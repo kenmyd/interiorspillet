@@ -21,11 +21,12 @@
  *   Integrity is always an error: ids (unique per namespace, syntax, prefixes, the frozen ids still there, levels /
  *   rooms / light groups registered in 00-ids.json), the schema, references, wall loops that close the room polygon
  *   with the normal inwards, overlapping rooms (with wall thickness), double walls, backOf pairs, openings that fit
- *   their wall, the door format, connects / opensInto against swing, holes inside their room, known archetypes.
- *   The plausibility checks – stair numbers (§1.6), headroom, the stair footprint, doors over the stair, the free width
- *   between an open door leaf and railings / walls, a door over a hole – are errors for measured values and warnings
- *   when a value involved is listed in `estimated` (§8.6). Control areas (> 10 %) and door heights under the stair are
- *   always warnings.
+ *   their wall, the door format, connects / opensInto against swing, holes inside their room, known archetypes, and the
+ *   free width (≥ 0,75 m) between an open door leaf and railings / walls (D6: the opening angle is a modelling choice,
+ *   so a leaf that cuts a passage is always fixable in the data, however uncertain the measurements around it are).
+ *   The plausibility checks – stair numbers (§1.6), headroom, the stair footprint, doors over the stair, a door over a
+ *   hole – are errors for measured values and warnings when a value involved is listed in `estimated` (§8.6). Control
+ *   areas (> 10 %) and door heights under the stair are always warnings.
  *
  * Pure Node (no three.js); stairWalk() is the same walk line the validator measures the going on.
  */
@@ -401,7 +402,8 @@ export function mergeHouse(spec, researchDir = RESEARCH_DIR, opts = {}) {
       if (Array.isArray(value)) {
         if (out[key] === undefined) out[key] = [];
         if (!Array.isArray(out[key])) throw new Error(`${where}: «${key}» er en liste her, men ikke i room-spec`);
-        mergeById(out[key], value.map((e) => stampEntry(key, clone(e), data.roomId, data.levelId)), key, where, log);
+        // only objects are stamped; anything else reaches mergeById, which names the file
+        mergeById(out[key], value.map((e) => (isObj(e) ? stampEntry(key, clone(e), data.roomId, data.levelId) : e)), key, where, log);
       } else if (isObj(value)) {
         if (out[key] === undefined) out[key] = {};
         if (!isObj(out[key])) throw new Error(`${where}: «${key}» er et objekt her, men ikke i room-spec`);
@@ -949,7 +951,6 @@ export function validateHouse(spec, opts = {}) {
   };
   const guardsOfLevel = (lid) => stairs.flatMap((s) => objs(s.guards).filter((g) => Array.isArray(g.line) && g.line.length >= 2 && g.line.every(isPoint) && (g.level ?? s.toLevel) === lid)
     .flatMap((g) => g.line.slice(1).map((p, i) => [g.line[i], p])));
-  const guardEst = (lid) => stairs.some((s) => isEst(s, 'guards') && objs(s.guards).some((g) => (g.level ?? s.toLevel) === lid));
   const roomAtPoint = (p, lid, except) => rooms.find((r) => r.id !== except && goodRooms.has(r.id) && physical(r) && r.levelId === lid && inOrOn(p, r.polygon, 0.02));
 
   for (const w of walls) {
@@ -1023,7 +1024,7 @@ export function validateHouse(spec, opts = {}) {
       const holes = holesOfLevel(wi.level);
       const over = holes.find((h) => g.clearPoints().some((p) => strictlyIn(p, h.polygon, 0.005)));
       if (over) judge(doorEst || isEst(over, 'polygon'), `${where}: den frie åpningen står over hullet ${over.id}`);
-      // free width past the open leaf (D6)
+      // free width past the open leaf (D6): always an error – the fix (openAngleDeg, hinge, swing) is in the data
       const leafRoomId = g.swingIn ? ownerRoom : (door.opensInto ?? other);
       const leafRoom = roomsById.get(leafRoomId);
       const info = { id: o.id, wallId: w.id, room: ownerRoom, leafRoom: leafRoomId ?? null, angle: g.angleDeg, blocked: null, minGuard: null };
@@ -1033,9 +1034,8 @@ export function validateHouse(spec, opts = {}) {
         info.blocked = res.blocked;
         info.minGuard = res.minGuard;
         if (res.blocked) {
-          const est = doorEst || isEst(leafRoom, 'polygon') || guardEst(lid) || holes.some((h) => isEst(h, 'polygon'));
           const gap = res.minGuard != null && res.minGuard < FREE_WIDTH ? ` (${fmt(res.minGuard)} m til rekkverket)` : '';
-          judge(est, `${where}: det åpne dørbladet (${fmt(g.angleDeg, 0)}°) gir under ${fmt(FREE_WIDTH)} m fri bredde mot rekkverk eller vegg i ${leafRoom.id}${gap}`);
+          error(`${where}: det åpne dørbladet (${fmt(g.angleDeg, 0)}°) gir under ${fmt(FREE_WIDTH)} m fri bredde mot rekkverk eller vegg i ${leafRoom.id}${gap} – endre openAngleDeg, hinge eller swing`);
         }
       }
       report.doors.push(info);

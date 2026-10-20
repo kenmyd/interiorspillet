@@ -523,8 +523,16 @@ async function main() {
     // it throws on errors, so a broken house file never reaches src/data. The measuring list (every `estimated` field)
     // is the generated «Målelista» section of research/room-spec-notes.md (with --out: a copy in the out folder).
     const house = await import('./house.mjs');
-    const spec = fixRoomSpec(house.mergeHouse(readJson(path.join(RESEARCH, 'room-spec.json')), RESEARCH, { log: note }));
-    const report = house.validateHouse(spec, { archetypes: SCHEMA });
+    let spec;
+    let report;
+    try {
+      spec = fixRoomSpec(house.mergeHouse(readJson(path.join(RESEARCH, 'room-spec.json')), RESEARCH, { log: note }));
+      report = house.validateHouse(spec, { archetypes: SCHEMA });
+    } catch (err) {
+      // only the message (it lists every error, or names the house file) – not the whole report object
+      console.error(`room-spec: ${err.message}\nnothing written`);
+      process.exit(1);
+    }
     writeJson(path.join(OUT, 'room-spec.json'), spec);
     const notesFile = path.join(RESEARCH, 'room-spec-notes.md');
     house.writeMeasureList(report, notesFile, OUT === DATA ? notesFile : path.join(OUT, 'room-spec-notes.md'));

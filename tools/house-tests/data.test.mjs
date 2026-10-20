@@ -4,10 +4,13 @@
  *   node tools/house-tests/data.test.mjs        (from anywhere; exit code 1 on failure – tools/test-house.mjs runs it)
  *
  * - re-running the normaliser reproduces src/data/room-spec.json and the generated «Målelista» byte for byte, and the
- *   house files change nothing in the living room (only `levels` and `rooms` are added);
+ *   real room-spec has no validator errors (warnings are allowed), keeps its key order and the living room's counts;
+ * - step 3's own house files (research/house/00-*.json) change nothing in the living room (only `levels` and `rooms`
+ *   are added) and validate without errors or warnings. These checks – and the plan house below – are built from the
+ *   00-files alone, so they keep holding when later steps add 10-/20-/30-… files (they own only those);
  * - mergeHouse: stamping, replace / extend by id, kitchen.items, deep merge, wallOpenings, key order, protected keys,
  *   which files are read;
- * - validateHouse is green on today's data and on a «plan house» built from notes/hele-huset-design.md §1.4–§1.6
+ * - validateHouse is green on a «plan house» built from notes/hele-huset-design.md §1.4–§1.6 on top of the 00-files
  *   (bad, gang, soverom, trappa, kjellergang, bod-1): stair numbers, warnings for estimated values;
  * - bad fixtures fail: door format, overlapping rooms, unknown archetype, an open door leaf against the railing, plus
  *   renamed ids, wall loops, backOf, double walls, swing/opensInto, lights, holes, doors over the hole.
@@ -43,6 +46,9 @@ const readJson = (rel) => JSON.parse(fs.readFileSync(path.join(ROOT, rel), 'utf8
 const base = readJson('research/room-spec.json');
 const registry = house.loadRegistry(RESEARCH);
 const realFiles = house.houseFiles(RESEARCH);
+// step 3 owns only research/house/00-*.json; the rest of the house comes in later 10-/20-/30-… files
+const own = realFiles.filter((f) => /^00-/.test(f.name));
+const ownSpec = fixRoomSpec(house.mergeHouse(base, RESEARCH, { files: own, registry }));
 const validate = (spec) => house.validateHouse(spec, { registry, throw: false });
 const has = (list, re) => list.some((m) => re.test(m));
 const show = (list) => list.slice(0, 4).join(' | ') || '(ingen)';
@@ -60,31 +66,51 @@ section('Normaliser: one regeneration, then byte-identical');
   fs.rmSync(out, { recursive: true, force: true });
 }
 const spec = readJson('src/data/room-spec.json');
+const inStue = (e) => !e.roomId || e.roomId === house.STUE;
+const stueOnly = (s) => {
+  const c = clone(s);
+  delete c.levels;
+  delete c.rooms;
+  return c;
+};
+
+// ---------------------------------------------------------------------------------------------------------------
+// Only what step 3 guarantees for the whole house: later steps add their own files and the counts grow.
+section('src/data/room-spec.json (whatever house files there are)');
 {
   const keys = Object.keys(spec);
-  check('room-spec keeps its keys in order, levels and rooms appended', keys.join() === [...Object.keys(base), 'levels', 'rooms'].join(), keys.join());
-  const stueOnly = clone(spec);
-  delete stueOnly.levels;
-  delete stueOnly.rooms;
-  check('the house files change nothing in the living room (= fixRoomSpec(research/room-spec.json))', JSON.stringify(stueOnly) === JSON.stringify(fixRoomSpec(clone(base))));
-  const inStue = (e) => !e.roomId || e.roomId === house.STUE;
-  check('the living room: 12 walls, 62 furniture', spec.walls.filter(inStue).length === 12 && spec.furniture.filter(inStue).length === 62);
+  const baseKeys = Object.keys(base);
+  const order = registry.schema.topLevel;
+  const added = keys.slice(baseKeys.length);
+  check('room-spec keeps its keys in order, the new ones appended in schema.topLevel order', keys.slice(0, baseKeys.length).join() === baseKeys.join()
+    && added.every((k) => order.includes(k)) && added.every((k, i) => i === 0 || order.indexOf(added[i - 1]) < order.indexOf(k)), keys.join());
+  const fixedBase = fixRoomSpec(clone(base));
+  check('meta, floor, baseboard and highWall are still the living room\'s (protected)', ['meta', 'floor', 'baseboard', 'highWall'].every((k) => JSON.stringify(spec[k]) === JSON.stringify(fixedBase[k])));
+  check('the living room: 12 walls, 62 furniture', spec.walls.filter(inStue).length === 12 && spec.furniture.filter(inStue).length === 62,
+    `walls ${spec.walls.filter(inStue).length}, furniture ${spec.furniture.filter(inStue).length}`);
+  const r = validate(spec);
+  check('the validator has no errors (warnings are allowed)', !r.errors.length, show(r.errors));
+  if (r.warnings.length) console.log(`  (${r.warnings.length} advarsler: ${show(r.warnings)})`);
+  check('no open door leaf cuts a passage (D6)', r.doors.every((d) => d.blocked !== true), JSON.stringify(r.doors.filter((d) => d.blocked)));
   const notes = fs.readFileSync(path.join(ROOT, 'research/room-spec-notes.md'), 'utf8');
   check('room-spec-notes.md: the generated section sits between the markers, the hand-written notes are kept', notes.includes(house.NOTES_START) && notes.includes(house.NOTES_END)
-    && notes.startsWith('# Romspesifikasjon – notater') && notes.includes('### Forkastet') && /\| Stue\/kjøkken \(`stue-kjokken`\) \| 1\. etasje \| living \| 53,78 m²/.test(notes)
-    && /`slabThickness`, `ceilingDefault`/.test(notes));
+    && notes.startsWith('# Romspesifikasjon – notater') && notes.includes('### Forkastet') && /\| Stue\/kjøkken \(`stue-kjokken`\) \| 1\. etasje \| living \| 53,78 m²/.test(notes));
 }
 
 // ---------------------------------------------------------------------------------------------------------------
-section('Validator: today\'s data');
+section('Step 3\'s own house files (research/house/00-*.json)');
 {
-  const r = validate(spec);
+  check('the 00-files include 00-hus.json (the id register is not one of them)', own.some((f) => f.name === '00-hus.json') && !own.some((f) => f.name === '00-ids.json'), own.map((f) => f.name).join());
+  check('they only append levels and rooms to the keys', Object.keys(ownSpec).join() === [...Object.keys(base), 'levels', 'rooms'].join(), Object.keys(ownSpec).join());
+  check('they change nothing in the living room (= fixRoomSpec(research/room-spec.json))', JSON.stringify(stueOnly(ownSpec)) === JSON.stringify(fixRoomSpec(clone(base))));
+  const r = validate(ownSpec);
   check('green: no errors, no warnings', !r.errors.length && !r.warnings.length, `${show(r.errors)} / ${show(r.warnings)}`);
   check('one level (hoved, floorY 0) and one room (stue-kjokken, 53,78 m², 12 walls)', r.levels.length === 1 && r.levels[0].id === 'hoved' && r.levels[0].floorY === 0
     && r.rooms.length === 1 && r.rooms[0].id === 'stue-kjokken' && near(r.rooms[0].area, 53.78, 0.005) && r.rooms[0].walls === 12);
   check('the measuring list has the estimated level fields', r.measureList.length === 1 && r.measureList[0].id === 'hoved' && r.measureList[0].fields.join() === 'slabThickness,ceilingDefault');
+  check('…and its markdown names them under «Nivåer»', /- \*\*Nivåer\*\*\n {2}- 1\. etasje \(`levels\/hoved`\): `slabThickness`, `ceilingDefault`/.test(house.measureListMarkdown(r)));
   let threw = null;
-  const bad = clone(spec);
+  const bad = clone(ownSpec);
   bad.walls.find((w) => w.id === 'w-hoy').id = 'w-hoy-ny';
   try {
     house.validateHouse(bad, { registry });
@@ -97,7 +123,9 @@ section('Validator: today\'s data');
 // ---------------------------------------------------------------------------------------------------------------
 section('mergeHouse');
 {
-  check('houseFiles: research/house/NN-*.json sorted, without the id register', realFiles.map((f) => f.name).join() === '00-hus.json');
+  const names = realFiles.map((f) => f.name);
+  check('houseFiles: research/house/NN-*.json sorted, 00-hus.json first, without the id register', names[0] === '00-hus.json' && names.join() === [...names].sort().join()
+    && names.every((n) => house.HOUSE_FILE.test(n)) && !names.includes(house.REGISTRY_FILE), names.join());
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ip-house-files-'));
   fs.mkdirSync(path.join(tmp, 'house'));
   for (const f of ['10-a.json', '05-b.json', 'notes.json', 'x-10.json', '00-ids.json', '1-c.json']) fs.writeFileSync(path.join(tmp, 'house', f), '{}');
@@ -283,11 +311,14 @@ function planFiles() {
   return [{ name: '10-hoved-rom.json', data: hoved }, { name: '20-trapp.json', data: trapp }, { name: '30-kjeller.json', data: kjeller }];
 }
 
-/** Plan house spec; `edit(files)` may change the house files before the merge, `after(spec)` the merged spec. */
+/**
+ * Plan house spec, merged on top of step 3's own 00-files only (never the real 10-/20-/30- files, which would replace
+ * or duplicate the fixtures); `edit(files)` may change the house files before the merge, `after(spec)` the merged spec.
+ */
 function planHouse(edit, after) {
   const files = planFiles();
   if (edit) edit(Object.fromEntries(files.map((f) => [f.name.slice(0, 2), f.data])));
-  const s = fixRoomSpec(house.mergeHouse(base, RESEARCH, { files: [...realFiles, ...files], registry }));
+  const s = fixRoomSpec(house.mergeHouse(base, RESEARCH, { files: [...own, ...files], registry }));
   if (after) after(s);
   return s;
 }
@@ -373,8 +404,27 @@ fails('unknown archetype (instead of becoming a vase)', planHouse((f) => {
     at90(f);
     measured(f);
   }), /door-gang \(w-gang\): det åpne dørbladet \(90°\) gir under 0,75 m fri bredde.*gang \(0,34 m til rekkverket\)/);
-  const r = validate(planHouse(at90));
-  check('…with estimated railings it is a warning, not an error', !r.errors.length && has(r.warnings, /door-gang.*90°.*fri bredde.*anslått/), show(r.errors));
+  // the opening angle is a modelling choice: estimated railings, hole or door never turn it into a warning
+  const r = fails('…also with estimated railings and an estimated door (always an error, never a warning)', planHouse((f) => {
+    at90(f);
+    f['10'].wallOpenings[0].openings[0].estimated = ['offset', 'width', 'door'];
+  }), /door-gang \(w-gang\): det åpne dørbladet \(90°\) gir under 0,75 m fri bredde.*0,34 m til rekkverket.*endre openAngleDeg/);
+  check('…and it is not reported as a warning too', !has(r.warnings, /fri bredde/), show(r.warnings));
+}
+{
+  // broken entries in a house file with a file-level roomId: the merge names the file instead of a raw TypeError
+  const merr = (walls) => {
+    try {
+      house.mergeHouse(base, RESEARCH, { files: [{ name: '50-x.json', data: { roomId: 'bad', walls } }], registry });
+    } catch (err) {
+      return err;
+    }
+    return null;
+  };
+  const a = merr([null]);
+  const b = merr([5]);
+  check('mergeHouse: a null or number entry under a file-level roomId names the file (no TypeError)', a && !(a instanceof TypeError) && /research\/house\/50-x\.json: walls: hver oppføring må være et objekt/.test(a.message)
+    && b && !(b instanceof TypeError) && /50-x\.json: walls: hver oppføring må være et objekt/.test(b.message), `${a?.message} / ${b?.message}`);
 }
 fails('a renamed id (w-hoy → w-hoyvegg)', planHouse(null, (s) => {
   s.walls.find((w) => w.id === 'w-hoy').id = 'w-hoyvegg';
