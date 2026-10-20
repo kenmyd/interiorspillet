@@ -1,0 +1,28 @@
+{
+  "$comment": "Hele huset, steg 3 (S0-data): nivået «hoved» og stua som rom. Leses av mergeHouse() i src/data/scripts/house.mjs (notes/hele-huset-design.md §1). Stuas tall er fotomålt og står fortsatt i research/room-spec.json; her står bare rommet, med samme polygon og gulv (validatoren sjekker at de er like).",
+  "levels": [
+    {
+      "id": "hoved",
+      "name": "1. etasje",
+      "floorY": 0,
+      "slabThickness": 0.3,
+      "ceilingDefault": 2.4,
+      "plan": { "file": "plantegning.png", "pxPerM": 51.3, "originPx": [90.5, 51.5] },
+      "estimated": ["slabThickness", "ceilingDefault"],
+      "source": "Planen og skalaen er meta.planFile, planPxPerM og planOriginPx (fotomålt, beholdes som alias). Dekket på 0,30 er anslått (D2, målelista punkt 1). Standardtaket 2,40 gjelder de nye rommene og er anslått (§1.4, målelista punkt 9)."
+    }
+  ],
+  "rooms": [
+    {
+      "id": "stue-kjokken",
+      "name": "Stue/kjøkken",
+      "levelId": "hoved",
+      "kind": "living",
+      "polygon": [[2.63, 0], [6.32, 0], [6.32, 5.38], [6.92, 5.38], [6.92, 11.93], [0, 11.93], [0, 8.34], [3.22, 8.34], [3.22, 2.22], [2.63, 2.22]],
+      "floor": { "material": "oak-plank", "color": "#a59b8f", "boards": "z" },
+      "ceilingIds": ["c-kjokken", "c-stue", "c-tvstue"],
+      "acoustic": { "mode": "calibrated" },
+      "source": "floor.polygon, ceilings og zones i research/room-spec.json (fotomålt). Etterklangen er kalibrert mot 0,86 s (D12)."
+    }
+  ]
+}

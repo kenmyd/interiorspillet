@@ -1,0 +1,131 @@
+{
+  "$comment": "Id-register og skjema for hele huset (notes/hele-huset-design.md §1, steg 3). Fila flettes IKKE inn i room-spec.json: mergeHouse() hopper over den, og validateHouse() i src/data/scripts/house.mjs sjekker dataene mot den. «frozen» er id-ene som fantes før hele huset; de får aldri nytt navn (lagrede design peker på dem). Nivåer, rom og lysgrupper må stå her før de kan brukes. «control» er eierens eller planens areal; over 10 % avvik gir en advarsel.",
+  "levels": {
+    "hoved": { "name": "1. etasje", "floorY": 0 },
+    "kjeller": { "name": "Kjeller" }
+  },
+  "rooms": {
+    "stue-kjokken": { "levelId": "hoved", "kind": "living", "control": { "area": 53.78, "source": "stuas regresjon (tools/test-design.mjs)" } },
+    "bad": { "levelId": "hoved", "kind": "bathroom", "control": { "area": 5.62, "dims": [2.53, 2.22], "source": "eier 2026-10-20" } },
+    "gang": { "levelId": "hoved", "kind": "hall", "control": { "area": 6.44, "dims": [3.11, 2.07], "source": "eier 2026-10-20" } },
+    "soverom": { "levelId": "hoved", "kind": "bedroom", "control": { "area": 11.48, "dims": [3.11, 3.69], "source": "eier 2026-10-20" } },
+    "trapp": { "kind": "hud" },
+    "kjeller-gang": { "levelId": "kjeller", "kind": "hall", "control": { "area": 12.5, "source": "eier 2026-10-20 (GANG, med trappa)" } },
+    "vaskerom": { "levelId": "kjeller", "kind": "laundry", "control": { "area": 10.77, "dims": [2.64, 4.08], "source": "plantegning_kjeller.png" } },
+    "soverom-kjeller": { "levelId": "kjeller", "kind": "bedroom", "control": { "area": 7.41, "source": "eier 2026-10-20" } },
+    "kjellerstue": { "levelId": "kjeller", "kind": "living", "control": { "area": 20.57, "source": "eier 2026-10-20" } },
+    "entre-kjeller": { "levelId": "kjeller", "kind": "entrance", "control": { "area": 7.35, "dims": [2.51, 2.93], "source": "eier 2026-10-20 (rommet med ytterdør)" } },
+    "bod-1": { "levelId": "kjeller", "kind": "storage", "control": { "area": 3.8, "dims": [1.64, 2.32], "source": "eier 2026-10-20" } },
+    "bod-2": { "levelId": "kjeller", "kind": "storage", "control": { "area": 9.93, "dims": [4.28, 2.32], "source": "eier 2026-10-20 (det grå rommet)" } },
+    "bod-3": { "levelId": "kjeller", "kind": "storage", "control": { "area": 10.51, "dims": [3.7, 2.84], "source": "eier 2026-10-20 (D10 kutter rommet ved terrassekanten)" } }
+  },
+  "pseudoRooms": ["ute"],
+  "lightGroups": {
+    "gang": { "roomId": "gang", "label": "Gang og trapp", "defaultDimmer": 0.5 },
+    "bad": { "roomId": "bad", "label": "Bad", "defaultDimmer": 0.6 },
+    "soverom": { "roomId": "soverom", "label": "Soverom", "defaultDimmer": 0.5 },
+    "kjeller-gang": { "roomId": "kjeller-gang", "label": "Kjellergang", "defaultDimmer": 0.5 },
+    "entre": { "roomId": "entre-kjeller", "label": "Entré", "defaultDimmer": 0.5 },
+    "vaskerom": { "roomId": "vaskerom", "label": "Vaskerom", "defaultDimmer": 0.6 },
+    "kjellerstue": { "roomId": "kjellerstue", "label": "Kjellerstue", "defaultDimmer": 0.4 },
+    "soverom-kjeller": { "roomId": "soverom-kjeller", "label": "Soverom i kjelleren", "defaultDimmer": 0.4 },
+    "boder": { "roomId": null, "label": "Boder", "defaultDimmer": 0 },
+    "ute": { "roomId": null, "label": "Ute", "defaultDimmer": 0.6 }
+  },
+  "legacyLightGroups": {
+    "spec": ["led-lister", "spotter-hoyvegg", "taklampe-tvstue", "kjokkenlys"],
+    "layout": ["led", "spots", "kjokken", "pendler", "overskap", "tvstue"]
+  },
+  "frozen": {
+    "walls": ["w-kjokken-ost", "w-kjokken-sor", "w-knekk", "w-sor", "w-vest-stue", "w-vest-tv", "w-nord-tv", "w-sov-tv", "w-hoy", "w-gang", "w-nisje-side", "w-nisje-bak"],
+    "openings": ["win-k1", "win-k2", "door-terrasse", "win-s1", "win-s2", "win-tv", "door-gang"],
+    "zones": ["kjokken", "spisestue", "stue", "tvstue"],
+    "ceilings": ["c-kjokken", "c-stue", "c-tvstue"],
+    "bulkheads": ["b-tvstue", "b-kjokken"],
+    "builtInLights": ["led-sor", "led-tvstue", "led-kjokken", "led-overskap", "spot-hoyvegg-1", "spot-hoyvegg-2", "spot-hoyvegg-3", "spot-hoyvegg-4", "tak-tvstue", "skinne-kjokken", "pendel-oy-1", "pendel-oy-2", "pendel-oy-3", "ring-kjokken-1", "ring-kjokken-2"],
+    "kitchenItems": ["k-hoyskap-kjol", "k-hoyskap-ovn", "k-hoyskap-smalt", "k-hjorneskap", "k-endepanel", "k-benk", "k-oppvask", "k-benkeplate", "k-vask", "k-overskap", "k-oy", "k-platetopp"],
+    "furniture": [
+      "f-hjornesofa", "f-pute-1", "f-pute-2", "f-pute-3", "f-pute-4", "f-pledd-tv", "f-sofabord-tv", "f-teppe-tv", "f-tv", "f-hoyttaler-v", "f-hoyttaler-h",
+      "f-hoyttaler-s", "f-vegghylle", "f-plante-sokkel", "f-gulvvase", "f-sylinder", "f-dekor-overlys", "f-buet-sofa", "f-pledd-salvie", "f-svingstol-1",
+      "f-svingstol-2", "f-settbord", "f-teppe-stue", "f-maleri", "f-palme", "f-plante-stativ", "f-pendel-stue", "f-lykt-v1", "f-vase-v1", "f-plante-v2",
+      "f-telys-v2", "f-spisebord", "f-spisestol-1", "f-spisestol-2", "f-spisestol-3", "f-spisestol-4", "f-spisestol-5", "f-spisestol-6", "f-barkrakk-1",
+      "f-barkrakk-2", "f-barkrakk-3", "f-pampas", "f-knivblokk", "f-avfallsbotte", "f-plante-benk", "f-pynt-jutematte-stor", "f-pynt-lysestake-1",
+      "f-pynt-lysestake-2", "f-pynt-jutematte-liten", "f-pynt-telys-settbord", "f-pynt-treboks", "f-pynt-glasskule-1", "f-pynt-glasskule-2", "f-pynt-lys-rav",
+      "f-pynt-lys-salvie", "f-pynt-lys-krem", "f-pynt-hylle-lykt", "f-pynt-hylle-steinstabel", "f-pynt-hylle-plante", "f-pynt-hylle-flaske", "f-pynt-hylle-telys",
+      "f-pynt-hylle-aloe"
+    ],
+    "fixtures": ["fx-varmepumpe", "fx-stikk-hoy", "fx-bryterpanel", "fx-bryter-dor", "fx-stikk-dor", "fx-bryter-nisje", "fx-stikk-nisje", "fx-stikk-vest", "fx-stikk-s1", "fx-stikk-s2", "fx-stikk-knekk", "fx-stikk-k1", "fx-stikk-k2", "fx-stikk-k3", "fx-roykvarsler-tv", "fx-sensor-tv", "fx-roykvarsler-k"],
+    "photoCameras": ["0_for", "20261018_082806", "20261018_082827", "20261018_082829", "20261018_082909", "20261018_082924", "20261018_083012", "20261018_083019"]
+  },
+  "schema": {
+    "idSyntax": "^[a-z0-9][a-z0-9_æøå-]*$",
+    "topLevel": [
+      "meta", "zones", "floor", "baseboard", "walls", "ceilings", "bulkheads", "builtInLights", "kitchen", "furniture", "fixtures", "highWall", "outside", "photoCameras",
+      "levels", "rooms", "floorOpenings", "stairs", "builtIns", "lightGroups", "facadeSegments", "outsideHouse"
+    ],
+    "protected": ["meta", "floor", "baseboard", "highWall"],
+    "collections": {
+      "levels": {
+        "required": ["id", "name", "floorY", "slabThickness", "ceilingDefault"],
+        "numbers": ["floorY", "slabThickness", "ceilingDefault"]
+      },
+      "rooms": {
+        "required": ["id", "name", "kind", "polygon"],
+        "requiredPhysical": ["levelId", "floor", "floor.material", "floor.color", "ceilingIds", "acoustic.mode"],
+        "enums": { "kind": ["living", "bathroom", "hall", "bedroom", "laundry", "storage", "entrance", "hud"], "acoustic.mode": ["calibrated", "estimate"] },
+        "numbers": ["floorOffset"],
+        "polygons": ["polygon"]
+      },
+      "walls": {
+        "required": ["id", "from", "to", "normal"],
+        "enums": { "material": ["paint", "stone-panel", "wetroom-paint", "dark-panel"] },
+        "numbers": ["thickness", "height", "length"],
+        "points2": ["from", "to", "normal"],
+        "idPattern": "^w-"
+      },
+      "openings": {
+        "required": ["id", "type", "offset", "width", "height"],
+        "enums": { "type": ["window", "door", "terrace-door", "opening"], "door.hinge": ["from", "to"], "door.swing": ["in", "out"] },
+        "numbers": ["offset", "width", "height", "sill", "door.openAngleDeg", "skyView", "obstruction"],
+        "forbidden": ["hinge", "swing", "leaf", "handleSide", "handleHeight", "leafColor", "closed", "opensInto", "openAngleDeg", "casing"],
+        "idPattern": "^(door|win|open)-"
+      },
+      "ceilings": { "required": ["id", "polygon"], "polygons": ["polygon"], "idPattern": "^c-" },
+      "bulkheads": { "required": ["id", "from", "to"], "idPattern": "^b-" },
+      "builtInLights": {
+        "required": ["id", "group", "type"],
+        "enums": { "type": ["led-strip", "spot", "ceiling-ring", "track", "pendant-cylinder", "plafond", "downlight"] },
+        "numbers": ["lumens", "lumensPerM", "lightColorK"],
+        "forbidden": ["kelvin", "diameter", "colorK"],
+        "idPattern": "^l-"
+      },
+      "kitchenItems": { "required": ["id", "position", "dims"], "idPattern": "^k-" },
+      "furniture": { "required": ["id", "archetype", "position", "dims"], "points3": ["position"], "idPattern": "^f-" },
+      "fixtures": { "required": ["id", "type"], "idPattern": "^fx-" },
+      "zones": { "required": ["id", "polygon"], "polygons": ["polygon"] },
+      "photoCameras": { "required": ["file", "pos"] },
+      "builtIns": {
+        "required": ["id", "roomId", "type", "mount", "position", "dims"],
+        "enums": {
+          "type": ["wc", "vanity", "shower", "mirror-round", "floor-drain", "towel-radiator", "laundry-bench", "cabinet-row", "washer", "dryer", "wardrobe-sliding"],
+          "mount": ["floor", "wall"]
+        },
+        "points3": ["position"],
+        "idPattern": "^bi-"
+      },
+      "lightGroups": { "required": ["id", "label"], "numbers": ["defaultDimmer"] },
+      "floorOpenings": { "required": ["id", "levelId", "roomId", "polygon"], "polygons": ["polygon"] },
+      "stairs": {
+        "required": ["id", "type", "fromLevel", "toLevel", "openingId", "risers", "top", "foot"],
+        "enums": { "type": ["straight", "quarter-turn-winder", "half-turn-winder"] },
+        "numbers": ["risers"],
+        "idPattern": "^trapp"
+      },
+      "facadeSegments": {
+        "required": ["id", "wallIds", "material"],
+        "enums": { "material": ["cladding", "plaster"] },
+        "idPattern": "^f-"
+      }
+    }
+  }
+}

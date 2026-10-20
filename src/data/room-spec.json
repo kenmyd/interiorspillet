@@ -3344,7 +3344,7 @@
       "materials": {
         "main": "linen"
       },
-      "notes": "Flettet jutematte midt på det store bordet (082827, 082829). (pynt fra bildene – fix-core r1)"
+      "notes": "Flettet jutematte på det store bordet (082827, 082829). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3377,7 +3377,7 @@
       "materials": {
         "main": "black-metal"
       },
-      "notes": "To sorte lysestaker på jutematta (082827). (pynt fra bildene – fix-core r1)"
+      "notes": "To sorte lysestaker på jutematta (082827). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3410,7 +3410,7 @@
       "materials": {
         "main": "black-metal"
       },
-      "notes": "To sorte lysestaker på jutematta (082827). (pynt fra bildene – fix-core r1)"
+      "notes": "To sorte lysestaker på jutematta (082827). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3442,7 +3442,7 @@
       "materials": {
         "main": "linen"
       },
-      "notes": "Jutematte på det lille bordet (082827). (pynt fra bildene – fix-core r1)"
+      "notes": "Jutematte på det lille bordet (082827). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3474,7 +3474,7 @@
       "materials": {
         "main": "glass-smoked"
       },
-      "notes": "Små grønne glass på det lille bordet (082827, 082819). (pynt fra bildene – fix-core r1)"
+      "notes": "Små grønne glass på det lille bordet (082827, 082819). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3505,7 +3505,7 @@
       "materials": {
         "main": "oak"
       },
-      "notes": "Liten rund boks på det lille bordet (082827). (pynt fra bildene – fix-core r1)"
+      "notes": "Liten rund boks på det lille bordet (082827). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3534,7 +3534,7 @@
       "materials": {
         "main": "glass-clear"
       },
-      "notes": "To klare glasskuler på sofabordet (082736, 082726). (pynt fra bildene – fix-core r1)"
+      "notes": "To klare glasskuler på sofabordet (082736, 082726). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3563,7 +3563,7 @@
       "materials": {
         "main": "glass-clear"
       },
-      "notes": "To klare glasskuler på sofabordet (082736, 082726). (pynt fra bildene – fix-core r1)"
+      "notes": "To klare glasskuler på sofabordet (082736, 082726). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3594,7 +3594,7 @@
       "materials": {
         "main": "glass-smoked"
       },
-      "notes": "Tre små lys i glass (rav, salvie, krem) på sofabordet (082736). (pynt fra bildene – fix-core r1)"
+      "notes": "Tre små lys i glass (rav, salvie, krem) på sofabordet (082736). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3625,7 +3625,7 @@
       "materials": {
         "main": "glass-smoked"
       },
-      "notes": "Tre små lys i glass (rav, salvie, krem) på sofabordet (082736). (pynt fra bildene – fix-core r1)"
+      "notes": "Tre små lys i glass (rav, salvie, krem) på sofabordet (082736). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3656,7 +3656,7 @@
       "materials": {
         "main": "glass-opal"
       },
-      "notes": "Tre små lys i glass (rav, salvie, krem) på sofabordet (082736). (pynt fra bildene – fix-core r1)"
+      "notes": "Tre små lys i glass (rav, salvie, krem) på sofabordet (082736). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3687,7 +3687,7 @@
       "materials": {
         "main": "glass-clear"
       },
-      "notes": "Topphylla (082736). (pynt fra bildene – fix-core r1)"
+      "notes": "Topphylla (082736). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3716,7 +3716,7 @@
       "materials": {
         "main": "ceramic"
       },
-      "notes": "Topphylla (082736). (pynt fra bildene – fix-core r1)"
+      "notes": "Topphylla (082736). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3751,7 +3751,7 @@
         "pot": "rattan",
         "leaves": "plant-leaf"
       },
-      "notes": "Øvre høyre hylle (082736). (pynt fra bildene – fix-core r1)"
+      "notes": "Øvre høyre hylle (082736). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3780,7 +3780,7 @@
       "materials": {
         "main": "glass-smoked"
       },
-      "notes": "Midtre hylle (082736). (pynt fra bildene – fix-core r1)"
+      "notes": "Midtre hylle (082736). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3811,7 +3811,7 @@
       "materials": {
         "main": "glass-smoked"
       },
-      "notes": "Nederste hylle til venstre (082736). (pynt fra bildene – fix-core r1)"
+      "notes": "Nederste hylle til venstre (082736). (pynt fra bildene)"
     },
     {
       "confidence": "low",
@@ -3846,7 +3846,7 @@
         "pot": "rattan",
         "leaves": "plant-leaf"
       },
-      "notes": "Nederste hylle til venstre (082736). (pynt fra bildene – fix-core r1)"
+      "notes": "Nederste hylle til venstre (082736). (pynt fra bildene)"
     }
   ],
   "fixtures": [
@@ -4533,6 +4533,92 @@
       "confidence": "med",
       "source": "gruppe 6 (omregnet til felles mål)",
       "notes": "Langt blikk østover: svingstoler, settbord, spisestue, kjøkken."
+    }
+  ],
+  "levels": [
+    {
+      "id": "hoved",
+      "name": "1. etasje",
+      "floorY": 0,
+      "slabThickness": 0.3,
+      "ceilingDefault": 2.4,
+      "plan": {
+        "file": "plantegning.png",
+        "pxPerM": 51.3,
+        "originPx": [
+          90.5,
+          51.5
+        ]
+      },
+      "estimated": [
+        "slabThickness",
+        "ceilingDefault"
+      ],
+      "source": "Planen og skalaen er meta.planFile, planPxPerM og planOriginPx (fotomålt, beholdes som alias). Dekket på 0,30 er anslått (D2, målelista punkt 1). Standardtaket 2,40 gjelder de nye rommene og er anslått (§1.4, målelista punkt 9)."
+    }
+  ],
+  "rooms": [
+    {
+      "id": "stue-kjokken",
+      "name": "Stue/kjøkken",
+      "levelId": "hoved",
+      "kind": "living",
+      "polygon": [
+        [
+          2.63,
+          0
+        ],
+        [
+          6.32,
+          0
+        ],
+        [
+          6.32,
+          5.38
+        ],
+        [
+          6.92,
+          5.38
+        ],
+        [
+          6.92,
+          11.93
+        ],
+        [
+          0,
+          11.93
+        ],
+        [
+          0,
+          8.34
+        ],
+        [
+          3.22,
+          8.34
+        ],
+        [
+          3.22,
+          2.22
+        ],
+        [
+          2.63,
+          2.22
+        ]
+      ],
+      "floor": {
+        "material": "oak-plank",
+        "color": "#a59b8f",
+        "boards": "z"
+      },
+      "ceilingIds": [
+        "c-kjokken",
+        "c-stue",
+        "c-tvstue"
+      ],
+      "acoustic": {
+        "mode": "calibrated"
+      },
+      "source": "floor.polygon, ceilings og zones i research/room-spec.json (fotomålt). Etterklangen er kalibrert mot 0,86 s (D12)."
     }
   ]
 }
