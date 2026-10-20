@@ -67,6 +67,18 @@
       "parts": ["panel", "slats", "backing", "frame"],
       "optionalParts": [],
       "partLabels": { "panel": "Panel", "slats": "Spiler", "backing": "Bakside", "frame": "Ramme" }
+    },
+    "bed": {
+      "label": "Senger",
+      "parts": ["frame", "headboard", "legs", "bedding"],
+      "optionalParts": ["throw"],
+      "partLabels": { "frame": "Seng/ramme", "headboard": "Hodegavl", "legs": "Ben", "bedding": "Sengetøy", "throw": "Sengeteppe" }
+    },
+    "fixture": {
+      "label": "Innredning og tilbehør",
+      "parts": ["body", "accent"],
+      "optionalParts": ["fabric"],
+      "partLabels": { "body": "Materiale", "accent": "Detaljer", "fabric": "Tekstil" }
     }
   },
   "archetypes": {
@@ -85,7 +97,7 @@
 
     "coffee-table-rect": { "family": "table", "mount": "floor", "label": "Sofabord" },
     "coffee-table-round-nesting": { "family": "table", "mount": "floor", "label": "Settbord (runde)" },
-    "dining-table-oval": { "family": "table", "mount": "floor", "label": "Spisebord (ovalt)" },
+    "dining-table-oval": { "family": "table", "mount": "floor", "label": "Spisebord" },
     "side-table-round": { "family": "table", "mount": "floor", "label": "Sidebord (rundt)" },
     "side-table-c": { "family": "table", "mount": "floor", "label": "Sidebord (C-form)" },
     "side-table-nesting": { "family": "table", "mount": "floor", "label": "Settbord" },
@@ -147,7 +159,26 @@
     "vertical": { "family": "shading", "mount": "window", "label": "Lamellgardin" },
     "curtain": { "family": "shading", "mount": "window", "label": "Gardin" },
     "roman": { "family": "shading", "mount": "window", "label": "Liftgardin" },
-    "exterior-screen": { "family": "shading", "mount": "window", "label": "Utvendig screen" }
+    "exterior-screen": { "family": "shading", "mount": "window", "label": "Utvendig screen" },
+
+    "bed": { "family": "bed", "mount": "floor", "label": "Seng" },
+    "headboard": { "family": "bed", "mount": "floor", "label": "Sengegavl", "parts": ["headboard", "legs"] },
+    "bench": { "family": "seating", "mount": "floor", "label": "Benk", "parts": ["upholstery", "legs", "frame"], "partLabels": { "upholstery": "Sete", "frame": "Ramme og hylle" } },
+    "chair": { "family": "seating", "mount": "floor", "label": "Spisestol med ramme", "parts": ["upholstery", "frame", "legs"], "partLabels": { "upholstery": "Trekk/sete", "frame": "Ramme og rygg" } },
+    "wardrobe": { "family": "storage", "mount": "floor", "label": "Garderobeskap" },
+    "dresser": { "family": "table", "mount": "floor", "label": "Kommode", "partLabels": { "front": "Fronter" } },
+    "bedside-table": { "family": "table", "mount": "floor", "label": "Nattbord" },
+    "bookcase": { "family": "storage", "mount": "floor", "label": "Bokhylle", "partLabels": { "body": "Korpus og hyller", "front": "Dører" } },
+    "shoe-cabinet": { "family": "storage", "mount": "floor", "label": "Skoskap", "partLabels": { "front": "Klaffer" } },
+    "wall-cabinet": { "family": "storage", "mount": "wall", "label": "Veggskap" },
+    "mirror-cabinet": { "family": "storage", "mount": "wall", "label": "Speilskap", "parts": ["body", "front", "handle"], "partLabels": { "front": "Speildører" } },
+    "mirror-floor": { "family": "framed", "mount": "floor", "label": "Gulvspeil", "partLabels": { "print": "Speilglass" } },
+    "towel": { "family": "textile", "mount": "soft", "label": "Håndklær", "partLabels": { "fabric": "Håndkle", "piping": "Bord/stripe" } },
+    "towel-ladder": { "family": "fixture", "mount": "floor", "label": "Håndklestige", "parts": ["body", "fabric"], "partLabels": { "body": "Stige", "fabric": "Håndklær" } },
+    "towel-rail": { "family": "fixture", "mount": "wall", "label": "Håndklestang", "parts": ["body", "fabric"], "partLabels": { "body": "Stang/knagg", "fabric": "Håndklær" } },
+    "bath-accessory": { "family": "fixture", "mount": "surface", "label": "Badetilbehør", "parts": ["body", "accent"], "partLabels": { "body": "Materiale", "accent": "Pumpe/metall" } },
+    "coat-rack": { "family": "fixture", "mount": "wall", "label": "Knaggrekke", "parts": ["body", "accent", "fabric"], "partLabels": { "body": "List/hylle", "accent": "Knagger", "fabric": "Klær" } },
+    "coat-stand": { "family": "fixture", "mount": "floor", "label": "Stumtjener", "parts": ["body", "accent", "fabric"], "partLabels": { "body": "Stativ", "accent": "Knagger", "fabric": "Klær" } }
   },
   "archetypeAliases": {
     "armchair-tub-swivel": "tub-swivel",
@@ -214,7 +245,33 @@
     "duette": "pleated",
     "lamell": "vertical",
     "gardin": "curtain",
-    "screen": "exterior-screen"
+    "screen": "exterior-screen",
+    "seng": "bed",
+    "kontinentalseng": "bed",
+    "rammeseng": "bed",
+    "sengegavl": "headboard",
+    "gavl": "headboard",
+    "benk": "bench",
+    "sengebenk": "bench",
+    "spisestol": "chair",
+    "garderobe": "wardrobe",
+    "garderobeskap": "wardrobe",
+    "kommode": "dresser",
+    "chest-of-drawers": "dresser",
+    "nattbord": "bedside-table",
+    "nightstand": "bedside-table",
+    "bokhylle": "bookcase",
+    "skoskap": "shoe-cabinet",
+    "veggskap": "wall-cabinet",
+    "speilskap": "mirror-cabinet",
+    "gulvspeil": "mirror-floor",
+    "handkle": "towel",
+    "towels": "towel",
+    "handklestige": "towel-ladder",
+    "handklestang": "towel-rail",
+    "knaggrekke": "coat-rack",
+    "knagger": "coat-rack",
+    "stumtjener": "coat-stand"
   },
   "materials": {
     "fabric": ["boucle", "woven", "velvet", "velour", "linen", "wool", "felt", "leather", "teddy", "knit", "cotton"],

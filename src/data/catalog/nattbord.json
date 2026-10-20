@@ -1,0 +1,835 @@
+[
+  {
+    "id": "bohus-naia-nattbord-40x50",
+    "category": "nattbord",
+    "name": "Naia nattbord 40x50",
+    "brand": "Tvilum",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/nattbord/naia-nattbord-40x50-2",
+    "priceNok": 1199,
+    "salePriceNok": 799,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 314417, sand): 799 kr i kampanje, før 1 199 kr – pris per stk. (to nattbord 1 598 kr). Cashmere (varenr. 333257, /bord/nattbord/naia-nattbord-40x50-4) og eik (varenr. 302577, /bord/nattbord/naia-nattbord-40x50-1) samme pris; brun eik (varenr. 333276, /bord/nattbord/naia-nattbord-40x50-5) 839 kr, før 1 199 kr; matt svart (varenr. 250823, /bord/nattbord/naia-nattbord-40x50) 1 199 kr uten kampanje. Finnes også 40x40 med én skuff og hylle.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.5,
+      "h": 0.5
+    },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:2"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "gripRecess": "top",
+      "base": "plinth",
+      "legH": 0.03,
+      "top": "same",
+      "corners": "square",
+      "notes": "MALM-type grip: recessed horizontal channel above each of the two drawer fronts; low recessed plinth; top overhangs slightly. Sand variant has an oak-look top over the sand body."
+    },
+    "variants": [
+      {
+        "name": "Sand (topp i eikedekor)",
+        "colors": {
+          "body": "#d3cac1",
+          "front": "#d3cac1",
+          "top": "#b5a18d",
+          "legs": "#c8bfb6",
+          "handle": "#c2b9b0"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "oak",
+          "legs": "painted",
+          "handle": "painted"
+        }
+      },
+      {
+        "name": "Cashmere",
+        "colors": {
+          "body": "#cfc7bf",
+          "front": "#d3cac1",
+          "top": "#c3bcb7",
+          "legs": "#c8bfb6",
+          "handle": "#c2b9b0"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.bohus.no/bord/nattbord/naia-nattbord-40x50-4"
+      },
+      {
+        "name": "Eik",
+        "colors": {
+          "body": "#c6ad94",
+          "front": "#cbb198",
+          "top": "#c6b198",
+          "legs": "#bea58c",
+          "handle": "#b29a82"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://www.bohus.no/bord/nattbord/naia-nattbord-40x50-1"
+      },
+      {
+        "name": "Brun eik",
+        "colors": {
+          "body": "#57443a",
+          "front": "#523f2f",
+          "top": "#5a4535",
+          "legs": "#4e3c30",
+          "handle": "#43342a"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 1199,
+        "salePriceNok": 839,
+        "url": "https://www.bohus.no/bord/nattbord/naia-nattbord-40x50-5"
+      },
+      {
+        "name": "Matt svart",
+        "colors": {
+          "body": "#2b2b2c",
+          "front": "#2b2b2c",
+          "top": "#2b2b2c",
+          "legs": "#262627",
+          "handle": "#222223"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "priceNok": 1199,
+        "url": "https://www.bohus.no/bord/nattbord/naia-nattbord-40x50"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Enkelt nattbord med to skuffer, grepløse fronter med innfrest grepskanal og lav sokkel; sand-varianten har topp i eikedekor.",
+    "why": "Rimeligste par til soverommet: bare 40 cm bredt, så to stykker får plass på hver side av en 180-seng i rommet på 3,11 m, og det matcher Naia-kommodene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/NAIA/342610/image-thumb__342610__PDP-Product/314417%20-%20Naia%20nattbord%2040x50%20H50%202%20skuffer%20foliert%20spon%20sand%20-%202.987c4a66.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 799 kr (før 1 199) i sand, 40x50x50 cm (B 40, D 50), 2 skuffer, foliert spon, produsert i Danmark. Sokkel ca. 3 cm og eiketopp på sand fra produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-madrid-nattbord-44x39",
+    "category": "nattbord",
+    "name": "Madrid nattbord 44x39",
+    "brand": "Tvilum",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/nattbord/madrid-nattbord-44x38",
+    "priceNok": 2199,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 308425, eik): 2 199 kr uten kampanje – pris per stk. Cashmere (varenr. 317855, /bord/nattbord/madrid-nattbord-44x39-2) 2 199 kr. Høy utgave 44x39x70 med 3 skuffer: cashmere 2 699 kr, matt svart 1 499 kr (før 2 499) og hvit 1 619 kr (før 2 699). Leveres med lærhåndtak og sølvknotter.",
+    "dims": {
+      "w": 0.44,
+      "d": 0.39,
+      "h": 0.55
+    },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:2"
+      ],
+      "frontStyle": "flat",
+      "handle": "knob",
+      "base": "legs",
+      "legStyle": "block",
+      "legH": 0.1,
+      "top": "same",
+      "corners": "square",
+      "notes": "Pulls are short vertical leather straps (one per drawer) – knob is the closest param. Square corner posts form the legs (~10 cm); a plain rail band (~5 cm) under the top and below the bottom drawer; top overhangs a little."
+    },
+    "variants": [
+      {
+        "name": "Eik",
+        "colors": {
+          "body": "#c1a78c",
+          "front": "#c5aa8d",
+          "top": "#c8ae93",
+          "legs": "#b79c82",
+          "handle": "#1d1d1d"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "leather"
+        }
+      },
+      {
+        "name": "Cashmere",
+        "colors": {
+          "body": "#c9c0b7",
+          "front": "#c9c0b7",
+          "top": "#c9c0b7",
+          "legs": "#c4bbb2",
+          "handle": "#5e4331"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/bord/nattbord/madrid-nattbord-44x39-2"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Nattbord i landlig nordisk stil med to skuffer, lærhåndtak og hjørnestolper som går ned i korte, firkantede ben.",
+    "why": "Matcher Madrid-kommoden; 55 cm høyde passer til en vanlig rammeseng, og eik eller cashmere holder soverommet lyst og rolig.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/321330/image-thumb__321330__PDP-Product/308425%20-%20Madrid%20nattbord%2043x38%20H54%202%20skuffer%20foliert%20spon%20eik%20-%207.595c2777.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 2 199 kr (eik og cashmere), 44x39x55 cm, 2 skuffer, foliert spon. Produktsiden for cashmere viser bilder av den høye H70-modellen, så cashmere-fargen og det brune lærhåndtaket er hentet derfra; benhøyde ca. 10 cm anslått fra eikebildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-vinstra-nattbord-46x40",
+    "category": "nattbord",
+    "name": "Vinstra nattbord 46x40",
+    "brand": "Actona",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/nattbord/vinstra-nattbord-46x40",
+    "priceNok": 2199,
+    "salePriceNok": 1499,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 298399, røykfarget): 1 499 kr i kampanje, før 2 199 kr – pris per stk. Lys eik (varenr. 298400, /bord/nattbord/vinstra-nattbord-46x40-1) 2 199 kr uten kampanje.",
+    "dims": {
+      "w": 0.45,
+      "d": 0.4,
+      "h": 0.7
+    },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:2"
+      ],
+      "frontStyle": "ribbed",
+      "ribPitch": 0.022,
+      "handle": "knob",
+      "base": "legs",
+      "legStyle": "metal-thin",
+      "legH": 0.3,
+      "top": "same",
+      "corners": "square",
+      "notes": "Black metal stand: thin square legs with a frame under the body and low H-stretchers (~10 cm above the floor). Vertical slat (spiler) fronts, one small black knob per drawer.",
+      "legFrame": true
+    },
+    "variants": [
+      {
+        "name": "Røykfarget",
+        "colors": {
+          "body": "#3a2f27",
+          "front": "#3c3027",
+          "top": "#3a2f27",
+          "legs": "#1b1b1b",
+          "handle": "#1a1a1a"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        }
+      },
+      {
+        "name": "Lys eik",
+        "colors": {
+          "body": "#cfac7d",
+          "front": "#d2b082",
+          "top": "#cfac7d",
+          "legs": "#1b1b1b",
+          "handle": "#1a1a1a"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "priceNok": 2199,
+        "url": "https://www.bohus.no/bord/nattbord/vinstra-nattbord-46x40-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Nattbord med to skuffer bak spilefronter, små svarte knotter og høyt, svart metallunderstell (30 cm).",
+    "why": "Samme spilefronter og svarte understell som Vinstra-kommoden; 70 cm høyde passer til en kontinentalseng, og det åpne understellet gjør det luftig ved sengen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/VINSTRA/322077/image-thumb__322077__PDP-Product/298399%20-%20Vinstra%20nattbord%2046x40%20H70%202%20skuffer%20melamin%20r%C3%B8ykfarget%20med%20svart%20understell%20-%202.fb543ec2.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 1 499 kr (før 2 199) i røykfarget, 45x40x70 cm (navn 46x40), 2 skuffer, benhøyde 30 cm, melamin og stål. Stagene i understellet og knottene fra produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-bodo-nattbord-45x40",
+    "category": "nattbord",
+    "name": "Bodø nattbord 45x40",
+    "brand": "Actona",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/nattbord/bodo-nattbord-45x40",
+    "priceNok": 3899,
+    "salePriceNok": 2299,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 284833, røykfarget lakkert eikefiner): 2 299 kr i kampanje, før 3 899 kr – pris per stk. Svart (varenr. 284834, /bord/nattbord/bodo-nattbord-45x40-1) samme pris; hvitoljet (varenr. 284835, /bord/nattbord/bodo-nattbord-45x40-2) 2 099 kr, før 3 599 kr.",
+    "dims": {
+      "w": 0.45,
+      "d": 0.4,
+      "h": 0.65
+    },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:2"
+      ],
+      "frontStyle": "flat",
+      "handle": "edge",
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legH": 0.19,
+      "top": "same",
+      "corners": "square",
+      "notes": "Splayed tapered round wood legs; edge = thin routed lip along the top edge of each drawer front. Leg height estimated from the photo (not stated)."
+    },
+    "variants": [
+      {
+        "name": "Lakkert eikefiner røykfarget",
+        "colors": {
+          "body": "#3c342a",
+          "front": "#3c342a",
+          "top": "#3f362c",
+          "legs": "#2a241d",
+          "handle": "#2c251e"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      },
+      {
+        "name": "Lakkert eikefiner svart",
+        "colors": {
+          "body": "#242426",
+          "front": "#242426",
+          "top": "#262628",
+          "legs": "#1e1e20",
+          "handle": "#1a1a1c"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "url": "https://www.bohus.no/bord/nattbord/bodo-nattbord-45x40-1"
+      },
+      {
+        "name": "Hvitoljet eikefiner",
+        "colors": {
+          "body": "#b0977a",
+          "front": "#b0977a",
+          "top": "#b89f83",
+          "legs": "#a58b6f",
+          "handle": "#8a7259"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "priceNok": 3599,
+        "salePriceNok": 2099,
+        "url": "https://www.bohus.no/bord/nattbord/bodo-nattbord-45x40-2"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Nattbord i eikefiner med to skuffer, smal grepslist i overkant av skuffene og skrå, avsmalnende treben.",
+    "why": "Matcher Bodø-kommoden; skrå ben gir luft under og et lett uttrykk ved sengen, og 65 cm høyde passer til en kontinentalseng.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/BOD%C3%98/277197/image-thumb__277197__PDP-Product/284833%20-%20Bod%C3%B8%20nattbord%2045x40%20H65%202%20skuffer%20lakkert%20eikefiner%20r%C3%B8ykfarget%20-%202.22392192.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 2 299 kr (før 3 899) i røykfarget, 45x40x65 cm, 2 skuffer, eikefiner. Benhøyde ikke oppgitt – ca. 19 cm anslått fra bildet; grepslisten tolket fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-nola-nattbord-50x40",
+    "category": "nattbord",
+    "name": "Nola nattbord 50x40",
+    "brand": "Unique Furniture",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/nattbord/nola-nattbord-50x40",
+    "priceNok": 5499,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 299524, røykfarget lakkert eikefiner): 5 499 kr uten kampanje – pris per stk. Produktdataene har også hvitoljet (varenr. 280472, /bord/nattbord/nola-nattbord-40x50) til 3 299 kr, før 5 499 kr, og svart (varenr. 280473, /bord/nattbord/nola-nattbord-40x50-1) til 4 749 kr – disse står ikke i nattbord-kategorien, så sjekk tilgjengelighet.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.4,
+      "h": 0.7
+    },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "door",
+        "door"
+      ],
+      "slidingDoors": true,
+      "frontStyle": "ribbed",
+      "ribPitch": 0.02,
+      "handle": "bar",
+      "handleLen": 0.05,
+      "base": "legs",
+      "legStyle": "metal-thin",
+      "legH": 0.4,
+      "top": "same",
+      "corners": "rounded",
+      "cornerR": 0.18,
+      "notes": "Rounded, almost oval (stadium) body wrapped in vertical oak slats: two tambour (sjalusi) doors that slide round the curve; top and bottom plates protrude slightly as rims. Thin black metal legs (40 cm) with stretchers ~15 cm above the floor. Short black vertical bar pulls; one shelf inside. Same design as the Nola skjenk in the catalogue.",
+      "legFrame": true
+    },
+    "variants": [
+      {
+        "name": "Røykfarget lakkert eikefiner / svarte metallben",
+        "colors": {
+          "body": "#6a5038",
+          "front": "#6e5339",
+          "top": "#654c35",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        }
+      },
+      {
+        "name": "Hvitoljet eikefiner / svarte metallben",
+        "colors": {
+          "body": "#d8cab3",
+          "front": "#d8cab3",
+          "top": "#d4c6ae",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "priceNok": 5499,
+        "salePriceNok": 3299,
+        "priceConfidence": "check",
+        "url": "https://www.bohus.no/bord/nattbord/nola-nattbord-40x50"
+      },
+      {
+        "name": "Svart eikefiner / svarte metallben",
+        "colors": {
+          "body": "#262626",
+          "front": "#282828",
+          "top": "#262626",
+          "legs": "#1c1c1c",
+          "handle": "#141414"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "priceNok": 4749,
+        "priceConfidence": "check",
+        "url": "https://www.bohus.no/bord/nattbord/nola-nattbord-40x50-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rundet nattbord i eikefiner med to sjalusidører i spiler, én hylle innenfor, korte svarte grep og tynne svarte metallben på 40 cm.",
+    "why": "Samme Nola-design som skjenken i stuen – røykfarget eik, spiler og svarte ben – så soverommet henger sammen med resten av huset. Lukkede dører skjuler rot.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOLA/316769/image-thumb__316769__PDP-Product/299524%20-%20Nola%20nattbord%2050x50%20H70%201%20hylle%20lakkert%20eikefiner%20r%C3%B8ykfarget%20med%20ben%20metall%20svart%20-%202.f838c50b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 5 499 kr i røykfarget, 50x40x70 cm, benhøyde 40 cm, 2 sjalusidører, 1 hylle, eikefiner, svarte metallben. Rundet form og stagene fra produktbildet (bildets filnavn sier 50x50 – sidens mål 50x40 er brukt). Hvitoljet og svart: produktdata uten plass i kategorilisten.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sandnes-vegghengt-nattbord-46x30",
+    "category": "nattbord",
+    "subcategory": "vegghengt",
+    "name": "Sandnes vegghengt nattbord 46x30",
+    "brand": "Actona",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/nattbord/sandnes-vegghengt-nattbord-46x30-2",
+    "priceNok": 1199,
+    "salePriceNok": 699,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 314402, røykfarget): 699 kr i kampanje, før 1 199 kr – pris per stk. Lys eik (varenr. 314399, /bord/nattbord/sandnes-vegghengt-nattbord-46x30-1) og beige (varenr. 314403, /bord/nattbord/sandnes-vegghengt-nattbord-46x30) 1 199 kr uten kampanje. Skruer/plugger til veggen velges etter veggtype.",
+    "dims": {
+      "w": 0.46,
+      "d": 0.3,
+      "h": 0.23
+    },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:1"
+      ],
+      "frontStyle": "framed",
+      "handle": "none",
+      "base": "wall",
+      "mountHeight": 0.4,
+      "legH": 0,
+      "top": "same",
+      "corners": "square",
+      "notes": "Floating box hung on the wall; one deep drawer behind a raised-frame (shaker) front, no visible handle. mountHeight 0.40 m (underside) is a suggestion that puts the top at ~0.63 m, level with a continental bed."
+    },
+    "variants": [
+      {
+        "name": "Røykfarget",
+        "colors": {
+          "body": "#4f4336",
+          "front": "#4f4336",
+          "top": "#4a3f33",
+          "legs": "#3c3227",
+          "handle": "#3c3227"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      },
+      {
+        "name": "Lys eik",
+        "colors": {
+          "body": "#d4ae80",
+          "front": "#d9b384",
+          "top": "#d4ae80",
+          "legs": "#ad8a60",
+          "handle": "#ad8a60"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "priceNok": 1199,
+        "url": "https://www.bohus.no/bord/nattbord/sandnes-vegghengt-nattbord-46x30-1"
+      },
+      {
+        "name": "Beige",
+        "colors": {
+          "body": "#c9beb8",
+          "front": "#c9beb8",
+          "top": "#c7bdb4",
+          "legs": "#b8ada5",
+          "handle": "#b8ada5"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "priceNok": 1199,
+        "url": "https://www.bohus.no/bord/nattbord/sandnes-vegghengt-nattbord-46x30"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Vegghengt nattbord med én dyp skuff bak rammefront, uten synlig håndtak.",
+    "why": "Svevende nattbord holder gulvet fritt og lett å vaske; bare 30 cm dypt, så det passer også ved sengen i det lille kjellersoverommet (7,4 m²). Matcher Sandnes-kommoden.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/SANDNES/343557/image-thumb__343557__PDP-Product/314402%20-%20Sandnes%20vegghengt%20nattbord%2046x30%20H23%201%20skuff%20melamin%20mdf%20r%C3%B8ykfarget%20-%202.a6707270.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 699 kr (før 1 199) i røykfarget, 46x30x23 cm, 1 skuff, MDF/melamin, vegghengt. Monteringshøyde 0,40 m (underkant) er et forslag; grepløs rammefront fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-asker-vegghengt-nattbord-46x30",
+    "category": "nattbord",
+    "subcategory": "vegghengt",
+    "name": "Asker nattbord 46x30 vegghengt",
+    "brand": "Actona",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/nattbord/asker-nattbord-45-6x30",
+    "priceNok": 1999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 318227, røykfarget lakkert eikefiner): 1 999 kr uten kampanje – pris per stk. Produktdataene har også en hvitpigmentert utgave (varenr. 318228, /bord/nattbord/actona-nattbord-45-6x30) til 1 299 kr, før 1 999 kr, men uten bilde og ikke i nattbord-kategorien – sjekk i butikk.",
+    "dims": {
+      "w": 0.46,
+      "d": 0.3,
+      "h": 0.24
+    },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:1"
+      ],
+      "frontStyle": "flat",
+      "handle": "cutout",
+      "base": "wall",
+      "mountHeight": 0.4,
+      "legH": 0,
+      "top": "same",
+      "corners": "square",
+      "gallery": true,
+      "notes": "Floating wall box: one drawer with a V-shaped notch grip in its top edge, above it an open tray – the back and side panels rise ~5 cm above the top as a gallery with rounded rear corners (same detail as the Asker dressers). mountHeight 0.40 m is a suggestion."
+    },
+    "variants": [
+      {
+        "name": "Lakkert eikefiner røykfarget",
+        "colors": {
+          "body": "#453b2f",
+          "front": "#453b2f",
+          "top": "#56493a",
+          "legs": "#352c23",
+          "handle": "#2a221b"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Vegghengt nattbord i eikefiner med én skuff med innfrest grep og en åpen flate på toppen med kant bak og på sidene.",
+    "why": "Samme serie som Asker-kommodene; svever over gulvet og holder soverommet ryddig, og kanten rundt toppen hindrer at mobil og bok glir ned bak sengen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/ASKER/348705/image-thumb__348705__PDP-Product/318227%20-%20Asker%20nattbord%2045.6x30%20H24%20vegghengt%201%20skuff%20lakkert%20eikefiner%20r%C3%B8ykfarget%20-%201.3a4ffa75.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 1 999 kr, 46x30x24 cm, vegghengt, 1 skuff, lakkert eikefiner røykfarget. Monteringshøyde 0,40 m er et forslag; kantlisten og grepet tolket fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-tonstad-nattbord-40x40",
+    "category": "nattbord",
+    "name": "TONSTAD nattbord 40x40",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/tonstad-nattbord-eikefiner-80489322/",
+    "priceNok": 1495,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (ikea.no, art. 804.893.22, eikefiner): 1 495 kr – pris per stk. Brun beiset eikefiner (art. 404.893.19) 1 495 kr og offwhite (art. 805.100.07) 1 295 kr i IKEAs søkedata.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.4,
+      "h": 0.59
+    },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:1"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legFrame": true,
+      "legH": 0.44,
+      "lowerShelf": 0.11,
+      "top": "same",
+      "corners": "rounded",
+      "cornerR": 0.02,
+      "notes": "Open frame table rather than a cabinet: four straight round solid-oak legs (not splayed) from the floor to the top; a ~13 cm drawer box hangs under the top between the legs; a fixed open shelf ~11 cm above the floor (lowerShelf). No handle (grip under the drawer front). Top with softly rounded corners."
+    },
+    "variants": [
+      {
+        "name": "Eikefiner",
+        "colors": {
+          "body": "#c8a689",
+          "front": "#c8a689",
+          "top": "#d0b495",
+          "legs": "#b8966f",
+          "handle": "#b18e6c"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        }
+      },
+      {
+        "name": "Brun beiset eikefiner",
+        "colors": {
+          "body": "#7a6455",
+          "front": "#7d6858",
+          "top": "#83705f",
+          "legs": "#6d5745",
+          "handle": "#6d5745"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/tonstad-nattbord-brun-beiset-eikefiner-40489319/"
+      },
+      {
+        "name": "Offwhite",
+        "colors": {
+          "body": "#e6e5e0",
+          "front": "#e8e7e2",
+          "top": "#eae9e4",
+          "legs": "#e4e3de",
+          "handle": "#e4e3de"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "priceNok": 1295,
+        "url": "https://www.ikea.com/no/no/p/tonstad-nattbord-offwhite-80510007/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Nattbord i eikefiner med runde ben i heltre, én skuff under toppen og en åpen hylle nede.",
+    "why": "Luftig og lett ved sengen, med eikefiner som matcher eikegulvet; 40 × 40 cm tar lite plass i soverommet, og den åpne hyllen holder bøkene samlet.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/tonstad-nattbord-eikefiner__1247217_pe922597_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 1 495 kr, 40x40x59 cm, skuff innv. 28x30 cm, fri høyde under 11 cm (hyllen), eikefiner og heltre ben. Skuffhøyde ca. 13 cm anslått fra bildet; variantpriser fra IKEAs søkedata.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-storklinta-kommode-2-skuffer-40x50",
+    "category": "nattbord",
+    "name": "STORKLINTA kommode med 2 skuffer 40x50",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/storklinta-kommode-med-2-skuffer-eikemonstret-med-2-skuffer-20631413/",
+    "priceNok": 595,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (ikea.no, art. 206.314.13, eikemønstret): 595 kr – pris per stk. Hvit (art. 006.314.14) og mørk brun eikemønstret (art. 606.314.11) 595 kr i IKEAs søkedata.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.5,
+      "h": 0.53
+    },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:2"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "gripRecess": "top",
+      "base": "plinth",
+      "legH": 0.04,
+      "top": "same",
+      "corners": "square",
+      "notes": "MALM successor: integrated grip along the upper edge of each drawer (recessed channel above the front); top overhangs slightly; recessed plinth (~4 cm, estimated) with small feet."
+    },
+    "variants": [
+      {
+        "name": "Eikemønstret",
+        "colors": {
+          "body": "#bba57e",
+          "front": "#c5a979",
+          "top": "#c2a77c",
+          "legs": "#b39a70",
+          "handle": "#a88f66"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f3f3f1",
+          "front": "#f3f3f1",
+          "top": "#f3f3f1",
+          "legs": "#ebebe9",
+          "handle": "#e6e6e4"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/storklinta-kommode-med-2-skuffer-hvit-med-2-skuffer-00631414/"
+      },
+      {
+        "name": "Mørk brun eikemønstret",
+        "colors": {
+          "body": "#55473d",
+          "front": "#53453b",
+          "top": "#5a4a3f",
+          "legs": "#4c3f36",
+          "handle": "#43372f"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/storklinta-kommode-med-2-skuffer-mork-brun-eikemonstret-60631411/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Liten kommode med to skuffer som nattbord, integrerte grep langs overkanten og innfelt sokkel.",
+    "why": "Billigste nattbord: 40 cm bredt og 53 cm høyt passer ved en rammeseng både i soverommet og i kjellersoverommet, og eikemønsteret matcher gulvet.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/storklinta-kommode-med-2-skuffer-eikemonstret-med-2-skuffer__1514044_pe1010804_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 595 kr, 40x50x53 cm, 2 skuffer (innv. 31x40x16 cm), integrerte grep langs øvre kant, sponplate med folie. Sokkelhøyde ca. 4 cm anslått fra bildet; variantpriser fra IKEAs søkedata.",
+    "priceConfidence": "checked"
+  }
+]

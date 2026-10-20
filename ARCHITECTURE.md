@@ -32,7 +32,9 @@ fra en annen modul som ikke finnes ennå, så bruk kontrakten slik den står her
 | `wall-proposals.json` | `{ wallFacts, proposals: [...] }` – alle forslag til den høye veggen (eksisterende + nye) | `research/wall-proposals*.json` |
 | `palette.json` | `{ walls: {sand, marrakesh}, paints: [...], materials: [...] }` | `research/palette.json` |
 
-Kategorinøkler: `lenestol`, `skjenk`, `vitrineskap`, `taklampe`, `smalamper`, `tekstil`, `teppe`, `solskjerming`, `akustikk`, `smatt`.
+Kategorinøkler (katalogrekkefølge): `sofa`, `lenestol`, `bord`, `stoler`, `skjenk`, `tvbenk`, `vitrineskap`, `hylle`, `seng`,
+`nattbord`, `kommode`, `garderobe`, `speil`, `bad`, `gang`, `taklampe`, `smalamper`, `tekstil`, `teppe`, `solskjerming`,
+`akustikk`, `smatt` (322 produkter; se `notes/katalog-hele-huset.md`).
 Bilder som spillet viser (fotomontasjer, stuebilder til fotosammenligning, utsikt) ligger nedskalert under
 `public/img/…` og refereres med **relative** stier (`img/forslag/B.jpg`) – bygget skal virke i en undermappe.
 
@@ -64,6 +66,10 @@ src/
     lamps.js        alle lamper og armaturer                         (LAMPS)
     textiles.js     puter, pledd, puffer, tepper                     (SOFT)
     decor.js        planter, vaser, kunst, speil, lys, TV, høyttalere, kurver, akustikkprodukter (SOFT)
+    beds.js         senger, sengegavler, benker                      (KATALOG)
+    storage.js      garderobeskap, kommoder, nattbord, skoskap, veggskap, speilskap, bokhyller (KATALOG; bygger på tables.js buildCabinet)
+    chairs.js       spisestoler med ramme                           (KATALOG)
+    fixtures.js     gulvspeil, håndklær, håndklestiger/-stenger, badetilbehør, knaggrekker, stumtjenere (KATALOG)
     shading.js      solskjerming på vinduer                          (SHADING)
     walldesigns.js  elementene i veggforslagene                     (WALLS)
   design/
@@ -198,12 +204,19 @@ til en grå boks hvis noe kaster), `archetypesFor(category)`.
 - **textiles.js**: `cushion throw pouf rug`
 - **decor.js**: `plant-floor plant-small vase art-frame mirror candle-holder basket tv speaker slat-panel
   fabric-panel acoustic-art felt-shape ceiling-absorber`
+- **beds.js**: `bed headboard bench` · **storage.js**: `wardrobe dresser bedside-table shoe-cabinet wall-cabinet
+  mirror-cabinet bookcase` · **chairs.js**: `chair` · **fixtures.js**: `mirror-floor towel towel-ladder towel-rail
+  bath-accessory coat-rack coat-stand` (parametre: `notes/katalog-hele-huset.md` §3)
 
 Hvis room-spec bruker en `kind` som ikke finnes, mapper `home/existing.js` den til nærmeste arketype.
 
 ## 6. Katalog (`catalog/index.js`)
 ```js
-CATEGORIES: [{ key, label, icon }]           // norsk: Lenestoler, Skjenker, Vitrineskap, Taklamper, Små lamper, Puter og pledd, Tepper, Solskjerming, Akustikk, Smått
+CATEGORIES: [{ key, label, icon, iconSvg, rooms }]   // norsk: Sofaer, Lenestoler, Bord, Spisestoler, Skjenker, TV-benker, Vitrineskap,
+                                                     // Hyller, Senger, Nattbord, Kommoder, Garderobeskap, Speil, Bad, Gang, Taklamper,
+                                                     // Små lamper, Puter og pledd, Tepper, Solskjerming, Akustikk, Smått
+                                                     // rooms: stue | kjellerstue | soverom | bad | gang | alle (for et romfilter)
+EXTRA_CATEGORIES: { elektronikk }                    // sofa/bord/stoler/hylle er katalogkategorier – eksisterende møbler kan byttes
 products(categoryKey) → Product[]; getProduct(id); search(text)
 productToItemSpec(product, variantIndex = product.defaultVariant) → item-spec for DesignState.add (uten position)
 ```
@@ -326,14 +339,20 @@ etterklangstid («Etterklang ≈ 0,72 s», grønn ≤ 0,6, gul ≤ 0,7, rød ove
 | --- | --- |
 | lenestoler, sofaer, spisestol, barkrakk | `upholstery` (trekk), `legs` (ben/fot), `frame` (synlig treramme, bare der den finnes) |
 | bord, sidebord, skjenk, TV-benk, vegghylle | `body` (korpus/understell), `front`, `top` (plate), `legs`, `handle` |
-| vitrineskap | `body` (korpus), `front` (dører), `top` (topplate), `legs` (understell), `handle` (grep) |
+| vitrineskap, garderobeskap, bokhylle, skoskap, veggskap | `body` (korpus), `front` (dører/klaffer), `top` (topplate), `legs` (understell), `handle` (grep) |
+| kommode, nattbord | som bord: `body`, `front` (fronter), `top`, `legs`, `handle` |
+| speilskap | `body`, `front` (speildører), `handle` |
+| seng, sengegavl | `frame` (seng/ramme), `headboard` (hodegavl), `legs`, `bedding` (sengetøy), `throw` (sengeteppe, valgfri); gavl: `headboard`, `legs` |
+| benk, spisestol med ramme | `upholstery` (sete/trekk), `legs`, `frame` (ramme, rygg, hylle) |
+| håndklær | `fabric`, `piping` (bord/stripe) |
+| håndklestige/-stang, knaggrekke, stumtjener, badetilbehør | `body`, `accent` (knagger/pumpe), `fabric` (håndklær/klær som vises) |
 | lamper | `shade` (skjerm), `inner` (innside skjerm), `base` (fot/stativ), `metal` (arm/ramme/oppheng), `cord` |
 | pute, pledd, puff | `fabric`, `piping` |
 | teppe | `base`, `accent`, `accent2` |
 | solskjerming | `fabric` (stoff), `slat` (lameller), `rail` (skinne/kasse/beslag) |
 | plante | `leaves`, `pot` |
 | vase, lysestake, kurv, TV, høyttaler | `body` (+ `flowers` for vase med blomster) |
-| kunst, speil | `print` (motiv), `frame` |
+| kunst, speil, gulvspeil | `print` (motiv/speilglass), `frame` |
 | akustikkprodukter | `panel`, `slats`, `backing`, `frame` |
 
 ## 14. Navet: `design/Editor.js`

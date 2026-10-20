@@ -12,7 +12,8 @@
  *   Sources: research/catalog/<key>.json, then every research/catalog-new/*.json (newer research rounds, e.g.
  *   taklampe-secto.json, lenestol-ny.json, vitrineskap.json): each product goes to its own `category` (else the file
  *   name before the first «-»), appended after the older products – a product with an id that already exists
- *   replaces the old one in place (the newer research wins).
+ *   replaces the old one in place (the newer research wins). Products in fixes.mjs CATEGORY_MOVES move to their new
+ *   category (the round-1 mirrors: Smått → Speil). Families bed/fixture keep only the parts their archetype lists.
  * - wall-proposals.json: research/wall-proposals.json + wall-proposals-new.json merged into
  *   { …, acousticModel, wallFacts, proposals }, image paths rewritten to the public copies.
  *
@@ -22,7 +23,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { fixRoomSpec, fixCatalog } from './fixes.mjs';
+import { fixRoomSpec, fixCatalog, CATEGORY_MOVES } from './fixes.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../..');
@@ -41,7 +42,10 @@ const wants = (what) => !ONLY || ONLY.has(what);
 
 const SCHEMA = readJson(path.join(DATA, 'archetypes.json'));
 /** Catalogue categories in catalogue order (catalog/index.js CATEGORIES). */
-export const CATEGORY_KEYS = ['lenestol', 'skjenk', 'vitrineskap', 'taklampe', 'smalamper', 'tekstil', 'teppe', 'solskjerming', 'akustikk', 'smatt'];
+export const CATEGORY_KEYS = [
+  'sofa', 'lenestol', 'bord', 'stoler', 'skjenk', 'tvbenk', 'vitrineskap', 'hylle', 'seng', 'nattbord', 'kommode', 'garderobe', 'speil', 'bad', 'gang',
+  'taklampe', 'smalamper', 'tekstil', 'teppe', 'solskjerming', 'akustikk', 'smatt',
+];
 const VALID_MATERIALS = new Set(Object.values(SCHEMA.materials).flat());
 const FABRIC_MATERIALS = new Set(SCHEMA.materials.fabric);
 
@@ -204,6 +208,13 @@ function remapParts(src, plan, { family, archetype, where, keepExtra = [] }) {
 
 const pick = (...keys) => ({ from: keys });
 
+/** Keeps only the parts an archetype lists (archetypes.json `parts`), plus the family's optional parts the data names. */
+function onlyParts(archetype, plan) {
+  const parts = SCHEMA.archetypes[archetype]?.parts;
+  if (!parts) return plan;
+  return Object.fromEntries(Object.entries(plan).filter(([k, rule]) => parts.includes(k) || !rule.derive));
+}
+
 function partPlan(family, archetype) {
   const sameAs = (part) => (c) => c[part];
   const sameMat = (part) => (m) => m[part];
@@ -293,6 +304,22 @@ function partPlan(family, archetype) {
         frame: { ...pick('frame', 'edge', 'rod'), derive: sameAs('panel'), deriveMaterial: sameMat('panel') },
         slats: { ...pick('slats'), derive: sameAs('panel'), deriveMaterial: sameMat('panel') },
       };
+    case 'bed':
+      // beds and headboards (hele huset): frame = the base/side rails (fabric or wood), bedding = duvet/pillows (shown made)
+      return onlyParts(archetype, {
+        frame: { ...pick('frame', 'base', 'body', 'upholstery'), derive: () => '#8f8a84', deriveMaterial: () => 'woven' },
+        headboard: { ...pick('headboard', 'gavl'), derive: (c, s) => c.frame || s.frame || '#8f8a84', deriveMaterial: (m, s) => m.frame || s.frame || 'woven' },
+        legs: { ...pick('legs', 'feet'), derive: () => '#5a4232', deriveMaterial: () => 'oak' },
+        bedding: { ...pick('bedding', 'duvet', 'linen'), derive: () => '#f1eee8', deriveMaterial: () => 'cotton' },
+        throw: { ...pick('throw', 'bedspread', 'runner') },
+      });
+    case 'fixture':
+      // towel ladders/rails, coat racks/stands, bath accessories: body + details (+ the textiles they show)
+      return onlyParts(archetype, {
+        body: { ...pick('body', 'main', 'frame', 'wood'), derive: () => '#cfc6b8', deriveMaterial: () => 'oak' },
+        accent: { ...pick('accent', 'hooks', 'pump', 'metal'), derive: sameAs('body'), deriveMaterial: sameMat('body') },
+        fabric: { ...pick('fabric', 'towels', 'coats', 'textile'), derive: () => '#e9e4da', deriveMaterial: () => 'cotton' },
+      });
     default:
       throw new Error(`No part plan for family ${family}`);
   }
@@ -400,6 +427,16 @@ function researchProducts() {
         note(`catalog-new/${f}: ${src.id} replaces the older research product`);
         list[i] = src;
       } else list.push(src);
+    }
+  }
+  // products that changed category (fixes.mjs CATEGORY_MOVES, e.g. the mirrors from Smått to Speil) keep their place order
+  for (const [id, to] of Object.entries(CATEGORY_MOVES || {})) {
+    for (const [key, list] of byCat) {
+      const i = list.findIndex((p) => String(p.id).trim().toLowerCase() === id);
+      if (i < 0 || key === to) continue;
+      const [p] = list.splice(i, 1);
+      byCat.get(to).push({ ...p, category: to });
+      note(`moved ${id}: ${key} → ${to}`);
     }
   }
   return byCat;

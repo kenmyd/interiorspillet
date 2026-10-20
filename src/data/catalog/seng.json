@@ -1,0 +1,1337 @@
+[
+  {
+    "id": "bohus-hitra-kontinentalseng-180x200",
+    "category": "seng",
+    "subcategory": "kontinentalseng",
+    "name": "Hitra kontinentalseng 180x200",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/kontinentalseng/180x200/hitra-kontinentalseng-180x200-21",
+    "priceNok": 29998,
+    "salePriceNok": 14999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 326756, Vilde Taupe, Fast med Softflex overmadrass, kampanje 14 999 kr, før 29 998 kr). Vilde Creme (varenr. 326758, /hitra-kontinentalseng-180x200-23, Fast/X-fast) har samme kampanjepris; Vilde Antrasitt (varenr. 326754, /hitra-kontinentalseng-180x200-19) koster 29 998 kr uten kampanje. Samme seng 160x200 fra 13 999 kr og 140x200 fra 10 999 kr (kampanje, kategorisiden). Gavl følger ikke med – se Hitra sengegavl.",
+    "dims": {
+      "w": 1.8,
+      "d": 2,
+      "h": 0.66
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "continental",
+      "mattressW": 1.8,
+      "mattressL": 2,
+      "seatH": 0.66,
+      "topperH": 0.06,
+      "legH": 0.14,
+      "legStyle": "taper",
+      "headboard": "none",
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": false,
+      "notes": "Two pocket-spring base halves with a Softflex topper (thickness estimated). Legs 'Nordisk' 14 cm, round tapered; light oiled oak on creme/taupe, black beech on antrasitt. The headboard in the photo is sold separately."
+    },
+    "variants": [
+      {
+        "name": "Vilde Taupe",
+        "colors": {
+          "frame": "#958c84",
+          "headboard": "#958c84",
+          "legs": "#d6c2a4",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "velour",
+          "headboard": "velour",
+          "legs": "white-oak",
+          "bedding": "cotton"
+        },
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/hitra-kontinentalseng-180x200-21"
+      },
+      {
+        "name": "Vilde Creme",
+        "colors": {
+          "frame": "#d2c9bf",
+          "headboard": "#d2c9bf",
+          "legs": "#d6c2a4",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "velour",
+          "headboard": "velour",
+          "legs": "white-oak",
+          "bedding": "cotton"
+        },
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/hitra-kontinentalseng-180x200-23"
+      },
+      {
+        "name": "Vilde Antrasitt",
+        "colors": {
+          "frame": "#3a3a38",
+          "headboard": "#3a3a38",
+          "legs": "#1e1d1c",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "velour",
+          "headboard": "velour",
+          "legs": "black-oak",
+          "bedding": "cotton"
+        },
+        "priceNok": 29998,
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/hitra-kontinentalseng-180x200-19"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.4,
+    "description": "Kontinentalseng 180x200 med to underseng-halvdeler i pocketfjær, Softflex overmadrass og 14 cm smalnende Nordisk-ben i lys eik. Liggehøyde 66 cm inkl. overmadrass. Selges uten gavl; sengetøy følger ikke med (sengen vises oppredd i spillet).",
+    "why": "Rimeligste vei til en god 180-seng: i soverommet på 3,11 × 3,69 m blir det ca. 65 cm på hver side til nattbord, og taupe eller creme ligger rolig mot de varme SAND-tonene. Kombiner med Hitra-gavlen (glatt eller med knapper) i samme Vilde-stoff.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/S-brand%20UAB/Produkter/HITRA/606276/image-thumb__606276__PDP-Product/327713%20-%20Hitra%20kontinentalseng%20140x200%20Medium-Fast%20Vilde%20Taupe%20med%20Softflex%20overmadrass%20med%20ben%20nordisk%20hvitoljet%20eik%2014cm%20-%201.2d62a776.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris (kampanje/ordinær) for alle tre farger, 180x200, høyde 66 cm, ben Nordisk 14 cm (eik, svart på antrasitt), «Gavl inkludert: Nei». Overmadrassens tykkelse (ca. 6 cm) og stofffarger anslått fra produktbildet (bildet viser 140x200 med gavl).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sando-kontinentalseng-180x200",
+    "category": "seng",
+    "subcategory": "kontinentalseng",
+    "name": "Sandø kontinentalseng 180x200",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/kontinentalseng/180x200/sando-kontinentalseng-180x200-89",
+    "priceNok": 51998,
+    "salePriceNok": 25999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 334429, Kine Sand, Fast med latex overmadrass, kampanje 25 999 kr, før 51 998 kr). Kine Espresso (varenr. 334427, /sando-kontinentalseng-180x200-87) og Kine Grafitt (varenr. 334428, /sando-kontinentalseng-180x200-88) koster 51 998 kr uten kampanje. Finnes også i Ella Sand (37 999 kr på kategorisiden) og som 160x200 (Kine Sand 24 999 kr) og 140x200 (21 999 kr). Leveres delvis montert i 6 kolli. Gavl følger ikke med – se Sandø sengegavl Lav.",
+    "dims": {
+      "w": 1.8,
+      "d": 2,
+      "h": 0.69
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "continental",
+      "mattressW": 1.8,
+      "mattressL": 2,
+      "seatH": 0.69,
+      "topperH": 0.07,
+      "legH": 0.14,
+      "legStyle": "taper",
+      "headboard": "none",
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": true,
+      "notes": "Three layers of pocket springs and a latex topper (thickness estimated). Legs 'Nordisk' 14 cm, tapered, brown oak (black on grafitt). Headboard in the photo (Sandø Quiltet with wings) is sold separately."
+    },
+    "variants": [
+      {
+        "name": "Kine Sand",
+        "colors": {
+          "frame": "#cbc4bb",
+          "headboard": "#cbc4bb",
+          "legs": "#4a3628",
+          "bedding": "#ebe6dd",
+          "throw": "#8f7a63"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "smoked-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/sando-kontinentalseng-180x200-89"
+      },
+      {
+        "name": "Kine Espresso",
+        "colors": {
+          "frame": "#4c423a",
+          "headboard": "#4c423a",
+          "legs": "#4a3628",
+          "bedding": "#ebe6dd",
+          "throw": "#b9a88f"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "smoked-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "priceNok": 51998,
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/sando-kontinentalseng-180x200-87"
+      },
+      {
+        "name": "Kine Grafitt",
+        "colors": {
+          "frame": "#3a3837",
+          "headboard": "#3a3837",
+          "legs": "#1e1d1c",
+          "bedding": "#ebe6dd",
+          "throw": "#a08b72"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "black-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "priceNok": 51998,
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/sando-kontinentalseng-180x200-88"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.5,
+    "description": "Kontinentalseng 180x200 med tre lag pocketfjær, latex overmadrass og 14 cm smalnende ben i brun eik. Liggehøyde 69 cm inkl. overmadrass. Selges uten gavl; sengetøy og pledd følger ikke med (vises oppredd i spillet).",
+    "why": "Midt-klassen som passer best til huset: Kine Sand er nesten samme tone som SAND-veggene og de brune eikebena går igjen i røkt eik i stua. I soverommet på 3,11 m gir 180-sengen ca. 65 cm til hver side; Sandø Lav-gavlen og Sandø-benken finnes i samme stoff.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/S-brand%20UAB/Produkter/SAND%C3%98/351986/image-thumb__351986__PDP-Product/334393%20-%20Sand%C3%B8%20kontinentalseng%20140x200%20Medium-Fast%20Kine%20sand%20med%20Latex%20overmadrass%20med%20ben%20nordisk%20brun%20eik%2014cm%20-%2014.2bff30b5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for Kine Sand/Espresso/Grafitt, 180x200, høyde 69 cm, ben Nordisk 14 cm (brun eik, svart på grafitt), «Gavl inkludert: Nei». Overmadrassens tykkelse (ca. 7 cm) og stofffarger anslått fra produktbildene.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-bjerkoy-kontinentalseng-180x200",
+    "category": "seng",
+    "subcategory": "kontinentalseng",
+    "name": "Bjerkøy kontinentalseng 180x200",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/kontinentalseng/180x200/bjerkoy-kontinentalseng-180x200-34",
+    "priceNok": 61665,
+    "salePriceNok": 36999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 327387, Hedvig Creme, Fast/X-fast med Edge overmadrass, kampanje 36 999 kr, før 61 665 kr). Hedvig Antrasitt (varenr. 327386, /bjerkoy-kontinentalseng-180x200-33) har samme pris og kampanje. Design Halvor Bakke. Gavl følger ikke med – se Bjerkøy sengegavl.",
+    "dims": {
+      "w": 1.8,
+      "d": 2,
+      "h": 0.74
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "continental",
+      "mattressW": 1.8,
+      "mattressL": 2,
+      "seatH": 0.74,
+      "topperH": 0.09,
+      "legH": 0.14,
+      "legStyle": "block",
+      "headboard": "none",
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": true,
+      "notes": "Premium bed: three layers of pocket springs, a thick pillow-top latex 'Edge' topper (thickness estimated from the photo). Legs 'Klassisk' 14 cm, straight square blocks: oak on creme, black on antrasitt."
+    },
+    "variants": [
+      {
+        "name": "Hedvig Creme",
+        "colors": {
+          "frame": "#cfcdc8",
+          "headboard": "#cfcdc8",
+          "legs": "#c9a97f",
+          "bedding": "#f1eee8",
+          "throw": "#a08a72"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "oak",
+          "bedding": "cotton",
+          "throw": "wool"
+        },
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/bjerkoy-kontinentalseng-180x200-34"
+      },
+      {
+        "name": "Hedvig Antrasitt",
+        "colors": {
+          "frame": "#333333",
+          "headboard": "#333333",
+          "legs": "#1e1d1c",
+          "bedding": "#f1eee8",
+          "throw": "#b5a58f"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "black-oak",
+          "bedding": "cotton",
+          "throw": "wool"
+        },
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/bjerkoy-kontinentalseng-180x200-33"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.5,
+    "description": "Toppmodell i kontinentalseng 180x200 med tre lag pocketfjær, tykk Edge latex overmadrass og rette 14 cm Klassisk-ben. Liggehøyde 74 cm inkl. overmadrass. Selges uten gavl; sengetøy og pledd følger ikke med (vises oppredd i spillet).",
+    "why": "Den mest luksuriøse sengen i utvalget: Hedvig creme er en lys, strukturert vev som passer bouclé-tonen i stua, og høy liggehøyde gjør det lett å reise seg. Gir ca. 65 cm på hver side i soverommet på 3,11 m; Bjerkøy-gavlen med vinger rammer den inn.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/S-brand%20UAB/Produkter/BJERK%C3%98Y/341878/image-thumb__341878__PDP-Product/316368%20-%20Bjerk%C3%B8y%20kontinentalseng%20150x200%20Medium-Fast%20Hedvig%20creme%20med%20SCS%206%20pikert%20100-%20naturlatex%20overmadrass%20med%20ben%20klassisk%20eik%2014cm%20-%202.49d34f01.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris (kampanje/ordinær) for begge farger, 180x200, høyde 74 cm, ben Klassisk 14 cm (eik / svart), «Gavl inkludert: Nei». Overmadrassens tykkelse (ca. 9 cm) og stofffarger anslått fra produktbildene (bildet viser 150x200 med gavl).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-vega-kontinentalseng-160x200",
+    "category": "seng",
+    "subcategory": "kontinentalseng",
+    "name": "Vega kontinentalseng 160x200",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/kontinentalseng/160x200/vega-kontinentalseng-160x200-33",
+    "priceNok": 37998,
+    "salePriceNok": 18999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 326616, Dorthe Sand, Fast med Cloudtex Pluss overmadrass, kampanje 18 999 kr, før 37 998 kr). Dorthe Chocolate (varenr. 326614, /vega-kontinentalseng-160x200-31) og Dorthe Creme (varenr. 326615, /vega-kontinentalseng-160x200-32) koster 37 998 kr uten kampanje. Finnes også 180x200 (Dorthe Sand 19 999 kr) og 140x200 (15 999 kr). Gavl følger ikke med (Vega sengegavl selges separat).",
+    "dims": {
+      "w": 1.6,
+      "d": 2,
+      "h": 0.69
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "continental",
+      "mattressW": 1.6,
+      "mattressL": 2,
+      "seatH": 0.69,
+      "topperH": 0.07,
+      "legH": 0.14,
+      "legStyle": "taper",
+      "headboard": "none",
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": true,
+      "notes": "Three layers of pocket springs, Cloudtex Pluss topper (thickness estimated). Legs 'Nordisk firkantet' 14 cm in brown oak – square tapered, modelled as round tapered."
+    },
+    "variants": [
+      {
+        "name": "Dorthe Sand",
+        "colors": {
+          "frame": "#a89e95",
+          "headboard": "#a89e95",
+          "legs": "#4a3628",
+          "bedding": "#f1eee8",
+          "throw": "#c9b9a2"
+        },
+        "materials": {
+          "frame": "velour",
+          "headboard": "velour",
+          "legs": "smoked-oak",
+          "bedding": "cotton",
+          "throw": "linen"
+        },
+        "url": "https://www.bohus.no/seng/kontinentalseng/160x200/vega-kontinentalseng-160x200-33"
+      },
+      {
+        "name": "Dorthe Chocolate",
+        "colors": {
+          "frame": "#544944",
+          "headboard": "#544944",
+          "legs": "#4a3628",
+          "bedding": "#f1eee8",
+          "throw": "#c9b9a2"
+        },
+        "materials": {
+          "frame": "velour",
+          "headboard": "velour",
+          "legs": "smoked-oak",
+          "bedding": "cotton",
+          "throw": "linen"
+        },
+        "priceNok": 37998,
+        "url": "https://www.bohus.no/seng/kontinentalseng/160x200/vega-kontinentalseng-160x200-31"
+      },
+      {
+        "name": "Dorthe Creme",
+        "colors": {
+          "frame": "#e8e4de",
+          "headboard": "#e8e4de",
+          "legs": "#4a3628",
+          "bedding": "#f1eee8",
+          "throw": "#a8927a"
+        },
+        "materials": {
+          "frame": "velour",
+          "headboard": "velour",
+          "legs": "smoked-oak",
+          "bedding": "cotton",
+          "throw": "linen"
+        },
+        "priceNok": 37998,
+        "url": "https://www.bohus.no/seng/kontinentalseng/160x200/vega-kontinentalseng-160x200-32"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.35,
+    "description": "Kontinentalseng 160x200 med tre lag pocketfjær, Cloudtex Pluss overmadrass og 14 cm smalnende ben i brun eik. Liggehøyde 69 cm inkl. overmadrass. Selges uten gavl; sengetøy og pledd følger ikke med (vises oppredd i spillet).",
+    "why": "160 i stedet for 180 gir ca. 75 cm luft på hver side i soverommet på 3,11 m – nok til en kommode ved siden av nattbordet. Dorthe Sand er en varm greige som ligger tett på Marrakesh-tonen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/S-brand%20UAB/Produkter/VEGA/351998/image-thumb__351998__PDP-Product/320548%20-%20Vega%20kontinentalseng%20150x200%20Medium-Fast%20Dorthe%20sand%20med%20Cloudtex%20pluss%20overmadrass%20med%20ben%20nordisk%20firkantet%20brun%20eik%2014cm%20-%201.742cfa63.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for Dorthe Sand/Chocolate/Creme, 160x200, høyde 69 cm, ben Nordisk 14 cm brun eik, «Gavl inkludert: Nei». Overmadrassens tykkelse (ca. 7 cm) og stofffarger anslått fra produktbildene (bildet viser 150x200 med gavl).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-roma-kontinentalseng-120x200",
+    "category": "seng",
+    "subcategory": "enkeltseng",
+    "name": "Roma kontinentalseng 120x200",
+    "brand": "Zen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/enkeltseng/120x200/roma-kontinentalseng-120x200-2",
+    "priceNok": 14998,
+    "salePriceNok": 7499,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 313957, Victor Stone, Dream Pluss overmadrass, kampanje 7 499 kr, før 14 998 kr). Victor Beige (varenr. 313956, /roma-kontinentalseng-120x200-1) koster 14 998 kr uten kampanje. Finnes også 140x200 (Victor Stone 8 499 kr) og som seng med oppbevaring. Kun fast fasthet. Madrassen leveres rullekomprimert, rammen flatpakket.",
+    "dims": {
+      "w": 1.2,
+      "d": 2,
+      "h": 0.69
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "continental",
+      "mattressW": 1.2,
+      "mattressL": 2,
+      "seatH": 0.69,
+      "topperH": 0.08,
+      "legH": 0.14,
+      "legStyle": "round",
+      "headboard": "none",
+      "bedding": "duvet",
+      "pillows": 1,
+      "throwRunner": false,
+      "notes": "One layer of 15 cm pocket springs on a slatted frame, 8 cm Dream Pluss topper (per the product page). Legs 14 cm brown oak, slim round – they look almost black in the photo. The quilted headboard in the photo is sold separately."
+    },
+    "variants": [
+      {
+        "name": "Victor Stone",
+        "colors": {
+          "frame": "#5a5049",
+          "headboard": "#5a5049",
+          "legs": "#3a2c22",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "smoked-oak",
+          "bedding": "cotton"
+        },
+        "url": "https://www.bohus.no/seng/enkeltseng/120x200/roma-kontinentalseng-120x200-2"
+      },
+      {
+        "name": "Victor Beige",
+        "colors": {
+          "frame": "#aea596",
+          "headboard": "#aea596",
+          "legs": "#3a2c22",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "smoked-oak",
+          "bedding": "cotton"
+        },
+        "priceNok": 14998,
+        "url": "https://www.bohus.no/seng/enkeltseng/120x200/roma-kontinentalseng-120x200-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.1,
+    "description": "Bred enkeltseng 120x200 i kontinentalstil med pocketfjær, 8 cm Dream Pluss overmadrass og slanke 14 cm ben i brun eik. Liggehøyde 69 cm. Selges uten gavl; sengetøy følger ikke med (vises oppredd i spillet).",
+    "why": "Til det lille kjellersoverommet på 7,4 m²: 120 cm gir god plass for én (eller en gjest) og lar det være gulv igjen til nattbord og garderobe. Victor Stone er en varm gråbrun som matcher røkt eik og svarte detaljer.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Dominari%20Grupe%20UAB/Produkter/ROMA/337377/image-thumb__337377__PDP-Product/313957%20-%20Roma%20kontinentalseng%20120x200%20Victor%20Stone%20med%20Dream%20pluss%20overmadrass%20med%20ben%20brun%20eik%2014cm%20-%201.5b26ff8d.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for Victor Stone og Victor Beige, 120x200, høyde 69 cm, 8 cm overmadrass, ben 14 cm brun eik. Benfasong (slanke runde) og stofffarger anslått fra produktbildene; gavlen på bildet følger ikke med.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sando-rammeseng-180x200",
+    "category": "seng",
+    "subcategory": "rammeseng",
+    "name": "Sandø rammeseng 180x200",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/kontinentalseng/180x200/sando-rammeseng-180x200-17",
+    "priceNok": 33998,
+    "salePriceNok": 16999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 334279, Kine Sand, Fast med latex overmadrass, kampanje 16 999 kr, før 33 998 kr). Kine Espresso (varenr. 334277, /sando-rammeseng-180x200-15) har samme kampanjepris; Kine Grafitt (varenr. 334278, /sando-rammeseng-180x200-16) koster 33 998 kr uten kampanje. Finnes også 120x200 (11 999 kr) og 90x200 (9 999 kr). Gavl følger ikke med.",
+    "dims": {
+      "w": 1.86,
+      "d": 2.06,
+      "h": 0.59
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "frame",
+      "mattressW": 1.8,
+      "mattressL": 2,
+      "seatH": 0.59,
+      "topperH": 0.06,
+      "railH": 0.53,
+      "railT": 0.03,
+      "legH": 0.19,
+      "legStyle": "round",
+      "headboard": "none",
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": false,
+      "notes": "Upholstered frame round a pocket-spring mattress, latex topper on top (thickness estimated). Bohus gives 180 (the mattress); outer frame ~186 × 206 estimated. Round 19 cm legs in brown oak (black on grafitt)."
+    },
+    "variants": [
+      {
+        "name": "Kine Sand",
+        "colors": {
+          "frame": "#cbc4bb",
+          "headboard": "#cbc4bb",
+          "legs": "#4a3628",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "smoked-oak",
+          "bedding": "cotton"
+        },
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/sando-rammeseng-180x200-17"
+      },
+      {
+        "name": "Kine Espresso",
+        "colors": {
+          "frame": "#4c423a",
+          "headboard": "#4c423a",
+          "legs": "#4a3628",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "smoked-oak",
+          "bedding": "cotton"
+        },
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/sando-rammeseng-180x200-15"
+      },
+      {
+        "name": "Kine Grafitt",
+        "colors": {
+          "frame": "#3a3837",
+          "headboard": "#3a3837",
+          "legs": "#1e1d1c",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "black-oak",
+          "bedding": "cotton"
+        },
+        "priceNok": 33998,
+        "url": "https://www.bohus.no/seng/kontinentalseng/180x200/sando-rammeseng-180x200-16"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.4,
+    "description": "Rammeseng 180x200 med polstret ramme rundt en pocketfjærmadrass, latex overmadrass og runde 19 cm ben i brun eik. Liggehøyde 59 cm – lavere og luftigere enn en kontinentalseng. Selges uten gavl; sengetøy følger ikke med (vises oppredd i spillet).",
+    "why": "Høyere ben og slank ramme gjør at sengen ser lettere ut i soverommet på 3,11 × 3,69 m, og det er lett å støvsuge under. Samme Kine Sand-stoff som Sandø-kontinentalsengen og Sandø Lav-gavlen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/S-brand%20UAB/Produkter/SAND%C3%98/606388/image-thumb__606388__PDP-Product/334273%20-%20Sand%C3%B8%20rammeseng%20150x200%20Medium-Fast%20Kine%20sand%20med%20Latex%20overmadrass%20med%20ben%20runde%20brun%20eik%2019cm%20-%203.c64c9467.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for Kine Sand/Espresso/Grafitt, 180x200, høyde 59 cm, ben Runde 19 cm (brun eik / svart), «Gavl inkludert: Nei». Ytre rammemål (ca. 186 × 206), rammehøyde og overmadrass (ca. 6 cm) anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-tokyo-seng-med-oppbevaring-140x200",
+    "category": "seng",
+    "subcategory": "oppbevaringsseng",
+    "name": "Tokyo seng med oppbevaring 140x200",
+    "brand": "Zen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/seng-med-oppbevaring/140x200/tokyo-magasinseng-140x200-14",
+    "priceNok": 18332,
+    "salePriceNok": 10999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 313917, David Creme, Fast med Dream Pluss overmadrass, kampanje 10 999 kr, før 18 332 kr). David Antrasitt (varenr. 313915, /tokyo-magasinseng-140x200-12) koster 18 332 kr uten kampanje; Noah Creme (varenr. 295258, /tokyo-magasinseng-140x200-9, Medium med Basic Pluss overmadrass, flatpakket) 10 699 kr. Finnes også 120x200 (9 999 kr), 160x200 (14 999 kr) og 180x200 (15 999 kr). Gavl følger ikke med.",
+    "dims": {
+      "w": 1.4,
+      "d": 2,
+      "h": 0.63
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "storage",
+      "mattressW": 1.4,
+      "mattressL": 2,
+      "seatH": 0.63,
+      "topperH": 0.08,
+      "legH": 0.06,
+      "legStyle": "round",
+      "drawers": 1,
+      "headboard": "none",
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": false,
+      "notes": "The lower base is one big pull-out storage box opening from one long side (reversible); the model shows a front on both sides. Short 6 cm round legs in oak (black on antrasitt). Topper ~8 cm (Dream Pluss)."
+    },
+    "variants": [
+      {
+        "name": "David Creme",
+        "colors": {
+          "frame": "#d8d2cb",
+          "headboard": "#d8d2cb",
+          "legs": "#cdb08a",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "oak",
+          "bedding": "cotton"
+        },
+        "url": "https://www.bohus.no/seng/seng-med-oppbevaring/140x200/tokyo-magasinseng-140x200-14"
+      },
+      {
+        "name": "David Antrasitt",
+        "colors": {
+          "frame": "#38383a",
+          "headboard": "#38383a",
+          "legs": "#1e1d1c",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "black-oak",
+          "bedding": "cotton"
+        },
+        "priceNok": 18332,
+        "url": "https://www.bohus.no/seng/seng-med-oppbevaring/140x200/tokyo-magasinseng-140x200-12"
+      },
+      {
+        "name": "Noah Creme",
+        "colors": {
+          "frame": "#d6cfc5",
+          "headboard": "#d6cfc5",
+          "legs": "#cdb08a",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "oak",
+          "bedding": "cotton"
+        },
+        "priceNok": 10699,
+        "url": "https://www.bohus.no/seng/seng-med-oppbevaring/140x200/tokyo-magasinseng-140x200-9"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.25,
+    "description": "Seng 140x200 med stor oppbevaringsskuff i undersengen (åpning fra siden, kan vendes), pocketfjær, Dream Pluss overmadrass og korte 6 cm eikeben. Høyde 63 cm. Selges uten gavl; sengetøy følger ikke med (vises oppredd i spillet).",
+    "why": "I kjellersoverommet på 7,4 m² er det lite plass til kommode – her går dyner, sengetøy og sesongklær rett inn i sengen, så rommet holdes ryddig. 140 cm er bredt nok for to gjester.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Dominari%20Grupe%20UAB/Produkter/TOKYO/337701/image-thumb__337701__PDP-Product/313913%20-%20Tokyo%20magasinseng%20120x200%20Fast%20David%20Creme%20med%20Dream%20pluss%20overmadrass%20med%20ben%20eik%206cm%20-%206.88ca6665.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for David Creme/David Antrasitt/Noah Creme, 140x200, høyde 63 cm, ben 6 cm (eik / svart), ramme i heltre og magasin i laminert spon, «vendbar åpning fra siden». Skuffens form og overmadrass (ca. 8 cm) anslått fra bildet (bildet viser 120x200 med gavl).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-tonstad-seng-med-skuffer-180x200",
+    "category": "seng",
+    "subcategory": "oppbevaringsseng",
+    "name": "TONSTAD Seng med skuffer 180x200",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/tonstad-seng-med-skuffer-brun-beiset-eikefiner-60489182/",
+    "priceNok": 6295,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (ikea.no, art. 604.891.82, brun beiset eikefiner, ingen kampanje). Eikefiner (art. 804.891.38) 6 295 kr, offwhite (art. 704.890.92) 5 695 kr. Ribbebunn kreves: med 2 × LURÖY koster sengen 6 695 kr (kombinasjon s59496701). 160x200 koster 400 kr mindre. Madrass og sengetøy kommer i tillegg.",
+    "dims": {
+      "w": 1.89,
+      "d": 2.09,
+      "h": 1.16
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "frame",
+      "mattressW": 1.8,
+      "mattressL": 2,
+      "seatH": 0.57,
+      "topperH": 0,
+      "railH": 0.44,
+      "railT": 0.045,
+      "legH": 0.21,
+      "legStyle": "round",
+      "drawers": 2,
+      "headboard": "wood",
+      "headboardH": 1.16,
+      "headboardT": 0.05,
+      "footboard": false,
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": true,
+      "notes": "Veneer frame on round corner posts (posts 46 cm at the foot, 116 cm at the head), foot end flush with the side rails. Four soft-close drawers under the bed, two per long side (72 × 58 × 13 cm inside) – not drawn by the frame model. Lying height depends on the mattress (not included), estimated for a ~20 cm mattress."
+    },
+    "variants": [
+      {
+        "name": "Brun beiset eikefiner",
+        "colors": {
+          "frame": "#66513a",
+          "headboard": "#66513a",
+          "legs": "#66513a",
+          "bedding": "#f1eee8",
+          "throw": "#c8b9a3"
+        },
+        "materials": {
+          "frame": "smoked-oak",
+          "headboard": "smoked-oak",
+          "legs": "smoked-oak",
+          "bedding": "cotton",
+          "throw": "linen"
+        },
+        "url": "https://www.ikea.com/no/no/p/tonstad-seng-med-skuffer-brun-beiset-eikefiner-60489182/"
+      },
+      {
+        "name": "Eikefiner",
+        "colors": {
+          "frame": "#c09f72",
+          "headboard": "#c09f72",
+          "legs": "#c09f72",
+          "bedding": "#f1eee8",
+          "throw": "#8f7a63"
+        },
+        "materials": {
+          "frame": "oak",
+          "headboard": "oak",
+          "legs": "oak",
+          "bedding": "cotton",
+          "throw": "linen"
+        },
+        "url": "https://www.ikea.com/no/no/p/tonstad-seng-med-skuffer-eikefiner-80489138/"
+      },
+      {
+        "name": "Offwhite",
+        "colors": {
+          "frame": "#ece8df",
+          "headboard": "#ece8df",
+          "legs": "#ece8df",
+          "bedding": "#f1eee8",
+          "throw": "#a8927a"
+        },
+        "materials": {
+          "frame": "painted",
+          "headboard": "painted",
+          "legs": "painted",
+          "bedding": "cotton",
+          "throw": "linen"
+        },
+        "priceNok": 5695,
+        "url": "https://www.ikea.com/no/no/p/tonstad-seng-med-skuffer-offwhite-70489092/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.3,
+    "description": "Sengestamme 180x200 i eikefiner med runde hjørnestolper, hodegavl i finér (116 cm) og fire store skuffer med myktlukking under sengen. Sidene kan justeres etter madrasstykkelse. Ribbebunn, madrass og sengetøy følger ikke med (sengen vises oppredd i spillet).",
+    "why": "Brun beiset eik er nesten samme tone som den røkte eiken i stua, og de fire skuffene tar sengetøy og klær så soverommet slipper en ekstra kommode. 189 cm bred gir ca. 61 cm på hver side i rommet på 3,11 m.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/tonstad-seng-med-skuffer-brun-beiset-eikefiner__1259648_pe926745_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: navn, pris for tre farger, lengde 209, bredde 189, hodegavl 116, fotgavl 46 cm, madrass 180x200, fire skuffer (innv. 72 × 58 × 13 cm), Luröy-kombinasjon 6 695 kr. Sidehøyde (ca. 44 cm), benhøyde (ca. 21 cm) og liggehøyde anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-idanas-polstret-sengestamme-180x200",
+    "category": "seng",
+    "subcategory": "rammeseng",
+    "name": "IDANÄS Polstret sengestamme 180x200",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/idanaes-polstret-sengestamme-naggen-beige-90588072/",
+    "priceNok": 4495,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (ikea.no, art. 905.880.72, Naggen beige, ingen kampanje). Gunnared mørk grå (art. 904.589.47) samme pris. 160x200 koster 3 995 kr. Midtbjelke og ribbebunn er inkludert; madrass og sengetøy kommer i tillegg. Leveres i 2 kolli.",
+    "dims": {
+      "w": 1.87,
+      "d": 2.22,
+      "h": 1.21
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "frame",
+      "mattressW": 1.8,
+      "mattressL": 2,
+      "seatH": 0.56,
+      "topperH": 0,
+      "railH": 0.42,
+      "railT": 0.035,
+      "legH": 0.21,
+      "legStyle": "taper",
+      "headboard": "tufted",
+      "headboardH": 1.21,
+      "headboardT": 0.12,
+      "buttonRows": 4,
+      "footboard": false,
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": false,
+      "notes": "Upholstered frame on tapered wooden legs (21 cm free height under the bed), padded headboard with a softly rolled top and buttons in a diamond pattern in its upper half (about three visible rows). Lying height depends on the mattress (not included), estimated."
+    },
+    "variants": [
+      {
+        "name": "Naggen beige",
+        "colors": {
+          "frame": "#c6bca9",
+          "headboard": "#c6bca9",
+          "legs": "#d3b68e",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "oak",
+          "bedding": "cotton"
+        },
+        "url": "https://www.ikea.com/no/no/p/idanaes-polstret-sengestamme-naggen-beige-90588072/"
+      },
+      {
+        "name": "Gunnared mørk grå",
+        "colors": {
+          "frame": "#4b4a50",
+          "headboard": "#4b4a50",
+          "legs": "#8f6443",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "oak",
+          "bedding": "cotton"
+        },
+        "url": "https://www.ikea.com/no/no/p/idanaes-polstret-sengestamme-gunnared-mork-gra-90458947/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.6,
+    "description": "Polstret sengestamme 180x200 med høy, myk hodegavl med knapper (121 cm), slank ramme (42 cm) og skrå treben. Ribbebunn og midtbjelke følger med; madrass og sengetøy følger ikke med (sengen vises oppredd i spillet).",
+    "why": "Den rimeligste sengen med gavl i utvalget: Naggen beige og lyse eikeben passer SAND-veggene og eikegulvet, og 187 cm bredde gir ca. 62 cm på hver side i soverommet på 3,11 m. 21 cm fri høyde under gjør rommet luftig og lett å holde rent.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/idanaes-polstret-sengestamme-naggen-beige__1322832_pe942286_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: navn, pris for begge farger, lengde 222, bredde 187, hodegavl 121, fotgavl 42 cm, fri høyde under sengen 21 cm, ribbebunn inkludert. Gavltykkelse (ca. 12 cm), antall knapperader og liggehøyde anslått fra bildet.",
+    "priceConfidence": "checked",
+    "absorptionNote": "Sengetøy pluss polstret hodegavl (+0,3)."
+  },
+  {
+    "id": "bohus-hitra-sengegavl-184x135",
+    "category": "seng",
+    "subcategory": "sengegavl",
+    "name": "Hitra sengegavl 184x135",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/hitra-sengegavl-184x135-2",
+    "priceNok": 8999,
+    "salePriceNok": 5399,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 325416, Vilde taupe, kampanje 5 399 kr, før 8 999 kr). Vilde creme (varenr. 325415, /hitra-sengegavl-184x135-1) har samme kampanjepris; Vilde antrasitt (varenr. 325414, /hitra-sengegavl-184x135) koster 8 999 kr uten kampanje. Til seng 180, med 14 cm svarte ben som skrues på.",
+    "dims": {
+      "w": 1.84,
+      "d": 0.1,
+      "h": 1.35
+    },
+    "archetype": "headboard",
+    "mount": "floor",
+    "params": {
+      "style": "panel",
+      "legH": 0.14,
+      "notes": "Plain padded panel with softly rounded edges on two black 14 cm feet; stands between the bed and the wall."
+    },
+    "variants": [
+      {
+        "name": "Vilde taupe",
+        "colors": {
+          "headboard": "#958c84",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/hitra-sengegavl-184x135-2"
+      },
+      {
+        "name": "Vilde creme",
+        "colors": {
+          "headboard": "#d2c9bf",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/hitra-sengegavl-184x135-1"
+      },
+      {
+        "name": "Vilde antrasitt",
+        "colors": {
+          "headboard": "#3a3a38",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "velour",
+          "legs": "black-metal"
+        },
+        "priceNok": 8999,
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/hitra-sengegavl-184x135"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.4,
+    "description": "Glatt polstret sengegavl 184 × 135 cm, 10 cm tykk, på 14 cm svarte ben. Plasseres mellom seng og vegg; passer seng 180.",
+    "why": "Matcher Hitra kontinentalseng 180 i samme Vilde-stoff og farge, og den rolige, glatte flaten holder soverommet ryddig. Gavlen er bare 4 cm bredere enn sengen, så det blir fortsatt ca. 63 cm til nattbord på hver side.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/S-brand%20UAB/Produkter/HITRA/606269/image-thumb__606269__PDP-Product/327845%20-%20Hitra%20sengegavl%20144x135%20Vilde%20Taupe%20med%20ben%2014cm%20svart%20til%20seng%20140%20-%202.5d2a3f5e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for alle tre farger, 184 × 10 × 135 cm, ben 14 cm svart. Stofffarger anslått fra produktbildene (bildet viser 144-bredden).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-hitra-sengegavl-knapper-182x135",
+    "category": "seng",
+    "subcategory": "sengegavl",
+    "name": "Hitra sengegavl Knapper 182x135",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/hitra-sengegavl-knapper-182x135-7",
+    "priceNok": 9499,
+    "salePriceNok": 5699,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 325539, Vilde creme, kampanje 5 699 kr, før 9 499 kr). Vilde taupe (varenr. 325540, /hitra-sengegavl-knapper-182x135-8) har samme kampanjepris; Vilde antrasitt (varenr. 325538, /hitra-sengegavl-knapper-182x135-6) koster 9 499 kr uten kampanje. Til seng 180, med 14 cm svarte ben.",
+    "dims": {
+      "w": 1.82,
+      "d": 0.1,
+      "h": 1.35
+    },
+    "archetype": "headboard",
+    "mount": "floor",
+    "params": {
+      "style": "tufted",
+      "legH": 0.14,
+      "buttonRows": 7,
+      "notes": "Buttons in a diamond pattern only in the upper part (four rows, ~15 cm apart, above a bed of 66 cm); the lower part behind the bed is plain black fabric. buttonRows 7 spreads rows over the whole panel so about four show above the mattress."
+    },
+    "variants": [
+      {
+        "name": "Vilde creme",
+        "colors": {
+          "headboard": "#cbc0b5",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/hitra-sengegavl-knapper-182x135-7"
+      },
+      {
+        "name": "Vilde taupe",
+        "colors": {
+          "headboard": "#958c84",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/hitra-sengegavl-knapper-182x135-8"
+      },
+      {
+        "name": "Vilde antrasitt",
+        "colors": {
+          "headboard": "#454446",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "velour",
+          "legs": "black-metal"
+        },
+        "priceNok": 9499,
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/hitra-sengegavl-knapper-182x135-6"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.45,
+    "description": "Polstret sengegavl 182 × 135 cm med trukne knapper i rutemønster og myk, fløyelsaktig Vilde-tekstil, på 14 cm svarte ben. Til seng 180.",
+    "why": "Gir Hitra-sengen et mer klassisk, hotellaktig preg uten å bli rotete – samme Vilde-stoff som sengen, og knappene fanger lyset fra sørvinduene. Bare 2 cm bredere enn en 180-seng.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/S-brand%20UAB/Produkter/HITRA/609390/image-thumb__609390__PDP-Product/327853%20-%20Hitra%20sengegavl%20knapper%20142x135%20Vilde%20Creme%20med%20ben%2014cm%20svart%20til%20seng%20140%20-%201.72eca53f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for alle tre farger, 182 × 10 × 135 cm, ben 14 cm svart. Knappemønster og farger anslått fra produktbildene (creme ser varmere/rosa-beige ut i bildet enn på sengen; satt mellom de to).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sando-sengegavl-lav-183x125",
+    "category": "seng",
+    "subcategory": "sengegavl",
+    "name": "Sandø sengegavl Lav 183x125",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/sando-sengegavl-lav-183x14-2",
+    "priceNok": 6999,
+    "salePriceNok": 4199,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 325455, Kine sand, kampanje 4 199 kr, før 6 999 kr). Kine espresso (varenr. 325453, /sando-sengegavl-lav-183x14) har samme kampanjepris; Kine grafitt (varenr. 325454, /sando-sengegavl-lav-183x14-1) koster 6 999 kr uten kampanje. Til seng 180, med 19 cm svarte ben. (Bohus kaller den «183x14» i navnet; produktdataen sier 183x125.)",
+    "dims": {
+      "w": 1.83,
+      "d": 0.1,
+      "h": 1.25
+    },
+    "archetype": "headboard",
+    "mount": "floor",
+    "params": {
+      "style": "panel",
+      "legH": 0.19,
+      "notes": "Low plain padded panel on two black 19 cm feet; thickness not given by Bohus (estimated ~10 cm)."
+    },
+    "variants": [
+      {
+        "name": "Kine sand",
+        "colors": {
+          "headboard": "#cbc4bb",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/sando-sengegavl-lav-183x14-2"
+      },
+      {
+        "name": "Kine espresso",
+        "colors": {
+          "headboard": "#4c423a",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/sando-sengegavl-lav-183x14"
+      },
+      {
+        "name": "Kine grafitt",
+        "colors": {
+          "headboard": "#3a3837",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 6999,
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/sando-sengegavl-lav-183x14-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.35,
+    "description": "Lav, glatt polstret sengegavl 183 × 125 cm i Kine-stoff på 19 cm svarte ben. Til seng 180; plasseres mellom seng og vegg.",
+    "why": "Matcher Sandø kontinentalseng og Sandø rammeseng i samme Kine-stoff. Den lave gavlen tar lite visuell plass under skråtaket og lar veggfargen dominere i det rolige soverommet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/S-brand%20UAB/Produkter/SAND%C3%98/606393/image-thumb__606393__PDP-Product/325458%20-%20Sand%C3%B8%20sengegavl%20lav%2093x125%20Kine%20sand%20med%20ben%2019cm%20svart%20til%20seng%2090%20-%201.759a0ae0.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for alle tre farger, bredde 183 cm, høyde 125 cm, ben 19 cm svart. Tykkelse (ca. 10 cm) og farger anslått fra produktbildet (bildet viser 93-bredden).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-bjerkoy-sengegavl-190x149",
+    "category": "seng",
+    "subcategory": "sengegavl",
+    "name": "Bjerkøy sengegavl 190x149",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/bjerkoy-sengegavl-190x149-1",
+    "priceNok": 15999,
+    "salePriceNok": 9599,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 316441, Hedvig creme, kampanje 9 599 kr, før 15 999 kr). Hedvig antrasitt (varenr. 316440, /bjerkoy-sengegavl-190x149) har samme kampanjepris; Hedvig taupe (varenr. 316442, /bjerkoy-sengegavl-190x149-2) koster 15 999 kr uten kampanje. Til seng 180. Design Halvor Bakke.",
+    "dims": {
+      "w": 1.9,
+      "d": 0.36,
+      "h": 1.49
+    },
+    "archetype": "headboard",
+    "mount": "floor",
+    "params": {
+      "style": "wing",
+      "legH": 0,
+      "wings": 0.26,
+      "notes": "Padded panel with 'ørelapper': side wings ~10 cm wide reaching 36 cm out from the wall stand on the floor and carry the panel; no separate feet (legs part unused/hidden)."
+    },
+    "variants": [
+      {
+        "name": "Hedvig creme",
+        "colors": {
+          "headboard": "#cfcdc8",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/bjerkoy-sengegavl-190x149-1"
+      },
+      {
+        "name": "Hedvig antrasitt",
+        "colors": {
+          "headboard": "#333333",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/bjerkoy-sengegavl-190x149"
+      },
+      {
+        "name": "Hedvig taupe",
+        "colors": {
+          "headboard": "#b0a598",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 15999,
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/bjerkoy-sengegavl-190x149-2"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.5,
+    "description": "Høy polstret sengegavl 190 × 149 cm med vinger (ørelapper) som går ned til gulvet og 36 cm ut fra veggen. Til seng 180.",
+    "why": "Hører til Bjerkøy kontinentalseng i samme Hedvig-stoff; vingene rammer inn sengen og demper lyd og trekk fra veggen. 190 cm bred gir fortsatt ca. 60 cm til nattbord på hver side i rommet på 3,11 m.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/S-brand%20UAB/Produkter/BJERK%C3%98Y/341891/image-thumb__341891__PDP-Product/316435%20-%20Bjerk%C3%B8y%20sengegavl%20160x149%20Hedvig%20creme%20med%20ben%2014cm%20svart%20til%20seng%20150%20-%202.d11a5aa3.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for alle tre farger, 190 × 36 × 149 cm, «polstret tekstil sengegavl med ørelapp». Vingenes bredde (ca. 10 cm) og panelets tykkelse anslått fra bildet (bildet viser 160-bredden).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-wood-sengegavl-260x120",
+    "category": "seng",
+    "subcategory": "sengegavl",
+    "name": "Wood sengegavl 260x120",
+    "brand": "Wonderland",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/wood-sengegavl-260x120-1",
+    "priceNok": 14284,
+    "salePriceNok": 9999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 284963, røkt eik, kampanje 9 999 kr, før 14 284 kr). Lys eik (varenr. 277097, /wood-sengegavl-260x120) har samme pris og kampanje. Til seng 180; kommer i 60 cm brede plater som monteres sammen og henges på veggen. Wood nattbord kan festes på gavlen (selges separat).",
+    "dims": {
+      "w": 2.6,
+      "d": 0.03,
+      "h": 1.2
+    },
+    "archetype": "headboard",
+    "mount": "floor",
+    "params": {
+      "style": "slats",
+      "legH": 0,
+      "notes": "Wall-mounted panel (2,7 cm) of dense vertical oak slats (~4,5 cm pitch) on a black backing; no top/bottom rails and no feet. The game stands it on the floor – in reality it is hung on the wall, usually with the bottom edge hidden behind the bed.",
+      "slatPitch": 0.045
+    },
+    "variants": [
+      {
+        "name": "Røkt eik",
+        "colors": {
+          "headboard": "#6a5242",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "smoked-oak",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/wood-sengegavl-260x120-1"
+      },
+      {
+        "name": "Lys eik",
+        "colors": {
+          "headboard": "#b09070",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "oak",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/seng/sengegavl/til-180-seng/wood-sengegavl-260x120"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.1,
+    "description": "Veggmontert sengegavl 260 × 120 cm med tette, loddrette spiler i eik (røkt eller lys) på svart bakplate, 2,7 cm tykk. Til seng 180.",
+    "why": "Røkt eik binder soverommet til den mørke eiken i stua, og 260 cm dekker nesten hele veggen på 3,11 m, slik at Wood-nattbordene kan henges rett på gavlen og gulvet blir fritt. Passer til alle sengene over uten gavl.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Wonderland%20AS/Produkter/WOOD/264884/image-thumb__264884__PDP-Product/284963%20-%20Wood%20sengegavl%20260x120%20r%C3%B8kt%20eik%20til%20seng%20180%20-%201.53ad99cf.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for røkt og lys eik, 260 × 2,7 × 120 cm, materiale eik, «monteres vegghengt», plater på 60 cm. Spileavstand og farger anslått fra produktbildene.",
+    "priceConfidence": "checked",
+    "absorptionNote": "Spiler i tre på plate – lite absorpsjon sammenlignet med en polstret gavl."
+  },
+  {
+    "id": "bohus-sando-sengebenk-150x51",
+    "category": "seng",
+    "subcategory": "sengebenk",
+    "name": "Sandø sengebenk 150x51",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/benk/sengebenk/sando-sengebenk-150x51-3",
+    "priceNok": 5999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 288166, Ella Sand, 5 999 kr, ingen kampanje). Kategorisiden for sengebenker viser bare Ella Sand nå («leveres i ulike farger» ifølge produktsiden). Leveres delvis montert.",
+    "dims": {
+      "w": 1.5,
+      "d": 0.43,
+      "h": 0.51
+    },
+    "archetype": "bench",
+    "mount": "floor",
+    "params": {
+      "seat": "upholstered",
+      "seatT": 0.09,
+      "legStyle": "wood-taper",
+      "legH": 0.1,
+      "shelf": "none",
+      "tufted": false,
+      "storage": true,
+      "seatH": 0.51,
+      "notes": "Upholstered storage box with a padded lift-up lid (5 cm foam, gas lift). In the photo the box stands on ~10 cm tapered dark-brown wood legs (the page says 'Uten ben'); the storage model puts the box on a low plinth instead."
+    },
+    "variants": [
+      {
+        "name": "Ella Sand",
+        "colors": {
+          "upholstery": "#c4bdb6",
+          "legs": "#4a3a30",
+          "frame": "#c4bdb6"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "smoked-oak",
+          "frame": "velour"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.25,
+    "description": "Polstret sengebenk 150 × 43 cm, 51 cm høy, med løftelokk på gasslift og oppbevaringsrom inni. Ramme i tre, spon og fiberplate, 5 cm skum i lokket.",
+    "why": "Står ved fotenden av en 180-seng og gir plass til pledd, puter og ekstra dyne, så soverommet holdes ryddig. Ella Sand passer Sandø-sengene og SAND-veggene; det blir fortsatt over 1 m gangsone foran benken i rommet på 3,69 m.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/S-brand%20UAB/Produkter/SAND%C3%98/277427/image-thumb__277427__PDP-Product/288166%20-%20Sand%C3%B8%20sengebenk%20150x51%20ella%20sand%20-%201.edf7dc41.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris, 150 × 43 × 51 cm, gasslift, 5 cm skum i lokk. Lokktykkelse, ben (siden sier «Uten ben», bildet viser korte skrå treben) og stofffarge anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-bramskjaera-sengebenk-147x48",
+    "category": "seng",
+    "subcategory": "sengebenk",
+    "name": "Bramskjæra sengebenk 147x48",
+    "brand": "Signature Collection Sleeping",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/benk/sengebenk/bramskjaera-sengebenk-147x48-1",
+    "priceNok": 7999,
+    "salePriceNok": 5999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 280292, Thea antrasitt, kampanje 5 999 kr, før 7 999 kr). Kategorisiden for sengebenker viser bare Thea antrasitt nå. Leveres montert. Design Halvor Bakke.",
+    "dims": {
+      "w": 1.47,
+      "d": 0.48,
+      "h": 0.46
+    },
+    "archetype": "bench",
+    "mount": "floor",
+    "params": {
+      "seat": "upholstered",
+      "seatT": 0.1,
+      "legStyle": "metal-frame",
+      "legH": 0.36,
+      "shelf": "none",
+      "tufted": false,
+      "storage": false,
+      "seatH": 0.46,
+      "notes": "Thick padded seat on a thin black square-tube steel frame (rectangular end frames joined by floor rails)."
+    },
+    "variants": [
+      {
+        "name": "Thea antrasitt",
+        "colors": {
+          "upholstery": "#404146",
+          "legs": "#1b1b1b",
+          "frame": "#1b1b1b"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.2,
+    "description": "Sengebenk 147 × 48 cm med tykt, godt polstret sete i strukturert Thea-stoff på et tynt, svart metallunderstell. Sittehøyde 46 cm.",
+    "why": "Svart metall og antrasitt stoff gjentar de svarte detaljene i huset og passer foran en grå eller antrasitt seng (Hitra, Sandø Grafitt, Bjerkøy). Det åpne understellet gjør at den ser lett ut i soverommet på 3,11 × 3,69 m.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Radinvesta%20UAB/Produkter/BRAMSKJ%C3%86RA/235748/image-thumb__235748__PDP-Product/280292%20-%20Bramskj%C3%A6ra%20sengebenk%20147x48%20thea%20antrasitt%20-%201.d5e951b9.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris (kampanje/ordinær), 147 × 48 × 46 cm, svarte ben, leveres montert. Setetykkelse og stoffets struktur anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sit-on-sengebenk-118x38",
+    "category": "seng",
+    "subcategory": "sengebenk",
+    "name": "Sit On sengebenk 118x38",
+    "brand": "Jensen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/benk/sengebenk/sit-on-sengebenk-118x38",
+    "priceNok": 4499,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 212773, svart, 4 499 kr, ingen kampanje). White wash (varenr. 212760, /sit-on-sengebenk-118x38-1) samme pris. 5 års totalgaranti fra Jensen. Leveres delvis montert.",
+    "dims": {
+      "w": 1.18,
+      "d": 0.38,
+      "h": 0.44
+    },
+    "archetype": "bench",
+    "mount": "floor",
+    "params": {
+      "seat": "wood",
+      "seatT": 0.025,
+      "legStyle": "metal-frame",
+      "legH": 0.37,
+      "shelf": "none",
+      "tufted": false,
+      "storage": false,
+      "seatH": 0.39,
+      "notes": "Solid-wood top with rounded corners on black powder-coated steel sled ends; the tubes continue ~5 cm above the seat as small loop handles at both ends (h 0,44 includes them)."
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "upholstery": "#262524",
+          "legs": "#1c1c1c",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "black-oak",
+          "legs": "black-metal",
+          "frame": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/benk/sengebenk/sit-on-sengebenk-118x38"
+      },
+      {
+        "name": "White wash",
+        "colors": {
+          "upholstery": "#ddd6cc",
+          "legs": "#1c1c1c",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "white-oak",
+          "legs": "black-metal",
+          "frame": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/benk/sengebenk/sit-on-sengebenk-118x38-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "description": "Smal sengebenk 118 × 38 cm med plate i heltre (svart eller white wash) på understell i svart pulverlakkert stål med små bøyler i endene. Passer foran kontinental- og rammesenger.",
+    "why": "Bare 38 cm dyp – passer også foran 120-sengen i kjellersoverommet på 7,4 m² uten å stenge gangsonen. Svart plate og stål matcher de svarte detaljene i huset; white wash gir en lysere variant mot eikegulvet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jensen%20Hilding%20Anders%20AS/Produkter/SIT%20ON/67764/image-thumb__67764__PDP-Product/212773%20-%20Sit%20On%20sengebenk%20118x44%20Tre%20svart%20-%201.98d5efb6.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for svart og white wash, 118 × 38 × 44 cm, plate i heltre, understell i svart pulverlakkert stål. Sittehøyde (ca. 39 cm, under bøylene) anslått fra bildet.",
+    "priceConfidence": "checked"
+  }
+]
