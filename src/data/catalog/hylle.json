@@ -769,5 +769,172 @@
     "verified": true,
     "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 110x26 cm, 5 cm tykk, maks 10 kg, skjult beslag, 129 kr (før 169, ny lavere pris), fargevarianter. Valnøttprisen (129 kr, nyhet) fra IKEAs søk.",
     "priceConfidence": "checked"
+  },
+  {
+    "id": "jysk-horsens-bokreol-70x29-h197",
+    "category": "hylle",
+    "subcategory": "bokhylle",
+    "name": "Bokreol HORSENS 5 hyller bred",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-lys-eikefarget",
+    "priceNok": 850,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3640339, lys eikefarget): 850 kr, ingen kampanje. Hvit (varenr. 3640334) 750 kr; varm eikefarget (varenr. 3680089) 850 kr. Lav utgave med 3 hyller 70x120 cm (hvit, varenr. 3606825) 500 kr. Mulig frakt i tillegg.",
+    "dims": {
+      "w": 0.7,
+      "d": 0.29,
+      "h": 1.97
+    },
+    "archetype": "bookcase",
+    "mount": "floor",
+    "params": {
+      "style": "closed",
+      "cols": 1,
+      "rows": 5,
+      "doorRows": 0,
+      "base": "plinth",
+      "legH": 0.06,
+      "decor": true,
+      "handle": "none",
+      "notes": "Plain melamine box with an HDF back, flush top, five equal open compartments and a low recessed plinth between the side panels. Max 5 kg per shelf."
+    },
+    "variants": [
+      {
+        "name": "Lys eikefarget",
+        "colors": {
+          "body": "#d4b38f",
+          "front": "#d4b38f",
+          "top": "#d8b993",
+          "legs": "#ccab87",
+          "handle": "#d4b38f"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-lys-eikefarget"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f0f0ee",
+          "front": "#f2f2f0",
+          "top": "#f0f0ee",
+          "legs": "#e9e9e7",
+          "handle": "#f2f2f0"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "priceNok": 750,
+        "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-hvit"
+      },
+      {
+        "name": "Varm eikefarget",
+        "colors": {
+          "body": "#c69d6f",
+          "front": "#c69d6f",
+          "top": "#caa274",
+          "legs": "#bd946a",
+          "handle": "#c69d6f"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-varm-eikefarget"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Enkel, høy bokhylle (70 × 29 × 197 cm) med fem åpne rom og lav sokkel, i lys eik, hvit eller varm eik.",
+    "why": "En rimelig, glatt bokhylle uten pynt til kjellerstua (20,6 m²) eller kjellersoverommet; bare 29 cm dyp, og lys eik eller hvit passer både eikegulvet og de lyse veggene.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/268408",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr. og priser for lys eik (850), hvit (750) og varm eik (850), mål 70x29x197 (hvit oppgitt 30 cm dyp), 5 hyller, maks 5 kg per hylle, melamin/trefiberplate med HDF-rygg, 31 kg; 3-hyllers 70x120 500 kr. Sokkelhøyde anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "jysk-hejsager-vegghylle-3-hyller-65x20",
+    "category": "hylle",
+    "subcategory": "vegghylle",
+    "name": "Vegghylle HEJSAGER 3 hyller",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/oppbevaring/hyller/vegghylle-hejsager-3-hyller-svart-natur",
+    "priceNok": 300,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3680115, svart/natur): 300 kr («Fast lav pris», ingen kampanje). Hvit/natur (varenr. 3680116) samme pris. Samme hylle med 1 hylle 65x20x27 cm (svart/natur, varenr. 3680114) 135 kr. Mulig frakt i tillegg.",
+    "dims": {
+      "w": 0.65,
+      "d": 0.2,
+      "h": 0.8
+    },
+    "archetype": "wall-shelf",
+    "mount": "wall",
+    "params": {
+      "style": "simple",
+      "shelves": 3,
+      "topT": 0.016,
+      "boardDepth": 0.2,
+      "brackets": "battens",
+      "mountHeight": 1.05,
+      "notes": "Three oak-look melamine boards hung in two thin powder-coated steel rod frames: the rods run vertically just behind the front edge of the boards and bend back to the wall at the top (≈ 15 cm above the top board). Drawn with the strap mounts in the body colour; the simple style spreads the boards over the full height."
+    },
+    "variants": [
+      {
+        "name": "Svart/natur",
+        "colors": {
+          "body": "#1c1c1c",
+          "front": "#1c1c1c",
+          "top": "#d4ad80",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "url": "https://jysk.no/oppbevaring/hyller/vegghylle-hejsager-3-hyller-svart-natur"
+      },
+      {
+        "name": "Hvit/natur",
+        "colors": {
+          "body": "#f0efec",
+          "front": "#f0efec",
+          "top": "#d4ad80",
+          "legs": "#f0efec",
+          "handle": "#f0efec"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "oak",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://jysk.no/oppbevaring/hyller/vegghylle-hejsager-3-hyller-hvit-natur"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Vegghylle 65 × 20 × 80 cm med tre hyller i natur eikefarge hengt i tynne stålbøyler, svarte eller hvite.",
+    "why": "Gir plass til kurver, nøkler og et par planter på veggen i gangen eller i inngangsrommet i kjelleren uten å ta gulvplass; den tynne svarte rammen gjentar de svarte detaljene i huset, og 300 kr er knapt mer enn en enkelt hylle hos Bohus.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/270390",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr. og 300 kr for svart/natur og hvit/natur, mål B65 x H80 x D20, 3 hyller (MDF/melamin/ABS), stål pulverlakkert, 5 kg; 1-hyllers 135 kr. Hylletykkelse og bøylenes form anslått fra bildet; maks belastning ikke oppgitt.",
+    "priceConfidence": "checked"
   }
 ]

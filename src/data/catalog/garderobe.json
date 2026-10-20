@@ -870,5 +870,130 @@
     "verified": true,
     "verifiedNote": "Bekreftet på ikea.no 2026-10-20: navn, art.nr. 404.079.22, pris 1 995 kr, mål 117x50x190, 3 dører hvorav 1 speildør, klesstang og hyller, sokkel foran og bak. Håndtak, håndtakshøyde og sokkelhøyde anslått fra bildet.",
     "priceConfidence": "checked"
+  },
+  {
+    "id": "skeidar-billund-garderobeskap-2-dors-99x62",
+    "category": "garderobe",
+    "subcategory": "garderobeskap",
+    "name": "Billund garderobeskap 2 dørs",
+    "brand": "Tvilum",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/garderobeskap/billund-garderobeskap-2-dors?VariationId=V_5637473106",
+    "priceNok": 5999,
+    "salePriceNok": 4999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 1019405, eik folie, kampanje 4 999 kr til 15.11, før 5 999 kr). Hvit folie (1019404) og cashmere (1019482) 5 999 kr, smoked oak (1019491) 6 999 kr uten kampanje. Finnes også med 3 dører (eik 5 999 kr, før 6 999) og 4 dører (eik 7 499 kr, før 7 999). Flatpakket; på nettlager, levering 3–7 virkedager.",
+    "dims": {
+      "w": 0.985,
+      "d": 0.617,
+      "h": 2.001
+    },
+    "archetype": "wardrobe",
+    "mount": "floor",
+    "params": {
+      "doors": 2,
+      "fronts": [
+        "door",
+        "door"
+      ],
+      "slidingDoors": false,
+      "frontStyle": "framed",
+      "frontFit": "overlay",
+      "handle": "knob",
+      "handleY": 1,
+      "base": "plinth",
+      "legH": 0.05,
+      "cornice": false,
+      "top": "same",
+      "corners": "square",
+      "notes": "Shaker-style doors: a raised frame round each door plus a horizontal mid rail at about knob height (the framed style draws no mid rail). Small round satin-steel knobs by the meeting edges at ~1,0 m. Plinth ~5 cm. Inside: 50 cm with hat shelf and hanging rail, 50 cm with 4 shelves."
+    },
+    "variants": [
+      {
+        "name": "Eik folie",
+        "colors": {
+          "body": "#bea98d",
+          "front": "#c0a98b",
+          "top": "#bea98d",
+          "legs": "#b3997c",
+          "handle": "#b9bcbf"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "steel"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/garderobeskap/billund-garderobeskap-2-dors?VariationId=V_5637473106"
+      },
+      {
+        "name": "Hvit folie",
+        "colors": {
+          "body": "#ecebe9",
+          "front": "#efeeec",
+          "top": "#ecebe9",
+          "legs": "#e6e5e3",
+          "handle": "#b9bcbf"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "steel"
+        },
+        "priceNok": 5999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/garderobeskap/billund-garderobeskap-2-dors?VariationId=V_5637473105"
+      },
+      {
+        "name": "Cashmere folie",
+        "colors": {
+          "body": "#c6c0b7",
+          "front": "#c8c1b8",
+          "top": "#c6c0b7",
+          "legs": "#c0b9b0",
+          "handle": "#b9bcbf"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "steel"
+        },
+        "priceNok": 5999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/garderobeskap/billund-garderobeskap-2-dors?VariationId=V_5637587146"
+      },
+      {
+        "name": "Smoked oak folie",
+        "colors": {
+          "body": "#4e3d2d",
+          "front": "#4e3c2b",
+          "top": "#4e3d2d",
+          "legs": "#4a3928",
+          "handle": "#b9bcbf"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "steel"
+        },
+        "priceNok": 6999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/garderobeskap/billund-garderobeskap-2-dors?VariationId=V_55011019491"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Toroms garderobeskap i foliert plate med rammedører i shaker-stil, små runde knotter og lav sokkel; hattehylle og kleshenger på den ene siden, fire hyller på den andre. Dansk produsert av Tvilum.",
+    "why": "Bare 98,5 cm bredt, så det får plass i kjellersoverommet (7,4 m²) eller ved siden av senga i soverommet oppe uten å ta over rommet. Rammedørene gir et rolig, klassisk uttrykk, og eik- eller cashmere-folien passer de lyse, varme veggene – til en rimelig pris.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1019405/1019405_V10235454-Billund1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 4 999 kr (før 5 999, tilbudet varer til 15.11) i eik folie og prisene for hvit, cashmere og smoked oak, 98,5x61,7x200,1, «50 cm med hattehylle, 50 cm oppheng og 4 hyller», foliert MDF i fronter, Tvilum, dansk produsert (lest fra sidens innebygde produktdata og variant-API). Sokkelhøyde (ca. 5 cm) og knottenes høyde (ca. 1,0 m) anslått fra bildet; folie-fargene fra produktbildene.",
+    "priceConfidence": "checked"
   }
 ]

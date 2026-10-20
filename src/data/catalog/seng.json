@@ -1,5 +1,69 @@
 [
   {
+    "id": "jysk-stubberup-sengeramme-140x200",
+    "category": "seng",
+    "subcategory": "rammeseng",
+    "name": "Sengeramme STUBBERUP 140x200cm natur eik",
+    "brand": "Royal Oak",
+    "store": "Jysk",
+    "url": "https://jysk.no/soverom/senger/sengebunner-lameller-og-sengerammer/sengerammer/sengeramme-stubberup-140x200cm-natur-eik",
+    "priceNok": 3499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3670406, natur eik): 3 499 kr, ingen kampanje. Samme seng 180x200 (varenr. 3670408) 3 999 kr og 90x200 (varenr. 3670529) 2 499 kr. Bare natur eik. Bunn (lameller) og madrass kjøpes separat. Mulig frakt i tillegg.",
+    "dims": {
+      "w": 1.47,
+      "d": 2.07,
+      "h": 1.03
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "frame",
+      "mattressW": 1.4,
+      "mattressL": 2,
+      "seatH": 0.52,
+      "topperH": 0,
+      "railH": 0.41,
+      "railT": 0.035,
+      "legH": 0.22,
+      "legStyle": "round",
+      "headboard": "slats",
+      "headboardH": 1.03,
+      "headboardT": 0.045,
+      "slatPitch": 0.1,
+      "footboard": false,
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": false,
+      "notes": "Oiled oak-veneer frame: ≈ 19 cm tall side and end rails from 22 cm (free height under the bed) to ≈ 41 cm, round solid-oak corner posts – at the head they rise to 103 cm and carry a top rail with 14 thin round spindles; at the foot they end just above the rail (the foot end is the rail itself). Centre beam with a middle leg. A ≈ 20 cm frame mattress (sold separately) is assumed for the lying height. In the model the spindles run down to the floor behind the head rail."
+    },
+    "variants": [
+      {
+        "name": "Natur eik",
+        "colors": {
+          "frame": "#c99a6a",
+          "headboard": "#c99a6a",
+          "legs": "#c4956a",
+          "bedding": "#f1eee8"
+        },
+        "materials": {
+          "frame": "oak",
+          "headboard": "oak",
+          "legs": "oak",
+          "bedding": "cotton"
+        },
+        "url": "https://jysk.no/soverom/senger/sengebunner-lameller-og-sengerammer/sengerammer/sengeramme-stubberup-140x200cm-natur-eik"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.2,
+    "description": "Sengeramme 140x200 i oljet eikefinér og massiv eik med spilegavl, runde hjørnestolper og lav fotende; frihøyde 22 cm under. Bunn, madrass og sengetøy kjøpes separat (vises oppredd i spillet).",
+    "why": "En 140-seng som får plass i det lille soverommet i kjelleren (7,4 m²): 147 × 207 cm gir rom til nattbord og gangsone, og lys eik med spiler ser lett og rolig ut. 22 cm frihøyde gjør det enkelt å holde rent under.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/236146",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., 3 499 kr (180x200 3 999 kr, 90x200 2 499 kr), mål B147 x L207 x H103, frihøyde 22 cm, eikefinér/massiv eik/kryssfinér/furu, oljebehandlet, ekskl. bunn og madrass. Skinnehøyde (ca. 41 cm), antall spiler og liggehøyde (med ca. 20 cm madrass) anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
     "id": "bohus-hitra-kontinentalseng-180x200",
     "category": "seng",
     "subcategory": "kontinentalseng",
@@ -1332,6 +1396,229 @@
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jensen%20Hilding%20Anders%20AS/Produkter/SIT%20ON/67764/image-thumb__67764__PDP-Product/212773%20-%20Sit%20On%20sengebenk%20118x44%20Tre%20svart%20-%201.98d5efb6.jpg",
     "verified": true,
     "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris for svart og white wash, 118 × 38 × 44 cm, plate i heltre, understell i svart pulverlakkert stål. Sittehøyde (ca. 39 cm, under bøylene) anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "skeidar-premium-15-kontinentalseng-180x200",
+    "category": "seng",
+    "subcategory": "kontinentalseng",
+    "name": "Premium 15 Kontinentalseng 180x200 cm",
+    "brand": "XOV",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/kontinentalsenger/premium-15-kontinentalseng-180x200-cm?VariationId=V_5637551194",
+    "priceNok": 47999,
+    "salePriceNok": 23999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 7070821, Storm 06 lys beige, medium/medium, Premium 15 overmadrass, kantet konet eik, kampanje 23 999 kr til 15.11, før 47 999 kr). De andre stoffene (f.eks. Storm 09 beige 7070812, Storm 54 tan 7070818, Terranova 04 beige 7070827, Terranova 09 grå 7070830) koster 47 999 kr uten kampanje. Samme seng 160x200 i Storm 06 lys beige 22 999 kr (før 45 999) og 140x200 18 999 kr (før 37 999). Gavl selges separat (se Nord sengegavl 180 cm). Bestillingsvare, ca. 6–7 uker; delvis montert (ben skrus på).",
+    "dims": {
+      "w": 1.8,
+      "d": 2,
+      "h": 0.71
+    },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "continental",
+      "mattressW": 1.8,
+      "mattressL": 2,
+      "seatH": 0.71,
+      "topperH": 0.07,
+      "legH": 0.15,
+      "legStyle": "taper",
+      "headboard": "none",
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": true,
+      "notes": "Two upholstered layers (base and a one-piece pocket-spring mattress without a centre seam) and a white 5 cm natural-latex topper (overall ~7 cm, estimated). Legs 'kantet konet eik': square tapered white-oiled oak, 15 cm – modelled as round tapered. Headboard sold separately."
+    },
+    "variants": [
+      {
+        "name": "Storm 06 lys beige",
+        "colors": {
+          "frame": "#a69684",
+          "headboard": "#a69684",
+          "legs": "#c4ad8c",
+          "bedding": "#ebe6dd",
+          "throw": "#8f7a63"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "white-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/kontinentalsenger/premium-15-kontinentalseng-180x200-cm?VariationId=V_5637551194"
+      },
+      {
+        "name": "Storm 09 beige",
+        "colors": {
+          "frame": "#9c8f84",
+          "headboard": "#9c8f84",
+          "legs": "#c4ad8c",
+          "bedding": "#ebe6dd",
+          "throw": "#8f7a63"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "white-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "priceNok": 47999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/kontinentalsenger/premium-15-kontinentalseng-180x200-cm?VariationId=V_5637551185"
+      },
+      {
+        "name": "Storm 54 tan",
+        "colors": {
+          "frame": "#6e4834",
+          "headboard": "#6e4834",
+          "legs": "#c4ad8c",
+          "bedding": "#ebe6dd",
+          "throw": "#c9b9a2"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "white-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "priceNok": 47999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/kontinentalsenger/premium-15-kontinentalseng-180x200-cm?VariationId=V_5637551191"
+      },
+      {
+        "name": "Terranova 04 beige",
+        "colors": {
+          "frame": "#9d9c98",
+          "headboard": "#9d9c98",
+          "legs": "#c4ad8c",
+          "bedding": "#ebe6dd",
+          "throw": "#8f7a63"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "white-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "priceNok": 47999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/kontinentalsenger/premium-15-kontinentalseng-180x200-cm?VariationId=V_5637552256"
+      },
+      {
+        "name": "Terranova 09 grå",
+        "colors": {
+          "frame": "#4c4d4b",
+          "headboard": "#4c4d4b",
+          "legs": "#c4ad8c",
+          "bedding": "#ebe6dd",
+          "throw": "#b9a88f"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "white-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "priceNok": 47999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/kontinentalsenger/premium-15-kontinentalseng-180x200-cm?VariationId=V_5637552259"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.5,
+    "description": "XOV-kontinentalseng 180x200 med tre lag pocketfjær og 7 komfortsoner, naturlatex i stoppingen, hel madrass uten skjøt i midten, Premium 15 overmadrass med 5 cm naturlatexkjerne og vaskbart trekk, og 15 cm koniske ben i hvitoljet eik. Liggehøyde 71 cm. Selges uten gavl; sengetøy og pledd følger ikke med (vises oppredd i spillet).",
+    "why": "Toppmodellen fra XOV til halv pris i Storm 06 lys beige – en lys, varm beige som passer SAND-veggene, og de hvitoljede eikebena matcher det lyse eikegulvet. I soverommet på 3,11 m gir 180-sengen ca. 65 cm til hver side, og Nord sengegavl finnes i samme Storm 06-stoff.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/7070821/7070821_V10235454-Premium15Kontinentalseng1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 23 999 kr (før 47 999, tilbudet varer til 15.11) i Storm 06 lys beige og 47 999 kr i de andre stoffene, 180x200, høyde 71 cm, ben «Eikeben, konisk, H15, hvitoljet», 7-soners pocketfjær i tre lag, Premium 15 overmadrass med 5 cm naturlatexkjerne, «gavl selges separat», XOV (lest fra sidens innebygde produktdata og variant-API). Overmadrassens tykkelse (ca. 7 cm) og stofffargene anslått fra produktbildene.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "skeidar-nord-sengegavl-216x128",
+    "category": "seng",
+    "subcategory": "sengegavl",
+    "name": "Nord sengegavl 180 cm",
+    "brand": "XOV",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/sengegavler/nord-sengegavl-180-cm?VariationId=V_5637585612",
+    "priceNok": 7499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 7064464, Storm 06 lys beige, 7 499 kr, ingen kampanje). Alle 13 stoffene i 180-bredden koster 7 499 kr (f.eks. Storm 54 tan 7064463, Terranova 04 beige 7064466, Terranova 09 grå 7064467). Nord sengegavl 140 cm (176 cm bred) er på kampanje: 2 999 kr (før 4 999) i Terranova 08 krem, tilbudet varer til 25.10. Ben skrus på; bestillingsvare, ca. 6–7 uker.",
+    "dims": {
+      "w": 2.16,
+      "d": 0.14,
+      "h": 1.28
+    },
+    "archetype": "headboard",
+    "mount": "floor",
+    "params": {
+      "style": "channel",
+      "channels": 3,
+      "legH": 0.15,
+      "notes": "Oversized padded panel (216 cm for a 180 bed) with a thin flat flange round the edge and two vertical seams that split it narrow–wide–narrow, each seam with one covered button at about mid-height; channel style with 3 channels is the closest. Black round plastic legs H15 screwed on behind. The store gives 128 cm height – whether that includes the legs is not stated (an older 180 listing says 145,5)."
+    },
+    "variants": [
+      {
+        "name": "Storm 06 lys beige",
+        "colors": {
+          "headboard": "#a69684",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "plastic"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/sengegavler/nord-sengegavl-180-cm?VariationId=V_5637585612"
+      },
+      {
+        "name": "Storm 54 tan",
+        "colors": {
+          "headboard": "#6e4834",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "plastic"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/sengegavler/nord-sengegavl-180-cm?VariationId=V_5637585611"
+      },
+      {
+        "name": "Terranova 04 beige",
+        "colors": {
+          "headboard": "#9d9c98",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "plastic"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/sengegavler/nord-sengegavl-180-cm?VariationId=V_5637585613"
+      },
+      {
+        "name": "Terranova 09 grå",
+        "colors": {
+          "headboard": "#4c4d4b",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "plastic"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/sengegavler/nord-sengegavl-180-cm?VariationId=V_5637585614"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.45,
+    "description": "Stor polstret sengegavl, 216 × 128 cm og 14 cm tykk, med smal kant rundt, to loddrette sømmer med én knapp hver og svarte runde ben på 15 cm. Til seng 180 – den er 36 cm bredere enn sengen («oversized»).",
+    "why": "Samme XOV-stoffer som Premium 15-sengen (Storm 06 lys beige passer rett til kampanjevarianten), og den rolige flaten med bare to sømmer holder soverommet ryddig. Passer best mot veggen på 3,69 m; mot veggen på 3,11 m blir det ca. 47 cm igjen på hver side, nok til smale nattbord.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/7064464/7064464_V10235454-NordSengegavl1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 7 499 kr for alle stoffene i 180-bredden, 216x14x128, «Oversized størrelse», ben «Svart rund plastic H15», 100 % polyester, XOV (lest fra sidens innebygde produktdata – WebFetch ser bare «Loading…»). Sømmene, knappene og kanten er lest av produktbildet (bildet viser panelet uten ben); om høyden 128 cm er med eller uten ben er ikke oppgitt. Stofffarger anslått fra produktbildene.",
     "priceConfidence": "checked"
   }
 ]

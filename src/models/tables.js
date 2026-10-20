@@ -1432,7 +1432,9 @@ function buildWallShelf(spec) {
         add(g, K.cylinder(0.008, 0.008, 0.006, { seg: 10, center: true }), mat('brass', '#b08d57'), null, sx * ix, h / 2 - 0.015, 0.006, [Math.PI / 2, 0, 0]);
       }
     } else if (mounts === 'battens') {
-      for (const sx of [-1, 1]) add(g, K.roundedBox(0.035, h, 0.02, 0.003, 1, { grain: 'y' }), body, 'body', sx * ix, 0, 0.01);
+      // wooden battens, or thin rods for a metal frame (rising a little above the top board)
+      const rod = kindGroup(spec.materials?.body || 'oak') === 'metal';
+      for (const sx of [-1, 1]) add(g, K.roundedBox(rod ? 0.012 : 0.035, h, rod ? 0.012 : 0.02, rod ? 0.005 : 0.003, 1, { grain: 'y' }), body, 'body', sx * ix, 0, rod ? 0.02 : 0.01);
     } else if (mounts === 'brackets') {
       for (const y of ys) for (const sx of [-1, 1]) {
         add(g, K.box(0.004, 0.08, 0.004), body, 'body', sx * ix, y - 0.04, 0.002);

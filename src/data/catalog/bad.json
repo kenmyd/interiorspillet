@@ -1127,5 +1127,113 @@
     "verified": true,
     "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 799 kr, høyde 64 cm, diameter 40 cm, 50 l, bambus med klar akryllakk, innerpose i resirkulert polyester, flettet lokk med åpning, føtter, maks 6 kg. Håndtak (utsparinger) fra bildet.",
     "priceConfidence": "checked"
+  },
+  {
+    "id": "jysk-karlstad-badematte-50x80",
+    "category": "bad",
+    "subcategory": "badematte",
+    "name": "Badematte KARLSTAD 50x80cm",
+    "brand": "Kronborg",
+    "store": "Jysk",
+    "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-natur",
+    "priceNok": 149,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 2521200, natur): 149 kr, ingen kampanje. Beige (varenr. 2526700), mørk sand (2525200), lys grå (2521258) og grå (2521242) samme pris; finnes også i olivengrønn. Samme matte 70x120 cm (natur, varenr. 2521300) 269 kr og rund Ø70 cm (natur, varenr. 2521400) 169 kr. Mulig frakt i tillegg.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.8,
+      "h": 0.025
+    },
+    "archetype": "rug",
+    "mount": "rug",
+    "params": {
+      "shape": "rect",
+      "pile": "high",
+      "pattern": "solid",
+      "weave": "machine-woven",
+      "fringe": false,
+      "thickness": 0.025,
+      "notes": "Soft, long shaggy microfibre pile (recycled polyester, dope-dyed) in one solid colour, square corners, latex anti-slip backing. Pile height/thickness not given by Jysk – estimated from the photo."
+    },
+    "variants": [
+      {
+        "name": "Natur",
+        "colors": {
+          "base": "#e0d9c8",
+          "accent": "#d3cbb8",
+          "accent2": "#ebe5d6"
+        },
+        "materials": {
+          "base": "teddy",
+          "accent": "teddy",
+          "accent2": "teddy"
+        },
+        "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-natur"
+      },
+      {
+        "name": "Beige",
+        "colors": {
+          "base": "#cbb8a6",
+          "accent": "#bdaa98",
+          "accent2": "#d8c7b6"
+        },
+        "materials": {
+          "base": "teddy",
+          "accent": "teddy",
+          "accent2": "teddy"
+        },
+        "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-beige"
+      },
+      {
+        "name": "Mørk sand",
+        "colors": {
+          "base": "#7f6858",
+          "accent": "#725d4e",
+          "accent2": "#8d7666"
+        },
+        "materials": {
+          "base": "teddy",
+          "accent": "teddy",
+          "accent2": "teddy"
+        },
+        "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-mork-sand"
+      },
+      {
+        "name": "Lys grå",
+        "colors": {
+          "base": "#a59d94",
+          "accent": "#978f87",
+          "accent2": "#b2aba3"
+        },
+        "materials": {
+          "base": "teddy",
+          "accent": "teddy",
+          "accent2": "teddy"
+        },
+        "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-lys-gra"
+      },
+      {
+        "name": "Grå",
+        "colors": {
+          "base": "#3a383d",
+          "accent": "#313034",
+          "accent2": "#47454a"
+        },
+        "materials": {
+          "base": "teddy",
+          "accent": "teddy",
+          "accent2": "teddy"
+        },
+        "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-gra"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.13,
+    "description": "Myk, luvet badematte 50 × 80 cm i resirkulert polyester med sklisikker lateksbakside, ensfarget i fem rolige farger.",
+    "why": "Til 149 kr er dette den rimeligste måten å gi badet i 1. etasje (2,53 × 2,22) en myk, varm flate foran vasken; beige eller mørk sand spiller på SAND-veggene, og 50 × 80 cm fyller ikke det lille gulvet.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/61061",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr. og 149 kr for natur, beige, mørk sand, lys grå og grå (hver fargeside lest), 50x80 cm, 100 % resirkulert polyester, lateksbakside, vask 40 °C, OEKO-TEX, kvalitet GOLD; 70x120 (269 kr) og Ø70 (169 kr). Luvhøyde/tykkelse ikke oppgitt – anslått; farger fra produktbildene.",
+    "priceConfidence": "checked",
+    "absorptionNote": "High pile α 0,32 × 0,40 m²."
   }
 ]

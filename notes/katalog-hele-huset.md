@@ -149,12 +149,13 @@ for variant `paramsOverride`, in the research file itself (Madrid 103 mirror var
 
 ## 4. Result (2026-10-21)
 
-136 new products (338 variants) in 15 files `research/catalog-new/*-hele-huset.json`: 105 Bohus, 30 IKEA, 1 Kid;
-322 products in all. Per category: Sofaer 9, Bord 9 (6 spisebord + 3 sofabord), Spisestoler 8, TV-benker 6, Hyller 9,
-Senger 17 (9 senger, 5 sengegavler, 3 sengebenker), Nattbord 9, Kommoder 9, Garderobeskap 8, Speil 10 (+3 moved), Bad
-18, Gang 11, Tepper +5, Solskjerming +3 (mørklegging), Smått +5 (planter). Researched by seven parallel research agents
-(brief `.shots/kat/BRIEF.md`, validator `.shots/kat/validate.mjs`, Bohus GraphQL / IKEA search helpers in `.shots/kat/`);
-every price, link and photo was read from the store's product data on 2026-10-20.
+152 new products (388 variants) in 17 files `research/catalog-new/*-hele-huset.json`: 105 Bohus, 30 IKEA, 8 Skeidar,
+8 Jysk, 1 Kid; 338 products in all. Per category: Sofaer 11, Bord 10 (7 spisebord + 3 sofabord), Spisestoler 8,
+TV-benker 7, Hyller 11, Senger 20 (11 senger, 6 sengegavler, 3 sengebenker), Nattbord 10, Kommoder 10, Garderobeskap 9,
+Speil 10 (+3 moved), Bad 19, Gang 14, Tepper +5, Solskjerming +3 (mørklegging), Smått +5 (planter). Researched by
+parallel research agents (brief `.shots/kat/BRIEF.md`, validator `.shots/kat/validate.mjs`, Bohus GraphQL / IKEA search /
+Skeidar / Jysk helpers in `.shots/kat/`); every price, link and photo was read from the store's product data on
+2026-10-20 (Skeidar and Jysk on 2026-10-21). Jysk sells no bathroom cabinets (only mats, towels and small racks).
 
 Verification (port 5260):
 - `node tools/test-design.mjs` → 110/110 (new section «Hele huset»: categories/icons/rooms, 18 archetypes with builders,
@@ -162,7 +163,7 @@ Verification (port 5260):
   wall lamp, wardrobe variant overrides, search). Re-running the normaliser reproduces `src/data/catalog` exactly.
 - `.shots/kat/compare.mjs <category>`: the store photo next to the model for every product (`.shots/kat/cmp-*.png`); the
   models were tuned until proportions, legs, fronts, handles and colours matched.
-- `.shots/kat/place-all.mjs`: every product of the new categories (334 variants) added through DesignState → a real
+- `.shots/kat/place-all.mjs`: every product of the new categories (384 variants) added through DesignState → a real
   model, never the grey fallback box; real Placement (ghost → click) of beds, wardrobes, a corner sofa, dressers,
   nightstands, towels, floor mirrors and a coat stand on the floor, and 8 wall items (mirror/wall cabinets, coat racks,
   a mirror, a towel rail, shelves) on the high wall at their `mountHeight` (`place-wall.mjs`); the catalogue panel per
@@ -179,6 +180,6 @@ Verification (port 5260):
   shoe-cabinet/coat-rack/coat-stand → gang) so «Bytt modell» offers the right products.
 - **Placement**: wall items without a `WALL_V` entry start at `params.mountHeight + h/2` – every new wall product has a
   `mountHeight`. Floor mirrors lean; their AABB is the leaning mirror.
-- **README**: product/category counts (322 / 22) and the new categories.
+- **README**: product/category counts (338 / 22) and the new categories.
 - Uncertain data is written in each product's `verifiedNote` / `params.notes` (estimated leg heights, topper
   thickness, depths read from photos, IKEA variant prices from the search API, Bohus «Expiring» stock in Bad).

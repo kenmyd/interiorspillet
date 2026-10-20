@@ -667,5 +667,103 @@
     "verified": true,
     "verifiedNote": "Bekreftet på bohus.no 2026-10-20: svart 3 699 kr (før 4 999), hvitpigmentert og brun 3 899 kr (før 5 199), Ø80 H38, platetykkelse 1,9 cm, skrå kant, konisk sokkel. Den brune varianten oppgis som H32 i navnet men med sokkelhøyde 38 cm – sjekk høyden ved kjøp. Sokkelens diametre anslått fra bildet.",
     "priceConfidence": "checked"
+  },
+  {
+    "id": "skeidar-visby-rundt-spisebord-o120",
+    "category": "bord",
+    "subcategory": "spisebord",
+    "name": "Visby rundt spisebord Ø120",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-bord/spisebord/visby-rundt-spisebord?VariationId=V_5637465583",
+    "priceNok": 29499,
+    "salePriceNok": 14999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 1391215, hvitpigmentert eik finér, Ø120, kampanje 14 999 kr til 15.11, før 29 499 kr). Sortbeiset (1391216) 28 599 kr og røykfarget (1391217) 29 999 kr uten kampanje. Ø138 hvitpigmentert 19 999 kr (før 33 399) og Ø150 21 999 kr (før 37 599). Plass til 2 ileggsplater (selges separat). Delvis montert i 3 kolli; bestillingsvare, ca. 6–8 uker.",
+    "dims": {
+      "w": 1.2,
+      "d": 1.2,
+      "h": 0.75
+    },
+    "archetype": "dining-table-oval",
+    "mount": "floor",
+    "params": {
+      "shape": "round",
+      "legs": "column",
+      "columnW": 0.52,
+      "columnD": 0.52,
+      "edge": "straight",
+      "topT": 0.05,
+      "leaves": 0,
+      "apron": false,
+      "notes": "Round extendable top, split across the middle for 2 leaves (sold separately), with a thick straight edge; one wide round column (~52 cm) clad in vertical oak slats with dark gaps, on a low plinth. The column builder draws a stadium – with equal width and depth it is round."
+    },
+    "variants": [
+      {
+        "name": "Hvitpigmentert eik finér",
+        "colors": {
+          "body": "#d6cabd",
+          "front": "#d6cabd",
+          "top": "#ddd2c5",
+          "legs": "#cbbcad",
+          "handle": "#cbbcad"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-bord/spisebord/visby-rundt-spisebord?VariationId=V_5637465583"
+      },
+      {
+        "name": "Sortbeiset eik finér",
+        "colors": {
+          "body": "#2f2d30",
+          "front": "#2f2d30",
+          "top": "#3a3839",
+          "legs": "#2a292c",
+          "handle": "#2a292c"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "priceNok": 28599,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-bord/spisebord/visby-rundt-spisebord?VariationId=V_5637449125"
+      },
+      {
+        "name": "Røykfarget eikefinér",
+        "colors": {
+          "body": "#4a4240",
+          "front": "#4a4240",
+          "top": "#564d4a",
+          "legs": "#433d3a",
+          "handle": "#433d3a"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 29999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-bord/spisebord/visby-rundt-spisebord?VariationId=V_5637465584"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rundt spisebord Ø120 i eikefinér med kraftig, rett kant og en bred søyle kledd med loddrette spiler; delt bordplate med plass til to ileggsplater.",
+    "why": "Et rundt bord tar lite plass og gir god flyt i en spisekrok i kjellerstua (20,6 m²) – fire rundt bordet, flere med ileggsplatene. Den hvitpigmenterte eiken er lys og rolig, og spilesøylen gir samme rillede uttrykk som Wave TV-benken.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1391215/1391215_V10235454-VisbySpisebord1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 14 999 kr (før 29 499, tilbudet varer til 15.11), Ø120 H75, hvitpigmentert eik finér i både bordplate og understell, uttrekksfunksjon, «ileggsplater selges separat»; sortbeiset og røykfarget uten kampanje (lest fra sidens innebygde produktdata og variant-API). Søylens diameter (ca. 52 cm) og platetykkelsen (ca. 5 cm) anslått fra bildet; ingen produsent oppgitt.",
+    "priceConfidence": "checked"
   }
 ]

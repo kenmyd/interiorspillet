@@ -281,6 +281,8 @@ export const PRODUCTS = {
   'bohus-linus-sapedispenser-8x8': { params: { squareBody: true } },
   'bohus-frikk-vegghylle-60x20': { params: { brackets: 'straps' } },
   'bohus-tamara-vegghylle-60x49': { params: { brackets: 'battens' } },
+  'jysk-cirkelhuse-stumtjener-h174': { params: { coats: 0 } },
+  'jysk-hejsager-vegghylle-3-hyller-65x20': { params: { brackets: 'battens' } },
   // ---- speil (moved from Smått, CATEGORY_MOVES)
   'bohus-applewood-speil-o90': { set: { subcategory: 'veggspeil' } },
   'bohus-othilie-speil-90x93': { set: { subcategory: 'veggspeil' } },

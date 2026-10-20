@@ -1,5 +1,145 @@
 [
   {
+    "id": "skeidar-wave-tv-benk-veggmontert-180x39",
+    "category": "tvbenk",
+    "name": "Wave TV Benk veggmontert",
+    "brand": "SAYS WHO",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595337",
+    "priceNok": 19999,
+    "salePriceNok": 11999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 1357731, hvitoljet eikefinér, veggmontert, kampanje 11 999 kr til 15.11, før 19 999 kr). Røkt olje (1357734) og gråoljet (1357735) samme kampanjepris; oljet (1357732) 19 999 kr og sortbeiset (1357730) 21 999 kr uten kampanje. Samme benk med metallbase (180x39x58,5, står på gulvet) koster 12 899 kr (før 21 499) i hvitoljet. Delvis montert i 2 kolli; bestillingsvare, ca. 9–10 uker.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.39,
+      "h": 0.36
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "wall",
+      "mountHeight": 0.15,
+      "legH": 0,
+      "fronts": [
+        "door",
+        "door",
+        "door"
+      ],
+      "slidingDoors": true,
+      "frontStyle": "ribbed",
+      "ribPitch": 0.022,
+      "frontFit": "inset",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Wall-hung box with a thin frame round three fluted (ribbed) sliding doors – the middle one runs in front of the two outer ones; no handles. mountHeight 0,15 m (underside) follows the room photo, where it hangs just above the skirting; it can be hung higher."
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eikefinér",
+        "colors": {
+          "body": "#cfbca4",
+          "front": "#c7b49b",
+          "top": "#d6c5ad",
+          "legs": "#cfbca4",
+          "handle": "#cfbca4"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595337"
+      },
+      {
+        "name": "Røkt olje eikefinér",
+        "colors": {
+          "body": "#78654f",
+          "front": "#74614b",
+          "top": "#7d6a54",
+          "legs": "#78654f",
+          "handle": "#78654f"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595340"
+      },
+      {
+        "name": "Gråoljet eikefinér",
+        "colors": {
+          "body": "#766857",
+          "front": "#716252",
+          "top": "#7b6d5c",
+          "legs": "#766857",
+          "handle": "#766857"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595341"
+      },
+      {
+        "name": "Oljet eikefinér",
+        "colors": {
+          "body": "#a6865d",
+          "front": "#a08158",
+          "top": "#ab8b62",
+          "legs": "#a6865d",
+          "handle": "#a6865d"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "priceNok": 19999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595338"
+      },
+      {
+        "name": "Sortbeiset eikefinér",
+        "colors": {
+          "body": "#2b231d",
+          "front": "#29211a",
+          "top": "#2f2620",
+          "legs": "#2b231d",
+          "handle": "#2b231d"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "priceNok": 21999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595336"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Veggmontert TV-benk i eikefinér med tre riflede skyvedører i en slank ramme – uten grep og uten ben, så gulvet under er fritt. Design SAYS WHO.",
+    "why": "En svevende TV-benk holder gulvet fritt og gjør kjellerstua (20,6 m²) lettere å holde ryddig – ledninger og utstyr forsvinner bak skyvedørene. 180 cm passer en 65–75-tommers TV, og de riflede frontene i hvitoljet eik passer det lyse eikegulvet.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1357731/1357731_V10235454-WaveTVBenk.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 11 999 kr (før 19 999, tilbudet varer til 15.11) i hvitoljet, røkt olje og gråoljet, oljet 19 999 og sortbeiset 21 999, 180x39x36, veggmontert, design SAYS WHO (lest fra sidens innebygde produktdata og variant-API). Skyvedørene, rillene og monteringshøyden er lest av produktbildene; trefargene anslått fra bildene.",
+    "priceConfidence": "checked"
+  },
+  {
     "id": "bohus-nola-tv-benk-180x40",
     "category": "tvbenk",
     "name": "Nola tv-benk 180x40",

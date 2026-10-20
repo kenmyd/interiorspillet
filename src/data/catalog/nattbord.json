@@ -1,5 +1,66 @@
 [
   {
+    "id": "jysk-hemme-nattbord-37x32",
+    "category": "nattbord",
+    "name": "Nattbord HEMME 1 skuff natur eik",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/soverom/nattbord/nattbord-hemme-1-skuff-natur-eik",
+    "priceNok": 999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3601423, natur eik): 999 kr per stk., ingen førpris; flerkjøpstilbud 2 for 1 499 kr. Bare natur eik. Mulig frakt i tillegg.",
+    "dims": {
+      "w": 0.37,
+      "d": 0.32,
+      "h": 0.6
+    },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:1"
+      ],
+      "frontStyle": "flat",
+      "handle": "cutout",
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legFrame": true,
+      "legH": 0.47,
+      "lowerShelf": 0.24,
+      "top": "same",
+      "corners": "rounded",
+      "cornerR": 0.015,
+      "notes": "Open frame table like TONSTAD: four straight round solid-oak legs (Ø ≈ 3 cm) from the floor to the top; a ≈ 10 cm drawer box hangs under the slightly overhanging top between them; a fixed open shelf ≈ 24 cm above the floor. The drawer has an oval finger hole in the middle of the front (shown as a cutout grip)."
+    },
+    "variants": [
+      {
+        "name": "Natur eik",
+        "colors": {
+          "body": "#d8bb9b",
+          "front": "#dcbf9f",
+          "top": "#dec3a5",
+          "legs": "#d2b392",
+          "handle": "#3a3029"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "painted"
+        },
+        "url": "https://jysk.no/soverom/nattbord/nattbord-hemme-1-skuff-natur-eik"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Luftig nattbord i eikefinér med runde ben i massiv eik, én skuff med grepshull og en åpen hylle nede.",
+    "why": "Smalt (37 × 32 cm), så det passer ved siden av en 140-seng i det lille kjellersoverommet; lys eik og runde heltreben hører sammen med STUBBERUP-sengen, og hyllen under holder bøkene samlet.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/283720",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., 999 kr (2 for 1 499), mål B37 x H60 x D32, topp MDF/eikefinér, ben massiv eik, 1 skuff (maks 3 kg) med skuffestopper, 1 hylle (maks 5 kg), 6 kg. Skuffhøyde (ca. 10 cm) og hyllehøyde (ca. 24 cm) anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
     "id": "bohus-naia-nattbord-40x50",
     "category": "nattbord",
     "name": "Naia nattbord 40x50",

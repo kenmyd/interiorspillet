@@ -1,5 +1,248 @@
 [
   {
+    "id": "skeidar-rossi-3-seter-sofa-244",
+    "category": "sofa",
+    "subcategory": "3-seter",
+    "name": "Rossi 3-seter sofa",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/rossi-3-seter-sofa?VariationId=V_5637572899",
+    "priceNok": 28599,
+    "salePriceNok": 14999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 1774400, Glow 2 Beige, arm A, standard komfort, kampanje 14 999 kr til 15.11, før 28 599 kr). Glow 5 Taupe (art.nr. 1774401) 15 999 kr (før 28 599) og Genesis 4 Beige (1776818) 14 999 kr (før 29 699); Raven 24 Light beige (1774402) og Beatto 1023 Grønn Grå (1776814) 28 599 kr uten kampanje. Lux komfort koster 1 000 kr mer (Glow 2 Beige 15 999 kr), arm B ca. 800 kr mer. Bestillingsvare på nett, leveringstid ca. 10–11 uker; leveres delvis montert i 2 kolli (ben skrus på).",
+    "dims": {
+      "w": 2.44,
+      "d": 1.12,
+      "h": 0.86
+    },
+    "archetype": "sofa-straight",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.44,
+      "armW": 0.2,
+      "armH": 0.6,
+      "seats": 2,
+      "legStyle": "block",
+      "legH": 0.05,
+      "piping": true,
+      "backT": 0.26,
+      "armStyle": "box",
+      "backStyle": "cushions",
+      "seatStyle": "split",
+      "notes": "Two free-standing modules, each with one wide square arm (arm A) and one deep seat cushion (70 cm sitting depth); big loose, softly crumpled back cushions plus four scatter cushions; self-piped edges on arms and cushions; low black block legs set in from the corners."
+    },
+    "variants": [
+      {
+        "name": "Glow 2 Beige / sorte ben",
+        "colors": {
+          "upholstery": "#ab9d8f",
+          "legs": "#1c1a19"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/rossi-3-seter-sofa?VariationId=V_5637572899"
+      },
+      {
+        "name": "Glow 5 Taupe / sorte ben",
+        "colors": {
+          "upholstery": "#8e8881",
+          "legs": "#1c1a19"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "priceNok": 28599,
+        "salePriceNok": 15999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/rossi-3-seter-sofa?VariationId=V_5637572900"
+      },
+      {
+        "name": "Genesis 4 Beige / sorte ben",
+        "colors": {
+          "upholstery": "#9e9284",
+          "legs": "#1c1a19"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "priceNok": 29699,
+        "salePriceNok": 14999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/rossi-3-seter-sofa?VariationId=V_5637550507"
+      },
+      {
+        "name": "Raven 24 Light beige / sorte ben",
+        "colors": {
+          "upholstery": "#bfb7af",
+          "legs": "#1c1a19"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "priceNok": 28599,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/rossi-3-seter-sofa?VariationId=V_5637572901"
+      },
+      {
+        "name": "Beatto 1023 Grønn Grå / sorte ben",
+        "colors": {
+          "upholstery": "#837a6d",
+          "legs": "#1c1a19"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "priceNok": 28599,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/rossi-3-seter-sofa?VariationId=V_5637550503"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 2.56,
+    "description": "Dyp og myk loungesofa i to frittstående moduler, med brede, rette armlener, to store seteputer, løse ryggputer og pynteputer, kantbånd og lave svarte klossben. Sittedybde hele 70 cm.",
+    "why": "Skeidars kjente sofaserie som et rimeligere alternativ til Lukas XL: 244 cm bred og 112 cm dyp gir en ordentlig filmkveld-sofa i den 20,6 m² store kjellerstua, Glow 2 Beige ligger tett på SAND-veggene, og de svarte bena gjentar de svarte detaljene i huset.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1774400/1774400_V10235454-RossiSofa1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 14 999 kr (før 28 599, tilbudet varer til 15.11), 244x112x86, sittehøyde 44, sittedybde 70, arm A med sorte ben, 2 seteputer, standard komfort, og prisene for alle fem stoffene. Siden tegner produktet fra sine innebygde produktdata (WebFetch ser bare «Loading…»), så tallene er lest derfra og fra sidens egen variant-API. Armlenebredde (ca. 20 cm), armlenehøyde (ca. 60 cm) og benhøyde (ca. 5 cm) anslått fra bildet; stofffarger fra produktbildene.",
+    "priceConfidence": "checked",
+    "absorptionNote": "≈ 1,05 × bredde (2,44 m)."
+  },
+  {
+    "id": "skeidar-eden-hjornesofa-apen-ende-262x218",
+    "category": "sofa",
+    "subcategory": "hjornesofa",
+    "name": "Eden hjørnesofa 2,5-seter med åpen ende høyre",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/eden-hjornesofa?VariationId=V_5637474758",
+    "priceNok": 24699,
+    "salePriceNok": 14799,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 8590536, Neve 09 Cappuccino, 2,5-seter med åpen ende høyre, kampanje 14 799 kr til 15.11, før 24 699 kr). Neve 3 Grey (8590560) og Neve 17/2 Dark Green (8590544) 14 819 kr (før 24 699); Movie 9 Cappuccino (8595525) og Movie 13/1 Light Khaki (8595501) 16 619 kr (før 27 699); Brego- og Brooklyn-stoffene 27 299–27 699 kr og Thor 25 099 kr uten kampanje. Speilvendt (åpen ende venstre, Neve 09 art.nr. 8590535) 14 819 kr. Eden 3-seter (217x86x87) 9 179 kr (før 15 299). Bestillingsvare, ca. 7–8 uker, delvis montert i 3 kolli (ben skrus på).",
+    "dims": {
+      "w": 2.62,
+      "d": 2.18,
+      "h": 0.87
+    },
+    "archetype": "sofa-modular-l",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.48,
+      "depth": 0.86,
+      "backT": 0.2,
+      "armW": 0.12,
+      "armH": 0.62,
+      "armStyle": "round",
+      "armSide": "-x",
+      "shortLegSide": "+x",
+      "layout": "corner",
+      "shortLegBackTo": 1,
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legH": 0.17,
+      "piping": false,
+      "notes": "2,5-seater with a slim, slightly flared rolled arm on the left; corner on the right where two loose back cushions run along the right side for the rear ~1,0 m behind a thin side panel, the front part is an open lounge end without arm. Loose reversible back and seat cushions (two seat cushions, corner seat, lounge cushion) and two scatter cushions; a double welt seam runs round the base. Splayed tapered natural-oak legs (~17 cm). Also sold mirrored (open end left)."
+    },
+    "variants": [
+      {
+        "name": "Neve 09 Cappuccino / ben i eik natur",
+        "colors": {
+          "upholstery": "#9c8d7d",
+          "legs": "#c9aa82",
+          "piping": "#8f8172"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak",
+          "piping": "woven"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/eden-hjornesofa?VariationId=V_5637474758"
+      },
+      {
+        "name": "Neve 3 Grey / ben i eik natur",
+        "colors": {
+          "upholstery": "#a29e9b",
+          "legs": "#c9aa82",
+          "piping": "#96928f"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak",
+          "piping": "woven"
+        },
+        "priceNok": 24699,
+        "salePriceNok": 14819,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/eden-hjornesofa?VariationId=V_5637474773"
+      },
+      {
+        "name": "Movie 9 Cappuccino / ben i eik natur",
+        "colors": {
+          "upholstery": "#a69884",
+          "legs": "#c9aa82",
+          "piping": "#9a8c79"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "oak",
+          "piping": "velour"
+        },
+        "priceNok": 27699,
+        "salePriceNok": 16619,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/eden-hjornesofa?VariationId=V_5637474813"
+      },
+      {
+        "name": "Movie 13/1 Light Khaki / ben i eik natur",
+        "colors": {
+          "upholstery": "#807a6d",
+          "legs": "#c9aa82",
+          "piping": "#757063"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "oak",
+          "piping": "velour"
+        },
+        "priceNok": 27699,
+        "salePriceNok": 16619,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/eden-hjornesofa?VariationId=V_5637474798"
+      },
+      {
+        "name": "Neve 17/2 Dark Green / ben i eik natur",
+        "colors": {
+          "upholstery": "#7b836c",
+          "legs": "#c9aa82",
+          "piping": "#707862"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak",
+          "piping": "woven"
+        },
+        "priceNok": 24699,
+        "salePriceNok": 14819,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/eden-hjornesofa?VariationId=V_5637474763"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 2.75,
+    "description": "Hjørnesofa i nordisk stil med smalt, svakt utsvingt armlene til venstre og hjørne med åpen ende til høyre, løse og vendbare rygg- og seteputer, dobbel søm rundt sokkelen og skrå ben i natureik.",
+    "why": "262 × 218 cm danner et lunt TV-hjørne i den 20,6 m² store kjellerstua, og den åpne enden gir plass til å legge beina opp uten at sofaen blir like massiv som en U-sofa. Ben i lys eik passer eikegulvet, og Neve 09 Cappuccino er en varm greige som harmonerer med Marrakesh-tonen.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/8590536/8590536_V10235454-EdenSofa1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 14 799 kr (før 24 699, tilbudet varer til 15.11), 262x218x87, sittehøyde 48, sittedybde 50, 2,5-seter med åpen ende høyre, ben i eik natur, vendbare puter, og prisene for de fem stoffene (lest fra sidens innebygde produktdata og variant-API – WebFetch ser bare «Loading…»). Seksjonsdybden 86 cm er fra Eden 3-seter (217x86x87); armlenebredde, armlenehøyde, benhøyde (ca. 17 cm) og hvor langt ryggen går langs den åpne enden (ca. 1,0 m) er anslått fra bildene.",
+    "priceConfidence": "checked",
+    "absorptionNote": "≈ 1,05 × bredde (2,62 m)."
+  },
+  {
     "id": "bohus-lukas-3-seter-sofa-xl",
     "category": "sofa",
     "subcategory": "3-seter",

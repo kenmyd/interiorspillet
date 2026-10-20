@@ -127,9 +127,10 @@ check('archetype display-cabinet: storage family, floor (or wall), «Vitrineskap
   && Object.keys(schema.families.storage.partLabels).length === 5);
 check('mountsCompatible: vitrineskap floor ↔ wall, nothing else across mounts', catalog.mountsCompatible('display-cabinet', 'floor', 'display-cabinet', 'wall')
   && !catalog.mountsCompatible('sideboard', 'floor', 'wall-shelf', 'wall') && !catalog.mountsCompatible('art-frame', 'wall', 'art-frame', 'floor'));
-// round 1 + catalog-new (lenestoler, Secto, gulvlamper, vitrineskap) + hele huset (136 new products, the 3 mirrors moved to Speil)
-const COUNTS = { sofa: 9, lenestol: 21, bord: 9, stoler: 8, skjenk: 14, tvbenk: 6, vitrineskap: 5, hylle: 9, seng: 17, nattbord: 9, kommode: 9, garderobe: 8, speil: 13, bad: 18, gang: 11, taklampe: 19, smalamper: 34, tekstil: 24, teppe: 19, solskjerming: 22, akustikk: 16, smatt: 22 };
-check('counts per category – 322 products', Object.entries(COUNTS).every(([k, n]) => counts[k] === n) && catalog.allProducts().length === 322, JSON.stringify(counts));
+// round 1 + catalog-new (lenestoler, Secto, gulvlamper, vitrineskap) + hele huset (152 new products incl. Skeidar and Jysk,
+// the 3 mirrors moved to Speil)
+const COUNTS = { sofa: 11, lenestol: 21, bord: 10, stoler: 8, skjenk: 14, tvbenk: 7, vitrineskap: 5, hylle: 11, seng: 20, nattbord: 10, kommode: 10, garderobe: 9, speil: 13, bad: 19, gang: 14, taklampe: 19, smalamper: 34, tekstil: 24, teppe: 19, solskjerming: 22, akustikk: 16, smatt: 22 };
+check('counts per category – 338 products', Object.entries(COUNTS).every(([k, n]) => counts[k] === n) && catalog.allProducts().length === 338, JSON.stringify(counts));
 const NEW_DIR = path.join(ROOT, 'research', 'catalog-new');
 const fresh = fs.readdirSync(NEW_DIR).filter((f) => f.endsWith('.json')).flatMap((f) => readJson(`research/catalog-new/${f}`));
 const KEEP = ['category', 'subcategory', 'name', 'brand', 'store', 'url', 'priceNok', 'salePriceNok', 'priceNote', 'priceConfidence', 'archetype', 'defaultVariant', 'description', 'why', 'imageUrl', 'verified', 'verifiedNote', 'light'];
@@ -154,7 +155,7 @@ for (const src of fresh) {
     for (const [part, hex] of Object.entries(v.colors)) if (pv?.colors?.[part] !== hex || pv?.materials?.[part] !== v.materials[part]) freshProblems.push(`${src.id}#${i}: ${part}`);
   });
 }
-check(`all ${fresh.length} new products kept: prices, sale prices, variant prices/urls, notes, image URLs, params (shape notes, profilePoints)`, fresh.length === 162 && !freshProblems.length,
+check(`all ${fresh.length} new products kept: prices, sale prices, variant prices/urls, notes, image URLs, params (shape notes, profilePoints)`, fresh.length === 178 && !freshProblems.length,
   freshProblems.slice(0, 8).join(' | '));
 const pr = (id, vi) => {
   const x = catalog.priceOf(catalog.getProduct(id), vi);
@@ -230,15 +231,15 @@ for (const src of huset) {
     husetProblems.push(`${src.id}: missing`);
     continue;
   }
-  if (!p.verified || !/2026-10-20/.test(p.priceNote) || !/^https:\/\//.test(p.url) || !/^https:\/\//.test(p.imageUrl)) husetProblems.push(`${p.id}: verified/date/url/image`);
+  if (!p.verified || !/2026-10-2[01]/.test(p.priceNote) || !/^https:\/\//.test(p.url) || !/^https:\/\//.test(p.imageUrl)) husetProblems.push(`${p.id}: verified/date/url/image`);
   if (!(typeof p.priceNok === 'number' && p.priceNok > 0) || typeof p.absorption !== 'number') husetProblems.push(`${p.id}: price/absorption`);
   if (p.subcategory && !catalog.SUBCATEGORY_LABELS[p.subcategory]) husetProblems.push(`${p.id}: subcategory ${p.subcategory} has no label`);
   if (!p.description || !p.why || !p.verifiedNote) husetProblems.push(`${p.id}: texts`);
 }
 const byStore = huset.reduce((m, p) => ({ ...m, [p.store]: (m[p.store] || 0) + 1 }), {});
 console.log('  hele huset per store', JSON.stringify(byStore));
-check(`all ${huset.length} hele-huset products: verified 2026-10-20, url + image, price, absorption, texts, subcategory labels`, huset.length === 136 && !husetProblems.length, husetProblems.slice(0, 6).join(' | '));
-check('Bohus first: more than half of the new products are from Bohus', (byStore.Bohus || 0) > huset.length / 2, JSON.stringify(byStore));
+check(`all ${huset.length} hele-huset products: verified 2026-10-20/21, url + image, price, absorption, texts, subcategory labels`, huset.length === 152 && !husetProblems.length, husetProblems.slice(0, 6).join(' | '));
+check('Bohus first (more than half), then IKEA, Skeidar, Jysk', (byStore.Bohus || 0) > huset.length / 2 && byStore.IKEA > 0 && byStore.Skeidar > 0 && byStore.Jysk > 0, JSON.stringify(byStore));
 const HUSET_PRICES = [
   ['bohus-sando-kontinentalseng-180x200', 0, '25999/51998/sale'], ['bohus-sando-kontinentalseng-180x200', 1, '51998/51998/-'],
   ['bohus-madrid-kommode-160x39', 0, '6499/6499/-'], ['bohus-madrid-kommode-160x39', 2, '3249/6499/sale'],
@@ -252,8 +253,8 @@ const fax = catalog.productToItemSpec('ikea-faxalven-speilskap-med-integrert-bel
 check('mirror cabinet with LED: wall item with a lamp (Inspector light controls), mountHeight for Placement', fax.mount === 'wall' && fax.light?.lumens === 1370 && fax.params.mountHeight > 1);
 const madridMirror = catalog.productToItemSpec('bohus-madrid-garderobeskap-103x60', catalog.getProduct('bohus-madrid-garderobeskap-103x60').variants.findIndex((v) => /speil/i.test(v.name)));
 check('wardrobe variant with a mirror door over drawers (paramsOverride fronts)', madridMirror.params.fronts.join() === 'mirror,door+drawers:2' && madridMirror.params.cellDrawerH === 0.43);
-check('beds: the bed family parts, seatY-ready params, headboards and benches in Senger', catalog.products('seng').filter((p) => p.archetype === 'bed').length === 9
-  && catalog.products('seng').filter((p) => p.subcategory === 'sengegavl').length === 5 && catalog.products('seng').every((p) => p.archetype !== 'bed' || p.variants.every((v) => v.colors.bedding && v.colors.frame)));
+check('beds: the bed family parts, seatY-ready params, headboards and benches in Senger', catalog.products('seng').filter((p) => p.archetype === 'bed').length === 11
+  && catalog.products('seng').filter((p) => p.subcategory === 'sengegavl').length === 6 && catalog.products('seng').every((p) => p.archetype !== 'bed' || p.variants.every((v) => v.colors.bedding && v.colors.frame)));
 check('search: «seng 180», «speilskap», «skoskap», «håndkle», «garderobe»', catalog.search('kontinentalseng 180').length >= 3 && catalog.search('speilskap').length >= 3
   && catalog.search('skoskap').length >= 4 && catalog.search('håndkle').length >= 3 && catalog.search('garderobe').length >= 8);
 

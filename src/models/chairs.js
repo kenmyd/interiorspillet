@@ -211,11 +211,12 @@ function buildChair(spec) {
     }
     case 'pad': {
       // a curved upholstered back pad above the seat with a gap (KRYLBO), on two hidden stays
-      const R = Math.max(0.22, w * 0.55);
-      const y0 = seatH + 0.07;
+      // a soft oval-ish pad: gently curved in plan, its top corners rounded off toward the sides
+      const R = Math.max(0.3, w * 0.8);
+      const y0 = seatH + 0.06;
       const ph = Math.max(0.15, h - y0);
-      const a = Math.asin(Math.min(0.95, (w / 2) / R));
-      add(g, arcBoard(R, a, 0.07, ph, seg(spec, 16), 0.028), up, 'upholstery', 0, y0, bz + R - 0.02);
+      const a = Math.asin(Math.min(0.95, (w / 2 + 0.02) / R));
+      add(g, tubBand(R, a, 0.08, ph, seg(spec, 18), 0.72), up, 'upholstery', 0, y0, bz + R - 0.03);
       for (const sx of [-1, 1]) stick(g, legs, 'legs', [sx * (lx - 0.03), legTop, bz + 0.02], [sx * (lx - 0.05), y0 + 0.05, bz - 0.01], 0.008, 0.008, { n: 8 });
       break;
     }

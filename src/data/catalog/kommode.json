@@ -863,5 +863,83 @@
     "verified": true,
     "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 3 695 kr, 160x50x96 cm, fri høyde under 11 cm, 8 skuffer (innv. dybde 43 cm), heltre furu, beis og lakk. Skuffehøyder og knotter fra produktbildet.",
     "priceConfidence": "checked"
+  },
+  {
+    "id": "skeidar-savona-kommode-3-3-skuffer-160x46",
+    "category": "kommode",
+    "name": "Savona kommode 3+3 skuffer",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/kommoder/savona-kommode-33-skuffer?VariationId=V_55027011502",
+    "priceNok": 7999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 7011502, natur eik finer, 7 999 kr, ingen kampanje). Røykfarget eik finer (7011503) samme pris. Savona kommode 4 skuffer (80,6x45,8x84,6) står til 5 999 kr på kategorisiden. Flatpakket i 2 kolli; bestillingsvare, ca. 5–8 uker.",
+    "dims": {
+      "w": 1.596,
+      "d": 0.458,
+      "h": 0.715
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:3",
+        "drawers:3"
+      ],
+      "frontStyle": "flat",
+      "frontFit": "inset",
+      "handle": "bar",
+      "handleLen": 0.12,
+      "base": "plinth",
+      "legH": 0.04,
+      "top": "same",
+      "corners": "square",
+      "notes": "Two columns of three equal drawers set inside the carcass (sides, top and a centre divider frame them), all six with soft-close. Short black angled tab pulls on the top edge of each drawer, centred – modelled as short black bars. A plain base rail ~4 cm on small plastic feet."
+    },
+    "variants": [
+      {
+        "name": "Natur eik finer",
+        "colors": {
+          "body": "#d0aa77",
+          "front": "#cda36e",
+          "top": "#d4b181",
+          "legs": "#c39a64",
+          "handle": "#1e1c1a"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "black-metal"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/kommoder/savona-kommode-33-skuffer?VariationId=V_55027011502"
+      },
+      {
+        "name": "Røykfarget eik finer",
+        "colors": {
+          "body": "#7a5332",
+          "front": "#754f2e",
+          "top": "#7d5635",
+          "legs": "#6a4628",
+          "handle": "#1e1c1a"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "black-metal"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/kommoder/savona-kommode-33-skuffer?VariationId=V_55027011503"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Bred, lav kommode i eikefinér med 2 × 3 like skuffer med softclose, korte svarte grep i overkanten og rett sokkel – enkle, rene linjer.",
+    "why": "160 cm bred, men bare 46 cm dyp og 71,5 cm høy: står under vinduet eller langs veggen i soverommet (3,11 × 3,69 m) og rommer det meste av klærne, så rommet holdes ryddig. Natur eik passer det lyse eikegulvet, og de svarte grepene gjentar de svarte detaljene i huset.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/7011502/7011502_V03011051-Savonakommode1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 7 999 kr i begge fargene, 159,6x45,8x71,5, softclose på alle 6 skuffene, natur eik / røykfarget eik finer, ben/understell «plastknotter» (lest fra sidens innebygde produktdata og variant-API). Sokkelhøyde, grepenes form og at skuffene er like høye er lest av produktbildet; ingen produsent oppgitt.",
+    "priceConfidence": "checked"
   }
 ]
