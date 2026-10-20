@@ -1,0 +1,128 @@
+{
+  "$comment": "Overlay for tools/house-tests/layout.test.mjs: merged by id onto src/data/room-spec.json (arrays extended / replaced by id, new keys added). A small house after the plan in notes/hele-huset-design.md (§1.4–1.6): the bathroom and hall of the ground floor (backOf faces, doors, a frosted window, a hole for the stair), the hud room of the stair, the basement level at −2.55 with a simplified basement hall and the entrance 0.30 lower (floorOffset). Test data only – the real data lives in research/house/NN-*.json.",
+  "levels": [
+    { "id": "kjeller", "name": "Kjeller", "floorY": -2.55, "slabThickness": 0.30, "ceilingDefault": 2.25,
+      "plan": { "file": "bilder_hus/plantegning_kjeller.png", "pxPerM": [60.3, 56.8], "originPx": [127, 120] },
+      "estimated": ["floorY", "ceilingDefault", "plan.pxPerM"], "source": "fixture (D2, D3)" }
+  ],
+  "rooms": [
+    { "id": "bad", "name": "Bad", "levelId": "hoved", "kind": "bathroom",
+      "polygon": [[0, 0], [2.53, 0], [2.53, 2.22], [0, 2.22]],
+      "floor": { "material": "vinyl", "color": "#5a5759", "pattern": "cloudy" },
+      "ceilingIds": ["c-bad"], "acoustic": { "mode": "estimate" }, "estimated": ["floor.color"] },
+    { "id": "gang", "name": "Gang", "levelId": "hoved", "kind": "hall",
+      "polygon": [[0, 2.32], [3.12, 2.32], [3.12, 4.43], [0, 4.43]],
+      "floor": { "material": "oak-plank", "color": "#a59b8f" }, "acoustic": { "mode": "estimate" } },
+    { "id": "trapp", "name": "Trappa", "levelId": "hoved", "kind": "hud", "openingId": "trappehull", "stairId": "trapp-kjeller" },
+    { "id": "kjeller-gang", "name": "Gang (kjeller)", "levelId": "kjeller", "kind": "hall",
+      "polygon": [[0, 2.32], [1.75, 2.32], [1.75, 2.56], [5.60, 2.56], [5.60, 5.36], [2.91, 5.36], [2.91, 4.43], [0, 4.43]],
+      "floor": { "material": "oak-plank", "color": "#cbbfb0" }, "estimated": ["*"] },
+    { "id": "entre-kjeller", "name": "Entré", "levelId": "kjeller", "kind": "entrance", "floorOffset": -0.30,
+      "polygon": [[6.01, 3.15], [8.51, 3.15], [8.51, 6.03], [6.57, 6.03], [6.57, 5.47], [6.01, 5.47]],
+      "floor": { "material": "oak-plank", "color": "#cbbfb0" }, "estimated": ["*"] }
+  ],
+  "walls": [
+    { "id": "w-bad-ost", "roomId": "bad", "from": [0, 0], "to": [2.53, 0], "normal": [0, 1],
+      "thickness": 0.30, "exterior": true, "height": 2.40, "material": "stone-panel", "color": "#c6c1b9" },
+    { "id": "w-bad-sor", "roomId": "bad", "from": [2.53, 0], "to": [2.53, 2.22], "normal": [-1, 0],
+      "backOf": "w-nisje-bak", "height": 2.40, "material": "stone-panel", "color": "#c6c1b9" },
+    { "id": "w-bad-gang", "roomId": "bad", "from": [2.53, 2.22], "to": [0, 2.22], "normal": [0, -1],
+      "thickness": 0.10, "height": 2.40, "material": "stone-panel", "color": "#c6c1b9",
+      "openings": [{ "id": "door-bad", "type": "door", "offset": 0.08, "width": 0.93, "height": 2.15, "sill": 0,
+        "frame": { "color": "#1d1e21", "width": 0.07, "depth": 0.02 }, "reveal": { "depth": 0.10, "color": "#1d1e21" },
+        "door": { "leafColor": "#1d1e21", "hinge": "from", "swing": "in", "opensInto": "bad",
+                  "leaf": { "w": 0.79, "h": 2.08 }, "handleSide": "to", "handleHeight": 1.05, "closed": true },
+        "connects": ["bad", "gang"], "estimated": ["width", "height", "door.leaf"] }] },
+    { "id": "w-bad-nord", "roomId": "bad", "from": [0, 2.22], "to": [0, 0], "normal": [1, 0],
+      "thickness": 0.30, "exterior": true, "height": 2.40, "material": "stone-panel", "color": "#c6c1b9",
+      "openings": [{ "id": "win-bad", "type": "window", "offset": 0.75, "width": 0.48, "height": 1.17,
+        "sill": 0.88, "frosted": true, "obstruction": 0.8, "estimated": ["sill"] }] },
+
+    { "id": "w-gang-ost", "roomId": "gang", "from": [0, 2.32], "to": [3.12, 2.32], "normal": [0, 1],
+      "backOf": ["w-bad-gang", "w-nisje-side"], "height": 2.40, "paint": "sand" },
+    { "id": "w-gang-hall", "roomId": "gang", "from": [3.12, 2.32], "to": [3.12, 4.43], "normal": [-1, 0],
+      "backOf": "w-gang", "height": 2.40, "paint": "sand" },
+    { "id": "w-gang-sov", "roomId": "gang", "from": [3.12, 4.43], "to": [0, 4.43], "normal": [0, -1],
+      "thickness": 0.10, "height": 2.40, "paint": "sand",
+      "openings": [{ "id": "door-soverom", "type": "door", "offset": 0.06, "width": 0.95, "height": 2.12, "sill": 0,
+        "door": { "leafColor": "#1d1e21", "hinge": "from", "swing": "out", "opensInto": "soverom", "closed": true },
+        "connects": ["gang", "soverom"], "estimated": ["width", "height"] }] },
+    { "id": "w-gang-nord", "roomId": "gang", "from": [0, 4.43], "to": [0, 2.32], "normal": [1, 0],
+      "thickness": 0.30, "exterior": true, "height": 2.40, "paint": "sand" },
+
+    { "id": "w-kg-sor", "roomId": "kjeller-gang", "from": [5.60, 2.56], "to": [5.60, 5.36], "normal": [-1, 0],
+      "thickness": 0.41, "height": 2.25, "paint": "sand", "estimated": ["*"] },
+    { "id": "w-entre-sor", "roomId": "entre-kjeller", "from": [8.51, 3.15], "to": [8.51, 6.03], "normal": [-1, 0],
+      "thickness": 0.23, "exterior": true, "height": 2.62, "paint": "sand",
+      "openings": [{ "id": "door-ute", "type": "door", "offset": 0.77, "width": 0.92, "height": 2.10, "sill": 0,
+        "door": { "leafColor": "#2b2c2e", "hinge": "from", "swing": "out", "closed": true },
+        "interactive": true, "estimated": ["*"] }] }
+  ],
+  "ceilings": [
+    { "id": "c-bad", "roomId": "bad", "polygon": [[0, 0], [2.53, 0], [2.53, 2.22], [0, 2.22]],
+      "height": 2.40, "color": "#efefed", "trim": "#1d1e21", "estimated": ["height"] },
+    { "id": "c-gang", "roomId": "gang", "polygon": [[0, 2.32], [3.12, 2.32], [3.12, 4.43], [0, 4.43]],
+      "height": 2.40, "color": "#ecebe8", "estimated": ["height", "color"] },
+    { "id": "c-kjeller-gang", "roomId": "kjeller-gang",
+      "polygon": [[0, 2.32], [1.75, 2.32], [1.75, 2.56], [5.60, 2.56], [5.60, 5.36], [2.91, 5.36], [2.91, 4.43], [0, 4.43]],
+      "height": 2.25, "color": "#e8e4dc", "estimated": ["*"] },
+    { "id": "c-entre", "roomId": "entre-kjeller",
+      "polygon": [[6.01, 3.15], [8.51, 3.15], [8.51, 6.03], [6.57, 6.03], [6.57, 5.47], [6.01, 5.47]],
+      "height": 2.40, "color": "#e8e4dc", "estimated": ["*"] }
+  ],
+  "zones": [
+    { "id": "z-entre", "roomId": "entre-kjeller", "name": "Entré", "polygon": [[6.01, 3.15], [8.51, 3.15], [8.51, 5.47], [6.01, 5.47]] }
+  ],
+  "floorOpenings": [
+    { "id": "trappehull", "levelId": "hoved", "roomId": "gang", "stairId": "trapp-kjeller",
+      "polygon": [[0, 2.32], [1.50, 2.32], [1.50, 3.48], [1.85, 3.48], [1.85, 4.43], [0, 4.43]],
+      "edgeBand": { "color": "#f2efe8", "depth": 0.30 }, "estimated": ["polygon"] }
+  ],
+  "stairs": [
+    { "id": "trapp-kjeller", "name": "Trappa", "type": "half-turn-winder",
+      "fromLevel": "kjeller", "toLevel": "hoved", "openingId": "trappehull", "roomIds": ["kjeller-gang", "gang"],
+      "risers": 14,
+      "top": { "edge": [[1.50, 2.32], [1.50, 3.10]], "down": [-1, 0], "straightTreads": 1 },
+      "foot": { "edge": [[1.60, 3.48], [1.60, 4.43]], "down": [1, 0], "straightTreads": 3 },
+      "well": { "polygon": [[1.20, 3.10], [1.50, 3.10], [1.50, 3.48], [1.20, 3.48]], "newel": [1.50, 3.10] },
+      "walkLine": "flight-centre", "going": null, "openRisers": true, "estimated": ["*"] }
+  ],
+  "lightGroups": [
+    { "id": "bad", "label": "Bad", "roomId": "bad", "dimmer": true, "defaultDimmer": 0.6 },
+    { "id": "gang", "label": "Gang og trapp", "roomId": "gang", "dimmer": true, "defaultDimmer": 0.5, "auto": "on" },
+    { "id": "kjeller-gang", "label": "Gang (kjeller)", "roomId": "kjeller-gang", "dimmer": true, "defaultDimmer": 0.5 }
+  ],
+  "builtInLights": [
+    { "id": "l-bad-tak", "roomId": "bad", "group": "bad", "type": "plafond", "position": [1.26, 2.40, 1.11],
+      "dims": { "d": 0.42, "h": 0.07 }, "lumens": 1400, "lightColorK": 4000, "estimated": ["lumens", "lightColorK"] },
+    { "id": "l-gang-tak", "roomId": "gang", "group": "gang", "type": "plafond", "position": [2.30, 2.40, 3.40],
+      "dims": { "d": 0.30, "h": 0.07 }, "lumens": 1100, "lightColorK": 3800, "estimated": ["*"] },
+    { "id": "l-kg-1", "roomId": "kjeller-gang", "group": "kjeller-gang", "type": "downlight", "position": [2.0, 2.25, 2.91],
+      "dims": { "d": 0.09 }, "lumens": 350, "lightColorK": 3000, "estimated": ["*"] }
+  ],
+  "fixtures": [
+    { "id": "fx-gang-bryter", "roomId": "gang", "type": "switch", "wallId": "w-gang-hall",
+      "position": [3.12, 1.05, 3.25], "dims": { "w": 0.085, "h": 0.085 }, "color": "#151515" },
+    { "id": "fx-gang-stikk", "roomId": "gang", "type": "socket", "wallId": "w-gang-sov",
+      "position": [1.95, 0.18, 4.43], "dims": { "w": 0.084, "h": 0.084 }, "color": "#1c1a19" },
+    { "id": "fx-kg-stikk", "roomId": "kjeller-gang", "type": "socket", "wallId": "w-kg-sor",
+      "position": [5.60, 0.18, 4.00], "dims": { "w": 0.084, "h": 0.084 }, "color": "#1c1a19" },
+    { "id": "fx-bad-ventil", "roomId": "bad", "type": "vent", "mount": "wall",
+      "position": [0.05, 2.10, 1.60], "dims": { "w": 0.15, "h": 0.15 }, "color": "#1d1e21", "estimated": ["*"] }
+  ],
+  "builtIns": [
+    { "id": "bi-bad-wc", "roomId": "bad", "type": "wc", "mount": "wall", "wallId": "w-bad-nord",
+      "position": [0, 0, 1.85], "dims": { "w": 0.70, "d": 0.20, "h": 1.10 }, "rotationDeg": 90,
+      "params": { "bowl": { "w": 0.36, "d": 0.54, "rimH": 0.42 } }, "estimated": ["position", "dims"] }
+  ],
+  "furniture": [
+    { "id": "f-bad-hoyskap", "roomId": "bad", "name": "Høyskap", "kind": "cabinet", "archetype": "wall-cabinet",
+      "mount": "wall", "wallId": "w-bad-ost", "position": [1.125, 0.10, 0], "rotationDeg": 0,
+      "dims": { "w": 0.35, "d": 0.30, "h": 1.60 }, "estimated": ["*"] }
+  ],
+  "photoCameras": [
+    { "file": "foto-hus/kjeller-gang/20261020_225349.jpg", "roomId": "kjeller-gang",
+      "pos": [3.40, 1.60, 3.50], "lookAt": [5.38, 1.88, 3.50], "vfovDeg": 62, "yawDeg": 90, "pitchDeg": 8,
+      "focalPx": 1300, "imageSize": [1600, 1200], "confidence": "low", "source": "fixture" }
+  ]
+}
