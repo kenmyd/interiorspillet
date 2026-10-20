@@ -28,7 +28,8 @@ const _eye = new THREE.Vector3();
  *   design (= home.design), editor
  *
  * Frame order: input → Esc (editor.handleEscape, else pause) → (help, player [only when the editor's view is 'walk'
- * and editor.blocksGameInput() is false], interaction, click → editor.handleClick → else interaction, E) →
+ * and editor.blocksGameInput() is false], interaction, click → editor.handleClick → else interaction, E: stand up
+ * when seated, sit on Selection.hoverSeat() when nothing else is targeted, else interaction) →
  * editor.update → room → home.update → audio → hud → render (home.lighting.render(renderer, scene, camera) when the
  * LightManager provides it – post-processing hook – else renderer.render).
  *
@@ -432,12 +433,26 @@ export class Game {
         }
 
         const captured = this.input.isCaptured;
-        this.interaction.update(this.input, this.hud, captured);
+        // sitting: E on the chair / sofa under the cursor (Selection's hover) sits down, E again stands up; while
+        // seated nothing else is targeted
+        const seated = walking && !!this.player.seated;
+        let seat = null;
+        if (seated) {
+          this.interaction.clear();
+          this.hud.setPrompt('Reis deg', 'E', 'eller gå med WASD');
+        } else {
+          seat = walking ? editor?.selection?.hoverSeat?.() ?? null : null;
+          this.interaction.update(this.input, this.hud, captured, seat && { text: 'Sett deg', key: 'E', status: seat.name });
+          if (this.interaction.target) seat = null;
+        }
         this.hud.setCrosshair(captured);
         const clicked = this.input.consumeClick();
         let used = false;
         if (clicked && editor) used = editor.handleClick(clicked);
-        if (this.input.consumeAction('interact') || (clicked && !used)) this.interaction.interact({ game: this });
+        const interactKey = this.input.consumeAction('interact');
+        if (interactKey && seated) this.player.standUp();
+        else if (interactKey && seat) this.player.sit(seat);
+        else if (interactKey || (clicked && !used)) this.interaction.interact({ game: this });
       }
       editor?.update(dt);
       this._updateRoom();

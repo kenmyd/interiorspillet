@@ -42,7 +42,7 @@ export function getControls(settings) {
         { keys: [{ mouse: 'left', label: 'Venstreklikk' }], text: 'Velg møbel, vegg eller vindu (åpner egenskapene)', short: 'Velg møbel, vegg eller vindu', hud: true },
         { keys: [{ mouse: 'left', label: 'Dra valgt møbel' }], text: 'Flytt møbelet langs gulvet, veggen eller bordet', short: 'Flytt det', hud: true },
         { keys: [{ mouse: 'wheel', label: 'Musehjul' }], text: 'Zoom i oversikt og plan (høyre dra snur, Shift + høyre dra flytter)' },
-        { keys: ['E'], text: 'Åpne og lukk dører' },
+        { keys: ['E'], text: 'Åpne og lukk dører, sett deg i stoler og sofaer (E eller WASD: reis deg)' },
         { keys: ['H'], text: 'Vis/skjul hjelp' },
         { keys: [{ wide: true, label: 'Esc' }], text: 'Avbryt, lukk panelet, velg bort – ellers pause' },
       ],

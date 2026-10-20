@@ -14,6 +14,11 @@ import { PLAYER, WALKABLE_NORMAL_Y } from '../config.js';
  *   velocity: Vector3, onGround: boolean, surface: string|null
  *   getState() → { speed, onGround, running, moving, justLanded, landImpact, lookDelta:{x,y}, pitch, time, bobPhase }
  *   Emits on events: 'footstep' {surface, running}, 'jump' {surface}, 'land' {surface, impact}
+ *   sit({ eye: Vector3, yaw })   sit down (player/Seats.js seatFor): the camera glides to the seat's eye point and
+ *                                turns to face out over the seat; only looking around works while seated
+ *   standUp()                    back on the feet where we stood before sitting (walking or jumping also stands up,
+ *                                once the movement keys held while sitting down have been let go)
+ *   seated: { eye, yaw } | null
  *
  * Extras: crouching (boolean), inWater (boolean), respawn(), getState() also carries crouch, crouching,
  * justJumped, verticalSpeed, airTime, inWater, surface, bobAmount, yaw.
@@ -83,6 +88,10 @@ export const MOVE = Object.freeze({
   /** Trying to walk this long in water deeper than waterTrapDepth without getting 1 m anywhere → respawn. */
   waterTrapTime: 4,
   waterTrapDepth: 0.3,
+  /** Seconds the camera glides between standing and sitting. */
+  sitBlend: 0.6,
+  /** Pitch (radians) the view settles at after sitting down: a little below the horizon. */
+  sitPitch: -0.08,
 });
 
 const _v = new THREE.Vector3();
@@ -159,6 +168,14 @@ export class PlayerController {
     this._safeT = 0;
     this._hasSafe = false;
 
+    this.seated = null; // { eye, yaw } while sitting
+    this._standAt = new THREE.Vector3(); // feet position to stand up at
+    this._seatArmed = false; // the movement keys were let go after sitting down (then they stand up)
+    this._turnLeft = 0; // yaw / pitch still to turn towards the seat's view (eased)
+    this._pitchLeft = 0;
+    this._blend = 0; // 1 → 0: camera glide from _blendFrom to its real place (sitting down, standing up)
+    this._blendFrom = new THREE.Vector3();
+
     this._state = {
       speed: 0,
       onGround: false,
@@ -210,6 +227,8 @@ export class PlayerController {
     this._safeT = 0;
     this._trapT = 0;
     this._trapAnchor.copy(pos);
+    this.seated = null;
+    this._blend = 0;
     if (!this._spawn) {
       this._spawn = pos.clone();
       this._spawnYaw = yaw;
@@ -244,6 +263,81 @@ export class PlayerController {
 
   getState() {
     return this._state;
+  }
+
+  /**
+   * Sit down on a seat (player/Seats.js seatFor). The feet stay where they are, so standUp() returns there.
+   * @param {{ eye: THREE.Vector3, yaw: number }} seat
+   */
+  sit(seat) {
+    if (!seat?.eye || !Number.isFinite(seat.eye.x + seat.eye.y + seat.eye.z + seat.yaw)) return;
+    if (!this.seated) this._standAt.copy(this.position);
+    this._blendFrom.copy(this.camera.position);
+    this._blend = 1;
+    this.seated = { eye: seat.eye.clone(), yaw: seat.yaw };
+    this._seatArmed = false;
+    this._turnLeft = wrapAngle(seat.yaw - this.yaw);
+    this._pitchLeft = MOVE.sitPitch - this.pitch;
+    this.velocity.set(0, 0, 0);
+    this.crouching = false;
+    this._crouchAmt = 0;
+    this._bobAmt = 0;
+    this._speed = 0;
+    this.events?.emit('sfx', { name: 'place', volume: 0.35 });
+  }
+
+  /** Stand up where we stood before sitting down. */
+  standUp() {
+    if (!this.seated) return;
+    this._blendFrom.copy(this.camera.position);
+    this._blend = 1;
+    this.seated = null;
+    this.position.copy(this._standAt);
+    this.velocity.set(0, 0, 0);
+    this._stepSmooth = 0;
+    this._dip = this._dipVel = 0;
+    this._stuckT = 0;
+    this._syncCapsule();
+  }
+
+  /** A frame while seated: ease towards the seat's view, stand up on walking / jumping, place the camera. */
+  _updateSeated(dt, inp) {
+    const s = this._state;
+    const k = 1 - Math.exp(-7 * dt);
+    const dy = this._turnLeft * k;
+    const dp = this._pitchLeft * k;
+    this.yaw = wrapAngle(this.yaw + dy);
+    this.pitch = THREE.MathUtils.clamp(this.pitch + dp, PLAYER.minPitch, PLAYER.maxPitch);
+    this._turnLeft -= dy;
+    this._pitchLeft -= dp;
+    // a look by hand ends the automatic turn (it would fight the mouse)
+    if (s.lookDelta.x || s.lookDelta.y) this._turnLeft = this._pitchLeft = 0;
+
+    const moving = Math.abs(inp.move?.forward || 0) > 0.01 || Math.abs(inp.move?.right || 0) > 0.01;
+    if (!moving) this._seatArmed = true;
+    else if (this._seatArmed) {
+      this.standUp();
+      this._placeCamera(dt);
+      return;
+    }
+    if (inp.jumpPressed) {
+      this.standUp();
+      this._placeCamera(dt);
+      return;
+    }
+    this._placeCamera(dt);
+    s.speed = 0;
+    s.onGround = true;
+    s.running = false;
+    s.moving = false;
+    s.crouching = false;
+    s.crouch = 0;
+    s.pitch = this.pitch;
+    s.yaw = this.yaw;
+    s.time = this._time;
+    s.bobAmount = 0;
+    s.verticalSpeed = 0;
+    s.airTime = 0;
   }
 
   /** Is this feet position good for (re)spawning: finite, inside the world, on walkable ground, not in water? */
@@ -299,6 +393,12 @@ export class PlayerController {
     this.pitch = THREE.MathUtils.clamp(this.pitch + lookY, PLAYER.minPitch, PLAYER.maxPitch);
     s.lookDelta.x = lookX;
     s.lookDelta.y = lookY;
+
+    // seated: only looking (walking or jumping stands up)
+    if (this.seated) {
+      this._updateSeated(dt, inp);
+      return;
+    }
 
     // ---- 2. crouch
     this._updateCrouch(!!inp.crouch, dt);
@@ -870,7 +970,18 @@ export class PlayerController {
 
   /* ------------------------------------------------------------------ camera */
 
-  _placeCamera(/* dt */) {
+  _placeCamera(dt = 0) {
+    if (this.seated) this.camera.position.copy(this.seated.eye);
+    else this._placeStandingCamera();
+    // gliding between standing and sitting
+    if (this._blend > 0) {
+      this._blend = Math.max(0, this._blend - dt / MOVE.sitBlend);
+      this.camera.position.lerp(this._blendFrom, easeInOut(this._blend));
+    }
+    this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
+  }
+
+  _placeStandingCamera() {
     // a «skikkelse» (physicalBody off) glides: no head bob
     const bobOn = this.settings?.get?.('headBob') !== false && this.settings?.get?.('physicalBody') !== false;
     const eye = THREE.MathUtils.lerp(PLAYER.eyeHeight, MOVE.crouchEyeHeight, easeInOut(this._crouchAmt));
@@ -886,7 +997,6 @@ export class PlayerController {
       y,
       this.position.z - Math.sin(this.yaw) * lateral,
     );
-    this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
   }
 }
 

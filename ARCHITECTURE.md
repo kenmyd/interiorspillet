@@ -41,8 +41,8 @@ Bilder som spillet viser (fotomontasjer, stuebilder til fotosammenligning, utsik
 ```
 src/
   main.js, config.js, style.css               (scaffold)
-  core/      Events, Input, Collision, Interaction, Highlight, Settings, Audio, Game   (scaffold; Game: integrasjon)
-  player/    PlayerController.js              (scaffold)
+  core/      Events, Input, Collision, Interaction, Highlight, Settings, Audio, Music, Game   (scaffold; Game: integrasjon; Music: bakgrunnsmusikk)
+  player/    PlayerController.js, Seats.js    (scaffold; Seats: sitte i stoler/sofaer – E over et møbel med seatY, E/WASD reiser deg)
   ui/        dom, Hud, PauseMenu, SettingsPanel, Loading, Dialog, icons, controlsHelp, ui.css (scaffold)
   world/     proctex, surfaces, shapeUtil, propMaterials, Door                         (scaffold)
   data/      *.json                            (FOUNDATION)

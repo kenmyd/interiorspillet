@@ -7,6 +7,7 @@
 //                                 true when it lands on the selected item or its rotate handle → drag via Placement
 //   update(dt), dispose()
 //   hover                         { kind, uid?, wallId?, windowId?, name } under the cursor (null when none)
+//   hoverSeat() → { uid, name, eye, yaw } | null   the hovered chair / sofa when it can be sat on (E, Game)
 //
 // Hover: rim glow (core/Highlight.js) + a small cursor hint («Lenestol – klikk for å endre»). The selected item gets an
 // amber glow and a footprint gizmo on its underlay (outline, front arrow, rotate handle). Keys for the selected item
@@ -19,6 +20,7 @@ import * as THREE from 'three';
 import { Highlighter } from '../core/Highlight.js';
 import { h, keycap } from '../ui/dom.js';
 import { openPanels } from '../ui/panelKit.js';
+import { SEAT, seatFor } from '../player/Seats.js';
 
 const DEG = Math.PI / 180;
 /** Pixels the pointer may travel before a press on the selected item becomes a drag. */
@@ -1270,6 +1272,19 @@ export class Selection {
     return e.input?.enabled !== false || !e.game?.inputBlocked;
   }
 
+  /**
+   * The chair, sofa, stool or pouf under the cursor when it can be sat on from here (walk mode, within SEAT.reach):
+   * { uid, name, eye, yaw } (player/Seats.js), or null. Game binds E to it.
+   */
+  hoverSeat() {
+    const hov = this.hover;
+    if (hov?.kind !== 'item' || !hov.point || !(hov.distance <= SEAT.reach) || this.editor.views?.isWalking === false) return null;
+    if (this._seatFor?.hover === hov) return this._seatFor.seat;
+    const seat = seatFor(hov.object || this.editor.sync.getObject(hov.uid), this.editor.design.get(hov.uid), hov.point);
+    this._seatFor = { hover: hov, seat: seat ? { ...seat, uid: hov.uid, name: hov.name } : null };
+    return this._seatFor.seat;
+  }
+
   /** Name and action text for a hover target. */
   _describe(hit) {
     const e = this.editor;
@@ -1278,7 +1293,8 @@ export class Selection {
       if (!item) return null;
       const selected = e.selected?.kind === 'item' && e.selected.uid === hit.uid;
       const action = item.locked ? 'låst' : selected ? 'dra for å flytte' : 'klikk for å endre';
-      return { kind: 'item', uid: hit.uid, name: itemName(item), action: `– ${action}`, object: e.sync.getObject(hit.uid) };
+      // point / distance: hoverSeat() sits where you aim on a sofa
+      return { kind: 'item', uid: hit.uid, name: itemName(item), action: `– ${action}`, object: e.sync.getObject(hit.uid), point: hit.point, distance: hit.distance };
     }
     if (hit.kind === 'wall') {
       const high = hit.wallId === e.home.highWall?.wallId;

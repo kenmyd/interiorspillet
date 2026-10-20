@@ -4,7 +4,7 @@ import { ICONS } from './icons.js';
 /**
  * Settings form bound to core/Settings.js – shared by the main menu dialog and the pause menu.
  * Every change is applied immediately with settings.set(key, value); Settings persists it and emits 'change'
- * (Game listens for fov / quality, AudioSystem for masterVolume / effectsVolume). The panel also follows changes made elsewhere
+ * (Game listens for fov / quality, AudioSystem for masterVolume / effectsVolume / music / musicVolume). The panel also follows changes made elsewhere
  * (e.g. "Tilbakestill").
  *
  * All tab pages are stacked in one grid cell (inactive ones are invisible + inert), so the panel always has the
@@ -87,6 +87,8 @@ export const SETTING_GROUPS = [
     icon: 'volume',
     rows: [
       { key: 'masterVolume', type: 'slider', label: 'Hovedvolum', min: 0, max: 1, step: 0.01, format: fmtPercent },
+      { key: 'music', type: 'toggle', label: 'Bakgrunnsmusikk', help: 'Rolig musikk uten sang, laget i nettleseren.' },
+      { key: 'musicVolume', type: 'slider', label: 'Musikk', min: 0, max: 1, step: 0.01, format: fmtPercent },
       { key: 'effectsVolume', type: 'slider', label: 'Effekter', help: 'Skritt, dører og menylyder.', min: 0, max: 1, step: 0.01, format: fmtPercent },
     ],
   },

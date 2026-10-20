@@ -1,10 +1,10 @@
 /**
  * Small procedural WebAudio sound system (replaces Kraftverkspillet's large AudioSystem; same API surface, so
  * Game.js / Door.js / ui/dom.js bindUiSounds work unchanged). Everything is synthesised from oscillators and one
- * shared noise buffer – the game ships no audio files.
+ * shared noise buffer – the game ships no audio files. The calm background music (core/Music.js) is synthesised too.
  *
  * CONTRACT (used by main.js / Game.js / world builders through ctx.audio):
- *   new AudioSystem(settings)      reads masterVolume / effectsVolume and follows their changes
+ *   new AudioSystem(settings)      reads masterVolume / effectsVolume / music / musicVolume and follows their changes
  *   async unlock() → boolean       create / resume the AudioContext (call from a user gesture); true when running.
  *                                  Never throws and never waits more than ~0.3 s (resume() hangs without a gesture).
  *   play(name, opts) → { stop() } | null
@@ -18,16 +18,21 @@
  *   setPaused(bool)                mutes the world bus (UI sounds stay) while the pause menu is open
  *   setEnvironment(obj)            accepted and ignored (kept for API compatibility)
  *   update(dt, camera)             moves the listener to the camera (positional one-shots)
- *   stopAll()                      stops every playing voice (quit to menu)
- *   dispose()                      closes the context
+ *   stopAll()                      stops every playing voice (quit to menu); the music keeps playing
+ *   dispose()                      stops the music and closes the context
+ *   music: AmbientMusic | null     created with the context; plays while the setting 'music' is on – also on the
+ *                                  start screen and while paused
  *   available: boolean             WebAudio exists in this browser;  state: AudioContext state or 'none'
  *
  * Everything before unlock() (or without WebAudio) is a silent no-op. Pointer / key presses anywhere on the page
  * also create / resume the context (until it runs). While the page is hidden the context is suspended.
  *
  * Signal graph:  world voices → worldBus (pause) ─┐
- *                ui voices ─────────────→ uiBus ──┴→ effects (effectsVolume) → master (masterVolume) → compressor → out
+ *                ui voices ─────────────→ uiBus ──┴→ effects (effectsVolume) ─┐
+ *                music (core/Music.js) ──────────→ musicBus (musicVolume) ────┴→ master (masterVolume) → compressor → out
  */
+
+import { AmbientMusic } from './Music.js';
 
 const MAX_VOICES = 24;
 
@@ -55,13 +60,15 @@ export class AudioSystem {
   constructor(settings) {
     this.settings = settings;
     this.ctx = null;
+    this.music = null;
     this.available = typeof window !== 'undefined' && !!(window.AudioContext || window.webkitAudioContext);
     this.paused = false;
     this._voices = new Set();
     this._listenerPlaced = false;
 
     this._onSettings = ({ key }) => {
-      if (key === 'masterVolume' || key === 'effectsVolume') this._applyVolumes();
+      if (key === 'masterVolume' || key === 'effectsVolume' || key === 'musicVolume') this._applyVolumes();
+      else if (key === 'music') this._applyMusic();
     };
     settings?.on?.('change', this._onSettings);
 
@@ -132,6 +139,11 @@ export class AudioSystem {
     this.worldBus.connect(this.effects);
     this.uiBus = ctx.createGain();
     this.uiBus.connect(this.effects);
+    // the music has its own volume and skips the effects bus (and the pause mute)
+    this.musicBus = ctx.createGain();
+    this.musicBus.gain.value = 0;
+    this.musicBus.connect(this.master);
+    this.music = new AmbientMusic(ctx, this.musicBus);
 
     // 1 s of white noise, shared by every voice
     const len = ctx.sampleRate;
@@ -140,6 +152,7 @@ export class AudioSystem {
     for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
 
     this._applyVolumes();
+    this._applyMusic();
   }
 
   _applyVolumes() {
@@ -147,8 +160,17 @@ export class AudioSystem {
     const t = this.ctx.currentTime;
     const mv = this.settings?.get?.('masterVolume') ?? 0.7;
     const ev = this.settings?.get?.('effectsVolume') ?? 0.9;
+    const muv = this.settings?.get?.('musicVolume') ?? 0.5;
     this.master.gain.setTargetAtTime(mv, t, 0.03);
     this.effects.gain.setTargetAtTime(ev, t, 0.03);
+    this.musicBus.gain.setTargetAtTime(muv, t, 0.03);
+  }
+
+  /** Starts / stops the background music to follow the setting 'music' (on by default). */
+  _applyMusic() {
+    if (!this.music) return;
+    if (this.settings?.get?.('music') !== false) this.music.start();
+    else this.music.stop();
   }
 
   setPaused(paused) {
@@ -194,6 +216,8 @@ export class AudioSystem {
 
   dispose() {
     this.stopAll();
+    this.music?.dispose();
+    this.music = null;
     this.settings?.off?.('change', this._onSettings);
     this._removeGestureListeners();
     document.removeEventListener('visibilitychange', this._onVisibility);

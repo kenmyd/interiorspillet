@@ -28,6 +28,9 @@ export const DEFAULT_SETTINGS = Object.freeze({
   masterVolume: 0.7,
   /** Footsteps, doors and UI sounds. */
   effectsVolume: 0.9,
+  /** Calm background music (core/Music.js) on/off. */
+  music: true,
+  musicVolume: 0.5,
   showFps: false,
   /** Dynamic resolution: lower the render resolution while the frame rate is below ~50 fps (Game). */
   autoResolution: true,

@@ -74,8 +74,10 @@ export class InteractionSystem {
    * @param {object} input  Input instance (uses isMouseLook / getPointerNDC)
    * @param {object} hud    Hud instance (setPrompt / setCursor), optional
    * @param {boolean} captured  true when the mouse is captured (centre-screen targeting)
+   * @param {{ text: string, key?: string, status?: string }|null} [fallback]  prompt shown when nothing is targeted
+   *                         (Game: «Sett deg» over a chair – sitting is not an interactable)
    */
-  update(input, hud, captured) {
+  update(input, hud, captured, fallback = null) {
     let ndc = null;
     if (captured) ndc = _center;
     else if (input && input.getPointerNDC) ndc = input.getPointerNDC(_ndc);
@@ -109,6 +111,8 @@ export class InteractionSystem {
         const text = typeof found.item.prompt === 'function' ? found.item.prompt() : found.item.prompt;
         const status = typeof found.item.status === 'function' ? found.item.status() : found.item.status;
         hud.setPrompt(text, found.item.key, status);
+      } else if (fallback) {
+        hud.setPrompt(fallback.text, fallback.key ?? 'E', fallback.status ?? null);
       } else {
         hud.setPrompt(null);
       }
