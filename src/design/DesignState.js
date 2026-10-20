@@ -330,19 +330,24 @@ function normaliseShading(spec) {
   return out;
 }
 
-/** Ids of the paintable surfaces (walls, ceilings, bulkheads); null = unknown layout → every id is accepted. */
+/**
+ * Ids of the paintable surfaces (walls, backOf faces, ceilings, bulkheads) of the whole house (layout.house; a layout
+ * without it: its own lists); null = unknown layout → every id is accepted. The whole house, so a saved paint on a
+ * surface of another room is not dropped silently.
+ */
 function paintIds(layout) {
+  const src = layout?.house ?? layout;
   const ids = [
-    ...Object.keys(layout?.wallsById || {}),
-    ...(Array.isArray(layout?.ceilings) ? layout.ceilings.map((c) => c.id) : []),
-    ...(Array.isArray(layout?.bulkheads) ? layout.bulkheads.map((b) => b.id) : []),
+    ...Object.keys(src?.wallsById || {}),
+    ...(Array.isArray(src?.ceilings) ? src.ceilings.map((c) => c.id) : []),
+    ...(Array.isArray(src?.bulkheads) ? src.bulkheads.map((b) => b.id) : []),
   ].filter(Boolean);
   return ids.length ? new Set(ids) : null;
 }
 
-/** Ids of the windows of the room (null = unknown layout → every id is accepted). */
+/** Ids of the windows of the whole house (layout.house; else the layout's own list); null = unknown layout → every id is accepted. */
 function windowIds(layout) {
-  const list = layout?.windows;
+  const list = layout?.house?.windows ?? layout?.windows;
   return Array.isArray(list) && list.length ? new Set(list.map((w) => w.id)) : null;
 }
 
