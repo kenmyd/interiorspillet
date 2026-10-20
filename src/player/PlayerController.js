@@ -52,6 +52,11 @@ export const MOVE = Object.freeze({
   stepHeight: 0.3,
   /** How far down we search for ground to stay glued when walking down steps/slopes. */
   snapDistance: 0.26,
+  /**
+   * The snap goes down in this many equal parts (2.17 cm each) and stops at the first walkable contact (see
+   * _snapDown). Twelve, not the four of the plan (§3.2): with 6.5 cm parts the edge push stayed in beside a wall.
+   */
+  snapParts: 12,
   /** Jump is still allowed this long after walking off an edge. */
   coyoteTime: 0.12,
   /** A jump pressed this long before landing still triggers. */
@@ -793,34 +798,65 @@ export class PlayerController {
     return true;
   }
 
-  /** Move down up to snapDistance onto walkable ground. Returns true (and keeps the move) on success. */
+  /**
+   * Move down up to snapDistance onto walkable ground. Returns true (and keeps the move) on success.
+   *
+   * The drop is taken in snapParts equal parts and stops at the first walkable contact (a coarse downward sweep).
+   * One full-length move sank the capsule deep into whatever lay below before resolving it. Over a convex edge –
+   * the top of a stair ramp, where the floor tips over into the slope, or a step nose – the octree then pushed it
+   * out along the edge, and that deep push, made vertical, lifted the feet above the floor: a small hop each frame
+   * until the drop no longer reached the slope and the player flew off the edge (feet 0.15–0.24 m above the ramp
+   * when walking, ~2 m through the air when running); off a sill it shoved the player forward (up to 1.7× the
+   * speed for a frame). See tools/house-tests/move.test.mjs. Going down a twelfth of the distance at a time meets
+   * the edge or the slope first, with a shallow push.
+   *
+   * Why twelve parts and not four: when the capsule also touches a wall (along the side of a stair shaft, past an
+   * open door leaf) _verticalizeGroundPush keeps the push as it is (wallCount > 0), so the forward part of the edge
+   * push stays in. At 6.5 cm per part that was a one-frame shove of up to 5.5× the walking speed at 144 Hz (|Δy|
+   * 5× the §7.3 bound) over the ramp top beside a wall, and on open wedges from 44–45°, where the deeper edge
+   * contact dips under WALKABLE_NORMAL_Y and the next part meets a vertical face under the edge as a wall. The steepest
+   * wedge that stays steady grows with the part count: 47° with 8 parts, 48° with 10, 49° with 12 (50–51° still
+   * shove at 144 Hz, ≤ 1.55×). Beside walls 8 parts or more give ≤ 1.00× and |Δy| ≤ 0.82× the bound. A shallower
+   * part costs nothing on level floors (no snap there); down a 43° wedge running at 30 Hz it is ~7 resolves a frame.
+   */
   _snapDown() {
     const cap = this.capsule;
     _trialCap.copy(cap);
     const y0 = cap.start.y;
-    cap.translate(_v.set(0, -MOVE.snapDistance, 0));
-    _before.copy(cap.start);
-    const res = this.collision.resolveCapsule(cap);
-    if (!res.onGround || res.groundNormal.y < WALKABLE_NORMAL_Y || cap.start.y > y0 + 0.001) {
-      cap.copy(_trialCap);
-      return false;
+    const part = MOVE.snapDistance / MOVE.snapParts;
+    for (let i = 0; i < MOVE.snapParts; i++) {
+      cap.translate(_v.set(0, -part, 0));
+      _before.copy(cap.start);
+      const res = this.collision.resolveCapsule(cap);
+      // pushed back above where we started: not ground below us (the same rejection as for the whole drop)
+      if (cap.start.y > y0 + 0.001) break;
+      // no walkable contact yet (nothing touched, or only a wall beside us / the nose we are stepping off): keep
+      // going down from where that contact pushed us. Off a real step nose that push is a short shove forward
+      // (the round bottom has to clear the nose); undoing it instead lets the combined push of nose and wall
+      // hold us up, and we would fall again (stairs get a wedge collider, §3.1 of notes/hele-huset-design.md)
+      if (!res.onGround || res.groundNormal.y < WALKABLE_NORMAL_Y) continue;
+      this.surface = res.surface;
+      this._groundNormal.copy(res.groundNormal);
+      // the snap is a vertical move: also an almost level push (rolling over an edge, n.y > 0.999) loses its
+      // sideways part, which at the depth of a snap part (up to 2.17 cm) is a few mm – a visible shove at 144 Hz
+      this._verticalizeGroundPush(res, _before, 1);
+      const drop = y0 - cap.start.y;
+      if (drop > 0.04) this._stepSmooth = Math.min(0.35, this._stepSmooth + drop);
+      return true;
     }
-    this.surface = res.surface;
-    this._groundNormal.copy(res.groundNormal);
-    this._verticalizeGroundPush(res, _before);
-    const drop = y0 - cap.start.y;
-    if (drop > 0.04) this._stepSmooth = Math.min(0.35, this._stepSmooth + drop);
-    return true;
+    cap.copy(_trialCap);
+    return false;
   }
 
   /**
    * On sloped static geometry the octree pushes along the surface normal, which would make the player slide
    * downhill while standing still. Replace that push with the equivalent purely vertical one.
+   * @param {number} [flatY] ground with normal.y above this counts as level and keeps its push as it is
    */
-  _verticalizeGroundPush(res, before) {
+  _verticalizeGroundPush(res, before, flatY = 0.999) {
     if (res.groundSource === 'terrain' || res.wallCount > 0) return;
     const n = res.groundNormal;
-    if (n.y > 0.999 || n.y < WALKABLE_NORMAL_Y) return;
+    if (n.y > flatY || n.y < WALKABLE_NORMAL_Y) return;
     const cap = this.capsule;
     const px = cap.start.x - before.x, py = cap.start.y - before.y, pz = cap.start.z - before.z;
     if (Math.abs(px) + Math.abs(pz) < 1e-7) return;
