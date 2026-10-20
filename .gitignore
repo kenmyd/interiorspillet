@@ -9,3 +9,6 @@ Thumbs.db
 deploy/*.zip
 # originalbildene av stua (126 MB) – spillet bruker de nedskalerte kopiene i public/img
 bilder_stue/
+# bilder av resten av huset (bad, gang, soverom, trapp, kjeller) – kildemateriale, ikke i git
+bilder_hus/
+.claude/worktrees/
