@@ -15,4 +15,12 @@ Gitt i chatten. Dette er fasit; ikke gjett noe annet ut fra bildene.
   - 1. etasje: venstre del av gangen/entréen, feltet merket «1,54 m» (fra venstre vegg ca. 1,54 m inn, hele dybden 2,07).
   - Kjeller: venstre ende av GANG, det skraverte trappefeltet (merket 2,91 / 1,83 på planen).
 - **Rot skal ikke med.** Alt modelleres ryddig, selv om bildene viser rot.
+- **Start ute:** Første gang man går inn i spillet og huset lastes (ingen lagret posisjon), starter man **utenfor
+  huset** og går inn **ytterdøra**. Mappenavnet «Entre og gang kjeller» tyder på at hovedinngangen er i
+  kjelleren (rommet med ytterdør, 2,51 × 2,93). Det må bekreftes fra bildene.
+- Bildemapper (originaler i `bilder_hus/<mappe>/`, 1600 px-kopier i `bilder_hus/_1600/<mappe>/`):
+  `gang 1etg` (7), `Soverom 1etg` (7), `Bad 1etg` (0, ingen bilder), `Entre og gang kjeller` (17), `Kjellerstue` (10),
+  `Soverom kjeller` (5), `vaskerom` (20). Bildene er tatt om kvelden i varmt lampelys, så fargene må hvitbalanseres.
+- Planene er tegnet med kjøkkenenden øverst (= øst) og elva til høyre (= sør). I spillet er +x = sør og +z = vest,
+  så planens høyre side = +x og planens nedre del = +z.
 - Bilder av rommene legges i `bilder_hus/` (ikke i git). Det som ikke vises på bilder eller plan, merkes «anslått».
