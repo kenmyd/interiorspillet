@@ -55,7 +55,22 @@ const spec = readJson('src/data/room-spec.json');
 const palette = readJson('src/data/palette.json');
 const walls = readJson('src/data/wall-proposals.json');
 const schema = readJson('src/data/archetypes.json');
-check('room-spec.json loads', spec.walls.length === 12 && spec.furniture.length === 62, `walls ${spec.walls.length}, furniture ${spec.furniture.length}`);
+// hele huset: the living room's entries have no roomId (or 'stue-kjokken'); the other rooms add theirs with a roomId
+const inStue = (e) => !e.roomId || e.roomId === 'stue-kjokken';
+const stueWalls = spec.walls.filter(inStue).length;
+const stueFurniture = spec.furniture.filter(inStue).length;
+check('room-spec.json loads (the living room: 12 walls, 62 furniture)', stueWalls === 12 && stueFurniture === 62, `walls ${stueWalls}, furniture ${stueFurniture}`);
+{
+  // src/data/room-spec.json is generated (research/room-spec.json + research/house/NN-*.json + fixes.mjs, validated by
+  // house.mjs): a fresh run must reproduce it byte for byte, and the generated «Målelista» in research/room-spec-notes.md
+  const out = fs.mkdtempSync(path.join(os.tmpdir(), 'ip-spec-'));
+  const res = spawnSync(process.execPath, [path.join(ROOT, 'src/data/scripts/normalize-data.mjs'), '--only=room-spec', `--out=${out}`], { cwd: ROOT, encoding: 'utf8' });
+  const same = (a, b) => fs.existsSync(a) && fs.readFileSync(a, 'utf8') === fs.readFileSync(b, 'utf8');
+  check('re-running the normaliser (room-spec + research/house + fixes, validated) reproduces src/data/room-spec.json and the measuring list exactly',
+    res.status === 0 && same(path.join(out, 'room-spec.json'), path.join(ROOT, 'src/data/room-spec.json')) && same(path.join(out, 'room-spec-notes.md'), path.join(ROOT, 'research/room-spec-notes.md')),
+    `${res.status} ${(res.stderr || '').slice(0, 300)}`);
+  fs.rmSync(out, { recursive: true, force: true });
+}
 check('palette.json loads (walls sand + marrakesh)', palette.walls.sand.hex === '#cfc5b4' && palette.walls.marrakesh.hex === '#aea191');
 check('wall-proposals.json: 60 proposals, existing first then N1…N39 (runde 3 = N20–N39)', walls.proposals.length === 60 && walls.proposals[0].id === '0' && walls.proposals[21].id === 'N1' && walls.proposals[39].id === 'N19' && walls.proposals[59].id === 'N39',
   walls.proposals.map((p) => p.id).join(','));
@@ -225,7 +240,7 @@ check('zones with Box3 0…3.1', layout.zones.length === 4 && layout.zones.every
 section('Existing furniture');
 const existing = await imp('src/home/existing.js');
 const originals = existing.originalItems(layout);
-check('every room-spec furniture entry → item (decor group split into 5)', originals.length === spec.furniture.length - 1 + 5, originals.length);
+check('every room-spec furniture entry → item (decor group split into 5)', originals.length === stueFurniture - 1 + 5, originals.length);
 const exProblems = [];
 for (const it of originals) {
   const a = schema.archetypes[it.archetype];

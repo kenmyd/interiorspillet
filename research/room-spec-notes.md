@@ -152,3 +152,20 @@ To uavhengige kontrollører foreslo 13 rettelser. Hver av dem er sjekket mot bil
 ### Forkastet
 
 * **f-maleri.params.frame**: ingen tydelig lys sidekant i 082815 (forsiden går rett over i veggskyggen). I 082806, det eneste bildet som ser nordsiden av lerretet, er kanten mørk, så endringen er ikke dokumentert.
+
+## Målelista
+
+<!-- målelista:start -->
+_Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/data/scripts/house.mjs`) fra `research/house/*.json`. Ikke rediger avsnittet for hånd. Når et mål kommer inn: fjern feltet fra `estimated`, sett `source` til «målt <dato>» og kjør normaliseren på nytt._
+
+**Rommene**
+
+| Rom | Nivå | Type | Areal i modellen | Kontrollareal | Avvik |
+|---|---|---|---|---|---|
+| Stue/kjøkken (`stue-kjokken`) | 1. etasje | living | 53,78 m² | 53,78 m² | 0,0 % |
+
+**Anslått, sortert etter rom**
+
+- **Nivåer**
+  - 1. etasje (`levels/hoved`): `slabThickness`, `ceilingDefault`. Kilde: Planen og skalaen er meta.planFile, planPxPerM og planOriginPx (fotomålt, beholdes som alias). Dekket på 0,30 er anslått (D2, målelista punkt 1). Standardtaket 2,40 gjelder de nye rommene og er anslått (§1.4, målelista punkt 9).
+<!-- målelista:slutt -->

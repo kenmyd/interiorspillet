@@ -516,12 +516,30 @@ function normaliseProposals() {
 
 // ---------------------------------------------------------------------------------------------------------------
 
-function main() {
+async function main() {
   if (OUT !== DATA) console.log(`writing to ${OUT}`);
   if (wants('room-spec')) {
-    const spec = fixRoomSpec(readJson(path.join(RESEARCH, 'room-spec.json')));
+    // hele huset (notes/hele-huset-design.md §1.7): research/house/NN-*.json merged in, then the whole house validated –
+    // it throws on errors, so a broken house file never reaches src/data. The measuring list (every `estimated` field)
+    // is the generated «Målelista» section of research/room-spec-notes.md (with --out: a copy in the out folder).
+    const house = await import('./house.mjs');
+    let spec;
+    let report;
+    try {
+      spec = fixRoomSpec(house.mergeHouse(readJson(path.join(RESEARCH, 'room-spec.json')), RESEARCH, { log: note }));
+      report = house.validateHouse(spec, { archetypes: SCHEMA });
+    } catch (err) {
+      // only the message (it lists every error, or names the house file) – not the whole report object
+      console.error(`room-spec: ${err.message}\nnothing written`);
+      process.exit(1);
+    }
     writeJson(path.join(OUT, 'room-spec.json'), spec);
-    console.log('room-spec: walls', spec.walls.length, 'furniture', spec.furniture.length, 'photoCameras', spec.photoCameras.length);
+    const notesFile = path.join(RESEARCH, 'room-spec-notes.md');
+    house.writeMeasureList(report, notesFile, OUT === DATA ? notesFile : path.join(OUT, 'room-spec-notes.md'));
+    const inStue = (list) => (list || []).filter((e) => !e.roomId || e.roomId === house.STUE).length;
+    console.log('room-spec: walls', inStue(spec.walls), 'furniture', inStue(spec.furniture), 'photoCameras', inStue(spec.photoCameras), '(stua);',
+      'whole house: walls', spec.walls.length, 'furniture', spec.furniture.length, 'photoCameras', spec.photoCameras.length);
+    console.log(house.formatReport(report, { verbose: process.argv.includes('--verbose') }));
   }
   if (wants('palette')) {
     const palette = readJson(path.join(RESEARCH, 'palette.json'));
