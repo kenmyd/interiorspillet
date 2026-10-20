@@ -1599,7 +1599,8 @@ function buildWingback(spec) {
   const colliders = [{ min: [-w / 2, 0, -d / 2], max: [w / 2, h, d / 2] }];
   if (P.footstool) {
     const fd = Math.min(0.42, d * 0.5);
-    colliders.push(addFootstool(g, spec, ms, style, { w: Math.min(w * 0.68, 0.6), d: fd, h: seatH - 0.02, z: d / 2 + 0.14 + fd / 2, q }));
+    const sw0 = clamp(num(P.stoolW, Math.min(w * 0.68, 0.6)), 0.3, 0.8), sd0 = clamp(num(P.stoolD, fd), 0.28, 0.6);
+    colliders.push(addFootstool(g, spec, ms, style, { w: sw0, d: sd0, h: clamp(num(P.stoolH, seatH - 0.02), 0.25, seatH + 0.02), z: d / 2 + 0.14 + sd0 / 2, q }));
   }
   return K.finishModel(g, { seatY: seatH, colliders });
 }
@@ -1616,9 +1617,56 @@ function sharedButton(q) {
 // ---------------------------------------------------------------------------------------------------------------
 // Club chair (box)
 
+/**
+ * Low, deep, armless lounge chair of soft pillows (Jakobsen Cooper): a rounded base, a seat of 2 × 2 puffy tufts and
+ * a reclined back of 2 × 3 tufts resting on the base's rear, on hidden glides (backShape 'tufted').
+ */
+function buildTuftedLounge(spec) {
+  const { w, d, h } = spec.dims;
+  const P = spec.params;
+  const q = qf(spec);
+  const style = P.legStyle || 'block';
+  const ms = materials(spec, style);
+  const g = new THREE.Group();
+  const seatH = clamp(num(P.seatH, 0.43), 0.3, h - 0.2);
+  const legH = clamp(num(P.legH, 0.025), 0.01, 0.15);
+  const zr = -d / 2, zf = d / 2;
+  const seatT = 0.2, deckTop = seatH - seatT + 0.03;
+  // base: one soft block over the whole footprint
+  const baseH = deckTop - legH;
+  g.add(K.partMesh(softBox(w, baseH, d, 'y', { puff: 0.04, round: 0.75, sides: 0.12, bottom: 0.05, q }), ms.up, 'upholstery', { position: [0, legH + baseH / 2, 0] }));
+  // back: 2 × 3 tufts, reclined so its rear top stays inside dims.d
+  const backT = clamp(d * 0.23, 0.18, 0.26), rec = 22 * DEG;
+  const L = (h - deckTop - 0.01) / Math.cos(rec);
+  const zp = zr + 0.012 + L * Math.sin(rec) + (backT / 2) * Math.cos(rec);
+  const back = new THREE.Group();
+  back.position.set(0, deckTop - 0.02, zp);
+  back.rotation.x = -rec;
+  g.add(back);
+  const cw = (w - 0.012) / 2;
+  for (let r = 0; r < 3; r++) {
+    for (const sx of [-1, 1]) {
+      const th = L / 3 + 0.035;
+      const geo = softBox(cw + 0.014, th, backT, 'z', { puff: 0.1, round: 0.42, sides: 0.12, top: 1, bottom: 0.3, q, seg: 12 });
+      back.add(K.partMesh(geo, ms.up, 'upholstery', { position: [sx * cw / 2, (r + 0.5) * (L / 3) + 0.01, 0] }));
+    }
+  }
+  // seat: 2 × 2 tufts from the back to the front edge
+  const z0 = zp + (backT / 2) * 0.7, sd = zf - 0.005 - z0;
+  for (let r = 0; r < 2; r++) {
+    for (const sx of [-1, 1]) {
+      const geo = softBox(cw + 0.014, seatT, sd / 2 + 0.02, 'y', { puff: 0.14, round: 0.6, sides: 0.15, bottom: 0.05, q, seg: 12 });
+      g.add(K.partMesh(geo, ms.up, 'upholstery', { position: [sx * cw / 2, seatH - seatT / 2, z0 + (r + 0.5) * (sd / 2)] }));
+    }
+  }
+  addBase(g, ms, style, { hx: w / 2, hz: d / 2, topY: legH + 0.004, q, inset: 0.06 });
+  return K.finishModel(g, { seatY: seatH });
+}
+
 function buildClubBox(spec) {
   const { w, d, h } = spec.dims;
   const P = spec.params;
+  if (P.backShape === 'tufted') return buildTuftedLounge(spec);
   const q = qf(spec);
   const style = P.legStyle || 'wood-taper';
   const ms = materials(spec, style);
@@ -1716,7 +1764,7 @@ function buildClubBox(spec) {
 //   shell    moulded veneer shell (`frame`, or the cover fabric) round seat and back that forms the arms, padded
 //            arm tops, thick cushions inside, a sausage neck roll on posts (Conform Timeout)
 //   tulip    thin tulip-shaped arms: broad, outward-curling tops narrowing to the foot (IMG Taycan)
-//   classic  the first model: tilted seat, three-part back, arm pads on side panels (Stressless Opal)
+//   classic  Stressless: seat and seamed back between slim arm pads on wooden brackets, ring base (Stressless Opal)
 // 'auto' params are read from params.notes (the shop description) when the explicit params are missing – the
 // explicit values per product are listed in notes/add-seating.md.
 
@@ -1732,8 +1780,10 @@ function reclinerStyle(spec) {
   const body = pick(P.body, RECLINER_BODIES)
     || (has(/formstøpt|skrog/) ? 'shell' : has(/tulipan/) ? 'tulip' : num(P.armW, 0.08) >= 0.1 || has(/sidevange|ytterskall/) ? 'box' : 'classic');
   const frameWood = !!C.frame && kindGroup(M.frame || 'oak') === 'wood';
+  // «helkledd»: the frame in the same fabric and colour as the cover reads as upholstered sides
+  const sameCover = !!C.frame && !frameWood && (M.frame || '') === (M.upholstery || '') && String(C.frame).toLowerCase() === String(C.upholstery || '').toLowerCase();
   const sides = pick(P.sides, ['fabric', 'shell', 'veneer'])
-    || (has(/finert|vanger i (?:tre|eik|valnøtt)/) ? 'veneer' : has(/ytterskall/) ? 'shell' : C.frame ? (frameWood ? 'veneer' : 'shell') : 'fabric');
+    || (has(/finert|vanger i (?:tre|eik|valnøtt)/) ? 'veneer' : has(/ytterskall/) ? 'shell' : C.frame && !sameCover ? (frameWood ? 'veneer' : 'shell') : 'fabric');
   const pile = Math.max(0, num(P.pile, M.upholstery === 'teddy' ? 0.02 : 0));
   const head = P.headrest === false ? 'none' : pick(P.headStyle, RECLINER_HEADS)
     || (has(/pølse/) ? 'roll' : has(/vingeformet/) ? 'wing' : has(/separat|rektangulær/) ? 'block' : body === 'shell' ? 'roll' : body === 'tulip' ? 'wing' : 'integrated');
@@ -1982,6 +2032,36 @@ function starBase(g, ms, { r, topY, q, arms = 5, slim = false, z = 0, plate = 0.
   if (plate > 0) sub.add(K.partMesh(K.roundedBox(plate, pT, plate * 0.9, 0.005, 1, { bottom: true }), m, 'legs', { position: [0, topY - pT, 0] }));
 }
 
+/** Stressless «Classic» base: a flat oval wooden ring on the floor and a curved plank rising from its rear to a plate under the seat. */
+function ringBase(g, ms, { rx, rz, topY, q, z = 0 }) {
+  const sub = new THREE.Group();
+  sub.position.z = z;
+  g.add(sub);
+  const m = ms.legs();
+  const n = Math.max(32, Math.round(56 * q));
+  const pts = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    pts.push(new THREE.Vector3(Math.cos(a) * rx, 0, Math.sin(a) * rz));
+  }
+  const ring = K.tube(pts, 0.026, { closed: true, radial: 10, seg: n * 2 });
+  ring.scale(1, 0.6, 1);
+  ring.translate(0, 0.016, 0);
+  sub.add(K.partMesh(ring, m, 'legs'));
+  // two S-curved planks: from the ring's rear, forward and up to the plate under the seat
+  for (const sx of [-1, 1]) {
+    const col = [];
+    for (let i = 0; i <= 14; i++) {
+      const t = i / 14;
+      const yy = 0.03 + (topY - 0.05) * (t * t * (3 - 2 * t));
+      const zz = -rz * 0.92 + (rz * 0.92 + 0.02) * Math.sin((t * Math.PI) / 2) ** 1.4;
+      col.push([sx * 0.055, yy, zz]);
+    }
+    sub.add(K.partMesh(sweepGeometry(col, { a: 0.026, b: 0.014, r: 0.5, side: [1, 0, 0], nc: 3, ns: 2, nEnd: 2, capLen: 0.4 }), m, 'legs'));
+  }
+  sub.add(K.partMesh(K.roundedBox(0.2, 0.02, 0.2, 0.005, 1, { bottom: true }), mat('black-metal', '#1b1b1b', { flat: true }), null, { position: [0, topY - 0.02, 0.02] }));
+}
+
 /** Small black recline lever on the right-hand side face (x = side face, sx = outward sign). */
 function addLever(g, m, [x, y, z], sx) {
   g.add(K.partMesh(K.cylinder(0.006, 0.006, 0.028, { seg: 8, center: true }), m, null, { position: [x + sx * 0.012, y, z], rotation: [0, 0, Math.PI / 2] }));
@@ -1990,7 +2070,6 @@ function addLever(g, m, [x, y, z], sx) {
 
 function buildRecliner(spec) {
   const st = reclinerStyle(spec);
-  if (st.body === 'classic') return buildReclinerClassic(spec, st);
   const { w, d, h } = spec.dims;
   const P = spec.params, C = spec.colors, M = spec.materials;
   const q = qf(spec);
@@ -2048,7 +2127,8 @@ function buildRecliner(spec) {
   const ya0 = Math.max(yb + 0.03, seatH - 0.3);
   const tS = clamp01((seatH - 0.07 - ya0) / (armH - ya0));
   const tkT = (t) => lerp(tk0, tk1, sstep(0.4, 1, t));
-  const xI0 = w / 2 - tk1 - tFlare; // inner face beside the seat
+  // inner face beside the seat; the rounded top cap insets the curl, so the arms are pushed out to reach dims.w
+  const xI0 = w / 2 - tk1 - tFlare + Math.min(0.035, tk1 * 0.35);
   const tC = lerp(tS, 1, 0.3); // the curl starts a little above the seat
   const xInT = (t) => (t >= tC ? xI0 + tFlare * ((t - tC) / (1 - tC || 1)) ** 1.8 : xI0 - 0.05 * (1 - Math.min(1, t / (tS || 1))) ** 1.5);
   const xcT = (t) => xInT(t) + tkT(t) / 2;
@@ -2060,6 +2140,9 @@ function buildRecliner(spec) {
   } else if (body === 'shell') {
     iw = w - 2 * shT - 0.03;
     bw = w * 0.6;
+  } else if (body === 'classic') {
+    iw = w - 2 * armW - 0.006; // the arm pads sit outboard of the seat (Stressless)
+    bw = iw - 0.01;
   } else {
     iw = 2 * xI0 + 0.01; // tucked into the arms (its rounded sides would leave a gap)
     bw = iw + 0.01;
@@ -2073,7 +2156,7 @@ function buildRecliner(spec) {
   const headH = st.head === 'roll' ? clamp(h * 0.19, 0.15, 0.21) : st.head === 'wing' ? clamp(h * 0.2, 0.16, 0.24) : st.head === 'block' ? clamp(h * 0.2, 0.16, 0.24) : 0;
   const gap = sep ? (st.head === 'roll' ? -0.03 : 0.007) : 0; // the roll rests on the rounded top of the back cushion
   // recline: as much as the depth behind the seat allows (the top of the back stays inside dims.d)
-  const recDef = (body === 'shell' ? 20 : body === 'tulip' ? 11 : 18) * DEG;
+  const recDef = (body === 'shell' ? 20 : body === 'tulip' ? 20 : 18) * DEG;
   // (the shell's back rim is low, so only the cushion top of a Timeout may lean a little past dims.d)
   const room = zP - zr + (body === 'shell' ? 0.05 : 0.012) - T1 - (body === 'shell' ? shT + 0.012 : 0);
   const rec = clamp(Math.atan(Math.max(0, room) / (h - yP)), 2 * DEG, recDef);
@@ -2184,7 +2267,7 @@ function buildRecliner(spec) {
   // ---- seat (Chicago / Bern: one thick block down to the body bottom), apron, chassis
   const tilt = 4 * DEG;
   const seatFull = body === 'box' && st.sides !== 'shell' && !integrated;
-  const sTh = seatFull ? Math.max(0.12, seatH - yb - 0.01) : body === 'shell' ? 0.16 : pile ? 0.17 : 0.14;
+  const sTh = seatFull ? Math.max(0.12, seatH - yb - 0.01) : body === 'shell' ? 0.16 : body === 'tulip' && integrated ? 0.19 : pile ? 0.17 : 0.14;
   const sD = zSF - zP + 0.05;
   const seat = new THREE.Group();
   seat.position.set(0, seatH, zSF);
@@ -2210,14 +2293,16 @@ function buildRecliner(spec) {
   // ---- integrated footrest: a tall padded panel under the seat front (closed) or swung out (footrestOpen)
   const colliders = [{ min: [-w / 2, 0, zr], max: [w / 2, h, zf] }];
   if (integrated) {
-    const fT = body === 'tulip' ? 0.12 : 0.1;
-    const hingeY = seatH - sTh + 0.025, hingeZ = zSF - 0.035;
+    const fT = st.open ? (body === 'tulip' ? 0.12 : 0.1) : 0.15;
+    // closed, the panel reaches well up behind the seat front, so no notch shows between seat and footrest
+    const hingeY = seatH - sTh + (st.open ? 0.025 : sTh * 0.55), hingeZ = zSF - 0.035;
     const pH = Math.max(0.1, hingeY - 0.07);
     const fr = new THREE.Group();
     fr.position.set(0, hingeY + (st.open ? 0.02 : 0), hingeZ + (st.open ? 0.1 : 0));
-    fr.rotation.x = st.open ? -76 * DEG : (body === 'tulip' ? 4 : 15) * DEG; // Grande: the closed panel slopes back toward the base
+    fr.rotation.x = st.open ? -76 * DEG : (body === 'tulip' ? 2 : 7) * DEG; // closed: nearly upright, sloping back a little toward the base
     g.add(fr);
-    addUp(fr, softBox(iw - 0.008, pH, fT, 'z', { puff: 0.1, round: 0.7, sides: 0.15, bottom: 0.3, q, seg: segFor(iw, pH) }), { position: [0, -pH / 2, 0.035 - fT / 2] });
+    // closed: as wide as the seat and flush with its front, so seat and footrest read as one block (Taycan, Grande)
+    addUp(fr, softBox(iw - (st.open ? 0.008 : 0.002), pH, fT, 'z', { puff: 0.08, round: st.open ? 0.7 : 0.45, sides: 0.12, bottom: 0.3, q, seg: segFor(iw, pH) }), { position: [0, -pH / 2, 0.035 - fT / 2] });
     if (st.open) {
       fr.updateMatrix();
       for (const sx of [-1, 1]) {
@@ -2231,17 +2316,24 @@ function buildRecliner(spec) {
   // ---- arms
   if (body === 'box') {
     const veneer = st.sides === 'veneer', shellSides = st.sides === 'shell';
-    const capped = veneer || shellSides; // an upholstered roll over the top and down the front
+    // an upholstered roll over the top and down the front (Zermatt, Grande); armCap: false keeps the plain panel top
+    // (Timeout in a wooden shell: veneer on the outer face, the upholstered panel forms the arm top)
+    const capped = (veneer || shellSides) && P.armCap !== false;
     const flare = veneer ? 0.012 : shellSides ? 0.02 : Math.min(0.05, armW * 0.4);
-    const yA0 = Math.max(yb + 0.004, seatH - 0.3);
+    // armBottom: the side panels may stop above the base (Timeout: the column shows under them)
+    const yA0 = clamp(num(P.armBottom, Math.max(yb + 0.004, seatH - 0.3)), yb + 0.004, seatH - 0.05);
     const capB = veneer ? 0.052 : 0.058; // half height of the arm roll (its top = armH)
     const topA = capped ? armH - capB * 1.45 : armH; // panel top (inside the lower half of the roll)
     const xi = w / 2 - armW;
     const rTopA = Math.min(armW * 0.45, 0.055, (topA - yA0) * 0.3);
+    // armTuck: the panels lean out toward the top (petal arms, Timeout): pulled in by `tuck` at the bottom
+    const tuck = clamp(num(P.armTuck, 0), 0, 0.08);
+    const shiftX = (y) => -tuck * (1 - sstep(yA0, topA, y)) ** 1.6;
     const rFB = Math.min(0.24, (topA - yA0) * 0.55);
     const zFa = zf - 0.006;
     // the outer face leans out toward the rolled top (Chicago: «buer litt utover»)
-    const xo = (y) => w / 2 - flare * (1 - sstep(yA0, topA + 0.02, y)) ** 1.3;
+    const over = capped ? (shellSides ? 0.02 : 0.012) : 0; // the roll over the top overhangs the panel by this much
+    const xo = (y) => w / 2 - over - flare * (1 - sstep(yA0, topA + 0.02, y)) ** 1.3;
     const zFat = (y) => {
       const dy = Math.max(0, yA0 + rFB - y);
       return zFa - (rFB - Math.sqrt(Math.max(0, rFB * rFB - dy * dy)));
@@ -2256,16 +2348,16 @@ function buildRecliner(spec) {
     for (const sx of [-1, 1]) {
       const levels = levelsY(yA0 + 0.012, topA - rTopA, extra, 0.045).map((y) => {
         const hwA = (xo(y) - xi) / 2, zB = zBat(y), zF = Math.max(zB + 0.05, zFat(y));
-        return { y, loop: rrLoop(hwA, zB, zF, Math.min(hwA * 0.96, 0.055), rTopA * 1.02, { nx: 4, nArc: 5, nSide: 4, cx: sx * (xi + hwA) }) };
+        return { y, loop: rrLoop(hwA, zB, zF, Math.min(hwA * 0.96, 0.055), rTopA * 1.02, { nx: 4, nArc: 5, nSide: 4, cx: sx * (xi + hwA + shiftX(y)) }) };
       });
       const panel = loftGeometry(levels, { top: rTopA, bottom: 0.012, nEdge: 4, nCap: 3 });
       if (shellSides) addFrame(g, panel);
       else addPlain(g, panel);
       if (veneer) {
         // wooden side plate on the outer face, under the roll and behind the fabric front strip
-        const levels2 = levelsY(yA0 + 0.016, topA - 0.006, extra, 0.045).map((y) => {
+        const levels2 = levelsY(yA0 + 0.016, capped ? topA - 0.006 : topA - rTopA * 1.15, extra, 0.045).map((y) => {
           const zB = zBat(y) + 0.012, zF = Math.max(zB + 0.04, zFat(y) - 0.045);
-          return { y, loop: rrLoop(0.0075, zB, zF, 0.007, 0.007, { nx: 2, nArc: 3, nSide: 4, cx: sx * (xo(y) - 0.0035) }) };
+          return { y, loop: rrLoop(0.0075, zB, zF, 0.007, 0.007, { nx: 2, nArc: 3, nSide: 4, cx: sx * (xo(y) - 0.0035 + shiftX(y)) }) };
         });
         addFrame(g, loftGeometry(levels2, { top: 0.006, bottom: 0.006, nEdge: 2, nCap: 2 }), {}, frameMat({ grain: 'v' }));
       }
@@ -2274,7 +2366,9 @@ function buildRecliner(spec) {
         const hwT = (xo(topA) - xi) / 2 + (shellSides ? 0.02 : 0.012), bT = capB;
         const yC = armH - bT, cx = sx * (xi + xo(topA)) / 2;
         const z0 = zBat(topA) + 0.04, z1 = zFa - bT + 0.012, rc = Math.min(0.07, bT * 1.4);
-        const yDown = shellSides ? Math.max(seatH - 0.06, yC - 0.2) : yA0 + 0.03;
+        // the roll wraps over the top and down the front edge to about the seat (a C seen from the side); armFrontDrop
+        // (m below the roll) shortens it
+        const yDown = shellSides ? Math.max(seatH - 0.06, yC - 0.2) : Math.max(yA0 + 0.03, P.armFrontDrop != null ? yC - num(P.armFrontDrop, 0.11) : seatH - 0.04);
         const pts = [];
         for (let i = 0; i <= 8; i++) pts.push([cx, yC, lerp(z0, z1 - rc, i / 8)]);
         for (let k = 1; k <= 6; k++) {
@@ -2289,7 +2383,29 @@ function buildRecliner(spec) {
         addUp(g, sweepGeometry(pts, { a: hwT, b: bT, r: 0.9, side: [1, 0, 0], nc: 5, ns: 3, nEnd: 4, capLen: 0.8 }));
       }
     }
-    if (st.lever) addLever(g, metal, [-(xo(armH - 0.13) + (veneer ? 0.004 : 0)), Math.min(topA - 0.06, armH - 0.13), zf - 0.27], -1);
+    if (st.lever) addLever(g, metal, [-(xo(armH - 0.13) + shiftX(armH - 0.13) + (veneer ? 0.004 : 0)), Math.min(topA - 0.06, armH - 0.13), zf - 0.27], -1);
+  } else if (body === 'classic') {
+    // Stressless: thick padded arm bolsters above the seat, open underneath, on a short wooden post at the rear (the
+    // base colour) that rises from the seat frame
+    const padH = 0.072, padW = Math.max(armW, 0.09);
+    const zA0 = rearZ(armH) + 0.03, zA1 = zf - 0.04;
+    const bracket = ms.legs();
+    const yS = seatH - sTh + 0.03;
+    for (const sx of [-1, 1]) {
+      const x = sx * (w / 2 - padW / 2);
+      const pts = [];
+      for (let i = 0; i <= 10; i++) {
+        const t = i / 10;
+        pts.push([x, armH - padH / 2 - 0.018 * t * t, lerp(zA0, zA1, t)]);
+      }
+      addUp(g, sweepGeometry(pts, { a: padW / 2, b: padH / 2, r: 0.85, nc: 5, ns: 3, nEnd: 4, capLen: 0.9 }));
+      const zPost = zA0 + 0.09;
+      addBeam(g, bracket, 'legs', [sx * (iw / 2 - 0.02), yS, zPost - 0.05], [x, armH - padH + 0.006, zPost], 0.034, 0.024, 0.006);
+      addBeam(g, bracket, 'legs', [sx * (iw / 2 - 0.02), yS, zPost - 0.05], [sx * (iw / 2 - 0.02), yS, zf - 0.2], 0.034, 0.022, 0.006);
+    }
+    // seat frame under the cushion, on the base plate
+    const fH = Math.max(0.03, seatH - sTh - legH - 0.025);
+    g.add(K.partMesh(K.roundedBox(iw * 0.6, fH, (zSF - zP) * 0.55, 0.012, 2, { bottom: true }), metal, null, { position: [0, legH + 0.025, (zSF + zP) / 2 - 0.03] }));
   } else if (body === 'tulip') {
     // thin petals: broad top from beside the back to near the seat front, narrowing to a foot under the seat
     const zTop0 = zP - 0.045, zTop1 = zSF - 0.075;
@@ -2297,7 +2413,8 @@ function buildRecliner(spec) {
     const rTopT = tk1 * 0.48, rBotT = tk0 * 0.45;
     const petal = (t) => {
       const s = Math.sin((Math.PI / 2) * clamp01(t));
-      return [zMidB - (zMidB - zTop0) * (0.22 + 0.78 * clamp01(t) ** 0.8), zMidB + (zTop1 - zMidB) * (0.22 + 0.78 * s ** 0.7)];
+      // a rounded petal from the side: a fairly broad foot, the front edge curving up and forward to the top
+      return [zMidB - (zMidB - zTop0) * (0.38 + 0.62 * clamp01(t) ** 0.8), zMidB + (zTop1 - zMidB) * (0.38 + 0.62 * s ** 0.55)];
     };
     const tOf = (y) => (y - ya0) / (armH - ya0);
     for (const sx of [-1, 1]) {
@@ -2403,7 +2520,8 @@ function buildRecliner(spec) {
 
   // ---- base (swivel star of 5 flat bars, slim 4-bar star, or round plate)
   const zBase = body === 'shell' ? (zf - 0.045 + rearZ(yb)) / 2 : lerp(zr, zf, 0.47);
-  if (disc) {
+  if (body === 'classic') ringBase(g, ms, { rx: clamp(w * 0.4, 0.22, 0.34), rz: clamp(d * 0.42, 0.22, 0.34), topY: legH + 0.004, q, z: zBase });
+  else if (disc) {
     const sub = new THREE.Group();
     sub.position.z = zBase;
     g.add(sub);
@@ -2454,7 +2572,8 @@ function buildRecliner(spec) {
       });
       addUp(fs, loftGeometry(levels, { top: rS, bottom: rS, nEdge: 4, nCap: 3, matrix: PROFILE_X }));
     }
-    starBase(fs, ms, { r: clamp(Math.min(fw, fd) * 0.62, 0.17, 0.3), topY: yc0 - 0.004, q, arms: 4, slim: st.slim, plate: 0.14 });
+    if (body === 'classic') ringBase(fs, ms, { rx: fw * 0.4, rz: fd * 0.42, topY: yc0 - 0.004, q });
+    else starBase(fs, ms, { r: clamp(Math.min(fw, fd) * 0.62, 0.17, 0.3), topY: yc0 - 0.004, q, arms: 4, slim: st.slim, plate: 0.14 });
     colliders.push({ min: [-fw / 2, 0, fz - fd / 2], max: [fw / 2, fh, fz + fd / 2] });
   }
 
@@ -2475,76 +2594,6 @@ function buildRecliner(spec) {
     return true;
   };
   return K.finishModel(g, { seatY: seatH, colliders, recolor });
-}
-
-/** The first recliner model (body 'classic'): Stressless-like arm pads on side panels, three-part back. */
-function buildReclinerClassic(spec, rs) {
-  const { w, d, h } = spec.dims;
-  const P = spec.params;
-  const q = qf(spec);
-  const style = P.legStyle || 'swivel-disc';
-  const ms = materials(spec, style);
-  const g = new THREE.Group();
-  const seatH = clamp(num(P.seatH, 0.42), 0.32, h - 0.35);
-  const armH = clamp(num(P.armH, 0.58), seatH + 0.08, h - 0.2);
-  const armW = clamp(num(P.armW, 0.08), 0.05, w * 0.18);
-  const legH = clamp(num(P.legH, 0.14), 0.06, seatH - 0.15);
-  const headrest = rs ? rs.head !== 'none' : P.headrest !== false;
-  const seatTilt = 5 * DEG, backRec = 20 * DEG;
-  const zr = -d / 2, zf = d / 2;
-  const iw = w - 2 * armW - 0.01;
-  // frame shell under the seat (upholstered)
-  const frameTop = seatH - 0.12;
-  const fh = frameTop - legH - 0.03;
-  g.add(K.partMesh(softBox(w - 2 * armW + 0.02, fh, d * 0.62, 'y', { puff: 0.03, round: 0.5, sides: 0.12, bottom: 0.1, q }), ms.up, 'upholstery', { position: [0, legH + 0.03 + fh / 2, zf - d * 0.33] }));
-  // seat cushion, tilted back
-  const sd = Math.min(0.54, d * 0.72);
-  const seat = new THREE.Group();
-  seat.position.set(0, frameTop, zf - 0.01);
-  seat.rotation.x = -seatTilt;
-  g.add(seat);
-  const st = seatH - frameTop + 0.01;
-  seat.add(K.partMesh(softBox(iw, st, sd, 'y', { puff: 0.16, round: 0.75, sides: 0.25, bottom: 0.15, q }), ms.up, 'upholstery', { position: [0, st / 2, -sd / 2] }));
-  // back: two stacked puffy sections + headrest, reclined about the seat's rear
-  const backTop = h - 0.01;
-  const pivotZ = zf - sd - 0.01;
-  const back = new THREE.Group();
-  back.position.set(0, seatH - 0.05, pivotZ);
-  back.rotation.x = -backRec;
-  g.add(back);
-  const bLen = (backTop - (seatH - 0.05)) / Math.cos(backRec);
-  const headL = headrest ? Math.min(0.2, bLen * 0.26) : 0;
-  const bodyL = bLen - headL;
-  const bt = 0.14;
-  const lumbar = bodyL * 0.45;
-  back.add(K.partMesh(softBox(iw, lumbar, bt, 'z', { puff: 0.2, round: 0.8, sides: 0.2, q }), ms.up, 'upholstery', { position: [0, lumbar / 2, 0] }));
-  back.add(K.partMesh(softBox(iw * 0.98, bodyL - lumbar, bt * 0.92, 'z', { puff: 0.2, round: 0.8, sides: 0.2, q }), ms.up, 'upholstery', { position: [0, lumbar + (bodyL - lumbar) / 2, -0.005] }));
-  // shell behind the cushions
-  back.add(K.partMesh(softBox(iw + 0.02, bodyL * 0.96, 0.06, 'z', { puff: 0.05, round: 0.8, sides: 0.05, q }), ms.up, 'upholstery', { position: [0, bodyL * 0.48, -bt / 2 - 0.02] }));
-  if (headrest) {
-    const hp = new THREE.Group();
-    hp.position.set(0, bodyL, 0.01);
-    hp.rotation.x = 12 * DEG;
-    back.add(hp);
-    hp.add(K.partMesh(softBox(iw * 0.86, headL, bt * 0.95, 'z', { puff: 0.25, round: 0.9, sides: 0.25, q }), ms.up, 'upholstery', { position: [0, headL / 2, 0] }));
-  }
-  // arms: upholstered pads on side panels
-  for (const sx of [-1, 1]) {
-    const x = sx * (w / 2 - armW / 2);
-    const ad = d * 0.7;
-    const az = zf - ad / 2 - 0.02;
-    g.add(K.partMesh(softBox(armW, 0.07, ad, 'y', { puff: 0.15, round: 0.9, sides: 0.2, q }), ms.up, 'upholstery', { position: [x, armH - 0.035, az] }));
-    const ph = armH - 0.07 - (legH + 0.05);
-    g.add(K.partMesh(softBox(armW * 0.7, ph, ad * 0.82, 'x', { puff: 0.05, round: 0.6, sides: 0.05, q }), ms.up, 'upholstery', { position: [x, legH + 0.05 + ph / 2, az - ad * 0.06] }));
-  }
-  // base: swivel plate / star (wood or metal)
-  addBase(g, ms, style === 'wood-taper' ? 'wood-taper' : style, { hx: w / 2 - 0.05, hz: d / 2 - 0.05, topY: legH + 0.03, q, inset: 0.04 });
-  const colliders = [{ min: [-w / 2, 0, -d / 2], max: [w / 2, h, d / 2] }];
-  if (rs ? rs.rest === 'stool' : P.footstool !== false) {
-    const fw = Math.min(0.56, w * 0.72), fd = 0.42, fhh = Math.min(0.42, seatH - 0.02);
-    colliders.push(addFootstool(g, spec, ms, style, { w: fw, d: fd, h: fhh, z: zf + 0.16 + fd / 2, q, tilt: -8 * DEG }));
-  }
-  return K.finishModel(g, { seatY: seatH, colliders });
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -2769,7 +2818,7 @@ export const archetypes = {
       armH: ARMH,
       legStyle: legParam(['wood-taper', 'block', 'none', 'swivel-disc']),
       legH: LEGH,
-      backShape: { type: 'enum', label: 'Rygg', options: [['square', 'Rett'], ['curved', 'Buet (quiltet)']] },
+      backShape: { type: 'enum', label: 'Rygg', options: [['square', 'Rett'], ['curved', 'Buet (quiltet)'], ['tufted', 'Puffete tufter, uten armlener']] },
       cushion: CUSHION,
     },
     dimsRange: { w: [0.65, 1.1], d: [0.7, 1.15], h: [0.65, 0.95] },
@@ -2781,7 +2830,7 @@ export const archetypes = {
     params: {
       seatH: SEAT,
       armH: ARMH,
-      body: { type: 'enum', label: 'Utforming', options: [['auto', 'Som produktet'], ['box', 'Polstrede sidevanger'], ['shell', 'Formstøpt skall'], ['tulip', 'Tynne tulipanarmlener'], ['classic', 'Armputer på vanger']] },
+      body: { type: 'enum', label: 'Utforming', options: [['auto', 'Som produktet'], ['box', 'Polstrede sidevanger'], ['shell', 'Formstøpt skall'], ['tulip', 'Tynne tulipanarmlener'], ['classic', 'Stressless (armputer på braketter, ringfot)']] },
       headStyle: { type: 'enum', label: 'Nakkepute', options: [['auto', 'Som produktet'], ['integrated', 'Innebygd i ryggen'], ['block', 'Egen pute'], ['roll', 'Pølsepute'], ['wing', 'Vingeformet'], ['none', 'Ingen']] },
       footrest: { type: 'enum', label: 'Fotstøtte', options: [['auto', 'Som produktet'], ['stool', 'Egen fotskammel'], ['integrated', 'Innebygd fothviler'], ['none', 'Ingen']] },
       footrestOpen: { type: 'bool', label: 'Fothvileren slått ut' },

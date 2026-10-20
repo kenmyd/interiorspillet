@@ -140,6 +140,7 @@ export class Door {
    *                                        one the frame is built as its own mesh under `root` (this.frameGroup)
    * @param {number} [o.duration=0.7]  swing time (s)
    * @param {boolean} [o.locked=false]
+   * @param {boolean} [o.interactive=true]  false: no prompt, the player cannot open it (a door that stays shut)
    * @param {number} [o.bodyRadius]    radius of the body the leaf stops against (default: PLAYER.radius)
    * @param {number} [o.bodyHeight]    its height (default: PLAYER.height)
    */
@@ -184,7 +185,7 @@ export class Door {
     for (const leaf of this.leaves) this._computeBoxes(leaf);
     this._buildDoorwayProxy();
 
-    this._registerInteraction(ctx);
+    if (o.interactive !== false) this._registerInteraction(ctx);
   }
 
   /* ------------------------------------------------------------------ public API */

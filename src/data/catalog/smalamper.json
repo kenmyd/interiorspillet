@@ -1266,11 +1266,15 @@
     "mount": "floor",
     "params": {
       "shadeD": 0.26,
-      "shadeH": 0.22,
-      "shadeShape": "drum",
+      "shadeBottomD": 0.13,
+      "shadeH": 0.3,
+      "shadeShape": "cone",
       "baseD": 0.6,
       "legCount": 3,
-      "translucent": 0.3
+      "translucent": 0.3,
+      "tilt": 15,
+      "tiltable": true,
+      "shapeNote": "Kjegleformet skjerm (Ø26 øverst, ca. Ø13 nederst, ca. 30 cm høy) med den vide åpningen opp, holdt i en kardangring i den smale enden rett over der de tre stålbena møtes (ca. 1,35 m). Skjermen kan vinkles; på produktbildet står den ca. 15–17° på skrå. Mål av skjermen anslått fra produktbildet (total høyde 165 cm)."
     },
     "variants": [
       {
@@ -1654,6 +1658,907 @@
     "imageUrl": "https://www.nordicnest.no/assets/blobs/tradition-flowerpot-portable-bordlampe-vp9-grey-beige/46862-03-01-1bacaba61c.jpg",
     "verified": true,
     "verifiedNote": "Bekreftet på nordicnest.no 2026-10-18: alle tre farger, H29,5 × Ø16 cm, fot Ø9,5, pris stemmer.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-aneta-august-gulvlampe-h140",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "August gulvlampe H140",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/gulvlampe/august-gulvlampe-h140-1",
+    "priceNok": 1999,
+    "priceNote": "Ordinær pris 1 999 kr på produktsiden 2026-10-20 (ingen kampanje). Samme pris for matt messing/hvit (art. 298703) og svart/hvit (art. 298702). 1 x E27 maks 40 W, pære medfølger ikke, av/på-bryter på ledningen, 2 m ledning med støpsel. Glasskuppel Ø27 cm, totalhøyde 140 cm. Fotens diameter og kuppelens høyde er ikke oppgitt (anslått fot Ø20 og kuppel H12,5 fra produktbildet). Leveres flatpakket. Nettlager: messing 3 stk, svart 1 stk, levering 2–3 virkedager.",
+    "dims": {
+      "w": 0.27,
+      "d": 0.27,
+      "h": 1.4
+    },
+    "archetype": "floor-globe",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.27,
+      "shadeH": 0.125,
+      "globeShape": "oblate",
+      "cupD": 0.17,
+      "cupH": 0.015,
+      "baseD": 0.2,
+      "baseH": 0.012,
+      "baseShape": "disc",
+      "collarD": 0.05,
+      "collarH": 0.08,
+      "poleD": 0.014,
+      "translucent": 0.85
+    },
+    "variants": [
+      {
+        "name": "Matt messing/hvit",
+        "colors": {
+          "shade": "#f3f0ea",
+          "inner": "#f6f3ec",
+          "base": "#b79a5e",
+          "metal": "#b79a5e",
+          "cord": "#cfcac2"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "brass",
+          "metal": "brass",
+          "cord": "plastic"
+        }
+      },
+      {
+        "name": "Svart/hvit",
+        "colors": {
+          "shade": "#f3f0ea",
+          "inner": "#f6f3ec",
+          "base": "#1d1d1d",
+          "metal": "#1d1d1d",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "plastic"
+        },
+        "url": "https://www.bohus.no/lamper/gulvlampe/august-gulvlampe-h140",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/AUGUST/308184/image-thumb__308184__PDP-Product/298702%20-%20August%20gulvlampe%20H140%20E27%20metall%20svart-hvit%20inkl.%20skjerm%20-%202.55045224.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Klassisk gulvlampe med slank stang i matt messing og en flattrykt kuppel i matt opalglass som sprer et mykt, jevnt lys i hele rommet.",
+    "why": "Opalglasset gir et rolig, varmt lys mot de sandfargede veggene, og messingen gir et lunt løft – den svarte varianten matcher de svarte metalldetaljene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/AUGUST/308140/image-thumb__308140__PDP-Product/298703%20-%20August%20gulvlampe%20H140%20E27%20metall%20matt%20messing-hvit%20inkl.%20skjerm%20-%201.ff38960b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 1 999 kr for begge farger, H140, glasskuppel Ø27, E27 maks 40 W, bryter på ledningen. Form sjekket mot produktbildet (fot-Ø og kuppelhøyde anslått).",
+    "shapeNote": "Klassisk «Stockholm»-type gulvlampe. Tynn rett stang (Ø ca. 1,4 cm) på en tynn rund skivefot (Ø ca. 20 cm, ca. 1,2 cm tykk); nederst på stangen en kort, tykkere krage (Ø ca. 5 cm, H ca. 8 cm) som står på foten. Øverst en flat metallskål (Ø ca. 17 cm, H ca. 1,5 cm) med en kort hals under, og i skålen hviler en LUKKET, flattrykt kuppel i matt opalglass: Ø27 × H ca. 12,5 cm (oblat ellipsoide, høyde/bredde ca. 0,46, flatest i bunnen der den ligger i skålen). Ikke en hel kule – bruk floor-globe med shadeH for flattrykket form. Lyset slipper ut gjennom hele glasset (diffust i alle retninger). Bare Ø27 og H140 er oppgitt; øvrige proporsjoner er målt fra produktbildet (anslått).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-aneta-coni-gulvlampe-h162",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Coni gulvlampe H162",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/gulvlampe/coni-gulvlampe-h162",
+    "priceNok": 1799,
+    "salePriceNok": 899,
+    "priceNote": "Ordinær pris 1 799 kr, outletpris 899 kr (-50 %) på produktsiden 2026-10-20. Outlet: hovedlageret er utsolgt for hjemlevering, men lampen finnes i butikk (Billingstad 3, Alna 2, Skøyen 1). 1 x E27 maks 40 W, pære medfølger ikke, av/på-bryter på ledningen, 1,8 m ledning med støpsel. Kan dimmes med klikkdimbar pære (ikke inkludert). Mål B22 × D45 × H162 cm, metallskjerm Ø20 i sandfarge. Fotens diameter, skjermhøyde og krokens mål er ikke oppgitt (anslått fra produktbildet).",
+    "dims": {
+      "w": 0.22,
+      "d": 0.45,
+      "h": 1.62
+    },
+    "archetype": "floor-reading",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.2,
+      "shadeH": 0.19,
+      "shadeShape": "hourglass",
+      "shadeTopD": 0.12,
+      "waistD": 0.065,
+      "waistAt": 0.06,
+      "baseD": 0.22,
+      "baseH": 0.03,
+      "baseShape": "disc",
+      "armShape": "hook",
+      "armReach": 0.17,
+      "hookR": 0.085,
+      "shadeTopBelowHook": 0.17,
+      "poleD": 0.016,
+      "translucent": 0
+    },
+    "variants": [
+      {
+        "name": "Sand",
+        "colors": {
+          "shade": "#cbbda6",
+          "inner": "#ddd2c0",
+          "base": "#cbbda6",
+          "metal": "#cbbda6",
+          "cord": "#c9bca6"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 470–806 lm (anbefalt, ikke inkludert; klikkdimbar pære gir dimming)"
+    },
+    "description": "Retroinspirert gulvlampe i sandfarget metall med en buet krok på toppen og en liten diabolo-formet metallskjerm som sender lyset rett ned.",
+    "why": "Sandfargen glir inn mot SAND-veggene, og det nedadrettede lyset gjør den til en fin leselampe ved en lenestol.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/CONI/308142/image-thumb__308142__PDP-Product/298704%20-%20Coni%20gulvlampe%20H162%20E27%20metall%20sand%20inkl.%20skjerm%20-%201.a1513c0f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, ordinær pris 1 799 kr og outletpris 899 kr, B22 × D45 × H162, metallskjerm Ø20 sand, E27 maks 40 W. Outletvare – kun butikklager. Form sjekket mot produktbildet.",
+    "shapeNote": "NY FORM (krok + diabolo-skjerm, nærmest floor-reading): Rund, flat skivefot (Ø ca. 22 cm, ca. 3 cm høy) med en rett, tynn stang (Ø ca. 1,6 cm) opp til 1,62 m. Øverst bøyer stangen seg i en jevn halvsirkel (radius ca. 8,5 cm, «hyrdestav»/svanehals) og går et kort stykke rett ned igjen; skjermen henger loddrett med åpningen ned, med senter ca. 17 cm horisontalt fra stangen. Skjermens topp ligger ca. 17 cm under krokens høyeste punkt. Skjermen er en diabolo/timeglass-form i metall: en liten omvendt kjegle øverst (Ø ca. 12 cm øverst, smalner til en midje Ø ca. 6,5 cm over ca. 6 cm høyde) og under midjen en vid kjegle som åpner seg til Ø20 cm nederst; total skjermhøyde ca. 19 cm. Hele lampen (fot, stang, skjerm) er pulverlakkert i samme matte sandfarge. Lyset går ned (ugjennomsiktig skjerm). Mål utover B22/D45/H162 og skjerm Ø20 er anslått fra produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sindig-lund-gulvlampe-h90",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Lund gulvlampe H90",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/gulvlampe/lund-gulvlampe-h90",
+    "priceNok": 1599,
+    "priceNote": "Ordinær pris 1 599 kr på produktsiden 2026-10-20 (ingen kampanje). 1 x E27 maks 15 W, pære medfølger ikke, av/på-bryter på ledningen, 2 m svart tekstilledning med støpsel. Kompatibel med klikkdimbar pære. Skjerm Ø40 cm, fot Ø22,5 cm, H90 cm; skjermhøyde ikke oppgitt (anslått ca. 26 cm fra produktbildet). Utstilt i 61 butikker; produktdata viste «OutOfStock» for nett, så nettlager bør sjekkes. En kunde skriver at lyset er litt svakt gjennom stoffet og at lampen er lavere enn ventet.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.4,
+      "h": 0.9
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.4,
+      "shadeH": 0.26,
+      "shadeShape": "drum",
+      "closedTop": true,
+      "baseShape": "cylinder",
+      "baseD": 0.225,
+      "baseH": 0.64,
+      "poleCount": 0,
+      "translucent": 0.4
+    },
+    "variants": [
+      {
+        "name": "Beige/natur",
+        "colors": {
+          "shade": "#d8d2c5",
+          "inner": "#e4dfd4",
+          "base": "#d8d2c5",
+          "metal": "#d8d2c5",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "linen",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.06,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert; maks 15 W)"
+    },
+    "description": "Myk, skulpturell gulvlampe der både den sylindriske foten og den store trommeskjermen er trukket med beige lin; lyset siver dempet gjennom stoffet.",
+    "why": "Lin i varm beige gir en rolig, tekstil følelse som passer med de sandfargede veggene og det lyse eikegulvet – lav nok til å stå ved siden av sofaen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Season%20ASIA%20Co.%20Ltd/Produkter/LUND/346374/image-thumb__346374__PDP-Product/316888%20-%20Lund%20gulvlampe%20H90%20E27%20lin%20beige%20-%201.5c65f249.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 1 599 kr, H90, skjerm Ø40, fot Ø22,5, lin beige/natur, E27 maks 15 W. Form sjekket mot produktbildet (skjermhøyde anslått).",
+    "shapeNote": "To enkle sylindere i samme beige lin, uten synlig stang: nederst en høy, glatt søyle (oppgitt fot Ø22,5 cm; på produktbildet ser søylen smalere ut, ca. 42–45 % av skjermbredden ≈ Ø17–18 cm – velg det som ser riktig ut), ca. 64 cm høy, stående rett på gulvet. Rett oppå søylen sitter en bred trommeskjerm Ø40 × ca. 26 cm med LUKKET topp (tekstildeksel øverst så pæren ikke blender) og åpen bunn; søylen går inn i skjermens bunnåpning. Rette, skarpe kanter, ingen synlige metalldeler. Lyset slipper svakt gjennom linet (skjermsiden), litt ned mot søylen; søylen selv lyser ikke. Skjermhøyde og søylehøyde er anslått fra produktbildet (H90 totalt).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-aneta-ronda-gulvlampe-h140",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Ronda gulvlampe H140",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/gulvlampe/ronda-gulvlampe-h140",
+    "priceNok": 2699,
+    "salePriceNok": 1200,
+    "priceNote": "Ordinær pris 2 699 kr, outletpris 1 200 kr (-55 %) på produktsiden 2026-10-20. Outlet: utsolgt for hjemlevering, finnes i butikk (Namsos 3, Tynset 1). 1 x E27 maks 10 W, pære medfølger ikke, av/på-bryter på ledningen, 1,8 m ledning med støpsel. Beige tekstilskjerm inkludert. H140; overskriften sier Ø30, spesifikasjonen Ø32,5 (trolig skjerm Ø30 og ramme Ø32,5). Skjermhøyde og fot ikke oppgitt (anslått skjerm ca. 80 cm og fotplate Ø30 fra produktbildet). Leveres flatpakket.",
+    "dims": {
+      "w": 0.325,
+      "d": 0.325,
+      "h": 1.4
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.3,
+      "shadeH": 0.8,
+      "shadeShape": "cylinder",
+      "shadeBottomAt": 0.5,
+      "baseShape": "disc",
+      "baseD": 0.3,
+      "baseH": 0.015,
+      "poleCount": 4,
+      "frame": "cage",
+      "frameD": 0.325,
+      "frameTopH": 0.09,
+      "barW": 0.012,
+      "translucent": 0.5
+    },
+    "variants": [
+      {
+        "name": "Beige/svart",
+        "colors": {
+          "shade": "#c2b293",
+          "inner": "#d9ccb2",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "plastic"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.05,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert; maks 10 W)"
+    },
+    "description": "Høy søyle av beige tekstil holdt av en slank, svart metallramme med fire stag på en rund, svart fotplate – gir et mykt, jevnt søylelys.",
+    "why": "Den svarte rammen gjentar de svarte metalldetaljene, mens den lyse tekstilsøylen gir et varmt, diffust lys i et hjørne.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/RONDA/308185/image-thumb__308185__PDP-Product/298701%20-%20Ronda%20gulvlampe%20H140%20E27%20metall%20svart-beige%20inkl.%20skjerm%20-%201.558bcf68.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, ordinær pris 2 699 kr og outletpris 1 200 kr, H140, Ø30/Ø32,5 (motstridende på siden), metall + tekstil, E27 maks 10 W. Outletvare – kun butikklager. Form sjekket mot produktbildet.",
+    "shapeNote": "NY FORM-detalj (bur-ramme): Høy, smal tekstilsylinder Ø30 × ca. 80 cm som svever med bunnen ca. 50 cm over gulvet, holdt av en ramme av fire tynne, svarte flatstål-stag (ca. 1,2 cm brede) som står UTENFOR skjermen, jevnt fordelt rundt (90° mellom stagene, på en sirkel Ø ca. 32,5 cm, så de nesten berører skjermen). Stagene går fra en tynn, rund svart fotplate (Ø ca. 30 cm, ca. 1,5 cm tykk), der de nederst bøyer innover og møtes i et kryss på platen, rett opp langs skjermen og ca. 9 cm over skjermtoppen, der de bøyer innover med avrundede hjørner og møtes i et X-kryss over midten med en liten knott. Skjermen er åpen i begge ender, med pære og sokkel inne i sylinderen omtrent midt i høyden (filamentpære synlig gjennom stoffet). Ledningen henger ned fra skjermbunnen til foten. Bruk poleCount 4 for de fire stagene. Skjermhøyde, stag-mål og fotplate er anslått fra produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-halvor-bakke-cape-town-gulvlampe-h150",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Cape Town gulvlampe H150",
+    "brand": "Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/gulvlampe/cape-town-gulvlampe-h150",
+    "priceNok": 3699,
+    "priceNote": "Ordinær pris 3 699 kr på produktsiden 2026-10-20 (ingen kampanje). 1 x E27 maks 40 W, pære medfølger ikke, av/på-bryter på ledningen, 1,9 m ledning med støpsel. Ikke dimbar (ifølge bildefilnavnet). Ø50 × H150 cm, jern og tre, farge brun, skjerm inkludert. Leveres ferdig montert, 2 kolli, 9 kg. Mål på fot, lag og lameller er anslått fra produktbildet.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.5,
+      "h": 1.5
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.5,
+      "shadeH": 0.5,
+      "shadeShape": "tiered-slats",
+      "tiers": 3,
+      "tierD": [
+        0.5,
+        0.4,
+        0.33
+      ],
+      "tierBottomAt": [
+        1.27,
+        1.12,
+        1
+      ],
+      "slatLength": [
+        0.23,
+        0.2,
+        0.2
+      ],
+      "slatsPerTier": [
+        30,
+        24,
+        20
+      ],
+      "slatW": 0.048,
+      "slatT": 0.008,
+      "baseShape": "disc",
+      "baseD": 0.29,
+      "baseH": 0.035,
+      "poleD": 0.025,
+      "translucent": 0.15
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "shade": "#6e5848",
+          "inner": "#6e5848",
+          "base": "#2b2522",
+          "metal": "#2b2522",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "smoked-oak",
+          "inner": "smoked-oak",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "plastic"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Rustikk gulvlampe med svart jernstang og en skjerm av tre lag hengende trelameller i gråbrunt tre, designet av Halvor Bakke.",
+    "why": "Treskjermen gir et varmt, stripete lys og et organisk preg som passer mot den mørke MARRAKESH-veggen i TV-stua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norsk%20Dun%20AS/Produkter/CAPE%20TOWN/307470/image-thumb__307470__PDP-Product/297859%20-%20Cape%20Town%20lampe%20H150%20E27%20ikke%20dimbar%20jern%20brun%20-%201.516e7fb0.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 3 699 kr, Ø50 × H150, jern med hengende trepaneler, brun, E27 maks 40 W, skjerm inkludert. Form sjekket mot produktbildet (alle delmål anslått).",
+    "shapeNote": "NY FORM (lagdelt treskjerm, «frynse» av lameller): Rund, tykk jernfot (Ø ca. 29 cm, ca. 3,5 cm høy) og en rett jernstang (Ø ca. 2,5 cm) opp til ca. 1,0 m. Skjermen består av tre konsentriske «skjørt» av løst hengende, flate trelameller (ca. 2,2 cm brede, 0,6 cm tykke, bredsiden ut), hver rad hengt i en tynn jernring: øverste lag Ø50 (ring helt øverst ved 1,50 m, lameller ca. 23 cm lange, ca. 70 stk), midterste lag Ø40 (bunn ved ca. 1,12 m, ca. 56 lameller), nederste lag Ø30 (bunn ved ca. 1,00 m der stangen slutter, ca. 44 lameller). Hvert lag stikker ut under laget over, så silhuetten blir en trappet, omvendt «bryllupskake». Lamellene har litt ulik lengde (ujevn underkant) og små mellomrom; lys slipper ut mellom dem og rett ned/opp gjennom de åpne ringene. Pæren sitter inne i midten av skjermen. Treet er gråbrunt, værbitt; jernet er mørk brun-svart. Alle delmål, lameller og høyder er anslått fra produktbildet; bare Ø50 og H150 er oppgitt. Korrigert etter produktbildet (2026-10-20): lamellene er bredere og færre (ca. 4,5–5 cm brede, ca. 30/24/20 per lag), nederste lag ca. Ø33.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-lauters-gulvlampe-ask-hvit",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "LAUTERS Gulvlampe, ask/hvit",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/lauters-gulvlampe-ask-hvit-30405042/",
+    "priceNok": 1395,
+    "priceNote": "Pris 1 395 kr på ikea.com/no 2026-10-20 (ingen kampanje). 1 x E27 maks 13 W, pære medfølger ikke (IKEA anbefaler opalhvit globepære). Bryter/dimmer er ikke oppgitt. Høyde justerbar 119–151 cm, skjermbredde 37 cm, fot (bena) Ø62 cm, 3,5 m ledning som kan skjules i foten. Skjermhøyde ikke oppgitt (anslått ca. 28 cm fra produktbildet).",
+    "dims": {
+      "w": 0.62,
+      "d": 0.62,
+      "h": 1.51
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.37,
+      "shadeH": 0.28,
+      "shadeShape": "drum",
+      "baseShape": "tripod",
+      "baseD": 0.62,
+      "baseH": 0.82,
+      "legCount": 3,
+      "legW": 0.035,
+      "hubD": 0.14,
+      "hubH": 0.04,
+      "poleD": 0.025,
+      "heightMin": 1.19,
+      "heightMax": 1.51,
+      "translucent": 0.5
+    },
+    "variants": [
+      {
+        "name": "Ask/hvit",
+        "colors": {
+          "shade": "#f1efea",
+          "inner": "#f4f2ee",
+          "base": "#d8b48a",
+          "metal": "#d8b48a",
+          "cord": "#f0f0f0"
+        },
+        "materials": {
+          "shade": "cotton",
+          "inner": "cotton",
+          "base": "ash",
+          "metal": "ash",
+          "cord": "plastic"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.05,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert; maks 13 W)"
+    },
+    "description": "Klassisk tripod-gulvlampe med tre ben og stang i massiv ask og en hvit trommeskjerm; høyden kan justeres.",
+    "why": "Den lyse asken spiller fint med det lyse eikegulvet, og den klassiske skandinaviske tripod-formen gir et lett, luftig uttrykk.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/lauters-gulvlampe-ask-hvit__0663863_pe712536_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-20: navn, pris 1 395 kr, høyde 119–151 cm, skjermbredde 37, fot Ø62, E27 maks 13 W, massiv ask. Form sjekket mot produktbildet (skjermhøyde anslått).",
+    "shapeNote": "Klassisk tripod i massiv ask (baseShape 'tripod'): tre rette ben med kvadratisk tverrsnitt (ca. 3,5 × 3,5 cm), spredt på en sirkel Ø62 cm på gulvet, som skrår innover og festes under et rundt, flatt navstykke i ask (Ø ca. 14 cm, ca. 4 cm tykt) ca. 82 cm over gulvet. Fra navet går en rund askestang (Ø ca. 2,5 cm) rett opp til skjermen (ca. 36 cm synlig ved full høyde; høyden kan senkes til 119 cm). Stangen fortsetter også et stykke ned under navet og ender i to små runde treskiver (ledningsholder) ca. 45 cm over gulvet. Hvit trommeskjerm Ø37 × ca. 28 cm, rette sider, åpen topp og bunn, pære midt i skjermen. Hvit ledning. Skjermhøyde og delmål er anslått fra produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "nordicnest-globen-torrano-gulvlampe-h145",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Torrano gulvlampe",
+    "brand": "Globen Lighting",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/globen-lighting/torrano-gulvlampe/?variantId=576644-01",
+    "priceNok": 5129,
+    "salePriceNok": 2811,
+    "priceNote": "Pris 2 811 kr hos Nordic Nest 2026-10-20 (veiledende pris 5 129 kr, -45 %). 1 x E27 maks 60 W, pære medfølger ikke, bryter på lampen (trekkjede med messinghåndtak på stangen ifølge produktbildet); kan dimmes bare med ekstern dimmer og dimbar pære. 2 m transparent ledning med støpsel. H145 cm, oppgitt L30 × B30 cm (= kulens Ø30). Fotens mål ikke oppgitt (anslått Ø11 × H32 cm fra produktbildet). Fot i massiv travertin, stang i børstet messingfarget metall, kule i hvitt opalglass. Bruttovekt 13,8 kg. Design Patrick Hall.",
+    "dims": {
+      "w": 0.3,
+      "d": 0.3,
+      "h": 1.45
+    },
+    "archetype": "floor-globe",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.3,
+      "baseD": 0.11,
+      "baseH": 0.32,
+      "baseShape": "bullet",
+      "cupD": 0.09,
+      "cupH": 0.015,
+      "poleD": 0.016,
+      "pullChain": true,
+      "translucent": 0.85
+    },
+    "variants": [
+      {
+        "name": "Travertin/messing",
+        "colors": {
+          "shade": "#f5f5f3",
+          "inner": "#f7f7f5",
+          "base": "#dccaa9",
+          "metal": "#c4a46a",
+          "cord": "#d9d9d9"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "travertine",
+          "metal": "brass",
+          "cord": "plastic"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Elegant gulvlampe med stor kule i hvitt opalglass på en tynn stang i børstet messing og en tung, avrundet fot i travertin.",
+    "why": "Travertinfoten og messingen er varme og naturlige, og opalkula gir et mykt, rundt lys som passer i en lys, skandinavisk stue.",
+    "imageUrl": "https://www.nordicnest.no/assets/blobs/globen-lighting-torrano-gulvlampe-travertin/576644-01_1_IM-39210429df.png?preset=medium&dpr=2",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-20: navn, pris 2 811 kr (veil. 5 129 kr), H145, 30 × 30 cm, E27 maks 60 W, travertin/glass/messingfarget metall, bryter på lampen. Form sjekket mot produktbildet (fotmål anslått).",
+    "shapeNote": "Ren floor-globe: hel, matt hvit opalglass-kule Ø30 cm øverst (toppen ved 1,45 m), hvilende i en liten messingkopp (Ø ca. 9 cm, ca. 1,5 cm høy) på toppen av en tynn, rett stang i børstet messing (Ø ca. 1,6 cm). Foten er en høy, smal «kule»-sylinder i travertin: Ø ca. 11 cm, ca. 32 cm høy, rett sylinder med halvkuleformet avrundet topp (baseShape 'bullet' – ny; bruk 'cylinder' med avrundet topp om den ikke finnes), stangen går ned i toppen av foten. Fra koppen henger en tynn messing-kulekjede ca. 15 cm ned langs stangen med et lite sylindrisk messinghåndtak (ca. 6 × 1,2 cm) nederst. Lyset sprer seg jevnt i alle retninger gjennom kula. Fotmål og kopp er anslått fra produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "nordicnest-globen-matisse-gulvlampe-h150",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Matisse gulvlampe 150 cm",
+    "brand": "Globen Lighting",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/globen-lighting/matisse-gulvlampe-150-cm/?variantId=46623-01",
+    "priceNok": 4109,
+    "salePriceNok": 1895,
+    "priceNote": "Pris 1 895 kr hos Nordic Nest 2026-10-20 (veiledende pris 4 109 kr). Bestillingsvare, sendes tidligst 10. november. 1 x E27 maks 60 W, pære medfølger ikke, bryter ikke oppgitt, 2 m transparent ledning med støpsel. H150 × Ø60 cm (Ø60 = den plisserte skjermen). Fot i hvit marmor, stang og toppkapsel i matt svart metall, skjerm i plissert bomull/polyester. Fotmål, skjermhøyde og antall plisseringer er ikke oppgitt (anslått). Design Patrick Hall.",
+    "dims": {
+      "w": 0.6,
+      "d": 0.6,
+      "h": 1.5
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.6,
+      "shadeTopD": 0.1,
+      "shadeH": 0.2,
+      "shadeShape": "pleated",
+      "pleats": 72,
+      "capD": 0.12,
+      "capH": 0.05,
+      "finialH": 0.04,
+      "baseShape": "cylinder",
+      "baseD": 0.14,
+      "baseH": 0.32,
+      "poleD": 0.022,
+      "translucent": 0.55
+    },
+    "variants": [
+      {
+        "name": "Svart/hvit",
+        "colors": {
+          "shade": "#f2f2f4",
+          "inner": "#f5f5f7",
+          "base": "#ebe9e5",
+          "metal": "#1c1c1c",
+          "cord": "#d9d9d9"
+        },
+        "materials": {
+          "shade": "cotton",
+          "inner": "cotton",
+          "base": "marble-white",
+          "metal": "black-metal",
+          "cord": "plastic"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.05,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Gulvlampe med vid, plissert skjerm i hvitt tekstil som minner om en parasoll, svart stang og sylinderfot i hvit marmor.",
+    "why": "Den plisserte skjermen gir et lekent, mykt lys, og de svarte detaljene knytter lampen til de svarte metalldetaljene i stua.",
+    "imageUrl": "https://www.nordicnest.no/assets/blobs/globen-lighting-matisse-gulvlampe-150-cm-svart-hvit/46623-01-01-7a7ae91020.jpg?preset=medium&dpr=2",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-20: navn, pris 1 895 kr (veil. 4 109 kr), H150 × Ø60, E27 maks 60 W, marmor/bomull/metall, plissert («foldet») tekstilskjerm. Ø60/H150 også bekreftet hos andre forhandlere. Form sjekket mot produktbildene.",
+    "shapeNote": "Plissert «parasoll»-skjerm: en lav, vid kjegle av hvit plissert tekstil (Ø60 nederst, ca. 70 skarpe sikksakk-plisseringer som stråler ut fra midten, takket underkant), fabric-delen ca. 11 cm høy. Øverst en svart, plissert metallkapsel (kjegle, Ø ca. 12 cm nederst, ca. 5 cm høy) med en spiss svart topp (ca. 4 cm). Skjermen sitter som en paraply rett på toppen av en tynn, matt svart stang (Ø ca. 2,2 cm); pæren sitter under kapselen, lyset går ned og ut gjennom stoffet. Foten er en massiv sylinder i hvit marmor med grå årer (Ø ca. 14 cm, ca. 32 cm høy) med et tynt svart metalllokk på toppen der stangen går inn. Merk: produktbildet (render) ser ut til å ha bredere skjerm i forhold til høyden enn Ø60/H150 – følg de oppgitte målene. Fot, høyder og plisseringsantall er anslått.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "nordicnest-ferm-living-kurbis-gulvlampe-high",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Kurbis gulvlampe high",
+    "brand": "Ferm Living",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/ferm-living/kurbis-gulvlampe-high/?variantId=631601-01",
+    "priceNok": 3985,
+    "salePriceNok": 2799,
+    "priceNote": "Pris 2 799 kr hos Nordic Nest 2026-10-20 (veiledende pris 3 985 kr, -30 %), «bare et fåtall igjen». Finnes også som Kurbis gulvlampe low (1 996 kr, veil. 2 965 kr). E27, pære medfølger ikke (LED anbefales); maks effekt og bryter er ikke oppgitt. 2,6 m svart ledning med støpsel. Ø60 × H137,6 cm. Skjerm i washi-papir, fot og stang i pulverlakkert svart metall. Lyktens høyde og fotmål er ikke oppgitt (anslått fra produktbildet).",
+    "dims": {
+      "w": 0.6,
+      "d": 0.6,
+      "h": 1.376
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.6,
+      "shadeH": 0.64,
+      "shadeShape": "lantern",
+      "ribs": 21,
+      "asymmetric": true,
+      "shadeBottomAt": 0.735,
+      "openingBottomD": 0.26,
+      "openingTopD": 0.1,
+      "baseShape": "disc",
+      "baseD": 0.29,
+      "baseH": 0.012,
+      "poleD": 0.014,
+      "translucent": 0.7
+    },
+    "variants": [
+      {
+        "name": "Natural/black",
+        "colors": {
+          "shade": "#e2d5b6",
+          "inner": "#eadfc6",
+          "base": "#1f1f1f",
+          "metal": "#1f1f1f",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "paper",
+          "inner": "paper",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "plastic"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Organisk, asymmetrisk papirlykt i naturfarget washi-papir på en slank svart stang – en moderne tolkning av den japanske rispapirlampen.",
+    "why": "Papirlykta gir et varmt, glødende lys som myker opp rommet og passer godt både mot SAND-veggene og den mørke MARRAKESH-veggen.",
+    "imageUrl": "https://www.nordicnest.no/assets/blobs/ferm-living-kurbis-gulvlampe-high-natural-black/631601-01_1_ProductImageMain-5f428d46be.png?preset=medium&dpr=2",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-20: navn, pris 2 799 kr (veil. 3 985 kr), Ø60 × H137,6, E27, washi-papir og svart pulverlakkert metall. Form sjekket mot produktbildet (lyktehøyde og ribber anslått).",
+    "shapeNote": "Papirlykt (shadeShape 'lantern', Akari-aktig) på stang: tynn, rund svart skivefot (Ø ca. 29 cm, ca. 1,2 cm) og en veldig tynn svart stang (Ø ca. 1,4 cm) opp til ca. 55 cm, der lykta sitter. Lykta er en stor, ORGANISK og asymmetrisk «gresskar/pære»-form i krøllet, naturfarget washi-papir over ca. 28 vannrette ståltrådribber (ca. 3 cm mellomrom): ca. 82 cm høy og opptil Ø60, smalere og litt skjev mot venstre øverst, bredest ca. 60 % ned med en tydeligere bule på den ene siden, så en litt avflatet bunn med åpning ca. Ø33 der den hviler på stangen; liten åpning/kapsel ca. Ø10 øverst. Papiret er tydelig rynkete mellom ribbene. Lyset gløder jevnt gjennom hele papiret. Lyktehøyde, ribbeantall og fotmål er anslått fra produktbildet. Korrigert etter produktbildet (2026-10-20): lykta er omtrent like høy som bred (ca. 64 cm ved Ø60) og sitter høyere – underkant ca. 74 cm over gulvet; bred, nesten flat bunn med åpning ca. Ø26, ca. 20 ribber.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "nordicnest-watt-veke-alba-gulvlampe-h72",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Alba gulvlampe",
+    "brand": "Watt & Veke",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/watt--veke/alba-gulvlampe/?variantId=639777-01",
+    "priceNok": 2823,
+    "salePriceNok": 1693,
+    "priceNote": "Pris 1 693 kr hos Nordic Nest 2026-10-20 (veiledende pris 2 823 kr, -40 %). Bestilt inn, sendes tidligst 5. november. 1 x E27 maks 40 W, pære medfølger ikke, ingen bryter oppgitt (dimbar med ekstern dimmer og dimbar pære). 2,2 m svart tekstilledning med støpsel. H72 × Ø26 cm, skjerm i plissert lin, fot i mørkbeiset mangotre. Fotmål og antall plisseringer er ikke oppgitt (anslått fra produktbildet). Lav gulvlampe for hjørne eller ved sofaen.",
+    "dims": {
+      "w": 0.26,
+      "d": 0.26,
+      "h": 0.72
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.26,
+      "shadeTopD": 0.245,
+      "shadeH": 0.69,
+      "shadeShape": "pleated",
+      "pleats": 48,
+      "shadeBottomAt": 0.03,
+      "baseShape": "cylinder",
+      "baseD": 0.15,
+      "baseH": 0.04,
+      "poleCount": 0,
+      "finialD": 0.03,
+      "translucent": 0.5,
+      "closedTop": true
+    },
+    "variants": [
+      {
+        "name": "Natural",
+        "colors": {
+          "shade": "#cdbb9c",
+          "inner": "#d9cab0",
+          "base": "#4a3428",
+          "metal": "#4a3428",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "walnut",
+          "metal": "walnut",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.05,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Lav gulvlampe formet som en plissert søyle i naturfarget lin på en mørk fot av mangotre.",
+    "why": "Plissert lin og mørkt tre gir varm tekstur og et dempet stemningslys nede ved gulvet, fint i et hjørne eller ved siden av sofaen.",
+    "imageUrl": "https://www.nordicnest.no/assets/blobs/watt-veke-alba-gulvlampe-natural/639777-01_1_ProductImageMain-9fa8ca92aa.png?preset=medium&dpr=2",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-20: navn, pris 1 693 kr (veil. 2 823 kr), H72 × Ø26, E27 maks 40 W, lin og mangotre. Form sjekket mot produktbildet (fot og plisseringer anslått). Mangotre er satt som 'walnut' (nærmeste mørke tresort).",
+    "shapeNote": "Plissert søyle uten synlig stang: en høy, rett sylinder av plissert naturfarget lin (Ø26 × ca. 69 cm, ca. 48 skarpe loddrette plisseringer, øverste kant brettet litt innover så toppen er ca. Ø24,5), som står på en lav, rund plint i mørkbeiset mangotre (Ø ca. 15 cm, ca. 4 cm høy, bare ca. 3 cm synlig under skjermkanten). Midt på toppen stikker en liten, mørk trekule/knott (Ø ca. 3 cm) opp. Pæren sitter inne i søylen; hele søylen gløder gjennom linet. Svart tekstilledning ut fra foten. Fotmål og plisseringsantall er anslått fra produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "nordicnest-northern-birdy-gulvlampe-h133",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Birdy gulvlampe",
+    "brand": "Northern",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/northern-lighting/birdy-gulvlampe/?variantId=28344-04",
+    "priceNok": 5890,
+    "salePriceNok": 4219,
+    "priceNote": "Pris 4 219 kr for Svart hos Nordic Nest 2026-10-20 (veiledende pris 5 890 kr). Andre farger med samme veil. pris: Matt grå 4 299 kr, Matt svart 4 436 kr, Matt hvit 4 491 kr, Black-steel 5 799 kr. Bestillingsvare, sendes tidligst 17.–18. november (Matt svart 29. oktober). 1 x E27, maks 7 W ifølge Nordic Nest (LED), pære medfølger ikke, bryter på ledningen, 2 m tekstilledning, leveres umontert. H133 × D67 cm (rekkevidde). Skjerm-, fot- og armmål er ikke oppgitt (anslått fra produktbildet). Design Birger Dahl 1952.",
+    "dims": {
+      "w": 0.22,
+      "d": 0.67,
+      "h": 1.33
+    },
+    "archetype": "floor-reading",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.12,
+      "shadeTopD": 0.07,
+      "shadeL": 0.21,
+      "shadeTilt": 35,
+      "obliqueCut": true,
+      "baseD": 0.22,
+      "baseH": 0.05,
+      "baseShape": "cylinder",
+      "pivotH": 1.07,
+      "armFront": 0.32,
+      "armBack": 0.11,
+      "armAngle": 34,
+      "armReach": 0.6,
+      "counterweight": "teardrop",
+      "poleD": 0.016,
+      "translucent": 0,
+      "armShape": "balance",
+      "shadeAttach": 0.35,
+      "counterweightL": 0.08
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#171717",
+          "inner": "#3a3a3a",
+          "base": "#171717",
+          "metal": "#171717",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Matt hvit",
+        "colors": {
+          "shade": "#ebeae6",
+          "inner": "#ebeae6",
+          "base": "#ebeae6",
+          "metal": "#ebeae6",
+          "cord": "#e8e8e8"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "priceNok": 5890,
+        "salePriceNok": 4491,
+        "url": "https://www.nordicnest.no/merkevarer/northern-lighting/birdy-gulvlampe/?variantId=28344-01"
+      },
+      {
+        "name": "Matt grå",
+        "colors": {
+          "shade": "#8c8c8a",
+          "inner": "#8c8c8a",
+          "base": "#8c8c8a",
+          "metal": "#8c8c8a",
+          "cord": "#7a7a7a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "priceNok": 5890,
+        "salePriceNok": 4299,
+        "url": "https://www.nordicnest.no/merkevarer/northern-lighting/birdy-gulvlampe/?variantId=28344-03"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 600,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 600 lm (anbefalt, ikke inkludert; maks 7 W)"
+    },
+    "description": "Norsk designklassiker fra 1952 av Birger Dahl: leselampe med vippearm, motvekt og en kjegleformet metallskjerm som retter lyset dit du trenger det.",
+    "why": "En norsk klassiker som passer perfekt ved en lenestol, og den svarte varianten matcher de svarte metalldetaljene i rommet.",
+    "imageUrl": "https://www.nordicnest.no/assets/blobs/northern-birdy-gulvlampe-svart/28344-04-01-79a9969bab.jpg?preset=medium&dpr=2",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-20: navn, priser for fire farger (veil. 5 890 kr), H133 × D67, E27 maks 7 W, aluminium/stål, bryter på ledningen. Farger på hvit/grå variant er anslått (ikke sett bilde). Form sjekket mot produktbildet (alle delmål anslått).",
+    "shapeNote": "Vippearm-leselampe: lav, rund sylinderfot (Ø ca. 22 cm, ca. 5 cm høy) og en tynn, rett stang (Ø ca. 1,6 cm) opp til et ledd ca. 107 cm over gulvet. I leddet balanserer en lang, tynn arm (Ø ca. 1,2 cm) som peker skrått oppover ca. 33° fra vannrett: forover ca. 48 cm til skjermen, bakover ca. 27 cm til et dråpeformet håndtak/motvekt (ca. 10 cm langt, Ø ca. 3,5 cm) der ledningen kommer ut og henger ned til gulvet. Skjermen er en lang, smal avkortet kjegle i metall (ca. 30 cm lang, Ø ca. 8,5 cm i den smale enden, Ø ca. 16 cm i åpningen) festet med en liten bøyle på armens ende, hengende med aksen ca. 30° fra loddrett så åpningen peker ned og litt fremover; åpningen er skrått avskåret. Rekkevidde fra stangen til ytterkant ca. 60–67 cm, toppen av skjermen ved 1,33 m. Lyset går ned som en spot. Alle delmål er anslått fra produktbildet; bare H133 og D67 er oppgitt. Korrigert etter produktbildet (2026-10-20): ledd ca. 107 cm over gulvet, arm ca. 32 cm forover og ca. 11 cm bakover + ca. 8 cm dråpe, skjerm ca. 21 cm lang (Ø ca. 7 → 12 cm) med armen festet ca. en tredjedel ned på baksiden.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "lampegiganten-lindby-canyana-gulvlampe-h139",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Lindby Canyana gulvlampe, 139 cm, natur, rotting, stativ",
+    "brand": "Lindby",
+    "store": "Lampegiganten",
+    "url": "https://www.lampegiganten.no/p/lindby-canyana-gulvlampe-139-cm-natur-rotting-stativ-9921064.html",
+    "priceNok": 2399,
+    "salePriceNok": 1199,
+    "priceNote": "Pris 1 199 kr hos Lampegiganten 2026-10-20 (veiledende pris 2 399 kr, -50 %). På lager (261 stk), levering 5–8 virkedager. 1 x E27 maks 40 W, pære medfølger ikke, ikke dimbar, fotbryter på ledningen, 2,8 m ledning. H139 cm, skjerm Ø32, stativ Ø45 cm. Skjermhøyde ikke oppgitt (anslått ca. 52 cm fra miljøbildet). Beskrivelsen sier trebeint stativ i svartlakkert metall, spesifikasjonen sier tre/metall – bildene viser svarte ben.",
+    "dims": {
+      "w": 0.45,
+      "d": 0.45,
+      "h": 1.39
+    },
+    "archetype": "floor-tripod",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.32,
+      "shadeH": 0.52,
+      "shadeShape": "woven",
+      "weave": "rattan",
+      "shadeTopD": 0.26,
+      "shadeBottomD": 0.26,
+      "ribs": 40,
+      "rings": 4,
+      "baseD": 0.45,
+      "legCount": 3,
+      "legD": 0.02,
+      "braceAt": 0.22,
+      "translucent": 0.35
+    },
+    "variants": [
+      {
+        "name": "Natur/svart",
+        "colors": {
+          "shade": "#c9a173",
+          "inner": "#d1ad80",
+          "base": "#1f1f1f",
+          "metal": "#1f1f1f",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "rattan",
+          "inner": "rattan",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "plastic"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED filament ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Gulvlampe med tønneformet skjerm av naturfarget rotting på et slankt, svart trebent stativ; lyset kaster stripete skygger på veggen.",
+    "why": "Rottingen gir varme og tekstur mot de sandfargede veggene, og de svarte bena gjentar de svarte metalldetaljene.",
+    "imageUrl": "https://lw-cdn.com/images/C8E3A3361353/k_c44fedaa395975ccd66f50f14d77d3aa;w_1600;h_1600;q_100/9921064.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampegiganten.no 2026-10-20: navn, pris 1 199 kr (veil. 2 399 kr), H139, skjerm Ø32, Ø45, E27 maks 40 W, rotting, trebent stativ, på lager. Bohus har ingen rottinggulvlampe i dag. Form sjekket mot miljøbildet (skjermhøyde anslått).",
+    "shapeNote": "Tripod med rottinglykt (floor-tripod + NY shadeShape 'woven' på tripod): tre tynne, svarte, runde metallben (Ø ca. 2 cm) som står på en sirkel Ø45 og møtes rett under skjermen ca. 87 cm over gulvet i en liten svart skive som skjermen står på. Ca. 22 cm over gulvet holdes bena sammen av et tynt, trekantet stag (tre tynne stenger mellom bena). Skjermen er en tønneformet «bur»-lykt i naturfarget rotting: Ø32 på det bredeste (midten), ca. 52 cm høy, avrundede skuldre som smalner til ca. Ø26 i topp og bunn, med ca. 40 loddrette rottingstaver med smale mellomrom og ca. 4 vannrette ringer (topp, ca. 1/4, midt, bunn); en tynn lukket ring/plate øverst. Pæren sitter fritt inne i buret og kaster stripete skygger. Skjermhøyde, staver og ringer er anslått fra miljøbildet.",
     "priceConfidence": "checked"
   }
 ]

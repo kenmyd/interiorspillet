@@ -1183,6 +1183,28 @@ export class Inspector extends BasePanel {
         kids.push(dropCtl.el, bottom);
       }
     }
+
+    // tiltable shades (Oslo Wood): the shade's angle – here, next to the light it aims
+    const tiltSchema = def?.params?.tilt;
+    const tiltValues = { ...(def?.defaults?.params || {}), ...(item.params || {}) };
+    if (tiltSchema && (!tiltSchema.requires || tiltValues[tiltSchema.requires])) {
+      const tiltLive = throttle((v) => this._apply({ params: { tilt: v } }, { coalesce: 'tilt', label: 'Vinkle skjermen' }), 90);
+      const tiltCtl = slider({
+        label: tiltSchema.label || 'Vinkel på skjermen',
+        min: tiltSchema.min ?? 0,
+        max: tiltSchema.max ?? 80,
+        step: tiltSchema.step ?? 1,
+        value: typeof tiltValues.tilt === 'number' ? tiltValues.tilt : 0,
+        format: (v) => `${Math.round(v)}°`,
+        onInput: (v) => tiltLive(v),
+        onChange: (v) => {
+          tiltLive.cancel();
+          this._apply({ params: { tilt: v } }, { coalesce: 'tilt', label: 'Vinkle skjermen' });
+          blurSoon(tiltCtl.input);
+        },
+      });
+      kids.push(tiltCtl.el, h('p.ipi-hint', { text: '0° = rett opp. Skjermen vippes mot lampens forside – roter lampen for å rette den mot en annen kant.' }));
+    }
     return section('Lys', ...kids);
   }
 
@@ -1260,11 +1282,14 @@ export class Inspector extends BasePanel {
     // lamps show «Avstand fra tak» in the light section; other ceiling items (absorbers) keep it here
     const family = this.catalog.archetypeInfo?.(item.archetype)?.family || null;
     if (item.mount === 'ceiling' && (family === 'lamp' || item.light)) delete schema.drop;
-    // floorOnly params (a cabinet's legs / plinth) mean nothing on a wall-hung item – and «Sokkel» there would make the
-    // builder draw it with the floor origin (notes/add-storage.md); moving between floor and wall is the swap's job
-    for (const [k, s] of Object.entries(schema)) if (!s || !s.type || (s.floorOnly && item.mount === 'wall')) delete schema[k];
-    if (!Object.keys(schema).length) return null;
+    // a lamp's shade angle sits in the light section too
+    if (family === 'lamp' || item.light) delete schema.tilt;
     const values = { ...(def?.defaults?.params || {}), ...(item.params || {}) };
+    // floorOnly params (a cabinet's legs / plinth) mean nothing on a wall-hung item – and «Sokkel» there would make the
+    // builder draw it with the floor origin (notes/add-storage.md); moving between floor and wall is the swap's job.
+    // `requires`: only for products whose params set that flag (the tilt of a tiltable shade)
+    for (const [k, s] of Object.entries(schema)) if (!s || !s.type || (s.floorOnly && item.mount === 'wall') || (s.requires && !values[s.requires])) delete schema[k];
+    if (!Object.keys(schema).length) return null;
     const lives = {};
     const ed = paramEditor(schema, values, (key, v, { final }) => {
       const apply = () => this._apply({ params: { [key]: v } }, { coalesce: `param:${key}`, label: `${schema[key]?.label || key}` });

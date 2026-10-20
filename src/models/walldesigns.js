@@ -851,64 +851,81 @@ function drawBotanicalTile(ctx, el, tw, th, cols) {
   const R = K.rng(`wp-bot:${el.seed ?? 1}`);
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, tw, th);
-  const sprigs = 5;
-  for (let s = 0; s < sprigs; s++) {
-    // sprigs on a jittered diagonal grid, so the repeat is not obvious
-    const x0 = ((s + 0.5) / sprigs) * tw + (R() - 0.5) * tw * 0.12;
-    const y0 = (((s * 2) % sprigs) / sprigs) * th + (R() - 0.5) * th * 0.1;
-    const len = th * (0.34 + R() * 0.12);
-    const ang = -Math.PI / 2 + (R() - 0.5) * 0.9;
-    const bend = (R() - 0.5) * 0.9;
-    const leaves = 7 + Math.floor(R() * 3);
-    const col = R() < 0.35 ? dark : leaf;
-    const shapes = [];
-    for (let i = 1; i <= leaves; i++) {
-      const t = i / (leaves + 1);
-      shapes.push({ t, side: i % 2 ? 1 : -1, L: len * (0.2 + R() * 0.06) * (1.05 - t * 0.45), c: R() < 0.2 ? dark : col });
+  // 3 × 3 jittered grid of sprigs that lean alternately left and right, some with a side branch: dense enough to read
+  // as a pattern from across the room, irregular enough that the repeat is not obvious
+  const mid = mixHex(leaf, bg, 0.3);
+  const sprigs = [];
+  for (let gy = 0; gy < 3; gy++) {
+    for (let gx = 0; gx < 3; gx++) {
+      const lean = ((gx + gy) % 2 ? 1 : -1) * (0.28 + R() * 0.4);
+      const len = th * (0.24 + R() * 0.12);
+      sprigs.push({
+        x0: ((gx + 0.5 + (gy % 2) * 0.5) / 3) * tw + (R() - 0.5) * tw * 0.1,
+        y0: ((gy + 0.85) / 3) * th + (R() - 0.5) * th * 0.08,
+        ang: -Math.PI / 2 + lean, bend: -lean * (0.4 + R() * 0.5), len, lean,
+        col: R() < 0.3 ? dark : R() < 0.5 ? mid : leaf,
+        leaves: 8 + Math.floor(R() * 4), lseed: R(), branch: R() < 0.55, berry: accent && R() < 0.45,
+      });
     }
-    const berry = accent && R() < 0.6;
-    wrapDraw(ctx, tw, th, () => {
-      const P = (t) => {
-        const a = ang + bend * t;
-        return [x0 + Math.cos(ang) * len * t + Math.cos(a + Math.PI / 2) * bend * len * 0.15 * t * t, y0 + Math.sin(ang) * len * t];
-      };
-      ctx.strokeStyle = dark;
-      ctx.lineWidth = 0.0035;
-      ctx.lineCap = 'round';
+  }
+  const drawSprig = (x0, y0, ang, bend, len, col, leaves, lseed, berry) => {
+    const LR = K.rng(`wp-leaf:${lseed}`);
+    const P = (t) => {
+      const a = ang + bend * t;
+      return [x0 + Math.cos(a) * len * t, y0 + Math.sin(a) * len * t];
+    };
+    ctx.strokeStyle = dark;
+    ctx.lineWidth = 0.003;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (let i = 0; i <= 16; i++) {
+      const [x, y] = P(i / 16);
+      if (i) ctx.lineTo(x, y);
+      else ctx.moveTo(x, y);
+    }
+    ctx.stroke();
+    for (let i = 1; i <= leaves; i++) {
+      const t = 0.12 + (0.88 * i) / (leaves + 0.5);
+      const [x, y] = P(t);
+      const [x2, y2] = P(Math.min(1, t + 0.02));
+      const side = i % 2 ? 1 : -1;
+      const L = len * (0.2 + LR() * 0.06) * (1.1 - t * 0.5);
+      const c = LR() < 0.18 ? dark : col;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(Math.atan2(y2 - y, x2 - x) + side * (0.75 + LR() * 0.3));
+      ctx.fillStyle = c;
       ctx.beginPath();
-      for (let i = 0; i <= 20; i++) {
-        const [x, y] = P(i / 20);
-        if (i) ctx.lineTo(x, y);
-        else ctx.moveTo(x, y);
-      }
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(L * 0.45, -L * 0.24, L, 0);
+      ctx.quadraticCurveTo(L * 0.45, L * 0.24, 0, 0);
+      ctx.fill();
+      ctx.strokeStyle = mixHex(c, bg, 0.4);
+      ctx.lineWidth = 0.0011;
+      ctx.beginPath();
+      ctx.moveTo(L * 0.06, 0);
+      ctx.lineTo(L * 0.85, 0);
       ctx.stroke();
-      for (const lf of shapes) {
-        const [x, y] = P(lf.t);
-        const [x2, y2] = P(Math.min(1, lf.t + 0.02));
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(Math.atan2(y2 - y, x2 - x) + lf.side * 0.95);
-        ctx.fillStyle = lf.c;
+      ctx.restore();
+    }
+    if (berry) {
+      const [x, y] = P(1);
+      ctx.fillStyle = accent;
+      for (const [dx, dy] of [[-0.011, -0.004], [0.002, -0.014], [0.012, -0.002]]) {
         ctx.beginPath();
-        ctx.ellipse(lf.L * 0.5, 0, lf.L * 0.5, lf.L * 0.17, 0, 0, Math.PI * 2);
+        ctx.arc(x + dx, y + dy, 0.0068, 0, Math.PI * 2);
         ctx.fill();
-        // midrib
-        ctx.strokeStyle = mixHex(lf.c, bg, 0.35);
-        ctx.lineWidth = 0.0012;
-        ctx.beginPath();
-        ctx.moveTo(lf.L * 0.08, 0);
-        ctx.lineTo(lf.L * 0.9, 0);
-        ctx.stroke();
-        ctx.restore();
       }
-      if (berry) {
-        const [x, y] = P(1);
-        ctx.fillStyle = accent;
-        for (let k = 0; k < 3; k++) {
-          ctx.beginPath();
-          ctx.arc(x + (k - 1) * 0.012, y - 0.008 - (k % 2) * 0.01, 0.0075, 0, Math.PI * 2);
-          ctx.fill();
-        }
+    }
+    return P;
+  };
+  for (const s of sprigs) {
+    wrapDraw(ctx, tw, th, () => {
+      const P = drawSprig(s.x0, s.y0, s.ang, s.bend, s.len, s.col, s.leaves, s.lseed, s.berry);
+      // a side branch leaning the other way from the lower part of the stem
+      if (s.branch) {
+        const [bx, by] = P(0.42);
+        drawSprig(bx, by, s.ang - Math.sign(s.lean) * 0.75, s.bend * 0.5, s.len * 0.45, s.col, 5, s.lseed + 0.5, false);
       }
     });
   }
@@ -1047,19 +1064,19 @@ function limewashSet() {
           amp *= 0.55;
           f *= 2.1;
         }
-        const v = 200 + (s / norm) * 34;
+        const v = 200 + (s / norm) * 15;
         const i = (y * N + x) * 4;
         d[i] = d[i + 1] = d[i + 2] = clamp(v, 0, 255);
         d[i + 3] = 255;
       }
     }
     ctx.putImageData(img, 0, 0);
-    // soft criss-cross brush strokes
+    // soft criss-cross brush strokes (faint: lime wash reads as clouds, not as smudges)
     const R = K.rng('limewash');
     ctx.lineCap = 'round';
-    for (let i = 0; i < 260; i++) {
+    for (let i = 0; i < 140; i++) {
       const x = R() * N, y = R() * N, len = (0.12 + R() * 0.28) * (N / tile), ang = (R() < 0.5 ? 0.6 : -0.6) + (R() - 0.5) * 0.8;
-      ctx.strokeStyle = R() < 0.5 ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.045)';
+      ctx.strokeStyle = R() < 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.018)';
       ctx.lineWidth = (0.04 + R() * 0.07) * (N / tile);
       for (const ox of [-N, 0, N]) for (const oy of [-N, 0, N]) {
         ctx.beginPath();
@@ -1085,7 +1102,7 @@ function limewashMat(hex) {
   return ownMat(`limewash|${c}|${QUALITY}`, () => {
     const set = limewashSet();
     const color = new THREE.Color(c).multiplyScalar(1 / set.ref);
-    const m = new THREE.MeshStandardMaterial({ color, map: set.map, normalMap: set.normalMap, normalScale: new THREE.Vector2(0.35, 0.35), roughness: 0.96 });
+    const m = new THREE.MeshStandardMaterial({ color, map: set.map, normalMap: set.normalMap, normalScale: new THREE.Vector2(0.2, 0.2), roughness: 0.96 });
     m.name = `limewash ${c}`;
     return m;
   });
@@ -1129,7 +1146,8 @@ export function elementBounds(el) {
       v0 = Math.min(v0, it.cv - rv);
       v1 = Math.max(v1, it.cv + rv);
     }
-    return { u0, v0, u1, v1, depth: t === 'hooks' ? 0.08 : num(el.depth, 0.04) };
+    const depth = t === 'hooks' ? 0.08 : items.reduce((s, it) => Math.max(s, num(it.depth, 0)), num(el.depth, 0.04));
+    return { u0, v0, u1, v1, depth };
   }
   if (t === 'hexagons') return { u0: num(el.u, 0), v0: num(el.v, 0), u1: num(el.u, 0) + num(el.w, 1), v1: num(el.v, 0) + num(el.h, 1), depth: num(el.depth, 0.025) };
   if (t === 'curtain') {
@@ -1153,11 +1171,20 @@ export function elementBounds(el) {
     const u = num(el.u, 0), w = num(el.w, 1), v = num(el.v, 1), th = num(el.thickness, 0.04);
     return { u0: u, v0: v, u1: u + w, v1: v + th, depth: num(el.d, 0.22) };
   }
+  if (t === 'ledge') {
+    const u = num(el.u, 0), w = num(el.w, 1), v = num(el.v, 1.3);
+    const top = (el.items || []).reduce((s, it) => Math.max(s, num(it.h, 0.6)), 0.03);
+    return { u0: u, v0: v, u1: u + w, v1: v + 0.025 + top, depth: num(el.d, 0.09) };
+  }
   const u = num(el.u, 0), v = num(el.v, 0), w = num(el.w, 1), h = num(el.h, 1);
   let depth = num(el.depth, 0.03);
-  if (t === 'slats') depth = num(el.standoff, 0.02) + (el.backing === 'none' ? 0 : FELT_T) + num(el.slatD, 0.012);
-  else if (t === 'sideboard-floating') depth = num(el.d, 0.4);
-  else if (t === 'paint-block') depth = 0.002;
+  if (t === 'slats') depth = num(el.standoff, 0.02) + (el.backing === 'none' ? 0 : FELT_T) + num(el.slatD, 0.012) + num(el.waveAmp, 0);
+  else if (t === 'sideboard-floating' || t === 'bookcase') depth = num(el.d, t === 'bookcase' ? 0.3 : 0.4);
+  else if (t === 'paint-block' || t === 'wallpaper') depth = 0.002;
+  else if (t === 'moulding') {
+    depth = num(el.relief, 0.018) + (el.rail === false ? 0 : 0.008);
+    return { u0: u, v0: v, u1: u + w, v1: v + h + (el.rail === false ? 0 : num(el.railH, 0.06)), depth };
+  }
   else if (t === 'tapestry') depth = el.rod === false ? 0.02 : 0.07;
   return { u0: u, v0: v, u1: u + w, v1: v + h, depth };
 }
@@ -1333,6 +1360,10 @@ function buildPanel(ctx, el) {
       const pm = surfaceMaterial(surface, color);
       g.add(K.partMesh(K.roundedBox(iw + 0.004, ih + 0.004, depth - 0.004, 0.004, 2), pm, 'panel', { position: [cx, cy, (depth - 0.004) / 2] }));
     }
+  } else if (edge === 'channel') {
+    // channel tufting: softly rounded upholstered bars side by side, the seams between them read as grooves
+    const geo = K.roundedBox(Math.max(0.02, w - 0.004), h, depth, Math.min(depth * 0.48, w * 0.3), 4);
+    g.add(K.partMesh(geo, surfaceMaterial(surface, color), 'panel', { position: [cx, cy, depth / 2] }));
   } else if (edge === 'rounded') {
     // upholstered cushion (bench backs)
     const geo = K.cushion(w, h, depth, { axis: 'z', puff: 0.22, round: 0.8, top: 1, bottom: 0, sides: 0.18, seg: 12 });
@@ -1529,7 +1560,9 @@ function buildHexagons(ctx, el) {
     const geo = baseFor(clamp(num(it.depth, depth), 0.005, 0.12)).clone();
     geo.translate(num(it.cu, 1), num(it.cv, 1), 0);
     const surf = it.surface || el.surface || 'wood-concrete';
-    K.worldUV(geo, 1, { grain: 'y', offset: [num(it.cu, 1) * 3.1, num(it.cv, 1) * 1.7] });
+    // wooden tiles: vertical grain, each tile cut from another part of the board
+    if (kindGroup(surf) === 'wood') K.worldUV(geo, 1, { grain: 'y', offset: [num(it.cu, 1) * 3.1, num(it.cv, 1) * 1.7] });
+    else K.worldUV(geo);
     ctx.g.add(K.partMesh(geo, surfaceMaterial(surf, resolveColor(it.color, colors[0])), 'panel'));
   }
   for (const b of bases.values()) b.dispose();
@@ -2275,7 +2308,7 @@ function buildMoulding(ctx, el) {
       }
       base.dispose();
     }
-  } else {
+  } else if (style !== 'rail') {
     const bwid = Math.max(profile, 0.04);
     for (let c = 0; c <= cols; c++) {
       const x = u + bwid / 2 + ((w - bwid) * c) / cols;
@@ -2615,6 +2648,8 @@ export function elementEditor(type, el = null) {
         standoffMm: { type: 'number', min: 0, max: 100, step: 1, label: 'Lekter/Glava bak', unit: 'mm' },
         backing: { type: 'enum', label: 'Bakgrunn', options: [['felt', 'Filt'], ['none', 'Ingen (rett på veggen)']] },
         backingColor: { ...colorP('Filtfarge'), palette: FELT_SWATCHES },
+        waveAmpMm: { type: 'number', min: 0, max: 80, step: 1, label: 'Bølge (ekstra dybde)', unit: 'mm' },
+        ...(num(e.waveAmp, 0) > 0 ? { wavePeriodCm: { type: 'number', min: 40, max: 400, step: 5, label: 'Bølgelengde', unit: 'cm' } } : {}),
       };
     case 'checker': {
       const s = {
@@ -2622,9 +2657,15 @@ export function elementEditor(type, el = null) {
         cols: { type: 'number', min: 1, max: 10, step: 1, label: 'Kolonner' },
         rows: { type: 'number', min: 1, max: 6, step: 1, label: 'Rader' },
         tileCm: { type: 'number', min: 20, max: 120, step: 1, label: 'Rutestørrelse', unit: 'cm' },
-        fill: { type: 'enum', label: 'Fyll', options: [['slats-alternating', 'Spiler i vekslende retning'], ['felt', 'Filt']] },
+        fill: { type: 'enum', label: 'Fyll', options: [['slats-alternating', 'Spiler i vekslende retning'], ['felt', 'Filt'], ['wood-felt', 'Spiler og filt annenhver']] },
       };
-      if (e.fill === 'felt') {
+      if (e.fill === 'wood-felt') {
+        s.wood0 = { type: 'enum', label: 'Treslag', options: WOOD_OPTIONS };
+        s.c0 = { ...colorP('Farge på spilene'), palette: WOOD_SWATCHES };
+        s.c1 = { ...colorP('Filtfarge'), palette: FELT_SWATCHES };
+        s.startOrientation = { type: 'enum', label: 'Spileretning', options: [['vertical', 'Stående spiler'], ['horizontal', 'Liggende spiler']] };
+        s.backingColor = { ...colorP('Filt bak spilene'), palette: FELT_SWATCHES };
+      } else if (e.fill === 'felt') {
         s.c0 = { ...colorP('Farge A'), palette: FELT_SWATCHES };
         s.c1 = { ...colorP('Farge B'), palette: FELT_SWATCHES };
         s.depthMm = { type: 'number', min: 9, max: 60, step: 1, label: 'Tykkelse', unit: 'mm' };
@@ -2646,7 +2687,7 @@ export function elementEditor(type, el = null) {
         depthMm: { type: 'number', min: 5, max: 120, step: 1, label: 'Tykkelse', unit: 'mm' },
         surface: { type: 'enum', label: 'Overflate', options: FABRIC_OPTIONS },
         color: { ...colorP('Farge'), palette: FABRIC_SWATCHES },
-        edge: { type: 'enum', label: 'Kant', options: [['square', 'Rett, stofftrukket'], ['rounded', 'Polstret (avrundet)'], ['frame', 'Med ramme']] },
+        edge: { type: 'enum', label: 'Kant', options: [['square', 'Rett, stofftrukket'], ['rounded', 'Polstret (avrundet)'], ['channel', 'Kanalpolstret'], ['frame', 'Med ramme']] },
         frameColor: { ...colorP('Rammefarge'), palette: [...METAL_SWATCHES, ...WOOD_SWATCHES] },
       };
     case 'art': {
@@ -2696,7 +2737,8 @@ export function elementEditor(type, el = null) {
         c0: { ...colorP('Farge 1'), palette: [...FELT_SWATCHES, { hex: '#b3aa95', name: 'Natur' }, { hex: '#5a5c59', name: 'Grå' }, { hex: '#7f9275', name: 'Salvie' }] },
         c1: { ...colorP('Farge 2'), palette: [...FELT_SWATCHES, { hex: '#5a5c59', name: 'Grå' }] },
         c2: { ...colorP('Farge 3'), palette: [...FELT_SWATCHES, { hex: '#7f9275', name: 'Salvie' }] },
-        surface: { type: 'enum', label: 'Materiale', options: [['wood-concrete', 'Trebetong'], ['felt', 'Filt'], ['cork', 'Kork']] },
+        surface: { type: 'enum', label: 'Materiale', options: [['wood-concrete', 'Trebetong'], ['felt', 'Filt'], ['cork', 'Kork'], ['oak', 'Eik'], ['smoked-oak', 'Røkt eik'], ['walnut', 'Valnøtt'], ['moss', 'Mose']] },
+        depthMm: { type: 'number', min: 10, max: 100, step: 1, label: 'Tykkelse', unit: 'mm' },
       };
     case 'curtain':
       return {
@@ -2772,7 +2814,53 @@ export function elementEditor(type, el = null) {
       return {
         ...POS(), ...SIZE(),
         color: colorP('Farge', 'paints'),
-        shape: { type: 'enum', label: 'Form', options: [['rect', 'Rektangel'], ['arch', 'Bue']] },
+        shape: { type: 'enum', label: 'Form', options: [['rect', 'Rektangel'], ['arch', 'Bue'], ['circle', 'Sirkel'], ['half-circle', 'Halvsirkel']] },
+        finish: { type: 'enum', label: 'Overflate', options: [['flat', 'Vanlig maling'], ['limewash', 'Kalkmaling (skyet)']] },
+      };
+    case 'wallpaper': {
+      const s = {
+        ...POS(), ...SIZE(),
+        pattern: { type: 'enum', label: 'Mønster', options: [['botanical', 'Botanisk'], ['mural', 'Panorama (landskap)'], ['stripes', 'Striper'], ['scallop', 'Fiskeskjell'], ['grasscloth', 'Gresstapet']] },
+      };
+      if (e.pattern !== 'mural') s.scale = { type: 'number', min: 0.5, max: 2.5, step: 0.05, label: 'Mønsterstørrelse' };
+      s.seed = { type: 'number', min: 1, max: 200, step: 1, label: 'Variant' };
+      const n = e.pattern === 'grasscloth' ? 1 : e.pattern === 'stripes' || e.pattern === 'scallop' ? 3 : Math.max(4, (e.colors || []).length);
+      for (let i = 0; i < n; i++) s[`c${i}`] = { ...colorP(i === 0 ? 'Bunnfarge' : `Farge ${i + 1}`), palette: [...ART_SWATCHES, ...FABRIC_SWATCHES] };
+      s.shape = { type: 'enum', label: 'Form', options: [['rect', 'Rektangel'], ['arch', 'Bue']] };
+      return s;
+    }
+    case 'moulding':
+      return {
+        ...POS(), ...SIZE(),
+        style: { type: 'enum', label: 'Type', options: [['boxes', 'Kassetter (fyllingspanel)'], ['grid', 'Rutenett av lister'], ['battens', 'Stående lister'], ['rail', 'Bare brystlist']] },
+        cols: { type: 'number', min: 1, max: 16, step: 1, label: 'Kolonner' },
+        rows: { type: 'number', min: 1, max: 10, step: 1, label: 'Rader' },
+        ...(e.style === 'boxes' || !e.style ? { gapCm: { type: 'number', min: 2, max: 40, step: 1, label: 'Avstand mellom kassettene', unit: 'cm' } } : {}),
+        profileMm: { type: 'number', min: 15, max: 120, step: 1, label: 'Listebredde', unit: 'mm' },
+        reliefMm: { type: 'number', min: 6, max: 50, step: 1, label: 'Listedybde', unit: 'mm' },
+        color: colorP('Farge', 'paints'),
+        rail: { type: 'bool', label: 'Brystlist øverst' },
+      };
+    case 'bookcase':
+      return {
+        ...POS(), ...SIZE(),
+        dCm: { type: 'number', min: 18, max: 50, step: 1, label: 'Dybde', unit: 'cm' },
+        cols: { type: 'number', min: 1, max: 10, step: 1, label: 'Seksjoner' },
+        rows: { type: 'number', min: 1, max: 12, step: 1, label: 'Hyller i høyden' },
+        material: { type: 'enum', label: 'Treslag', options: WOOD_OPTIONS },
+        color: { ...colorP('Farge'), palette: WOOD_SWATCHES },
+        backColor: { ...colorP('Bakvegg (malt)'), palette: 'paints' },
+        fill: { type: 'number', min: 0, max: 1, step: 0.05, label: 'Hvor full (bøker)' },
+        seed: { type: 'number', min: 1, max: 200, step: 1, label: 'Variant' },
+      };
+    case 'ledge':
+      return {
+        ...POS(),
+        w: SIZE().w,
+        dCm: { type: 'number', min: 5, max: 25, step: 1, label: 'Dybde', unit: 'cm' },
+        material: { type: 'enum', label: 'Treslag', options: WOOD_OPTIONS },
+        color: { ...colorP('Farge'), palette: [...WOOD_SWATCHES, { hex: '#1f1f1f', name: 'Sort' }, { hex: '#e9e5dc', name: 'Hvit' }] },
+        frame: { type: 'enum', label: 'Rammer', options: [['black', 'Sort'], ['oak', 'Eik'], ['smoked-oak', 'Røkt eik'], ['walnut', 'Valnøtt'], ['white', 'Hvit'], ['mixed', 'Blandet (som foreslått)']] },
       };
     case 'plant':
       return {
@@ -2798,7 +2886,25 @@ export function elementValues(el, elements = []) {
   const mm = (k) => Math.round(num(el[k], 0) * 1000);
   switch (el.type) {
     case 'slats':
-      Object.assign(out, { slatWMm: mm('slatW'), gapMm: mm('gap'), slatDMm: mm('slatD'), standoffMm: mm('standoff'), backing: el.backing || 'felt' });
+      Object.assign(out, { slatWMm: mm('slatW'), gapMm: mm('gap'), slatDMm: mm('slatD'), standoffMm: mm('standoff'), backing: el.backing || 'felt', waveAmpMm: mm('waveAmp'), wavePeriodCm: Math.round(num(el.wavePeriod, 1.3) * 100) });
+      break;
+    case 'wallpaper':
+      (el.colors?.length ? el.colors : DEFAULTS.wallpaper.colors).forEach((c, i) => (out[`c${i}`] = c));
+      Object.assign(out, { pattern: el.pattern || 'botanical', scale: num(el.scale, 1), seed: num(el.seed, 1), shape: el.shape || 'rect' });
+      break;
+    case 'moulding':
+      Object.assign(out, { style: el.style || 'boxes', cols: num(el.cols, 4), rows: num(el.rows, 1), gapCm: Math.round(num(el.gap, 0.1) * 100), profileMm: mm('profile') || 35, reliefMm: mm('relief') || 18, color: el.color || 'sand', rail: el.rail !== false });
+      break;
+    case 'bookcase':
+      Object.assign(out, { dCm: Math.round(num(el.d, 0.3) * 100), cols: num(el.cols, 4), rows: num(el.rows, 6), material: woodKind(el.material, 'oak'), backColor: el.backColor || resolveColor('sand'), fill: num(el.fill, 0.75), seed: num(el.seed, 1) });
+      break;
+    case 'ledge': {
+      const frames = new Set((el.items || []).map((it) => it.frame || 'black'));
+      Object.assign(out, { dCm: Math.round(num(el.d, 0.09) * 100), material: woodKind(el.material, 'oak'), frame: frames.size === 1 ? [...frames][0] : 'mixed' });
+      break;
+    }
+    case 'paint-block':
+      out.finish = el.finish || 'flat';
       break;
     case 'checker':
       Object.assign(out, {
@@ -2823,7 +2929,7 @@ export function elementValues(el, elements = []) {
       Object.assign(out, { u: +b.u0.toFixed(2), v: +b.v0.toFixed(2), count: (el.items || []).length, diameterCm: Math.round(num(el.items?.[0]?.r, 0.4) * 200), depthMm: mm('depth') });
       break;
     case 'hexagons':
-      Object.assign(out, { u: +b.u0.toFixed(2), v: +b.v0.toFixed(2), count: (el.items || []).length || num(el.count, 12), sizeCm: Math.round(num(el.size, 0.52) * 100), c0: el.colors?.[0], c1: el.colors?.[1], c2: el.colors?.[2], surface: el.surface || 'wood-concrete' });
+      Object.assign(out, { u: +b.u0.toFixed(2), v: +b.v0.toFixed(2), count: (el.items || []).length || num(el.count, 12), sizeCm: Math.round(num(el.size, 0.52) * 100), c0: el.colors?.[0], c1: el.colors?.[1], c2: el.colors?.[2], surface: el.surface || 'wood-concrete', depthMm: mm('depth') || 25 });
       break;
     case 'curtain':
       Object.assign(out, { waveCm: +(num(el.waveWidth, 0.135) * 100).toFixed(1), fullness: num(el.fullness, 2.2), trackStyle: el.trackStyle === 'rail' ? 'rail' : 'pelmet' });
@@ -2875,13 +2981,17 @@ function estimateAlpha(el) {
     case 'curtain':
       return el.fabric === 'velvet' || el.fabric === 'velour' ? 0.49 : 0.4;
     case 'hexagons':
-      return el.surface === 'felt' ? 0.8 : el.surface === 'cork' ? 0.3 : 0.45;
+      return el.surface === 'felt' ? 0.8 : el.surface === 'cork' ? 0.3 : el.surface === 'moss' ? 0.47 : kindGroup(el.surface) === 'wood' ? 0.08 : 0.45;
+    case 'bookcase':
+      // full shelves of books absorb and scatter a little (≈ 0.3 when full, the open wood shelves ≈ 0.1)
+      return +(0.1 + 0.25 * clamp(num(el.fill, 0.75), 0, 1)).toFixed(2);
     default:
       return el.alpha ?? 0;
   }
 }
 
 const ALPHA_KEYS = new Set(['backing', 'gapMm', 'slatWMm', 'standoffMm', 'fill', 'surface', 'edge', 'acoustic', 'fabric', 'depthMm']);
+const LEDGE_FRAME_KEYS = new Set(['black', 'oak', 'smoked-oak', 'walnut', 'white']);
 
 /**
  * Returns a new element with one schema value changed (handles derived keys: mm/cm, colour lists, item-based
@@ -2919,8 +3029,12 @@ export function setElementParam(el, key, value) {
     if (Array.isArray(e.items)) e.items = e.items.map((it) => (resolveColor(it.color) === old ? { ...it, color: value } : it));
   } else if (ck && t === 'art') {
     setList('palette', Number(ck[1]), value, (e.palette || []).length);
-  } else if (ck && t === 'tapestry') {
-    setList('colors', Number(ck[1]), value, 4);
+  } else if (ck && (t === 'tapestry' || t === 'wallpaper')) {
+    setList('colors', Number(ck[1]), value, t === 'wallpaper' ? (e.colors || DEFAULTS.wallpaper.colors).length : 4);
+  } else if (t === 'ledge' && key === 'frame') {
+    if (LEDGE_FRAME_KEYS.has(value)) e.items = (e.items || []).map((it) => ({ ...it, frame: value }));
+  } else if (t === 'moulding' && key === 'gapCm') {
+    e.gap = value / 100;
   } else if (ck && t === 'checker') {
     setList('colors', Number(ck[1]), value, 2);
   } else if (key === 'wood0' || key === 'wood1') {
@@ -2930,7 +3044,7 @@ export function setElementParam(el, key, value) {
   } else if (key === 'wood' && t === 'slats') {
     e.wood = value;
     if (WOOD_PRESETS[value] && value !== 'painted') e.slatColor = WOOD_PRESETS[value].hex;
-  } else if (key === 'material' && (t === 'shelf' || t === 'sideboard-floating' || t === 'hooks')) {
+  } else if (key === 'material' && (t === 'shelf' || t === 'sideboard-floating' || t === 'hooks' || t === 'bookcase' || t === 'ledge')) {
     e.material = value;
     if (WOOD_PRESETS[value] && value !== 'painted') e.color = WOOD_PRESETS[value].hex;
   } else if (t === 'checker' && (key === 'cols' || key === 'rows' || key === 'tileCm')) {
@@ -3027,8 +3141,8 @@ export function moveElement(el, du = 0, dv = 0) {
 }
 
 // types that stand on the floor / hang from the ceiling at a fixed height, and flat ones others may be put on
-const FIXED_V_TYPES = new Set(['curtain', 'sideboard-floating', 'plant', 'paint-block', 'slats']);
-const FLAT_TYPES = new Set(['paint-block', 'led']);
+const FIXED_V_TYPES = new Set(['curtain', 'sideboard-floating', 'plant', 'paint-block', 'slats', 'bookcase', 'wallpaper']);
+const FLAT_TYPES = new Set(['paint-block', 'led', 'wallpaper', 'moulding']);
 
 /**
  * Moves a new element to the freest spot on the wall: the least overlap with the existing elements (painted fields
@@ -3094,6 +3208,14 @@ export function describeElement(el) {
       return `${label} · ${fmt(num(el.w, 1))} m · ${num(el.colorK, 2700)} K`;
     case 'curtain':
       return `${label} · ${{ velvet: 'fløyel', linen: 'lin', wool: 'ull', cotton: 'bomull' }[el.fabric] || 'stoff'} · ${size}`;
+    case 'wallpaper':
+      return `${label} · ${{ botanical: 'botanisk', mural: 'panorama', stripes: 'striper', scallop: 'fiskeskjell', grasscloth: 'gresstapet' }[el.pattern] || 'mønster'} · ${size}`;
+    case 'moulding':
+      return `${label} · ${{ boxes: 'kassetter', grid: 'rutenett', battens: 'stående lister', rail: 'brystlist' }[el.style || 'boxes']} · ${size}`;
+    case 'bookcase':
+      return `${label} · ${wood ? `${wood.toLowerCase()} · ` : ''}${num(el.cols, 4)} seksjoner · ${size}`;
+    case 'ledge':
+      return `${label} · ${(el.items || []).length} bilder · ${fmt(num(el.w, 1))} m`;
     default:
       return `${label} · ${size}`;
   }

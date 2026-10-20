@@ -76,7 +76,12 @@
           "h": 1,
           "depth": 0.03,
           "motif": "abstract-shapes",
-          "palette": ["#ebe3d6", "#c9b79c", "#8c6c55", "#2b2826"],
+          "palette": [
+            "#ebe3d6",
+            "#c9b79c",
+            "#8c6c55",
+            "#2b2826"
+          ],
           "frame": "oak",
           "acoustic": false,
           "seed": 81,
@@ -90,7 +95,11 @@
           "h": 0.7,
           "depth": 0.025,
           "motif": "botanical",
-          "palette": ["#efe9de", "#7d8a6a", "#3a3a33"],
+          "palette": [
+            "#efe9de",
+            "#7d8a6a",
+            "#3a3a33"
+          ],
           "frame": "black",
           "acoustic": false,
           "seed": 82,
@@ -104,7 +113,11 @@
           "h": 0.5,
           "depth": 0.025,
           "motif": "line-art",
-          "palette": ["#f1ece2", "#2b2b2b", "#c58f6e"],
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#c58f6e"
+          ],
           "frame": "oak",
           "acoustic": false,
           "seed": 83,
@@ -155,7 +168,14 @@
           "h": 1.45,
           "depth": 0.05,
           "motif": "landscape-hills",
-          "palette": ["#e7e2d7", "#a9b3b0", "#7f8f78", "#5b6b52", "#b58456", "#3c3f3a"],
+          "palette": [
+            "#e7e2d7",
+            "#a9b3b0",
+            "#7f8f78",
+            "#5b6b52",
+            "#b58456",
+            "#3c3f3a"
+          ],
           "frame": "none",
           "acoustic": true,
           "sun": false,
@@ -172,7 +192,14 @@
           "h": 1.45,
           "depth": 0.05,
           "motif": "landscape-hills",
-          "palette": ["#e7e2d7", "#a9b3b0", "#7f8f78", "#5b6b52", "#b58456", "#3c3f3a"],
+          "palette": [
+            "#e7e2d7",
+            "#a9b3b0",
+            "#7f8f78",
+            "#5b6b52",
+            "#b58456",
+            "#3c3f3a"
+          ],
           "frame": "none",
           "acoustic": true,
           "sun": false,
@@ -189,7 +216,14 @@
           "h": 1.45,
           "depth": 0.05,
           "motif": "landscape-hills",
-          "palette": ["#e7e2d7", "#a9b3b0", "#7f8f78", "#5b6b52", "#b58456", "#3c3f3a"],
+          "palette": [
+            "#e7e2d7",
+            "#a9b3b0",
+            "#7f8f78",
+            "#5b6b52",
+            "#b58456",
+            "#3c3f3a"
+          ],
           "frame": "none",
           "acoustic": true,
           "sun": false,
@@ -243,7 +277,13 @@
           "h": 1.3,
           "depth": 0.045,
           "motif": "landscape-hills",
-          "palette": ["#ece5d8", "#b9c0b0", "#7d8a6a", "#566650", "#c98f6b"],
+          "palette": [
+            "#ece5d8",
+            "#b9c0b0",
+            "#7d8a6a",
+            "#566650",
+            "#c98f6b"
+          ],
           "frame": "oak",
           "acoustic": true,
           "sun": true,
@@ -258,7 +298,11 @@
           "h": 0.7,
           "depth": 0.04,
           "motif": "botanical",
-          "palette": ["#efe8dc", "#7d8a6a", "#3a3936"],
+          "palette": [
+            "#efe8dc",
+            "#7d8a6a",
+            "#3a3936"
+          ],
           "frame": "oak",
           "acoustic": true,
           "seed": 102,
@@ -272,7 +316,11 @@
           "h": 0.54,
           "depth": 0.04,
           "motif": "line-art",
-          "palette": ["#f1ece2", "#2b2b2b", "#c98f6b"],
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#c98f6b"
+          ],
           "frame": "oak",
           "acoustic": true,
           "seed": 103,
@@ -286,7 +334,12 @@
           "h": 0.6,
           "depth": 0.04,
           "motif": "abstract-shapes",
-          "palette": ["#e9e0d0", "#c98f6b", "#b8a58a", "#3a3936"],
+          "palette": [
+            "#e9e0d0",
+            "#c98f6b",
+            "#b8a58a",
+            "#3a3936"
+          ],
           "frame": "oak",
           "acoustic": true,
           "seed": 104,
@@ -300,7 +353,12 @@
           "h": 0.54,
           "depth": 0.04,
           "motif": "abstract-shapes",
-          "palette": ["#ece5d8", "#7d8a6a", "#c98f6b", "#2b2b2b"],
+          "palette": [
+            "#ece5d8",
+            "#7d8a6a",
+            "#c98f6b",
+            "#2b2b2b"
+          ],
           "frame": "oak",
           "acoustic": true,
           "seed": 105,
@@ -314,7 +372,11 @@
           "h": 0.7,
           "depth": 0.04,
           "motif": "botanical",
-          "palette": ["#efe8dc", "#566650", "#b8a58a"],
+          "palette": [
+            "#efe8dc",
+            "#566650",
+            "#b8a58a"
+          ],
           "frame": "oak",
           "acoustic": true,
           "seed": 106,
@@ -328,7 +390,11 @@
           "h": 0.6,
           "depth": 0.04,
           "motif": "line-art",
-          "palette": ["#f1ece2", "#2b2b2b", "#7d8a6a"],
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#7d8a6a"
+          ],
           "frame": "oak",
           "acoustic": true,
           "seed": 107,
@@ -737,7 +803,13 @@
           "h": 1,
           "depth": 0.05,
           "motif": "landscape-hills",
-          "palette": ["#e7e2d7", "#a9b3b0", "#7f8f78", "#5b6b52", "#b58456"],
+          "palette": [
+            "#e7e2d7",
+            "#a9b3b0",
+            "#7f8f78",
+            "#5b6b52",
+            "#b58456"
+          ],
           "frame": "oak",
           "acoustic": true,
           "sun": false,
@@ -1019,7 +1091,10 @@
           "rows": 4,
           "depth": 0.04,
           "fill": "felt",
-          "colors": ["#c9bca6", "#a39584"],
+          "colors": [
+            "#c9bca6",
+            "#a39584"
+          ],
           "gap": 0.003,
           "alpha": 0.8
         }
@@ -1289,6 +1364,2662 @@
           "alpha": 0
         }
       ]
+    },
+    {
+      "id": "N20",
+      "code": "N20",
+      "name": "Bikube i filt – diagonal flyt i Marrakesh, sand og terrakotta",
+      "group": "Runde 3 – sekskanter",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 2.8,
+      "rt60": 0.78,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Sekskantede akustikkpaneler i PET-filt (40 cm, 4 cm tykke) satt i et diagonalt bånd fra nisjehjørnet opp mot døra. Båndet er tettest på midten og løser seg opp i enkeltfliser i endene. Fargene går fra MARRAKESH ved TV-stua via sand til terrakotta mot kjøkkenet, så veggen binder de to rommene sammen.",
+      "pros": [
+        "Leken og myk – tar opp rundingene i rommet",
+        "God demping per flis (filt 40 mm)",
+        "Fargene henter både TV-stua (Marrakesh) og stueveggen (sand)",
+        "Kan monteres og flyttes med dobbeltsidig tape eller små skruer"
+      ],
+      "cons": [
+        "Mange fliser å sette opp nøyaktig – lag papirmal først",
+        "Mer uttrykk enn en rolig spilevegg",
+        "Filt samler noe støv – støvsug av og til"
+      ],
+      "products": [
+        "Sekskantede akustikkpaneler i PET-filt, ca. 40 cm flat-til-flat, 40 mm – se tellingen i detaljene",
+        "Tre farger: Marrakesh-lik varmgrå, sand og terrakotta",
+        "Montering: lim/dobbeltsidig tape for filt eller skjulte skruer"
+      ],
+      "notes": "Flate topp/bunn. Båndet går fra ca. (0,35; 0,72) til (3,38; 2,62) m, holder seg unna bryterne ved døra (u > 3,62).",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "hexagons",
+          "u": 0.151,
+          "v": 0.42,
+          "w": 3.235,
+          "h": 2.44,
+          "size": 0.4,
+          "depth": 0.04,
+          "colors": [
+            "#a39584",
+            "#cbbba2",
+            "#b06f55"
+          ],
+          "surface": "felt",
+          "orientation": "flat-top",
+          "items": [
+            {
+              "cu": 0.351,
+              "cv": 0.62,
+              "color": "#a39584"
+            },
+            {
+              "cu": 0.705,
+              "cv": 0.824,
+              "color": "#a39584"
+            },
+            {
+              "cu": 0.705,
+              "cv": 1.232,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.06,
+              "cv": 1.028,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.06,
+              "cv": 1.436,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.414,
+              "cv": 0.824,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.414,
+              "cv": 1.232,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.414,
+              "cv": 1.64,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.414,
+              "cv": 2.048,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.769,
+              "cv": 1.028,
+              "color": "#b06f55"
+            },
+            {
+              "cu": 1.769,
+              "cv": 1.436,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.769,
+              "cv": 1.844,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.769,
+              "cv": 2.252,
+              "color": "#a39584"
+            },
+            {
+              "cu": 2.123,
+              "cv": 1.232,
+              "color": "#b06f55"
+            },
+            {
+              "cu": 2.123,
+              "cv": 1.64,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.123,
+              "cv": 2.048,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.123,
+              "cv": 2.456,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.477,
+              "cv": 1.436,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.477,
+              "cv": 1.844,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.477,
+              "cv": 2.252,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.832,
+              "cv": 1.232,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.832,
+              "cv": 2.048,
+              "color": "#b06f55"
+            },
+            {
+              "cu": 2.832,
+              "cv": 2.456,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 3.186,
+              "cv": 2.252,
+              "color": "#b06f55"
+            },
+            {
+              "cu": 3.186,
+              "cv": 2.66,
+              "color": "#b06f55"
+            }
+          ],
+          "alpha": 0.8
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N21",
+      "code": "N21",
+      "name": "Sekskanter i røkt eik med mosefliser",
+      "group": "Runde 3 – sekskanter",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 1.1,
+      "rt60": 0.83,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "En organisk klynge av sekskanter i røkt eik (finér på MDF, 22 mm) der noen fliser er byttet ut med preservert mose som står litt lenger ut. Røkt eik henter spisebordet og kjøkkenet, mosen gir liv og litt demping.",
+      "pros": [
+        "Varmt og naturlig – tre og mose sammen",
+        "Røkt eik matcher bord og kjøkken",
+        "Mosen trenger ikke vann eller lys",
+        "Relieff: mosen står ut, eiken ligger flatere"
+      ],
+      "cons": [
+        "Lite demping (eikeflisene er harde) – ca. +1 m² Sabine",
+        "Mose tåler ikke tørr luft over lang tid uten å bleke litt",
+        "Mange enkeltfliser å montere"
+      ],
+      "products": [
+        "Sekskanter i røkt eik (finér/MDF), ca. 46 cm flat-til-flat",
+        "Sekskantede mosefliser (preservert ball-/flatmose) i samme størrelse",
+        "Monteringslim / skjulte skruer"
+      ],
+      "notes": "Klyngen er midtstilt (u 0,3–3,6). Mosen samlet i to klumper: oppe til venstre og nede til høyre.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "hexagons",
+          "u": 0.186,
+          "v": 0.734,
+          "w": 3.304,
+          "h": 1.864,
+          "size": 0.46,
+          "depth": 0.022,
+          "colors": [
+            "#5f4936",
+            "#557030"
+          ],
+          "surface": "smoked-oak",
+          "orientation": "flat-top",
+          "items": [
+            {
+              "cu": 0.416,
+              "cv": 1.666,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 0.822,
+              "cv": 1.432,
+              "color": "#557030",
+              "surface": "moss",
+              "depth": 0.042
+            },
+            {
+              "cu": 0.822,
+              "cv": 1.9,
+              "color": "#557030",
+              "surface": "moss",
+              "depth": 0.042
+            },
+            {
+              "cu": 0.822,
+              "cv": 2.368,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 1.228,
+              "cv": 1.198,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 1.228,
+              "cv": 1.666,
+              "color": "#557030",
+              "surface": "moss",
+              "depth": 0.042
+            },
+            {
+              "cu": 1.228,
+              "cv": 2.134,
+              "color": "#557030",
+              "surface": "moss",
+              "depth": 0.042
+            },
+            {
+              "cu": 1.635,
+              "cv": 0.964,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 1.635,
+              "cv": 1.432,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 1.635,
+              "cv": 1.9,
+              "color": "#557030",
+              "surface": "moss",
+              "depth": 0.042
+            },
+            {
+              "cu": 1.635,
+              "cv": 2.368,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 2.041,
+              "cv": 1.198,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 2.041,
+              "cv": 1.666,
+              "color": "#557030",
+              "surface": "moss",
+              "depth": 0.042
+            },
+            {
+              "cu": 2.041,
+              "cv": 2.134,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 2.447,
+              "cv": 0.964,
+              "color": "#557030",
+              "surface": "moss",
+              "depth": 0.042
+            },
+            {
+              "cu": 2.447,
+              "cv": 1.432,
+              "color": "#557030",
+              "surface": "moss",
+              "depth": 0.042
+            },
+            {
+              "cu": 2.447,
+              "cv": 1.9,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 2.447,
+              "cv": 2.368,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 2.854,
+              "cv": 1.198,
+              "color": "#557030",
+              "surface": "moss",
+              "depth": 0.042
+            },
+            {
+              "cu": 2.854,
+              "cv": 1.666,
+              "color": "#557030",
+              "surface": "moss",
+              "depth": 0.042
+            },
+            {
+              "cu": 2.854,
+              "cv": 2.134,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 3.26,
+              "cv": 1.432,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            },
+            {
+              "cu": 3.26,
+              "cv": 1.9,
+              "color": "#5f4936",
+              "surface": "smoked-oak",
+              "depth": 0.022
+            }
+          ],
+          "alpha": 0.25
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N22",
+      "code": "N22",
+      "name": "Sekskanter som drysser utover – grønn ombre",
+      "group": "Runde 3 – sekskanter",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 2.2,
+      "rt60": 0.79,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Spisse sekskanter i filt som står tett i hjørnet ved TV-stua og drysser utover veggen, mens fargen glir fra mørk oliven via grønn og salvie til sand. Et rolig «utsnitt av en eng» som tar opp grønnfargene fra stolene ved kjøkkenøya.",
+      "pros": [
+        "Fargeovergangen gjør mønsteret mykt og ikke rotete",
+        "Demper godt der det er tettest",
+        "Grønt henter barkrakkene ved kjøkkenøya",
+        "Fritt rundt bryterne ved døra"
+      ],
+      "cons": [
+        "Ujevn demping – mest i venstre del",
+        "Fire farger må bestilles",
+        "Krever nøyaktig utmåling"
+      ],
+      "products": [
+        "Sekskantede filtpaneler, spiss topp, ca. 36 cm flat-til-flat, 40 mm",
+        "Farger: oliven, grønn, lys salvie og sand"
+      ],
+      "notes": "Spiss topp (pointy-top). Tettest rundt (0,3; 0,5) m, sannsynligheten for en flis faller med avstanden.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "hexagons",
+          "u": 0.1,
+          "v": 0.348,
+          "w": 3.12,
+          "h": 1.639,
+          "size": 0.36,
+          "depth": 0.04,
+          "colors": [
+            "#6b6a47",
+            "#6f8a6c",
+            "#8e9a7e",
+            "#cbbba2"
+          ],
+          "surface": "felt",
+          "orientation": "pointy-top",
+          "items": [
+            {
+              "cu": 0.28,
+              "cv": 0.528,
+              "color": "#6b6a47"
+            },
+            {
+              "cu": 0.648,
+              "cv": 0.528,
+              "color": "#6b6a47"
+            },
+            {
+              "cu": 1.016,
+              "cv": 0.528,
+              "color": "#6b6a47"
+            },
+            {
+              "cu": 1.384,
+              "cv": 0.528,
+              "color": "#6f8a6c"
+            },
+            {
+              "cu": 1.752,
+              "cv": 0.528,
+              "color": "#6f8a6c"
+            },
+            {
+              "cu": 2.12,
+              "cv": 0.528,
+              "color": "#8e9a7e"
+            },
+            {
+              "cu": 0.464,
+              "cv": 0.848,
+              "color": "#6b6a47"
+            },
+            {
+              "cu": 0.832,
+              "cv": 0.848,
+              "color": "#6b6a47"
+            },
+            {
+              "cu": 1.2,
+              "cv": 0.848,
+              "color": "#6f8a6c"
+            },
+            {
+              "cu": 1.568,
+              "cv": 0.848,
+              "color": "#6f8a6c"
+            },
+            {
+              "cu": 1.936,
+              "cv": 0.848,
+              "color": "#8e9a7e"
+            },
+            {
+              "cu": 0.28,
+              "cv": 1.167,
+              "color": "#6f8a6c"
+            },
+            {
+              "cu": 0.648,
+              "cv": 1.167,
+              "color": "#6b6a47"
+            },
+            {
+              "cu": 1.016,
+              "cv": 1.167,
+              "color": "#6f8a6c"
+            },
+            {
+              "cu": 1.752,
+              "cv": 1.167,
+              "color": "#6f8a6c"
+            },
+            {
+              "cu": 2.12,
+              "cv": 1.167,
+              "color": "#8e9a7e"
+            },
+            {
+              "cu": 0.464,
+              "cv": 1.487,
+              "color": "#6f8a6c"
+            },
+            {
+              "cu": 0.832,
+              "cv": 1.487,
+              "color": "#6f8a6c"
+            },
+            {
+              "cu": 2.304,
+              "cv": 1.487,
+              "color": "#8e9a7e"
+            },
+            {
+              "cu": 3.04,
+              "cv": 1.487,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 0.28,
+              "cv": 1.807,
+              "color": "#8e9a7e"
+            },
+            {
+              "cu": 1.752,
+              "cv": 1.807,
+              "color": "#8e9a7e"
+            },
+            {
+              "cu": 2.488,
+              "cv": 1.807,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.856,
+              "cv": 1.807,
+              "color": "#cbbba2"
+            }
+          ],
+          "alpha": 0.8
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N23",
+      "code": "N23",
+      "name": "Store sekskanter i tre dybder – ton i ton",
+      "group": "Runde 3 – sekskanter",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 4.2,
+      "rt60": 0.74,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Store sekskanter (60 cm) i lys sandfarget filt, nesten samme farge som veggen, men i tre tykkelser: 2, 4,5 og 7 cm. Mønsteret kommer fram som skygger når spottene og sollyset treffer veggen – rolig på dagtid, skulpturelt om kvelden.",
+      "pros": [
+        "Veldig rolig – passer om du ikke vil ha flere farger",
+        "Tykke fliser demper godt, også litt lavere frekvenser",
+        "Spottene over veggen gir et levende skyggespill",
+        "Få og store fliser – enkel montering"
+      ],
+      "cons": [
+        "Kan bli for anonymt i flatt lys",
+        "Tre tykkelser må bestilles / bygges opp med avstandsklosser",
+        "Lyse filtkanter blir fort skitne ved spisebordet"
+      ],
+      "products": [
+        "Sekskantede filtpaneler ca. 60 cm i lys sand – 20, 45 og 70 mm (eller 20 mm-fliser på avstandsklosser)",
+        "Fargen bør prøves mot SAND-veggen før bestilling"
+      ],
+      "notes": "Flate topp/bunn. Dybden følger en bølge over veggen (2 / 4,5 / 7 cm).",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "hexagons",
+          "u": 0.246,
+          "v": 0.5,
+          "w": 3.238,
+          "h": 2.424,
+          "size": 0.6,
+          "depth": 0.045,
+          "colors": [
+            "#c9bca6"
+          ],
+          "surface": "felt",
+          "orientation": "flat-top",
+          "items": [
+            {
+              "cu": 0.546,
+              "cv": 1.408,
+              "color": "#c9bca6",
+              "depth": 0.02
+            },
+            {
+              "cu": 0.546,
+              "cv": 2.016,
+              "color": "#c9bca6",
+              "depth": 0.02
+            },
+            {
+              "cu": 1.074,
+              "cv": 1.104,
+              "color": "#c9bca6",
+              "depth": 0.02
+            },
+            {
+              "cu": 1.074,
+              "cv": 1.712,
+              "color": "#c9bca6",
+              "depth": 0.02
+            },
+            {
+              "cu": 1.074,
+              "cv": 2.32,
+              "color": "#c9bca6",
+              "depth": 0.045
+            },
+            {
+              "cu": 1.602,
+              "cv": 0.8,
+              "color": "#c9bca6",
+              "depth": 0.02
+            },
+            {
+              "cu": 1.602,
+              "cv": 1.408,
+              "color": "#c9bca6",
+              "depth": 0.045
+            },
+            {
+              "cu": 1.602,
+              "cv": 2.016,
+              "color": "#c9bca6",
+              "depth": 0.07
+            },
+            {
+              "cu": 1.602,
+              "cv": 2.624,
+              "color": "#c9bca6",
+              "depth": 0.07
+            },
+            {
+              "cu": 2.129,
+              "cv": 1.104,
+              "color": "#c9bca6",
+              "depth": 0.07
+            },
+            {
+              "cu": 2.129,
+              "cv": 1.712,
+              "color": "#c9bca6",
+              "depth": 0.07
+            },
+            {
+              "cu": 2.129,
+              "cv": 2.32,
+              "color": "#c9bca6",
+              "depth": 0.07
+            },
+            {
+              "cu": 2.657,
+              "cv": 1.408,
+              "color": "#c9bca6",
+              "depth": 0.07
+            },
+            {
+              "cu": 2.657,
+              "cv": 2.016,
+              "color": "#c9bca6",
+              "depth": 0.045
+            },
+            {
+              "cu": 3.184,
+              "cv": 1.104,
+              "color": "#c9bca6",
+              "depth": 0.07
+            },
+            {
+              "cu": 3.184,
+              "cv": 1.712,
+              "color": "#c9bca6",
+              "depth": 0.02
+            },
+            {
+              "cu": 3.184,
+              "cv": 2.32,
+              "color": "#c9bca6",
+              "depth": 0.02
+            }
+          ],
+          "alpha": 0.8
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N24",
+      "code": "N24",
+      "name": "Korksekskanter over svevende skjenk",
+      "group": "Runde 3 – sekskanter",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 1.1,
+      "rt60": 0.83,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Et bredt bånd av sekskanter i kork over en vegghengt skjenk i røkt eik. Lys naturkork går over i mørk, varmebehandlet kork mot kjøkkenenden. Kork er varm å ta på, demper litt og tåler at stoler og hender kommer borti.",
+      "pros": [
+        "Varm, naturlig overflate som tåler slitasje",
+        "Skjenken gir oppbevaring og en flate til lampe og pynt",
+        "Fargeovergangen gir bevegelse uten å bli urolig",
+        "Stikkontakten ved gulvet havner under skjenken"
+      ],
+      "cons": [
+        "Kork demper mindre enn filt (ca. +1,1 m² Sabine)",
+        "Mørk kork kan oppleves tungt i kveldslys",
+        "Skjenken må festes godt i stendere"
+      ],
+      "products": [
+        "Sekskantede korkfliser ca. 42 cm, 25 mm – natur og mørk (ekspandert) kork",
+        "Vegghengt skjenk ca. 220 × 40 × 45 cm i røkt eik",
+        "Bordlampe med opalskjerm på skjenken"
+      ],
+      "notes": "Båndet ligger mellom 1,10 og 2,62 m. Skjenken henger 25 cm over gulvet (25–70 cm), u 0,86–3,06.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "hexagons",
+          "u": 0.212,
+          "v": 1.1,
+          "w": 3.023,
+          "h": 1.49,
+          "size": 0.42,
+          "depth": 0.025,
+          "colors": [
+            "#b8996f",
+            "#4b3b30"
+          ],
+          "surface": "cork",
+          "orientation": "flat-top",
+          "items": [
+            {
+              "cu": 0.422,
+              "cv": 1.31,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 0.422,
+              "cv": 1.738,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 0.794,
+              "cv": 1.524,
+              "color": "#4b3b30"
+            },
+            {
+              "cu": 0.794,
+              "cv": 1.952,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 0.794,
+              "cv": 2.38,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 1.166,
+              "cv": 1.31,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 1.166,
+              "cv": 1.738,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 1.166,
+              "cv": 2.166,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 1.538,
+              "cv": 1.524,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 1.538,
+              "cv": 1.952,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 1.538,
+              "cv": 2.38,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 1.909,
+              "cv": 1.31,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 1.909,
+              "cv": 1.738,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 1.909,
+              "cv": 2.166,
+              "color": "#4b3b30"
+            },
+            {
+              "cu": 2.281,
+              "cv": 1.524,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 2.281,
+              "cv": 1.952,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 2.281,
+              "cv": 2.38,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 2.653,
+              "cv": 1.31,
+              "color": "#4b3b30"
+            },
+            {
+              "cu": 2.653,
+              "cv": 1.738,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 2.653,
+              "cv": 2.166,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 3.025,
+              "cv": 1.524,
+              "color": "#4b3b30"
+            },
+            {
+              "cu": 3.025,
+              "cv": 1.952,
+              "color": "#b8996f"
+            },
+            {
+              "cu": 3.025,
+              "cv": 2.38,
+              "color": "#b8996f"
+            }
+          ],
+          "alpha": 0.3
+        },
+        {
+          "type": "sideboard-floating",
+          "v": 0.25,
+          "h": 0.45,
+          "d": 0.4,
+          "frontStyle": "flat",
+          "material": "smoked-oak",
+          "color": "#5f4936",
+          "alpha": 0,
+          "u": 0.855,
+          "w": 2.2,
+          "lamp": true
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N25",
+      "code": "N25",
+      "name": "Sjakkbrett i røkt eik over liten svart skjenk",
+      "group": "Runde 3 – sjakkbrett med skjenk",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 2.3,
+      "rt60": 0.79,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Et mindre sjakkbrett i røkt eik (4 × 3 ruter à 50 cm) midt på veggen, over en kort, vegghengt skjenk i sort eik med riflede fronter. Ruteflaten blir som et stort bilde over skjenken – roligere enn sjakkbrett over hele veggen.",
+      "pros": [
+        "Røkt eik passer med bord og kjøkken",
+        "Skjenken gir en flate til lampe og pynt",
+        "Mye sand-vegg rundt – rommet føles ikke tyngre",
+        "Rimeligere enn full vegg"
+      ],
+      "cons": [
+        "Halv demping av P2 (ca. +2,3 m² Sabine)",
+        "Skjenken må festes i stendere",
+        "Bryterne ved døra er fri, men stikket ved gulvet blir synlig under skjenken"
+      ],
+      "products": [
+        "Akupixel/akustikkfliser 50 × 50 cm i røkt eik med vekslende spileretning – 12 stk",
+        "Vegghengt skjenk ca. 140 × 40 × 45 cm, sort eik med riflet front"
+      ],
+      "notes": "Sjakkbrettet u 0,96–2,96, v 1,00–2,50. Skjenken u 1,26–2,66, v 0,25–0,70.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "tile": 0.5,
+          "depth": 0.021,
+          "fill": "slats-alternating",
+          "gap": 0.003,
+          "startOrientation": "vertical",
+          "slatW": 0.027,
+          "slatGap": 0.013,
+          "backingColor": "#1b1b1b",
+          "alpha": 0.77,
+          "u": 0.955,
+          "v": 1,
+          "cols": 4,
+          "rows": 3,
+          "colors": [
+            "#5f4936",
+            "#5f4936"
+          ],
+          "woods": [
+            "smoked-oak",
+            "smoked-oak"
+          ],
+          "w": 2,
+          "h": 1.5
+        },
+        {
+          "type": "sideboard-floating",
+          "v": 0.25,
+          "h": 0.45,
+          "d": 0.4,
+          "frontStyle": "ribbed",
+          "material": "black-oak",
+          "color": "#2a2725",
+          "alpha": 0,
+          "u": 1.255,
+          "w": 1.4,
+          "doors": 3,
+          "lamp": true
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N26",
+      "code": "N26",
+      "name": "Høyt tofarget sjakkbrett ved siden av skjenk og bilde",
+      "group": "Runde 3 – sjakkbrett med skjenk",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 3,
+      "rt60": 0.77,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "En asymmetrisk løsning: et smalt, høyt sjakkbrett (3 × 5 ruter à 45 cm) i røkt og naturell eik mot døra, og til venstre en lav skjenk med et akustikkbilde over. Sjakkbrettet trekker blikket oppover og viser fram takhøyden på 3 meter.",
+      "pros": [
+        "Viser fram den høye veggen",
+        "To eikefarger gir et tydelig, men varmt mønster",
+        "Bildet over skjenken kan byttes ut over tid",
+        "Skjenken står ved spisebordet der den trengs"
+      ],
+      "cons": [
+        "Asymmetri passer ikke alle",
+        "Demping ca. +3,0 m² Sabine",
+        "Sjakkbrettet går nær bryterne ved døra (8 cm klaring)"
+      ],
+      "products": [
+        "Akustikkfliser 45 × 45 cm med spiler – 8 røkt eik + 7 naturell eik",
+        "Vegghengt skjenk ca. 160 × 40 × 50 cm i røkt eik, riflet front",
+        "Akustikkbilde ca. 80 × 100 cm i eikeramme"
+      ],
+      "notes": "Sjakkbrett u 2,35–3,70, v 0,60–2,85. Skjenk u 0,30–1,90. Bildet u 0,70–1,50, v 1,15–2,15.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "tile": 0.45,
+          "depth": 0.021,
+          "fill": "slats-alternating",
+          "gap": 0.003,
+          "startOrientation": "vertical",
+          "slatW": 0.027,
+          "slatGap": 0.013,
+          "backingColor": "#1b1b1b",
+          "alpha": 0.77,
+          "u": 2.35,
+          "v": 0.6,
+          "cols": 3,
+          "rows": 5,
+          "colors": [
+            "#5f4936",
+            "#b08b62"
+          ],
+          "woods": [
+            "smoked-oak",
+            "oak"
+          ],
+          "w": 1.35,
+          "h": 2.25
+        },
+        {
+          "type": "sideboard-floating",
+          "v": 0.25,
+          "h": 0.5,
+          "d": 0.4,
+          "frontStyle": "ribbed",
+          "material": "smoked-oak",
+          "color": "#5f4936",
+          "alpha": 0,
+          "u": 0.3,
+          "w": 1.6,
+          "doors": 3,
+          "lamp": true
+        },
+        {
+          "type": "art",
+          "u": 0.7,
+          "v": 1.15,
+          "w": 0.8,
+          "h": 1,
+          "depth": 0.045,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#566650",
+            "#b8a58a"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 61,
+          "alpha": 0.86
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N27",
+      "code": "N27",
+      "name": "Sjakkbrett i eik og olivenfilt over valnøttskjenk",
+      "group": "Runde 3 – sjakkbrett med skjenk",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 3.4,
+      "rt60": 0.76,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Sjakkbrettet er her laget av to materialer: annenhver rute med eikespiler og annenhver med olivengrønn filt. Båndet (6 × 2 ruter à 60 cm) ligger øverst på veggen, over en kort vegghengt skjenk i valnøtt.",
+      "pros": [
+        "Tre og tekstil gir en mykere variant av sjakkbrettet",
+        "Filtrutene demper litt bedre enn spilene",
+        "Oliven passer med grønnfargene ved kjøkkenøya",
+        "Skjenken gir en flate ved spisebordet"
+      ],
+      "cons": [
+        "Demping ca. +3,4 m² Sabine (bare båndet)",
+        "To produkter som må passe sammen i tykkelse",
+        "Valnøtt er en fjerde tretone i rommet"
+      ],
+      "products": [
+        "Akustikkfliser 60 × 60 cm med eikespiler – 6 stk",
+        "Akustikkfliser 60 × 60 cm i olivengrønn filt, samme tykkelse – 6 stk",
+        "Vegghengt skjenk ca. 160 × 40 × 42 cm i valnøtt"
+      ],
+      "notes": "Båndet u 0,16–3,76, v 1,15–2,35. Skjenk u 1,16–2,76, v 0,30–0,72.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "tile": 0.6,
+          "depth": 0.021,
+          "fill": "wood-felt",
+          "gap": 0.003,
+          "startOrientation": "vertical",
+          "slatW": 0.027,
+          "slatGap": 0.013,
+          "backingColor": "#1b1b1b",
+          "alpha": 0.78,
+          "u": 0.155,
+          "v": 1.15,
+          "cols": 6,
+          "rows": 2,
+          "colors": [
+            "#b08b62",
+            "#6b6a47"
+          ],
+          "woods": [
+            "oak",
+            "oak"
+          ],
+          "w": 3.6,
+          "h": 1.2
+        },
+        {
+          "type": "sideboard-floating",
+          "v": 0.3,
+          "h": 0.42,
+          "d": 0.4,
+          "frontStyle": "flat",
+          "material": "walnut",
+          "color": "#6b4a33",
+          "alpha": 0,
+          "u": 1.155,
+          "w": 1.6,
+          "doors": 3,
+          "lamp": true
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N28",
+      "code": "N28",
+      "name": "Mini-sjakkbrett i valnøtt (40 cm ruter) + sort skjenk",
+      "group": "Runde 3 – sjakkbrett med skjenk",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 3.4,
+      "rt60": 0.76,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Mindre ruter (40 cm) gir et finere, mer tekstilaktig mønster. Feltet (7 × 4 ruter) i valnøtt henger midt på veggen, med en kort skjenk i sort eik under. Mørk og elegant – mest «kveld» av sjakkbrettene.",
+      "pros": [
+        "Små ruter gir et roligere, finere mønster",
+        "Valnøtt er varm og eksklusiv",
+        "Sort skjenk binder sammen med kjøkkenfrontene",
+        "God demping for feltets størrelse (ca. +3,4 m² Sabine)"
+      ],
+      "cons": [
+        "Mørkt felt – trenger spottene på om kvelden",
+        "Flere fliser å montere (28 stk)",
+        "Sort eik viser støv – tørk av jevnlig"
+      ],
+      "products": [
+        "Akustikkfliser 40 × 40 cm i valnøtt med vekslende spileretning – 28 stk",
+        "Vegghengt skjenk ca. 120 × 40 × 40 cm i sort eik"
+      ],
+      "notes": "Feltet u 0,56–3,36, v 0,95–2,55. Skjenk u 1,36–2,56, v 0,30–0,70.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "tile": 0.4,
+          "depth": 0.021,
+          "fill": "slats-alternating",
+          "gap": 0.003,
+          "startOrientation": "vertical",
+          "slatW": 0.022,
+          "slatGap": 0.01,
+          "backingColor": "#1b1b1b",
+          "alpha": 0.77,
+          "u": 0.555,
+          "v": 0.95,
+          "cols": 7,
+          "rows": 4,
+          "colors": [
+            "#6b4a33",
+            "#6b4a33"
+          ],
+          "woods": [
+            "walnut",
+            "walnut"
+          ],
+          "w": 2.8,
+          "h": 1.6
+        },
+        {
+          "type": "sideboard-floating",
+          "v": 0.3,
+          "h": 0.4,
+          "d": 0.4,
+          "frontStyle": "flat",
+          "material": "black-oak",
+          "color": "#2a2725",
+          "alpha": 0,
+          "u": 1.355,
+          "w": 1.2,
+          "doors": 2,
+          "lamp": true
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N29",
+      "code": "N29",
+      "name": "Salongvegg til taket – 11 bilder i blandede rammer",
+      "group": "Runde 3 – bildevegger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 2.4,
+      "rt60": 0.79,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "En tett «salongvegg» som bruker hele høyden: elleve bilder i sort, eik og valnøtt, fra like over stolryggene (95 cm) og nesten opp til taket (2,85 m). De tre største er akustikkbilder, resten vanlige trykk med passepartout. Motivene holder seg i rommets farger – sand, grønt, terrakotta og sort strek.",
+      "pros": [
+        "Personlig og levende – kan bygges ut og byttes over tid",
+        "Bruker takhøyden og gjør veggen til et blikkfang",
+        "De store akustikkbildene demper der det trengs",
+        "Ingen flytting av brytere eller stikk"
+      ],
+      "cons": [
+        "Moderat demping (ca. +2,4 m² Sabine)",
+        "Krever planlegging – legg ut papirmaler på gulvet først",
+        "Mange festepunkter"
+      ],
+      "products": [
+        "3 akustikkbilder: 80 × 60, 80 × 122 og 90 × 125 cm",
+        "8 trykk med passepartout i rammer: 50 × 70, 50 × 62, 50 × 42, 2 × 42 × 57, 2 × 76 × 58, 76 × 60 cm",
+        "Rammer i sort, eik og valnøtt"
+      ],
+      "notes": "Fire kolonner (u 0,35–0,85 / 0,93–1,73 / 1,81–2,71 / 2,79–3,55) med 6–8 cm mellomrom, bunnlinje 95 cm, topp 2,85 m.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "art",
+          "u": 0.35,
+          "v": 2.15,
+          "w": 0.5,
+          "h": 0.7,
+          "depth": 0.025,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#7d8a6a",
+            "#3a3936"
+          ],
+          "frame": "black",
+          "acoustic": false,
+          "seed": 71,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 0.35,
+          "v": 1.45,
+          "w": 0.5,
+          "h": 0.62,
+          "depth": 0.025,
+          "motif": "line-art",
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#c98f6b"
+          ],
+          "frame": "oak",
+          "acoustic": false,
+          "seed": 72,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 0.35,
+          "v": 0.95,
+          "w": 0.5,
+          "h": 0.42,
+          "depth": 0.025,
+          "motif": "abstract-shapes",
+          "palette": [
+            "#e9e0d0",
+            "#c98f6b",
+            "#b8a58a",
+            "#3a3936"
+          ],
+          "frame": "walnut",
+          "acoustic": false,
+          "seed": 73,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 0.93,
+          "v": 2.25,
+          "w": 0.8,
+          "h": 0.6,
+          "depth": 0.045,
+          "motif": "landscape-hills",
+          "palette": [
+            "#e9dfcc",
+            "#a9b3b0",
+            "#6f846f",
+            "#c97f5c"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 74,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 0.93,
+          "v": 0.95,
+          "w": 0.8,
+          "h": 1.22,
+          "depth": 0.045,
+          "motif": "abstract-shapes",
+          "palette": [
+            "#ece5d8",
+            "#7d8a6a",
+            "#c98f6b",
+            "#2b2b2b"
+          ],
+          "frame": "black",
+          "acoustic": true,
+          "seed": 75,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 1.81,
+          "v": 1.6,
+          "w": 0.9,
+          "h": 1.25,
+          "depth": 0.045,
+          "motif": "landscape-hills",
+          "palette": [
+            "#ece5d8",
+            "#b9c0b0",
+            "#7d8a6a",
+            "#566650",
+            "#c98f6b"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 76,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 1.81,
+          "v": 0.95,
+          "w": 0.42,
+          "h": 0.57,
+          "depth": 0.025,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#566650",
+            "#b8a58a"
+          ],
+          "frame": "black",
+          "acoustic": false,
+          "seed": 77,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 2.29,
+          "v": 0.95,
+          "w": 0.42,
+          "h": 0.57,
+          "depth": 0.025,
+          "motif": "line-art",
+          "palette": [
+            "#efe9de",
+            "#2b2b2b",
+            "#a9ae94"
+          ],
+          "frame": "oak",
+          "acoustic": false,
+          "seed": 78,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 2.79,
+          "v": 2.27,
+          "w": 0.76,
+          "h": 0.58,
+          "depth": 0.025,
+          "motif": "abstract-shapes",
+          "palette": [
+            "#e9dfcc",
+            "#566650",
+            "#d9845f",
+            "#b8a58a"
+          ],
+          "frame": "walnut",
+          "acoustic": false,
+          "seed": 79,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 2.79,
+          "v": 1.6,
+          "w": 0.76,
+          "h": 0.6,
+          "depth": 0.025,
+          "motif": "botanical",
+          "palette": [
+            "#ece5d8",
+            "#8c6c55",
+            "#3a3936"
+          ],
+          "frame": "oak",
+          "acoustic": false,
+          "seed": 80,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 2.79,
+          "v": 0.95,
+          "w": 0.76,
+          "h": 0.57,
+          "depth": 0.025,
+          "motif": "landscape-hills",
+          "palette": [
+            "#e9dfcc",
+            "#a9b3b0",
+            "#6f846f",
+            "#c97f5c"
+          ],
+          "frame": "black",
+          "acoustic": false,
+          "seed": 81,
+          "alpha": 0.05,
+          "sun": false
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N30",
+      "code": "N30",
+      "name": "To bildehyller med lente bilder",
+      "group": "Runde 3 – bildevegger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 0,
+      "rt60": 0.86,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "To smale bildehyller i røkt eik med bilder som står lent mot veggen, noen litt foran andre. Uttrykket er avslappet og lett å endre – bytt bilder etter årstid uten nye hull i veggen.",
+      "pros": [
+        "Superenkelt å bytte og flytte bilder",
+        "Bare to monteringer i veggen",
+        "Røkt eik binder sammen med bordet",
+        "Lagdelingen gir dybde"
+      ],
+      "cons": [
+        "Nesten ingen demping",
+        "Kan se rotete ut hvis det blir for mange ting",
+        "Hyllene må sitte over stolryggene (her 1,05 og 1,90 m)"
+      ],
+      "products": [
+        "2 bildehyller ca. 300 × 9 cm i røkt eik med kant",
+        "9 trykk i rammer (sort, eik, valnøtt, hvit) i størrelser fra 35 × 45 til 70 × 50 cm"
+      ],
+      "notes": "Nedre hylle v 1,05, øvre v 1,90, begge u 0,45–3,45. Bildene står lent ca. 3–4° mot veggen.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "ledge",
+          "u": 0.45,
+          "v": 1.05,
+          "w": 3,
+          "d": 0.09,
+          "material": "smoked-oak",
+          "color": "#5f4936",
+          "lip": true,
+          "alpha": 0,
+          "items": [
+            {
+              "cu": 0.8,
+              "w": 0.5,
+              "h": 0.7,
+              "motif": "botanical",
+              "palette": [
+                "#efe8dc",
+                "#7d8a6a",
+                "#3a3936"
+              ],
+              "seed": 91,
+              "frame": "black",
+              "layer": 0
+            },
+            {
+              "cu": 1.32,
+              "w": 0.42,
+              "h": 0.55,
+              "motif": "line-art",
+              "palette": [
+                "#f1ece2",
+                "#2b2b2b",
+                "#c98f6b"
+              ],
+              "seed": 92,
+              "frame": "oak",
+              "layer": 1
+            },
+            {
+              "cu": 1.95,
+              "w": 0.7,
+              "h": 0.5,
+              "motif": "landscape-hills",
+              "palette": [
+                "#ece5d8",
+                "#b9c0b0",
+                "#7d8a6a",
+                "#566650",
+                "#c98f6b"
+              ],
+              "seed": 93,
+              "frame": "white",
+              "layer": 0
+            },
+            {
+              "cu": 2.58,
+              "w": 0.4,
+              "h": 0.6,
+              "motif": "abstract-shapes",
+              "palette": [
+                "#e9e0d0",
+                "#c98f6b",
+                "#b8a58a",
+                "#3a3936"
+              ],
+              "seed": 94,
+              "frame": "black",
+              "layer": 1
+            },
+            {
+              "cu": 3.1,
+              "w": 0.5,
+              "h": 0.65,
+              "motif": "botanical",
+              "palette": [
+                "#ece5d8",
+                "#8c6c55",
+                "#3a3936"
+              ],
+              "seed": 95,
+              "frame": "walnut",
+              "layer": 0
+            }
+          ]
+        },
+        {
+          "type": "ledge",
+          "u": 0.45,
+          "v": 1.9,
+          "w": 3,
+          "d": 0.09,
+          "material": "smoked-oak",
+          "color": "#5f4936",
+          "lip": true,
+          "alpha": 0,
+          "items": [
+            {
+              "cu": 0.9,
+              "w": 0.45,
+              "h": 0.55,
+              "motif": "abstract-shapes",
+              "palette": [
+                "#e9dfcc",
+                "#566650",
+                "#d9845f",
+                "#b8a58a"
+              ],
+              "seed": 96,
+              "frame": "oak",
+              "layer": 0
+            },
+            {
+              "cu": 1.55,
+              "w": 0.6,
+              "h": 0.8,
+              "motif": "landscape-hills",
+              "palette": [
+                "#e9dfcc",
+                "#a9b3b0",
+                "#6f846f",
+                "#c97f5c"
+              ],
+              "seed": 97,
+              "frame": "black",
+              "layer": 0
+            },
+            {
+              "cu": 2.12,
+              "w": 0.35,
+              "h": 0.45,
+              "motif": "line-art",
+              "palette": [
+                "#efe9de",
+                "#2b2b2b",
+                "#a9ae94"
+              ],
+              "seed": 98,
+              "frame": "white",
+              "layer": 1
+            },
+            {
+              "cu": 2.78,
+              "w": 0.55,
+              "h": 0.7,
+              "motif": "botanical",
+              "palette": [
+                "#efe8dc",
+                "#566650",
+                "#b8a58a"
+              ],
+              "seed": 99,
+              "frame": "black",
+              "layer": 0
+            }
+          ]
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N31",
+      "code": "N31",
+      "name": "Rutenett 3 × 3 – botanisk serie i eikerammer",
+      "group": "Runde 3 – bildevegger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 2.4,
+      "rt60": 0.79,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Ni like store akustikkbilder (50 × 62 cm) med botaniske motiver i et stramt rutenett midt på veggen, i smale eikerammer. Strengt og rolig, som en plansje-samling – og bildene demper fordi de har filt bak trykket.",
+      "pros": [
+        "Ryddig og tidløst",
+        "Ni like formater er enkle å henge rett",
+        "Demper litt (ca. +2,4 m² Sabine)",
+        "Grønt og sand passer med resten av rommet"
+      ],
+      "cons": [
+        "Lite plass til personlige bilder",
+        "Rutenettet må henges millimeterpresist",
+        "Mye vegg står fortsatt bar"
+      ],
+      "products": [
+        "9 akustikkbilder 50 × 62 cm, 45 mm, botaniske motiver",
+        "Smale eikerammer",
+        "Opphengsskinne eller nivellerte kroker"
+      ],
+      "notes": "Rutenettet u 1,15–2,77, v 0,86–2,84, 6 cm mellomrom.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "art",
+          "u": 1.145,
+          "v": 0.86,
+          "w": 0.5,
+          "h": 0.62,
+          "depth": 0.045,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#7d8a6a",
+            "#3a3936"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 101,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 1.705,
+          "v": 0.86,
+          "w": 0.5,
+          "h": 0.62,
+          "depth": 0.045,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#566650",
+            "#b8a58a"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 102,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 2.265,
+          "v": 0.86,
+          "w": 0.5,
+          "h": 0.62,
+          "depth": 0.045,
+          "motif": "botanical",
+          "palette": [
+            "#ece5d8",
+            "#8c6c55",
+            "#3a3936"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 103,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 1.145,
+          "v": 1.54,
+          "w": 0.5,
+          "h": 0.62,
+          "depth": 0.045,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#566650",
+            "#b8a58a"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 104,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 1.705,
+          "v": 1.54,
+          "w": 0.5,
+          "h": 0.62,
+          "depth": 0.045,
+          "motif": "botanical",
+          "palette": [
+            "#ece5d8",
+            "#8c6c55",
+            "#3a3936"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 105,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 2.265,
+          "v": 1.54,
+          "w": 0.5,
+          "h": 0.62,
+          "depth": 0.045,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#7d8a6a",
+            "#3a3936"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 106,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 1.145,
+          "v": 2.22,
+          "w": 0.5,
+          "h": 0.62,
+          "depth": 0.045,
+          "motif": "botanical",
+          "palette": [
+            "#ece5d8",
+            "#8c6c55",
+            "#3a3936"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 107,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 1.705,
+          "v": 2.22,
+          "w": 0.5,
+          "h": 0.62,
+          "depth": 0.045,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#7d8a6a",
+            "#3a3936"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 108,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 2.265,
+          "v": 2.22,
+          "w": 0.5,
+          "h": 0.62,
+          "depth": 0.045,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#566650",
+            "#b8a58a"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 109,
+          "alpha": 0.86
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N32",
+      "code": "N32",
+      "name": "Spilevegg i røkt eik med tre innrammede bilder",
+      "group": "Runde 3 – bildevegger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 7.1,
+      "rt60": 0.68,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Full spilevegg i røkt eik (0–235 cm) som i B2, men med tre sorte rammer med strektegninger hengt rett på spilene. Bildene bryter opp de lange linjene og gjør veggen mer personlig, mens spileveggen står for dempingen.",
+      "pros": [
+        "Mest demping av bildeveggene (ca. +7 m² Sabine)",
+        "Lyse trykk lyser opp den mørke eiken",
+        "Bildene kan byttes uten å røre panelet",
+        "Røkt eik matcher bord og kjøkken"
+      ],
+      "cons": [
+        "Bryterne ved døra må på påbyggsramme (som i B)",
+        "Bildene henger på skruer mellom spilene",
+        "Mørk flate på 9 m²"
+      ],
+      "products": [
+        "Akupanel røkt eik på filt med lekter og Glava bak – ca. 9,2 m²",
+        "3 trykk 60 × 80 cm med passepartout i sorte rammer",
+        "Påbyggsrammer for bryter/stikk"
+      ],
+      "notes": "Bildene: u 0,91–1,51, 1,66–2,26 og 2,41–3,01, v 1,15–1,95, hengt på forsiden av spilene.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "art",
+          "u": 0.905,
+          "v": 1.15,
+          "w": 0.6,
+          "h": 0.8,
+          "depth": 0.025,
+          "motif": "line-art",
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#c98f6b"
+          ],
+          "frame": "black",
+          "acoustic": false,
+          "seed": 111,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 1.655,
+          "v": 1.15,
+          "w": 0.6,
+          "h": 0.8,
+          "depth": 0.025,
+          "motif": "line-art",
+          "palette": [
+            "#efe9de",
+            "#2b2b2b",
+            "#a9ae94"
+          ],
+          "frame": "black",
+          "acoustic": false,
+          "seed": 112,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 2.405,
+          "v": 1.15,
+          "w": 0.6,
+          "h": 0.8,
+          "depth": 0.025,
+          "motif": "line-art",
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#c98f6b"
+          ],
+          "frame": "black",
+          "acoustic": false,
+          "seed": 113,
+          "alpha": 0.05
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N33",
+      "code": "N33",
+      "name": "Panoramatapet – fjell i morgendis",
+      "group": "Runde 3 – nye retninger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 0,
+      "rt60": 0.86,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Hele veggen tapetsert med et panoramamotiv: lag på lag med åser i dempede salvie- og grågrønne toner som blir lysere mot en disig himmel. Veggen blir et vindu ut mot landskapet og gir rommet dybde – særlig fint sett fra sofaen.",
+      "pros": [
+        "Et stort uttrykk for en lav pris",
+        "Gir følelse av dybde og utsikt",
+        "Fargene passer med grønt ved kjøkkenøya og SAND",
+        "Ingenting stikker ut fra veggen"
+      ],
+      "cons": [
+        "Ingen demping – må kombineres med teppe, gardiner eller takabsorbenter",
+        "Lettere å gå lei av et motiv",
+        "Krever nøye tapetsering (store baner)"
+      ],
+      "products": [
+        "Panoramatapet ca. 390 × 300 cm, eget motiv eller ferdig landskapsmotiv i dempede grønntoner",
+        "Tapetlim og evt. hjelp av tapetserer"
+      ],
+      "notes": "Dekker hele veggen u 0–3,91, v 0–3,00.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "wallpaper",
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 3,
+          "pattern": "mural",
+          "colors": [
+            "#e4e1d8",
+            "#c6cbbf",
+            "#a5b0a1",
+            "#87958a",
+            "#66746a"
+          ],
+          "sun": false,
+          "seed": 33,
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N34",
+      "code": "N34",
+      "name": "Fyllingspanel i MARRAKESH med linfelt",
+      "group": "Runde 3 – nye retninger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 2.6,
+      "rt60": 0.78,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Klassiske kassettlister (fyllingspanel) over hele veggen, malt i MARRAKESH som veggene i TV-stua, med en brystlist i 95 cm høyde. I de tre store feltene øverst sitter tynne, stofftrukne akustikkplater i lin i en lys Marrakesh-tone – det ser ut som innrammede stoffpaneler i en gammel bygård.",
+      "pros": [
+        "Tidløst og elegant – passer med høyden på veggen",
+        "MARRAKESH binder stua og TV-stua sammen",
+        "Linfeltene demper (ca. +2,6 m² Sabine) uten å synes som «akustikk»",
+        "Listverk er rimelig og enkelt å male om"
+      ],
+      "cons": [
+        "Mye presist snekkerarbeid med gjæringer",
+        "Hele veggen må males (helst halvblank på listene)",
+        "Mer klassisk enn resten av rommet"
+      ],
+      "products": [
+        "Profilerte lister ca. 35 × 18 mm (fyllingslister) og brystlist ca. 60 mm",
+        "Maling: MARRAKESH (Jotun 1623), helmatt på vegg og halvblank på lister",
+        "3 stofftrukne akustikkplater 30 mm i lin (lys Marrakesh-tone), ca. 95 × 157 cm"
+      ],
+      "notes": "Nedre kassetter u 0,25–3,66, v 0,20–0,95 (over stikkontaktene). Brystlist v 0,95–1,01 over hele bredden. Øvre kassetter v 1,10–2,90.",
+      "wallPaint": "marrakesh",
+      "wallPaintLabel": "MARRAKESH (Jotun 1623)",
+      "elements": [
+        {
+          "type": "moulding",
+          "u": 0.25,
+          "v": 0.2,
+          "w": 3.41,
+          "h": 0.75,
+          "style": "boxes",
+          "cols": 4,
+          "rows": 1,
+          "gap": 0.08,
+          "profile": 0.035,
+          "relief": 0.018,
+          "color": "marrakesh",
+          "rail": false,
+          "alpha": 0
+        },
+        {
+          "type": "moulding",
+          "u": 0,
+          "v": 0.85,
+          "w": 3.91,
+          "h": 0.1,
+          "style": "rail",
+          "cols": 1,
+          "rows": 1,
+          "gap": 0,
+          "profile": 0.035,
+          "relief": 0.018,
+          "color": "marrakesh",
+          "rail": true,
+          "railH": 0.06,
+          "alpha": 0
+        },
+        {
+          "type": "moulding",
+          "u": 0.25,
+          "v": 1.1,
+          "w": 3.41,
+          "h": 1.8,
+          "cols": 3,
+          "gap": 0.08,
+          "profile": 0.035,
+          "rows": 1,
+          "relief": 0.018,
+          "style": "boxes",
+          "color": "marrakesh",
+          "rail": false,
+          "alpha": 0
+        },
+        {
+          "type": "panel",
+          "u": 0.4,
+          "v": 1.25,
+          "w": 0.89,
+          "h": 1.5,
+          "depth": 0.03,
+          "surface": "linen",
+          "color": "#b9ac98",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.65
+        },
+        {
+          "type": "panel",
+          "u": 1.51,
+          "v": 1.25,
+          "w": 0.89,
+          "h": 1.5,
+          "depth": 0.03,
+          "surface": "linen",
+          "color": "#b9ac98",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.65
+        },
+        {
+          "type": "panel",
+          "u": 2.62,
+          "v": 1.25,
+          "w": 0.89,
+          "h": 1.5,
+          "depth": 0.03,
+          "surface": "linen",
+          "color": "#b9ac98",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.65
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N35",
+      "code": "N35",
+      "name": "Bokvegg i eik til taket",
+      "group": "Runde 3 – nye retninger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 3,
+      "rt60": 0.77,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "En innebygd bokhylle i naturell eik fra nisjehjørnet nesten til døra og helt opp under taket, med bakvegg i MARRAKESH. Fem seksjoner og åtte hyller gir plass til bøker, vaser og bilder – og en full bokvegg sprer og demper lyden overraskende godt.",
+      "pros": [
+        "Enormt med oppbevaring",
+        "Bøker sprer lyden og demper etterklangen (ca. +3,0 m² Sabine)",
+        "Gjør stua lun og personlig",
+        "Bakveggen i MARRAKESH gir dybde"
+      ],
+      "cons": [
+        "Tar 30 cm av gulvet – ca. 87 cm igjen bak stolene ved bordet",
+        "Stikkontakten havner inne i hylla (flyttes eller brukes til lys)",
+        "De øverste hyllene trenger en liten gardintrapp"
+      ],
+      "products": [
+        "Innebygd bokhylle ca. 362 × 292 × 30 cm i eik (snekker eller hyllesystem med eikefronter)",
+        "Maling: MARRAKESH i bakveggen",
+        "Evt. LED-list i underkant av hyllene"
+      ],
+      "notes": "Hylla går fra u 0 (nisjehjørnet) til 3,62 (fri for bryterne ved døra), høyde 2,92 m – taket skrår ned fra veggen (2,95 m 30 cm ut).",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "bookcase",
+          "u": 0,
+          "v": 0,
+          "w": 3.62,
+          "h": 2.92,
+          "d": 0.3,
+          "cols": 5,
+          "rows": 8,
+          "material": "oak",
+          "color": "#b08b62",
+          "backColor": "marrakesh",
+          "fill": 0.72,
+          "plinth": 0.08,
+          "seed": 35,
+          "alpha": 0.28
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N36",
+      "code": "N36",
+      "name": "Bølgevegg – spiler som bølger seg, naturell eik",
+      "group": "Runde 3 – nye retninger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 7,
+      "rt60": 0.68,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "En spilevegg der hver spile er litt tykkere eller tynnere enn naboen, slik at veggen bølger seg sakte tre ganger over bredden. Når spottene lyser ned langs veggen, kommer bølgen fram som myke skygger. Samme demping som en vanlig spilevegg.",
+      "pros": [
+        "God demping (ca. +7 m² Sabine)",
+        "Skulpturelt og helt annerledes enn vanlige spilevegger",
+        "Naturell eik holder rommet lyst",
+        "Bølgen er subtil på dagtid og tydelig om kvelden"
+      ],
+      "cons": [
+        "Må lages på mål (spiler i ulike tykkelser)",
+        "Dyrere enn ferdige akupaneler",
+        "Bryterne ved døra må på påbyggsramme"
+      ],
+      "products": [
+        "Massive eikespiler 27 mm brede i tykkelser 12–82 mm, på sort filt",
+        "Lekter og Glava bak (48 mm)",
+        "Påbyggsrammer for bryter/stikk"
+      ],
+      "notes": "Bølgehøyde 7 cm, bølgelengde 1,30 m (tre bølger over veggen). 0–235 cm som B.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "waveAmp": 0.07,
+          "wavePeriod": 1.3,
+          "wavePhase": 0,
+          "alpha": 0.76
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N37",
+      "code": "N37",
+      "name": "Kanalpolstret vegg i sandfarget fløyel med eikelist",
+      "group": "Runde 3 – nye retninger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 8.3,
+      "rt60": 0.65,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Veggen polstret fra gulvet til 235 cm i vertikale kanaler (30 cm) med sandfarget fløyel, avsluttet med en smal eikelist på toppen. Som en stor sengegavl – ekstremt mykt og lunt, og den beste dempingen av alle forslagene i denne runden.",
+      "pros": [
+        "Best demping i runden (ca. +8 m² Sabine)",
+        "Mykt og hotell-lunt",
+        "Sandfargen er nesten lik veggen – rolig og lyst",
+        "Eikelista binder til gulvet og bordet"
+      ],
+      "cons": [
+        "Tekstil ved spisebordet – kan få flekker (velg avtakbart / flekkbehandlet stoff)",
+        "Må lages på mål av møbeltapetserer",
+        "Bryterne ved døra må på påbyggsramme"
+      ],
+      "products": [
+        "13 polstrede kanalpaneler 30 × 235 cm, 60 mm, i sandfarget møbelfløyel",
+        "Eikelist 8 × 3 cm over hele bredden",
+        "Påbyggsrammer for bryter/stikk"
+      ],
+      "notes": "Kanalene står kant i kant (u 0–3,91). Lista ligger på 2,35 m.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "panel",
+          "u": 0,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 0.301,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 0.602,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 0.902,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 1.203,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 1.504,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 1.805,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 2.105,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 2.406,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 2.707,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 3.008,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 3.308,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "panel",
+          "u": 3.609,
+          "v": 0,
+          "w": 0.301,
+          "h": 2.35,
+          "depth": 0.06,
+          "surface": "velvet",
+          "color": "#cbbca3",
+          "edge": "channel",
+          "frameColor": null,
+          "alpha": 0.9
+        },
+        {
+          "type": "shelf",
+          "u": 0,
+          "v": 2.35,
+          "w": 3.91,
+          "d": 0.08,
+          "thickness": 0.03,
+          "color": "#b08b62",
+          "material": "oak",
+          "decor": false,
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N38",
+      "code": "N38",
+      "name": "Kalkmaling med terrakotta-sol over skjenken",
+      "group": "Runde 3 – nye retninger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 0,
+      "rt60": 0.86,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Veggen kalkmalt i en varm, lys leirtone med skyet, levende overflate, og en stor halvsirkel i terrakotta-kalk som en soloppgang bak en vegghengt skjenk. Middelhavsaktig og varmt – særlig når kveldssola treffer veggen.",
+      "pros": [
+        "Varmt og stemningsfullt for liten innsats",
+        "Kalkmaling gir en levende, matt overflate",
+        "Skjenken gir oppbevaring og flate til lampe",
+        "Kan males om når du vil"
+      ],
+      "cons": [
+        "Ingen demping – kombiner med teppe/gardiner/takabsorbenter",
+        "Kalkmaling krever riktig grunning og teknikk",
+        "Terrakotta er en ny farge i rommet"
+      ],
+      "products": [
+        "Kalkmaling i lys leire (ca. 7 m²) og terrakotta (ca. 2,5 m²) med grunning",
+        "Vegghengt skjenk ca. 220 × 40 × 45 cm i røkt eik med riflet front",
+        "Bordlampe på skjenken"
+      ],
+      "notes": "Halvsirkelen har radius 1,2 m med flat side på 0,70 m (skjenkens topp), midt på veggen.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "paint-block",
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 3,
+          "color": "#d4bea5",
+          "shape": "rect",
+          "finish": "limewash",
+          "alpha": 0
+        },
+        {
+          "type": "paint-block",
+          "u": 0.755,
+          "v": 0.7,
+          "w": 2.4,
+          "h": 1.2,
+          "color": "#b8775b",
+          "shape": "half-circle",
+          "finish": "limewash",
+          "alpha": 0
+        },
+        {
+          "type": "sideboard-floating",
+          "v": 0.25,
+          "h": 0.45,
+          "d": 0.4,
+          "frontStyle": "ribbed",
+          "material": "smoked-oak",
+          "color": "#5f4936",
+          "alpha": 0,
+          "u": 0.855,
+          "w": 2.2,
+          "lamp": true
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N39",
+      "code": "N39",
+      "name": "Botanisk tapet over mørkegrønt brystpanel",
+      "group": "Runde 3 – nye retninger",
+      "priceText": "Pris ikke beregnet",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 0,
+      "rt60": 0.86,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Nedre del av veggen (opp til 95 cm) malt mørk grønn med kassettlister og brystlist i samme farge, og et botanisk tapet med grener og bær i salvie, oliven og terrakotta over. Engelsk landsted møter norsk stue – grønt som henger sammen med stolene ved kjøkkenøya.",
+      "pros": [
+        "Varmt og personlig",
+        "Brystpanelet tåler stoler og hender",
+        "Tapetet tar opp grønt og terrakotta fra resten av rommet",
+        "Rimelig i forhold til uttrykket"
+      ],
+      "cons": [
+        "Ingen demping – kombiner med andre tiltak",
+        "Mønstret tapet passer ikke alle",
+        "Tapetsering rundt bryterne ved døra"
+      ],
+      "products": [
+        "Botanisk tapet (ca. 8 m² + passing av mønster)",
+        "Fyllingslister og brystlist, malt i mørk grønn (halvblank)",
+        "Maling: dyp grønn på nedre del (ca. 4 m²)"
+      ],
+      "notes": "Brystpanel 0–0,95 m, brystlist 0,95–1,01 m, tapet fra 1,01 m til taket.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "paint-block",
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 0.96,
+          "color": "#5d6450",
+          "shape": "rect",
+          "alpha": 0
+        },
+        {
+          "type": "moulding",
+          "u": 0.25,
+          "v": 0.2,
+          "w": 3.41,
+          "h": 0.68,
+          "style": "boxes",
+          "cols": 4,
+          "rows": 1,
+          "gap": 0.08,
+          "profile": 0.035,
+          "relief": 0.018,
+          "color": "#5d6450",
+          "rail": false,
+          "alpha": 0
+        },
+        {
+          "type": "moulding",
+          "u": 0,
+          "v": 0.85,
+          "w": 3.91,
+          "h": 0.1,
+          "style": "rail",
+          "cols": 1,
+          "rows": 1,
+          "gap": 0,
+          "profile": 0.035,
+          "relief": 0.018,
+          "color": "#5d6450",
+          "rail": true,
+          "railH": 0.06,
+          "alpha": 0
+        },
+        {
+          "type": "wallpaper",
+          "u": 0,
+          "v": 1.01,
+          "w": 3.91,
+          "h": 1.99,
+          "pattern": "botanical",
+          "colors": [
+            "#ebe4d6",
+            "#8e9a7e",
+            "#566650",
+            "#c97f5c"
+          ],
+          "scale": 1,
+          "seed": 39,
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "drawings": []
     }
   ]
 }

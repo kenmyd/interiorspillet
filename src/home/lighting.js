@@ -23,8 +23,8 @@
 //                 sky part below the glass top, the ground part above the sill). The patch radiances become a
 //                 low-poly copy of the room that is turned into a PMREM environment map (one reused render target) –
 //                 it is the indirect light (diffuse irradiance) AND the reflections of every PBR material. Lamp flux
-//                 enters it weighted by the lamp's distance to the camera (BOUNCE_LOCAL – one probe serves the whole
-//                 open-plan room; re-solved every 1.2 m walked), daylight fully.
+//                 enters it at LAMP_BOUNCE (one probe serves the whole open-plan room), daylight fully. Nothing in it
+//                 depends on where the camera is, so a corner of the room looks the same from near and far.
 //   emissive      lamp shades / bulbs / LED diffusers glow with the luminance their lumens give over their area,
 //                 rolled off at EMISSIVE_DISPLAY_CAP so they keep the light's colour instead of clipping to white.
 //   exposure      the photometric values are multiplied by one scene scale S (a camera with partial eye adaptation:
@@ -36,11 +36,13 @@
 //                 light, a lamp-lit evening reads warm white, not orange-brown or olive. Eased like the exposure.
 //                 Khronos PBR Neutral tone mapping (base colours stay true, saturated lamp light stays amber).
 //   outside       the 3D exterior gets its own sky environment (exterior.js setDaylight(…, light)), not the room's.
-//   budget        fixed pools of point / spot / rect lights (counts never change, so shaders never recompile); every
-//                 0.25 s / 0.5 m the sources with the largest contribution to the render camera get a slot, the rest
-//                 are emissive only and their direct light near the camera is added to an ambient term (the bounce of
-//                 every source is in the environment map regardless). LED strips weigh STRIP_SIGNATURE × their flux
-//                 for a rect slot (their wash is what shows; a window's spot stand-in looks nearly the same).
+//   budget        fixed pools of point / spot / rect lights (counts never change, so shaders never recompile), sized so
+//                 every built-in lamp of the room has a real light at once (PROFILES); every 0.25 s / 0.5 m the sources
+//                 with the largest contribution to the render camera get a slot, the rest (only when more lamps are
+//                 placed than there are slots) are emissive only and their direct light near the camera is added to an
+//                 ambient term (the bounce of every source is in the environment map regardless). LED strips weigh
+//                 STRIP_SIGNATURE × their flux for a rect slot (their wash is what shows; a window's spot stand-in looks
+//                 nearly the same).
 //   AO            GTAO multiplied onto the frame on «høy» (lighting.render()).
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
@@ -89,7 +91,7 @@ const MODE_KEY = { day: 1, evening: 0.95, night: 0.85 };
  * day + 0.6 · lamp mix, which left every surface beige whenever the lamps had a fair share of the light). One diagonal
  * matrix maps the colour of the dominant light (srcM, in mired) onto the colour it is shown as (appM): both mix the
  * daylight and the lamps by the lamps' weight m = lampL · pull / (dayL + lampL · pull) (lampL, dayL = their light on
- * the room's surfaces, lamps weighted by bounce locality); each part is moved toward D65 (= no correction) by:
+ * the room's surfaces, lamps at LAMP_BOUNCE); each part is moved toward D65 (= no correction) by:
  *   day       next to lamps: the sky/sun colour almost uncorrected – the 08:30 photos show the daylit Sand walls
  *             grey-blue (#a8c2d2, #c9d3d4) and the 2700 K pools amber (#da9765), i.e. a camera near D65;
  *   dayAlone  daylight without lamps: the measured colour on the surfaces (sun + its warm bounce) balanced more, like
@@ -122,12 +124,14 @@ const RING_UP_SHARE = 0.15;
 /** Downward half-space emitter for fixtures whose up-light is drawn as ceiling decals (see _itemCandidate). */
 const HALF_SPACE_SPOT = { angle: 84 * DEG, penumbra: 0.35, pointShare: 0.3, decalGain: 1.4 };
 /**
- * Lamp bounce locality (add-lighting): a lamp's bounce counts fully next to the camera and falls to `min` with
- * distance (R² / (R² + d²), `radius` m) – a lamp's first bounce lands near the lamp, and the single environment probe
- * otherwise spread every lamp's bounce over the whole open-plan room (the 08:30 photos: lamp light stays in the pools
- * and coves, the daylit walls and the TV-stue sofa stay grey). Re-solved after the camera moves `step` m.
+ * Share of a lamp's flux that goes into the bounce (radiosity → environment map, exposure, white balance). A lamp's
+ * first bounce lands near the lamp, and the single environment probe spreads every lamp's bounce over the whole
+ * open-plan room (the 08:30 photos: lamp light stays in the pools and coves, the daylit walls and the TV-stue sofa stay
+ * grey). add-lighting weighted each lamp by its distance to the camera (R² / (R² + d²), R = 3 m, ≥ 0.1) – a corner then
+ * brightened as you walked toward it (its lamps' bounce grew, from ≈ 0.3 to ≈ 0.7). One constant instead: the mean of
+ * that weight over the walkable room (≈ 0.45), so the calibrated balance of daylight and lamps stays.
  */
-const BOUNCE_LOCAL = { radius: 3, min: 0.1, step: 1.2 };
+const LAMP_BOUNCE = 0.45;
 /** Light-slot priority of an LED strip over its flux (see _score). */
 const STRIP_SIGNATURE = 8;
 /** Display level (brightest channel, × white) the glow of lamps and LED lines rolls off toward (see _applyEmissive). */
@@ -149,6 +153,13 @@ const WINDOW_TILT = 45 * DEG;
  * lower half runs onto the floor in front of the wall; narrower ones are the old bullet shape.
  */
 const HIGHWALL_SPOT = { angle: 32 * DEG, penumbra: 1, aimDrop: 0.25 };
+/**
+ * Beam of the three pendants over the kitchen island (group 'pendler'). The model's own cone (≈ 20° half-angle,
+ * penumbra 0.55) drew pools ≈ 0.5 m across on the worktop 0.8 m below; the owner's pendants light a much larger part
+ * of the island. 34° with a firmer edge (penumbra 0.3): pools ≈ 1 m across that still read as three on the dark
+ * worktop (40–46° with a soft edge lit the island evenly – no pools left, and as much floor as worktop).
+ */
+const ISLAND_PENDANT = { angle: 34 * DEG, penumbra: 0.3 };
 
 /**
  * Per quality level: light pool sizes, shadow and environment resolution, ambient occlusion.
@@ -157,11 +168,16 @@ const HIGHWALL_SPOT = { angle: 32 * DEG, penumbra: 1, aimDrop: 0.25 };
  * and the light uniforms uploaded at every program switch. fix-lighting r1: «middels» went from 4/10/8 (+4 shadowed
  * spots) to 2/6/4 (the four high-wall spots keep their shadows): ≈ 2× faster compiles, ≈ ½ the uniforms. Window sky
  * light without a rect slot falls back to a cheap spot (see _budget), sun-patch bounce lights are spots.
+ * The room has 11 spot lamps (4 high-wall spots, 3 island pendants, 2 kitchen rings, the TV-stue ring, the stue
+ * chandelier): with 6 spots on «middels» only two of the seven beside the high-wall spots had a light at a time – the
+ * rest were a flat ambient term that faded in as you walked up to them (one pendant lit, the TV-stue darker from a
+ * distance). «middels» has 12 now (one spare for a placed lamp): ≈ +4 s on the first load (16.6 → 20.5 s, headless
+ * Edge/D3D11); the rect pool is unchanged (four more rects cost ≈ +11 s).
  */
 const PROFILES = {
-  low: { point: 2, spot: 4, spotShadows: 0, rect: 3, shadowMap: 1024, pcf: 1.6, spotShadowMap: 0, env: 64, ao: false },
-  medium: { point: 2, spot: 6, spotShadows: 4, rect: 4, shadowMap: 2048, pcf: 2.2, spotShadowMap: 512, env: 64, ao: false },
-  high: { point: 4, spot: 10, spotShadows: 4, rect: 8, shadowMap: 4096, pcf: 3.2, spotShadowMap: 1024, env: 128, ao: true },
+  low: { point: 2, spot: 8, spotShadows: 0, rect: 3, shadowMap: 1024, pcf: 1.6, spotShadowMap: 0, env: 64, ao: false },
+  medium: { point: 2, spot: 12, spotShadows: 4, rect: 4, shadowMap: 2048, pcf: 2.2, spotShadowMap: 512, env: 64, ao: false },
+  high: { point: 4, spot: 14, spotShadows: 4, rect: 8, shadowMap: 4096, pcf: 3.2, spotShadowMap: 1024, env: 128, ao: true },
 };
 
 /** Luminance of a linear RGB colour. */
@@ -803,7 +819,8 @@ export class LightManager {
 
     const layout = home?.layout;
     this.layout = layout || null;
-    this.builtInGroups = (layout?.lightGroups || []).map((g) => ({ id: g.id, label: g.label, lumens: 0 }));
+    this.builtInGroups = (layout?.lightGroups || []).map((g) => ({ id: g.id, label: g.label, lumens: 0, dimmer: clamp(g.dimmer ?? 1) }));
+    this._defaultDimmer = Object.fromEntries(this.builtInGroups.map((g) => [g.id, g.dimmer]));
     this.center = new THREE.Vector3(3.5, 1.2, 6);
     if (layout?.bounds) {
       const b = layout.bounds;
@@ -892,20 +909,29 @@ export class LightManager {
     this._markDirty();
   }
 
-  /** Built-in group on/off and dimmer; null = back to the default for the time of day. */
+  /**
+   * Built-in group on/off and dimmer; null = back to the default (on/off by the time of day, the group's own dimmer).
+   * `{ auto: true, dimmer }` keeps on/off by the time of day at another dimmer (PhotoCompare: the photos' lamps).
+   */
   setBuiltIn(groupId, state) {
     if (!state) this._builtInState.delete(groupId);
     else {
-      const cur = this._builtInState.get(groupId) || { on: this._defaultLampsOn, dimmer: 1 };
-      this._builtInState.set(groupId, { on: state.on ?? cur.on, dimmer: clamp(state.dimmer ?? cur.dimmer) });
+      const cur = this._builtInState.get(groupId) || { on: this._defaultLampsOn, dimmer: this._groupDimmer(groupId) };
+      this._builtInState.set(groupId, { on: state.on ?? cur.on, dimmer: clamp(state.dimmer ?? cur.dimmer), auto: state.auto === true });
     }
     this._markDirty();
   }
 
-  /** Effective state of a built-in group: { on, dimmer, auto } (auto = follows the time of day). */
+  /** Effective state of a built-in group: { on, dimmer, auto } (auto = on/off follows the time of day). */
   groupState(groupId) {
     const s = this._builtInState.get(groupId);
-    return s ? { on: s.on, dimmer: s.dimmer, auto: false } : { on: this._defaultLampsOn, dimmer: 1, auto: true };
+    if (!s) return { on: this._defaultLampsOn, dimmer: this._groupDimmer(groupId), auto: true };
+    return { on: s.auto ? this._defaultLampsOn : s.on, dimmer: s.dimmer, auto: s.auto };
+  }
+
+  /** The dimmer a built-in group starts at (layout LIGHT_GROUPS). */
+  _groupDimmer(groupId) {
+    return this._defaultDimmer[groupId] ?? 1;
   }
 
   /** Daylight share let through a window (0..1) by its shading. */
@@ -949,12 +975,6 @@ export class LightManager {
   /** Every frame: exposure easing, the light budget, light values. */
   update(dt = 0, camera = this.camera) {
     this._clock += dt;
-    // the lamps' bounce is weighted by their distance to the camera (_bounceLocality): re-solve after a walk
-    const cpos = (this._renderCamera || camera)?.position;
-    if (cpos && this._model && this._localFrom && cpos.distanceToSquared(this._localFrom) > BOUNCE_LOCAL.step * BOUNCE_LOCAL.step) {
-      if (this._localInside || this._isInsideRoom(cpos)) this._markDirty();
-      else this._localFrom.copy(cpos); // outside the room → nothing to re-solve
-    }
     if (this._dirty) this._recompute();
     // ease the scene scale (eye adaptation): ~0.25 s
     if (this._S == null) this._S = this._Starget;
@@ -1185,8 +1205,13 @@ export class LightManager {
           const pos = l.type === 'pendant-cylinder' && atMount
             ? new THREE.Vector3(l.position.x, (dims.bottomY ?? l.position.y - 0.7) - 0.01, l.position.z)
             : l.position.clone();
-          const angle = l.angle != null ? clamp(l.angle, 0.15, 1.3) : 34 * DEG;
-          c = { ...base, id, kind: 'spot', position: pos, direction: dir, angle, penumbra: clamp(l.penumbra ?? 0.6) };
+          if (l.group === 'pendler') {
+            // the island pendants: wide pools on the worktop (see ISLAND_PENDANT)
+            c = { ...base, id, kind: 'spot', position: pos, direction: dir, angle: ISLAND_PENDANT.angle, penumbra: ISLAND_PENDANT.penumbra };
+          } else {
+            const angle = l.angle != null ? clamp(l.angle, 0.15, 1.3) : 34 * DEG;
+            c = { ...base, id, kind: 'spot', position: pos, direction: dir, angle, penumbra: clamp(l.penumbra ?? 0.6) };
+          }
         } else {
           c = { ...base, id, kind: 'point', position: atMount ? l.position.clone().setY(l.position.y - 0.15) : l.position.clone() };
         }
@@ -1386,28 +1411,6 @@ export class LightManager {
     return times.noon;
   }
 
-  /**
-   * Share of a lamp's flux that goes into the bounce (radiosity → environment map, exposure, white balance), by its
-   * distance to the camera (see BOUNCE_LOCAL). One environment probe serves the whole open-plan room, so without this
-   * the kitchen lamps' bounce lit the sofa in the TV-stue as much as the kitchen.
-   */
-  _bounceLocality(c) {
-    const p = this._localPos;
-    if (!p) return 1;
-    let d2;
-    if (c.strip && c.right) {
-      _v1.copy(p).sub(c.position);
-      const u = clamp(_v1.dot(c.right), -c.width / 2, c.width / 2);
-      d2 = _v2.copy(c.position).addScaledVector(c.right, u).distanceToSquared(p);
-    } else d2 = c.position.distanceToSquared(p);
-    const R2 = BOUNCE_LOCAL.radius * BOUNCE_LOCAL.radius;
-    return BOUNCE_LOCAL.min + (1 - BOUNCE_LOCAL.min) * (R2 / (R2 + d2));
-  }
-
-  _isInsideRoom(p) {
-    return p.y < 3.4 && (this.layout?.isInside ? this.layout.isInside(p.x, p.z) : true);
-  }
-
   /** Adaptation of the camera white point to the lamps' colour (see WB). */
   _lampAdapt(effective) {
     return effective === 'evening' || effective === 'night' ? this._wbParams.lampsEvening : this._wbParams.lamps;
@@ -1444,14 +1447,6 @@ export class LightManager {
   /** Everything that depends on time, mode, lamps and shading. Cheap (≈ 0.2 ms). */
   _recompute() {
     this._dirty = false;
-    const cpos = (this._renderCamera || this.camera)?.position;
-    if (cpos) {
-      // a camera outside the room (dollhouse / plan view) weighs the lamps as seen from the middle of the room
-      const inside = this._isInsideRoom(cpos);
-      (this._localPos ??= new THREE.Vector3()).copy(inside ? cpos : this.center);
-      this._localFrom = cpos.clone();
-      this._localInside = inside;
-    }
     const model = this._model;
     const weather = this.weather;
     const { sun, altDeg, times, effective, hour: effHour } = this._effectiveSun();
@@ -1547,8 +1542,8 @@ export class LightManager {
       let on, dimmer;
       if (c.source === 'builtin') {
         const s = this._builtInState.get(c.group);
-        on = s ? s.on : autoOn;
-        dimmer = s ? s.dimmer : 1;
+        on = s && !s.auto ? s.on : autoOn;
+        dimmer = s ? s.dimmer : this._groupDimmer(c.group);
       } else {
         on = c.itemOn;
         dimmer = c.itemDimmer;
@@ -1560,10 +1555,9 @@ export class LightManager {
       if (c.flux > 0) {
         lampFlux += c.flux;
         addScaled(lampColorSum, c.color, c.flux);
-        const k = this._bounceLocality(c);
-        lampMired += (c.flux * k * 1e6) / Math.max(1000, c.colorK || 2700);
-        lampMiredW += c.flux * k;
-        if (model && c.weights) this._deposit(c.weights, c.flux * k, c.color, false);
+        lampMired += (c.flux * 1e6) / Math.max(1000, c.colorK || 2700);
+        lampMiredW += c.flux;
+        if (model && c.weights) this._deposit(c.weights, c.flux * LAMP_BOUNCE, c.color, false);
       }
     }
 
@@ -1657,7 +1651,7 @@ export class LightManager {
     const ref = _c1.copy(illumDay).add(illumLamp).multiplyScalar(1 / Math.max(1e-6, dayL + lampL));
     ref.multiply(wbT);
     wbT.multiplyScalar(1 / Math.max(1e-4, lum(ref)));
-    // eased in update() (the white point moves with the camera: lamp bounce locality); snapped on the first solve
+    // eased in update() (a dimmer or the clock slider moves it); snapped on the first solve
     if (!this._wbReady) {
       this._wb.copy(wbT);
       this._wbReady = true;
@@ -2030,18 +2024,22 @@ export class LightManager {
       c.slot = free;
       c.fade = this._S == null || this._clock < 0.5 ? 1 : 0;
       this._configureSlot(free, c);
+      if (free.shadowed) this._requestSunShadow(free); // a spare shadow slot of the high-wall spots
     }
   }
 
-  /** Spots: shadow-casting slots go to the high-wall spots first. */
+  /**
+   * Spots: shadow-casting slots go to the high-wall spots first; the ones they leave (spots off) light other lamps,
+   * with shadows, like the plain slots.
+   */
   _assignSpots(slots, list) {
     const shadowSlots = slots.filter((s) => s.shadowed);
     const plain = slots.filter((s) => !s.shadowed);
     const wants = list.filter((c) => c.wantsShadow).sort((a, b) => b.score - a.score);
     const shadowed = wants.slice(0, shadowSlots.length);
     const rest = list.filter((c) => !shadowed.includes(c));
-    // shadowed slots
-    for (const s of shadowSlots) if (s.cand && !shadowed.includes(s.cand)) {
+    // shadowed slots: free those of lamps that are gone, then seat the high-wall spots (evicting a borrower if needed)
+    for (const s of shadowSlots) if (s.cand && !list.includes(s.cand)) {
       s.cand.slot = null;
       s.cand = null;
     }
@@ -2051,19 +2049,18 @@ export class LightManager {
         c.slot.cand = null;
         c.slot = null;
       }
-      const free = shadowSlots.find((s) => !s.cand);
+      const free = shadowSlots.find((s) => !s.cand) ?? shadowSlots.find((s) => !s.cand.wantsShadow || !shadowed.includes(s.cand));
       if (!free) break;
+      if (free.cand) free.cand.slot = null;
       free.cand = c;
       c.slot = free;
       c.fade = this._S == null || this._clock < 0.5 ? 1 : 0;
       this._configureSlot(free, c);
       this._requestSunShadow(free);
     }
-    for (const c of rest) if (c.slot?.shadowed) {
-      c.slot.cand = null;
-      c.slot = null;
-    }
-    this._assign(plain, rest);
+    const spare = shadowSlots.filter((s) => !s.cand || !shadowed.includes(s.cand));
+    for (const c of rest) if (c.slot?.shadowed && !spare.includes(c.slot)) c.slot = null;
+    this._assign([...plain, ...spare], rest);
   }
 
   /** Copies a candidate's geometry into a pool light. */

@@ -280,6 +280,9 @@ export function purchaseOf(product, variantIndex = product?.defaultVariant ?? 0,
   };
 }
 
+/** The light a newly placed lamp starts with: 2700 K at 40 %, whatever the shop's bulb (the Inspector changes both). */
+export const NEW_LAMP = Object.freeze({ colorK: 2700, dimmer: 0.4 });
+
 /**
  * Item spec for DesignState.add() from a product variant (no position – Placement sets it).
  * @param {Object|string} product  product or product id
@@ -311,8 +314,9 @@ export function productToItemSpec(product, variantIndex) {
   if (p.mount === 'ceiling' && spec.params.drop == null && typeof spec.params.dropDefault === 'number') {
     spec.params.drop = typeof spec.params.maxDrop === 'number' ? Math.min(spec.params.dropDefault, spec.params.maxDrop) : spec.params.dropDefault;
   }
+  // a new lamp starts warm and dimmed (NEW_LAMP – the owner's choice; the shop's colour temperature is in the facts)
   if (p.light) {
-    spec.light = { on: true, dimmer: 1, colorK: p.light.colorK ?? 2700, lumens: p.light.lumens ?? 800 };
+    spec.light = { on: true, dimmer: NEW_LAMP.dimmer, colorK: NEW_LAMP.colorK, lumens: p.light.lumens ?? 800 };
   }
   return spec;
 }

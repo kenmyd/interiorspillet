@@ -71,15 +71,24 @@ const DEG = Math.PI / 180;
 const EPS = 1e-6;
 const ZONE_BOX_TOP = 3.1;
 
-/** Contract light groups (ARCHITECTURE §15) with Norwegian labels. */
+/** Contract light groups (ARCHITECTURE §15) with Norwegian labels and the dimmer they start at (the levels the owner
+ *  uses in the evening; on/off still follows the time of day until the group is switched by hand). */
 const LIGHT_GROUPS = [
-  { id: 'led', label: 'LED-lister' },
-  { id: 'spots', label: 'Spotter ved den høye veggen' },
-  { id: 'kjokken', label: 'Kjøkkenlys' },
-  { id: 'overskap', label: 'Lys under overskapet' },
-  { id: 'tvstue', label: 'Taklampe i TV-stua' },
+  { id: 'led', label: 'LED-lister', dimmer: 0.15 },
+  { id: 'spots', label: 'Spotter ved den høye veggen', dimmer: 0.07 },
+  { id: 'kjokken', label: 'Kjøkkenlys', dimmer: 0.3 },
+  { id: 'pendler', label: 'Pendler over kjøkkenøya', dimmer: 0.3 },
+  { id: 'overskap', label: 'Lys under overskapet', dimmer: 0.16 },
+  { id: 'tvstue', label: 'Taklampe i TV-stua', dimmer: 0.35 },
 ];
 const SPEC_GROUP_TO_GROUP = { 'led-lister': 'led', 'spotter-hoyvegg': 'spots', 'taklampe-tvstue': 'tvstue', kjokkenlys: 'kjokken' };
+
+/** Group of a room-spec light: the strip under the glass cabinet and the island pendants have their own switch. */
+function lightGroupOf(l) {
+  if (l.id === 'led-overskap') return 'overskap';
+  if (l.type === 'pendant-cylinder' && l.group === 'kjokkenlys') return 'pendler';
+  return SPEC_GROUP_TO_GROUP[l.group] || 'kjokken';
+}
 
 // ---------------------------------------------------------------------------------------------------------------
 // Geometry helpers (plan = x/z)
@@ -485,7 +494,7 @@ export function buildLayout(spec = roomSpec, palette = paletteData) {
 
   // ---- built-in lights (stay in the shell; LightManager drives them)
   const builtInLights = (spec.builtInLights || []).map((l) => {
-    const group = l.id === 'led-overskap' ? 'overskap' : SPEC_GROUP_TO_GROUP[l.group] || 'kjokken';
+    const group = lightGroupOf(l);
     const out = {
       id: l.id,
       group,

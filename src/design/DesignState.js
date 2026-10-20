@@ -1,5 +1,6 @@
 import { Emitter } from '../core/Events.js';
 import { originalItems } from '../home/existing.js';
+import { getProduct } from '../catalog/index.js';
 import { layout as defaultLayout } from '../home/layout.js';
 import schema from '../data/archetypes.json';
 import wallData from '../data/wall-proposals.json';
@@ -849,6 +850,13 @@ export class DesignState extends Emitter {
       orig ??= new Map(originalItems(this.layout).map((o) => [o.uid, o]));
       const o = orig.get(it.uid);
       if (o) { it.dims = { ...o.dims }; it.params = { ...it.params, ...o.params }; }
+    }
+    // catalogue model corrections a design saved earlier still holds (2026-10-20: Oslo Wood was drawn with a drum shade;
+    // the real one is a tiltable cone) – the product's shape params, only while the saved item still has the old shape
+    for (const it of items.values()) {
+      if (it.refId !== 'nordicnest-northern-oslo-wood-gulvlampe' || it.params?.shadeShape === 'cone') continue;
+      const p = getProduct(it.refId)?.params;
+      if (p) it.params = { ...it.params, ...Object.fromEntries(['shadeShape', 'shadeD', 'shadeBottomD', 'shadeH', 'tilt', 'tiltable'].filter((k) => k in p).map((k) => [k, p[k]])) };
     }
     this.items = items;
     this.wall = normaliseWall(data.wall, this.layout);

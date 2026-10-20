@@ -12,12 +12,16 @@ import { SceneSync } from '../design/SceneSync.js';
 import { setModelQuality, ARCHETYPES } from '../models/registry.js';
 import { setWallQuality, ELEMENT_TYPES } from '../models/walldesigns.js';
 
+/** The open-plan room the HUD names (the zones of room-spec are not separate rooms). */
+const OPEN_ROOM = Object.freeze({ id: 'stue-kjokken', name: 'Stue/kjøkken' });
+
 /**
  * The home – the real living room (ARCHITECTURE §4). Game.js (and dev/sandbox) call createHome(ctx) once.
  *
  *   createHome(ctx) → home = {
  *     spawn: { position: Vector3 (feet), yaw, pitch },     dining area, looking toward the sitting area / windows
- *     rooms: [{ id, name, box: Box3 }],                    zones from room-spec (HUD «Spisestue» …)
+ *     rooms: [{ id, name, zoneId, box: Box3 }],            one box per room-spec zone, all the same room
+ *                                                          (id 'stue-kjokken', HUD «Stue/kjøkken»)
  *     layout,                                              home/layout.js
  *     walls: WallInfo[], windows: WindowInfo[], doors: DoorInfo[], highWall: HighWallInfo   (from shell.js)
  *     ceilingHeightAt(x, z), floorY: 0,
@@ -122,7 +126,9 @@ export async function createHome(ctx) {
   for (const w of shell.windows) if (w.anchor) roots.shading.attach(w.anchor);
   if (shell.highWall?.anchor) roots.wall.attach(shell.highWall.anchor);
 
-  const rooms = layout.zones.map((z) => ({ id: z.id, name: z.name, box: z.box.clone() }));
+  // one open room: the zones' boxes all count as «Stue/kjøkken», so walking between kitchen, dining area and the two
+  // living areas never announces a new room (the HUD banner shows once, when the game starts)
+  const rooms = layout.zones.map((z) => ({ id: OPEN_ROOM.id, name: OPEN_ROOM.name, zoneId: z.id, box: z.box.clone() }));
   const paintOf = (wallId) => design.paints[wallId] ?? layout.wallsById[wallId]?.paint ?? null;
 
   const home = {

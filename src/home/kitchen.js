@@ -647,9 +647,13 @@ export function buildKitchen(ctx, layout) {
     const tall = layout.kitchen.items.filter((k) => k.type === 'tall-cabinet').map((k) => k.box);
     if (tall.length) boxes.push(tall.reduce((a, b) => a.clone().union(b)));
     if (benk) boxes.push(benk.box.clone().union(wt ? wt.box : benk.box));
-    if (oy) boxes.push(new THREE.Box3(new THREE.Vector3(oy.box.min.x, 0, oy.box.min.z), new THREE.Vector3(oy.box.max.x, oy.box.max.y, oy.box.max.z)));
     if (ov) boxes.push(ov.box.clone());
     for (const b of boxes) ctx.collision.addStaticBox(b);
+    // the island stands free in the room: like the furniture it is a ghost while settings.physicalBody is off
+    if (oy) {
+      const island = new THREE.Box3(new THREE.Vector3(oy.box.min.x, 0, oy.box.min.z), new THREE.Vector3(oy.box.max.x, oy.box.max.y, oy.box.max.z));
+      ctx.collision.addDynamicBox(island, { id: 'kitchen-island' }).furniture = true;
+    }
   }
 
   // ---------------------------------------------------------------------------------------------------------------
@@ -662,7 +666,7 @@ export function buildKitchen(ctx, layout) {
   group.add(lights);
   const lb = new MeshBatcher('kitchen-light-fittings');
   for (const l of layout.builtInLights) {
-    if (l.group !== 'kjokken' && l.group !== 'overskap') continue;
+    if (l.group !== 'kjokken' && l.group !== 'pendler' && l.group !== 'overskap') continue;
     const label = groupLabel[l.group] || l.name;
     if (l.type === 'track' && l.from && l.to) {
       const len = l.from.distanceTo(l.to);

@@ -32,6 +32,7 @@ const PROPOSALS = new Map((wallData.proposals || []).map((p) => [p.id, p]));
 const ELEMENT_ALPHA = {
   slats: 0.76, panel: 0.94, art: 0.56, tapestry: 0.45, checker: 0.77, circles: 0.8, hexagons: 0.45, curtain: 0.45,
   moss: 0.47, shelf: 0, 'sideboard-floating': 0, hooks: 0, led: 0, 'lamp-wall': 0, 'paint-block': 0, plant: 0,
+  wallpaper: 0, moulding: 0, bookcase: 0.25, ledge: 0,
 };
 
 /** Fabric alpha (m² Sabine per m² of covered window) when a shading spec has no catalogue product. */

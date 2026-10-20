@@ -120,29 +120,37 @@ const INSERT = {
 const ABS_NOTE = (flat, batten) => `Regnet som montert rett på veggen (som i spillet): ca. ${flat} m² Sabine per panel. På lekter med mineralull bak gir panelet mer (klasse A, ca. ${batten} m²).`;
 
 /**
- * Per product: fields to set (`set`), variant fixes by name substring (`variants`: [[match, fields]]), variant names
+ * Per product: fields to set (`set`), `dims` / `params` merged into the product's (measured sizes, model shape), variant
+ * fixes by name substring (`variants`: [[match, fields]]), variant names
  * (`variantNames`: [[from, to]]), required extras, default variant by name, etc.
  */
-const PRODUCTS = {
+export const PRODUCTS = {
   // ---- lenestoler
   'fagmobler-conform-daisy-lenestol': { variants: [['Ito Stone', { priceNok: 13799 }], ['Benson Bronze', { priceNok: 13799 }]] },
-  'bohus-dominari-beetle-loungestol': { variants: [['Lincoln', { priceNok: 13845, salePriceNok: 8999 }], ['Golden 68', { priceNok: 14666, salePriceNok: 9499 }], ['Golden 29', { priceNok: 14666 }]] },
+  'bohus-dominari-beetle-loungestol': { params: { seatD: 0.53 }, variants: [['Lincoln', { priceNok: 13845, salePriceNok: 8999 }], ['Golden 68', { priceNok: 14666, salePriceNok: 9499 }], ['Golden 29', { priceNok: 14666 }]] },
   'bohus-actona-meno-loungestol': { variants: [['Bay creme', { priceNok: 5999 }]] },
   'bohus-signature-920-loungestol': { set: { brand: 'Signature Collection by Halvor Bakke (Vilmers)' }, variants: [['Jesper', { priceNok: 17332 }], ['Sebastian Forest', { priceNok: 17332, salePriceNok: 12999 }]] },
   'bohus-scapa-avila-hvilestol': { variants: [['Ager', { priceNok: 11248, salePriceNok: 4499 }]] },
-  'bohus-stressless-opal-hvilestol-med-fotskammel': { variants: [['Daisy 12', { priceNok: 27099 }]] },
+  // Stressless product sheet: footstool 54 × 40 × 39 cm
+  'bohus-stressless-opal-hvilestol-med-fotskammel': { params: { stoolW: 0.54, stoolD: 0.4, stoolH: 0.39 }, variants: [['Daisy 12', { priceNok: 27099 }]] },
   'bohus-castle-mark-bern-hvilestol-med-fotskammel': { variants: [['Loft 19', { priceNok: 7999, salePriceNok: 5599 }]] },
   'bohus-vilmers-nordal-loungestol': { variants: [['Adore', { priceNok: 9332, salePriceNok: 6999 }], ['Dolomite', { priceNok: 9999, salePriceNok: 5999 }], ['Marble Ash', { priceNok: 7999 }]] },
-  'bohus-jakobsen-cooper-loungestol': { variants: [['Lamb 05', { priceNok: 7832, salePriceNok: 5399 }], ['Perfect Harmony', { priceNok: 7415, salePriceNok: 5550 }], ['Seven 18', { priceNok: 7415 }]] },
-  'ikea-strandmon-orelappstol-med-fotskammel': { variants: [['Talliden', { priceNok: 5290 }], ['Tommaboda', { priceConfidence: 'check' }], ['Sulviken', { priceConfidence: 'check' }], ['Tibbleby', { priceConfidence: 'check' }]] },
+  // armless, low and deep with puffy tufts in seat and back (product photos) – not a tub back
+  'bohus-jakobsen-cooper-loungestol': { params: { backShape: 'tufted' }, variants: [['Lamb 05', { priceNok: 7832, salePriceNok: 5399 }], ['Perfect Harmony', { priceNok: 7415, salePriceNok: 5550 }], ['Seven 18', { priceNok: 7415 }]] },
+  // IKEA: footstool 60 × 40 × 44 cm
+  'ikea-strandmon-orelappstol-med-fotskammel': { params: { stoolW: 0.6, stoolD: 0.4, stoolH: 0.44 }, variants: [['Talliden', { priceNok: 5290 }], ['Tommaboda', { priceConfidence: 'check' }], ['Sulviken', { priceConfidence: 'check' }], ['Tibbleby', { priceConfidence: 'check' }]] },
   'ikea-ekenaset-lenestol': { variants: [['Axvall', { priceNok: 2495 }], ['Grann', { priceNok: 3495 }]], defaultVariant: 'eikemønstret/Kilanda' },
-  'ikea-saltsjobaden-gynge-og-svingstol': { defaultVariant: 'Fridtuna lys beige' },
+  'ikea-saltsjobaden-gynge-og-svingstol': { params: { seatD: 0.65 }, defaultVariant: 'Fridtuna lys beige' },
   // hvilestoler (research/catalog-new/lenestol-ny.json): the research guessed 0,55–0,8 m²; a high upholstered back,
   // headrest and footstool/footrest give ≈ 0,7–0,9 m² Sabine (500–1000 Hz) – the swivel chairs in the room are 0,6
   'bohus-actona-chicago-hvilestol-med-fotskammel': { set: { absorption: 0.8, absorptionNote: 'Anslått ca. 0,8 m² Sabine med fotskammelen: høy, polstret rygg og stoffkledde sider. I kunstskinn demper den litt mindre.' } },
-  'bohus-conform-timeout-hvilestol-med-fotskammel': { set: { absorption: 0.85, absorptionNote: 'Anslått ca. 0,85 m² Sabine med fotskammelen: tykke sete- og ryggputer og nakkepute. Et skall i finér demper lite.' } },
+  // Timeout: thick side panels whose arm tops flare out (petal), the column showing under them, a separate head
+  // cushion; wooden-shell variants show veneer on the outer faces, the arm tops stay upholstered
+  'bohus-conform-timeout-hvilestol-med-fotskammel': { params: { body: 'box', headStyle: 'block', armW: 0.13, armH: 0.55, armTuck: 0.045, armBottom: 0.27, armCap: false, stoolW: 0.51, stoolD: 0.38, stoolH: 0.39 }, set: { absorption: 0.85, absorptionNote: 'Anslått ca. 0,85 m² Sabine med fotskammelen: tykke sete- og ryggputer og nakkepute. Et skall i finér demper lite.' } },
   'bohus-castle-mark-zermatt-hvilestol-med-fotskammel': { set: { absorption: 0.9, absorptionNote: 'Anslått ca. 0,9 m² Sabine med fotskammelen: luvrikt fåreskinn på sete, rygg og skammel demper mest av hvilestolene.' } },
-  'bohus-castle-mark-grande-hvilestol-med-fothviler': { set: { absorption: 0.75, absorptionNote: 'Anslått ca. 0,75 m² Sabine: høy, polstret rygg og innebygd fothviler, men sidene er finert eik.' } },
+  // Grande with footrest: the page shows no measurements now; same frame as Zermatt med fothviler (109 cm high). Oak side
+  // panels with the arm roll wrapped over the top and down the front, arms flaring out a little
+  'bohus-castle-mark-grande-hvilestol-med-fothviler': { dims: { h: 1.09 }, params: { backH: 1.09, armH: 0.6, armTuck: 0.03 }, set: { absorption: 0.75, absorptionNote: 'Anslått ca. 0,75 m² Sabine: høy, polstret rygg og innebygd fothviler, men sidene er finert eik.' } },
   'bohus-img-taycan-hvilestol-med-fothviler': { set: { absorption: 0.7, absorptionNote: 'Anslått ca. 0,7 m² Sabine: polstret rygg og fothviler, men tynne armlener og ingen skammel.' } },
   // ---- skjenker
   'bohus-nola-skjenk-180x45': { variants: [['Hvitoljet', { priceNok: 10329, salePriceNok: 5164 }]] },
@@ -270,6 +278,15 @@ export function fixCatalog(key, products) {
       for (const [k, v] of Object.entries(f.set)) {
         if (v === null) delete p[k];
         else p[k] = v;
+      }
+    }
+    // model fixes: measured dims and shape params are merged in (null removes a key)
+    for (const k of ['dims', 'params']) {
+      if (!f?.[k]) continue;
+      p[k] = { ...(p[k] || {}) };
+      for (const [kk, v] of Object.entries(f[k])) {
+        if (v === null) delete p[k][kk];
+        else p[k][kk] = v;
       }
     }
     if (f?.noteAppend && !String(p.priceNote || '').includes(f.noteAppend)) p.priceNote = `${p.priceNote ? `${p.priceNote} ` : ''}${f.noteAppend}`;

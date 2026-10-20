@@ -221,7 +221,7 @@
     "mount": "floor",
     "params": {
       "seatH": 0.42,
-      "seatD": 0.5,
+      "seatD": 0.53,
       "backH": 0.82,
       "armH": 0.62,
       "armW": 0.14,
@@ -640,7 +640,10 @@
       "backShape": "high",
       "cushion": "tight",
       "footstool": true,
-      "headrest": true
+      "headrest": true,
+      "stoolW": 0.54,
+      "stoolD": 0.4,
+      "stoolH": 0.39
     },
     "variants": [
       {
@@ -951,7 +954,7 @@
       "armW": 0,
       "legStyle": "block",
       "legH": 0.025,
-      "backShape": "curved",
+      "backShape": "tufted",
       "cushion": "tight",
       "footstool": false,
       "headrest": false
@@ -1043,7 +1046,10 @@
       "backShape": "wing",
       "cushion": "tight",
       "footstool": true,
-      "headrest": false
+      "headrest": false,
+      "stoolW": 0.6,
+      "stoolD": 0.4,
+      "stoolH": 0.44
     },
     "variants": [
       {
@@ -1239,7 +1245,7 @@
     "mount": "floor",
     "params": {
       "seatH": 0.45,
-      "seatD": 0.6,
+      "seatD": 0.65,
       "backH": 0.75,
       "armH": 0.62,
       "armW": 0.12,
@@ -1536,15 +1542,23 @@
       "seatH": 0.42,
       "seatD": 0.5,
       "backH": 1.01,
-      "armH": 0.58,
-      "armW": 0.1,
+      "armH": 0.55,
+      "armW": 0.13,
       "legStyle": "swivel-star",
       "legH": 0.22,
       "backShape": "high",
       "cushion": "loose",
       "footstool": true,
       "headrest": true,
-      "notes": "Formstøpt, buet skall (skrog) som omslutter sete og rygg og danner armlenene, med polstrede armlenstopper. Skallet ses fra siden og bak og er frame-delen: finér i eik, valnøtt eller svart eik, eller trukket i samme stoff når varianten heter «helkledd» (da er frame = stofffargen). Inne i skallet ligger tykke, polstrede sete- og ryggputer som er festet, og en separat, pølseformet nakkepute sitter på to metallpinner øverst. Ryggen vippes med en spak på høyre side. Svingfoten har søyle og 5 armer i svart eller blank aluminium, på noen varianter kledd med tre; x-fot og quattro har 4 armer. Fotskammelen er 51 × 38 × 39 cm (fra Bohus), har samme stoff og skall og står på en egen firearmet fot. Armlenshøyden er anslått. Bohus oppgir dybde 50 cm for noen varianter, men det er setedybden; stolen er 81 cm dyp."
+      "notes": "Formstøpt, buet skall (skrog) som omslutter sete og rygg og danner armlenene, med polstrede armlenstopper. Skallet ses fra siden og bak og er frame-delen: finér i eik, valnøtt eller svart eik, eller trukket i samme stoff når varianten heter «helkledd» (da er frame = stofffargen). Inne i skallet ligger tykke, polstrede sete- og ryggputer som er festet, og en separat, pølseformet nakkepute sitter på to metallpinner øverst. Ryggen vippes med en spak på høyre side. Svingfoten har søyle og 5 armer i svart eller blank aluminium, på noen varianter kledd med tre; x-fot og quattro har 4 armer. Fotskammelen er 51 × 38 × 39 cm (fra Bohus), har samme stoff og skall og står på en egen firearmet fot. Armlenshøyden er anslått. Bohus oppgir dybde 50 cm for noen varianter, men det er setedybden; stolen er 81 cm dyp.",
+      "body": "box",
+      "headStyle": "block",
+      "armTuck": 0.045,
+      "armBottom": 0.27,
+      "armCap": false,
+      "stoolW": 0.51,
+      "stoolD": 0.38,
+      "stoolH": 0.39
     },
     "variants": [
       {
@@ -1740,15 +1754,15 @@
     "dims": {
       "w": 0.8,
       "d": 0.84,
-      "h": 1.08
+      "h": 1.09
     },
     "archetype": "recliner",
     "mount": "floor",
     "params": {
       "seatH": 0.48,
       "seatD": 0.5,
-      "backH": 1.08,
-      "armH": 0.62,
+      "backH": 1.09,
+      "armH": 0.6,
       "armW": 0.13,
       "legStyle": "swivel-star",
       "legH": 0.08,
@@ -1756,7 +1770,8 @@
       "cushion": "tight",
       "footstool": false,
       "headrest": true,
-      "notes": "Recliner med innebygd fothviler som felles ut fra setefronten, uten separat skammel. Når fothvileren er lukket, henger setefronten ned nesten til foten. Manuell regulering med spak på høyre vange, og sving. En separat, rektangulær nakkepute sitter på to metallpinner øverst og kan heves, og ryggen har en tverrsøm med knappetrykk. Utsiden av armlenene har buede vanger i finert hvitpigmentert eik (frame); stoffet dekker armlenstoppen og innsiden. Lav, svart femarmet stjernefot i aluminium med søyle. Stålramme med nozag og formstøpt kaldskum i setet. Høyden er anslått (se priceNote)."
+      "notes": "Recliner med innebygd fothviler som felles ut fra setefronten, uten separat skammel. Når fothvileren er lukket, henger setefronten ned nesten til foten. Manuell regulering med spak på høyre vange, og sving. En separat, rektangulær nakkepute sitter på to metallpinner øverst og kan heves, og ryggen har en tverrsøm med knappetrykk. Utsiden av armlenene har buede vanger i finert hvitpigmentert eik (frame); stoffet dekker armlenstoppen og innsiden. Lav, svart femarmet stjernefot i aluminium med søyle. Stålramme med nozag og formstøpt kaldskum i setet. Høyden er anslått (se priceNote).",
+      "armTuck": 0.03
     },
     "variants": [
       {

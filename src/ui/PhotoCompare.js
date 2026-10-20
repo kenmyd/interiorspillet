@@ -34,6 +34,9 @@ const PROPOSALS = wallData.proposals || [];
 const PHOTO_ENV = LIGHTING.PHOTO_ENV || { hour: 8.5, month: 10, day: 18, mode: 'auto' };
 /** Lamps lit in the montages (the four spots light pools on the wall, the LED strip in the TV niche glows). */
 const MONTAGE_LAMPS = { spots: { on: true, dimmer: 1 }, led: { on: true, dimmer: 1 } };
+/** The other built-in lamps as in the photos: on/off by the time of day, at full power (the lamp lumens of room-spec
+ *  are fitted to the photos at 100 %; the groups' own default dimmers are the owner's evening levels). */
+const PHOTO_LAMPS = Object.freeze({ auto: true, dimmer: 1 });
 
 let stylesAdded = false;
 function addStyles() {
@@ -540,7 +543,7 @@ export class PhotoCompare extends BasePanel {
     if (!L) return;
     L.setTime?.({ hour: env.hour, month: env.month, day: env.day });
     L.setMode?.(env.mode || 'auto');
-    for (const g of L.builtInGroups || []) L.setBuiltIn?.(g.id, env.builtIn?.[g.id] ?? null);
+    for (const g of L.builtInGroups || []) L.setBuiltIn?.(g.id, env.builtIn?.[g.id] ?? PHOTO_LAMPS);
     L.requestShadowUpdate?.();
     this._lightApplied = key;
     this._lightState();

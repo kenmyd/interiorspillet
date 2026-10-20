@@ -1113,11 +1113,15 @@
     "archetype": "floor-tripod",
     "params": {
       "shadeD": 0.26,
-      "shadeH": 0.22,
-      "shadeShape": "drum",
+      "shadeBottomD": 0.13,
+      "shadeH": 0.3,
+      "shadeShape": "cone",
       "baseD": 0.6,
       "legCount": 3,
-      "translucent": 0.3
+      "translucent": 0.3,
+      "tilt": 15,
+      "tiltable": true,
+      "shapeNote": "Kjegleformet skjerm (Ø26 øverst, ca. Ø13 nederst, ca. 30 cm høy) med den vide åpningen opp, holdt i en kardangring i den smale enden rett over der de tre stålbena møtes (ca. 1,35 m). Skjermen kan vinkles; på produktbildet står den ca. 15–17° på skrå. Mål av skjermen anslått fra produktbildet (total høyde 165 cm)."
     },
     "variants": [
       {

@@ -29,7 +29,8 @@ import { layout as roomLayout } from '../home/layout.js';
  * Glow hue: the LightManager writes `emissive = light colour × white balance` into every lamp glow material each
  * time it recomputes, so a colour baked into `emissive` is lost in the game. The surface hue (brass insides glow gold,
  * rattan amber) and the warmth of the bulbs therefore ride in a shader multiplier (`lampGlowTint`, luminance 1 –
- * brightness stays the LightManager's), and the base `emissive` carries the rest for pages without a LightManager.
+ * brightness stays the LightManager's – except dark fabric/paper shades, which glow less: Lamp.darkGlow), and the base
+ * `emissive` carries the rest for pages without a LightManager.
  *
  * Ceiling lamps follow the ceiling: the canopy (and the cords that hang off-centre from it, e.g. long bar pendants)
  * tilt to the local slope of `home/layout.js` ceilingHeightAt wherever the lamp hangs from the room's ceiling – the
@@ -110,12 +111,15 @@ function hueOf(c, sat = 1) {
 /** Saturation kept by the glow of a surface: metals reflect their own colour, fabrics/glass scatter toward white. */
 const METAL_HUE = new Set(['brass', 'bronze', 'copper']);
 const GLOW_SAT = { metal: 1, other: 0.6 };
+/** Linear luminance from which a translucent shade glows fully (≈ sRGB #959595); darker ones glow less (darkGlow). */
+const DARK_GLOW_LUM = 0.3;
 /** Warmth kept by visible bulbs/LED faces under the game's white balance (share of the colour temperature's hue). */
 const BULB_WARMTH = 0.45;
 
 /**
  * Multiplies a glow material's emitted light by a colour in the shader (after the emissive map). The LightManager
- * overwrites `material.emissive` with the light colour, so this is where a surface hue survives. One program for all
+ * overwrites `material.emissive` with the light colour, so this is where a surface hue (and a dark shade's lower
+ * level, Lamp.glowHue) survives. One program for all
  * tinted lamp glows (shared cache key), the colour is a per-material uniform.
  */
 function tintGlow(m, rgb) {
@@ -306,10 +310,26 @@ class Lamp {
     return this.canopyRoot;
   }
 
-  /** Hue a part's glow takes on (its surface colour, linear, luminance 1). */
+  /**
+   * Hue a part's glow takes on (its surface colour, linear), at luminance 1 – or less for a dark fabric/paper shade:
+   * black cloth lets little light through and reflects little inside, so a lit black shade stays dark instead of
+   * glowing as bright as a white one (the LightManager sets the level from the lumens alone).
+   */
   glowHue(part) {
     const sat = METAL_HUE.has(this.kind(part)) ? GLOW_SAT.metal : GLOW_SAT.other;
-    return hueOf(linearRGB(this.hex(part)), sat);
+    const hue = hueOf(linearRGB(this.hex(part)), sat);
+    const f = this.darkGlow(part);
+    return f < 1 ? hue.map((v) => v * f) : hue;
+  }
+
+  /**
+   * Glow share of a dark translucent (fabric, paper, rattan …) part: the light it passes / reflects follows its albedo,
+   * so 1 from light-mid tones up (linear luminance ≥ DARK_GLOW_LUM), ≈ 0.4 for brown linen, ≈ 0.06 for black.
+   */
+  darkGlow(part) {
+    const k = this.kind(part);
+    if (!(k in TRANSLUCENCY) || GLASS.has(k)) return 1;
+    return clamp(lum709(linearRGB(this.hex(part))) / DARK_GLOW_LUM, 0.04, 1);
   }
 
   kind(part) {
@@ -714,16 +734,21 @@ function footDome(L, d, h) {
  * Drum / cylinder / cone shade (fabric or paper): outer + inner + rims + the wire spider at the top and a bulb.
  * Returns the bulb position.
  */
-function drumShade(L, { R, Rtop = R, H, yb, x = 0, z = 0, mod = null, spider = true, bulb = 'globe', bulbR = 0.03 }) {
+function drumShade(L, { R, Rtop = R, H, yb, x = 0, z = 0, mod = null, seg = L.q.lathe, spider = true, closedTop = false, bulb = 'globe', bulbR = 0.03 }) {
   const t = 0.0025;
   const prof = [[R, yb]];
   // slight barrel for tall drums looks wrong – straight walls, two intermediate points for the taper
   prof.push([R + (Rtop - R) * 0.5, yb + H * 0.5], [Rtop, yb + H]);
-  const s = shell(prof, t, L.q.lathe, { mod });
+  const s = shell(prof, t, seg, { mod });
   const o = L.shadeMat('shade', 1.1);
   const i = L.innerMat('inner', 0.45);
   for (const g of [s.outer, ...s.rims]) L.auto(g.translate(x, 0, z), o, 'shade');
   L.auto(s.inner.translate(x, 0, z), i, 'inner');
+  if (closedTop) {
+    // fabric lid: outside up, inside down (no glare from above)
+    L.auto(new THREE.CircleGeometry(Rtop - 0.0005, seg).rotateX(-Math.PI / 2).translate(x, yb + H, z), o, 'shade');
+    L.auto(new THREE.CircleGeometry(Rtop - t, seg).rotateX(Math.PI / 2).translate(x, yb + H - t, z), i, 'inner');
+  }
   // wire rings that hold the fabric (visible at the edges) and the spider
   const ring = Math.max(0.0012, Math.min(0.002, R * 0.01));
   const wire = L.mat('metal');
@@ -740,6 +765,81 @@ function drumShade(L, { R, Rtop = R, H, yb, x = 0, z = 0, mod = null, spider = t
   const by = yb + H * 0.42;
   if (bulb) L.bulb(bulb, [x, by, z], Math.min(bulbR, R * 0.35));
   return [x, by, z];
+}
+
+/**
+ * drumShade options for a pleated (plissé) shade of `n` pleats: a zigzag around the shade, two lathe segments per pleat
+ * (crest and fold), about 1 cm deep.
+ */
+function pleatOpts(L, n, R) {
+  const amp = clamp(0.011 / Math.max(0.05, R), 0.02, 0.07);
+  return {
+    seg: Math.max(L.q.lathe, n * 2),
+    mod: (phi) => {
+      const u = (((n * phi) / TAU) % 1 + 1) % 1;
+      return 1 + amp * (Math.abs(2 * u - 1) * 2 - 1);
+    },
+  };
+}
+
+/**
+ * Woven rattan / wicker shade (drum or tapered, R → Rtop): one open-weave surface that glows where the light shines
+ * through the gaps, with a hoop at each rim. Returns the bulb position.
+ */
+function wovenShade(L, { R, Rtop = R, H, yb }) {
+  const seg = L.q.lathe;
+  const prof = [[R, yb], [(R + Rtop) / 2 + Math.min(R, Rtop) * 0.03, yb + H * 0.5], [Rtop, yb + H]];
+  const open = /woven|rattan/.test(L.kind('shade'));
+  const kind = open ? 'rattan' : L.kind('shade');
+  const opts = open ? { open: true, scale: 3.5, side: 'double' } : { side: 'double' };
+  const t = L.translucency();
+  const m = L.hueGlow(shadeMaterial(kind, L.hex('shade'), { glow: L.tint('shade'), intensity: 0.12 + t * 0.6, ...opts }), L.glowHue('shade'));
+  L.glowAdd(K.lathe(prof, { seg }), m, 'shade', { castShadow: true });
+  const band = L.mat('shade', { roughness: 0.6 });
+  for (const [r, y] of [prof[0], prof[2]]) L.add(K.torus(r, 0.0045, { radial: 6, tubular: seg }).rotateX(Math.PI / 2).translate(0, y, 0), band, 'shade');
+  const by = yb + H * 0.45;
+  L.bulb('filament', [0, by, 0], 0.03);
+  return [0, by, 0];
+}
+
+/**
+ * Paper lantern (rice paper on a wire spiral, Akari-like): an ellipsoid Ø 2R × H from yb up with openings of radius
+ * rBottom (the pole) and rTop, shallow horizontal ribs every ≈ 2.5 cm (or `ribs`). `organic` (Ferm Living Kurbis): a
+ * pear shape, widest low, bulging more to one side, with crinkled paper. Returns the bulb position.
+ */
+function lanternShade(L, { R, H, yb, ribs = 0, rBottom = 0, rTop = 0, organic = false }) {
+  const n = ribs > 2 ? Math.round(ribs) : Math.max(6, Math.round(H / 0.025));
+  const steps = n * 3;
+  const rOpen = clamp(rBottom || Math.min(0.045, R * 0.3), 0.01, R * 0.8);
+  const a0 = Math.asin(rOpen / R), a1 = Math.PI - Math.asin(clamp(rTop || Math.min(0.035, R * 0.22), 0.01, R * 0.8) / R);
+  const prof = [];
+  for (let i = 0; i <= steps; i++) {
+    const a = a0 + ((a1 - a0) * i) / steps;
+    let r = R * Math.sin(a), u = (1 - Math.cos(a)) / 2;
+    // pear: the widest part pulled down to ≈ 40 % of the height, the top narrower
+    if (organic) r *= 1 - 0.22 * u ** 1.6 + 0.06 * Math.sin(Math.PI * u);
+    prof.push([r, yb + H * u]);
+  }
+  const rnd = K.rng(`lantern:${n}`);
+  const wob = organic ? Array.from({ length: 5 }, () => [rnd.range(0, TAU), rnd.range(0.004, 0.012)]) : [];
+  // ribs: the paper bulges a little between the wires; organic: one side bulges more, crinkles between the ribs
+  const mod = (phi, y) => {
+    const u = (y - yb) / H;
+    let f = 1 + 0.012 * Math.sin(Math.PI * n * u) ** 2;
+    if (organic) {
+      f += 0.05 * Math.cos(phi - 0.6) * Math.sin(Math.PI * u) ** 2;
+      for (const [p, amp] of wob) f += amp * Math.sin(phi * 7 + p + u * 9) * Math.sin(Math.PI * n * u) ** 2;
+    }
+    return f;
+  };
+  const s = shell(prof, 0.0015, Math.max(L.q.lathe, 36), { mod });
+  const o = L.shadeMat('shade', 1.2);
+  L.auto(s.outer, o, 'shade');
+  for (const g of s.rims) L.auto(g, o, 'shade');
+  L.auto(s.inner, L.innerMat('inner', 0.5), 'inner');
+  const by = yb + H * 0.5;
+  L.bulb('globe', [0, by, 0], Math.min(0.03, R * 0.3));
+  return [0, by, 0];
 }
 
 /** Rectangular (box) fabric shade, open top and bottom. Returns the bulb position. */
@@ -2028,11 +2128,25 @@ function kScale(L, natW) {
   return natW > 0 ? clamp(L.dims.w / natW, 0.3, 4) : 1;
 }
 
-/** Foot by shape: 'disc' | 'rect' | 'dome' | 'cylinder' | 'cone' | 'stacked-pebbles' | 'vase' | 'wavy-column'. Returns its top y. */
+/**
+ * Foot by shape: 'disc' | 'rect' | 'dome' | 'cylinder' | 'bullet' | 'cone' | 'stacked-pebbles' | 'vase' | 'wavy-column'.
+ * Returns its top y.
+ */
 function foot(L, shape, { D, H, W, Dd }) {
   const seg = L.q.lathe;
   const m = L.mat('base');
   switch (shape) {
+    case 'bullet': {
+      // tall cylinder with a half-round top (Globen Torrano's travertine foot)
+      const r = D / 2;
+      const prof = [[0.0005, 0], [r - 0.003, 0], [r, 0.003], [r, Math.max(0.004, H - r)]];
+      for (let i = 1; i <= 8; i++) {
+        const a = (i / 8) * (Math.PI / 2);
+        prof.push([Math.max(0.0005, r * Math.cos(a)), Math.max(0.004, H - r) + r * Math.sin(a)]);
+      }
+      L.add(K.lathe(prof, { seg }), m, 'base');
+      return Math.max(0.004, H - r) + r;
+    }
     case 'rect':
       L.add(K.roundedBox(W, H, Dd, Math.min(0.004, H / 3), 2).translate(0, H / 2, 0), m, 'base');
       return H;
@@ -2093,22 +2207,35 @@ function floorColliders(L, footR, shade) {
   if (shade) L.colliders.push(shade);
 }
 
+/**
+ * Foot + pole + shade. params: shadeShape 'drum' | 'cylinder' | 'cone' | 'pleated' | 'woven' | 'lantern' | 'rect' |
+ * 'tiered-slats' (see the shade helpers), shadeD / shadeTopD / shadeH, shadeBottomAt (shade bottom above the floor –
+ * else the shade sits at the top), closedTop, capD / capH / finialH (pointed metal cap on top), finialD (knob on top),
+ * baseShape (foot()) or 'tripod' (wooden legs to a hub at baseH, the pole above it), baseD / baseH, poleCount (0 = no
+ * pole: the shade stands on its column/plinth), poleD, frame 'cage' (four flat bars around the shade instead of a pole).
+ */
 function buildFloorPoleShade(spec) {
   const L = new Lamp('floor-pole-shade', spec);
   const { w, d, h } = L.dims;
   const P = L.P;
   const shape = P.shadeShape || 'drum';
   const baseShape = P.baseShape || 'disc';
+  const cage = P.frame === 'cage';
   const sD0 = num(P.shadeD, w), bD0 = num(P.baseD, Math.min(0.28, w * 0.7));
-  const k = kScale(L, Math.max(sD0, bD0));
-  const sD = sD0 * k, sH = Math.min(num(P.shadeH, sD0 * 0.7) * k, h * 0.55);
-  const bD = bD0 * k;
+  const k = kScale(L, Math.max(sD0, bD0, cage ? num(P.frameD, 0) : 0));
+  const sD = sD0 * k, bD = bD0 * k;
+  const atY = num(P.shadeBottomAt, NaN);
+  const sH = Number.isFinite(atY) ? Math.min(num(P.shadeH, sD0 * 0.7) * k, h - Math.min(atY, h * 0.9) - (cage ? num(P.frameTopH, 0.09) : 0)) : Math.min(num(P.shadeH, sD0 * 0.7) * k, h * 0.55);
   const sDepth = shape === 'rect' ? Math.min(d, num(P.shadeDepth, d * 0.75) * k) : sD;
-  const yb = h - sH;
+  const yb = Number.isFinite(atY) ? clamp(atY, 0, h - sH) : h - sH;
+  const metal = L.mat('metal');
   let baseTop;
   const baseH = num(P.baseH, 0);
-  if (baseShape === 'cone' || baseShape === 'stacked-pebbles' || baseShape === 'cylinder') {
-    const bh = Math.min(baseH > 0 ? baseH : h * 0.4, yb - 0.01);
+  if (baseShape === 'tripod') {
+    baseTop = tripodFoot(L, { D: bD, H: clamp(baseH > 0 ? baseH : yb * 0.6, 0.2, yb - 0.05), legs: num(P.legCount, 3), legW: num(P.legW, 0.03), hubD: num(P.hubD, 0.12), hubH: num(P.hubH, 0.04) });
+  } else if (baseShape === 'cone' || baseShape === 'stacked-pebbles' || baseShape === 'cylinder' || baseShape === 'bullet') {
+    // a plinth narrower than the shade may reach up into it (Watt & Veke Alba), else it ends under the shade
+    const bh = Math.min(baseH > 0 ? baseH : h * 0.4, bD < sD * 0.9 ? yb + sH * 0.3 : Math.max(0.01, yb - 0.01));
     const pd = baseShape === 'stacked-pebbles' ? Math.min(bD, sD * 0.34) : bD;
     baseTop = foot(L, baseShape, { D: pd, H: bh });
   } else if (baseShape === 'rect') {
@@ -2116,26 +2243,142 @@ function buildFloorPoleShade(spec) {
     const W = Math.max(bD, poles > 1 ? sD * 0.5 + 0.06 : bD);
     // the foot plate gives the lamp its depth (Turner: shade 15 cm deep on a 20 cm deep foot = dims.d)
     baseTop = foot(L, 'rect', { W, Dd: Math.max(0.1, sDepth, Math.min(d, num(P.baseDepth, d))), H: 0.02 });
-  } else baseTop = foot(L, baseShape, { D: bD, H: 0.025 });
-  // pole(s) up into the shade
-  const poles = Math.max(1, Math.round(num(P.poleCount, 1)));
-  const poleTop = shape === 'cylinder' && baseShape === 'cone' ? yb + 0.02 : yb + sH * 0.3;
-  const poleR = poles > 1 ? 0.007 : 0.0095;
+  } else baseTop = foot(L, baseShape, { D: bD, H: baseH > 0 ? Math.min(baseH, 0.06) : 0.025 });
+  // pole(s) up into the shade (none with a cage frame or poleCount 0)
+  const poles = cage ? 0 : Math.max(0, Math.round(num(P.poleCount, 1)));
+  const poleTop = shape === 'cylinder' && baseShape === 'cone' ? yb + 0.02 : shape === 'tiered-slats' ? yb + sH * 0.15 : yb + sH * 0.3;
+  const poleR = Number.isFinite(P.poleD) ? clamp(P.poleD / 2, 0.005, 0.02) : poles > 1 ? 0.007 : 0.0095;
   for (let i = 0; i < poles; i++) {
     const x = poles === 1 ? 0 : (i / (poles - 1) - 0.5) * sD * 0.5;
-    if (poleTop - baseTop > 0.01) L.add(K.cylinder(poleR, poleR, poleTop - baseTop + 0.005, { seg: L.q.rod + 2 }).translate(x, baseTop - 0.005, 0), L.mat('metal'), 'metal');
+    if (poleTop - baseTop > 0.01) L.add(K.cylinder(poleR, poleR, poleTop - baseTop + 0.005, { seg: L.q.rod + 2 }).translate(x, baseTop - 0.005, 0), L.mat(baseShape === 'tripod' ? 'base' : 'metal', baseShape === 'tripod' ? woodGrain(L) : undefined), baseShape === 'tripod' ? 'base' : 'metal');
   }
+  // the socket comes up from the pole top – or from the plinth when there is no pole; a cage hangs it from the top
+  const sockFrom = poles ? poleTop : Math.max(baseTop, yb);
   let bulb;
+  // tapered shapes: shadeD = Ø at the bottom, shadeTopD = Ø at the top
+  const Rtop = (num(P.shadeTopD, sD0 * ({ cone: 0.6, pleated: 0.8 }[shape] ?? 1)) * k) / 2;
+  const closed = !!P.closedTop;
   if (shape === 'rect') {
     bulb = boxShade(L, { W: sD, D: sDepth, H: sH, yb });
-    if (poles > 1) L.add(K.box(sD * 0.5, 0.008, 0.012).translate(0, yb + sH * 0.3, 0), L.mat('metal'), 'metal');
+    if (poles > 1) L.add(K.box(sD * 0.5, 0.008, 0.012).translate(0, yb + sH * 0.3, 0), metal, 'metal');
+  } else if (shape === 'woven') {
+    bulb = wovenShade(L, { R: sD / 2, Rtop, H: sH, yb });
+  } else if (shape === 'lantern') {
+    bulb = lanternShade(L, { R: sD / 2, H: sH, yb, ribs: num(P.ribs, 0), rBottom: num(P.openingBottomD, 0) * k / 2, rTop: num(P.openingTopD, 0) * k / 2, organic: !!P.asymmetric });
+  } else if (shape === 'tiered-slats') {
+    bulb = slatTiers(L, { P, k, yb, h });
   } else {
-    bulb = drumShade(L, { R: sD / 2, H: sH, yb, bulbR: 0.03 });
-    L.socket(0, poleTop, bulb[1] - 0.03, 0, 0.016);
+    const pleats = shape === 'pleated' ? clamp(Math.round(num(P.pleats, 40)), 12, 120) : 0;
+    const taper = shape === 'cone' || shape === 'pleated';
+    bulb = drumShade(L, { R: sD / 2, Rtop: taper ? Rtop : sD / 2, H: sH, yb, bulbR: 0.03, closedTop: closed, spider: !closed && !cage, ...(pleats ? pleatOpts(L, pleats, sD / 2) : {}) });
   }
+  if (!cage && shape !== 'rect') L.socket(0, sockFrom, bulb[1] - 0.03, 0, 0.016);
+  // pointed metal cap over a shallow (parasol) shade, knob on a closed top
+  const top = yb + sH;
+  if (num(P.capD, 0) > 0) {
+    const cR = (P.capD * k) / 2, cH = num(P.capH, 0.05) * k, fH = num(P.finialH, 0) * k;
+    const c = L.q.lathe;
+    L.add(K.lathe([[0.004, top - cH * 0.9], [cR, top - cH * 0.9], [cR * 0.98, top - cH * 0.82], [cR * 0.22, top + cH * 0.1], [0.004, top + cH * 0.12]], { seg: c }), metal, 'metal');
+    if (fH > 0) L.add(K.lathe([[0.0005, top + cH * 0.08], [0.009, top + cH * 0.08], [0.0005, top + cH * 0.08 + fH]], { seg: 12 }), metal, 'metal');
+  }
+  if (num(P.finialD, 0) > 0) {
+    const r = (P.finialD * k) / 2;
+    L.add(xf(K.sphere(r, { wSeg: 14, hSeg: 10 }), [0, top + r * 0.8, 0]), L.mat('base', woodGrain(L)), 'base');
+  }
+  if (cage) cageFrame(L, { R: (num(P.frameD, sD0 + 0.02) * k) / 2, yb, top, plateY: baseTop, barW: num(P.barW, 0.012), topH: num(P.frameTopH, 0.09), bulb });
   L.point(bulb, L.lumens(806));
-  floorColliders(L, Math.max(0.05, bD / 2), { min: [-sD / 2, yb, -sDepth / 2], max: [sD / 2, h, sDepth / 2] });
+  const sR = Math.max(sD / 2, shape === 'tiered-slats' ? (Math.max(...(P.tierD || [sD0])) * k) / 2 : 0);
+  floorColliders(L, Math.max(0.05, bD / 2), { min: [-sR, yb, -Math.max(sR, sDepth / 2)], max: [sR, h, Math.max(sR, sDepth / 2)] });
   return L.finish();
+}
+
+/**
+ * Wooden tripod under a pole (IKEA LAUTERS): `legs` square legs (legW) from a circle of Ø D on the floor up to the
+ * underside of a round hub (hubD × hubH) whose top is at H. Returns H.
+ */
+function tripodFoot(L, { D, H, legs = 3, legW = 0.03, hubD = 0.12, hubH = 0.04 }) {
+  const m = L.mat('base', woodGrain(L));
+  const n = clamp(Math.round(legs), 3, 5);
+  const fr = D / 2 - legW / 2;
+  const hr = hubD / 2 - legW * 0.6;
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * TAU + Math.PI;
+    const s = [Math.sin(a), 0, Math.cos(a)];
+    L.add(bar([s[0] * fr, 0, s[2] * fr], [s[0] * hr, H - hubH * 0.5, s[2] * hr], legW, legW, [Math.cos(a), 0, -Math.sin(a)]), m, 'base');
+  }
+  L.add(discGeo(hubD, hubH, L.q.lathe, { y0: H - hubH, round: 0.006 }), m, 'base');
+  return H;
+}
+
+/**
+ * Four flat bars around a cylinder shade (Aneta Ronda): on a circle of radius R at 45°, from the foot plate (where they
+ * turn in and cross) straight up past the shade and over its top (topH above it) where they turn in to an X with a
+ * knob. The socket hangs from the X down to the bulb.
+ */
+function cageFrame(L, { R, yb, top, plateY, barW, topH, bulb }) {
+  const m = L.mat('metal');
+  const t = Math.max(0.003, barW * 0.3);
+  const yTop = top + topH, rc = Math.min(0.035, R * 0.25);
+  for (let i = 0; i < 4; i++) {
+    const a = (i / 4) * TAU + Math.PI / 4;
+    const s = [Math.sin(a), Math.cos(a)];
+    const at = (r, y) => [s[0] * r, y, s[1] * r];
+    // flat side faces outward: width along the tangent
+    const tan = [Math.cos(a), 0, -Math.sin(a)];
+    L.add(bar(at(R, plateY + rc), at(R, yTop - rc), barW, t, tan), m, 'metal');
+    L.add(bar(at(R, yTop - rc), at(R - rc * 0.3, yTop - rc * 0.3), barW, t, tan), m, 'metal');
+    L.add(bar(at(R - rc * 0.3, yTop - rc * 0.3), at(0, yTop), barW, t, tan), m, 'metal');
+    L.add(bar(at(R, plateY + rc), at(R - rc, plateY + t / 2), barW, t, tan), m, 'metal');
+    L.add(bar(at(R - rc, plateY + t / 2), at(0, plateY + t / 2), barW, t, tan), m, 'metal');
+  }
+  L.add(xf(K.sphere(0.011, { wSeg: 12, hSeg: 8 }), [0, yTop + 0.004, 0], null, [1, 0.7, 1]), m, 'metal');
+  // rod from the X to the socket, cord from the socket down to the plate
+  L.add(K.cylinder(0.004, 0.004, yTop - bulb[1] - 0.06, { seg: 8 }).translate(0, bulb[1] + 0.06, 0), m, 'metal');
+  L.socket(0, bulb[1] + 0.025, bulb[1] + 0.065, 0, 0.016);
+}
+
+/**
+ * Tiers of loose hanging wooden slats (Halvor Bakke Cape Town): per tier a thin ring at the top and `slatsPerTier`
+ * flat slats (slatW × slatT, broad face out) hanging from it, each a little different in length. tierD = Ø per tier
+ * (top tier first), tierBottomAt = bottom of each tier above the floor, slatLength per tier. Returns the bulb position.
+ */
+function slatTiers(L, { P, k, yb, h }) {
+  const tierD = Array.isArray(P.tierD) && P.tierD.length ? P.tierD : [0.5, 0.4, 0.3];
+  const n = tierD.length;
+  const lens = tierD.map((_, i) => num(Array.isArray(P.slatLength) ? P.slatLength[i] : P.slatLength, 0.2) * k);
+  const bottoms = tierD.map((_, i) => num(Array.isArray(P.tierBottomAt) ? P.tierBottomAt[i] : NaN, NaN));
+  // without measured tiers: stack them down from the top, each 70 % into the one above
+  for (let i = 0; i < n; i++) if (!Number.isFinite(bottoms[i])) bottoms[i] = i === 0 ? h - lens[0] : bottoms[i - 1] - lens[i] * 0.7;
+  const scaleY = (y) => yb + ((y - bottoms[n - 1]) * (h - yb)) / Math.max(0.05, h - bottoms[n - 1]);
+  const sw = num(P.slatW, 0.022) * k, st = num(P.slatT, 0.006) * k;
+  const wood = L.mat('shade', { grain: 'v' });
+  const ring = L.mat('metal');
+  const rnd = K.rng(`slats:${tierD.join(',')}`);
+  for (let i = 0; i < n; i++) {
+    const R = (tierD[i] * k) / 2;
+    const yTop = scaleY(bottoms[i] + lens[i]), yBot = scaleY(bottoms[i]);
+    const count = clamp(Math.round(num(Array.isArray(P.slatsPerTier) ? P.slatsPerTier[i] : NaN, (TAU * R) / (sw * 1.9))), 8, 140);
+    for (let j = 0; j < count; j++) {
+      const a = ((j + rnd.range(-0.15, 0.15)) / count) * TAU;
+      const len = (yTop - yBot) * rnd.range(0.9, 1.04);
+      const r = R - st / 2;
+      const g = K.box(sw, len, st, { grain: 'y' });
+      xf(g, [Math.sin(a) * r, yTop - len / 2 - 0.004, Math.cos(a) * r], [rnd.range(-0.03, 0.03), a, 0]);
+      L.add(g, wood, 'shade');
+    }
+    L.add(K.torus(R - st, 0.003, { radial: 5, tubular: Math.max(24, L.q.lathe) }).rotateX(Math.PI / 2).translate(0, yTop - 0.008, 0), ring, 'metal');
+    // spokes from the pole to the ring
+    for (let s = 0; s < 3; s++) {
+      const a = (s / 3) * TAU + i;
+      L.add(rod([0, yTop - 0.012, 0], [Math.sin(a) * (R - st), yTop - 0.008, Math.cos(a) * (R - st)], 0.0022, 5), ring, 'metal');
+    }
+  }
+  const by = scaleY(bottoms[n - 1] + lens[n - 1] * 0.9);
+  L.bulb('globe', [0, by, 0], 0.03);
+  // thin rod from the bulb up through the tiers: the rings' spokes meet it
+  const yMax = Math.max(...tierD.map((_, i) => scaleY(bottoms[i] + lens[i])));
+  L.add(K.cylinder(0.005, 0.005, yMax - by - 0.03, { seg: 8 }).translate(0, by + 0.03, 0), ring, 'metal');
+  return [0, by, 0];
 }
 
 function buildFloorArc(spec) {
@@ -2187,7 +2430,13 @@ function buildFloorArc(spec) {
   return L.finish();
 }
 
+/**
+ * Tripod floor lamp: `legCount` legs from a circle of Ø params.baseD up to a hub under the shade. shadeShape 'drum'
+ * (default) sits on the hub; 'cone' is the Northern Oslo Wood: see tripodCone.
+ */
 function buildFloorTripod(spec) {
+  if (spec.params?.shadeShape === 'cone') return tripodCone(spec);
+  if (spec.params?.shadeShape === 'woven') return tripodBasket(spec);
   const L = new Lamp('floor-tripod', spec);
   const { w, d, h } = L.dims;
   const P = L.P;
@@ -2214,6 +2463,151 @@ function buildFloorTripod(spec) {
   L.socket(0, apexY, bulb[1] - 0.03, 0, 0.016);
   L.point(bulb, L.lumens(806));
   L.colliders.push({ min: [-footR, 0, -footR], max: [footR, h, footR] });
+  return L.finish();
+}
+
+/**
+ * Tripod with a rattan cage lantern standing on the legs (Lindby Canyana): thin legs from a circle of Ø baseD meet in a
+ * small plate under the lantern, a triangular brace braceAt above the floor; the lantern is a barrel of `ribs` vertical
+ * canes (Ø shadeD in the middle, shadeBottomD / shadeTopD at the ends, rounded shoulders) with `rings` hoops and a
+ * closed top. The bulb hangs free inside.
+ */
+function tripodBasket(spec) {
+  const L = new Lamp('floor-tripod', spec);
+  const { w, d, h } = L.dims;
+  const P = L.P;
+  const legs = clamp(Math.round(num(P.legCount, 3)), 3, 5);
+  const sD = Math.min(num(P.shadeD, 0.32), Math.min(w, d) * 0.95);
+  const sH = Math.min(num(P.shadeH, sD * 1.6), h * 0.5);
+  const R = sD / 2;
+  const rB = Math.min(num(P.shadeBottomD, sD * 0.8), sD) / 2, rT = Math.min(num(P.shadeTopD, sD * 0.8), sD) / 2;
+  const yb = h - sH;
+  const footR = Math.min(num(P.baseD, Math.min(w, d)), w, d) / 2 - 0.012;
+  const legR = clamp(num(P.legD, 0.016), 0.008, 0.03) / 2;
+  const legM = L.mat('base', woodGrain(L));
+  const metal = L.mat('metal');
+  const plateY = yb - 0.006;
+  const ends = [];
+  for (let i = 0; i < legs; i++) {
+    const a = (i / legs) * TAU + Math.PI;
+    const foot = [Math.sin(a) * footR, 0, Math.cos(a) * footR];
+    const top = [Math.sin(a) * 0.035, plateY - 0.004, Math.cos(a) * 0.035];
+    L.add(rod(foot, top, legR, L.q.rod + 2), legM, 'base');
+    L.add(xf(K.sphere(legR * 1.1, { wSeg: 8, hSeg: 6 }), foot, null, [1, 0.5, 1]), legM, 'base');
+    ends.push([foot, top]);
+  }
+  // brace between the legs
+  const braceY = num(P.braceAt, 0);
+  if (braceY > 0.05 && braceY < plateY - 0.1) {
+    const at = ([f, t]) => f.map((v, k) => v + ((t[k] - v) * braceY) / (plateY - 0.004));
+    for (let i = 0; i < legs; i++) L.add(rod(at(ends[i]), at(ends[(i + 1) % legs]), 0.004, 6), legM, 'base');
+  }
+  L.add(discGeo(Math.max(0.09, rB * 1.1), 0.008, L.q.lathe, { y0: plateY - 0.002 }), metal, 'metal');
+  // barrel outline (r, y) bottom → top: the ends' radii blend into the belly with rounded shoulders
+  const N = 14;
+  const prof = [];
+  for (let i = 0; i <= N; i++) {
+    const t = i / N;
+    const rEnd = rB + (rT - rB) * t;
+    prof.push([rEnd + (R - rEnd) * Math.sin(Math.PI * t) ** 0.6, yb + 0.004 + t * (sH - 0.008)]);
+  }
+  const ribs = clamp(Math.round(num(P.ribs, 40)), 12, 96);
+  const rr = Math.max(0.0022, R * 0.012);
+  const cane = L.shadeMat('shade', 0.4);
+  for (let k = 0; k < ribs; k++) {
+    const a = (k / ribs) * TAU;
+    L.auto(K.tube(prof.map(([r, y]) => [Math.sin(a) * r, y, Math.cos(a) * r]), rr, { radial: 4, seg: N + 6 }), cane, 'shade');
+  }
+  const hoop = L.mat('shade', { roughness: 0.6 });
+  const rings = clamp(Math.round(num(P.rings, 3)), 2, 8);
+  for (let i = 0; i < rings; i++) {
+    const p = prof[Math.round((i / (rings - 1)) * N)];
+    L.add(K.torus(p[0], rr * 1.5, { radial: 5, tubular: L.q.lathe }).rotateX(Math.PI / 2).translate(0, p[1], 0), hoop, 'shade');
+  }
+  // closed top: a woven lid
+  const top = prof[N];
+  L.add(new THREE.CircleGeometry(top[0], L.q.lathe).rotateX(-Math.PI / 2).translate(0, top[1] + rr, 0), L.mat('shade', { side: 'double' }), 'shade');
+  const by = yb + sH * 0.45;
+  L.socket(0, plateY, by - 0.03, 0, 0.016);
+  L.bulb('filament', [0, by, 0], 0.03);
+  L.point([0, by, 0], L.lumens(806));
+  L.colliders.push({ min: [-footR, 0, -footR], max: [footR, yb, footR] });
+  L.colliders.push({ min: [-R, yb, -R], max: [R, h, R] });
+  return L.finish();
+}
+
+/** Steepest shade tilt of a tiltable tripod (degrees): the cone lies almost on its side. */
+const MAX_TILT = 80;
+
+/**
+ * Tripod with a tiltable cone shade (Northern Oslo Wood): thin steel legs meet in a small hub, a fork on the hub holds a
+ * gimbal ring at the narrow end of the shade, and the shade (Ø shadeBottomD → Ø shadeD, wide end up, height shadeH)
+ * turns about the fork's pins – params.tilt degrees toward the front (+z); the whole lamp turns for another direction.
+ * Socket and bulb tilt with the shade.
+ */
+function tripodCone(spec) {
+  const L = new Lamp('floor-tripod', spec);
+  const { w, d, h } = L.dims;
+  const P = L.P;
+  const legs = clamp(Math.round(num(P.legCount, 3)), 3, 5);
+  const sD = Math.min(num(P.shadeD, 0.26), Math.min(w, d) * 0.95);
+  const sDb = clamp(num(P.shadeBottomD, sD * 0.5), 0.06, sD);
+  const sH = Math.min(num(P.shadeH, sD * 1.15), h * 0.4);
+  const tilt = clamp(num(P.tilt, 0), 0, MAX_TILT) * DEG;
+  // pivot (gimbal pins) a little above the shade's lower rim, so the rim hides the ring when the shade stands upright
+  const lip = 0.015;
+  const py = h - sH + lip;
+  const pivot = new THREE.Vector3(0, py, 0);
+  const M = new THREE.Matrix4().compose(pivot, new THREE.Quaternion().setFromEuler(new THREE.Euler(tilt, 0, 0)), new THREE.Vector3(1, 1, 1));
+  const T = (geo) => geo.applyMatrix4(M);
+  const at = (x, y, z) => new THREE.Vector3(x, y, z).applyMatrix4(M);
+
+  // legs: feet on a circle (params.baseD), tops into the hub under the fork
+  const footR = Math.min(num(P.baseD, Math.min(w, d)), w, d) / 2 - 0.012;
+  const hubTop = py - 0.04, hubH = 0.045;
+  const legM = L.mat('base', woodGrain(L));
+  for (let i = 0; i < legs; i++) {
+    const a = (i / legs) * TAU + Math.PI;
+    const foot = [Math.sin(a) * footR, 0, Math.cos(a) * footR];
+    const top = [Math.sin(a) * 0.013, hubTop - hubH * 0.45, Math.cos(a) * 0.013];
+    L.add(rod(foot, top, 0.0068, L.q.rod + 2, 0.006), legM, 'base');
+    L.add(xf(K.sphere(0.0085, { wSeg: 8, hSeg: 6 }), foot, null, [1, 0.6, 1]), legM, 'base');
+  }
+  const metal = L.mat('metal');
+  L.add(K.cylinder(0.016, 0.017, hubH, { seg: 16 }).translate(0, hubTop - hubH, 0), metal, 'metal');
+  // fork: two prongs from the hub up to the pins on the tilt axis (x), the ring between them
+  const ringR = 0.024, pinX = 0.031;
+  for (const s of [-1, 1]) {
+    L.add(rod([s * 0.009, hubTop - 0.004, 0], [s * pinX, py, 0], 0.0032, 6), metal, 'metal');
+    L.add(rod([s * (ringR - 0.002), py, 0], [s * (pinX + 0.004), py, 0], 0.0035, 8), metal, 'metal');
+  }
+  // gimbal ring around the socket and the socket itself: they turn with the shade
+  L.add(T(K.torus(ringR, 0.0028, { radial: 6, tubular: 28 }).rotateX(Math.PI / 2)), metal, 'metal');
+  for (const s of [-1, 1]) L.add(T(rod([s * 0.016, 0, 0], [s * (ringR - 0.001), 0, 0], 0.0025, 6)), metal, 'metal');
+  const bulbY = sH * 0.32 - lip;
+  L.add(T(K.cylinder(0.0165, 0.0165, bulbY - 0.03 + 0.012, { seg: L.q.rod + 6 }).translate(0, -0.012, 0)), metal, 'metal');
+
+  // the shade: a straight cone open at both ends, narrow end down (nylon thread wound on two wire rings)
+  const rB = sDb / 2, rT = sD / 2;
+  const y0 = -lip;
+  const s = shell([[rB, y0], [(rB + rT) / 2, y0 + sH / 2], [rT, y0 + sH]], 0.002, Math.max(L.q.lathe, 40));
+  const o = L.shadeMat('shade', 1.1);
+  for (const g of [s.outer, ...s.rims]) L.auto(T(g), o, 'shade');
+  L.auto(T(s.inner), L.innerMat('inner', 0.45), 'inner');
+  // the wire rings show as a slightly thicker edge at both ends
+  for (const [r, y] of [[rB, y0], [rT, y0 + sH]]) L.auto(T(K.torus(r - 0.001, 0.0022, { radial: 5, tubular: Math.max(L.q.lathe, 40) }).rotateX(Math.PI / 2).translate(0, y, 0)), o, 'shade');
+  const bulb = at(0, bulbY, 0);
+  L.bulb('globe', bulb, 0.03);
+  L.point(bulb.toArray(), L.lumens(806));
+
+  // colliders: the legs' column, and the tilted shade's box (rim points)
+  L.colliders.push({ min: [-footR, 0, -footR], max: [footR, py, footR] });
+  const box = new THREE.Box3();
+  for (let k = 0; k < 16; k++) {
+    const phi = (k / 16) * TAU;
+    for (const [r, y] of [[rB, y0], [rT, y0 + sH]]) box.expandByPoint(at(Math.sin(phi) * r, y, Math.cos(phi) * r));
+  }
+  L.colliders.push({ min: box.min.toArray(), max: box.max.toArray() });
   return L.finish();
 }
 
@@ -2293,25 +2687,67 @@ function buildFloorUplight(spec) {
   return L.finish();
 }
 
+/**
+ * Opal glass globe on a pole. params: shadeD (glass Ø), shadeH (< shadeD: a flattened, closed dome – Aneta August),
+ * cupD / cupH (metal cup the glass rests in; else a small holder), baseShape 'disc' | foot() shapes ('bullet': Globen
+ * Torrano), baseD / baseH, collarD / collarH (thicker sleeve at the pole's foot), poleD, pullChain (ball chain with a
+ * handle hanging from the cup).
+ */
 function buildFloorGlobe(spec) {
   const L = new Lamp('floor-globe', spec);
   const { w, h } = L.dims;
   const P = L.P;
   const sD = Math.min(num(P.shadeD, w * 0.9), w);
-  const bD = Math.min(num(P.baseD, Math.min(0.26, w * 0.75)), w);
-  const footH = footDisc(L, bD, 0.025);
   const R = sD / 2;
-  const cy = h - R;
-  L.add(K.cylinder(0.009, 0.009, cy - R * 0.9 - footH, { seg: L.q.rod + 2 }).translate(0, footH - 0.004, 0), L.mat('metal'), 'metal');
-  L.add(K.cylinder(R * 0.2, R * 0.22, 0.03, { seg: L.q.lathe }).translate(0, cy - R * 0.98 - 0.012, 0), L.mat('metal'), 'metal');
-  globeShade(L, { R, cy, open: 0.18, openAt: 'bottom' });
-  L.bulb('globe', [0, cy, 0], Math.min(0.03, R * 0.3), { intensity: 2.5 });
+  const Ry = clamp(num(P.shadeH, sD), sD * 0.3, sD) / 2;
+  const bD = Math.min(num(P.baseD, Math.min(0.26, w * 0.75)), w);
+  const baseShape = P.baseShape || 'disc';
+  const footH = baseShape === 'disc' ? footDisc(L, bD, clamp(num(P.baseH, 0.025), 0.008, 0.06)) : foot(L, baseShape, { D: bD, H: Math.min(num(P.baseH, 0.3), h * 0.4) });
+  const metal = L.mat('metal');
+  const poleR = clamp(num(P.poleD, 0.018), 0.008, 0.04) / 2;
+  const cy = h - Ry;
+  const glassBottom = cy - Ry;
+  let poleTop;
+  if (num(P.cupD, 0) > 0) {
+    // the glass rests in a shallow cup: its rim meets the glass where the glass is cupD wide
+    const cr = Math.min(P.cupD / 2, R * 0.9);
+    const rimY = cy - Ry * Math.sqrt(Math.max(0, 1 - (cr / R) ** 2));
+    const cH = Math.max(0.008, num(P.cupH, 0.015));
+    const y0 = Math.min(rimY - cH, glassBottom - 0.004);
+    L.add(K.lathe([[0.0005, y0], [cr * 0.35, y0], [cr * 0.8, y0 + (rimY - y0) * 0.45], [cr, rimY], [cr - 0.0025, rimY + 0.001]], { seg: L.q.lathe }), metal, 'metal');
+    L.add(K.cylinder(poleR * 1.5, poleR * 1.5, 0.02, { seg: L.q.rod + 4 }).translate(0, y0 - 0.02, 0), metal, 'metal');
+    poleTop = y0 - 0.019;
+    if (P.pullChain) {
+      // ball chain from the cup's underside, a small cylinder handle at its end
+      const x = cr * 0.7, len = 0.15, n = Math.round(len / 0.0045);
+      for (let i = 0; i < n; i++) L.add(xf(K.sphere(0.0017, { wSeg: 6, hSeg: 4 }), [x, y0 + (rimY - y0) * 0.2 - i * 0.0045, 0]), metal, 'metal');
+      L.add(K.cylinder(0.006, 0.006, 0.06, { seg: 10 }).translate(x, y0 - len - 0.06, 0), metal, 'metal');
+    }
+  } else {
+    L.add(K.cylinder(R * 0.2, R * 0.22, 0.03, { seg: L.q.lathe }).translate(0, glassBottom + R * 0.02 - 0.012, 0), metal, 'metal');
+    poleTop = glassBottom + R * 0.1;
+  }
+  L.add(K.cylinder(poleR, poleR, poleTop - footH + 0.004, { seg: L.q.rod + 2 }).translate(0, footH - 0.004, 0), metal, 'metal');
+  if (num(P.collarD, 0) > 0) {
+    const ch = Math.min(num(P.collarH, 0.08), (poleTop - footH) * 0.3);
+    L.add(K.cylinder(P.collarD / 2, P.collarD / 2, ch, { seg: L.q.lathe }).translate(0, footH - 0.002, 0), metal, 'metal');
+  }
+  globeShade(L, { R, Ry, cy, open: num(P.cupD, 0) > 0 ? 0 : 0.18, openAt: 'bottom' });
+  L.bulb('globe', [0, cy - Ry * 0.15, 0], Math.min(0.03, R * 0.3, Ry * 0.5), { intensity: 2.5 });
   L.point([0, cy, 0], L.lumens(806));
-  floorColliders(L, bD / 2, { min: [-R, h - 2 * R, -R], max: [R, h, R] });
+  floorColliders(L, bD / 2, { min: [-R, glassBottom, -R], max: [R, h, R] });
   return L.finish();
 }
 
+/**
+ * Reading lamp: foot + pole + an arm to a small shade aimed down and forward (+z). armShape: default = straight arm
+ * from a ball joint; 'hook' (Aneta Coni) = the pole bends over in a half circle and the shade hangs straight down;
+ * 'balance' (Northern Birdy) = an arm balanced on the pole with a counterweight behind.
+ */
 function buildFloorReading(spec) {
+  const shape = spec.params?.armShape;
+  if (shape === 'hook') return readingHook(spec);
+  if (shape === 'balance') return readingBalance(spec);
   const L = new Lamp('floor-reading', spec);
   const { w, d, h } = L.dims;
   const P = L.P;
@@ -2337,6 +2773,145 @@ function buildFloorReading(spec) {
   L.bulb('globe', bp, Math.min(0.025, sD * 0.18));
   L.spot(bp.toArray(), dir.toArray(), L.lumens(600), 0.65, 0.6);
   L.colliders.push({ min: [-bD / 2, 0, zb - bD / 2], max: [bD / 2, h * 0.9, zb + bD / 2] });
+  return L.finish();
+}
+
+/** Foot of a reading lamp at z = zb: disc (baseH ≤ 6 cm) or a foot() shape. Returns its top. */
+function readingFoot(L, bD, zb) {
+  const P = L.P;
+  const shape = P.baseShape || 'disc';
+  const H = num(P.baseH, 0.025);
+  const n = L.g.children.length;
+  const top = shape === 'disc' ? footDisc(L, bD, clamp(H, 0.008, 0.06)) : foot(L, shape, { D: bD, H });
+  for (const c of L.g.children.slice(n)) c.geometry.translate(0, 0, zb);
+  return top;
+}
+
+/**
+ * Hook reading lamp (Aneta Coni): straight pole, a half-circle bend of radius hookR at the top, a short drop and an
+ * hourglass shade (Ø shadeTopD at the top, waist Ø waistD at waistAt below the top, opening Ø shadeD) hanging straight
+ * down, its top shadeTopBelowHook under the top of the bend. All in one powder-coated colour.
+ */
+function readingHook(spec) {
+  const L = new Lamp('floor-reading', spec);
+  const { w, d, h } = L.dims;
+  const P = L.P;
+  const bD = Math.min(num(P.baseD, 0.22), w);
+  const hookR = clamp(num(P.hookR, num(P.armReach, 0.17) / 2), 0.04, 0.2);
+  const sD = Math.min(num(P.shadeD, 0.2), w), sH = clamp(num(P.shadeH, sD), 0.08, h * 0.3);
+  const reach = 2 * hookR;
+  // centre the whole lamp (foot back, shade front) in its depth
+  const span = bD / 2 + reach + sD / 2;
+  const zb = -span / 2 + bD / 2, zs = zb + reach;
+  const footTop = readingFoot(L, bD, zb);
+  const top = h - num(P.shadeTopBelowHook, 0.17);
+  const cy = h - hookR;
+  const pts = [[0, footTop - 0.004, zb], [0, cy, zb]];
+  for (let i = 1; i < 16; i++) {
+    const a = Math.PI - (i / 16) * Math.PI;
+    pts.push([0, cy + Math.sin(a) * hookR, zb + hookR + Math.cos(a) * hookR]);
+  }
+  pts.push([0, cy, zs], [0, top + 0.012, zs]);
+  const poleR = clamp(num(P.poleD, 0.016), 0.008, 0.03) / 2;
+  L.add(K.tube(pts, poleR, { radial: L.q.rod + 2, seg: 60, curve: 'line' }), L.mat('metal'), 'metal');
+  // hourglass: small inverted cone down to the waist, then the wide cone to the opening
+  const rT = Math.min(num(P.shadeTopD, sD * 0.6), sD) / 2, rW = Math.min(num(P.waistD, sD * 0.32), 2 * rT) / 2;
+  const wy = top - clamp(num(P.waistAt, sH * 0.3), 0.02, sH * 0.6);
+  const yb = top - sH;
+  const prof = [[sD / 2, yb], [sD * 0.44, yb + (wy - yb) * 0.35], [rW * 1.15, wy - 0.006], [rW, wy], [rW * 1.15, wy + 0.006], [rT, top]];
+  const s = shell(prof, 0.0015, L.q.lathe);
+  for (const g of [s.outer, ...s.rims]) L.add(g.translate(0, 0, zs), L.mat('shade'), 'shade');
+  L.auto(s.inner.translate(0, 0, zs), L.innerMat('inner', 0.55), 'inner');
+  const bp = [0, wy - 0.035, zs];
+  L.socket(0, wy - 0.01, top, zs, 0.014);
+  L.bulb('globe', bp, Math.min(0.025, rW * 0.9));
+  L.spot(bp, [0, -1, 0], L.lumens(470), Math.atan2(sD / 2, bp[1] - yb) + 0.25, 0.7);
+  L.colliders.push({ min: [-bD / 2, 0, zb - bD / 2], max: [bD / 2, h * 0.9, zb + bD / 2] });
+  L.colliders.push({ min: [-sD / 2, yb, zs - sD / 2], max: [sD / 2, top, zs + sD / 2] });
+  return L.finish();
+}
+
+/**
+ * Balance-arm reading lamp (Northern Birdy): a pole to a joint at pivotH, a long thin arm through it rising armAngle°
+ * toward the front – armFront to the shade, armBack to a teardrop counterweight – and a long truncated cone shade
+ * (shadeL, Ø shadeTopD → shadeD, the opening cut at a slant), its back resting on the arm's tip at shadeAttach (share of
+ * its length from the narrow end), axis shadeTilt° from the vertical, opening down and forward. counterweightL = length
+ * of the teardrop. The arm lengths shrink to fit dims.d.
+ */
+function readingBalance(spec) {
+  const L = new Lamp('floor-reading', spec);
+  const { w, d, h } = L.dims;
+  const P = L.P;
+  const bD = Math.min(num(P.baseD, 0.22), w);
+  const sD = Math.min(num(P.shadeD, 0.16), w), sL = clamp(num(P.shadeL, 0.3), 0.08, 0.6);
+  const rT = Math.min(num(P.shadeTopD, sD * 0.55), sD) / 2;
+  const tilt = clamp(num(P.shadeTilt, 30), 0, 80) * DEG;
+  const ang = clamp(num(P.armAngle, 30), -20, 70) * DEG;
+  const cw = clamp(num(P.counterweightL, 0.08), 0.03, 0.2);
+  const att = clamp(num(P.shadeAttach, 0.35), 0, 0.9);
+  let front = num(P.armFront, 0.32), back = num(P.armBack, 0.11);
+  // horizontal span: counterweight end … shade rim
+  const ax = (Math.cos(ang)), dir = new THREE.Vector3(0, -Math.cos(tilt), Math.sin(tilt));
+  const shadeFwd = sL * (1 - att) * Math.sin(tilt) + (sD / 2) * Math.cos(tilt);
+  const span = (back + cw) * ax + front * ax + shadeFwd;
+  if (span > d) {
+    const f = Math.max(0.5, (d - shadeFwd) / ((back + cw + front) * ax));
+    front *= f;
+    back *= f;
+  }
+  // centre the lamp in its depth: counterweight end … shade rim
+  const rearExt = (back + cw) * ax, frontExt = front * ax + shadeFwd;
+  const zb = -(rearExt + frontExt) / 2 + rearExt;
+  const footTop = readingFoot(L, bD, zb);
+  const metal = L.mat('metal');
+  const py = clamp(num(P.pivotH, h * 0.68), footTop + 0.2, h - 0.1);
+  const poleR = clamp(num(P.poleD, 0.016), 0.008, 0.03) / 2;
+  L.add(K.cylinder(poleR, poleR, py - footTop + 0.004, { seg: L.q.rod + 2 }).translate(0, footTop - 0.004, zb), metal, 'metal');
+  // joint: a short horizontal hub across the arm
+  L.add(K.cylinder(0.013, 0.013, 0.03, { seg: 14, center: true }).rotateZ(Math.PI / 2).translate(0, py, zb), metal, 'metal');
+  const u = new THREE.Vector3(0, Math.sin(ang), Math.cos(ang));
+  const piv = new THREE.Vector3(0, py, zb);
+  const tip = piv.clone().addScaledVector(u, front);
+  const rear = piv.clone().addScaledVector(u, -back);
+  L.add(rod(rear.toArray(), tip.toArray(), 0.006, L.q.rod), metal, 'metal');
+  // teardrop counterweight behind the arm's end (round end at the back), the cord hangs from it
+  const tear = [];
+  for (let i = 0; i <= 10; i++) {
+    const t = i / 10;
+    tear.push([Math.max(0.0005, 0.0175 * Math.sin(Math.PI * t ** 0.7) * (1 - 0.55 * t)), t * cw]);
+  }
+  const tq = aim(u.clone().negate());
+  L.add(xf(K.lathe([[0.0005, 0], ...tear.slice(1)], { seg: 16 }), rear, tq), metal, 'metal');
+  const cwEnd = rear.clone().addScaledVector(u, -cw * 0.75);
+  L.add(rod(cwEnd.toArray(), [0, 0.002, cwEnd.z], 0.0025, 5), L.mat('cord'), 'cord');
+  // the shade: axis `dir`, its back surface on the arm's tip at `att` of its length; base = centre of the narrow end
+  const q = aim(dir.clone().negate());
+  const prof = [[sD / 2, -sL], [sD / 2 - (sD / 2 - rT) * 0.5, -sL * 0.5], [rT, 0]];
+  const s = shell(prof, 0.0015, L.q.lathe);
+  // slanted opening: the rim's front edge reaches further than its back edge
+  const slant = P.obliqueCut === false ? 0 : Math.tan(18 * DEG);
+  for (const g of [s.outer, s.inner, ...s.rims]) {
+    const p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const y = p.getY(i);
+      if (y < -sL * 0.5) p.setY(i, y - slant * p.getZ(i) * ((-y - sL * 0.5) / (sL * 0.5)));
+    }
+    p.needsUpdate = true;
+    K.smoothNormals(g);
+  }
+  const away = u.clone().addScaledVector(dir, -u.dot(dir)).normalize();
+  const rAt = rT + (sD / 2 - rT) * att;
+  const base = tip.clone().addScaledVector(away, rAt).addScaledVector(dir, -sL * att);
+  // a small clamp ring around the shade where the arm holds it
+  L.add(xf(K.torus(rAt + 0.002, 0.0028, { radial: 6, tubular: 24 }).rotateX(Math.PI / 2), base.clone().addScaledVector(dir, sL * att), q), metal, 'metal');
+  for (const g of [s.outer, ...s.rims]) L.add(xf(g, base, q), L.mat('shade'), 'shade');
+  L.auto(xf(s.inner, base, q), L.innerMat('inner', 0.55), 'inner');
+  L.add(xf(K.cylinder(rT * 0.95, rT * 0.95, 0.012, { seg: 16 }), base.clone().addScaledVector(dir, -0.002), q), L.mat('shade'), 'shade');
+  const bp = base.clone().addScaledVector(dir, sL * 0.35);
+  L.add(xf(K.cylinder(0.014, 0.014, sL * 0.3, { seg: 12 }).translate(0, -sL * 0.3, 0), base, q), metal, 'metal');
+  L.bulb('globe', bp, Math.min(0.025, sD * 0.16));
+  L.spot(bp.toArray(), dir.toArray(), L.lumens(470), Math.atan2(sD / 2, sL * 0.65) + 0.3, 0.6);
+  L.colliders.push({ min: [-bD / 2, 0, zb - bD / 2], max: [bD / 2, py, zb + bD / 2] });
   return L.finish();
 }
 
@@ -2749,13 +3324,17 @@ export const archetypes = {
     },
     dimsRange: { w: [0.3, 2.0], d: [0.3, 2.0], h: [1.2, 2.3] },
   }),
+  // shadeShape 'cone' (+ shadeBottomD) = Oslo Wood; `tilt` only on products with params.tiltable (Inspector: «Lys»)
   'floor-tripod': F('floor-tripod', buildFloorTripod, { w: 0.6, d: 0.6, h: 1.65 }, { ...look('#232323', 'cotton'), colors: { ...look('#232323', 'cotton').colors, base: '#1f1f1f' } }, { shadeD: 0.4, shadeH: 0.3 }, {
-    params: SHADE_GLOW,
+    params: {
+      tilt: { type: 'number', min: 0, max: MAX_TILT, step: 1, unit: '°', label: 'Vinkel på skjermen', requires: 'tiltable' },
+      ...SHADE_GLOW,
+    },
     dimsRange: { w: [0.35, 0.9], d: [0.35, 0.9], h: [1.0, 2.0] },
   }),
   'floor-pole-shade': F('floor-pole-shade', buildFloorPoleShade, { w: 0.4, d: 0.4, h: 1.5 }, look('#ddd2bf', 'linen'), {}, {
     params: {
-      shadeShape: { type: 'enum', options: [['drum', 'Sylinder'], ['cylinder', 'Høy sylinder'], ['rect', 'Rektangulær']], label: 'Skjerm' },
+      shadeShape: { type: 'enum', options: [['drum', 'Sylinder'], ['cylinder', 'Høy sylinder'], ['cone', 'Kjegle'], ['pleated', 'Plissert'], ['woven', 'Flettet'], ['lantern', 'Rispapir (lykt)'], ['rect', 'Rektangulær']], label: 'Skjerm' },
       ...SHADE_GLOW,
     },
     dimsRange: { w: [0.2, 0.8], d: [0.15, 0.8], h: [0.9, 2.0] },

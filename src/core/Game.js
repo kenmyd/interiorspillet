@@ -478,7 +478,11 @@ export class Game {
     if (id !== this.roomId) {
       this.roomId = id;
       this.events.emit('room', room ? { id: room.id, name: room.name } : null);
-      if (room) this.hud.showRoom(room.name);
+      // the banner names a room once: a gap between two zone boxes or a step out onto the terrace is no new room
+      if (room && room.id !== this._announcedRoom) {
+        this._announcedRoom = room.id;
+        this.hud.showRoom(room.name);
+      }
     }
   }
 

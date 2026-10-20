@@ -897,6 +897,7 @@ export function buildShell(ctx, layout) {
         frontLabel: 'Gangen',
         backLabel: 'Stua',
         threshold: false,
+        interactive: false, // the hall is not modelled – the door stays shut
       });
       replaceLeaf(door, hallLeaf(d, lw, lh, swing));
       // karm: black lining of the reveal, 2 cm proud on the room side, door stop on the room side of the leaf
@@ -1069,7 +1070,7 @@ export function buildShell(ctx, layout) {
   const spotDefs = [];
   const spotLights = [];
   for (const l of layout.builtInLights) {
-    if (l.group === 'kjokken' || l.group === 'overskap') continue; // kitchen.js
+    if (l.group === 'kjokken' || l.group === 'pendler' || l.group === 'overskap') continue; // kitchen.js
     if (l.type === 'led-strip' && l.from && l.to) {
       const strip = ledStrip(l, layout.ceilingHeightAt, fixBatch, M.alu);
       owned.push(strip.mesh.geometry, strip.mesh.material);

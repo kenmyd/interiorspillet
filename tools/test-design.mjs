@@ -57,13 +57,13 @@ const walls = readJson('src/data/wall-proposals.json');
 const schema = readJson('src/data/archetypes.json');
 check('room-spec.json loads', spec.walls.length === 12 && spec.furniture.length === 62, `walls ${spec.walls.length}, furniture ${spec.furniture.length}`);
 check('palette.json loads (walls sand + marrakesh)', palette.walls.sand.hex === '#cfc5b4' && palette.walls.marrakesh.hex === '#aea191');
-check('wall-proposals.json: 40 proposals, existing first then N1…N19', walls.proposals.length === 40 && walls.proposals[0].id === '0' && walls.proposals[21].id === 'N1' && walls.proposals[39].id === 'N19',
+check('wall-proposals.json: 60 proposals, existing first then N1…N39 (runde 3 = N20–N39)', walls.proposals.length === 60 && walls.proposals[0].id === '0' && walls.proposals[21].id === 'N1' && walls.proposals[39].id === 'N19' && walls.proposals[59].id === 'N39',
   walls.proposals.map((p) => p.id).join(','));
 check('wall-proposals.json: acousticModel at top level', walls.acousticModel?.k === 22.7 && walls.acousticModel?.baseAbsorption === 26.4);
 const withImage = walls.proposals.filter((p) => p.image);
 check('proposal images → img/forslag/<CODE>.jpg + thumb', withImage.length === 21 && withImage.every((p) => p.image === `img/forslag/${p.code}.jpg` && p.thumb === `img/forslag/thumb/${p.code}.jpg`));
 check('new proposals N* have image null', walls.proposals.filter((p) => /^N/.test(p.id)).every((p) => p.image === null && p.thumb === null));
-const ELEMENT_TYPES = ['slats', 'panel', 'art', 'tapestry', 'checker', 'circles', 'hexagons', 'curtain', 'moss', 'shelf', 'sideboard-floating', 'hooks', 'led', 'lamp-wall', 'paint-block', 'plant'];
+const ELEMENT_TYPES = ['slats', 'panel', 'art', 'tapestry', 'checker', 'circles', 'hexagons', 'curtain', 'moss', 'shelf', 'sideboard-floating', 'hooks', 'led', 'lamp-wall', 'paint-block', 'plant', 'wallpaper', 'moulding', 'bookcase', 'ledge'];
 const badEls = walls.proposals.flatMap((p) => p.elements.filter((e) => !ELEMENT_TYPES.includes(e.type)).map((e) => `${p.id}:${e.type}`));
 check('every wall element type is known (§9)', !badEls.length, badEls.join(' '));
 
@@ -126,22 +126,25 @@ check('archetype display-cabinet: storage family, floor (or wall), «Vitrineskap
   && Object.keys(schema.families.storage.partLabels).length === 5);
 check('mountsCompatible: vitrineskap floor ↔ wall, nothing else across mounts', catalog.mountsCompatible('display-cabinet', 'floor', 'display-cabinet', 'wall')
   && !catalog.mountsCompatible('sideboard', 'floor', 'wall-shelf', 'wall') && !catalog.mountsCompatible('art-frame', 'wall', 'art-frame', 'floor'));
-check('counts: 21 lenestoler, 14 skjenker, 5 vitrineskap, 19 taklamper – 174 products', counts.lenestol === 21 && counts.skjenk === 14 && counts.vitrineskap === 5 && counts.taklampe === 19
-  && catalog.allProducts().length === 174, JSON.stringify(counts));
+check('counts: 21 lenestoler, 14 skjenker, 5 vitrineskap, 19 taklamper, 34 små lamper – 186 products', counts.lenestol === 21 && counts.skjenk === 14 && counts.vitrineskap === 5 && counts.taklampe === 19
+  && counts.smalamper === 34 && catalog.allProducts().length === 186, JSON.stringify(counts));
 const NEW_DIR = path.join(ROOT, 'research', 'catalog-new');
 const fresh = fs.readdirSync(NEW_DIR).filter((f) => f.endsWith('.json')).flatMap((f) => readJson(`research/catalog-new/${f}`));
 const KEEP = ['category', 'subcategory', 'name', 'brand', 'store', 'url', 'priceNok', 'salePriceNok', 'priceNote', 'priceConfidence', 'archetype', 'defaultVariant', 'description', 'why', 'imageUrl', 'verified', 'verifiedNote', 'light'];
 const freshProblems = [];
+// measured dims / model params set in src/data/scripts/fixes.mjs win over the research values
+const { PRODUCTS: FIXES } = await imp('src/data/scripts/fixes.mjs');
 for (const src of fresh) {
   const p = catalog.getProduct(src.id);
+  const fx = FIXES[src.id] || {};
   if (!p) {
     freshProblems.push(`${src.id}: missing`);
     continue;
   }
   for (const k of KEEP) if (JSON.stringify(p[k]) !== JSON.stringify(src[k])) freshProblems.push(`${src.id}: ${k}`);
-  for (const k of ['w', 'd', 'h']) if (!near(p.dims[k], src.dims[k], 1e-9)) freshProblems.push(`${src.id}: dims.${k}`);
+  for (const k of ['w', 'd', 'h']) if (!near(p.dims[k], fx.dims?.[k] ?? src.dims[k], 1e-9)) freshProblems.push(`${src.id}: dims.${k}`);
   if (p.mount !== src.mount) freshProblems.push(`${src.id}: mount ${p.mount} ≠ research ${src.mount}`);
-  for (const [k, v] of Object.entries(src.params || {})) if (JSON.stringify(p.params[k]) !== JSON.stringify(v)) freshProblems.push(`${src.id}: params.${k}`);
+  for (const [k, v] of Object.entries(src.params || {})) if (JSON.stringify(p.params[k]) !== JSON.stringify(fx.params && k in fx.params ? fx.params[k] : v)) freshProblems.push(`${src.id}: params.${k}`);
   if (p.variants.length !== src.variants.length) freshProblems.push(`${src.id}: variants`);
   src.variants.forEach((v, i) => {
     const pv = p.variants[i];
@@ -149,7 +152,7 @@ for (const src of fresh) {
     for (const [part, hex] of Object.entries(v.colors)) if (pv?.colors?.[part] !== hex || pv?.materials?.[part] !== v.materials[part]) freshProblems.push(`${src.id}#${i}: ${part}`);
   });
 }
-check(`all ${fresh.length} new products kept: prices, sale prices, variant prices/urls, notes, image URLs, params (shape notes, profilePoints)`, fresh.length === 14 && !freshProblems.length,
+check(`all ${fresh.length} new products kept: prices, sale prices, variant prices/urls, notes, image URLs, params (shape notes, profilePoints)`, fresh.length === 26 && !freshProblems.length,
   freshProblems.slice(0, 8).join(' | '));
 const pr = (id, vi) => {
   const x = catalog.priceOf(catalog.getProduct(id), vi);
@@ -176,13 +179,23 @@ check('BESTÅ vitrine: wall-hung item, variant «klart glass» overrides doorSty
   && catalog.productToItemSpec('ikea-besta-veggmontert-60x42x64-glassvik-rokfarget', 0).params.doorStyle === 'glass-smoked');
 check('the four other vitrines stand on the floor', catalog.products('vitrineskap').filter((p) => p.mount === 'floor').length === 4);
 const secto = catalog.productToItemSpec('christiania-belysning-secto-design-octo-4240-taklampe-o54');
-check('Secto/Octo pendants: ceiling, drop = the shop cable default, 806 lm 3000 K, profilePoints kept', secto.mount === 'ceiling' && secto.params.drop === 1.2 && secto.light.lumens === 806
-  && secto.light.colorK === 3000 && secto.params.profilePoints.length === 21 && secto.params.profilePoints[13][1] === 0.54);
+// a placed lamp starts at NEW_LAMP (2700 K, 40 %); the shop's 3000 K stays in the product facts
+check('Secto/Octo pendants: ceiling, drop = the shop cable default, 806 lm (shop 3000 K, placed at NEW_LAMP), profilePoints kept', secto.mount === 'ceiling' && secto.params.drop === 1.2 && secto.light.lumens === 806
+  && catalog.getProduct('christiania-belysning-secto-design-octo-4240-taklampe-o54').light.colorK === 3000
+  && secto.light.colorK === catalog.NEW_LAMP.colorK && secto.light.dimmer === catalog.NEW_LAMP.dimmer
+  && secto.params.profilePoints.length === 21 && secto.params.profilePoints[13][1] === 0.54);
 check('subcategories: every recliner «hvilestol» (7), every pendant «pendel» (18)', catalog.products('lenestol').filter((p) => p.subcategory === 'hvilestol').length === 7
   && catalog.products('lenestol').filter((p) => p.archetype === 'recliner').every((p) => p.subcategory === 'hvilestol')
   && catalog.products('taklampe').filter((p) => p.subcategory === 'pendel').length === 18 && catalog.SUBCATEGORY_LABELS.hvilestol === 'Hvilestoler');
 check('search finds the new products', catalog.search('vitrineskap').length === 5 && catalog.search('secto').length === 4 && catalog.search('hvilestol fotskammel').length >= 4
   && catalog.search('octo').length === 2, `vitrine ${catalog.search('vitrineskap').length}, secto ${catalog.search('secto').length}, octo ${catalog.search('octo').length}`);
+const floorLamps = catalog.products('smalamper').filter((p) => p.subcategory === 'gulvlampe');
+const oslo = catalog.productToItemSpec('nordicnest-northern-oslo-wood-gulvlampe');
+check('22 gulvlamper on the floor (12 new: globe, reading, pleated, lantern, slats, cage, tripods); Oslo Wood = tiltable cone', floorLamps.length === 22
+  && floorLamps.every((p) => p.mount === 'floor' && p.archetype.startsWith('floor-'))
+  && new Set(floorLamps.map((p) => p.params?.shadeShape || p.params?.armShape || p.archetype)).size >= 12
+  && oslo.params.shadeShape === 'cone' && oslo.params.tilt === 15 && oslo.params.tiltable === true && oslo.params.shadeBottomD === 0.13,
+  `${floorLamps.length} floor lamps`);
 const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ip-norm-'));
 const run = spawnSync(process.execPath, [path.join(ROOT, 'src/data/scripts/normalize-data.mjs'), '--only=catalog', `--out=${outDir}`], { cwd: ROOT, encoding: 'utf8' });
 const same = (key) => fs.readFileSync(path.join(outDir, 'catalog', `${key}.json`), 'utf8') === fs.readFileSync(path.join(ROOT, 'src/data/catalog', `${key}.json`), 'utf8');
@@ -318,6 +331,18 @@ const d4 = new DesignState({ original: false });
 d4.load(old);
 const ch4 = d4.list().find((i) => i.refId === 'f-pendel-stue');
 check('old save: existing lamp lumens from the room-spec, dimmer/colour kept', ch4.light.lumens === 800 && ch4.light.dimmer === 0.5 && ch4.light.colorK === 3000);
+// an Oslo Wood placed before 2026-10-20 (drum shade) gets the tiltable cone; its other params and a set tilt stay
+const osloOld = { ...catalog.productToItemSpec('nordicnest-northern-oslo-wood-gulvlampe'), position: [4, 0, 6] };
+osloOld.params = { ...osloOld.params, shadeShape: 'drum', shadeH: 0.22, translucent: 0.42 };
+delete osloOld.params.tilt;
+delete osloOld.params.tiltable;
+const d5 = new DesignState({ original: false });
+d5.load({ items: [osloOld] });
+const o5 = d5.list()[0];
+const d6 = new DesignState({ original: false });
+d6.load({ items: [{ ...osloOld, params: { ...o5.params, tilt: 40 } }] });
+check('old save: Oslo Wood with a drum shade → tiltable cone (translucent kept), a cone keeps its tilt', o5.params.shadeShape === 'cone' && o5.params.shadeH === 0.3
+  && o5.params.tilt === 15 && o5.params.tiltable === true && o5.params.translucent === 0.42 && d6.list()[0].params.tilt === 40);
 d.resetToOriginal();
 check('resetToOriginal (undoable)', d.items.size === originals.length && d.wall.proposalId === '0' && !Object.keys(d.windows).length && d.canUndo);
 d.undo();

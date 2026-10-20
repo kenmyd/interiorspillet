@@ -270,7 +270,8 @@ skal kaste skygge for sola; delvis gjennomskinnelige stoffer slipper gjennom en 
 ## 9. Veggforslag (`models/walldesigns.js`)
 ```js
 applyWallDesign(highWallInfo, elements|null) → Group      // bygger i highWall.anchor, fjerner gammel
-ELEMENT_TYPES: { slats, panel, art, tapestry, checker, circles, hexagons, curtain, moss, shelf, sideboard-floating, hooks, led, lamp-wall, paint-block, plant }
+ELEMENT_TYPES: { slats, panel, art, tapestry, checker, circles, hexagons, curtain, moss, shelf, sideboard-floating, hooks, led, lamp-wall, paint-block, plant,
+                 wallpaper, moulding, bookcase, ledge }   // runde 3: tapet, listverk, bokhylle, bildehylle
 elementEditor(type) → param-skjema for WallPanel (samme format som Def.params)
 elementAbsorption(element) → m²
 ```
@@ -282,7 +283,7 @@ class LightManager {
   setTime({ hour, month, day })        // sol: breddegrad 58.1° N, vinduene mot sør (+x); nord = −x, øst = −z
   setMode('auto'|'day'|'evening'|'night')
   setItemLights(uid, lights|null)      // lights i verdenskoordinater: [{ type, position: Vector3, direction?, angle?, colorK, lumens, on, dimmer, emissiveMeshes }]
-  builtInGroups: [{ id, label }]       // LED-lister, takspotter ved høy vegg, kjøkkenpendler, TV-stue-taklampe …
+  builtInGroups: [{ id, label, lumens, dimmer }]   // LED-lister, takspotter ved høy vegg, kjøkkenlys, pendler, TV-stue-taklampe …
   setBuiltIn(groupId, { on, dimmer })
   setWindowTransmission(windowId, t)   // solskjerming demper himmellys og sol per vindu
   requestShadowUpdate()                // skyggekart oppdateres bare ved endringer (autoUpdate = false)
@@ -367,8 +368,9 @@ tekstfelt har fokus.
 `buildShell`/`buildKitchen` returnerer `builtInLights: [{ id, group, label, type: 'led-strip'|'spot'|'ceiling'|
 'pendant', from?: Vector3, to?: Vector3, position?: Vector3, direction?: Vector3, colorK, lumens, emissiveMeshes:
 Mesh[] }]` (verdenskoordinater). `group` er en av `led` (LED-lister), `spots` (spotter ved den høye veggen),
-`kjokken` (kjøkkenpendler og taklamper), `tvstue` (taklampa i TV-stua), `overskap` (lys under overskap).
-LightManager lager lyskildene og styrer emissiveMeshes. `buildExterior` returnerer `{ group, setDaylight(level
+`kjokken` (LED foran høyskapene og ringlampene i taket), `pendler` (de tre pendlene over kjøkkenøya), `tvstue`
+(taklampa i TV-stua), `overskap` (lys under overskap). Hver gruppe har en standard-dimmer (`layout.lightGroups[].dimmer`);
+av/på følger tiden på døgnet til gruppen slås av eller på for hånd. LightManager lager lyskildene og styrer emissiveMeshes. `buildExterior` returnerer `{ group, setDaylight(level
 0..1, skyHex) }` så lyset kan dimme utsikten om kvelden.
 
 ## 16. Testing
