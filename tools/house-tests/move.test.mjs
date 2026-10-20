@@ -5,12 +5,16 @@
  *   node tools/house-tests/move.test.mjs        (from the project root; exit code 1 on failure)
  *
  * Every scenario runs at 30, 60 and 144 Hz, walking and running:
- *   - ramp top: the invisible wedge under a stair (§3.1, 14 risers à 0.182, going 0.195 / 0.20 / 0.21 / 0.23) seen
- *     from the floor it tips over from. The player must stay on the ground over the edge and down the slope (0 %
- *     airborne frames, no 'land' event), descend smoothly, keep the horizontal speed and end on the lower floor
- *     (−2.548 ± 0.02); also between side walls, entered at an angle (the snap must look past wall contacts);
+ *   - ramp top: the invisible wedge under a stair (§3.1, 14 risers à 0.182, going 0.195 / 0.20 / 0.21 / 0.23, and
+ *     steeper wedges of 44 / 45 / 48° for the winder's inner side) seen from the floor it tips over from. The player
+ *     must stay on the ground over the edge and down the slope (0 % airborne frames, no 'land' event), descend
+ *     smoothly, keep the horizontal speed and end on the lower floor (−2.548 ± 0.02); 51° is printed only (the
+ *     limit: it still shoves). Also between side walls 0.90 and 0.78 m apart (the real shaft), entered at 10 / 20 /
+ *     30°: the same checks, speed and |Δy| included (the snap must look past wall contacts, and beside a wall its
+ *     edge push is not made vertical);
  *   - up the ramp: arrives on the upper floor, never airborne at the crest;
  *   - real steps down: the entrance steps (2 × 0.15, §3.11) and a terrace-like stair (9 × 0.188) – no air, no 'land';
+ *     single drops of 0.20–0.26 are printed (the shove off the nose grows with the drop);
  *     up real risers is the step-up, not the snap: a 0.10 riser must stay climbable, the stairs are only printed
  *     (they stop at the first riser, as before M1);
  *   - the same stairs as a wedge, down at an even speed and up again;
@@ -187,14 +191,22 @@ function speedBand(frames, hz, nominal) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------
-section('Rampetoppen: ned kilen under trappa (14 × 0,182)');
-// 0.195: one straight wedge from the top nose to the foot of the bottom riser with going 0.21 (slope 14r / 13g, 43°)
-for (const going of [0.195, 0.2, 0.21, 0.23]) {
+section('Rampetoppen: ned kilen under trappa (14 × 0,182), og brattere kiler (44, 45, 48°)');
+// 0.195: one straight wedge from the top nose to the foot of the bottom riser with going 0.21 (slope 14r / 13g, 43°).
+// 44–48°: the inner side of the winder treads (helicoid, §3.1) is steeper than the straight flight; with 6.5 cm snap
+// parts the edge contact there dipped under WALKABLE_NORMAL_Y and the walk shoved (1.75× at 60 Hz, 2.96× at 144 Hz).
+// Keep the wedge and the helicoid at or below 48° on the walking line: 51° still shoves (printed below).
+const goingFor = (deg) => 0.182 / Math.tan(THREE.MathUtils.degToRad(deg));
+const RAMPS = [
+  ...[0.195, 0.2, 0.21, 0.23].map((going) => ({ going, name: `inntrinn ${String(going).replace('.', ',')}` })),
+  ...[44, 45, 48].map((deg) => ({ going: goingFor(deg), name: `kile ${deg}°` })),
+];
+for (const { going, name } of RAMPS) {
   for (const hz of RATES) {
     for (const g of GAITS) {
       const w = rampWorld({ going });
       const r = walk(w.col, { hz, running: g.running, start: [-2.5, 0, 0], untilX: w.L + 1.2 });
-      const label = `inntrinn ${String(going).replace('.', ',')}, ${hz} Hz, ${g.name}`;
+      const label = `${name}, ${hz} Hz, ${g.name}`;
       // steady speed reached on the flat before the edge; look at the edge region and the whole slope
       const region = r.frames.filter((f) => f.x - f.dx > -0.6 && f.x < w.L);
       const air = airborne(region);
@@ -218,6 +230,17 @@ for (const going of [0.195, 0.2, 0.21, 0.23]) {
     }
   }
 }
+// the limit: at 51° the ramp top still shoves for a frame (printed, not counted)
+{
+  const res = RATES.map((hz) => {
+    const w = rampWorld({ going: goingFor(51) });
+    const r = walk(w.col, { hz, running: false, start: [-2.5, 0, 0], untilX: w.L + 1.2 });
+    const region = r.frames.filter((f) => f.x - f.dx > -0.6 && f.x < 1.0);
+    const [, smax] = speedBand(region, hz, PLAYER.walkSpeed);
+    return `${hz} Hz fart opptil ${smax.toFixed(2)}, ${airborne(region).length} i lufta`;
+  });
+  console.log(`  info kile 51°, gange (over grensen på 48°): ${res.join(' · ')}`);
+}
 // control: the snap as it was (one part) does hop here
 for (const hz of RATES) {
   for (const g of GAITS) {
@@ -231,22 +254,37 @@ for (const hz of RATES) {
   }
 }
 
-section('Rampetoppen mellom sidevegger, skrå inngang (20°)');
-for (const hz of RATES) {
-  for (const g of GAITS) {
-    const w = rampWorld({ going: 0.21, halfWidth: 0.45, walls: true });
-    // heading 20° towards −z: the player meets the wall at z −0.45 before the edge and slides along it down the slope
-    const r = walk(w.col, { hz, running: g.running, start: [-2.0, 0, 0.1], yawDeg: 20, untilX: w.L + 1.2 });
-    const region = r.frames.filter((f) => f.x - f.dx > -0.6 && f.x < w.L);
-    const air = airborne(region);
-    const last = r.frames.at(-1);
-    const hugging = region.filter((f) => f.z < -0.45 + PLAYER.radius + 0.01).length / Math.max(1, region.length);
-    check(
-      `${hz} Hz, ${g.name}: langs veggen over kanten, 0 % i lufta, ingen «land»`,
-      region.length > 0 && air.length === 0 && lands(r).length === 0 && hugging > 0.8,
-      `${air.length}/${region.length} i lufta, ${lands(r).length} land, ${Math.round(hugging * 100)} % inntil veggen`,
-    );
-    check(`${hz} Hz, ${g.name}: ender på kjellergulvet`, Math.abs(last.y + w.H) <= 0.02 && last.x > w.L && !toasts(r).length, `y ${f3(last.y)}`);
+section('Rampetoppen mellom sidevegger (0,90 og 0,78 m), skrå inngang (10, 20, 30°)');
+// The real shaft is 0.78 m between the walls, so walking along a side wall over the ramp top is the normal case.
+// Beside a wall _verticalizeGroundPush keeps the push as it is (wallCount > 0), so the forward part of the snap's
+// edge push stays in: with snap parts of 6.5 cm (snapParts 4) that was a one-frame shove of 1.65–2.78× the walking
+// speed at 60 Hz and 5.5× at 144 Hz, |Δy| up to 5× the §7.3 bound. Hence the speed and |Δy| checks here.
+for (const width of [0.9, 0.78]) {
+  for (const yawDeg of [10, 20, 30]) {
+    for (const hz of RATES) {
+      for (const g of GAITS) {
+        const w = rampWorld({ going: 0.21, halfWidth: width / 2, walls: true });
+        // heading yawDeg towards −z: the player meets the wall at z −width/2 before the edge and slides along it
+        const r = walk(w.col, { hz, running: g.running, start: [-2.0, 0, 0], yawDeg, untilX: w.L + 1.2 });
+        const label = `${width.toFixed(2).replace('.', ',')} m, ${yawDeg}°, ${hz} Hz, ${g.name}`;
+        const region = r.frames.filter((f) => f.x - f.dx > -0.6 && f.x < w.L);
+        const air = airborne(region);
+        const last = r.frames.at(-1);
+        const hugging = region.filter((f) => f.z < -width / 2 + PLAYER.radius + 0.01).length / Math.max(1, region.length);
+        // the same bounds as on the open ramp (sliding along the wall the horizontal speed is ≈ cos(yaw), never more)
+        const dyMax = 1.3 * g.speed * (1 / hz) * Math.tan(w.theta) + 0.002;
+        const worstDy = Math.max(...region.map((f) => Math.abs(f.dy)));
+        const [, smax] = speedBand(region, hz, g.speed);
+        check(
+          `${label}: langs veggen over kanten, 0 % i lufta, ingen «land»`,
+          region.length > 0 && air.length === 0 && lands(r).length === 0 && hugging > 0.8,
+          `${air.length}/${region.length} i lufta, ${lands(r).length} land, ${Math.round(hugging * 100)} % inntil veggen`,
+        );
+        check(`${label}: aldri raskere over kanten (≤ 1,03)`, smax <= 1.03, `fart opptil ${smax.toFixed(3)}`);
+        check(`${label}: jevn nedstigning (|Δy| ≤ ${f3(dyMax)})`, worstDy <= dyMax, `største |Δy| ${f3(worstDy)}`);
+        check(`${label}: ender på kjellergulvet`, Math.abs(last.y + w.H) <= 0.02 && last.x > w.L && !toasts(r).length, `y ${f3(last.y)}`);
+      }
+    }
   }
 }
 
@@ -281,8 +319,9 @@ for (const s of STAIRS) {
       const air = airborne(region);
       const lastD = down.frames.at(-1);
       // the speed is only printed: off each nose the round bottom (r 0.3) has to clear the nose before it can stand on
-      // the tread below – a shove forward of ≥ 2.6 cm (0.15) / 4.3 cm (0.188) in one frame. Before M1 the same
-      // noses gave air time and a 'land' instead. Stairs get a wedge (next section: steady speed).
+      // the tread below – a shove forward of ≥ 2.6 cm (0.15) / 4.3 cm (0.188) in one frame, 6–9 cm off drops of
+      // 0.20–0.28 (printed below). Before M1 the same noses gave air time and a 'land' instead. Stairs and any other
+      // real height step of 0.15–0.26 get a wedge or a floor strip (next section: steady speed).
       const [smin, smax] = speedBand(region, hz, g.speed);
       check(
         `${s.name}, ${hz} Hz, ${g.name}: ned uten luft og uten «land»`,
@@ -291,6 +330,17 @@ for (const s of STAIRS) {
       );
     }
   }
+}
+// single drops: the shove off the nose grows with the drop (the geometry of the round bottom, not the part size)
+for (const rise of [0.2, 0.24, 0.26]) {
+  const res = RATES.map((hz) => {
+    const w = stepsWorld({ rise, n: 1, going: 0.3 });
+    const r = walk(w.col, { hz, running: false, start: [-1.5, 0, 0], untilX: 1.5 });
+    const region = r.frames.filter((f) => f.x - f.dx > -0.6 && f.x < 0.8);
+    const shove = Math.max(...region.map((f) => Math.hypot(f.dx, f.dz)));
+    return `${hz} Hz ${(shove * 100).toFixed(1)} cm (${((shove * hz) / PLAYER.walkSpeed).toFixed(2)}×), ${airborne(region).length} i lufta, ${lands(r).length} land`;
+  });
+  console.log(`  info ned ett ekte trinn på ${String(rise).replace('.', ',')}, gange, største steg i ett bilde: ${res.join(' · ')}`);
 }
 // Up real risers is the step-up (_tryStepUp), not the snap: the round bottom of the capsule first meets a riser edge
 // higher than ~0.14 m at a contact too steep to stand on, so the player stops there (before M1 already from ~0.14).
