@@ -1,0 +1,702 @@
+/*
+ * Interiørspillet – editor panels (ui/panelKit.js). Builds on ui/ui.css: same variables, buttons (.kv-btn), range
+ * (.kv-range), switch (.kv-switch), tabs (.kv-tabs/.kv-tab). Classes here are .ip-*.
+ *
+ * Performance: NO backdrop-filter on anything that stays on screen while playing – it re-blurs the WebGL canvas
+ * every frame. Panels are opaque (the 3D/plan view and scrolled content never show through small 11–12 px text);
+ * sticky blocks inside a panel get the same solid colour (--ip-panel-bg).
+ * Layering: HUD 5 · panels 8+ (raised on open) · toolbar 7 · pause menu 30 · dialogs 40.
+ */
+
+.ip-panel {
+  --ip-panel-bg: rgb(14, 21, 30);
+  --ip-w: 24em;
+  --ip-gap: 1em;
+  --ip-bottom: 6.2em; /* room for the toolbar */
+  position: absolute;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  width: min(var(--ip-w), calc(100% - 2 * var(--ip-gap)));
+  max-height: calc(100% - var(--ip-gap) - var(--ip-bottom));
+  pointer-events: auto;
+  color: var(--kv-ink);
+  background: var(--ip-panel-bg);
+  border: 1px solid var(--kv-line-2);
+  border-radius: calc(var(--kv-r-lg) + 0.15em);
+  box-shadow: var(--kv-shadow);
+  opacity: 0;
+  transition: opacity 0.18s, transform 0.26s var(--kv-ease-out);
+}
+
+.ip-panel--right {
+  top: var(--ip-gap);
+  right: var(--ip-gap);
+  transform: translateX(1.2em);
+}
+
+.ip-panel--left {
+  top: var(--ip-gap);
+  left: var(--ip-gap);
+  transform: translateX(-1.2em);
+}
+
+.ip-panel--bottom {
+  left: 50%;
+  bottom: var(--ip-bottom);
+  --ip-w: 40em;
+  max-height: 46%;
+  transform: translate(-50%, 1em);
+}
+
+.ip-panel--center {
+  left: 50%;
+  top: 50%;
+  --ip-w: 40em;
+  max-height: calc(100% - 4em);
+  transform: translate(-50%, -48%) scale(0.98);
+  z-index: 25;
+}
+
+.ip-panel.is-open {
+  opacity: 1;
+  transform: none;
+}
+
+.ip-panel--bottom.is-open {
+  transform: translate(-50%, 0);
+}
+
+.ip-panel--center.is-open {
+  transform: translate(-50%, -50%);
+}
+
+.ip-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 24;
+  pointer-events: auto;
+  background: rgba(5, 9, 13, 0.55);
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+
+.ip-backdrop.is-open {
+  opacity: 1;
+}
+
+.ip-panel [data-sticky],
+.ip-panel .is-sticky {
+  background: var(--ip-panel-bg);
+}
+
+.ip-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.75em 0.75em 0.75em 1.1em;
+  border-bottom: 1px solid var(--kv-line);
+  flex: none;
+}
+
+.ip-panel__icon {
+  color: var(--kv-accent);
+  display: grid;
+}
+
+.ip-panel__title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font: 720 1.12em/1.15 var(--kv-font-display);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ip-panel__close {
+  width: 2.1em;
+  height: 2.1em;
+}
+
+.ip-panel__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.9em 1.1em 1.1em;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.ip-panel__body::-webkit-scrollbar {
+  width: 0.55em;
+}
+
+.ip-panel__body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 1em;
+}
+
+.ip-panel__foot {
+  flex: none;
+  display: flex;
+  gap: 0.5em;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0.7em 1.1em;
+  border-top: 1px solid var(--kv-line);
+}
+
+/* ------------------------------------------------------------------ layout */
+
+.ip-section {
+  margin: 0 0 1.15em;
+}
+
+.ip-section:last-child {
+  margin-bottom: 0;
+}
+
+.ip-section__title {
+  margin: 0 0 0.55em;
+  font-size: 0.74em;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--kv-ink-3);
+}
+
+.ip-field {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+  align-items: center;
+  gap: 0.35em 0.9em;
+  padding: 0.32em 0;
+}
+
+.ip-field--toggle {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.ip-field__label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 0.9em;
+  color: var(--kv-ink-2);
+}
+
+.ip-field__label small {
+  font-size: 0.82em;
+  color: var(--kv-ink-4);
+}
+
+.ip-field__control {
+  min-width: 0;
+}
+
+.ip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.ip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5em, 1fr));
+  gap: 0.6em;
+}
+
+.ip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.ip-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  padding: 2.2em 1em;
+  text-align: center;
+  color: var(--kv-ink-3);
+}
+
+.ip-empty .kv-icon {
+  width: 2em;
+  height: 2em;
+  opacity: 0.6;
+}
+
+.ip-empty p {
+  margin: 0;
+  font-size: 0.95em;
+}
+
+/* ------------------------------------------------------------------ controls */
+
+.ip-btn--primary {
+  background: var(--kv-accent);
+  border-color: transparent;
+  color: var(--kv-accent-ink);
+}
+
+.ip-btn--primary:hover {
+  background: var(--kv-accent-2);
+  border-color: transparent;
+}
+
+.kv-btn:disabled,
+.kv-iconbtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+.kv-iconbtn.is-active {
+  background: var(--kv-accent-soft);
+  color: var(--kv-accent-2);
+  border-color: rgba(255, 181, 46, 0.35);
+}
+
+.ip-tabs {
+  margin-bottom: 0.9em;
+}
+
+.ip-tabs .kv-tab {
+  height: 2.25em;
+  font-size: 0.9em;
+}
+
+.ip-slider {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.ip-slider .kv-range {
+  flex: 1;
+  min-width: 0;
+}
+
+.ip-slider__value {
+  min-width: 4.2em;
+  text-align: right;
+  font-size: 0.86em;
+  font-variant-numeric: tabular-nums;
+  color: var(--kv-ink);
+}
+
+.ip-input,
+.ip-select {
+  width: 100%;
+  height: 2.2em;
+  padding: 0 0.7em;
+  border-radius: var(--kv-r-sm);
+  border: 1px solid var(--kv-line-2);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--kv-ink);
+  font: inherit;
+  font-size: 0.92em;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.ip-input:hover,
+.ip-select:hover {
+  border-color: rgba(255, 255, 255, 0.26);
+}
+
+.ip-input:focus,
+.ip-select:focus {
+  outline: none;
+  border-color: var(--kv-accent);
+  background: rgba(0, 0, 0, 0.38);
+}
+
+.ip-input::placeholder {
+  color: var(--kv-ink-4);
+}
+
+.ip-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2em;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b7c4d0' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6em center;
+  background-size: 1em 1em;
+}
+
+.ip-select option {
+  background: #16202b;
+  color: var(--kv-ink);
+}
+
+/* colour */
+.ip-color {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55em;
+}
+
+.ip-color__row {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.ip-color__native {
+  flex: none;
+  width: 2.6em;
+  height: 2.2em;
+  padding: 0;
+  border: 1px solid var(--kv-line-2);
+  border-radius: var(--kv-r-sm);
+  background: none;
+  cursor: pointer;
+}
+
+.ip-color__native::-webkit-color-swatch-wrapper {
+  padding: 0.18em;
+}
+
+.ip-color__native::-webkit-color-swatch {
+  border: 0;
+  border-radius: 0.3em;
+}
+
+.ip-color__hex {
+  width: 7.5em;
+  font-family: var(--kv-font-mono);
+  text-transform: lowercase;
+}
+
+.ip-swatches {
+  --ip-sw: 1.7em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.36em;
+}
+
+.ip-swatch {
+  width: var(--ip-sw);
+  height: var(--ip-sw);
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.12s var(--kv-ease), border-color 0.12s;
+}
+
+.ip-swatch:hover {
+  transform: scale(1.12);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.ip-swatch.is-active {
+  border-color: var(--kv-accent);
+  box-shadow: 0 0 0 2px rgba(255, 181, 46, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+/* badges */
+.ip-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em;
+}
+
+.ip-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 1.55em;
+  padding: 0 0.55em;
+  border-radius: 1em;
+  font-size: 0.72em;
+  font-weight: 650;
+  white-space: nowrap;
+  background: var(--kv-surface-3);
+  color: var(--kv-ink-2);
+}
+
+.ip-badge--accent {
+  background: var(--kv-accent-soft);
+  color: var(--kv-accent-2);
+}
+
+.ip-badge--ok {
+  background: rgba(79, 214, 143, 0.14);
+  color: #8be6b4;
+}
+
+.ip-badge--warn {
+  background: rgba(255, 200, 80, 0.16);
+  color: #ffd98a;
+}
+
+.ip-badge--danger {
+  background: var(--kv-danger-soft);
+  color: #ffb3aa;
+}
+
+.ip-badge--info {
+  background: rgba(99, 189, 255, 0.14);
+  color: #a8d9ff;
+}
+
+/* cards */
+.ip-card {
+  display: flex;
+  gap: 0.8em;
+  padding: 0.6em;
+  border-radius: var(--kv-r);
+  border: 1px solid var(--kv-line);
+  background: var(--kv-surface);
+  transition: background 0.15s, border-color 0.15s, transform 0.15s var(--kv-ease);
+}
+
+.ip-card.is-clickable {
+  cursor: pointer;
+}
+
+.ip-card.is-clickable:hover {
+  background: var(--kv-surface-2);
+  border-color: var(--kv-line-2);
+}
+
+.ip-card.is-selected {
+  border-color: var(--kv-accent);
+  background: var(--kv-accent-soft);
+}
+
+.ip-card:focus-visible {
+  outline: 2px solid var(--kv-accent);
+  outline-offset: 2px;
+}
+
+.ip-card__img {
+  flex: none;
+  width: 5.4em;
+  height: 5.4em;
+  border-radius: var(--kv-r-sm);
+  background: #1f2934 center / cover no-repeat;
+  display: grid;
+  place-items: center;
+  color: var(--kv-ink-4);
+}
+
+.ip-card__img .kv-icon {
+  width: 2em;
+  height: 2em;
+}
+
+.ip-card__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22em;
+}
+
+.ip-card__title {
+  font-weight: 650;
+  font-size: 0.95em;
+  line-height: 1.25;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.ip-card__sub {
+  font-size: 0.8em;
+  color: var(--kv-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ip-card__foot {
+  margin-top: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.ip-card__price {
+  font-weight: 750;
+  color: var(--kv-accent-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.ip-card__price s {
+  margin-left: 0.45em;
+  font-weight: 500;
+  font-size: 0.85em;
+  color: var(--kv-ink-4);
+}
+
+.ip-card__actions {
+  display: flex;
+  gap: 0.35em;
+}
+
+/* confirm dialog content */
+.ip-dialog-host {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.ip-confirm__text {
+  margin: 0 0 1.2em;
+  color: var(--kv-ink-2);
+  line-height: 1.5;
+}
+
+.ip-confirm__buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6em;
+}
+
+/* ------------------------------------------------------------------ toolbar + corner badge (used by ui/Toolbar.js
+   and ui/AcousticsWidget.js – the UI owner may restyle) */
+
+.ip-toolbar {
+  position: absolute;
+  left: 50%;
+  bottom: 1em;
+  z-index: 7;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: stretch;
+  gap: 0.2em;
+  max-width: calc(100% - 2em);
+  padding: 0.32em;
+  pointer-events: auto;
+  border-radius: calc(var(--kv-r-lg) + 0.25em);
+  border: 1px solid var(--kv-line-2);
+  background: rgba(14, 21, 30, 0.9);
+  box-shadow: var(--kv-shadow);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ip-toolbar__sep {
+  width: 1px;
+  margin: 0.4em 0.25em;
+  background: var(--kv-line-2);
+  flex: none;
+}
+
+.ip-toolbtn {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.22em;
+  min-width: 4.7em;
+  padding: 0.42em 0.55em 0.36em;
+  border: 0;
+  border-radius: var(--kv-r);
+  background: transparent;
+  color: var(--kv-ink-2);
+  font-size: 0.78em;
+  font-weight: 650;
+  line-height: 1.1;
+  transition: background 0.15s, color 0.15s;
+}
+
+.ip-toolbtn .kv-icon {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.ip-toolbtn:hover {
+  background: var(--kv-surface-2);
+  color: var(--kv-ink);
+}
+
+.ip-toolbtn.is-active {
+  background: var(--kv-accent-soft);
+  color: var(--kv-accent-2);
+}
+
+.ip-toolbtn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.ip-toolbtn__key {
+  position: absolute;
+  top: 0.3em;
+  right: 0.35em;
+  font-size: 0.78em;
+  font-weight: 700;
+  color: var(--kv-ink-4);
+}
+
+.ip-corner {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  z-index: 7;
+  pointer-events: auto;
+}
+
+.ip-rt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  height: 2.4em;
+  padding: 0 0.9em 0 0.7em;
+  border-radius: 2em;
+  border: 1px solid var(--kv-line-2);
+  background: rgba(14, 21, 30, 0.88);
+  color: var(--kv-ink);
+  font-weight: 650;
+  font-size: 0.9em;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 0.4em 1.2em rgba(0, 0, 0, 0.3);
+}
+
+.ip-rt__dot {
+  width: 0.7em;
+  height: 0.7em;
+  border-radius: 50%;
+  background: var(--kv-ink-3);
+  box-shadow: 0 0 0.5em currentColor;
+}
+
+.ip-rt--green .ip-rt__dot {
+  background: var(--kv-ok);
+  color: var(--kv-ok);
+}
+
+.ip-rt--yellow .ip-rt__dot {
+  background: #ffc850;
+  color: #ffc850;
+}
+
+.ip-rt--red .ip-rt__dot {
+  background: var(--kv-danger);
+  color: var(--kv-danger);
+}
+
+/* Photo comparison open (PhotoCompare adds #ui-root.pc-active): the wall panel shrinks to its proposal switcher
+   (◀ ▶, «Bruk dette forslaget») so the montage and the 3D view stay visible. */
+#ui-root.pc-active .wp-panel { --ip-w: 22em; }
+#ui-root.pc-active .wp-panel .wp-content,
+#ui-root.pc-active .wp-panel .wp-status .ip-tabs,
+#ui-root.pc-active .wp-panel .wp-meta,
+#ui-root.pc-active .wp-panel .wp-state { display: none; }
+#ui-root.pc-active .wp-panel .wp-status { margin-bottom: 0; position: static; }

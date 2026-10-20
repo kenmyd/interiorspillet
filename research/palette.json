@@ -1,0 +1,1042 @@
+{
+  "meta": {
+    "tittel": "Farger og materialer – Interiørspillet",
+    "oppdatert": "2026-10-18",
+    "hexMerknad": "Malingshex er Jotuns egne skjermverdier fra jotun.com/no-no. Farger på skjerm avviker fra ekte maling – bruk alltid fargeprøve.",
+    "ncsMerknad": "«S xxxx-xxxx» = NCS-standard. Koder uten «S» er Jotuns tilnærmede NCS-notasjon. null = ikke oppgitt av Jotun.",
+    "materialMerknad": "hex er sRGB albedo. roughness/metalness er for THREE.MeshStandardMaterial; physical er valgfrie MeshPhysicalMaterial-felt (sheen, transmission osv.).",
+    "lysTips": {
+      "ledList": {
+        "kelvin": 2700,
+        "hex": "#ffb46b",
+        "note": "Varm LED-list i taket langs veggene – gir Sand/Marrakesh en gyllen glød."
+      },
+      "spotter": {
+        "kelvin": 2700,
+        "hex": "#ffb46b",
+        "note": "Takskinne med 4 spotter over den høye veggen."
+      },
+      "dagslys": {
+        "kelvin": 6000,
+        "hex": "#fff4e5",
+        "note": "Sørvendte vinduer mot elva."
+      }
+    },
+    "paintGroups": [
+      "Varm nøytral",
+      "Beige og brun",
+      "Grå",
+      "Grønn",
+      "Blå",
+      "Terrakotta og leire",
+      "Mørk aksent"
+    ],
+    "materialGroups": [
+      "Tre",
+      "Metall",
+      "Tekstil",
+      "Stein",
+      "Glass",
+      "Naturfiber",
+      "Lakk"
+    ],
+    "kilder": [
+      "https://www.jotun.com/no-no/decorative/interior/colours/1623-persian-khaki-interior",
+      "https://www.jotun.com/no-no/decorative/colours/interior/all-interior-colours/1140-sand-interior",
+      "https://www.jotun.com/no-no/decorative/colours/colour-charts/interior/jotun-colour-collection-2026",
+      "https://www.jotun.com/no-no/decorative/colours/colour-charts/interior/jotun-colour-collection-2025",
+      "https://www.jotun.com/no-no/decorative/colours/colour-charts/interior/jotun-colour-collection-2024",
+      "https://www.jotun.com/no-no/decorative/colours/colour-charts/interior/jotun-colour-collection-2023",
+      "https://www.jotun.com/dk-da/decorative/colours/colour-tools/ncs-and-hex-colour-codes-architect-tools"
+    ]
+  },
+  "walls": {
+    "sand": {
+      "id": "sand",
+      "brand": "Jotun",
+      "produktlinje": "LADY (Pure Color / Wonderwall / Minerals – samme fargekode)",
+      "name": "SAND",
+      "code": "1140",
+      "hex": "#cfc5b4",
+      "rgb": [
+        207,
+        197,
+        180
+      ],
+      "lrv": 56,
+      "ncs": "S 2005-Y30R",
+      "ncsKilde": "Oppgitt av to selgere på FINN for ferdigblandet Jotun 1140 Sand (ikke offisiell Jotun-tabell). Nærmeste NCS etter hex: S 2005-Y20R (ΔE00 0,95, plan-home.com).",
+      "beskrivelse": "En varm, dempet beige. En lys mellomtone som oppleves lun og varm – en av Jotuns mest solgte farger.",
+      "soner": [
+        "Lyse vegger i kjøkken, spisestue og sittestue (bl.a. pilarene mellom vinduene og den høye veggen)",
+        "Taket i disse sonene har samme farge"
+      ],
+      "fotoObservasjon": {
+        "bilde": "20261018_082905.jpg",
+        "maaltSnitt": "#94897d",
+        "forhold": "Pilaren mellom vinduene måler ca. #94897d (G/R 0,93, B/R 0,84) – samme fargetone som Sand, men ca. 70 % lysstyrke fordi bildet er tatt i svakt morgenlys (08:29).",
+        "kveldslys": "Under de varme LED-listene (ca. 2700 K) blir Sand gyllen honning-/havrebeige; rett under lista måler taket #b98b5d. I dagslys fra de sørvendte vinduene ser den nesten greige/lys varmgrå ut."
+      },
+      "renderTips": "Bruk offisiell hex som albedo (sRGB, THREE.Color konverterer til lineær). La varmt lys (2700 K) gi gløden – ikke bak den inn i fargen.",
+      "kilder": [
+        "https://www.jotun.com/no-no/decorative/colours/interior/all-interior-colours/1140-sand-interior",
+        "https://www.jotun.com/api/v2/search/colour?freeText=1140&pageUrl=/no-no/decorative/colours/interior/all-interior-colours",
+        "https://paintdb.com/colors/jotun/jotun-1140-sand",
+        "https://plan-home.com/match-colors/sand-1140"
+      ]
+    },
+    "marrakesh": {
+      "id": "marrakesh",
+      "brand": "Jotun",
+      "produktlinje": "LADY (Pure Color / Wonderwall / Minerals – samme fargekode)",
+      "name": "MARRAKESH",
+      "altName": "PERSIAN KHAKI (Jotuns internasjonale navn på samme kode)",
+      "code": "1623",
+      "hex": "#aea191",
+      "rgb": [
+        174,
+        161,
+        145
+      ],
+      "lrv": null,
+      "lrvEstimat": "ca. 36–37 (beregnet fra hex, ikke oppgitt av Jotun)",
+      "ncs": null,
+      "ncsOmtrent": "S 3005-Y20R",
+      "ncsKilde": "Jotun oppgir ikke NCS for 1623. Nærmeste NCS-standard etter hex er ca. S 3005-Y20R (ΔE00 2,4, plan-home.com). En FINN-annonse oppgir «9906-Y28R», som ikke er en gyldig NCS-kode (trolig skrivefeil) – ikke bruk den.",
+      "beskrivelse": "En lun, brun favoritt. Jotun anbefaler den ton-i-ton sammen med 1931 Kokos og 1140 Sand – altså nøyaktig kombinasjonen i huset.",
+      "soner": [
+        "De litt mørkere grå-brune veggene, tydeligst i TV-stua (nisjen med den grå hjørnesofaen)",
+        "Taket i TV-stua har samme farge"
+      ],
+      "fotoObservasjon": {
+        "bilde": "20261018_082726.jpg",
+        "maaltSnitt": "#504944",
+        "forhold": "Høyre vegg i TV-stua måler ca. #504944 (G/R 0,92, B/R 0,85) – samme fargetone som Marrakesh (G/R 0,93, B/R 0,83), men mye mørkere fordi TV-stua ligger i skyggen og bildet er tatt tidlig morgen.",
+        "kveldslys": "I kveldslys med LED-lista og taklampa blir Marrakesh en varm sjokolade-/sopp-taupe; nærmest lista drar den mot oransjebrun (venstre vegg #3e352b, B/R 0,69). Mot vinduet (dagslys) ser den gråbrun/greige ut."
+      },
+      "renderTips": "Bruk offisiell hex som albedo. TV-stua ser mørkere ut enn fargen tilsier fordi den får lite dagslys – det skal lyssettingen ta seg av.",
+      "kilder": [
+        "https://www.jotun.com/no-no/decorative/interior/colours/1623-persian-khaki-interior",
+        "https://www.jotun.com/api/v2/search/colour?freeText=1623&pageUrl=/no-no/decorative/colours/interior/all-interior-colours",
+        "https://plan-home.com/color/jotun-marrakesh-persian-khaki",
+        "https://plan-home.com/compare-colors/jotun-marrakesh-persian-khaki/s-3005-y20r",
+        "https://www.finn.no/438207424"
+      ]
+    }
+  },
+  "paints": [
+    {
+      "id": "jotun-1931",
+      "brand": "Jotun",
+      "name": "KOKOS",
+      "code": "1931",
+      "hex": "#e3ddcd",
+      "group": "Varm nøytral",
+      "ncs": null,
+      "kolleksjon": "Nuances 2025",
+      "current": false,
+      "notes": "Lys, myk beige. Jotun anbefaler den ton-i-ton med Sand og Marrakesh."
+    },
+    {
+      "id": "jotun-12300",
+      "brand": "Jotun",
+      "name": "HAZELNUT BEIGE",
+      "code": "12300",
+      "hex": "#beb19c",
+      "group": "Varm nøytral",
+      "ncs": "2907-Y21R",
+      "kolleksjon": "Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Litt dypere og mer nøttete enn Sand – trygg oppgradering av høy vegg."
+    },
+    {
+      "id": "jotun-12075",
+      "brand": "Jotun",
+      "name": "SOOTHING BEIGE",
+      "code": "12075",
+      "hex": "#cac0af",
+      "group": "Varm nøytral",
+      "ncs": null,
+      "kolleksjon": "Canvas 2024",
+      "current": false,
+      "notes": "Nesten som Sand, en anelse gråere."
+    },
+    {
+      "id": "jotun-1140",
+      "brand": "Jotun",
+      "name": "SAND",
+      "code": "1140",
+      "hex": "#cfc5b4",
+      "group": "Varm nøytral",
+      "ncs": "S 2005-Y30R",
+      "kolleksjon": null,
+      "current": true,
+      "notes": "Dagens farge på de lyse veggene."
+    },
+    {
+      "id": "jotun-12076",
+      "brand": "Jotun",
+      "name": "MODERN BEIGE",
+      "code": "12076",
+      "hex": "#bfb3a4",
+      "group": "Beige og brun",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Ligger mellom Sand og Marrakesh – myk kontrast."
+    },
+    {
+      "id": "jotun-1623",
+      "brand": "Jotun",
+      "name": "MARRAKESH",
+      "code": "1623",
+      "hex": "#aea191",
+      "group": "Beige og brun",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": true,
+      "notes": "Dagens farge i TV-stua. Gir høy vegg samme farge som TV-stua."
+    },
+    {
+      "id": "jotun-1929",
+      "brand": "Jotun",
+      "name": "MUSKATNØTT",
+      "code": "1929",
+      "hex": "#a19485",
+      "group": "Beige og brun",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Klassisk varm gråbrun, litt dypere enn Marrakesh."
+    },
+    {
+      "id": "jotun-12292",
+      "brand": "Jotun",
+      "name": "CARAMEL BROWN",
+      "code": "12292",
+      "hex": "#a59885",
+      "group": "Beige og brun",
+      "ncs": "4207-Y18R",
+      "kolleksjon": "Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Gyllen karamell-taupe."
+    },
+    {
+      "id": "jotun-10965",
+      "brand": "Jotun",
+      "name": "HIPSTER BROWN",
+      "code": "10965",
+      "hex": "#857c6e",
+      "group": "Beige og brun",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Hakket mørkere og mer gyllen enn Marrakesh – fin aksentvegg."
+    },
+    {
+      "id": "jotun-1974",
+      "brand": "Jotun",
+      "name": "GOLDEN WALNUT",
+      "code": "1974",
+      "hex": "#927a5c",
+      "group": "Beige og brun",
+      "ncs": "S 5020-Y10R",
+      "kolleksjon": "Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Varm valnøttbrun; passer til messing og eik."
+    },
+    {
+      "id": "jotun-10964",
+      "brand": "Jotun",
+      "name": "SMOKED OAK",
+      "code": "10964",
+      "hex": "#6c6358",
+      "group": "Beige og brun",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Matcher spilevegg i røkt eik (forslag B2/P2/T)."
+    },
+    {
+      "id": "jotun-12078",
+      "brand": "Jotun",
+      "name": "COMFORT GREY",
+      "code": "12078",
+      "hex": "#beb9af",
+      "group": "Grå",
+      "ncs": null,
+      "kolleksjon": "Canvas 2024 / Nuances 2025",
+      "current": false,
+      "notes": "Lys, varm grå – roligere enn Sand."
+    },
+    {
+      "id": "jotun-1877",
+      "brand": "Jotun",
+      "name": "VALMUEFRØ",
+      "code": "1877",
+      "hex": "#96938b",
+      "group": "Grå",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Mellomgrå med varm undertone, spiller fint med grå sofa."
+    },
+    {
+      "id": "jotun-10249",
+      "brand": "Jotun",
+      "name": "SOBER",
+      "code": "10249",
+      "hex": "#79736d",
+      "group": "Grå",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Dyp varmgrå – elegant bak lys spilevegg."
+    },
+    {
+      "id": "jotun-8252",
+      "brand": "Jotun",
+      "name": "GREEN HARMONY",
+      "code": "8252",
+      "hex": "#9e9b86",
+      "group": "Grønn",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Myk, grå salviegrønn."
+    },
+    {
+      "id": "jotun-8493",
+      "brand": "Jotun",
+      "name": "GREEN TEA",
+      "code": "8493",
+      "hex": "#a09b7c",
+      "group": "Grønn",
+      "ncs": "3916-G73Y",
+      "kolleksjon": "Canvas 2024 / Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Populær dempet grønn – går igjen i fargekartene 2024 og 2026."
+    },
+    {
+      "id": "jotun-7629",
+      "brand": "Jotun",
+      "name": "ANTIQUE GREEN",
+      "code": "7629",
+      "hex": "#8a8f81",
+      "group": "Grønn",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Grå salvie med kjølig undertone."
+    },
+    {
+      "id": "jotun-8469",
+      "brand": "Jotun",
+      "name": "GREEN LEAF",
+      "code": "8469",
+      "hex": "#8a8774",
+      "group": "Grønn",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Salvie/oliven-mellomtone; passer til salvie fløyelsgardin (forslag C)."
+    },
+    {
+      "id": "jotun-8284",
+      "brand": "Jotun",
+      "name": "OLIVE",
+      "code": "8284",
+      "hex": "#b8a87f",
+      "group": "Grønn",
+      "ncs": "S 3020-G90Y",
+      "kolleksjon": "Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Lys, gyllen oliven."
+    },
+    {
+      "id": "jotun-8597",
+      "brand": "Jotun",
+      "name": "SEAWEED GREEN",
+      "code": "8597",
+      "hex": "#968a66",
+      "group": "Grønn",
+      "ncs": "4520-G83Y",
+      "kolleksjon": "Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Varm olivengrønn."
+    },
+    {
+      "id": "jotun-8575",
+      "brand": "Jotun",
+      "name": "NATURAL GREEN",
+      "code": "8575",
+      "hex": "#7a7861",
+      "group": "Grønn",
+      "ncs": null,
+      "kolleksjon": "Stories 2023",
+      "current": false,
+      "notes": "Dempet mosegrønn."
+    },
+    {
+      "id": "jotun-8494",
+      "brand": "Jotun",
+      "name": "ORGANIC GREEN",
+      "code": "8494",
+      "hex": "#646656",
+      "group": "Grønn",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Dyp mosegrønn – passer til forslag M (mose + røkt eik)."
+    },
+    {
+      "id": "jotun-7613",
+      "brand": "Jotun",
+      "name": "NORTHERN MYSTIC",
+      "code": "7613",
+      "hex": "#696d61",
+      "group": "Grønn",
+      "ncs": "6508-G39Y",
+      "kolleksjon": "Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Mørk grågrønn – tilsvarer forslag H."
+    },
+    {
+      "id": "jotun-6194",
+      "brand": "Jotun",
+      "name": "WILD IVY",
+      "code": "6194",
+      "hex": "#5f817e",
+      "group": "Grønn",
+      "ncs": "S 5020-B50G",
+      "kolleksjon": "Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Dyp blågrønn; spenstig mot elva og trærne ute."
+    },
+    {
+      "id": "jotun-6379",
+      "brand": "Jotun",
+      "name": "CITYSCAPE",
+      "code": "6379",
+      "hex": "#8c9893",
+      "group": "Blå",
+      "ncs": "4307-B83G",
+      "kolleksjon": "Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Dempet grå-blågrønn."
+    },
+    {
+      "id": "jotun-5180",
+      "brand": "Jotun",
+      "name": "OSLO",
+      "code": "5180",
+      "hex": "#526064",
+      "group": "Blå",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Dyp, grå petrolblå."
+    },
+    {
+      "id": "jotun-4477",
+      "brand": "Jotun",
+      "name": "DECO BLUE",
+      "code": "4477",
+      "hex": "#525c64",
+      "group": "Blå",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Mørk støvblå; flott med messing og konjakk skinn."
+    },
+    {
+      "id": "jotun-20046",
+      "brand": "Jotun",
+      "name": "SAVANNA SUNSET",
+      "code": "20046",
+      "hex": "#af8a76",
+      "group": "Terrakotta og leire",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Myk leire/rosébrun. Jotun parer den med Marrakesh."
+    },
+    {
+      "id": "jotun-11220",
+      "brand": "Jotun",
+      "name": "OCHRE CLAY",
+      "code": "11220",
+      "hex": "#c8936b",
+      "group": "Terrakotta og leire",
+      "ncs": "2931-Y37R",
+      "kolleksjon": "Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Varm oker-leire."
+    },
+    {
+      "id": "jotun-2856",
+      "brand": "Jotun",
+      "name": "WARM BLUSH",
+      "code": "2856",
+      "hex": "#ab8073",
+      "group": "Terrakotta og leire",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Støvete terrakotta-rosa."
+    },
+    {
+      "id": "jotun-20120",
+      "brand": "Jotun",
+      "name": "ORGANIC RED",
+      "code": "20120",
+      "hex": "#987a6a",
+      "group": "Terrakotta og leire",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Dempet jordrød/leirbrun."
+    },
+    {
+      "id": "jotun-2951",
+      "brand": "Jotun",
+      "name": "SOPHISTICATED RED",
+      "code": "2951",
+      "hex": "#7b5953",
+      "group": "Terrakotta og leire",
+      "ncs": "S 6020-Y80R",
+      "kolleksjon": "Stories 2023 / Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Dyp rødbrun – lun kveldsstemning."
+    },
+    {
+      "id": "jotun-2149",
+      "brand": "Jotun",
+      "name": "COFFEE",
+      "code": "2149",
+      "hex": "#524240",
+      "group": "Mørk aksent",
+      "ncs": "S 8010-Y90R",
+      "kolleksjon": "Soulful Spaces 2025/2026",
+      "current": false,
+      "notes": "Mørk kaffebrun; dramatisk bak lys spilevegg eller kunst."
+    },
+    {
+      "id": "jotun-9938",
+      "brand": "Jotun",
+      "name": "DEMPET SORT",
+      "code": "9938",
+      "hex": "#494948",
+      "group": "Mørk aksent",
+      "ncs": null,
+      "kolleksjon": null,
+      "current": false,
+      "notes": "Myk sort som matcher kjøkkenfronter og dørkarm."
+    }
+  ],
+  "materials": [
+    {
+      "id": "eik-natur",
+      "name": "Naturell eik (oljet)",
+      "group": "Tre",
+      "hex": "#c39b6e",
+      "roughness": 0.55,
+      "metalness": 0,
+      "notes": "Lys gyllen eik – forslag B og P1."
+    },
+    {
+      "id": "eik-hvitoljet",
+      "name": "Hvitoljet eik",
+      "group": "Tre",
+      "hex": "#d9ccb6",
+      "roughness": 0.6,
+      "metalness": 0,
+      "notes": "Lys skandinavisk eik."
+    },
+    {
+      "id": "eik-rokt",
+      "name": "Røkt eik",
+      "group": "Tre",
+      "hex": "#7a5e47",
+      "roughness": 0.55,
+      "metalness": 0,
+      "notes": "Varm mellombrun – forslag B2, P2 og T."
+    },
+    {
+      "id": "eik-mork",
+      "name": "Mørkbeiset eik (som spisebordet)",
+      "group": "Tre",
+      "hex": "#4e3f36",
+      "roughness": 0.5,
+      "metalness": 0,
+      "notes": "Målt fra spisebordet på bildene."
+    },
+    {
+      "id": "valnott",
+      "name": "Valnøtt",
+      "group": "Tre",
+      "hex": "#5f4332",
+      "roughness": 0.5,
+      "metalness": 0,
+      "notes": "Rik sjokoladebrun – forslag P3."
+    },
+    {
+      "id": "eik-svart",
+      "name": "Svartbeiset eik",
+      "group": "Tre",
+      "hex": "#2b2623",
+      "roughness": 0.55,
+      "metalness": 0,
+      "notes": "Synlig åring under – forslag P4."
+    },
+    {
+      "id": "teak",
+      "name": "Teak",
+      "group": "Tre",
+      "hex": "#9c6b3f",
+      "roughness": 0.5,
+      "metalness": 0,
+      "notes": "Varm rødgyllen, retro."
+    },
+    {
+      "id": "ask",
+      "name": "Ask",
+      "group": "Tre",
+      "hex": "#d6c4a3",
+      "roughness": 0.6,
+      "metalness": 0,
+      "notes": "Lys med tydelig åring."
+    },
+    {
+      "id": "gulv-eik",
+      "name": "Lys grålasert eik (gulvet)",
+      "group": "Tre",
+      "hex": "#bfb2a3",
+      "roughness": 0.45,
+      "metalness": 0,
+      "notes": "Tilnærmet gulvet i stua."
+    },
+    {
+      "id": "metall-sort",
+      "name": "Matt svart metall",
+      "group": "Metall",
+      "hex": "#1f1f1f",
+      "roughness": 0.6,
+      "metalness": 0.25,
+      "notes": "Pulverlakk – stolben, hyller, lampeoppheng og sofabord."
+    },
+    {
+      "id": "messing-borstet",
+      "name": "Børstet messing",
+      "group": "Metall",
+      "hex": "#c8a463",
+      "roughness": 0.35,
+      "metalness": 1,
+      "notes": "Lampefot, håndtak og rammer."
+    },
+    {
+      "id": "messing-antikk",
+      "name": "Antikk messing",
+      "group": "Metall",
+      "hex": "#9e7c45",
+      "roughness": 0.45,
+      "metalness": 1,
+      "notes": "Mørkere, dempet messing."
+    },
+    {
+      "id": "krom",
+      "name": "Krom",
+      "group": "Metall",
+      "hex": "#e4e6e8",
+      "roughness": 0.06,
+      "metalness": 1,
+      "notes": "Speilblank."
+    },
+    {
+      "id": "stal-borstet",
+      "name": "Børstet stål",
+      "group": "Metall",
+      "hex": "#b9bcbf",
+      "roughness": 0.35,
+      "metalness": 1,
+      "notes": "Nøytral, matt metallglans."
+    },
+    {
+      "id": "bronse",
+      "name": "Røkt bronse",
+      "group": "Metall",
+      "hex": "#6b4f37",
+      "roughness": 0.4,
+      "metalness": 1,
+      "notes": "Varm mørk metall."
+    },
+    {
+      "id": "boucle-offwhite",
+      "name": "Bouclé offwhite",
+      "group": "Tekstil",
+      "hex": "#e5ded2",
+      "roughness": 0.95,
+      "metalness": 0,
+      "notes": "Som spisestolene.",
+      "physical": {
+        "sheen": 0.3,
+        "sheenColor": "#ffffff",
+        "sheenRoughness": 0.8
+      }
+    },
+    {
+      "id": "boucle-sand",
+      "name": "Bouclé sand",
+      "group": "Tekstil",
+      "hex": "#cbbba2",
+      "roughness": 0.95,
+      "metalness": 0,
+      "notes": "Varm sandbeige.",
+      "physical": {
+        "sheen": 0.3,
+        "sheenColor": "#fff6e8",
+        "sheenRoughness": 0.8
+      }
+    },
+    {
+      "id": "boucle-gra",
+      "name": "Bouclé lys grå",
+      "group": "Tekstil",
+      "hex": "#b3aea6",
+      "roughness": 0.95,
+      "metalness": 0,
+      "notes": "Som de runde lenestolene i sittestua.",
+      "physical": {
+        "sheen": 0.3,
+        "sheenColor": "#ffffff",
+        "sheenRoughness": 0.8
+      }
+    },
+    {
+      "id": "vevd-gra-melange",
+      "name": "Vevd grå melange (som hjørnesofaen)",
+      "group": "Tekstil",
+      "hex": "#7b7a77",
+      "roughness": 0.92,
+      "metalness": 0,
+      "notes": "Grå hjørnesofa i TV-stua.",
+      "physical": {
+        "sheen": 0.2,
+        "sheenColor": "#cfcfcf",
+        "sheenRoughness": 0.9
+      }
+    },
+    {
+      "id": "flovel-salvie",
+      "name": "Fløyel salvie",
+      "group": "Tekstil",
+      "hex": "#8e9a7e",
+      "roughness": 0.6,
+      "metalness": 0,
+      "notes": "Fløyel – bruk sheen. Forslag C (gardinvegg).",
+      "physical": {
+        "sheen": 0.8,
+        "sheenColor": "#c9d4b8",
+        "sheenRoughness": 0.35
+      }
+    },
+    {
+      "id": "flovel-rust",
+      "name": "Fløyel rust",
+      "group": "Tekstil",
+      "hex": "#9a4f2f",
+      "roughness": 0.6,
+      "metalness": 0,
+      "notes": "Varm rustoransje fløyel.",
+      "physical": {
+        "sheen": 0.8,
+        "sheenColor": "#d98a5c",
+        "sheenRoughness": 0.35
+      }
+    },
+    {
+      "id": "flovel-marine",
+      "name": "Fløyel marineblå",
+      "group": "Tekstil",
+      "hex": "#27334a",
+      "roughness": 0.6,
+      "metalness": 0,
+      "notes": "Dyp blå fløyel.",
+      "physical": {
+        "sheen": 0.8,
+        "sheenColor": "#5a6f96",
+        "sheenRoughness": 0.35
+      }
+    },
+    {
+      "id": "flovel-skogsgronn",
+      "name": "Fløyel skogsgrønn",
+      "group": "Tekstil",
+      "hex": "#2f4a3b",
+      "roughness": 0.6,
+      "metalness": 0,
+      "notes": "Dyp grønn fløyel.",
+      "physical": {
+        "sheen": 0.8,
+        "sheenColor": "#5f8a70",
+        "sheenRoughness": 0.35
+      }
+    },
+    {
+      "id": "flovel-kamel",
+      "name": "Fløyel kamel",
+      "group": "Tekstil",
+      "hex": "#b0855a",
+      "roughness": 0.6,
+      "metalness": 0,
+      "notes": "Gyllen kamel fløyel.",
+      "physical": {
+        "sheen": 0.8,
+        "sheenColor": "#e6c08f",
+        "sheenRoughness": 0.35
+      }
+    },
+    {
+      "id": "lin-natur",
+      "name": "Lin naturell",
+      "group": "Tekstil",
+      "hex": "#d4c8b2",
+      "roughness": 0.9,
+      "metalness": 0,
+      "notes": "Gardiner og puter."
+    },
+    {
+      "id": "lin-sand",
+      "name": "Lin sand",
+      "group": "Tekstil",
+      "hex": "#c2b197",
+      "roughness": 0.9,
+      "metalness": 0,
+      "notes": "Varm sand."
+    },
+    {
+      "id": "lin-gra",
+      "name": "Lin grå",
+      "group": "Tekstil",
+      "hex": "#9d9991",
+      "roughness": 0.9,
+      "metalness": 0,
+      "notes": "Varm grå."
+    },
+    {
+      "id": "filt-koksgra",
+      "name": "Ullfilt koksgrå",
+      "group": "Tekstil",
+      "hex": "#3c3d3f",
+      "roughness": 0.95,
+      "metalness": 0,
+      "notes": "Akustikkpaneler og filtsirkler (forslag A og S)."
+    },
+    {
+      "id": "filt-gra",
+      "name": "Ullfilt grå",
+      "group": "Tekstil",
+      "hex": "#8b8b89",
+      "roughness": 0.95,
+      "metalness": 0,
+      "notes": "Akustikkpaneler."
+    },
+    {
+      "id": "filt-oliven",
+      "name": "Ullfilt oliven",
+      "group": "Tekstil",
+      "hex": "#6b6a47",
+      "roughness": 0.95,
+      "metalness": 0,
+      "notes": "Akustikkpaneler i grønt."
+    },
+    {
+      "id": "skinn-konjakk",
+      "name": "Skinn konjakk",
+      "group": "Tekstil",
+      "hex": "#8b4e2b",
+      "roughness": 0.45,
+      "metalness": 0,
+      "notes": "Lenestol, puff.",
+      "physical": {
+        "clearcoat": 0.15,
+        "clearcoatRoughness": 0.6
+      }
+    },
+    {
+      "id": "skinn-svart",
+      "name": "Skinn svart",
+      "group": "Tekstil",
+      "hex": "#1e1c1b",
+      "roughness": 0.4,
+      "metalness": 0,
+      "notes": "Lenestol.",
+      "physical": {
+        "clearcoat": 0.2,
+        "clearcoatRoughness": 0.5
+      }
+    },
+    {
+      "id": "teddy-offwhite",
+      "name": "Teddy offwhite",
+      "group": "Tekstil",
+      "hex": "#ebe4d8",
+      "roughness": 1,
+      "metalness": 0,
+      "notes": "Lodden – puter, pledd og lenestol.",
+      "physical": {
+        "sheen": 0.5,
+        "sheenColor": "#ffffff",
+        "sheenRoughness": 0.9
+      }
+    },
+    {
+      "id": "stein-mork-benk",
+      "name": "Mørk marmorlook (som kjøkkenbenken)",
+      "group": "Stein",
+      "hex": "#3a322d",
+      "roughness": 0.3,
+      "metalness": 0,
+      "notes": "Mørk brunsort med lyse grå årer – kjøkkenbenken og øya."
+    },
+    {
+      "id": "travertin",
+      "name": "Travertin",
+      "group": "Stein",
+      "hex": "#d6c7ad",
+      "roughness": 0.7,
+      "metalness": 0,
+      "notes": "Varm porøs kalkstein – sofabord og lampefot."
+    },
+    {
+      "id": "marmor-hvit",
+      "name": "Hvit marmor",
+      "group": "Stein",
+      "hex": "#ebe8e3",
+      "roughness": 0.25,
+      "metalness": 0,
+      "notes": "Carrara-aktig med grå årer."
+    },
+    {
+      "id": "keramikk-sand",
+      "name": "Matt keramikk sand",
+      "group": "Stein",
+      "hex": "#cdbfa8",
+      "roughness": 0.8,
+      "metalness": 0,
+      "notes": "Vaser og bordlampefot."
+    },
+    {
+      "id": "glass-opal",
+      "name": "Opalglass",
+      "group": "Glass",
+      "hex": "#f3f1ec",
+      "roughness": 0.35,
+      "metalness": 0,
+      "notes": "Lampekupler. Bruk emissive når lampen er på.",
+      "physical": {
+        "transmission": 0.25,
+        "thickness": 0.003,
+        "ior": 1.5,
+        "emissiveWhenOn": "#ffe2b8"
+      }
+    },
+    {
+      "id": "glass-royk",
+      "name": "Røykglass",
+      "group": "Glass",
+      "hex": "#4b4641",
+      "roughness": 0.05,
+      "metalness": 0,
+      "notes": "Lampeskjermer, sofabord.",
+      "physical": {
+        "transmission": 0.85,
+        "ior": 1.5,
+        "opacity": 0.6,
+        "transparent": true
+      }
+    },
+    {
+      "id": "glass-klart",
+      "name": "Klart glass",
+      "group": "Glass",
+      "hex": "#ffffff",
+      "roughness": 0.02,
+      "metalness": 0,
+      "notes": "Vindusglass, lampekupler.",
+      "physical": {
+        "transmission": 1,
+        "ior": 1.5,
+        "thickness": 0.004
+      }
+    },
+    {
+      "id": "rotting-natur",
+      "name": "Rotting naturell",
+      "group": "Naturfiber",
+      "hex": "#c29b63",
+      "roughness": 0.75,
+      "metalness": 0,
+      "notes": "Flettet – bruk alphaMap for åpen fletting."
+    },
+    {
+      "id": "rotting-mork",
+      "name": "Rotting mørkbeiset",
+      "group": "Naturfiber",
+      "hex": "#6e5236",
+      "roughness": 0.75,
+      "metalness": 0,
+      "notes": "Mørk flettet rotting."
+    },
+    {
+      "id": "papir-ris",
+      "name": "Rispapir (lampeskjerm)",
+      "group": "Naturfiber",
+      "hex": "#f1ead9",
+      "roughness": 0.9,
+      "metalness": 0,
+      "notes": "Lyser varmt gjennom når lampen er på.",
+      "physical": {
+        "transmission": 0.4,
+        "thickness": 0.001,
+        "emissiveWhenOn": "#ffd9a8"
+      }
+    },
+    {
+      "id": "papirsnor",
+      "name": "Flettet papirsnor",
+      "group": "Naturfiber",
+      "hex": "#d8c7a6",
+      "roughness": 0.85,
+      "metalness": 0,
+      "notes": "Stoler og kurver."
+    },
+    {
+      "id": "jute",
+      "name": "Jute / sisal",
+      "group": "Naturfiber",
+      "hex": "#b39a70",
+      "roughness": 0.95,
+      "metalness": 0,
+      "notes": "Tepper og kurver."
+    },
+    {
+      "id": "lakk-sort-matt",
+      "name": "Matt sort front (som kjøkkenet)",
+      "group": "Lakk",
+      "hex": "#1c1b1b",
+      "roughness": 0.7,
+      "metalness": 0,
+      "notes": "Kjøkkenfronter, dør og dørkarm."
+    },
+    {
+      "id": "lakk-hvit-matt",
+      "name": "Matt hvit lakk",
+      "group": "Lakk",
+      "hex": "#eeece6",
+      "roughness": 0.6,
+      "metalness": 0,
+      "notes": "Skjenk og hyller."
+    }
+  ]
+}

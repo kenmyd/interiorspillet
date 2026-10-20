@@ -1,0 +1,4000 @@
+{
+  "meta": {
+    "units": "m",
+    "axes": "Meter. Three.js-akser: +x = plan høyre (sør, mot de store vinduene), +z = plan ned (vest, mot TV-stua), +y = opp. Origo (0,0,0) = gulvnivå i det øverste venstre innerhjørnet av plantegningen (innsiden av nordre/venstre yttervegg og østre/øverste yttervegg). rotationDeg = three.js rotation.y i grader. Et objekts front peker mot lokal +z: 0 → front mot +z (vest/plan ned), 90 → mot +x (sør/vinduene), 180 → mot −z (øst/kjøkkenet), −90 → mot −x (nord).",
+    "planPxPerM": 51.3,
+    "planOriginPx": [
+      90.5,
+      51.5
+    ],
+    "planFile": "plantegning.png",
+    "version": 1,
+    "date": "2026-10-18",
+    "paints": {
+      "sand": {
+        "name": "SAND",
+        "code": "Jotun 1140",
+        "hex": "#cfc5b4"
+      },
+      "marrakesh": {
+        "name": "MARRAKESH",
+        "code": "Jotun 1623",
+        "hex": "#aea191"
+      }
+    },
+    "derived": {
+      "floorAreaM2": 53.8,
+      "volumeM3": 138.5,
+      "highWallAreaM2": 11.73,
+      "ceilingAt": "kjøkken og TV-stue 2,40 flatt; ellers y = 3,00 − 0,16216·(x − 3,22)"
+    },
+    "conventions": [
+      "Vegger: from→to går med klokka rundt det åpne rommet sett ovenfra; rommet ligger alltid til høyre (roomSide \"right\"), normal = innover. from/to er innvendig veggflate; tykkelsen legges utover.",
+      "Åpninger: offset = avstand langs veggen fra «from» til nærmeste kant av hullet i veggflaten (lysningens ytterkant). width/height/sill gjelder hullet. Vindusrammer står inne i hullet med reveal.depth fra veggflaten. For innvendige dører er hullet = ytterkant av den synlige karmen (frame.width tegnes innenfor hullet).",
+      "door.hinge \"from\"/\"to\" = hengslene står på den kanten av hullet som vender mot veggens from-/to-ende. door.swing \"in\" = slår inn i det åpne rommet, \"out\" = slår bort fra det (ut på terrassen / inn i nabo-rommet).",
+      "Møbler: position = [x, y, z] der x/z er midten av fotavtrykket og y er underkanten. For veggmonterte ting (mount \"wall\") er x/z midten av baksiden på veggflaten og y underkanten; «center» gir i tillegg vertikal midte (slik models/-kontrakten bruker). dims.w går langs lokal x, dims.d langs lokal z (fronten).",
+      "Fotokameraer: lookAt = pos + 2 m langs blikkretningen; yawDeg følger rotationDeg-konvensjonen (0 = ser mot +z), så three.js camera.rotation.y = yawDeg + 180. vfovDeg er for hele bildehøyden (montasjen: fotodelen 952 px).",
+      "Kjøkken: position = midten av boksen. topProfile på vegger = [[u, høyde], …] langs veggen fra «from».",
+      "Farger \"sand\"/\"marrakesh\" slås opp i paletten. Hex-verdier for møbler er hvitbalanserte anslag – bildene er undereksponert morgenlys + 2700 K LED."
+    ],
+    "notes": [
+      "Planens skala er 51,3 px/m (ikke 50,5): 6,92 m innvendig bredde = 355 px, 7,22 m utvendig = 371 px. Alle seks gruppene (unntatt 6) og ny skanning av planen er enige.",
+      "Planens møbler er feil (rundt bord, rett sofa, TV-benk osv.); alle møbler her er fra bildene.",
+      "Yttervegger er tegnet 0,16 m i planen, men lysningene er ca. 0,20 m dype, så yttervegger er modellert 0,30 m (innvendige flater er uendret).",
+      "Vindusplassering langs sørveggen er kontrollert med projektive tilpasninger på 082806 og 082914 (knekkhjørnet lest på nytt i 082914). Pilarene dør–V1 og V1–V2 er ca. 0,21 m og endepilaren ca. 0,46 m, så vinduene er ca. 2,36 m brede (ikke 2,39–2,40 som i planen) og terrassedøra ca. 0,88 m. Kjøkkenets kvadratiske vindu er ca. 1,12 m bredt (z 3,66–4,78), kontrollert med 082916 og 082901. Alt bør måles med båndmål."
+    ]
+  },
+  "zones": [
+    {
+      "id": "kjokken",
+      "name": "Kjøkken",
+      "polygon": [
+        [
+          2.63,
+          0
+        ],
+        [
+          6.32,
+          0
+        ],
+        [
+          6.32,
+          3.32
+        ],
+        [
+          3.22,
+          3.32
+        ],
+        [
+          3.22,
+          2.22
+        ],
+        [
+          2.63,
+          2.22
+        ]
+      ]
+    },
+    {
+      "id": "spisestue",
+      "name": "Spisestue",
+      "polygon": [
+        [
+          3.22,
+          3.32
+        ],
+        [
+          6.32,
+          3.32
+        ],
+        [
+          6.32,
+          5.38
+        ],
+        [
+          6.92,
+          5.38
+        ],
+        [
+          6.92,
+          8.34
+        ],
+        [
+          3.22,
+          8.34
+        ]
+      ]
+    },
+    {
+      "id": "stue",
+      "name": "Stue",
+      "polygon": [
+        [
+          3.22,
+          8.34
+        ],
+        [
+          6.92,
+          8.34
+        ],
+        [
+          6.92,
+          11.93
+        ],
+        [
+          3.22,
+          11.93
+        ]
+      ]
+    },
+    {
+      "id": "tvstue",
+      "name": "TV-stue",
+      "polygon": [
+        [
+          0,
+          8.34
+        ],
+        [
+          3.22,
+          8.34
+        ],
+        [
+          3.22,
+          11.93
+        ],
+        [
+          0,
+          11.93
+        ]
+      ]
+    }
+  ],
+  "floor": {
+    "polygon": [
+      [
+        2.63,
+        0
+      ],
+      [
+        6.32,
+        0
+      ],
+      [
+        6.32,
+        5.38
+      ],
+      [
+        6.92,
+        5.38
+      ],
+      [
+        6.92,
+        11.93
+      ],
+      [
+        0,
+        11.93
+      ],
+      [
+        0,
+        8.34
+      ],
+      [
+        3.22,
+        8.34
+      ],
+      [
+        3.22,
+        2.22
+      ],
+      [
+        2.63,
+        2.22
+      ]
+    ],
+    "material": "oak-plank",
+    "color": "#a59b8f",
+    "grainContrast": 0.06,
+    "seamColor": "#8c8178",
+    "plankWidth": 0.22,
+    "plankLength": 2.2,
+    "direction": "z",
+    "stagger": "tilfeldig forskjøvne endeskjøter",
+    "finish": "matt, hvitpigmentert/gråvasket eik",
+    "notes": "Samme gulv gjennom kjøkken, spisestue, stue og TV-stue. Bordene går langs z (øst–vest), parallelt med vindusveggen."
+  },
+  "baseboard": {
+    "height": 0.07,
+    "thickness": 0.012,
+    "color": "#e9e6df",
+    "profile": "rett, firkantet med liten fas",
+    "notes": "Hvit på alle vegger, også Marrakesh-veggene."
+  },
+  "walls": [
+    {
+      "id": "w-kjokken-ost",
+      "name": "Kjøkkenvegg mot øst (benkeveggen)",
+      "from": [
+        2.63,
+        0
+      ],
+      "to": [
+        6.32,
+        0
+      ],
+      "length": 3.69,
+      "normal": [
+        0,
+        1
+      ],
+      "roomSide": "right",
+      "thickness": 0.3,
+      "paint": "sand",
+      "exterior": true,
+      "height": 2.4,
+      "notes": "Bak benkeraden. Glassoverskap og to stikkontakter på veggen. Ingen vinduer.",
+      "openings": []
+    },
+    {
+      "id": "w-kjokken-sor",
+      "name": "Kjøkkenvegg mot sør (vinduer)",
+      "from": [
+        6.32,
+        0
+      ],
+      "to": [
+        6.32,
+        5.38
+      ],
+      "length": 5.38,
+      "normal": [
+        -1,
+        0
+      ],
+      "roomSide": "right",
+      "thickness": 0.3,
+      "paint": "sand",
+      "exterior": true,
+      "topProfile": [
+        [
+          0,
+          2.4
+        ],
+        [
+          3.32,
+          2.4
+        ],
+        [
+          3.32,
+          2.497
+        ],
+        [
+          5.38,
+          2.497
+        ]
+      ],
+      "notes": "Toppen følger taket: flatt 2,40 over kjøkkenet (z < 3,32), deretter skråtaket (≈2,50 ved x 6,32). Kjøkkenøya står inntil veggen under det lange vinduet.",
+      "openings": [
+        {
+          "id": "win-k1",
+          "type": "window",
+          "name": "Kjøkkenvindu (langt)",
+          "offset": 0.62,
+          "width": 2.42,
+          "sill": 0.96,
+          "height": 1.16,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.07,
+            "depth": 0.07
+          },
+          "reveal": {
+            "depth": 0.2,
+            "color": "#e6e2da"
+          },
+          "sillBoard": {
+            "depth": 0.2,
+            "color": "#e6e2da",
+            "thickness": 0.025,
+            "overhang": 0.01
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": true,
+              "hinge": "top"
+            }
+          ],
+          "door": null,
+          "handle": {
+            "color": "#1a1a1a",
+            "position": "midt på bunnrammen"
+          },
+          "outsideView": "Terrassedekke med grå utemøbler (rotting-lenestol, lite hvitt bord) og et mørkt grått, stående kledd uthus/anneks 2–4 m unna; trær i høstfarger og terrasserekkverket mot vest.",
+          "confidence": "med"
+        },
+        {
+          "id": "win-k2",
+          "type": "window",
+          "name": "Kjøkkenvindu (kvadratisk)",
+          "offset": 3.66,
+          "width": 1.12,
+          "sill": 0.98,
+          "height": 1.14,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.1,
+            "depth": 0.07
+          },
+          "reveal": {
+            "depth": 0.2,
+            "color": "#e6e2da"
+          },
+          "sillBoard": {
+            "depth": 0.2,
+            "color": "#e6e2da",
+            "thickness": 0.025,
+            "overhang": 0.01
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": true,
+              "hinge": "top"
+            }
+          ],
+          "door": null,
+          "handle": {
+            "color": "#1a1a1a",
+            "position": "midt på bunnrammen"
+          },
+          "outsideView": "Terrasserekkverket like utenfor, elva og røde naust på motsatt side, skogkledd li.",
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "id": "w-knekk",
+      "name": "Knekkvegg ved terrassedøra",
+      "from": [
+        6.32,
+        5.38
+      ],
+      "to": [
+        6.92,
+        5.38
+      ],
+      "length": 0.6,
+      "normal": [
+        0,
+        1
+      ],
+      "roomSide": "right",
+      "thickness": 0.3,
+      "paint": "sand",
+      "exterior": true,
+      "topProfile": [
+        [
+          0,
+          2.497
+        ],
+        [
+          0.6,
+          2.4
+        ]
+      ],
+      "notes": "0,60 m bred vegg mot vest (+z). Stikkontakt nede ved ytterhjørnet.",
+      "openings": []
+    },
+    {
+      "id": "w-sor",
+      "name": "Vindusvegg mot sør (elva)",
+      "from": [
+        6.92,
+        5.38
+      ],
+      "to": [
+        6.92,
+        11.93
+      ],
+      "length": 6.55,
+      "normal": [
+        -1,
+        0
+      ],
+      "roomSide": "right",
+      "thickness": 0.3,
+      "paint": "sand",
+      "exterior": true,
+      "height": 2.4,
+      "notes": "Terrassedør + to store faste vinduer. Alle hoder på 2,10 (0,30 m veggbånd under taket, vasket av LED-lista). Stripe ved knekken ca. 0,07 m, pilarer: dør–V1 0,21 m, V1–V2 0,21 m, V2–hjørne 0,46 m (fra 082806 og 082914; vindusbredder ca. 2,36 m og dør ca. 0,88 m – bør måles).",
+      "openings": [
+        {
+          "id": "door-terrasse",
+          "type": "terrace-door",
+          "name": "Terrassedør",
+          "offset": 0.07,
+          "width": 0.88,
+          "sill": 0,
+          "height": 2.1,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.07,
+            "depth": 0.07
+          },
+          "reveal": {
+            "depth": 0.2,
+            "color": "#e6e2da"
+          },
+          "sillBoard": null,
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": true,
+              "hinge": "to"
+            }
+          ],
+          "door": {
+            "leafColor": "#25272b",
+            "hinge": "to",
+            "swing": "out",
+            "handle": "#1a1a1a",
+            "glazed": true,
+            "glassFrom": 0.25,
+            "glassTo": 1.95,
+            "handleHeight": 1.05,
+            "threshold": "#cdbfae"
+          },
+          "outsideView": "Terrassen i gulvnivå med mørkt grått dekke og rekkverk av liggende grå trespiler; bak: plen som faller mot elva, store eiker ved bredden, røde naust og hvite hus på motsatt side.",
+          "confidence": "med"
+        },
+        {
+          "id": "win-s1",
+          "type": "window",
+          "name": "Stort vindu ved spisebordet",
+          "offset": 1.16,
+          "width": 2.36,
+          "sill": 0.29,
+          "height": 1.81,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.07,
+            "depth": 0.07
+          },
+          "reveal": {
+            "depth": 0.2,
+            "color": "#e6e2da"
+          },
+          "sillBoard": {
+            "depth": 0.2,
+            "color": "#e6e2da",
+            "thickness": 0.025,
+            "overhang": 0.01
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": false
+            }
+          ],
+          "door": null,
+          "outsideView": "Terrassen og trappa ned mot vest i forgrunnen, plen, elva rett fram, rad med røde naust og vei på motsatt bredd, hvite hus i lia til høyre (sørvest).",
+          "confidence": "med"
+        },
+        {
+          "id": "win-s2",
+          "type": "window",
+          "name": "Stort vindu ved sofaen",
+          "offset": 3.73,
+          "width": 2.36,
+          "sill": 0.29,
+          "height": 1.81,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.07,
+            "depth": 0.07
+          },
+          "reveal": {
+            "depth": 0.2,
+            "color": "#e6e2da"
+          },
+          "sillBoard": {
+            "depth": 0.2,
+            "color": "#e6e2da",
+            "thickness": 0.025,
+            "overhang": 0.01
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": false
+            }
+          ],
+          "door": null,
+          "outsideView": "Stor mosegrodd granittstein med skiferheller rett utenfor, plen, en stor bred eik og bjørk/lønn i høstfarger, elva bak, hvite hus i lia. Hagen ligger ca. 2,5–3 m lavere enn stuegulvet.",
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "id": "w-vest-stue",
+      "name": "Vestvegg i stua (bak sofaen)",
+      "from": [
+        6.92,
+        11.93
+      ],
+      "to": [
+        3.22,
+        11.93
+      ],
+      "length": 3.7,
+      "normal": [
+        0,
+        -1
+      ],
+      "roomSide": "right",
+      "thickness": 0.3,
+      "paint": "marrakesh",
+      "exterior": true,
+      "topProfile": [
+        [
+          0,
+          2.4
+        ],
+        [
+          3.7,
+          3
+        ]
+      ],
+      "notes": "Samme farge som TV-veggen (ingen fargeskille ved x 3,22). Toppen stiger med skråtaket fra 2,40 til 3,00.",
+      "openings": []
+    },
+    {
+      "id": "w-vest-tv",
+      "name": "TV-vegg",
+      "from": [
+        3.22,
+        11.93
+      ],
+      "to": [
+        0,
+        11.93
+      ],
+      "length": 3.22,
+      "normal": [
+        0,
+        -1
+      ],
+      "roomSide": "right",
+      "thickness": 0.3,
+      "paint": "marrakesh",
+      "exterior": true,
+      "height": 2.4,
+      "notes": "Veggmontert 77″ TV med innfelte høyttalere, ingen TV-benk.",
+      "openings": []
+    },
+    {
+      "id": "w-nord-tv",
+      "name": "Nordvegg i TV-stua (overlysvindu)",
+      "from": [
+        0,
+        11.93
+      ],
+      "to": [
+        0,
+        8.34
+      ],
+      "length": 3.59,
+      "normal": [
+        1,
+        0
+      ],
+      "roomSide": "right",
+      "thickness": 0.3,
+      "paint": "marrakesh",
+      "exterior": true,
+      "height": 2.4,
+      "notes": "LED-list i taket langs veggen. Ser lysere ut på bildene fordi LED-lista vasker den.",
+      "openings": [
+        {
+          "id": "win-tv",
+          "type": "window",
+          "name": "Overlysvindu i TV-stua",
+          "offset": 0.96,
+          "width": 1.75,
+          "sill": 1.64,
+          "height": 0.48,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.07,
+            "depth": 0.07
+          },
+          "reveal": {
+            "depth": 0.2,
+            "color": "#e6e2da"
+          },
+          "sillBoard": {
+            "depth": 0.2,
+            "color": "#e6e2da",
+            "thickness": 0.025,
+            "overhang": 0.01
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": false
+            }
+          ],
+          "door": null,
+          "outsideView": "Lys grå-blå flatt tak/fasade på et nabobygg (næringsbygg) 10–20 m unna med nettinggjerde, en liten gran, bjørk/bøk med gule blader og en furukledd fjellknaus. Overskyet himmel.",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "id": "w-sov-tv",
+      "name": "Bakvegg i TV-stua (mot soverommet)",
+      "from": [
+        0,
+        8.34
+      ],
+      "to": [
+        3.22,
+        8.34
+      ],
+      "length": 3.22,
+      "normal": [
+        0,
+        1
+      ],
+      "roomSide": "right",
+      "thickness": 0.14,
+      "paint": "marrakesh",
+      "exterior": false,
+      "height": 2.4,
+      "notes": "Soverommet ligger bak. Vegghylle over sofaen, bryter og stikkontakt ved nisjehjørnet.",
+      "openings": []
+    },
+    {
+      "id": "w-hoy",
+      "name": "Den høye veggen",
+      "from": [
+        3.22,
+        8.34
+      ],
+      "to": [
+        3.22,
+        4.43
+      ],
+      "length": 3.91,
+      "normal": [
+        1,
+        0
+      ],
+      "roomSide": "right",
+      "thickness": 0.1,
+      "paint": "sand",
+      "exterior": false,
+      "height": 3,
+      "isHigh": true,
+      "notes": "Fra nisjehjørnet til ytterkant av den svarte dørkarmen: 3,91 × 3,00 m. Soverommet ligger bak.",
+      "openings": []
+    },
+    {
+      "id": "w-gang",
+      "name": "Vegg ved gangdøra",
+      "from": [
+        3.22,
+        4.43
+      ],
+      "to": [
+        3.22,
+        2.22
+      ],
+      "length": 2.21,
+      "normal": [
+        1,
+        0
+      ],
+      "roomSide": "right",
+      "thickness": 0.1,
+      "paint": "sand",
+      "exterior": false,
+      "topProfile": [
+        [
+          0,
+          3
+        ],
+        [
+          1.11,
+          3
+        ],
+        [
+          1.11,
+          2.4
+        ],
+        [
+          2.21,
+          2.4
+        ]
+      ],
+      "notes": "Døra fyller den første biten (offset 0). Varmepumpe over døra. Resten (1,14 m) er glatt vegg fram til høyskapene.",
+      "openings": [
+        {
+          "id": "door-gang",
+          "type": "door",
+          "name": "Dør til gang/entré",
+          "offset": 0,
+          "width": 1.07,
+          "sill": 0,
+          "height": 2.15,
+          "frame": {
+            "color": "#1d1e21",
+            "width": 0.07,
+            "depth": 0.02
+          },
+          "reveal": {
+            "depth": 0.1,
+            "color": "#1d1e21"
+          },
+          "sillBoard": null,
+          "sashes": [],
+          "door": {
+            "leafColor": "#1d1e21",
+            "hinge": "to",
+            "swing": "out",
+            "handle": "#1a1a1a",
+            "style": "glatt dørblad med ett innfelt felt (fresespor ca. 11 cm inn)",
+            "leaf": {
+              "w": 0.93,
+              "h": 2.08
+            },
+            "handleSide": "from",
+            "handleHeight": 1.08,
+            "handleType": "kun runde rosetter (ingen vrider montert)",
+            "threshold": "#cdbfae",
+            "closed": true
+          },
+          "outsideView": null,
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "id": "w-nisje-side",
+      "name": "Vegg bak høyskapene (side)",
+      "from": [
+        3.22,
+        2.22
+      ],
+      "to": [
+        2.63,
+        2.22
+      ],
+      "length": 0.59,
+      "normal": [
+        0,
+        -1
+      ],
+      "roomSide": "right",
+      "thickness": 0.1,
+      "paint": "sand",
+      "exterior": false,
+      "height": 2.4,
+      "hiddenBehindCabinets": true,
+      "openings": []
+    },
+    {
+      "id": "w-nisje-bak",
+      "name": "Vegg bak høyskapene (bak)",
+      "from": [
+        2.63,
+        2.22
+      ],
+      "to": [
+        2.63,
+        0
+      ],
+      "length": 2.22,
+      "normal": [
+        1,
+        0
+      ],
+      "roomSide": "right",
+      "thickness": 0.1,
+      "paint": "sand",
+      "exterior": false,
+      "height": 2.4,
+      "hiddenBehindCabinets": true,
+      "openings": []
+    }
+  ],
+  "ceilings": [
+    {
+      "id": "c-kjokken",
+      "name": "Kjøkkentak",
+      "polygon": [
+        [
+          2.63,
+          0
+        ],
+        [
+          6.32,
+          0
+        ],
+        [
+          6.32,
+          3.32
+        ],
+        [
+          3.22,
+          3.32
+        ],
+        [
+          3.22,
+          2.22
+        ],
+        [
+          2.63,
+          2.22
+        ]
+      ],
+      "paint": "sand",
+      "type": "flat",
+      "height": 2.4
+    },
+    {
+      "id": "c-stue",
+      "name": "Skråtak over spisestue og stue",
+      "polygon": [
+        [
+          3.22,
+          3.32
+        ],
+        [
+          6.32,
+          3.32
+        ],
+        [
+          6.32,
+          5.38
+        ],
+        [
+          6.92,
+          5.38
+        ],
+        [
+          6.92,
+          11.93
+        ],
+        [
+          3.22,
+          11.93
+        ]
+      ],
+      "paint": "sand",
+      "type": "slope",
+      "highLine": [
+        [
+          3.22,
+          3.32
+        ],
+        [
+          3.22,
+          11.93
+        ]
+      ],
+      "highHeight": 3,
+      "lowLine": [
+        [
+          6.92,
+          3.32
+        ],
+        [
+          6.92,
+          11.93
+        ]
+      ],
+      "lowHeight": 2.4,
+      "formula": "y = 3.00 − 0.16216·(x − 3.22)  (9,2°, faller mot sør; konstant langs z)"
+    },
+    {
+      "id": "c-tvstue",
+      "name": "TV-stuetak",
+      "polygon": [
+        [
+          0,
+          8.34
+        ],
+        [
+          3.22,
+          8.34
+        ],
+        [
+          3.22,
+          11.93
+        ],
+        [
+          0,
+          11.93
+        ]
+      ],
+      "paint": "marrakesh",
+      "type": "flat",
+      "height": 2.4
+    }
+  ],
+  "bulkheads": [
+    {
+      "id": "b-tvstue",
+      "name": "Nedforing over åpningen til TV-stua",
+      "from": [
+        3.22,
+        8.34
+      ],
+      "to": [
+        3.22,
+        11.93
+      ],
+      "bottom": 2.4,
+      "top": 3,
+      "depth": 0.1,
+      "faces": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "notes": "Loddrett flate i samme plan som den høye veggen, skarp underkant uten lys eller list. Gruppe 5 målte underkant 2,33 og tegning 08 sier 2,35 – brukerens 2,40 er lagt inn."
+    },
+    {
+      "id": "b-kjokken",
+      "name": "Nedforing mellom kjøkken og spisestue",
+      "from": [
+        3.22,
+        3.32
+      ],
+      "to": [
+        6.32,
+        3.32
+      ],
+      "bottom": 2.4,
+      "top": 3,
+      "topAtTo": 2.497,
+      "topFollows": "c-stue",
+      "depth": 0.1,
+      "faces": [
+        0,
+        1
+      ],
+      "paint": "sand",
+      "notes": "Smal trekant/trapes: 0,60 m høy ved den høye veggen, ca. 0,10 m ved kjøkkenets sørvegg. Ligger ca. 4 cm øst for gangdørkarmen; varmepumpa slutter inntil den."
+    }
+  ],
+  "builtInLights": [
+    {
+      "id": "led-sor",
+      "group": "led-lister",
+      "type": "led-strip",
+      "name": "LED-list over vinduene",
+      "from": [
+        6.89,
+        2.4,
+        5.38
+      ],
+      "to": [
+        6.89,
+        2.4,
+        11.93
+      ],
+      "dims": {
+        "w": 0.02
+      },
+      "color": "#d9d9d6",
+      "lightColorK": 2700,
+      "lumensPerM": 400,
+      "aim": "ned langs vindusveggen (veggvasker)",
+      "notes": "Innfelt alu-profil med opal diffusor tett inntil veggen, hele vindusveggen fra knekken til sørvesthjørnet. Fortsetter ikke på andre vegger."
+    },
+    {
+      "id": "led-tvstue",
+      "group": "led-lister",
+      "type": "led-strip",
+      "name": "LED-list i TV-stua",
+      "from": [
+        0.03,
+        2.4,
+        8.36
+      ],
+      "to": [
+        0.03,
+        2.4,
+        11.91
+      ],
+      "dims": {
+        "w": 0.02
+      },
+      "color": "#d9d9d6",
+      "lightColorK": 2700,
+      "lumensPerM": 400,
+      "aim": "ned langs nordveggen",
+      "notes": "Samme profil, langs nordveggen (overlysvinduet)."
+    },
+    {
+      "id": "led-kjokken",
+      "group": "kjokkenlys",
+      "type": "led-strip",
+      "name": "LED-list foran høyskapene",
+      "from": [
+        3.37,
+        2.4,
+        0.05
+      ],
+      "to": [
+        3.37,
+        2.4,
+        2.2
+      ],
+      "dims": {
+        "w": 0.02
+      },
+      "color": "#d9d9d6",
+      "lightColorK": 2700,
+      "lumensPerM": 400,
+      "aim": "ned langs høyskapfrontene"
+    },
+    {
+      "id": "led-overskap",
+      "group": "kjokkenlys",
+      "type": "led-strip",
+      "name": "Lys under glassoverskapet",
+      "from": [
+        4.12,
+        1.46,
+        0.3
+      ],
+      "to": [
+        6.08,
+        1.46,
+        0.3
+      ],
+      "dims": {
+        "w": 0.01
+      },
+      "color": "#d9d9d6",
+      "lightColorK": 2700,
+      "lumensPerM": 300,
+      "aim": "ned på benkeplata og bakveggen",
+      "notes": "I tillegg varmt lys inne i glasskapet."
+    },
+    {
+      "id": "spot-hoyvegg-1",
+      "group": "spotter-hoyvegg",
+      "type": "spot",
+      "name": "Spot ved den høye veggen 1",
+      "position": [
+        3.6,
+        2.938,
+        7.58
+      ],
+      "dims": {
+        "d": 0.06,
+        "l": 0.13
+      },
+      "color": "#151515",
+      "lightColorK": 2700,
+      "lumens": 400,
+      "beamDeg": 36,
+      "aimAt": [
+        3.22,
+        2.25,
+        7.58
+      ],
+      "notes": "Sort justerbar påbygd sylinderspot på skråtaket, vinklet ca. 30° mot veggen. Lager en lyskjegle på veggen fra ca. 2,9 ned til ca. 1,6 m."
+    },
+    {
+      "id": "spot-hoyvegg-2",
+      "group": "spotter-hoyvegg",
+      "type": "spot",
+      "name": "Spot ved den høye veggen 2",
+      "position": [
+        3.6,
+        2.938,
+        6.72
+      ],
+      "dims": {
+        "d": 0.06,
+        "l": 0.13
+      },
+      "color": "#151515",
+      "lightColorK": 2700,
+      "lumens": 400,
+      "beamDeg": 36,
+      "aimAt": [
+        3.22,
+        2.25,
+        6.72
+      ],
+      "notes": "Sort justerbar påbygd sylinderspot på skråtaket, vinklet ca. 30° mot veggen. Lager en lyskjegle på veggen fra ca. 2,9 ned til ca. 1,6 m."
+    },
+    {
+      "id": "spot-hoyvegg-3",
+      "group": "spotter-hoyvegg",
+      "type": "spot",
+      "name": "Spot ved den høye veggen 3",
+      "position": [
+        3.6,
+        2.938,
+        5.86
+      ],
+      "dims": {
+        "d": 0.06,
+        "l": 0.13
+      },
+      "color": "#151515",
+      "lightColorK": 2700,
+      "lumens": 400,
+      "beamDeg": 36,
+      "aimAt": [
+        3.22,
+        2.25,
+        5.86
+      ],
+      "notes": "Sort justerbar påbygd sylinderspot på skråtaket, vinklet ca. 30° mot veggen. Lager en lyskjegle på veggen fra ca. 2,9 ned til ca. 1,6 m."
+    },
+    {
+      "id": "spot-hoyvegg-4",
+      "group": "spotter-hoyvegg",
+      "type": "spot",
+      "name": "Spot ved den høye veggen 4",
+      "position": [
+        3.6,
+        2.938,
+        5
+      ],
+      "dims": {
+        "d": 0.06,
+        "l": 0.13
+      },
+      "color": "#151515",
+      "lightColorK": 2700,
+      "lumens": 400,
+      "beamDeg": 36,
+      "aimAt": [
+        3.22,
+        2.25,
+        5
+      ],
+      "notes": "Sort justerbar påbygd sylinderspot på skråtaket, vinklet ca. 30° mot veggen. Lager en lyskjegle på veggen fra ca. 2,9 ned til ca. 1,6 m."
+    },
+    {
+      "id": "tak-tvstue",
+      "group": "taklampe-tvstue",
+      "type": "ceiling-ring",
+      "name": "Taklampe i TV-stua (tre ringer)",
+      "position": [
+        1.62,
+        2.4,
+        10.12
+      ],
+      "dims": {
+        "w": 0.85,
+        "d": 0.55,
+        "drop": 0.1,
+        "rings": [
+          0.45,
+          0.4,
+          0.3
+        ]
+      },
+      "color": "#151515",
+      "accent": "#c8a46a",
+      "lightColorK": 2700,
+      "lumens": 3000,
+      "notes": "Tre overlappende ringer, svart ytterkant, varm LED på innsiden/undersiden, gull/krom nav. Underkant ca. 2,30."
+    },
+    {
+      "id": "skinne-kjokken",
+      "group": "kjokkenlys",
+      "type": "track",
+      "name": "Takskinne over kjøkkenøya",
+      "from": [
+        4.68,
+        2.4,
+        2.5
+      ],
+      "to": [
+        6.05,
+        2.4,
+        2.5
+      ],
+      "dims": {
+        "w": 0.035,
+        "h": 0.035
+      },
+      "color": "#151515",
+      "lightColorK": 2700,
+      "notes": "Sort påbygd skinne på det flate kjøkkentaket."
+    },
+    {
+      "id": "pendel-oy-1",
+      "group": "kjokkenlys",
+      "type": "pendant-cylinder",
+      "name": "Pendel over kjøkkenøya 1",
+      "position": [
+        4.85,
+        2.4,
+        2.5
+      ],
+      "dims": {
+        "d": 0.07,
+        "l": 0.3,
+        "bottomY": 1.7
+      },
+      "color": "#151515",
+      "lightColorK": 2700,
+      "lumens": 400,
+      "notes": "Slank sort sylinder på sort ledning fra takskinna, nedlys. Ca. 0,8 m over benkeplata."
+    },
+    {
+      "id": "pendel-oy-2",
+      "group": "kjokkenlys",
+      "type": "pendant-cylinder",
+      "name": "Pendel over kjøkkenøya 2",
+      "position": [
+        5.38,
+        2.4,
+        2.5
+      ],
+      "dims": {
+        "d": 0.07,
+        "l": 0.3,
+        "bottomY": 1.7
+      },
+      "color": "#151515",
+      "lightColorK": 2700,
+      "lumens": 400,
+      "notes": "Slank sort sylinder på sort ledning fra takskinna, nedlys. Ca. 0,8 m over benkeplata."
+    },
+    {
+      "id": "pendel-oy-3",
+      "group": "kjokkenlys",
+      "type": "pendant-cylinder",
+      "name": "Pendel over kjøkkenøya 3",
+      "position": [
+        5.92,
+        2.4,
+        2.5
+      ],
+      "dims": {
+        "d": 0.07,
+        "l": 0.3,
+        "bottomY": 1.7
+      },
+      "color": "#151515",
+      "lightColorK": 2700,
+      "lumens": 400,
+      "notes": "Slank sort sylinder på sort ledning fra takskinna, nedlys. Ca. 0,8 m over benkeplata."
+    },
+    {
+      "id": "ring-kjokken-1",
+      "group": "kjokkenlys",
+      "type": "ceiling-ring",
+      "name": "Ringlampe i kjøkkenet 1",
+      "position": [
+        4.02,
+        2.4,
+        1.68
+      ],
+      "dims": {
+        "w": 0.4,
+        "drop": 0.15,
+        "arm": "skrå arm fra liten takkopp"
+      },
+      "color": "#2a2622",
+      "lightColorK": 2700,
+      "lumens": 2000,
+      "notes": "Vannrett LED-ring Ø 0,40 på bøyd arm, lyser nedover."
+    },
+    {
+      "id": "ring-kjokken-2",
+      "group": "kjokkenlys",
+      "type": "ceiling-ring",
+      "name": "Ringlampe i kjøkkenet 2",
+      "position": [
+        5.53,
+        2.4,
+        1.3
+      ],
+      "dims": {
+        "w": 0.4,
+        "drop": 0.15,
+        "arm": "skrå arm fra liten takkopp"
+      },
+      "color": "#2a2622",
+      "lightColorK": 2700,
+      "lumens": 2000
+    }
+  ],
+  "kitchen": {
+    "notes": "Mørkt grå trestruktur (grafitt-eik) på høyskapene, matt antrasitt grepsløse fronter i benk og øy, mørk steinlook-benkeplate med lyse årer. Svarte slanke stanghåndtak (0,25 m) på høyskapene. Høyskapene står i en nisje x 2,63–3,28, z 0–2,22; LED-lista går rett foran dem i taket.",
+    "items": [
+      {
+        "id": "k-hoyskap-kjol",
+        "type": "tall-cabinet",
+        "name": "Høyskap – integrert kjøl/frys",
+        "position": [
+          2.955,
+          1.19,
+          1.87
+        ],
+        "dims": {
+          "w": 0.6,
+          "d": 0.65,
+          "h": 2.38
+        },
+        "rotationDeg": 90,
+        "color": "#55575a",
+        "material": "graphite-oak",
+        "notes": "Øvre dør 0,77–2,38, nedre 0,07–0,77, håndtak ved delingen. Sort ventilasjonsrist øverst og i sokkelen.",
+        "fronts": [
+          [
+            0.07,
+            0.77
+          ],
+          [
+            0.77,
+            2.38
+          ]
+        ]
+      },
+      {
+        "id": "k-hoyskap-ovn",
+        "type": "tall-cabinet",
+        "name": "Høyskap – ovner og kaffemaskin",
+        "position": [
+          2.955,
+          1.19,
+          1.27
+        ],
+        "dims": {
+          "w": 0.6,
+          "d": 0.65,
+          "h": 2.38
+        },
+        "rotationDeg": 90,
+        "color": "#55575a",
+        "material": "graphite-oak",
+        "notes": "Ovner i sort glass (Siemens-stil).",
+        "fronts": [
+          [
+            0.07,
+            0.29,
+            "skuff"
+          ],
+          [
+            0.29,
+            0.91,
+            "stekeovn"
+          ],
+          [
+            0.91,
+            1.39,
+            "innebygd kaffemaskin"
+          ],
+          [
+            1.39,
+            1.83,
+            "kompakt kombiovn/mikro"
+          ],
+          [
+            1.83,
+            2.38,
+            "dør"
+          ]
+        ],
+        "appliances": {
+          "color": "#0e0e10",
+          "material": "glass-smoked"
+        }
+      },
+      {
+        "id": "k-hoyskap-smalt",
+        "type": "tall-cabinet",
+        "name": "Høyskap – smalt",
+        "position": [
+          2.955,
+          1.19,
+          0.81
+        ],
+        "dims": {
+          "w": 0.32,
+          "d": 0.65,
+          "h": 2.38
+        },
+        "rotationDeg": 90,
+        "color": "#55575a",
+        "material": "graphite-oak",
+        "fronts": [
+          [
+            0.07,
+            0.77
+          ],
+          [
+            0.77,
+            2.38
+          ]
+        ]
+      },
+      {
+        "id": "k-hjorneskap",
+        "type": "tall-cabinet",
+        "name": "Hjørneskap med rullejalusi",
+        "position": [
+          2.955,
+          1.19,
+          0.325
+        ],
+        "dims": {
+          "w": 0.65,
+          "d": 0.65,
+          "h": 2.38
+        },
+        "rotationDeg": 90,
+        "color": "#55575a",
+        "material": "graphite-oak",
+        "notes": "Benkehøyt underskap (0–0,91), åpen «garasje» med sort rullejalusi over benkeplata (0,91–1,86), overskapsdør 1,86–2,38. Benkeplata går inn i den.",
+        "fronts": [
+          [
+            0.13,
+            0.87,
+            "underskap"
+          ],
+          [
+            0.91,
+            1.86,
+            "rullejalusi #1a1a1a"
+          ],
+          [
+            1.86,
+            2.38,
+            "dør"
+          ]
+        ]
+      },
+      {
+        "id": "k-endepanel",
+        "type": "tall-cabinet",
+        "name": "Endepanel høyskap",
+        "position": [
+          2.955,
+          1.19,
+          2.195
+        ],
+        "dims": {
+          "w": 0.05,
+          "d": 0.65,
+          "h": 2.38
+        },
+        "rotationDeg": 90,
+        "color": "#55575a",
+        "material": "graphite-oak"
+      },
+      {
+        "id": "k-benk",
+        "type": "base-cabinet",
+        "name": "Benkerad langs østveggen",
+        "position": [
+          4.8,
+          0.445,
+          0.31
+        ],
+        "dims": {
+          "w": 3.04,
+          "d": 0.62,
+          "h": 0.89
+        },
+        "rotationDeg": 0,
+        "color": "#2a2b2d",
+        "material": "painted",
+        "notes": "Grepsløse fronter med grepslist ved 0,51; sokkel 0–0,13 (sort, 8 cm inntrukket). Enheter (x): 3,28–3,90 dører, 3,90–4,50 skuffer, 4,50–5,10 skuffer, 5,10–5,70 vask, 5,70–6,30 integrert oppvaskmaskin, endepanel 6,30–6,32.",
+        "units": [
+          [
+            3.28,
+            3.9,
+            "dører"
+          ],
+          [
+            3.9,
+            4.5,
+            "skuffer"
+          ],
+          [
+            4.5,
+            5.1,
+            "skuffer"
+          ],
+          [
+            5.1,
+            5.7,
+            "vaskeskap"
+          ],
+          [
+            5.7,
+            6.3,
+            "oppvaskmaskin"
+          ]
+        ]
+      },
+      {
+        "id": "k-oppvask",
+        "type": "dishwasher",
+        "name": "Oppvaskmaskin (integrert)",
+        "position": [
+          6,
+          0.45,
+          0.31
+        ],
+        "dims": {
+          "w": 0.6,
+          "d": 0.6,
+          "h": 0.82
+        },
+        "rotationDeg": 0,
+        "color": "#2a2b2d",
+        "material": "painted",
+        "notes": "Front lik skapfrontene."
+      },
+      {
+        "id": "k-benkeplate",
+        "type": "worktop",
+        "name": "Benkeplate langs østveggen",
+        "position": [
+          4.475,
+          0.9,
+          0.315
+        ],
+        "dims": {
+          "w": 3.69,
+          "d": 0.63,
+          "h": 0.02
+        },
+        "rotationDeg": 0,
+        "color": "#3b3633",
+        "veins": "#b5b0aa",
+        "material": "marble-dark"
+      },
+      {
+        "id": "k-vask",
+        "type": "sink",
+        "name": "Kjøkkenvask",
+        "position": [
+          5.4,
+          0.91,
+          0.32
+        ],
+        "dims": {
+          "w": 0.5,
+          "d": 0.4,
+          "h": 0.2
+        },
+        "rotationDeg": 0,
+        "color": "#1c1c1c",
+        "material": "black-composite",
+        "tap": {
+          "position": [
+            5.4,
+            0.91,
+            0.08
+          ],
+          "h": 0.35,
+          "color": "#151515",
+          "style": "høy J-tut, ettgreps"
+        }
+      },
+      {
+        "id": "k-overskap",
+        "type": "wall-cabinet-glass",
+        "name": "Glassoverskap",
+        "position": [
+          5.1,
+          1.685,
+          0.175
+        ],
+        "dims": {
+          "w": 2,
+          "d": 0.35,
+          "h": 0.43
+        },
+        "rotationDeg": 0,
+        "color": "#1c1c1c",
+        "glass": "#3a3632",
+        "material": "glass-smoked",
+        "doors": 3,
+        "notes": "Sorte alu-rammer med røykfarget glass, lys inni (vinglass, boller). Bunn 1,47, topp 1,90."
+      },
+      {
+        "id": "k-oy",
+        "type": "island",
+        "name": "Kjøkkenøy",
+        "position": [
+          5.35,
+          0.455,
+          2.46
+        ],
+        "dims": {
+          "w": 1.94,
+          "d": 1.12,
+          "h": 0.91
+        },
+        "rotationDeg": 180,
+        "color": "#2a2b2d",
+        "material": "painted",
+        "top": {
+          "color": "#3b3633",
+          "veins": "#b5b0aa",
+          "material": "marble-dark",
+          "thickness": 0.02
+        },
+        "extent": {
+          "x": [
+            4.38,
+            6.32
+          ],
+          "z": [
+            1.9,
+            3.02
+          ]
+        },
+        "notes": "Front (kokesiden med skuffer) mot øst (−z). Fossefall av benkeplata ned til gulvet i nordenden (x 4,38). Sørenden står inntil veggen under det lange vinduet. 0,30 m overheng med 3 barkrakker på vestsiden (+z).",
+        "overhang": {
+          "side": "+z",
+          "depth": 0.3
+        },
+        "waterfall": "x-min"
+      },
+      {
+        "id": "k-platetopp",
+        "type": "hob",
+        "name": "Induksjonstopp med innebygd ventilator",
+        "position": [
+          5.35,
+          0.91,
+          2.245
+        ],
+        "dims": {
+          "w": 0.816,
+          "d": 0.527,
+          "h": 0.01
+        },
+        "rotationDeg": 180,
+        "color": "#0e0e10",
+        "material": "glass-smoked",
+        "notes": "Siemens-type med avtrekk i midten. Ingen kjøkkenvifte i taket."
+      }
+    ]
+  },
+  "furniture": [
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-hjornesofa",
+      "name": "Hjørnesofa",
+      "kind": "sofa-modular-l",
+      "archetype": "sofa-modular-l",
+      "position": [
+        1.475,
+        0,
+        9.39
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 2.95,
+        "d": 2.06,
+        "h": 0.85
+      },
+      "params": {
+        "seatH": 0.45,
+        "backH": 0.85,
+        "backT": 0.25,
+        "depth": 0.92,
+        "armW": 0.27,
+        "armH": 0.63,
+        "armSide": "+x",
+        "shortLegSide": "-x",
+        "shortLegLength": 2.06,
+        "shortLegBackTo": 1.48,
+        "shortLegOpenEnd": true,
+        "base": "plint (ingen synlige ben)",
+        "piping": true,
+        "modules": [
+          "hjørne 0,92",
+          "sete 0,81",
+          "sete 0,93",
+          "armlene 0,27",
+          "sjeselong 0,92 × 1,14"
+        ],
+        "world": {
+          "longSide": {
+            "x": [
+              0,
+              2.95
+            ],
+            "z": [
+              8.36,
+              9.28
+            ]
+          },
+          "shortLeg": {
+            "x": [
+              0,
+              0.92
+            ],
+            "z": [
+              8.36,
+              10.42
+            ]
+          }
+        }
+      },
+      "colors": {
+        "main": "#707173",
+        "piping": "#55514c"
+      },
+      "materials": {
+        "main": "woven"
+      },
+      "notes": "Grå vevd melange med kontrastkant. Langsiden langs soveromsveggen, kortsiden langs nordveggen; ryggputene på kortsiden slutter ved z 9,84, siste del er åpen (ingen armlene). Planen viser feil form."
+    },
+    {
+      "confidence": "med",
+      "mount": "soft",
+      "id": "f-pute-1",
+      "name": "Pute (strikk, mørk)",
+      "kind": "cushion",
+      "archetype": "cushion",
+      "position": [
+        0.47,
+        0.45,
+        8.83
+      ],
+      "rotationDeg": 45,
+      "dims": {
+        "w": 0.45,
+        "d": 0.15,
+        "h": 0.45
+      },
+      "params": {
+        "lean": 70,
+        "style": "grov strikk"
+      },
+      "colors": {
+        "main": "#4a403c"
+      },
+      "materials": {
+        "main": "knit"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "soft",
+      "id": "f-pute-2",
+      "name": "Pute (bobler, krem)",
+      "kind": "cushion",
+      "archetype": "cushion",
+      "position": [
+        0.84,
+        0.45,
+        8.76
+      ],
+      "rotationDeg": 10,
+      "dims": {
+        "w": 0.45,
+        "d": 0.15,
+        "h": 0.45
+      },
+      "params": {
+        "lean": 70,
+        "style": "popcorn/bobler"
+      },
+      "colors": {
+        "main": "#e4ddd3"
+      },
+      "materials": {
+        "main": "teddy"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "soft",
+      "id": "f-pute-3",
+      "name": "Pute (strikk, mørk)",
+      "kind": "cushion",
+      "archetype": "cushion",
+      "position": [
+        2.35,
+        0.45,
+        8.72
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.5,
+        "d": 0.15,
+        "h": 0.5
+      },
+      "params": {
+        "lean": 70,
+        "style": "grov strikk"
+      },
+      "colors": {
+        "main": "#4a403c"
+      },
+      "materials": {
+        "main": "knit"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "soft",
+      "id": "f-pute-4",
+      "name": "Pute (bobler, krem)",
+      "kind": "cushion",
+      "archetype": "cushion",
+      "position": [
+        2.45,
+        0.45,
+        8.82
+      ],
+      "rotationDeg": -30,
+      "dims": {
+        "w": 0.45,
+        "d": 0.15,
+        "h": 0.45
+      },
+      "params": {
+        "lean": 60,
+        "style": "popcorn/bobler"
+      },
+      "colors": {
+        "main": "#e4ddd3"
+      },
+      "materials": {
+        "main": "teddy"
+      },
+      "notes": "Lener mot armlenet."
+    },
+    {
+      "confidence": "med",
+      "mount": "soft",
+      "id": "f-pledd-tv",
+      "name": "Pledd (vaffelstrikk)",
+      "kind": "throw",
+      "archetype": "throw",
+      "position": [
+        0.45,
+        0.45,
+        10.12
+      ],
+      "rotationDeg": 90,
+      "dims": {
+        "w": 0.55,
+        "d": 0.45,
+        "h": 0.06
+      },
+      "params": {
+        "folded": true
+      },
+      "colors": {
+        "main": "#e0d6c8"
+      },
+      "materials": {
+        "main": "knit"
+      },
+      "notes": "Brettet på den åpne enden av sjeselongen."
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-sofabord-tv",
+      "name": "Sofabord (TV-stue)",
+      "kind": "coffee-table-rect",
+      "archetype": "coffee-table-rect",
+      "position": [
+        1.85,
+        0,
+        9.8
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 1.2,
+        "d": 0.6,
+        "h": 0.43
+      },
+      "params": {
+        "topT": 0.03,
+        "frame": "kasseramme av 2×2 cm firkantrør med bunnrektangel på gulvet"
+      },
+      "colors": {
+        "top": "#4a4746",
+        "frame": "#1b1b1b"
+      },
+      "materials": {
+        "top": "travertine",
+        "frame": "black-metal"
+      },
+      "notes": "Antrasitt betong-/keramikkpreget plate. På bordet: to klare glasskuler for telys og tre små lys i glass (rav, salvie, krem)."
+    },
+    {
+      "confidence": "med",
+      "mount": "rug",
+      "id": "f-teppe-tv",
+      "name": "Teppe (TV-stue)",
+      "kind": "rug",
+      "archetype": "rug",
+      "position": [
+        1.92,
+        0,
+        9.88
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 2.3,
+        "d": 1.6,
+        "h": 0.015
+      },
+      "params": {
+        "pattern": "geometrisk: store koksgrå halvmåner/linser, overlappende grå rektangler, to bånd med fine sort/hvite striper",
+        "pile": "lav–middels luv",
+        "edge": "smal hvit kant"
+      },
+      "colors": {
+        "main": "#c4c2bf",
+        "accent1": "#2e2f33",
+        "accent2": "#8f8d8b",
+        "accent3": "#d6d3ce"
+      },
+      "materials": {
+        "main": "wool"
+      },
+      "notes": "Ligger under sofaens langside og sjeselong."
+    },
+    {
+      "confidence": "high",
+      "mount": "wall",
+      "id": "f-tv",
+      "name": "TV (77″)",
+      "kind": "tv",
+      "archetype": "tv",
+      "wallId": "w-vest-tv",
+      "position": [
+        1.7,
+        0.56,
+        11.93
+      ],
+      "center": [
+        1.7,
+        1.055,
+        11.93
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 1.72,
+        "d": 0.05,
+        "h": 0.99
+      },
+      "colors": {
+        "main": "#100e0f"
+      },
+      "materials": {
+        "main": "glass-smoked"
+      },
+      "notes": "Veggmontert, ingen TV-benk under."
+    },
+    {
+      "confidence": "med",
+      "mount": "wall",
+      "id": "f-hoyttaler-v",
+      "name": "Innfelt høyttaler (venstre)",
+      "kind": "speaker",
+      "archetype": "speaker",
+      "wallId": "w-vest-tv",
+      "position": [
+        2.72,
+        0.86,
+        11.93
+      ],
+      "center": [
+        2.72,
+        1.06,
+        11.93
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 0.2,
+        "d": 0.01,
+        "h": 0.4
+      },
+      "params": {
+        "inWall": true
+      },
+      "colors": {
+        "main": "#d6d6d4"
+      },
+      "materials": {
+        "main": "painted"
+      },
+      "notes": "Venstre sett fra sofaen mot TV-en (stuesiden, +x)."
+    },
+    {
+      "confidence": "med",
+      "mount": "wall",
+      "id": "f-hoyttaler-h",
+      "name": "Innfelt høyttaler (høyre)",
+      "kind": "speaker",
+      "archetype": "speaker",
+      "wallId": "w-vest-tv",
+      "position": [
+        0.68,
+        0.86,
+        11.93
+      ],
+      "center": [
+        0.68,
+        1.06,
+        11.93
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 0.2,
+        "d": 0.01,
+        "h": 0.4
+      },
+      "params": {
+        "inWall": true
+      },
+      "colors": {
+        "main": "#d6d6d4"
+      },
+      "materials": {
+        "main": "painted"
+      },
+      "notes": "Høyre sett fra sofaen mot TV-en (mot nordveggen, −x)."
+    },
+    {
+      "confidence": "low",
+      "mount": "wall",
+      "id": "f-hoyttaler-s",
+      "name": "Innfelt senterhøyttaler",
+      "kind": "speaker",
+      "archetype": "speaker",
+      "wallId": "w-vest-tv",
+      "position": [
+        1.7,
+        0.315,
+        11.93
+      ],
+      "center": [
+        1.7,
+        0.38,
+        11.93
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 0.4,
+        "d": 0.01,
+        "h": 0.13
+      },
+      "params": {
+        "inWall": true
+      },
+      "colors": {
+        "main": "#d6d6d4"
+      },
+      "materials": {
+        "main": "painted"
+      },
+      "notes": "Kan også være en flat medieplate nær gulvet (gruppe 6)."
+    },
+    {
+      "confidence": "med",
+      "mount": "wall",
+      "id": "f-vegghylle",
+      "name": "Vegghylle (sort metall)",
+      "kind": "wall-shelf",
+      "archetype": "wall-shelf",
+      "wallId": "w-sov-tv",
+      "position": [
+        1.63,
+        1.37,
+        8.34
+      ],
+      "center": [
+        1.63,
+        1.62,
+        8.34
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 1.2,
+        "d": 0.2,
+        "h": 0.5
+      },
+      "params": {
+        "coords": "lokale: x fra midten, y fra underkant",
+        "uprights": [
+          [
+            -0.52,
+            0.03,
+            0.23
+          ],
+          [
+            -0.22,
+            0,
+            0.45
+          ],
+          [
+            0.18,
+            0,
+            0.45
+          ],
+          [
+            0.5,
+            0.25,
+            0.5
+          ]
+        ],
+        "bars": [
+          [
+            -0.35,
+            0.55,
+            0.43
+          ],
+          [
+            -0.56,
+            0.32,
+            0.18
+          ],
+          [
+            -0.22,
+            -0.08,
+            0.02
+          ]
+        ],
+        "boards": [
+          [
+            -0.26,
+            0.21,
+            0.44
+          ],
+          [
+            0.14,
+            0.59,
+            0.28
+          ],
+          [
+            -0.26,
+            0.21,
+            0.15
+          ],
+          [
+            -0.6,
+            -0.22,
+            0
+          ]
+        ],
+        "boardDepth": 0.19,
+        "barW": 0.015,
+        "decor": [
+          "glasslykt med hvitt kubbelys + krem «steinstabel»-skulptur (topphylla)",
+          "liten kunstig grønn plante i sjøgresskurv (øvre høyre)",
+          "røykgrå glassflaske-vase (midten)",
+          "grå riflet glass-telysholder + liten aloe i sjøgresskurv (nede til venstre)"
+        ]
+      },
+      "colors": {
+        "main": "#1e1e1e"
+      },
+      "materials": {
+        "main": "black-metal"
+      },
+      "notes": "Asymmetrisk «rutenett»-hylle over sofaen."
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-plante-sokkel",
+      "name": "Plante på sokkel",
+      "kind": "plant-floor",
+      "archetype": "plant-floor",
+      "position": [
+        0.25,
+        0,
+        11.72
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.33,
+        "d": 0.36,
+        "h": 0.85
+      },
+      "params": {
+        "spread": 0.45,
+        "species": "kunstig anthurium/satengranke med hjerteformede mørkegrønne blader, hengende",
+        "pedestal": {
+          "w": 0.33,
+          "d": 0.36,
+          "h": 0.4,
+          "color": "#1a1a1a"
+        },
+        "pot": {
+          "d": 0.22,
+          "h": 0.18
+        }
+      },
+      "colors": {
+        "pot": "#f2f0ec",
+        "leaves": "#2f4a2a"
+      },
+      "materials": {
+        "pot": "ceramic",
+        "leaves": "plant-leaf"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-gulvvase",
+      "name": "Gulvvase med hortensia",
+      "kind": "vase",
+      "archetype": "vase",
+      "position": [
+        3.08,
+        0,
+        8.52
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.18,
+        "d": 0.18,
+        "h": 0.85
+      },
+      "params": {
+        "vaseH": 0.5,
+        "ribbed": true,
+        "flowers": "kunstige lyseblå hortensia",
+        "flowerTop": 0.85
+      },
+      "colors": {
+        "main": "#cfc6b8",
+        "flowers": "#9fb8d8"
+      },
+      "materials": {
+        "main": "ceramic"
+      },
+      "notes": "I lomma mellom sofaarmen og nisjehjørnet."
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-sylinder",
+      "name": "Skumrulle (sort, stående)",
+      "kind": "basket",
+      "archetype": "basket",
+      "position": [
+        0.15,
+        0,
+        10.62
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.16,
+        "d": 0.16,
+        "h": 0.35
+      },
+      "colors": {
+        "main": "#1a1a1a"
+      },
+      "materials": {
+        "main": "foam"
+      },
+      "notes": "Stående treningsrulle i matt sort EVA-skum med knotter og hul kjerne, inntil nordveggen ved enden av sjeselongen (082726, 082736)."
+    },
+    {
+      "confidence": "low",
+      "mount": "surface",
+      "id": "f-dekor-overlys",
+      "name": "Pynt i overlysvinduet",
+      "kind": "decor-group",
+      "archetype": "vase",
+      "position": [
+        -0.1,
+        1.64,
+        10.1
+      ],
+      "rotationDeg": 90,
+      "dims": {
+        "w": 1.6,
+        "d": 0.18,
+        "h": 0.25
+      },
+      "params": {
+        "items": [
+          [
+            "bunke med blader/bøker",
+            10.81,
+            0.3,
+            0.06
+          ],
+          [
+            "klar boblevase",
+            10.59,
+            0.13,
+            0.12
+          ],
+          [
+            "liten kremfarget vase med grønn eukalyptuskvist",
+            10.2,
+            0.08,
+            0.22
+          ],
+          [
+            "liten terrakottafarget flaskevase med grønn kvist",
+            10.12,
+            0.07,
+            0.2
+          ],
+          [
+            "oval grå tau-/filtkurv",
+            9.56,
+            0.36,
+            0.12
+          ]
+        ],
+        "itemsFormat": "[navn, z, bredde, høyde]"
+      },
+      "colors": {
+        "main": "#cfc8bd"
+      },
+      "materials": {
+        "main": "ceramic"
+      },
+      "notes": "Står i lysningen (x ≈ −0,10). Rekkefølge fra vest (TV-veggen) mot øst: bladbunke, boblevase, kremfarget vase, terrakottavase, kurv (082800, 082726)."
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-buet-sofa",
+      "name": "Buet sofa",
+      "kind": "sofa-curved",
+      "archetype": "sofa-curved",
+      "position": [
+        5.5,
+        0,
+        11.4
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 2.1,
+        "d": 0.98,
+        "h": 0.75
+      },
+      "params": {
+        "seatH": 0.43,
+        "backT": 0.22,
+        "wingEnd": "-x (lokalt) = vindusenden",
+        "bolsterEnd": "+x (lokalt) = palmeenden",
+        "bolsterD": 0.22,
+        "bolsterH": 0.58,
+        "frontConvex": true,
+        "base": "avrundet plint med 3 cm skyggefuge"
+      },
+      "colors": {
+        "main": "#b5b1ab"
+      },
+      "materials": {
+        "main": "boucle"
+      },
+      "notes": "Organisk, avrundet sete i ett. Ryggen er høyest (≈0,78) i vindusenden der den krummer fram som en vinge, og senker seg mot palmeenden som har en lav pølsearm. Ryggen ca. 5 cm fra veggen."
+    },
+    {
+      "confidence": "med",
+      "mount": "soft",
+      "id": "f-pledd-salvie",
+      "name": "Pledd (salvie)",
+      "kind": "throw",
+      "archetype": "throw",
+      "position": [
+        4.65,
+        0.43,
+        11.3
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 0.6,
+        "d": 0.5,
+        "h": 0.05
+      },
+      "params": {
+        "draped": "over pølsearmen og ned på setet",
+        "fringe": true
+      },
+      "colors": {
+        "main": "#a7b89c"
+      },
+      "materials": {
+        "main": "wool"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-svingstol-1",
+      "name": "Svingstol (nord)",
+      "kind": "armchair-tub-swivel",
+      "archetype": "tub-swivel",
+      "position": [
+        4.92,
+        0,
+        8.82
+      ],
+      "rotationDeg": 15,
+      "dims": {
+        "w": 0.75,
+        "d": 0.75,
+        "h": 0.76
+      },
+      "params": {
+        "seatH": 0.45,
+        "armH": 0.58,
+        "backWrapDeg": 200,
+        "shellT": 0.1,
+        "base": {
+          "d": 0.64,
+          "h": 0.3,
+          "shape": "trommel uten ben"
+        },
+        "piping": true
+      },
+      "colors": {
+        "main": "#a7a19b"
+      },
+      "materials": {
+        "main": "boucle"
+      },
+      "notes": "Rund dreibar skålstol."
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-svingstol-2",
+      "name": "Svingstol (ved vinduet)",
+      "kind": "armchair-tub-swivel",
+      "archetype": "tub-swivel",
+      "position": [
+        6.12,
+        0,
+        8.85
+      ],
+      "rotationDeg": -10,
+      "dims": {
+        "w": 0.75,
+        "d": 0.75,
+        "h": 0.76
+      },
+      "params": {
+        "seatH": 0.45,
+        "armH": 0.58,
+        "backWrapDeg": 200,
+        "shellT": 0.1,
+        "base": {
+          "d": 0.64,
+          "h": 0.3,
+          "shape": "trommel uten ben"
+        },
+        "piping": true
+      },
+      "colors": {
+        "main": "#a7a19b"
+      },
+      "materials": {
+        "main": "boucle"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-settbord",
+      "name": "Settbord, runde (2 stk)",
+      "kind": "coffee-table-round-nesting",
+      "archetype": "coffee-table-round-nesting",
+      "position": [
+        5.325,
+        0,
+        10.09
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 1.48,
+        "d": 0.9,
+        "h": 0.45
+      },
+      "params": {
+        "tables": [
+          {
+            "d": 0.9,
+            "h": 0.45,
+            "offset": [
+              0.29,
+              -0.01
+            ]
+          },
+          {
+            "d": 0.75,
+            "h": 0.4,
+            "offset": [
+              -0.36,
+              0.01
+            ]
+          }
+        ],
+        "topT": 0.025,
+        "frame": "tynn sort ring oppe og på gulvet + 3–4 rette ben"
+      },
+      "colors": {
+        "top": "#3d332d",
+        "frame": "#1c1c1c"
+      },
+      "materials": {
+        "top": "smoked-oak",
+        "frame": "black-metal"
+      },
+      "notes": "Det store bordet er høyest; det lille skyves delvis under. Pynt: rund jutematte med to sorte lysestaker og salviegrønne kronelys (stort bord), jutematte, to salviegrønne telysglass og en rund treboks med rosa lokk (lite bord)."
+    },
+    {
+      "confidence": "med",
+      "mount": "rug",
+      "id": "f-teppe-stue",
+      "name": "Ullteppe (kuler)",
+      "kind": "rug",
+      "archetype": "rug",
+      "position": [
+        5.44,
+        0,
+        10.1
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 2,
+        "d": 3,
+        "h": 0.02
+      },
+      "params": {
+        "pattern": "filtede ullkuler («pebble»)",
+        "pile": "1,5–2 cm"
+      },
+      "colors": {
+        "main": "#9c9ea2",
+        "fleck1": "#6f7077",
+        "fleck2": "#d8d8d8"
+      },
+      "materials": {
+        "main": "wool"
+      },
+      "notes": "Under sofafronten og forkant av svingstolene; ca. 0,45 m fra vindusveggen."
+    },
+    {
+      "confidence": "med",
+      "mount": "wall",
+      "id": "f-maleri",
+      "name": "Maleri (tåkete trær)",
+      "kind": "painting",
+      "archetype": "art-frame",
+      "wallId": "w-vest-stue",
+      "position": [
+        5.35,
+        1.27,
+        11.93
+      ],
+      "center": [
+        5.35,
+        1.62,
+        11.93
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 1,
+        "d": 0.035,
+        "h": 0.7
+      },
+      "params": {
+        "motif": "tåkete abstrakt landskap: rad med slanke bjørkeaktige trær med salvie/oliven løv over en blek vannlinje",
+        "frame": "ingen ramme / mørke lerretskanter",
+        "palette": [
+          "#e8e6e0",
+          "#c9cfcd",
+          "#8f9e8c",
+          "#4d5a5a",
+          "#b9c6cc"
+        ]
+      },
+      "colors": {
+        "main": "#c9cfcd"
+      },
+      "materials": {
+        "main": "cotton"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-palme",
+      "name": "Palme (kunstig)",
+      "kind": "plant-floor",
+      "archetype": "plant-floor",
+      "position": [
+        4.15,
+        0,
+        11.62
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.3,
+        "d": 0.3,
+        "h": 1.8
+      },
+      "params": {
+        "spread": 1.2,
+        "species": "kentia/areca-palme, ca. 8 buede blader",
+        "pot": {
+          "d": 0.3,
+          "h": 0.31
+        }
+      },
+      "colors": {
+        "pot": "#f0efea",
+        "leaves": "#3f6b3a"
+      },
+      "materials": {
+        "pot": "ceramic",
+        "leaves": "plant-leaf"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-plante-stativ",
+      "name": "Gullranke på plantestativ",
+      "kind": "plant-floor",
+      "archetype": "plant-floor",
+      "position": [
+        6.68,
+        0,
+        11.7
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.24,
+        "d": 0.24,
+        "h": 1
+      },
+      "params": {
+        "spread": 0.45,
+        "species": "kunstig gullranke (pothos), hengende",
+        "stand": {
+          "d": 0.24,
+          "h": 0.62,
+          "color": "#1a1a1a",
+          "style": "sort trådsylinder"
+        },
+        "pot": {
+          "d": 0.18,
+          "color": "#1a1a1a"
+        }
+      },
+      "colors": {
+        "pot": "#1a1a1a",
+        "leaves": "#3d7a32"
+      },
+      "materials": {
+        "pot": "black-metal",
+        "leaves": "plant-leaf"
+      },
+      "notes": "I hjørnet mellom sofaenden og vindusveggen."
+    },
+    {
+      "confidence": "med",
+      "mount": "ceiling",
+      "id": "f-pendel-stue",
+      "name": "Taklampe «molekyl» over sittegruppa",
+      "kind": "chandelier-molecule",
+      "archetype": "chandelier-molecule",
+      "position": [
+        5.45,
+        2.638,
+        10.15
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 1,
+        "d": 1,
+        "h": 0.8
+      },
+      "params": {
+        "drop": 0.79,
+        "hubY": 2.22,
+        "lowestShadeY": 1.85,
+        "shades": 8,
+        "shadeD": [
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.13,
+          0.13,
+          0.13,
+          0.13
+        ],
+        "canopyD": 0.12,
+        "rod": 0.42
+      },
+      "colors": {
+        "main": "#1a1a1a",
+        "inner": "#b08a4a"
+      },
+      "materials": {
+        "main": "black-metal",
+        "inner": "brass"
+      },
+      "light": {
+        "on": true,
+        "colorK": 2700,
+        "lumens": 2000
+      },
+      "notes": "Sort grenlampe med kuleledd og 8 dype, nesten kuleformede skjermer (ca. 3/4 kule med åpning, sort utside og messing innside) i to størrelser, med synlige varme pærer. Henger over settbordene, ikke over spisebordet."
+    },
+    {
+      "confidence": "low",
+      "mount": "surface",
+      "id": "f-lykt-v1",
+      "name": "Lykt i røykglass",
+      "kind": "candle",
+      "archetype": "candle-holder",
+      "position": [
+        7.02,
+        0.29,
+        6.85
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.14,
+        "d": 0.14,
+        "h": 0.2
+      },
+      "colors": {
+        "main": "#8e9094",
+        "candle": "#f2efe8"
+      },
+      "materials": {
+        "main": "glass-smoked"
+      },
+      "notes": "På vinduskarmen i det store vinduet ved spisebordet."
+    },
+    {
+      "confidence": "low",
+      "mount": "surface",
+      "id": "f-vase-v1",
+      "name": "Sort vase med eukalyptus",
+      "kind": "vase",
+      "archetype": "vase",
+      "position": [
+        7.02,
+        0.29,
+        8.3
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.17,
+        "d": 0.17,
+        "h": 0.55
+      },
+      "params": {
+        "vaseH": 0.23,
+        "stems": "kunstig eukalyptus"
+      },
+      "colors": {
+        "main": "#2a2a2c",
+        "stems": "#8fa39a"
+      },
+      "materials": {
+        "main": "ceramic"
+      }
+    },
+    {
+      "confidence": "low",
+      "mount": "surface",
+      "id": "f-plante-v2",
+      "name": "Liten plante i sort potte",
+      "kind": "plant-small",
+      "archetype": "plant-small",
+      "position": [
+        7.02,
+        0.29,
+        9.35
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.15,
+        "d": 0.15,
+        "h": 0.25
+      },
+      "params": {
+        "species": "rosmarin/aspargesbregne (kunstig)"
+      },
+      "colors": {
+        "pot": "#1a1a1a",
+        "leaves": "#5d7a4e"
+      },
+      "materials": {
+        "pot": "ceramic",
+        "leaves": "plant-leaf"
+      }
+    },
+    {
+      "confidence": "low",
+      "mount": "surface",
+      "id": "f-telys-v2",
+      "name": "To telysglass (salvie)",
+      "kind": "candle",
+      "archetype": "candle-holder",
+      "position": [
+        7.02,
+        0.29,
+        11.3
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.2,
+        "d": 0.08,
+        "h": 0.07
+      },
+      "params": {
+        "count": 2,
+        "spacing": 0.12
+      },
+      "colors": {
+        "main": "#9fb0a0"
+      },
+      "materials": {
+        "main": "glass-smoked"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-spisebord",
+      "name": "Spisebord (ovalt)",
+      "kind": "dining-table-oval",
+      "archetype": "dining-table-oval",
+      "position": [
+        5.37,
+        0,
+        6.81
+      ],
+      "rotationDeg": 90,
+      "dims": {
+        "w": 2,
+        "d": 1.05,
+        "h": 0.75
+      },
+      "params": {
+        "shape": "stadion (to halvrunde ender + rett midtparti; uttrekk med innleggsplate)",
+        "topT": 0.03,
+        "edge": "tynn kant med lys skråfas under",
+        "legs": "to skrå A/V-rammer av sort flattstål, satt ca. 0,40 inn fra endene"
+      },
+      "colors": {
+        "top": "#4b4039",
+        "legs": "#1c1c1c"
+      },
+      "materials": {
+        "top": "smoked-oak",
+        "legs": "black-metal"
+      },
+      "notes": "Langaksen går langs z (parallelt med vindusveggen). Kan stå skjevt 5–10° fra dag til dag. Ingen lampe over bordet i dag – det er der brukeren vil ha ny belysning (taket er 2,65 m over bordets midte)."
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-spisestol-1",
+      "name": "Spisestol (høy vegg-siden, øst)",
+      "kind": "dining-chair",
+      "archetype": "dining-chair",
+      "position": [
+        4.68,
+        0,
+        6.33
+      ],
+      "rotationDeg": 90,
+      "dims": {
+        "w": 0.52,
+        "d": 0.58,
+        "h": 0.88
+      },
+      "params": {
+        "seatH": 0.47,
+        "shell": "skallstol med svakt utsvingte øvre hjørner og loddrett søm bak",
+        "legs": "4 tynne sorte skrå stålben Ø 0,02"
+      },
+      "colors": {
+        "main": "#d2cbc2",
+        "legs": "#1a1a1a"
+      },
+      "materials": {
+        "main": "boucle",
+        "legs": "black-metal"
+      }
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-spisestol-2",
+      "name": "Spisestol (høy vegg-siden, vest)",
+      "kind": "dining-chair",
+      "archetype": "dining-chair",
+      "position": [
+        4.68,
+        0,
+        7.29
+      ],
+      "rotationDeg": 90,
+      "dims": {
+        "w": 0.52,
+        "d": 0.58,
+        "h": 0.88
+      },
+      "params": {
+        "seatH": 0.47,
+        "shell": "skallstol med svakt utsvingte øvre hjørner og loddrett søm bak",
+        "legs": "4 tynne sorte skrå stålben Ø 0,02"
+      },
+      "colors": {
+        "main": "#d2cbc2",
+        "legs": "#1a1a1a"
+      },
+      "materials": {
+        "main": "boucle",
+        "legs": "black-metal"
+      }
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-spisestol-3",
+      "name": "Spisestol (vindussiden, øst)",
+      "kind": "dining-chair",
+      "archetype": "dining-chair",
+      "position": [
+        6.08,
+        0,
+        6.33
+      ],
+      "rotationDeg": -90,
+      "dims": {
+        "w": 0.52,
+        "d": 0.58,
+        "h": 0.88
+      },
+      "params": {
+        "seatH": 0.47,
+        "shell": "skallstol med svakt utsvingte øvre hjørner og loddrett søm bak",
+        "legs": "4 tynne sorte skrå stålben Ø 0,02"
+      },
+      "colors": {
+        "main": "#d2cbc2",
+        "legs": "#1a1a1a"
+      },
+      "materials": {
+        "main": "boucle",
+        "legs": "black-metal"
+      }
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-spisestol-4",
+      "name": "Spisestol (vindussiden, vest)",
+      "kind": "dining-chair",
+      "archetype": "dining-chair",
+      "position": [
+        6.08,
+        0,
+        7.29
+      ],
+      "rotationDeg": -90,
+      "dims": {
+        "w": 0.52,
+        "d": 0.58,
+        "h": 0.88
+      },
+      "params": {
+        "seatH": 0.47,
+        "shell": "skallstol med svakt utsvingte øvre hjørner og loddrett søm bak",
+        "legs": "4 tynne sorte skrå stålben Ø 0,02"
+      },
+      "colors": {
+        "main": "#d2cbc2",
+        "legs": "#1a1a1a"
+      },
+      "materials": {
+        "main": "boucle",
+        "legs": "black-metal"
+      }
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-spisestol-5",
+      "name": "Spisestol (østenden)",
+      "kind": "dining-chair",
+      "archetype": "dining-chair",
+      "position": [
+        5.4,
+        0,
+        5.58
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.52,
+        "d": 0.58,
+        "h": 0.88
+      },
+      "params": {
+        "seatH": 0.47,
+        "shell": "skallstol med svakt utsvingte øvre hjørner og loddrett søm bak",
+        "legs": "4 tynne sorte skrå stålben Ø 0,02"
+      },
+      "colors": {
+        "main": "#d2cbc2",
+        "legs": "#1a1a1a"
+      },
+      "materials": {
+        "main": "boucle",
+        "legs": "black-metal"
+      }
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-spisestol-6",
+      "name": "Spisestol (vestenden)",
+      "kind": "dining-chair",
+      "archetype": "dining-chair",
+      "position": [
+        5.34,
+        0,
+        8.06
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 0.52,
+        "d": 0.58,
+        "h": 0.88
+      },
+      "params": {
+        "seatH": 0.47,
+        "shell": "skallstol med svakt utsvingte øvre hjørner og loddrett søm bak",
+        "legs": "4 tynne sorte skrå stålben Ø 0,02"
+      },
+      "colors": {
+        "main": "#d2cbc2",
+        "legs": "#1a1a1a"
+      },
+      "materials": {
+        "main": "boucle",
+        "legs": "black-metal"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-barkrakk-1",
+      "name": "Barkrakk",
+      "kind": "bar-stool",
+      "archetype": "bar-stool",
+      "position": [
+        4.76,
+        0,
+        3.32
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 0.45,
+        "d": 0.48,
+        "h": 0.97
+      },
+      "params": {
+        "seatH": 0.65,
+        "back": "avrundet skall med kanaler innvendig og loddrett søm bak",
+        "legs": "tynn sort 4-bens ramme med fotstøtte"
+      },
+      "colors": {
+        "main": "#4a5646",
+        "legs": "#1a1a1a"
+      },
+      "materials": {
+        "main": "velvet",
+        "legs": "black-metal"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-barkrakk-2",
+      "name": "Barkrakk",
+      "kind": "bar-stool",
+      "archetype": "bar-stool",
+      "position": [
+        5.34,
+        0,
+        3.32
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 0.45,
+        "d": 0.48,
+        "h": 0.97
+      },
+      "params": {
+        "seatH": 0.65,
+        "back": "avrundet skall med kanaler innvendig og loddrett søm bak",
+        "legs": "tynn sort 4-bens ramme med fotstøtte"
+      },
+      "colors": {
+        "main": "#4a5646",
+        "legs": "#1a1a1a"
+      },
+      "materials": {
+        "main": "velvet",
+        "legs": "black-metal"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-barkrakk-3",
+      "name": "Barkrakk",
+      "kind": "bar-stool",
+      "archetype": "bar-stool",
+      "position": [
+        5.93,
+        0,
+        3.32
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 0.45,
+        "d": 0.48,
+        "h": 0.97
+      },
+      "params": {
+        "seatH": 0.65,
+        "back": "avrundet skall med kanaler innvendig og loddrett søm bak",
+        "legs": "tynn sort 4-bens ramme med fotstøtte"
+      },
+      "colors": {
+        "main": "#4a5646",
+        "legs": "#1a1a1a"
+      },
+      "materials": {
+        "main": "velvet",
+        "legs": "black-metal"
+      }
+    },
+    {
+      "confidence": "med",
+      "mount": "surface",
+      "id": "f-pampas",
+      "name": "Bølgevase med pampasgress",
+      "kind": "vase",
+      "archetype": "vase",
+      "position": [
+        6.1,
+        0.91,
+        2.85
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.35,
+        "d": 0.35,
+        "h": 1
+      },
+      "params": {
+        "vaseH": 0.3,
+        "vaseD": 0.14,
+        "stems": "kunstig pampas",
+        "mat": {
+          "d": 0.35,
+          "color": "#b89a70"
+        }
+      },
+      "colors": {
+        "main": "#ece4d6",
+        "stems": "#e3d8cc"
+      },
+      "materials": {
+        "main": "ceramic"
+      }
+    },
+    {
+      "confidence": "low",
+      "mount": "surface",
+      "id": "f-knivblokk",
+      "name": "Knivblokk",
+      "kind": "decor",
+      "archetype": "vase",
+      "position": [
+        3.4,
+        0.91,
+        0.2
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.12,
+        "d": 0.12,
+        "h": 0.25
+      },
+      "colors": {
+        "main": "#151515"
+      },
+      "materials": {
+        "main": "plastic"
+      }
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-avfallsbotte",
+      "name": "Pedalbøtte (stål)",
+      "kind": "decor",
+      "archetype": "basket",
+      "position": [
+        6.12,
+        0,
+        1.25
+      ],
+      "rotationDeg": -90,
+      "dims": {
+        "w": 0.3,
+        "d": 0.28,
+        "h": 0.45
+      },
+      "colors": {
+        "main": "#b8b8b6",
+        "lid": "#151515"
+      },
+      "materials": {
+        "main": "steel"
+      },
+      "notes": "Mellom benkeraden og øya, inntil vinduesveggen."
+    },
+    {
+      "confidence": "low",
+      "mount": "surface",
+      "id": "f-plante-benk",
+      "name": "Liten potteplante på benken",
+      "kind": "plant-small",
+      "archetype": "plant-small",
+      "position": [
+        6.2,
+        0.91,
+        0.15
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.15,
+        "d": 0.15,
+        "h": 0.3
+      },
+      "colors": {
+        "pot": "#f0efea",
+        "leaves": "#4f7a3a"
+      },
+      "materials": {
+        "pot": "ceramic",
+        "leaves": "plant-leaf"
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "fx-varmepumpe",
+      "type": "heat-pump",
+      "name": "Varmepumpe (innedel)",
+      "wallId": "w-gang",
+      "position": [
+        3.335,
+        2.715,
+        3.84
+      ],
+      "dims": {
+        "w": 0.92,
+        "d": 0.23,
+        "h": 0.33
+      },
+      "rotationDeg": 90,
+      "color": "#151515",
+      "notes": "Over gangdøra, østre ende inntil kjøkkennedforingen. Høyde usikker: underkant 2,50–2,62, topp 2,85–2,96."
+    },
+    {
+      "id": "fx-stikk-hoy",
+      "type": "socket",
+      "name": "Stikkontakt på den høye veggen",
+      "wallId": "w-hoy",
+      "position": [
+        3.22,
+        0.18,
+        7.23
+      ],
+      "dims": {
+        "w": 0.084,
+        "h": 0.084
+      },
+      "color": "#1c1a19"
+    },
+    {
+      "id": "fx-bryterpanel",
+      "type": "switch",
+      "name": "Bryterpanel (sort glass)",
+      "wallId": "w-hoy",
+      "position": [
+        3.22,
+        1.58,
+        4.54
+      ],
+      "dims": {
+        "w": 0.17,
+        "h": 0.09
+      },
+      "color": "#151515"
+    },
+    {
+      "id": "fx-bryter-dor",
+      "type": "switch",
+      "name": "Bryter ved døra",
+      "wallId": "w-hoy",
+      "position": [
+        3.22,
+        1.18,
+        4.54
+      ],
+      "dims": {
+        "w": 0.09,
+        "h": 0.09
+      },
+      "color": "#151515"
+    },
+    {
+      "id": "fx-stikk-dor",
+      "type": "socket",
+      "name": "Stikkontakt ved døra",
+      "wallId": "w-hoy",
+      "position": [
+        3.22,
+        0.18,
+        4.55
+      ],
+      "dims": {
+        "w": 0.084,
+        "h": 0.084
+      },
+      "color": "#1c1a19"
+    },
+    {
+      "id": "fx-bryter-nisje",
+      "type": "switch",
+      "name": "Bryter i TV-stua",
+      "wallId": "w-sov-tv",
+      "position": [
+        3.14,
+        1.2,
+        8.34
+      ],
+      "dims": {
+        "w": 0.085,
+        "h": 0.085
+      },
+      "color": "#151515"
+    },
+    {
+      "id": "fx-stikk-nisje",
+      "type": "socket",
+      "name": "Stikkontakt i TV-stua",
+      "wallId": "w-sov-tv",
+      "position": [
+        3.1,
+        0.2,
+        8.34
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.084
+      },
+      "color": "#1c1a19"
+    },
+    {
+      "id": "fx-stikk-vest",
+      "type": "socket",
+      "name": "Stikkontakt ved palmen",
+      "wallId": "w-vest-stue",
+      "position": [
+        4.4,
+        0.22,
+        11.93
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.084
+      },
+      "color": "#1c1a19",
+      "confidence": "low"
+    },
+    {
+      "id": "fx-stikk-s1",
+      "type": "socket",
+      "name": "Stikkontakt under vinduet",
+      "wallId": "w-sor",
+      "position": [
+        6.92,
+        0.18,
+        6.7
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.084
+      },
+      "color": "#1c1a19"
+    },
+    {
+      "id": "fx-stikk-s2",
+      "type": "socket",
+      "name": "Stikkontakt ved vinduspilaren",
+      "wallId": "w-sor",
+      "position": [
+        6.92,
+        0.15,
+        9.06
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.084
+      },
+      "color": "#1c1a19"
+    },
+    {
+      "id": "fx-stikk-knekk",
+      "type": "socket",
+      "name": "Stikkontakt på knekkveggen",
+      "wallId": "w-knekk",
+      "position": [
+        6.45,
+        0.15,
+        5.38
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.084
+      },
+      "color": "#1c1a19",
+      "confidence": "low"
+    },
+    {
+      "id": "fx-stikk-k1",
+      "type": "socket",
+      "name": "Stikkontakt over benken",
+      "wallId": "w-kjokken-ost",
+      "position": [
+        3.6,
+        1.12,
+        0
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.084
+      },
+      "color": "#1c1a19"
+    },
+    {
+      "id": "fx-stikk-k2",
+      "type": "socket",
+      "name": "Stikkontakt over benken",
+      "wallId": "w-kjokken-ost",
+      "position": [
+        6.22,
+        1.13,
+        0
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.084
+      },
+      "color": "#1c1a19"
+    },
+    {
+      "id": "fx-stikk-k3",
+      "type": "socket",
+      "name": "Stikkontakt under kjøkkenvinduet",
+      "wallId": "w-kjokken-sor",
+      "position": [
+        6.32,
+        0.15,
+        5.05
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.084
+      },
+      "color": "#1c1a19",
+      "confidence": "low"
+    },
+    {
+      "id": "fx-roykvarsler-tv",
+      "type": "smoke-detector",
+      "name": "Røykvarsler (TV-stue)",
+      "position": [
+        2.56,
+        2.4,
+        8.88
+      ],
+      "dims": {
+        "d": 0.14,
+        "h": 0.03
+      },
+      "color": "#151515"
+    },
+    {
+      "id": "fx-sensor-tv",
+      "type": "sensor",
+      "name": "Liten takgiver (TV-stue)",
+      "position": [
+        0.25,
+        2.4,
+        8.75
+      ],
+      "dims": {
+        "d": 0.06,
+        "h": 0.02
+      },
+      "color": "#151515",
+      "confidence": "low"
+    },
+    {
+      "id": "fx-roykvarsler-k",
+      "type": "smoke-detector",
+      "name": "Røykvarsler (kjøkken)",
+      "position": [
+        3.66,
+        2.4,
+        1.3
+      ],
+      "dims": {
+        "d": 0.13,
+        "h": 0.03
+      },
+      "color": "#151515"
+    }
+  ],
+  "highWall": {
+    "wallId": "w-hoy",
+    "name": "Den høye veggen",
+    "start": [
+      3.22,
+      8.34
+    ],
+    "end": [
+      3.22,
+      4.43
+    ],
+    "width": 3.91,
+    "height": 3,
+    "normal": [
+      1,
+      0
+    ],
+    "uDir": [
+      0,
+      -1
+    ],
+    "paint": "sand",
+    "rt60Today": 0.86,
+    "rt60Target": [
+      0.4,
+      0.6
+    ],
+    "existing": "Bare malt gips (SAND). Fire sorte justerbare spotter i skråtaket 0,38 m foran veggen (z 7,58 / 6,72 / 5,86 / 5,00, dvs. 0,76 / 1,62 / 2,48 / 3,34 m fra nisjehjørnet) lager varme lyskjegler øverst på veggen. Stikkontakt ved gulvet 1,11 m fra nisjehjørnet (h 0,18). Ved dørkarmen (0,11 m fra karmen): bryterpanel i sort glass h 1,58, bryter h 1,18, stikkontakt h 0,18. Gulvlist 7 cm. Varmepumpa sitter over døra, like utenfor veggfeltet. I venstre ende: nisjehjørnet med gulvvase (hortensia) og sofaarmen; nedforingen over TV-stua fortsetter i samme plan fra 2,40 til 3,00.",
+    "obstacles": [
+      {
+        "type": "spot-light-pool",
+        "u": [
+          0.76,
+          1.62,
+          2.48,
+          3.34
+        ],
+        "note": "u = avstand fra start (nisjehjørnet)"
+      },
+      {
+        "type": "socket",
+        "u": 1.11,
+        "v": 0.18
+      },
+      {
+        "type": "switch",
+        "u": 3.8,
+        "v": 1.58
+      },
+      {
+        "type": "switch",
+        "u": 3.8,
+        "v": 1.18
+      },
+      {
+        "type": "socket",
+        "u": 3.79,
+        "v": 0.18
+      }
+    ]
+  },
+  "outside": {
+    "terrace": {
+      "polygon": [
+        [
+          6.62,
+          0
+        ],
+        [
+          9.8,
+          0
+        ],
+        [
+          9.8,
+          7.4
+        ],
+        [
+          7.22,
+          7.4
+        ],
+        [
+          7.22,
+          5.08
+        ],
+        [
+          6.62,
+          5.08
+        ]
+      ],
+      "polygonNote": "Fra utsiden av ytterveggene (0,30 m). Dybde ca. 3,2 m foran kjøkkenet og 2,6 m foran stua.",
+      "floorY": -0.03,
+      "deck": {
+        "color": "#5a5e64",
+        "material": "mørk grå, glatt (malt betong / kompositt / membran)"
+      },
+      "railing": "Liggende trespiler (ca. 7 cm bord, 3 cm mellomrom) i grålasert/værbitt tre på stolper ca. 1,3 m c/c med flat håndlist, langs sørkanten og vestkanten. Et parti med dekorativ spileskjerm. Fra terrassens sørvesthjørne går en rett trapp vestover langs fasaden ned til en lys betongrepos på plenen.",
+      "railingHeight": 1.05,
+      "railingColor": "#7c776f",
+      "railingLines": [
+        [
+          [
+            9.8,
+            0
+          ],
+          [
+            9.8,
+            7.4
+          ]
+        ],
+        [
+          [
+            7.22,
+            7.4
+          ],
+          [
+            8.75,
+            7.4
+          ]
+        ]
+      ],
+      "stair": {
+        "from": [
+          9.3,
+          7.4
+        ],
+        "to": [
+          9.3,
+          11.1
+        ],
+        "width": 1,
+        "topY": -0.03,
+        "bottomY": -2.7,
+        "guard": "spilepanel på yttersiden",
+        "landing": {
+          "polygon": [
+            [
+              8.5,
+              11.1
+            ],
+            [
+              10.5,
+              11.1
+            ],
+            [
+              10.5,
+              12.4
+            ],
+            [
+              8.5,
+              12.4
+            ]
+          ],
+          "y": -2.7,
+          "material": "lys betong"
+        }
+      },
+      "furniture": "Grå rotting-lenestol og lite hvitt bord foran kjøkkenvinduet.",
+      "underside": "Hvit pusset grunnmur og mørk bod-åpning under terrassen; grå betongpilar.",
+      "annex": {
+        "polygon": [
+          [
+            6.8,
+            -3
+          ],
+          [
+            10,
+            -3
+          ],
+          [
+            10,
+            0
+          ],
+          [
+            6.8,
+            0
+          ]
+        ],
+        "height": 2.6,
+        "roof": "saltak med mose-/torvkant, mønet langs x",
+        "cladding": "mørk grå-brun stående kledning (#4a4642)",
+        "notes": "Uthus/anneks som lukker terrassen mot øst; sees tett utenfor kjøkkenvinduet."
+      },
+      "confidence": "low"
+    },
+    "view": "Huset ligger høyt i en skråning over ei rolig elv (ca. 80–100 m bred) i sør. Plenen faller fra ca. 2,5–3 m under stuegulvet ned mot elvebredden med store gamle eiker, en søyleformet bartrebusk og runde busker. På motsatt bredd: vei, en rad røde naust med hvit kant (mot sørøst), hvite og grå hus som klatrer oppover lia (mot sørvest), skogkledde åser med furu, bjørk og høstfarger på begge sider. Rett utenfor vinduet ved sofaen: stor mose- og lavgrodd granittstein (ca. 3 m) med mørke skiferheller og grus. Mot nord (overlysvinduet): lyst grå-blått næringsbygg med flatt tak, nettinggjerde, bjørk og furuknaus. Himmel: tidlig morgen, lys blå med fersken/gult ved horisonten (sørøst).",
+    "groundBelowY": -2.7,
+    "terrain": {
+      "nearHouseY": -2.7,
+      "riverBankDistanceM": 60,
+      "riverY": -5.5,
+      "riverWidthM": 90,
+      "slope": "faller mot sør (+x)"
+    },
+    "sun": {
+      "latitude": 58.1,
+      "windowsFace": "south"
+    }
+  },
+  "photoCameras": [
+    {
+      "file": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/0_for.jpg",
+      "pos": [
+        6.52,
+        1.79,
+        9.48
+      ],
+      "lookAt": [
+        5.075,
+        1.484,
+        8.132
+      ],
+      "vfovDeg": 83.32,
+      "yawDeg": -133,
+      "pitchDeg": -8.8,
+      "rollDeg": -2.7,
+      "focalPx": 535,
+      "imageSize": [
+        1288,
+        1030
+      ],
+      "confidence": "med",
+      "source": "løst på nytt av hovedmåler (13 punkter, rms 7–11 px)",
+      "photoRect": [
+        0,
+        0,
+        1270,
+        952
+      ],
+      "k1": 0.02,
+      "sharedBy": "Alle 1288×1030-montasjene i stue_hoy_vegg_forslag/1_…/2_…/3_…/4_… har samme vinkel.",
+      "notes": "Kveldsbilde tatt nær vindusveggen bak svingstolen ved vinduet, mot nordøst. Fotodelen er 1270×952 øverst til venstre; nederst er en tekstlinje."
+    },
+    {
+      "file": "bilder_stue/20261018_082806.jpg",
+      "pos": [
+        1.18,
+        1.72,
+        10.03
+      ],
+      "lookAt": [
+        3.051,
+        1.135,
+        10.428
+      ],
+      "vfovDeg": 86.305,
+      "yawDeg": 78,
+      "pitchDeg": -17,
+      "rollDeg": 2.9,
+      "focalPx": 1600,
+      "imageSize": [
+        4000,
+        3000
+      ],
+      "confidence": "high",
+      "source": "gruppe 2 (rms 10 px)",
+      "notes": "Fra TV-stua mot sør: hele vindusveggen, sittegruppa, spisebordet."
+    },
+    {
+      "file": "bilder_stue/20261018_082827.jpg",
+      "pos": [
+        5.93,
+        1.57,
+        10.78
+      ],
+      "lookAt": [
+        5.121,
+        0.232,
+        9.533
+      ],
+      "vfovDeg": 86.305,
+      "yawDeg": -147,
+      "pitchDeg": -42,
+      "rollDeg": 3.3,
+      "focalPx": 1600,
+      "imageSize": [
+        4000,
+        3000
+      ],
+      "confidence": "med",
+      "source": "gruppe 2 (rms 21 px)",
+      "notes": "Fra sofaen mot øst-nordøst, bratt ned: TV-stua, den høye veggen, kjøkkenet."
+    },
+    {
+      "file": "bilder_stue/20261018_082829.jpg",
+      "pos": [
+        6.4,
+        1.43,
+        9.97
+      ],
+      "lookAt": [
+        5.867,
+        0.283,
+        8.421
+      ],
+      "vfovDeg": 89.924,
+      "yawDeg": -161,
+      "pitchDeg": -35,
+      "rollDeg": -2,
+      "focalPx": 1502,
+      "imageSize": [
+        4000,
+        3000
+      ],
+      "confidence": "med",
+      "source": "gruppe 3 (rms 12 px)",
+      "notes": "Fra vindussiden mot den høye veggen og kjøkkenet."
+    },
+    {
+      "file": "bilder_stue/20261018_082909.jpg",
+      "pos": [
+        5.19,
+        1.85,
+        3.75
+      ],
+      "lookAt": [
+        4.929,
+        1.745,
+        5.73
+      ],
+      "vfovDeg": 86.305,
+      "yawDeg": -7.5,
+      "pitchDeg": -3,
+      "rollDeg": 0,
+      "focalPx": 1600,
+      "imageSize": [
+        4000,
+        3000
+      ],
+      "confidence": "med",
+      "source": "gruppe 4 (rms 3–6 px)",
+      "notes": "Fra kjøkken/spisestue rett vestover gjennom hele rommet."
+    },
+    {
+      "file": "bilder_stue/20261018_082924.jpg",
+      "pos": [
+        5.61,
+        1.78,
+        4.64
+      ],
+      "lookAt": [
+        3.622,
+        1.64,
+        4.814
+      ],
+      "vfovDeg": 89.886,
+      "yawDeg": -85,
+      "pitchDeg": -4,
+      "rollDeg": -1.8,
+      "focalPx": 1503,
+      "imageSize": [
+        4000,
+        3000
+      ],
+      "confidence": "high",
+      "source": "gruppe 5 (rms 3,8 px)",
+      "notes": "Den høye veggen nesten rett forfra (spotter, dør, varmepumpe)."
+    },
+    {
+      "file": "bilder_stue/20261018_083012.jpg",
+      "pos": [
+        6,
+        1.86,
+        11.1
+      ],
+      "lookAt": [
+        4.575,
+        2.31,
+        9.771
+      ],
+      "vfovDeg": 84.547,
+      "yawDeg": -133,
+      "pitchDeg": 13,
+      "rollDeg": 2,
+      "focalPx": 1650,
+      "imageSize": [
+        4000,
+        3000
+      ],
+      "confidence": "med",
+      "source": "gruppe 6 (omregnet til felles mål)",
+      "notes": "Oversikt mot nordøst fra sofaen – nesten samme vinkel som montasjene."
+    },
+    {
+      "file": "bilder_stue/20261018_083019.jpg",
+      "pos": [
+        5.26,
+        1.74,
+        10.84
+      ],
+      "lookAt": [
+        5.26,
+        1.403,
+        8.869
+      ],
+      "vfovDeg": 87.133,
+      "yawDeg": 180,
+      "pitchDeg": -9.7,
+      "rollDeg": -3.3,
+      "focalPx": 1577,
+      "imageSize": [
+        4000,
+        3000
+      ],
+      "confidence": "med",
+      "source": "gruppe 6 (omregnet til felles mål)",
+      "notes": "Langt blikk østover: svingstoler, settbord, spisestue, kjøkken."
+    }
+  ]
+}

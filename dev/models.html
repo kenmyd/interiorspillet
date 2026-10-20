@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Interiørspillet – modellgalleri</title>
+    <link rel="icon" href="data:," />
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #111; color: #ddd; font: 12px system-ui, sans-serif; }
+      canvas { display: block; }
+      #info { position: fixed; left: 8px; bottom: 8px; background: #000a; padding: 4px 8px; border-radius: 4px; pointer-events: none; white-space: pre; z-index: 2; }
+      #labels { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+      .lbl { position: absolute; transform: translate(-50%, -100%); padding: 2px 6px; border-radius: 3px; background: #fffd; color: #222; font: 600 11px system-ui, sans-serif; white-space: nowrap; box-shadow: 0 1px 3px #0003; }
+      .lbl small { display: block; font-weight: 400; color: #555; }
+    </style>
+    <script>
+      // public/ files are served from the app root: dev pages live one folder down
+      window.__ASSET_BASE__ = '../';
+    </script>
+  </head>
+  <body>
+    <div id="labels"></div>
+    <div id="info"></div>
+    <script type="module" src="/src/dev/models.js"></script>
+  </body>
+</html>

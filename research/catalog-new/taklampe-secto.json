@@ -1,0 +1,756 @@
+[
+  {
+    "id": "christiania-belysning-secto-design-secto-4200-taklampe",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Secto 4200 taklampe",
+    "brand": "Secto Design",
+    "store": "Christiania Belysning",
+    "url": "https://www.christiania-belysning.no/products/secto-4200-taklampe-o30",
+    "priceNok": 7495,
+    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (ordinær pris, ikke på kampanje): 7 495 kr for hvit, bjørk og sort, 8 090 kr for valnøttfinér. Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, 1060 lm, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no). Prisjakt viste samme dag lavere pris hos danske Magasin du Nord (fra 6 296 kr, farge ikke oppgitt).",
+    "dims": {
+      "w": 0.3,
+      "d": 0.3,
+      "h": 0.6
+    },
+    "archetype": "pendant-slatted",
+    "mount": "ceiling",
+    "params": {
+      "profile": "secto",
+      "shadeD": 0.3,
+      "shadeH": 0.6,
+      "topD": 0.129,
+      "bottomD": 0.3,
+      "neckD": 0.129,
+      "neckH": 0.19,
+      "maxDAt": 0.6,
+      "profilePoints": [
+        [
+          0,
+          0.129
+        ],
+        [
+          0.19,
+          0.129
+        ],
+        [
+          0.21,
+          0.138
+        ],
+        [
+          0.24,
+          0.15
+        ],
+        [
+          0.27,
+          0.164
+        ],
+        [
+          0.3,
+          0.176
+        ],
+        [
+          0.36,
+          0.201
+        ],
+        [
+          0.42,
+          0.229
+        ],
+        [
+          0.48,
+          0.256
+        ],
+        [
+          0.54,
+          0.282
+        ],
+        [
+          0.6,
+          0.3
+        ]
+      ],
+      "slats": 52,
+      "slatW": 0.0078,
+      "slatT": 0.0025,
+      "rings": 3,
+      "bulbAt": 0.1,
+      "closedTop": true,
+      "openBottom": true,
+      "count": 1,
+      "spread": 0,
+      "translucent": 0,
+      "dropDefault": 1.25,
+      "maxDrop": 2.1,
+      "canopy": "white",
+      "canopyD": 0.122,
+      "canopyH": 0.112,
+      "shapeNote": "Trumpet/flared cone, NOT a bowed spindle (profile key 'secto' kept; follow profilePoints). profilePoints = [metres down from shade top, outer diameter in metres], measured from the store's cut-out product photo (H/D ratio matches the official 60/30 cm). Top 0.19 m is a straight closed cylinder (neck, slats touching edge to edge, top closed by a small cap where the cord enters) that hides the bulb; below a soft shoulder the slats run almost straight (very slightly concave) out to the widest point, the open bottom rim at 0.30 m. Slats are thin, flat, vertical birch strips with the broad face outward, held by thin plywood rings inside (top, neck/shoulder, bottom rim, estimated). Slat count and slat width are estimated from the photo (about 52 x 7.8 mm, gaps of about 10 mm at the rim).",
+      "canopyNote": "Ceiling cup in matt soft lacquer: white for Bjørk, Hvit and Valnøtt, black for Sort (use the variant's metal colour).",
+      "slatNote": "Black and white are laminate on the outer face only; the inner face of the slats is natural birch (warm glow inside when lit). Walnut is veneer on the outer face, birch inside."
+    },
+    "variants": [
+      {
+        "name": "Bjørk",
+        "colors": {
+          "shade": "#dcc6a2",
+          "inner": "#e4d3b6",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "ash",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Valnøtt",
+        "colors": {
+          "shade": "#6f4f3a",
+          "inner": "#dcc6a2",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "walnut",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "priceNok": 8090
+      },
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#262422",
+          "inner": "#d8c3a0",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#ecebe6",
+          "inner": "#e6dccb",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Secto Designs aller første pendel (Seppo Koho, 1999), håndlaget i Finland av tynne, formpressede bjørkespiler: en smal, lukket hals øverst skjuler pæren, og under den vider spilene seg ut i en slank kjegle til Ø30 nederst. Lyset siles mykt og blendfritt ut mellom spilene.",
+    "why": "Den høye, slanke kjeglen utnytter takhøyden på ca. 2,65 m over spisebordet uten å ta mye plass i bredden, og de varme trespilene passer til SAND-veggene; velg valnøtt for å matche røykeikebordet eller sort for å binde lampen til det svarte kjøkkenet.",
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4200_birch_frilagt.png?v=1791795696",
+    "verified": true,
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 7 495 kr (valnøtt 8 090 kr), ikke på salg, alle fire farger bestillbare. Mål Ø30 × 60 cm, 1,4 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Secto 4200, 1999). Form sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "christiania-belysning-secto-design-secto-4201-small-taklampe",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Secto 4201 Small taklampe",
+    "brand": "Secto Design",
+    "store": "Christiania Belysning",
+    "url": "https://www.christiania-belysning.no/products/secto-4201-small-taklampe-o25",
+    "priceNok": 6765,
+    "salePriceNok": 5412,
+    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (kampanje -20 %): 5 412 kr (før 6 765 kr) for hvit, bjørk og sort; valnøttfinér 5 876 kr (før 7 345 kr). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, 1060 lm, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no).",
+    "dims": {
+      "w": 0.25,
+      "d": 0.25,
+      "h": 0.45
+    },
+    "archetype": "pendant-slatted",
+    "mount": "ceiling",
+    "params": {
+      "profile": "secto",
+      "shadeD": 0.25,
+      "shadeH": 0.45,
+      "topD": 0.126,
+      "bottomD": 0.25,
+      "neckD": 0.126,
+      "neckH": 0.167,
+      "maxDAt": 0.45,
+      "profilePoints": [
+        [
+          0,
+          0.126
+        ],
+        [
+          0.167,
+          0.126
+        ],
+        [
+          0.18,
+          0.128
+        ],
+        [
+          0.2025,
+          0.137
+        ],
+        [
+          0.225,
+          0.148
+        ],
+        [
+          0.27,
+          0.169
+        ],
+        [
+          0.315,
+          0.19
+        ],
+        [
+          0.36,
+          0.211
+        ],
+        [
+          0.405,
+          0.233
+        ],
+        [
+          0.45,
+          0.25
+        ]
+      ],
+      "slats": 52,
+      "slatW": 0.0076,
+      "slatT": 0.0025,
+      "rings": 3,
+      "bulbAt": 0.09,
+      "closedTop": true,
+      "openBottom": true,
+      "count": 1,
+      "spread": 0,
+      "translucent": 0,
+      "dropDefault": 1.25,
+      "maxDrop": 1.95,
+      "canopy": "white",
+      "canopyD": 0.122,
+      "canopyH": 0.112,
+      "shapeNote": "Smaller version of the Secto 4200 with the same construction: a straight closed cylindrical neck (Ø about 0.126 m, the same as on the 4200) for the top 0.167 m, then an almost straight cone flaring to an open Ø 0.25 m rim. profilePoints = [metres down from shade top, outer diameter in metres], measured from the store's cut-out photo (H/D 1.81, official 45/25). Slat count and width are estimated from the photo. Trumpet/flared cone, NOT a bowed spindle (profile key secto kept; follow profilePoints).",
+      "canopyNote": "Ceiling cup in matt soft lacquer: white for Bjørk, Hvit and Valnøtt, black for Sort (use the variant's metal colour).",
+      "slatNote": "Black and white are laminate on the outer face only; the inner face of the slats is natural birch (warm glow inside when lit). Walnut is veneer on the outer face, birch inside."
+    },
+    "variants": [
+      {
+        "name": "Bjørk",
+        "colors": {
+          "shade": "#dcc6a2",
+          "inner": "#e4d3b6",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "ash",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Valnøtt",
+        "colors": {
+          "shade": "#6f4f3a",
+          "inner": "#dcc6a2",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "walnut",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "priceNok": 7345,
+        "salePriceNok": 5876
+      },
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#262422",
+          "inner": "#d8c3a0",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#ecebe6",
+          "inner": "#e6dccb",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Den mindre utgaven av Secto 4200 (45 cm høy, Ø25) med den samme smale, lukkede halsen og den utvidende kjeglen av håndlagde bjørkespiler. Secto Design lager den for rom med lavere tak.",
+    "why": "Med bare 45 cm høyde passer den der taket er flatt 2,4 m i TV-stua og kjøkkenet, og to–tre stykker i rekke gir jevnt lys over hele det ovale spisebordet.",
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4201_birch_frilagt.png?v=1791795702",
+    "verified": true,
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 5 412 kr (før 6 765), valnøtt 5 876 kr (før 7 345). Mål Ø25 × 45 cm, 1,2 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Secto Small 4201, 2000). Fjernet ubekreftede Finnish Design Shop-priser.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "christiania-belysning-secto-design-octo-4240-taklampe-o54",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Octo 4240 taklampe ø54",
+    "brand": "Secto Design",
+    "store": "Christiania Belysning",
+    "url": "https://www.christiania-belysning.no/products/octo-4240-taklampe-o54",
+    "priceNok": 11395,
+    "salePriceNok": 9116,
+    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (kampanje -20 %): 9 116 kr (før 11 395 kr) for hvit, bjørk og sort; valnøttfinér 9 588 kr (før 11 985 kr). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no).",
+    "dims": {
+      "w": 0.54,
+      "d": 0.54,
+      "h": 0.68
+    },
+    "archetype": "pendant-slatted",
+    "mount": "ceiling",
+    "params": {
+      "profile": "octo",
+      "shadeD": 0.54,
+      "shadeH": 0.68,
+      "topD": 0.125,
+      "bottomD": 0.36,
+      "neckD": 0.125,
+      "neckH": 0.18,
+      "maxDAt": 0.47,
+      "profilePoints": [
+        [
+          0,
+          0.125
+        ],
+        [
+          0.17,
+          0.125
+        ],
+        [
+          0.187,
+          0.134
+        ],
+        [
+          0.204,
+          0.156
+        ],
+        [
+          0.221,
+          0.209
+        ],
+        [
+          0.238,
+          0.276
+        ],
+        [
+          0.255,
+          0.326
+        ],
+        [
+          0.272,
+          0.364
+        ],
+        [
+          0.306,
+          0.426
+        ],
+        [
+          0.34,
+          0.472
+        ],
+        [
+          0.374,
+          0.501
+        ],
+        [
+          0.408,
+          0.524
+        ],
+        [
+          0.442,
+          0.536
+        ],
+        [
+          0.469,
+          0.54
+        ],
+        [
+          0.51,
+          0.535
+        ],
+        [
+          0.544,
+          0.521
+        ],
+        [
+          0.578,
+          0.497
+        ],
+        [
+          0.612,
+          0.464
+        ],
+        [
+          0.646,
+          0.417
+        ],
+        [
+          0.663,
+          0.384
+        ],
+        [
+          0.68,
+          0.36
+        ]
+      ],
+      "slats": 44,
+      "slatW": 0.0085,
+      "slatT": 0.0025,
+      "rings": 3,
+      "bulbAt": 0.1,
+      "closedTop": true,
+      "openBottom": true,
+      "count": 1,
+      "spread": 0,
+      "translucent": 0,
+      "dropDefault": 1.2,
+      "maxDrop": 2.18,
+      "canopy": "white",
+      "canopyD": 0.122,
+      "canopyH": 0.112,
+      "shapeNote": "Flask/onion shape (like a round-bottom flask with a neck), NOT octagonal and NOT widest at the top (profile key 'octo' kept; follow profilePoints). profilePoints = [metres down from shade top, outer diameter in metres], measured from the store's cut-out photo (H/D 1.275, official 68/54). A straight, closed cylindrical neck Ø 0.125 m for the top 0.17 m hides the bulb; the slats then bend out in a quick, rounded shoulder (Ø 0.16 to 0.36 m within 0.07 m of height), swell to the widest Ø 0.54 m about 0.47 m below the top (about 69 % of the height), and curve back in to an open bottom rim of Ø about 0.36 m. Each slat is one continuous thin, bent birch strip, broad face outward, fixed to thin plywood rings (neck top, neck base, bottom rim, estimated). Slat count and width are estimated from the photo (about 44 x 8.5 mm; the slats nearly touch in the neck and leave gaps of about 3 cm at the widest point).",
+      "canopyNote": "Ceiling cup in matt soft lacquer: white for Bjørk, Hvit and Valnøtt, black for Sort (use the variant's metal colour).",
+      "slatNote": "Black and white are laminate on the outer face only; the inner face of the slats is natural birch (warm glow inside when lit). Walnut is veneer on the outer face, birch inside."
+    },
+    "variants": [
+      {
+        "name": "Bjørk",
+        "colors": {
+          "shade": "#dcc6a2",
+          "inner": "#e4d3b6",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "ash",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Valnøtt",
+        "colors": {
+          "shade": "#6f4f3a",
+          "inner": "#dcc6a2",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "walnut",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "priceNok": 11985,
+        "salePriceNok": 9588
+      },
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#262422",
+          "inner": "#d8c3a0",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#ecebe6",
+          "inner": "#e6dccb",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Secto Designs ikoniske Octo (Seppo Koho, 2005): en luftig, rund lykt av tynne bjørkespiler med smal hals øverst, bred mage på Ø54 og innsvingt, åpen bunn, omtrent som en kolbe. Pæren sitter skjult i halsen, så lyset blir mykt og uten blending, med vakre skyggestriper.",
+    "why": "Den store, runde formen fyller rommet over det ovale spisebordet på en luftig måte og blir et varmt skandinavisk midtpunkt mot elveutsikten, men den trenger takhøyde og passer derfor best i den høye delen av rommet (ca. 2,65 m eller mer).",
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Octo4240_birch_frilagt_3194d8f7-719d-4ad2-87d4-01f3a5930101.png?v=1791795764",
+    "verified": true,
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 9 116 kr (før 11 395), valnøtt 9 588 kr (før 11 985). Mål Ø54 × 68 cm, 2,0 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Octo 4240, 2005). Kolbeform (ikke åttekantet) sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "christiania-belysning-secto-design-octo-4241-small-taklampe-o45",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Octo 4241 Small taklampe ø45",
+    "brand": "Secto Design",
+    "store": "Christiania Belysning",
+    "url": "https://www.christiania-belysning.no/products/octo-4241-small-taklampe-o45",
+    "priceNok": 10320,
+    "salePriceNok": 8256,
+    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (kampanje -20 %): 8 256 kr (før 10 320 kr) for hvit, bjørk og sort; valnøttfinér 8 736 kr (før 10 920 kr). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no). Prisjakt viste samme dag lavere pris hos danske Magasin du Nord (6 160 kr, sort eller hvit).",
+    "dims": {
+      "w": 0.45,
+      "d": 0.45,
+      "h": 0.55
+    },
+    "archetype": "pendant-slatted",
+    "mount": "ceiling",
+    "params": {
+      "profile": "octo",
+      "shadeD": 0.45,
+      "shadeH": 0.55,
+      "topD": 0.107,
+      "bottomD": 0.32,
+      "neckD": 0.107,
+      "neckH": 0.155,
+      "maxDAt": 0.385,
+      "profilePoints": [
+        [
+          0,
+          0.107
+        ],
+        [
+          0.151,
+          0.107
+        ],
+        [
+          0.165,
+          0.115
+        ],
+        [
+          0.179,
+          0.142
+        ],
+        [
+          0.193,
+          0.203
+        ],
+        [
+          0.206,
+          0.252
+        ],
+        [
+          0.22,
+          0.289
+        ],
+        [
+          0.248,
+          0.346
+        ],
+        [
+          0.275,
+          0.385
+        ],
+        [
+          0.303,
+          0.414
+        ],
+        [
+          0.33,
+          0.434
+        ],
+        [
+          0.358,
+          0.446
+        ],
+        [
+          0.385,
+          0.45
+        ],
+        [
+          0.413,
+          0.448
+        ],
+        [
+          0.44,
+          0.438
+        ],
+        [
+          0.468,
+          0.421
+        ],
+        [
+          0.495,
+          0.395
+        ],
+        [
+          0.523,
+          0.359
+        ],
+        [
+          0.536,
+          0.336
+        ],
+        [
+          0.55,
+          0.32
+        ]
+      ],
+      "slats": 44,
+      "slatW": 0.0075,
+      "slatT": 0.0025,
+      "rings": 3,
+      "bulbAt": 0.09,
+      "closedTop": true,
+      "openBottom": true,
+      "count": 1,
+      "spread": 0,
+      "translucent": 0,
+      "dropDefault": 1.2,
+      "maxDrop": 2.05,
+      "canopy": "white",
+      "canopyD": 0.122,
+      "canopyH": 0.112,
+      "shapeNote": "Compact Octo with the same flask/onion construction as the Octo 4240: a straight closed neck Ø about 0.107 m for the top 0.15 m, a quick rounded shoulder, the widest Ø 0.45 m at about 70 % of the height, then curving back in to an open bottom rim of Ø about 0.32 m. profilePoints = [metres down from shade top, outer diameter in metres], measured from the store's cut-out photo (photo H/D 1.255, official 55/45 = 1.22; heights are scaled to the official 0.55 m). Slat count and width are estimated. Flask/onion shape, NOT octagonal and NOT widest at the top (profile key octo kept; follow profilePoints).",
+      "canopyNote": "Ceiling cup in matt soft lacquer: white for Bjørk, Hvit and Valnøtt, black for Sort (use the variant's metal colour).",
+      "slatNote": "Black and white are laminate on the outer face only; the inner face of the slats is natural birch (warm glow inside when lit). Walnut is veneer on the outer face, birch inside."
+    },
+    "variants": [
+      {
+        "name": "Bjørk",
+        "colors": {
+          "shade": "#dcc6a2",
+          "inner": "#e4d3b6",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "ash",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Valnøtt",
+        "colors": {
+          "shade": "#6f4f3a",
+          "inner": "#dcc6a2",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "walnut",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "priceNok": 10920,
+        "salePriceNok": 8736
+      },
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#262422",
+          "inner": "#d8c3a0",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#ecebe6",
+          "inner": "#e6dccb",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "En mer kompakt Octo (2018) på Ø45 × 55 cm med den samme kolbeformen: smal hals, rund mage og innsvingt, åpen bunn i håndlagde bjørkespiler. Pæren er skjult i halsen og gir både mykt nedlys og stemningslys.",
+    "why": "Octo Small gir den samme ikoniske silhuetten uten å dominere spiseplassen, og den lyse bjørken spiller fint mot det lysgrå eikegulvet og de lyse bouclé-stolene rundt bordet.",
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/OctoSmall4241_birch_frilagt_787c8fd0-0e8d-41a8-a889-9051740dabf1.png?v=1791896520",
+    "verified": true,
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 8 256 kr (før 10 320), valnøtt 8 736 kr (før 10 920). Mål Ø45 × 55 cm, 1,3 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Octo Small 4241, 2018). Form sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser.",
+    "priceConfidence": "checked"
+  }
+]

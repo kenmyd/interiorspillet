@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.shots/
+*.log
+.DS_Store
+Thumbs.db
+.ref/
+.claude/settings.local.json
+deploy/*.zip
+# originalbildene av stua (126 MB) – spillet bruker de nedskalerte kopiene i public/img
+bilder_stue/

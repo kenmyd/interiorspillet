@@ -1,0 +1,427 @@
+[
+  {
+    "id": "bohus-sagene-vitrineskap-med-lys-90x40",
+    "category": "vitrineskap",
+    "name": "Sagene vitrineskap med lys 90x40",
+    "brand": "Interstil",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/vitrineskap/sagene-vitrineskap-med-lys-90x40-2",
+    "priceNok": 12999,
+    "salePriceNok": 7799,
+    "priceNote": "Pris sjekket 2026-10-18 på produktsiden (varenr. 319380, svart lakkert eikefiner, «Salg» SPAR 40 %, før 12 999 kr). Brun lakkert eik (varenr. 318809, /oppbevaring/vitrineskap/sagene-vitrineskap-med-lys-90x40-1) koster 13 999 kr uten kampanje på produktsiden (kategorisiden viste 8 399 kr – sjekk i butikk). Finnes også hvitpigmentert (varenr. 318808, 7 799 kr, før 12 999 kr). Lys 3000 K, ikke dimbart. Leveres flatpakket (2 kolli), frakt 999 kr.",
+    "dims": {
+      "w": 0.9,
+      "d": 0.4,
+      "h": 1.8
+    },
+    "archetype": "display-cabinet",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legH": 0.25,
+      "legStyle": "wood-taper",
+      "doors": 2,
+      "doorStyle": "glass-framed",
+      "glassSides": false,
+      "shelves": 3,
+      "shelfMaterial": "glass",
+      "drawers": 2,
+      "bottomHeight": 0.39,
+      "led": true,
+      "handle": "bar",
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Lakkert eikefiner svart",
+        "colors": {
+          "body": "#1d1d1d",
+          "front": "#1f1f1f",
+          "top": "#1d1d1d",
+          "legs": "#1b1b1b",
+          "handle": "#111111"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-metal"
+        }
+      },
+      {
+        "name": "Lakkert eikefiner brun",
+        "colors": {
+          "body": "#5c4230",
+          "front": "#5f4532",
+          "top": "#5c4230",
+          "legs": "#543c2c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "black-metal"
+        },
+        "priceNok": 13999,
+        "priceConfidence": "check"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Vitrineskap med to rammede glassdører og innebygd lys over to lukkede dører, tre flyttbare hyller (glass og tre), slanke svarte grep og skrå treben på 25 cm.",
+    "why": "Samme serie som Sagene-skjenken: svart eik og svarte grep matcher det svarte kjøkkenet, og det varme lyset (3000 K) gir glød mot SAND-veggene om kvelden.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/SAGENE/594001/image-thumb__594001__PDP-Product/319380%20-%20Sagene%20vitrineskap%20med%20lys%2090x40%20H180%204%20d%C3%B8rer%203%20hyllerplater%20lakkert%20eikefiner%20svart%20-%201.4137ca07.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 7 799 kr (før 12 999, SPAR 40 %), 90x40x180, benhøyde 25 cm, 4 dører hvorav 2 i glass, 3 hyller, lys 3000 K. Rettet: brun variant har ingen kampanje på produktsiden (8 399 fjernet); høyde på lukket nederste del justert til ca. 0,39 m etter bilde.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-scandi-vitrineskap-med-lys-60x40",
+    "category": "vitrineskap",
+    "name": "Scandi vitrineskap med lys 60x40",
+    "brand": "Baltic Furniture",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/vitrineskap/scandi-vitrineskap-med-lys-60x40-2",
+    "priceNok": 20599,
+    "priceNote": "Pris sjekket 2026-10-18 på produktsiden (varenr. 322383, oljet eik smoked, ingen kampanje). Kampanjen «30 % rabatt på SCANDI-serien i mocca og svart» gjelder mocca (varenr. 322381, /scandi-vitrineskap-med-lys-60x40: 14 399 kr, før 20 699 kr) og matt svart (varenr. 322384, /scandi-vitrineskap-med-lys-60x40-1: 15 899 kr, før 22 799 kr). Nordic White (varenr. 322382, /scandi-vitrineskap-med-lys-60x40-3) 20 599 kr. Finnes også 120x40 med fire dører. LED 3000 K, maks 6 W, av/på-bryter på ledning, ikke dimbart. Bestillingsvare, leveres delvis montert, frakt 999 kr.",
+    "dims": {
+      "w": 0.6,
+      "d": 0.4,
+      "h": 1.9
+    },
+    "archetype": "display-cabinet",
+    "mount": "floor",
+    "params": {
+      "base": "plinth",
+      "legH": 0.05,
+      "legStyle": "block",
+      "doors": 2,
+      "doorStyle": "glass-framed",
+      "glassSides": false,
+      "shelves": 5,
+      "shelfMaterial": "glass",
+      "drawers": 0,
+      "bottomHeight": 0,
+      "led": true,
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "doorLayout": "stacked",
+      "handleCutout": true
+    },
+    "variants": [
+      {
+        "name": "Oljet eikefiner smoked",
+        "colors": {
+          "body": "#5b4232",
+          "front": "#5e4535",
+          "top": "#5b4232",
+          "legs": "#4c372a",
+          "handle": "#3a2a20"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      },
+      {
+        "name": "Oljet eikefiner mocca",
+        "colors": {
+          "body": "#4a372c",
+          "front": "#4d392d",
+          "top": "#4a372c",
+          "legs": "#433227",
+          "handle": "#3f2f25"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 20699,
+        "salePriceNok": 14399
+      },
+      {
+        "name": "Lakkert eikefiner matt svart",
+        "colors": {
+          "body": "#1e1d1c",
+          "front": "#201f1e",
+          "top": "#1e1d1c",
+          "legs": "#1a1918",
+          "handle": "#161514"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "priceNok": 22799,
+        "salePriceNok": 15899
+      },
+      {
+        "name": "Hvitoljet eikefiner Nordic White",
+        "colors": {
+          "body": "#d9cbb4",
+          "front": "#dccfb9",
+          "top": "#d9cbb4",
+          "legs": "#cdbca1",
+          "handle": "#bfae94"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "priceNok": 20599
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Høyt og smalt vitrineskap på sokkel med to rammede glassdører over hverandre, innfrest grep, rene slette fronter, fem flyttbare hyller og varmhvitt LED-lys.",
+    "why": "Med bare 60 cm bredde passer det inn ved spiseplassen, og den smoked-oljede eiken har samme dype tone som det ovale spisebordet og Scandi-skjenken.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Baltic%20Furniture/Produkter/SCANDI/346273/image-thumb__346273__PDP-Product/318142%20-%20SCANDI%20Vitrineskap%20med%20lys%20Smoked%20-%201.fd5e16cd.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 20 599 kr, 60x40x190, 5 cm sokkel, 2 dører, 5 hyller, LED 3000 K. Rettet: smoked er ikke på kampanje (14 399 fjernet – kampanjen gjelder bare mocca og svart), hjørner er rette (ikke avrundede) etter bilde, bilde-URL byttet til den som vises på siden.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-belfort-vitrineskap-med-lys-120x40",
+    "category": "vitrineskap",
+    "name": "Belfort vitrineskap med lys 120x40",
+    "brand": "Interstil",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/vitrineskap/belfort-vitrineskap-med-lys-120x40",
+    "priceNok": 20999,
+    "salePriceNok": 16799,
+    "priceNote": "Pris sjekket 2026-10-18 på produktsiden (varenr. 327332, oljet eik brun, SPAR 20 %). Hvitoljet eik (varenr. 327333, /oppbevaring/vitrineskap/belfort-vitrineskap-med-lys-120x40-1) har samme pris og kampanje. Høyde 180 cm i spesifikasjonen (180,5 i navnet). Leveres delvis montert – kun ben og hyller settes på; leveringstid ca. 5–6 uker, frakt 999 kr.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.4,
+      "h": 1.805
+    },
+    "archetype": "display-cabinet",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legH": 0.25,
+      "legStyle": "wood-taper",
+      "doors": 2,
+      "doorStyle": "glass-framed",
+      "glassSides": false,
+      "shelves": 6,
+      "shelfMaterial": "glass",
+      "drawers": 2,
+      "bottomHeight": 0,
+      "led": true,
+      "handle": "bar",
+      "top": "same",
+      "corners": "square",
+      "drawerPosition": "middle-inside"
+    },
+    "variants": [
+      {
+        "name": "Oljet eik brun",
+        "colors": {
+          "body": "#342a23",
+          "front": "#372c25",
+          "top": "#342a23",
+          "legs": "#2f261f",
+          "handle": "#231c18"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      },
+      {
+        "name": "Hvitoljet eik",
+        "colors": {
+          "body": "#d9cbb4",
+          "front": "#dccfb9",
+          "top": "#d9cbb4",
+          "legs": "#cdbca1",
+          "handle": "#b9a587"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "priceNok": 20999,
+        "salePriceNok": 16799
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Bredt vitrineskap i mørk, oljet eik med to høye rammede glassdører, seks glasshyller, to skuffer i midten bak glasset, innebygd LED-belysning og skrå treben på 25 cm.",
+    "why": "120 cm bredde gir tyngde nok til den store, høye veggen ved spiseplassen, og den mørkbrune oljede eiken ligger tett opp mot det røykfargede spisebordet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/BELFORT/601858/image-thumb__601858__PDP-Product/327332%20-%20Belfort%20vitrineskap%20med%20lys%20120x40%20H180.5%202%20d%C3%B8rer%202%20skuffer%206%20hyller%20oljet%20eik%20brun%20-%201.5b8cdd9e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 16 799 kr (før 20 999, SPAR 20 %), 120x40x180, benhøyde 25 cm, 2 dører, 2 skuffer, 6 glasshyller, LED. Hvitoljet variant bekreftet med samme pris. Brunfargen gjort litt mørkere etter produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-signature-1860-vitrineskap-90x40",
+    "category": "vitrineskap",
+    "name": "Signature 1860 vitrineskap 90x40",
+    "brand": "Signature Collection by Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/vitrineskap/signature-1860-vitrineskap-90x40-1",
+    "priceNok": 18299,
+    "salePriceNok": 13499,
+    "priceNote": "Pris sjekket 2026-10-18 på produktsiden (varenr. 304105, svart lakkert eikefiner, SPAR 25 %, før 18 299 kr; levering 1–2 virkedager, frakt 999 kr). Brun oljet eik (varenr. 304104, /oppbevaring/vitrineskap/signature-1860-vitrineskap-90x40) koster 18 299 kr, men er utsolgt fra sentrallageret. Fargetemperatur på lyset er ikke oppgitt. Leveres delvis montert.",
+    "dims": {
+      "w": 0.9,
+      "d": 0.4,
+      "h": 1.59
+    },
+    "archetype": "display-cabinet",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legH": 0.48,
+      "legStyle": "metal-frame",
+      "doors": 2,
+      "doorStyle": "glass-framed",
+      "glassSides": false,
+      "shelves": 2,
+      "shelfMaterial": "glass",
+      "drawers": 1,
+      "bottomHeight": 0.17,
+      "led": true,
+      "handle": "knob",
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Lakkert eikefiner svart / svart metallunderstell / børstet messing",
+        "colors": {
+          "body": "#1c1b1a",
+          "front": "#1e1d1c",
+          "top": "#1c1b1a",
+          "legs": "#1a1a1a",
+          "handle": "#a8865a"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-metal",
+          "handle": "brass"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Vitrineskap i svart lakkert eik med to rammede dører i klart glass, én skuff, justerbare glasshyller, innebygd lys og små riflede grep i børstet messing, på et høyt og slankt understell i svart metall.",
+    "why": "Samme serie som Signature 1850-skjenken: svart eik og tynt svart metallunderstell gjentar kjøkkenet og metalldetaljene, og med 159 cm høyde får det plass selv under det lave taket ved vinduene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/SIGNATURE%201860/331681/image-thumb__331681__PDP-Product/304105%20-%20Signature%201860%20vitrineskap%2090x40%20H159%202%20d%C3%B8rer%202%20skuffer%202%20hyllerplater%20lakkert%20eikefiner%20svart%20med%20metall%20understell%20svart%20-%201.5e1619c8.jpg",
+    "verified": true,
+    "verifiedNote": "Erstatter Seaford vitrineskap 77x35, som er utgått på bohus.no (sentrallageret utsolgt, bare restlager i et par butikker). Bekreftet på bohus.no 2026-10-18: 13 499 kr (før 18 299, SPAR 25 %), 90x40x159, 2 glassdører, 1 skuff, innebygd lys, messinggrep, svart metallunderstell. Siden oppgir 4 glasshyller, bildet viser 2 hyllenivåer; understellshøyde (ca. 0,48 m) og skuffehøyde anslått fra bilde.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-besta-veggmontert-60x42x64-glassvik-rokfarget",
+    "category": "vitrineskap",
+    "name": "BESTÅ veggmontert skapkombinasjon 60x42x64",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-glassvik-rokfarget-glass-s49441083/",
+    "priceNok": 1695,
+    "salePriceNok": 1495,
+    "priceNote": "Pris sjekket 2026-10-18 (art.nr. 494.410.83, brunsvart/Glassvik røkfarget glass, «Ny lavere pris» 1 495 kr, førpris 1 695 kr). Inkluderer stamme, veggskinne, 1 Glassvik vitrinedør (herdet glass, aluminiumsramme), myktlukkende/trykk-åpne-hengsel og 1 glasshylle. Skruer/plugger til veggen og belysning kjøpes separat. Kan settes flere ved siden av hverandre.",
+    "dims": {
+      "w": 0.6,
+      "d": 0.42,
+      "h": 0.64
+    },
+    "archetype": "display-cabinet",
+    "mount": "wall",
+    "params": {
+      "base": "wall",
+      "legH": 0,
+      "legStyle": "block",
+      "doors": 1,
+      "doorStyle": "glass-smoked",
+      "glassSides": false,
+      "shelves": 1,
+      "shelfMaterial": "glass",
+      "drawers": 0,
+      "bottomHeight": 0,
+      "led": false,
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "mountHeight": 1.2
+    },
+    "variants": [
+      {
+        "name": "Brunsvart / Glassvik røkfarget glass",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#1c1a19",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#1c1a19"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-metal",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-metal"
+        }
+      },
+      {
+        "name": "Høyglanset/svart/Glassvik (svart ramme, klart glass)",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#151515",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#151515"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-metal",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-metal"
+        },
+        "paramsOverride": {
+          "doorStyle": "glass-framed"
+        },
+        "priceNok": 1695,
+        "salePriceNok": 1495,
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-hoyglanset-svart-glassvik-s29439825/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Svevende veggskap på veggskinne med én vitrinedør i røykfarget herdet glass, én glasshylle og myktlukkende trykk-åpne-hengsel.",
+    "why": "Hengt over en skjenk eller ved kjøkkenet holder det gulvet fritt, og det mørke korpuset med røykfarget glass går i ett med det svarte kjøkkenet for en svært lav pris.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-veggmontert-skapkombinasjon-brunsvart-glassvik-rokfarget-glass__1603656_pe1044346_s5.jpg?f=s",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: 1 495 kr (førpris 1 695), 60x42x64, Glassvik røkfarget dør, glasshylle, veggskinne, trykk-åpne-hengsel (ikke noe grep synlig på bildet, selv om siden sier «håndtak er inkludert»). Rettet: variant 2 heter «høyglanset/svart/Glassvik» og har samme brunsvarte stamme (202.459.64) med svart ramme og klart glass – samme pris.",
+    "priceConfidence": "checked"
+  }
+]

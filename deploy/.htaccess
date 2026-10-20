@@ -1,0 +1,77 @@
+# Interiørspillet – .htaccess for Apache (legg den i samme mappe som index.html, f.eks. public_html/stue/)
+# Se deploy/LES_MEG_OPPLASTING.md for hvordan du lager passordfila og laster opp.
+
+# ---------------------------------------------------------------------------------------------------------------
+# 1. Passordbeskyttelse (Basic Auth)
+#    Bytt ut stien under med den FULLE stien til .htpasswd-fila på serveren (spør webhotellet, eller se
+#    «Hjemmekatalog» i kontrollpanelet). Legg .htpasswd UTENFOR public_html hvis du kan, f.eks.
+#    /home/brukernavn/.htpasswd-stue
+#    Linjene står med vilje ikke i <IfModule>: mangler modulen, gir serveren heller en feil enn å åpne siden.
+# ---------------------------------------------------------------------------------------------------------------
+AuthType Basic
+AuthName "Interiorspillet - logg inn"
+AuthUserFile /FULL/STI/TIL/.htpasswd
+Require valid-user
+
+# Ikke vis fil-lister for mapper uten index.html
+Options -Indexes
+
+# Riktig filtype og tegnsett (spillet laster .json og .js-moduler)
+AddDefaultCharset utf-8
+AddCharset utf-8 .html .js .mjs .css .json .svg .md
+AddType text/javascript .js .mjs
+AddType application/json .json
+AddType image/svg+xml .svg
+AddType image/webp .webp
+
+# ---------------------------------------------------------------------------------------------------------------
+# 2. Komprimering (tekstfiler blir ca. 3–4 ganger mindre)
+# ---------------------------------------------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/css text/plain text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# ---------------------------------------------------------------------------------------------------------------
+# 3. Mellomlagring (cache)
+#    - assets/*-<hash>.js|css: navnet endres ved hver ny versjon → kan caches i et år
+#    - index.html og dev-sidene: sjekkes hver gang, så en ny opplasting synes med en gang
+#    - bilder: 30 dager (de endres sjelden – last opp med nytt navn hvis du bytter et bilde)
+# ---------------------------------------------------------------------------------------------------------------
+<IfModule mod_headers.c>
+  <FilesMatch "-[A-Za-z0-9_-]{8}\.(js|css)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(jpe?g|png|webp|svg|ico)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+  <FilesMatch "\.json$">
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+  # litt grunnleggende sikkerhet
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "same-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+<IfModule !mod_headers.c>
+  <IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType application/json "access plus 1 day"
+  </IfModule>
+</IfModule>
+
+# Ikke server skjulte filer (.htpasswd, .git …) hvis de ved et uhell ligger her
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>

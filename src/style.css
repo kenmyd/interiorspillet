@@ -1,0 +1,42 @@
+/* Base page layout. Component styles live in src/ui/ui.css. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0b1118;
+  color: #e9eef3;
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+}
+
+#game-root {
+  position: absolute;
+  inset: 0;
+}
+
+#game-root canvas.game-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+
+/* Overlays never block the canvas by default; interactive panels opt in with pointer-events: auto. */
+#ui-root {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}

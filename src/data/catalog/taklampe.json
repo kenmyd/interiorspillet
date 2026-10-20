@@ -1,0 +1,1789 @@
+[
+  {
+    "id": "bohus-aneta-linea-taklampe-l100",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Linea taklampe L100",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/pendel/linea-taklampe-l100",
+    "priceNok": 2999,
+    "salePriceNok": 1799,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -40 %). Varianten Beige/natur har egen side: https://www.bohus.no/lamper/taklamper/pendel/linea-taklampe-l100cm (samme pris). Kabel 1,4 m. Mål på armaturen, uten oppheng.",
+    "dims": {
+      "w": 1,
+      "d": 0.04,
+      "h": 0.04
+    },
+    "archetype": "pendant-linear",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.04,
+      "shadeH": 0.04,
+      "shadeW": 1,
+      "count": 1,
+      "spread": 0,
+      "dropDefault": 1.05,
+      "openBottom": true,
+      "translucent": 0,
+      "cordCount": 2,
+      "maxDrop": 1.44
+    },
+    "variants": [
+      {
+        "name": "Brunbeiset tre",
+        "colors": {
+          "shade": "#5a4030",
+          "inner": "#f4efe6",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "walnut",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Beige/natur",
+        "colors": {
+          "shade": "#c9a77c",
+          "inner": "#f4efe6",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "oak",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1850,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Smal, 100 cm lang pendel i tre med integrert, dimbar LED (1850 lm, 3000 K) som lyser ned på bordet. Henger i to tynne oppheng.",
+    "why": "Den lange, rolige linjen følger det ovale spisebordet på langs, og den brunbeisede varianten matcher den mørke røykeika i bordet uten å konkurrere med elveutsikten.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/LINEA/339992/image-thumb__339992__PDP-Product/316840%20-%20Linea%20taklampe%20L100%20integrert%201%20lyskilder%20dimbar%20tre%20brunbeiset%20-%201.85432b4b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 1 799 kr (før 2 999), 100×4×4 cm, kabel 1,4 m, 1850 lm/3000 K dimbar. Begge fargevarianter har egne sider med samme pris.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sindig-verma-taklampe-o50",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Verma taklampe Ø50",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/pendel/verma-taklampe-o50",
+    "priceNok": 2999,
+    "salePriceNok": 1499,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -50 %). Finnes også i Ø75 (2 249 kr, før 4 499 kr, egen side verma-taklampe-o75). 4 x E27, maks 25 W per pære, pærer følger ikke med. Kabel 1,5 m med kjede.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.5,
+      "h": 0.28
+    },
+    "archetype": "pendant-woven",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.5,
+      "shadeH": 0.28,
+      "count": 1,
+      "spread": 0,
+      "dropDefault": 1.05,
+      "openBottom": true,
+      "translucent": 0.5,
+      "maxDrop": 1.78,
+      "weave": "linen"
+    },
+    "variants": [
+      {
+        "name": "Naturhvit lin",
+        "colors": {
+          "shade": "#e8e1d3",
+          "inner": "#f4efe5",
+          "base": "#e2dccf",
+          "metal": "#e2dccf",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.06,
+    "light": {
+      "lumens": 1900,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Rund linskjerm med plass til fire pærer, som gir et mykt og jevnt lys gjennom stoffet. Lumen er estimert med fire 470 lm LED-pærer.",
+    "why": "Den lyse linskjermen speiler boucléstolene rundt bordet og gir varmt, blendfritt lys mot de varme SAND-veggene, og fire pærer gir nok lys til hele bordet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/VERMA/307972/image-thumb__307972__PDP-Product/297412%20-%20Verma%20taklampe%20%C3%9850%20E27%20dimbar%20metall%20naturhvit%20inkl.%20skjerm%20-%201.661fe883.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 1 499 kr (før 2 999), Ø50×28 cm, 4×E27 maks 25 W, kabel 1,5 m med kjede. Ø75-prisen rettet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-aneta-donna-taklampe-o55",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Donna taklampe Ø55",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/pendel/donna-taklampe-o55",
+    "priceNok": 2299,
+    "salePriceNok": 1379,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -40 %). Varianten Hvit har egen side: https://www.bohus.no/lamper/taklamper/pendel/donna-taklampe-o55-1 (samme pris). 1 x E27 maks 40 W, kabel 2 m. Kan også monteres som plafond.",
+    "dims": {
+      "w": 0.55,
+      "d": 0.55,
+      "h": 0.21
+    },
+    "archetype": "pendant-woven",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.55,
+      "shadeH": 0.21,
+      "count": 1,
+      "spread": 0,
+      "dropDefault": 1.05,
+      "openBottom": true,
+      "translucent": 0.45,
+      "maxDrop": 2.21,
+      "weave": "fabric"
+    },
+    "variants": [
+      {
+        "name": "Varmgrå tekstil",
+        "colors": {
+          "shade": "#a39a8f",
+          "inner": "#d9d1c5",
+          "base": "#2a2a2a",
+          "metal": "#2a2a2a",
+          "cord": "#2a2a2a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Hvit tekstil",
+        "colors": {
+          "shade": "#eeebe5",
+          "inner": "#f6f4ef",
+          "base": "#e8e6e1",
+          "metal": "#e8e6e1",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.07,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Bred, lav tekstilpendel i myke, organiske former med delvis gjennomskinnelig skjerm. Lumen er estimert med en 806 lm LED-pære.",
+    "why": "Den varmgrå fargen ligger tett på MARRAKESH-veggene og den grå sofaen, slik at lampen blir en rolig del av paletten i stedet for et blikkfang.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/DONNA/303326/image-thumb__303326__PDP-Product/294357%20-%20Donna%20taklampe%20%C3%9855%20E27%20tekstil%20varmgr%C3%A5%20inkl.%20skjerm%20-%201.218636b1.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 1 379 kr (før 2 299), Ø55×21 cm, kabel 2 m, varmgrå og hvit (egen side), kan monteres som plafond.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-aneta-savanna-taklampe-o57",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Savanna taklampe Ø57",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/pendel/savanna-taklampe-o57",
+    "priceNok": 2499,
+    "salePriceNok": 1499,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -40 %). Finnes også i Ø40 (1 019 kr, før 1 699 kr, savanna-takpendel-o40). 1 x E27 maks 40 W, kabel 1,5 m. Matt pære anbefales.",
+    "dims": {
+      "w": 0.57,
+      "d": 0.57,
+      "h": 0.2
+    },
+    "archetype": "pendant-woven",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.57,
+      "shadeH": 0.2,
+      "count": 1,
+      "spread": 0,
+      "dropDefault": 1.05,
+      "openBottom": true,
+      "translucent": 0.3,
+      "maxDrop": 1.7,
+      "weave": "bamboo"
+    },
+    "variants": [
+      {
+        "name": "Brun bambus",
+        "colors": {
+          "shade": "#7a5a3a",
+          "inner": "#8a6a48",
+          "base": "#2a2a2a",
+          "metal": "#2a2a2a",
+          "cord": "#3b2e22"
+        },
+        "materials": {
+          "shade": "woven",
+          "inner": "woven",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Flat kurvlampe i flettet, brun bambus der lyset siler ut gjennom flettverket og lager et lunt lysmønster. Lumen er estimert med en 806 lm LED-pære.",
+    "why": "Den brune bambusen gir en varm, naturlig kontrast til det mørke bordet og den svarte kjøkkenfronten, og den flate formen passer under det skrå taket.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/SAVANNA/308349/image-thumb__308349__PDP-Product/298691%20-%20Savanna%20taklampe%20%C3%9857%20E27%20bambus%20brun%20inkl.%20skjerm%20-%201.c2f54ce5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 1 499 kr (før 2 499), Ø57×20 cm, bambus brun, kabel 1,5 m. Ø40-prisen rettet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-prhome-zuri-taklampe-o61",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Zuri taklampe Ø61",
+    "brand": "PR Home",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/pendel/zuri-taklampe-o61",
+    "priceNok": 4499,
+    "salePriceNok": 2699,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -40 %). 1 x E27 maks 40 W, vridd jutefarget tekstilkabel 1,2 m (begrenser hvor lavt den kan henge).",
+    "dims": {
+      "w": 0.61,
+      "d": 0.61,
+      "h": 0.31
+    },
+    "archetype": "pendant-woven",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.61,
+      "shadeH": 0.31,
+      "count": 1,
+      "spread": 0,
+      "dropDefault": 1.05,
+      "openBottom": true,
+      "translucent": 0.35,
+      "maxDrop": 1.51,
+      "weave": "rattan"
+    },
+    "variants": [
+      {
+        "name": "Natur rotting",
+        "colors": {
+          "shade": "#c8a675",
+          "inner": "#b8955f",
+          "base": "#f1eee8",
+          "metal": "#f1eee8",
+          "cord": "#b89a6e"
+        },
+        "materials": {
+          "shade": "woven",
+          "inner": "woven",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "rattan"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Stor, håndflettet rottingpendel med kuplet form; hver skjerm er litt unik. Lumen er estimert med en 806 lm LED-pære.",
+    "why": "Den lyse rottingen bringer inn noe naturlig og mykt mellom den mørke bordplaten og det lyse eikegulvet, og størrelsen gjør seg godt i den høye delen av rommet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/PR%20Home/Produkter/ZURI/232260/image-thumb__232260__PDP-Product/279301%20-%20Zuri%20taklampe%20%C3%9861%20E27%20rattan%20natur%20inkl.%20skjerm%20-%201.ef5bc6e2.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 2 699 kr (før 4 499), Ø61×31 cm, rotting natur, kabel 1,2 m.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sindig-bliss-taklampe-o60",
+    "category": "taklampe",
+    "name": "Bliss taklampe Ø60",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/pendel/bliss-taklampe-o60",
+    "priceNok": 3999,
+    "salePriceNok": 1999,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -50 %). Finnes også i Ø80 (2 499 kr, før 4 999 kr, bliss-taklampe-o80). Oppgitt total høyde 150 cm inkl. oppheng; høyden på selve armaturen (0,30 m) er estimert. Fem ekstra glasstaver følger med.",
+    "dims": {
+      "w": 0.6,
+      "d": 0.6,
+      "h": 0.3
+    },
+    "archetype": "ceiling-ring",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.6,
+      "shadeH": 0.3,
+      "count": 1,
+      "spread": 0,
+      "dropDefault": 1,
+      "openBottom": true,
+      "translucent": 0.8,
+      "rods": 36,
+      "maxDrop": 1.5
+    },
+    "variants": [
+      {
+        "name": "Svart metall med glass",
+        "colors": {
+          "shade": "#dfe2e0",
+          "inner": "#f3efe6",
+          "base": "#1b1b1b",
+          "metal": "#1b1b1b",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "glass-clear",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "steel"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 5026,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Dekorativ ring i svart metall med hengende glasstaver og integrert, dimbar LED på hele 5026 lm. Glasset sprer lyset i et glitrende, mykt skjær.",
+    "why": "Svart metall går igjen fra kjøkkenet og dagens lampe, og den kraftige, dimbare LED-en lyser opp hele spiseplassen også mørke vinterkvelder ved elva.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Season%20ASIA%20Co.%20Ltd/Produkter/BLISS/321644/image-thumb__321644__PDP-Product/301351%20-%20Bliss%20taklampe%20%C3%9860%20integrert%20dimbar%20metall%20svart%20-%202.26a3a805.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 1 999 kr (før 3 999), Ø60, total høyde 150 cm, 5026 lm/3000 K dimbar, svart metall og glass. Ø80-prisen rettet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-magnor-rocks-xo-taklampe-o26",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Rocks Xo taklampe Ø26",
+    "brand": "Magnor",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/pendel/rocks-xo-taklampe-o26-1",
+    "priceNok": 3990,
+    "salePriceNok": 2394,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -40 %), pris per stk. Over et 160–200 cm bord anbefales 2–3 stk på rekke. Finnes også i Ø12,5 og Ø20,4 (se størrelsesvalg på siden). 1 x E27 maks 10 W, kabel 3 m.",
+    "dims": {
+      "w": 0.26,
+      "d": 0.26,
+      "h": 0.3
+    },
+    "archetype": "pendant-dome",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.26,
+      "shadeH": 0.3,
+      "count": 1,
+      "spread": 0.6,
+      "suggestedCount": 3,
+      "dropDefault": 1.1,
+      "openBottom": true,
+      "translucent": 0.6,
+      "ribbed": true,
+      "maxDrop": 3.3
+    },
+    "variants": [
+      {
+        "name": "Caramel glass",
+        "colors": {
+          "shade": "#a0622a",
+          "inner": "#c98a4a",
+          "base": "#2a2a2a",
+          "metal": "#2a2a2a",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "glass-clear",
+          "inner": "glass-clear",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Norsk designet glasspendel (Halvor Bakke for Magnor) i riflet caramelfarget glass med virvlende mønster. Lumen er estimert med en 806 lm LED-pære.",
+    "why": "Det varme, ravfargede glasset gir et gyllent skjær over den mørke røykeika og spiller fint mot de svarte metalldetaljene, særlig med to–tre lamper i rekke.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Home%20Brands%20AS/Produkter/ROCKS%20XO/611923/image-thumb__611923__PDP-Product/332093%20-%20Rocks%20Xo%20taklampe%20%C3%9826%20E27%20dimbar%20glass%20caramel%20-%201.9a17772c.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 2 394 kr (før 3 990), Ø26×30 cm, caramel glass, kabel 3 m. Priser på Ø12,5/Ø20,4 er ikke bekreftet og er fjernet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-aneta-calyps-taklampe-o45",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Calyps taklampe Ø45",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/pendel/calyps-taklampe-o45",
+    "priceNok": 1599,
+    "salePriceNok": 959,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -40 %). Finnes også i Ø55 (se størrelsesvalg på siden). 1 x E27 maks 10 W, kabel 1,3 m.",
+    "dims": {
+      "w": 0.45,
+      "d": 0.45,
+      "h": 0.2
+    },
+    "archetype": "pendant-dome",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.45,
+      "shadeH": 0.2,
+      "count": 1,
+      "spread": 0,
+      "dropDefault": 1.05,
+      "openBottom": true,
+      "translucent": 0.15,
+      "slats": true,
+      "maxDrop": 1.5
+    },
+    "variants": [
+      {
+        "name": "Svart finér",
+        "colors": {
+          "shade": "#1f1c1a",
+          "inner": "#2b2622",
+          "base": "#1a1a1a",
+          "metal": "#1a1a1a",
+          "cord": "#151515"
+        },
+        "materials": {
+          "shade": "oak",
+          "inner": "oak",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Kuppelformet skjerm av svarte finérspiler der lyset slipper mykt ut gjennom glippene. Lumen er estimert med en 806 lm LED-pære.",
+    "why": "Den svarte trespileskjermen knytter spiseplassen til det svarte kjøkkenet og de svarte stolbena, og er et rimelig og grafisk alternativ til dagens lampe.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/CALYPS/308171/image-thumb__308171__PDP-Product/298694%20-%20Calyps%20taklampe%20%C3%9845%20E27%20finer%20svart%20inkl.%20skjerm%20-%201.c3bf6ce9.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 959 kr (før 1 599), Ø45×20 cm, svart finér, kabel 1,3 m, også Ø55.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-aneta-pelagia-taklampe-o84",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Pelagia taklampe Ø84",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/pendel/pelagia-taklampe-o84",
+    "priceNok": 4999,
+    "salePriceNok": 2999,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -40 %). 8 integrerte lyskilder, justerbare lampehoder, kabel 1,5 m. Skjermstørrelse per hode er estimert.",
+    "dims": {
+      "w": 0.84,
+      "d": 0.84,
+      "h": 0.3
+    },
+    "archetype": "pendant-multi",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.12,
+      "shadeH": 0.08,
+      "count": 8,
+      "spread": 0.3,
+      "dropDefault": 1,
+      "openBottom": true,
+      "translucent": 0,
+      "layout": "branches",
+      "maxDrop": 1.8
+    },
+    "variants": [
+      {
+        "name": "Svart/gull",
+        "colors": {
+          "shade": "#1a1a1a",
+          "inner": "#c9a14a",
+          "base": "#1a1a1a",
+          "metal": "#1a1a1a",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "brass",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 780,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Moderne armlampe med åtte justerbare lampehoder i svart med gull innside, laget for spisestue og stue.",
+    "why": "Den ligner dagens svarte armlampe, men er bredere og lavere og dekker et utvidet bord bedre, med gull innside som gir et varmt glimt mot SAND-veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/PELAGIA/611753/image-thumb__611753__PDP-Product/327518%20-%20Pelagia%20taklampe%20%C3%9884%20integrert%208%20lyskilder%20dimbar%20metall%20svart-gull%20-%201.625c615e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 2 999 kr (før 4 999), Ø84×30 cm, 8 integrerte lyskilder, 780 lm/2700 K, kabel 1,5 m. Bestillingsvare på nett.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-aneta-valencia-taklampe-o45",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Valencia taklampe Ø45",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/pendel/valencia-taklampe-o45",
+    "priceNok": 1999,
+    "salePriceNok": 1199,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -40 %). Varianten Svart har egen side: https://www.bohus.no/lamper/taklamper/pendel/valencia-taklampe-o45-1 (samme pris). 1 x E27 maks 40 W, kabel 1,2 m. Antall blader/lag er estimert.",
+    "dims": {
+      "w": 0.45,
+      "d": 0.45,
+      "h": 0.21
+    },
+    "archetype": "pendant-tiered",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.45,
+      "shadeH": 0.21,
+      "count": 1,
+      "spread": 0,
+      "tiers": 3,
+      "dropDefault": 1.05,
+      "openBottom": true,
+      "translucent": 0.2,
+      "maxDrop": 1.41
+    },
+    "variants": [
+      {
+        "name": "Sand",
+        "colors": {
+          "shade": "#cbb89b",
+          "inner": "#efe6d6",
+          "base": "#cbb89b",
+          "metal": "#cbb89b",
+          "cord": "#cbb89b"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#e9e4da",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#151515"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "painted",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Retroinspirert metallpendel med skjerm av overlappende blader der lyset skinner ut mellom bladene, et rimelig alternativ til klassiske lagdelte skjermer. Lumen er estimert med en 806 lm LED-pære.",
+    "why": "Sandfargen er nesten lik veggfargen SAND og gir en rolig, helhetlig look, mens den svarte varianten heller binder rommet til kjøkkenet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/VALENCIA/308143/image-thumb__308143__PDP-Product/298708%20-%20Valencia%20taklampe%20%C3%9845%20E27%20metall%20sand%20inkl.%20skjerm%20-%201.21f6a7b8.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 1 199 kr (før 1 999), Ø45×21 cm, kabel 1,2 m, sand og svart (egen side).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "lampehuset-nova-life-kelly-taklampe-rekke-3lys-80cm-smoke",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Kelly taklampe rekke 3lys 80cm smoke",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/taklamper/takpendler/kelly-taklampe-rekke-3lys-80cm-smoke/",
+    "priceNok": 4999,
+    "salePriceNok": 2499,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -50 %). 3 x E27 maks 40 W, kabel 1,5 m. Stangen er 80 cm lang og 8 cm bred. Metallfargen er ikke oppgitt på siden (antatt svart matt); høyden på armaturen er estimert.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.19,
+      "h": 0.25
+    },
+    "archetype": "pendant-multi",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.19,
+      "shadeH": 0.19,
+      "count": 3,
+      "spread": 0.3,
+      "dropDefault": 1.05,
+      "openBottom": false,
+      "translucent": 0.5,
+      "layout": "row",
+      "shadeShape": "globe",
+      "maxDrop": 1.69
+    },
+    "variants": [
+      {
+        "name": "Smoke",
+        "colors": {
+          "shade": "#4a4440",
+          "inner": "#f0d9a8",
+          "base": "#1b1b1b",
+          "metal": "#1b1b1b",
+          "cord": "#151515"
+        },
+        "materials": {
+          "shade": "glass-smoked",
+          "inner": "glass-clear",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1400,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Tre munnblåste glasskupler i røykfarget glass på en 80 cm lang stang. Lumen er estimert med tre 470 lm LED-pærer.",
+    "why": "Røykglasset videreføres fra dagens lampe, og tre kupler på rekke dekker hele lengden av det ovale bordet, også når det er slått ut.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=640,h=640,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/5395808071/sites-default-files-product_image-8_33.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-18: 2 499 kr (før 4 999), 80 cm stang (8 cm bred), Ø19 glass, 3×E27, kabel 150 cm. Lagerstatus ikke vist.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "lampehuset-nova-life-daniella-taklampe-rekke-3lys-80cm-natur",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Daniella taklampe rekke 3lys 80cm natur",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/taklamper/takpendler/daniella-taklampe-rekke-3lys-80cm-natur/",
+    "priceNok": 6999,
+    "salePriceNok": 3499,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -50 %). 3 x E27 maks 40 W, kabel 1,7 m. Siden oppgir «lengde 170 cm, bredde 80 cm, diameter 20 cm»; tolket som 80 cm stang med Ø20 skjermer og 170 cm kabel. Materiale: finér i naturfarge.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.2,
+      "h": 0.22
+    },
+    "archetype": "pendant-multi",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.2,
+      "shadeH": 0.22,
+      "count": 3,
+      "spread": 0.3,
+      "dropDefault": 1.05,
+      "openBottom": true,
+      "translucent": 0.2,
+      "layout": "row",
+      "shadeShape": "slatted",
+      "maxDrop": 1.92
+    },
+    "variants": [
+      {
+        "name": "Natur finér",
+        "colors": {
+          "shade": "#c49a6c",
+          "inner": "#d8b58a",
+          "base": "#1b1b1b",
+          "metal": "#1b1b1b",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "oak",
+          "inner": "oak",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1400,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Tre skjermer av naturfargede finérspiler på rekke, som sender lyset ned og lager et lunt stripemønster. Lumen er estimert med tre 470 lm LED-pærer.",
+    "why": "Spilene i lys, naturfarget finér henter opp tonen i eikegulvet og bryter opp det mørke bordet, mens rekkeformen passer det avlange bordet.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=640,h=640,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/5487508061/daniella-rekke1.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-18: 3 499 kr (før 6 999), 80 cm, Ø20, 3×E27, kabel 170 cm. Materialet er finér (rettet fra eik). Lagerstatus ikke vist.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "nordicnest-by-rydens-cloud-pendel-o48-smoke",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Cloud pendel Ø48 cm, Smoke",
+    "brand": "By Rydéns",
+    "store": "Nordic Nest",
+    "url": "https://nordicnest.no/merkevarer/by-rydens/cloud-pendel-o48-cm/?variantId=623864-01",
+    "priceNok": 3347,
+    "salePriceNok": 1349,
+    "priceNote": "pris sjekket 2026-10-18 (kampanje -60 % fra veil. pris). 1 x E27 maks 40 W. Kabellengde er ikke oppgitt. Siden oppgir metallfarge «Sølv». Antall og størrelse på glasskulene er estimert.",
+    "dims": {
+      "w": 0.48,
+      "d": 0.48,
+      "h": 0.32
+    },
+    "archetype": "pendant-multi",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.14,
+      "shadeH": 0.14,
+      "count": 12,
+      "spread": 0.12,
+      "dropDefault": 1.05,
+      "openBottom": false,
+      "translucent": 0.55,
+      "layout": "cluster",
+      "shadeShape": "globe",
+      "maxDrop": 2
+    },
+    "variants": [
+      {
+        "name": "Smoke",
+        "colors": {
+          "shade": "#5b5753",
+          "inner": "#f0d9a8",
+          "base": "#9e9e9e",
+          "metal": "#9e9e9e",
+          "cord": "#2a2a2a"
+        },
+        "materials": {
+          "shade": "glass-smoked",
+          "inner": "glass-clear",
+          "base": "chrome",
+          "metal": "chrome",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Skulpturell pendel der munnblåste glasskuler i røykfarge danner en svevende lyssky rundt én lyskilde. Lumen er estimert med en 806 lm LED-pære.",
+    "why": "Røykglasskulene gjentar kulene i dagens lampe, men i en mykere og mer samlet form som ikke stjeler oppmerksomheten fra elveutsikten.",
+    "imageUrl": "https://nordicnest.no/assets/blobs/by-rydens-cloud-pendel-48-cm-smoke/623864-01_1_LSProductImageMain-2bba3413ba.png?preset=medium&dpr=2",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-18: 1 349 kr (veil. 3 347), Ø48×32 cm, E27 maks 40 W, på lager. Kabellengde ikke oppgitt (maks nedheng estimert).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "lampemesteren-louis-poulsen-ph-5-500-black-edition-2025",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "PH 5 500 hengelampe Black Edition 2025 E27",
+    "brand": "Louis Poulsen",
+    "store": "Lampemesteren",
+    "url": "https://www.lampemesteren.no/p/ph-5-500-hengelampe-black-edition-2025-e27-louis-poulsen-10047274.html",
+    "priceNok": 8800,
+    "salePriceNok": 8095,
+    "priceNote": "pris sjekket 2026-10-18 (-8 % fra veil. pris). Investeringsalternativ, klart dyrere enn de andre. 1 x E27 maks 75 W, maks nedheng 327 cm. Andre PH 5-farger hos Lampemesteren koster ca. 8 655–9 510 kr.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.5,
+      "h": 0.267
+    },
+    "archetype": "pendant-tiered",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.5,
+      "shadeH": 0.267,
+      "count": 1,
+      "spread": 0,
+      "tiers": 3,
+      "dropDefault": 1.05,
+      "openBottom": true,
+      "translucent": 0,
+      "maxDrop": 3.27
+    },
+    "variants": [
+      {
+        "name": "Svart/hvit (Black Edition 2025)",
+        "colors": {
+          "shade": "#141414",
+          "inner": "#f2f2f0",
+          "base": "#141414",
+          "metal": "#141414",
+          "cord": "#141414"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "painted",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1113,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Designklassikeren fra 1958 med lagdelte skjermer som gir helt blendfritt lys, her i svart med hvit innside. Pære følger ikke med; lumen er estimert med en LED-pære på ca. 1100 lm.",
+    "why": "Den svarte versjonen passer perfekt til det svarte kjøkkenet og de svarte detaljene, og det blendfrie lyset er ideelt over et spisebord der man sitter lenge.",
+    "imageUrl": "https://lw-cdn.com/images/5D539E70FAC5/k_ce1992a625fc58f2616dd5e798bc9205;w_1600;h_1600;q_100/10047274.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampemesteren.no 2026-10-18: 8 095 kr (veil. 8 800), Ø50×26,7 cm, E27 maks 75 W, maks nedheng 327 cm, på lager.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "lampemesteren-lucande-stakato-6-led-pendellampe-l120-black",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Stakato 6 LED-pendellampe L120 Black",
+    "brand": "Lucande",
+    "store": "Lampemesteren",
+    "url": "https://www.lampemesteren.no/p/stakato-6-led-pendellampe-l120-black-lucande-9627601.html",
+    "priceNok": 2949,
+    "salePriceNok": 1459,
+    "priceNote": "pris sjekket 2026-10-18 (-50 % fra veil. pris). Integrert LED 25 W, 1430 lm, 3000 K; dimmes i tre trinn (100/40/10 %) med vanlig bryter. Maks nedheng 210 cm. Baldakin 59 cm lang.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.016,
+      "h": 0.016
+    },
+    "archetype": "pendant-linear",
+    "mount": "ceiling",
+    "params": {
+      "shadeD": 0.016,
+      "shadeH": 0.016,
+      "shadeW": 1.2,
+      "count": 6,
+      "spread": 0.2,
+      "dropDefault": 1.05,
+      "openBottom": true,
+      "translucent": 0,
+      "cordCount": 2,
+      "maxDrop": 2.1
+    },
+    "variants": [
+      {
+        "name": "Svart matt",
+        "colors": {
+          "shade": "#1a1a1a",
+          "inner": "#f5f3ee",
+          "base": "#1a1a1a",
+          "metal": "#1a1a1a",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "steel"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1430,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Ultratynn, 120 cm lang LED-stang i matt svart aluminium som nesten forsvinner i rommet, men gir godt arbeidslys på bordet.",
+    "why": "Den svarte, slanke linjen er nesten usynlig mot vinduene og lar elveutsikten være i fokus, samtidig som den følger bordet når det er slått ut til 200 cm.",
+    "imageUrl": "https://lw-cdn.com/images/BD7BD2593C19/k_f74e26acc8cfc3fcdfd3473fda256d25;w_1600;h_1600;q_100/9627601.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampemesteren.no 2026-10-18: 1 459 kr (veil. 2 949), 120×1,6×1,6 cm, 6 LED-moduler, 1430 lm/3000 K, maks nedheng 210 cm.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "christiania-belysning-secto-design-secto-4200-taklampe",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Secto 4200 taklampe",
+    "brand": "Secto Design",
+    "store": "Christiania Belysning",
+    "url": "https://www.christiania-belysning.no/products/secto-4200-taklampe-o30",
+    "priceNok": 7495,
+    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (ordinær pris, ikke på kampanje): 7 495 kr for hvit, bjørk og sort, 8 090 kr for valnøttfinér. Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, 1060 lm, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no). Prisjakt viste samme dag lavere pris hos danske Magasin du Nord (fra 6 296 kr, farge ikke oppgitt).",
+    "dims": {
+      "w": 0.3,
+      "d": 0.3,
+      "h": 0.6
+    },
+    "archetype": "pendant-slatted",
+    "mount": "ceiling",
+    "params": {
+      "profile": "secto",
+      "shadeD": 0.3,
+      "shadeH": 0.6,
+      "topD": 0.129,
+      "bottomD": 0.3,
+      "neckD": 0.129,
+      "neckH": 0.19,
+      "maxDAt": 0.6,
+      "profilePoints": [
+        [
+          0,
+          0.129
+        ],
+        [
+          0.19,
+          0.129
+        ],
+        [
+          0.21,
+          0.138
+        ],
+        [
+          0.24,
+          0.15
+        ],
+        [
+          0.27,
+          0.164
+        ],
+        [
+          0.3,
+          0.176
+        ],
+        [
+          0.36,
+          0.201
+        ],
+        [
+          0.42,
+          0.229
+        ],
+        [
+          0.48,
+          0.256
+        ],
+        [
+          0.54,
+          0.282
+        ],
+        [
+          0.6,
+          0.3
+        ]
+      ],
+      "slats": 52,
+      "slatW": 0.0078,
+      "slatT": 0.0025,
+      "rings": 3,
+      "bulbAt": 0.1,
+      "closedTop": true,
+      "openBottom": true,
+      "count": 1,
+      "spread": 0,
+      "translucent": 0,
+      "dropDefault": 1.25,
+      "maxDrop": 2.1,
+      "canopy": "white",
+      "canopyD": 0.122,
+      "canopyH": 0.112,
+      "shapeNote": "Trumpet/flared cone, NOT a bowed spindle (profile key 'secto' kept; follow profilePoints). profilePoints = [metres down from shade top, outer diameter in metres], measured from the store's cut-out product photo (H/D ratio matches the official 60/30 cm). Top 0.19 m is a straight closed cylinder (neck, slats touching edge to edge, top closed by a small cap where the cord enters) that hides the bulb; below a soft shoulder the slats run almost straight (very slightly concave) out to the widest point, the open bottom rim at 0.30 m. Slats are thin, flat, vertical birch strips with the broad face outward, held by thin plywood rings inside (top, neck/shoulder, bottom rim, estimated). Slat count and slat width are estimated from the photo (about 52 x 7.8 mm, gaps of about 10 mm at the rim).",
+      "canopyNote": "Ceiling cup in matt soft lacquer: white for Bjørk, Hvit and Valnøtt, black for Sort (use the variant's metal colour).",
+      "slatNote": "Black and white are laminate on the outer face only; the inner face of the slats is natural birch (warm glow inside when lit). Walnut is veneer on the outer face, birch inside."
+    },
+    "variants": [
+      {
+        "name": "Bjørk",
+        "colors": {
+          "shade": "#dcc6a2",
+          "inner": "#e4d3b6",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "ash",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Valnøtt",
+        "colors": {
+          "shade": "#6f4f3a",
+          "inner": "#dcc6a2",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "walnut",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "priceNok": 8090
+      },
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#262422",
+          "inner": "#d8c3a0",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#ecebe6",
+          "inner": "#e6dccb",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Secto Designs aller første pendel (Seppo Koho, 1999), håndlaget i Finland av tynne, formpressede bjørkespiler: en smal, lukket hals øverst skjuler pæren, og under den vider spilene seg ut i en slank kjegle til Ø30 nederst. Lyset siles mykt og blendfritt ut mellom spilene.",
+    "why": "Den høye, slanke kjeglen utnytter takhøyden på ca. 2,65 m over spisebordet uten å ta mye plass i bredden, og de varme trespilene passer til SAND-veggene; velg valnøtt for å matche røykeikebordet eller sort for å binde lampen til det svarte kjøkkenet.",
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4200_birch_frilagt.png?v=1791795696",
+    "verified": true,
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 7 495 kr (valnøtt 8 090 kr), ikke på salg, alle fire farger bestillbare. Mål Ø30 × 60 cm, 1,4 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Secto 4200, 1999). Form sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "christiania-belysning-secto-design-secto-4201-small-taklampe",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Secto 4201 Small taklampe",
+    "brand": "Secto Design",
+    "store": "Christiania Belysning",
+    "url": "https://www.christiania-belysning.no/products/secto-4201-small-taklampe-o25",
+    "priceNok": 6765,
+    "salePriceNok": 5412,
+    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (kampanje -20 %): 5 412 kr (før 6 765 kr) for hvit, bjørk og sort; valnøttfinér 5 876 kr (før 7 345 kr). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, 1060 lm, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no).",
+    "dims": {
+      "w": 0.25,
+      "d": 0.25,
+      "h": 0.45
+    },
+    "archetype": "pendant-slatted",
+    "mount": "ceiling",
+    "params": {
+      "profile": "secto",
+      "shadeD": 0.25,
+      "shadeH": 0.45,
+      "topD": 0.126,
+      "bottomD": 0.25,
+      "neckD": 0.126,
+      "neckH": 0.167,
+      "maxDAt": 0.45,
+      "profilePoints": [
+        [
+          0,
+          0.126
+        ],
+        [
+          0.167,
+          0.126
+        ],
+        [
+          0.18,
+          0.128
+        ],
+        [
+          0.2025,
+          0.137
+        ],
+        [
+          0.225,
+          0.148
+        ],
+        [
+          0.27,
+          0.169
+        ],
+        [
+          0.315,
+          0.19
+        ],
+        [
+          0.36,
+          0.211
+        ],
+        [
+          0.405,
+          0.233
+        ],
+        [
+          0.45,
+          0.25
+        ]
+      ],
+      "slats": 52,
+      "slatW": 0.0076,
+      "slatT": 0.0025,
+      "rings": 3,
+      "bulbAt": 0.09,
+      "closedTop": true,
+      "openBottom": true,
+      "count": 1,
+      "spread": 0,
+      "translucent": 0,
+      "dropDefault": 1.25,
+      "maxDrop": 1.95,
+      "canopy": "white",
+      "canopyD": 0.122,
+      "canopyH": 0.112,
+      "shapeNote": "Smaller version of the Secto 4200 with the same construction: a straight closed cylindrical neck (Ø about 0.126 m, the same as on the 4200) for the top 0.167 m, then an almost straight cone flaring to an open Ø 0.25 m rim. profilePoints = [metres down from shade top, outer diameter in metres], measured from the store's cut-out photo (H/D 1.81, official 45/25). Slat count and width are estimated from the photo. Trumpet/flared cone, NOT a bowed spindle (profile key secto kept; follow profilePoints).",
+      "canopyNote": "Ceiling cup in matt soft lacquer: white for Bjørk, Hvit and Valnøtt, black for Sort (use the variant's metal colour).",
+      "slatNote": "Black and white are laminate on the outer face only; the inner face of the slats is natural birch (warm glow inside when lit). Walnut is veneer on the outer face, birch inside."
+    },
+    "variants": [
+      {
+        "name": "Bjørk",
+        "colors": {
+          "shade": "#dcc6a2",
+          "inner": "#e4d3b6",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "ash",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Valnøtt",
+        "colors": {
+          "shade": "#6f4f3a",
+          "inner": "#dcc6a2",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "walnut",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "priceNok": 7345,
+        "salePriceNok": 5876
+      },
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#262422",
+          "inner": "#d8c3a0",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#ecebe6",
+          "inner": "#e6dccb",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Den mindre utgaven av Secto 4200 (45 cm høy, Ø25) med den samme smale, lukkede halsen og den utvidende kjeglen av håndlagde bjørkespiler. Secto Design lager den for rom med lavere tak.",
+    "why": "Med bare 45 cm høyde passer den der taket er flatt 2,4 m i TV-stua og kjøkkenet, og to–tre stykker i rekke gir jevnt lys over hele det ovale spisebordet.",
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4201_birch_frilagt.png?v=1791795702",
+    "verified": true,
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 5 412 kr (før 6 765), valnøtt 5 876 kr (før 7 345). Mål Ø25 × 45 cm, 1,2 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Secto Small 4201, 2000). Fjernet ubekreftede Finnish Design Shop-priser.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "christiania-belysning-secto-design-octo-4240-taklampe-o54",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Octo 4240 taklampe ø54",
+    "brand": "Secto Design",
+    "store": "Christiania Belysning",
+    "url": "https://www.christiania-belysning.no/products/octo-4240-taklampe-o54",
+    "priceNok": 11395,
+    "salePriceNok": 9116,
+    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (kampanje -20 %): 9 116 kr (før 11 395 kr) for hvit, bjørk og sort; valnøttfinér 9 588 kr (før 11 985 kr). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no).",
+    "dims": {
+      "w": 0.54,
+      "d": 0.54,
+      "h": 0.68
+    },
+    "archetype": "pendant-slatted",
+    "mount": "ceiling",
+    "params": {
+      "profile": "octo",
+      "shadeD": 0.54,
+      "shadeH": 0.68,
+      "topD": 0.125,
+      "bottomD": 0.36,
+      "neckD": 0.125,
+      "neckH": 0.18,
+      "maxDAt": 0.47,
+      "profilePoints": [
+        [
+          0,
+          0.125
+        ],
+        [
+          0.17,
+          0.125
+        ],
+        [
+          0.187,
+          0.134
+        ],
+        [
+          0.204,
+          0.156
+        ],
+        [
+          0.221,
+          0.209
+        ],
+        [
+          0.238,
+          0.276
+        ],
+        [
+          0.255,
+          0.326
+        ],
+        [
+          0.272,
+          0.364
+        ],
+        [
+          0.306,
+          0.426
+        ],
+        [
+          0.34,
+          0.472
+        ],
+        [
+          0.374,
+          0.501
+        ],
+        [
+          0.408,
+          0.524
+        ],
+        [
+          0.442,
+          0.536
+        ],
+        [
+          0.469,
+          0.54
+        ],
+        [
+          0.51,
+          0.535
+        ],
+        [
+          0.544,
+          0.521
+        ],
+        [
+          0.578,
+          0.497
+        ],
+        [
+          0.612,
+          0.464
+        ],
+        [
+          0.646,
+          0.417
+        ],
+        [
+          0.663,
+          0.384
+        ],
+        [
+          0.68,
+          0.36
+        ]
+      ],
+      "slats": 44,
+      "slatW": 0.0085,
+      "slatT": 0.0025,
+      "rings": 3,
+      "bulbAt": 0.1,
+      "closedTop": true,
+      "openBottom": true,
+      "count": 1,
+      "spread": 0,
+      "translucent": 0,
+      "dropDefault": 1.2,
+      "maxDrop": 2.18,
+      "canopy": "white",
+      "canopyD": 0.122,
+      "canopyH": 0.112,
+      "shapeNote": "Flask/onion shape (like a round-bottom flask with a neck), NOT octagonal and NOT widest at the top (profile key 'octo' kept; follow profilePoints). profilePoints = [metres down from shade top, outer diameter in metres], measured from the store's cut-out photo (H/D 1.275, official 68/54). A straight, closed cylindrical neck Ø 0.125 m for the top 0.17 m hides the bulb; the slats then bend out in a quick, rounded shoulder (Ø 0.16 to 0.36 m within 0.07 m of height), swell to the widest Ø 0.54 m about 0.47 m below the top (about 69 % of the height), and curve back in to an open bottom rim of Ø about 0.36 m. Each slat is one continuous thin, bent birch strip, broad face outward, fixed to thin plywood rings (neck top, neck base, bottom rim, estimated). Slat count and width are estimated from the photo (about 44 x 8.5 mm; the slats nearly touch in the neck and leave gaps of about 3 cm at the widest point).",
+      "canopyNote": "Ceiling cup in matt soft lacquer: white for Bjørk, Hvit and Valnøtt, black for Sort (use the variant's metal colour).",
+      "slatNote": "Black and white are laminate on the outer face only; the inner face of the slats is natural birch (warm glow inside when lit). Walnut is veneer on the outer face, birch inside."
+    },
+    "variants": [
+      {
+        "name": "Bjørk",
+        "colors": {
+          "shade": "#dcc6a2",
+          "inner": "#e4d3b6",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "ash",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Valnøtt",
+        "colors": {
+          "shade": "#6f4f3a",
+          "inner": "#dcc6a2",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "walnut",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "priceNok": 11985,
+        "salePriceNok": 9588
+      },
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#262422",
+          "inner": "#d8c3a0",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#ecebe6",
+          "inner": "#e6dccb",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Secto Designs ikoniske Octo (Seppo Koho, 2005): en luftig, rund lykt av tynne bjørkespiler med smal hals øverst, bred mage på Ø54 og innsvingt, åpen bunn, omtrent som en kolbe. Pæren sitter skjult i halsen, så lyset blir mykt og uten blending, med vakre skyggestriper.",
+    "why": "Den store, runde formen fyller rommet over det ovale spisebordet på en luftig måte og blir et varmt skandinavisk midtpunkt mot elveutsikten, men den trenger takhøyde og passer derfor best i den høye delen av rommet (ca. 2,65 m eller mer).",
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Octo4240_birch_frilagt_3194d8f7-719d-4ad2-87d4-01f3a5930101.png?v=1791795764",
+    "verified": true,
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 9 116 kr (før 11 395), valnøtt 9 588 kr (før 11 985). Mål Ø54 × 68 cm, 2,0 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Octo 4240, 2005). Kolbeform (ikke åttekantet) sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "christiania-belysning-secto-design-octo-4241-small-taklampe-o45",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Octo 4241 Small taklampe ø45",
+    "brand": "Secto Design",
+    "store": "Christiania Belysning",
+    "url": "https://www.christiania-belysning.no/products/octo-4241-small-taklampe-o45",
+    "priceNok": 10320,
+    "salePriceNok": 8256,
+    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (kampanje -20 %): 8 256 kr (før 10 320 kr) for hvit, bjørk og sort; valnøttfinér 8 736 kr (før 10 920 kr). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no). Prisjakt viste samme dag lavere pris hos danske Magasin du Nord (6 160 kr, sort eller hvit).",
+    "dims": {
+      "w": 0.45,
+      "d": 0.45,
+      "h": 0.55
+    },
+    "archetype": "pendant-slatted",
+    "mount": "ceiling",
+    "params": {
+      "profile": "octo",
+      "shadeD": 0.45,
+      "shadeH": 0.55,
+      "topD": 0.107,
+      "bottomD": 0.32,
+      "neckD": 0.107,
+      "neckH": 0.155,
+      "maxDAt": 0.385,
+      "profilePoints": [
+        [
+          0,
+          0.107
+        ],
+        [
+          0.151,
+          0.107
+        ],
+        [
+          0.165,
+          0.115
+        ],
+        [
+          0.179,
+          0.142
+        ],
+        [
+          0.193,
+          0.203
+        ],
+        [
+          0.206,
+          0.252
+        ],
+        [
+          0.22,
+          0.289
+        ],
+        [
+          0.248,
+          0.346
+        ],
+        [
+          0.275,
+          0.385
+        ],
+        [
+          0.303,
+          0.414
+        ],
+        [
+          0.33,
+          0.434
+        ],
+        [
+          0.358,
+          0.446
+        ],
+        [
+          0.385,
+          0.45
+        ],
+        [
+          0.413,
+          0.448
+        ],
+        [
+          0.44,
+          0.438
+        ],
+        [
+          0.468,
+          0.421
+        ],
+        [
+          0.495,
+          0.395
+        ],
+        [
+          0.523,
+          0.359
+        ],
+        [
+          0.536,
+          0.336
+        ],
+        [
+          0.55,
+          0.32
+        ]
+      ],
+      "slats": 44,
+      "slatW": 0.0075,
+      "slatT": 0.0025,
+      "rings": 3,
+      "bulbAt": 0.09,
+      "closedTop": true,
+      "openBottom": true,
+      "count": 1,
+      "spread": 0,
+      "translucent": 0,
+      "dropDefault": 1.2,
+      "maxDrop": 2.05,
+      "canopy": "white",
+      "canopyD": 0.122,
+      "canopyH": 0.112,
+      "shapeNote": "Compact Octo with the same flask/onion construction as the Octo 4240: a straight closed neck Ø about 0.107 m for the top 0.15 m, a quick rounded shoulder, the widest Ø 0.45 m at about 70 % of the height, then curving back in to an open bottom rim of Ø about 0.32 m. profilePoints = [metres down from shade top, outer diameter in metres], measured from the store's cut-out photo (photo H/D 1.255, official 55/45 = 1.22; heights are scaled to the official 0.55 m). Slat count and width are estimated. Flask/onion shape, NOT octagonal and NOT widest at the top (profile key octo kept; follow profilePoints).",
+      "canopyNote": "Ceiling cup in matt soft lacquer: white for Bjørk, Hvit and Valnøtt, black for Sort (use the variant's metal colour).",
+      "slatNote": "Black and white are laminate on the outer face only; the inner face of the slats is natural birch (warm glow inside when lit). Walnut is veneer on the outer face, birch inside."
+    },
+    "variants": [
+      {
+        "name": "Bjørk",
+        "colors": {
+          "shade": "#dcc6a2",
+          "inner": "#e4d3b6",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "ash",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Valnøtt",
+        "colors": {
+          "shade": "#6f4f3a",
+          "inner": "#dcc6a2",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "walnut",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "priceNok": 10920,
+        "salePriceNok": 8736
+      },
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#262422",
+          "inner": "#d8c3a0",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#ecebe6",
+          "inner": "#e6dccb",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#e8e6e1"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "ash",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "En mer kompakt Octo (2018) på Ø45 × 55 cm med den samme kolbeformen: smal hals, rund mage og innsvingt, åpen bunn i håndlagde bjørkespiler. Pæren er skjult i halsen og gir både mykt nedlys og stemningslys.",
+    "why": "Octo Small gir den samme ikoniske silhuetten uten å dominere spiseplassen, og den lyse bjørken spiller fint mot det lysgrå eikegulvet og de lyse bouclé-stolene rundt bordet.",
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/OctoSmall4241_birch_frilagt_787c8fd0-0e8d-41a8-a889-9051740dabf1.png?v=1791896520",
+    "verified": true,
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 8 256 kr (før 10 320), valnøtt 8 736 kr (før 10 920). Mål Ø45 × 55 cm, 1,3 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Octo Small 4241, 2018). Form sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser.",
+    "priceConfidence": "checked"
+  }
+]

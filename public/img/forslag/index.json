@@ -1,0 +1,270 @@
+{
+  "montages": {
+    "0": {
+      "file": "img/forslag/0.jpg",
+      "thumb": "img/forslag/thumb/0.jpg",
+      "source": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/0_for.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 1
+    },
+    "B": {
+      "file": "img/forslag/B.jpg",
+      "thumb": "img/forslag/thumb/B.jpg",
+      "source": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/1_B_spilevegg_eik_anbefalt.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 1
+    },
+    "B2": {
+      "file": "img/forslag/B2.jpg",
+      "thumb": "img/forslag/thumb/B2.jpg",
+      "source": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/2_B2_spilevegg_rokt_eik.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 1
+    },
+    "E": {
+      "file": "img/forslag/E.jpg",
+      "thumb": "img/forslag/thumb/E.jpg",
+      "source": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/3_E_spileband_skjenk.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 1
+    },
+    "F": {
+      "file": "img/forslag/F.jpg",
+      "thumb": "img/forslag/thumb/F.jpg",
+      "source": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/4_F_tre_spilefelt.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 1
+    },
+    "A": {
+      "file": "img/forslag/A.jpg",
+      "thumb": "img/forslag/thumb/A.jpg",
+      "source": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/5_A_tekstilpaneler_kull.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 1
+    },
+    "G": {
+      "file": "img/forslag/G.jpg",
+      "thumb": "img/forslag/thumb/G.jpg",
+      "source": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/6_G_veggteppe.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 1
+    },
+    "H": {
+      "file": "img/forslag/H.jpg",
+      "thumb": "img/forslag/thumb/H.jpg",
+      "source": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/7_H_mork_vegg_akustikkbilder.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 1
+    },
+    "K": {
+      "file": "img/forslag/K.jpg",
+      "thumb": "img/forslag/thumb/K.jpg",
+      "source": "stue_hoy_vegg_forslag/2_Kunst_og_monster/10_K_kunst_og_spilefelt.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 2
+    },
+    "P": {
+      "file": "img/forslag/P.jpg",
+      "thumb": "img/forslag/thumb/P.jpg",
+      "source": "stue_hoy_vegg_forslag/2_Kunst_og_monster/11_P_akupixel_sjakkbrett.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 2
+    },
+    "S": {
+      "file": "img/forslag/S.jpg",
+      "thumb": "img/forslag/thumb/S.jpg",
+      "source": "stue_hoy_vegg_forslag/2_Kunst_og_monster/12_S_filtsirkler.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 2
+    },
+    "P1": {
+      "file": "img/forslag/P1.jpg",
+      "thumb": "img/forslag/thumb/P1.jpg",
+      "source": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/14_P1_naturell_eik.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 3
+    },
+    "P2": {
+      "file": "img/forslag/P2.jpg",
+      "thumb": "img/forslag/thumb/P2.jpg",
+      "source": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/15_P2_rokt_eik.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 3
+    },
+    "P3": {
+      "file": "img/forslag/P3.jpg",
+      "thumb": "img/forslag/thumb/P3.jpg",
+      "source": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/16_P3_valnott.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 3
+    },
+    "P4": {
+      "file": "img/forslag/P4.jpg",
+      "thumb": "img/forslag/thumb/P4.jpg",
+      "source": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/17_P4_svart_eik.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 3
+    },
+    "P5": {
+      "file": "img/forslag/P5.jpg",
+      "thumb": "img/forslag/thumb/P5.jpg",
+      "source": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/18_P5_tofarget.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 3
+    },
+    "C": {
+      "file": "img/forslag/C.jpg",
+      "thumb": "img/forslag/thumb/C.jpg",
+      "source": "stue_hoy_vegg_forslag/4_Nye_retninger/20_C_gardinvegg_salvie.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 4
+    },
+    "M": {
+      "file": "img/forslag/M.jpg",
+      "thumb": "img/forslag/thumb/M.jpg",
+      "source": "stue_hoy_vegg_forslag/4_Nye_retninger/21_M_mose_og_rokt_eik.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 4
+    },
+    "X": {
+      "file": "img/forslag/X.jpg",
+      "thumb": "img/forslag/thumb/X.jpg",
+      "source": "stue_hoy_vegg_forslag/4_Nye_retninger/22_X_trebetong_sekskant.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 4
+    },
+    "T": {
+      "file": "img/forslag/T.jpg",
+      "thumb": "img/forslag/thumb/T.jpg",
+      "source": "stue_hoy_vegg_forslag/4_Nye_retninger/23_T_tynne_spiler_flush.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 4
+    },
+    "G2": {
+      "file": "img/forslag/G2.jpg",
+      "thumb": "img/forslag/thumb/G2.jpg",
+      "source": "stue_hoy_vegg_forslag/4_Nye_retninger/24_G2_spilevegg_med_knagger.jpg",
+      "size": [
+        1288,
+        1030
+      ],
+      "group": 4
+    }
+  },
+  "overviews": [
+    {
+      "group": 1,
+      "file": "img/forslag/oversikt-1.jpg",
+      "source": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/00_oversikt_alle_alternativer.jpg",
+      "size": [
+        954,
+        1600
+      ]
+    },
+    {
+      "group": 2,
+      "file": "img/forslag/oversikt-2.jpg",
+      "source": "stue_hoy_vegg_forslag/2_Kunst_og_monster/13_oversikt_kunst_og_monster.jpg",
+      "size": [
+        1318,
+        1160
+      ]
+    },
+    {
+      "group": 3,
+      "file": "img/forslag/oversikt-3.jpg",
+      "source": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/19_oversikt_sjakkbrett_farger.jpg",
+      "size": [
+        1259,
+        1600
+      ]
+    },
+    {
+      "group": 4,
+      "file": "img/forslag/oversikt-4.jpg",
+      "source": "stue_hoy_vegg_forslag/4_Nye_retninger/25_oversikt_nye_retninger.jpg",
+      "size": [
+        1259,
+        1600
+      ]
+    }
+  ],
+  "drawings": [
+    {
+      "file": "img/forslag/tegning-08.png",
+      "source": "stue_hoy_vegg_forslag/5_Tegninger/08_oppriss_alle_alternativer.png",
+      "size": [
+        1225,
+        1600
+      ]
+    },
+    {
+      "file": "img/forslag/tegning-09.png",
+      "source": "stue_hoy_vegg_forslag/5_Tegninger/09_B_arbeidstegning_oppriss_og_snitt.png",
+      "size": [
+        1600,
+        1179
+      ]
+    }
+  ]
+}

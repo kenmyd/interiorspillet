@@ -1,0 +1,3822 @@
+{
+  "version": 1,
+  "generated": "2026-10-18",
+  "source": "stue_hoy_vegg_forslag (LES_MEG.txt, 5_Tegninger 08/09, alle fotomontasjer og oversiktsark) + bilder_stue 20261018_083012/082809",
+  "units": "meter; u langs veggen fra nisjehjørnet, v opp fra gulvet; (u, v) = nedre venstre hjørne av elementet; cu/cv = senter",
+  "rankingNote": "Rangering fra LES_MEG: 1) C gardinvegg  2) T eller B i røkt eik (B2)  3) P2 sjakkbrett røkt eik. B er «anbefalt for mest demping» i runde 1.",
+  "acousticModel": {
+    "formula": "RT60 ≈ 22,7 / (26,4 + ΔA)",
+    "k": 22.7,
+    "baseAbsorption": 26.4,
+    "volumeM3": 141,
+    "note": "Sabine (0,161·V/A) kalibrert mot tallene i forslagene: i dag 0,86 s; B +7 m² → 0,68 s; E +3,3 → 0,76 s osv. ΔA = tilført absorpsjon i m² Sabine (500–1000 Hz). Gjelder veggen alene – teppe, gardiner og takabsorbenter kommer i tillegg."
+  },
+  "wallFacts": {
+    "width": 3.9,
+    "height": 3,
+    "uStartDescription": "u = 0 er nisjehjørnet mot TV-stua (venstre ende når man står i stua og ser på veggen). u øker mot høyre, mot dørkarmen ved kjøkkenenden; u = 3,90 er venstre kant av dørkarmen. v = 0 er gulvet, v = 3,00 er taket langs veggen.",
+    "orientation": {
+      "faces": "+x (sør, mot de store vinduene)",
+      "normal": [
+        1,
+        0,
+        0
+      ],
+      "uDirection": [
+        0,
+        0,
+        -1
+      ],
+      "note": "Den høye veggen er nordveggen i spise-/stuedelen. Venstre ende (u = 0) ligger mot vest/TV-stua (+z), høyre ende mot øst/kjøkkenet (−z)."
+    },
+    "worldPlacementHint": {
+      "planeX": 3.23,
+      "uZeroZ": 8.51,
+      "note": "Grovt estimat fra plantegningen (soverommets østvegg, 50,5 px/m). Ikke målt – room-spec/layout skal overstyre."
+    },
+    "ceiling": {
+      "heightAtWall": 3,
+      "note": "Taket er flatt langs hele veggen (3,00 m) og skrår ned til 2,40 m mot vinduene i sør, altså vinkelrett ut fra veggen."
+    },
+    "nicheCeilingUnderside": 2.35,
+    "nicheCeilingNote": "Tegningene setter underkant nisjetak (TV-stua) til 2,35 m, og de fleste forslag har toppen i flukt med denne linja. Brukeren oppgir flatt tak 2,40 m i TV-stua – forskjellen kan være karm/innfelling. Kontrollmål.",
+    "panelTopLine": 2.35,
+    "currentPaint": {
+      "name": "sand",
+      "label": "SAND (Jotun 1140)",
+      "hex": "#cfc5b4"
+    },
+    "nichePaint": {
+      "name": "marrakesh",
+      "label": "MARRAKESH (Jotun 1623)",
+      "hex": "#aea191"
+    },
+    "rt60Today": 0.86,
+    "rt60Target": [
+      0.4,
+      0.6
+    ],
+    "acousticModel": {
+      "formula": "RT60 ≈ 22,7 / (26,4 + ΔA)",
+      "k": 22.7,
+      "baseAbsorption": 26.4,
+      "volumeM3": 141,
+      "note": "Sabine (0,161·V/A) kalibrert mot tallene i forslagene: i dag 0,86 s; B +7 m² → 0,68 s; E +3,3 → 0,76 s osv. ΔA = tilført absorpsjon i m² Sabine (500–1000 Hz). Gjelder veggen alene – teppe, gardiner og takabsorbenter kommer i tillegg."
+    },
+    "absorptionGuide": {
+      "note": "Veiledende αw (Sabine-m² per m² flate) brukt for å regne om forslagene når de endres. Hvert element har også feltet «alpha».",
+      "slats (lekter + 50 mm Glava, ca. 70 mm ut)": 0.76,
+      "slats (direkte på vegg, Akupixel/sjakkbrett)": 0.77,
+      "slats (tynne spiler flatt mot vegg)": 0.44,
+      "panel fabric klasse A": 0.94,
+      "panel felt": 0.8,
+      "panel cork": 0.3,
+      "panel wood/plaster/mirror": 0.05,
+      "art acoustic (tynt trykk)": 0.56,
+      "art acoustic (tykt panel)": 0.86,
+      "art ikke-akustisk": 0.05,
+      "tapestry": 0.45,
+      "curtain velvet": 0.49,
+      "curtain linen/wool": 0.4,
+      "curtain sheer": 0.15,
+      "circles felt": 0.8,
+      "hexagons wood-concrete": 0.45,
+      "moss": 0.47,
+      "shelf/sideboard/hooks/led/lamp/paint/plant": 0
+    },
+    "obstacles": [
+      {
+        "id": "spot1",
+        "name": "Takspot 1",
+        "kind": "spot",
+        "cu": 0.9,
+        "cv": 2.95,
+        "u": 0.86,
+        "v": 2.85,
+        "w": 0.08,
+        "h": 0.15,
+        "mount": "ceiling",
+        "distFromWall": 0.25,
+        "note": "Svarte påbygde spotter i taket, rettet mot veggen. Avstand fra vegg er estimat."
+      },
+      {
+        "id": "spot2",
+        "name": "Takspot 2",
+        "kind": "spot",
+        "cu": 1.9,
+        "cv": 2.95,
+        "u": 1.86,
+        "v": 2.85,
+        "w": 0.08,
+        "h": 0.15,
+        "mount": "ceiling",
+        "distFromWall": 0.25
+      },
+      {
+        "id": "spot3",
+        "name": "Takspot 3",
+        "kind": "spot",
+        "cu": 2.9,
+        "cv": 2.95,
+        "u": 2.86,
+        "v": 2.85,
+        "w": 0.08,
+        "h": 0.15,
+        "mount": "ceiling",
+        "distFromWall": 0.25
+      },
+      {
+        "id": "spot4",
+        "name": "Takspot 4",
+        "kind": "spot",
+        "cu": 3.85,
+        "cv": 2.95,
+        "u": 3.81,
+        "v": 2.85,
+        "w": 0.08,
+        "h": 0.15,
+        "mount": "ceiling",
+        "distFromWall": 0.25
+      },
+      {
+        "id": "socket1",
+        "name": "Stikkontakt ved gulvet",
+        "kind": "socket",
+        "cu": 1.11,
+        "cv": 0.18,
+        "u": 1.07,
+        "v": 0.14,
+        "w": 0.08,
+        "h": 0.08,
+        "color": "#1c1c1c",
+        "note": "Svart. Må flyttes ut med påbyggsramme ved heldekkende spilevegg."
+      },
+      {
+        "id": "socket2",
+        "name": "Stikkontakt ved dørkarmen",
+        "kind": "socket",
+        "cu": 3.83,
+        "cv": 0.18,
+        "u": 3.79,
+        "v": 0.14,
+        "w": 0.07,
+        "h": 0.07,
+        "color": "#1c1c1c",
+        "note": "Sett på foto 20261018_083012.jpg, ikke på tegningene – posisjon er estimat."
+      },
+      {
+        "id": "switch1",
+        "name": "Bryter/termostat ved døra (øvre)",
+        "kind": "switch",
+        "cu": 3.81,
+        "cv": 1.63,
+        "u": 3.76,
+        "v": 1.595,
+        "w": 0.1,
+        "h": 0.07,
+        "color": "#1c1c1c"
+      },
+      {
+        "id": "switch2",
+        "name": "Bryter ved døra (nedre)",
+        "kind": "switch",
+        "cu": 3.81,
+        "cv": 1.2,
+        "u": 3.785,
+        "v": 1.16,
+        "w": 0.05,
+        "h": 0.08,
+        "color": "#1c1c1c"
+      },
+      {
+        "id": "doorframe",
+        "name": "Dørkarm og dør (mot gang/soverom)",
+        "kind": "door",
+        "u": 3.9,
+        "v": 0,
+        "w": 1,
+        "h": 2.13,
+        "color": "#2b2829",
+        "note": "Mørk antrasitt karm og dør. Ytre karmbredde ca. 1,0 m (tegning 09 viser opptil 1,16 m – usikkert). Karmtopp ca. 2,13 m."
+      },
+      {
+        "id": "heatpump",
+        "name": "Varmepumpe (innedel)",
+        "kind": "heatpump",
+        "u": 3.95,
+        "v": 2.55,
+        "w": 0.8,
+        "h": 0.3,
+        "depth": 0.22,
+        "color": "#1e1e1e",
+        "note": "Svart innedel over døra, utenfor selve veggfeltet (u > 3,90). Bredde estimert."
+      },
+      {
+        "id": "skirting",
+        "name": "Gulvlist",
+        "kind": "skirting",
+        "u": 0,
+        "v": 0,
+        "w": 3.9,
+        "h": 0.06,
+        "depth": 0.012,
+        "color": "#e9e5dc",
+        "note": "Lys gulvlist; fjernes bak paneler som står på gulvet (tegning 09)."
+      },
+      {
+        "id": "niche",
+        "name": "Nisje/TV-stue",
+        "kind": "niche-edge",
+        "u": 0,
+        "v": 0,
+        "w": 0,
+        "h": 2.35,
+        "note": "Utvendig hjørne ved u = 0 der veggen svinger inn i TV-stua; nisjetaket har underkant ca. 2,35 m. Veggene i TV-stua er MARRAKESH."
+      }
+    ]
+  },
+  "proposals": [
+    {
+      "id": "0",
+      "code": "0",
+      "name": "Før – dagens vegg",
+      "group": "Runde 1 – fotomontasjer",
+      "priceText": "0 kr",
+      "priceMin": 0,
+      "priceMax": 0,
+      "sabineAdded": 0,
+      "rt60": 0.86,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Dagens vegg: ca. 3,9 × 3,0 m bar gips i fargen SAND, med fire takspotter som lager lyskjegler på veggen. Etterklangstiden er ca. 0,86 s (estimat) – målet er 0,4–0,6 s.",
+      "pros": [
+        "Lys og rolig",
+        "Spottene gir fine lyskjegler på veggen"
+      ],
+      "cons": [
+        "Stor, hard flate som gir mye etterklang",
+        "Veggen virker tom i forhold til takhøyden på 3 m"
+      ],
+      "products": [],
+      "notes": null,
+      "wallPaint": null,
+      "elements": [],
+      "image": "img/forslag/0.jpg",
+      "thumb": "img/forslag/thumb/0.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/0_for.jpg",
+      "drawingsSource": [
+        "stue_hoy_vegg_forslag/5_Tegninger/08_oppriss_alle_alternativer.png"
+      ]
+    },
+    {
+      "id": "B",
+      "code": "B",
+      "name": "Spilevegg naturell eik 0–235 cm",
+      "group": "Runde 1 – fotomontasjer",
+      "priceText": "ca. 12–13 000 kr",
+      "priceMin": 12000,
+      "priceMax": 13000,
+      "sabineAdded": 7,
+      "rt60": 0.68,
+      "rank": null,
+      "recommended": true,
+      "badge": "Anbefalt for mest demping (runde 1)",
+      "description": "Akustiske spilepaneler i naturell eik over hele veggen fra gulvet til 235 cm, i flukt med underkant av nisjetaket. Panelene skrus på lekter med 50 mm Glava bak og bygger ca. 70 mm ut fra veggen. Mest demping av forslagene i runde 1.",
+      "pros": [
+        "Mest demping i runde 1 (ca. +7 m² Sabine, RT60 ca. 0,68 s alene)",
+        "Varm, lys eik gir kontrast til mørkt bord og kjøkken",
+        "Spottene treffer toppen av panelet og fremhever spilene",
+        "Ferdig arbeidstegning og materialliste finnes"
+      ],
+      "cons": [
+        "Dyreste løsning i runde 1",
+        "Brytere og stikkontakt må flyttes ut med påbyggsrammer",
+        "Mye lys eik sammen med det lyse gulvet"
+      ],
+      "products": [
+        "WoodUpp Akupanel eik 240×60 – 7 stk (ca. 11 900 kr), eller Fibrotech 244×52 – 8 stk (ca. 12 000 kr)",
+        "Glava Proff 34, 50 mm – ca. 10 m² (ca. 500 kr)",
+        "Lekt 36×48, 2,4 m – 8 stk (ca. 350 kr)",
+        "Svarte panelskruer 35 mm – 1 pk (ca. 150 kr)",
+        "Eikelist/endespile – 1 stk (ca. 150 kr)",
+        "Påbyggsrammer for brytere/stikk – 3 stk (ca. 300 kr)"
+      ],
+      "notes": "Panelinndeling P1–P6 à 60 cm fra nisjehjørnet, P7 kappet til ca. 30 cm mot karmen. Alle paneler kappes til 2350 mm og står på gulvet. Spiler 27 mm, fuge 13 mm (c/c 40 mm), 12 mm spile + 9 mm filt. Med teppe, filt, gardiner og takabsorbenter: RT60 ca. 0,52 s.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.9,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        }
+      ],
+      "image": "img/forslag/B.jpg",
+      "thumb": "img/forslag/thumb/B.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/1_B_spilevegg_eik_anbefalt.jpg",
+      "drawingsSource": [
+        "stue_hoy_vegg_forslag/5_Tegninger/08_oppriss_alle_alternativer.png",
+        "stue_hoy_vegg_forslag/5_Tegninger/09_B_arbeidstegning_oppriss_og_snitt.png"
+      ]
+    },
+    {
+      "id": "B2",
+      "code": "B2",
+      "name": "Spilevegg røkt eik 0–235 cm",
+      "group": "Runde 1 – fotomontasjer",
+      "priceText": "ca. 12–13 000 kr",
+      "priceMin": 12000,
+      "priceMax": 13000,
+      "sabineAdded": 7,
+      "rt60": 0.68,
+      "rank": 2,
+      "recommended": true,
+      "badge": "Rangering 2 – B i røkt eik",
+      "description": "Samme spilevegg som B, men i røkt eik. Den mørkere eika har samme tyngde som spisebordet og kjøkkenfrontene og gir et roligere, mer helhetlig uttrykk.",
+      "pros": [
+        "Samme demping som B (ca. +7 m² Sabine)",
+        "Henger sammen med spisebordet og det mørke kjøkkenet",
+        "Rolig og eksklusivt – rangert som nr. 2 for rommet"
+      ],
+      "cons": [
+        "En mørk flate på over 9 m² kan gjøre rommet tyngre på kveldstid",
+        "Brytere og stikkontakt må flyttes ut",
+        "Samme pris som B"
+      ],
+      "products": [
+        "WoodUpp Akupanel røkt eik 240×60 – 7 stk, eller Fibrotech røkt eik 244×52 – 8 stk",
+        "Glava Proff 34, lekt 36×48 og svarte panelskruer som for B",
+        "Påbyggsrammer for brytere/stikk – 3 stk"
+      ],
+      "notes": "Samme mål og inndeling som B (se arbeidstegning 09).",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.9,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        }
+      ],
+      "image": "img/forslag/B2.jpg",
+      "thumb": "img/forslag/thumb/B2.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/2_B2_spilevegg_rokt_eik.jpg",
+      "drawingsSource": [
+        "stue_hoy_vegg_forslag/5_Tegninger/08_oppriss_alle_alternativer.png"
+      ]
+    },
+    {
+      "id": "E",
+      "code": "E",
+      "name": "Spilebånd 128–235 cm + svevende skjenk",
+      "group": "Runde 1 – fotomontasjer",
+      "priceText": "ca. 6 000 kr + skjenk",
+      "priceMin": 6000,
+      "priceMax": 6000,
+      "sabineAdded": 3.3,
+      "rt60": 0.76,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Et 107 cm høyt bånd av eikespiler øverst på veggen (128–235 cm) over hele bredden, med en svevende skjenk på 220 × 40 × 45 cm i røkt eik under. Skjenken gir oppbevaring og en flate til lampe og pynt ved spisebordet.",
+      "pros": [
+        "Oppbevaring og avlastningsflate ved spisebordet",
+        "Halvparten av panelkostnaden til B",
+        "Spilene sitter akkurat der spottene lyser"
+      ],
+      "cons": [
+        "Omtrent halv demping av B (ca. +3,3 m² Sabine)",
+        "Skjenken kommer i tillegg",
+        "Skjenken må festes godt i stendere"
+      ],
+      "products": [
+        "Akupanel eik kappet til 107 cm – ca. 4,2 m²",
+        "Svevende/vegghengt skjenk ca. 220 × 40 × 45 cm i røkt eik – se Bohus sitt utvalg av skjenker",
+        "Bordlampe med soppformet opalskjerm på skjenken"
+      ],
+      "notes": "Skjenken henger 25 cm over gulvet (25–70 cm) fra u = 0,75 til 2,95. Montasjen viser også bordlampe, bøker og vase på skjenken.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 1.28,
+          "w": 3.9,
+          "h": 1.07,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.79
+        },
+        {
+          "type": "sideboard-floating",
+          "u": 0.75,
+          "v": 0.25,
+          "w": 2.2,
+          "h": 0.45,
+          "d": 0.4,
+          "frontStyle": "flat",
+          "color": "#4e3b2c",
+          "material": "smoked-oak",
+          "doors": 4,
+          "alpha": 0
+        }
+      ],
+      "image": "img/forslag/E.jpg",
+      "thumb": "img/forslag/thumb/E.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/3_E_spileband_skjenk.jpg",
+      "drawingsSource": [
+        "stue_hoy_vegg_forslag/5_Tegninger/08_oppriss_alle_alternativer.png"
+      ]
+    },
+    {
+      "id": "F",
+      "code": "F",
+      "name": "Tre spilefelt 100 × 225 cm",
+      "group": "Runde 1 – fotomontasjer",
+      "priceText": "ca. 9–10 000 kr",
+      "priceMin": 9000,
+      "priceMax": 10000,
+      "sabineAdded": 5.3,
+      "rt60": 0.71,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Tre frittstående felt av eikespiler, hvert 100 × 225 cm, med 35 cm mellomrom der veggfargen synes. Feltene starter 10 cm over gulvet og slutter i flukt med nisjetaket på 235 cm.",
+      "pros": [
+        "Luftig og rytmisk – veggen virker ikke «kledd inn»",
+        "God demping for prisen (ca. +5,3 m² Sabine)",
+        "Stikkontakten og bryterne havner i mellomrommene – ingen flytting"
+      ],
+      "cons": [
+        "Mindre demping enn heldekkende spilevegg",
+        "Krever nøyaktig utmåling så mellomrommene blir like"
+      ],
+      "products": [
+        "Akupanel eik 60 cm bred, kappet/skjøtt til tre felt à 100 × 225 cm (ca. 5 paneler)",
+        "Lekter og Glava bak hvert felt",
+        "Eikelist på sidekantene"
+      ],
+      "notes": null,
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0.1,
+          "w": 1,
+          "h": 2.25,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.785
+        },
+        {
+          "type": "slats",
+          "u": 1.35,
+          "v": 0.1,
+          "w": 1,
+          "h": 2.25,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.785
+        },
+        {
+          "type": "slats",
+          "u": 2.7,
+          "v": 0.1,
+          "w": 1,
+          "h": 2.25,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.785
+        }
+      ],
+      "image": "img/forslag/F.jpg",
+      "thumb": "img/forslag/thumb/F.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/4_F_tre_spilefelt.jpg",
+      "drawingsSource": [
+        "stue_hoy_vegg_forslag/5_Tegninger/08_oppriss_alle_alternativer.png"
+      ]
+    },
+    {
+      "id": "A",
+      "code": "A",
+      "name": "Tre tekstilpaneler 120 × 200 cm, kull",
+      "group": "Runde 1 – fotomontasjer",
+      "priceText": "ca. 13 000 kr",
+      "priceMin": 13000,
+      "priceMax": 13000,
+      "sabineAdded": 6.8,
+      "rt60": 0.69,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Tre store stofftrukne akustikkpaneler i absorpsjonsklasse A, 120 × 200 cm hver, i koksgrå (kull). Panelene henger 35 cm over gulvet med toppen på 235 cm og smale fuger imellom.",
+      "pros": [
+        "Nesten like god demping som B (ca. +6,8 m² Sabine)",
+        "Klasse A – dokumentert absorpsjon",
+        "Enkel montering"
+      ],
+      "cons": [
+        "Stor mørk flate – kan virke tung og kino-aktig",
+        "Stoff samler støv",
+        "Lite tre og varme i uttrykket"
+      ],
+      "products": [
+        "3 stk stofftrukne akustikkpaneler 120 × 200 × ca. 5 cm, absorpsjonsklasse A, farge kull"
+      ],
+      "notes": null,
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "panel",
+          "u": 0.025,
+          "v": 0.35,
+          "w": 1.2,
+          "h": 2,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#3a3b40",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 1.29,
+          "v": 0.35,
+          "w": 1.2,
+          "h": 2,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#3a3b40",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 2.555,
+          "v": 0.35,
+          "w": 1.2,
+          "h": 2,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#3a3b40",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        }
+      ],
+      "image": "img/forslag/A.jpg",
+      "thumb": "img/forslag/thumb/A.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/5_A_tekstilpaneler_kull.jpg",
+      "drawingsSource": [
+        "stue_hoy_vegg_forslag/5_Tegninger/08_oppriss_alle_alternativer.png"
+      ]
+    },
+    {
+      "id": "G",
+      "code": "G",
+      "name": "Flatvevd ullteppe 300 × 200 cm på stang",
+      "group": "Runde 1 – fotomontasjer",
+      "priceText": "ca. 5–6 000 kr",
+      "priceMin": 5000,
+      "priceMax": 6000,
+      "sabineAdded": 2.7,
+      "rt60": 0.78,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Et stort flatvevd ullteppe med seks romber i offwhite, grått og salvie, hengt på en svart stang under spottene. Gir mykhet og et nordisk preg.",
+      "pros": [
+        "Rimelig og enkelt å henge opp",
+        "Mykt og lunt uttrykk",
+        "Kan tas med og flyttes"
+      ],
+      "cons": [
+        "Lite demping (ca. +2,7 m² Sabine) uten absorbent bak",
+        "Tekstil samler støv",
+        "Mønsteret er et tydelig stilvalg"
+      ],
+      "products": [
+        "Flatvevd ullteppe/kelim ca. 300 × 200 cm med rombemønster",
+        "Svart teppestang ca. 320 cm med braketter",
+        "Tips: 30–50 mm akustikkfilt bak teppet øker dempingen"
+      ],
+      "notes": "Stang fra ca. u = 0,36 til 3,54 på 238 cm. Teppet 45–345 cm × 35–235 cm, frynser nederst.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "tapestry",
+          "u": 0.45,
+          "v": 0.35,
+          "w": 3,
+          "h": 2,
+          "pattern": "diamond",
+          "colors": [
+            "#e4e1d8",
+            "#9a9a94",
+            "#8e9a80",
+            "#5d5d58"
+          ],
+          "rod": true,
+          "rodColor": "#1e1e1e",
+          "fringe": true,
+          "motifCount": 6,
+          "alpha": 0.45
+        }
+      ],
+      "image": "img/forslag/G.jpg",
+      "thumb": "img/forslag/thumb/G.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/6_G_veggteppe.jpg",
+      "drawingsSource": [
+        "stue_hoy_vegg_forslag/5_Tegninger/08_oppriss_alle_alternativer.png"
+      ]
+    },
+    {
+      "id": "H",
+      "code": "H",
+      "name": "Mørk grågrønn vegg + 3 akustikkbilder 80 × 120",
+      "group": "Runde 1 – fotomontasjer",
+      "priceText": "ca. 11–12 000 kr",
+      "priceMin": 11000,
+      "priceMax": 12000,
+      "sabineAdded": 1.6,
+      "rt60": 0.8,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Hele den høye veggen males mørk grågrønn, og tre akustikkbilder på 80 × 120 cm med landskapsmotiv i svarte rammer henges med 30 cm mellomrom, midt på 145 cm.",
+      "pros": [
+        "Stor stemningsendring – rommet får en tydelig fondvegg",
+        "Kunst og litt demping i ett",
+        "Grønt spiller fint mot elva og naturen utenfor"
+      ],
+      "cons": [
+        "Minst demping av forslagene (ca. +1,6 m² Sabine)",
+        "En 3 m høy vegg må males",
+        "Mørk farge sluker lys om kvelden"
+      ],
+      "products": [
+        "Maling mørk grågrønn, ca. 12 m² × 2 strøk",
+        "3 stk akustikkbilder 80 × 120 cm med eget motiv (trykk på akustikkplate) i svart ramme"
+      ],
+      "notes": null,
+      "wallPaint": "#55665b",
+      "elements": [
+        {
+          "type": "art",
+          "u": 0.35,
+          "v": 0.85,
+          "w": 0.8,
+          "h": 1.2,
+          "depth": 0.045,
+          "motif": "landscape-hills",
+          "palette": [
+            "#e9dfcc",
+            "#a9ae94",
+            "#6f846f",
+            "#c97f5c"
+          ],
+          "frame": "black",
+          "acoustic": true,
+          "sun": true,
+          "seed": 1,
+          "alpha": 0.56
+        },
+        {
+          "type": "art",
+          "u": 1.45,
+          "v": 0.85,
+          "w": 0.8,
+          "h": 1.2,
+          "depth": 0.045,
+          "motif": "landscape-hills",
+          "palette": [
+            "#e9dfcc",
+            "#a9ae94",
+            "#6f846f",
+            "#c97f5c"
+          ],
+          "frame": "black",
+          "acoustic": true,
+          "sun": false,
+          "seed": 2,
+          "alpha": 0.56
+        },
+        {
+          "type": "art",
+          "u": 2.55,
+          "v": 0.85,
+          "w": 0.8,
+          "h": 1.2,
+          "depth": 0.045,
+          "motif": "landscape-hills",
+          "palette": [
+            "#e9dfcc",
+            "#a9ae94",
+            "#6f846f",
+            "#c97f5c"
+          ],
+          "frame": "black",
+          "acoustic": true,
+          "sun": false,
+          "seed": 3,
+          "alpha": 0.56
+        }
+      ],
+      "image": "img/forslag/H.jpg",
+      "thumb": "img/forslag/thumb/H.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/1_Fotomontasjer_runde1/7_H_mork_vegg_akustikkbilder.jpg",
+      "drawingsSource": [
+        "stue_hoy_vegg_forslag/5_Tegninger/08_oppriss_alle_alternativer.png"
+      ]
+    },
+    {
+      "id": "K",
+      "code": "K",
+      "name": "Akustikkbilde 180 × 120 + to spilefelt 60 × 235",
+      "group": "Kunst og mønster",
+      "priceText": "ca. 12 500 kr",
+      "priceMin": 12500,
+      "priceMax": 12500,
+      "sabineAdded": 4,
+      "rt60": 0.75,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Et stort akustikkbilde på 180 × 120 cm med fjellandskap i salviegrønt og en terrakotta sol, flankert av to smale spilefelt i naturell eik (60 × 235 cm) – ett ved nisjehjørnet og ett ved døra.",
+      "pros": [
+        "Kunst og akustikk i ett – et naturlig blikkfang fra sofaen og spisebordet",
+        "Spilefeltene rammer inn bildet og binder veggen sammen med nisjen",
+        "Grønne toner henter inn naturen utenfor"
+      ],
+      "cons": [
+        "Moderat demping (ca. +4 m² Sabine)",
+        "Motivet må man like over tid",
+        "Bildet er en kostbar enkeltdel"
+      ],
+      "products": [
+        "Akustikkbilde 180 × 120 cm med eget motiv i eikeramme",
+        "2 stk akupanel eik 60 × 240 cm, kappet til 235 cm"
+      ],
+      "notes": "Posisjoner målt fra montasjen med perspektivkorreksjon (±5 cm). Bildet er midtstilt mellom spilefeltene, midt på 145 cm.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0.2,
+          "v": 0,
+          "w": 0.6,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.02,
+          "alpha": 0.76
+        },
+        {
+          "type": "art",
+          "u": 1.05,
+          "v": 0.85,
+          "w": 1.8,
+          "h": 1.2,
+          "depth": 0.05,
+          "motif": "landscape-hills",
+          "palette": [
+            "#e4dfd2",
+            "#a8b9a3",
+            "#86a08a",
+            "#5e7b67",
+            "#e9e1cc",
+            "#d9845f"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "sun": true,
+          "alpha": 0.86
+        },
+        {
+          "type": "slats",
+          "u": 3.1,
+          "v": 0,
+          "w": 0.6,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.02,
+          "alpha": 0.76
+        }
+      ],
+      "image": "img/forslag/K.jpg",
+      "thumb": "img/forslag/thumb/K.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/2_Kunst_og_monster/10_K_kunst_og_spilefelt.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "P",
+      "code": "P",
+      "name": "Akupixel 60 × 60 i sjakkbrett, naturell eik",
+      "group": "Kunst og mønster",
+      "priceText": "ca. 7 500 kr",
+      "priceMin": 7500,
+      "priceMax": 7500,
+      "sabineAdded": 5,
+      "rt60": 0.73,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "18 kvadratiske spilefliser (Akupixel 60 × 60 cm) i naturell eik lagt i sjakkbrett – annenhver flis med stående og liggende spiler – i et felt på 360 × 180 cm med toppen på 235 cm, midtstilt på veggen.",
+      "pros": [
+        "Lekent, grafisk mønster som endrer seg med lyset fra spottene",
+        "God demping for prisen (ca. +5 m² Sabine)",
+        "Enkel montering, og enkeltfliser kan byttes"
+      ],
+      "cons": [
+        "Travlere uttrykk enn en jevn spilevegg",
+        "Krever nøyaktig utlegging så fugene blir rette"
+      ],
+      "products": [
+        "Akupixel 60 × 60 cm akustikkfliser i eik – 18 stk (6 × 3)"
+      ],
+      "notes": "Øverste venstre flis har stående spiler; deretter vekselvis liggende/stående.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "u": 0.15,
+          "v": 0.55,
+          "w": 3.6,
+          "h": 1.8,
+          "tile": 0.6,
+          "cols": 6,
+          "rows": 3,
+          "depth": 0.021,
+          "fill": "slats-alternating",
+          "colors": [
+            "#b08b62",
+            "#b08b62"
+          ],
+          "gap": 0.003,
+          "startOrientation": "vertical",
+          "slatW": 0.027,
+          "slatGap": 0.013,
+          "backingColor": "#1b1b1b",
+          "alpha": 0.77
+        }
+      ],
+      "image": "img/forslag/P.jpg",
+      "thumb": "img/forslag/thumb/P.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/2_Kunst_og_monster/11_P_akupixel_sjakkbrett.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "S",
+      "code": "S",
+      "name": "Fire filtsirkler Ø80 (Hush beige/grønn/grå)",
+      "group": "Kunst og mønster",
+      "priceText": "ca. 4 800 kr",
+      "priceMin": 4800,
+      "priceMax": 4800,
+      "sabineAdded": 1.6,
+      "rt60": 0.81,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Fire runde akustikkpaneler i filt, Ø 80 cm, i beige, salviegrønn, grå og mørk grå, hengt i et forskjøvet høy–lav-mønster bortover veggen.",
+      "pros": [
+        "Rimeligste forslaget",
+        "Mykt og lekent uttrykk",
+        "Lett å flytte eller supplere senere"
+      ],
+      "cons": [
+        "Lite demping (ca. +1,6 m² Sabine)",
+        "Kan se litt kontor-aktig ut hvis fargene ikke treffer"
+      ],
+      "products": [
+        "4 stk runde akustikkpaneler i filt Ø 80 cm fra Hush (beige, grønn, grå, mørk grå)"
+      ],
+      "notes": "Sentre målt fra montasjen med perspektivkorreksjon (±5 cm).",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "circles",
+          "items": [
+            {
+              "cu": 0.6,
+              "cv": 1.77,
+              "r": 0.4,
+              "color": "#b9ab90"
+            },
+            {
+              "cu": 1.5,
+              "cv": 1.11,
+              "r": 0.4,
+              "color": "#6f8a6c"
+            },
+            {
+              "cu": 2.38,
+              "cv": 1.77,
+              "r": 0.4,
+              "color": "#7c766f"
+            },
+            {
+              "cu": 3.25,
+              "cv": 1.11,
+              "r": 0.4,
+              "color": "#4a4d53"
+            }
+          ],
+          "depth": 0.05,
+          "surface": "felt",
+          "alpha": 0.8
+        }
+      ],
+      "image": "img/forslag/S.jpg",
+      "thumb": "img/forslag/thumb/S.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/2_Kunst_og_monster/12_S_filtsirkler.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "P1",
+      "code": "P1",
+      "name": "Sjakkbrett naturell eik",
+      "group": "Sjakkbrett-farger",
+      "priceText": "ca. 7 500 kr",
+      "priceMin": 7500,
+      "priceMax": 7500,
+      "sabineAdded": 5,
+      "rt60": 0.73,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Akupixel-sjakkbrett i naturell eik (som P). Lys og varm – gir kontrast mot det mørke bordet og kjøkkenet.",
+      "pros": [
+        "Lys og varm",
+        "Tydelig mønster i spotlyset",
+        "Kontrast mot mørke møbler"
+      ],
+      "cons": [
+        "Mye lys eik sammen med gulvet",
+        "Konkurrerer litt med spisebordet om oppmerksomheten"
+      ],
+      "products": [
+        "Akupixel 60 × 60 cm akustikkfliser – 18 stk (6 × 3)"
+      ],
+      "notes": "Samme felt 360 × 180 cm med topp på 235 cm som P. Demping ca. +5 m² Sabine uansett farge. Farger er veiledende.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "u": 0.15,
+          "v": 0.55,
+          "w": 3.6,
+          "h": 1.8,
+          "tile": 0.6,
+          "cols": 6,
+          "rows": 3,
+          "depth": 0.021,
+          "fill": "slats-alternating",
+          "colors": [
+            "#b08b62",
+            "#b08b62"
+          ],
+          "gap": 0.003,
+          "startOrientation": "vertical",
+          "slatW": 0.027,
+          "slatGap": 0.013,
+          "backingColor": "#1b1b1b",
+          "alpha": 0.77,
+          "woods": [
+            "oak",
+            "oak"
+          ]
+        }
+      ],
+      "image": "img/forslag/P1.jpg",
+      "thumb": "img/forslag/thumb/P1.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/14_P1_naturell_eik.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "P2",
+      "code": "P2",
+      "name": "Sjakkbrett røkt eik",
+      "group": "Sjakkbrett-farger",
+      "priceText": "ca. 7 500 kr (som P – fargepris ikke bekreftet)",
+      "priceMin": 7500,
+      "priceMax": 7500,
+      "sabineAdded": 5,
+      "rt60": 0.73,
+      "rank": 3,
+      "recommended": true,
+      "badge": "Rangering 3 – passer best av sjakkbrettfargene",
+      "description": "Akupixel-sjakkbrett i røkt eik. Samme tyngde som spisebordet – rolig, og henger sammen med kjøkkenet.",
+      "pros": [
+        "Passer best med bord og kjøkken",
+        "Rolig – mønsteret blir subtilt",
+        "God demping for prisen"
+      ],
+      "cons": [
+        "Mønsteret syns mindre i dagslys",
+        "Mørkt felt på 6,5 m²"
+      ],
+      "products": [
+        "Akupixel 60 × 60 cm akustikkfliser – 18 stk (6 × 3)"
+      ],
+      "notes": "Samme felt 360 × 180 cm med topp på 235 cm som P. Demping ca. +5 m² Sabine uansett farge. Farger er veiledende.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "u": 0.15,
+          "v": 0.55,
+          "w": 3.6,
+          "h": 1.8,
+          "tile": 0.6,
+          "cols": 6,
+          "rows": 3,
+          "depth": 0.021,
+          "fill": "slats-alternating",
+          "colors": [
+            "#5f4936",
+            "#5f4936"
+          ],
+          "gap": 0.003,
+          "startOrientation": "vertical",
+          "slatW": 0.027,
+          "slatGap": 0.013,
+          "backingColor": "#1b1b1b",
+          "alpha": 0.77,
+          "woods": [
+            "smoked-oak",
+            "smoked-oak"
+          ]
+        }
+      ],
+      "image": "img/forslag/P2.jpg",
+      "thumb": "img/forslag/thumb/P2.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/15_P2_rokt_eik.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "P3",
+      "code": "P3",
+      "name": "Sjakkbrett valnøtt",
+      "group": "Sjakkbrett-farger",
+      "priceText": "ca. 7 500 kr (som P – fargepris ikke bekreftet)",
+      "priceMin": 7500,
+      "priceMax": 7500,
+      "sabineAdded": 5,
+      "rt60": 0.73,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Akupixel-sjakkbrett i valnøtt. Varm og mørk – mer «møbel», men litt rødere enn resten av rommet.",
+      "pros": [
+        "Varm og rik farge",
+        "Føles som et møbel"
+      ],
+      "cons": [
+        "Litt rødere enn resten av rommet",
+        "Kan krangle med den røkte eika i bordet"
+      ],
+      "products": [
+        "Akupixel 60 × 60 cm akustikkfliser – 18 stk (6 × 3)"
+      ],
+      "notes": "Samme felt 360 × 180 cm med topp på 235 cm som P. Demping ca. +5 m² Sabine uansett farge. Farger er veiledende.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "u": 0.15,
+          "v": 0.55,
+          "w": 3.6,
+          "h": 1.8,
+          "tile": 0.6,
+          "cols": 6,
+          "rows": 3,
+          "depth": 0.021,
+          "fill": "slats-alternating",
+          "colors": [
+            "#6b4a33",
+            "#6b4a33"
+          ],
+          "gap": 0.003,
+          "startOrientation": "vertical",
+          "slatW": 0.027,
+          "slatGap": 0.013,
+          "backingColor": "#1b1b1b",
+          "alpha": 0.77,
+          "woods": [
+            "walnut",
+            "walnut"
+          ]
+        }
+      ],
+      "image": "img/forslag/P3.jpg",
+      "thumb": "img/forslag/thumb/P3.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/16_P3_valnott.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "P4",
+      "code": "P4",
+      "name": "Sjakkbrett svart eik",
+      "group": "Sjakkbrett-farger",
+      "priceText": "ca. 7 500 kr (som P – fargepris ikke bekreftet)",
+      "priceMin": 7500,
+      "priceMax": 7500,
+      "sabineAdded": 5,
+      "rt60": 0.73,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Akupixel-sjakkbrett i svart eik. Grafisk – mønsteret forsvinner nesten, unntatt under spottene.",
+      "pros": [
+        "Grafisk og moderne",
+        "Matcher svarte detaljer i kjøkken og stoler"
+      ],
+      "cons": [
+        "Mønsteret forsvinner utenfor spotlyset",
+        "Svært mørkt felt"
+      ],
+      "products": [
+        "Akupixel 60 × 60 cm akustikkfliser – 18 stk (6 × 3)"
+      ],
+      "notes": "Samme felt 360 × 180 cm med topp på 235 cm som P. Demping ca. +5 m² Sabine uansett farge. Farger er veiledende.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "u": 0.15,
+          "v": 0.55,
+          "w": 3.6,
+          "h": 1.8,
+          "tile": 0.6,
+          "cols": 6,
+          "rows": 3,
+          "depth": 0.021,
+          "fill": "slats-alternating",
+          "colors": [
+            "#2a2725",
+            "#2a2725"
+          ],
+          "gap": 0.003,
+          "startOrientation": "vertical",
+          "slatW": 0.027,
+          "slatGap": 0.013,
+          "backingColor": "#1b1b1b",
+          "alpha": 0.77,
+          "woods": [
+            "black-oak",
+            "black-oak"
+          ]
+        }
+      ],
+      "image": "img/forslag/P4.jpg",
+      "thumb": "img/forslag/thumb/P4.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/17_P4_svart_eik.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "P5",
+      "code": "P5",
+      "name": "Sjakkbrett tofarget: røkt + naturell eik",
+      "group": "Sjakkbrett-farger",
+      "priceText": "ca. 7 500 kr (som P – fargepris ikke bekreftet)",
+      "priceMin": 7500,
+      "priceMax": 7500,
+      "sabineAdded": 5,
+      "rt60": 0.73,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Akupixel-sjakkbrett der stående fliser er røkt eik og liggende fliser naturell eik. Tydeligst sjakkbrett – binder sammen mørke møbler og lyst gulv.",
+      "pros": [
+        "Tydeligste mønsteret",
+        "Binder mørke møbler og lyst gulv",
+        "Personlig og leken"
+      ],
+      "cons": [
+        "Mest urolig av sjakkbrettene",
+        "Må bestille to farger"
+      ],
+      "products": [
+        "Akupixel 60 × 60 cm akustikkfliser – 18 stk (6 × 3)"
+      ],
+      "notes": "colors[0] = stående fliser (øverst til venstre), colors[1] = liggende fliser.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "u": 0.15,
+          "v": 0.55,
+          "w": 3.6,
+          "h": 1.8,
+          "tile": 0.6,
+          "cols": 6,
+          "rows": 3,
+          "depth": 0.021,
+          "fill": "slats-alternating",
+          "colors": [
+            "#5f4936",
+            "#b08b62"
+          ],
+          "gap": 0.003,
+          "startOrientation": "vertical",
+          "slatW": 0.027,
+          "slatGap": 0.013,
+          "backingColor": "#1b1b1b",
+          "alpha": 0.77,
+          "woods": [
+            "smoked-oak",
+            "oak"
+          ]
+        }
+      ],
+      "image": "img/forslag/P5.jpg",
+      "thumb": "img/forslag/thumb/P5.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/3_Sjakkbrett_farger/18_P5_tofarget.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "C",
+      "code": "C",
+      "name": "Gardinvegg i salvie fløyel, gulv til tak",
+      "group": "Nye retninger",
+      "priceText": "ca. 3–4 000 kr + skinne",
+      "priceMin": 3000,
+      "priceMax": 4000,
+      "sabineAdded": 5.5,
+      "rt60": 0.71,
+      "rank": 1,
+      "recommended": true,
+      "badge": "Rangering 1 – mest effekt per krone",
+      "description": "En bølgegardin i salviegrønn fløyel fra tak til gulv over hele veggen, hengt i en takskinne langs veggen. Fløyel med god fylde demper mye for pengene og gjør rommet mykt og lunt.",
+      "pros": [
+        "Mest effekt per krone (ca. +5–6 m² Sabine)",
+        "Ingen inngrep i veggen – kan trekkes til side eller byttes",
+        "Mykt, hotellaktig uttrykk som rammer inn spisestua",
+        "Rimelig"
+      ],
+      "cons": [
+        "Spottene må kanskje vris så de lyser på stoffet",
+        "Fløyel samler støv og må støvsuges",
+        "Gardinen må stoppe før karmen så bryterne er tilgjengelige"
+      ],
+      "products": [
+        "Fløyelsgardin salvie med bølgefold, ca. 3,8 m bred × 3,0 m høy, fylde 2,0–2,5 (ca. 8–9 m stoff)",
+        "Takskinne for bølgegardin ca. 4 m, svart"
+      ],
+      "notes": "Gardinen går fra nisjehjørnet (u = 0) til ca. 12 cm før karmen (u = 3,78). Ca. 28 bølger à ca. 13,5 cm.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "curtain",
+          "u": 0,
+          "w": 3.78,
+          "top": 3,
+          "bottom": 0.01,
+          "fabric": "velvet",
+          "color": "#667a62",
+          "fold": "wave",
+          "fullness": 2.2,
+          "track": "ceiling",
+          "trackColor": "#1e1e1e",
+          "waveWidth": 0.135,
+          "alpha": 0.49
+        }
+      ],
+      "image": "img/forslag/C.jpg",
+      "thumb": "img/forslag/thumb/C.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/4_Nye_retninger/20_C_gardinvegg_salvie.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "M",
+      "code": "M",
+      "name": "Mosefliser + røkt eik i sjakkbrett (18 × 60 × 60)",
+      "group": "Nye retninger",
+      "priceText": "ca. 15 000 kr",
+      "priceMin": 15000,
+      "priceMax": 15000,
+      "sabineAdded": 4,
+      "rt60": 0.75,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Samme sjakkbrettfelt som P (360 × 180 cm, topp på 235 cm), men annenhver flis er preservert mose og annenhver spiler i røkt eik. Gir en grønn, levende vegg uten vedlikehold.",
+      "pros": [
+        "Unik og naturlig – henter inn grønt fra elva og hagen",
+        "Preservert mose trenger verken vann eller lys",
+        "God demping (ca. +4 m² Sabine)"
+      ],
+      "cons": [
+        "Dyreste sjakkbrettvarianten (ca. 15 000 kr)",
+        "Mose kan tørke/falme med sterk sol og tørr luft fra varmepumpa",
+        "Kraftig uttrykk"
+      ],
+      "products": [
+        "9 stk mosefliser 60 × 60 cm (preservert/stabilisert mose)",
+        "9 stk Akupixel 60 × 60 cm i røkt eik"
+      ],
+      "notes": "Mose øverst til venstre. Spileflisene ligger vannrett i øverste og nederste rad og står loddrett i midtre rad.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "moss",
+          "u": 0.15,
+          "v": 1.75,
+          "w": 0.6,
+          "h": 0.6,
+          "depth": 0.04,
+          "color": "#557030",
+          "style": "mix",
+          "alpha": 0.47
+        },
+        {
+          "type": "slats",
+          "u": 0.75,
+          "v": 1.75,
+          "w": 0.6,
+          "h": 0.6,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "horizontal",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0,
+          "alpha": 0.77
+        },
+        {
+          "type": "moss",
+          "u": 1.35,
+          "v": 1.75,
+          "w": 0.6,
+          "h": 0.6,
+          "depth": 0.04,
+          "color": "#557030",
+          "style": "mix",
+          "alpha": 0.47
+        },
+        {
+          "type": "slats",
+          "u": 1.95,
+          "v": 1.75,
+          "w": 0.6,
+          "h": 0.6,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "horizontal",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0,
+          "alpha": 0.77
+        },
+        {
+          "type": "moss",
+          "u": 2.55,
+          "v": 1.75,
+          "w": 0.6,
+          "h": 0.6,
+          "depth": 0.04,
+          "color": "#557030",
+          "style": "mix",
+          "alpha": 0.47
+        },
+        {
+          "type": "slats",
+          "u": 3.15,
+          "v": 1.75,
+          "w": 0.6,
+          "h": 0.6,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "horizontal",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0,
+          "alpha": 0.77
+        },
+        {
+          "type": "slats",
+          "u": 0.15,
+          "v": 1.15,
+          "w": 0.6,
+          "h": 0.6,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0,
+          "alpha": 0.77
+        },
+        {
+          "type": "moss",
+          "u": 0.75,
+          "v": 1.15,
+          "w": 0.6,
+          "h": 0.6,
+          "depth": 0.04,
+          "color": "#557030",
+          "style": "mix",
+          "alpha": 0.47
+        },
+        {
+          "type": "slats",
+          "u": 1.35,
+          "v": 1.15,
+          "w": 0.6,
+          "h": 0.6,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0,
+          "alpha": 0.77
+        },
+        {
+          "type": "moss",
+          "u": 1.95,
+          "v": 1.15,
+          "w": 0.6,
+          "h": 0.6,
+          "depth": 0.04,
+          "color": "#557030",
+          "style": "mix",
+          "alpha": 0.47
+        },
+        {
+          "type": "slats",
+          "u": 2.55,
+          "v": 1.15,
+          "w": 0.6,
+          "h": 0.6,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0,
+          "alpha": 0.77
+        },
+        {
+          "type": "moss",
+          "u": 3.15,
+          "v": 1.15,
+          "w": 0.6,
+          "h": 0.6,
+          "depth": 0.04,
+          "color": "#557030",
+          "style": "mix",
+          "alpha": 0.47
+        },
+        {
+          "type": "moss",
+          "u": 0.15,
+          "v": 0.55,
+          "w": 0.6,
+          "h": 0.6,
+          "depth": 0.04,
+          "color": "#557030",
+          "style": "mix",
+          "alpha": 0.47
+        },
+        {
+          "type": "slats",
+          "u": 0.75,
+          "v": 0.55,
+          "w": 0.6,
+          "h": 0.6,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "horizontal",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0,
+          "alpha": 0.77
+        },
+        {
+          "type": "moss",
+          "u": 1.35,
+          "v": 0.55,
+          "w": 0.6,
+          "h": 0.6,
+          "depth": 0.04,
+          "color": "#557030",
+          "style": "mix",
+          "alpha": 0.47
+        },
+        {
+          "type": "slats",
+          "u": 1.95,
+          "v": 0.55,
+          "w": 0.6,
+          "h": 0.6,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "horizontal",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0,
+          "alpha": 0.77
+        },
+        {
+          "type": "moss",
+          "u": 2.55,
+          "v": 0.55,
+          "w": 0.6,
+          "h": 0.6,
+          "depth": 0.04,
+          "color": "#557030",
+          "style": "mix",
+          "alpha": 0.47
+        },
+        {
+          "type": "slats",
+          "u": 3.15,
+          "v": 0.55,
+          "w": 0.6,
+          "h": 0.6,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "horizontal",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0,
+          "alpha": 0.77
+        }
+      ],
+      "image": "img/forslag/M.jpg",
+      "thumb": "img/forslag/thumb/M.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/4_Nye_retninger/21_M_mose_og_rokt_eik.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "X",
+      "code": "X",
+      "name": "Trebetong-sekskanter, 19 stk (natur/grå/salvie)",
+      "group": "Nye retninger",
+      "priceText": "pris ukjent",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 2,
+      "rt60": 0.79,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "19 sekskantede akustikkfliser i trebetong (treull og sement), ca. 52 cm mellom flatene, satt sammen i en organisk klynge i naturfarge med innslag av mørk grå og én salviegrønn. Med ull eller mineralull bak øker dempingen.",
+      "pros": [
+        "Robust og ripefast overflate",
+        "Spennende, organisk mønster",
+        "Kan utvides eller omgrupperes senere"
+      ],
+      "cons": [
+        "Lav demping uten isolasjon bak (ca. +2 m² Sabine)",
+        "Pris ikke avklart",
+        "Grov overflate – mer industrielt uttrykk"
+      ],
+      "products": [
+        "19 stk sekskantede trebetong-/treullfliser ca. 52 × 60 cm (f.eks. BAUX – sjekk forhandler og pris)",
+        "Evt. 30–50 mm ull/mineralull bak for mer demping"
+      ],
+      "notes": "Flate topp/bunn (flat-top). 7 kolonner med c/c 46 cm, rader c/c 52 cm. 13 natur, 5 mørk grå, 1 salvie. «items» gir eksakt plassering fra montasjen.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "hexagons",
+          "u": 0.13,
+          "v": 0.39,
+          "w": 3.36,
+          "h": 1.82,
+          "size": 0.52,
+          "depth": 0.025,
+          "colors": [
+            "#b3aa95",
+            "#5a5c59",
+            "#7f9275"
+          ],
+          "layout": "cluster",
+          "surface": "wood-concrete",
+          "orientation": "flat-top",
+          "items": [
+            {
+              "cu": 0.43,
+              "cv": 1.43,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 0.43,
+              "cv": 0.91,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 0.89,
+              "cv": 1.69,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 0.89,
+              "cv": 1.17,
+              "color": "#5a5c59"
+            },
+            {
+              "cu": 0.89,
+              "cv": 0.65,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 1.35,
+              "cv": 1.95,
+              "color": "#5a5c59"
+            },
+            {
+              "cu": 1.35,
+              "cv": 1.43,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 1.35,
+              "cv": 0.91,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 1.81,
+              "cv": 1.69,
+              "color": "#5a5c59"
+            },
+            {
+              "cu": 1.81,
+              "cv": 1.17,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 1.81,
+              "cv": 0.65,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 2.27,
+              "cv": 1.95,
+              "color": "#5a5c59"
+            },
+            {
+              "cu": 2.27,
+              "cv": 1.43,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 2.27,
+              "cv": 0.91,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 2.73,
+              "cv": 1.69,
+              "color": "#7f9275"
+            },
+            {
+              "cu": 2.73,
+              "cv": 1.17,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 2.73,
+              "cv": 0.65,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 3.19,
+              "cv": 1.43,
+              "color": "#b3aa95"
+            },
+            {
+              "cu": 3.19,
+              "cv": 0.91,
+              "color": "#5a5c59"
+            }
+          ],
+          "alpha": 0.45
+        }
+      ],
+      "image": "img/forslag/X.jpg",
+      "thumb": "img/forslag/thumb/X.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/4_Nye_retninger/22_X_trebetong_sekskant.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "T",
+      "code": "T",
+      "name": "Tynne spiler flatt mot veggen, røkt eik 0–235",
+      "group": "Nye retninger",
+      "priceText": "pris ukjent",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 4,
+      "rt60": 0.75,
+      "rank": 2,
+      "recommended": true,
+      "badge": "Rangering 2",
+      "description": "Tynne spiler i røkt eik montert rett på veggen uten lekter, fra gulvet til 235 cm over hele bredden. Gir et stramt og slankt uttrykk som ligner snekret møbelfront, og bygger bare et par centimeter ut fra veggen.",
+      "pros": [
+        "Stramt og elegant – nesten som innebygget snekkerarbeid",
+        "Bygger lite ut – brytere og stikk er enklere å tilpasse",
+        "Rolig røkt eik som matcher bord og kjøkken",
+        "Rangert som nr. 2 for rommet"
+      ],
+      "cons": [
+        "Mindre demping enn B fordi det ikke er hulrom og isolasjon bak (ca. +4 m² Sabine)",
+        "Pris ikke avklart",
+        "Krever helt plan vegg"
+      ],
+      "products": [
+        "Tynne akustikkspiler/slanke akupaneler i røkt eik, ca. 9,2 m²",
+        "Monteres direkte på gips med lim/skruer"
+      ],
+      "notes": null,
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.9,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.008,
+          "gap": 0.008,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#6a5440",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0,
+          "alpha": 0.44
+        }
+      ],
+      "image": "img/forslag/T.jpg",
+      "thumb": "img/forslag/thumb/T.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/4_Nye_retninger/23_T_tynne_spiler_flush.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "G2",
+      "code": "G2",
+      "name": "Norsk spilevegg med utfellbare knagger ved døra",
+      "group": "Nye retninger",
+      "priceText": "pris på tilbud",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 4.5,
+      "rt60": 0.74,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "En norskprodusert spilevegg i lys eik med bredere spiler og smale fuger, fra gulvet til 235 cm over hele veggen. Ved døra er tre utfellbare knagger felt inn i spilene – praktisk for jakker og vesker.",
+      "pros": [
+        "Funksjon og akustikk i ett – knagger der man trenger dem",
+        "Lys, nordisk eik",
+        "Norsk produksjon",
+        "God demping (ca. +4–5 m² Sabine)"
+      ],
+      "cons": [
+        "Pris må hentes inn på tilbud",
+        "Jakker på knaggene kan gi rot på en fin vegg",
+        "Mye lys eik sammen med gulvet"
+      ],
+      "products": [
+        "Norsk spilevegg i eik med integrerte utfellbare knagger – pris på tilbud fra produsent",
+        "Montering på lekter som for B"
+      ],
+      "notes": "Knaggene sitter ca. 165 cm over gulvet, u ≈ 3,44 / 3,55 / 3,66 (målt fra montasjen).",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.9,
+          "h": 2.35,
+          "slatW": 0.045,
+          "slatD": 0.018,
+          "gap": 0.012,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b9976e",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.03,
+          "alpha": 0.49
+        },
+        {
+          "type": "hooks",
+          "items": [
+            {
+              "cu": 3.44,
+              "cv": 1.65
+            },
+            {
+              "cu": 3.55,
+              "cv": 1.65
+            },
+            {
+              "cu": 3.66,
+              "cv": 1.65
+            }
+          ],
+          "style": "fold-out",
+          "color": "#8a6b4a",
+          "material": "oak",
+          "alpha": 0
+        }
+      ],
+      "image": "img/forslag/G2.jpg",
+      "thumb": "img/forslag/thumb/G2.jpg",
+      "imageSource": "stue_hoy_vegg_forslag/4_Nye_retninger/24_G2_spilevegg_med_knagger.jpg",
+      "drawingsSource": []
+    },
+    {
+      "id": "N1",
+      "code": "N1",
+      "name": "Spilevegg røkt eik helt til taket (0–300 cm)",
+      "group": "Nye forslag",
+      "priceText": "ca. 16–19 000 kr (estimat)",
+      "priceMin": 16000,
+      "priceMax": 19000,
+      "sabineAdded": 8.9,
+      "rt60": 0.64,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Som B2, men spilene går helt opp til taket på 3 m. Veggen blir én høy, rolig flate i røkt eik som fremhever takhøyden, og gir mest demping av alle forslagene.",
+      "pros": [
+        "Mest demping av alle forslagene (ca. +8,9 m² Sabine)",
+        "Fremhever takhøyden – ingen skjøtelinje på 235 cm",
+        "Spottene streifer spilene helt oppe ved taket"
+      ],
+      "cons": [
+        "Dyreste forslaget",
+        "Krever ca. 300 cm lange paneler (ikke alltid lagervare) eller skjøt",
+        "Mye mørk flate – vurder naturell eik om rommet blir for tungt"
+      ],
+      "products": [
+        "Akupanel røkt eik i 300 cm lengde, ca. 11,7 m² (sjekk lengder hos WoodUpp/Fibrotech)",
+        "Lekter og 50 mm Glava som for B",
+        "Påbyggsrammer for brytere og stikk"
+      ],
+      "notes": "Pris og demping er estimert ut fra B (ca. 1 400 kr/m², αw ≈ 0,76).",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.9,
+          "h": 3,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N2",
+      "code": "N2",
+      "name": "Lin-gardin i sand – ton i ton",
+      "group": "Nye forslag",
+      "priceText": "ca. 3–5 000 kr + skinne (estimat)",
+      "priceMin": 3000,
+      "priceMax": 5000,
+      "sabineAdded": 4.5,
+      "rt60": 0.73,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Samme grep som gardinveggen C, men i tykt lin (eller linlook) i en sandfarge som glir inn i veggfargen. Gir demping og mykhet uten å endre fargene i rommet.",
+      "pros": [
+        "Rimelig og helt reversibelt",
+        "Lyst og luftig – rommet blir ikke mørkere",
+        "Passer med gardiner/solskjerming ved vinduene"
+      ],
+      "cons": [
+        "Litt mindre demping enn fløyel (ca. +4,5 m² Sabine)",
+        "Ekte lin krøller – linlook i polyester er enklere",
+        "Mindre wow-effekt enn salvie fløyel"
+      ],
+      "products": [
+        "Tykk lin-/linlook-gardin med bølgefold, ca. 3,8 × 3,0 m, fylde 2,3",
+        "Takskinne for bølgegardin ca. 4 m",
+        "Ferdigsydde lin-gardiner finnes i mange interiørbutikker – sjekk også Bohus sitt tekstilutvalg"
+      ],
+      "notes": null,
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "curtain",
+          "u": 0,
+          "w": 3.78,
+          "top": 3,
+          "bottom": 0.01,
+          "fabric": "linen",
+          "color": "#d6ccbb",
+          "fold": "wave",
+          "fullness": 2.3,
+          "track": "ceiling",
+          "trackColor": "#e9e5dc",
+          "waveWidth": 0.13,
+          "alpha": 0.4
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N3",
+      "code": "N3",
+      "name": "Spilebånd røkt eik + skjenk med LED-lys",
+      "group": "Nye forslag",
+      "priceText": "ca. 7 000 kr + skjenk (estimat)",
+      "priceMin": 7000,
+      "priceMax": 7000,
+      "sabineAdded": 3.3,
+      "rt60": 0.76,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Videreføring av E: spilebåndet øverst (128–235 cm) i røkt eik, med en varm LED-list i underkant som lyser ned på en svevende skjenk med riflet front. Gir lun kveldsbelysning ved spisebordet og god oppbevaring.",
+      "pros": [
+        "Akustikk, oppbevaring og stemningsbelysning i ett",
+        "Røkt eik matcher bordet og kjøkkenet",
+        "Indirekte LED-lys uten blending",
+        "Stikkontakten ved gulvet havner rett under skjenken – fin til LED og bordlampe"
+      ],
+      "cons": [
+        "Omtrent halv demping av full spilevegg (ca. +3,3 m² Sabine)",
+        "LED-lista trenger strøm og skjult kabel",
+        "Skjenken kommer i tillegg"
+      ],
+      "products": [
+        "Akupanel røkt eik kappet til 107 cm – ca. 4,2 m²",
+        "LED-list 2700 K med aluprofil og diffusor, ca. 3,9 m",
+        "Vegghengt skjenk ca. 200–220 cm i svart eller røkt eik med riflet front – se Bohus sitt skjenkutvalg"
+      ],
+      "notes": null,
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 1.28,
+          "w": 3.9,
+          "h": 1.07,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.79
+        },
+        {
+          "type": "led",
+          "u": 0,
+          "v": 1.27,
+          "w": 3.9,
+          "direction": "down",
+          "colorK": 2700,
+          "alpha": 0
+        },
+        {
+          "type": "sideboard-floating",
+          "u": 0.85,
+          "v": 0.25,
+          "w": 2.2,
+          "h": 0.45,
+          "d": 0.4,
+          "frontStyle": "ribbed",
+          "color": "#2c2a28",
+          "material": "black",
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N4",
+      "code": "N4",
+      "name": "Malt bue i MARRAKESH med eikehylle og oliventre",
+      "group": "Nye forslag",
+      "priceText": "ca. 2 500–4 500 kr (estimat)",
+      "priceMin": 2500,
+      "priceMax": 4500,
+      "sabineAdded": 0.5,
+      "rt60": 0.84,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "En malt bue i den varme grå-brune MARRAKESH-fargen fra TV-stua, med en svevende eikehylle og et lite akustikkbilde med strekmotiv inne i buen, og et oliventre ved nisjehjørnet. Binder sammen fargene i spisestua og TV-stua.",
+      "pros": [
+        "Rimelig og personlig",
+        "Henter MARRAKESH fra TV-stua inn i spisestua",
+        "Hylla gir plass til bøker, vaser og lys"
+      ],
+      "cons": [
+        "Svært lite demping (ca. +0,5 m² Sabine) – må kombineres med tepper, puter og gardiner",
+        "Buen må males nøyaktig (sjablong og maskeringstape)",
+        "Ekte plante får lite lys så langt fra vinduene – vurder kunstig"
+      ],
+      "products": [
+        "MARRAKESH (Jotun 1623), ca. 1 liter",
+        "Svevende vegghylle i eik ca. 120 × 22 cm",
+        "Lite akustikkbilde ca. 100 × 70 cm med strekmotiv",
+        "Oliventre ca. 170 cm i lys krukke (kunstig eller ekte) – sjekk Bohus sitt utvalg av planter og krukker"
+      ],
+      "notes": null,
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "paint-block",
+          "u": 1.2,
+          "v": 0,
+          "w": 1.5,
+          "h": 2.25,
+          "color": "#aea191",
+          "paintName": "marrakesh",
+          "shape": "arch",
+          "alpha": 0
+        },
+        {
+          "type": "shelf",
+          "u": 1.35,
+          "v": 1.05,
+          "w": 1.2,
+          "d": 0.22,
+          "thickness": 0.04,
+          "color": "#b08b62",
+          "material": "oak",
+          "alpha": 0
+        },
+        {
+          "type": "art",
+          "u": 1.45,
+          "v": 1.3,
+          "w": 1,
+          "h": 0.7,
+          "depth": 0.03,
+          "motif": "line-art",
+          "palette": [
+            "#efe9de",
+            "#2b2b2b",
+            "#c58f6e"
+          ],
+          "frame": "none",
+          "acoustic": true,
+          "alpha": 0.7
+        },
+        {
+          "type": "plant",
+          "cu": 0.5,
+          "species": "olive",
+          "height": 1.7,
+          "potColor": "#ddd6ca",
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N5",
+      "code": "N5",
+      "name": "Tekstilpaneler i sand og terrakotta",
+      "group": "Nye forslag",
+      "priceText": "ca. 13 000 kr (estimat, som A)",
+      "priceMin": 12000,
+      "priceMax": 14000,
+      "sabineAdded": 6.8,
+      "rt60": 0.68,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "De samme tre store klasse A-panelene som i A, men i lyse, varme farger: sand på sidene og terrakotta i midten. Like god demping som A, men et lettere og varmere uttrykk.",
+      "pros": [
+        "Like god demping som A (ca. +6,8 m² Sabine)",
+        "Varme farger som passer med SAND-veggene og eika",
+        "Midtpanelet blir et rolig blikkfang over spisebordet"
+      ],
+      "cons": [
+        "Lyse tekstiler viser flekker lettere",
+        "Terrakotta er et tydelig fargevalg",
+        "Relativt dyrt"
+      ],
+      "products": [
+        "3 stk stofftrukne akustikkpaneler 120 × 200 × ca. 5 cm, klasse A (2 i sand, 1 i terrakotta)"
+      ],
+      "notes": null,
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "panel",
+          "u": 0.025,
+          "v": 0.35,
+          "w": 1.2,
+          "h": 2,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#cdbfa6",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 1.29,
+          "v": 0.35,
+          "w": 1.2,
+          "h": 2,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#b06f55",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 2.555,
+          "v": 0.35,
+          "w": 1.2,
+          "h": 2,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#cdbfa6",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N6",
+      "code": "N6",
+      "name": "Mosefelt med eikespiler på sidene",
+      "group": "Nye forslag",
+      "priceText": "ca. 11–13 000 kr (estimat)",
+      "priceMin": 11000,
+      "priceMax": 13000,
+      "sabineAdded": 3.2,
+      "rt60": 0.77,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Som K, men med et felt av preservert mose (180 × 120 cm) i stedet for kunsttrykk, flankert av to spilefelt i naturell eik. Gir en grønn «levende» vegg uten vedlikehold.",
+      "pros": [
+        "Grønt og naturlig – speiler utsikten mot elva",
+        "Ingen vanning eller stell",
+        "Moderat demping (ca. +3,2 m² Sabine)"
+      ],
+      "cons": [
+        "Mose kan falme og tørke i sterk sol og tørr luft fra varmepumpa",
+        "Dyrere per m² enn spiler",
+        "Kraftig uttrykk"
+      ],
+      "products": [
+        "Mosepanel 180 × 120 cm (preservert mose), gjerne med eikeramme",
+        "2 stk akupanel eik 60 × 240 cm, kappet til 235 cm"
+      ],
+      "notes": null,
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0.2,
+          "v": 0,
+          "w": 0.6,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.02,
+          "alpha": 0.76
+        },
+        {
+          "type": "moss",
+          "u": 1.05,
+          "v": 0.85,
+          "w": 1.8,
+          "h": 1.2,
+          "depth": 0.05,
+          "color": "#5a7431",
+          "style": "mix",
+          "alpha": 0.47
+        },
+        {
+          "type": "slats",
+          "u": 3.1,
+          "v": 0,
+          "w": 0.6,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.02,
+          "alpha": 0.76
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N7",
+      "code": "N7",
+      "name": "Kelimteppe med messing-vegglamper",
+      "group": "Nye forslag",
+      "priceText": "ca. 6–11 000 kr (estimat)",
+      "priceMin": 6000,
+      "priceMax": 11000,
+      "sabineAdded": 2,
+      "rt60": 0.8,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Et håndvevd kelimteppe i varme jordfarger hengt på en eikestang midt på veggen, flankert av to vegglamper i messing. Gir farge, mønster og lun belysning ved spisebordet – og litt demping.",
+      "pros": [
+        "Lunt og personlig – gir rommet karakter",
+        "Vegglampene gir stemningsbelysning om kvelden",
+        "Teppet kan byttes eller flyttes"
+      ],
+      "cons": [
+        "Lite demping (ca. +2 m² Sabine) – legg gjerne filt bak",
+        "Vegglampene trenger strøm (skjult kabel eller ledning til stikk)",
+        "Mønsteret er et tydelig stilvalg"
+      ],
+      "products": [
+        "Kelim/flatvevd ullteppe ca. 260 × 170 cm",
+        "Teppestang i eik ca. 280 cm",
+        "2 stk vegglamper i messing, 2700 K – se Bohus sitt utvalg av vegglamper"
+      ],
+      "notes": null,
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "tapestry",
+          "u": 0.65,
+          "v": 0.55,
+          "w": 2.6,
+          "h": 1.7,
+          "pattern": "kilim",
+          "colors": [
+            "#d8cbb5",
+            "#a8604a",
+            "#5d6b5a",
+            "#2e2c2a"
+          ],
+          "rod": true,
+          "rodColor": "#b08b62",
+          "fringe": true,
+          "alpha": 0.45
+        },
+        {
+          "type": "lamp-wall",
+          "cu": 0.35,
+          "cv": 1.75,
+          "style": "sconce",
+          "color": "#b8925a",
+          "colorK": 2700,
+          "alpha": 0
+        },
+        {
+          "type": "lamp-wall",
+          "cu": 3.55,
+          "cv": 1.75,
+          "style": "sconce",
+          "color": "#b8925a",
+          "colorK": 2700,
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N8",
+      "code": "N8",
+      "name": "Brystpanel i røkt eik + leirefarget vegg og bildelist",
+      "group": "Nye forslag",
+      "priceText": "ca. 11–13 000 kr inkl. bilder (estimat)",
+      "priceMin": 11000,
+      "priceMax": 13000,
+      "sabineAdded": 3.3,
+      "rt60": 0.76,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Akustikkspiler i røkt eik som brystpanel fra gulvet til 110 cm over hele veggen, avsluttet med en 10 cm dyp eikelist som også er bildelist. Veggen over males i den myke leirefargen SAVANNA SUNSET (Jotun 20046), som Jotun selv parer med MARRAKESH – slik henger spisestua og TV-stua sammen. Mørkt nederst og lyst øverst gjør at den 3 meter høye veggen føles rolig og godt forankret.",
+      "pros": [
+        "Klassisk og tidløst grep som gir den høye veggen gode proporsjoner",
+        "Bildelista gjør det lett å bytte bilder og pynt uten nye hull i veggen",
+        "Spilene tåler at stolryggene treffer veggen",
+        "Leirefargen gir varme uten å bli mørk, og spiller med MARRAKESH i TV-stua"
+      ],
+      "cons": [
+        "Moderat demping (ca. +3,3 m² Sabine) – bare den nederste tredjedelen absorberer",
+        "Hele veggen må males (ca. 12 m², to strøk)",
+        "Stikkontaktene ved gulvet må flyttes ut med påbyggsrammer",
+        "Bildelista må skjøtes eller lages av én 3,9 m lang planke"
+      ],
+      "products": [
+        "Akupanel røkt eik 240 × 60 cm – 4 stk, kappet i to til 110 cm (WoodUpp/Fibrotech, ca. 6 800 kr)",
+        "Glava 50 mm og lekter 36 × 48 bak panelet (ca. 400 kr)",
+        "Topplist/bildelist i røkt eik 390 × 10 × 3 cm (ca. 800–1 200 kr)",
+        "Jotun Lady Pure Color SAVANNA SUNSET 20046, 2,7 l (ca. 1 100 kr)",
+        "Gustin strukturbilde 80 × 100 fra Bohus (1 999 kr) + to mindre bilder i ramme (ca. 600–900 kr)",
+        "Påbyggsrammer for stikkontaktene – 2 stk (ca. 200 kr)"
+      ],
+      "notes": "Panelet går 0–110 cm, lista ligger på 110–113 cm. Den nedre bryteren ved døra sitter fra ca. 116 cm og blir fri. Byttes leirefargen ut med SAND, blir det et rent ton-i-ton-brystpanel. Pris uten bilder: ca. 9–10 000 kr.",
+      "wallPaint": "#af8a76",
+      "wallPaintLabel": "SAVANNA SUNSET (Jotun 20046)",
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.9,
+          "h": 1.1,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "shelf",
+          "u": 0,
+          "v": 1.1,
+          "w": 3.9,
+          "d": 0.1,
+          "thickness": 0.03,
+          "color": "#5f4936",
+          "material": "smoked-oak",
+          "alpha": 0
+        },
+        {
+          "type": "art",
+          "u": 1.02,
+          "v": 1.13,
+          "w": 0.8,
+          "h": 1,
+          "depth": 0.03,
+          "motif": "abstract-shapes",
+          "palette": [
+            "#ebe3d6",
+            "#c9b79c",
+            "#8c6c55",
+            "#2b2826"
+          ],
+          "frame": "oak",
+          "acoustic": false,
+          "seed": 81,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 1.9,
+          "v": 1.13,
+          "w": 0.5,
+          "h": 0.7,
+          "depth": 0.025,
+          "motif": "botanical",
+          "palette": [
+            "#efe9de",
+            "#7d8a6a",
+            "#3a3a33"
+          ],
+          "frame": "black",
+          "acoustic": false,
+          "seed": 82,
+          "alpha": 0.05
+        },
+        {
+          "type": "art",
+          "u": 2.48,
+          "v": 1.13,
+          "w": 0.4,
+          "h": 0.5,
+          "depth": 0.025,
+          "motif": "line-art",
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#c58f6e"
+          ],
+          "frame": "oak",
+          "acoustic": false,
+          "seed": 83,
+          "alpha": 0.05
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N9",
+      "code": "N9",
+      "name": "Akustisk triptyk «Elva» – tre bilder 110 × 145",
+      "group": "Nye forslag",
+      "priceText": "ca. 13–18 000 kr (estimat)",
+      "priceMin": 13000,
+      "priceMax": 18000,
+      "sabineAdded": 4.1,
+      "rt60": 0.74,
+      "rank": null,
+      "recommended": true,
+      "badge": "Designfavoritt – kunst og akustikk",
+      "description": "Tre store akustikkbilder på 110 × 145 cm som sammen viser ett panorama av elva og åsene utenfor – gjerne et eget bilde tatt fra stua. Bildene henger med 6 cm mellomrom fra 90 til 235 cm, så toppen flukter med nisjetaket, og takspottene lyser på hvert sitt bilde. Utsikten speiles inn på veggen motsatt vinduene, og veggen får både kunst og demping.",
+      "pros": [
+        "Personlig: utsikten fra vinduene blir kunst på veggen",
+        "Takspottene (ca. 0,9 / 1,9 / 2,9 m) står nesten midt over hvert bilde – ferdig belysning",
+        "Grei demping (ca. +4,1 m² Sabine) uten snekkerarbeid",
+        "Ingen flytting av brytere eller stikkontakter, og lett å ta med ved flytting"
+      ],
+      "cons": [
+        "Kostbart per m² sammenlignet med spiler",
+        "Motivet er et tydelig valg man må like over tid",
+        "Mindre demping enn heldekkende spilevegg"
+      ],
+      "products": [
+        "3 stk akustikkbilder 110 × 145 × 5 cm med eget trykk (ett panoramabilde delt i tre) – flere norske nettbutikker lager akustikkbilder på bestilling",
+        "Skjult veggoppheng (følger som regel med)",
+        "Tips: ta panoramabildet en morgen eller kveld med dis over elva – det gir rolige farger"
+      ],
+      "notes": "Bildene er midtstilt på veggen (u 0,24–3,66 m) og slutter ca. 10 cm før bryterne ved døra. panoramaPart 0/1/2 betyr at motivet skal gå sammenhengende over de tre bildene.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "art",
+          "u": 0.24,
+          "v": 0.9,
+          "w": 1.1,
+          "h": 1.45,
+          "depth": 0.05,
+          "motif": "landscape-hills",
+          "palette": [
+            "#e7e2d7",
+            "#a9b3b0",
+            "#7f8f78",
+            "#5b6b52",
+            "#b58456",
+            "#3c3f3a"
+          ],
+          "frame": "none",
+          "acoustic": true,
+          "sun": false,
+          "seed": 91,
+          "panoramaPart": 0,
+          "panoramaCount": 3,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 1.4,
+          "v": 0.9,
+          "w": 1.1,
+          "h": 1.45,
+          "depth": 0.05,
+          "motif": "landscape-hills",
+          "palette": [
+            "#e7e2d7",
+            "#a9b3b0",
+            "#7f8f78",
+            "#5b6b52",
+            "#b58456",
+            "#3c3f3a"
+          ],
+          "frame": "none",
+          "acoustic": true,
+          "sun": false,
+          "seed": 91,
+          "panoramaPart": 1,
+          "panoramaCount": 3,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 2.56,
+          "v": 0.9,
+          "w": 1.1,
+          "h": 1.45,
+          "depth": 0.05,
+          "motif": "landscape-hills",
+          "palette": [
+            "#e7e2d7",
+            "#a9b3b0",
+            "#7f8f78",
+            "#5b6b52",
+            "#b58456",
+            "#3c3f3a"
+          ],
+          "frame": "none",
+          "acoustic": true,
+          "sun": false,
+          "seed": 91,
+          "panoramaPart": 2,
+          "panoramaCount": 3,
+          "alpha": 0.86
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N10",
+      "code": "N10",
+      "name": "Gallerivegg – sju akustikkbilder i eikerammer",
+      "group": "Nye forslag",
+      "priceText": "ca. 10–15 000 kr (gjør-det-selv: ca. 4–6 000 kr)",
+      "priceMin": 4000,
+      "priceMax": 15000,
+      "sabineAdded": 3,
+      "rt60": 0.77,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "En samlet gallerivegg med sju akustikkbilder i eikerammer i ulike størrelser rundt et større landskapsbilde i midten. Toppene ligger på linje på 230 cm og bunnene på 100 cm, så veggen ser ryddig ut selv med mange bilder. Motivene holdes i rommets farger: sand, oliven, terrakotta og sort strek.",
+      "pros": [
+        "Personlig og levende – kan bygges ut og byttes over tid",
+        "Eikerammene binder veggen sammen med gulvet og spisestolene",
+        "Rimelig gjør-det-selv-variant: vanlige plakater med 30–40 mm akustikkfilt bak",
+        "Ingen flytting av brytere eller stikkontakter"
+      ],
+      "cons": [
+        "Moderat demping (ca. +3,0 m² Sabine)",
+        "Krever nøye utmåling – sett opp papirmaler med maskeringstape først",
+        "Mange festepunkter i veggen"
+      ],
+      "products": [
+        "7 akustikkbilder i eikeramme, 4 cm tykke: 100 × 130, 2 × 68 × 70, 2 × 68 × 54 og 2 × 42 × 60 cm",
+        "Gjør-det-selv: plakater + eikerammer + 30–40 mm akustikkfilt bak hver plakat",
+        "Plakatmotiver i sand, oliven og terrakotta – se også bildeutvalget hos Bohus"
+      ],
+      "notes": "Grupperingen er midtstilt på veggen (u 0,22–3,67 m) med 6–7 cm mellomrom. Toppkant 230 cm, bunnkant 100 cm (over stolryggene); de to små bildene ytterst er midtstilt på 165 cm.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "art",
+          "u": 1.45,
+          "v": 1,
+          "w": 1,
+          "h": 1.3,
+          "depth": 0.045,
+          "motif": "landscape-hills",
+          "palette": [
+            "#ece5d8",
+            "#b9c0b0",
+            "#7d8a6a",
+            "#566650",
+            "#c98f6b"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "sun": true,
+          "seed": 101,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 0.7,
+          "v": 1.6,
+          "w": 0.68,
+          "h": 0.7,
+          "depth": 0.04,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#7d8a6a",
+            "#3a3936"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 102,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 0.7,
+          "v": 1,
+          "w": 0.68,
+          "h": 0.54,
+          "depth": 0.04,
+          "motif": "line-art",
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#c98f6b"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 103,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 0.22,
+          "v": 1.35,
+          "w": 0.42,
+          "h": 0.6,
+          "depth": 0.04,
+          "motif": "abstract-shapes",
+          "palette": [
+            "#e9e0d0",
+            "#c98f6b",
+            "#b8a58a",
+            "#3a3936"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 104,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 2.51,
+          "v": 1.76,
+          "w": 0.68,
+          "h": 0.54,
+          "depth": 0.04,
+          "motif": "abstract-shapes",
+          "palette": [
+            "#ece5d8",
+            "#7d8a6a",
+            "#c98f6b",
+            "#2b2b2b"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 105,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 2.51,
+          "v": 1,
+          "w": 0.68,
+          "h": 0.7,
+          "depth": 0.04,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#566650",
+            "#b8a58a"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 106,
+          "alpha": 0.86
+        },
+        {
+          "type": "art",
+          "u": 3.25,
+          "v": 1.35,
+          "w": 0.42,
+          "h": 0.6,
+          "depth": 0.04,
+          "motif": "line-art",
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#7d8a6a"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "seed": 107,
+          "alpha": 0.86
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N11",
+      "code": "N11",
+      "name": "Korkvegg i mørk ekspandert kork, gulv til tak",
+      "group": "Nye forslag",
+      "priceText": "ca. 8–11 000 kr inkl. lamper (+ ca. 3 200 kr for fiolfikus)",
+      "priceMin": 8000,
+      "priceMax": 11000,
+      "sabineAdded": 3.5,
+      "rt60": 0.76,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Hele veggen kles med 30 mm ekspandert kork – en mørk, sjokoladebrun og levende overflate som ligner røkt eik på avstand og er myk og varm å ta på. To svarte vegglamper med arm gir lunt lys ved spisebordet, og en fiolfikus ved nisjehjørnet gir et grønt avbrekk. Kork er et naturmateriale som både demper lyd og tåler slag fra stolrygger.",
+      "pros": [
+        "Uvanlig, taktilt og arkitektonisk – en vegg ingen andre har",
+        "Dekker hele veggen fra gulv til tak og fremhever takhøyden",
+        "Naturlig og bærekraftig materiale som tåler stolrygger",
+        "Rimelig per m²"
+      ],
+      "cons": [
+        "Lavere demping per m² enn spiler og stoff (ca. +3,5 m² Sabine totalt)",
+        "Mørk flate på 11,7 m² sluker noe lys om kvelden",
+        "Brytere og stikkontakter må flyttes ut med påbyggsrammer",
+        "Ekspandert kork kan smuldre litt i kantene – avslutt med list ved nisjehjørnet og karmen"
+      ],
+      "products": [
+        "Ekspandert kork (termokork) 30 mm, ca. 13 m² inkl. kapp (ca. 5 500–7 500 kr)",
+        "Lim for korkplater (ca. 600 kr)",
+        "2 stk svarte vegglamper med arm, f.eks. August vegglampe fra Bohus (1 199 kr/stk)",
+        "Valgfritt: Fiolficus kunstig plante H150 fra Bohus (3 199 kr) i lys krukke"
+      ],
+      "notes": "Lampene henger under spot 1 og spot 3 (u 0,95 og 2,95 m) på 170 cm. Ekspandert kork i 40–50 mm gir mer demping enn tallet her (αw ≈ 0,3 er brukt for 30 mm).",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "panel",
+          "u": 0,
+          "v": 0,
+          "w": 3.9,
+          "h": 3,
+          "depth": 0.03,
+          "surface": "cork",
+          "color": "#4b3b30",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.3
+        },
+        {
+          "type": "lamp-wall",
+          "cu": 0.95,
+          "cv": 1.7,
+          "style": "arm",
+          "color": "#1f1f1f",
+          "colorK": 2700,
+          "alpha": 0
+        },
+        {
+          "type": "lamp-wall",
+          "cu": 2.95,
+          "cv": 1.7,
+          "style": "arm",
+          "color": "#1f1f1f",
+          "colorK": 2700,
+          "alpha": 0
+        },
+        {
+          "type": "plant",
+          "cu": 0.3,
+          "species": "ficus-lyrata",
+          "height": 1.5,
+          "potColor": "#d8d1c5",
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N12",
+      "code": "N12",
+      "name": "Spilevegg med opplyst hyllenisje",
+      "group": "Nye forslag",
+      "priceText": "ca. 11–13 000 kr (estimat)",
+      "priceMin": 11000,
+      "priceMax": 13000,
+      "sabineAdded": 3.8,
+      "rt60": 0.75,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "To spilefelt i naturell eik (105 cm brede) fra gulvet til 235 cm rammer inn en 180 cm bred nisje i midten, malt i den mørke SMOKED OAK (Jotun 10964). I nisjen henger tre eikehyller, og en varm LED-list i toppen lyser ned over keramikk, bøker og lys. Veggen ser ut som innebygget snekkerarbeid og gir både demping og en plass for ting man er glad i.",
+      "pros": [
+        "Akustikk, utstillingsplass og stemningslys i ett",
+        "Ser innebygget ut – spilene bygger 7 cm ut og gir nisjen naturlig dybde",
+        "Stikkontakten ved gulvet havner i nisjen og kan gi strøm til LED-lista",
+        "Den mørke nisjen spiller mot spisebordet og kjøkkenet"
+      ],
+      "cons": [
+        "Moderat demping (ca. +3,8 m² Sabine)",
+        "Hyllene må styles for å se bra ut – kan fort bli rotete",
+        "Lange hyller (176 cm) trenger skjulte braketter festet i stendere",
+        "Bryterne og stikkontakten ved døra må flyttes ut på høyre spilefelt"
+      ],
+      "products": [
+        "Akupanel naturell eik 240 × 60 cm – 4 stk (ca. 6 800 kr)",
+        "Glava 50 mm, lekter og svarte skruer (ca. 300 kr)",
+        "3 stk eikehyller 176 × 22 × 4 cm med skjult brakett (ca. 3 000–3 600 kr)",
+        "LED-list 2700 K med aluprofil og diffusor, ca. 1,8 m (ca. 800–1 200 kr)",
+        "Jotun Lady Pure Color SMOKED OAK 10964, 0,68 l (ca. 450 kr)",
+        "Pynt: f.eks. Ceres lysestake og Aude vase fra Bohus"
+      ],
+      "notes": "Nisjen går fra u 1,05 til 2,85 m (midt på veggen). Hyller på 110, 155 og 200 cm. LED-lista sitter i overkant av nisjen på 233 cm.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 1.05,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 2.85,
+          "v": 0,
+          "w": 1.05,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "paint-block",
+          "u": 1.05,
+          "v": 0,
+          "w": 1.8,
+          "h": 2.35,
+          "color": "#6c6358",
+          "paintName": "SMOKED OAK (Jotun 10964)",
+          "shape": "rect",
+          "alpha": 0
+        },
+        {
+          "type": "shelf",
+          "u": 1.07,
+          "v": 1.1,
+          "w": 1.76,
+          "d": 0.22,
+          "thickness": 0.04,
+          "color": "#b08b62",
+          "material": "oak",
+          "alpha": 0
+        },
+        {
+          "type": "shelf",
+          "u": 1.07,
+          "v": 1.55,
+          "w": 1.76,
+          "d": 0.22,
+          "thickness": 0.04,
+          "color": "#b08b62",
+          "material": "oak",
+          "alpha": 0
+        },
+        {
+          "type": "shelf",
+          "u": 1.07,
+          "v": 2,
+          "w": 1.76,
+          "d": 0.22,
+          "thickness": 0.04,
+          "color": "#b08b62",
+          "material": "oak",
+          "alpha": 0
+        },
+        {
+          "type": "led",
+          "u": 1.05,
+          "v": 2.33,
+          "w": 1.8,
+          "direction": "down",
+          "colorK": 2700,
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N13",
+      "code": "N13",
+      "name": "Fargedrukning i GREEN LEAF – malte spiler og vegg i samme farge",
+      "group": "Nye forslag",
+      "priceText": "ca. 9–12 000 kr (estimat)",
+      "priceMin": 9000,
+      "priceMax": 12000,
+      "sabineAdded": 7,
+      "rt60": 0.68,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Hele veggen og en heldekkende spilevegg fra gulvet til 235 cm males i samme dempede salvie- og olivengrønne farge, GREEN LEAF (Jotun 8469). Når spiler og vegg har samme farge, forsvinner skjøten på 235 cm, og veggen blir én rolig, grønn flate med struktur. Grønt henter inn trærne utenfor og de grønne barstolene på kjøkkenet, og dempingen er like god som i B.",
+      "pros": [
+        "Like mye demping som B (ca. +7 m² Sabine) – RT60 ca. 0,68 s alene",
+        "Moderne ton-i-ton-uttrykk som er rolig selv om fargen er tydelig",
+        "Grønt binder sammen barstolene, plantene og utsikten mot elva",
+        "MDF-spiler som males er rimeligere enn eikefiner"
+      ],
+      "cons": [
+        "Spilene må males (sprøytes eller rulles før montering) – tidkrevende",
+        "Fargen er et tydeligere valg enn tre",
+        "Brytere og stikkontakter må flyttes ut med påbyggsrammer",
+        "Riper i malte spiler må flikkes"
+      ],
+      "products": [
+        "Spilepanel i MDF på filt, umalt/grunnet for maling – ca. 9,2 m² (8 paneler à 240 × 60, kappet til 235 cm)",
+        "Jotun Lady Pure Color GREEN LEAF 8469 – ca. 2 × 2,7 l (vegg og spiler)",
+        "Glava 50 mm og lekter 36 × 48 som for B",
+        "Påbyggsrammer for brytere og stikkontakter – 3 stk"
+      ],
+      "notes": "Samme mål og inndeling som B (arbeidstegning 09), bare malt. Vil man ha det lysere, fungerer det samme grepet i SAND (helt ton-i-ton) eller i GREEN HARMONY 8252.",
+      "wallPaint": "#8a8774",
+      "wallPaintLabel": "GREEN LEAF (Jotun 8469)",
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.9,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "painted",
+          "slatColor": "#8a8774",
+          "backing": "felt",
+          "backingColor": "#3a3a30",
+          "standoff": 0.048,
+          "alpha": 0.76
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N14",
+      "code": "N14",
+      "name": "Innebygd spisebenk med polstret rygg",
+      "group": "Nye forslag",
+      "priceText": "ca. 16–24 000 kr (benk på mål er den store posten)",
+      "priceMin": 16000,
+      "priceMax": 24000,
+      "sabineAdded": 2.7,
+      "rt60": 0.78,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "En 240 cm lang benk i røkt eik langs veggen, med seks polstrede ryggputer i sand bouclé og et stort akustikkbilde over. Spisebordet flyttes inntil benken, slik at veggsiden av bordet blir en lun kafékrok der benken erstatter to–tre stoler. To svarte armlamper, én på hver side, gir godt lys over bordet om kvelden.",
+      "pros": [
+        "Funksjonelt – flere sitteplasser og oppbevaring i benken",
+        "Polstringen demper lyden der folk faktisk sitter og prater",
+        "Frigjør gulvplass mellom bordet og veggen",
+        "Puter og pledd fra Bohus kan brukes på benken"
+      ],
+      "cons": [
+        "Lavere demping enn heldekkende løsninger (ca. +2,7 m² Sabine, litt mer med sittepute)",
+        "Benk på mål er en stor kostnad",
+        "Bordet må flyttes inntil benken (ca. 30–40 cm fra veggen til bordkanten)",
+        "Stikkontakten ved gulvet havner bak benken – lag en utsparing"
+      ],
+      "products": [
+        "Benk 240 × 45 × 45 cm i røkt eik med oppbevaring – snekker, eller en frittstående spisebenk (se Bohus sitt utvalg av benker)",
+        "6 stk polstrede veggputer 39 × 60 cm i bouclé sand, hengt på skinne",
+        "Sittepute 240 × 45 cm sydd på mål",
+        "Akustikkbilde 160 × 100 cm i eikeramme",
+        "2 stk svarte armlamper, f.eks. August vegglampe fra Bohus (1 199 kr/stk)",
+        "Pynteputer, f.eks. Boucle Moment 50 × 50 fra Bohus (649 kr/stk)"
+      ],
+      "notes": "Benken står fra u 0,80 til 3,20 m. Ryggputene sitter fra 50 til 110 cm, bildet fra 130 til 230 cm. Benken er tegnet som en lav skjenk på gulvet (sideboard-floating med v = 0).",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "sideboard-floating",
+          "u": 0.8,
+          "v": 0,
+          "w": 2.4,
+          "h": 0.45,
+          "d": 0.45,
+          "frontStyle": "slatted",
+          "color": "#5f4936",
+          "material": "smoked-oak",
+          "use": "bench",
+          "alpha": 0
+        },
+        {
+          "type": "panel",
+          "u": 0.8,
+          "v": 0.5,
+          "w": 0.39,
+          "h": 0.6,
+          "depth": 0.08,
+          "surface": "fabric",
+          "color": "#cbbba2",
+          "edge": "rounded",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 1.202,
+          "v": 0.5,
+          "w": 0.39,
+          "h": 0.6,
+          "depth": 0.08,
+          "surface": "fabric",
+          "color": "#cbbba2",
+          "edge": "rounded",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 1.604,
+          "v": 0.5,
+          "w": 0.39,
+          "h": 0.6,
+          "depth": 0.08,
+          "surface": "fabric",
+          "color": "#cbbba2",
+          "edge": "rounded",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 2.006,
+          "v": 0.5,
+          "w": 0.39,
+          "h": 0.6,
+          "depth": 0.08,
+          "surface": "fabric",
+          "color": "#cbbba2",
+          "edge": "rounded",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 2.408,
+          "v": 0.5,
+          "w": 0.39,
+          "h": 0.6,
+          "depth": 0.08,
+          "surface": "fabric",
+          "color": "#cbbba2",
+          "edge": "rounded",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 2.81,
+          "v": 0.5,
+          "w": 0.39,
+          "h": 0.6,
+          "depth": 0.08,
+          "surface": "fabric",
+          "color": "#cbbba2",
+          "edge": "rounded",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "art",
+          "u": 1.2,
+          "v": 1.3,
+          "w": 1.6,
+          "h": 1,
+          "depth": 0.05,
+          "motif": "landscape-hills",
+          "palette": [
+            "#e7e2d7",
+            "#a9b3b0",
+            "#7f8f78",
+            "#5b6b52",
+            "#b58456"
+          ],
+          "frame": "oak",
+          "acoustic": true,
+          "sun": false,
+          "seed": 141,
+          "alpha": 0.86
+        },
+        {
+          "type": "lamp-wall",
+          "cu": 0.5,
+          "cv": 1.55,
+          "style": "arm",
+          "color": "#1f1f1f",
+          "colorK": 2700,
+          "alpha": 0
+        },
+        {
+          "type": "lamp-wall",
+          "cu": 3.5,
+          "cv": 1.55,
+          "style": "arm",
+          "color": "#1f1f1f",
+          "colorK": 2700,
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N15",
+      "code": "N15",
+      "name": "Vegghengt skjenk, speil og lampetter + «usynlige» stoffpaneler",
+      "group": "Nye forslag",
+      "priceText": "ca. 13–16 000 kr (estimat)",
+      "priceMin": 13000,
+      "priceMax": 16000,
+      "sabineAdded": 2.6,
+      "rt60": 0.78,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "En vegghengt skjenk i mørk eik med et speil over, flankert av to lampetter – et klassisk spisestue-oppsett. Speilet henger rett overfor de store vinduene mot sør og speiler elva og dagslyset inn i spisestua. Ytterst på hver side står et høyt stoffpanel i en sandfarge nesten lik veggen, så dempingen knapt synes.",
+      "pros": [
+        "Speilet henter utsikten og dagslyset inn i rommet",
+        "Skjenken gir oppbevaring og avlastningsflate ved bordet",
+        "Akustikken er nesten usynlig – panelene glir inn i SAND",
+        "Mange Bohus-produkter: speil, lampetter og eventuelt skjenk"
+      ],
+      "cons": [
+        "Moderat demping (ca. +2,6 m² Sabine) – bør kombineres med teppe, puter og gardiner",
+        "Speilet kan gi gjenskinn fra takspottene",
+        "Lampettene trenger strøm (skjult kabel eller ledning ned til stikkontakt)"
+      ],
+      "products": [
+        "Vegghengt skjenk 180 × 42 × 64 cm i brunsvart eik, f.eks. IKEA BESTÅ veggmontert Björköviken (5 235 kr) – eller en Bohus-skjenk på gulvet, f.eks. Nola 180 × 45 (10 329 kr)",
+        "Othilie speil 90 × 93 fra Bohus (2 299 kr)",
+        "2 stk Lund vegglampe fra Bohus (799 kr/stk)",
+        "2 stk stofftrukne akustikkpaneler 60 × 225 cm, klasse A, i sand (ca. 4 000–5 000 kr)"
+      ],
+      "notes": "Skjenken henger 30 cm over gulvet (30–94 cm) fra u 1,00 til 2,80 m; stikkontakten ved gulvet blir liggende fritt under. Speilet 115–208 cm, lampettene på 162 cm, 30 cm utenfor speilet.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "panel",
+          "u": 0.1,
+          "v": 0.1,
+          "w": 0.6,
+          "h": 2.25,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#c6baa5",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 3.1,
+          "v": 0.1,
+          "w": 0.6,
+          "h": 2.25,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#c6baa5",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "sideboard-floating",
+          "u": 1,
+          "v": 0.3,
+          "w": 1.8,
+          "h": 0.64,
+          "d": 0.42,
+          "frontStyle": "flat",
+          "color": "#4a3a30",
+          "material": "smoked-oak",
+          "alpha": 0
+        },
+        {
+          "type": "panel",
+          "u": 1.45,
+          "v": 1.15,
+          "w": 0.9,
+          "h": 0.93,
+          "depth": 0.02,
+          "surface": "mirror",
+          "color": "#d9dcdc",
+          "edge": "frame",
+          "frameColor": "#1f1f1f",
+          "alpha": 0.05
+        },
+        {
+          "type": "lamp-wall",
+          "cu": 1.15,
+          "cv": 1.62,
+          "style": "sconce",
+          "color": "#1f1f1f",
+          "colorK": 2700,
+          "alpha": 0
+        },
+        {
+          "type": "lamp-wall",
+          "cu": 2.65,
+          "cv": 1.62,
+          "style": "sconce",
+          "color": "#1f1f1f",
+          "colorK": 2700,
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N16",
+      "code": "N16",
+      "name": "Stoffpaneler i rytme – oliven, sand og terrakotta",
+      "group": "Nye forslag",
+      "priceText": "ca. 9–12 000 kr (estimat)",
+      "priceMin": 9000,
+      "priceMax": 12000,
+      "sabineAdded": 5.2,
+      "rt60": 0.72,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "Fem smale stofftrukne akustikkpaneler, 60 cm brede, i oliven, sand og terrakotta henger side om side med 12 cm mellomrom. Toppene flukter med nisjetaket på 235 cm, mens bunnene veksler mellom 35 og 75 cm – det gir en rolig rytme, nesten som et stort abstrakt maleri. Jordfargene passer med SAND, eikegulvet og det mørke spisebordet.",
+      "pros": [
+        "God demping (ca. +5,2 m² Sabine) med klasse A-paneler",
+        "Leken, men ordnet rytme som gir veggen karakter",
+        "Fargene kan gjentas i puter og pledd i sittegruppa",
+        "Enkel montering, og ingen flytting av brytere eller stikkontakter"
+      ],
+      "cons": [
+        "Tydelig fargevalg",
+        "Stoff samler støv (støvsug med børstemunnstykke)",
+        "Fem enkeltpaneler må henges helt i lodd og på linje"
+      ],
+      "products": [
+        "5 stk stofftrukne akustikkpaneler klasse A, 50 mm: 3 stk 60 × 200 cm (2 oliven, 1 terrakotta) og 2 stk 60 × 160 cm (sand)",
+        "Stoff i ull eller ullblanding",
+        "Tips: gjenta fargene med pynteputer fra Bohus, f.eks. Thomas eller Asima"
+      ],
+      "notes": "Panelene står fra u 0,21 til 3,69 m med c/c 72 cm. Rekkefølge fra venstre: oliven (høy), sand (kort), terrakotta (høy), sand (kort), oliven (høy).",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "panel",
+          "u": 0.21,
+          "v": 0.35,
+          "w": 0.6,
+          "h": 2,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#6b6a47",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 0.93,
+          "v": 0.75,
+          "w": 0.6,
+          "h": 1.6,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#cbbba2",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 1.65,
+          "v": 0.35,
+          "w": 0.6,
+          "h": 2,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#b06f55",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 2.37,
+          "v": 0.75,
+          "w": 0.6,
+          "h": 1.6,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#cbbba2",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        },
+        {
+          "type": "panel",
+          "u": 3.09,
+          "v": 0.35,
+          "w": 0.6,
+          "h": 2,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#6b6a47",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.94
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N17",
+      "code": "N17",
+      "name": "Rutevegg i filt – SAND og MARRAKESH",
+      "group": "Nye forslag",
+      "priceText": "ca. 10–15 000 kr (estimat)",
+      "priceMin": 10000,
+      "priceMax": 15000,
+      "sabineAdded": 6.6,
+      "rt60": 0.69,
+      "rank": null,
+      "recommended": false,
+      "badge": null,
+      "description": "24 kvadratiske filtfliser på 58,5 cm, 4 cm tykke, i sjakkbrett fra gulvet til 235 cm, i to farger som ligger tett opp mot husets egne veggfarger SAND og MARRAKESH. Mønsteret er så dempet at veggen oppleves som en myk, quiltet flate – men den demper nesten like mye som en heldekkende spilevegg.",
+      "pros": [
+        "Mye demping (ca. +6,6 m² Sabine) – RT60 ca. 0,69 s alene",
+        "Ton-i-ton med husets egne farger – rolig og lunt",
+        "Myk overflate som tåler stolrygger",
+        "Enkeltfliser kan byttes eller flyttes"
+      ],
+      "cons": [
+        "Filt samler støv og kan få merker",
+        "Mindre «wow» enn tre eller kunst",
+        "Fliser på 60 × 60 må kappes 1,5 cm for å treffe 235 cm, og stikkontakten krever utsparing"
+      ],
+      "products": [
+        "24 stk akustikkfliser i PET-filt eller ullfilt, 60 × 60 × 4 cm – 12 i sand, 12 i varm gråbrun",
+        "Montasjelim for akustikkplater, eller klips/borrelås så flisene kan tas ned",
+        "Påbyggsramme/utsparing for stikkontakten ved gulvet"
+      ],
+      "notes": "Feltet går fra u 0,17 til 3,69 m og fra gulvet (gulvlista fjernes bak) til 235 cm, 6 × 4 fliser à 58,5 cm med 3 mm fuge. Fliser 60 × 60 kappes med skarp kniv og linjal.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "checker",
+          "u": 0.17,
+          "v": 0,
+          "w": 3.525,
+          "h": 2.349,
+          "tile": 0.585,
+          "cols": 6,
+          "rows": 4,
+          "depth": 0.04,
+          "fill": "felt",
+          "colors": [
+            "#c9bca6",
+            "#a39584"
+          ],
+          "gap": 0.003,
+          "alpha": 0.8
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N18",
+      "code": "N18",
+      "name": "Japandi – lin-paneler i svarte rammer",
+      "group": "Nye forslag",
+      "priceText": "ca. 5–7 000 kr som gjør-det-selv (ferdigkjøpt ca. 14–18 000 kr)",
+      "priceMin": 5000,
+      "priceMax": 18000,
+      "sabineAdded": 5.8,
+      "rt60": 0.7,
+      "rank": null,
+      "recommended": true,
+      "badge": "Designfavoritt – mest demping per krone (gjør-det-selv)",
+      "description": "Åtte akustikkpaneler i rammer av sortbeiset tre, trukket med lys lin, satt i et rutenett med fire kolonner og to rader – som japanske shoji-skjermer. De svarte rammene gjentar de svarte vinduskarmene, dørkarmen og kjøkkenet, mens linen er nesten like lys som veggen. Panelene kan lages som gjør-det-selv med Glava i rammer av lekt.",
+      "pros": [
+        "Mye demping (ca. +5,8 m² Sabine), men et lyst og luftig uttrykk",
+        "De svarte rammene binder veggen sammen med vinduene, døra og kjøkkenet",
+        "Svært rimelig som gjør-det-selv (ca. 5–7 000 kr)",
+        "Nederste rad starter på 30 cm – stoffet holdes unna stolben og stikkontakten"
+      ],
+      "cons": [
+        "Grafisk rutenett – strammere enn mykt",
+        "Linen må være akustisk åpen (løs vevnad) for at lyden skal slippe inn",
+        "Gjør-det-selv krever nøyaktig snekring og stramming av stoff"
+      ],
+      "products": [
+        "8 rammer av 21 × 45 mm lekt, sortbeiset (eller ferdige stoffpaneler med sort ramme)",
+        "Glava eller Rockwool 50 mm i rammene",
+        "Akustisk åpent lin eller linlook i naturfarge, ca. 9 m",
+        "Ferdigkjøpt alternativ: stofftrukne akustikkpaneler med sort ramme (ca. 14–18 000 kr)"
+      ],
+      "notes": "Kolonner à 85 cm med 4 cm fuge fra u 0,19 til 3,71 m. Nedre rad 30–102 cm, øvre rad 106–235 cm (topp i flukt med nisjetaket). αw ≈ 0,85 brukt fordi rammene tar litt av stoffflaten.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "panel",
+          "u": 0.19,
+          "v": 0.3,
+          "w": 0.85,
+          "h": 0.72,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#d4c8b2",
+          "edge": "frame",
+          "frameColor": "#1f1f1f",
+          "alpha": 0.85
+        },
+        {
+          "type": "panel",
+          "u": 1.08,
+          "v": 0.3,
+          "w": 0.85,
+          "h": 0.72,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#d4c8b2",
+          "edge": "frame",
+          "frameColor": "#1f1f1f",
+          "alpha": 0.85
+        },
+        {
+          "type": "panel",
+          "u": 1.97,
+          "v": 0.3,
+          "w": 0.85,
+          "h": 0.72,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#d4c8b2",
+          "edge": "frame",
+          "frameColor": "#1f1f1f",
+          "alpha": 0.85
+        },
+        {
+          "type": "panel",
+          "u": 2.86,
+          "v": 0.3,
+          "w": 0.85,
+          "h": 0.72,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#d4c8b2",
+          "edge": "frame",
+          "frameColor": "#1f1f1f",
+          "alpha": 0.85
+        },
+        {
+          "type": "panel",
+          "u": 0.19,
+          "v": 1.06,
+          "w": 0.85,
+          "h": 1.29,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#d4c8b2",
+          "edge": "frame",
+          "frameColor": "#1f1f1f",
+          "alpha": 0.85
+        },
+        {
+          "type": "panel",
+          "u": 1.08,
+          "v": 1.06,
+          "w": 0.85,
+          "h": 1.29,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#d4c8b2",
+          "edge": "frame",
+          "frameColor": "#1f1f1f",
+          "alpha": 0.85
+        },
+        {
+          "type": "panel",
+          "u": 1.97,
+          "v": 1.06,
+          "w": 0.85,
+          "h": 1.29,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#d4c8b2",
+          "edge": "frame",
+          "frameColor": "#1f1f1f",
+          "alpha": 0.85
+        },
+        {
+          "type": "panel",
+          "u": 2.86,
+          "v": 1.06,
+          "w": 0.85,
+          "h": 1.29,
+          "depth": 0.05,
+          "surface": "fabric",
+          "color": "#d4c8b2",
+          "edge": "frame",
+          "frameColor": "#1f1f1f",
+          "alpha": 0.85
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    },
+    {
+      "id": "N19",
+      "code": "N19",
+      "name": "Snekkervegg – røkt eik til taket med innfelt skjenk og LED",
+      "group": "Nye forslag",
+      "priceText": "ca. 22–26 000 kr (estimat)",
+      "priceMin": 22000,
+      "priceMax": 26000,
+      "sabineAdded": 7.4,
+      "rt60": 0.67,
+      "rank": null,
+      "recommended": true,
+      "badge": "Mest demping av de nye forslagene",
+      "description": "Spiler i røkt eik fra gulv til tak, med en 200 cm bred utsparing nederst i midten der en vegghengt skjenk henger innfelt. En varm LED-list i en 10 cm skyggefuge over skjenken lyser ned på skjenktoppen, og nisjen bak skjenken males mørk, så alt ser ut som ett møbel. Veggen får mest demping av de nye forslagene og ser ut som skreddersydd snekkerarbeid.",
+      "pros": [
+        "Mest demping av de nye forslagene (ca. +7,4 m² Sabine, RT60 ca. 0,67 s alene)",
+        "Skjenk, lys og akustikk i én helhet – ser bygget inn ut",
+        "Røkt eik matcher bordet og kjøkkenet, og full høyde fremhever takhøyden",
+        "Stikkontakten ved gulvet havner under skjenken og kan gi strøm til LED-lista"
+      ],
+      "cons": [
+        "Dyreste av de nye forslagene",
+        "Krever 300 cm lange paneler (eller skjøt) og nøyaktig montering",
+        "Mye mørk flate – kan virke tungt på kveldstid",
+        "Bryterne og stikkontakten ved døra må flyttes ut med påbyggsrammer"
+      ],
+      "products": [
+        "Akupanel røkt eik: 4 stk i 300 cm og 4 stk i 240 cm lengde (sjekk lengder hos WoodUpp/Fibrotech, ca. 15–17 000 kr)",
+        "Vegghengt skjenk 180 × 42 × 64 cm, f.eks. IKEA BESTÅ veggmontert Björköviken brunsvart eik (5 235 kr)",
+        "LED-list 2700 K med aluprofil og diffusor, ca. 2 m (ca. 1 000–1 200 kr)",
+        "Jotun Lady Pure Color COFFEE 2149 til nisjen bak skjenken, 0,68 l (ca. 450 kr)",
+        "Glava 50 mm, lekter, svarte skruer og påbyggsrammer (ca. 1 100 kr)"
+      ],
+      "notes": "Sidefeltene er 95 cm brede (u 0–0,95 og 2,95–3,90 m) og går 0–300 cm. Midtfeltet går 99–300 cm. Skjenken henger 25–89 cm fra u 1,05 til 2,85 m, LED-lista sitter på 98 cm.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 0.95,
+          "h": 3,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 2.95,
+          "v": 0,
+          "w": 0.95,
+          "h": 3,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 0.95,
+          "v": 0.99,
+          "w": 2,
+          "h": 2.01,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "paint-block",
+          "u": 0.95,
+          "v": 0,
+          "w": 2,
+          "h": 0.99,
+          "color": "#524240",
+          "paintName": "COFFEE (Jotun 2149)",
+          "shape": "rect",
+          "alpha": 0
+        },
+        {
+          "type": "sideboard-floating",
+          "u": 1.05,
+          "v": 0.25,
+          "w": 1.8,
+          "h": 0.64,
+          "d": 0.42,
+          "frontStyle": "flat",
+          "color": "#4a3a30",
+          "material": "smoked-oak",
+          "alpha": 0
+        },
+        {
+          "type": "led",
+          "u": 0.95,
+          "v": 0.98,
+          "w": 2,
+          "direction": "down",
+          "colorK": 2700,
+          "alpha": 0
+        }
+      ],
+      "image": null,
+      "thumb": null,
+      "imageSource": null,
+      "drawingsSource": []
+    }
+  ]
+}

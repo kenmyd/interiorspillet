@@ -1,0 +1,201 @@
+{
+  "version": 1,
+  "generatedBy": "tools/prep-images.py",
+  "mapping": "Cylinder around a vertical axis through \"center\" (world metres, +x south, +y up, +z west). Image column u (0 = left edge) maps linearly to azimuth: az = azimuthDeg[0] + u * (azimuthDeg[1] - azimuthDeg[0]); azimuth is measured from +x (south) toward +z (west), so a texel at azimuth az lies in world direction (cos az, 0, sin az). Image row v (0 = bottom) maps linearly to height on the cylinder: y = center.y + radius * (tanElevation[0] + v * (tanElevation[1] - tanElevation[0])); horizonV is the row of the camera horizon (eye height = center.y). Seen from \"center\" the image is an exact reprojection of the photos (verified by rendering it back to the photo cameras). center = the photo camera position (from the window frame in the photo). suggestedWidth/Height = arc length and height of the cylinder segment at radius suggestedDistance; any radius gives the same picture from center, the radius only sets the parallax when the viewer moves (≈ distance of the main subject).",
+  "backdrops": [
+    {
+      "id": "sor",
+      "file": "img/utsikt/sor.jpg",
+      "fileLow": "img/utsikt/lav/sor.jpg",
+      "size": [
+        4096,
+        2048
+      ],
+      "facing": "south",
+      "windows": [
+        "win-s1",
+        "win-s2",
+        "door-terrasse"
+      ],
+      "projection": "cylinder",
+      "azimuthDeg": [
+        -100.0,
+        100.0
+      ],
+      "elevationDeg": [
+        -40.0,
+        40.0
+      ],
+      "tanElevation": [
+        -0.8391,
+        0.8391
+      ],
+      "horizonV": 0.5,
+      "center": [
+        6.1,
+        1.65,
+        10.45
+      ],
+      "suggestedDistance": 60,
+      "suggestedWidth": 209.4,
+      "suggestedHeight": 100.7,
+      "sourcePhotos": [
+        "20261018_082850.jpg",
+        "20261018_082852.jpg",
+        "20261018_082855.jpg"
+      ],
+      "cameraRotations": {
+        "082850": [
+          -4.72,
+          -13.71,
+          -2.79
+        ],
+        "082852": [
+          -43.08,
+          -11.07,
+          -3.58
+        ],
+        "082855": [
+          44.35,
+          -9.69,
+          -2.02
+        ]
+      },
+      "timeOfDay": "morning, clear (08:28, 18 Oct)",
+      "notes": "Living-room view south over the lawn to the river (~60 m), the red boathouses (~150 m, az -12..-4), the houses on the far bank (az 0..+14) and the hills (1-2 km). Shot through the west living-room window; window frames, the lamp reflections and the terrace (deck, railing, stair, concrete landing: build them in 3D) are removed. The big lichen rock (3-5 m, az +7..+27) and the trees west of the house (az +15..+66) are close: they only line up from near \"center\". Keep 3D ground within a few metres of the facade (terrace, a strip of lawn) – the photo itself shows the lawn falling ~2.7 m below the floor down to the river; a ground plane further out would cover it. Beyond az -66 (east, behind the annex) and +66 (west, only seen at grazing angles) the photos are continued by a stretched, softened reflection. Use an unlit material (MeshBasicMaterial, colorSpace SRGB, toneMapped false, fog false) and scale its colour with daylight."
+    },
+    {
+      "id": "sor-kveld",
+      "file": "img/utsikt/sor-kveld.jpg",
+      "fileLow": "img/utsikt/lav/sor-kveld.jpg",
+      "size": [
+        4096,
+        2048
+      ],
+      "facing": "south",
+      "windows": [
+        "win-s1",
+        "win-s2",
+        "door-terrasse"
+      ],
+      "projection": "cylinder",
+      "azimuthDeg": [
+        -100.0,
+        100.0
+      ],
+      "elevationDeg": [
+        -40.0,
+        40.0
+      ],
+      "tanElevation": [
+        -0.8391,
+        0.8391
+      ],
+      "horizonV": 0.5,
+      "center": [
+        6.1,
+        1.65,
+        10.45
+      ],
+      "suggestedDistance": 60,
+      "suggestedWidth": 209.4,
+      "suggestedHeight": 100.7,
+      "timeOfDay": "blue hour, ~30 min after sunset",
+      "notes": "Same geometry as sor.jpg (swap the map or cross-fade). Deep-blue sky with a faint glow low in the south-west (az +40..+90), darkened landscape, the river mirroring the evening sky and a few lit windows in the houses across the river. For night, darken it further (colour x 0.15-0.3)."
+    },
+    {
+      "id": "ost",
+      "file": "img/utsikt/ost.jpg",
+      "fileLow": "img/utsikt/lav/ost.jpg",
+      "size": [
+        2560,
+        1536
+      ],
+      "facing": "south",
+      "role": "kitchen",
+      "windows": [
+        "win-k1",
+        "win-k2"
+      ],
+      "projection": "cylinder",
+      "azimuthDeg": [
+        -60.0,
+        60.0
+      ],
+      "elevationDeg": [
+        -32.14,
+        32.14
+      ],
+      "tanElevation": [
+        -0.6283,
+        0.6283
+      ],
+      "horizonV": 0.5,
+      "center": [
+        4.27,
+        1.56,
+        1.41
+      ],
+      "suggestedDistance": 40,
+      "suggestedWidth": 83.8,
+      "suggestedHeight": 50.3,
+      "sourcePhotos": [
+        "20261018_082950.jpg"
+      ],
+      "cameraRotations": {
+        "082950": [
+          -2.28,
+          -14.98,
+          -0.86
+        ]
+      },
+      "notes": "Kitchen-end view (\"ost\" = the east end of the room): what the long kitchen window (win-k1, wall x = 6.32) sees from the kitchen island. NB the kitchen windows face SOUTH (like the living room), not east, so facing is \"south\" and the azimuths are absolute: the \"east\" part is the dark wooden annex/outbuilding that closes the terrace to the east and fills the left of the view (az < -15, its gable edge runs from az -18/e +13 down to az -12/e -3). Then the river with the red boathouses and the houses climbing the far bank (az +10..+40). The terrace railing, chair and table are removed (build them in 3D); below the railing top (e < -5.5) there is a soft green slope only meant to be seen between the slats. Sky = the same sky model as sor.jpg (same directions), so the two match where they meet. Optional: sor.jpg alone also works for the kitchen windows (it is the same landscape seen 8 m further west); use ost.jpg if you give the kitchen its own backdrop layer or for a kitchen photo comparison."
+    },
+    {
+      "id": "nord",
+      "file": "img/utsikt/nord.jpg",
+      "fileLow": "img/utsikt/lav/nord.jpg",
+      "size": [
+        2048,
+        1182
+      ],
+      "facing": "north",
+      "windows": [
+        "win-tv"
+      ],
+      "projection": "cylinder",
+      "azimuthDeg": [
+        125.0,
+        235.0
+      ],
+      "elevationDeg": [
+        -15.0,
+        40.0
+      ],
+      "tanElevation": [
+        -0.2679,
+        0.8391
+      ],
+      "horizonV": 0.242,
+      "center": [
+        1.66,
+        1.82,
+        9.71
+      ],
+      "suggestedDistance": 25,
+      "suggestedWidth": 48.0,
+      "suggestedHeight": 27.7,
+      "sourcePhotos": [
+        "20261018_082800.jpg"
+      ],
+      "cameraRotations": {
+        "082800": [
+          162.51,
+          -1.5,
+          -0.46
+        ]
+      },
+      "notes": "TV-room strip window (win-tv, wall x = 0, sill 1.64 m): yellow birch leaves close to the glass (left, az 135..160), the light grey-blue commercial building with a flat roof and a mesh fence (~20-30 m), a small spruce, and the forested knoll behind (right). Objects on the sill are removed. Above the photo the knoll/crowns are continued with a rounded top; below the sill only a blurred fill (hardly visible: the glass starts at 1.70 m). The sky is the photographed hazy north sky deepening upward."
+    }
+  ]
+}

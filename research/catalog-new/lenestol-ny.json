@@ -1,0 +1,433 @@
+[
+  {
+    "id": "bohus-actona-chicago-hvilestol-med-fotskammel",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Chicago hvilestol med fotskammel",
+    "brand": "Actona",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/hvilestol/chicago-hvilestol-med-fotskammel",
+    "priceNok": 7999,
+    "priceNote": "pris sjekket 2026-10-18 på bohus.no. Fotskammelen er inkludert i prisen. Monza Beige 60 med svingfot matt svart koster 7 999,-. PU-kunstskinn svart koster 6 999,- (før 8 999,-, salg t.o.m. 30.11.). Monza Taupe 40 i bouclé (8 999,-) er utgått hos Bohus og er tatt ut. Bohus oppgir ikke merke, men leverandøren er Actona.",
+    "dims": {
+      "w": 0.75,
+      "d": 0.83,
+      "h": 1.12
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.47,
+      "seatD": 0.52,
+      "backH": 1.12,
+      "armH": 0.63,
+      "armW": 0.12,
+      "legStyle": "swivel-star",
+      "legH": 0.18,
+      "backShape": "high",
+      "cushion": "tight",
+      "footstool": true,
+      "headrest": true,
+      "notes": "Høy, rett rygg der den øverste delen er formet som en innebygd nakkepute, med en tverrsøm under. Ryggen har også en loddrett søm på midten og en tverrsøm over korsryggen. Armlenene er brede og avrundede, går i ett med sidevangene og buer litt utover. Polstringen er fast. Stolen står på en svart femarmet stjernefot med søyle (svingfot). Ryggen kan vippes manuelt bakover til hvilestilling, og stolen har ingen innebygd fothviler. Fotskammelen er ca. 50 × 40 × 42 cm (anslått fra bildet, ikke oppgitt), har samme stoff med en tverrsøm og står på en egen svart firearmet fot. Armlenshøyden er også anslått."
+    },
+    "variants": [
+      {
+        "name": "Monza Beige 60, svingfot matt svart",
+        "colors": {
+          "upholstery": "#b9aea3",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        }
+      },
+      {
+        "name": "PU-kunstskinn svart, svingfot matt svart",
+        "colors": {
+          "upholstery": "#222120",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "black-metal"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 6999
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.6,
+    "description": "Rimelig hvilestol med høy rygg, nakkeparti og matchende fotskammel på svart svingfot. Ryggen kan vippes bakover til hvilestilling.",
+    "why": "Det beige Monza-stoffet og den svarte stjernefoten passer til rommets lyse tekstiler og svarte metalldetaljer, og settet er det klart rimeligste av hvilestolene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/CHICAGO/314859/image-thumb__314859__PDP-Product/297407%20-%20Chicago%20hvilestol%20med%20fotskammel%20regulerbar%20rygg%20Monza%20Beige%2060%20svingfot%20matt%20svart%20-%201.b060623f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, pris, mål (75×83×112, sete 47/52), svingfot i matt svart og at fotskammelen er inkludert. Rettet: Monza Taupe 40 er utgått og tatt ut, og kampanjeprisen 5 999,- for beige finnes ikke (prisen er 7 999,-).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-conform-timeout-hvilestol-med-fotskammel",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Timeout hvilestol med fotskammel",
+    "brand": "Conform",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-99",
+    "priceNok": 31498,
+    "salePriceNok": 20298,
+    "priceNote": "pris sjekket 2026-10-18 på bohus.no. Alle prisene gjelder stol + matchende fotskammel, som kjøpes hver for seg. Makalu 64 Taupe (helkledd, sving og retur, svart svingfot): stolen koster 15 999,- (før 24 799,-) og fotskammelen 4 299,- (før 6 699,-, bohus.no/stoler/fotskammel/timeout-fotskammel-40), til sammen 20 298,- (før 31 498,-), salg t.o.m. 30.11. Det ferdige settet «Timeout hvilestol med fotskammel» i samme farge (31 498,-) er utgående og nesten utsolgt, så lenken går til stolen. De andre variantene er stol + fotskammel i samme stoff. Bohus har rundt 55 aktive Timeout-stoler: stolen alene koster 19 499–32 199,- og fotskammelen 6 399–10 299,-. Skroget finnes i eik, ubehandlet eik, valnøtt, svart eik eller helkledd; foten som svingfot, x-fot eller quattro; ryggen som standard eller høy; og stolen også i Large (84 × 89 × 114 cm, 31 099,-). Timeout med integrert fothviler koster 31 599–34 899,-, flere på salg fra 19 259,-.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.81,
+      "h": 1.01
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.42,
+      "seatD": 0.5,
+      "backH": 1.01,
+      "armH": 0.58,
+      "armW": 0.1,
+      "legStyle": "swivel-star",
+      "legH": 0.22,
+      "backShape": "high",
+      "cushion": "loose",
+      "footstool": true,
+      "headrest": true,
+      "notes": "Formstøpt, buet skall (skrog) som omslutter sete og rygg og danner armlenene, med polstrede armlenstopper. Skallet ses fra siden og bak og er frame-delen: finér i eik, valnøtt eller svart eik, eller trukket i samme stoff når varianten heter «helkledd» (da er frame = stofffargen). Inne i skallet ligger tykke, polstrede sete- og ryggputer som er festet, og en separat, pølseformet nakkepute sitter på to metallpinner øverst. Ryggen vippes med en spak på høyre side. Svingfoten har søyle og 5 armer i svart eller blank aluminium, på noen varianter kledd med tre; x-fot og quattro har 4 armer. Fotskammelen er 51 × 38 × 39 cm (fra Bohus), har samme stoff og skall og står på en egen firearmet fot. Armlenshøyden er anslått. Bohus oppgir dybde 50 cm for noen varianter, men det er setedybden; stolen er 81 cm dyp."
+    },
+    "variants": [
+      {
+        "name": "Makalu 64 Taupe, helkledd skrog, svingfot svart aluminium (sving og retur)",
+        "colors": {
+          "upholstery": "#aea89b",
+          "legs": "#1c1c1c",
+          "frame": "#aea89b"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal",
+          "frame": "boucle"
+        }
+      },
+      {
+        "name": "Cortina 09 Sand, skrog valnøtt, svingfot aluminium (sving og retur)",
+        "colors": {
+          "upholstery": "#c8b89f",
+          "legs": "#c4c6c8",
+          "frame": "#5a3f2e"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "chrome",
+          "frame": "walnut"
+        },
+        "priceNok": 31498
+      },
+      {
+        "name": "Cortina 75 Silver, skrog svart eik, svingfot svart (sving og retur)",
+        "colors": {
+          "upholstery": "#a9a9a6",
+          "legs": "#1c1c1c",
+          "frame": "#1f1d1b"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "black-oak"
+        },
+        "priceNok": 31498
+      },
+      {
+        "name": "Sheford 72 Light grey, skrog ubehandlet eik, svingfot tre/aluminium",
+        "colors": {
+          "upholstery": "#b7b5b0",
+          "legs": "#c9a77a",
+          "frame": "#c9a77a"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak",
+          "frame": "oak"
+        },
+        "priceNok": 35098
+      },
+      {
+        "name": "Fantasy 89 Black (skinn), skrog valnøtt, x-fot aluminium",
+        "colors": {
+          "upholstery": "#1f1e1d",
+          "legs": "#c4c6c8",
+          "frame": "#5a3f2e"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "chrome",
+          "frame": "walnut"
+        },
+        "priceNok": 31898
+      },
+      {
+        "name": "Velvety 64 Bronze, skrog valnøtt, svingfot aluminium",
+        "colors": {
+          "upholstery": "#9a7b4c",
+          "legs": "#c4c6c8",
+          "frame": "#5a3f2e"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "chrome",
+          "frame": "walnut"
+        },
+        "priceNok": 32198,
+        "salePriceNok": 19318
+      },
+      {
+        "name": "Fåreskinn Offwhite, skrog ubehandlet eik, svingfot eik/aluminium",
+        "colors": {
+          "upholstery": "#ebe5d9",
+          "legs": "#c9a77a",
+          "frame": "#c9a77a"
+        },
+        "materials": {
+          "upholstery": "teddy",
+          "legs": "oak",
+          "frame": "oak"
+        },
+        "priceNok": 42498,
+        "salePriceNok": 33998
+      },
+      {
+        "name": "Trapani 26 Olive med pikering, skrog valnøtt, svingfot valnøtt/aluminium",
+        "colors": {
+          "upholstery": "#767a60",
+          "legs": "#5a3f2e",
+          "frame": "#5a3f2e"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "walnut",
+          "frame": "walnut"
+        },
+        "priceNok": 35898
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.6,
+    "description": "Klassisk hvilestol designet av Jahn Aamodt for Conform, med buet skall, myke puter, nakkepute, vippbar rygg og sving, her med matchende fotskammel. Produsert i Skandinavia.",
+    "why": "Helkledd Makalu i lys taupe med svart fot ligner de lyse boucle-svingstolene og de svarte detaljene, mens skall i valnøtt eller svart eik kan knytte stolen til det mørke spisebordet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Conform%20Collection%20AB/Produkter/TIMEOUT/612595/image-thumb__612595__PDP-Product/330797%20-%20Timeout%20hvilestol%20med%20sving%20og%20retur%2C%20helkledd%20Makalu%2064%20Taupe%20svingfot%20svart%20aluminium%2039cm%20-%203.960040fa.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: Makalu-stolen og -fotskammelen, prisene og salget, mål (80×81×101, sete 42/50, fotskammel 51×38×39) og alle de åtte variantene finnes. Rettet: lenken går nå til stolen i stedet for det utgående settet, og Fåreskinn Offwhite er byttet til den aktive varianten (42 498,-, salg 33 998,-).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-castle-mark-zermatt-hvilestol-med-fotskammel",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Zermatt hvilestol med fotskammel",
+    "brand": "Castle Mark",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/hvilestol/zermatt-hvilestol-med-fotskammel-1",
+    "priceNok": 23330,
+    "priceNote": "pris sjekket 2026-10-18 på bohus.no. Fotskammelen er inkludert. Bohus har nå bare én variant: fåreskinn Sahara med Sunny beige stoff og svart aluminiumsfot, 23 330,- (ikke på salg). Lys grå-varianten (19 999,-) er utgått. «Zermatt» er også navnet på en spisebords- og skjenkserie, som for det meste er utgått; her er hvilestolen valgt. Bohus selger også Zermatt hvilestol med integrert fothviler og sving i Breeze-stoff, 79 × 85 × 109 cm. Med manuell regulering koster den 16 665,- (Breeze 120 Beige 9 999,-), med motor 19 998,- (Breeze 120 Beige 11 999,-), salg t.o.m. 30.11.",
+    "dims": {
+      "w": 0.81,
+      "d": 0.86,
+      "h": 1.11
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "seatD": 0.53,
+      "backH": 1.11,
+      "armH": 0.62,
+      "armW": 0.13,
+      "legStyle": "swivel-star",
+      "legH": 0.17,
+      "backShape": "high",
+      "cushion": "tight",
+      "footstool": true,
+      "headrest": true,
+      "notes": "Stolen har to materialer. Sete, rygg, armlenstopper, nakkepute og toppen av fotskammelen er i krøllete fåreskinn (upholstery). Det buede ytterskallet og sidene er trukket i glatt stoff (Sunny beige); bruk frame for dette stoffskallet, som ikke er av tre eller metall. En separat nakkepute sitter øverst, og ryggen vippes med en spak på høyre side. Stolen står på en svart femarmet stjernefot med søyle (trolig sving, men Bohus oppgir det ikke). Fotskammelen står på en egen svart firearmet fot og er ca. 55 × 45 × 42 cm (anslått fra bildet, ikke oppgitt). Bohus kaller fargen beige, men fåreskinnet ser oliven-/gråbrunt ut på bildene."
+    },
+    "variants": [
+      {
+        "name": "Fåreskinn Sahara, Sunny beige, sokkel svart aluminium",
+        "colors": {
+          "upholstery": "#6d634f",
+          "legs": "#1c1c1c",
+          "frame": "#a39b8a"
+        },
+        "materials": {
+          "upholstery": "teddy",
+          "legs": "black-metal",
+          "frame": "woven"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.8,
+    "description": "Hvilestol med fotskammel trukket i ekte fåreskinn, med vippbar rygg, nakkepute og svart stjernefot i aluminium.",
+    "why": "Fåreskinnet gir lun tekstur og demper lyd i et rom med harde flater og store vinduer, og den svarte foten matcher det svarte metallet på kjøkkenet og spisestolene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Castle%20Mark%20Enterprises%20Ltd/Produkter/ZERMATT/265060/image-thumb__265060__PDP-Product/280889%20-%20Zermatt%20hvilestol%20med%20fotskammel%20f%C3%A5reskinn%20beige%20ben%20svart%20-%205.b8ffa5e8.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, pris 23 330,-, mål (81×86×111, sete 46/53), fåreskinn Sahara og at fotskammelen er inkludert. Rettet: Lys grå er utgått og tatt ut, og kampanjeprisen 13 799,- finnes ikke. Fotskammelen har firearmet fot, og sving og regulerbar nakkepute er ikke oppgitt.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-castle-mark-grande-hvilestol-med-fothviler",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Grande hvilestol med integrert fothviler med regulering",
+    "brand": "Castle Mark",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/hvilestol/zermatt-hvilestol-med-integrert-fothviler-med-regulering-1",
+    "priceNok": 18332,
+    "priceNote": "pris sjekket 2026-10-18 på bohus.no: Vida 102 Muldvarp 18 332,-; Vida 071 Beige 10 999,- (før 18 332,-, salg t.o.m. 30.11.). Fothvileren er innebygd, så stolen trenger ingen fotskammel. Bohus oppgir høyde 85 cm, men bildene viser høy rygg med en nakkepute som kan heves. Zermatt-stolen med samme understell og mål er 109 cm, så høyden er satt til ca. 1,08 m. Lenken heter «zermatt-…» selv om varen er Grande. Den eldre «Grande hvilestol» med sving og retur i Crush-stoff (14 999,-) er utgått, og Crush Grey-fotskammelen selges ut på outlet til 1 350,-.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.84,
+      "h": 1.08
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.48,
+      "seatD": 0.5,
+      "backH": 1.08,
+      "armH": 0.62,
+      "armW": 0.13,
+      "legStyle": "swivel-star",
+      "legH": 0.08,
+      "backShape": "high",
+      "cushion": "tight",
+      "footstool": false,
+      "headrest": true,
+      "notes": "Recliner med innebygd fothviler som felles ut fra setefronten, uten separat skammel. Når fothvileren er lukket, henger setefronten ned nesten til foten. Manuell regulering med spak på høyre vange, og sving. En separat, rektangulær nakkepute sitter på to metallpinner øverst og kan heves, og ryggen har en tverrsøm med knappetrykk. Utsiden av armlenene har buede vanger i finert hvitpigmentert eik (frame); stoffet dekker armlenstoppen og innsiden. Lav, svart femarmet stjernefot i aluminium med søyle. Stålramme med nozag og formstøpt kaldskum i setet. Høyden er anslått (se priceNote)."
+    },
+    "variants": [
+      {
+        "name": "Vida 102 Muldvarp, sider hvitpigmentert eik, understell svart aluminium",
+        "colors": {
+          "upholstery": "#a69583",
+          "legs": "#1c1c1c",
+          "frame": "#dcc498"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "white-oak"
+        }
+      },
+      {
+        "name": "Vida 071 Beige, sider hvitpigmentert eik, understell svart aluminium",
+        "colors": {
+          "upholstery": "#dcd4c6",
+          "legs": "#1c1c1c",
+          "frame": "#dcc498"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "white-oak"
+        },
+        "priceNok": 18332,
+        "salePriceNok": 10999
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.6,
+    "description": "Hvilestol med innebygd fothviler, sving og manuell regulering, med sidevanger i hvitpigmentert eik og svart stjernefot.",
+    "why": "Den lyse eika på sidene går godt med det gråvaskede eikegulvet, og muldvarp-fargen ligger tett på MARRAKESH-veggene. Med innebygd fothviler tar den mindre gulvplass enn en stol med skammel.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Castle%20Mark%20Enterprises%20Ltd/Produkter/GRANDE/608650/image-thumb__608650__PDP-Product/324961%20-%20Grande%20hvilestol%20med%20integrert%20fothviler%20med%20regulering%20med%20sving%2C%20hvitpigmentert%20tre%20Vida%20102%20Muldvarp%20aluminium%20understell%20svart%20-%202.0598a23f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, pris, salg, bredde og dybde (80×84), sete 48/50, sving, innebygd fothviler og sider i hvitpigmentert eik. Bohus oppgir høyde 85 cm, som trolig er feil; høyden er anslått til 1,08 m. Rettet: den eldre Grande hvilestol i Crush-stoff er utgått.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-img-taycan-hvilestol-med-fothviler",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Taycan hvilestol med integrert fothviler",
+    "brand": "IMG",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/hvilestol/taycan-hvilestol-med-fothviler",
+    "priceNok": 31998,
+    "priceNote": "pris sjekket 2026-10-18 på bohus.no: Raven 109 Desert med Slimline B1 i børstet aluminium 31 998,-. Taycan Wood i Prime-skinn P301 Black med vanger i valnøtt koster 33 685,- (87 × 89 × 101 cm). Varianten med motor og oppladbart batteri i Tuva 08 Brown koster 29 379,- (før 48 965,-, salg t.o.m. 30.11.; 83 × 87 × 95 cm). Den manuelle varianten har uavhengig regulering av rygg og fothviler, sving og en nakkepute som kan reguleres, og stolen trenger ingen fotskammel. Bohus oppgir ikke S/M/L for denne modellen. Taycan uten fothviler selges som «medium» (83 × 84 × 105 cm, setehøyde 45) med separat fotskammel: stolen koster 29 930–29 998,-, fotskammelen 6 280–7 380,- og settet 36 278–37 310,-. Taycan Wood i Milla 156 Green er på salg (stol 14 999,-, sett 18 139,-).",
+    "dims": {
+      "w": 0.81,
+      "d": 0.87,
+      "h": 1.01
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.51,
+      "seatD": 0.52,
+      "backH": 1.01,
+      "armH": 0.64,
+      "armW": 0.12,
+      "legStyle": "swivel-star",
+      "legH": 0.15,
+      "backShape": "high",
+      "cushion": "tight",
+      "footstool": false,
+      "headrest": true,
+      "notes": "Recliner med innebygd fothviler: setefronten er et høyt, polstret panel som felles ut som leggstøtte. Armlenene er tynne og tulipanformede, med brede, utoverbøyde topper som smalner ned mot foten. Ryggen har to felt og en separat, vingeformet nakkepute som kan tiltes. Stolen har sving og står på en tynn, firearmet stjernefot (Slimline B1, 15 cm) i børstet aluminium. Taycan Wood har buede vanger i valnøtt på utsiden av armlenene (frame); på stoffvariantene er vangene trukket i stoff (frame = stofffargen). Motorvarianten har femarmet svart fot (19 cm), betjeningspanel og batteri under høyre vange, og lavere rygg (95 cm)."
+    },
+    "variants": [
+      {
+        "name": "Raven 109 Desert, Slimline B1 børstet aluminium",
+        "colors": {
+          "upholstery": "#aaa59c",
+          "legs": "#b0b2b3",
+          "frame": "#aaa59c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "steel",
+          "frame": "woven"
+        }
+      },
+      {
+        "name": "Taycan Wood, Prime skinn P301 Black, vanger valnøtt, Slimline B1 svart",
+        "colors": {
+          "upholstery": "#1e1d1c",
+          "legs": "#1c1c1c",
+          "frame": "#4b3b2f"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "black-metal",
+          "frame": "walnut"
+        },
+        "priceNok": 33685
+      },
+      {
+        "name": "Tuva 08 Brown, med motor og batteri, Slimline B1 alu svart 19 cm",
+        "colors": {
+          "upholstery": "#4f443c",
+          "legs": "#1c1c1c",
+          "frame": "#4f443c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "woven"
+        },
+        "priceNok": 48965,
+        "salePriceNok": 29379
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.55,
+    "description": "Hvilestol fra IMG med innebygd fothviler, sving og uavhengig regulering av rygg og fothviler. Nakkeputa kan tiltes, og putene er i formstøpt kaldskum.",
+    "why": "Den lyse, varmgrå Raven-fargen passer til den grå hjørnesofaen og SAND-veggene, og med innebygd fothviler trenger stolen ikke ekstra gulvplass til skammel i TV-stua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/IMG%20avd%20Skandinavia%2C%20Ekornes%20AS/Produkter/TAYCAN/267966/image-thumb__267966__PDP-Product/286425%20-%20Taycan%20hvilestol%20med%20fothviler%20med%20sving%2C%20h%C3%B8y%20rygg%20kan%20reguleres%20raven%20109%20desert%20slimline%20b%C3%B8rstet%20aluminium%20-%205.c7ba8562.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, priser, salg, mål (81×87×101, sete 51/52), Slimline B1 15 cm, sving og innebygd fothviler stemmer for alle tre variantene. Rettet: kampanjeprisen 13 845,- finnes ikke for denne stolen.",
+    "priceConfidence": "checked"
+  }
+]

@@ -1,0 +1,1331 @@
+[
+  {
+    "id": "bohus-boucle-moment-pynteputetrekk-50x50",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Boucle Moment pynteputetrekk 50x50",
+    "brand": "Jakobsdals",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/boucle-moment-pynteputetrekk-50x50",
+    "priceNok": 649,
+    "salePriceNok": 325,
+    "priceNote": "pris sjekket 2026-10-18: svart og rust 649/325 kr, rosa 749/375 kr. Svart og rust er utgående og kan ikke leveres hjem – kun igjen i noen få butikker; rosa er på lager. Kun trekk – innerpute Norsk Dun 50x50 koster 329 kr.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.15,
+      "h": 0.5
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.5,
+        0.5
+      ],
+      "texture": "boucle",
+      "pattern": "solid",
+      "flange": 0
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "fabric": "#2a2826"
+        },
+        "materials": {
+          "fabric": "boucle"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/boucle-moment-pynteputetrekk-50x50"
+      },
+      {
+        "name": "Rust",
+        "colors": {
+          "fabric": "#9a4a2c"
+        },
+        "materials": {
+          "fabric": "boucle"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/boucle-moment-pynteputetrekk-50x50-2"
+      },
+      {
+        "name": "Rosa",
+        "colors": {
+          "fabric": "#d9b3a8"
+        },
+        "materials": {
+          "fabric": "boucle"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/boucle-moment-pynteputetrekk-50x50-11"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.1,
+    "description": "Pynteputetrekk i tett bouclé (polyester/akryl) med glidelås. Selges som trekk; innerpute kjøpes separat.",
+    "why": "Svart bouclé knytter sofaen til det svarte kjøkkenet og de svarte metalldetaljene, og gir en mørk kontrast mot de lyse bouclé-stolene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Home%20Of%20Textile/Produkter/BOUCLE%20MOMENT/163731/image-thumb__163731__PDP-Product/252633%20-%20Boucle%20Moment%20pynteputetrekk%2050x50%20polyester%20svart%20-%2011.bffe7027.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: alle tre farger og priser stemmer. Svart og rust er utgående (kun enkelte butikker)."
+  },
+  {
+    "id": "bohus-georgia-pynteputetrekk-50x50",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Georgia pynteputetrekk 50x50",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/georgia-pynteputetrekk-50x50-2",
+    "priceNok": 349,
+    "salePriceNok": 175,
+    "priceNote": "pris sjekket 2026-10-18 (349/175 kr, 50 % rabatt) – samme pris for alle fire farger. Kun trekk – innerpute Norsk Dun 50x50 koster 329 kr.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.15,
+      "h": 0.5
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.5,
+        0.5
+      ],
+      "texture": "boucle",
+      "pattern": "solid",
+      "flange": 0
+    },
+    "variants": [
+      {
+        "name": "Offwhite",
+        "colors": {
+          "fabric": "#ebe6dc"
+        },
+        "materials": {
+          "fabric": "boucle"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/georgia-pynteputetrekk-50x50-2"
+      },
+      {
+        "name": "Beige/natur",
+        "colors": {
+          "fabric": "#d4c6b0"
+        },
+        "materials": {
+          "fabric": "boucle"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/georgia-pynteputetrekk-50x50"
+      },
+      {
+        "name": "Grønn",
+        "colors": {
+          "fabric": "#7a8064"
+        },
+        "materials": {
+          "fabric": "boucle"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/georgia-pynteputetrekk-50x50-1"
+      },
+      {
+        "name": "Brun",
+        "colors": {
+          "fabric": "#7a5c46"
+        },
+        "materials": {
+          "fabric": "boucle"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/georgia-pynteputetrekk-50x50-4"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.1,
+    "description": "Mykt bouclé-trekk i polyester med bouclé på begge sider og glidelås. Rimelig basispute som er lett å kombinere.",
+    "why": "Offwhite bouclé gjentar materialet i spisestolene og de to svingstolene, og lyser opp den mørkegrå hjørnesofaen i TV-stua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Sweden%20AB/Produkter/GEORGIA/307872/image-thumb__307872__PDP-Product/298073%20-%20Georgia%20pynteputetrekk%2050x50%20polyester%20offwhite%20-%201.acd7e901.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18. Rettet: «Brun/offwhite» er egentlig «Brun», la til beige-URL og grønn variant."
+  },
+  {
+    "id": "bohus-thomas-pynteputetrekk-50x50",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Thomas pynteputetrekk 50x50",
+    "brand": "Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/thomas-pynteputetrekk-50x50-1",
+    "priceNok": 699,
+    "salePriceNok": 419,
+    "priceNote": "pris sjekket 2026-10-18 (699/419 kr, 40 % rabatt) – samme pris for brun, kamel, grønn og beige/natur. Kun trekk – innerpute Norsk Dun 50x50 koster 329 kr. Finnes også i 40x60 (649 kr).",
+    "dims": {
+      "w": 0.5,
+      "d": 0.15,
+      "h": 0.5
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.5,
+        0.5
+      ],
+      "texture": "velvet",
+      "pattern": "solid",
+      "flange": 0.015
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "fabric": "#5a3f2e",
+          "piping": "#5a3f2e"
+        },
+        "materials": {
+          "fabric": "velour",
+          "piping": "velour"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/thomas-pynteputetrekk-50x50-1"
+      },
+      {
+        "name": "Kamel",
+        "colors": {
+          "fabric": "#a8774a",
+          "piping": "#a8774a"
+        },
+        "materials": {
+          "fabric": "velour",
+          "piping": "velour"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/thomas-pynteputetrekk-50x50-4"
+      },
+      {
+        "name": "Grønn",
+        "colors": {
+          "fabric": "#4f5a3c",
+          "piping": "#4f5a3c"
+        },
+        "materials": {
+          "fabric": "velour",
+          "piping": "velour"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/thomas-pynteputetrekk-50x50-2"
+      },
+      {
+        "name": "Beige/natur",
+        "colors": {
+          "fabric": "#cdbca2",
+          "piping": "#cdbca2"
+        },
+        "materials": {
+          "fabric": "velour",
+          "piping": "velour"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/thomas-pynteputetrekk-50x50"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.09,
+    "description": "Klassisk pynteputetrekk i 100 % bomullsvelur med smal ramme (flens) rundt alle fire sider og glidelås.",
+    "why": "Varm brun eller kamel velur gir dybde til den grå sofaen og harmonerer med det røkte eikebordet og MARRAKESH-veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norsk%20Dun%20AS/Produkter/THOMAS/339346/image-thumb__339346__PDP-Product/314443%20-%20Thomas%20pynteputetrekk%2050x50%20bomullsvelur%20brun%20-%201.5f600849.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, materiale og alle fire farge-URL-er stemmer."
+  },
+  {
+    "id": "bohus-thomas-pynteputetrekk-40x60",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Thomas pynteputetrekk 40x60",
+    "brand": "Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/thomas-pynteputetrekk-40x60",
+    "priceNok": 649,
+    "salePriceNok": 389,
+    "priceNote": "pris sjekket 2026-10-18 (649/389 kr, 40 % rabatt), brun og kamel. Kun trekk – innerpute Norsk Dun 40x60 koster 299 kr. Finnes også i 50x50.",
+    "dims": {
+      "w": 0.6,
+      "d": 0.14,
+      "h": 0.4
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "lumbar",
+      "size": [
+        0.6,
+        0.4
+      ],
+      "texture": "velvet",
+      "pattern": "solid",
+      "flange": 0.015
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "fabric": "#5a3f2e",
+          "piping": "#5a3f2e"
+        },
+        "materials": {
+          "fabric": "velour",
+          "piping": "velour"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/thomas-pynteputetrekk-40x60"
+      },
+      {
+        "name": "Kamel",
+        "colors": {
+          "fabric": "#a8774a",
+          "piping": "#a8774a"
+        },
+        "materials": {
+          "fabric": "velour",
+          "piping": "velour"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/thomas-pynteputetrekk-40x60-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.09,
+    "description": "Avlang ryggpute i bomullsvelur med smal flens. Passer foran de kvadratiske putene i sofaen eller alene i en lenestol.",
+    "why": "En avlang velurpute er perfekt i den nye lenestolen og gir en varm brun aksent mot de grå og sandfargede flatene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norsk%20Dun%20AS/Produkter/THOMAS/608992/image-thumb__608992__PDP-Product/328858%20-%20Thomas%20pynteputetrekk%2040x60%20bomullsvelur%20brun%20-%201.15016f22.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18. Rettet: variant 2 er kamel, ikke en ekstra brunfarge."
+  },
+  {
+    "id": "bohus-asima-pynteputetrekk-50x50",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Asima pynteputetrekk 50x50",
+    "brand": "Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/asima-pynteputetrekk-50x50",
+    "priceNok": 549,
+    "salePriceNok": 329,
+    "priceNote": "pris sjekket 2026-10-18 (549/329 kr, 40 % rabatt) – samme pris for alle tre farger; beige/natur er bestillingsvare på nett. Kun trekk. Matcher Asima pledd 120x200.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.15,
+      "h": 0.5
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.5,
+        0.5
+      ],
+      "texture": "wool",
+      "pattern": "herringbone",
+      "flange": 0
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "fabric": "#6b5443"
+        },
+        "materials": {
+          "fabric": "wool"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/asima-pynteputetrekk-50x50"
+      },
+      {
+        "name": "Grønn",
+        "colors": {
+          "fabric": "#5f6a4c"
+        },
+        "materials": {
+          "fabric": "wool"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/asima-pynteputetrekk-50x50-1"
+      },
+      {
+        "name": "Beige/natur",
+        "colors": {
+          "fabric": "#cbbba3"
+        },
+        "materials": {
+          "fabric": "wool"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/asima-pynteputetrekk-50x50-2"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.11,
+    "description": "Pynteputetrekk i myk, resirkulerbar ull fra Asima-serien, designet av Halvor Bakke. Matcher Asima-pleddet i fiskebeinsmønster.",
+    "why": "Ull med vevd struktur demper lyd bedre enn glatte stoffer, og de varme brunfargene passer til SAND- og MARRAKESH-veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norsk%20Dun%20AS/Produkter/ASIMA/339338/image-thumb__339338__PDP-Product/314450%20-%20Asima%20pynteputetrekk%2050x50%20ull%20brun%20-%201.fa950a00.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18. Rettet: «Brun/beige»-URL-en er grønn; beige heter beige/natur. Fjernet ubekreftet flens."
+  },
+  {
+    "id": "bohus-zayla-pynteputetrekk-50x50",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Zayla pynteputetrekk 50x50",
+    "brand": "Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/zayla-pynteputetrekk-50x50",
+    "priceNok": 549,
+    "salePriceNok": 329,
+    "priceNote": "pris sjekket 2026-10-18 (40 % rabatt). Kun trekk. Matcher Zayla pledd 120x200.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.15,
+      "h": 0.5
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.5,
+        0.5
+      ],
+      "texture": "wool",
+      "pattern": "houndstooth",
+      "patternColor": "#7d6e5c",
+      "flange": 0.02
+    },
+    "variants": [
+      {
+        "name": "Beige/natur",
+        "colors": {
+          "fabric": "#cfc3ae"
+        },
+        "materials": {
+          "fabric": "wool"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.11,
+    "description": "Vevd ulltrekk (65 % resirkulert ull, cashwool) med klassisk hanefotmønster, 2 cm ramme på tre sider og glidelås i bunnen.",
+    "why": "Det dempede hanefotmønsteret i beige og brunt gir litt mønster i et ellers ensfarget rom uten å bryte med den rolige paletten.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norsk%20Dun%20AS/Produkter/ZAYLA/611708/image-thumb__611708__PDP-Product/328867%20-%20Zayla%20pynteputetrekk%2050x50%20ull%20beige%20-%201.58961309.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, hanefotmønster, 65 % resirkulert ull og 2 cm ramme på tre sider stemmer."
+  },
+  {
+    "id": "bohus-sturla-pynteputetrekk-60x60",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Sturla pynteputetrekk 60x60",
+    "brand": "Rebell",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/sturla-putetrekk-60x60",
+    "priceNok": 449,
+    "salePriceNok": 269,
+    "priceNote": "pris sjekket 2026-10-18 (449/269 kr, 40 % rabatt). Kun trekk – innerpute Norsk Dun 60x60 koster 449 kr. Finnes også i 40x60 (399/239 kr).",
+    "dims": {
+      "w": 0.6,
+      "d": 0.17,
+      "h": 0.6
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.6,
+        0.6
+      ],
+      "texture": "wool",
+      "pattern": "solid",
+      "flange": 0
+    },
+    "variants": [
+      {
+        "name": "Svart brun",
+        "colors": {
+          "fabric": "#3a312b"
+        },
+        "materials": {
+          "fabric": "wool"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.14,
+    "description": "Stor ullpute i 60x60 i en dyp svartbrun farge. Gir et lunt, avslappet uttrykk i en stor hjørnesofa.",
+    "why": "Den store hjørnesofaen tåler store 60x60-puter, og svartbrun ull gjentar de mørke detaljene (sofabord, kjøkken, vinduskarmer).",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norway%20AS/Produkter/STURLA/88232/image-thumb__88232__PDP-Product/222496%20-%20Sturla%20putetrekk%2060x60%20ull%20svart-brun%20-%201.ae5f2c22.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18. Rettet: 40x60-varianten koster 399/239 kr."
+  },
+  {
+    "id": "bohus-sondre-pynteputetrekk-50x50",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Sondre pynteputetrekk 50x50",
+    "brand": "Rebell",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/sondre-pynteputetrekk-50x50",
+    "priceNok": 449,
+    "salePriceNok": 269,
+    "priceNote": "pris sjekket 2026-10-18 (40 % rabatt). Kun trekk. Matcher Sondre pledd 130x170.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.15,
+      "h": 0.5
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.5,
+        0.5
+      ],
+      "texture": "wool",
+      "pattern": "check",
+      "patternColor": "#8e8579",
+      "flange": 0
+    },
+    "variants": [
+      {
+        "name": "Grå beige",
+        "colors": {
+          "fabric": "#b8ad9c"
+        },
+        "materials": {
+          "fabric": "wool"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.11,
+    "description": "Vevd ulltrekk (65 % resirkulert ull) med klassisk rutemønster i beige og grått.",
+    "why": "Grå-beige ruter binder sammen den grå sofaen og de sandfargede veggene, og ull er et godt valg for bedre akustikk.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norway%20AS/Produkter/SONDRE/324219/image-thumb__324219__PDP-Product/306163%20-%20Sondre%20pynteputetrekk%2050x50%20ull%20gr%C3%A5-beige-natur%20-%201.b81b6b82.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, rutemønster og 65 % resirkulert ull stemmer."
+  },
+  {
+    "id": "bohus-bogstad-pynteputetrekk-40x60",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Bogstad pynteputetrekk 40x60",
+    "brand": "Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/bogstad-pynteputetrekk-40x60",
+    "priceNok": 649,
+    "salePriceNok": 389,
+    "priceNote": "pris sjekket 2026-10-18 (649/389 kr, 40 % rabatt). Leveringstid 2–3 uker. Kun trekk – innerpute Norsk Dun 40x60 koster 299 kr.",
+    "dims": {
+      "w": 0.6,
+      "d": 0.14,
+      "h": 0.4
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "lumbar",
+      "size": [
+        0.6,
+        0.4
+      ],
+      "texture": "woven",
+      "pattern": "zigzag",
+      "patternColor": "#b3a48a",
+      "flange": 0
+    },
+    "variants": [
+      {
+        "name": "Beige/natur",
+        "colors": {
+          "fabric": "#cbbda5"
+        },
+        "materials": {
+          "fabric": "woven"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.08,
+    "description": "Avlangt pynteputetrekk i polyester i varm naturbeige med diskret vevd sikksakkmønster og glidelås.",
+    "why": "En lys, strukturert ryggpute myker opp de lyse bouclé-svingstolene eller den buede sofaen ved vinduet uten å ta fokus.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norsk%20Dun%20AS/Produkter/BOGSTAD/611656/image-thumb__611656__PDP-Product/328827%20-%20Bogstad%20pynteputetrekk%2040x60%20polyester%20beige%20-%201.8ec2f10b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, polyester og vevd sikksakkmønster stemmer."
+  },
+  {
+    "id": "bohus-curl-pynteputetrekk-50x50",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Curl pynteputetrekk 50x50",
+    "brand": "Ikke oppgitt (Bohus-sortiment)",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/curl-pynteputetrekk-50x50-2",
+    "priceNok": 849,
+    "salePriceNok": 509,
+    "priceNote": "pris sjekket 2026-10-18 (849/509 kr, 40 % rabatt). Kun trekk – innerpute Norsk Dun 50x50 koster 329 kr. Finnes også i 40x60.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.16,
+      "h": 0.5
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.5,
+        0.5
+      ],
+      "texture": "teddy",
+      "pattern": "solid",
+      "pile": 0.025,
+      "flange": 0
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "fabric": "#6e5240"
+        },
+        "materials": {
+          "fabric": "sheepskin"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputetrekk/curl-pynteputetrekk-50x50-2"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.13,
+    "description": "Pynteputetrekk i 100 % lammeskinn med myk, krøllete ull og glidelås.",
+    "why": "Krøllete lammeskinn gir ekstra lunhet og lyddemping, og den brune fargen er en fin varm kontrast til den grå hjørnesofaen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Henan%20Prosper%20Skins%20%26%20Leather%20Enter/Produkter/CURL/613961/image-thumb__613961__PDP-Product/328629%20-%20Curl%20pynteputetrekk%2050x50%20lammeskinn%20brun%20-%201.0efec1b5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18. Rettet: krem kan ikke velges (kun i bildegalleriet) – fjernet."
+  },
+  {
+    "id": "bohus-bari-pyntepute-o35",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Bari pyntepute Ø35",
+    "brand": "Holmen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pynteputer/bari-pyntepute-o35",
+    "priceNok": 799,
+    "salePriceNok": 479,
+    "priceNote": "pris sjekket 2026-10-18 (799/479 kr, 40 % rabatt). Selges som pyntepute (ikke trekk); fyll er ikke spesifisert. Finnes også i Ø25 (449/269 kr). Tykkelse ikke oppgitt – anslått 12 cm.",
+    "dims": {
+      "w": 0.35,
+      "d": 0.12,
+      "h": 0.35
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "round",
+      "size": [
+        0.35,
+        0.35
+      ],
+      "texture": "teddy",
+      "pattern": "solid",
+      "flange": 0
+    },
+    "variants": [
+      {
+        "name": "Beige/natur",
+        "colors": {
+          "fabric": "#d8ccb8"
+        },
+        "materials": {
+          "fabric": "teddy"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.06,
+    "description": "Rund pyntepute i polyester med myk, fluffy overflate.",
+    "why": "En rund, lodden pute bryter opp de rette linjene i sofaen og gjentar de runde formene i svingstolene og sofabordene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Martinsen%20AS/Produkter/BARI/267922/image-thumb__267922__PDP-Product/286198%20-%20Bari%20pyntepute%20%C3%9835%20polyester%20krem%20-%201.40a403f0.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, Ø35, polyester og beige/natur stemmer; Ø25 koster 449/269 kr."
+  },
+  {
+    "id": "bohus-asima-pledd-frynser-120x200",
+    "category": "tekstil",
+    "subcategory": "pledd",
+    "name": "Asima pledd Frynser 120x200",
+    "brand": "Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/asima-pledd-frynser-120x200-1",
+    "priceNok": 1399,
+    "salePriceNok": 839,
+    "priceNote": "pris sjekket 2026-10-18 (1 399/839 kr, 40 % rabatt) for brun, beige/natur og grønn. Rust er utgående outlet til 699 kr, kun 1 stk igjen i enkelte butikker.",
+    "dims": {
+      "w": 1.2,
+      "d": 2,
+      "h": 0.008
+    },
+    "archetype": "throw",
+    "params": {
+      "size": [
+        1.2,
+        2
+      ],
+      "texture": "wool",
+      "fringe": true,
+      "pattern": "herringbone"
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "fabric": "#6b5443"
+        },
+        "materials": {
+          "fabric": "wool"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/asima-pledd-frynser-120x200-1"
+      },
+      {
+        "name": "Beige/natur",
+        "colors": {
+          "fabric": "#cbbba3"
+        },
+        "materials": {
+          "fabric": "wool"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/asima-pledd-frynser-120x200-2"
+      },
+      {
+        "name": "Grønn",
+        "colors": {
+          "fabric": "#5f6a4c"
+        },
+        "materials": {
+          "fabric": "wool"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/asima-pledd-frynser-120x200"
+      },
+      {
+        "name": "Rust (utgående)",
+        "colors": {
+          "fabric": "#a5532f"
+        },
+        "materials": {
+          "fabric": "wool"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/asima-pledd-120x200"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.45,
+    "description": "Ullpledd i fiskebeinsmønster med frynser, vevd i cashwool (65 % resirkulert ull). Matcher Asima-putene.",
+    "why": "Et ullpledd over sofaryggen eller lenestolen er en enkel måte å legge til lyddempende tekstil på, og grønt passer til det grønne pleddet som ligger på sofaen og utsikten mot elva.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norsk%20Dun%20AS/Produkter/ASIMA/594134/image-thumb__594134__PDP-Product/322337%20-%20Asima%20pledd%20120x200%20ull%20brun%20-%201.5e5e6f80.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, 120x200, fiskebeinsmønster og alle fire farger stemmer."
+  },
+  {
+    "id": "bohus-zayla-pledd-frynser-120x200",
+    "category": "tekstil",
+    "subcategory": "pledd",
+    "name": "Zayla pledd Frynser 120x200",
+    "brand": "Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/zayla-pledd-frynser-120x200",
+    "priceNok": 1399,
+    "salePriceNok": 839,
+    "priceNote": "pris sjekket 2026-10-18 (1 399/839 kr, 40 % rabatt). Leveringstid 2–3 uker på nett.",
+    "dims": {
+      "w": 1.2,
+      "d": 2,
+      "h": 0.008
+    },
+    "archetype": "throw",
+    "params": {
+      "size": [
+        1.2,
+        2
+      ],
+      "texture": "wool",
+      "fringe": true,
+      "pattern": "houndstooth",
+      "patternColor": "#7d6e5c"
+    },
+    "variants": [
+      {
+        "name": "Beige/natur",
+        "colors": {
+          "fabric": "#cfc3ae"
+        },
+        "materials": {
+          "fabric": "wool"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.45,
+    "description": "Ullpledd med klassisk hanefotmønster og frynser, vevd i 65 % resirkulert ull.",
+    "why": "Den lyse hanefoten passer på de lyse bouclé-svingstolene eller en ny lenestol, og matcher Zayla-putene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norsk%20Dun%20AS/Produkter/ZAYLA/611700/image-thumb__611700__PDP-Product/328866%20-%20Zayla%20pledd%20120x200%20ull%20beige%20-%201.7b8615bf.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, 120x200, hanefotmønster og 65 % resirkulert ull stemmer."
+  },
+  {
+    "id": "bohus-loom-pledd-frynser-140x200",
+    "category": "tekstil",
+    "subcategory": "pledd",
+    "name": "Loom pledd Frynser 140x200",
+    "brand": "Jakobsdals",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/loom-pledd-frynser-130x170",
+    "priceNok": 1499,
+    "salePriceNok": 899,
+    "priceNote": "pris sjekket 2026-10-18 (1 499/899 kr, 40 % rabatt). URL-en sier 130x170, men produktet på siden er 140x200 (varenr. 331078).",
+    "dims": {
+      "w": 1.4,
+      "d": 2,
+      "h": 0.01
+    },
+    "archetype": "throw",
+    "params": {
+      "size": [
+        1.4,
+        2
+      ],
+      "texture": "wool",
+      "fringe": true,
+      "pattern": "solid",
+      "fringeColor": "#4a3f36"
+    },
+    "variants": [
+      {
+        "name": "Gråbrun",
+        "colors": {
+          "fabric": "#8a7d70"
+        },
+        "materials": {
+          "fabric": "wool"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.5,
+    "description": "Børstet pledd i ullblanding (55 % ull, 27 % akryl, 18 % nylon) med myk, varm overflate og mørke frynser.",
+    "why": "Gråbrunt ligger midt mellom den grå sofaen og MARRAKESH-veggene, og et stort, tykt pledd gir mest lyddemping per krone.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Home%20Of%20Textile/Produkter/LOOM/613062/image-thumb__613062__PDP-Product/331078%20-%20Loom%20pledd%20140x200%20ull%20gr%C3%A5brun%20-%201.0ba606cc.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18. Rettet: materiale er 55 % ull/27 % akryl/18 % nylon; designernavnet er uklart på siden og er fjernet."
+  },
+  {
+    "id": "bohus-bello-pledd-140x200",
+    "category": "tekstil",
+    "subcategory": "pledd",
+    "name": "Bello pledd 140x200",
+    "brand": "Jakobsdals",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/bello-ullpledd-140x200",
+    "priceNok": 1299,
+    "salePriceNok": 779,
+    "priceNote": "pris sjekket 2026-10-18: svart/beige/natur 1 299/779 kr (40 % rabatt); brun-oker 1 299 kr uten rabatt.",
+    "dims": {
+      "w": 1.4,
+      "d": 2,
+      "h": 0.01
+    },
+    "archetype": "throw",
+    "params": {
+      "size": [
+        1.4,
+        2
+      ],
+      "texture": "wool",
+      "fringe": true,
+      "pattern": "check",
+      "patternColor": "#cbbfa8"
+    },
+    "variants": [
+      {
+        "name": "Svart/beige/natur",
+        "colors": {
+          "fabric": "#2f2c29"
+        },
+        "materials": {
+          "fabric": "wool"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/bello-ullpledd-140x200"
+      },
+      {
+        "name": "Brun-oker",
+        "colors": {
+          "fabric": "#8a6334"
+        },
+        "materials": {
+          "fabric": "wool"
+        },
+        "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/bello-ullpledd-140x200-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.4,
+    "description": "Mykt og varmt pledd i akryl/ull-blanding (50 % akryl, 20 % ull, 20 % polyester) med frynser og et levende mønster i mørke toner.",
+    "why": "Det mørke mønsteret tåler hverdagsbruk i TV-stua og passer til det svarte kjøkkenet og de svarte metalldetaljene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Home%20Of%20Textile/Produkter/BELLO/268658/image-thumb__268658__PDP-Product/286745%20-%20Bello%20ullpledd%20140x200%20ull%20svart%20-%201.86541a08.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18. Rettet: ullandelen er bare 20 % (resten akryl/polyester), og brun-oker har ingen tilbudspris."
+  },
+  {
+    "id": "bohus-sondre-pledd-130x170",
+    "category": "tekstil",
+    "subcategory": "pledd",
+    "name": "Sondre pledd 130x170",
+    "brand": "Rebell",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/puter-og-pledd/pledd/sondre-ullpledd-130x170",
+    "priceNok": 949,
+    "salePriceNok": 599,
+    "priceNote": "pris sjekket 2026-10-18 (949/599 kr, 37 % rabatt). Frynser ikke nevnt på produktsiden. Kun håndvask.",
+    "dims": {
+      "w": 1.3,
+      "d": 1.7,
+      "h": 0.008
+    },
+    "archetype": "throw",
+    "params": {
+      "size": [
+        1.3,
+        1.7
+      ],
+      "texture": "wool",
+      "fringe": false,
+      "pattern": "check",
+      "patternColor": "#8e8579"
+    },
+    "variants": [
+      {
+        "name": "Grå beige",
+        "colors": {
+          "fabric": "#b8ad9c"
+        },
+        "materials": {
+          "fabric": "wool"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.4,
+    "description": "Rutete ullpledd i resirkulert cashwool i grå og beige toner. Matcher Sondre-putene.",
+    "why": "De grå-beige rutene passer både på den grå hjørnesofaen og på de lyse stolene, og knytter sammen TV-stua og sittestua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norway%20AS/Produkter/SONDRE/324220/image-thumb__324220__PDP-Product/306164%20-%20Sondre%20ullpledd%20130x170%20ull%20gr%C3%A5-beige%20-%201.4350ee65.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 949/599 kr, 130x170 og 65 % resirkulert ull stemmer."
+  },
+  {
+    "id": "bohus-shaun-puff-o55",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "Shaun puff Ø55",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/puff/shaun-puff-o55-2",
+    "priceNok": 1699,
+    "salePriceNok": 1019,
+    "priceNote": "ordinær pris 1 699 kr på produktsiden 2026-10-18; kategorilisten viste kampanjepris 1 019 kr. Brun kan ikke leveres hjem (kun i enkelte butikker). Finnes også i Ø40 (H45, 1 199 kr).",
+    "dims": {
+      "w": 0.55,
+      "d": 0.55,
+      "h": 0.35
+    },
+    "archetype": "pouf",
+    "params": {
+      "shape": "round",
+      "texture": "teddy",
+      "legs": "none"
+    },
+    "variants": [
+      {
+        "name": "Bouclé hvit",
+        "colors": {
+          "fabric": "#ece7dd"
+        },
+        "materials": {
+          "fabric": "boucle"
+        },
+        "url": "https://www.bohus.no/stoler/puff/shaun-puff-o55-2"
+      },
+      {
+        "name": "Teddystoff brun",
+        "colors": {
+          "fabric": "#7a5f4a"
+        },
+        "materials": {
+          "fabric": "teddy"
+        },
+        "url": "https://www.bohus.no/stoler/puff/shaun-puff-o55-3"
+      },
+      {
+        "name": "Teddystoff beige",
+        "colors": {
+          "fabric": "#d3c4ad"
+        },
+        "materials": {
+          "fabric": "teddy"
+        },
+        "url": "https://www.bohus.no/stoler/puff/shaun-puff-o55-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.3,
+    "description": "Lav, rund puff (Ø55, H35) i silkemykt krøllet tekstil. Fungerer som fotskammel, ekstra sitteplass eller avlastning.",
+    "why": "En lav, rund teddypuff ved svingstolene eller foran en ny lenestol gjentar de myke, runde formene i sittestua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/SHAUN/136535/image-thumb__136535__PDP-Product/250741%20-%20Shaun%20puff%20%C3%9855%20H35%20cm%20hvit%20-%2025.9f352d64.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18. Rettet: hvit variant er bouclé; brun er utsolgt for hjemlevering."
+  },
+  {
+    "id": "bohus-dani-puff-med-oppbevaring-o41",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "Dani puff med oppbevaring Ø41",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/puff/dani-puff-o41-1",
+    "priceNok": 1799,
+    "salePriceNok": 1079,
+    "priceNote": "ordinær pris 1 799 kr på produktsiden 2026-10-18; kategorilisten viste kampanjepris 1 079 kr. Finnes også i Ø55 (2 299 kr, kampanje 1 379 kr). Maks belastning 120 kg.",
+    "dims": {
+      "w": 0.41,
+      "d": 0.41,
+      "h": 0.46
+    },
+    "archetype": "pouf",
+    "params": {
+      "shape": "cylinder",
+      "texture": "teddy",
+      "legs": "plinth",
+      "storage": true
+    },
+    "variants": [
+      {
+        "name": "Teddy gråbrun",
+        "colors": {
+          "fabric": "#9c8f80",
+          "legs": "#c9a978"
+        },
+        "materials": {
+          "fabric": "teddy",
+          "legs": "oak"
+        },
+        "url": "https://www.bohus.no/stoler/puff/dani-puff-o41-1"
+      },
+      {
+        "name": "Teddystoff hvit",
+        "colors": {
+          "fabric": "#ebe5da",
+          "legs": "#c9a978"
+        },
+        "materials": {
+          "fabric": "teddy",
+          "legs": "oak"
+        },
+        "url": "https://www.bohus.no/stoler/puff/dani-puff-o41"
+      },
+      {
+        "name": "Teddy grønn",
+        "colors": {
+          "fabric": "#7d8466",
+          "legs": "#c9a978"
+        },
+        "materials": {
+          "fabric": "teddy",
+          "legs": "oak"
+        },
+        "url": "https://www.bohus.no/stoler/puff/dani-puff-med-oppbevaring-o41"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.22,
+    "description": "Puff i mykt teddystoff med sokkel i lys eik og løftbart lokk med oppbevaring under.",
+    "why": "Oppbevaringen gir plass til pledd og ekstra puter i TV-stua, og den lyse eikesokkelen matcher eikegulvet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/DANI/264290/image-thumb__264290__PDP-Product/280420%20-%20Dani%20puff%20%C3%9841%20H46%20cm%20teddystoff%20gr%C3%A5brun%20-%202.606e7a06.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 1 799 kr, Ø41 H46, lys eik og alle tre farger stemmer; Ø55 koster 2 299 kr."
+  },
+  {
+    "id": "bohus-west-puff-o42",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "West puff Ø42",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/puff/west-puff-o42-1",
+    "priceNok": 1599,
+    "salePriceNok": 959,
+    "priceNote": "ordinær pris 1 599 kr på produktsiden 2026-10-18; kategorilisten viste kampanjepris 959 kr.",
+    "dims": {
+      "w": 0.42,
+      "d": 0.42,
+      "h": 0.4
+    },
+    "archetype": "pouf",
+    "params": {
+      "shape": "round",
+      "texture": "boucle",
+      "legs": "wood",
+      "legHeight": 0.1
+    },
+    "variants": [
+      {
+        "name": "Boucle brun med mørkebrun",
+        "colors": {
+          "fabric": "#8a6d55",
+          "legs": "#3d2c22"
+        },
+        "materials": {
+          "fabric": "boucle",
+          "legs": "smoked-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.2,
+    "description": "Moderne puff i brun bouclé på solide mørkebrune treben i furu. Ekstra sitteplass, fotskammel eller pyntemøbel.",
+    "why": "Brun bouclé med mørke treben passer til det røkte eikespisebordet og gir en varm aksent ved de lyse bouclé-stolene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/WEST/612013/image-thumb__612013__PDP-Product/327925%20-%20West%20puff%20%C3%9842%20Boucle%20Brun%20med%20m%C3%B8rk%20brun%20-%201.498276d2.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 1 599 kr, Ø42 H40, brun bouclé og mørkebrune treben (furu) stemmer."
+  },
+  {
+    "id": "bohus-olea-puff-40x35",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "Olea puff 40x35",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/puff/olea-puff-40x35",
+    "priceNok": 1199,
+    "salePriceNok": 599,
+    "priceNote": "ordinær pris 1 199 kr på produktsiden 2026-10-18; kategorilisten viste kampanjepris 599 kr.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.35,
+      "h": 0.42
+    },
+    "archetype": "pouf",
+    "params": {
+      "shape": "round",
+      "texture": "boucle",
+      "legs": "none",
+      "stitchedLines": true
+    },
+    "variants": [
+      {
+        "name": "Boucle hvit",
+        "colors": {
+          "fabric": "#e9e4da"
+        },
+        "materials": {
+          "fabric": "boucle"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.18,
+    "description": "Liten, myk puff i hvit bouclé med broderte linjer som følger buen på puffen.",
+    "why": "Hvit bouclé matcher spisestolene og svingstolene, og den lille størrelsen får plass ved sofaen i TV-stua uten å stjele gulvplass.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/OLEA/317570/image-thumb__317570__PDP-Product/297800%20-%20Olea%20puff%2040x35%20Boucle%20Hvit%20-%205.f6a3b09d.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: 1 199 kr, 40x35 H42 og hvit bouclé stemmer."
+  },
+  {
+    "id": "kid-andrea-velour-pynteputetrekk-50x50",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Andrea velour pynteputetrekk 50x50 cm",
+    "brand": "Kid",
+    "store": "Kid Interiør",
+    "url": "https://www.kid.no/puter-og-pledd/pynteputer/pynteputetrekk/andrea-velour-pynteputetrekk-lys-beige",
+    "priceNok": 299.9,
+    "priceNote": "pris sjekket 2026-10-18. Kun trekk – innerpute selges separat.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.15,
+      "h": 0.5
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.5,
+        0.5
+      ],
+      "texture": "velvet",
+      "pattern": "solid",
+      "flange": 0.02
+    },
+    "variants": [
+      {
+        "name": "Lys beige",
+        "colors": {
+          "fabric": "#ddd0bd"
+        },
+        "materials": {
+          "fabric": "velour"
+        },
+        "url": "https://www.kid.no/puter-og-pledd/pynteputer/pynteputetrekk/andrea-velour-pynteputetrekk-lys-beige"
+      },
+      {
+        "name": "Grønn",
+        "colors": {
+          "fabric": "#5d6b4e"
+        },
+        "materials": {
+          "fabric": "velour"
+        },
+        "url": "https://www.kid.no/puter-og-pledd/pynteputer/pynteputetrekk/andrea-velour-pynteputetrekk-gronn"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.09,
+    "description": "Pynteputetrekk i kraftig bomullsvelur (300 g/m²) med dekorativ kant og glidelås, Oeko-Tex-sertifisert.",
+    "why": "Rimelig velur i lys beige eller grønn gir glans og mykhet mot de matte bouclé-flatene, og grønt spiller på utsikten mot trærne og elva.",
+    "imageUrl": "https://www.kid.no/globalassets/productimages/212153050205.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på kid.no 2026-10-18: 299,90 kr, 50x50, 100 % bomullsvelur 300 g/m², lys beige og grønn på lager."
+  },
+  {
+    "id": "kid-verbier-pynteputetrekk-50x50",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Verbier pynteputetrekk lys brun 50x50 cm",
+    "brand": "Kid Premium Collection",
+    "store": "Kid Interiør",
+    "url": "https://www.kid.no/puter-og-pledd/pynteputer/pynteputetrekk/verbier-pynteputetrekk-lys-brun",
+    "priceNok": 399.9,
+    "priceNote": "pris sjekket 2026-10-18. Kun trekk – innerpute selges separat.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.15,
+      "h": 0.5
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.5,
+        0.5
+      ],
+      "texture": "wool",
+      "pattern": "check",
+      "patternColor": "#e2d6c3",
+      "flange": 0
+    },
+    "variants": [
+      {
+        "name": "Lys brun",
+        "colors": {
+          "fabric": "#a88b6e"
+        },
+        "materials": {
+          "fabric": "wool"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.1,
+    "description": "Rutete pynteputetrekk i ullmiks (58 % ull) fra Kids Premium Collection, med glidelås.",
+    "why": "Lys brune ruter i ull passer til SAND-veggene og gir en lun hyttefølelse i TV-stua uten å bli for mørkt.",
+    "imageUrl": "https://www.kid.no/globalassets/productimages/209632050144.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på kid.no 2026-10-18: 399,90 kr, 50x50, 58 % ull, rutete, lys brun."
+  },
+  {
+    "id": "hm-putetrekk-i-boucle-50x50",
+    "category": "tekstil",
+    "subcategory": "pute",
+    "name": "Putetrekk i bouclé",
+    "brand": "H&M HOME",
+    "store": "H&M Home",
+    "url": "https://www2.hm.com/no_no/productpage.1179957003.html",
+    "priceNok": 179,
+    "priceNote": "pris fra søkeresultat 2026-10-18: 139 kr (før 179 kr) – hm.com blokkerer automatisk henting (HTTP 403), sjekk pris og lager manuelt. Kun trekk, 100 % resirkulert polyester.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.15,
+      "h": 0.5
+    },
+    "archetype": "cushion",
+    "params": {
+      "shape": "square",
+      "size": [
+        0.5,
+        0.5
+      ],
+      "texture": "boucle",
+      "pattern": "solid",
+      "flange": 0
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "fabric": "#d6c9b4"
+        },
+        "materials": {
+          "fabric": "boucle"
+        },
+        "url": "https://www2.hm.com/no_no/productpage.1179957003.html"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.09,
+    "description": "Enkelt, kvadratisk putetrekk i bouclé med glidelås. Et rimelig alternativ for å fylle opp sofaen med flere puter.",
+    "why": "Billig måte å få mange like bouclé-puter i sofaen som matcher spisestolene og svingstolene.",
+    "imageUrl": "",
+    "salePriceNok": 139,
+    "verified": true,
+    "verifiedNote": "Bekreftet via søkeresultat 2026-10-18 (hm.com blokkerer henting). Rettet: tilbudspris 139 kr; hvit (1183149001) er rektangulær – fjernet."
+  },
+  {
+    "id": "jysk-puff-vildsund-52x41",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "Puff VILDSUND 52x41 offwhite teddystoff/natur eik",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/stue/puffer/puff-vildsund-52x41-offwhite-teddystoff-natur-eik",
+    "priceNok": 999,
+    "priceNote": "pris sjekket 2026-10-18 (999 kr). Offwhite (varenr. 3640267) er midlertidig utsolgt for levering; finnes også i brun/natur eik (varenr. 3640268). Benhøyde ikke oppgitt – anslått 12 cm.",
+    "dims": {
+      "w": 0.52,
+      "d": 0.41,
+      "h": 0.41
+    },
+    "archetype": "pouf",
+    "params": {
+      "shape": "square",
+      "texture": "teddy",
+      "legs": "wood",
+      "legHeight": 0.12
+    },
+    "variants": [
+      {
+        "name": "Offwhite teddystoff/natur eik",
+        "colors": {
+          "fabric": "#ebe6dc",
+          "legs": "#c9a978"
+        },
+        "materials": {
+          "fabric": "teddy",
+          "legs": "oak"
+        }
+      },
+      {
+        "name": "Brun/natur eik",
+        "colors": {
+          "fabric": "#7a5f4a",
+          "legs": "#c9a978"
+        },
+        "materials": {
+          "fabric": "teddy",
+          "legs": "oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.22,
+    "description": "Rektangulær puff med trekk i teddystoff og ben i massivt gummitre med naturlig eikefinish.",
+    "why": "Lyse treben passer til eikegulvet, og den rektangulære formen kan stå foran den nye lenestolen som fotskammel.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/249739",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-18: 999 kr, 52x41 H41, offwhite og brun stemmer. Midlertidig utsolgt for levering."
+  }
+]
