@@ -1,0 +1,3418 @@
+{
+ "version": 1,
+ "meta": {
+  "name": "Fixture v1 (gardin win-s1, maling w-hoy)",
+  "createdAt": "2026-10-21T00:00:00.000Z",
+  "updatedAt": "2026-10-21T00:00:00.000Z"
+ },
+ "items": [
+  {
+   "uid": "ex-f-hjornesofa",
+   "source": "existing",
+   "refId": "f-hjornesofa",
+   "name": "Hjørnesofa",
+   "category": "sofa",
+   "archetype": "sofa-modular-l",
+   "mount": "floor",
+   "position": [
+    1.475,
+    0.015,
+    9.39
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 2.95,
+    "d": 2.06,
+    "h": 0.85
+   },
+   "params": {
+    "seatH": 0.45,
+    "backH": 0.85,
+    "backT": 0.25,
+    "depth": 0.92,
+    "armW": 0.27,
+    "armH": 0.63,
+    "armSide": "+x",
+    "shortLegSide": "-x",
+    "shortLegLength": 2.06,
+    "shortLegBackTo": 1.48,
+    "shortLegOpenEnd": true,
+    "piping": true,
+    "world": {
+     "longSide": {
+      "x": [
+       0,
+       2.95
+      ],
+      "z": [
+       8.36,
+       9.28
+      ]
+     },
+     "shortLeg": {
+      "x": [
+       0,
+       0.92
+      ],
+      "z": [
+       8.36,
+       10.42
+      ]
+     }
+    },
+    "base": "plinth",
+    "modules": [
+     {
+      "kind": "corner",
+      "w": 0.92
+     },
+     {
+      "kind": "seat",
+      "w": 0.81
+     },
+     {
+      "kind": "seat",
+      "w": 0.93
+     },
+     {
+      "kind": "arm",
+      "w": 0.27
+     },
+     {
+      "kind": "chaise",
+      "w": 0.92,
+      "d": 1.14
+     }
+    ]
+   },
+   "colors": {
+    "upholstery": "#707173",
+    "legs": "#707173",
+    "piping": "#55514c"
+   },
+   "materials": {
+    "upholstery": "woven",
+    "legs": "woven",
+    "piping": "woven"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 3,
+    "ref": {
+     "w": 2.95,
+     "d": 2.06,
+     "h": 0.85
+    }
+   },
+   "notes": "Grå vevd melange med kontrastkant. Langsiden langs soveromsveggen, kortsiden langs nordveggen; ryggputene på kortsiden slutter ved z 9,84, siste del er åpen (ingen armlene). Planen viser feil form. · base: plint (ingen synlige ben) · modules: hjørne 0,92; sete 0,81; sete 0,93; armlene 0,27; sjeselong 0,92 × 1,14",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-pute-1",
+   "source": "existing",
+   "refId": "f-pute-1",
+   "name": "Pute (strikk, mørk)",
+   "category": "tekstil",
+   "archetype": "cushion",
+   "mount": "soft",
+   "position": [
+    0.47,
+    0.45,
+    8.83
+   ],
+   "rotationDeg": 45,
+   "dims": {
+    "w": 0.45,
+    "d": 0.15,
+    "h": 0.45
+   },
+   "params": {
+    "lean": 70,
+    "shape": "square",
+    "size": [
+     0.45,
+     0.45
+    ],
+    "texture": "knit",
+    "pattern": "solid",
+    "flange": 0
+   },
+   "colors": {
+    "fabric": "#4c4c4f",
+    "piping": "#4c4c4f"
+   },
+   "materials": {
+    "fabric": "knit",
+    "piping": "knit"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.1,
+    "ref": {
+     "w": 0.45,
+     "d": 0.15,
+     "h": 0.45
+    }
+   },
+   "notes": "style: grov strikk",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-pute-2",
+   "source": "existing",
+   "refId": "f-pute-2",
+   "name": "Pute (bobler, krem)",
+   "category": "tekstil",
+   "archetype": "cushion",
+   "mount": "soft",
+   "position": [
+    0.84,
+    0.45,
+    8.76
+   ],
+   "rotationDeg": 10,
+   "dims": {
+    "w": 0.45,
+    "d": 0.15,
+    "h": 0.45
+   },
+   "params": {
+    "lean": 70,
+    "shape": "square",
+    "size": [
+     0.45,
+     0.45
+    ],
+    "texture": "bobble",
+    "pattern": "solid",
+    "flange": 0
+   },
+   "colors": {
+    "fabric": "#e4ddd3",
+    "piping": "#e4ddd3"
+   },
+   "materials": {
+    "fabric": "teddy",
+    "piping": "teddy"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.1,
+    "ref": {
+     "w": 0.45,
+     "d": 0.15,
+     "h": 0.45
+    }
+   },
+   "notes": "style: popcorn/bobler",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-pute-3",
+   "source": "existing",
+   "refId": "f-pute-3",
+   "name": "Pute (strikk, mørk)",
+   "category": "tekstil",
+   "archetype": "cushion",
+   "mount": "soft",
+   "position": [
+    2.35,
+    0.45,
+    8.72
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.5,
+    "d": 0.15,
+    "h": 0.5
+   },
+   "params": {
+    "lean": 70,
+    "shape": "square",
+    "size": [
+     0.5,
+     0.5
+    ],
+    "texture": "knit",
+    "pattern": "solid",
+    "flange": 0
+   },
+   "colors": {
+    "fabric": "#4c4c4f",
+    "piping": "#4c4c4f"
+   },
+   "materials": {
+    "fabric": "knit",
+    "piping": "knit"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.11,
+    "ref": {
+     "w": 0.5,
+     "d": 0.15,
+     "h": 0.5
+    }
+   },
+   "notes": "style: grov strikk",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-pute-4",
+   "source": "existing",
+   "refId": "f-pute-4",
+   "name": "Pute (bobler, krem)",
+   "category": "tekstil",
+   "archetype": "cushion",
+   "mount": "soft",
+   "position": [
+    2.45,
+    0.45,
+    8.82
+   ],
+   "rotationDeg": -30,
+   "dims": {
+    "w": 0.45,
+    "d": 0.15,
+    "h": 0.45
+   },
+   "params": {
+    "lean": 60,
+    "shape": "square",
+    "size": [
+     0.45,
+     0.45
+    ],
+    "texture": "bobble",
+    "pattern": "solid",
+    "flange": 0
+   },
+   "colors": {
+    "fabric": "#e4ddd3",
+    "piping": "#e4ddd3"
+   },
+   "materials": {
+    "fabric": "teddy",
+    "piping": "teddy"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.1,
+    "ref": {
+     "w": 0.45,
+     "d": 0.15,
+     "h": 0.45
+    }
+   },
+   "notes": "Lener mot armlenet. · style: popcorn/bobler",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-pledd-tv",
+   "source": "existing",
+   "refId": "f-pledd-tv",
+   "name": "Pledd (vaffelstrikk)",
+   "category": "tekstil",
+   "archetype": "throw",
+   "mount": "soft",
+   "position": [
+    0.45,
+    0.45,
+    10.12
+   ],
+   "rotationDeg": 90,
+   "dims": {
+    "w": 0.55,
+    "d": 0.45,
+    "h": 0.06
+   },
+   "params": {
+    "folded": true,
+    "size": [
+     0.55,
+     0.45
+    ],
+    "texture": "knit",
+    "pattern": "waffle",
+    "drape": "folded",
+    "fringe": false
+   },
+   "colors": {
+    "fabric": "#e0d6c8",
+    "piping": "#e0d6c8"
+   },
+   "materials": {
+    "fabric": "knit",
+    "piping": "knit"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.25,
+    "ref": {
+     "w": 0.55,
+     "d": 0.45,
+     "h": 0.06
+    }
+   },
+   "notes": "Brettet på den åpne enden av sjeselongen.",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-sofabord-tv",
+   "source": "existing",
+   "refId": "f-sofabord-tv",
+   "name": "Sofabord (TV-stue)",
+   "category": "bord",
+   "archetype": "coffee-table-rect",
+   "mount": "floor",
+   "position": [
+    1.85,
+    0.015,
+    9.8
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 1.2,
+    "d": 0.6,
+    "h": 0.43
+   },
+   "params": {
+    "topT": 0.03,
+    "frame": "tube-box",
+    "tubeW": 0.02
+   },
+   "colors": {
+    "body": "#1b1b1b",
+    "front": "#1b1b1b",
+    "top": "#3f3f41",
+    "legs": "#1b1b1b",
+    "handle": "#1b1b1b"
+   },
+   "materials": {
+    "body": "black-metal",
+    "front": "black-metal",
+    "top": "ceramic",
+    "legs": "black-metal",
+    "handle": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 1.2,
+     "d": 0.6,
+     "h": 0.43
+    }
+   },
+   "notes": "Antrasitt betong-/keramikkpreget plate. På bordet: to klare glasskuler for telys og tre små lys i glass (rav, salvie, krem). · frame: kasseramme av 2×2 cm firkantrør med bunnrektangel på gulvet",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-teppe-tv",
+   "source": "existing",
+   "refId": "f-teppe-tv",
+   "name": "Teppe (TV-stue)",
+   "category": "teppe",
+   "archetype": "rug",
+   "mount": "rug",
+   "position": [
+    1.92,
+    0,
+    9.88
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 2.3,
+    "d": 1.6,
+    "h": 0.015
+   },
+   "params": {
+    "shape": "rect",
+    "pile": "low",
+    "pattern": "geometric",
+    "thickness": 0.015,
+    "weave": "machine-woven",
+    "fringe": false,
+    "border": true,
+    "borderColor": "#e9e6df",
+    "accent3Color": "#d6d3ce"
+   },
+   "colors": {
+    "base": "#c4c2bf",
+    "accent": "#2e2f33",
+    "accent2": "#8f8d8b"
+   },
+   "materials": {
+    "base": "wool",
+    "accent": "wool",
+    "accent2": "wool"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.92,
+    "ref": {
+     "w": 2.3,
+     "d": 1.6,
+     "h": 0.015
+    }
+   },
+   "notes": "Ligger under sofaens langside og sjeselong. · pattern: geometrisk: store koksgrå halvmåner/linser, overlappende grå rektangler, to bånd med fine sort/hvite striper · pile: lav–middels luv · edge: smal hvit kant",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-tv",
+   "source": "existing",
+   "refId": "f-tv",
+   "name": "TV (77″)",
+   "category": "elektronikk",
+   "archetype": "tv",
+   "mount": "wall",
+   "position": [
+    1.7,
+    1.055,
+    11.93
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 1.72,
+    "d": 0.05,
+    "h": 0.99
+   },
+   "params": {},
+   "colors": {
+    "body": "#100e0f"
+   },
+   "materials": {
+    "body": "glass-smoked"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "attach": {
+    "wallId": "w-vest-tv",
+    "normal": [
+     0,
+     0,
+     -1
+    ]
+   },
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 1.72,
+     "d": 0.05,
+     "h": 0.99
+    }
+   },
+   "notes": "Veggmontert, ingen TV-benk under.",
+   "confidence": "high"
+  },
+  {
+   "uid": "ex-f-hoyttaler-v",
+   "source": "existing",
+   "refId": "f-hoyttaler-v",
+   "name": "Innfelt høyttaler (venstre)",
+   "category": "elektronikk",
+   "archetype": "speaker",
+   "mount": "wall",
+   "position": [
+    2.72,
+    1.06,
+    11.93
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 0.2,
+    "d": 0.01,
+    "h": 0.4
+   },
+   "params": {
+    "inWall": true
+   },
+   "colors": {
+    "body": "#d6d6d4"
+   },
+   "materials": {
+    "body": "painted"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "attach": {
+    "wallId": "w-vest-tv",
+    "normal": [
+     0,
+     0,
+     -1
+    ]
+   },
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.2,
+     "d": 0.01,
+     "h": 0.4
+    }
+   },
+   "notes": "Venstre sett fra sofaen mot TV-en (stuesiden, +x).",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-hoyttaler-h",
+   "source": "existing",
+   "refId": "f-hoyttaler-h",
+   "name": "Innfelt høyttaler (høyre)",
+   "category": "elektronikk",
+   "archetype": "speaker",
+   "mount": "wall",
+   "position": [
+    0.68,
+    1.06,
+    11.93
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 0.2,
+    "d": 0.01,
+    "h": 0.4
+   },
+   "params": {
+    "inWall": true
+   },
+   "colors": {
+    "body": "#d6d6d4"
+   },
+   "materials": {
+    "body": "painted"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "attach": {
+    "wallId": "w-vest-tv",
+    "normal": [
+     0,
+     0,
+     -1
+    ]
+   },
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.2,
+     "d": 0.01,
+     "h": 0.4
+    }
+   },
+   "notes": "Høyre sett fra sofaen mot TV-en (mot nordveggen, −x).",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-hoyttaler-s",
+   "source": "existing",
+   "refId": "f-hoyttaler-s",
+   "name": "Innfelt senterhøyttaler",
+   "category": "elektronikk",
+   "archetype": "speaker",
+   "mount": "wall",
+   "position": [
+    1.7,
+    0.38,
+    11.93
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 0.4,
+    "d": 0.01,
+    "h": 0.13
+   },
+   "params": {
+    "inWall": true
+   },
+   "colors": {
+    "body": "#d6d6d4"
+   },
+   "materials": {
+    "body": "painted"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "attach": {
+    "wallId": "w-vest-tv",
+    "normal": [
+     0,
+     0,
+     -1
+    ]
+   },
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.4,
+     "d": 0.01,
+     "h": 0.13
+    }
+   },
+   "notes": "Kan også være en flat medieplate nær gulvet (gruppe 6).",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-vegghylle",
+   "source": "existing",
+   "refId": "f-vegghylle",
+   "name": "Vegghylle (sort metall)",
+   "category": "hylle",
+   "archetype": "wall-shelf",
+   "mount": "wall",
+   "position": [
+    1.63,
+    1.62,
+    8.34
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 1.2,
+    "d": 0.2,
+    "h": 0.5
+   },
+   "params": {
+    "uprights": [
+     [
+      -0.52,
+      0.03,
+      0.23
+     ],
+     [
+      -0.22,
+      0,
+      0.45
+     ],
+     [
+      0.18,
+      0,
+      0.45
+     ],
+     [
+      0.5,
+      0.25,
+      0.5
+     ]
+    ],
+    "bars": [
+     [
+      -0.35,
+      0.55,
+      0.43
+     ],
+     [
+      -0.56,
+      0.32,
+      0.18
+     ],
+     [
+      -0.22,
+      -0.08,
+      0.02
+     ]
+    ],
+    "boards": [
+     [
+      -0.26,
+      0.21,
+      0.44
+     ],
+     [
+      0.14,
+      0.59,
+      0.28
+     ],
+     [
+      -0.26,
+      0.21,
+      0.15
+     ],
+     [
+      -0.6,
+      -0.22,
+      0
+     ]
+    ],
+    "boardDepth": 0.19,
+    "barW": 0.015,
+    "style": "grid"
+   },
+   "colors": {
+    "body": "#1e1e1e",
+    "front": "#1e1e1e",
+    "top": "#1e1e1e",
+    "legs": "#1e1e1e",
+    "handle": "#1e1e1e"
+   },
+   "materials": {
+    "body": "black-metal",
+    "front": "black-metal",
+    "top": "black-metal",
+    "legs": "black-metal",
+    "handle": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "attach": {
+    "wallId": "w-sov-tv",
+    "normal": [
+     0,
+     0,
+     1
+    ]
+   },
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 1.2,
+     "d": 0.2,
+     "h": 0.5
+    }
+   },
+   "notes": "Asymmetrisk «rutenett»-hylle over sofaen. · coords: lokale: x fra midten, y fra underkant · decor: glasslykt med hvitt kubbelys + krem «steinstabel»-skulptur (topphylla); liten kunstig grønn plante i sjøgresskurv (øvre høyre); røykgrå glassflaske-vase (midten); grå riflet glass-telysholder + liten aloe i sjøgresskurv (nede til venstre)",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-plante-sokkel",
+   "source": "existing",
+   "refId": "f-plante-sokkel",
+   "name": "Plante på sokkel",
+   "category": "smatt",
+   "archetype": "plant-floor",
+   "mount": "floor",
+   "position": [
+    0.25,
+    0,
+    11.72
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.33,
+    "d": 0.36,
+    "h": 0.85
+   },
+   "params": {
+    "spread": 0.45,
+    "pedestal": {
+     "w": 0.33,
+     "d": 0.36,
+     "h": 0.4,
+     "color": "#1a1a1a"
+    },
+    "species": "anthurium",
+    "potD": 0.22,
+    "potH": 0.18,
+    "plantH": 0.45
+   },
+   "colors": {
+    "leaves": "#2f4a2a",
+    "pot": "#f2f0ec"
+   },
+   "materials": {
+    "leaves": "plant-leaf",
+    "pot": "ceramic"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.05,
+    "ref": {
+     "w": 0.33,
+     "d": 0.36,
+     "h": 0.85
+    }
+   },
+   "notes": "species: kunstig anthurium/satengranke med hjerteformede mørkegrønne blader, hengende",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-gulvvase",
+   "source": "existing",
+   "refId": "f-gulvvase",
+   "name": "Gulvvase med hortensia",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "floor",
+   "position": [
+    3.08,
+    0,
+    8.52
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.18,
+    "d": 0.18,
+    "h": 0.85
+   },
+   "params": {
+    "flowers": "hydrangea",
+    "d": 0.18,
+    "h": 0.5,
+    "stemsH": 0.85,
+    "shape": "ribbed"
+   },
+   "colors": {
+    "body": "#cfc6b8",
+    "flowers": "#9fb8d8"
+   },
+   "materials": {
+    "body": "ceramic",
+    "flowers": "plant-leaf"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.03,
+    "ref": {
+     "w": 0.18,
+     "d": 0.18,
+     "h": 0.85
+    }
+   },
+   "notes": "I lomma mellom sofaarmen og nisjehjørnet. · flowers: kunstige lyseblå hortensia",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-sylinder",
+   "source": "existing",
+   "refId": "f-sylinder",
+   "name": "Skumrulle (sort, stående)",
+   "category": "smatt",
+   "archetype": "basket",
+   "mount": "floor",
+   "position": [
+    0.15,
+    0,
+    10.62
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.16,
+    "d": 0.16,
+    "h": 0.35
+   },
+   "params": {
+    "shape": "cylinder",
+    "weave": "foam",
+    "hollow": true,
+    "d": 0.16,
+    "h": 0.35
+   },
+   "colors": {
+    "body": "#1a1a1a"
+   },
+   "materials": {
+    "body": "plastic"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.02,
+    "ref": {
+     "w": 0.16,
+     "d": 0.16,
+     "h": 0.35
+    }
+   },
+   "notes": "Stående treningsrulle i matt sort EVA-skum med knotter og hul kjerne, inntil nordveggen ved enden av sjeselongen (082726, 082736).",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-dekor-overlys-1",
+   "source": "existing",
+   "refId": "f-dekor-overlys",
+   "name": "Bunke med blader og bøker",
+   "category": "smatt",
+   "archetype": "basket",
+   "mount": "surface",
+   "position": [
+    -0.1,
+    1.64,
+    10.81
+   ],
+   "rotationDeg": 90,
+   "dims": {
+    "w": 0.3,
+    "d": 0.16,
+    "h": 0.06
+   },
+   "params": {
+    "shape": "rect",
+    "weave": "none",
+    "d": 0.3,
+    "h": 0.06
+   },
+   "colors": {
+    "body": "#d9d2c4"
+   },
+   "materials": {
+    "body": "paper"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.3,
+     "d": 0.16,
+     "h": 0.06
+    }
+   },
+   "notes": "bunke med blader/bøker (del av «Pynt i overlysvinduet»). Står i lysningen (x ≈ −0,10). Rekkefølge fra vest (TV-veggen) mot øst: bladbunke, boblevase, kremfarget vase, terrakottavase, kurv (082800, 082726).",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-dekor-overlys-2",
+   "source": "existing",
+   "refId": "f-dekor-overlys",
+   "name": "Boblevase (klar)",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "surface",
+   "position": [
+    -0.1,
+    1.64,
+    10.59
+   ],
+   "rotationDeg": 90,
+   "dims": {
+    "w": 0.13,
+    "d": 0.13,
+    "h": 0.12
+   },
+   "params": {
+    "shape": "bubble",
+    "d": 0.13,
+    "h": 0.12
+   },
+   "colors": {
+    "body": "#dfe6e4"
+   },
+   "materials": {
+    "body": "glass-clear"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.13,
+     "d": 0.13,
+     "h": 0.12
+    }
+   },
+   "notes": "klar boblevase (del av «Pynt i overlysvinduet»). Står i lysningen (x ≈ −0,10). Rekkefølge fra vest (TV-veggen) mot øst: bladbunke, boblevase, kremfarget vase, terrakottavase, kurv (082800, 082726).",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-dekor-overlys-3",
+   "source": "existing",
+   "refId": "f-dekor-overlys",
+   "name": "Liten kremfarget vase med eukalyptus",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "surface",
+   "position": [
+    -0.1,
+    1.64,
+    10.2
+   ],
+   "rotationDeg": 90,
+   "dims": {
+    "w": 0.08,
+    "d": 0.08,
+    "h": 0.22
+   },
+   "params": {
+    "shape": "round",
+    "flowers": "eucalyptus",
+    "d": 0.08,
+    "h": 0.121,
+    "stemsH": 0.22
+   },
+   "colors": {
+    "body": "#e8e0d0",
+    "flowers": "#8fa39a"
+   },
+   "materials": {
+    "body": "ceramic",
+    "flowers": "plant-leaf"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.08,
+     "d": 0.08,
+     "h": 0.22
+    }
+   },
+   "notes": "liten kremfarget vase med grønn eukalyptuskvist (del av «Pynt i overlysvinduet»). Står i lysningen (x ≈ −0,10). Rekkefølge fra vest (TV-veggen) mot øst: bladbunke, boblevase, kremfarget vase, terrakottavase, kurv (082800, 082726).",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-dekor-overlys-4",
+   "source": "existing",
+   "refId": "f-dekor-overlys",
+   "name": "Liten terrakottavase med grønn kvist",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "surface",
+   "position": [
+    -0.1,
+    1.64,
+    10.12
+   ],
+   "rotationDeg": 90,
+   "dims": {
+    "w": 0.07,
+    "d": 0.07,
+    "h": 0.2
+   },
+   "params": {
+    "shape": "bottle",
+    "flowers": "sprig",
+    "d": 0.07,
+    "h": 0.11,
+    "stemsH": 0.2
+   },
+   "colors": {
+    "body": "#b4674a",
+    "flowers": "#6f8f5a"
+   },
+   "materials": {
+    "body": "ceramic",
+    "flowers": "plant-leaf"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.07,
+     "d": 0.07,
+     "h": 0.2
+    }
+   },
+   "notes": "liten terrakottafarget flaskevase med grønn kvist (del av «Pynt i overlysvinduet»). Står i lysningen (x ≈ −0,10). Rekkefølge fra vest (TV-veggen) mot øst: bladbunke, boblevase, kremfarget vase, terrakottavase, kurv (082800, 082726).",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-dekor-overlys-5",
+   "source": "existing",
+   "refId": "f-dekor-overlys",
+   "name": "Oval grå kurv",
+   "category": "smatt",
+   "archetype": "basket",
+   "mount": "surface",
+   "position": [
+    -0.1,
+    1.64,
+    9.56
+   ],
+   "rotationDeg": 90,
+   "dims": {
+    "w": 0.36,
+    "d": 0.16,
+    "h": 0.12
+   },
+   "params": {
+    "shape": "oval",
+    "weave": "rope",
+    "d": 0.36,
+    "h": 0.12
+   },
+   "colors": {
+    "body": "#8f8d88"
+   },
+   "materials": {
+    "body": "woven"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.36,
+     "d": 0.16,
+     "h": 0.12
+    }
+   },
+   "notes": "oval grå tau-/filtkurv (del av «Pynt i overlysvinduet»). Står i lysningen (x ≈ −0,10). Rekkefølge fra vest (TV-veggen) mot øst: bladbunke, boblevase, kremfarget vase, terrakottavase, kurv (082800, 082726).",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-buet-sofa",
+   "source": "existing",
+   "refId": "f-buet-sofa",
+   "name": "Buet sofa",
+   "category": "sofa",
+   "archetype": "sofa-curved",
+   "mount": "floor",
+   "position": [
+    5.5,
+    0.02,
+    11.4
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 2.1,
+    "d": 0.98,
+    "h": 0.75
+   },
+   "params": {
+    "seatH": 0.43,
+    "backT": 0.22,
+    "bolsterD": 0.22,
+    "bolsterH": 0.58,
+    "frontConvex": true,
+    "base": "plinth",
+    "backH": 0.78,
+    "wingEnd": "-x",
+    "bolsterEnd": "+x"
+   },
+   "colors": {
+    "upholstery": "#b5b1ab",
+    "legs": "#b5b1ab"
+   },
+   "materials": {
+    "upholstery": "boucle",
+    "legs": "boucle"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 2.2,
+    "ref": {
+     "w": 2.1,
+     "d": 0.98,
+     "h": 0.75
+    }
+   },
+   "notes": "Organisk, avrundet sete i ett. Ryggen er høyest (≈0,78) i vindusenden der den krummer fram som en vinge, og senker seg mot palmeenden som har en lav pølsearm. Ryggen ca. 5 cm fra veggen. · wingEnd: -x (lokalt) = vindusenden · bolsterEnd: +x (lokalt) = palmeenden · base: avrundet plint med 3 cm skyggefuge",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-pledd-salvie",
+   "source": "existing",
+   "refId": "f-pledd-salvie",
+   "name": "Pledd (salvie)",
+   "category": "tekstil",
+   "archetype": "throw",
+   "mount": "soft",
+   "position": [
+    4.65,
+    0.43,
+    11.3
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 0.6,
+    "d": 0.5,
+    "h": 0.05
+   },
+   "params": {
+    "fringe": true,
+    "size": [
+     0.6,
+     0.5
+    ],
+    "texture": "wool",
+    "pattern": "solid",
+    "folded": false,
+    "draped": "arm",
+    "drape": "over-arm"
+   },
+   "colors": {
+    "fabric": "#a7b89c",
+    "piping": "#a7b89c"
+   },
+   "materials": {
+    "fabric": "wool",
+    "piping": "wool"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.3,
+    "ref": {
+     "w": 0.6,
+     "d": 0.5,
+     "h": 0.05
+    }
+   },
+   "notes": "draped: over pølsearmen og ned på setet",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-svingstol-1",
+   "source": "existing",
+   "refId": "f-svingstol-1",
+   "name": "Svingstol (nord)",
+   "category": "lenestol",
+   "archetype": "tub-swivel",
+   "mount": "floor",
+   "position": [
+    4.92,
+    0.02,
+    8.82
+   ],
+   "rotationDeg": 15,
+   "dims": {
+    "w": 0.75,
+    "d": 0.75,
+    "h": 0.76
+   },
+   "params": {
+    "seatH": 0.45,
+    "armH": 0.58,
+    "backWrapDeg": 200,
+    "shellT": 0.1,
+    "piping": true,
+    "legStyle": "drum",
+    "baseD": 0.64,
+    "baseH": 0.3,
+    "backH": 0.76,
+    "backShape": "round",
+    "cushion": "tight"
+   },
+   "colors": {
+    "upholstery": "#a7a19b",
+    "legs": "#a7a19b"
+   },
+   "materials": {
+    "upholstery": "boucle",
+    "legs": "boucle"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.6,
+    "ref": {
+     "w": 0.75,
+     "d": 0.75,
+     "h": 0.76
+    }
+   },
+   "notes": "Rund dreibar skålstol.",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-svingstol-2",
+   "source": "existing",
+   "refId": "f-svingstol-2",
+   "name": "Svingstol (ved vinduet)",
+   "category": "lenestol",
+   "archetype": "tub-swivel",
+   "mount": "floor",
+   "position": [
+    6.12,
+    0.02,
+    8.85
+   ],
+   "rotationDeg": -10,
+   "dims": {
+    "w": 0.75,
+    "d": 0.75,
+    "h": 0.76
+   },
+   "params": {
+    "seatH": 0.45,
+    "armH": 0.58,
+    "backWrapDeg": 200,
+    "shellT": 0.1,
+    "piping": true,
+    "legStyle": "drum",
+    "baseD": 0.64,
+    "baseH": 0.3,
+    "backH": 0.76,
+    "backShape": "round",
+    "cushion": "tight"
+   },
+   "colors": {
+    "upholstery": "#a7a19b",
+    "legs": "#a7a19b"
+   },
+   "materials": {
+    "upholstery": "boucle",
+    "legs": "boucle"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.6,
+    "ref": {
+     "w": 0.75,
+     "d": 0.75,
+     "h": 0.76
+    }
+   },
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-settbord",
+   "source": "existing",
+   "refId": "f-settbord",
+   "name": "Settbord, runde (2 stk)",
+   "category": "bord",
+   "archetype": "coffee-table-round-nesting",
+   "mount": "floor",
+   "position": [
+    5.325,
+    0.02,
+    10.09
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 1.48,
+    "d": 0.9,
+    "h": 0.45
+   },
+   "params": {
+    "tables": [
+     {
+      "d": 0.9,
+      "h": 0.45,
+      "offset": [
+       0.29,
+       -0.01
+      ]
+     },
+     {
+      "d": 0.75,
+      "h": 0.4,
+      "offset": [
+       -0.36,
+       0.01
+      ]
+     }
+    ],
+    "topT": 0.025,
+    "frame": "ring"
+   },
+   "colors": {
+    "body": "#1c1c1c",
+    "front": "#1c1c1c",
+    "top": "#3d332d",
+    "legs": "#1c1c1c",
+    "handle": "#1c1c1c"
+   },
+   "materials": {
+    "body": "black-metal",
+    "front": "black-metal",
+    "top": "smoked-oak",
+    "legs": "black-metal",
+    "handle": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 1.48,
+     "d": 0.9,
+     "h": 0.45
+    }
+   },
+   "notes": "Det store bordet er høyest; det lille skyves delvis under. Pynt: rund jutematte med to sorte lysestaker og salviegrønne kronelys (stort bord), jutematte, to salviegrønne telysglass og en rund treboks med rosa lokk (lite bord). · frame: tynn sort ring oppe og på gulvet + 3–4 rette ben",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-teppe-stue",
+   "source": "existing",
+   "refId": "f-teppe-stue",
+   "name": "Ullteppe (kuler)",
+   "category": "teppe",
+   "archetype": "rug",
+   "mount": "rug",
+   "position": [
+    5.44,
+    0,
+    10.1
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 2,
+    "d": 3,
+    "h": 0.02
+   },
+   "params": {
+    "shape": "rect",
+    "pile": "medium",
+    "pattern": "pebble",
+    "thickness": 0.02,
+    "weave": "felted",
+    "fringe": false
+   },
+   "colors": {
+    "base": "#9c9ea2",
+    "accent": "#6f7077",
+    "accent2": "#d8d8d8"
+   },
+   "materials": {
+    "base": "wool",
+    "accent": "wool",
+    "accent2": "wool"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 1.68,
+    "ref": {
+     "w": 2,
+     "d": 3,
+     "h": 0.02
+    }
+   },
+   "notes": "Under sofafronten og forkant av svingstolene; ca. 0,45 m fra vindusveggen. · pattern: filtede ullkuler («pebble») · pile: 1,5–2 cm",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-maleri",
+   "source": "existing",
+   "refId": "f-maleri",
+   "name": "Maleri (tåkete trær)",
+   "category": "smatt",
+   "archetype": "art-frame",
+   "mount": "wall",
+   "position": [
+    5.35,
+    1.62,
+    11.93
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 1,
+    "d": 0.035,
+    "h": 0.7
+   },
+   "params": {
+    "palette": [
+     "#e8e6e0",
+     "#c9cfcd",
+     "#8f9e8c",
+     "#4d5a5a",
+     "#b9c6cc"
+    ],
+    "motif": "misty-trees",
+    "frame": "none",
+    "frameW": 0,
+    "depth": 0.035,
+    "texture": "canvas"
+   },
+   "colors": {
+    "print": "#c9cfcd",
+    "frame": "#464848"
+   },
+   "materials": {
+    "print": "cotton",
+    "frame": "painted"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "attach": {
+    "wallId": "w-vest-stue",
+    "normal": [
+     0,
+     0,
+     -1
+    ]
+   },
+   "acoustic": {
+    "m2": 0.05,
+    "ref": {
+     "w": 1,
+     "d": 0.035,
+     "h": 0.7
+    }
+   },
+   "notes": "motif: tåkete abstrakt landskap: rad med slanke bjørkeaktige trær med salvie/oliven løv over en blek vannlinje · frame: ingen ramme / mørke lerretskanter",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-palme",
+   "source": "existing",
+   "refId": "f-palme",
+   "name": "Palme (kunstig)",
+   "category": "smatt",
+   "archetype": "plant-floor",
+   "mount": "floor",
+   "position": [
+    4.15,
+    0,
+    11.62
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.3,
+    "d": 0.3,
+    "h": 1.8
+   },
+   "params": {
+    "spread": 1.2,
+    "species": "palm",
+    "potD": 0.3,
+    "potH": 0.31,
+    "plantH": 1.8
+   },
+   "colors": {
+    "leaves": "#3f6b3a",
+    "pot": "#f0efea"
+   },
+   "materials": {
+    "leaves": "plant-leaf",
+    "pot": "ceramic"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.1,
+    "ref": {
+     "w": 0.3,
+     "d": 0.3,
+     "h": 1.8
+    }
+   },
+   "notes": "species: kentia/areca-palme, ca. 8 buede blader",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-plante-stativ",
+   "source": "existing",
+   "refId": "f-plante-stativ",
+   "name": "Gullranke på plantestativ",
+   "category": "smatt",
+   "archetype": "plant-floor",
+   "mount": "floor",
+   "position": [
+    6.68,
+    0,
+    11.7
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.24,
+    "d": 0.24,
+    "h": 1
+   },
+   "params": {
+    "spread": 0.45,
+    "stand": {
+     "d": 0.24,
+     "h": 0.62,
+     "color": "#1a1a1a",
+     "style": "wire"
+    },
+    "species": "pothos",
+    "potD": 0.18,
+    "plantH": 0.38
+   },
+   "colors": {
+    "leaves": "#3d7a32",
+    "pot": "#1a1a1a"
+   },
+   "materials": {
+    "leaves": "plant-leaf",
+    "pot": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.04,
+    "ref": {
+     "w": 0.24,
+     "d": 0.24,
+     "h": 1
+    }
+   },
+   "notes": "I hjørnet mellom sofaenden og vindusveggen. · species: kunstig gullranke (pothos), hengende",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-pendel-stue",
+   "source": "existing",
+   "refId": "f-pendel-stue",
+   "name": "Taklampe «molekyl» over sittegruppa",
+   "category": "taklampe",
+   "archetype": "chandelier-molecule",
+   "mount": "ceiling",
+   "position": [
+    5.45,
+    2.638,
+    10.15
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 1,
+    "d": 1,
+    "h": 0.8
+   },
+   "params": {
+    "drop": 0.79,
+    "shades": 8,
+    "shadeD": [
+     0.16,
+     0.16,
+     0.16,
+     0.16,
+     0.105,
+     0.105,
+     0.105,
+     0.105
+    ],
+    "canopyD": 0.12,
+    "rod": 0.42,
+    "hubDrop": 0.418,
+    "bulbs": "visible"
+   },
+   "colors": {
+    "shade": "#1a1a1a",
+    "inner": "#b08a4a",
+    "base": "#1a1a1a",
+    "metal": "#1a1a1a",
+    "cord": "#1a1a1a"
+   },
+   "materials": {
+    "shade": "black-metal",
+    "inner": "brass",
+    "base": "black-metal",
+    "metal": "black-metal",
+    "cord": "cotton"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "light": {
+    "on": true,
+    "dimmer": 1,
+    "colorK": 2700,
+    "lumens": 800
+   },
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 1,
+     "d": 1,
+     "h": 0.8
+    }
+   },
+   "notes": "Sort grenlampe med kuleledd og 8 dype, nesten kuleformede skjermer (ca. 3/4 kule med åpning, sort utside og messing innside) i to størrelser, med synlige varme pærer. Henger over settbordene, ikke over spisebordet.",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-lykt-v1",
+   "source": "existing",
+   "refId": "f-lykt-v1",
+   "name": "Lykt i røykglass",
+   "category": "smatt",
+   "archetype": "candle-holder",
+   "mount": "surface",
+   "position": [
+    7.02,
+    0.29,
+    6.85
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.14,
+    "d": 0.14,
+    "h": 0.2
+   },
+   "params": {
+    "kind": "lantern",
+    "glass": "smoked",
+    "candles": 1,
+    "candleColor": "#f2efe8"
+   },
+   "colors": {
+    "body": "#8e9094"
+   },
+   "materials": {
+    "body": "glass-smoked"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.14,
+     "d": 0.14,
+     "h": 0.2
+    }
+   },
+   "notes": "På vinduskarmen i det store vinduet ved spisebordet.",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-vase-v1",
+   "source": "existing",
+   "refId": "f-vase-v1",
+   "name": "Sort vase med eukalyptus",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "surface",
+   "position": [
+    7.02,
+    0.29,
+    8.3
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.17,
+    "d": 0.17,
+    "h": 0.55
+   },
+   "params": {
+    "flowers": "eucalyptus",
+    "d": 0.17,
+    "h": 0.23,
+    "stemsH": 0.55,
+    "shape": "round"
+   },
+   "colors": {
+    "body": "#2a2a2c",
+    "flowers": "#8fa39a"
+   },
+   "materials": {
+    "body": "ceramic",
+    "flowers": "plant-leaf"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.17,
+     "d": 0.17,
+     "h": 0.55
+    }
+   },
+   "notes": "stems: kunstig eukalyptus",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-plante-v2",
+   "source": "existing",
+   "refId": "f-plante-v2",
+   "name": "Liten plante i sort potte",
+   "category": "smatt",
+   "archetype": "plant-small",
+   "mount": "surface",
+   "position": [
+    7.02,
+    0.29,
+    9.35
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.15,
+    "d": 0.15,
+    "h": 0.25
+   },
+   "params": {
+    "species": "fern",
+    "plantH": 0.25
+   },
+   "colors": {
+    "leaves": "#5d7a4e",
+    "pot": "#1a1a1a"
+   },
+   "materials": {
+    "leaves": "plant-leaf",
+    "pot": "ceramic"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.02,
+    "ref": {
+     "w": 0.15,
+     "d": 0.15,
+     "h": 0.25
+    }
+   },
+   "notes": "species: rosmarin/aspargesbregne (kunstig)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-telys-v2",
+   "source": "existing",
+   "refId": "f-telys-v2",
+   "name": "To telysglass (salvie)",
+   "category": "smatt",
+   "archetype": "candle-holder",
+   "mount": "surface",
+   "position": [
+    7.02,
+    0.29,
+    11.3
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.2,
+    "d": 0.08,
+    "h": 0.07
+   },
+   "params": {
+    "count": 2,
+    "spacing": 0.12,
+    "kind": "tealight"
+   },
+   "colors": {
+    "body": "#9fb0a0"
+   },
+   "materials": {
+    "body": "glass-smoked"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.2,
+     "d": 0.08,
+     "h": 0.07
+    }
+   },
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-spisebord",
+   "source": "existing",
+   "refId": "f-spisebord",
+   "name": "Spisebord (ovalt)",
+   "category": "bord",
+   "archetype": "dining-table-oval",
+   "mount": "floor",
+   "position": [
+    5.37,
+    0,
+    6.81
+   ],
+   "rotationDeg": 90,
+   "dims": {
+    "w": 2,
+    "d": 1.05,
+    "h": 0.75
+   },
+   "params": {
+    "topT": 0.03,
+    "shape": "stadium",
+    "legs": "a-frame",
+    "legInset": 0.4,
+    "edge": "bevel"
+   },
+   "colors": {
+    "body": "#1c1c1c",
+    "front": "#1c1c1c",
+    "top": "#4b4039",
+    "legs": "#1c1c1c",
+    "handle": "#1c1c1c"
+   },
+   "materials": {
+    "body": "black-metal",
+    "front": "black-metal",
+    "top": "smoked-oak",
+    "legs": "black-metal",
+    "handle": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 2,
+     "d": 1.05,
+     "h": 0.75
+    }
+   },
+   "notes": "Langaksen går langs z (parallelt med vindusveggen). Kan stå skjevt 5–10° fra dag til dag. Ingen lampe over bordet i dag – det er der brukeren vil ha ny belysning (taket er 2,65 m over bordets midte). · shape: stadion (to halvrunde ender + rett midtparti; uttrekk med innleggsplate) · edge: tynn kant med lys skråfas under · legs: to skrå A/V-rammer av sort flattstål, satt ca. 0,40 inn fra endene",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-spisestol-1",
+   "source": "existing",
+   "refId": "f-spisestol-1",
+   "name": "Spisestol (høy vegg-siden, øst)",
+   "category": "stoler",
+   "archetype": "dining-chair",
+   "mount": "floor",
+   "position": [
+    4.68,
+    0,
+    6.33
+   ],
+   "rotationDeg": 90,
+   "dims": {
+    "w": 0.52,
+    "d": 0.58,
+    "h": 0.88
+   },
+   "params": {
+    "seatH": 0.47,
+    "shell": "shell",
+    "legStyle": "slim-metal",
+    "legD": 0.02
+   },
+   "colors": {
+    "upholstery": "#c8c8c6",
+    "legs": "#1a1a1a"
+   },
+   "materials": {
+    "upholstery": "boucle",
+    "legs": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.25,
+    "ref": {
+     "w": 0.52,
+     "d": 0.58,
+     "h": 0.88
+    }
+   },
+   "notes": "shell: skallstol med svakt utsvingte øvre hjørner og loddrett søm bak · legs: 4 tynne sorte skrå stålben Ø 0,02",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-spisestol-2",
+   "source": "existing",
+   "refId": "f-spisestol-2",
+   "name": "Spisestol (høy vegg-siden, vest)",
+   "category": "stoler",
+   "archetype": "dining-chair",
+   "mount": "floor",
+   "position": [
+    4.68,
+    0,
+    7.29
+   ],
+   "rotationDeg": 90,
+   "dims": {
+    "w": 0.52,
+    "d": 0.58,
+    "h": 0.88
+   },
+   "params": {
+    "seatH": 0.47,
+    "shell": "shell",
+    "legStyle": "slim-metal",
+    "legD": 0.02
+   },
+   "colors": {
+    "upholstery": "#c8c8c6",
+    "legs": "#1a1a1a"
+   },
+   "materials": {
+    "upholstery": "boucle",
+    "legs": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.25,
+    "ref": {
+     "w": 0.52,
+     "d": 0.58,
+     "h": 0.88
+    }
+   },
+   "notes": "shell: skallstol med svakt utsvingte øvre hjørner og loddrett søm bak · legs: 4 tynne sorte skrå stålben Ø 0,02",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-spisestol-3",
+   "source": "existing",
+   "refId": "f-spisestol-3",
+   "name": "Spisestol (vindussiden, øst)",
+   "category": "stoler",
+   "archetype": "dining-chair",
+   "mount": "floor",
+   "position": [
+    6.08,
+    0,
+    6.33
+   ],
+   "rotationDeg": -90,
+   "dims": {
+    "w": 0.52,
+    "d": 0.58,
+    "h": 0.88
+   },
+   "params": {
+    "seatH": 0.47,
+    "shell": "shell",
+    "legStyle": "slim-metal",
+    "legD": 0.02
+   },
+   "colors": {
+    "upholstery": "#c8c8c6",
+    "legs": "#1a1a1a"
+   },
+   "materials": {
+    "upholstery": "boucle",
+    "legs": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.25,
+    "ref": {
+     "w": 0.52,
+     "d": 0.58,
+     "h": 0.88
+    }
+   },
+   "notes": "shell: skallstol med svakt utsvingte øvre hjørner og loddrett søm bak · legs: 4 tynne sorte skrå stålben Ø 0,02",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-spisestol-4",
+   "source": "existing",
+   "refId": "f-spisestol-4",
+   "name": "Spisestol (vindussiden, vest)",
+   "category": "stoler",
+   "archetype": "dining-chair",
+   "mount": "floor",
+   "position": [
+    6.08,
+    0,
+    7.29
+   ],
+   "rotationDeg": -90,
+   "dims": {
+    "w": 0.52,
+    "d": 0.58,
+    "h": 0.88
+   },
+   "params": {
+    "seatH": 0.47,
+    "shell": "shell",
+    "legStyle": "slim-metal",
+    "legD": 0.02
+   },
+   "colors": {
+    "upholstery": "#c8c8c6",
+    "legs": "#1a1a1a"
+   },
+   "materials": {
+    "upholstery": "boucle",
+    "legs": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.25,
+    "ref": {
+     "w": 0.52,
+     "d": 0.58,
+     "h": 0.88
+    }
+   },
+   "notes": "shell: skallstol med svakt utsvingte øvre hjørner og loddrett søm bak · legs: 4 tynne sorte skrå stålben Ø 0,02",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-spisestol-5",
+   "source": "existing",
+   "refId": "f-spisestol-5",
+   "name": "Spisestol (østenden)",
+   "category": "stoler",
+   "archetype": "dining-chair",
+   "mount": "floor",
+   "position": [
+    5.4,
+    0,
+    5.58
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.52,
+    "d": 0.58,
+    "h": 0.88
+   },
+   "params": {
+    "seatH": 0.47,
+    "shell": "shell",
+    "legStyle": "slim-metal",
+    "legD": 0.02
+   },
+   "colors": {
+    "upholstery": "#c8c8c6",
+    "legs": "#1a1a1a"
+   },
+   "materials": {
+    "upholstery": "boucle",
+    "legs": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.25,
+    "ref": {
+     "w": 0.52,
+     "d": 0.58,
+     "h": 0.88
+    }
+   },
+   "notes": "shell: skallstol med svakt utsvingte øvre hjørner og loddrett søm bak · legs: 4 tynne sorte skrå stålben Ø 0,02",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-spisestol-6",
+   "source": "existing",
+   "refId": "f-spisestol-6",
+   "name": "Spisestol (vestenden)",
+   "category": "stoler",
+   "archetype": "dining-chair",
+   "mount": "floor",
+   "position": [
+    5.34,
+    0,
+    8.06
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 0.52,
+    "d": 0.58,
+    "h": 0.88
+   },
+   "params": {
+    "seatH": 0.47,
+    "shell": "shell",
+    "legStyle": "slim-metal",
+    "legD": 0.02
+   },
+   "colors": {
+    "upholstery": "#c8c8c6",
+    "legs": "#1a1a1a"
+   },
+   "materials": {
+    "upholstery": "boucle",
+    "legs": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.25,
+    "ref": {
+     "w": 0.52,
+     "d": 0.58,
+     "h": 0.88
+    }
+   },
+   "notes": "shell: skallstol med svakt utsvingte øvre hjørner og loddrett søm bak · legs: 4 tynne sorte skrå stålben Ø 0,02",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-barkrakk-1",
+   "source": "existing",
+   "refId": "f-barkrakk-1",
+   "name": "Barkrakk",
+   "category": "stoler",
+   "archetype": "bar-stool",
+   "mount": "floor",
+   "position": [
+    4.76,
+    0,
+    3.32
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 0.45,
+    "d": 0.48,
+    "h": 0.97
+   },
+   "params": {
+    "seatH": 0.65,
+    "back": "shell",
+    "legStyle": "slim-metal",
+    "footrest": true
+   },
+   "colors": {
+    "upholstery": "#4a5646",
+    "legs": "#1a1a1a"
+   },
+   "materials": {
+    "upholstery": "velvet",
+    "legs": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.15,
+    "ref": {
+     "w": 0.45,
+     "d": 0.48,
+     "h": 0.97
+    }
+   },
+   "notes": "back: avrundet skall med kanaler innvendig og loddrett søm bak · legs: tynn sort 4-bens ramme med fotstøtte",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-barkrakk-2",
+   "source": "existing",
+   "refId": "f-barkrakk-2",
+   "name": "Barkrakk",
+   "category": "stoler",
+   "archetype": "bar-stool",
+   "mount": "floor",
+   "position": [
+    5.34,
+    0,
+    3.32
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 0.45,
+    "d": 0.48,
+    "h": 0.97
+   },
+   "params": {
+    "seatH": 0.65,
+    "back": "shell",
+    "legStyle": "slim-metal",
+    "footrest": true
+   },
+   "colors": {
+    "upholstery": "#4a5646",
+    "legs": "#1a1a1a"
+   },
+   "materials": {
+    "upholstery": "velvet",
+    "legs": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.15,
+    "ref": {
+     "w": 0.45,
+     "d": 0.48,
+     "h": 0.97
+    }
+   },
+   "notes": "back: avrundet skall med kanaler innvendig og loddrett søm bak · legs: tynn sort 4-bens ramme med fotstøtte",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-barkrakk-3",
+   "source": "existing",
+   "refId": "f-barkrakk-3",
+   "name": "Barkrakk",
+   "category": "stoler",
+   "archetype": "bar-stool",
+   "mount": "floor",
+   "position": [
+    5.93,
+    0,
+    3.32
+   ],
+   "rotationDeg": 180,
+   "dims": {
+    "w": 0.45,
+    "d": 0.48,
+    "h": 0.97
+   },
+   "params": {
+    "seatH": 0.65,
+    "back": "shell",
+    "legStyle": "slim-metal",
+    "footrest": true
+   },
+   "colors": {
+    "upholstery": "#4a5646",
+    "legs": "#1a1a1a"
+   },
+   "materials": {
+    "upholstery": "velvet",
+    "legs": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.15,
+    "ref": {
+     "w": 0.45,
+     "d": 0.48,
+     "h": 0.97
+    }
+   },
+   "notes": "back: avrundet skall med kanaler innvendig og loddrett søm bak · legs: tynn sort 4-bens ramme med fotstøtte",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-pampas",
+   "source": "existing",
+   "refId": "f-pampas",
+   "name": "Bølgevase med pampasgress",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "surface",
+   "position": [
+    6.1,
+    0.91,
+    2.85
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.32,
+    "d": 0.32,
+    "h": 0.55
+   },
+   "params": {
+    "mat": {
+     "d": 0.35,
+     "color": "#b89a70"
+    },
+    "plumes": 4,
+    "plumeWidth": 1.5,
+    "plumeLength": 0.72,
+    "plumeFan": 0.45,
+    "flowers": "pampas",
+    "d": 0.13,
+    "h": 0.24,
+    "stemsH": 0.55,
+    "shape": "wave"
+   },
+   "colors": {
+    "body": "#ece4d6",
+    "flowers": "#e3d8cc"
+   },
+   "materials": {
+    "body": "ceramic",
+    "flowers": "plant-leaf"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.32,
+     "d": 0.32,
+     "h": 0.55
+    }
+   },
+   "notes": "stems: kunstig pampas",
+   "confidence": "med"
+  },
+  {
+   "uid": "ex-f-knivblokk",
+   "source": "existing",
+   "refId": "f-knivblokk",
+   "name": "Knivblokk",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "surface",
+   "position": [
+    3.4,
+    0.91,
+    0.2
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.12,
+    "d": 0.12,
+    "h": 0.25
+   },
+   "params": {
+    "flowers": null,
+    "d": 0.12,
+    "h": 0.25,
+    "shape": "block"
+   },
+   "colors": {
+    "body": "#151515"
+   },
+   "materials": {
+    "body": "plastic"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.12,
+     "d": 0.12,
+     "h": 0.25
+    }
+   },
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-avfallsbotte",
+   "source": "existing",
+   "refId": "f-avfallsbotte",
+   "name": "Pedalbøtte (stål)",
+   "category": "smatt",
+   "archetype": "basket",
+   "mount": "floor",
+   "position": [
+    6.12,
+    0,
+    1.25
+   ],
+   "rotationDeg": -90,
+   "dims": {
+    "w": 0.3,
+    "d": 0.28,
+    "h": 0.45
+   },
+   "params": {
+    "shape": "pedal-bin",
+    "lid": true,
+    "weave": "none",
+    "d": 0.3,
+    "h": 0.45,
+    "lidColor": "#151515"
+   },
+   "colors": {
+    "body": "#b8b8b6"
+   },
+   "materials": {
+    "body": "steel"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.3,
+     "d": 0.28,
+     "h": 0.45
+    }
+   },
+   "notes": "Mellom benkeraden og øya, inntil vinduesveggen.",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-plante-benk",
+   "source": "existing",
+   "refId": "f-plante-benk",
+   "name": "Liten potteplante på benken",
+   "category": "smatt",
+   "archetype": "plant-small",
+   "mount": "surface",
+   "position": [
+    6.2,
+    0.91,
+    0.15
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.15,
+    "d": 0.15,
+    "h": 0.3
+   },
+   "params": {
+    "species": "herb",
+    "plantH": 0.3
+   },
+   "colors": {
+    "leaves": "#4f7a3a",
+    "pot": "#f0efea"
+   },
+   "materials": {
+    "leaves": "plant-leaf",
+    "pot": "ceramic"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.02,
+    "ref": {
+     "w": 0.15,
+     "d": 0.15,
+     "h": 0.3
+    }
+   },
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-jutematte-stor",
+   "source": "existing",
+   "refId": "f-pynt-jutematte-stor",
+   "name": "Rund jutematte (stort settbord)",
+   "category": "teppe",
+   "archetype": "rug",
+   "mount": "surface",
+   "position": [
+    5.66,
+    0.47,
+    10.05
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.4,
+    "d": 0.4,
+    "h": 0.006
+   },
+   "params": {
+    "shape": "round",
+    "pile": "flat",
+    "weave": "braided",
+    "pattern": "solid",
+    "thickness": 0.006,
+    "fringe": false
+   },
+   "colors": {
+    "base": "#b39d78",
+    "accent": "#8f7e60",
+    "accent2": "#bca988"
+   },
+   "materials": {
+    "base": "linen",
+    "accent": "linen",
+    "accent2": "linen"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.029,
+    "ref": {
+     "w": 0.4,
+     "d": 0.4,
+     "h": 0.006
+    }
+   },
+   "notes": "Flettet jutematte midt på det store bordet (082827, 082829). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-lysestake-1",
+   "source": "existing",
+   "refId": "f-pynt-lysestake-1",
+   "name": "Høy sort lysestake med salviegrønt kronelys",
+   "category": "smatt",
+   "archetype": "candle-holder",
+   "mount": "surface",
+   "position": [
+    5.68,
+    0.476,
+    9.97
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.07,
+    "d": 0.07,
+    "h": 0.3
+   },
+   "params": {
+    "kind": "candlestick",
+    "lit": false,
+    "candleColor": "#a9b89a",
+    "candleH": 0.24,
+    "baseD": 0.07
+   },
+   "colors": {
+    "body": "#1a1a1a"
+   },
+   "materials": {
+    "body": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.07,
+     "d": 0.07,
+     "h": 0.3
+    }
+   },
+   "notes": "To sorte lysestaker på jutematta (082827). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-lysestake-2",
+   "source": "existing",
+   "refId": "f-pynt-lysestake-2",
+   "name": "Lav sort lysestake med salviegrønt kronelys",
+   "category": "smatt",
+   "archetype": "candle-holder",
+   "mount": "surface",
+   "position": [
+    5.66,
+    0.476,
+    10.1
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.07,
+    "d": 0.07,
+    "h": 0.22
+   },
+   "params": {
+    "kind": "candlestick",
+    "lit": false,
+    "candleColor": "#a9b89a",
+    "candleH": 0.24,
+    "baseD": 0.07
+   },
+   "colors": {
+    "body": "#1a1a1a"
+   },
+   "materials": {
+    "body": "black-metal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.07,
+     "d": 0.07,
+     "h": 0.22
+    }
+   },
+   "notes": "To sorte lysestaker på jutematta (082827). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-jutematte-liten",
+   "source": "existing",
+   "refId": "f-pynt-jutematte-liten",
+   "name": "Rund jutematte (lite settbord)",
+   "category": "teppe",
+   "archetype": "rug",
+   "mount": "surface",
+   "position": [
+    4.92,
+    0.42,
+    10.06
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.3,
+    "d": 0.3,
+    "h": 0.006
+   },
+   "params": {
+    "shape": "round",
+    "pile": "flat",
+    "weave": "braided",
+    "pattern": "solid",
+    "thickness": 0.006,
+    "fringe": false
+   },
+   "colors": {
+    "base": "#b39d78",
+    "accent": "#8f7e60",
+    "accent2": "#bca988"
+   },
+   "materials": {
+    "base": "linen",
+    "accent": "linen",
+    "accent2": "linen"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0.016,
+    "ref": {
+     "w": 0.3,
+     "d": 0.3,
+     "h": 0.006
+    }
+   },
+   "notes": "Jutematte på det lille bordet (082827). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-telys-settbord",
+   "source": "existing",
+   "refId": "f-pynt-telys-settbord",
+   "name": "To salviegrønne telysglass",
+   "category": "smatt",
+   "archetype": "candle-holder",
+   "mount": "surface",
+   "position": [
+    4.9,
+    0.426,
+    10.02
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.16,
+    "d": 0.07,
+    "h": 0.07
+   },
+   "params": {
+    "kind": "tealight",
+    "count": 2,
+    "spacing": 0.08,
+    "lit": false
+   },
+   "colors": {
+    "body": "#93a68e"
+   },
+   "materials": {
+    "body": "glass-smoked"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.16,
+     "d": 0.07,
+     "h": 0.07
+    }
+   },
+   "notes": "Små grønne glass på det lille bordet (082827, 082819). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-treboks",
+   "source": "existing",
+   "refId": "f-pynt-treboks",
+   "name": "Rund treboks med rosa lokk",
+   "category": "smatt",
+   "archetype": "basket",
+   "mount": "surface",
+   "position": [
+    4.98,
+    0.426,
+    10.14
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.09,
+    "d": 0.09,
+    "h": 0.05
+   },
+   "params": {
+    "shape": "cylinder",
+    "weave": "foam",
+    "hollow": true,
+    "d": 0.09,
+    "h": 0.05,
+    "lidColor": "#d8a7a4"
+   },
+   "colors": {
+    "body": "#b08d62"
+   },
+   "materials": {
+    "body": "oak"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.09,
+     "d": 0.09,
+     "h": 0.05
+    }
+   },
+   "notes": "Liten rund boks på det lille bordet (082827). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-glasskule-1",
+   "source": "existing",
+   "refId": "f-pynt-glasskule-1",
+   "name": "Klar glasskule for telys",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "surface",
+   "position": [
+    1.76,
+    0.445,
+    9.74
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.1,
+    "d": 0.1,
+    "h": 0.1
+   },
+   "params": {
+    "shape": "bubble",
+    "flowers": null,
+    "d": 0.1,
+    "h": 0.1
+   },
+   "colors": {
+    "body": "#e9efee"
+   },
+   "materials": {
+    "body": "glass-clear"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.1,
+     "d": 0.1,
+     "h": 0.1
+    }
+   },
+   "notes": "To klare glasskuler på sofabordet (082736, 082726). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-glasskule-2",
+   "source": "existing",
+   "refId": "f-pynt-glasskule-2",
+   "name": "Klar glasskule for telys",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "surface",
+   "position": [
+    1.85,
+    0.445,
+    9.7
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.09,
+    "d": 0.09,
+    "h": 0.09
+   },
+   "params": {
+    "shape": "bubble",
+    "flowers": null,
+    "d": 0.09,
+    "h": 0.09
+   },
+   "colors": {
+    "body": "#e9efee"
+   },
+   "materials": {
+    "body": "glass-clear"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.09,
+     "d": 0.09,
+     "h": 0.09
+    }
+   },
+   "notes": "To klare glasskuler på sofabordet (082736, 082726). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-lys-rav",
+   "source": "existing",
+   "refId": "f-pynt-lys-rav",
+   "name": "Lys i ravfarget glass",
+   "category": "smatt",
+   "archetype": "candle-holder",
+   "mount": "surface",
+   "position": [
+    2.05,
+    0.445,
+    9.86
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.07,
+    "d": 0.07,
+    "h": 0.08
+   },
+   "params": {
+    "kind": "tealight",
+    "count": 1,
+    "lit": false
+   },
+   "colors": {
+    "body": "#a8743c"
+   },
+   "materials": {
+    "body": "glass-smoked"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.07,
+     "d": 0.07,
+     "h": 0.08
+    }
+   },
+   "notes": "Tre små lys i glass (rav, salvie, krem) på sofabordet (082736). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-lys-salvie",
+   "source": "existing",
+   "refId": "f-pynt-lys-salvie",
+   "name": "Lys i salviegrønt glass",
+   "category": "smatt",
+   "archetype": "candle-holder",
+   "mount": "surface",
+   "position": [
+    2.12,
+    0.445,
+    9.79
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.07,
+    "d": 0.07,
+    "h": 0.07
+   },
+   "params": {
+    "kind": "tealight",
+    "count": 1,
+    "lit": false
+   },
+   "colors": {
+    "body": "#93a488"
+   },
+   "materials": {
+    "body": "glass-smoked"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.07,
+     "d": 0.07,
+     "h": 0.07
+    }
+   },
+   "notes": "Tre små lys i glass (rav, salvie, krem) på sofabordet (082736). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-lys-krem",
+   "source": "existing",
+   "refId": "f-pynt-lys-krem",
+   "name": "Lys i kremfarget glass",
+   "category": "smatt",
+   "archetype": "candle-holder",
+   "mount": "surface",
+   "position": [
+    2.1,
+    0.445,
+    9.93
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.07,
+    "d": 0.07,
+    "h": 0.06
+   },
+   "params": {
+    "kind": "tealight",
+    "count": 1,
+    "lit": false
+   },
+   "colors": {
+    "body": "#ece4d6"
+   },
+   "materials": {
+    "body": "glass-opal"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.07,
+     "d": 0.07,
+     "h": 0.06
+    }
+   },
+   "notes": "Tre små lys i glass (rav, salvie, krem) på sofabordet (082736). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-hylle-lykt",
+   "source": "existing",
+   "refId": "f-pynt-hylle-lykt",
+   "name": "Glasslykt med hvitt kubbelys",
+   "category": "smatt",
+   "archetype": "candle-holder",
+   "mount": "surface",
+   "position": [
+    1.52,
+    1.822,
+    8.45
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.1,
+    "d": 0.1,
+    "h": 0.16
+   },
+   "params": {
+    "kind": "lantern",
+    "lit": false,
+    "candleColor": "#f4f1ea"
+   },
+   "colors": {
+    "body": "#eef1f0"
+   },
+   "materials": {
+    "body": "glass-clear"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.1,
+     "d": 0.1,
+     "h": 0.16
+    }
+   },
+   "notes": "Topphylla (082736). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-hylle-steinstabel",
+   "source": "existing",
+   "refId": "f-pynt-hylle-steinstabel",
+   "name": "Krem «steinstabel»-skulptur",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "surface",
+   "position": [
+    1.7,
+    1.822,
+    8.45
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.08,
+    "d": 0.08,
+    "h": 0.14
+   },
+   "params": {
+    "shape": "sculptural",
+    "flowers": null,
+    "d": 0.08,
+    "h": 0.14
+   },
+   "colors": {
+    "body": "#e3d9c6"
+   },
+   "materials": {
+    "body": "ceramic"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.08,
+     "d": 0.08,
+     "h": 0.14
+    }
+   },
+   "notes": "Topphylla (082736). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-hylle-plante",
+   "source": "existing",
+   "refId": "f-pynt-hylle-plante",
+   "name": "Liten grønn plante i sjøgresskurv",
+   "category": "smatt",
+   "archetype": "plant-small",
+   "mount": "surface",
+   "position": [
+    2.1,
+    1.662,
+    8.45
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.12,
+    "d": 0.12,
+    "h": 0.2
+   },
+   "params": {
+    "species": "herb",
+    "potD": 0.1,
+    "potH": 0.08,
+    "plantH": 0.2
+   },
+   "colors": {
+    "leaves": "#5f7d4c",
+    "pot": "#a08a62"
+   },
+   "materials": {
+    "leaves": "plant-leaf",
+    "pot": "rattan"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.12,
+     "d": 0.12,
+     "h": 0.2
+    }
+   },
+   "notes": "Øvre høyre hylle (082736). (pynt fra bildene – fix-core r1) · species: kunstig grønn plante",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-hylle-flaske",
+   "source": "existing",
+   "refId": "f-pynt-hylle-flaske",
+   "name": "Røykgrå glassflaske-vase",
+   "category": "smatt",
+   "archetype": "vase",
+   "mount": "surface",
+   "position": [
+    1.6,
+    1.532,
+    8.45
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.07,
+    "d": 0.07,
+    "h": 0.2
+   },
+   "params": {
+    "shape": "bottle",
+    "flowers": null,
+    "d": 0.07,
+    "h": 0.2
+   },
+   "colors": {
+    "body": "#6f7275"
+   },
+   "materials": {
+    "body": "glass-smoked"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.07,
+     "d": 0.07,
+     "h": 0.2
+    }
+   },
+   "notes": "Midtre hylle (082736). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-hylle-telys",
+   "source": "existing",
+   "refId": "f-pynt-hylle-telys",
+   "name": "Grå riflet telysholder i glass",
+   "category": "smatt",
+   "archetype": "candle-holder",
+   "mount": "surface",
+   "position": [
+    1.12,
+    1.382,
+    8.45
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.08,
+    "d": 0.08,
+    "h": 0.09
+   },
+   "params": {
+    "kind": "tealight",
+    "count": 1,
+    "lit": false
+   },
+   "colors": {
+    "body": "#8c9093"
+   },
+   "materials": {
+    "body": "glass-smoked"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.08,
+     "d": 0.08,
+     "h": 0.09
+    }
+   },
+   "notes": "Nederste hylle til venstre (082736). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  },
+  {
+   "uid": "ex-f-pynt-hylle-aloe",
+   "source": "existing",
+   "refId": "f-pynt-hylle-aloe",
+   "name": "Liten aloe i sjøgresskurv",
+   "category": "smatt",
+   "archetype": "plant-small",
+   "mount": "surface",
+   "position": [
+    1.3,
+    1.382,
+    8.45
+   ],
+   "rotationDeg": 0,
+   "dims": {
+    "w": 0.1,
+    "d": 0.1,
+    "h": 0.16
+   },
+   "params": {
+    "species": "herb",
+    "potD": 0.09,
+    "potH": 0.07,
+    "plantH": 0.16
+   },
+   "colors": {
+    "leaves": "#6f8a5a",
+    "pot": "#a08a62"
+   },
+   "materials": {
+    "leaves": "plant-leaf",
+    "pot": "rattan"
+   },
+   "variantIndex": 0,
+   "hidden": false,
+   "locked": false,
+   "acoustic": {
+    "m2": 0,
+    "ref": {
+     "w": 0.1,
+     "d": 0.1,
+     "h": 0.16
+    }
+   },
+   "notes": "Nederste hylle til venstre (082736). (pynt fra bildene – fix-core r1)",
+   "confidence": "low"
+  }
+ ],
+ "wall": {
+  "proposalId": "0",
+  "elements": [],
+  "edited": false
+ },
+ "windows": {
+  "win-s1": {
+   "productId": "bohus-rebell-sondre-gardinlengde-140x220",
+   "variantIndex": 0,
+   "archetype": "curtain",
+   "params": {
+    "fold": "ring",
+    "fabric": "wool",
+    "track": "wall",
+    "pattern": "check",
+    "panels": 1,
+    "transmission": 0.15,
+    "uvBlock": 0.85,
+    "mount": "wall"
+   },
+   "colors": {
+    "fabric": "#b4a998",
+    "slat": "#b4a998",
+    "rail": "#1e1e1e"
+   },
+   "materials": {
+    "fabric": "wool",
+    "slat": "wool",
+    "rail": "black-metal"
+   },
+   "open": 1,
+   "tilt": 0,
+   "mount": "wall"
+  }
+ },
+ "paints": {
+  "w-hoy": "#7d8a80"
+ },
+ "env": {
+  "hour": 13,
+  "month": 6,
+  "day": 15,
+  "mode": "auto",
+  "builtIn": {},
+  "exposure": 1
+ }
+}

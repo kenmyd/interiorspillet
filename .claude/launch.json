@@ -12,6 +12,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "--config", ".shots/wall-r3/vite.config.mjs"],
       "port": 5249
+    },
+    {
+      "name": "hus-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5250", "--strictPort"],
+      "port": 5250
     }
   ]
 }
