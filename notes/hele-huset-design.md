@@ -31,7 +31,9 @@ Koordinater: meter, +x = sør (de store vinduene), +z = vest, y opp. Modellene v
   - Stopp bare PID-er du selv har startet, med `taskkill /PID <pid> /T /F`.
   - Drep aldri prosesser etter navn, og aldri `msedge.exe`.
   - Start nettlesere med `chromium.launchServer()` og skriv PID-en til `.shots/hus/<steg>/browser.pid`.
-  - Bare én hodeløs nettleser rendrer om gangen. Det styres med låsefila `.shots/hus/gpu.lock`.
+  - Bare én hodeløs nettleser rendrer om gangen. Det styres med låsekatalogen `.shots/hus/gpu.lock.d` i hovedtreet
+    (`mkdir`; finnes den, vent 20 s og prøv igjen; eldre enn 15 min er foreldet). Verktøyene fra steg 2 tar den selv
+    med `--lock`.
 - **Hold maskinen våken** ved å be verten om keep-awake. Strøminnstillinger skal ikke endres.
 - **Ingen git push og ingen Railway-deploy.**
   - Alt blir lokale commits på grenen `hele-huset`.
@@ -661,8 +663,14 @@ Kilde: `ytterdor-ute.md`, med D8–D10.
    - **Svingtrinnene** blir en triangulert skrueflate der høyden er en funksjon av vinkelen langs ganglinja.
    - Synlige trinn, vanger og spiler får `collide:false`, samme mønster som kitchen.js:289. Kilen ligger i `stairColliders()`.
 2. **Trinnvis snap ned (steg 5, M1).**
-   - `_snapDown` (PlayerController.js:797) flytter i fire deler og stopper ved første gangbare kontakt, med de samme
-     sjekkene.
+   - `_snapDown` (PlayerController.js:797) flytter i **tolv deler (2,17 cm)** og stopper ved første gangbare kontakt,
+     med de samme sjekkene. *(Integrator W0: ikke fire som i utkastet. Med fire eller åtte deler ga en 48°-kile fortsatt
+     et dytt på 144 Hz; grensen flytter seg ca. 1° per to ekstra deler, og 12 gir 49°, én grad over rådet til steg 19.
+     Se commit b074972.)*
+   - Snapen når i praksis ca. 0,33 m ned fra en firkantet kant (snapDistance 0,26 + kapselbunnen), ikke 0,26. En kant på
+     0,27–0,32 m tas derfor i ett bilde i stedet for et fall. Det er godtatt i natt, fordi grepet som stopper det
+     (`_levelY`, `.shots/hus/m1-rev2/PC.fixC.js` i arbeidstreet hus-m1) gjør ekte trinn til korte fall. Velges det
+     senere, må det komme sammen med kilene i steg 24 og 25.
    - I hodeløs test fjernet dette lufthoppene på rampetoppen. Der hoppet spilleren ellers 0,25 m i gange og fløy 1,7 m i løp.
    - `snapDistance` heves ikke før dette er på plass.
    - Steget må også gåes i nettleseren på terrassetrappa og over terskler (§7.4).
@@ -702,8 +710,11 @@ Kilde: `ytterdor-ute.md`, med D8–D10.
 10. **Gulv under dørhull.** Dørhull har ikke gulv i dag, og terskelboksen har `collide:false` (shell.js:917). I tykke vegger
     synker kapselen 4–8 cm, for eksempel i ytterdøra (0,23–0,30) og i åpningen gang ↔ entré (0,41). `doors.js` legger en
     gulvstripe med kollisjon i hvert dørhull.
-11. **Entrétrinnene** er to ekte trinn à 0,15. Rampe er ikke nødvendig, fordi snap og trinn klarer 0,15 etter M1. Testen
-    er en gangtur gjennom åpningen begge veier.
+11. **Entrétrinnene** er to trinn à 0,15. *(Integrator W0, rettet etter M1:)* snap og trinn klarer **ikke** 0,15. Å gå
+    opp et ekte trinn på 0,15 eller mer feiler både før og etter M1, og ned gir et dytt fremover ved hver nese (opptil
+    2,9× på 144 Hz mellom veggene 0,9 m fra hverandre; enkeltfall på 0,20–0,26 gir opptil 5,3×). Derfor: **en usynlig
+    kile over trinnene, og synlige trinn med `collide:false`** (steg 24). Det samme gjelder **alle ekte høydetrinn på
+    0,15–0,26 i huset**, også terrassetrappa (steg 25). Testen er en gangtur gjennom åpningen begge veier.
 
 ---
 
@@ -983,6 +994,10 @@ Steg 1 kjøres først, deretter 2–5 parallelt og 6 til slutt.
    - *Avhenger av:* 1. Nettlesersjekken avhenger av 2.
    - *Test:* 0 % lufthopp på rampetoppen i Node på 30, 60 og 144 Hz. Gangtur i nettleseren over terrassetrappa og
      terskelen til `door-gang`, uten «land»-dunk og uten endret fart.
+   - *Integrator W0:* terrassetrappa er stengt i dag (`exterior.js` 455-462, en solid boks; trinnene har
+     `collide:false`). Nettleserdelen ble derfor bare gjort over terskelen til `door-terrasse`. Steg 25 kjører
+     `tools/tour.mjs` over trappa på 30/60/144 Hz når den kan gås (med kile). Fra stua når man heller ikke gangen før
+     gulvstripa i dørhullet (§3.10, `doors.js`) er på plass: kapselen synker 0,134 m i `door-gang`.
    - *Bilder:* nei.
 6. **S0-stub: modulskjelett og returkontrakt.**
    - *Mål:*
@@ -1254,6 +1269,14 @@ Disse stegene trenger brukeren. I natt lages bare forslag.
   - `node tools/imgdiff.mjs ref.png ny.png --max=<2 × støy>` for de 8 foto-kameraene, spawn, orbit og plan.
   
   Bare L1, L2 og C3 (gjennom glasset) kan få et avvik godkjent, og bare med begrunnelse i sluttrapporten.
+  - Alt i én kommando: `node tools/refcheck.mjs --port=525N --step=<steg> --lock` (12 bilder og dumpen mot
+    `C:\Dev\Interiørspillet\.shots\hus\ref\`).
+  - **Orbit og plan viser hele etasjen.** Når bølge 1 bygger bad, gang og soverom (steg 8 og senere), endrer
+    `orbit-sor`, `orbit-nord` og `plan` seg selv om stua er lik. Steg i bølge 1 og senere kjører derfor
+    `--only=0_for,20261018_082806,20261018_082827,20261018_082829,20261018_082909,20261018_082924,20261018_083012,20261018_083019,spawn`
+    pluss dumpen, og ser på orbit og plan med øynene. Integratoren lager referansene på nytt etter hver godkjent bølge
+    (alle 12 bildene, fra hovedtreet med den flettede koden): `node tools/refcheck.mjs --port=5250 --make --publish --lock`.
+    Lag aldri referanser med `--only` og `--publish` samtidig (refcheck nekter nå).
 
 ### 7.2 Tester per steg
 

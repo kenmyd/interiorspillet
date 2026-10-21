@@ -5,7 +5,11 @@
  *   node src/data/scripts/normalize-data.mjs [--only=catalog|room-spec|palette|walls,…] [--out=<dir>] [--verbose]
  *   (run from the project root; --out writes the files to another folder instead of src/data – e.g. to diff them)
  *
- * - room-spec.json, palette.json: copied (validated as JSON).
+ * - room-spec.json: research/room-spec.json (the living room) with every research/house/NN-*.json merged in and the
+ *   whole house validated (house.mjs: mergeHouse + validateHouse, which throws on errors – nothing is written then;
+ *   00-ids.json is the id register and schema, not merged), then fixes.mjs; the measuring list (every `estimated`
+ *   field) goes into the generated «Målelista» section of research/room-spec-notes.md. Never edit it by hand.
+ * - palette.json: copied (validated as JSON).
  * - catalog/<key>.json: unique ids, dims in metres, archetype mapped to a known one, colour/material keys renamed to
  *   the canonical part names (ARCHITECTURE §13) and filled for every part of the archetype family, material kinds
  *   mapped to the known kinds (§4), numeric strings → numbers, "mount" added from the archetype.

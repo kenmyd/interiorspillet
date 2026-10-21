@@ -25,7 +25,7 @@
  * (`mkdir "C:\Dev\Interiørspillet\.shots\hus\gpu.lock.d"`) must not pass --lock, or the tool waits for their own lock.
  */
 import { chromium } from 'playwright-core';
-import { mkdirSync, rmSync, statSync, writeFileSync, existsSync, utimesSync } from 'node:fs';
+import { mkdirSync, rmSync, statSync, writeFileSync, readFileSync, existsSync, utimesSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
 
 export const ROOT = resolve(import.meta.dirname, '..', '..');
@@ -85,10 +85,15 @@ export async function acquireGpuLock({ label = 'tool', waitMs = 20000, staleMs =
       await sleep(waitMs);
     }
   }
+  // the owner line is also the token release() checks: a lock taken over as stale while we held it (the machine slept
+  // past the heartbeat) belongs to someone else, and removing it would let two browsers render at once
+  const token = `${label} pid ${process.pid} ${new Date().toISOString()} ${ROOT}`;
+  let wrote = false;
   try {
-    writeFileSync(join(GPU_LOCK, 'owner.txt'), `${label} pid ${process.pid} ${new Date().toISOString()} ${ROOT}\n`);
+    writeFileSync(join(GPU_LOCK, 'owner.txt'), `${token}\n`);
+    wrote = true;
   } catch {
-    /* only information */
+    /* without the owner file release() falls back to removing the lock */
   }
   // heartbeat: keep the lock's mtime fresh while we hold it, so a long run is never taken for a stale lock
   const beat = setInterval(() => {
@@ -105,6 +110,18 @@ export async function acquireGpuLock({ label = 'tool', waitMs = 20000, staleMs =
     if (released) return;
     released = true;
     clearInterval(beat);
+    if (wrote) {
+      let owner = null;
+      try {
+        owner = readFileSync(join(GPU_LOCK, 'owner.txt'), 'utf8').trim();
+      } catch {
+        /* gone, or a new owner has not written its file yet */
+      }
+      if (owner !== token) {
+        if (existsSync(GPU_LOCK)) log(`[gpu-lock] not removing ${GPU_LOCK}: it is no longer ours (owner: ${owner ?? '?'})`);
+        return;
+      }
+    }
     rmSync(GPU_LOCK, { recursive: true, force: true });
   };
   process.once('exit', release);

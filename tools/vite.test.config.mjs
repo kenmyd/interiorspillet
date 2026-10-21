@@ -8,8 +8,10 @@
 // - root = the folder above this file (the worktree), whatever the current directory is;
 // - cacheDir = <root>/.shots/.vite (gitignored). The prebundled deps are served as /.shots/.vite/deps/three.js …
 //   (tools/walkmap.mjs and tools/tour.mjs find them through the page's resource list, see tools/lib/hus.mjs depUrl);
-// - server.hmr = false: no websocket, edits never reload a page in the middle of a screenshot. The file watcher stays
-//   on, so an edit in your own worktree is served on the next page load (just reload / rerun the tool);
+// - server.hmr = false: HMR off – file edits are not pushed, so an edit never reloads a page in the middle of a
+//   screenshot. The client websocket still connects (ws://127.0.0.1:<port>/?token=…), so a server restart (e.g. after
+//   editing this config) can still reload a connected page: do not restart the server during a run. The file watcher
+//   stays on, so an edit in your own worktree is served on the next page load (just reload / rerun the tool);
 // - port: --port on the command line wins, then the env HUS_PORT, then 5250 (the integrator's port); strictPort, so a
 //   busy port fails instead of silently moving to the next one;
 // - every dependency is prebundled up front (optimizeDeps entries + include), so no page triggers a re-optimisation

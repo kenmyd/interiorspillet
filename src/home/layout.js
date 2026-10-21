@@ -813,6 +813,10 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
 
   let house = null; // set below; ceilingHeightAt(x, z, y) delegates to it
   const warnedSites = new Set();
+  // new Error().stack is costly on hot paths (lamps.js ceilingAt, Placement drags every frame): the first 32 checks
+  // always run, after that at most one per 250 ms – still one warning per call site
+  let siteChecks = 0;
+  let lastSiteCheck = 0;
   /**
    * Ceiling height at a plan point: flat 2.40 in the kitchen and TV-stue, the slope y = 3.00 − 0.16216·(x − 3.22)
    * over dining/living, lowered under bulkheads. Points outside every ceiling use the nearest one. Always the living
@@ -826,7 +830,10 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     if (y !== undefined && y !== null) return house.ceilingHeightAt(x, z, y);
     if (devWarnings && otherRooms.length && !floor.contains(x, z)) {
       const r = otherRooms.find((rm) => rm.contains(x, z));
-      if (r) {
+      const now = r ? Date.now() : 0;
+      if (r && (siteChecks < 32 || now - lastSiteCheck >= 250)) {
+        siteChecks++;
+        lastSiteCheck = now;
         const site = callSite();
         if (!warnedSites.has(site)) {
           warnedSites.add(site);

@@ -122,7 +122,7 @@
   ],
   "photoCameras": [
     { "file": "foto-hus/kjeller-gang/20261020_225349.jpg", "roomId": "kjeller-gang",
-      "pos": [3.40, 1.60, 3.50], "lookAt": [5.38, 1.88, 3.50], "vfovDeg": 62, "yawDeg": 90, "pitchDeg": 8,
+      "pos": [3.40, 1.60, 3.50], "lookAt": [1.40, 1.88, 3.50], "vfovDeg": 62, "yawDeg": 90, "pitchDeg": 8,
       "focalPx": 1300, "imageSize": [1600, 1200], "confidence": "low", "source": "fixture" }
   ]
 }

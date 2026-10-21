@@ -12,7 +12,8 @@
  *   which files are read;
  * - validateHouse is green on a «plan house» built from notes/hele-huset-design.md §1.4–§1.6 on top of the 00-files
  *   (bad, gang, soverom, trappa, kjellergang, bod-1): stair numbers, warnings for estimated values;
- * - bad fixtures fail: door format, overlapping rooms, unknown archetype, an open door leaf against the railing, plus
+ * - bad fixtures fail: door format, overlapping rooms, unknown or alias archetype, a new entry without roomId, kjeller
+ *   on another floorY than 00-ids.json, an open door leaf against the railing, plus
  *   renamed ids, wall loops, backOf, double walls, swing/opensInto, lights, holes, doors over the hole.
  * Pure Node: house.mjs reads JSON with fs, so no JSON import hook is needed.
  */
@@ -396,6 +397,30 @@ fails('…and the missing door:{…} is named', planHouse((f) => {
 fails('unknown archetype (instead of becoming a vase)', planHouse((f) => {
   f['10'].furniture = [{ id: 'f-seng', roomId: 'soverom', name: 'Seng', archetype: 'flying-bed', position: [1.55, 0, 7.2], rotationDeg: 90, dims: { w: 1.8, d: 2, h: 0.62 } }];
 }), /furniture\/f-seng: arketypen «flying-bed» finnes ikke/);
+fails('an alias as archetype (existing.js resolves aliases only through kind, so «sofa» would become a vase)', planHouse((f) => {
+  f['10'].furniture = [{ id: 'f-sofa-sov', roomId: 'soverom', name: 'Sofa', archetype: 'sofa', position: [1.55, 0, 7.2], rotationDeg: 90, dims: { w: 1.8, d: 0.9, h: 0.8 } }];
+}), /furniture\/f-sofa-sov: arketypen «sofa» er et alias – bruk «sofa-straight»/);
+fails('a new entry without roomId lands in the living room – an error, also with levelId «kjeller»', planHouse((f) => {
+  f['30'].walls.push({ id: 'w-x-kjeller', levelId: 'kjeller', from: [0.2, 0.2], to: [0.4, 0.2], normal: [0, 1], thickness: 0.1, height: 2.25 });
+}), /walls\/w-x-kjeller: mangler roomId – uten roomId havner den i stua.*selv med levelId «kjeller»/);
+fails('kjeller on another floorY than D2 (−2,55, in 00-ids.json)', planHouse((f) => {
+  f['20'].levels[0].floorY = -2.7;
+}), /levels\/kjeller: floorY -2\.7 ≠ -2\.55 i 00-ids\.json/);
+{
+  // replacing a photo-measured entry by id is invisible to the validator afterwards, so the merge warns
+  const warned = [];
+  const orig = console.warn;
+  console.warn = (...m) => warned.push(m.join(' '));
+  try {
+    const tv = clone(base.furniture.find((x) => x.id === 'f-tv'));
+    house.mergeHouse(base, RESEARCH, { files: [{ name: '50-x.json', data: { furniture: [{ ...tv, name: 'TV (flyttet)' }] } }], registry });
+    house.mergeHouse(base, RESEARCH, { files: [{ name: '51-x.json', data: { roomId: 'soverom', furniture: [{ id: 'f-ny-stol', archetype: 'dining-chair', position: [1, 0, 6], dims: { w: 0.5, d: 0.5, h: 0.8 } }] } }], registry });
+  } finally {
+    console.warn = orig;
+  }
+  check('replacing a frozen living-room entry from a house file warns (only L1, L2 and C3 may, §0)', has(warned, /50-x\.json: furniture «f-tv» erstatter den fotomålte oppføringen/), show(warned));
+  check('…and a new entry does not', !has(warned, /51-x\.json/), show(warned));
+}
 {
   const at90 = (f) => {
     f['10'].wallOpenings[0].openings[0].door.openAngleDeg = 90;

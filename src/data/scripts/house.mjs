@@ -15,13 +15,16 @@
  *   - `wallOpenings: [{ wallId, openings }]` patches the openings of an existing wall without copying the wall: an
  *     opening with an id that is already there is deep-merged, a new one is appended;
  *   - new top-level keys go last, in the order of the register's schema.topLevel, so the key order is stable;
- *   - meta, floor, baseboard and highWall cannot be changed from the house files (the living room is photo-measured).
+ *   - meta, floor, baseboard and highWall cannot be changed from the house files (the living room is photo-measured);
+ *   - replacing a frozen (photo-measured) entry by id prints a console warning – the validator cannot see it afterwards.
  *
  * validateHouse(spec, { registry?, archetypes?, throw? }) → report; throws (like mapArchetype) when there are errors.
  *   Integrity is always an error: ids (unique per namespace, syntax, prefixes, the frozen ids still there, levels /
  *   rooms / light groups registered in 00-ids.json), the schema, references, wall loops that close the room polygon
  *   with the normal inwards, overlapping rooms (with wall thickness), double walls, backOf pairs, openings that fit
- *   their wall, the door format, connects / opensInto against swing, holes inside their room, known archetypes, and the
+ *   their wall, the door format, connects / opensInto against swing, holes inside their room, known (canonical, not
+ *   alias) archetypes, a roomId on every new wall / zone / ceiling / bulkhead / light / furniture / fixture / photo
+ *   camera (without one it lands in the living room; only the frozen ids may lack it), and the
  *   free width (≥ 0,75 m) between an open door leaf and railings / walls (D6: the opening angle is a modelling choice,
  *   so a leaf that cuts a passage is always fixable in the data, however uncertain the measurements around it are).
  *   The plausibility checks – stair numbers (§1.6), headroom, the stair footprint, doors over the stair, a door over a
@@ -321,7 +324,7 @@ function stampEntry(key, entry, fileRoom, fileLevel) {
   return e;
 }
 
-function mergeById(list, entries, key, where, log) {
+function mergeById(list, entries, key, where, log, frozen = null) {
   const seen = new Set();
   for (const e of entries) {
     if (!isObj(e)) throw new Error(`${where}: ${key}: hver oppføring må være et objekt`);
@@ -333,6 +336,9 @@ function mergeById(list, entries, key, where, log) {
     if (i >= 0) {
       list[i] = e;
       log(`${where}: ${key} «${id}» erstattet`);
+      // a photo-measured living-room entry replaced from a house file: the validator cannot see it afterwards, so say it
+      // here (only L1, L2 and C3 may change the living room, §0; door-gang is patched with wallOpenings, never replaced)
+      if (frozen?.has(id)) console.warn(`[house] ${where}: ${key} «${id}» erstatter den fotomålte oppføringen i stua – bare L1, L2 og C3 kan endre stua (§0); bruk wallOpenings for åpninger`);
     } else list.push(e);
   }
 }
@@ -389,6 +395,7 @@ export function mergeHouse(spec, researchDir = RESEARCH_DIR, opts = {}) {
   const out = clone(spec);
   const baseKeys = Object.keys(out);
   const protectedKeys = new Set(registry?.schema?.protected ?? DEFAULT_PROTECTED);
+  const frozenOf = (coll) => new Set(arr(registry?.frozen?.[coll]));
   for (const { name, data } of files) {
     const where = `research/house/${name}`;
     if (!isObj(data)) throw new Error(`${where}: fila må være et JSON-objekt`);
@@ -403,7 +410,7 @@ export function mergeHouse(spec, researchDir = RESEARCH_DIR, opts = {}) {
         if (out[key] === undefined) out[key] = [];
         if (!Array.isArray(out[key])) throw new Error(`${where}: «${key}» er en liste her, men ikke i room-spec`);
         // only objects are stamped; anything else reaches mergeById, which names the file
-        mergeById(out[key], value.map((e) => (isObj(e) ? stampEntry(key, clone(e), data.roomId, data.levelId) : e)), key, where, log);
+        mergeById(out[key], value.map((e) => (isObj(e) ? stampEntry(key, clone(e), data.roomId, data.levelId) : e)), key, where, log, frozenOf(key));
       } else if (isObj(value)) {
         if (out[key] === undefined) out[key] = {};
         if (!isObj(out[key])) throw new Error(`${where}: «${key}» er et objekt her, men ikke i room-spec`);
@@ -412,7 +419,7 @@ export function mergeHouse(spec, researchDir = RESEARCH_DIR, opts = {}) {
           if (items !== undefined) {
             if (!Array.isArray(items)) throw new Error(`${where}: kitchen.items må være en liste`);
             if (!Array.isArray(out.kitchen.items)) out.kitchen.items = [];
-            mergeById(out.kitchen.items, items.map(clone), 'kitchen.items', where, log);
+            mergeById(out.kitchen.items, items.map(clone), 'kitchen.items', where, log, frozenOf('kitchenItems'));
           }
           deepMerge(out.kitchen, rest);
         } else deepMerge(out[key], value);
@@ -724,6 +731,17 @@ export function validateHouse(spec, opts = {}) {
   for (const [coll, ids] of Object.entries(frozen)) {
     const have = new Set(entries.filter((x) => x.coll === coll).map((x) => x.id));
     for (const id of arr(ids)) if (!have.has(id)) error(`${coll}/${id} finnes ikke lenger – eksisterende id-er får aldri nytt navn (lagrede design peker på dem)`);
+  }
+
+  // ---- a new entry without roomId lands in the living room (layout.js puts every entry without one there, also one
+  //      with levelId «kjeller»): only the photo-measured (frozen) ids may lack it. A new living-room entry names
+  //      roomId «stue-kjokken» explicitly (and only L1, L2 and C3 may add one, §0).
+  if (reg.frozen) {
+    const NEEDS_ROOM = new Set(['walls', 'zones', 'ceilings', 'bulkheads', 'builtInLights', 'furniture', 'fixtures', 'photoCameras']);
+    for (const x of entries) {
+      if (!x.id || !isObj(x.e) || !NEEDS_ROOM.has(x.coll) || x.e.roomId != null || isFrozen(x.coll, x.id)) continue;
+      error(`${x.coll}/${x.id}: mangler roomId – uten roomId havner den i stua (layout.js)${x.e.levelId != null ? `, selv med levelId «${x.e.levelId}»` : ''}; sett roomId på oppføringen eller i fila (eller «${STUE}» hvis den virkelig hører til stua, §0)`);
+    }
   }
 
   // ---- levels
@@ -1214,9 +1232,14 @@ export function validateHouse(spec, opts = {}) {
   }
 
   // ---- built-ins, fixtures, furniture
-  const knownArchetype = (a) => !!(a && (archetypes.archetypes?.[a] || archetypes.archetypeAliases?.[a]));
+  // only canonical names: existing.js (originalItems) resolves an alias through f.kind, never through f.archetype, so
+  // { archetype: 'sofa' } without a matching kind would silently become a vase
   for (const f of objs(spec.furniture)) {
-    if (!knownArchetype(f.archetype)) error(`furniture/${f.id}: arketypen «${f.archetype}» finnes ikke i src/data/archetypes.json (ellers blir den stille en vase)`);
+    if (!(f.archetype && archetypes.archetypes?.[f.archetype])) {
+      const alias = f.archetype ? archetypes.archetypeAliases?.[f.archetype] : null;
+      if (alias) error(`furniture/${f.id}: arketypen «${f.archetype}» er et alias – bruk «${alias}» (existing.js slår ikke opp alias i archetype, så den blir ellers stille en vase)`);
+      else error(`furniture/${f.id}: arketypen «${f.archetype}» finnes ikke i src/data/archetypes.json (ellers blir den stille en vase)`);
+    }
     if (f.roomId != null && goodRooms.has(f.roomId) && Array.isArray(f.position) && f.position.length === 3) {
       const r = roomsById.get(f.roomId);
       if (physical(r) && !inOrOn([f.position[0], f.position[2]], r.polygon, 0.05)) warn(`furniture/${f.id}: står utenfor rommet ${r.id}`);

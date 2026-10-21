@@ -27,10 +27,23 @@ fra en annen modul som ikke finnes ennå, så bruk kontrakten slik den står her
 
 | Fil | Innhold | Kilde |
 | --- | --- | --- |
-| `room-spec.json` | Vegger, åpninger, tak, gulv, kjøkken, eksisterende møbler, lys, terrasse, fotokameraer | `research/room-spec.json` |
+| `room-spec.json` | Vegger, åpninger, tak, gulv, kjøkken, eksisterende møbler, lys, terrasse, fotokameraer – og for hele huset nivåer, rom, hull, trapper, `builtIns` og lysgrupper | `research/room-spec.json` (stua) + `research/house/NN-*.json` (resten av huset) |
 | `catalog/<kategori>.json` | Produkter (skjema i §6) | `research/catalog/*.json` |
 | `wall-proposals.json` | `{ wallFacts, proposals: [...] }` – alle forslag til den høye veggen (eksisterende + nye) | `research/wall-proposals*.json` |
 | `palette.json` | `{ walls: {sand, marrakesh}, paints: [...], materials: [...] }` | `research/palette.json` |
+
+**`room-spec.json` redigeres aldri for hånd.** Den genereres med `node src/data/scripts/normalize-data.mjs --only=room-spec`
+(deterministisk – ved flettekonflikt kjører du den på nytt). Normaliseren (`src/data/scripts/house.mjs`, plan:
+`notes/hele-huset-design.md` §1.7):
+- fletter `research/house/NN-*.json` inn i `research/room-spec.json` i sortert rekkefølge (lister etter id,
+  `wallOpenings` lapper åpningene i en eksisterende vegg, `levelId`/`roomId` på fila stemples på oppføringene);
+- `research/house/00-ids.json` er id-registeret og skjemaet (nivåer, rom, lysgrupper, de frosne stue-id-ene) og flettes
+  ikke inn;
+- `validateHouse` kaster ved feil, så ingenting skrives: id-er, skjema, veggsløyfer, overlapp, dørformat, kjente
+  arketyper (ikke alias), `roomId` på alle nye oppføringer (uten havner de i stua), og fri bredde forbi et åpent
+  dørblad (D6: alltid feil, fordi åpningsvinkelen er et modellvalg). Anslåtte verdier (`estimated`) gir advarsler der
+  planen sier det;
+- skriver «Målelista» (alle `estimated`-felt) som generert avsnitt i `research/room-spec-notes.md`.
 
 Kategorinøkler: `lenestol`, `skjenk`, `vitrineskap`, `taklampe`, `smalamper`, `tekstil`, `teppe`, `solskjerming`, `akustikk`, `smatt`.
 Bilder som spillet viser (fotomontasjer, stuebilder til fotosammenligning, utsikt) ligger nedskalert under

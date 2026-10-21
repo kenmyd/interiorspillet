@@ -2,7 +2,7 @@
   "$comment": "Id-register og skjema for hele huset (notes/hele-huset-design.md §1, steg 3). Fila flettes IKKE inn i room-spec.json: mergeHouse() hopper over den, og validateHouse() i src/data/scripts/house.mjs sjekker dataene mot den. «frozen» er id-ene som fantes før hele huset; de får aldri nytt navn (lagrede design peker på dem). Nivåer, rom og lysgrupper må stå her før de kan brukes. «control» er eierens eller planens areal; over 10 % avvik gir en advarsel.",
   "levels": {
     "hoved": { "name": "1. etasje", "floorY": 0 },
-    "kjeller": { "name": "Kjeller" }
+    "kjeller": { "name": "Kjeller", "floorY": -2.55 }
   },
   "rooms": {
     "stue-kjokken": { "levelId": "hoved", "kind": "living", "control": { "area": 53.78, "source": "stuas regresjon (tools/test-design.mjs)" } },

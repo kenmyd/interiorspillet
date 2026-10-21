@@ -193,8 +193,11 @@ Alle mål for rommet ligger på **ett sted**:
   `height`, `sill`), tak (`ceilings`: flatt 2,40 og skråtaket 3,00 → 2,40), nedforinger (`bulkheads`), gulv,
   kjøkkeninnredning (`kitchen`), dagens møbler (`furniture`: posisjon, rotasjon, mål, farger, materialer), faste
   lys (`builtInLights`), stikkontakter/brytere/varmepumpe (`fixtures`), den høye veggen (`highWall`), terrassen
-  (`outside`) og fotovinklene (`photoCameras`). Kopien i `research/room-spec.json` er kilden for dataskriptet
-  (`node src/data/scripts/normalize-data.mjs` kopierer den over) – endrer du i `src/data`, endre gjerne begge.
+  (`outside`) og fotovinklene (`photoCameras`). Fila **genereres** og redigeres ikke for hånd: kilden er
+  `research/room-spec.json` (stua) pluss `research/house/NN-*.json` (resten av huset, med id-registeret
+  `research/house/00-ids.json`), og `node src/data/scripts/normalize-data.mjs --only=room-spec` fletter dem, validerer
+  hele huset (stopper ved feil, for eksempel en dør som sperrer en passasje) og skriver fila og «Målelista» i
+  `research/room-spec-notes.md`.
 - **`src/home/layout.js`** – leser room-spec og regner ut alt annet (veggvektorer, åpninger i 3D, takhøyde i hvert
   punkt, soner, volum, den høye veggens koordinater). Her skal det normalt ikke stå tall; endre i room-spec.
 - Farger: `src/data/palette.json` (Jotun SAND #cfc5b4 og MARRAKESH #aea191 + paletten), produkter:

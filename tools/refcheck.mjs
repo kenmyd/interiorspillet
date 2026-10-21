@@ -22,7 +22,12 @@
  * Make (--make): every view twice (two separate browser runs) into <worktree>/.shots/hus/ref/<name>.png and
  * ref/take2/<name>.png; noise.json gets the diff between the takes per view and the limit max = 2 × the measured noise
  * (changed %, at least MIN_MAX = 0.005 % ≈ 61 px, so a few odd shadow-edge pixels cannot fail a check); state.json from dump-state (run twice, the
- * two dumps must be identical). --publish copies the finished folder to the main tree's .shots/hus/ref.
+ * two dumps must be identical). --publish copies the finished folder to the main tree's .shots/hus/ref, file by file
+ * over the old set, and only a full set (all 12 views + state.json; --only with --publish is refused). A worktree
+ * without references is first seeded from the published ones, so --make --only=… re-makes just those views locally.
+ * In a check without --only a view or state.json without a reference fails (exit 2) instead of being skipped.
+ * Orbit and plan show the whole floor: from wave 1 on, steps check with --only=<the 8 photos>,spawn (§7.1) and the
+ * integrator re-makes the full set after each approved wave.
  *
  * --lock passes --lock to every child run (the GPU lock is taken and released per screenshot / dump, never held for the
  * whole check, so other agents get their turn). Leave it out when you hold the lock yourself.
@@ -82,6 +87,17 @@ let code = 0;
 const t0 = Date.now();
 if (opt.make === 'true') {
   const REF = join(ROOT, '.shots', 'hus', 'ref');
+  const MAIN_REF = join(MAIN_ROOT, '.shots', 'hus', 'ref');
+  // a partial set must never replace the published one (later checks would only «skip» the missing views)
+  if (only && opt.publish === 'true') {
+    console.error('[refcheck] --make --only=… --publish is refused: publish only a full set (all 12 views and state.json)');
+    process.exit(2);
+  }
+  // a worktree without references starts from the published ones, so --make --only=… re-makes just those views
+  if (REF !== MAIN_REF && !existsSync(join(REF, 'noise.json')) && existsSync(join(MAIN_REF, 'noise.json'))) {
+    cpSync(MAIN_REF, REF, { recursive: true });
+    console.log(`seeded ${REF} from ${MAIN_REF}`);
+  }
   mkdirSync(join(REF, 'take2'), { recursive: true });
   const noise = existsSync(join(REF, 'noise.json')) ? JSON.parse(readFileSync(join(REF, 'noise.json'), 'utf8')) : { views: {} };
   noise.made = new Date().toISOString();
@@ -117,9 +133,12 @@ if (opt.make === 'true') {
       code = code || 2;
     }
   }
+  const head = spawnSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).stdout?.trim() || '?';
   writeFileSync(join(REF, 'README.txt'), [
-    'Referanser for stua fra steg 2 (S0-test), laget fra koden på grenen hele-huset før de andre stegene.',
-    `Laget ${new Date().toISOString()} fra ${ROOT}.`,
+    'Referanser for stua (notes/hele-huset-design.md §0, §7.1). Første sett: steg 2 (S0-test), fra koden på hele-huset før',
+    'de andre stegene. Integratoren lager hele settet på nytt etter hver godkjent bølge (orbit og plan viser hele etasjen):',
+    '  node tools/refcheck.mjs --port=5250 --make --publish --lock      (fra hovedtreet, aldri med --only)',
+    `Sist laget ${new Date().toISOString()} fra ${ROOT} (git ${head})${only ? `, bare ${[...only].join(', ')}` : ''}.`,
     '',
     '<navn>.png        referansebildet (1280×960, tools/shot.mjs --steps=120)',
     'take2/<navn>.png  andre opptak av det samme (støymåling)',
@@ -130,11 +149,16 @@ if (opt.make === 'true') {
     '',
   ].join('\n'));
   if (opt.publish === 'true' && code === 0) {
-    const dst = join(MAIN_ROOT, '.shots', 'hus', 'ref');
-    if (dst !== REF) {
-      rmSync(dst, { recursive: true, force: true });
-      mkdirSync(join(MAIN_ROOT, '.shots', 'hus'), { recursive: true });
-      cpSync(REF, dst, { recursive: true });
+    const dst = MAIN_REF;
+    const made = JSON.parse(readFileSync(join(REF, 'noise.json'), 'utf8'));
+    const missing = [...VIEWS.filter((v) => !existsSync(join(REF, `${v.name}.png`)) || !made.views?.[v.name]).map((v) => v.name), ...(existsSync(join(REF, 'state.json')) ? [] : ['state.json'])];
+    if (missing.length) {
+      console.log(`FAIL publish refused: ${REF} lacks ${missing.join(', ')}`);
+      code = 2;
+    } else if (dst !== REF) {
+      // file by file over the published folder (never rm first: an interrupted copy leaves the old set, not none)
+      mkdirSync(dst, { recursive: true });
+      cpSync(REF, dst, { recursive: true, force: true });
       console.log(`published → ${dst}`);
     }
   }
@@ -154,7 +178,12 @@ if (opt.make === 'true') {
       const ref = join(REF, `${v.name}.png`);
       const lim = noise.views?.[v.name];
       if (!existsSync(ref) || !lim) {
-        console.log(`skip ${v.name}: no reference`);
+        // without --only every view must have a reference: a missing one would quietly weaken the regression
+        if (only) console.log(`skip ${v.name}: no reference`);
+        else {
+          console.log(`FAIL ${v.name}: no reference in ${REF} (make the full set: refcheck --make --publish)`);
+          code = 2;
+        }
         continue;
       }
       const out = join(OUT, `${v.name}.png`);
@@ -176,8 +205,10 @@ if (opt.make === 'true') {
     }
   }
   if (!opt['no-state']) {
-    if (!existsSync(join(REF, 'state.json'))) console.log('skip state: no state.json in the references');
-    else {
+    if (!existsSync(join(REF, 'state.json'))) {
+      console.log(`${only ? 'skip' : 'FAIL'} state: no state.json in the references`);
+      if (!only) code = 2;
+    } else {
       const s = dump(join(OUT, 'state.json'), join(REF, 'state.json'));
       const lines = s.text.split('\n');
       const diffAt = lines.findIndex((l) => l.startsWith('DIFF') || l.startsWith('same as'));
