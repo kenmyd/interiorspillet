@@ -365,8 +365,12 @@ section('The real room-spec (src/data/room-spec.json, every research/house file)
     return !!m && !!reg.rooms?.[m[1]] && !(realSpecJson.rooms || []).some((r) => r.id === m[1]);
   };
   check('builds without warnings (except a registered room that another house file brings)', warns.every(pending), warns.filter((w) => !pending(w)).join(' | '));
-  const d = firstDiff(snapBase, livingSnapshot(Lr));
-  check('every old field (the living room) deep-equal to today (except derived connects/interactive/opensInto)', !d, d ?? '');
+  // door-gang may also gain the door fields a house file patches onto it with wallOpenings (A1: 180°, casing,
+  // hardware, estimated, source) – the same set as tools/house-tests/hoved-rom.test.mjs skips
+  const PATCHED = new Set([...DERIVED_NEIGHBOUR_KEYS, 'openAngleDeg', 'casing', 'hardware', 'estimated', 'source']);
+  const snap = (X) => Object.fromEntries(OLD_FIELDS.map((k) => [k, plain(X[k], PATCHED)]));
+  const d = firstDiff(snap(base), snap(Lr));
+  check('every old field (the living room) deep-equal to today (except derived connects/interactive/opensInto and door-gang\'s patched door fields)', !d, d ?? '');
   check('volume 138.57, floor 53.78, 12 walls, 6 windows, 2 doors, the six light groups', near(Lr.volume, 138.57, 0.01) && near(Lr.floorArea, 53.78, 0.01) && Lr.walls.length === 12
     && Lr.windows.length === 6 && Lr.doors.length === 2 && Lr.lightGroups.map((g) => g.id).join() === 'led,spots,kjokken,pendler,overskap,tvstue', `${Lr.volume} ${Lr.floorArea} ${Lr.walls.length}`);
   check('ceilingHeightAt(x, z) / isInside / zoneAt identical to today on a grid', gridPts.every(([x, z]) => base.ceilingHeightAt(x, z) === Lr.ceilingHeightAt(x, z)
