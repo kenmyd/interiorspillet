@@ -564,6 +564,8 @@ export function buildExterior(ctx, layout) {
   const litMats = Object.values(M);
   // full sky light: the authored envMapIntensity (0.4 on the boards) only damped the room's bounce, which no longer lights them
   for (const m of litMats) m.userData.envBase = 1;
+  // the niche soffit faces the (green) ground half of the sky dome: less of it, so it reads dark grey-brown (225543)
+  if (M.soffit) M.soffit.userData.envBase = 0.4;
 
   // ---------------------------------------------------------------------------------------------------------------
   // Terrace deck (slab 0.2 m, top at deckY), edge fascia, pillars and the white foundation under the facade
@@ -933,14 +935,14 @@ export function buildExterior(ctx, layout) {
     return g;
   };
   // hele huset: a ground patch west of the house (z beyond the basement's west face), falling from just under the
-  // basement bedroom's west window (sill y −1.68) to the lawn at x 6.4 – what win-sk sees instead of a photo
+  // basement bedroom's west window (sill y −1.68; ground −2.25 there, anslått) to the lawn at x 6.4 – what win-sk sees instead of a photo
   const westGroundGeometry = () => {
     const x0 = -0.2, x1 = 6.4, z0 = 11.7, z1 = 42; // x ≥ −0.2: never in front of win-tv (glass at x −0.24)
     const g = new THREE.PlaneGeometry(x1 - x0, z1 - z0, 12, 16);
     g.rotateX(-Math.PI / 2);
     g.translate((x0 + x1) / 2, 0, (z0 + z1) / 2);
     const pos = g.attributes.position;
-    for (let i = 0; i < pos.count; i++) pos.setY(i, lerp(-1.95, nearGroundY, smooth(1.5, x1, pos.getX(i))));
+    for (let i = 0; i < pos.count; i++) pos.setY(i, lerp(-2.25, nearGroundY, smooth(1.5, x1, pos.getX(i))));
     g.computeVertexNormals();
     return g;
   };
