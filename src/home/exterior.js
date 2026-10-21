@@ -565,7 +565,7 @@ export function buildExterior(ctx, layout) {
   // full sky light: the authored envMapIntensity (0.4 on the boards) only damped the room's bounce, which no longer lights them
   for (const m of litMats) m.userData.envBase = 1;
   // the niche soffit faces the (green) ground half of the sky dome: less of it, so it reads dark grey-brown (225543)
-  if (M.soffit) M.soffit.userData.envBase = 0.4;
+  if (M.soffit) M.soffit.userData.envBase = 0.12;
 
   // ---------------------------------------------------------------------------------------------------------------
   // Terrace deck (slab 0.2 m, top at deckY), edge fascia, pillars and the white foundation under the facade
