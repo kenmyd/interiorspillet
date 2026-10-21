@@ -3,7 +3,7 @@
  * Node test for the level / room API of src/home/layout.js (notes/hele-huset-design.md §1.8, step 4 S0-layout):
  *   node tools/house-tests/layout.test.mjs        (from the project root; exit code 1 on failure)
  *
- * Builds the layout of today's room-spec and of house-mini (the fixture overlay merged onto it: a bathroom and hall
+ * Builds the layout of today's living room (research/room-spec.json + the 00-files) and of house-mini (the fixture overlay merged onto it: a bathroom and hall
  * with backOf faces, doors, a frosted window, the stair hole + stair, a hud room, the basement level at −2.55 and an
  * entrance 0.30 lower) and checks:
  *   • the living room is unchanged: every old top-level field deep-equal (only the door's derived connects /
@@ -117,7 +117,15 @@ const OLD_FIELDS = ['meta', 'paints', 'walls', 'wallsById', 'openings', 'opening
 const livingSnapshot = (L) => Object.fromEntries(OLD_FIELDS.map((k) => [k, plain(L[k])]));
 
 const { buildLayout, lightGroupOf, LIVING_ROOM_ID, LEVEL_HYSTERESIS } = await imp('src/home/layout.js');
-const specJson = readJson(path.join(ROOT, 'src/data/room-spec.json'));
+// «today» = the living room alone: research/room-spec.json + research/house/00-*.json, built as normalize-data.mjs
+// builds src/data/room-spec.json. The generated file itself grows with every house step (10-, 20-, 30-… files: steg 7
+// adds bad, gang and soverom), so it is no longer «today» – house-mini (the overlay) is the house of this test.
+const houseData = await imp('src/data/scripts/house.mjs');
+const { fixRoomSpec } = await imp('src/data/scripts/fixes.mjs');
+const RESEARCH = path.join(ROOT, 'research');
+const specJson = fixRoomSpec(houseData.mergeHouse(readJson(path.join(RESEARCH, 'room-spec.json')), RESEARCH, {
+  files: houseData.houseFiles(RESEARCH).filter((f) => /^00-/.test(f.name)),
+}));
 const palette = readJson(path.join(ROOT, 'src/data/palette.json'));
 const mini = readJson(path.join(HERE, 'fixtures/house-mini.json'));
 

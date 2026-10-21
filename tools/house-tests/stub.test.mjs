@@ -7,7 +7,7 @@
  *     pickables, builtInLights, colliders, update, setPaint, dispose } – empty, so the living room is unchanged;
  *     stairLayout / stairColliders / slabColliders exist; createVisibility hides nothing;
  *   • createHouseRoots: one group per level, one entry per room (group → surfaces + contents) in its level, the
- *     living room's shell and kitchen first in their level – for today's room-spec and for house-mini;
+ *     living room's shell and kitchen first in their level – for today's living room (research/room-spec.json + the 00-files) and for house-mini;
  *   • mergeHouseParts: empty builders leave the shell's own arrays (identity); real lists are appended after the
  *     shell's, pickables per key, builtInLights only in the house list;
  *   • addColliders: Box3 → addStaticBox, Object3D → addStatic;
@@ -53,7 +53,13 @@ function quiet(fn) {
   }
 }
 
-const spec = readJson('src/data/room-spec.json');
+// «today» = the living room alone (research/room-spec.json + research/house/00-*.json, as normalize-data.mjs builds
+// src/data/room-spec.json): the generated file grows with every house step (steg 7 adds bad, gang and soverom)
+const houseData = await imp('src/data/scripts/house.mjs');
+const { fixRoomSpec } = await imp('src/data/scripts/fixes.mjs');
+const spec = fixRoomSpec(houseData.mergeHouse(readJson('research/room-spec.json'), houseData.RESEARCH_DIR, {
+  files: houseData.houseFiles(houseData.RESEARCH_DIR).filter((f) => /^00-/.test(f.name)),
+}));
 const palette = readJson('src/data/palette.json');
 const mini = readJson('tools/house-tests/fixtures/house-mini.json');
 const [today] = quiet(() => buildLayout(structuredClone(spec), palette));
