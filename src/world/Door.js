@@ -100,8 +100,8 @@ function releaseSignMaterial(key) {
  * The wall occupies z ∈ [−depth, 0].
  *
  * Collision: while closed each leaf is an axis-aligned box filling the opening; fully open it moves to the open leaf
- * (the open angle is 90°, so the box stays axis-aligned for walls on the world axes); in between the leaf is covered
- * by SEGMENTS small boxes that follow it.
+ * (at 90° or 180° – o.openAngleDeg – the box stays axis-aligned for walls on the world axes); in between, and fully
+ * open at any other angle, the leaf is covered by SEGMENTS small boxes that follow it.
  *
  * The player is never swept: given state.playerPosition (feet) in update(), the swing stops where the leaf would
  * touch the player's capsule – like a real door stopping against a person – and continues once they step aside.
@@ -143,6 +143,8 @@ export class Door {
    * @param {boolean} [o.interactive=true]  false: no prompt, the player cannot open it (a door that stays shut)
    * @param {number} [o.bodyRadius]    radius of the body the leaf stops against (default: PLAYER.radius)
    * @param {number} [o.bodyHeight]    its height (default: PLAYER.height)
+   * @param {number} [o.openAngleDeg=90]  how far the leaf swings open (180: flat against the wall, door-gang D6;
+   *                                    95 / 130: the outer door and the basement bedroom, hele-huset-avstemming §5.1)
    */
   constructor(ctx, o) {
     this.ctx = ctx;
@@ -152,7 +154,12 @@ export class Door {
     this.depth = o.depth;
     this.swing = o.swing ?? 1;
     this.duration = o.duration ?? 0.7;
-    this.openAngle = Math.PI / 2;
+    this.openAngle = THREE.MathUtils.degToRad(o.openAngleDeg ?? 90);
+    /**
+     * Open on a world axis (a multiple of 90°): the open leaf is one axis-aligned box. Any other angle keeps the
+     * SEGMENTS boxes that follow the leaf when it is fully open, so its AABB does not block the floor diagonally.
+     */
+    this._openAxisAligned = Math.abs(Math.sin(this.openAngle * 2)) < 1e-6;
     this.locked = !!o.locked;
     this.frontLabel = o.frontLabel ?? null;
     this.backLabel = o.backLabel ?? null;
@@ -507,7 +514,7 @@ export class Door {
     }
   }
 
-  /** Closed and open world AABBs of a leaf (90° open). */
+  /** Closed and open world AABBs of a leaf (open = this.openAngle). */
   _computeBoxes(leaf) {
     const saved = leaf.pivot.rotation.y;
     for (const [angle, box] of [[0, leaf.closedBox], [this._angleFor(leaf, 1), leaf.openBox]]) {
@@ -544,7 +551,8 @@ export class Door {
   _setColliders(state) {
     for (const leaf of this.leaves) {
       if (!leaf.collider) continue;
-      const moving = state === 'moving';
+      // an open leaf off the world axes is covered by the segment boxes (its AABB would block a diagonal band)
+      const moving = state === 'moving' || (state === 'open' && !this._openAxisAligned);
       leaf.collider.enabled = !moving;
       if (state === 'closed') leaf.collider.box.copy(leaf.closedBox);
       else if (state === 'open') leaf.collider.box.copy(leaf.openBox);
