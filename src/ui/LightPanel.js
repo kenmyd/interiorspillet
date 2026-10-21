@@ -79,6 +79,12 @@ const CSS = `
 .lp-allrow { display: flex; gap: 0.4em; flex-wrap: wrap; margin-bottom: 0.4em; }
 .lp-allrow .kv-btn { flex: 1; }
 .lp-empty { font-size: 0.85em; color: var(--kv-ink-3); margin: 0.3em 0; }
+.lp-room { display: flex; align-items: center; gap: 0.6em; margin: 0.85em 0 0.15em; padding-top: 0.55em; border-top: 1px solid var(--kv-line-2); }
+.lp-room:first-child { margin-top: 0.2em; border-top: 0; padding-top: 0; }
+.lp-room__name { flex: 1; min-width: 0; font-size: 0.8em; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--kv-ink-2); }
+.lp-room__name small { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--kv-ink-4); margin-left: 0.4em; }
+.lp-room__here { font-size: 0.72em; font-weight: 650; padding: 0.1em 0.5em; border-radius: 1em; background: var(--kv-accent-soft); color: var(--kv-ink); }
+.lp-room + .lp-lamp { border-top: 0; }
 `;
 
 const SUN_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
@@ -209,10 +215,12 @@ export class LightPanel extends BasePanel {
       format: (v) => `${fmtNumber(v, 1)}° N`,
       onInput: (v) => this.settings?.set?.('sunLatitude', Math.round(v * 10) / 10),
     });
+    // «Vinduene står mot sør» only where the room the camera is in has a south window (§4.10)
+    this.placeHint = h('p.lp-hint');
     this.body.append(section('Bilde og sted',
       this.exposure.el,
       this.latitude.el,
-      h('p.lp-hint', { text: 'Vinduene står mot sør. Breddegraden og været lagres i innstillingene dine, resten lagres med designet.' }),
+      this.placeHint,
     ));
   }
 
@@ -377,26 +385,76 @@ export class LightPanel extends BasePanel {
     // picture
     if (document.activeElement !== this.exposure.input) this.exposure.set(Math.round(Math.log2(env.exposure || 1) * 10) / 10);
     if (document.activeElement !== this.latitude.input) this.latitude.set(latitude);
+    const here = this._roomList().find((r) => r.id === (this.lighting?.cameraRoomId ?? 'stue-kjokken'));
+    const south = here ? here.south !== false : true;
+    this.placeHint.textContent = `${south ? 'Vinduene står mot sør. ' : ''}Breddegraden og været lagres i innstillingene dine, resten lagres med designet.`;
+  }
+
+  /** Rooms of the house that have light groups (lighting.roomsInfo), or none (an older LightManager). */
+  _roomList() {
+    try {
+      return this.lighting?.roomsInfo?.() ?? [];
+    } catch {
+      return [];
+    }
+  }
+
+  /** All groups of a room on or off as one change (§4.10: every room has its own switch). */
+  _setRoom(groupIds, on) {
+    const L = this.lighting;
+    const builtIn = {};
+    for (const id of groupIds) {
+      const cur = L.groupState(id);
+      builtIn[id] = { on, dimmer: on && cur.dimmer < 0.05 ? 1 : cur.dimmer };
+    }
+    if (groupIds.length) this._setEnv({ builtIn });
   }
 
   _refreshLamps() {
     const L = this.lighting;
     const specs = [];
-    for (const g of L?.builtInGroups ?? []) {
+    const groupSpec = (g) => {
       const st = L.groupState(g.id);
-      specs.push({
+      return {
         key: `g:${g.id}`,
         name: g.label,
         sub: g.lumens ? `${fmtNumber(g.lumens, 0)} lumen` : '',
         on: st.on,
         dimmer: st.dimmer,
         auto: st.auto,
+        dimmable: g.dimmable !== false,
         onToggle: (on) => {
           const cur = L.groupState(g.id);
           this._setGroup(g.id, { on, dimmer: on && cur.dimmer < 0.05 ? 1 : cur.dimmer });
         },
         onDim: (v) => this._setGroup(g.id, { on: v > 0.001, dimmer: v }),
-      });
+      };
+    };
+    // grouped by room (§4.10): the room the camera is in first, each room with its own switch; groups of no single
+    // room (boder, ute) last
+    const groups = L?.builtInGroups ?? [];
+    const rooms = this._roomList();
+    const here = L?.cameraRoomId ?? 'stue-kjokken';
+    const sections = [];
+    if (rooms.length) {
+      const named = new Map(rooms.map((r) => [r.id, r]));
+      const ids = [...new Set(groups.map((g) => g.roomId ?? null))];
+      const order = [here, ...rooms.map((r) => r.id).filter((id) => id !== here), ...ids.filter((id) => id && !named.has(id)), null];
+      for (const id of order) {
+        const list = groups.filter((g) => (g.roomId ?? null) === id);
+        if (!list.length || sections.some((s) => s.id === id)) continue;
+        sections.push({ id, name: id === null ? 'Andre' : named.get(id)?.name ?? id, list, here: id === here });
+      }
+    } else sections.push({ id: '', name: '', list: groups, here: false });
+    for (const s of sections) {
+      if (s.name) {
+        const anyOn = s.list.some((g) => L.groupState(g.id).on);
+        specs.push({
+          key: `r:${s.id}`, header: true, name: s.name, sub: s.here ? 'her' : '', on: anyOn,
+          onToggle: (on) => this._setRoom(s.list.map((g) => g.id), on),
+        });
+      }
+      for (const g of s.list) specs.push(groupSpec(g));
     }
     const uids = this._lampUids();
     const firstItem = specs.length;
@@ -436,9 +494,21 @@ export class LightPanel extends BasePanel {
     ].filter(Boolean));
   }
 
-  /** One lamp row: name, «auto» badge, on/off switch and a dimmer. */
+  /** One lamp row: name, «auto» badge, on/off switch and a dimmer – or a room's header with its own switch. */
   _lampRow(spec) {
     let cur = spec;
+    if (spec.header) {
+      const tg = toggle({ label: '', value: spec.on, onChange: (v) => cur.onToggle(v) });
+      const hereEl = h('span.lp-room__here', { text: 'Her', title: 'Rommet du står i' });
+      const el = h('div.lp-room', {}, h('div.lp-room__name', { text: spec.name }), hereEl, tg.el);
+      const sync = (s) => {
+        cur = s;
+        hereEl.hidden = s.sub !== 'her';
+        tg.set(s.on);
+      };
+      sync(spec);
+      return { el, sync };
+    }
     const tg = toggle({ label: '', value: spec.on, onChange: (v) => cur.onToggle(v) });
     const sl = slider({ min: 0, max: 1, step: 0.01, value: spec.dimmer, format: (v) => `${Math.round(v * 100)} %`, onInput: (v) => cur.onDim(v) });
     const badgeEl = h('span.lp-lamp__auto', { text: 'auto', title: 'Følger tiden på døgnet' });
@@ -453,6 +523,7 @@ export class LightPanel extends BasePanel {
       el.classList.toggle('is-off', !s.on);
       badgeEl.hidden = !s.auto;
       tg.set(s.on);
+      sl.el.hidden = s.dimmable === false;
       if (document.activeElement !== sl.input) sl.set(s.dimmer);
     };
     sync(spec);

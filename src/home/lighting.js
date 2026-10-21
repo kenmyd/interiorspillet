@@ -44,9 +44,37 @@
 //                 STRIP_SIGNATURE × their flux for a rect slot (their wash is what shows; a window's spot stand-in looks
 //                 nearly the same).
 //   AO            GTAO multiplied onto the frame on «høy» (lighting.render()).
+//
+// The whole house (notes/hele-huset-design.md §4, steg 13 L1 + 27 L2):
+//   rooms         the living room (stue/kjøkken/TV-stue) is computed exactly as before (its model, windows, lamps,
+//                 bounce lights). Every other room of layout.house gets its own small radiosity model (floor minus
+//                 holes, ceilings, walls with their holes, glass, doors/holes as PORTALS), its own windows (sky, sun,
+//                 skyView / obstruction / frosted from the data) and lamps (plafond = Lambertian disc, downlights
+//                 grouped to at most two spots per room, LED strips with signature 1). Portals carry the neighbour's
+//                 mean exitance × the door's opening into the room (stue → gang → … in one coupling pass + one more).
+//   camera room   the room the camera is in (layout.house.roomAt, body height, level hysteresis; above the ceilings =
+//                 the overview → the living room) drives exposure, white balance, ambient and the environment map
+//                 (one PMREM per room, cached; ≤ 1 build per room change). Other rooms are scaled by their radiance
+//                 relative to it (lightmask room factors). Lkey of a room other than the living room is at least
+//                 min(2, the largest Lkey of the rooms the camera can reach); the change eases over ≈ 1.5 s.
+//   masks         src/world/lightmask.js keeps every pooled light in its room: a slot lights its room fully (the
+//                 living room's also OUTSIDE), other rooms only through an open portal. Slots go only to sources of
+//                 the rooms the camera can reach (open portals, depth 2), so with the doors shut the living room has
+//                 exactly today's candidates.
+//   auto          per group (data `auto`): 'on' (rooms without windows), 'dark' (the room's own daylight), 'evening'
+//                 (entrance, outside), 'off' (storerooms); the six living-room groups follow the living room as before.
+//   sun           the shadow box follows the camera's level (hoved exactly as before, kjeller y −2.9…0), the sun's map
+//                 renders only when flagged (sun.shadow.autoUpdate off: a shadow slot changing hands no longer redraws
+//                 it; an outside request – shading.js blinds – still does).
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { installLightMask, lightMask, buildRoomTable, portalRects, OUTSIDE_ID } from '../world/lightmask.js';
+
+// before the first compile of any lit material (the patch is inert until LightManager.render enables it)
+installLightMask();
+
+const LIVING_ID = 'stue-kjokken';
 
 const DEG = Math.PI / 180;
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
@@ -134,6 +162,22 @@ const HALF_SPACE_SPOT = { angle: 84 * DEG, penumbra: 0.35, pointShare: 0.3, deca
 const LAMP_BOUNCE = 0.45;
 /** Light-slot priority of an LED strip over its flux (see _score). */
 const STRIP_SIGNATURE = 8;
+/**
+ * The rooms of the house besides the living room (§4.4, §4.5, §4.8, §4.11): an LED strip there weighs its flux only
+ * (signature 1 – with 8 the handrail LED would take the living room's strip slots at night); downlights are grouped
+ * into at most `maxDownlightSpots` spot candidates per room (the rest of a room's light is its bounce); a room's Lkey is
+ * at least min(reachLkeyCap, the largest Lkey the camera can reach); exposure / white balance ease over roomEase s
+ * after a room change; a door counts as a portal for the light budget above portalOpen; frosted glass lets frostedT
+ * through, diffuse (no tilt).
+ */
+const HOUSE = {
+  stripSignature: 1, maxDownlightSpots: 2, reachLkeyCap: 2, roomEase: 1.5, portalOpen: 0.5, frostedT: 0.5,
+  downlight: { angle: 50 * DEG, penumbra: 0.7 }, plafond: { angle: 82 * DEG },
+};
+/** LAMP_BOUNCE of a house room: ≈ 1 for a small closed room (its lamps light all of it), less for a big one. */
+const roomLampBounce = (area) => clamp(1.2 - area / 40, 0.6, 1);
+/** Shadow box of the basement level (y): its floors up to the top of the slab above (the sun comes in at its windows). */
+const BASEMENT_SHADOW_Y = [-2.9, 0];
 /** Display level (brightest channel, × white) the glow of lamps and LED lines rolls off toward (see _applyEmissive). */
 const EMISSIVE_DISPLAY_CAP = 1.8;
 const TONE_MAPPING = THREE.NeutralToneMapping;
@@ -649,6 +693,207 @@ function buildRoomModel(layout) {
   return { patches, F, envScene, owned, totalArea, floor, floors, floorArea: floors.reduce((t, p) => t + p.area, 0) };
 }
 
+/** Form factors F[i][j] ∝ A_j cos_i cos_j / (r² + A_j/π), rows normalised (closed room) – as in buildRoomModel. */
+function formFactors(patches) {
+  const n = patches.length;
+  const F = new Float32Array(n * n);
+  for (let i = 0; i < n; i++) {
+    const pi = patches[i];
+    let sum = 0;
+    for (let j = 0; j < n; j++) {
+      if (i === j) continue;
+      const pj = patches[j];
+      _v1.copy(pj.center).sub(pi.center);
+      const r2 = _v1.lengthSq();
+      if (r2 < 1e-6) continue;
+      _v1.multiplyScalar(1 / Math.sqrt(r2));
+      const ci = pi.normal.dot(_v1);
+      const cj = -pj.normal.dot(_v1);
+      if (ci <= 0.02 || cj <= 0.02) continue;
+      const w = (pj.area * ci * cj) / (r2 + pj.area / Math.PI);
+      F[i * n + j] = w;
+      sum += w;
+    }
+    if (sum > 0) for (let j = 0; j < n; j++) F[i * n + j] /= sum;
+  }
+  return F;
+}
+
+/**
+ * The radiosity model of a house room other than the living room (§4.4): its floor (minus the holes in it), its
+ * ceilings (minus the stairwell cut-outs), its walls without their holes (own openings and those of their backOf
+ * partner), the glass of its windows, and PORTALS – the doorways / openings to its neighbours and the stairwell – that
+ * absorb what reaches them (ρ 0) and send in the neighbour's light (LightManager._recomputeRooms). Same patch shape as
+ * buildRoomModel, world y (the room's floorY).
+ * @param {object} layout
+ * @param {object} room   layout.house room
+ * @param {object[]} portalDefs  lightmask.portalRects(layout)
+ */
+function buildHouseRoomModel(layout, room, portalDefs) {
+  const h = layout.house;
+  const patches = [];
+  const envScene = new THREE.Scene();
+  envScene.name = `lighting-env:${room.id}`;
+  const owned = [];
+  const addMesh = (geo, patch) => {
+    const m = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide, toneMapped: false });
+    const mesh = new THREE.Mesh(geo, m);
+    envScene.add(mesh);
+    owned.push(geo, m);
+    patch.meshes.push(mesh);
+    return mesh;
+  };
+  const newPatch = (o) => {
+    const p = { meshes: [], E: new THREE.Color(), Eday: new THREE.Color(), Esun: new THREE.Color(), B: new THREE.Color(), Bday: new THREE.Color(), L: new THREE.Color(), ...o };
+    patches.push(p);
+    return p;
+  };
+  const fy = room.floorY;
+  const holes = (h.floorOpenings || []).filter((fo) => fo.levelId === room.levelId && fo.roomId === room.id);
+  const holeArea = holes.reduce((s, fo) => s + fo.area, 0);
+  const inHole = (x, z) => holes.some((fo) => fo.contains(x, z));
+
+  // floor
+  const floorHex = room.floor?.color || '#b4a99c';
+  const floorRho = hexLinear(floorHex).multiplyScalar(FLOOR_CLUTTER);
+  const fArea = Math.max(0.2, room.area - holeArea);
+  const fc = room.centroid;
+  const floor = newPatch({
+    id: `floor:${room.id}`, kind: 'floor', normal: new THREE.Vector3(0, 1, 0), area: fArea,
+    center: new THREE.Vector3(fc.x, fy, fc.y), rho: floorRho,
+    hit(o, d) {
+      if (d.y > -1e-4) return null;
+      const t = (fy - o.y) / d.y;
+      if (t <= 0) return null;
+      const x = o.x + d.x * t, z = o.z + d.z * t;
+      return room.contains(x, z) && !inHole(x, z) ? t : null;
+    },
+  });
+  {
+    const shape = new THREE.Shape(room.polygon.map((p) => new THREE.Vector2(p.x, -p.y)));
+    for (const fo of holes) shape.holes.push(new THREE.Path(fo.polygon.map((p) => new THREE.Vector2(p.x, -p.y))));
+    const g = new THREE.ShapeGeometry(shape);
+    g.rotateX(-Math.PI / 2);
+    g.translate(0, fy, 0);
+    addMesh(g, floor);
+  }
+
+  // ceilings (flat or sloped, world y), minus the stairwell cut-outs
+  const ceilings = (h.ceilings || []).filter((c) => c.roomId === room.id);
+  const level = h.levelsById?.[room.levelId];
+  const ceilList = ceilings.length ? ceilings : [{
+    id: `c-${room.id}`, polygon: room.polygon, area: room.area, centroid: room.centroid, paintHex: '#e8e4dc',
+    heightAt: () => level?.ceilingDefault ?? 2.4, floorY: fy, holes: [],
+  }];
+  for (const c of ceilList) {
+    const cut = (c.holes || []).reduce((s, poly) => s + Math.abs(polyArea(poly)), 0);
+    const cx = c.centroid.x, cz = c.centroid.y;
+    const top = (x, z) => c.floorY + c.heightAt(x, z);
+    const p = newPatch({
+      id: `ceiling:${c.id}`, kind: 'ceiling', normal: new THREE.Vector3(0, -1, 0), area: Math.max(0.2, c.area - cut),
+      center: new THREE.Vector3(cx, top(cx, cz), cz), rho: hexLinear(c.paintHex), hit: () => null,
+    });
+    const shape = new THREE.Shape(c.polygon.map((q) => new THREE.Vector2(q.x, q.y)));
+    for (const poly of c.holes || []) shape.holes.push(new THREE.Path(poly.map((q) => new THREE.Vector2(q.x, q.y))));
+    const g = new THREE.ShapeGeometry(shape);
+    g.rotateX(Math.PI / 2);
+    const pos = g.attributes.position;
+    for (let i = 0; i < pos.count; i++) pos.setY(i, top(pos.getX(i), pos.getZ(i)));
+    addMesh(g, p);
+  }
+
+  // walls: room-side faces without their holes; the holes are glass (own windows), doors (closed leaf) or portals
+  const portalIds = new Set(portalDefs.filter((q) => q.connects.includes(room.id)).map((q) => q.id));
+  for (const wid of room.wallIds || []) {
+    const w = h.wallsById?.[wid];
+    if (!w || w.length < 0.05) continue;
+    const L = w.length;
+    const prof = w.topProfile;
+    let full = 0;
+    for (let i = 0; i < prof.length - 1; i++) full += ((prof[i][1] + prof[i + 1][1]) / 2) * Math.max(0, prof[i + 1][0] - prof[i][0]);
+    const holeList = w.holes || [];
+    const holesA = holeList.reduce((s, o) => s + Math.max(0, o.u1 - o.u0) * Math.max(0, o.top - o.sill), 0);
+    const start = new THREE.Vector3(w.start.x, fy, w.start.y);
+    const avgH = full / Math.max(1e-3, L);
+    const p = newPatch({
+      id: `wall:${w.id}`, kind: 'wall', wallId: w.id, normal: w.normal3.clone(), area: Math.max(0.05, full - holesA),
+      center: start.clone().addScaledVector(w.dir3, L / 2).setY(fy + avgH / 2), rho: hexLinear(w.paintHex), floorY: fy,
+      hit(o, d) {
+        const dn = d.dot(w.normal3);
+        if (dn > -1e-4) return null;
+        const t = _v1.copy(start).sub(o).dot(w.normal3) / dn;
+        if (t <= 0) return null;
+        _v2.copy(o).addScaledVector(d, t);
+        const u = _v3.copy(_v2).sub(start).dot(w.dir3);
+        const y = _v2.y - fy;
+        if (u < 0 || u > L || y < 0 || y > w.heightAt(u)) return null;
+        for (const op of holeList) if (u > op.u0 && u < op.u1 && y > op.sill && y < op.top) return null;
+        return t;
+      },
+    });
+    const outline = [new THREE.Vector2(0, 0), new THREE.Vector2(L, 0)];
+    for (let i = prof.length - 1; i >= 0; i--) outline.push(new THREE.Vector2(Math.min(L, prof[i][0]), prof[i][1]));
+    const g = new THREE.ShapeGeometry(new THREE.Shape(outline));
+    g.applyMatrix4(new THREE.Matrix4().makeBasis(w.dir3, new THREE.Vector3(0, 1, 0), w.normal3).setPosition(start));
+    addMesh(g, p);
+    for (const op of holeList) {
+      const o = h.openingsById?.[op.openingId];
+      if (!o) continue;
+      const isGlass = o.type === 'window' || o.type === 'terrace-door';
+      const width = op.u1 - op.u0, height = op.top - op.sill;
+      if (width < 0.05 || height < 0.05) continue;
+      const center = start.clone().addScaledVector(w.dir3, (op.u0 + op.u1) / 2).setY(fy + (op.sill + op.top) / 2);
+      const portal = !isGlass && portalIds.has(o.id);
+      const kind = isGlass ? 'glass' : portal ? 'portal' : 'door';
+      const gp = newPatch({
+        id: `${kind}:${o.id}`, kind, openingId: o.id, normal: w.normal3.clone(), area: width * height, center, halfHeight: height / 2,
+        rho: isGlass ? new THREE.Color(0.06, 0.06, 0.06) : portal ? new THREE.Color(0, 0, 0) : hexLinear(o.frame?.color || '#1d1e21'),
+        leafRho: hexLinear(o.door?.leafColor || o.frame?.color || '#1d1e21'),
+        hit(oo, d) {
+          const dn = d.dot(w.normal3);
+          if (dn > -1e-4) return null;
+          const t = _v1.copy(start).sub(oo).dot(w.normal3) / dn;
+          if (t <= 0) return null;
+          _v2.copy(oo).addScaledVector(d, t);
+          const u = _v3.copy(_v2).sub(start).dot(w.dir3);
+          const y = _v2.y - fy;
+          return u > op.u0 && u < op.u1 && y > op.sill && y < op.top ? t : null;
+        },
+      });
+      const q = new THREE.PlaneGeometry(width, height);
+      q.applyMatrix4(new THREE.Matrix4().makeBasis(w.dir3, new THREE.Vector3(0, 1, 0), w.normal3).setPosition(center.clone().addScaledVector(w.normal3, 0.01)));
+      addMesh(q, gp);
+    }
+  }
+
+  // the stairwell: a horizontal portal in the floor (upper room) or the ceiling (lower room)
+  for (const def of portalDefs) {
+    if (def.kind !== 'hole' || !def.connects.includes(room.id)) continue;
+    const upper = def.connects[0] === room.id;
+    const y = upper ? fy : (ceilList[0] ? ceilList[0].floorY + ceilList[0].heightAt(def.center[0], def.center[2]) : def.center[1]);
+    const area = 4 * def.halfU * def.halfV;
+    const p = newPatch({
+      id: `portal:${def.id}`, kind: 'portal', openingId: def.id, normal: new THREE.Vector3(0, upper ? 1 : -1, 0), area,
+      center: new THREE.Vector3(def.center[0], y, def.center[2]), halfHeight: 0, rho: new THREE.Color(0, 0, 0), hit: () => null,
+    });
+    const g = new THREE.PlaneGeometry(2 * def.halfU, 2 * def.halfV);
+    g.rotateX(upper ? -Math.PI / 2 : Math.PI / 2);
+    g.translate(def.center[0], y + (upper ? 0.005 : -0.005), def.center[2]);
+    addMesh(g, p);
+  }
+
+  const F = formFactors(patches);
+  const totalArea = patches.reduce((s, p) => s + p.area, 0);
+  return { patches, F, envScene, owned, totalArea, floor, floors: [floor], floorArea: floor.area, roomId: room.id };
+}
+
+/** Shoelace area of a polygon of Vector2 (signed). */
+function polyArea(poly) {
+  let a = 0;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) a += (poly[j].x + poly[i].x) * (poly[j].y - poly[i].y);
+  return a / 2;
+}
+
 /**
  * Splits a source's flux over the patches it can see: weight = approximate solid angle × emission lobe.
  * @param {THREE.Vector3} pos
@@ -813,13 +1058,29 @@ export class LightManager {
     this._lastCamPos = new THREE.Vector3(1e9, 0, 0);
     this._renderCamera = camera || null;
     this._defaultLampsOn = false;
+    this._camRoomId = LIVING_ID;
+    this._camLevelId = 'hoved';
+    this._worlds = new Map();
+    this._roomWindows = [];
+    this._houseLamps = [];
+    this._sunPassPending = false;
+    this._slotShadowOnly = false;
+    this._roomEaseUntil = -1e9;
     this._traceDir = new THREE.Vector3();
     this._ambCol = new THREE.Color();
     this.stats = {};
 
     const layout = home?.layout;
     this.layout = layout || null;
-    this.builtInGroups = (layout?.lightGroups || []).map((g) => ({ id: g.id, label: g.label, lumens: 0, dimmer: clamp(g.dimmer ?? 1) }));
+    // every group of the house: the living room's six (layout.lightGroups, same order and dimmers as before), then the
+    // data groups (§4.10) with their room, start dimmer and auto rule
+    const groupList = layout?.house?.lightGroups?.length ? layout.house.lightGroups : layout?.lightGroups || [];
+    this.builtInGroups = groupList.map((g) => ({
+      id: g.id, label: g.label, lumens: 0, dimmer: clamp(g.dimmer ?? 1), roomId: g.roomId === undefined ? LIVING_ID : g.roomId,
+      levelId: g.levelId ?? null, dimmable: g.dimmable !== false, auto: g.auto ?? null,
+    }));
+    this._groupsById = Object.fromEntries(this.builtInGroups.map((g) => [g.id, g]));
+    this._livingGroupIds = new Set((layout?.lightGroups || []).map((g) => g.id));
     this._defaultDimmer = Object.fromEntries(this.builtInGroups.map((g) => [g.id, g.dimmer]));
     this.center = new THREE.Vector3(3.5, 1.2, 6);
     if (layout?.bounds) {
@@ -859,8 +1120,11 @@ export class LightManager {
     this._buildSun();
     this._buildPools();
     this._model = layout ? buildRoomModel(layout) : null;
+    if (this._model) this._model.roomId = LIVING_ID;
+    this._buildHouse();
     this._buildWindows();
     this._buildBuiltIns();
+    this._buildHouseLamps();
     this._initEnvironment();
 
     this._onSettings = ({ key }) => {
@@ -916,7 +1180,7 @@ export class LightManager {
   setBuiltIn(groupId, state) {
     if (!state) this._builtInState.delete(groupId);
     else {
-      const cur = this._builtInState.get(groupId) || { on: this._defaultLampsOn, dimmer: this._groupDimmer(groupId) };
+      const cur = this._builtInState.get(groupId) || { on: this._autoOnFor(groupId), dimmer: this._groupDimmer(groupId) };
       this._builtInState.set(groupId, { on: state.on ?? cur.on, dimmer: clamp(state.dimmer ?? cur.dimmer), auto: state.auto === true });
     }
     this._markDirty();
@@ -925,8 +1189,46 @@ export class LightManager {
   /** Effective state of a built-in group: { on, dimmer, auto } (auto = on/off follows the time of day). */
   groupState(groupId) {
     const s = this._builtInState.get(groupId);
-    if (!s) return { on: this._defaultLampsOn, dimmer: this._groupDimmer(groupId), auto: true };
-    return { on: s.auto ? this._defaultLampsOn : s.on, dimmer: s.dimmer, auto: s.auto };
+    if (!s) return { on: this._autoOnFor(groupId), dimmer: this._groupDimmer(groupId), auto: true };
+    return { on: s.auto ? this._autoOnFor(groupId) : s.on, dimmer: s.dimmer, auto: s.auto };
+  }
+
+  /**
+   * On/off of a group by the time of day (§4.5). The living room's groups follow the living room's daylight as before;
+   * a data group follows its `auto`: 'on' (rooms without windows: on in auto), 'off' (storerooms), 'evening' (entrance,
+   * outside: when the sun is down), 'dark' / none (its room's own daylight on the floor). «Dagslys» turns all of them
+   * off, «Kveldslys» / «Natt» all on but the 'off' ones.
+   */
+  _autoOnFor(groupId) {
+    const g = this._groupsById?.[groupId];
+    if (!g || this._livingGroupIds.has(groupId) || g.roomId === LIVING_ID) return this._defaultLampsOn;
+    const rule = g.auto ?? 'dark';
+    if (rule === 'off') return false;
+    if (this.mode === 'day') return false;
+    if (this.mode === 'evening' || this.mode === 'night') return true;
+    if (rule === 'on') return true;
+    if (rule === 'evening') return this._outdoorDark ?? false;
+    const w = g.roomId ? this._worlds.get(g.roomId) : null;
+    return w ? !!w.autoOn : this._defaultLampsOn;
+  }
+
+  /** The room the camera is in (drives exposure, white balance and the environment map). */
+  get cameraRoomId() {
+    return this._camRoomId;
+  }
+
+  /** Rooms and their numbers for the UI: [{ id, name, levelId, groups: [groupId], south, Lkey, daylightLux, autoOn }]. */
+  roomsInfo() {
+    const out = [];
+    for (const [id, w] of this._worlds) {
+      out.push({
+        id, name: w.room?.name ?? id, levelId: w.room?.levelId ?? 'hoved', south: !!w.south,
+        groups: this.builtInGroups.filter((g) => (g.roomId ?? null) === id).map((g) => g.id),
+        Lkey: w.living ? this._livingRes?.Lkey ?? null : w.Lkey ?? null, daylightLux: Math.round(w.living ? this._livingRes?.dayFloorLux ?? 0 : w.dayFloorLux ?? 0),
+        autoOn: w.living ? this._defaultLampsOn : !!w.autoOn,
+      });
+    }
+    return out;
   }
 
   /** The dimmer a built-in group starts at (layout LIGHT_GROUPS). */
@@ -943,13 +1245,24 @@ export class LightManager {
   /** Re-render the shadow maps on the next frame (they are static otherwise). */
   requestShadowUpdate() {
     if (this.renderer) this.renderer.shadowMap.needsUpdate = true;
+    if (this.sun) this.sun.shadow.needsUpdate = true;
+    this._slotShadowOnly = false;
     for (const s of this._pool?.spot || []) if (s.shadowed) s.light.shadow.needsUpdate = true;
   }
 
-  /** Only the sun's shadow map (the sun moved). */
+  /**
+   * The sun's shadow map (the sun moved: slot = null), or only a spot slot's map (it got another lamp) – the sun's
+   * map is not redrawn for that any more (sun.shadow.autoUpdate is off, §4.6).
+   */
   _requestSunShadow(slot = null) {
     if (this.renderer) this.renderer.shadowMap.needsUpdate = true;
-    if (slot?.shadowed) slot.light.shadow.needsUpdate = true;
+    if (slot) {
+      if (slot.shadowed) slot.light.shadow.needsUpdate = true;
+      if (!this.sun.shadow.needsUpdate) this._slotShadowOnly = true;
+    } else {
+      this.sun.shadow.needsUpdate = true;
+      this._slotShadowOnly = false;
+    }
   }
 
   /** Uids of design items that currently have lights. */
@@ -975,11 +1288,17 @@ export class LightManager {
   /** Every frame: exposure easing, the light budget, light values. */
   update(dt = 0, camera = this.camera) {
     this._clock += dt;
+    const camNow = this._renderCamera || camera;
+    if (this._worlds.size > 1) {
+      this._updatePortals();
+      this._trackCamera(camNow);
+    }
     if (this._dirty) this._recompute();
-    // ease the scene scale (eye adaptation): ~0.25 s
+    // ease the scene scale (eye adaptation): ~0.25 s; slower for HOUSE.roomEase after a room change
+    const easing = this._clock < this._roomEaseUntil;
     if (this._S == null) this._S = this._Starget;
     else if (dt > 0) {
-      const k = 1 - Math.exp(-dt / 0.25);
+      const k = 1 - Math.exp(-dt / (easing ? 0.5 : 0.25));
       const ls = Math.log(this._S) + (Math.log(this._Starget) - Math.log(this._S)) * k;
       this._S = Math.exp(ls);
       if (Math.abs(Math.log(this._S / this._Starget)) < 1e-3) this._S = this._Starget;
@@ -994,7 +1313,7 @@ export class LightManager {
       const w = this._wb, t = this._wbTarget;
       const d = Math.abs(w.r - t.r) + Math.abs(w.g - t.g) + Math.abs(w.b - t.b);
       if (d > 1e-4) {
-        w.lerp(t, d < 2e-3 ? 1 : 1 - Math.exp(-dt / 0.4));
+        w.lerp(t, d < 2e-3 ? 1 : 1 - Math.exp(-dt / (easing ? 0.6 : 0.4)));
         this._applyDirty = true;
       }
     } else if (dt === 0 && this._wbReady) this._wb.copy(this._wbTarget);
@@ -1015,9 +1334,20 @@ export class LightManager {
     this._renderCamera = camera;
     if (this._S == null) this.update(0, camera);
     this._maybeBuildEnv(renderer);
+    // the sun's map renders only when flagged (autoUpdate off): an outside request (shading.js blinds set
+    // renderer.shadowMap.needsUpdate) still redraws it, a spot slot that only changed lamp does not
+    const sm = renderer.shadowMap;
+    if (sm?.needsUpdate && !this._slotShadowOnly) this.sun.shadow.needsUpdate = true;
+    if (sm?.enabled && sm.needsUpdate && this.sun.castShadow && this.sun.shadow.needsUpdate) this.stats.sunPasses = (this.stats.sunPasses || 0) + 1;
+    this._slotShadowOnly = false;
     // the scene goes straight to the screen (tone mapping in the materials, so the unlit photo backdrops stay
-    // untouched); ambient occlusion is multiplied on top afterwards
-    renderer.render(scene, camera);
+    // untouched); ambient occlusion is multiplied on top afterwards. The light masks only for this render.
+    lightMask.setEnabled(!!this._table);
+    try {
+      renderer.render(scene, camera);
+    } finally {
+      lightMask.setEnabled(false);
+    }
     if (this.profile.ao && camera?.isPerspectiveCamera) this._renderAO(renderer, scene, camera);
   }
 
@@ -1026,6 +1356,10 @@ export class LightManager {
     this.root.removeFromParent();
     if (this.scene.environment === this._envRT?.texture) this.scene.environment = null;
     this._envRT?.dispose();
+    for (const w of this._worlds.values()) {
+      if (w.env.rt && w.env.rt !== this._envRT) w.env.rt.dispose();
+      if (!w.living) for (const o of w.model?.owned || []) o.dispose?.();
+    }
     this._envCube?.dispose();
     this._pmrem?.dispose();
     for (const o of this._model?.owned || []) o.dispose?.();
@@ -1048,6 +1382,9 @@ export class LightManager {
     sun.shadow.bias = -0.00035;
     sun.shadow.normalBias = 0.012;
     sun.shadow.radius = this.profile.pcf;
+    // rendered only when flagged (render(): the sun moved, the scene changed, an outside request such as a blind)
+    sun.shadow.autoUpdate = false;
+    sun.shadow.needsUpdate = true;
     sun.position.set(20, 20, 0);
     sun.target.position.copy(this.center);
     this.root.add(sun, sun.target);
@@ -1055,10 +1392,36 @@ export class LightManager {
     this.ambient = new THREE.AmbientLight(0xffffff, 0);
     this.ambient.name = 'ambient-fill';
     this.root.add(this.ambient);
-    // the room box the shadow camera must cover (receivers + the walls/ceiling between them and the sun)
-    const b = this.layout?.bounds ?? { minX: 0, maxX: 7, minZ: 0, maxZ: 12 };
-    this._shadowBox = new THREE.Box3(new THREE.Vector3(b.minX - 0.35, -0.05, b.minZ - 0.35), new THREE.Vector3(b.maxX + 0.35, 3.15, b.maxZ + 0.35));
+    // the room box the shadow camera must cover (receivers + the walls/ceiling between them and the sun): per level of
+    // the camera (§4.6) – the ground floor's is the living room's box as before
+    this._shadowBox = this._shadowBoxFor('hoved');
     this._sunKey = '';
+  }
+
+  /** Shadow-camera box of a level: 'hoved' = the living room's bounds as before; the basement its rooms, y −2.9…0. */
+  _shadowBoxFor(levelId) {
+    const lb = levelId !== 'hoved' ? this.layout?.house?.levelBounds?.(levelId) : null;
+    if (lb && Number.isFinite(lb.minX) && lb.maxX > lb.minX) {
+      return new THREE.Box3(new THREE.Vector3(lb.minX - 0.35, BASEMENT_SHADOW_Y[0], lb.minZ - 0.35), new THREE.Vector3(lb.maxX + 0.35, BASEMENT_SHADOW_Y[1], lb.maxZ + 0.35));
+    }
+    const b = this.layout?.bounds ?? { minX: 0, maxX: 7, minZ: 0, maxZ: 12 };
+    return new THREE.Box3(new THREE.Vector3(b.minX - 0.35, -0.05, b.minZ - 0.35), new THREE.Vector3(b.maxX + 0.35, 3.15, b.maxZ + 0.35));
+  }
+
+  /** The camera changed level: refit the sun's shadow camera (and GTAO's box) to that level and redraw the map. */
+  _setShadowLevel(levelId) {
+    this._shadowBox = this._shadowBoxFor(levelId);
+    this._sunKey = '';
+    if (this._sunPhys > 0 && this._sunDir) this._placeSun(this._sunDir);
+    if (this._gtao) this._gtao.setSceneClipBox(this._aoBoxFor(levelId));
+  }
+
+  /** GTAO's clip box: the living room's as before on the ground floor, the basement's below. */
+  _aoBoxFor(levelId) {
+    const lb = levelId !== 'hoved' ? this.layout?.house?.levelBounds?.(levelId) : null;
+    if (lb && Number.isFinite(lb.minX) && lb.maxX > lb.minX) return new THREE.Box3(new THREE.Vector3(lb.minX - 0.4, lb.minY - 0.2, lb.minZ - 0.4), new THREE.Vector3(lb.maxX + 0.4, lb.maxY + 0.3, lb.maxZ + 0.4));
+    const bb = this.layout?.bounds;
+    return bb ? new THREE.Box3(new THREE.Vector3(bb.minX - 0.4, -0.2, bb.minZ - 0.4), new THREE.Vector3(bb.maxX + 0.4, 3.3, bb.maxZ + 0.4)) : null;
   }
 
   /** Fixed light pools (counts never change → no shader recompiles when lamps go on/off). */
@@ -1099,12 +1462,208 @@ export class LightManager {
       this.root.add(l);
       this._pool.rect.push({ light: l, cand: null, kind: 'rect' });
     }
+    // three's uniform order of the lights of one kind (WebGLLights: shadow-casting first, stable otherwise) = the index
+    // of the slot's mask in lightmask.js
+    for (const kind of ['point', 'spot', 'rect']) {
+      const list = this._pool[kind];
+      [...list.filter((s) => s.light.castShadow), ...list.filter((s) => !s.light.castShadow)].forEach((s, i) => (s.shaderIndex = i));
+    }
+  }
+
+  // ---- the house (§4): room table, portals, the models of the other rooms --------------------------------------
+
+  _buildHouse() {
+    const h = this.layout?.house;
+    if (!h || !this._model || !lightMask.available) return;
+    this._table = buildRoomTable(this.layout);
+    this._portalDefs = portalRects(this.layout);
+    lightMask.setRooms(this._table);
+    for (let i = 0; i < 16; i++) lightMask.setRoomFactor(i, 1, 1, 1);
+    const living = h.roomsById?.[LIVING_ID] ?? { id: LIVING_ID, name: 'Stue/kjøkken', levelId: 'hoved' };
+    this._worlds.set(LIVING_ID, {
+      id: LIVING_ID, living: true, room: living, model: this._model, windows: [], lamps: [], lampBounce: LAMP_BOUNCE,
+      env: { rt: null, Senv: 1, dirty: true }, south: true,
+    });
+    for (const room of h.rooms || []) {
+      if (room.hud || room.id === LIVING_ID || !(room.polygon?.length >= 3) || !this._table.byId[room.id]) continue;
+      let model;
+      try {
+        model = buildHouseRoomModel(this.layout, room, this._portalDefs);
+      } catch (err) {
+        console.warn(`[lighting] room ${room.id}: no light model`, err);
+        continue;
+      }
+      // portal patches: their neighbour and the Lambertian weights of what they send into the room
+      for (const p of model.patches) {
+        if (p.kind !== 'portal') continue;
+        const def = this._portalDefs.find((q) => q.id === p.openingId);
+        p.portal = def ?? null;
+        p.neighbour = def ? def.connects.find((id) => id !== room.id) ?? null : null;
+        p.portalWeights = fluxWeights(model, p.center.clone().addScaledVector(p.normal, 0.05), p.normal, 1);
+      }
+      this._worlds.set(room.id, {
+        id: room.id, living: false, room, model, windows: [], lamps: [], lampBounce: roomLampBounce(room.area),
+        probe: this._probeFor(room), env: { rt: null, Senv: 1, dirty: true }, south: false,
+        M: new THREE.Color(), Mday: new THREE.Color(), Lkey: 0.02, dayFloorLux: 0, autoOn: false, lampFlux: 0,
+        wbT: new THREE.Color(1, 1, 1), wbK: null, wbInfo: null,
+      });
+    }
+    // coupling order: breadth-first from the living room over the portals (stue → gang → bad, soverom, kjellergang → …)
+    const order = [];
+    const seen = new Set([LIVING_ID]);
+    let front = [LIVING_ID];
+    while (front.length) {
+      const next = [];
+      for (const id of front) {
+        for (const q of this._portalDefs) {
+          if (!q.connects.includes(id)) continue;
+          const o = q.connects.find((x) => x !== id);
+          if (!o || seen.has(o) || !this._worlds.has(o)) continue;
+          seen.add(o);
+          order.push(o);
+          next.push(o);
+        }
+      }
+      front = next;
+    }
+    for (const id of this._worlds.keys()) if (id !== LIVING_ID && !seen.has(id)) order.push(id);
+    this._roomOrder = order;
+    this._doorsById = null;
+    this._portalState = '';
+  }
+
+  /** Probe of a room's environment map: its centroid at 1.45 m, the gang's fixed spot (2.6; 1.45; 3.4), off any hole. */
+  _probeFor(room) {
+    const y = room.floorY + 1.45;
+    if (room.id === 'gang') return new THREE.Vector3(2.6, y, 3.4);
+    const holes = (this.layout.house.floorOpenings || []).filter((fo) => fo.roomId === room.id);
+    const ok = (x, z) => room.contains(x, z) && !holes.some((fo) => fo.contains(x, z));
+    if (ok(room.centroid.x, room.centroid.y)) return new THREE.Vector3(room.centroid.x, y, room.centroid.y);
+    let best = null, bestA = 0;
+    for (const p of room.polygon) for (const q of room.polygon) {
+      const x = (p.x + q.x) / 2, z = (p.y + q.y) / 2;
+      const a = Math.abs((p.x - q.x) * (p.y - q.y));
+      if (a > bestA && ok(x, z)) {
+        bestA = a;
+        best = [x, z];
+      }
+    }
+    return best ? new THREE.Vector3(best[0], y, best[1]) : new THREE.Vector3(room.centroid.x, y, room.centroid.y);
+  }
+
+  /** Room of a world point (physical rooms; outside the house: the living room, whose lights also light outside). */
+  _roomIdAt(p) {
+    const r = this.layout?.house?.roomAt?.(p.x, p.y, p.z);
+    return r && this._worlds.has(r.id) ? r.id : LIVING_ID;
+  }
+
+  /** Model a source of a room deposits its bounce into (the living room's for the living room and outside). */
+  _modelOf(roomId) {
+    return this._worlds.get(roomId)?.model ?? (roomId === OUTSIDE_ID ? null : this._model);
+  }
+
+  /** Opening (0..1) of a portal: a door's leaf (Door.t), an open opening or the stairwell 1. */
+  _portalGain(def) {
+    if (def.kind !== 'door') return 1;
+    if (!this._doorsById) {
+      this._doorsById = new Map();
+      for (const d of this.home?.doors || []) if (d?.door) this._doorsById.set(d.id, d.door);
+    }
+    const door = this._doorsById.get(def.id);
+    if (!door) return 0;
+    return clamp(door.t ?? (door.isOpen ? 1 : 0));
+  }
+
+  /** The rooms the camera can reach (open portals, breadth-first, depth 2), the camera's room first. */
+  _reachable() {
+    const start = this._camRoomId;
+    const out = new Set([start]);
+    if (!this._portalDefs?.length) return out;
+    let front = [start];
+    for (let depth = 0; depth < 2 && front.length; depth++) {
+      const next = [];
+      for (const id of front) {
+        for (const q of this._portalDefs) {
+          if (!q.connects.includes(id) || this._portalGain(q) <= HOUSE.portalOpen) continue;
+          const o = q.connects.find((x) => x !== id);
+          if (!o || out.has(o)) continue;
+          out.add(o);
+          next.push(o);
+        }
+      }
+      front = next;
+    }
+    return out;
+  }
+
+  /**
+   * The camera's level (shadow box) and room (exposure …): layout.house at body height (eye − 0.7) with the level's
+   * hysteresis. In a doorway / wall the room stays; outside the house and above the ceilings (orbit, plan) it is the
+   * living room (its light is what the terrace and the overviews were always shown with).
+   */
+  _trackCamera(cam) {
+    const p = cam?.position;
+    const h = this.layout?.house;
+    if (!p || !h?.levelAt) return;
+    const body = p.y - 0.7;
+    const lv = h.levelAt(body, this._camLevelId);
+    if (lv && lv.id !== this._camLevelId) {
+      this._camLevelId = lv.id;
+      this._setShadowLevel(lv.id);
+    }
+    let id = this._camRoomId;
+    const r = lv ? h.roomAt(p.x, body, p.z, { levelId: lv.id }) : null;
+    if (r && this._worlds.has(r.id)) id = p.y <= r.ceilingTop + 0.05 ? r.id : LIVING_ID;
+    else if (!r || !this._worlds.has(r.id)) id = h.isInside?.(p.x, p.z, body, lv?.id) ? this._camRoomId : LIVING_ID;
+    if (id !== this._camRoomId) {
+      this._camRoomId = id;
+      const W = this._worlds.get(id);
+      if (W) W.env.dirty = W.env.dirty || !W.env.rt;
+      this._selectRoom(true);
+    }
+  }
+
+  /** Portal rectangles with their current opening → lightmask (only when something changed). */
+  _updatePortals() {
+    if (!this._table || !this._portalDefs?.length) return;
+    const gains = this._portalDefs.map((q) => this._portalGain(q));
+    const key = gains.map((g) => g.toFixed(3)).join(',');
+    if (key === this._portalState) return;
+    const opened = this._portalState && this._portalState.split(',').some((g, i) => (+g > HOUSE.portalOpen) !== (gains[i] > HOUSE.portalOpen));
+    this._portalState = key;
+    const bit = (id) => this._table.byId[id]?.bit ?? 0;
+    lightMask.setPortals(this._portalDefs.map((q, i) => ({
+      center: q.center, u: q.u, halfU: q.halfU, v: q.v, halfV: q.halfV, bits: bit(q.connects[0]) | bit(q.connects[1]),
+      // direct light through a door: full from half open (the leaf no longer stands in the way of most of it)
+      gain: q.kind === 'door' ? clamp(gains[i] / HOUSE.portalOpen) : 1,
+    })));
+    // the portals feed the rooms' bounce, and a door crossing half open changes what the camera can reach
+    this._markDirty();
+    if (opened) this._selectAt = -1e9;
+  }
+
+  /** Mask bits of a source: its room (the living room's – and outside's – also OUTSIDE), home = its room. */
+  _maskOf(c) {
+    const t = this._table;
+    if (!t) return [0, 0];
+    const roomId = c.roomId ?? LIVING_ID;
+    const e = t.byId[roomId] ?? t.byId[LIVING_ID];
+    const bits = e.bit | (roomId === LIVING_ID || roomId === OUTSIDE_ID ? t.outsideBit : 0);
+    return [bits, e.bit];
   }
 
   /** Windows/glass doors: sky RectAreaLight candidates + data for the sun flux. */
   _buildWindows() {
     this._windows = [];
-    for (const o of this.layout?.windows || []) {
+    this._roomWindows = [];
+    // the living room's windows (this._windows, as before), then those of the other rooms (their world's model)
+    const living = this.layout?.windows || [];
+    const others = (this.layout?.house?.windows || []).filter((o) => o.roomId !== LIVING_ID && this._worlds.has(o.roomId));
+    for (const o of [...living, ...others]) {
+      const own = (o.roomId ?? LIVING_ID) === LIVING_ID;
+      const world = own ? null : this._worlds.get(o.roomId);
+      const model = own ? this._model : world.model;
+      const frosted = !own && !!o.frosted;
       const fw = o.frame?.width ?? 0.07;
       const gw = Math.max(0.2, o.width - 2 * fw);
       const gh = Math.max(0.2, o.height - 2 * fw);
@@ -1116,9 +1675,11 @@ export class LightManager {
       // the sky light comes in from above the horizon and goes DOWN into the room (only the dimmer ground-reflected
       // light goes up): the window's rect light faces WINDOW_TILT below horizontal, so the ceiling next to the glass
       // stays dark as in the photos (fix-lighting r1: at 15° the windows lit the ceiling almost as much as the floor)
-      const tilted = normal.clone().multiplyScalar(Math.cos(WINDOW_TILT)).add(new THREE.Vector3(0, -Math.sin(WINDOW_TILT), 0)).normalize();
+      // frosted glass (the bathroom): diffuse, straight into the room
+      const tilted = frosted ? normal.clone() : normal.clone().multiplyScalar(Math.cos(WINDOW_TILT)).add(new THREE.Vector3(0, -Math.sin(WINDOW_TILT), 0)).normalize();
+      const roomId = own ? LIVING_ID : o.roomId;
       const cand = {
-        id: `window:${o.id}`, kind: 'rect', source: 'window', windowId: o.id,
+        id: `window:${o.id}`, kind: 'rect', source: 'window', windowId: o.id, roomId,
         position: center, normal: tilted, right, width: gw, height: gh, area: gw * gh,
         color: new THREE.Color(1, 1, 1), phys: 0, flux: 0, on: true, emissive: [], fade: 0, slot: null,
         quat: rectQuaternion(tilted, right),
@@ -1127,7 +1688,7 @@ export class LightManager {
       // window seen from a few metres is a cos-lobe point source, I = L·A·cosθ); costs a cheap spot slot, not a rect
       const back = 0.35 + 0.25 * Math.sqrt(gw * gh);
       const spotCand = {
-        id: `windowspot:${o.id}`, kind: 'spot', source: 'window-spot', windowId: o.id,
+        id: `windowspot:${o.id}`, kind: 'spot', source: 'window-spot', windowId: o.id, roomId,
         position: center.clone().addScaledVector(normal, -back), direction: tilted.clone(), angle: 86 * DEG, penumbra: 1,
         color: new THREE.Color(1, 1, 1), phys: 0, flux: 0, on: false, emissive: [], fade: 0, slot: null,
         // the point sits `back` behind the glass: compensate the 1/d² loss at a typical 3 m into the room
@@ -1136,16 +1697,44 @@ export class LightManager {
       cand.spotCand = spotCand;
       const sampleUV = [];
       for (const su of [-0.35, 0, 0.35]) for (const sv of [-0.35, 0, 0.35]) sampleUV.push([su, sv]);
-      this._windows.push({
+      const entry = {
         id: o.id, type: o.type, opening: o, normal, outward: normal.clone().negate(), right, up, center, glassDepth,
-        width: gw, height: gh, area: gw * gh, cand, spotCand, samples: sampleUV,
+        width: gw, height: gh, area: gw * gh, cand, spotCand, samples: sampleUV, roomId, frosted,
         // radiosity: the sky part lands on what lies below the glass top (floor, the lower walls), the ground part on
         // what lies above the sill (upper walls, the ceilings) – both Lambertian about the window normal
-        skyWeights: this._model ? fluxWeights(this._model, center.clone().addScaledVector(normal, 0.25), normal, 1, null, (p) => patchShareBelow(p, center.y + gh / 2)) : null,
-        groundWeights: this._model ? fluxWeights(this._model, center.clone().addScaledVector(normal, 0.25), normal, 1, null, (p) => 1 - patchShareBelow(p, center.y - gh / 2)) : null,
+        skyWeights: model ? fluxWeights(model, center.clone().addScaledVector(normal, 0.25), normal, 1, null, (p) => patchShareBelow(p, center.y + gh / 2)) : null,
+        groundWeights: model ? fluxWeights(model, center.clone().addScaledVector(normal, 0.25), normal, 1, null, (p) => 1 - patchShareBelow(p, center.y - gh / 2)) : null,
         L: 0, sunFlux: 0, skyFlux: 0,
-      });
+      };
+      if (own) this._windows.push(entry);
+      else {
+        // the rooms' models are in world y: patchShareBelow measures from the room's floor
+        if (model && world.room.floorY) {
+          const fy = world.room.floorY;
+          const below = (p, y) => (p.kind === 'wall' ? patchShareBelow({ ...p, center: p.center.clone().setY(p.center.y - fy) }, y - fy) : patchShareBelow(p, y));
+          const at = center.clone().addScaledVector(normal, 0.25);
+          entry.skyWeights = fluxWeights(model, at, normal, 1, null, (p) => below(p, center.y + gh / 2));
+          entry.groundWeights = fluxWeights(model, at, normal, 1, null, (p) => 1 - below(p, center.y - gh / 2));
+        }
+        if (frosted) entry.diffuseWeights = fluxWeights(model, center.clone().addScaledVector(normal, 0.25), normal, 1);
+        // glass under the soffit of the covered forecourt (the side panels of the entrance door) sees half the sky
+        const cov = this.layout.house.outsideHouse?.covered?.polygon;
+        if (Array.isArray(cov) && cov.length >= 3) {
+          const out = center.clone().addScaledVector(normal, -0.4);
+          let inside = false;
+          for (let i = 0, j = cov.length - 1; i < cov.length; j = i++) {
+            const a = cov[i], b = cov[j];
+            if ((a[1] > out.z) !== (b[1] > out.z) && out.x < ((b[0] - a[0]) * (out.z - a[1])) / (b[1] - a[1]) + a[0]) inside = !inside;
+          }
+          if (inside) entry.coveredSky = 0.5;
+        }
+        world.windows.push(entry);
+        this._roomWindows.push(entry);
+        if (normal.x < -0.7) world.south = true; // the glass looks south (+x)
+      }
     }
+    const lw = this._worlds.get(LIVING_ID);
+    if (lw) lw.windows = this._windows;
   }
 
   /** Built-in fixtures of the shell/kitchen (§15) → light candidates. */
@@ -1157,7 +1746,7 @@ export class LightManager {
       const lm = Math.max(0, l.lumens || 0);
       const dims = l.dims ?? specById[l.id]?.dims ?? {};
       groupLumens[l.group] = (groupLumens[l.group] || 0) + lm;
-      const base = { source: 'builtin', group: l.group, builtInId: l.id, colorK: l.colorK || 2700, lumens: lm, emissive: l.emissiveMeshes || [], fade: 0, slot: null };
+      const base = { source: 'builtin', group: l.group, builtInId: l.id, colorK: l.colorK || 2700, lumens: lm, emissive: l.emissiveMeshes || [], fade: 0, slot: null, roomId: LIVING_ID };
       let c = null;
       if (l.type === 'led-strip' && l.from && l.to) {
         const from = l.from.clone(), to = l.to.clone();
@@ -1220,6 +1809,130 @@ export class LightManager {
       this._initCandidate(c);
       this._builtIns.push(c);
     }
+    this._groupLumens = groupLumens;
+    for (const g of this.builtInGroups) g.lumens = Math.round(groupLumens[g.id] || 0);
+  }
+
+  /**
+   * The lamps of the other rooms and outside (§4.8): layout.house.builtInLights outside the living room and
+   * outsideHouse.lights (world y), with the glowing meshes of the builders' entries of the same id
+   * (home.house.builtInLights after the living room's); builder lights without data (the mirror ring, the handrail
+   * LED …) as they come. plafond → Lambertian disc downward; downlights → at most two spots per room and group (the
+   * nearest along the room's long axis, their flux summed, the cone widened over the group); led-strip → a thin rect
+   * (signature 1); anything else a point. Their bounce goes into their room's model.
+   */
+  _buildHouseLamps() {
+    this._houseLamps = [];
+    const h = this.layout?.house;
+    if (!h || !this._table) return;
+    const living = new Set(this.home?.builtInLights || []);
+    // builder entries by their data id (a builder may split one fixture into 'l-x:0', 'l-x:1' like the shell)
+    const fromBuilders = new Map();
+    for (const l of this.home?.house?.builtInLights || []) {
+      if (living.has(l) || l?.id == null) continue;
+      const key = String(l.id).split(':')[0];
+      if (!fromBuilders.has(key)) fromBuilders.set(key, []);
+      fromBuilders.get(key).push(l);
+    }
+    const entries = [];
+    const take = (id) => {
+      const list = fromBuilders.get(String(id)) || [];
+      fromBuilders.delete(String(id));
+      return list.flatMap((b) => b.emissiveMeshes || []);
+    };
+    for (const l of h.builtInLights || []) {
+      if (l.roomId === LIVING_ID || l.emits === false || !this._worlds.has(l.roomId)) continue;
+      entries.push({ ...l, emissiveMeshes: take(l.id) });
+    }
+    for (const l of h.outsideHouse?.lights || []) {
+      if (!Array.isArray(l.position)) continue;
+      entries.push({
+        id: l.id, roomId: OUTSIDE_ID, group: l.group || 'ute', type: l.type, colorK: l.lightColorK ?? 2700, lumens: l.lumens ?? 0,
+        dims: l.dims || {}, position: new THREE.Vector3(...l.position), direction: new THREE.Vector3(0, -1, 0), emissiveMeshes: take(l.id),
+      });
+    }
+    for (const b of [...fromBuilders.values()].flat()) {
+      const p = b.position ?? (b.from && b.to ? b.from.clone().add(b.to).multiplyScalar(0.5) : null);
+      if (!p) continue;
+      const roomId = b.roomId && (this._worlds.has(b.roomId) || b.roomId === OUTSIDE_ID) ? b.roomId : this._roomIdAt(p);
+      if (roomId === LIVING_ID) continue; // the living room's lights come from home.builtInLights only
+      entries.push({ ...b, roomId, colorK: b.colorK ?? b.lightColorK ?? 2700, lumens: b.lumens ?? 0, emissiveMeshes: b.emissiveMeshes || [] });
+    }
+    const groupLumens = this._groupLumens || {};
+    const push = (c) => {
+      if (!c) return;
+      this._initCandidate(c, this._modelOf(c.roomId));
+      this._houseLamps.push(c);
+      this._worlds.get(c.roomId)?.lamps.push(c);
+    };
+    // downlights per room and group → at most HOUSE.maxDownlightSpots spots
+    const clusters = new Map();
+    for (const l of entries) {
+      groupLumens[l.group] = (groupLumens[l.group] || 0) + Math.max(0, l.lumens || 0);
+      const base = {
+        source: 'builtin', group: l.group, builtInId: l.id, colorK: l.colorK || 2700, lumens: Math.max(0, l.lumens || 0),
+        emissive: l.emissiveMeshes || [], fade: 0, slot: null, roomId: l.roomId, house: true,
+      };
+      if (l.type === 'downlight' && l.position) {
+        const key = `${l.roomId}|${l.group}`;
+        if (!clusters.has(key)) clusters.set(key, []);
+        clusters.get(key).push({ l, base });
+      } else if (l.type === 'led-strip' && l.from && l.to) {
+        const from = l.from.clone(), to = l.to.clone();
+        const len = from.distanceTo(to);
+        if (len < 0.02) continue;
+        const along = to.clone().sub(from).normalize();
+        const mid = from.clone().add(to).multiplyScalar(0.5);
+        const toward = this._nearestWallNormal(mid, along, l.roomId);
+        const normal = new THREE.Vector3(0, -1, 0);
+        const pos = mid.clone().setY(mid.y - 0.015);
+        if (toward) {
+          normal.multiplyScalar(Math.cos(38 * DEG)).addScaledVector(toward, -Math.sin(38 * DEG)).normalize();
+          pos.addScaledVector(toward, 0.06);
+        }
+        push({ ...base, id: `builtin:${l.id}`, kind: 'rect', position: pos, normal, right: along, width: len, height: 0.05, area: len * 0.05,
+          quat: rectQuaternion(normal, along), strip: true, stripSignature: HOUSE.stripSignature, noShadow: true });
+      } else if (l.position) {
+        const dims = l.dims || {};
+        if (l.type === 'plafond' || l.type === 'ceiling' || l.type === 'ceiling-ring') {
+          const drop = (dims.h ?? 0.07) + 0.01;
+          push({ ...base, id: `builtin:${l.id}`, kind: 'spot', position: l.position.clone().setY(l.position.y - drop), direction: new THREE.Vector3(0, -1, 0),
+            angle: HOUSE.plafond.angle, penumbra: 1, lambert: true, noShadow: true });
+        } else {
+          push({ ...base, id: `builtin:${l.id}`, kind: 'point', position: l.position.clone(), noShadow: true });
+        }
+      }
+    }
+    for (const [key, list] of clusters) {
+      const [roomId] = key.split('|');
+      const floorY = this._worlds.get(roomId)?.room?.floorY ?? (roomId === OUTSIDE_ID ? (h.outsideHouse?.entranceLevelY ?? list[0].l.position.y - 2.3) : 0);
+      // split along the axis the lights spread most over, at most maxDownlightSpots parts
+      const xs = list.map((e) => e.l.position.x), zs = list.map((e) => e.l.position.z);
+      const alongX = Math.max(...xs) - Math.min(...xs) >= Math.max(...zs) - Math.min(...zs);
+      list.sort((a, b) => (alongX ? a.l.position.x - b.l.position.x : a.l.position.z - b.l.position.z));
+      const parts = Math.min(HOUSE.maxDownlightSpots, list.length);
+      for (let k = 0; k < parts; k++) {
+        const part = list.slice(Math.floor((k * list.length) / parts), Math.floor(((k + 1) * list.length) / parts));
+        const c = new THREE.Vector3();
+        let lm = 0;
+        for (const e of part) {
+          c.add(e.l.position);
+          lm += e.base.lumens;
+        }
+        c.multiplyScalar(1 / part.length);
+        let r = 0;
+        for (const e of part) r = Math.max(r, Math.hypot(e.l.position.x - c.x, e.l.position.z - c.z));
+        const H = Math.max(0.5, c.y - floorY);
+        const angle = clamp(Math.atan((r + H * Math.tan(HOUSE.downlight.angle)) / H), HOUSE.downlight.angle, 80 * DEG);
+        const first = part[0];
+        push({
+          ...first.base, id: `builtin:${first.l.id}`, builtInId: `downlights.${roomId}.${first.l.group}.${k}`, lumens: lm,
+          emissive: part.flatMap((e) => e.base.emissive), members: part.map((e) => e.l.id),
+          kind: 'spot', position: c.setY(c.y - 0.02), direction: new THREE.Vector3(0, -1, 0), angle, penumbra: HOUSE.downlight.penumbra,
+          noShadow: angle > 50 * DEG + 1e-6,
+        });
+      }
+    }
     for (const g of this.builtInGroups) g.lumens = Math.round(groupLumens[g.id] || 0);
   }
 
@@ -1238,9 +1951,10 @@ export class LightManager {
   }
 
   /** Inward normal of the wall the point lies along (parallel within 0.4 m), or null. */
-  _nearestWallNormal(p, along) {
+  _nearestWallNormal(p, along, roomId = LIVING_ID) {
     let best = null, bestD = 0.4;
-    for (const w of this.layout?.walls || []) {
+    const walls = roomId === LIVING_ID ? this.layout?.walls || [] : (this.layout?.house?.walls || []).filter((w) => w.roomId === roomId);
+    for (const w of walls) {
       if (Math.abs(w.dir3.dot(along)) < 0.95) continue;
       const d = (p.x - w.start.x) * w.normal3.x + (p.z - w.start.y) * w.normal3.z;
       const u = (p.x - w.start.x) * w.dir3.x + (p.z - w.start.y) * w.dir3.z;
@@ -1277,33 +1991,37 @@ export class LightManager {
       colorK: l.colorK ?? 2700, lumens: Math.max(0, l.lumens ?? 800), itemOn: l.on !== false, itemDimmer: clamp(l.dimmer ?? 1),
       emissive, fade: 0, slot: null, halfSpace: split,
     };
+    // the room the lamp stands in (its bounce goes into that room's model; outside the house: the living room's)
+    c.roomId = this._worlds.size ? this._roomIdAt(c.position) : LIVING_ID;
+    const model = this._modelOf(c.roomId);
     if (!split) {
-      this._initCandidate(c);
+      this._initCandidate(c, model);
       return [c];
     }
     const lm = c.lumens, k = HALF_SPACE_SPOT.pointShare;
     c.lumens = lm * (1 - k);
     const up = { ...c, id: `${c.id}:up`, kind: 'point', position: c.position.clone(), direction: c.direction.clone(), lumens: lm * k, emissive: [] };
-    this._initCandidate(c);
-    this._initCandidate(up);
+    this._initCandidate(c, model);
+    this._initCandidate(up, model);
     return [c, up];
   }
 
   /** Physical intensity per lumen, colour and flux weights of a lamp candidate. */
-  _initCandidate(c) {
+  _initCandidate(c, model = this._model) {
     c.color = lightColor(c.colorK);
     if (c.kind === 'point') c.cdPerLm = 1 / (4 * Math.PI);
     else if (c.kind === 'spot') c.cdPerLm = c.lambert ? 1 / Math.PI : 1 / spotSolidAngle(c.angle, c.penumbra);
     else c.cdPerLm = 1 / (Math.PI * c.area); // rect: nits per lumen
-    if (this._model) {
-      if (c.kind === 'point') c.weights = fluxWeights(this._model, c.position, null);
-      else if (c.kind === 'spot') c.weights = fluxWeights(this._model, c.position, c.direction, c.lambert ? 1 : lobeExponent(c.angle * 0.8));
-      else c.weights = fluxWeights(this._model, c.position, c.normal, 1);
+    c.weights = null;
+    if (model) {
+      if (c.kind === 'point') c.weights = fluxWeights(model, c.position, null);
+      else if (c.kind === 'spot') c.weights = fluxWeights(model, c.position, c.direction, c.lambert ? 1 : lobeExponent(c.angle * 0.8));
+      else c.weights = fluxWeights(model, c.position, c.normal, 1);
       const upShare = c.lambert ? RING_UP_SHARE : 0;
       if (upShare > 0) {
         // the up-light of a downward fixture (upward shades and their glowing insides; the sides of a ring's opal
         // diffuser) still reaches the ceiling – in the bounce only (decals, where a model has them, draw where it lands)
-        const up = fluxWeights(this._model, c.position, null);
+        const up = fluxWeights(model, c.position, null);
         for (let i = 0; i < c.weights.length; i++) c.weights[i] = c.weights[i] * (1 - upShare) + up[i] * upShare;
       }
     }
@@ -1369,6 +2087,7 @@ export class LightManager {
   _markDirty() {
     this._dirty = true;
     this._envDirty = true;
+    for (const w of this._worlds.values()) w.env.dirty = true;
   }
 
   get latitude() {
@@ -1479,12 +2198,16 @@ export class LightManager {
     const groundColor = addScaled(addScaled(new THREE.Color(0, 0, 0), skyColor, dl.Edh), sunColor, dl.Edn * Math.max(0, Math.sin(altDeg * DEG)));
     groundColor.multiplyScalar(1 / Math.max(1e-6, lum(groundColor))).multiply(GROUND_TINT);
     groundColor.multiplyScalar(1 / Math.max(1e-6, lum(groundColor)));
+    this._groundColor = groundColor;
     for (const w of this._windows) {
       const t = this._transmission[w.id] ?? 1;
-      const obstruction = OBSTRUCTION[w.id] ?? 1;
+      // per window from the data (§4.7), today's constants by default
+      const obstruction = w.opening.obstruction ?? OBSTRUCTION[w.id] ?? 1;
       const cosSun = Math.max(0, sunDir.dot(w.outward));
       const circum = dl.clear ? 0.45 * (0.25 + 0.75 * (dl.circum ?? 1)) : 0.05;
-      const EvSky = dl.Edh * (0.42 + circum * cosSun);
+      // skyView (data, 0–1): the share of an open facade's sky the glass sees (basement windows) – scales the 0.42
+      const skyView = w.opening.skyView != null ? 0.42 * w.opening.skyView : 0.42;
+      const EvSky = dl.Edh * (skyView + circum * cosSun);
       const EvGround = 0.5 * GROUND_RHO * dl.Eglobal;
       const Ev = EvSky + EvGround;
       w.L = (Ev * GLASS_T * obstruction * t) / Math.PI;
@@ -1533,8 +2256,11 @@ export class LightManager {
     }
     const autoOn = this.mode === 'evening' || this.mode === 'night' ? true : this.mode === 'day' ? false : dayFloorLux < LAMPS_ON_BELOW_LUX;
     this._defaultLampsOn = autoOn;
+    // the other rooms' daylight (their own windows) → their automatic lamps; outside: dark below ≈ 800 lux
+    this._outdoorDark = dl.Eglobal < 800;
+    if (this._worlds.size > 1) this._roomsDaylight(dl, sunDir, sunUp, sunColor, skyColor, groundColor);
 
-    // ---- lamps
+    // ---- lamps (the living room's into its model as before; the other rooms' into theirs)
     let lampFlux = 0, lampMired = 0, lampMiredW = 0;
     const lampColorSum = new THREE.Color();
     const all = this._allLampCandidates();
@@ -1542,7 +2268,7 @@ export class LightManager {
       let on, dimmer;
       if (c.source === 'builtin') {
         const s = this._builtInState.get(c.group);
-        on = s && !s.auto ? s.on : autoOn;
+        on = s && !s.auto ? s.on : c.house ? this._autoOnFor(c.group) : autoOn;
         dimmer = s ? s.dimmer : this._groupDimmer(c.group);
       } else {
         on = c.itemOn;
@@ -1553,6 +2279,16 @@ export class LightManager {
       c.flux = c.on ? c.lumens * dimmer : 0;
       c.phys = c.flux * c.cdPerLm;
       if (c.flux > 0) {
+        if (c.roomId && c.roomId !== LIVING_ID) {
+          const w = this._worlds.get(c.roomId);
+          if (w) {
+            w.lampFlux += c.flux;
+            w.lampMired += (c.flux * 1e6) / Math.max(1000, c.colorK || 2700);
+            w.lampMiredW += c.flux;
+            if (c.weights) this._depositIn(w.model, c.weights, c.flux * w.lampBounce, c.color, 'E');
+          }
+          continue;
+        }
         lampFlux += c.flux;
         addScaled(lampColorSum, c.color, c.flux);
         lampMired += (c.flux * 1e6) / Math.max(1000, c.colorK || 2700);
@@ -1687,11 +2423,15 @@ export class LightManager {
     const skyLight = lightColor(Math.min(dl.skyK, OUTDOOR.maxK));
     const groundLight = groundColor.clone().multiplyScalar(OUTDOOR.ground * (dl.Eglobal / Math.max(1e-6, dl.Edh)));
     this._outdoor = { sky: skyLight.multiplyScalar(skyRad), ground: groundLight.multiplyScalar(skyRad), envSize: this.profile.env };
-    try {
-      this.home?.exterior?.setDaylight?.(this._exteriorLevel, this._skyHex, this._outdoor);
-    } catch (err) {
-      console.warn('[lighting] exterior.setDaylight failed', err);
-    }
+    // (with the camera in another room _selectRoom sets it from that room's exposure instead)
+    if (this._camRoomId === LIVING_ID || !this._worlds.has(this._camRoomId)) {
+      this._exteriorFor = LIVING_ID;
+      try {
+        this.home?.exterior?.setDaylight?.(this._exteriorLevel, this._skyHex, this._outdoor);
+      } catch (err) {
+        console.warn('[lighting] exterior.setDaylight failed', err);
+      }
+    } else this._exteriorFor = null;
 
     this._info = {
       hour: this.time.hour, month: this.time.month, day: this.time.day, mode: this.mode, effective,
@@ -1712,6 +2452,16 @@ export class LightManager {
       lampLumens: Math.round(lampFlux),
       keyLuminance: Lkey,
     };
+    // the living room's result; the other rooms are solved from it (portals) and the camera's room is selected
+    this._livingRes = {
+      Lkey, Starget: this._Starget, wbT: this._wbTarget.clone(), wbK: this._wbK, wbInfo: this._wbInfo, info: this._info,
+      dayFloorLux, exteriorLevel: this._exteriorLevel, effective,
+    };
+    if (this._worlds.size > 1) {
+      this._livingExitance();
+      this._recomputeRooms(dl, effective);
+      this._selectRoom(false);
+    }
     this.stats.recomputes = (this.stats.recomputes || 0) + 1;
     this._applyDirty = true;
     this._selectAt = -1e9;
@@ -1724,14 +2474,17 @@ export class LightManager {
     }
   }
 
-  /** Sky lights of the windows (rect). */
+  /** Sky lights of the windows (rect): the living room's, then the other rooms'. */
   _extraRects() {
-    return this._windows.map((w) => w.cand);
+    const list = this._windows.map((w) => w.cand);
+    for (const w of this._roomWindows) list.push(w.cand);
+    return list;
   }
 
   /** Spot stand-ins: the sun-patch bounce lights and the windows' far-field spots. */
   _extraSpots() {
     const list = this._windows.map((w) => w.spotCand);
+    for (const w of this._roomWindows) list.push(w.spotCand);
     if (this._bounces?.length) list.push(...this._bounces);
     return list;
   }
@@ -1836,6 +2589,7 @@ export class LightManager {
   _allLampCandidates() {
     const list = [...this._builtIns];
     for (const l of this._items.values()) list.push(...l);
+    if (this._houseLamps?.length) list.push(...this._houseLamps);
     return list;
   }
 
@@ -1853,9 +2607,384 @@ export class LightManager {
     }
   }
 
+  /** _deposit into any model (key 'E' | 'Eday'). */
+  _depositIn(model, weights, flux, color, key) {
+    const P = model.patches;
+    for (let i = 0; i < P.length; i++) {
+      const w = weights[i];
+      if (!w) continue;
+      const e = (flux * w) / P[i].area;
+      P[i][key].r += e * color.r;
+      P[i][key].g += e * color.g;
+      P[i][key].b += e * color.b;
+    }
+  }
+
+  // ---- the other rooms (§4.3–4.5, §4.7) ----------------------------------------------------------------------
+
+  /**
+   * Daylight in every room but the living room: sky and ground light through its own windows (skyView, obstruction,
+   * frosted glass from the data), the sun traced onto its patches, the daylight-only solve → its floor daylight and
+   * its automatic lamps. Resets the rooms' lamp sums (the lamp loop of _recompute fills them).
+   */
+  _roomsDaylight(dl, sunDir, sunUp, sunColor, skyColor, groundColor) {
+    const effOff = this.mode === 'day', effOn = this.mode === 'evening' || this.mode === 'night';
+    for (const [id, W] of this._worlds) {
+      if (W.living) continue;
+      for (const p of W.model.patches) {
+        p.E.setRGB(0, 0, 0);
+        p.Eday.setRGB(0, 0, 0);
+        p.Esun.setRGB(0, 0, 0);
+      }
+      W.lampFlux = 0;
+      W.lampMired = 0;
+      W.lampMiredW = 0;
+      W.dayFlux = 0;
+      W.skyTot = 0;
+      W.sunTot = 0;
+      for (const w of W.windows) {
+        const t = this._transmission[w.id] ?? 1;
+        const obstruction = w.opening.obstruction ?? OBSTRUCTION[w.id] ?? 1;
+        const cosSun = Math.max(0, sunDir.dot(w.outward));
+        const circum = dl.clear ? 0.45 * (0.25 + 0.75 * (dl.circum ?? 1)) : 0.05;
+        // skyView (data, 0–1): the share of an open facade's sky a basement window sees over the terrain – the 0.42
+        // and the circumsolar part shrink with it
+        const sv = w.opening.skyView != null ? clamp(w.opening.skyView) : (w.coveredSky ?? 1);
+        const EvSky = dl.Edh * sv * (0.42 + circum * cosSun);
+        const EvGround = 0.5 * GROUND_RHO * dl.Eglobal;
+        const Ev = EvSky + EvGround;
+        const glassT = w.frosted ? HOUSE.frostedT : GLASS_T;
+        w.L = (Ev * glassT * obstruction * t) / Math.PI;
+        w.skyFlux = w.L * Math.PI * w.area;
+        w.groundShare = EvGround / Math.max(1e-6, Ev);
+        const winColor = addScaled(_c1.copy(skyColor).multiplyScalar(1 - w.groundShare), groundColor, w.groundShare);
+        winColor.multiplyScalar(1 / Math.max(1e-6, lum(winColor)));
+        w.cand.phys = w.L;
+        w.cand.flux = w.skyFlux;
+        w.cand.color.copy(winColor);
+        w.cand.on = w.skyFlux > 1;
+        w.spotCand.phys = w.L * w.area * w.spotCand.gain;
+        w.spotCand.flux = w.skyFlux;
+        w.spotCand.color.copy(winColor);
+        W.dayFlux += w.skyFlux;
+        W.skyTot += w.skyFlux;
+        if (w.frosted && w.diffuseWeights) this._depositIn(W.model, w.diffuseWeights, w.skyFlux, winColor, 'Eday');
+        else if (w.skyWeights) {
+          this._depositIn(W.model, w.skyWeights, w.skyFlux * (1 - w.groundShare), skyColor, 'Eday');
+          this._depositIn(W.model, w.groundWeights, w.skyFlux * w.groundShare, groundColor, 'Eday');
+        }
+        w.sunFlux = 0;
+        w.floorFrac = 0;
+        if (sunUp && cosSun > 0.01) {
+          const sr = sunDir.dot(w.right), sy = sunDir.y;
+          const reveal = Math.max(0, 1 - (w.glassDepth * Math.abs(sr)) / (cosSun * w.width)) * Math.max(0, 1 - (w.glassDepth * Math.abs(sy)) / (cosSun * w.height));
+          w.sunFlux = dl.Edn * cosSun * glassT * w.area * reveal * t * obstruction;
+          W.dayFlux += w.sunFlux;
+          W.sunTot += w.sunFlux;
+          if (w.sunFlux > 0) {
+            // frosted glass scatters the beam; clear glass lands it where it shines
+            if (w.frosted && w.diffuseWeights) this._depositIn(W.model, w.diffuseWeights, w.sunFlux, sunColor, 'Eday');
+            else w.floorFrac = this._traceSun(w, sunDir, sunColor, W.model);
+          }
+        }
+      }
+      // the room's own daylight (portals come in _recomputeRooms): the automatic lamps follow it
+      solveRadiosity(W.model, 'Eday', 'Bday', 8);
+      let skyDirect = 0, indirect = 0;
+      const fi = W.model.patches.indexOf(W.model.floor);
+      for (const w of W.windows) {
+        const ww = w.frosted ? w.diffuseWeights : w.skyWeights;
+        if (ww) skyDirect += w.skyFlux * (w.frosted ? 1 : 1 - w.groundShare) * ww[fi];
+      }
+      indirect = this._indirectAtIn(W.model, fi, 'Bday') * W.model.floor.area;
+      W.ownDayLux = (skyDirect + indirect) / Math.max(1, W.model.floorArea);
+      W.autoOn = effOn ? true : effOff ? false : W.ownDayLux < LAMPS_ON_BELOW_LUX;
+      W.dayFloorLux = W.ownDayLux;
+      // what the lamp loop and the portals add on top
+      for (const p of W.model.patches) {
+        p.E0 = (p.E0 || new THREE.Color()).setRGB(0, 0, 0);
+        p.Eday0 = (p.Eday0 || new THREE.Color()).copy(p.Eday);
+      }
+    }
+  }
+
+  /** The living room's mean exitance (lux, rgb; daylight part apart) – what its portals send into the hall. */
+  _livingExitance() {
+    const W = this._worlds.get(LIVING_ID);
+    if (!W || !this._model) return;
+    const M = (W.M ||= new THREE.Color()).setRGB(0, 0, 0);
+    const Md = (W.Mday ||= new THREE.Color()).setRGB(0, 0, 0);
+    let a = 0;
+    for (const p of this._model.patches) {
+      if (p.kind === 'glass') continue;
+      addScaled(M, p.B, p.area);
+      addScaled(Md, p.Bday, p.area);
+      a += p.area;
+    }
+    M.multiplyScalar(1 / Math.max(1, a));
+    Md.multiplyScalar(1 / Math.max(1, a));
+  }
+
+  /**
+   * The full solve of every other room: its lamps (deposited by _recompute) + daylight + the PORTALS – each open door,
+   * opening and the stairwell sends the neighbour's mean exitance × its opening into the room (Lambertian about the
+   * portal), its daylight part apart. In coupling order from the living room, twice (a room solved later can feed one
+   * solved before it: kjellerstue → kjellergang). Then Lkey, the colour of the light and the white balance per room.
+   */
+  _recomputeRooms(dl, effective) {
+    const ute = this._outsideExitance(dl);
+    const gains = new Map(this._portalDefs.map((q) => [q.id, this._portalGain(q)]));
+    // no light from the last solve: pass 0 couples forward only, pass 1 adds what comes back (deterministic)
+    for (const W of this._worlds.values()) {
+      if (W.living) continue;
+      W.M.setRGB(0, 0, 0);
+      W.Mday.setRGB(0, 0, 0);
+    }
+    for (let pass = 0; pass < 2; pass++) {
+      for (const id of this._roomOrder) {
+        const W = this._worlds.get(id);
+        if (!W) continue;
+        const P = W.model.patches;
+        // lamps (E, deposited by the lamp loop – keep them in E0 on the first pass) + daylight + portals
+        for (const p of P) {
+          if (pass === 0) p.E0.copy(p.E);
+          p.E.copy(p.E0);
+          p.Eday.copy(p.Eday0);
+        }
+        for (const p of P) {
+          if (p.kind !== 'portal' || !p.portal) continue;
+          const g = gains.get(p.portal.id) ?? 0;
+          const N = p.neighbour === OUTSIDE_ID ? ute : this._worlds.get(p.neighbour);
+          // the door leaf (closed part) reflects like the leaf; the open part absorbs and lets the neighbour in
+          p.rho.copy(p.leafRho || _c3.setRGB(0.05, 0.05, 0.05)).multiplyScalar(p.portal.kind === 'door' ? 1 - g : 0);
+          p.inM = (p.inM || new THREE.Color()).setRGB(0, 0, 0);
+          p.inMday = (p.inMday || new THREE.Color()).setRGB(0, 0, 0);
+          if (!N?.M || g <= 0) continue;
+          p.inM.copy(N.M).multiplyScalar(g);
+          p.inMday.copy(N.Mday).multiplyScalar(g);
+          const fluxL = lum(p.inM) * p.area, fluxD = lum(p.inMday) * p.area;
+          if (fluxL > 1e-6) this._depositIn(W.model, p.portalWeights, fluxL, _c1.copy(p.inM).multiplyScalar(1 / Math.max(1e-9, lum(p.inM))), 'E');
+          if (fluxD > 1e-6) this._depositIn(W.model, p.portalWeights, fluxD, _c2.copy(p.inMday).multiplyScalar(1 / Math.max(1e-9, lum(p.inMday))), 'Eday');
+        }
+        solveRadiosity(W.model, 'Eday', 'Bday', 8);
+        for (const p of P) p.E.add(p.Eday);
+        solveRadiosity(W.model, 'E', 'B', 10);
+        // the portals show what comes through them (environment map), the leaf what it reflects
+        for (const p of P) {
+          if (p.kind !== 'portal') continue;
+          p.B.add(p.inM);
+          p.Bday.add(p.inMday);
+        }
+        // mean exitance (what this room sends on) and the key luminance
+        const M = W.M.setRGB(0, 0, 0), Md = W.Mday.setRGB(0, 0, 0);
+        let a = 0, la = 0;
+        for (const p of P) {
+          if (p.kind === 'glass' || p.kind === 'portal') continue;
+          addScaled(M, p.B, p.area);
+          addScaled(Md, p.Bday, p.area);
+          la += (lum(p.B) / Math.PI) * p.area;
+          a += p.area;
+        }
+        M.multiplyScalar(1 / Math.max(1e-3, a));
+        Md.multiplyScalar(1 / Math.max(1e-3, a));
+        W.Lkey = Math.max(0.02, la / Math.max(1e-3, a));
+        if (pass === 1) {
+          // floor daylight incl. what the portals bring (the UI's number; the lamps follow the room's own windows):
+          // the sky through its windows + all daylight bounce, as in the living room
+          const fi = P.indexOf(W.model.floor);
+          let skyDirect = 0;
+          for (const w of W.windows) {
+            const ww = w.frosted ? w.diffuseWeights : w.skyWeights;
+            if (ww) skyDirect += w.skyFlux * (w.frosted ? 1 : 1 - w.groundShare) * ww[fi];
+          }
+          W.dayFloorLux = (skyDirect + this._indirectAtIn(W.model, fi, 'Bday') * W.model.floor.area) / Math.max(1, W.model.floorArea);
+          this._whiteBalanceFor(W, dl, effective);
+        }
+      }
+    }
+  }
+
+  /** The «room» outside the entrance door: daylight off the ground and the forecourt's lamps (mean exitance, lux). */
+  _outsideExitance(dl) {
+    const o = this._ute ||= { M: new THREE.Color(), Mday: new THREE.Color() };
+    const sky = lightColor(dl.skyK);
+    o.Mday.copy(sky).multiplyScalar(GROUND_RHO * dl.Eglobal);
+    let lamp = 0;
+    const col = _c1.setRGB(0, 0, 0);
+    for (const c of this._houseLamps) {
+      if (c.roomId !== OUTSIDE_ID || !(c.flux > 0)) continue;
+      lamp += c.flux;
+      addScaled(col, c.color, c.flux);
+    }
+    o.M.copy(o.Mday);
+    if (lamp > 0) addScaled(o.M, col.multiplyScalar(1 / lamp), (lamp * 0.25) / 12); // ≈ 12 m² under the soffit, ρ 0.25
+    return o;
+  }
+
+  /** _indirectAt for any model. */
+  _indirectAtIn(model, i, key) {
+    const { patches, F } = model;
+    const n = patches.length;
+    let s = 0;
+    for (let j = 0; j < n; j++) {
+      const f = F[i * n + j];
+      if (f) s += f * lum(patches[j][key]);
+    }
+    return s;
+  }
+
+  /** White balance of a room (the living room's rule, see WB and _recompute) → W.wbT, W.wbK, W.wbInfo. */
+  _whiteBalanceFor(W, dl, effective) {
+    const { patches, F } = W.model;
+    const n = patches.length;
+    const illum = new THREE.Color(0, 0, 0), illumDay = new THREE.Color(0, 0, 0);
+    for (let i = 0; i < n; i++) {
+      const p = patches[i];
+      if (p.kind === 'glass' || p.kind === 'portal') continue;
+      let r = p.E.r, g = p.E.g, b = p.E.b;
+      let rd = p.Eday.r, gd = p.Eday.g, bd = p.Eday.b;
+      for (let j = 0; j < n; j++) {
+        const f = F[i * n + j];
+        if (!f) continue;
+        const q = patches[j];
+        r += f * q.B.r;
+        g += f * q.B.g;
+        b += f * q.B.b;
+        rd += f * q.Bday.r;
+        gd += f * q.Bday.g;
+        bd += f * q.Bday.b;
+      }
+      illum.r += r * p.area;
+      illum.g += g * p.area;
+      illum.b += b * p.area;
+      illumDay.r += rd * p.area;
+      illumDay.g += gd * p.area;
+      illumDay.b += bd * p.area;
+    }
+    const illumLamp = new THREE.Color(Math.max(0, illum.r - illumDay.r), Math.max(0, illum.g - illumDay.g), Math.max(0, illum.b - illumDay.b));
+    const nightScale = W.model.totalArea / Math.max(1, this._model?.totalArea ?? 200);
+    addScaled(illumDay, NIGHT_COLOR, NIGHT_FLOOR_LUX * 100 * nightScale);
+    const dayL = lum(illumDay), lampL = lum(illumLamp);
+    const wbp = this._wbParams;
+    const m = (lampL * wbp.pull) / Math.max(1e-6, dayL + lampL * wbp.pull);
+    const alone = 1 - smoothstep(0, 0.08, m);
+    const skyTot = W.skyTot || 0, sunTot = W.sunTot || 0;
+    const srcDayMired = skyTot + sunTot > 1e-6 ? (skyTot * 1e6 / dl.skyK + sunTot * 1e6 / dl.sunK) / (skyTot + sunTot) : 1e6 / 7000;
+    const dayMired = lerp(srcDayMired, 1e6 / cctOf(illumDay), alone);
+    const lampSrcMired = W.lampMiredW > 1e-6 ? W.lampMired / W.lampMiredW : 1e6 / 2700;
+    const lampMiredAvg = lampL > 1e-6 ? lerp(lampSrcMired, 1e6 / cctOf(illumLamp), WB.lampsMeasured * smoothstep(0.5, 0.95, m)) : lampSrcMired;
+    const M65 = 1e6 / 6500;
+    const al = this._lampAdapt(effective);
+    const srcM = lerp(dayMired, lampMiredAvg, m);
+    const aD = lerp(wbp.day, wbp.dayAlone, alone);
+    const appM = lerp(dayMired + aD * (M65 - dayMired), lampMiredAvg + al * (M65 - lampMiredAvg), m);
+    const kOf = (mired) => 1e6 / clamp(mired, 1e6 / 15000, 1e6 / 1200);
+    const A = kelvinToColor(kOf(appM), new THREE.Color()), Sc = kelvinToColor(kOf(srcM), new THREE.Color());
+    const wbT = W.wbT;
+    wbT.setRGB(A.r / Math.max(1e-4, Sc.r), A.g / Math.max(1e-4, Sc.g), A.b / Math.max(1e-4, Sc.b));
+    W.wbK = [Math.round(kOf(srcM)), Math.round(kOf(appM))];
+    const ref = new THREE.Color().copy(illumDay).add(illumLamp).multiplyScalar(1 / Math.max(1e-6, dayL + lampL));
+    ref.multiply(wbT);
+    wbT.multiplyScalar(1 / Math.max(1e-4, lum(ref)));
+    const dayShare = dayL / Math.max(1e-6, dayL + lampL);
+    W.wbInfo = { dayShare, lampShare: W.lampFlux / Math.max(1, W.lampFlux + W.dayFlux), lampWeight: m, whiteK: W.wbK };
+  }
+
+  /**
+   * Drives exposure, white balance, the info numbers, the environment map and the room factors from the camera's
+   * room. The living room: exactly its own solve (as before). Another room: its Lkey, at least min(2, the largest Lkey
+   * the camera can reach) (§4.5), its white balance; the other rooms' indirect light × their radiance relative to it.
+   * @param {boolean} changed  the camera just changed room (ease over HOUSE.roomEase)
+   */
+  _selectRoom(changed) {
+    const L = this._livingRes;
+    if (!L) return;
+    const id = this._camRoomId;
+    const W = this._worlds.get(id);
+    const reach = this._reachable();
+    if (!W || W.living) {
+      this._Lkey = L.Lkey;
+      this._Starget = L.Starget;
+      this._wbTarget.copy(L.wbT);
+      this._wbK = L.wbK;
+      this._wbInfo = L.wbInfo;
+      this._info = L.info;
+      if (this._exteriorFor !== LIVING_ID) this._applyExterior(L.Starget, L.Lkey, LIVING_ID);
+    } else {
+      let reachMax = 0;
+      for (const r of reach) {
+        if (r === id) continue;
+        const o = this._worlds.get(r);
+        if (o) reachMax = Math.max(reachMax, o.living ? L.Lkey : o.Lkey);
+      }
+      const Lkey = Math.max(W.Lkey, Math.min(HOUSE.reachLkeyCap, reachMax));
+      this._Lkey = Lkey;
+      this._Starget = (this._key * (MODE_KEY[L.effective] ?? 1) * this.exposure) / (Math.pow(Lkey, KEY.p) * Math.pow(KEY.L0, 1 - KEY.p));
+      this._wbTarget.copy(W.wbT);
+      this._wbK = W.wbK;
+      this._wbInfo = W.wbInfo;
+      this._info = {
+        ...L.info, room: id, indoorDaylightLux: Math.round(W.dayFloorLux), lampsOnByDefault: !!W.autoOn,
+        lampLumens: Math.round(W.lampFlux), keyLuminance: Lkey, sunInRoom: W.windows.some((w) => w.sunFlux > 50),
+      };
+      this._applyExterior(this._Starget, Lkey, id);
+    }
+    this._info.room = id;
+    // indirect light of the other rooms relative to the camera's (lightmask); the camera's room and outside exactly 1
+    const t = this._table;
+    if (t) {
+      const C = W && !W.living ? W.M : this._worlds.get(LIVING_ID)?.M;
+      for (const [rid, R] of this._worlds) {
+        const e = t.byId[rid];
+        if (!e) continue;
+        // a fragment (also) in the camera's room uses its own environment as is (w = 1): the closed door leaf and the
+        // reveal (in both rooms' hole box) look as before from the living room
+        if (rid === id || !C || !R.M) lightMask.setRoomFactor(e.index, 1, 1, 1, rid === id);
+        else {
+          const f = (a, b) => clamp(a / Math.max(1e-4, b), 0, 50);
+          lightMask.setRoomFactor(e.index, f(R.M.r, C.r), f(R.M.g, C.g), f(R.M.b, C.b), false);
+        }
+      }
+      if (!this._worlds.has(id)) lightMask.setRoomFactor(t.byId[LIVING_ID].index, 1, 1, 1, true);
+      lightMask.setRoomFactor(t.outside, 1, 1, 1, false);
+    }
+    if (changed) {
+      this._roomEaseUntil = this._clock + HOUSE.roomEase;
+      this._selectAt = -1e9;
+      this._applyDirty = true;
+      for (const fn of this._listeners) {
+        try {
+          fn(this._info);
+        } catch (err) {
+          console.warn('[lighting] listener failed', err);
+        }
+      }
+    }
+  }
+
+  /** The photo backdrop and the 3D exterior's sky light for an exposure (the same formula as in _recompute). */
+  _applyExterior(Starget, Lkey, roomId) {
+    this._exteriorFor = roomId;
+    const dl = this._daylight;
+    if (!dl) return;
+    const Lout = (dl.Eglobal * 0.35) / Math.PI;
+    const Sview = Starget * Math.pow(Math.min(1, Lkey / VIEW_LKEY_MIN), KEY.p);
+    const view = clamp((Lout * Sview) / 0.5);
+    this._exteriorLevel = Math.max(0.03, Math.sqrt(view));
+    const skyPhys = (dl.Edh * Sview) / Math.PI;
+    const skyRad = OUTDOOR.cap * (1 - Math.exp(-skyPhys / OUTDOOR.cap));
+    const skyLight = lightColor(Math.min(dl.skyK, OUTDOOR.maxK));
+    const groundLight = (this._groundColor || new THREE.Color(1, 1, 1)).clone().multiplyScalar(OUTDOOR.ground * (dl.Eglobal / Math.max(1e-6, dl.Edh)));
+    this._outdoor = { sky: skyLight.multiplyScalar(skyRad), ground: groundLight.multiplyScalar(skyRad), envSize: this.profile.env };
+    try {
+      this.home?.exterior?.setDaylight?.(this._exteriorLevel, this._skyHex, this._outdoor);
+    } catch (err) {
+      console.warn('[lighting] exterior.setDaylight failed', err);
+    }
+  }
+
   /** Traces the sun beam through a window onto the room patches (9 rays). */
-  _traceSun(w, sunDir, color) {
-    const model = this._model;
+  _traceSun(w, sunDir, color, model = this._model) {
     const d = this._traceDir.copy(sunDir).negate(); // own vector: patch.hit() uses the shared temporaries
     const per = w.sunFlux / w.samples.length;
     let floorHits = 0;
@@ -1948,18 +3077,22 @@ export class LightManager {
     if (cp) this._lastCamPos.copy(cp);
     if (camera?.getWorldDirection) this._camFwd = camera.getWorldDirection(this._camFwd || new THREE.Vector3());
     const groups = { point: [], spot: [], rect: [] };
-    for (const c of this._allLampCandidates()) if (c.on && c.flux > 0) groups[c.kind]?.push(c);
-    for (const c of this._extraRects()) if (c.on) groups.rect.push(c);
+    // only the sources of the rooms the camera can reach (§4.1: with the doors shut, the living room's own)
+    const reach = this._worlds.size > 1 ? this._reachable() : null;
+    const ok = (c) => !reach || reach.has(c.roomId ?? LIVING_ID);
+    this._reach = reach;
+    for (const c of this._allLampCandidates()) if (c.on && c.flux > 0 && ok(c)) groups[c.kind]?.push(c);
+    for (const c of this._extraRects()) if (c.on && ok(c)) groups.rect.push(c);
     // rect slots first: windows without one compete for a plain spot slot with their far-field stand-in
     for (const kind of ['rect', 'point', 'spot']) {
       const slots = this._pool[kind];
       if (kind === 'spot') {
-        for (const w of this._windows) {
+        for (const w of [...this._windows, ...this._roomWindows]) {
           const sc = w.spotCand;
           sc.on = w.cand.on && !(w.cand.slot && w.cand.slot.cand === w.cand);
-          if (sc.on) groups.spot.push(sc);
+          if (sc.on && ok(sc)) groups.spot.push(sc);
         }
-        for (const b of this._bounces || []) if (b.on) groups.spot.push(b);
+        for (const b of this._bounces || []) if (b.on && ok(b)) groups.spot.push(b);
       }
       const list = groups[kind];
       for (const c of list) c.score = this._score(c, cp);
@@ -2005,7 +3138,7 @@ export class LightManager {
     // the high-wall spots draw visible scallops and the LED coves a warm wash under the ceiling: they matter more than
     // their flux says (add-lighting: at photo-like lumens the coves lost every rect slot to the windows, whose
     // far-field spot stand-in looks nearly the same from a few metres – the cove without its wash does not)
-    const signature = c.wantsShadow ? 2.5 : c.strip ? STRIP_SIGNATURE : 1;
+    const signature = c.wantsShadow ? 2.5 : c.strip ? (c.stripSignature ?? STRIP_SIGNATURE) : 1;
     return (c.flux * view * signature * (c.slot ? 1.3 : 1)) / (1 + d2);
   }
 
@@ -2061,6 +3194,21 @@ export class LightManager {
     const spare = shadowSlots.filter((s) => !s.cand || !shadowed.includes(s.cand));
     for (const c of rest) if (c.slot?.shadowed && !spare.includes(c.slot)) c.slot = null;
     this._assign([...plain, ...spare], rest);
+    // shadow slots only for cones ≤ 50° (§4.9): a wide house lamp (plafond, grouped downlights) that landed in a spare
+    // shadow slot swaps with a lamp in a plain slot that may cast shadows (the living room's lamps never have noShadow)
+    for (const s of spare) {
+      if (!s.cand?.noShadow) continue;
+      const p = plain.find((q) => q.cand && !q.cand.noShadow);
+      if (!p) break;
+      const a = s.cand, b = p.cand;
+      s.cand = b;
+      b.slot = s;
+      p.cand = a;
+      a.slot = p;
+      this._configureSlot(s, b);
+      this._configureSlot(p, a);
+      this._requestSunShadow(s);
+    }
   }
 
   /** Copies a candidate's geometry into a pool light. */
@@ -2122,9 +3270,15 @@ export class LightManager {
       ambLux += e;
       addScaled(ambCol, c.color, e);
     };
+    const masks = !!this._table;
     for (const kind of ['point', 'spot', 'rect']) {
       for (const s of this._pool[kind]) {
         const c = s.cand;
+        if (masks) {
+          // the slot lights the room of its source (lightmask.js)
+          const [bits, home] = c ? this._maskOf(c) : [0, 0];
+          lightMask.setSlot(kind, s.shaderIndex ?? 0, bits, home);
+        }
         if (!c || !c.on) {
           s.light.intensity = 0;
           continue;
@@ -2138,10 +3292,13 @@ export class LightManager {
         }
       }
     }
-    for (const c of this._allLampCandidates()) if (c.on && !c.slot) addAmbient(c);
+    // only the camera room's sources without a slot: the ambient term is the light round the camera (other rooms get
+    // theirs through the room factor of their bounce)
+    const here = (c) => !masks || (c.roomId ?? LIVING_ID) === this._camRoomId;
+    for (const c of this._allLampCandidates()) if (c.on && !c.slot && here(c)) addAmbient(c);
     // a window without a rect slot is lit by its far-field spot when that has a slot (its fade-in is ambient above)
-    for (const c of this._extraRects()) if (c.on && !c.slot && !c.spotCand?.slot) addAmbient(c);
-    for (const c of this._bounces || []) if (c.on && !c.slot) addAmbient(c);
+    for (const c of this._extraRects()) if (c.on && !c.slot && !c.spotCand?.slot && here(c)) addAmbient(c);
+    for (const c of this._bounces || []) if (c.on && !c.slot && here(c)) addAmbient(c);
     // eased (the budget re-runs every 0.25 s / 0.5 m of camera movement)
     this._ambTarget = ambLux;
     if (this._ambNow == null) this._ambNow = ambLux;
@@ -2202,24 +3359,39 @@ export class LightManager {
   _maybeBuildEnv(renderer) {
     if (!this._pmrem || !this._model) return;
     const S = this._S ?? this._Starget;
-    const drift = Math.abs(Math.log(S / (this._Senv || S)));
-    if (!this._envDirty && drift < 0.7) return;
+    // the camera room's own map (one PMREM per room, cached): a room change swaps to it, or builds it once
+    const W = this._worlds.get(this._camRoomId) ?? null;
+    const env = W?.env ?? null;
+    if (env?.rt && !env.dirty && this.scene.environment !== env.rt.texture) {
+      this.scene.environment = env.rt.texture;
+      this._envRT = env.rt;
+      this._Senv = env.Senv;
+      this._applyDirty = true;
+    }
+    const dirty = env ? env.dirty || !env.rt : this._envDirty;
+    const drift = Math.abs(Math.log(S / ((env ? env.Senv : this._Senv) || S)));
+    // (while the eye eases after a room change the map was built for the target: environmentIntensity follows)
+    if (!dirty && (drift < 0.7 || this._clock < this._roomEaseUntil)) return;
     // throttle while sliders are dragged: at most every ENV_MIN_INTERVAL s; the last change is built at most that long
     // after it (a single click rebuilds at once – the previous build is older than the interval)
     if (this._clock - this._envAt < ENV_MIN_INTERVAL && this._envBuilt) return;
-    this._buildEnv(renderer, false);
+    // right after a room change: built at the exposure the eye is easing toward (no second build for the drift)
+    this._buildEnv(renderer, false, W, this._clock < this._roomEaseUntil);
   }
 
-  /** Patch radiances → env meshes → PMREM (scene.environment). ≈ 1 ms. */
-  _buildEnv(renderer, initial) {
-    const model = this._model;
-    const S = initial ? 1 : (this._S ?? this._Starget);
+  /** Patch radiances → env meshes → PMREM (scene.environment). ≈ 1 ms. W = the room (default the living room). */
+  _buildEnv(renderer, initial, W = null, atTarget = false) {
+    const world = W ?? this._worlds.get(LIVING_ID) ?? null;
+    const living = !world || world.living;
+    const model = living ? this._model : world.model;
+    const S = initial ? 1 : atTarget ? this._Starget : (this._S ?? this._Starget);
     const wb = this._wb;
+    const windows = living ? this._windows : world.windows;
     for (const p of model.patches) {
       if (initial) p.L.setRGB(0.05, 0.05, 0.05);
       else {
         p.L.copy(p.B);
-        if (p.kind === 'floor' && this._bounces?.length) {
+        if (living && p.kind === 'floor' && this._bounces?.length) {
           _c1.copy(p.Esun).multiply(p.rho);
           p.L.r = Math.max(0, p.L.r - _c1.r);
           p.L.g = Math.max(0, p.L.g - _c1.g);
@@ -2228,24 +3400,32 @@ export class LightManager {
         p.L.multiplyScalar(S / Math.PI).multiply(wb);
         if (p.kind === 'glass') {
           // a faint view through the glass in reflections (the sky itself comes from the window lights)
-          const w = this._windows.find((x) => `glass:${x.id}` === p.id);
+          const w = windows.find((x) => `glass:${x.id}` === p.id);
           if (w) p.L.add(_c1.copy(w.cand.color).multiply(wb).multiplyScalar(w.L * S * 0.12));
         }
       }
       for (const m of p.meshes) m.material.color.copy(p.L);
     }
     const size = this.profile.env;
-    const probe = new THREE.Vector3(4.8, 1.45, 7.4);
-    if (this.layout && !this.layout.isInside(probe.x, probe.z)) probe.set(this.center.x, 1.45, this.center.z);
+    let probe;
+    if (living) {
+      probe = new THREE.Vector3(4.8, 1.45, 7.4);
+      if (this.layout && !this.layout.isInside(probe.x, probe.z)) probe.set(this.center.x, 1.45, this.center.z);
+    } else probe = world.probe;
     // the room copy → a cube render target → PMREM into the SAME target every time (fix-lighting r1: fromScene()
-    // allocated and disposed a new target per rebuild – costly while the clock slider is dragged)
+    // allocated and disposed a new target per rebuild – costly while the clock slider is dragged); one per room
     if (!this._envCube || this._envCube.width !== size) {
       this._envCube?.dispose();
       this._envCube = new THREE.WebGLCubeRenderTarget(size, { type: THREE.HalfFloatType, generateMipmaps: false, depthBuffer: true });
       this._envCubeCam = new THREE.CubeCamera(0.03, 40, this._envCube);
       this._envRT?.dispose();
       this._envRT = null;
+      for (const w of this._worlds.values()) {
+        if (w.env.rt && w.env.rt !== this._envRT) w.env.rt.dispose();
+        w.env.rt = null;
+      }
     }
+    const target = world ? world.env.rt : this._envRT;
     const cc = renderer.getClearColor(_cc).getHex();
     const ca = renderer.getClearAlpha();
     const tm = renderer.toneMapping;
@@ -2256,13 +3436,18 @@ export class LightManager {
     this._envCubeCam.update(renderer, model.envScene);
     renderer.setClearColor(cc, ca);
     renderer.toneMapping = tm;
-    const rt = this._pmrem.fromCubemap(this._envCube.texture, this._envRT);
+    const rt = this._pmrem.fromCubemap(this._envCube.texture, target);
     this._envRT = rt;
     if (this.scene.environment !== rt.texture) this.scene.environment = rt.texture;
     this.scene.environmentIntensity = 1;
     this._Senv = S;
     this._envAt = this._clock;
-    this._envDirty = false;
+    if (world) {
+      world.env.rt = rt;
+      world.env.Senv = S;
+      world.env.dirty = !!initial;
+    }
+    if (living) this._envDirty = false;
     this._envBuilt = !initial;
     this.stats.envBuilds = (this.stats.envBuilds || 0) + 1;
     if (!initial) this._applyDirty = true;
@@ -2284,8 +3469,8 @@ export class LightManager {
         g.blendIntensity = 0.7;
         g.updateGtaoMaterial({ radius: 0.32, distanceExponent: 1.6, thickness: 1.2, scale: 1.0, samples: 16, distanceFallOff: 1.0, screenSpaceRadius: false });
         g.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 12 });
-        const bb = this.layout?.bounds;
-        if (bb) g.setSceneClipBox(new THREE.Box3(new THREE.Vector3(bb.minX - 0.4, -0.2, bb.minZ - 0.4), new THREE.Vector3(bb.maxX + 0.4, 3.3, bb.maxZ + 0.4)));
+        const box = this._aoBoxFor(this._camLevelId);
+        if (box) g.setSceneClipBox(box);
         this._gtao = g;
         this._aoSize = size;
       } catch (err) {
