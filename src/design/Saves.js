@@ -34,11 +34,14 @@ export function sessionName(d = new Date()) {
   return `${SESSION_PREFIX}${pad(d.getDate())}.${pad(d.getMonth() + 1)}. ${pad(d.getHours())}:${pad(d.getMinutes())})`;
 }
 
-/** Comparable JSON of the parts of a design that count as «work» (furniture, wall, shading, paint – not env/meta). */
+/**
+ * Comparable JSON of the parts of a design that count as «work» (furniture, wall, shading, paint, slat finishes – not
+ * env/meta). A design without `finishes` (saved before them) compares like one with none.
+ */
 function workKey(json) {
   if (!json || typeof json !== 'object') return '';
   const items = (Array.isArray(json.items) ? json.items : []).map((it) => JSON.stringify(it)).sort();
-  return JSON.stringify([items, json.wall ?? null, json.windows ?? {}, json.paints ?? {}]);
+  return JSON.stringify([items, json.wall ?? null, json.windows ?? {}, json.paints ?? {}, json.finishes ?? {}]);
 }
 
 let _originalKey = null;
@@ -184,7 +187,7 @@ export class Saves {
     return removed;
   }
 
-  /** True when a design JSON differs from today's room in furniture, wall, shading or paint (not just light/time). */
+  /** True when a design JSON differs from today's room in furniture, wall, shading, paint or slats (not just light/time). */
   isWork(json) {
     if (!json) return false;
     if (_originalKey == null) {

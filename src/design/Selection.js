@@ -1,24 +1,25 @@
 // Selection – picking furniture, walls and windows with the mouse (ARCHITECTURE §11, §14). Owned by INTERACT.
 //
 //   new Selection(editor)
-//   handleClick(ndc) → bool       canvas click: selects an item / wall / window (editor.select), or deselects; false
-//                                 lets the InteractionSystem have the click (doors keep working)
+//   handleClick(ndc) → bool       canvas click: selects an item / wall / ceiling / window (editor.select), or deselects;
+//                                 false lets the InteractionSystem have the click (doors keep working)
 //   pointerDown(event) → bool     left press on the canvas (Input.setPointerClaim in walk mode, ViewModes otherwise):
 //                                 true when it lands on the selected item (→ move) or on its rotate handle or outline
 //                                 (→ rotate): drag via Placement
 //   update(dt), dispose()
-//   hover                         { kind, uid?, wallId?, windowId?, name } under the cursor (null when none)
+//   hover                         { kind, uid?, wallId?, windowId?, ceilingId?, name } under the cursor (null when none)
 //   hoverSeat() → { uid, name, eye, yaw } | null   the hovered chair / sofa when it can be sat on (E, Game)
 //
 // Hover: rim glow (core/Highlight.js) + a small cursor hint («Lenestol – klikk for å endre»). The selected item gets an
 // amber glow and a footprint gizmo on its underlay (outline, front arrow, rotate handle). The whole outline turns the
 // item too: within EDGE_PX screen pixels of it (not on the item itself) the cursor becomes ROTATE_CURSOR and the rotate
-// handle slides along the line under it. Keys for the selected item
+// handle slides along the line under it. A selected ceiling flashes amber over its surface and slats and keeps a faint
+// glow (a ceiling has no footprint). Keys for the selected item
 // (only when no text field has focus): R / Shift+R ±15°, Delete/Backspace removes, D (Ctrl+D in walk mode, where D
 // strafes) duplicates, arrow keys move 2 cm (Shift: 10 cm). Esc is handled by the Editor (deselect).
 //
 // Shared helpers for the other INTERACT modules (Placement, ViewModes): pickAt, cursorNDC, cursorClient,
-// ndcFromClient, Footprint, hintUI, houseRoots, floorYAt, underlayY.
+// ndcFromClient, Footprint, hintUI, houseRoots, floorYAt, underlayY, surfaceInfo (a ceiling's / bulkhead's name).
 // The whole house (notes/hele-huset-design.md §5.3): picking also tests every room's surfaces and contents
 // (home.roots.rooms[id], houseRoots – the bathroom, the basement …); the footprint gizmo stands on the floor of the
 // item's level (the entrance's lower floor too) and only that level's rugs lift it.
@@ -35,8 +36,8 @@ const DRAG_PX = 5;
 /** Screen pixels from the centre of the selected item's outline within which a press rotates the item. */
 const EDGE_PX = 10;
 const ARROWS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']);
-const SELECTABLE = new Set(['item', 'wall', 'window']);
-/** Hover picking: walls, windows and items are targets; floor, ceilings and everything else only occlude. */
+const SELECTABLE = new Set(['item', 'wall', 'window', 'ceiling']);
+/** Hover picking: walls, ceilings, windows and items are targets; the floor and everything else only occlude. */
 const HOVER = { want: SELECTABLE };
 /** Visibility picking: the first visible surface of any kind (floor, wall, item …). */
 const ANY = { want: { has: () => true } };
@@ -529,6 +530,30 @@ export function houseRoots(home) {
 /** Display name for an item ('Lenestol' …). */
 export function itemName(item) {
   return item?.name || 'Møbel';
+}
+
+/**
+ * What of a wall's / ceiling's slat finish glows with it: its highlight proxy (one even glow over the panel – an
+ * outline around every slat would turn into a striped amber block at a grazing angle) and the felt behind the slats
+ * (its outline rims the panel). Empty when the surface has no slats.
+ */
+function finishGlow(editor, surfaceId) {
+  const g = editor.sync?.finishObject?.(surfaceId);
+  const parts = g?.visible ? g.userData.model?.parts : null;
+  return parts ? [...(parts.glow || []), ...(parts.backing || [])] : [];
+}
+
+/**
+ * A ceiling or bulkhead of the house by id (hover text, Inspector): { name, bulkhead } or null.
+ * @param {object} editor
+ * @param {string} id  ceiling / bulkhead id (userData.pick.ceilingId)
+ */
+export function surfaceInfo(editor, id) {
+  const L = editor?.layout;
+  const c = (L?.house?.ceilings ?? L?.ceilings ?? []).find((x) => x.id === id);
+  if (c) return { name: c.name || 'Tak', bulkhead: false };
+  const b = (L?.house?.bulkheads ?? L?.bulkheads ?? []).find((x) => x.id === id);
+  return b ? { name: b.name || 'Nedforing', bulkhead: true } : null;
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -1288,6 +1313,7 @@ export class Selection {
     this.hint = hintUI(editor);
     // selected: mostly outline, so the colour the user just picked stays readable
     this.selectedGlow = new Highlighter({ color: 0xffb52e, glow: 0.22 });
+    this.surfaceGlow = new Highlighter({ color: 0xffb52e, glow: 0.28 }); // a selected ceiling (_surfaceGlowTick)
     this.hoverGlow = new Highlighter({ color: 0xfff3dc });
     this.footprint = new Footprint(editor, { name: 'ix-selection' });
     this.hover = null;
@@ -1307,6 +1333,10 @@ export class Selection {
     this._offBuilt = editor.sync.on('built', ({ uid }) => {
       if (uid === editor.selected?.uid) this._selObj = null; // re-attach the glow to the rebuilt model
       if (uid === this.hover?.uid) this._hoverKey = '';
+    });
+    // a wall's / ceiling's slats were rebuilt: the hover glow takes the new ones
+    this._offFinish = editor.sync.on?.('finish', ({ surfaceId }) => {
+      if (surfaceId === this.hover?.wallId || surfaceId === this.hover?.ceilingId) this._hoverKey = '';
     });
     // walk mode: left presses on the selected item belong to us (no mouse-look), arrow keys nudge it
     editor.input?.setPointerClaim?.((e) => this.pointerDown(e));
@@ -1338,6 +1368,7 @@ export class Selection {
       if (e.selected?.uid !== hit.uid) e.events.emit('sfx', { name: 'ui-click', volume: 0.6 });
       e.select({ kind: 'item', uid: hit.uid });
     } else if (hit.kind === 'wall') e.select({ kind: 'wall', wallId: hit.wallId, point: hit.point }); // WallPanel picks the element under it
+    else if (hit.kind === 'ceiling') e.select({ kind: 'ceiling', ceilingId: hit.ceilingId, point: hit.point });
     else if (hit.kind === 'window') e.select({ kind: 'window', windowId: hit.windowId, point: hit.point });
     return true;
   }
@@ -1438,6 +1469,7 @@ export class Selection {
       this.selectedGlow.set(obj && obj.visible ? obj : null);
     }
     this.selectedGlow.update();
+    this._surfaceGlowTick(sel);
 
     const placing = !!e.placement?.isPlacing;
     const drag = e.placement?.dragState ?? null;
@@ -1484,7 +1516,7 @@ export class Selection {
     const turning = this._press?.kind === 'rotate' || (drag?.kind === 'rotate' && drag.uid === uid);
     if (!turning && !this._rot?.handle) this.footprint.setGrip(this._rot);
 
-    const key = hover ? `${hover.kind}:${hover.uid || hover.wallId || hover.windowId}` : '';
+    const key = hover ? `${hover.kind}:${hover.uid || hover.wallId || hover.windowId || hover.ceilingId}` : '';
     if (key !== this._hoverKey) {
       this._hoverKey = key;
       this.hoverGlow.set(hover && !(hover.kind === 'item' && hover.uid === uid) ? this._glowRoots(hover) : null);
@@ -1549,7 +1581,12 @@ export class Selection {
     if (hit.kind === 'wall') {
       const high = hit.wallId === e.home.highWall?.wallId;
       const wall = e.home.walls?.find((w) => w.id === hit.wallId);
-      return { kind: 'wall', wallId: hit.wallId, name: high ? 'Den høye veggen' : wall?.name || 'Vegg', action: high ? '– klikk for forslag' : '– klikk for å endre farge', object: hit.object };
+      return { kind: 'wall', wallId: hit.wallId, name: high ? 'Den høye veggen' : wall?.name || 'Vegg', action: high ? '– klikk for forslag' : '– klikk for farge eller spiler', object: hit.object };
+    }
+    if (hit.kind === 'ceiling') {
+      const info = surfaceInfo(e, hit.ceilingId);
+      if (!info) return null;
+      return { kind: 'ceiling', ceilingId: hit.ceilingId, name: info.name, action: info.bulkhead ? '– klikk for å endre farge' : '– klikk for farge eller spilepanel', object: hit.object };
     }
     if (hit.kind === 'window') {
       const win = e.home.windows?.find((w) => w.id === hit.windowId);
@@ -1568,8 +1605,10 @@ export class Selection {
       const wall = e.home.walls?.find((w) => w.id === hover.wallId);
       const roots = [...(wall?.meshes || [hover.object])];
       if (hover.wallId === e.home.highWall?.wallId && e.home.highWall.anchor) roots.push(e.home.highWall.anchor);
+      roots.push(...finishGlow(e, hover.wallId));
       return roots.filter((m) => !e.views?.isConcealed?.(m));
     }
+    if (hover.kind === 'ceiling') return this._ceilingRoots(hover.ceilingId, hover.object);
     if (hover.kind === 'window') {
       // the glass, the window's own frame parts (named after the opening) and its sun shading
       const id = hover.windowId;
@@ -1588,6 +1627,49 @@ export class Selection {
       return list.length ? list : hover.object;
     }
     return null;
+  }
+
+  /** A ceiling's (or bulkhead's) meshes and its slats, for the glow. */
+  _ceilingRoots(id, fallback = null) {
+    const e = this.editor;
+    const roots = (e.home.pickables?.ceilings || []).filter((m) => m.userData?.pick?.ceilingId === id && !e.views?.isConcealed?.(m));
+    if (!roots.length && fallback) roots.push(fallback);
+    roots.push(...finishGlow(e, id));
+    return roots.length ? roots : null;
+  }
+
+  /**
+   * A selected ceiling glows on its own: a big surface has hardly any silhouette for the outline, so its surface flashes
+   * amber when it is selected and settles to a faint glow (the colour being picked stays readable).
+   */
+  _surfaceGlowTick(sel) {
+    const surf = this._surfaceGlow(sel);
+    if (surf !== this._surfObj) {
+      const id = sel?.kind === 'ceiling' ? sel.ceilingId : null;
+      if (id !== this._surfId) this._surfT0 = performance.now();
+      this._surfId = id;
+      this._surfObj = surf;
+      this.surfaceGlow.set(surf);
+    }
+    if (!surf) return;
+    const t = (performance.now() - (this._surfT0 || 0)) / 1000;
+    this.surfaceGlow.uniforms.uGlow.value = 0.28 + 0.9 * Math.max(0, 1 - t / 1.4);
+    this.surfaceGlow.update();
+  }
+
+  /**
+   * The surface-glow target of a selected ceiling: its meshes and its slats' glow proxy (the same array while nothing
+   * changed, so the glow is not rebuilt every frame); null for anything else.
+   */
+  _surfaceGlow(sel) {
+    if (sel?.kind !== 'ceiling') {
+      this._surfGlow = null;
+      return null;
+    }
+    const slats = this.editor.sync.finishObject?.(sel.ceilingId) ?? null;
+    const key = `${sel.ceilingId}|${slats?.uuid ?? ''}|${slats?.visible ?? ''}|${this.editor.views?.mode ?? ''}`;
+    if (this._surfGlow?.key !== key) this._surfGlow = { key, roots: this._ceilingRoots(sel.ceilingId) };
+    return this._surfGlow.roots;
   }
 
   // ---- keys --------------------------------------------------------------------------------------------------
@@ -1702,10 +1784,12 @@ export class Selection {
     window.removeEventListener('keydown', this._onKey);
     this._endPress();
     this._offBuilt?.();
+    this._offFinish?.();
     const input = this.editor.input;
     input?.setPointerClaim?.(null);
     input?.setKeyClaim?.(null);
     this.selectedGlow.dispose();
+    this.surfaceGlow.dispose();
     this.hoverGlow.dispose();
     this.footprint.dispose();
     this.hint.dispose();

@@ -524,6 +524,102 @@ orig.remove(vUid);
 orig.remove(zUid);
 
 // ---------------------------------------------------------------------------------------------------------------
+section('Slat finishes (spiler på vegger og tak)');
+const F = await imp('src/design/Finishes.js');
+check('surface kinds: walls and ceilings; the high wall and the bulkheads get none', F.surfaceKind(layout, 'w-sor') === 'wall' && F.surfaceKind(layout, 'c-stue') === 'ceiling'
+  && F.surfaceKind(layout, 'c-bad') === 'ceiling' && F.surfaceKind(layout, 'w-gang-ost') === 'wall' && F.surfaceKind(layout, 'w-hoy') === null && F.surfaceKind(layout, 'b-tvstue') === null);
+const fd = new DesignState();
+const fn0 = fd.historySize;
+fd.setFinish('c-stue', { type: 'slats', look: 'oak' });
+fd.setFinish('w-sor', { type: 'slats', look: 'walnut', slatW: 9, extent: 'section', u: 1, w: 2, h: 1.6, direction: 'across' });
+check('setFinish normalises per kind (a wall: extent/u/w/h, a ceiling: direction; numbers clamped)', fd.finishes['c-stue'].direction === 'along' && !('extent' in fd.finishes['c-stue'])
+  && fd.finishes['w-sor'].extent === 'section' && fd.finishes['w-sor'].h === 1.6 && fd.finishes['w-sor'].slatW === 0.12 && !('direction' in fd.finishes['w-sor']));
+fd.setFinish('w-hoy', { type: 'slats' });
+fd.setFinish('w-finnes-ikke', { type: 'slats' });
+check('no finish on the high wall or an unknown surface', !fd.finishes['w-hoy'] && !fd.finishes['w-finnes-ikke']);
+check('each setFinish is one undo step', fd.historySize === fn0 + 2 && fd.undoLabel === 'Legg inn spiler', `${fd.historySize - fn0} ${fd.undoLabel}`);
+fd.setFinish('w-sor', { ...fd.finishes['w-sor'], gap: 0.02 }, { coalesce: 'gap' });
+fd.setFinish('w-sor', { ...fd.finishes['w-sor'], gap: 0.025 }, { coalesce: 'gap' });
+check('a slider drag (same coalesce key) is one step', fd.historySize === fn0 + 3 && fd.finishes['w-sor'].gap === 0.025 && fd.undoLabel === 'Endre spiler');
+fd.undo();
+check('undo restores the finish from before the drag', fd.finishes['w-sor'].gap === 0.013);
+fd.redo();
+let fev = null;
+const offFev = fd.on('finish', (e) => (fev = e));
+fd.setFinish('c-stue', null);
+offFev();
+check("removing emits 'finish' with spec null", fev?.surfaceId === 'c-stue' && fev.spec === null && !fd.finishes['c-stue']);
+fd.undo();
+check('undo brings the ceiling slats back', fd.finishes['c-stue']?.look === 'oak');
+const fj = fd.toJSON();
+const fd2 = new DesignState({ original: false });
+fd2.load(JSON.stringify(fj));
+check('toJSON → load keeps the finishes', JSON.stringify(fd2.finishes) === JSON.stringify(fd.finishes) && JSON.stringify(fd2.toJSON().finishes) === JSON.stringify(fj.finishes));
+const { finishes: _noFinishes, ...fjOld } = fj;
+const fd3 = new DesignState();
+fd3.load(fjOld);
+check('a design saved before the finishes loads with none', JSON.stringify(fd3.finishes) === '{}' && fd3.items.size === fd.items.size);
+fd3.load({ ...fj, finishes: { 'w-hoy': { type: 'slats' }, 'w-x': { type: 'slats' }, 'c-bad': { look: 'nope', slatW: 'x' } } });
+check('loading drops finishes on unknown surfaces / the high wall and fixes bad values', Object.keys(fd3.finishes).join() === 'c-bad' && fd3.finishes['c-bad'].look === 'oak' && fd3.finishes['c-bad'].slatW === 0.027);
+fd3.load(fj);
+fd3.load(new DesignState().originalJSON(), { keepHistory: true });
+check('a load step (Original) removes the finishes, undo brings them back', !Object.keys(fd3.finishes).length && fd3.undo() && fd3.finishes['w-sor']?.look === 'walnut');
+const savesF = new (await imp('src/design/Saves.js')).Saves(new DesignState(), { storage: null, autosave: false });
+check('a design with only slats counts as work (Forrige økt)', savesF.isWork({ ...new DesignState().toJSON(), finishes: { 'c-stue': fd.finishes['c-stue'] } }) && !savesF.isWork(new DesignState().toJSON()));
+
+// geometry: windows / doors stay free, slopes are followed, lamps are cut around
+const rSor = F.finishRegion(layout, 'w-sor', F.defaultFinish('wall'));
+const lSor = F.slatLayout(rSor);
+const sorHoles = layout.wallsById['w-sor'].holes;
+const overHole = lSor.slats.some((s) => s.runs.some(([a, b]) => sorHoles.some((o) => s.c + rSor.slatW / 2 > o.u0 && s.c - rSor.slatW / 2 < o.u1 && b > o.sill + 1e-3 && a < o.top)));
+check(`w-sor: ${lSor.slats.length} slats, none over a window or the terrace door`, lSor.slats.length > 100 && !overHole);
+const rVest = F.finishRegion(layout, 'w-vest-stue', F.defaultFinish('wall'));
+const lVest = F.slatLayout(rVest);
+const wVest = layout.wallsById['w-vest-stue'];
+const slopeOk = lVest.slats.every((s) => {
+  const top = s.runs[s.runs.length - 1][1];
+  const under = Math.min(wVest.heightAt(s.c - rVest.slatW / 2), wVest.heightAt(s.c + rVest.slatW / 2));
+  return top <= under && top > under - 0.02;
+});
+check(`w-vest-stue: ${lVest.slats.length} slats follow the sloped top (2.40 → 3.00 m) within 2 cm`, lVest.slats.length > 80 && slopeOk);
+const rSec = F.finishRegion(layout, 'w-sor', fd.finishes['w-sor']);
+const lSec = F.slatLayout(rSec);
+check('a section: within u 1–3 m and under 1.60 m', lSec.slats.every((s) => s.c > 1 && s.c < 3 && s.runs.every(([, b]) => b <= 1.6 + 1e-9)));
+const rCeil = F.finishRegion(layout, 'c-stue', F.defaultFinish('ceiling'));
+const lCeil = F.slatLayout(rCeil);
+const cStue = layout.ceilings.find((c) => c.id === 'c-stue');
+const fr = rCeil.frame;
+const world = (x, y, z) => [0, 1, 2].map((i) => fr.origin[i] + fr.x[i] * x + fr.y[i] * y + fr.z[i] * z);
+const followsSlope = lCeil.slats.every((s) => s.runs.every(([a, b]) => [a, b].every((x) => {
+  const p = world(x, s.c, rCeil.base + rCeil.depth);
+  const gap = cStue.topAt(p[0], p[2]) - p[1];
+  return gap > 0.015 && gap < 0.03;
+})));
+check(`c-stue: ${lCeil.slats.length} slats in the sloped ceiling plane (face 1.5–3 cm under it everywhere)`, lCeil.slats.length > 60 && followsSlope && Math.abs(fr.z[1]) < 0.999);
+const spotsFree = layout.builtInLights.filter((l) => l.type === 'spot').every((l) => {
+  const P = [l.position.x - fr.origin[0], cStue.topAt(l.position.x, l.position.z) - fr.origin[1], l.position.z - fr.origin[2]];
+  const lx = P[0] * fr.x[0] + P[1] * fr.x[1] + P[2] * fr.x[2];
+  const ly = P[0] * fr.y[0] + P[1] * fr.y[1] + P[2] * fr.y[2];
+  return !lCeil.slats.some((s) => Math.abs(s.c - ly) < rCeil.slatW / 2 && s.runs.some(([a, b]) => lx > a && lx < b));
+});
+check('c-stue: the spots at the high wall are cut around', spotsFree && rCeil.holes.length >= 5);
+
+// acoustics: felt-backed slats absorb like the high wall's slats (0.76), straight on the surface nothing
+const fa = new DesignState();
+const ra0 = ac.computeAcoustics(fa, { layout });
+fa.setFinish('c-stue', { type: 'slats' });
+const raC = ac.computeAcoustics(fa, { layout });
+const areaC = F.finishArea(layout, 'c-stue', fa.finishes['c-stue']);
+check(`ceiling slats on felt: +${(raC.absorption - ra0.absorption).toFixed(2)} m² (${areaC.toFixed(1)} m² × 0.76), RT60 ${ra0.rt60.toFixed(2)} → ${raC.rt60.toFixed(2)} s`,
+  near(raC.absorption - ra0.absorption, areaC * 0.76, 1e-6) && areaC > 25 && areaC < 34 && raC.rt60 < 0.55 && raC.changes.some((c) => c.label.startsWith('Spiler: Skråtak')) && raC.breakdown.some((b) => b.label === 'Spiler på vegger og tak'));
+fa.setFinish('c-stue', { type: 'slats', backing: 'none' });
+check('slats without felt add nothing', near(ac.computeAcoustics(fa, { layout }).rt60, ra0.rt60, 1e-9));
+fa.setFinish('c-stue', null);
+fa.setFinish('c-bad', { type: 'slats' });
+check('the bathroom ceiling counts in the bathroom, not the living room', near(ac.computeAcoustics(fa, { layout }).rt60, 0.86, 0.005)
+  && ac.computeAcoustics(fa, { layout }, { roomId: 'bad' }).rt60 < ac.computeAcoustics(new DesignState(), { layout }, { roomId: 'bad' }).rt60 - 0.05);
+
+// ---------------------------------------------------------------------------------------------------------------
 section('Saves');
 const { Saves, STORAGE_KEY } = await imp('src/design/Saves.js');
 const mem = new Map();

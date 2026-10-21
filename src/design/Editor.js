@@ -31,7 +31,7 @@ import { isTyping } from '../ui/dom.js';
  *                                 player's (playerLevel()); new items are placed on it (item.level, §5.3)
  *   ?view=plan&floor=kjeller      opens the plan (or the overview) of that level (§5.2)
  *   ui: { toolbar, catalog, inspector, wall, window, light, sun, saves, shopping, acoustics, photo }
- *   selected: { kind: 'item'|'wall'|'window'|null, uid?, wallId?, windowId? }
+ *   selected: { kind: 'item'|'wall'|'ceiling'|'window'|null, uid?, wallId?, ceilingId?, windowId? }
  *   select(target|null)          sets selected, emits 'select' { selected, previous }, opens the matching panel
  *   startPlacing(itemSpec, opts) → placement.start
  *   handleClick(ndc) → bool      canvas click (Game routes Input clicks here first; ViewModes outside walk mode)
@@ -167,22 +167,22 @@ export class Editor {
   }
 
   /**
-   * Selects an item/wall/window (or nothing) and opens the matching panel: item → inspector, the high wall → wall
-   * panel, another wall → inspector (paint), window → window panel. null closes the inspector.
-   * @param {{ kind: 'item'|'wall'|'window', uid?: string, wallId?: string, windowId?: string }|null} target
+   * Selects an item/wall/ceiling/window (or nothing) and opens the matching panel: item → inspector, the high wall →
+   * wall panel, another wall or a ceiling → inspector (paint, slats), window → window panel. null closes the inspector.
+   * @param {{ kind: 'item'|'wall'|'ceiling'|'window', uid?: string, wallId?: string, ceilingId?: string, windowId?: string }|null} target
    */
   select(target) {
     const previous = this.selected;
     const next = target && target.kind ? { ...target } : { kind: null };
-    const same = previous.kind === next.kind && previous.uid === next.uid && previous.wallId === next.wallId && previous.windowId === next.windowId;
+    const same = previous.kind === next.kind && previous.uid === next.uid && previous.wallId === next.wallId && previous.windowId === next.windowId && previous.ceilingId === next.ceilingId;
     this.selected = next;
     if (!same) this.events.emit('select', { selected: next, previous });
     try {
       if (next.kind === 'item') this.ui.inspector.open(next);
       else if (next.kind === 'wall' && next.wallId === this.home.highWall?.wallId) this.ui.wall.open(next);
-      else if (next.kind === 'wall') this.ui.inspector.open(next);
+      else if (next.kind === 'wall' || next.kind === 'ceiling') this.ui.inspector.open(next);
       else if (next.kind === 'window') this.ui.window.open(next.windowId);
-      else if (previous.kind === 'item' || previous.kind === 'wall') this.ui.inspector.close();
+      else if (previous.kind === 'item' || previous.kind === 'wall' || previous.kind === 'ceiling') this.ui.inspector.close();
     } catch (err) {
       console.error('[editor] panel failed to open', err);
     }

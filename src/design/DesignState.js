@@ -5,23 +5,27 @@ import { layout as defaultLayout } from '../home/layout.js';
 import schema from '../data/archetypes.json';
 import wallData from '../data/wall-proposals.json';
 import palette from '../data/palette.json';
+import { normaliseFinish, surfaceKind, finishSurfaceIds } from './Finishes.js';
 
 /**
  * DesignState – the whole design as plain data (ARCHITECTURE §7) plus undo/redo.
  *
- * State: items (Map uid → Item), wall (the high wall), windows (shading per window), paints (wall colour overrides),
- * env (time of day, light mode, built-in light groups, exposure), meta (name, createdAt, updatedAt).
+ * State: items (Map uid → Item), wall (the high wall), windows (shading per window), paints (wall / ceiling colour
+ * overrides), finishes (a slat panel on a wall or a ceiling: { [surfaceId]: FinishSpec }, design/Finishes.js; missing =
+ * the bare painted surface), env (time of day, light mode, built-in light groups, exposure), meta (name, createdAt,
+ * updatedAt). A design saved before the finishes simply has none.
  *
  * Events (payloads): 'item:add' {uid,item} · 'item:update' {uid,item,patch} · 'item:remove' {uid,item} ·
- * 'wall' {wall} · 'window' {windowId, spec} · 'paint' {wallId, color} · 'env' {patch} · 'load' {} ·
- * 'change' {type, …} (after every one of the above) · 'history' {canUndo, canRedo, undoLabel, redoLabel}.
+ * 'wall' {wall} · 'window' {windowId, spec} · 'paint' {wallId, color} · 'finish' {surfaceId, spec} · 'env' {patch} ·
+ * 'load' {} · 'change' {type, …} (after every one of the above) · 'history' {canUndo, canRedo, undoLabel, redoLabel}.
  *
  * Items and specs returned by get()/list() are the live objects: treat them as read-only and change them only through
  * update()/setWindow()/… (every mutation replaces the stored object, so references taken earlier stay unchanged).
  *
  * History: every mutation is one undo step unless it runs inside transaction(label, fn) / begin(label)…end(), which
  * group everything into one step (a drag = one step). Steps store deep-cloned before/after snapshots of the touched
- * items/wall/windows/paints/env. Max 200 steps. setEnv() calls within 1 s coalesce into one step.
+ * items/wall/windows/paints/finishes/env. Max 200 steps. setEnv() calls within 1 s coalesce into one step, so do
+ * setPaint() calls on one surface and setFinish() calls with the same `coalesce` key (a slider drag).
  *
  * Version 2 (hele-huset §5.5, steg 16 E3) – the whole house:
  *   - every item has `level` (a level id of layout.house: 'hoved', 'kjeller'). In memory `position[1]` is WORLD y
@@ -543,6 +547,7 @@ export class DesignState extends Emitter {
     this.wall = { proposalId: null, elements: null, edited: false };
     this.windows = {};
     this.paints = {};
+    this.finishes = {};
     this.env = normaliseEnv(DEFAULT_ENV);
     const now = new Date().toISOString();
     // an empty design (original: false) never gets the originals added later: it «has» every room
@@ -763,6 +768,36 @@ export class DesignState extends Emitter {
   }
 
   /**
+   * Puts (or removes with null) a surface finish – a slat panel – on a wall or a ceiling (design/Finishes.js; not the
+   * high wall, it has the wall proposals). The spec is normalised for the surface's kind.
+   * @param {string} surfaceId  wall or ceiling id
+   * @param {Object|null} spec  FinishSpec ({ type: 'slats', look, slatW, gap, depth, backing, … })
+   * @param {{ coalesce?: string, label?: string }} [opts] coalesce: steps with the same key on the same surface within
+   *   1 s are one undo step (a slider drag)
+   * @returns {Object|null} the stored finish
+   */
+  setFinish(surfaceId, spec, opts = {}) {
+    const kind = surfaceKind(this.layout, surfaceId);
+    const known = finishSurfaceIds(this.layout);
+    if (known && !known.has(surfaceId)) return this.finishes[surfaceId] ?? null;
+    const next = spec == null ? null : normaliseFinish(spec, kind);
+    const cur = this.finishes[surfaceId] ?? null;
+    if (same(next, cur)) return cur;
+    const label = opts.label || (!next ? 'Fjern spiler' : !cur ? 'Legg inn spiler' : 'Endre spiler');
+    this._step(label, () => {
+      this._touch('finishes', surfaceId);
+      if (next) this.finishes = { ...this.finishes, [surfaceId]: next };
+      else {
+        const { [surfaceId]: _drop, ...rest } = this.finishes;
+        this.finishes = rest;
+      }
+    }, opts.coalesce && next && cur ? `finish:${surfaceId}:${opts.coalesce}` : null);
+    this._emit('finish', { surfaceId, spec: next });
+    this._changed({ type: 'finish', surfaceId });
+    return next;
+  }
+
+  /**
    * Changes the environment ({ hour, month, day, mode, exposure, builtIn: { [groupId]: { on, dimmer } } }).
    * builtIn merges per group. Consecutive calls within 1 s are one undo step.
    * @param {Object} patch
@@ -878,7 +913,7 @@ export class DesignState extends Emitter {
 
   /**
    * Plain JSON of the design ({ version: 2, meta: { name, createdAt, updatedAt, originalRooms, specRevision },
-   * items: [...] (y level-local), wall, windows, paints, env }).
+   * items: [...] (y level-local), wall, windows, paints, finishes, env }).
    */
   toJSON() {
     const orig = originalsOf(this.layout);
@@ -899,6 +934,7 @@ export class DesignState extends Emitter {
       wall: clone(this.wall),
       windows: clone(this.windows),
       paints: clone(this.paints),
+      finishes: clone(this.finishes),
       env: clone(this.env),
     };
   }
@@ -932,6 +968,7 @@ export class DesignState extends Emitter {
       this._touchStep(step, 'wall', '_');
       for (const id of Object.keys(this.windows)) this._touchStep(step, 'windows', id);
       for (const id of Object.keys(this.paints)) this._touchStep(step, 'paints', id);
+      for (const id of Object.keys(this.finishes)) this._touchStep(step, 'finishes', id);
       this._touchStep(step, 'env', '_');
       this._touchStep(step, 'meta', '_');
       this._replaceAll(data);
@@ -939,6 +976,7 @@ export class DesignState extends Emitter {
       for (const uid of this.items.keys()) this._touchStep(step, 'items', uid, null);
       for (const id of Object.keys(this.windows)) this._touchStep(step, 'windows', id, null);
       for (const id of Object.keys(this.paints)) this._touchStep(step, 'paints', id, null);
+      for (const id of Object.keys(this.finishes)) this._touchStep(step, 'finishes', id, null);
       this._commit(step);
     } else {
       this._replaceAll(data);
@@ -967,6 +1005,7 @@ export class DesignState extends Emitter {
       wall: { proposalId: '0', elements: [], edited: false },
       windows: {},
       paints: {},
+      finishes: {},
       env: clone(DEFAULT_ENV),
     };
   }
@@ -1066,6 +1105,15 @@ export class DesignState extends Emitter {
       if (v) paints[id] = v;
     }
     this.paints = paints;
+    // slat finishes (a design saved before them has none); a surface this layout does not have is dropped
+    const finishes = {};
+    const finishable = finishSurfaceIds(this.layout);
+    for (const [id, spec] of Object.entries(isObj(data.finishes) ? data.finishes : {})) {
+      if (finishable && !finishable.has(id)) continue;
+      const f = normaliseFinish(spec, surfaceKind(this.layout, id));
+      if (f) finishes[id] = f;
+    }
+    this.finishes = finishes;
     this.env = normaliseEnv(data.env);
     const now = new Date().toISOString();
     this.meta = {
@@ -1091,6 +1139,8 @@ export class DesignState extends Emitter {
         return { get: (k) => this.windows[k] ?? null };
       case 'paints':
         return { get: (k) => this.paints[k] ?? null };
+      case 'finishes':
+        return { get: (k) => this.finishes[k] ?? null };
       case 'env':
         return { get: () => this.env };
       case 'meta': // only load steps touch it (the design's name follows undo/redo of «Åpne»/«Importer»)
@@ -1227,6 +1277,14 @@ export class DesignState extends Emitter {
         this.paints = rest;
       }
       this._emit('paint', { wallId: id, color: this.paints[id] ?? null });
+    }
+    for (const [id, spec] of Object.entries(snapshot.finishes || {})) {
+      if (spec) this.finishes = { ...this.finishes, [id]: clone(spec) };
+      else {
+        const { [id]: _drop, ...rest } = this.finishes;
+        this.finishes = rest;
+      }
+      this._emit('finish', { surfaceId: id, spec: this.finishes[id] ?? null });
     }
     if (snapshot.env && '_' in snapshot.env) {
       this.env = clone(snapshot.env._);
