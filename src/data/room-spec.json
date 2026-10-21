@@ -760,10 +760,29 @@
             "handleHeight": 1.08,
             "handleType": "kun runde rosetter (ingen vrider montert)",
             "threshold": "#cdbfae",
-            "closed": true
+            "closed": true,
+            "opensInto": "gang",
+            "openAngleDeg": 180,
+            "casing": {
+              "back": false
+            },
+            "hardware": {
+              "type": "rose-only",
+              "rose": "round",
+              "finish": "#1a1a1a"
+            }
           },
           "outsideView": null,
-          "confidence": "high"
+          "confidence": "high",
+          "connects": [
+            "stue-kjokken",
+            "gang"
+          ],
+          "interactive": true,
+          "estimated": [
+            "door.openAngleDeg"
+          ],
+          "source": "D6 og hele-huset-avstemming.md V55: 180° (bladet flatt mot gangsiden av w-gang, z 2,50–3,43) er et spillvalg – 225331 viser bladet ca. 90° åpent, men 90° ville sperret veien til badet. casing.back false: geriktens karm på gangsiden ville skåret inn i w-gang-sov (hullet går helt til z 4,43). V47: bare runde rosetter, ingen vrider."
         }
       ]
     },
@@ -814,6 +833,574 @@
       "height": 2.4,
       "hiddenBehindCabinets": true,
       "openings": []
+    },
+    {
+      "id": "w-bad-ost",
+      "name": "Østvegg på badet (servant og høyskap)",
+      "roomId": "bad",
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        2.53,
+        0
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "thickness": 0.3,
+      "exterior": true,
+      "height": 2.4,
+      "material": "stone-panel",
+      "paint": "#c8c5bf",
+      "panel": {
+        "size": [
+          0.6,
+          2.4
+        ],
+        "joint": "#bcb9b3",
+        "horizontalJoints": false
+      },
+      "estimated": [
+        "thickness",
+        "height"
+      ],
+      "source": "bad-1etg.md (225425 rett forfra); hele-huset-avstemming.md V41 (steinplater #c8c5bf, bare loddrette skjøter hver 0,60)",
+      "notes": "Yttervegg som kjøkkenets østvegg. Ytterflaten (z −0,30) møter w-kjokken-ost på x 2,53 (fasadesegmentet f-ost-bad)."
+    },
+    {
+      "id": "w-bad-sor",
+      "name": "Sørvegg på badet (mot kjøkkennisjen)",
+      "roomId": "bad",
+      "from": [
+        2.53,
+        0
+      ],
+      "to": [
+        2.53,
+        2.22
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "backOf": "w-nisje-bak",
+      "height": 2.4,
+      "material": "stone-panel",
+      "paint": "#c8c5bf",
+      "panel": {
+        "size": [
+          0.6,
+          2.4
+        ],
+        "joint": "#bcb9b3",
+        "horizontalJoints": false
+      },
+      "estimated": [
+        "height"
+      ],
+      "source": "bad-1etg.md (225413, 225423); D13 (baksiden av w-nisje-bak)",
+      "notes": "Blank vegg med én knagg. Dørbladet til door-bad legger seg her når døra står åpen."
+    },
+    {
+      "id": "w-bad-gang",
+      "name": "Vestvegg på badet (mot gangen)",
+      "roomId": "bad",
+      "from": [
+        2.53,
+        2.22
+      ],
+      "to": [
+        0,
+        2.22
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "thickness": 0.1,
+      "height": 2.4,
+      "material": "stone-panel",
+      "paint": "#c8c5bf",
+      "panel": {
+        "size": [
+          0.6,
+          2.4
+        ],
+        "joint": "#bcb9b3",
+        "horizontalJoints": false
+      },
+      "estimated": [
+        "thickness",
+        "height"
+      ],
+      "source": "bad-1etg.md (225421 rett forfra); gang-1etg.md (225333); plantegning.png",
+      "openings": [
+        {
+          "id": "door-bad",
+          "type": "door",
+          "name": "Dør til badet",
+          "offset": 0.08,
+          "width": 0.91,
+          "sill": 0,
+          "height": 2.15,
+          "frame": {
+            "color": "#1d1e21",
+            "width": 0.07,
+            "depth": 0.02
+          },
+          "reveal": {
+            "depth": 0.1,
+            "color": "#1d1e21"
+          },
+          "door": {
+            "leafColor": "#1d1e21",
+            "hinge": "from",
+            "swing": "in",
+            "opensInto": "bad",
+            "style": "glatt dørblad med ett innfelt felt (som door-gang)",
+            "leaf": {
+              "w": 0.77,
+              "h": 2.08
+            },
+            "handleSide": "to",
+            "handleHeight": 1.03,
+            "handle": "#1a1a1a",
+            "hardware": {
+              "type": "lever",
+              "rose": "round",
+              "finish": "#1a1a1a",
+              "wcTurn": true
+            },
+            "threshold": {
+              "top": "#2a2a2c",
+              "front": "#cdbfae",
+              "depth": 0.09
+            },
+            "closed": true
+          },
+          "connects": [
+            "bad",
+            "gang"
+          ],
+          "interactive": true,
+          "confidence": "med",
+          "estimated": [
+            "width",
+            "height",
+            "door.leaf",
+            "door.handleHeight",
+            "door.threshold"
+          ],
+          "source": "hele-huset-avstemming.md V15 (gulvkanten på x 1,45, 0,09 list til karmen), V47 (vrider med WC-vri), V48 (mørk topp med lys forkant mot gangen), V49 (hull x 1,54–2,45, blad 0,77 × 2,08 = hull − 2 × karm 0,07); bad-1etg.md, gang-1etg.md; 225333, 225335, 225421"
+        }
+      ]
+    },
+    {
+      "id": "w-bad-nord",
+      "name": "Nordvegg på badet (vindu og WC)",
+      "roomId": "bad",
+      "from": [
+        0,
+        2.22
+      ],
+      "to": [
+        0,
+        0
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "thickness": 0.3,
+      "exterior": true,
+      "height": 2.4,
+      "material": "stone-panel",
+      "paint": "#c8c5bf",
+      "panel": {
+        "size": [
+          0.6,
+          2.4
+        ],
+        "joint": "#bcb9b3",
+        "horizontalJoints": false
+      },
+      "estimated": [
+        "thickness",
+        "height"
+      ],
+      "source": "bad-1etg.md (225419 rett forfra); plantegning.png («Vindu mål 48x117», 0,99 + 0,48 + 0,75 = 2,22)",
+      "openings": [
+        {
+          "id": "win-bad",
+          "type": "window",
+          "name": "Badevindu (frostet)",
+          "offset": 0.75,
+          "width": 0.48,
+          "sill": 0.88,
+          "height": 1.17,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.07,
+            "depth": 0.07
+          },
+          "reveal": {
+            "depth": 0.2,
+            "color": "#c8c5bf",
+            "edge": "#c9cac8"
+          },
+          "sillBoard": {
+            "depth": 0.15,
+            "color": "#c8c5bf",
+            "thickness": 0.02,
+            "overhang": 0
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": true
+            }
+          ],
+          "frosted": true,
+          "obstruction": 0.8,
+          "outsideView": "Frostet glass – ingen utsikt (nordvendt, mot nabobygget som TV-stuevinduet).",
+          "confidence": "med",
+          "estimated": [
+            "sill",
+            "obstruction",
+            "sashes",
+            "reveal.depth"
+          ],
+          "source": "eier 2026-10-20 (48 × 117); plantegning.png (0,99 fra østhjørnet); bad-1etg.md (225419: sill 0,88, topp 2,05, lys grå kantlist, frostet glass)"
+        }
+      ]
+    },
+    {
+      "id": "w-gang-ost",
+      "name": "Østvegg i gangen (baddøra)",
+      "roomId": "gang",
+      "from": [
+        0,
+        2.32
+      ],
+      "to": [
+        3.12,
+        2.32
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "backOf": [
+        "w-bad-gang",
+        "w-nisje-side"
+      ],
+      "height": 2.4,
+      "paint": "sand",
+      "estimated": [
+        "height"
+      ],
+      "source": "gang-1etg.md (225333, 225324); D13 (baksiden av w-bad-gang og w-nisje-side)",
+      "notes": "x 0–1,45 står i trappehullet (sjaktveggen går ned, V16). Hullet til door-bad (x 1,54–2,45) avledes fra eierveggen."
+    },
+    {
+      "id": "w-gang-hall",
+      "name": "Sørvegg i gangen (stuedøra)",
+      "roomId": "gang",
+      "from": [
+        3.12,
+        2.32
+      ],
+      "to": [
+        3.12,
+        4.43
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "backOf": "w-gang",
+      "height": 2.4,
+      "paint": "sand",
+      "estimated": [
+        "height"
+      ],
+      "source": "gang-1etg.md (225324, 225327, 225331); hele-huset-avstemming.md V54 (x 3,12 = baksiden av w-gang); D13",
+      "notes": "Hullet til door-gang (z 3,36–4,43) avledes fra w-gang. Veggstykket z 2,32–3,36 er glatt, uten bryter; door-gang legger seg her når den står 180° åpen (D6)."
+    },
+    {
+      "id": "w-gang-sov",
+      "name": "Vestvegg i gangen (mot soverommet)",
+      "roomId": "gang",
+      "from": [
+        3.12,
+        4.43
+      ],
+      "to": [
+        0,
+        4.43
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "thickness": 0.1,
+      "height": 2.4,
+      "paint": "sand",
+      "estimated": [
+        "thickness",
+        "height"
+      ],
+      "source": "gang-1etg.md (225331, 225335); soverom-1etg.md; D1 og hele-huset-avstemming.md V54 (z 4,43–4,53)",
+      "notes": "x 0–1,85 står i trappehullet (nedre løp går langs veggen, rekkverk A er festet ved x 1,85).",
+      "openings": [
+        {
+          "id": "door-soverom",
+          "type": "door",
+          "name": "Dør til soverommet",
+          "offset": 0.06,
+          "width": 0.95,
+          "sill": 0,
+          "height": 2.12,
+          "frame": {
+            "color": "#1d1e21",
+            "width": 0.07,
+            "depth": 0.02
+          },
+          "reveal": {
+            "depth": 0.1,
+            "color": "#1d1e21"
+          },
+          "door": {
+            "leafColor": "#1d1e21",
+            "hinge": "from",
+            "swing": "out",
+            "opensInto": "soverom",
+            "style": "glatt dørblad med ett innfelt felt (som door-gang)",
+            "leaf": {
+              "w": 0.81,
+              "h": 2.05
+            },
+            "handleSide": "to",
+            "handleHeight": 1.05,
+            "handle": "#1a1a1a",
+            "hardware": {
+              "type": "lever",
+              "rose": "round",
+              "finish": "#1a1a1a",
+              "strike": "#c9cbcd"
+            },
+            "threshold": {
+              "top": "#2b2b2d",
+              "depth": 0.05
+            },
+            "closed": true
+          },
+          "connects": [
+            "gang",
+            "soverom"
+          ],
+          "interactive": true,
+          "confidence": "med",
+          "estimated": [
+            "width",
+            "height",
+            "door.leaf",
+            "door.threshold.depth"
+          ],
+          "source": "soverom-1etg.md (225304, 225308, 225316: hengsler i sør, slår inn i soverommet og legger seg mot sørveggen; vrider med rund rosett på begge sider og sluttstykke i blank stål); hele-huset-avstemming.md V47, V48 (smal metallterskel #2b2b2d), V49 (hull x 2,11–3,06, blad 0,81 × 2,05)"
+        }
+      ]
+    },
+    {
+      "id": "w-gang-nord",
+      "name": "Nordvegg i gangen (i trappesjakta)",
+      "roomId": "gang",
+      "from": [
+        0,
+        4.43
+      ],
+      "to": [
+        0,
+        2.32
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "thickness": 0.3,
+      "exterior": true,
+      "height": 2.4,
+      "paint": "sand",
+      "estimated": [
+        "thickness",
+        "height"
+      ],
+      "source": "gang-1etg.md (225331, 225335, 225337, 225339): yttervegg uten vindu og dør",
+      "notes": "Står helt inne i trappehullet. Veggflata går rett ned gjennom etasjeskillet til hylla (topp y −0,27, x 0–0,13), V16 og V21 – det bygger trappesteget (20-trapp.json / steg 21)."
+    },
+    {
+      "id": "w-sov-ost",
+      "name": "Østvegg på soverommet (garderobe og dør)",
+      "roomId": "soverom",
+      "from": [
+        0,
+        4.53
+      ],
+      "to": [
+        3.12,
+        4.53
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "backOf": "w-gang-sov",
+      "height": 2.4,
+      "paint": "#50575c",
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "soverom-1etg.md (225304, 225308); D13 (baksiden av w-gang-sov)",
+      "notes": "Garderoben står x 0–1,88, døra x 2,11–3,06 (hullet avledes fra w-gang-sov). Rommet er helmalt i mørk blågrå, også taket."
+    },
+    {
+      "id": "w-sov-sor",
+      "name": "Sørvegg på soverommet (mot stua)",
+      "roomId": "soverom",
+      "from": [
+        3.12,
+        4.53
+      ],
+      "to": [
+        3.12,
+        8.2
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "backOf": "w-hoy",
+      "height": 2.4,
+      "paint": "#50575c",
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "soverom-1etg.md (225259, 225304, 225316); D13 (baksiden av w-hoy, som er 3,00 høy på stuesiden)",
+      "notes": "Knaggrekke og dørstopper. Dørbladet til door-soverom legger seg her."
+    },
+    {
+      "id": "w-sov-vest",
+      "name": "Vestvegg på soverommet (hodeveggen)",
+      "roomId": "soverom",
+      "from": [
+        3.12,
+        8.2
+      ],
+      "to": [
+        0,
+        8.2
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "backOf": "w-sov-tv",
+      "height": 2.4,
+      "paint": "#50575c",
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "soverom-1etg.md (225259, 225307, 225316); D13 (baksiden av w-sov-tv, 0,14 tykk)",
+      "notes": "Hodeenden av senga, uten gavl. To runde uttak (innredningen)."
+    },
+    {
+      "id": "w-sov-nord",
+      "name": "Nordvegg på soverommet (vindu)",
+      "roomId": "soverom",
+      "from": [
+        0,
+        8.2
+      ],
+      "to": [
+        0,
+        4.53
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "thickness": 0.3,
+      "exterior": true,
+      "height": 2.4,
+      "paint": "#50575c",
+      "estimated": [
+        "thickness",
+        "height",
+        "paint"
+      ],
+      "source": "soverom-1etg.md (225307); plantegning.png",
+      "openings": [
+        {
+          "id": "win-sov",
+          "type": "window",
+          "name": "Soveromsvindu",
+          "offset": 0.92,
+          "width": 1.17,
+          "sill": 0.92,
+          "height": 1.17,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.07,
+            "depth": 0.07
+          },
+          "reveal": {
+            "depth": 0.2,
+            "color": "#50575c",
+            "casing": false
+          },
+          "sillBoard": {
+            "depth": 0.2,
+            "color": "#50575c",
+            "thickness": 0.02,
+            "overhang": 0
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": true
+            }
+          ],
+          "obstruction": 0.8,
+          "existingShading": {
+            "archetype": "roller",
+            "fabric": "blackout",
+            "color": "#2a2b2d",
+            "position": "down",
+            "mount": "reveal",
+            "cord": {
+              "color": "#e8e8e6",
+              "side": "øst"
+            }
+          },
+          "outsideView": "Mot nord (som TV-stuevinduet); på bildet er mørkleggingsgardinen nede.",
+          "confidence": "med",
+          "estimated": [
+            "frame",
+            "sashes",
+            "obstruction",
+            "sillBoard"
+          ],
+          "source": "hele-huset-avstemming.md V51 (z 6,11–7,28, 1,17 × 1,17, sill 0,92, topp 2,09, smyg 0,20 i veggfargen uten gerikt, mørkleggingsgardin #2a2b2d nede med hvit snor på østsiden); soverom-1etg.md (225307); plantegning.png (z 6,10–7,30)"
+        }
+      ]
     }
   ],
   "ceilings": [
@@ -929,6 +1516,101 @@
       "paint": "marrakesh",
       "type": "flat",
       "height": 2.4
+    },
+    {
+      "id": "c-bad",
+      "roomId": "bad",
+      "name": "Badetak",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          2.53,
+          0
+        ],
+        [
+          2.53,
+          2.22
+        ],
+        [
+          0,
+          2.22
+        ]
+      ],
+      "type": "flat",
+      "height": 2.4,
+      "paint": "#efefed",
+      "trim": "#1d1e21",
+      "trimHeight": 0.035,
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "bad-1etg.md (glatt hvitt tak med svart taklist 3–4 cm rundt hele taket, 225413–225427); takhøyden 2,40 er anslått (eier: 2,4 for de flate takene)"
+    },
+    {
+      "id": "c-gang",
+      "roomId": "gang",
+      "name": "Gangtak",
+      "polygon": [
+        [
+          0,
+          2.32
+        ],
+        [
+          3.12,
+          2.32
+        ],
+        [
+          3.12,
+          4.43
+        ],
+        [
+          0,
+          4.43
+        ]
+      ],
+      "type": "flat",
+      "height": 2.4,
+      "paint": "#ecebe8",
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "gang-1etg.md (lyst, nær nøytralt ved lampa, uten taklist; 225331); design §2.4. Flatt også over trappehullet."
+    },
+    {
+      "id": "c-soverom",
+      "roomId": "soverom",
+      "name": "Soveromstak",
+      "polygon": [
+        [
+          0,
+          4.53
+        ],
+        [
+          3.12,
+          4.53
+        ],
+        [
+          3.12,
+          8.2
+        ],
+        [
+          0,
+          8.2
+        ]
+      ],
+      "type": "flat",
+      "height": 2.4,
+      "paint": "#50575c",
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "soverom-1etg.md (helmalt: taket i samme mørke blågrå som veggene, 225259, 225316)"
     }
   ],
   "bulkheads": [
@@ -1320,6 +2002,138 @@
       "color": "#2a2622",
       "lightColorK": 2700,
       "lumens": 500
+    },
+    {
+      "id": "l-bad-tak",
+      "roomId": "bad",
+      "group": "bad",
+      "type": "plafond",
+      "name": "Plafond på badet",
+      "position": [
+        1.26,
+        2.4,
+        1.11
+      ],
+      "dims": {
+        "d": 0.42,
+        "h": 0.07
+      },
+      "color": "#3a3a3c",
+      "accent": "#f2f2f0",
+      "lumens": 1500,
+      "lightColorK": 4000,
+      "estimated": [
+        "position",
+        "dims",
+        "lumens",
+        "lightColorK"
+      ],
+      "source": "bad-1etg.md (rund påbygd LED-plafond med opal front og mørk grå kant, Ø 0,40–0,45, midt i taket; 225413, 225417, 225419, 225427); hele-huset-avstemming.md V45 (mørk kant, 1500 lm)"
+    },
+    {
+      "id": "l-bad-spot",
+      "roomId": "bad",
+      "group": "bad",
+      "type": "downlight",
+      "name": "Downlight ved baddøra",
+      "position": [
+        2.2,
+        2.4,
+        1.85
+      ],
+      "dims": {
+        "d": 0.08
+      },
+      "color": "#151515",
+      "lumens": 300,
+      "lightColorK": 3000,
+      "estimated": [
+        "*"
+      ],
+      "source": "bad-1etg.md (innfelt, sort ring, nær døra; 225413, 225421); hele-huset-avstemming.md V45"
+    },
+    {
+      "id": "l-gang-tak",
+      "roomId": "gang",
+      "group": "gang",
+      "type": "plafond",
+      "name": "Plafond i gangen (over trappetoppen)",
+      "position": [
+        1.2,
+        2.4,
+        3.1
+      ],
+      "dims": {
+        "d": 0.38,
+        "h": 0.07
+      },
+      "color": "#f0f0ee",
+      "accent": "#f2f2f0",
+      "lumens": 1400,
+      "lightColorK": 3800,
+      "estimated": [
+        "position",
+        "dims",
+        "lumens",
+        "lightColorK"
+      ],
+      "source": "hele-huset-avstemming.md V46 (Ø 0,38 på (1,2; 2,40; 3,1), 3500–4000 K, hvit kant #f0f0ee); gang-1etg.md (225324, 225327, 225331, 225333)"
+    },
+    {
+      "id": "l-sov-tak",
+      "roomId": "soverom",
+      "group": "soverom",
+      "type": "plafond",
+      "name": "Plafond på soverommet",
+      "position": [
+        1.5,
+        2.4,
+        6.4
+      ],
+      "dims": {
+        "d": 0.4,
+        "h": 0.07
+      },
+      "color": "#eeeeec",
+      "accent": "#f2f2f0",
+      "lumens": 1500,
+      "lightColorK": 4000,
+      "estimated": [
+        "position",
+        "dims",
+        "lumens",
+        "lightColorK"
+      ],
+      "source": "soverom-1etg.md (rund flat plafond med opal diffuser og lys kant, Ø 0,40, ca. midt i rommet, kjølig hvitt; 225259, 225304); design §2.5"
+    },
+    {
+      "id": "l-sov-garderobe",
+      "roomId": "soverom",
+      "group": "soverom",
+      "type": "led-strip",
+      "name": "LED-list over garderoben",
+      "from": [
+        0.03,
+        2.4,
+        5.16
+      ],
+      "to": [
+        1.85,
+        2.4,
+        5.16
+      ],
+      "dims": {
+        "w": 0.02
+      },
+      "color": "#d9d9d6",
+      "lightColorK": 2800,
+      "lumensPerM": 300,
+      "aim": "ned langs garderobefrontene",
+      "estimated": [
+        "*"
+      ],
+      "source": "soverom-1etg.md (varmhvit LED-list langs hele toppen av garderobefronten, ca. 1,88 m, 225304, 225308); design §2.5 og §4.10 (gruppa soverom: plafond og garderobe-LED)",
+      "notes": "Garderoben (innredningen) står x 0–1,88 · z 4,53–5,13 med fronten mot vest. Uklart om lista sitter i topplista eller i taket rett foran; her i taket, 3 cm foran fronten."
     }
   ],
   "kitchen": {
@@ -4125,6 +4939,132 @@
         "h": 0.03
       },
       "color": "#151515"
+    },
+    {
+      "id": "fx-takpunkt-gang-p1",
+      "roomId": "gang",
+      "type": "smoke-detector",
+      "name": "Takpunkt P1 (over trappa, ved nordveggen)",
+      "mount": "ceiling",
+      "position": [
+        0.35,
+        2.4,
+        3.65
+      ],
+      "dims": {
+        "d": 0.065,
+        "h": 0.025
+      },
+      "color": "#151515",
+      "estimated": [
+        "*"
+      ],
+      "source": "hele-huset-avstemming.md V46; gang-1etg.md (225331, 225333): rundt, sort, litt kuplet, ikke tent"
+    },
+    {
+      "id": "fx-takpunkt-gang-p2",
+      "roomId": "gang",
+      "type": "smoke-detector",
+      "name": "Takpunkt P2 (over gangen)",
+      "mount": "ceiling",
+      "position": [
+        2.4,
+        2.4,
+        3.1
+      ],
+      "dims": {
+        "d": 0.065,
+        "h": 0.025
+      },
+      "color": "#151515",
+      "estimated": [
+        "*"
+      ],
+      "source": "hele-huset-avstemming.md V46; gang-1etg.md (225324, 225327)"
+    },
+    {
+      "id": "fx-stikk-gang",
+      "roomId": "gang",
+      "type": "socket",
+      "name": "Stikkontakt i gangen (ved rekkverk A)",
+      "wallId": "w-gang-sov",
+      "position": [
+        1.95,
+        0.18,
+        4.43
+      ],
+      "dims": {
+        "w": 0.084,
+        "h": 0.084
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "gang-1etg.md (225331, 225335): sort, rett sør for rekkverksstolpen på x 1,85, senter ca. 0,18; design §2.4"
+    },
+    {
+      "id": "fx-ventil-bad",
+      "roomId": "bad",
+      "type": "vent",
+      "name": "Avtrekksventil i badetaket",
+      "mount": "ceiling",
+      "position": [
+        0.35,
+        2.4,
+        1.2
+      ],
+      "dims": {
+        "d": 0.15,
+        "h": 0.02
+      },
+      "color": "#4a4a4c",
+      "estimated": [
+        "*"
+      ],
+      "source": "bad-1etg.md (rund, mørk grå, Ø ca. 0,15, i taket over vinduet; 225417, 225419); design §2.3 (Lys: «en mørk ventil ved vindusveggen»)"
+    },
+    {
+      "id": "fx-takpunkt-sov-a",
+      "roomId": "soverom",
+      "type": "sensor",
+      "name": "Takpunkt A (innenfor døra)",
+      "mount": "ceiling",
+      "position": [
+        2.6,
+        2.4,
+        4.8
+      ],
+      "dims": {
+        "d": 0.05,
+        "h": 0.01
+      },
+      "color": "#1e1e20",
+      "estimated": [
+        "*"
+      ],
+      "source": "soverom-1etg.md (lite mørkt innfelt punkt, ikke tent; 225304, 225308)"
+    },
+    {
+      "id": "fx-takpunkt-sov-b",
+      "roomId": "soverom",
+      "type": "sensor",
+      "name": "Takpunkt B",
+      "mount": "ceiling",
+      "position": [
+        1.1,
+        2.4,
+        6.7
+      ],
+      "dims": {
+        "d": 0.05,
+        "h": 0.01
+      },
+      "color": "#1e1e20",
+      "estimated": [
+        "*"
+      ],
+      "source": "soverom-1etg.md (225316; plasseringen er usikker)"
     }
   ],
   "highWall": {
@@ -4619,6 +5559,197 @@
         "mode": "calibrated"
       },
       "source": "floor.polygon, ceilings og zones i research/room-spec.json (fotomålt). Etterklangen er kalibrert mot 0,86 s (D12)."
+    },
+    {
+      "id": "bad",
+      "levelId": "hoved",
+      "name": "Bad",
+      "kind": "bathroom",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          2.53,
+          0
+        ],
+        [
+          2.53,
+          2.22
+        ],
+        [
+          0,
+          2.22
+        ]
+      ],
+      "floor": {
+        "material": "vinyl",
+        "color": "#5a5759",
+        "pattern": "cloudy",
+        "surface": "tile"
+      },
+      "baseboard": {
+        "type": "upstand",
+        "height": 0.04,
+        "thickness": 0.005,
+        "color": "#2a2a2c"
+      },
+      "ceilingIds": [
+        "c-bad"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "estimated": [
+        "floor.color",
+        "baseboard"
+      ],
+      "source": "eier 2026-10-20 (2,53 × 2,22); bad-1etg.md (225413–225429 i mappa vaskerom/, 225333); hele-huset-avstemming.md V37, V42 (mørkt oppbrett i stedet for gulvlist)"
+    },
+    {
+      "id": "gang",
+      "levelId": "hoved",
+      "name": "Gang",
+      "kind": "hall",
+      "polygon": [
+        [
+          0,
+          2.32
+        ],
+        [
+          3.12,
+          2.32
+        ],
+        [
+          3.12,
+          4.43
+        ],
+        [
+          0,
+          4.43
+        ]
+      ],
+      "floor": {
+        "material": "oak-plank",
+        "color": "#a59b8f",
+        "boards": "z",
+        "surface": "wood"
+      },
+      "baseboard": {
+        "height": 0.07,
+        "thickness": 0.012,
+        "color": "#ada291"
+      },
+      "ceilingIds": [
+        "c-gang"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "estimated": [
+        "baseboard"
+      ],
+      "source": "eier 2026-10-20 (3,11 × 2,07); gang-1etg.md; hele-huset-avstemming.md V50 (gulvlist i lys eik), V54 (D1: vestveggen på z 4,43–4,53, sørveggen x 3,12 = baksiden av w-gang)",
+      "notes": "Trappehullet (trappehull i 20-trapp.json) tar x 0–1,45 for z 2,32–3,48 og x 0–1,85 for z 3,48–4,43. Nordveggen (w-gang-nord) står helt inne i hullet, og øst- og vestveggen går ned i sjakta langs hullet (V16). Ingen møbler, ingen bryter på gangsiden."
+    },
+    {
+      "id": "soverom",
+      "levelId": "hoved",
+      "name": "Soverom",
+      "kind": "bedroom",
+      "polygon": [
+        [
+          0,
+          4.53
+        ],
+        [
+          3.12,
+          4.53
+        ],
+        [
+          3.12,
+          8.2
+        ],
+        [
+          0,
+          8.2
+        ]
+      ],
+      "floor": {
+        "material": "oak-plank",
+        "color": "#a59b8f",
+        "boards": "z",
+        "surface": "wood"
+      },
+      "baseboard": {
+        "height": 0.07,
+        "thickness": 0.012,
+        "color": "#ada291"
+      },
+      "ceilingIds": [
+        "c-soverom"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "estimated": [
+        "baseboard"
+      ],
+      "source": "eier 2026-10-20 (3,11 × 3,69); soverom-1etg.md; hele-huset-avstemming.md V50, V54 (D1: østveggen på z 4,53)"
+    }
+  ],
+  "lightGroups": [
+    {
+      "id": "gang",
+      "label": "Gang og trapp",
+      "roomId": "gang",
+      "dimmer": true,
+      "defaultDimmer": 0.5,
+      "auto": "on",
+      "source": "design §4.5 og §4.10: plafonden og LED-håndløperen (20-trapp.json); rom uten vindu, så lyset er på i auto"
+    },
+    {
+      "id": "bad",
+      "label": "Bad",
+      "roomId": "bad",
+      "dimmer": true,
+      "defaultDimmer": 0.6,
+      "auto": "dark",
+      "source": "design §4.10: plafond, downlight og speilringen (bi-bad-speil i 11-hoved-innredning.json)"
+    },
+    {
+      "id": "soverom",
+      "label": "Soverom",
+      "roomId": "soverom",
+      "dimmer": true,
+      "defaultDimmer": 0.5,
+      "auto": "dark",
+      "source": "design §4.10: plafond og garderobe-LED"
+    }
+  ],
+  "facadeSegments": [
+    {
+      "id": "f-nord-hoved",
+      "wallIds": [
+        "w-bad-nord",
+        "w-gang-nord",
+        "w-sov-nord"
+      ],
+      "joinStart": "w-bad-ost",
+      "joinEnd": "w-nord-tv",
+      "material": "cladding",
+      "source": "Nordfasaden i 1. etasje fra NØ-hjørnet (x −0,30, z −0,30) til w-nord-tv (som slutter på z 8,20 med gjæringen mot w-sov-tv). Én sammenhengende flate på x −0,30 som også dekker veggendene mellom rommene (z 2,22–2,32 og 4,43–4,53). Stående kledning #4a4642 som resten av huset; nordfasaden er ikke fotografert (anslått)."
+    },
+    {
+      "id": "f-ost-bad",
+      "wallIds": [
+        "w-bad-ost"
+      ],
+      "joinStart": "w-bad-nord",
+      "joinEnd": "w-kjokken-ost",
+      "material": "cladding",
+      "source": "Østfasaden for badet på z −0,30, fra NØ-hjørnet til w-kjokken-ost (som begynner på x 2,53 med gjæringen mot w-nisje-bak). Stående kledning #4a4642 (anslått)."
     }
   ]
 }
