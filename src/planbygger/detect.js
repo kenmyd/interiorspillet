@@ -55,6 +55,8 @@ export const DETECT_DEFAULTS = Object.freeze({
   minSidelight: 0.3,
   /** wall networks shorter than this share of the largest one are dropped (furniture, labels) */
   minNetworkShare: 0.12,
+  /** below this resolution the plan is detected on an upsampled copy (px per metre) */
+  minPxPerM: 50,
 });
 
 const H = 'h';
@@ -198,6 +200,33 @@ function refine(grey, seg, ink, paper, opts) {
   }
 }
 
+/** Bilinear upsampling of an RGBA image by an integer factor. */
+export function upsample(img, f) {
+  const { width: w, height: h, data: d } = img;
+  const W = w * f;
+  const H = h * f;
+  const out = new Uint8ClampedArray(W * H * 4);
+  for (let y = 0; y < H; y++) {
+    const sy = Math.max(0, Math.min(h - 1, (y + 0.5) / f - 0.5));
+    const y0 = Math.floor(sy);
+    const y1 = Math.min(h - 1, y0 + 1);
+    const fy = sy - y0;
+    for (let x = 0; x < W; x++) {
+      const sx = Math.max(0, Math.min(w - 1, (x + 0.5) / f - 0.5));
+      const x0 = Math.floor(sx);
+      const x1 = Math.min(w - 1, x0 + 1);
+      const fx = sx - x0;
+      const o = (y * W + x) * 4;
+      for (let c = 0; c < 4; c++) {
+        const a = d[(y0 * w + x0) * 4 + c] * (1 - fx) + d[(y0 * w + x1) * 4 + c] * fx;
+        const b = d[(y1 * w + x0) * 4 + c] * (1 - fx) + d[(y1 * w + x1) * 4 + c] * fx;
+        out[o + c] = a * (1 - fy) + b * fy;
+      }
+    }
+  }
+  return { width: W, height: H, data: out };
+}
+
 /** Union–find. */
 function dsu(n) {
   const p = Array.from({ length: n }, (_, i) => i);
@@ -214,6 +243,19 @@ export function detectPlan(img, options = {}) {
   const o = { ...DETECT_DEFAULTS, ...options };
   const ppm = o.pxPerM;
   if (!(ppm > 0)) throw new Error('detectPlan: pxPerM (skalaen) mangler');
+  // a low-resolution plan (an interior wall of 10 cm under ~5 px) is detected on a bilinear 2–3× copy: the opening
+  // that removes text would otherwise remove the thin walls too; the result is scaled back
+  if (ppm < o.minPxPerM && !options._scaled) {
+    const f = Math.min(4, Math.ceil(o.minPxPerM / ppm));
+    const r = detectPlan(upsample(img, f), { ...options, pxPerM: ppm * f, _scaled: f });
+    const k = 1 / f;
+    return {
+      ...r,
+      walls: r.walls.map((w) => ({ ...w, a: [w.a[0] * k, w.a[1] * k], b: [w.b[0] * k, w.b[1] * k], t: w.t * k })),
+      openings: r.openings.map((op) => ({ ...op, from: op.from * k, to: op.to * k, leaf: op.leaf == null ? null : op.leaf * k })),
+      stats: { ...r.stats, upsampled: f },
+    };
+  }
   const t0 = typeof performance !== 'undefined' ? performance.now() : Date.now();
   const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0;
   const timings = {};
@@ -264,17 +306,26 @@ export function detectPlan(img, options = {}) {
       const w = c.maxX - c.minX + 1;
       const h = c.maxY - c.minY + 1;
       if (c.area < 0.6 * w * h) continue; // not a filled rectangle
+      // both orientations; the best reason wins: in the band of a wall line > on the face of a perpendicular wall (the
+      // start of a wall at a corner / T) > a free piece clearly longer than thick
+      let best = null;
       for (const axis of [H, V]) {
         const [s0, s1, a0, a1] = axis === H ? [c.minX, c.maxX, c.minY, c.maxY] : [c.minY, c.maxY, c.minX, c.maxX];
         const cc = (a0 + a1 + 1) / 2;
         const t = a1 - a0 + 1;
+        const len = s1 - s0 + 1;
+        const wallLike = t >= minWallPx * 0.6 && t <= maxWallPx;
         const inLine = pieces.some((p) => p.axis === axis && p.src === 'run' && Math.abs(p.c - cc) <= 1.6 && Math.abs(p.t - t) <= 2.5);
-        const free = s1 - s0 + 1 >= 0.25 * ppm && t >= minWallPx * 0.6 && t <= maxWallPx && s1 - s0 + 1 >= 1.5 * t;
-        if (inLine || free) {
-          pieces.push({ axis, c: cc, s0, s1: s1 + 1, t, src: 'stub' });
-          break;
-        }
+        const onFace = wallLike && len >= 0.05 * ppm && pieces.some((p) => {
+          if (p.axis === axis || p.src !== 'run') return false;
+          const touches = Math.abs(s0 - (p.c + p.t / 2)) <= 2 || Math.abs(s1 + 1 - (p.c - p.t / 2)) <= 2;
+          return touches && a0 >= p.s0 - 2 && a1 + 1 <= p.s1 + 2;
+        });
+        const free = wallLike && len >= 0.25 * ppm && len >= 1.5 * t;
+        const rank = inLine ? 3 : onFace ? 2 : free ? 1 : 0;
+        if (rank && (!best || rank > best.rank || (rank === best.rank && len / t > best.ratio))) best = { rank, ratio: len / t, piece: { axis, c: cc, s0, s1: s1 + 1, t, src: 'stub' } };
       }
+      if (best) pieces.push(best.piece);
     }
   }
   for (const p of pieces) refine(grey, p, ink, paper, { darkT });

@@ -85,11 +85,18 @@ export function houseFrame(doc, found) {
   return { toGame, toPlan, vecToGame, origin, north: doc.settings?.north ?? 0 };
 }
 
-/** A room kind and name for a region the user has not named (no OCR in v1: area and doors only). */
-function guessKind(room, isLargest) {
+/**
+ * A room kind for a region the user has not named – no OCR in v1, only rules on what the plan shows: the largest room
+ * is the living room, a small one with the front door the entrance, one with three or more doors / passages a hall, a
+ * room without windows a storage room, a small one with a window a bathroom, the rest bedrooms. The editor marks the
+ * names as suggestions («?»).
+ */
+export function guessKind(f, isLargest) {
   if (isLargest) return 'living';
-  if (room.area < 2.6) return 'storage';
-  if (room.doors >= 3 && room.area < 14) return 'hall';
+  if (f.exteriorDoors && f.area < 12) return 'entrance';
+  if (f.doors >= 3 && f.area < 16) return 'hall';
+  if (!f.windows && f.area < 12) return 'storage';
+  if (f.area < 7) return 'bathroom';
   return 'bedroom';
 }
 
@@ -104,17 +111,23 @@ export function labelRooms(level, settings = DEFAULT_SETTINGS, takenIds = new Se
     const idx = found.at(r.seed[0], r.seed[1]);
     if (idx >= 0 && !used.has(idx)) used.set(idx, r);
   }
-  // doors per region (for the guess)
-  const doorCount = new Map();
+  // doors / passages, windows and front doors per region (for the guess)
+  const feat = new Map();
+  const F = (idx) => feat.get(idx) ?? feat.set(idx, { doors: 0, windows: 0, exteriorDoors: 0 }).get(idx);
   for (const o of level.openings) {
-    if (o.type !== 'door') continue;
     const w = level.walls.find((x) => x.id === o.wall);
     if (!w) continue;
     const u = wallDir(w);
     const c = add(w.a, mul(u, o.at));
-    for (const s of [1, -1]) {
-      const idx = found.at(...add(c, mul(perp(u), s * (w.t / 2 + 0.06))));
-      if (idx >= 0) doorCount.set(idx, (doorCount.get(idx) || 0) + 1);
+    const sides = [1, -1].map((s) => found.at(...add(c, mul(perp(u), s * (w.t / 2 + 0.06)))));
+    const outside = sides.some((i) => i === -1);
+    for (const idx of sides) {
+      if (idx < 0) continue;
+      if (o.type === 'window') F(idx).windows++;
+      else {
+        F(idx).doors++;
+        if (o.type === 'door' && outside) F(idx).exteriorDoors++;
+      }
     }
   }
   const largest = found.rooms.reduce((b, r) => (!b || r.area > b.area ? r : b), null);
@@ -124,7 +137,7 @@ export function labelRooms(level, settings = DEFAULT_SETTINGS, takenIds = new Se
     let kind = label?.kind;
     let name = label?.name;
     const auto = !label;
-    if (!kind) kind = guessKind({ area: region.area, doors: doorCount.get(region.index) || 0 }, region === largest);
+    if (!kind) kind = guessKind({ area: region.area, ...(feat.get(region.index) ?? { doors: 0, windows: 0, exteriorDoors: 0 }) }, region === largest);
     if (!name) {
       counters[kind] = (counters[kind] || 0) + 1;
       name = KIND_NAMES[kind] ?? 'Rom';
