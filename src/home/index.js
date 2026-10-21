@@ -1,10 +1,14 @@
 import * as THREE from 'three';
-import { layout as roomLayout } from './layout.js';
+import { layout as roomLayout, LIVING_ROOM_ID, MAIN_LEVEL_ID } from './layout.js';
 import { originalItems } from './existing.js';
 import { configureMaterials, prepareMaterials, ALL_KINDS } from './materials.js';
 import { buildShell } from './shell.js';
 import { buildKitchen } from './kitchen.js';
 import { buildExterior } from './exterior.js';
+import { buildRooms } from './rooms.js';
+import { buildStairs } from './stairs.js';
+import { buildBuiltIns } from './builtins.js';
+import { createVisibility } from './visibility.js';
 import { LightManager } from './lighting.js';
 import { DesignState, setDesignLimits } from '../design/DesignState.js';
 import { Saves } from '../design/Saves.js';
@@ -16,25 +20,67 @@ import { setWallQuality, ELEMENT_TYPES } from '../models/walldesigns.js';
 const OPEN_ROOM = Object.freeze({ id: 'stue-kjokken', name: 'Stue/kjøkken' });
 
 /**
- * The home – the real living room (ARCHITECTURE §4). Game.js (and dev/sandbox) call createHome(ctx) once.
+ * The home – the real house (ARCHITECTURE §4, notes/hele-huset-design.md). Game.js (and dev/sandbox) call
+ * createHome(ctx) once.
  *
  *   createHome(ctx) → home = {
  *     spawn: { position: Vector3 (feet), yaw, pitch },     dining area, looking toward the sitting area / windows
  *     rooms: [{ id, name, zoneId, box: Box3 }],            one box per room-spec zone, all the same room
  *                                                          (id 'stue-kjokken', HUD «Stue/kjøkken»)
  *     layout,                                              home/layout.js
- *     walls: WallInfo[], windows: WindowInfo[], doors: DoorInfo[], highWall: HighWallInfo   (from shell.js)
- *     ceilingHeightAt(x, z), floorY: 0,
- *     roots: { shell, kitchen, exterior, items, wall, shading },        THREE.Groups in the scene
- *     pickables: { floor, walls, ceilings, windows },                   meshes for Selection/Placement
- *     builtInLights: [...],                                             shell + kitchen (§15)
- *     lighting: LightManager, design: DesignState, saves: Saves, sync: SceneSync,
- *     shell, kitchen, exterior,                                         the builder results
- *     setPaint(wallId, color|null), paintOf(wallId) → colour or name in use
+ *     walls: WallInfo[], windows: WindowInfo[], doors: DoorInfo[]     shell.js + the house builders (merged, below)
+ *     highWall: HighWallInfo                                           shell.js
+ *     ceilingHeightAt(x, z, y?), floorY: 0,                            y (world) given → the house's ceiling there
+ *                                                                      (layout.house.ceilingHeightAt); without y the
+ *                                                                      living room's, as before (§1.8)
+ *     roots: { shell, kitchen, exterior, items, wall, shading,         THREE.Groups in the scene
+ *              levels: { [levelId]: Group },                           everything of a level (below)
+ *              rooms: { [roomId]: { id, name, levelId, kind, hud, group, surfaces, contents } } },
+ *     pickables: { floor, walls, ceilings, windows },                  meshes for Selection/Placement (merged)
+ *     builtInLights: [...],                                            shell + kitchen (§15) – the LightManager's list,
+ *                                                                      still the living room's only (§4.2)
+ *     house: { walls, windows, doors, pickables, builtInLights, colliders },   the whole house, every builder
+ *     lighting: LightManager, design: DesignState, saves: Saves, sync: SceneSync, visibility (visibility.js),
+ *     shell, kitchen, exterior,                                        the builder results
+ *     parts: { rooms, stairs, builtIns },                              the house builders' results (rooms.js,
+ *                                                                      stairs.js, builtins.js)
+ *     setPaint(id, color|null), paintOf(wallId) → colour or name in use
  *     update(dt, time, state), dispose(),
  *   }
  *
- * ctx (from Game.js, see SCAFFOLD.md) gets ctx.design and ctx.lighting added here. Start design (ctx.dev):
+ * The house builders (notes/hele-huset-design.md §2.1, steg 6 S0-stub) – buildRooms(ctx, layout, shell.materials),
+ * buildStairs(ctx, layout), buildBuiltIns(ctx, layout) – all return the same build contract:
+ *   { group, walls, windows, doors, pickables: { floor, walls, ceilings, windows }, builtInLights, colliders,
+ *     update?(dt, state), setPaint?(id, color), dispose() }
+ *   • walls / windows / doors / pickables are appended (after the shell's) to home.walls / windows / doors / pickables;
+ *     a window's `anchor` is attached to roots.shading like the shell's. While every builder returns empty lists the
+ *     home fields are the shell's own arrays, as before.
+ *   • builtInLights go to home.house.builtInLights (the living room's first) – NOT to home.builtInLights, which the
+ *     LightManager reads (lighting.js _buildBuiltIns): an unknown group starts at dimmer 1 and would light the living
+ *     room's model. Steg 13 (L1) switches lighting.js to home.house.builtInLights.
+ *   • colliders: static THREE.Box3 (→ collision.addStaticBox) or THREE.Object3D (→ collision.addStatic), registered
+ *     here before Game.load builds the octree. Door leaves (Door.js addDynamicBox) and surface zones the builder
+ *     registers itself through ctx.collision. home.house.colliders lists them all.
+ *   • group: the builder's root; added to the scene when the builder left it without a parent.
+ *   • update(dt, state) runs every frame after the shell's and must animate the builder's doors (a builder without
+ *     update() gets door.update called on its doors here); setPaint(id, color) runs on every builder (each ignores
+ *     ids it does not own); dispose() runs before the shell's.
+ *
+ * Scene roots of the levels and rooms (built from layout.house before the builders run, also given as ctx.roots):
+ *   roots.levels[id]          one Group per level ('level:<id>'), everything of that level (visibility.js hides the
+ *                             other level, §4.12). The living room's shell and kitchen are the first children of their
+ *                             level, so the scene is traversed in the same order as before.
+ *   roots.rooms[id].group     'room:<id>' in its level, with two children:
+ *     .surfaces               'room:<id>:surfaces' – the room's walls, floor, ceilings, fittings (rooms.js; ViewModes
+ *                             cuts them like roots.shell, §5.2)
+ *     .contents               'room:<id>:contents' – built-ins, room lamps, decor: what visibility.js hides when the
+ *                             room cannot be seen (§4.12)
+ *   The living room's surfaces are roots.shell and roots.kitchen; its group stays empty. Every room of
+ *   layout.house.rooms gets an entry, hud rooms (the stair, `hud: true`) included. Furniture stays in roots.items
+ *   (SceneSync), the exterior in roots.exterior (no level).
+ *
+ * ctx (from Game.js, see SCAFFOLD.md) gets ctx.design, ctx.roots and ctx.lighting added here (ctx.lighting only after
+ * the builders ran). Start design (ctx.dev):
  *   dev.start = 'original' (default; the previous unnamed session is kept as «Forrige økt …») | 'continue' (Saves.restore)
  *   dev.params ?design=<saved name> loads that design, &start=continue continues.
  *   dev.readOnlySaves = true (dev pages): saved designs are read but never written, no autosave.
@@ -104,6 +150,8 @@ export async function createHome(ctx) {
     items: new THREE.Group(),
     wall: new THREE.Group(),
     shading: new THREE.Group(),
+    levels: {},
+    rooms: {},
   };
   roots.items.name = 'items';
   roots.wall.name = 'wall-design';
@@ -120,52 +168,84 @@ export async function createHome(ctx) {
   progress(0.6, 'Utsikten');
   const exterior = buildExterior(ctx, layout);
   roots.exterior = exterior.group;
-  scene.add(roots.exterior, roots.shell, roots.kitchen, roots.items, roots.wall, roots.shading);
+
+  // the levels and rooms of the house; the living room's shell and kitchen lead their level (same order as before)
+  Object.assign(roots, createHouseRoots(layout, [shell.group, kitchen.group]));
+  ctx.roots = roots;
+  progress(0.62, 'Bygger resten av huset');
+  await tick();
+  const parts = {
+    rooms: buildRooms(ctx, layout, shell.materials ?? null),
+    stairs: buildStairs(ctx, layout),
+    builtIns: buildBuiltIns(ctx, layout),
+  };
+  const built = Object.values(parts);
+
+  scene.add(roots.exterior, ...Object.values(roots.levels), roots.items, roots.wall, roots.shading);
+  for (const p of built) if (p.group && !p.group.parent) scene.add(p.group);
+  const livingLights = [...(shell.builtInLights || []), ...(kitchen.builtInLights || [])];
+  const house = mergeHouseParts(shell, built, livingLights);
+  addColliders(ctx.collision, house.colliders);
   scene.updateMatrixWorld(true);
   // window anchors → roots.shading, the high wall anchor → roots.wall (same world transform)
-  for (const w of shell.windows) if (w.anchor) roots.shading.attach(w.anchor);
+  for (const w of house.windows) if (w.anchor) roots.shading.attach(w.anchor);
   if (shell.highWall?.anchor) roots.wall.attach(shell.highWall.anchor);
 
   // one open room: the zones' boxes all count as «Stue/kjøkken», so walking between kitchen, dining area and the two
   // living areas never announces a new room (the HUD banner shows once, when the game starts)
   const rooms = layout.zones.map((z) => ({ id: OPEN_ROOM.id, name: OPEN_ROOM.name, zoneId: z.id, box: z.box.clone() }));
-  const paintOf = (wallId) => design.paints[wallId] ?? layout.wallsById[wallId]?.paint ?? null;
+  // any wall of the house (layout.house.wallsById holds the living room's walls as the same objects)
+  const paintOf = (wallId) => design.paints[wallId] ?? (layout.house?.wallsById?.[wallId] ?? layout.wallsById[wallId])?.paint ?? null;
 
   const home = {
     spawn: spawnPoint(layout),
     rooms,
     layout,
-    walls: shell.walls,
-    windows: shell.windows,
-    doors: shell.doors,
+    walls: house.walls,
+    windows: house.windows,
+    doors: house.doors,
     highWall: shell.highWall,
-    ceilingHeightAt: shell.ceilingHeightAt ?? layout.ceilingHeightAt,
+    ceilingHeightAt: homeCeilingHeightAt(layout),
     floorY: 0,
     roots,
-    pickables: shell.pickables,
-    builtInLights: [...(shell.builtInLights || []), ...(kitchen.builtInLights || [])],
+    pickables: house.pickables,
+    builtInLights: livingLights,
+    house,
     shell,
     kitchen,
     exterior,
+    parts,
     design,
     saves,
     lighting: null,
     sync: null,
-    setPaint: (wallId, color) => shell.setPaint?.(wallId, color),
+    visibility: null,
+    setPaint: (id, color) => {
+      shell.setPaint?.(id, color);
+      for (const p of built) p.setPaint?.(id, color);
+    },
     paintOf,
     update(dt, time, state) {
       shell.update?.(dt, state);
+      // a builder without update() still gets its doors animated
+      for (const p of built) {
+        if (p.update) p.update(dt, state);
+        else for (const d of p.doors || []) d.door?.update?.(dt, state);
+      }
       home.sync.update(dt);
+      home.visibility?.update(dt, state);
       home.lighting.update(dt, state?.camera ?? ctx.camera);
     },
     dispose() {
+      home.visibility?.dispose?.();
       home.sync.dispose();
       saves.dispose?.();
       home.lighting.dispose?.();
+      for (const p of built) p.dispose?.();
       shell.dispose?.();
       kitchen.dispose?.();
       exterior.dispose?.();
-      for (const r of [roots.items, roots.wall, roots.shading]) r.removeFromParent();
+      for (const r of [roots.items, roots.wall, roots.shading, ...Object.values(roots.levels)]) r.removeFromParent();
     },
   };
 
@@ -181,8 +261,116 @@ export async function createHome(ctx) {
   await home.sync.syncAllAsync((f) => progress(0.72 + 0.14 * f, 'Møblerer'));
   home.sync.gating = true;
   await exterior.ready?.catch?.(() => {});
+  // last: it hides levels / room contents only once the game loop runs (after Game._precompile, §4.12)
+  home.visibility = createVisibility(home, layout);
   progress(0.88, 'Nesten klar');
   return home;
+}
+
+/**
+ * The scene roots of the house: one Group per level of layout.house.levels and one entry per room of
+ * layout.house.rooms (see the top of this file). `lead` (the living room's shell and kitchen) become the first
+ * children of the living room's level, before the room groups. A layout without `house` gets the ground floor and the
+ * living room only. Pure (Node-testable): nothing is added to a scene.
+ * @param {object} layout       home/layout.js
+ * @param {THREE.Object3D[]} [lead]
+ * @returns {{ levels: Object<string, THREE.Group>, rooms: Object<string, { id: string, name: string, levelId: string,
+ *   kind: string, hud: boolean, group: THREE.Group, surfaces: THREE.Group, contents: THREE.Group }> }}
+ */
+export function createHouseRoots(layout, lead = []) {
+  const h = layout?.house;
+  const levelList = h?.levels?.length ? h.levels : [{ id: MAIN_LEVEL_ID }];
+  const roomList = h?.rooms?.length ? h.rooms : [{ id: LIVING_ROOM_ID, name: OPEN_ROOM.name, levelId: MAIN_LEVEL_ID, kind: 'living', hud: false }];
+  const levels = {};
+  for (const lv of levelList) {
+    const g = new THREE.Group();
+    g.name = `level:${lv.id}`;
+    g.userData.levelId = lv.id;
+    levels[lv.id] = g;
+  }
+  const fallbackLevel = levelList.find((lv) => lv.id === MAIN_LEVEL_ID)?.id ?? levelList[0].id;
+  const living = roomList.find((r) => r.id === LIVING_ROOM_ID);
+  const livingLevel = levels[living?.levelId] ? living.levelId : fallbackLevel;
+  for (const o of lead) if (o) levels[livingLevel].add(o);
+  const rooms = {};
+  for (const r of roomList) {
+    const levelId = levels[r.levelId] ? r.levelId : fallbackLevel;
+    const group = new THREE.Group();
+    group.name = `room:${r.id}`;
+    group.userData.roomId = r.id;
+    group.userData.levelId = levelId;
+    const surfaces = new THREE.Group();
+    surfaces.name = `room:${r.id}:surfaces`;
+    const contents = new THREE.Group();
+    contents.name = `room:${r.id}:contents`;
+    group.add(surfaces, contents);
+    levels[levelId].add(group);
+    rooms[r.id] = { id: r.id, name: r.name ?? r.id, levelId, kind: r.kind ?? 'room', hud: !!r.hud, group, surfaces, contents };
+  }
+  return { levels, rooms };
+}
+
+/**
+ * Merges the house builders' results with the shell's (see the top of this file). A list no builder adds to is the
+ * shell's own array (the same object as before the house builders existed).
+ * @param {object} shell         buildShell result
+ * @param {object[]} parts       build-contract results (rooms, stairs, built-ins)
+ * @param {object[]} livingLights  the living room's built-in lights (shell + kitchen)
+ * @returns {{ walls: object[], windows: object[], doors: object[], pickables: Object<string, THREE.Mesh[]>,
+ *   builtInLights: object[], colliders: Array<THREE.Box3|THREE.Object3D> }}
+ */
+export function mergeHouseParts(shell, parts, livingLights = []) {
+  const list = (key) => {
+    const extra = parts.flatMap((p) => p?.[key] || []);
+    const base = shell?.[key] || [];
+    return extra.length ? [...base, ...extra] : base;
+  };
+  const basePick = shell?.pickables || { floor: [], walls: [], ceilings: [], windows: [] };
+  const pickParts = parts.map((p) => p?.pickables).filter(Boolean);
+  let pickables = basePick;
+  if (pickParts.some((pk) => Object.values(pk).some((l) => l?.length))) {
+    pickables = {};
+    for (const k of new Set([...Object.keys(basePick), ...pickParts.flatMap((pk) => Object.keys(pk))])) {
+      pickables[k] = [...(basePick[k] || []), ...pickParts.flatMap((pk) => pk[k] || [])];
+    }
+  }
+  return {
+    walls: list('walls'),
+    windows: list('windows'),
+    doors: list('doors'),
+    pickables,
+    builtInLights: [...livingLights, ...parts.flatMap((p) => p?.builtInLights || [])],
+    colliders: parts.flatMap((p) => p?.colliders || []),
+  };
+}
+
+/**
+ * Registers static colliders of the build contract: THREE.Box3 → addStaticBox, anything else (an Object3D) →
+ * addStatic. Call before collision.build() (Game.load builds after createHome).
+ * @param {object|null} collision  CollisionWorld
+ * @param {Array<THREE.Box3|THREE.Object3D>} [colliders]
+ */
+export function addColliders(collision, colliders) {
+  if (!collision) return;
+  for (const c of colliders || []) {
+    if (!c) continue;
+    if (c.isBox3) collision.addStaticBox(c);
+    else collision.addStatic(c);
+  }
+}
+
+/**
+ * home.ceilingHeightAt(x, z, y?): with y (world) the house's ceiling there, without y the living room's (§1.8).
+ * layout.ceilingHeightAt already forwards y to layout.house – it is used as is, so its dev warning about 2-argument
+ * calls in other rooms names the real call site; an older layout without that gets a wrapper.
+ * @param {object} layout
+ * @returns {(x: number, z: number, y?: number) => number}
+ */
+export function homeCeilingHeightAt(layout) {
+  const own = layout.ceilingHeightAt;
+  const house = layout.house?.ceilingHeightAt;
+  if (!house || own.length >= 3) return own;
+  return (x, z, y) => (y === undefined || y === null ? own(x, z) : house(x, z, y));
 }
 
 /**
