@@ -15,6 +15,7 @@ import { WallPanel } from '../ui/WallPanel.js';
 import { PhotoCompare } from '../ui/PhotoCompare.js';
 import { WindowPanel } from '../ui/WindowPanel.js';
 import { LightPanel } from '../ui/LightPanel.js';
+import { SunPanel } from '../ui/SunPanel.js';
 import { setPanelHost, closeTopPanel, anyModalOpen, isFormFocused } from '../ui/panelKit.js';
 import { isTyping } from '../ui/dom.js';
 
@@ -29,7 +30,7 @@ import { isTyping } from '../ui/dom.js';
  *   level → levelId               the level the editor works on: the overview's / plan's (views.level), else the
  *                                 player's (playerLevel()); new items are placed on it (item.level, §5.3)
  *   ?view=plan&floor=kjeller      opens the plan (or the overview) of that level (§5.2)
- *   ui: { toolbar, catalog, inspector, wall, window, light, saves, shopping, acoustics, photo }
+ *   ui: { toolbar, catalog, inspector, wall, window, light, sun, saves, shopping, acoustics, photo }
  *   selected: { kind: 'item'|'wall'|'window'|null, uid?, wallId?, windowId? }
  *   select(target|null)          sets selected, emits 'select' { selected, previous }, opens the matching panel
  *   startPlacing(itemSpec, opts) → placement.start
@@ -107,6 +108,7 @@ export class Editor {
       wall: make('wall', WallPanel),
       window: make('window', WindowPanel),
       light: make('light', LightPanel),
+      sun: make('sun', SunPanel),
       saves: make('saves', SavePanel),
       shopping: make('shopping', ShoppingPanel),
       acoustics: make('acoustics', AcousticsWidget),

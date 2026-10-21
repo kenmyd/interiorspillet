@@ -6,14 +6,15 @@ import { openPanels } from './panelKit.js';
  * Toolbar along the bottom of the screen (ARCHITECTURE §12, §14) and the global shortcuts.
  *
  *   new Toolbar(editor)
- *   run(id)                    'catalog' | 'wall' | 'window' | 'light' | 'view' | 'compare' | 'saves' | 'shopping' | 'photo' | 'undo' | 'redo'
+ *   run(id)                    'catalog' | 'wall' | 'window' | 'light' | 'sun' | 'view' | 'compare' | 'saves' | 'shopping' |
+ *                              'photo' | 'undo' | 'redo'
  *   compareActive              true while «Før» (the original room) is shown
  *   enterCompare() / exitCompare() / toggleCompare()
  *   takePicture() → string|null   renders the current view and downloads «huset-YYYY-MM-DD-HHMM.png»
  *   open() / close() / toggle() / isOpen / update() / dispose()
  *
  * Shortcuts (ignored while a text field has focus, the game is paused or a modal is open – editor.keysActive()):
- * K Katalog · V Veggforslag · B Vinduer · L Lys og sol · Tab Visning · O Før/etter · M Design · I Handleliste ·
+ * K Katalog · V Veggforslag · B Vinduer · L Belysning · T Sol · Tab Visning · O Før/etter · M Design · I Handleliste ·
  * P Bilde · Ctrl+Z angre · Ctrl+Y / Ctrl+Shift+Z gjør om · Page Up / Page Down etasje opp / ned (oversikt og plan).
  * The «Etasje» button (cycleLevel) is shown in the overview and the plan only, named after the level they show
  * (views.levelName; 'view' / 'view-level' events).
@@ -33,7 +34,8 @@ export const TOOL_ICONS = {
   catalog: ICONS.sofa,
   wall: S('<rect x="4" y="3.5" width="16" height="17" rx="1.4"/><path d="M8 3.5v17M12 3.5v17M16 3.5v17"/>'),
   window: ICONS.blinds,
-  sun: S('<circle cx="12" cy="12" r="3.8"/><path d="M12 2.6v2.1M12 19.3v2.1M2.6 12h2.1M19.3 12h2.1M5.4 5.4l1.5 1.5M17.1 17.1l1.5 1.5M5.4 18.6l1.5-1.5M17.1 6.9l1.5-1.5"/>'),
+  bulb: ICONS.bulb,
+  sun: ICONS.sun,
   view: S('<path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/>'),
   compare: S('<rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M12 2.5v19"/><path d="M8.6 9.8 6.4 12l2.2 2.2M15.4 9.8l2.2 2.2-2.2 2.2"/>'),
   folder: S('<path d="M3.5 7.4a2 2 0 0 1 2-2h3.8l2 2.1h7.2a2 2 0 0 1 2 2v8.1a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><path d="M3.5 10h17"/>'),
@@ -48,7 +50,8 @@ const BUTTONS = [
   { id: 'catalog', label: 'Katalog', icon: 'catalog', key: 'K', code: 'KeyK', panel: 'catalog', title: 'Katalog – lenestoler, skjenker, lamper, tekstiler og akustikk' },
   { id: 'wall', label: 'Veggforslag', icon: 'wall', key: 'V', code: 'KeyV', panel: 'wall', title: 'Forslag til den høye veggen' },
   { id: 'window', label: 'Vinduer', icon: 'window', key: 'B', code: 'KeyB', panel: 'window', title: 'Vinduer og solskjerming' },
-  { id: 'light', label: 'Lys og sol', icon: 'sun', key: 'L', code: 'KeyL', panel: 'light', title: 'Lys, sol og tid på døgnet' },
+  { id: 'light', label: 'Belysning', icon: 'bulb', key: 'L', code: 'KeyL', panel: 'light', title: 'Belysning – lampene i rommene' },
+  { id: 'sun', label: 'Sol', icon: 'sun', key: 'T', code: 'KeyT', panel: 'sun', title: 'Sol – tid på døgnet, dato og vær' },
   { sep: true },
   { id: 'view', label: 'Visning', icon: 'view', key: 'Tab', code: 'Tab', title: 'Bytt visning: gå · oversikt · plan' },
   // shown in the overview and the plan only (§5.2): the level they show; PageUp / PageDown (handled in _key)
@@ -64,10 +67,13 @@ const VIEW_LABELS = { walk: 'Gå', orbit: 'Oversikt', plan: 'Plan', photo: 'Foto
 const VIEW_ORDER = ['walk', 'orbit', 'plan'];
 
 /** Tools that may stay on while «Før» is shown (they do not change the furniture). */
-const COMPARE_SAFE = new Set(['view', 'level', 'compare', 'photo', 'light', 'undo', 'redo']);
+const COMPARE_SAFE = new Set(['view', 'level', 'compare', 'photo', 'light', 'sun', 'undo', 'redo']);
 
 const CSS = `
 .ipt-bar { gap: 0.15em; }
+/* centred, but never under the reverberation badge in the bottom-left corner (AcousticsWidget, ends ≈ 13.9em from the
+   left): a wide bar (small windows, «Etasje» in the overview and the plan) moves right of it while it still fits */
+.ipt-bar { transform: translateX(min(max(-50%, calc(14.6em - 50vw)), calc(50vw - 100% - 1em))); }
 .ipt-bar .ip-toolbtn { min-width: 4.9em; }
 .ipt-bar .ip-toolbtn .kv-icon { width: 1.55em; height: 1.55em; }
 .ipt-bar .ip-toolbtn__key { top: 0.28em; right: 0.32em; font-size: 0.72em; letter-spacing: 0.02em; }

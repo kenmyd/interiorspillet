@@ -1,7 +1,6 @@
 import { h, svg, keycap, PAUSE_EVENT } from './dom.js';
 import { ICONS } from './icons.js';
 import { buildControlsList } from './controlsHelp.js';
-import { COMPASS } from '../config.js';
 
 /**
  * In-game HUD (DOM overlay). Never captures the mouse: everything is pointer-events: none.
@@ -16,14 +15,12 @@ import { COMPASS } from '../config.js';
  *   toast(text, seconds=3)          short message
  *   showHelp(visible, autoHideSeconds?) / toggleHelp()   controls overview panel
  *   setFps(number|null)
- *   setHeading(yawRadians)          compass heading: bearing = yaw0Bearing − yaw (deg); yaw0Bearing defaults to
- *                                   COMPASS.yaw0Bearing (config.js: yaw 0 looks along −z = east = 90°)
  *   update(dt)
  *   dispose()
  *
  * Extras:
- *   new Hud(uiRoot, settings, { placeName, yaw0Bearing })   placeName: small line above the room name in the
- *                                   room banner (e.g. 'Hjemme'); yaw0Bearing: compass bearing at yaw 0
+ *   new Hud(uiRoot, settings, { placeName })   placeName: small line above the room name in the room banner
+ *                                   (e.g. 'Hjemme')
  *   showRoom(name, { eyebrow })     per-call override of that small line ('' hides it). Game passes the level of the
  *                                   place: «1. etasje», «Kjeller» or «Ute» (notes/hele-huset-design.md §5.1)
  *   roomShown                       { name, eyebrow } of the last banner (null before the first), for tests / tools
@@ -34,9 +31,6 @@ import { COMPASS } from '../config.js';
  * Most setters are called every frame, so they only touch the DOM when the value actually changes.
  */
 
-const COMPASS_STEP = 15; // degrees between ticks
-const COMPASS_EM_PER_DEG = 0.19; // strip scale (≈ 140° visible in the 27em window)
-const LABELS = { 0: 'N', 45: 'NØ', 90: 'Ø', 135: 'SØ', 180: 'S', 225: 'SV', 270: 'V', 315: 'NV' };
 const ROOM_TIME = 2.6; // seconds the room banner stays (incl. fades)
 const MAX_TOASTS = 3;
 
@@ -46,41 +40,21 @@ export class Hud {
    * @param {import('../core/Settings.js').Settings} settings
    * @param {object} [o]
    * @param {string} [o.placeName]  shown above the room name in the room banner (e.g. 'Hjemme')
-   * @param {number} [o.yaw0Bearing]  compass bearing (deg) when yaw = 0 (default COMPASS.yaw0Bearing)
    */
-  constructor(root, settings, { placeName = '', yaw0Bearing = COMPASS.yaw0Bearing } = {}) {
+  constructor(root, settings, { placeName = '' } = {}) {
     this.root = root;
     this.settings = settings;
     this.placeName = placeName;
-    this.yaw0Bearing = yaw0Bearing;
     this._prompt = { text: null, key: null };
     this._crosshair = null;
     this._cursor = null;
     this._fps = undefined;
-    this._bearing = null;
     this._roomT = 0;
     this.roomShown = null;
     this._helpT = 0;
     this._helpTotal = 0;
     this._toasts = [];
     this.paused = false;
-
-    // compass
-    this.compassStrip = h('div.kv-compass__strip');
-    for (let d = -360; d <= 720; d += COMPASS_STEP) {
-      const deg = ((d % 360) + 360) % 360;
-      const label = LABELS[deg];
-      const tick = h(`span.kv-compass__tick${label ? '.is-major' : ''}${deg === 0 ? '.is-north' : ''}`, {
-        style: { left: `${d * COMPASS_EM_PER_DEG}em` },
-      }, label ? h('b', { text: label }) : null);
-      this.compassStrip.append(tick);
-    }
-    this.compassDeg = h('span.kv-compass__deg');
-    this.compass = h('div.kv-compass', { 'aria-hidden': 'true' },
-      h('div.kv-compass__window', {}, this.compassStrip),
-      h('span.kv-compass__needle'),
-      this.compassDeg,
-    );
 
     // fps
     this.fpsEl = h('div.kv-fps', { hidden: true });
@@ -113,7 +87,7 @@ export class Hud {
     this.helpHint = h('div.kv-helphint', {}, keycap('H'), h('span', { text: 'Hjelp' }));
 
     this.el = h('div.kv-hud.kv-scale', {},
-      this.compass, this.fpsEl, this.room, this.crosshair, this.prompt, this.toasts, this.help, this.helpHint,
+      this.fpsEl, this.room, this.crosshair, this.prompt, this.toasts, this.help, this.helpHint,
     );
     root.append(this.el);
 
@@ -122,7 +96,6 @@ export class Hud {
       if (key === 'mouseMode' || key === 'turnWithKeys' || key === 'runToggle') this._renderHelp();
     });
     this._renderHelp();
-    this.setHeading(0);
 
     this._onPause = (e) => this.setPaused(!!e.detail?.paused);
     root.addEventListener(PAUSE_EVENT, this._onPause);
@@ -249,7 +222,7 @@ export class Hud {
     this.helpList.replaceChildren(buildControlsList(this.settings));
   }
 
-  /* ------------------------------------------------------------------ fps / compass */
+  /* ------------------------------------------------------------------ fps */
 
   /** @param {number|null} fps */
   setFps(fps) {
@@ -266,20 +239,6 @@ export class Hud {
     this.fpsEl.hidden = false;
     this.fpsEl.textContent = `${v} FPS`;
     this.fpsEl.dataset.level = v >= 55 ? 'good' : v >= 30 ? 'ok' : 'bad';
-  }
-
-  /** @param {number} yaw radians (camera rotation.y, + = turned left); bearing = yaw0Bearing − yaw */
-  setHeading(yaw) {
-    let bearing = this.yaw0Bearing - (yaw * 180) / Math.PI;
-    bearing = ((bearing % 360) + 360) % 360;
-    if (this._bearing !== null && Math.abs(bearing - this._bearing) < 0.05) return;
-    this._bearing = bearing;
-    this.compassStrip.style.transform = `translateX(${(-bearing * COMPASS_EM_PER_DEG).toFixed(3)}em)`;
-    const rounded = Math.round(bearing) % 360;
-    if (rounded !== this._degShown) {
-      this._degShown = rounded;
-      this.compassDeg.textContent = `${rounded}°`;
-    }
   }
 
   /* ------------------------------------------------------------------ frame */

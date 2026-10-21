@@ -35,9 +35,9 @@ export const DEFAULT_SETTINGS = Object.freeze({
   /** Dynamic resolution: lower the render resolution while the frame rate is below ~50 fps (Game). */
   autoResolution: true,
   showHelpOnStart: true,
-  /** Latitude for the sun (degrees north) – «Lys og sol» → «Breddegrad». */
+  /** Latitude for the sun (degrees north) – «Sol» → «Breddegrad». */
   sunLatitude: 58.1,
-  /** 'clear' | 'overcast' – «Lys og sol» → «Vær». */
+  /** 'clear' | 'overcast' – «Sol» → «Vær». */
   lightWeather: 'clear',
 });
 

@@ -23,8 +23,7 @@
 // the room does not change when you look at it from outside.
 // The overview and the plan frame the room in the part of the screen the HUD leaves free (between the top and the
 // key bar above the toolbar, beside open side panels): opening the catalogue or the inspector slides the view over
-// (a view offset in the overview, a shifted camera in the plan) and the selected item is panned into view. The
-// walk view's compass is hidden in the other views.
+// (a view offset in the overview, a shifted camera in the plan) and the selected item is panned into view.
 //
 // The whole house (notes/hele-huset-design.md §5.2, steg 15 E2 + 28 E4): the overview and the plan show ONE level
 // (`level`, a layout.house.levels id) – every room of it: the living room's shell and the rooms' surfaces
@@ -114,7 +113,6 @@ export class ViewModes {
     this._panelSig = '';
     this._ensureAt = 0; // keep the selection in view (time from which to check, 0 = off)
     this._panAnim = null;
-    this._compassHidden = false;
     this._hudKey = '';
     this._cuts = new Map(); // levelId → cut model (see _prepareCut)
     this._cutLevel = null;
@@ -521,7 +519,7 @@ export class ViewModes {
 
   /**
    * Frames the whole floor (and the wall tops) for an orbit direction: the smallest distance at which it fits, with
-   * the pivot shifted so the room sits in the free part of the screen (between the compass and the toolbar).
+   * the pivot shifted so the room sits in the free part of the screen (between the top and the toolbar).
    */
   _fitOrbit(target, dir, el) {
     const cam = (this._fitCam ||= new THREE.PerspectiveCamera(ORBIT_FOV, 1, 0.1, 200));
@@ -674,12 +672,6 @@ export class ViewModes {
     } else if (this.mode === 'plan') this._updateOrtho();
     else if (this.mode === 'photo') this._applyViewOffset(0);
     if (!this._tween && (this.mode === 'orbit' || this.mode === 'plan')) this._keepSelectionVisible(dt);
-    // the compass belongs to walking
-    const hideCompass = this.mode !== 'walk' || !!this._tween;
-    if (hideCompass !== this._compassHidden && this.editor.hud?.compass) {
-      this._compassHidden = hideCompass;
-      this.editor.hud.compass.style.visibility = hideCompass ? 'hidden' : '';
-    }
 
     this._refreshConcealed();
     const tm = this._tween;
@@ -1827,7 +1819,6 @@ export class ViewModes {
     this._offLoad?.();
     this._offSelect?.();
     for (const off of this._offSync || []) off?.();
-    if (this._compassHidden && this.editor.hud?.compass) this.editor.hud.compass.style.visibility = '';
     this.persp.clearViewOffset();
     this.controls.dispose();
     for (const g of this._overlays.values()) g.removeFromParent();
