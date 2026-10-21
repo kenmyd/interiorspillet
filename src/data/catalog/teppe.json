@@ -40,11 +40,11 @@
         "url": "https://www.bohus.no/tepper/gulvteppe/stort-teppe/gabel-teppe-240x340-1"
       },
       {
-        "name": "Brun (Muldvarp)",
+        "name": "Muldvarp",
         "colors": {
-          "base": "#6a5f55",
-          "accent": "#584e45",
-          "accent2": "#7c7166"
+          "base": "#6d5e4d",
+          "accent": "#5b4d3d",
+          "accent2": "#7f705e"
         },
         "materials": {
           "base": "wool",
@@ -56,9 +56,9 @@
       {
         "name": "Beige",
         "colors": {
-          "base": "#c8bba6",
-          "accent": "#b5a891",
-          "accent2": "#d6cbb8"
+          "base": "#ae9c81",
+          "accent": "#9b896c",
+          "accent2": "#bcac93"
         },
         "materials": {
           "base": "wool",
@@ -70,9 +70,9 @@
       {
         "name": "Hvit berber",
         "colors": {
-          "base": "#e6e0d4",
-          "accent": "#8c8378",
-          "accent2": "#d3cbbd"
+          "base": "#dbd4c0",
+          "accent": "#cdc6b1",
+          "accent2": "#e5dfcc"
         },
         "materials": {
           "base": "wool",
@@ -88,7 +88,7 @@
     "why": "240x340 er stort nok til at stolene rundt det mørke ovale spisebordet står på teppet når de trekkes ut, og den varme grå tonen binder sammen den mørke eika, de lyse bouclé-stolene og MARRAKESH-veggene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/GABEL/306519/image-thumb__306519__PDP-Product/298136%20-%20Gabel%20teppe%20160x230%20ull%20varm%20gr%C3%A5%20-%201.f7aabe1d.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, 240x340 cm, 1 cm luv, 100 % ull, og alle fire fargelenkene virker.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, 240x340 cm, 1 cm luv, 100 % ull, og alle fire fargelenkene virker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire fargene i 240x340 finnes (Varm grå, Muldvarp, Beige og Hvit berber, 100 % ull, alle 14 799 kr). «Brun (Muldvarp)» heter nå «Muldvarp» som hos Bohus, og muldvarp, beige og hvit berber har fått farger fra sine egne produktbilder (hvit berber er ensfarget krem uten mørke prikker).",
     "priceConfidence": "check"
   },
   {
@@ -134,9 +134,9 @@
       {
         "name": "Muldvarp",
         "colors": {
-          "base": "#6a5f55",
-          "accent": "#584e45",
-          "accent2": "#7c7166"
+          "base": "#756656",
+          "accent": "#635546",
+          "accent2": "#877867"
         },
         "materials": {
           "base": "wool",
@@ -148,9 +148,9 @@
       {
         "name": "Beige",
         "colors": {
-          "base": "#c8bba6",
-          "accent": "#b5a891",
-          "accent2": "#d6cbb8"
+          "base": "#a69884",
+          "accent": "#93856f",
+          "accent2": "#b4a896"
         },
         "materials": {
           "base": "wool",
@@ -163,8 +163,8 @@
         "name": "Hvit berber",
         "colors": {
           "base": "#e6e0d4",
-          "accent": "#8c8378",
-          "accent2": "#d3cbbd"
+          "accent": "#d9d2c1",
+          "accent2": "#efe9da"
         },
         "materials": {
           "base": "wool",
@@ -180,7 +180,7 @@
     "why": "Et rundt teppe myker opp de rette linjene i sittegruppen ved vinduene og gjentar formen på de runde salongbordene og de svingbare tubestolene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/GABEL/306518/image-thumb__306518__PDP-Product/298142%20-%20Gabel%20rundt%20teppe%20%C3%98160%20ull%20varm%20gr%C3%A5%20-%201.70f9d9a5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, Ø240, 1 cm luv, 100 % ull, og alle fire fargelenkene virker.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, Ø240, 1 cm luv, 100 % ull, og alle fire fargelenkene virker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire fargene i Ø240 finnes (Varm grå, Muldvarp, Beige og Hvit berber, 100 % ull, alle 10 499 kr). Muldvarp og beige har fått farger fra sine egne produktbilder, og hvit berber har ikke lenger mørke prikker (ensfarget krem på bildet).",
     "priceConfidence": "check"
   },
   {
@@ -226,9 +226,9 @@
       {
         "name": "Hvit",
         "colors": {
-          "base": "#ebe8e1",
-          "accent": "#d9d4ca",
-          "accent2": "#f3f1ec"
+          "base": "#e2e1dd",
+          "accent": "#d0cdc6",
+          "accent2": "#eaeae8"
         },
         "materials": {
           "base": "wool",
@@ -240,9 +240,9 @@
       {
         "name": "Sølv",
         "colors": {
-          "base": "#b9b8b3",
-          "accent": "#9f9e99",
-          "accent2": "#cfcec9"
+          "base": "#a9aca8",
+          "accent": "#8f928e",
+          "accent2": "#bfc2be"
         },
         "materials": {
           "base": "wool",
@@ -254,9 +254,9 @@
       {
         "name": "Brungrå",
         "colors": {
-          "base": "#8a8073",
-          "accent": "#736a5e",
-          "accent2": "#a0978a"
+          "base": "#b3a190",
+          "accent": "#9c8b7b",
+          "accent2": "#c9b8a7"
         },
         "materials": {
           "base": "wool",
@@ -272,7 +272,7 @@
     "why": "Et rimelig ullteppe som gir mye lyddemping for pengene, og den naturhvite vevstrukturen passer til de lyse bouclé-stolene og SAND-veggene i sittegruppen ved vinduene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/FRIGG/97881/image-thumb__97881__PDP-Product/105398%20-%20Frigg%20teppe%20160x230%20ull%20natur%20-%2012.0ade65ca.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, 200x290 cm, 1 cm, 100 % ull, vendbart, og alle fire fargelenkene virker. Merke er ikke oppgitt på siden (leverandør Denina).",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, 200x290 cm, 1 cm, 100 % ull, vendbart, og alle fire fargelenkene virker. Merke er ikke oppgitt på siden (leverandør Denina). Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire fargene i 200x290 finnes (Natur, Hvit, Sølv og Brungrå, 100 % ull, alle 3 899 kr; granitt er utgått). Hvit, sølv og brungrå har fått farger fra sine egne produktbilder (brungrå er en lysere brun-beige melert tone enn før).",
     "priceConfidence": "check"
   },
   {
@@ -318,9 +318,9 @@
       {
         "name": "Brun",
         "colors": {
-          "base": "#7a6a5a",
-          "accent": "#4a3f36",
-          "accent2": "#9a8a78"
+          "base": "#af9c82",
+          "accent": "#5c4e40",
+          "accent2": "#c1ae94"
         },
         "materials": {
           "base": "wool",
@@ -336,7 +336,7 @@
     "why": "Berberlooket med mørke prikker skjuler smuler og flekker godt under spisebordet og gjentar de svarte metalldetaljene og den varme SAND-fargen.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/LOTUS/306521/image-thumb__306521__PDP-Product/298117%20-%20Lotus%20teppe%20160x230%20ull%20beige%20-%201.3fb0d04c.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, 240x340 cm, 1 cm, håndtuftet i håndspunnet ull med filtbakside, og begge fargelenkene virker. Merke er ikke oppgitt (leverandør Denina).",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, 240x340 cm, 1 cm, håndtuftet i håndspunnet ull med filtbakside, og begge fargelenkene virker. Merke er ikke oppgitt (leverandør Denina). Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge fargene i 240x340 finnes (Beige og Brun, 100 % ull, begge 9 999 kr). Brun har fått lysere gråbrun bunnfarge med mørke prikker fra produktbildet.",
     "priceConfidence": "check"
   },
   {
@@ -397,9 +397,9 @@
       {
         "name": "125-melert greige",
         "colors": {
-          "base": "#c4bcb0",
-          "accent": "#a49b8e",
-          "accent2": "#d7d0c6"
+          "base": "#b7b1ad",
+          "accent": "#97908b",
+          "accent2": "#cac5c3"
         },
         "materials": {
           "base": "wool",
@@ -417,7 +417,7 @@
     "why": "Et stort og lyst ullteppe som kan erstatte dagens teppe i sittegruppen ved de sørvendte vinduene. Den lyse beige fargen gjør rommet lysere og demper mye av klangen.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Lone%20Tepper/Produkter/VILA/340642/image-thumb__340642__PDP-Product/314775%20-%20Vila%20teppe%20130x190%20100-%20ull%20beige%20-%201.3ef4e6cf.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18. Rettet: den grå varianten lenket til et 300x400-teppe og er byttet til 240x340-utgaven. Greige-varianten er lagt til.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18. Rettet: den grå varianten lenket til et 300x400-teppe og er byttet til 240x340-utgaven. Greige-varianten er lagt til. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre fargene i 240x340 finnes (138-beige 8 999 kr, 115-melert lys grå og 125-melert greige 6 299 kr på tilbud, før 8 999 kr – prisene står nå per farge; 100 % ull). 125-melert greige har fått farge fra produktbildet. 825-melert grå, 001-offwhite og 967-brun finnes ikke i 240x340.",
     "priceConfidence": "checked"
   },
   {
@@ -463,9 +463,9 @@
       {
         "name": "Natur",
         "colors": {
-          "base": "#e2ddd2",
-          "accent": "#bdb5a7",
-          "accent2": "#eeeae2"
+          "base": "#bfb6b1",
+          "accent": "#9a8e86",
+          "accent2": "#cbc3c1"
         },
         "materials": {
           "base": "wool",
@@ -495,7 +495,7 @@
     "why": "Med 2 cm luv demper det mer lyd enn et flatvevd teppe, og den kjølige melerte grå passer til den grå hjørnesofaen i TV-stua.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Lone%20Tepper/Produkter/LINDE/309032/image-thumb__309032__PDP-Product/298370%20-%20Linde%20teppe%20160x230%20100-%20ull%20gr%C3%A5%20-%204.1701d6aa.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, 200x290 cm, 2 cm luv, håndtuftet New Zealand-ull på bomullscanvas. Offwhite-varianten er lagt til.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, 200x290 cm, 2 cm luv, håndtuftet New Zealand-ull på bomullscanvas. Offwhite-varianten er lagt til. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre fargene i 200x290 finnes (Grå, Natur og Offwhite, 100 % ull, alle 8 299 kr). Natur er en gråbeige melert tone på produktbildene og har fått mørkere farge enn før.",
     "priceConfidence": "check"
   },
   {
@@ -527,9 +527,9 @@
       {
         "name": "Melert grå",
         "colors": {
-          "base": "#c9c6bc",
-          "accent": "#a9a69d",
-          "accent2": "#dcd9d0"
+          "base": "#d5d2c7",
+          "accent": "#b5b2a8",
+          "accent2": "#e8e5db"
         },
         "materials": {
           "base": "wool",
@@ -541,9 +541,9 @@
       {
         "name": "Melert mørk grå",
         "colors": {
-          "base": "#6d6b67",
-          "accent": "#55534f",
-          "accent2": "#858380"
+          "base": "#636264",
+          "accent": "#4b4a4c",
+          "accent2": "#7b7a7d"
         },
         "materials": {
           "base": "wool",
@@ -555,9 +555,9 @@
       {
         "name": "Taupe",
         "colors": {
-          "base": "#a5998a",
-          "accent": "#8a7f71",
-          "accent2": "#bcb2a5"
+          "base": "#736758",
+          "accent": "#584d3f",
+          "accent2": "#8a8073"
         },
         "materials": {
           "base": "wool",
@@ -569,9 +569,9 @@
       {
         "name": "Beige",
         "colors": {
-          "base": "#cfc2ad",
-          "accent": "#b6a993",
-          "accent2": "#ddd3c1"
+          "base": "#f0e6dc",
+          "accent": "#d7cdc2",
+          "accent2": "#faf2ea"
         },
         "materials": {
           "base": "wool",
@@ -587,7 +587,7 @@
     "why": "Et rundt teppe på Ø250 rammer inn de to runde salongbordene og tubestolene ved vinduene, og den melerte grå matcher stolenes bouclé.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Lone%20Tepper/Produkter/EDEN/596392/image-thumb__596392__PDP-Product/222164%20-%20Eden%20rundt%20teppe%20%C3%98160%2050-%20ull%2050-%20viskose%20melert%20gr%C3%A5%20-%201.8f332a19.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris 5 319 kr (før 7 599 kr), Ø250, 0,7 cm luv, 50 % ull og 50 % viskose. Taupe-varianten er lagt til.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris 5 319 kr (før 7 599 kr), Ø250, 0,7 cm luv, 50 % ull og 50 % viskose. Taupe-varianten er lagt til. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire fargene i Ø250 finnes (Melert Grå, Melert Mørk Grå, Taupe og Beige, alle 5 319 kr, før 7 599 kr). Stoffet er rettet til ull (50 % ull og 50 % viskose), og alle fire har fått farger fra produktbildene (taupe er mørk gråbrun og beige nesten hvit krem).",
     "priceConfidence": "checked"
   },
   {
@@ -619,9 +619,9 @@
       {
         "name": "Lys grå",
         "colors": {
-          "base": "#b4b3ae",
-          "accent": "#9a9994",
-          "accent2": "#c8c7c2"
+          "base": "#8e908b",
+          "accent": "#747671",
+          "accent2": "#a2a49f"
         },
         "materials": {
           "base": "woven",
@@ -665,7 +665,7 @@
     "why": "Et slitesterkt og lettstelt budsjettvalg til TV-stua, der det brukes mye. Den mørk grå varianten passer til hjørnesofaen og det mørke salongbordet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/RIVAL%20FRISE/93992/image-thumb__93992__PDP-Product/191252%20-%20Rival%20Frise%20teppe%20200x290%20polypropylen%20lys%20gr%C3%A5%20-%201.ac8c3cb5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, 200x290 cm, 1 cm luv, polypropylen, og alle tre fargelenkene virker. Rettet: bildet viste mørk grå og er byttet til lys grå, og beskrivelsen følger nå siden.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, 200x290 cm, 1 cm luv, polypropylen, og alle tre fargelenkene virker. Rettet: bildet viste mørk grå og er byttet til lys grå, og beskrivelsen følger nå siden. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre fargene i 200x290 finnes (Lys grå, Mørk grå og Krem, alle 4 499 kr; blå, mørk grønn, terracotta og svart er utgått). Materialet er rettet til vevd syntet (100 % polypropylen, maskinvevd), og lys grå har fått mørkere farge fra produktbildet.",
     "priceConfidence": "check"
   },
   {
@@ -711,9 +711,9 @@
       {
         "name": "Offwhite",
         "colors": {
-          "base": "#e8e3da",
-          "accent": "#d6d0c5",
-          "accent2": "#f0ece5"
+          "base": "#f1ece2",
+          "accent": "#dfd9cd",
+          "accent2": "#f9f5ed"
         },
         "materials": {
           "base": "wool",
@@ -757,7 +757,7 @@
     "why": "Tykk og fyldig ull demper mest lyd per kvadratmeter av teppene her, og den lys grå fargen passer til tubestolene i bouclé og hjørnesofaen.",
     "imageUrl": "https://www.kid.no/globalassets/productimages/10022614816929_1.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på kid.no 2026-10-18: navn, priser per størrelse, 80 % ull og 20 % bomull, 4000 g/m², håndvevd, og alle fire fargelenkene virker.",
+    "verifiedNote": "Bekreftet på kid.no 2026-10-18: navn, priser per størrelse, 80 % ull og 20 % bomull, 4000 g/m², håndvevd, og alle fire fargelenkene virker. Farger og stoff kontrollert 2026-10-21 mot kid.no: alle fire fargene finnes i 200x300 (lys grå, offwhite, beige og lindegrønn, alle 8 999,90 kr, nå 6 299,93 kr; 80 % ull og 20 % bomull). Offwhite har fått lysere farge fra produktbildet.",
     "priceConfidence": "checked"
   },
   {
@@ -803,9 +803,9 @@
       {
         "name": "Beige",
         "colors": {
-          "base": "#c6b096",
-          "accent": "#b39c82",
-          "accent2": "#d4c1aa"
+          "base": "#d5c3ac",
+          "accent": "#c2af98",
+          "accent2": "#e3d4c0"
         },
         "materials": {
           "base": "wool",
@@ -817,9 +817,9 @@
       {
         "name": "Lys brun",
         "colors": {
-          "base": "#a88b70",
-          "accent": "#94785e",
-          "accent2": "#b89d84"
+          "base": "#b9a391",
+          "accent": "#a5907f",
+          "accent2": "#c9b5a5"
         },
         "materials": {
           "base": "wool",
@@ -831,9 +831,9 @@
       {
         "name": "Brun",
         "colors": {
-          "base": "#6f5847",
-          "accent": "#5d4939",
-          "accent2": "#806957"
+          "base": "#a18774",
+          "accent": "#8f7866",
+          "accent2": "#b29884"
         },
         "materials": {
           "base": "wool",
@@ -849,7 +849,7 @@
     "why": "Et rimelig ensfarget ullteppe i varm beige som passer til SAND-veggene og det lyse eikegulvet, og det er lett å legge under spisebordet.",
     "imageUrl": "https://www.kid.no/globalassets/productimages/10077311619205.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på kid.no 2026-10-18: navn, priser per størrelse, 100 % RWS-ull, 1800 g/m², håndvevd med kantdetalj, og alle fire fargelenkene virker.",
+    "verifiedNote": "Bekreftet på kid.no 2026-10-18: navn, priser per størrelse, 100 % RWS-ull, 1800 g/m², håndvevd med kantdetalj, og alle fire fargelenkene virker. Farger og stoff kontrollert 2026-10-21 mot kid.no: alle fire fargene finnes i 200x300 (lys beige, beige, lys brun og brun, alle 2 999,90 kr, nå 2 099,93 kr; lys beige er utsolgt på nett i 200x300), 100 % ull. Beige, lys brun og brun har fått farger fra produktbildene (brun er en lysere, varm brun enn før).",
     "priceConfidence": "checked"
   },
   {
@@ -859,8 +859,8 @@
     "brand": "Rugvista core",
     "store": "Rugvista",
     "url": "https://www.rugvista.no/p/melange-200x300-cm-gra-stort-teppe-CVD22354",
-    "priceNok": 4440,
-    "priceNote": "pris sjekket 2026-10-18, lest fra sidens produktdata (fri frakt). Beige og brun koster det samme. 250x300 koster 5 310 kr og 250x250 4 660 kr. 250x350, 300x300 og 300x400 finnes også.",
+    "priceNok": 4120,
+    "priceNote": "pris sjekket 2026-10-18, lest fra sidens produktdata (fri frakt). Beige og brun koster det samme. 250x300 koster 5 310 kr og 250x250 4 660 kr. 250x350, 300x300 og 300x400 finnes også. Pris sjekket på nytt 2026-10-21 på produktsiden: 4 120 kr for alle tre fargene (ingen kampanje, laveste pris siste 30 dager 4 120 kr), så prisen er rettet fra 4 440 kr.",
     "dims": {
       "w": 2,
       "d": 3,
@@ -880,8 +880,8 @@
       {
         "name": "Grå",
         "colors": {
-          "base": "#bdb7b0",
-          "accent": "#8f8983",
+          "base": "#c8bfba",
+          "accent": "#9a918d",
           "accent2": "#e3ded5"
         },
         "materials": {
@@ -894,8 +894,8 @@
       {
         "name": "Beige",
         "colors": {
-          "base": "#cdbfa9",
-          "accent": "#a99a83",
+          "base": "#d7cec3",
+          "accent": "#b3a99d",
           "accent2": "#e6ddcf"
         },
         "materials": {
@@ -908,8 +908,8 @@
       {
         "name": "Brun",
         "colors": {
-          "base": "#7b6a5b",
-          "accent": "#5f5145",
+          "base": "#8d7e74",
+          "accent": "#71655e",
           "accent2": "#d8cfc1"
         },
         "materials": {
@@ -926,7 +926,7 @@
     "why": "En rimelig grå melange som ligner teppet som ligger i sittegruppen i dag, og som er tynn nok til at svingstolene og salongbordene står stødig.",
     "imageUrl": "https://cdn.rugvista.net/products/main/457718.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på rugvista.no 2026-10-18: 4 440 kr, 200x300 cm, 5 mm, 80 % ull og 20 % bomull, håndvevd med frynser, på lager. Alle tre fargelenkene virker.",
+    "verifiedNote": "Bekreftet på rugvista.no 2026-10-18: 4 440 kr, 200x300 cm, 5 mm, 80 % ull og 20 % bomull, håndvevd med frynser, på lager. Alle tre fargelenkene virker. Farger og stoff kontrollert 2026-10-21 mot rugvista.no: alle tre fargene finnes i 200x300 (Grå, Beige og Brun, 80 % ull og 20 % bomull, alle 4 120 kr), og alle tre har fått bunnfarge fra produktbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -962,9 +962,9 @@
           "accent2": "#ddd8c9"
         },
         "materials": {
-          "base": "wool",
-          "accent": "wool",
-          "accent2": "wool"
+          "base": "woven",
+          "accent": "woven",
+          "accent2": "woven"
         },
         "url": "https://jysk.no/interior/gulvtepper/store-gulvtepper/teppe-lucerne-200x300-beige"
       }
@@ -975,7 +975,7 @@
     "why": "Den lyse, ribbede strukturen gir litt tekstur mot det glatte eikegulvet og gir god lyddemping til lav pris, for eksempel under spisebordet.",
     "imageUrl": "https://img.jysk.io?url=https%3A%2F%2Fcdn1.jysk.com%2Fgetimage%2Fwd3.large%2F262162&w=2744",
     "verified": true,
-    "verifiedNote": "Bekreftet på jysk.no 2026-10-18: navn, 3 499 kr, 200x300 cm, 60 % resirkulert polyester og 40 % ull, 2400 g/m², håndlaget.",
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-18: navn, 3 499 kr, 200x300 cm, 60 % resirkulert polyester og 40 % ull, 2400 g/m², håndlaget. Farger og stoff kontrollert 2026-10-21 mot jysk.no: 200x300 finnes bare i beige (grå finnes bare i 140x200 og 160x230). Materialet er rettet fra «wool-blend» til vevd, fordi forsiden er 60 % resirkulert polyester og 40 % ull.",
     "priceConfidence": "checked"
   },
   {
@@ -1020,9 +1020,9 @@
       {
         "name": "Beige",
         "colors": {
-          "base": "#c5b9a3",
-          "accent": "#a89b84",
-          "accent2": "#ddd3c1"
+          "base": "#e5ddc9",
+          "accent": "#c8bfaa",
+          "accent2": "#faf4e3"
         },
         "materials": {
           "base": "wool",
@@ -1038,7 +1038,7 @@
     "why": "Et rimelig ullteppe i varm, melert grå som passer til MARRAKESH-veggene. Det er tynt nok til at spisestolene glir lett ut og inn.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/tidtabell-teppe-flatvevd-gra__1205732_pe907227_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: navn, 2 995 kr, 200x300 cm, 6 mm, 1400 g/m², ull med bomullsrenning. Rettet: gråblå finnes ikke i 200x300 (lenken var død) og er fjernet, og beige har fått lenke.",
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: navn, 2 995 kr, 200x300 cm, 6 mm, 1400 g/m², ull med bomullsrenning. Rettet: gråblå finnes ikke i 200x300 (lenken var død) og er fjernet, og beige har fått lenke. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: grå og beige er de eneste fargene i 200x300 (begge 2 995 kr; gråblå finnes bare i 133x195 og 170x240), og beige har fått lysere farge fra produktbildet.",
     "priceConfidence": "checked"
   },
   {
@@ -1087,7 +1087,7 @@
     "why": "Ufarget grå ull med grov struktur passer til den vevde grå hjørnesofaen og gir TV-stua et lunt, taktilt gulv.",
     "imageUrl": "https://images.bolia.com/cdn-cgi/image/width=1100,height=530,fit=pad/products/22-139-03_24.webp",
     "verified": false,
-    "verifiedNote": "Bekreftet på bolia.com 2026-10-18: Dalvik Teppe 200 x 300 cm i grå, 8 344 kr, på lager, 100 % New Zealand-ull, håndvevd med boblestruktur og frynser.",
+    "verifiedNote": "Bekreftet på bolia.com 2026-10-18: Dalvik Teppe 200 x 300 cm i grå, 8 344 kr, på lager, 100 % New Zealand-ull, håndvevd med boblestruktur og frynser. Farger og stoff kontrollert 2026-10-21 mot bolia.com: Dalvik finnes bare i grå (100 % ufarget ull), så den ene varianten stemmer.",
     "priceConfidence": "check"
   },
   {
@@ -1133,9 +1133,9 @@
       {
         "name": "Hvit",
         "colors": {
-          "base": "#ebe8e1",
-          "accent": "#d9d4ca",
-          "accent2": "#f3f1ec"
+          "base": "#e0dfdb",
+          "accent": "#cecbc4",
+          "accent2": "#e8e8e6"
         },
         "materials": {
           "base": "wool",
@@ -1147,9 +1147,9 @@
       {
         "name": "Sølv",
         "colors": {
-          "base": "#b9b8b3",
-          "accent": "#9f9e99",
-          "accent2": "#cfcec9"
+          "base": "#a7aba7",
+          "accent": "#8d918d",
+          "accent2": "#bdc1bd"
         },
         "materials": {
           "base": "wool",
@@ -1161,9 +1161,9 @@
       {
         "name": "Brungrå",
         "colors": {
-          "base": "#8a8073",
-          "accent": "#736a5e",
-          "accent2": "#a0978a"
+          "base": "#b2a08f",
+          "accent": "#9b8a7a",
+          "accent2": "#c8b7a6"
         },
         "materials": {
           "base": "wool",
@@ -1179,7 +1179,7 @@
     "why": "200 cm lang passer den på den frie delen av gangen ved trappa (ca. 1,57 × 2,07 m) og demper skritt mot gulvet; den naturhvite melangen er rolig mot SAND-veggene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/FRIGG/623391/image-thumb__623391__PDP-Product/Frigg_natur_70x200.c2626289.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 70x200, 1 cm, 100 % ull, håndvevd, vendbar, 949 kr, varenr. og lenker for alle fire farger. Fargene hentet fra Frigg-teppet i katalogen, natur justert etter løperbildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 70x200, 1 cm, 100 % ull, håndvevd, vendbar, 949 kr, varenr. og lenker for alle fire farger. Fargene hentet fra Frigg-teppet i katalogen, natur justert etter løperbildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire fargene i 70x200 finnes (Natur, Hvit, Sølv og Brungrå, alle 949 kr; sølv er merket som utgående, granitt er utgått). Hvit, sølv og brungrå har fått farger fra produktbildene (brungrå er lysere enn før).",
     "absorptionNote": "Flatvevd: 0,18 × 1,4 m².",
     "priceConfidence": "checked"
   },
@@ -1214,8 +1214,8 @@
       {
         "name": "Gråmix",
         "colors": {
-          "base": "#8f8d89",
-          "accent": "#85837f",
+          "base": "#7c7a77",
+          "accent": "#72706d",
           "accent2": "#1f1f1f"
         },
         "materials": {
@@ -1228,8 +1228,8 @@
       {
         "name": "Brun",
         "colors": {
-          "base": "#a8988a",
-          "accent": "#9f8f81",
+          "base": "#c2b2a5",
+          "accent": "#b9a99c",
           "accent2": "#e9e1d3"
         },
         "materials": {
@@ -1246,7 +1246,7 @@
     "why": "Kjellergangen (12,5 m²) med trapp og inngang får mest slitasje og vått fottøy; Trio tåler hard bruk og er lett å støvsuge, og 300 cm dekker gangen fra trappa. Gråmix med svart linje følger de svarte detaljene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/TRIO/122483/image-thumb__122483__PDP-Product/243378%20-%20Trio%20l%C3%B8per%2080x300%20polypropylen%20gr%C3%A5mix%20-%201.538924a9.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 80x300, polypropylen, maskinvevd, gummiert bakside, 839 kr (før 1 199) for gråmix og brun. Luggen oppgis til 0,5 cm (gråmix) og 1 cm (brun); farger fra bildene (brun-bildet er 80x250).",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 80x300, polypropylen, maskinvevd, gummiert bakside, 839 kr (før 1 199) for gråmix og brun. Luggen oppgis til 0,5 cm (gråmix) og 1 cm (brun); farger fra bildene (brun-bildet er 80x250). Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge fargene i 80x300 finnes (Gråmix og Brun, 100 % polypropylen, begge 839 kr, før 1 199 kr), og bunnfargene er justert etter produktbildene (kantlinjene er uendret).",
     "absorptionNote": "Flatvevd: 0,18 × 2,4 m².",
     "priceConfidence": "checked"
   },
@@ -1279,9 +1279,9 @@
       {
         "name": "Sand",
         "colors": {
-          "base": "#ddd6c6",
-          "accent": "#cfc7b5",
-          "accent2": "#e8e2d5"
+          "base": "#ddd1bb",
+          "accent": "#cfc2aa",
+          "accent2": "#e8ddca"
         },
         "materials": {
           "base": "wool",
@@ -1293,9 +1293,9 @@
       {
         "name": "Varm grå",
         "colors": {
-          "base": "#8a857d",
-          "accent": "#78736b",
-          "accent2": "#9c978f"
+          "base": "#827c73",
+          "accent": "#706a61",
+          "accent2": "#948e85"
         },
         "materials": {
           "base": "wool",
@@ -1307,9 +1307,9 @@
       {
         "name": "Muldvarp",
         "colors": {
-          "base": "#a59c8b",
-          "accent": "#958c7b",
-          "accent2": "#b5ad9d"
+          "base": "#afa492",
+          "accent": "#9f9482",
+          "accent2": "#bfb5a4"
         },
         "materials": {
           "base": "wool",
@@ -1325,7 +1325,7 @@
     "why": "160x230 kan ligge på tvers under nedre del av en 160/180-seng på soverommet (3,11 × 3,69), så du går på ull morgen og kveld; sand er varmt og rolig mot SAND/Marrakesh-veggene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/SVAL/337596/image-thumb__337596__PDP-Product/314755%20-%20Sval%20teppe%20160x230%20100-%20ull%20sand%20-%204.154d2ca0.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 160x230, 100 % ull, håndvevd, lugg 1 cm, 2 939 kr (før 4 199) for alle tre farger, varenr. og lenker.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 160x230, 100 % ull, håndvevd, lugg 1 cm, 2 939 kr (før 4 199) for alle tre farger, varenr. og lenker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre fargene i 160x230 finnes (Sand, Varm Grå og Muldvarp, 100 % ull, alle 2 939 kr, før 4 199 kr), og fargene er finjustert etter produktbildene.",
     "absorptionNote": "Lav lugg: 0,25 × 3,68 m².",
     "priceConfidence": "checked"
   },
@@ -1373,9 +1373,9 @@
       {
         "name": "Grå",
         "colors": {
-          "base": "#6f6a64",
-          "accent": "#635e58",
-          "accent2": "#7d7872"
+          "base": "#7b746a",
+          "accent": "#6f685e",
+          "accent2": "#898278"
         },
         "materials": {
           "base": "wool",
@@ -1387,9 +1387,9 @@
       {
         "name": "Hvit",
         "colors": {
-          "base": "#e4dfd4",
-          "accent": "#d6d0c4",
-          "accent2": "#eeeae1"
+          "base": "#d4d3cc",
+          "accent": "#c6c4bc",
+          "accent2": "#deded9"
         },
         "materials": {
           "base": "wool",
@@ -1405,7 +1405,7 @@
     "why": "Kjellerstua (20,6 m²) har harde flater og trenger lyddemping; 2 cm ull-lugg demper mer enn et flatvevd teppe, og den varme beigen holder seg rolig under en sofagruppe.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Inhouse%20Group/Produkter/BOLZANO/342016/image-thumb__342016__PDP-Product/314937%20-%20Bolzano%20teppe%20160x230%20100-%20ull%20beige%20-%202.8dcc46a1.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 200x290, 2 cm, 100 % ull, håndtuftet, 3 499 kr (før 4 999) for beige, grå og hvit. Merke ikke oppgitt (leverandør Inhouse Group); produktbildet er av 160x230. Hvit-fargen anslått fra fargenavnet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 200x290, 2 cm, 100 % ull, håndtuftet, 3 499 kr (før 4 999) for beige, grå og hvit. Merke ikke oppgitt (leverandør Inhouse Group); produktbildet er av 160x230. Hvit-fargen anslått fra fargenavnet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre fargene i 200x290 finnes (Beige, Grå og Hvit, 100 % ull, alle 3 499 kr, før 4 999 kr). Grå og hvit er justert etter produktbildene (hvit er en kjølig, lys gråhvit).",
     "absorptionNote": "Middels lugg: 0,28 × 5,8 m².",
     "priceConfidence": "checked"
   },
@@ -1452,9 +1452,9 @@
       {
         "name": "Grå",
         "colors": {
-          "base": "#a7a19a",
-          "accent": "#8f8880",
-          "accent2": "#bdb8b1"
+          "base": "#b3a9a0",
+          "accent": "#9b9086",
+          "accent2": "#c9c0b7"
         },
         "materials": {
           "base": "wool",
@@ -1480,9 +1480,9 @@
       {
         "name": "Koksgrå",
         "colors": {
-          "base": "#4f4d4b",
-          "accent": "#403e3c",
-          "accent2": "#605e5b"
+          "base": "#38302b",
+          "accent": "#29211c",
+          "accent2": "#49413b"
         },
         "materials": {
           "base": "wool",
@@ -1498,7 +1498,7 @@
     "why": "Et rundt teppe myker opp det lille soverommet i kjelleren (7,4 m²) eller en lesekrok uten å dekke hele gulvet; hvit berber er lys og ren, grå og koksgrå tåler mer.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/KLEBER/351583/image-thumb__351583__PDP-Product/314739%20-%20Kleber%20rundt%20teppe%20%C3%98160%20100-%20ull%20hvit%20berber%20-%201.aaf7ddbb.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: Ø160, 1 cm, 100 % ull, håndvevd, vendbar, 2 729 kr (før 3 899) for alle fire farger, varenr. og lenker. Brun og koksgrå farge anslått fra fargenavnet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: Ø160, 1 cm, 100 % ull, håndvevd, vendbar, 2 729 kr (før 3 899) for alle fire farger, varenr. og lenker. Brun og koksgrå farge anslått fra fargenavnet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire fargene i Ø160 finnes (Hvit berber, Grå, Brun og Koksgrå, 100 % ull, alle 2 729 kr, før 3 899 kr). Grå og koksgrå er justert etter produktbildene (koksgrå er nesten svart med en brun tone).",
     "absorptionNote": "Flatvevd: 0,18 × 2,01 m².",
     "priceConfidence": "checked"
   }

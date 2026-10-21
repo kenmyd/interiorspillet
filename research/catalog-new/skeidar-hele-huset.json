@@ -67,7 +67,7 @@
           "legs": "#1c1a19"
         },
         "materials": {
-          "upholstery": "woven",
+          "upholstery": "velvet",
           "legs": "black-oak"
         },
         "priceNok": 29699,
@@ -102,6 +102,48 @@
         "priceNok": 28599,
         "priceConfidence": "checked",
         "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/rossi-3-seter-sofa?VariationId=V_5637550503"
+      },
+      {
+        "name": "Raven 30 Taupe / sorte ben",
+        "colors": {
+          "upholstery": "#b3a293",
+          "legs": "#1c1a19"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "priceNok": 28599,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/rossi-3-seter-sofa?VariationId=V_5637572902"
+      },
+      {
+        "name": "Beatto 1027 Lys Grå / sorte ben",
+        "colors": {
+          "upholstery": "#b4aca5",
+          "legs": "#1c1a19"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "priceNok": 28599,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/rossi-3-seter-sofa?VariationId=V_5637547341"
+      },
+      {
+        "name": "Genesis 6 Mink / sorte ben",
+        "colors": {
+          "upholstery": "#6f5f52",
+          "legs": "#1c1a19"
+        },
+        "materials": {
+          "upholstery": "velvet",
+          "legs": "black-oak"
+        },
+        "priceNok": 29699,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/rossi-3-seter-sofa?VariationId=V_5637550504"
       }
     ],
     "defaultVariant": 0,
@@ -111,7 +153,7 @@
     "why": "Skeidars kjente sofaserie som et rimeligere alternativ til Lukas XL: 244 cm bred og 112 cm dyp gir en ordentlig filmkveld-sofa i den 20,6 m² store kjellerstua, Glow 2 Beige ligger tett på SAND-veggene, og de svarte bena gjentar de svarte detaljene i huset.",
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1774400/1774400_V10235454-RossiSofa1.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 14 999 kr (før 28 599, tilbudet varer til 15.11), 244x112x86, sittehøyde 44, sittedybde 70, arm A med sorte ben, 2 seteputer, standard komfort, og prisene for alle fem stoffene. Siden tegner produktet fra sine innebygde produktdata (WebFetch ser bare «Loading…»), så tallene er lest derfra og fra sidens egen variant-API. Armlenebredde (ca. 20 cm), armlenehøyde (ca. 60 cm) og benhøyde (ca. 5 cm) anslått fra bildet; stofffarger fra produktbildene."
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 14 999 kr (før 28 599, tilbudet varer til 15.11), 244x112x86, sittehøyde 44, sittedybde 70, arm A med sorte ben, 2 seteputer, standard komfort, og prisene for alle fem stoffene. Siden tegner produktet fra sine innebygde produktdata (WebFetch ser bare «Loading…»), så tallene er lest derfra og fra sidens egen variant-API. Armlenebredde (ca. 20 cm), armlenehøyde (ca. 60 cm) og benhøyde (ca. 5 cm) anslått fra bildet; stofffarger fra produktbildene. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: alle de fem stoffene finnes fortsatt i 3-seter med arm A og standard komfort; Genesis 4 Beige er rettet fra vevd stoff til fløyel (Skeidar kaller Genesis «fløyelstekstil»), og Raven 30 Taupe (28 599 kr), Beatto 1027 Lys Grå (28 599 kr) og Genesis 6 Mink (fløyel, 29 699 kr) er lagt til med farger fra sine egne produktbilder."
   },
   {
     "id": "skeidar-eden-hjornesofa-apen-ende-262x218",
@@ -231,6 +273,39 @@
         "salePriceNok": 14819,
         "priceConfidence": "checked",
         "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/eden-hjornesofa?VariationId=V_5637474763"
+      },
+      {
+        "name": "Movie 3/3 Warm Grey / ben i eik natur",
+        "colors": {
+          "upholstery": "#8a837a",
+          "legs": "#c9aa82",
+          "piping": "#7f786f"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "oak",
+          "piping": "velour"
+        },
+        "priceNok": 27699,
+        "salePriceNok": 16619,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/eden-hjornesofa?VariationId=V_5637474808"
+      },
+      {
+        "name": "Brego 14 Latte / ben i eik natur",
+        "colors": {
+          "upholstery": "#887663",
+          "legs": "#c9aa82",
+          "piping": "#7d6c59"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak",
+          "piping": "woven"
+        },
+        "priceNok": 27299,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/eden-hjornesofa?VariationId=V_5637474753"
       }
     ],
     "defaultVariant": 0,
@@ -240,7 +315,7 @@
     "why": "262 × 218 cm danner et lunt TV-hjørne i den 20,6 m² store kjellerstua, og den åpne enden gir plass til å legge beina opp uten at sofaen blir like massiv som en U-sofa. Ben i lys eik passer eikegulvet, og Neve 09 Cappuccino er en varm greige som harmonerer med Marrakesh-tonen.",
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/8590536/8590536_V10235454-EdenSofa1.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 14 799 kr (før 24 699, tilbudet varer til 15.11), 262x218x87, sittehøyde 48, sittedybde 50, 2,5-seter med åpen ende høyre, ben i eik natur, vendbare puter, og prisene for de fem stoffene (lest fra sidens innebygde produktdata og variant-API – WebFetch ser bare «Loading…»). Seksjonsdybden 86 cm er fra Eden 3-seter (217x86x87); armlenebredde, armlenehøyde, benhøyde (ca. 17 cm) og hvor langt ryggen går langs den åpne enden (ca. 1,0 m) er anslått fra bildene."
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 14 799 kr (før 24 699, tilbudet varer til 15.11), 262x218x87, sittehøyde 48, sittedybde 50, 2,5-seter med åpen ende høyre, ben i eik natur, vendbare puter, og prisene for de fem stoffene (lest fra sidens innebygde produktdata og variant-API – WebFetch ser bare «Loading…»). Seksjonsdybden 86 cm er fra Eden 3-seter (217x86x87); armlenebredde, armlenehøyde, benhøyde (ca. 17 cm) og hvor langt ryggen går langs den åpne enden (ca. 1,0 m) er anslått fra bildene. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: alle de fem stoffene finnes i 2,5-seter med åpen ende høyre; Movie 3/3 Warm Grey (16 619 kr, før 27 699) og Brego 14 Latte (27 299 kr) er lagt til med farger fra sine egne produktbilder."
   },
   {
     "id": "skeidar-premium-15-kontinentalseng-180x200",
@@ -373,6 +448,66 @@
         "priceNok": 47999,
         "priceConfidence": "checked",
         "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/kontinentalsenger/premium-15-kontinentalseng-180x200-cm?VariationId=V_5637552259"
+      },
+      {
+        "name": "Terranova 08 krem",
+        "colors": {
+          "frame": "#a29f97",
+          "headboard": "#a29f97",
+          "legs": "#c4ad8c",
+          "bedding": "#ebe6dd",
+          "throw": "#8f7a63"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "white-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "priceNok": 47999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/kontinentalsenger/premium-15-kontinentalseng-180x200-cm?VariationId=V_5637552265"
+      },
+      {
+        "name": "Copenhagen 904 beige",
+        "colors": {
+          "frame": "#a39480",
+          "headboard": "#a39480",
+          "legs": "#c4ad8c",
+          "bedding": "#ebe6dd",
+          "throw": "#8f7a63"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "white-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "priceNok": 47999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/kontinentalsenger/premium-15-kontinentalseng-180x200-cm?VariationId=V_5637552274"
+      },
+      {
+        "name": "Coco 80 grå",
+        "colors": {
+          "frame": "#9f9a91",
+          "headboard": "#9f9a91",
+          "legs": "#c4ad8c",
+          "bedding": "#ebe6dd",
+          "throw": "#8f7a63"
+        },
+        "materials": {
+          "frame": "woven",
+          "headboard": "woven",
+          "legs": "white-oak",
+          "bedding": "linen",
+          "throw": "knit"
+        },
+        "priceNok": 47999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/kontinentalsenger/premium-15-kontinentalseng-180x200-cm?VariationId=V_5637552280"
       }
     ],
     "defaultVariant": 0,
@@ -381,7 +516,7 @@
     "why": "Toppmodellen fra XOV til halv pris i Storm 06 lys beige – en lys, varm beige som passer SAND-veggene, og de hvitoljede eikebena matcher det lyse eikegulvet. I soverommet på 3,11 m gir 180-sengen ca. 65 cm til hver side, og Nord sengegavl finnes i samme Storm 06-stoff.",
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/7070821/7070821_V10235454-Premium15Kontinentalseng1.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 23 999 kr (før 47 999, tilbudet varer til 15.11) i Storm 06 lys beige og 47 999 kr i de andre stoffene, 180x200, høyde 71 cm, ben «Eikeben, konisk, H15, hvitoljet», 7-soners pocketfjær i tre lag, Premium 15 overmadrass med 5 cm naturlatexkjerne, «gavl selges separat», XOV (lest fra sidens innebygde produktdata og variant-API). Overmadrassens tykkelse (ca. 7 cm) og stofffargene anslått fra produktbildene."
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 23 999 kr (før 47 999, tilbudet varer til 15.11) i Storm 06 lys beige og 47 999 kr i de andre stoffene, 180x200, høyde 71 cm, ben «Eikeben, konisk, H15, hvitoljet», 7-soners pocketfjær i tre lag, Premium 15 overmadrass med 5 cm naturlatexkjerne, «gavl selges separat», XOV (lest fra sidens innebygde produktdata og variant-API). Overmadrassens tykkelse (ca. 7 cm) og stofffargene anslått fra produktbildene. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: alle de fem stoffene finnes; Terranova 08 krem, Copenhagen 904 beige og Coco 80 grå (alle 47 999 kr) er lagt til med farger fra sine egne produktbilder (Terranova 04 beige ser grå ut på Skeidars bilde, og fargen følger bildet)."
   },
   {
     "id": "skeidar-nord-sengegavl-216x128",
@@ -455,6 +590,42 @@
           "legs": "plastic"
         },
         "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/sengegavler/nord-sengegavl-180-cm?VariationId=V_5637585614"
+      },
+      {
+        "name": "Copenhagen 803 grå",
+        "colors": {
+          "headboard": "#867c74",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "plastic"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/sengegavler/nord-sengegavl-180-cm?VariationId=V_5637585617"
+      },
+      {
+        "name": "Coco 80 grå",
+        "colors": {
+          "headboard": "#969696",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "plastic"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/sengegavler/nord-sengegavl-180-cm?VariationId=V_5637585619"
+      },
+      {
+        "name": "Neve 16 brun",
+        "colors": {
+          "headboard": "#b6a59b",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "headboard": "woven",
+          "legs": "plastic"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-senger-og-madrasser/sengegavler/nord-sengegavl-180-cm?VariationId=V_5637585620"
       }
     ],
     "defaultVariant": 0,
@@ -463,7 +634,7 @@
     "why": "Samme XOV-stoffer som Premium 15-sengen (Storm 06 lys beige passer rett til kampanjevarianten), og den rolige flaten med bare to sømmer holder soverommet ryddig. Passer best mot veggen på 3,69 m; mot veggen på 3,11 m blir det ca. 47 cm igjen på hver side, nok til smale nattbord.",
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/7064464/7064464_V10235454-NordSengegavl1.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 7 499 kr for alle stoffene i 180-bredden, 216x14x128, «Oversized størrelse», ben «Svart rund plastic H15», 100 % polyester, XOV (lest fra sidens innebygde produktdata – WebFetch ser bare «Loading…»). Sømmene, knappene og kanten er lest av produktbildet (bildet viser panelet uten ben); om høyden 128 cm er med eller uten ben er ikke oppgitt. Stofffarger anslått fra produktbildene."
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 7 499 kr for alle stoffene i 180-bredden, 216x14x128, «Oversized størrelse», ben «Svart rund plastic H15», 100 % polyester, XOV (lest fra sidens innebygde produktdata – WebFetch ser bare «Loading…»). Sømmene, knappene og kanten er lest av produktbildet (bildet viser panelet uten ben); om høyden 128 cm er med eller uten ben er ikke oppgitt. Stofffarger anslått fra produktbildene. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: alle de fire stoffene finnes i 180-bredden (216x14x128); Copenhagen 803 grå, Coco 80 grå og Neve 16 brun (alle 7 499 kr) er lagt til med farger fra sine egne produktbilder."
   },
   {
     "id": "skeidar-billund-garderobeskap-2-dors-99x62",
@@ -542,7 +713,7 @@
         "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/garderobeskap/billund-garderobeskap-2-dors?VariationId=V_5637473105"
       },
       {
-        "name": "Cashmere folie",
+        "name": "Cashmere farget folie",
         "colors": {
           "body": "#c6c0b7",
           "front": "#c8c1b8",
@@ -562,7 +733,7 @@
         "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/garderobeskap/billund-garderobeskap-2-dors?VariationId=V_5637587146"
       },
       {
-        "name": "Smoked oak folie",
+        "name": "Smoked oak farget folie",
         "colors": {
           "body": "#4e3d2d",
           "front": "#4e3c2b",
@@ -588,7 +759,7 @@
     "why": "Bare 98,5 cm bredt, så det får plass i kjellersoverommet (7,4 m²) eller ved siden av senga i soverommet oppe uten å ta over rommet. Rammedørene gir et rolig, klassisk uttrykk, og eik- eller cashmere-folien passer de lyse, varme veggene – til en rimelig pris.",
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1019405/1019405_V10235454-Billund1.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 4 999 kr (før 5 999, tilbudet varer til 15.11) i eik folie og prisene for hvit, cashmere og smoked oak, 98,5x61,7x200,1, «50 cm med hattehylle, 50 cm oppheng og 4 hyller», foliert MDF i fronter, Tvilum, dansk produsert (lest fra sidens innebygde produktdata og variant-API). Sokkelhøyde (ca. 5 cm) og knottenes høyde (ca. 1,0 m) anslått fra bildet; folie-fargene fra produktbildene."
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 4 999 kr (før 5 999, tilbudet varer til 15.11) i eik folie og prisene for hvit, cashmere og smoked oak, 98,5x61,7x200,1, «50 cm med hattehylle, 50 cm oppheng og 4 hyller», foliert MDF i fronter, Tvilum, dansk produsert (lest fra sidens innebygde produktdata og variant-API). Sokkelhøyde (ca. 5 cm) og knottenes høyde (ca. 1,0 m) anslått fra bildet; folie-fargene fra produktbildene. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: alle de fire fargene finnes i 2-dørs; navnene er rettet til Skeidars egne «Cashmere farget folie» og «Smoked oak farget folie»."
   },
   {
     "id": "skeidar-savona-kommode-3-3-skuffer-160x46",
@@ -666,7 +837,7 @@
     "why": "160 cm bred, men bare 46 cm dyp og 71,5 cm høy: står under vinduet eller langs veggen i soverommet (3,11 × 3,69 m) og rommer det meste av klærne, så rommet holdes ryddig. Natur eik passer det lyse eikegulvet, og de svarte grepene gjentar de svarte detaljene i huset.",
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/7011502/7011502_V03011051-Savonakommode1.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 7 999 kr i begge fargene, 159,6x45,8x71,5, softclose på alle 6 skuffene, natur eik / røykfarget eik finer, ben/understell «plastknotter» (lest fra sidens innebygde produktdata og variant-API). Sokkelhøyde, grepenes form og at skuffene er like høye er lest av produktbildet; ingen produsent oppgitt."
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 7 999 kr i begge fargene, 159,6x45,8x71,5, softclose på alle 6 skuffene, natur eik / røykfarget eik finer, ben/understell «plastknotter» (lest fra sidens innebygde produktdata og variant-API). Sokkelhøyde, grepenes form og at skuffene er like høye er lest av produktbildet; ingen produsent oppgitt. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: alle variantene finnes (natur eik finer og røykfarget eik finer, begge 7 999 kr)."
   },
   {
     "id": "skeidar-visby-rundt-spisebord-o120",
@@ -764,7 +935,7 @@
     "why": "Et rundt bord tar lite plass og gir god flyt i en spisekrok i kjellerstua (20,6 m²) – fire rundt bordet, flere med ileggsplatene. Den hvitpigmenterte eiken er lys og rolig, og spilesøylen gir samme rillede uttrykk som Wave TV-benken.",
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1391215/1391215_V10235454-VisbySpisebord1.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 14 999 kr (før 29 499, tilbudet varer til 15.11), Ø120 H75, hvitpigmentert eik finér i både bordplate og understell, uttrekksfunksjon, «ileggsplater selges separat»; sortbeiset og røykfarget uten kampanje (lest fra sidens innebygde produktdata og variant-API). Søylens diameter (ca. 52 cm) og platetykkelsen (ca. 5 cm) anslått fra bildet; ingen produsent oppgitt."
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 14 999 kr (før 29 499, tilbudet varer til 15.11), Ø120 H75, hvitpigmentert eik finér i både bordplate og understell, uttrekksfunksjon, «ileggsplater selges separat»; sortbeiset og røykfarget uten kampanje (lest fra sidens innebygde produktdata og variant-API). Søylens diameter (ca. 52 cm) og platetykkelsen (ca. 5 cm) anslått fra bildet; ingen produsent oppgitt. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: alle variantene finnes i Ø120 (moccabeiset finnes bare i Ø150 og er ikke tatt med)."
   },
   {
     "id": "skeidar-wave-tv-benk-veggmontert-180x39",
@@ -896,6 +1067,26 @@
         "priceNok": 21999,
         "priceConfidence": "checked",
         "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595336"
+      },
+      {
+        "name": "Mokkaolje eikefinér",
+        "colors": {
+          "body": "#7c6352",
+          "front": "#786050",
+          "top": "#82695a",
+          "legs": "#7c6352",
+          "handle": "#7c6352"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 19999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595339"
       }
     ],
     "defaultVariant": 0,
@@ -904,6 +1095,6 @@
     "why": "En svevende TV-benk holder gulvet fritt og gjør kjellerstua (20,6 m²) lettere å holde ryddig – ledninger og utstyr forsvinner bak skyvedørene. 180 cm passer en 65–75-tommers TV, og de riflede frontene i hvitoljet eik passer det lyse eikegulvet.",
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1357731/1357731_V10235454-WaveTVBenk.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 11 999 kr (før 19 999, tilbudet varer til 15.11) i hvitoljet, røkt olje og gråoljet, oljet 19 999 og sortbeiset 21 999, 180x39x36, veggmontert, design SAYS WHO (lest fra sidens innebygde produktdata og variant-API). Skyvedørene, rillene og monteringshøyden er lest av produktbildene; trefargene anslått fra bildene."
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 11 999 kr (før 19 999, tilbudet varer til 15.11) i hvitoljet, røkt olje og gråoljet, oljet 19 999 og sortbeiset 21 999, 180x39x36, veggmontert, design SAYS WHO (lest fra sidens innebygde produktdata og variant-API). Skyvedørene, rillene og monteringshøyden er lest av produktbildene; trefargene anslått fra bildene. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: alle de fem finishene finnes i den veggmonterte utgaven; Mokkaolje eikefinér (19 999 kr) er lagt til med farge fra sitt eget produktbilde."
   }
 ]

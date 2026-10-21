@@ -148,6 +148,12 @@ const CSS = `
 .ipi-part__body { padding: 0.15em 0.6em 0.65em; display: flex; flex-direction: column; gap: 0.5em; }
 .ipi-part__body .ip-swatches { --ip-sw: 1.45em; gap: 0.3em; }
 .ipi-swlabel { font-size: 0.72em; color: var(--kv-ink-4); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: -0.25em; }
+.ipi-opts { display: flex; flex-direction: column; gap: 0.25em; }
+.ipi-opt { display: flex; align-items: center; gap: 0.55em; padding: 0.3em 0.45em; border-radius: var(--kv-r-sm); border: 1px solid transparent; background: transparent; color: var(--kv-ink); text-align: left; font-size: 0.86em; }
+.ipi-opt:hover { background: var(--kv-surface); border-color: var(--kv-line); }
+.ipi-opt.is-active { border-color: var(--kv-accent); background: var(--kv-surface); }
+.ipi-opt .ipi-dot { width: 1.15em; height: 1.15em; }
+.ipi-opt small { margin-left: auto; color: var(--kv-ink-3); font-size: 0.86em; }
 .ipi-kelvin .kv-range::-webkit-slider-runnable-track { background: linear-gradient(90deg, #ff9d3c, #ffd2a1 35%, #fff4e6 60%, #e6efff); }
 .ipi-kelvin .kv-range::-moz-range-track { background: linear-gradient(90deg, #ff9d3c, #ffd2a1 35%, #fff4e6 60%, #e6efff); }
 .ipi-hint { font-size: 0.8em; color: var(--kv-ink-3); margin: 0.2em 0 0; line-height: 1.4; }
@@ -456,15 +462,19 @@ export class Inspector extends BasePanel {
     const v = product?.variants?.[item.variantIndex ?? product.defaultVariant ?? 0];
     if (!v) return { color: false, mat: false, parts: new Set() };
     const parts = new Set();
+    // bedding, towels and coats that only dress the model are not the store's – any colour is fine there
+    const props = new Set(this.catalog.archetypeInfo?.(item.archetype)?.propParts || []);
     let color = false;
     let mat = false;
     for (const [k, c] of Object.entries(item.colors || {})) {
+      if (props.has(k)) continue;
       if (v.colors?.[k] && colorDist(resolveColor(c), resolveColor(v.colors[k])) > 6) {
         parts.add(k);
         color = true;
       }
     }
     for (const [k, m] of Object.entries(item.materials || {})) {
+      if (props.has(k)) continue;
       if (v.materials?.[k] && v.materials[k] !== m) {
         parts.add(k);
         mat = true;
@@ -968,6 +978,15 @@ export class Inspector extends BasePanel {
     return Object.keys(out).length ? out : undefined;
   }
 
+  /** Switches the item to store variant j (its colours, materials and variant params). */
+  _pickVariant(item, product, j) {
+    const nv = product.variants[j];
+    if (!nv) return;
+    const patch = { colors: clone(nv.colors), materials: clone(nv.materials), params: this._variantParams(product, j), variantIndex: j };
+    this._apply(patch.params ? this._fit(item.uid, patch).patch : patch, { label: `Velg ${nv.name || 'variant'}` });
+    this._render();
+  }
+
   _variantSection(item, product) {
     if (!product || (product.variants?.length || 0) < 2) return null;
     const vi = item.variantIndex ?? 0;
@@ -978,12 +997,7 @@ export class Inspector extends BasePanel {
     const own = custom.color || custom.mat;
     const list = h('div.ipi-variants', { role: 'listbox', 'aria-label': 'Varianter' }, product.variants.map((vv, i) => variantSwatch(product, vv, i, {
       active: i === vi && !own,
-      onPick: (j) => {
-        const nv = product.variants[j];
-        const patch = { colors: clone(nv.colors), materials: clone(nv.materials), params: this._variantParams(product, j), variantIndex: j };
-        this._apply(patch.params ? this._fit(item.uid, patch).patch : patch, { label: `Velg ${nv.name || 'variant'}` });
-        this._render();
-      },
+      onPick: (j) => this._pickVariant(item, product, j),
     })));
     this._vnameEl = h('div.ipi-vname', {}, own ? 'Egen farge' : v?.name || '', own ? h('small', { text: ` · utgangspunkt: ${v?.name || 'butikkens variant'}` }) : info.price != null ? h('small', { text: ` · ${fmtNok(info.price)}` }) : null);
     this._variantList = list;
@@ -1026,7 +1040,7 @@ export class Inspector extends BasePanel {
       return;
     }
     const what = custom.color && custom.mat ? 'egen farge og materiale' : custom.mat ? 'eget materiale' : 'egen farge';
-    slot.replaceChildren(h('div.ipi-warn', {}, svg(ICONS.warning), h('span', { text: `Du har valgt ${what} – det finnes kanskje ikke hos ${product.store}.` }),
+    slot.replaceChildren(h('div.ipi-warn', {}, svg(ICONS.warning), h('span', { text: `Dette møbelet har ${what} (fra et eldre lagret design) – ${product.store} selger bare variantene over.` }),
       h('button', { type: 'button', text: 'Butikkens farger', title: 'Tilbake til fargene og materialene i varianten', on: { click: () => this._storeLook() } })));
   }
 
@@ -1087,6 +1101,42 @@ export class Inspector extends BasePanel {
       const el = h(`div.ipi-part${open ? '.is-open' : ''}`, { 'data-part': part }, head);
       if (!open) return el;
 
+      // a catalogue product only offers what the store sells (the owner's rule): the options of this part across the
+      // variants; a pick switches to the variant with that option whose other parts are closest to how they look now,
+      // so every combination on screen is one the store really sells
+      const prop = (info?.propParts || []).includes(part);
+      if (product && !prop) {
+        const opts = [];
+        product.variants.forEach((vv, j) => {
+          const c = vv.colors?.[part];
+          if (!c) return;
+          const hx = resolveColor(c), k = vv.materials?.[part] || kind;
+          let o = opts.find((x) => x.kind === k && colorDist(x.hex, hx) < 4);
+          if (!o) opts.push((o = { hex: hx, kind: k, names: [], idx: [] }));
+          o.names.push(vv.name);
+          o.idx.push(j);
+        });
+        const vi = item.variantIndex ?? product.defaultVariant ?? 0;
+        const otherDist = (vv) => Object.entries(item.colors || {}).reduce((sum, [k, c]) => (k === part || !vv.colors?.[k] ? sum : sum + colorDist(resolveColor(c), resolveColor(vv.colors[k]))), 0);
+        const chips = opts.map((o) => {
+          const on = o.idx.includes(vi) && !custom.parts.has(part);
+          const shown = o.names.length > 2 ? `${o.names.slice(0, 2).join(', ')} +${o.names.length - 2}` : o.names.join(', ');
+          return h(`button.ipi-opt${on ? '.is-active' : ''}`, {
+            type: 'button',
+            title: `${o.names.join(', ')} · ${MATERIAL_LABELS[o.kind] || o.kind}`,
+            'aria-pressed': on ? 'true' : 'false',
+            on: { click: () => {
+              if (on) return;
+              const best = o.idx.slice().sort((a, b) => otherDist(product.variants[a]) - otherDist(product.variants[b]))[0];
+              this._pickVariant(item, product, best);
+            } },
+          }, h('span.ipi-dot', { style: { background: o.hex } }), h('span', { text: shown }), h('small', { text: MATERIAL_LABELS[o.kind] || o.kind }));
+        });
+        const lbl = opts.length > 1 ? `${label} hos ${product.store} – velger hele varianten` : `Bare dette hos ${product.store}`;
+        el.append(h('div.ipi-part__body', {}, h('div.ipi-swlabel', { text: lbl }), h('div.ipi-opts', {}, chips)));
+        return el;
+      }
+
       // material
       let kinds = kindsFor(part, family, kind);
       if (!kinds.includes(kind)) kinds = [kind, ...kinds];
@@ -1121,7 +1171,8 @@ export class Inspector extends BasePanel {
         } else live(c);
       }, { palette: swatchList, label: `Farge på ${label.toLowerCase()}` });
       const bodyKids = [mat.el, picker.el];
-      if (store.length) bodyKids.splice(1, 0, h('div.ipi-swlabel', { text: `Farger: ${store.length > 0 ? `${product.store} først, så paletten` : 'paletten'}` }));
+      if (prop) bodyKids.unshift(h('div.ipi-swlabel', { text: 'Pynt – følger ikke med, velg fritt' }));
+      else if (store.length) bodyKids.splice(1, 0, h('div.ipi-swlabel', { text: `Farger: ${store.length > 0 ? `${product.store} først, så paletten` : 'paletten'}` }));
       el.append(h('div.ipi-part__body', {}, bodyKids));
       return el;
     });

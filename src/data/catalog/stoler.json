@@ -79,11 +79,11 @@
         "name": "Alpine Boucle beige, eikeben brunpigmentert",
         "colors": {
           "upholstery": "#c9beb1",
-          "legs": "#7a5e46"
+          "legs": "#3a332b"
         },
         "materials": {
           "upholstery": "boucle",
-          "legs": "oak"
+          "legs": "smoked-oak"
         },
         "url": "https://www.bohus.no/stoler/spisestoler/alice-spisestol-4",
         "priceNok": 2799,
@@ -99,7 +99,7 @@
     "why": "Nærmest dagens grå bouclé-skallstoler i spisestua – den beige bouclén er en varmere tone mot SAND-veggene, og stolen passer like godt rundt et nytt bord i kjellerstua. Svingfunksjonen gjør det lett å reise seg i en trang spisekrok.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/ALICE/267814/image-thumb__267814__PDP-Product/284675%20-%20Alice%20spisestol%20alpine%20boucle%20beige%20med%20svarte%20ben%20-%202.36253c35.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 2 499 kr per stol (beige, onyx, velur antrasitt med svarte ben), 1 599 kr (før 2 799) med eikeben; B52 × D58 × H88, sittehøyde 47,5 cm, sittedybde 43,5 cm, benhøyde 39 cm, svingfunksjon. Fargekoder anslått fra bildene.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 2 499 kr per stol (beige, onyx, velur antrasitt med svarte ben), 1 599 kr (før 2 799) med eikeben; B52 × D58 × H88, sittehøyde 47,5 cm, sittedybde 43,5 cm, benhøyde 39 cm, svingfunksjon. Fargekoder anslått fra bildene. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fem variantene finnes; eikebena på den brunpigmenterte utgaven er nesten svartbrune på bildet og er rettet fra lys eik til mørk røykfarget eik.",
     "priceConfidence": "checked"
   },
   {
@@ -187,6 +187,68 @@
           "frame": "woven"
         },
         "url": "https://www.bohus.no/stoler/spisestoler/ella-m-spisestol-71"
+      },
+      {
+        "name": "Alpine 01 Natural, mocca ben",
+        "colors": {
+          "upholstery": "#c4b9ac",
+          "legs": "#4b3a2d",
+          "frame": "#c4b9ac"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "smoked-oak",
+          "frame": "boucle"
+        },
+        "url": "https://www.bohus.no/stoler/spisestoler/ella-m-spisestol-70"
+      },
+      {
+        "name": "Sometimes 09 Taupe, mocca ben",
+        "colors": {
+          "upholstery": "#c3bcb9",
+          "legs": "#4b3a2d",
+          "frame": "#c3bcb9"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "smoked-oak",
+          "frame": "velour"
+        },
+        "priceNok": 3284,
+        "salePriceNok": 1970,
+        "url": "https://www.bohus.no/stoler/spisestoler/ella-m-spisestol-94"
+      },
+      {
+        "name": "Storm 02 Natural, mocca ben",
+        "colors": {
+          "upholstery": "#d5ccbe",
+          "legs": "#4b3a2d",
+          "frame": "#d5ccbe"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "smoked-oak",
+          "frame": "woven"
+        },
+        "priceNok": 2999,
+        "salePriceNok": 1799,
+        "url": "https://www.bohus.no/stoler/spisestoler/ella-m-spisestol-87"
+      },
+      {
+        "name": "Egon 48 Dark brown, mocca ben",
+        "colors": {
+          "upholstery": "#4f4540",
+          "legs": "#4b3a2d",
+          "frame": "#4f4540"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "smoked-oak",
+          "frame": "woven"
+        },
+        "priceNok": 3284,
+        "salePriceNok": 1970,
+        "url": "https://www.bohus.no/stoler/spisestoler/ella-m-spisestol-74"
       }
     ],
     "defaultVariant": 0,
@@ -195,7 +257,7 @@
     "why": "Lysegrått stoff og mocca-ben binder sammen de grå bouclé-stolene og det røykfargede spisebordet oppe, og den rolige, tette formen gjør en spisekrok i kjellerstua lun og stille. Rimelig på kampanje.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/ELLA%20%28M%29/595934/image-thumb__595934__PDP-Product/321373%20-%20Ella%20%28M%29%20spisestol%20Aragon%2080%20Light%20grey%20med%20heltre%20eikeben%20lakkert%2044%20mocca%20-%202.2af62b5b.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 1 885 kr (før 3 141) for Aragon 80/99, 1 799 kr (før 2 999) for Storm 02/09; B49 × D61 × H90, benhøyde 38 cm, sittedybde 43 cm. Bohus oppgir sittehøyde 51 cm (myk pute) – modellen bruker 0,50. Fargekoder anslått fra stoffnavn og bilder.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 1 885 kr (før 3 141) for Aragon 80/99, 1 799 kr (før 2 999) for Storm 02/09; B49 × D61 × H90, benhøyde 38 cm, sittedybde 43 cm. Bohus oppgir sittehøyde 51 cm (myk pute) – modellen bruker 0,50. Fargekoder anslått fra stoffnavn og bilder. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire variantene finnes. Lagt til Alpine 01 Natural (bouclé, 1 885 kr), Sometimes 09 Taupe (1 970 kr), Storm 02 Natural (1 799 kr) og Egon 48 Dark brown (1 970 kr), alle med mocca ben (varenr. 321350, 321374, 321367 og 321354). Finnes også i flere stoff- og benkombinasjoner (svart, gråpigmentert og hvitoljet eik).",
     "priceConfidence": "checked"
   },
   {
@@ -254,9 +316,9 @@
       {
         "name": "Now or Never 92 Grey",
         "colors": {
-          "upholstery": "#9e9c98",
+          "upholstery": "#4d4d4d",
           "legs": "#1a1a1a",
-          "frame": "#9e9c98"
+          "frame": "#4d4d4d"
         },
         "materials": {
           "upholstery": "boucle",
@@ -268,9 +330,9 @@
       {
         "name": "Now or Never 16 Taupe",
         "colors": {
-          "upholstery": "#a39484",
+          "upholstery": "#7d6f61",
           "legs": "#1a1a1a",
-          "frame": "#a39484"
+          "frame": "#7d6f61"
         },
         "materials": {
           "upholstery": "boucle",
@@ -278,6 +340,51 @@
           "frame": "boucle"
         },
         "url": "https://www.bohus.no/stoler/spisestoler/rocco-spisestol-5"
+      },
+      {
+        "name": "Vibe 18 Stone",
+        "colors": {
+          "upholstery": "#959595",
+          "legs": "#1a1a1a",
+          "frame": "#959595"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "woven"
+        },
+        "priceNok": 4399,
+        "url": "https://www.bohus.no/stoler/spisestoler/rocco-spisestol-1"
+      },
+      {
+        "name": "Mito 01 Natural",
+        "colors": {
+          "upholstery": "#d5d4c8",
+          "legs": "#1a1a1a",
+          "frame": "#d5d4c8"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "woven"
+        },
+        "priceNok": 4899,
+        "url": "https://www.bohus.no/stoler/spisestoler/rocco-spisestol-med-armlene"
+      },
+      {
+        "name": "Mito 169 Onyx",
+        "colors": {
+          "upholstery": "#404040",
+          "legs": "#1a1a1a",
+          "frame": "#404040"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "woven"
+        },
+        "priceNok": 4899,
+        "url": "https://www.bohus.no/stoler/spisestoler/rocco-spisestol-med-armlene-2"
       }
     ],
     "defaultVariant": 0,
@@ -286,7 +393,7 @@
     "why": "Bouclé på tynne svarte ben er samme formspråk som skallstolene i spisestua, men med armlener blir den en lenestol rundt bordet – fin i kjellerstua der spisekroken også er sted for lange kvelder.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/ROCCO/237524/image-thumb__237524__PDP-Product/283327%20-%20Rocco%20spisestol%20now%20or%20never%20white%2001%20med%20ben%20svart%20metall%20-%202.e3122e7c.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 4 699 kr per stol for Now or Never 01/03/16/92 med svarte metallben, B61 × D61 × H82, sittehøyde 49 cm, sittedybde 45 cm. Armlenehøyde anslått fra bildet; stoffet (Now or Never) tolket som bouclé ut fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 4 699 kr per stol for Now or Never 01/03/16/92 med svarte metallben, B61 × D61 × H82, sittehøyde 49 cm, sittedybde 45 cm. Armlenehøyde anslått fra bildet; stoffet (Now or Never) tolket som bouclé ut fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire Now or Never-fargene finnes (bouclé); 92 Grey og 16 Taupe er mye mørkere på bildene enn fargekodene var og er rettet (koksgrå og mellombrun taupe). Lagt til Vibe 18 Stone (4 399 kr, varenr. 280106) og Mito 01 Natural og Mito 169 Onyx (4 899 kr, varenr. 284743 og 284745), alle vevde med svarte metallben; treben-utgavene er utgått.",
     "priceConfidence": "checked",
     "absorptionNote": "Polstret stol med armlener og lav rygg: litt mer stoff enn en vanlig polstret spisestol (0,25)."
   },
@@ -350,7 +457,7 @@
     "why": "Røykfarget eik gjentar det mørke spisebordet oppe, og det lyse flettede setet gir varme mot SAND-veggene – en tidløs, luftig stol som ikke tar visuell plass i en spisekrok i kjellerstua.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/FYN/601578/image-thumb__601578__PDP-Product/322748%20-%20Fyn%20spisestol%20med%20armlene%20flettet%20lysebrun%20matt%20sete%20med%20eikeben%20finer%20lakkert%20r%C3%B8ykfarget%20-%205.cc134fd8.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 4 799 kr per stol i begge farger, B52 × D53,5 × H77, sittehøyde 49 cm, sittedybde 47 cm, armlenehøyde 71 cm, ferdig montert. Fargekoder anslått fra bildene.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 4 799 kr per stol i begge farger, B52 × D53,5 × H77, sittehøyde 49 cm, sittedybde 47 cm, armlenehøyde 71 cm, ferdig montert. Fargekoder anslått fra bildene. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle variantene finnes (bare disse to).",
     "priceConfidence": "checked"
   },
   {
@@ -418,7 +525,7 @@
     "why": "Lys eik og flettet sete gir en lett, ryddig spisekrok i kjellerstua og passer til lyse bord som Bastia eller Lukas; cognac-setet er et varmt alternativ mot SAND-veggene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/NONI/320162/image-thumb__320162__PDP-Product/295709%20-%20Noni%20spisestol%20med%20flettet%20sete%20Heltre%20eik%20hvitoljet%20-%202.04d8c5e5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 3 199 kr per stol i begge varianter, B54 × D54,8 × H80, sittehøyde 46 cm, sittedybde 42 cm, heltre eik, montert. Antall spiler (4) talt på bildet; fargekoder anslått fra bildene.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 3 199 kr per stol i begge varianter, B54 × D54,8 × H80, sittehøyde 46 cm, sittedybde 42 cm, heltre eik, montert. Antall spiler (4) talt på bildet; fargekoder anslått fra bildene. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle variantene finnes (bare disse to; utgaven med kunstskinn cognac er merket utgående hos Bohus).",
     "priceConfidence": "checked"
   },
   {
@@ -461,7 +568,7 @@
         }
       },
       {
-        "name": "Hvitpigmentert eik, svart sete",
+        "name": "Hvitlakkert eik, svart sete",
         "colors": {
           "upholstery": "#1e1e1e",
           "legs": "#dcc8ab",
@@ -481,7 +588,7 @@
     "why": "Smal og lett (47 cm), så det får plass mange rundt et lite bord i kjellerstua; helsvart passer de svarte detaljene og et svart bord som Signature 1800, lys eik passer Bastia eller LISABO.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/BRAGE/145393/image-thumb__145393__PDP-Product/250685%20-%20Brage%20spisestol%20pu%20kunstskinn%20svart%20med%20ben%20svart%20lakkert%20eik%20-%201.9302d447.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 2 299 kr per stol i begge farger, B47 × D50 × H80, sittehøyde 47 cm, sittedybde 40 cm, lakkert eik og PU-kunstskinn. Fargekoder anslått fra bildene.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 2 299 kr per stol i begge farger, B47 × D50 × H80, sittehøyde 47 cm, sittedybde 40 cm, lakkert eik og PU-kunstskinn. Fargekoder anslått fra bildene. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes; Bohus kaller den lyse utgaven «eikeben hvitlakkert» (navnet rettet fra hvitpigmentert, fargen er lys hvitlasert eik), og den er merket utgående.",
     "priceConfidence": "checked",
     "absorptionNote": "Bare setet er polstret (kunstskinn), ryggen er tre – mellom tre- (0,05) og polstret stol (0,25)."
   },
@@ -545,7 +652,7 @@
     "why": "Billigste vei til en komplett spisekrok i kjellerstua sammen med LISABO-bordet; lys ask passer eikegulvet, svart gjentar de svarte detaljene i huset.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/lisabo-stol-ask__0786549_pe763015_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 795 kr (førpris 995 kr, «Ny lavere pris»), B46 × D51 × H80, sittehøyde 45 cm, sittebredde 44 cm, sittedybde 39 cm, selges enkeltvis. Svart variant 795 kr i søket (art.nr. lest fra url).",
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 795 kr (førpris 995 kr, «Ny lavere pris»), B46 × D51 × H80, sittehøyde 45 cm, sittebredde 44 cm, sittedybde 39 cm, selges enkeltvis. Svart variant 795 kr i søket (art.nr. lest fra url). Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle variantene finnes (bare ask og svart; LISABO med Tallmyra-sete er en egen vare).",
     "priceConfidence": "checked"
   },
   {
@@ -600,6 +707,20 @@
           "frame": "woven"
         },
         "url": "https://www.ikea.com/no/no/p/krylbo-stol-tibbleby-mork-rod-30620579/"
+      },
+      {
+        "name": "Tonerud blå",
+        "colors": {
+          "upholstery": "#355889",
+          "legs": "#1a5590",
+          "frame": "#355889"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "steel",
+          "frame": "woven"
+        },
+        "url": "https://www.ikea.com/no/no/p/krylbo-stol-tonerud-bla-90566744/"
       }
     ],
     "defaultVariant": 0,
@@ -608,7 +729,7 @@
     "why": "Myk og varm for under tusen kroner – den mørke beige tonen ligger nær SAND/MARRAKESH-veggene, og den lave, runde ryggen holder spisekroken i kjellerstua luftig.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/krylbo-stol-tonerud-mork-beige__1208495_pe908606_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 845 kr, B55 × D51 × H75, sittehøyde 49 cm, sittebredde 49 cm, sittedybde 41 cm, stål med pulverlakk, trekk i 100 % resirkulert polyester, selges enkeltvis. Rød variant 845 kr i søket; fargekoder anslått fra bildene.",
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 845 kr, B55 × D51 × H75, sittehøyde 49 cm, sittebredde 49 cm, sittedybde 41 cm, stål med pulverlakk, trekk i 100 % resirkulert polyester, selges enkeltvis. Rød variant 845 kr i søket; fargekoder anslått fra bildene. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: begge variantene finnes; lagt til Tonerud blå (845 kr, blå ben), den eneste andre fargen.",
     "priceConfidence": "checked"
   }
 ]

@@ -47,7 +47,7 @@ fra en annen modul som ikke finnes ennå, så bruk kontrakten slik den står her
 
 Kategorinøkler (katalogrekkefølge): `sofa`, `lenestol`, `bord`, `stoler`, `skjenk`, `tvbenk`, `vitrineskap`, `hylle`, `seng`,
 `nattbord`, `kommode`, `garderobe`, `speil`, `bad`, `gang`, `taklampe`, `smalamper`, `tekstil`, `teppe`, `solskjerming`,
-`akustikk`, `smatt` (338 produkter; se `notes/katalog-hele-huset.md`).
+`akustikk`, `smatt` (372 produkter; se `notes/katalog-hele-huset.md`).
 Bilder som spillet viser (fotomontasjer, stuebilder til fotosammenligning, utsikt) ligger nedskalert under
 `public/img/…` og refereres med **relative** stier (`img/forslag/B.jpg`) – bygget skal virke i en undermappe.
 

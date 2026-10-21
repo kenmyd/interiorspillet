@@ -40,12 +40,13 @@
         "materials": {
           "upholstery": "woven",
           "legs": "black-metal"
-        }
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/chicago-hvilestol-med-fotskammel"
       },
       {
         "name": "PU-kunstskinn svart, svingfot matt svart",
         "colors": {
-          "upholstery": "#222120",
+          "upholstery": "#333134",
           "legs": "#1c1c1c"
         },
         "materials": {
@@ -53,7 +54,8 @@
           "legs": "black-metal"
         },
         "priceNok": 8999,
-        "salePriceNok": 6999
+        "salePriceNok": 6999,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/chicago-hvilestol-med-fotskammel-1"
       }
     ],
     "defaultVariant": 0,
@@ -62,7 +64,7 @@
     "why": "Det beige Monza-stoffet og den svarte stjernefoten passer til rommets lyse tekstiler og svarte metalldetaljer, og settet er det klart rimeligste av hvilestolene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/CHICAGO/314859/image-thumb__314859__PDP-Product/297407%20-%20Chicago%20hvilestol%20med%20fotskammel%20regulerbar%20rygg%20Monza%20Beige%2060%20svingfot%20matt%20svart%20-%201.b060623f.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, pris, mål (75×83×112, sete 47/52), svingfot i matt svart og at fotskammelen er inkludert. Rettet: Monza Taupe 40 er utgått og tatt ut, og kampanjeprisen 5 999,- for beige finnes ikke (prisen er 7 999,-).",
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, pris, mål (75×83×112, sete 47/52), svingfot i matt svart og at fotskammelen er inkludert. Rettet: Monza Taupe 40 er utgått og tatt ut, og kampanjeprisen 5 999,- for beige finnes ikke (prisen er 7 999,-). Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (Monza Beige 60, polyester, 7 999 kr; PU-kunstskinn svart 6 999 kr, før 8 999 kr), Monza Taupe er fortsatt utløpt. Egne lenker lagt inn.",
     "priceConfidence": "checked"
   },
   {
@@ -101,78 +103,83 @@
       {
         "name": "Makalu 64 Taupe, helkledd skrog, svingfot svart aluminium (sving og retur)",
         "colors": {
-          "upholstery": "#aea89b",
+          "upholstery": "#a39a87",
           "legs": "#1c1c1c",
-          "frame": "#aea89b"
+          "frame": "#a39a87"
         },
         "materials": {
           "upholstery": "boucle",
           "legs": "black-metal",
           "frame": "boucle"
-        }
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-99"
       },
       {
         "name": "Cortina 09 Sand, skrog valnøtt, svingfot aluminium (sving og retur)",
         "colors": {
-          "upholstery": "#c8b89f",
+          "upholstery": "#bfb7a8",
           "legs": "#c4c6c8",
-          "frame": "#5a3f2e"
+          "frame": "#8a6c58"
         },
         "materials": {
           "upholstery": "woven",
           "legs": "chrome",
           "frame": "walnut"
         },
-        "priceNok": 31498
+        "priceNok": 31498,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-98"
       },
       {
         "name": "Cortina 75 Silver, skrog svart eik, svingfot svart (sving og retur)",
         "colors": {
-          "upholstery": "#a9a9a6",
+          "upholstery": "#b5b4b1",
           "legs": "#1c1c1c",
-          "frame": "#1f1d1b"
+          "frame": "#262524"
         },
         "materials": {
           "upholstery": "woven",
           "legs": "black-metal",
           "frame": "black-oak"
         },
-        "priceNok": 31498
+        "priceNok": 31498,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-141"
       },
       {
         "name": "Sheford 72 Light grey, skrog ubehandlet eik, svingfot tre/aluminium",
         "colors": {
-          "upholstery": "#b7b5b0",
-          "legs": "#c9a77a",
-          "frame": "#c9a77a"
+          "upholstery": "#babbad",
+          "legs": "#cdbb9f",
+          "frame": "#c8b496"
         },
         "materials": {
           "upholstery": "woven",
           "legs": "oak",
           "frame": "oak"
         },
-        "priceNok": 35098
+        "priceNok": 35098,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-1"
       },
       {
         "name": "Fantasy 89 Black (skinn), skrog valnøtt, x-fot aluminium",
         "colors": {
-          "upholstery": "#1f1e1d",
+          "upholstery": "#1c1d20",
           "legs": "#c4c6c8",
-          "frame": "#5a3f2e"
+          "frame": "#7a5740"
         },
         "materials": {
           "upholstery": "leather",
           "legs": "chrome",
           "frame": "walnut"
         },
-        "priceNok": 31898
+        "priceNok": 31898,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-46"
       },
       {
         "name": "Velvety 64 Bronze, skrog valnøtt, svingfot aluminium",
         "colors": {
-          "upholstery": "#9a7b4c",
+          "upholstery": "#ad6b41",
           "legs": "#c4c6c8",
-          "frame": "#5a3f2e"
+          "frame": "#86695a"
         },
         "materials": {
           "upholstery": "velour",
@@ -180,14 +187,15 @@
           "frame": "walnut"
         },
         "priceNok": 32198,
-        "salePriceNok": 19318
+        "salePriceNok": 19318,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-2"
       },
       {
         "name": "Fåreskinn Offwhite, skrog ubehandlet eik, svingfot eik/aluminium",
         "colors": {
-          "upholstery": "#ebe5d9",
-          "legs": "#c9a77a",
-          "frame": "#c9a77a"
+          "upholstery": "#dcd7ca",
+          "legs": "#b39a78",
+          "frame": "#bfa27c"
         },
         "materials": {
           "upholstery": "teddy",
@@ -195,21 +203,23 @@
           "frame": "oak"
         },
         "priceNok": 42498,
-        "salePriceNok": 33998
+        "salePriceNok": 33998,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-41"
       },
       {
         "name": "Trapani 26 Olive med pikering, skrog valnøtt, svingfot valnøtt/aluminium",
         "colors": {
-          "upholstery": "#767a60",
-          "legs": "#5a3f2e",
-          "frame": "#5a3f2e"
+          "upholstery": "#7d7a65",
+          "legs": "#655146",
+          "frame": "#655146"
         },
         "materials": {
           "upholstery": "velour",
           "legs": "walnut",
           "frame": "walnut"
         },
-        "priceNok": 35898
+        "priceNok": 35898,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-37"
       }
     ],
     "defaultVariant": 0,
@@ -218,7 +228,7 @@
     "why": "Helkledd Makalu i lys taupe med svart fot ligner de lyse boucle-svingstolene og de svarte detaljene, mens skall i valnøtt eller svart eik kan knytte stolen til det mørke spisebordet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Conform%20Collection%20AB/Produkter/TIMEOUT/612595/image-thumb__612595__PDP-Product/330797%20-%20Timeout%20hvilestol%20med%20sving%20og%20retur%2C%20helkledd%20Makalu%2064%20Taupe%20svingfot%20svart%20aluminium%2039cm%20-%203.960040fa.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: Makalu-stolen og -fotskammelen, prisene og salget, mål (80×81×101, sete 42/50, fotskammel 51×38×39) og alle de åtte variantene finnes. Rettet: lenken går nå til stolen i stedet for det utgående settet, og Fåreskinn Offwhite er byttet til den aktive varianten (42 498,-, salg 33 998,-).",
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: Makalu-stolen og -fotskammelen, prisene og salget, mål (80×81×101, sete 42/50, fotskammel 51×38×39) og alle de åtte variantene finnes. Rettet: lenken går nå til stolen i stedet for det utgående settet, og Fåreskinn Offwhite er byttet til den aktive varianten (42 498,-, salg 33 998,-). Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle åtte variantene finnes som stol + fotskammel i samme stoff og skrog (Makalu, Cortina 09 og 75, Sheford 72, Fantasy-skinn, Velvety, fåreskinn Offwhite og Trapani med pikering); hver variant lenker nå til sin stol. Fargene er tatt fra produktbildene – rettet: Velvety 64 Bronze er rustbrun/konjakk (ikke gylden), og skallene i valnøtt og eik er lysere.",
     "priceConfidence": "checked"
   },
   {
@@ -256,15 +266,16 @@
       {
         "name": "Fåreskinn Sahara, Sunny beige, sokkel svart aluminium",
         "colors": {
-          "upholstery": "#6d634f",
+          "upholstery": "#685e4e",
           "legs": "#1c1c1c",
-          "frame": "#a39b8a"
+          "frame": "#8f8676"
         },
         "materials": {
           "upholstery": "teddy",
           "legs": "black-metal",
           "frame": "woven"
-        }
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/zermatt-hvilestol-med-fotskammel-1"
       }
     ],
     "defaultVariant": 0,
@@ -273,7 +284,7 @@
     "why": "Fåreskinnet gir lun tekstur og demper lyd i et rom med harde flater og store vinduer, og den svarte foten matcher det svarte metallet på kjøkkenet og spisestolene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Castle%20Mark%20Enterprises%20Ltd/Produkter/ZERMATT/265060/image-thumb__265060__PDP-Product/280889%20-%20Zermatt%20hvilestol%20med%20fotskammel%20f%C3%A5reskinn%20beige%20ben%20svart%20-%205.b8ffa5e8.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, pris 23 330,-, mål (81×86×111, sete 46/53), fåreskinn Sahara og at fotskammelen er inkludert. Rettet: Lys grå er utgått og tatt ut, og kampanjeprisen 13 799,- finnes ikke. Fotskammelen har firearmet fot, og sving og regulerbar nakkepute er ikke oppgitt.",
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, pris 23 330,-, mål (81×86×111, sete 46/53), fåreskinn Sahara og at fotskammelen er inkludert. Rettet: Lys grå er utgått og tatt ut, og kampanjeprisen 13 799,- finnes ikke. Fotskammelen har firearmet fot, og sving og regulerbar nakkepute er ikke oppgitt. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Fåreskinn Sahara med Sunny beige stoff er fortsatt eneste variant (lys grå er utløpt). Stoffskallet justert etter produktbildet.",
     "priceConfidence": "checked"
   },
   {
@@ -311,22 +322,23 @@
       {
         "name": "Vida 102 Muldvarp, sider hvitpigmentert eik, understell svart aluminium",
         "colors": {
-          "upholstery": "#a69583",
+          "upholstery": "#a39383",
           "legs": "#1c1c1c",
-          "frame": "#dcc498"
+          "frame": "#d4b68a"
         },
         "materials": {
           "upholstery": "woven",
           "legs": "black-metal",
           "frame": "white-oak"
-        }
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/zermatt-hvilestol-med-integrert-fothviler-med-regulering-1"
       },
       {
         "name": "Vida 071 Beige, sider hvitpigmentert eik, understell svart aluminium",
         "colors": {
-          "upholstery": "#dcd4c6",
+          "upholstery": "#d6cfc5",
           "legs": "#1c1c1c",
-          "frame": "#dcc498"
+          "frame": "#d9c69e"
         },
         "materials": {
           "upholstery": "woven",
@@ -334,7 +346,8 @@
           "frame": "white-oak"
         },
         "priceNok": 18332,
-        "salePriceNok": 10999
+        "salePriceNok": 10999,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/grande-hvilestol-med-integrert-fothviler-med-regulering-1"
       }
     ],
     "defaultVariant": 0,
@@ -343,7 +356,7 @@
     "why": "Den lyse eika på sidene går godt med det gråvaskede eikegulvet, og muldvarp-fargen ligger tett på MARRAKESH-veggene. Med innebygd fothviler tar den mindre gulvplass enn en stol med skammel.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Castle%20Mark%20Enterprises%20Ltd/Produkter/GRANDE/608650/image-thumb__608650__PDP-Product/324961%20-%20Grande%20hvilestol%20med%20integrert%20fothviler%20med%20regulering%20med%20sving%2C%20hvitpigmentert%20tre%20Vida%20102%20Muldvarp%20aluminium%20understell%20svart%20-%202.0598a23f.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, pris, salg, bredde og dybde (80×84), sete 48/50, sving, innebygd fothviler og sider i hvitpigmentert eik. Bohus oppgir høyde 85 cm, som trolig er feil; høyden er anslått til 1,08 m. Rettet: den eldre Grande hvilestol i Crush-stoff er utgått.",
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, pris, salg, bredde og dybde (80×84), sete 48/50, sving, innebygd fothviler og sider i hvitpigmentert eik. Bohus oppgir høyde 85 cm, som trolig er feil; høyden er anslått til 1,08 m. Rettet: den eldre Grande hvilestol i Crush-stoff er utgått. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge Vida-variantene finnes (Muldvarp 18 332 kr, Beige 10 999 kr, før 18 332 kr). Egne lenker lagt inn, eikesidene justert etter produktbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -389,28 +402,30 @@
           "upholstery": "woven",
           "legs": "steel",
           "frame": "woven"
-        }
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/taycan-hvilestol-med-fothviler"
       },
       {
         "name": "Taycan Wood, Prime skinn P301 Black, vanger valnøtt, Slimline B1 svart",
         "colors": {
-          "upholstery": "#1e1d1c",
+          "upholstery": "#2a2a2d",
           "legs": "#1c1c1c",
-          "frame": "#4b3b2f"
+          "frame": "#6b5a4c"
         },
         "materials": {
           "upholstery": "leather",
           "legs": "black-metal",
           "frame": "walnut"
         },
-        "priceNok": 33685
+        "priceNok": 33685,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/taycan-hvilestol-med-integrert-fothviler"
       },
       {
         "name": "Tuva 08 Brown, med motor og batteri, Slimline B1 alu svart 19 cm",
         "colors": {
-          "upholstery": "#4f443c",
+          "upholstery": "#4a3c37",
           "legs": "#1c1c1c",
-          "frame": "#4f443c"
+          "frame": "#4a3c37"
         },
         "materials": {
           "upholstery": "woven",
@@ -418,7 +433,8 @@
           "frame": "woven"
         },
         "priceNok": 48965,
-        "salePriceNok": 29379
+        "salePriceNok": 29379,
+        "url": "https://www.bohus.no/stoler/lenestol/hvilestol/taycan-hvilestol-1"
       }
     ],
     "defaultVariant": 0,
@@ -427,7 +443,7 @@
     "why": "Den lyse, varmgrå Raven-fargen passer til den grå hjørnesofaen og SAND-veggene, og med innebygd fothviler trenger stolen ikke ekstra gulvplass til skammel i TV-stua.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/IMG%20avd%20Skandinavia%2C%20Ekornes%20AS/Produkter/TAYCAN/267966/image-thumb__267966__PDP-Product/286425%20-%20Taycan%20hvilestol%20med%20fothviler%20med%20sving%2C%20h%C3%B8y%20rygg%20kan%20reguleres%20raven%20109%20desert%20slimline%20b%C3%B8rstet%20aluminium%20-%205.c7ba8562.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, priser, salg, mål (81×87×101, sete 51/52), Slimline B1 15 cm, sving og innebygd fothviler stemmer for alle tre variantene. Rettet: kampanjeprisen 13 845,- finnes ikke for denne stolen.",
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: navn, priser, salg, mål (81×87×101, sete 51/52), Slimline B1 15 cm, sving og innebygd fothviler stemmer for alle tre variantene. Rettet: kampanjeprisen 13 845,- finnes ikke for denne stolen. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre variantene finnes (Raven 109 Desert 31 998 kr, Taycan Wood i Prime-skinn P301 Black 33 685 kr, Tuva 08 Brown med motor 29 379 kr, før 48 965 kr). Egne lenker lagt inn, skinn, valnøttvanger og Tuva justert etter produktbildene.",
     "priceConfidence": "checked"
   }
 ]
