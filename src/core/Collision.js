@@ -8,9 +8,12 @@ const _v3 = new THREE.Vector3();
 const _p = new THREE.Vector3();
 const _q = new THREE.Vector3();
 const _n = new THREE.Vector3();
+const _n2 = new THREE.Vector3();
 const _m = new THREE.Matrix4();
 const _mi = new THREE.Matrix4();
 const _ray = new THREE.Ray();
+/** cos 30°: a sloped summed octree push this close to a walkable face under the foot takes its normal (resolveCapsule). */
+const FACE_MATCH = Math.cos((30 * Math.PI) / 180);
 
 /**
  * Collision world for the first-person player.
@@ -25,6 +28,13 @@ const _ray = new THREE.Ray();
  *     getSurface(x,z).
  *
  * resolveCapsule(capsule) pushes a THREE Capsule out of everything and reports ground contact.
+ *
+ * Levels (notes/hele-huset-design.md §3.4, steg 20): the walkable area is one rectangle (setBounds, any height) or a
+ * list of rectangles with a band of feet heights each (setBoundsList: one per level of the house, the forecourt
+ * outside). isWalkable(x, z, y) tests the union – with y the feet (world), without y every rectangle counts.
+ * groundHeight(x, z, y) is the terrain, or where the house has a floor (setFloorField(layout.house.floorYAt)) that
+ * floor when it is higher. Neither the bounds nor the floor field collide: the floors, the slab and the stair wedge are
+ * ordinary static colliders.
  */
 export class CollisionWorld {
   constructor() {
@@ -36,9 +46,16 @@ export class CollisionWorld {
     this.surfaceZones = [];
     /** true: dynamic boxes flagged `furniture` do not block the player (settings.physicalBody off). */
     this.ghostFurniture = false;
+    /** true: a sloped static push close to the walkable face under the foot takes that face's normal (resolveCapsule). */
+    this.faceGround = true;
     this.waterLevel = -Infinity;
     this.maxWadeDepth = 0.7;
+    /** The walkable rectangle (setBounds), or with a list (setBoundsList) the bounding rectangle of the list. */
     this.bounds = { minX: -Infinity, maxX: Infinity, minZ: -Infinity, maxZ: Infinity };
+    /** null, or [{ minX, maxX, minZ, maxZ, minY, maxY, levelId? }] (y = feet, world): the walkable area is their union. */
+    this.boundsList = null;
+    /** null, or (x, z, y) → world y of the house floor under / just above a point, or null (layout.house.floorYAt). */
+    this.floorField = null;
     /** Footstep surface on static/dynamic ground outside every surface zone (the house has wooden floors). */
     this.defaultSurface = 'wood';
     this.triangleCount = 0;
@@ -53,6 +70,8 @@ export class CollisionWorld {
       /** Surface tag under the feet: 'wood' (default here) | 'tile' | 'rug' | 'concrete' ... (addSurfaceZone / defaultSurface) */
       surface: null,
       groundSource: null, // 'static' | 'dynamic' | 'terrain'
+      /** The static ground under the foot is a sloped walkable face (a stair wedge), not a floor, a sill or a step. */
+      slope: false,
     };
     for (let i = 0; i < 8; i++) this._result.wallNormals.push(new THREE.Vector3());
   }
@@ -106,8 +125,50 @@ export class CollisionWorld {
     if (i >= 0) this.surfaceZones.splice(i, 1);
   }
 
+  /** One walkable rectangle at every height (replaces a list from setBoundsList). */
   setBounds(minX, maxX, minZ, maxZ) {
     this.bounds = { minX, maxX, minZ, maxZ };
+    this.boundsList = null;
+  }
+
+  /**
+   * Several walkable rectangles, each for a band of feet heights (world y): one per level (layout.house.walkRects),
+   * the forecourt (outsideHouse.walkRects). The walkable area is their union; `bounds` becomes their bounding
+   * rectangle. A missing minY / maxY is open (−∞ / +∞). An empty list or null goes back to the plain `bounds`.
+   * @param {Array<{minX:number,maxX:number,minZ:number,maxZ:number,minY?:number|null,maxY?:number|null,levelId?:string}>|null} list
+   */
+  setBoundsList(list) {
+    const rects = (list || [])
+      .filter((r) => r && [r.minX, r.maxX, r.minZ, r.maxZ].every((v) => typeof v === 'number' && !Number.isNaN(v)))
+      .map((r) => ({
+        minX: r.minX,
+        maxX: r.maxX,
+        minZ: r.minZ,
+        maxZ: r.maxZ,
+        minY: typeof r.minY === 'number' && !Number.isNaN(r.minY) ? r.minY : -Infinity,
+        maxY: typeof r.maxY === 'number' && !Number.isNaN(r.maxY) ? r.maxY : Infinity,
+        levelId: r.levelId ?? null,
+      }));
+    if (!rects.length) {
+      this.boundsList = null;
+      return;
+    }
+    this.boundsList = rects;
+    this.bounds = {
+      minX: Math.min(...rects.map((r) => r.minX)),
+      maxX: Math.max(...rects.map((r) => r.maxX)),
+      minZ: Math.min(...rects.map((r) => r.minZ)),
+      maxZ: Math.max(...rects.map((r) => r.maxZ)),
+    };
+  }
+
+  /**
+   * The house's floors as a query (not a collider): (x, z, y) → world y of the floor under / just above (x, y, z), or
+   * null where the house has none (layout.house.floorYAt). groundHeight falls back to it.
+   * @param {((x: number, z: number, y?: number) => number|null)|null} fn
+   */
+  setFloorField(fn) {
+    this.floorField = typeof fn === 'function' ? fn : null;
   }
 
   setWater(level, maxWadeDepth = 0.7) {
@@ -181,17 +242,56 @@ export class CollisionWorld {
 
   /* ------------------------------------------------------------------ queries */
 
-  /** Terrain height or -Infinity when there is no heightfield. */
-  groundHeight(x, z) {
-    return this.heightfield ? this.heightfield.getHeight(x, z) : -Infinity;
+  /**
+   * Ground height under a point: the terrain, or the house floor there (setFloorField) when that is higher; -Infinity
+   * when there is neither. y (feet, world) picks the floor of the level the point is on – without it the highest one.
+   */
+  groundHeight(x, z, y) {
+    const h = this.heightfield ? this.heightfield.getHeight(x, z) : -Infinity;
+    if (!this.floorField) return h;
+    const f = this.floorField(x, z, y);
+    return typeof f === 'number' && f > h ? f : h;
   }
 
-  /** False outside the world bounds or where the terrain is deeper than wading depth under water. */
-  isWalkable(x, z) {
-    const b = this.bounds;
-    if (x < b.minX || x > b.maxX || z < b.minZ || z > b.maxZ) return false;
+  /**
+   * False outside the walkable area (setBounds / setBoundsList: with y (feet, world) only the rectangles whose band
+   * holds y count, without y all of them) or where the terrain is deeper than wading depth under water.
+   */
+  isWalkable(x, z, y) {
+    if (!this._inBounds(x, z, y)) return false;
     if (this.heightfield && this.heightfield.getHeight(x, z) < this.waterLevel - this.maxWadeDepth) return false;
     return true;
+  }
+
+  /**
+   * How far (m) a point lies outside the walkable area: ≤ 0 inside (the deepest inside of the rectangles that hold it),
+   * Infinity when no rectangle's band holds y.
+   */
+  outsideDistance(x, z, y) {
+    const list = this.boundsList;
+    if (!list) return outsideRect(this.bounds, x, z);
+    let d = Infinity;
+    for (let i = 0; i < list.length; i++) {
+      const r = list[i];
+      if (y != null && (y < r.minY || y > r.maxY)) continue;
+      d = Math.min(d, outsideRect(r, x, z));
+    }
+    return d;
+  }
+
+  _inBounds(x, z, y) {
+    const list = this.boundsList;
+    if (!list) {
+      const b = this.bounds;
+      return !(x < b.minX || x > b.maxX || z < b.minZ || z > b.maxZ);
+    }
+    for (let i = 0; i < list.length; i++) {
+      const r = list[i];
+      if (x < r.minX || x > r.maxX || z < r.minZ || z > r.maxZ) continue;
+      if (y != null && (y < r.minY || y > r.maxY)) continue;
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -205,13 +305,27 @@ export class CollisionWorld {
     res.wallCount = 0;
     res.surface = null;
     res.groundSource = null;
+    res.slope = false;
 
     // 1) Static octree
     if (this.triangleCount > 0) {
       const hit = this.octree.capsuleIntersect(capsule);
       if (hit && hit.depth > 1e-10) {
+        // The octree sums the pushes of every triangle the capsule touches. On a slope of many triangles (the stair
+        // wedge, notes/hele-huset-design.md §3.1) the neighbours' edges, and in the winders the steeper inner side
+        // touching the body, tilt the sum: it came out up to ~30° off the face under the foot, under WALKABLE_NORMAL_Y
+        // on the 42° wedge, and the ground snap then went on down and shoved the player along it, or pushed the player
+        // back down the slope walking up (tools/test-stairs.mjs, the control runs). So a sloped sum close to the sloped
+        // walkable face straight under the foot (within FACE_MATCH) takes that face's normal – the push is then made
+        // vertical like any ground push. Only on sloped static ground: on a flat face below (every floor, sill and step
+        // of the living room) and for flat pushes, walls and step noses nothing changes.
+        let n = hit.normal;
+        if (this.faceGround && n.y > 0.2 && n.y < 0.999 && this._faceBelow(capsule, _n2) && _n2.y >= WALKABLE_NORMAL_Y && _n2.y < 0.999 && _n2.dot(n) > FACE_MATCH) {
+          n = _n2;
+          res.slope = true;
+        }
         capsule.translate(_v1.copy(hit.normal).multiplyScalar(hit.depth));
-        this._classify(res, hit.normal, 'static');
+        this._classify(res, n, 'static');
       }
     }
 
@@ -317,6 +431,20 @@ export class CollisionWorld {
     return !!this.raycast(_ray, len);
   }
 
+  /**
+   * Normal of the static face straight under the foot sphere's centre (front faces only), if one lies within reach of
+   * the sphere on walkable ground (radius / WALKABLE_NORMAL_Y). Writes it into out.
+   * @returns {boolean}
+   */
+  _faceBelow(capsule, out) {
+    _ray.origin.copy(capsule.start);
+    _ray.direction.set(0, -1, 0);
+    const hit = this.octree.rayIntersect(_ray);
+    if (!hit || hit.distance > capsule.radius / WALKABLE_NORMAL_Y + 0.02) return false;
+    hit.triangle.getNormal(out);
+    return out.y > 0;
+  }
+
   _classify(res, normal, source) {
     if (normal.y >= WALKABLE_NORMAL_Y) {
       res.onGround = true;
@@ -330,6 +458,11 @@ export class CollisionWorld {
   _pushWall(res, normal) {
     if (res.wallCount < res.wallNormals.length) res.wallNormals[res.wallCount++].copy(normal);
   }
+}
+
+/** How far (m) a point lies outside a rectangle { minX, maxX, minZ, maxZ }; ≤ 0 inside. */
+function outsideRect(b, x, z) {
+  return Math.max(b.minX - x, x - b.maxX, b.minZ - z, z - b.maxZ);
 }
 
 function isNoCollide(obj) {
