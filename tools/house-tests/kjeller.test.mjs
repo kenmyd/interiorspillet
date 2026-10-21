@@ -175,7 +175,7 @@ section('Windows, ceilings, lights, fixtures, built-ins');
   const win = (id) => ops[id];
   check('kjellerstue: V1 z 7,41–8,76 and V2 z 9,50–10,85, sill 0,85, top 2,15 (V64)', near(edgesOf(win('win-ks-1'))[0], 7.41, 1e-9) && near(edgesOf(win('win-ks-1'))[1], 8.76, 1e-9)
     && near(edgesOf(win('win-ks-2'))[0], 9.5, 1e-9) && near(edgesOf(win('win-ks-2'))[1], 10.85, 1e-9) && ['win-ks-1', 'win-ks-2'].every((id) => win(id).sill === 0.85 && near(win(id).sill + win(id).height, 2.15, 1e-9)));
-  check('bedroom: x 0,76–2,06, sill 0,88, top 2,19 (V63); laundry: z 6,91–8,19 (V58)', near(edgesOf(win('win-sk'))[0], 0.76, 1e-9) && near(edgesOf(win('win-sk'))[1], 2.06, 1e-9) && win('win-sk').sill === 0.88
+  check('bedroom: x 0,76–2,06, hole 0,88 (board top 0,95), top 2,19 (V63); laundry: z 6,91–8,19 (V58)', near(edgesOf(win('win-sk'))[0], 0.76, 1e-9) && near(edgesOf(win('win-sk'))[1], 2.06, 1e-9) && win('win-sk').sill === 0.95 && near(win('win-sk').sill - win('win-sk').sillBoard.thickness, 0.88, 1e-9)
     && near(win('win-sk').sill + win('win-sk').height, 2.19, 1e-9) && near(edgesOf(win('win-vask'))[0], 6.91, 1e-9) && near(edgesOf(win('win-vask'))[1], 8.19, 1e-9));
   const C = Object.fromEntries(spec.ceilings.map((c) => [c.id, c]));
   const room = (id) => spec.rooms.find((r) => r.id === id);

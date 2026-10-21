@@ -92,6 +92,10 @@ section('src/data/room-spec.json (whatever house files there are)');
   const r = validate(spec);
   check('the validator has no errors (warnings are allowed)', !r.errors.length, show(r.errors));
   if (r.warnings.length) console.log(`  (${r.warnings.length} advarsler: ${show(r.warnings)})`);
+  // integrator W1: the «registered, not modelled yet» leniency (pending) is for a branch that lacks another step's file;
+  // once 10-hoved-rom.json (A1) and 20-/30-/35-*.json (B1+C1) are merged, nothing the real set refers to may be pending
+  const merged = ['10-', '20-', '30-'].every((p) => realFiles.some((f) => f.name.startsWith(p)));
+  if (merged) check('the merged house: no room or light group is pending (registered but not modelled)', !r.pending.length, JSON.stringify(r.pending));
   check('no open door leaf cuts a passage (D6)', r.doors.every((d) => d.blocked !== true), JSON.stringify(r.doors.filter((d) => d.blocked)));
   const notes = fs.readFileSync(path.join(ROOT, 'research/room-spec-notes.md'), 'utf8');
   check('room-spec-notes.md: the generated section sits between the markers, the hand-written notes are kept', notes.includes(house.NOTES_START) && notes.includes(house.NOTES_END)

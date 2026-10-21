@@ -112,7 +112,7 @@ import paletteData from '../data/palette.json';
  * @property {WallLayout[]} walls         + wallsById, wall(id), backFacesOf(id)
  * @property {OpeningLayout[]} openings   + openingsById, opening(id), windows, doors (+ openAngleDeg, opensInto, casing), thresholds
  * @property {Object[]} ceilings          + heightAt (above the room floor), topAt (world), holes (stairwell cut-outs)
- * @property {Object[]} lightGroups       the six living-room groups + the data groups { id, label, roomId, dimmer (start level), dimmable, auto }
+ * @property {Object[]} lightGroups       the six living-room groups + the data groups { id, label, roomId (null: several rooms or none, e.g. boder, ute), dimmer (start level), dimmable, auto }
  * @property {Object[]} floorOpenings     { id, levelId, roomId, stairId, polygon, area, contains(x, z) (strict) }
  * @property {Object[]} stairs            { …data, fromLevel, toLevel, risers, rise, riser, topY, bottomY, footprint, wellPolygon, walkLine,
  *                                          walkLength, going, contains(x, z), surfaceY(x, z) }
@@ -893,7 +893,9 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       console.warn(`[layout] light group ${g.id} is defined twice – the first one is kept`);
       continue;
     }
-    const { roomId, levelId } = placeOf(g);
+    // a group with roomId null spans several rooms or none (boder, ute): it keeps null instead of becoming the living
+    // room's (placeOf's default), so a lighting step that picks groups by room does not count it as stue-kjokken
+    const { roomId, levelId } = g.roomId === null ? { roomId: null, levelId: levelsById[g.levelId]?.id ?? null } : placeOf(g);
     dataGroups.push({
       ...deepClone(g),
       id: g.id,

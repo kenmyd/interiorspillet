@@ -116,7 +116,7 @@
           "connects": ["bad", "gang"],
           "interactive": true,
           "confidence": "med",
-          "estimated": ["width", "height", "door.leaf", "door.handleHeight", "door.threshold"],
+          "estimated": ["offset", "width", "height", "door.leaf", "door.handleHeight", "door.threshold"],
           "source": "hele-huset-avstemming.md V15 (gulvkanten på x 1,45, 0,09 list til karmen), V47 (vrider med WC-vri), V48 (mørk topp med lys forkant mot gangen), V49 (hull x 1,54–2,45, blad 0,77 × 2,08 = hull − 2 × karm 0,07); bad-1etg.md, gang-1etg.md; 225333, 225335, 225421"
         }
       ]
@@ -196,7 +196,7 @@
       "thickness": 0.1,
       "height": 2.4,
       "paint": "sand",
-      "estimated": ["thickness", "height"],
+      "estimated": ["from", "to", "thickness", "height"],
       "source": "gang-1etg.md (225331, 225335); soverom-1etg.md; D1 og hele-huset-avstemming.md V54 (z 4,43–4,53)",
       "notes": "x 0–1,85 står i trappehullet (nedre løp går langs veggen, rekkverk A er festet ved x 1,85).",
       "openings": [
@@ -319,7 +319,7 @@
           "existingShading": { "archetype": "roller", "fabric": "blackout", "color": "#2a2b2d", "position": "down", "mount": "reveal", "cord": { "color": "#e8e8e6", "side": "øst" } },
           "outsideView": "Mot nord (som TV-stuevinduet); på bildet er mørkleggingsgardinen nede.",
           "confidence": "med",
-          "estimated": ["frame", "sashes", "obstruction", "sillBoard"],
+          "estimated": ["offset", "width", "height", "sill", "frame", "sashes", "obstruction", "sillBoard"],
           "source": "hele-huset-avstemming.md V51 (z 6,11–7,28, 1,17 × 1,17, sill 0,92, topp 2,09, smyg 0,20 i veggfargen uten gerikt, mørkleggingsgardin #2a2b2d nede med hvit snor på østsiden); soverom-1etg.md (225307); plantegning.png (z 6,10–7,30)"
         }
       ]

@@ -377,6 +377,10 @@ section('The real room-spec (src/data/room-spec.json, every research/house file)
     && base.isInside(x, z) === Lr.isInside(x, z) && (base.zoneAt(x, z)?.id ?? null) === (Lr.zoneAt(x, z)?.id ?? null)));
   check('house: the levels from the data, the living room first among the rooms', Lr.house.levels[0].id === 'hoved' && Lr.house.rooms[0].id === LIVING_ROOM_ID
     && Lr.house.levels.every((lv) => (realSpecJson.levels || []).some((l) => l.id === lv.id) || lv.id === 'hoved'));
+  // integrator W1: a data group with roomId null (boder, ute) keeps null – it is not one of the living room's
+  const nullGroups = (realSpecJson.lightGroups || []).filter((g) => g.roomId === null).map((g) => g.id);
+  check('house light groups with roomId null in the data (boder, ute) keep roomId null', nullGroups.every((id) => Lr.house.lightGroups.find((g) => g.id === id)?.roomId === null),
+    Lr.house.lightGroups.filter((g) => nullGroups.includes(g.id)).map((g) => `${g.id}:${g.roomId}`).join());
 }
 
 // ---------------------------------------------------------------------------------------------------------------

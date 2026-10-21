@@ -193,7 +193,7 @@ _Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/da
   - `walls/w-bad-sor`: `height`. Kilde: bad-1etg.md (225413, 225423); D13 (baksiden av w-nisje-bak)
   - `walls/w-bad-gang`: `thickness`, `height`. Kilde: bad-1etg.md (225421 rett forfra); gang-1etg.md (225333); plantegning.png
   - `walls/w-bad-nord`: `thickness`, `height`. Kilde: bad-1etg.md (225419 rett forfra); plantegning.png («Vindu mål 48x117», 0,99 + 0,48 + 0,75 = 2,22)
-  - `openings/door-bad`: `width`, `height`, `door.leaf`, `door.handleHeight`, `door.threshold`. Kilde: hele-huset-avstemming.md V15 (gulvkanten på x 1,45, 0,09 list til karmen), V47 (vrider med WC-vri), V48 (mørk topp med lys forkant mot gangen), V49 (hull x 1,54–2,45, blad 0,77 × 2,08 = hull − 2 × karm 0,07); bad-1etg.md, gang-1etg.md; 225333, 225335, 225421
+  - `openings/door-bad`: `offset`, `width`, `height`, `door.leaf`, `door.handleHeight`, `door.threshold`. Kilde: hele-huset-avstemming.md V15 (gulvkanten på x 1,45, 0,09 list til karmen), V47 (vrider med WC-vri), V48 (mørk topp med lys forkant mot gangen), V49 (hull x 1,54–2,45, blad 0,77 × 2,08 = hull − 2 × karm 0,07); bad-1etg.md, gang-1etg.md; 225333, 225335, 225421
   - `openings/win-bad`: `sill`, `obstruction`, `sashes`, `reveal.depth`. Kilde: eier 2026-10-20 (48 × 117); plantegning.png (0,99 fra østhjørnet); bad-1etg.md (225419: sill 0,88, topp 2,05, lys grå kantlist, frostet glass)
   - `ceilings/c-bad`: `height`, `paint`. Kilde: bad-1etg.md (glatt hvitt tak med svart taklist 3–4 cm rundt hele taket, 225413–225427); takhøyden 2,40 er anslått (eier: 2,4 for de flate takene)
   - `builtInLights/l-bad-tak`: `position`, `dims`, `lumens`, `lightColorK`. Kilde: bad-1etg.md (rund påbygd LED-plafond med opal front og mørk grå kant, Ø 0,40–0,45, midt i taket; 225413, 225417, 225419, 225427); hele-huset-avstemming.md V45 (mørk kant, 1500 lm)
@@ -203,7 +203,7 @@ _Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/da
   - `rooms/gang`: `baseboard`. Kilde: eier 2026-10-20 (3,11 × 2,07); gang-1etg.md; hele-huset-avstemming.md V50 (gulvlist i lys eik), V54 (D1: vestveggen på z 4,43–4,53, sørveggen x 3,12 = baksiden av w-gang)
   - `walls/w-gang-ost`: `height`. Kilde: gang-1etg.md (225333, 225324); D13 (baksiden av w-bad-gang og w-nisje-side)
   - `walls/w-gang-hall`: `height`. Kilde: gang-1etg.md (225324, 225327, 225331); hele-huset-avstemming.md V54 (x 3,12 = baksiden av w-gang); D13
-  - `walls/w-gang-sov`: `thickness`, `height`. Kilde: gang-1etg.md (225331, 225335); soverom-1etg.md; D1 og hele-huset-avstemming.md V54 (z 4,43–4,53)
+  - `walls/w-gang-sov`: `from`, `to`, `thickness`, `height`. Kilde: gang-1etg.md (225331, 225335); soverom-1etg.md; D1 og hele-huset-avstemming.md V54 (z 4,43–4,53)
   - `walls/w-gang-nord`: `thickness`, `height`. Kilde: gang-1etg.md (225331, 225335, 225337, 225339): yttervegg uten vindu og dør
   - `openings/door-soverom`: `width`, `height`, `door.leaf`, `door.threshold.depth`. Kilde: soverom-1etg.md (225304, 225308, 225316: hengsler i sør, slår inn i soverommet og legger seg mot sørveggen; vrider med rund rosett på begge sider og sluttstykke i blank stål); hele-huset-avstemming.md V47, V48 (smal metallterskel #2b2b2d), V49 (hull x 2,11–3,06, blad 0,81 × 2,05)
   - `ceilings/c-gang`: `height`, `paint`. Kilde: gang-1etg.md (lyst, nær nøytralt ved lampa, uten taklist; 225331); design §2.4. Flatt også over trappehullet.
@@ -218,7 +218,7 @@ _Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/da
   - `walls/w-sov-sor`: `height`, `paint`. Kilde: soverom-1etg.md (225259, 225304, 225316); D13 (baksiden av w-hoy, som er 3,00 høy på stuesiden)
   - `walls/w-sov-vest`: `height`, `paint`. Kilde: soverom-1etg.md (225259, 225307, 225316); D13 (baksiden av w-sov-tv, 0,14 tykk)
   - `walls/w-sov-nord`: `thickness`, `height`, `paint`. Kilde: soverom-1etg.md (225307); plantegning.png
-  - `openings/win-sov`: `frame`, `sashes`, `obstruction`, `sillBoard`. Kilde: hele-huset-avstemming.md V51 (z 6,11–7,28, 1,17 × 1,17, sill 0,92, topp 2,09, smyg 0,20 i veggfargen uten gerikt, mørkleggingsgardin #2a2b2d nede med hvit snor på østsiden); soverom-1etg.md (225307); plantegning.png (z 6,10–7,30)
+  - `openings/win-sov`: `offset`, `width`, `height`, `sill`, `frame`, `sashes`, `obstruction`, `sillBoard`. Kilde: hele-huset-avstemming.md V51 (z 6,11–7,28, 1,17 × 1,17, sill 0,92, topp 2,09, smyg 0,20 i veggfargen uten gerikt, mørkleggingsgardin #2a2b2d nede med hvit snor på østsiden); soverom-1etg.md (225307); plantegning.png (z 6,10–7,30)
   - `ceilings/c-soverom`: `height`, `paint`. Kilde: soverom-1etg.md (helmalt: taket i samme mørke blågrå som veggene, 225259, 225316)
   - `builtInLights/l-sov-tak`: `position`, `dims`, `lumens`, `lightColorK`. Kilde: soverom-1etg.md (rund flat plafond med opal diffuser og lys kant, Ø 0,40, ca. midt i rommet, kjølig hvitt; 225259, 225304); design §2.5
   - `builtInLights/l-sov-garderobe`: hele oppføringen. Kilde: soverom-1etg.md (varmhvit LED-list langs hele toppen av garderobefronten, ca. 1,88 m, 225304, 225308); design §2.5 og §4.10 (gruppa soverom: plafond og garderobe-LED)
