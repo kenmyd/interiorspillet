@@ -196,10 +196,11 @@ section('Entrance steps (V24, §3.11)');
     const ray = new THREE.Raycaster(new THREE.Vector3(5.955, -1, 3.9), new THREE.Vector3(0, -1, 0));
     w.material.side = THREE.DoubleSide;
     const hit = ray.intersectObject(w)[0];
-    check('the wedge passes the middle tread (−2.70) in the middle of the 0.41 wall', hit && near(hit.point.y, -2.7, 0.01), hit && hit.point.y.toFixed(3));
-    const hitA = new THREE.Raycaster(new THREE.Vector3(5.62, -1, 3.9), new THREE.Vector3(0, -1, 0)).intersectObject(w)[0];
+    check('the wedge passes just above the middle tread (−2.70) in the middle of the 0.41 wall', hit && hit.point.y >= -2.7 - 0.005 && hit.point.y <= -2.62, hit && hit.point.y.toFixed(3));
+    const hitA = new THREE.Raycaster(new THREE.Vector3(5.752, -1, 3.9), new THREE.Vector3(0, -1, 0)).intersectObject(w)[0];
     const hitB = new THREE.Raycaster(new THREE.Vector3(6.28, -1, 3.9), new THREE.Vector3(0, -1, 0)).intersectObject(w)[0];
-    check('it starts on the hall floor (−2.55) and ends on the entrance floor (−2.85), ≤ 30°', hitA && hitB && near(hitA.point.y, -2.55, 0.01) && near(hitB.point.y, -2.85, 0.015) && Math.atan2(0.3, 0.67) < (30 * Math.PI) / 180, `${hitA?.point.y.toFixed(3)} ${hitB?.point.y.toFixed(3)}`);
+    const none = new THREE.Raycaster(new THREE.Vector3(5.7, -1, 3.9), new THREE.Vector3(0, -1, 0)).intersectObject(w)[0];
+    check('it starts on the edge of the hall floor (−2.55 at x 5.75, nothing under the hall floor: no edge to stop the capsule) and ends on the entrance floor (−2.85), ≤ 30°', hitA && hitB && !none && near(hitA.point.y, -2.55, 0.01) && near(hitB.point.y, -2.85, 0.015) && Math.atan2(0.3, 0.54) < (30 * Math.PI) / 180, `${hitA?.point.y.toFixed(3)} ${hitB?.point.y.toFixed(3)} ${none?.point.y}`);
   }
 }
 

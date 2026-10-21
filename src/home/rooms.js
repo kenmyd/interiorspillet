@@ -706,9 +706,11 @@ export function buildRooms(ctx, layout, M = null) {
       f.box(W, h, td, 0, yTop - h / 2, (z0 + z1) / 2, fm, { collide: false });
       f.box(W, 0.012, nd, 0, yTop - 0.004, z0 + nd / 2 - 0.005, nm, { collide: false });
     }
-    // the wedge: from the owner floor ~0.13 inside the owner room to the far floor ~0.13 beyond the far face
+    // the wedge: from the owner floor's edge at the owner face to the far floor 0.13 beyond the far face. It must start
+    // ON the owner floor: started inside the owner room (below its floor), the floor's edge would stand above the
+    // wedge and stop the capsule on the way up like a wall
     const ext = 0.13;
-    const zA = ext, zB = -t - ext;
+    const zA = 0, zB = -t - ext;
     const prof = [[zA, 0], [zB, -rise], [zB, -rise - 0.03], [zA, -rise - 0.03]];
     const g = keep(prismX(prof, -W / 2 + 0.005, W / 2 - 0.005));
     g.applyMatrix4(OM);
