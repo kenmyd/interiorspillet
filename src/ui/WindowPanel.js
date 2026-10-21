@@ -901,25 +901,20 @@ export class WindowPanel extends BasePanel {
     if (cur?.productId === p.id) return;
     const main = TYPE[p.archetype]?.main || 'fabric';
     const want = this._wanted(cur);
-    // the user's colour: the product's nearest variant when it is close, else the own colour on this product
+    // the user's colour: the product's nearest variant – a catalogue product only comes in the colours the store sells
     let vi = p.defaultVariant ?? 0;
     let near = null;
-    let custom = false;
     if (want?.main && p.variants?.length) {
       near = nearestVariant(p, want.main, main);
-      if (near && near.dE <= CLOSE_DE) vi = near.index;
-      else custom = true;
+      if (near) vi = near.index;
     }
     const next = this._specFor(p, vi, cur);
     if (!next) return;
-    this._applyWanted(next, custom ? want : { rail: want?.rail }, { custom: false });
     this._write(next, { label: `Velg ${p.name}` });
     this.render();
     const store = p.store || p.brand || 'butikken';
-    if (custom && near) {
-      this.editor.events?.emit?.('toast', { text: `${p.name} vises i fargen du valgte – den finnes kanskje ikke hos ${store}. Nærmeste farge der: ${near.name}.`, seconds: 4.5 });
-    } else if (near && near.dE > 2.5) {
-      this.editor.events?.emit?.('toast', { text: `Nærmeste farge hos ${store}: ${near.name}.`, seconds: 3 });
+    if (near && near.dE > 2.5) {
+      this.editor.events?.emit?.('toast', { text: `Nærmeste farge hos ${store}: ${near.name}.`, seconds: near.dE > CLOSE_DE ? 4 : 3 });
     }
   }
 
@@ -982,8 +977,14 @@ export class WindowPanel extends BasePanel {
       nodes.push(field('Varianter', sw, { hint: vName || '' }));
     }
     const hexNow = mainHex(spec) || '#cccccc';
-    // an own colour on a product: none of its variants has it
+    // an own colour on a product: none of its variants has it (only from an older saved design now)
     const ownOnProduct = !!product && !(product.variants || []).some((v) => sameHex(variantHex(v, main), hexNow));
+    if (product) {
+      // the owner's rule: catalogue products only in the colours and fabrics the store sells – no own colour
+      if (ownOnProduct) nodes.push(h('p', { style: { fontSize: '0.8em', color: 'var(--kv-ink-3)', margin: '0.3em 0 0', lineHeight: 1.4 }, text: `Egen farge fra et eldre lagret design – ${product.store || 'butikken'} selger bare variantene over.` }));
+      else if (!(product.variants?.length > 1)) nodes.push(h('p', { style: { fontSize: '0.8em', color: 'var(--kv-ink-3)', margin: '0.3em 0 0', lineHeight: 1.4 }, text: `Finnes bare i denne fargen hos ${product.store || 'butikken'}.` }));
+      return section('Farge', ...nodes);
+    }
     const pal = [...FABRIC_PALETTE];
     const picker = colorPicker(hexNow, (hex, { final }) => {
       this._patch((s) => setMain(s, hex), { drag: !final, label: 'Egen farge' });

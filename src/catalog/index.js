@@ -266,6 +266,8 @@ export function archetypeInfo(archetype) {
     parts: a.parts || fam.parts,
     partLabels: { ...(fam.partLabels || {}), ...(a.partLabels || {}) },
     ownPartLabels: { ...(a.partLabels || {}) },
+    // parts that only dress the model (bedding, towels or coats shown on it) – not sold with the product
+    propParts: Array.isArray(a.propParts) ? [...a.propParts] : [],
   };
 }
 

@@ -128,9 +128,9 @@ check('archetype display-cabinet: storage family, floor (or wall), «Vitrineskap
 check('mountsCompatible: vitrineskap floor ↔ wall, nothing else across mounts', catalog.mountsCompatible('display-cabinet', 'floor', 'display-cabinet', 'wall')
   && !catalog.mountsCompatible('sideboard', 'floor', 'wall-shelf', 'wall') && !catalog.mountsCompatible('art-frame', 'wall', 'art-frame', 'floor'));
 // round 1 + catalog-new (lenestoler, Secto, gulvlamper, vitrineskap) + hele huset (152 new products incl. Skeidar and Jysk,
-// the 3 mirrors moved to Speil)
-const COUNTS = { sofa: 11, lenestol: 21, bord: 10, stoler: 8, skjenk: 14, tvbenk: 7, vitrineskap: 5, hylle: 11, seng: 20, nattbord: 10, kommode: 10, garderobe: 9, speil: 13, bad: 19, gang: 14, taklampe: 19, smalamper: 34, tekstil: 24, teppe: 19, solskjerming: 22, akustikk: 16, smatt: 22 };
-check('counts per category – 338 products', Object.entries(COUNTS).every(([k, n]) => counts[k] === n) && catalog.allProducts().length === 338, JSON.stringify(counts));
+// the 3 mirrors moved to Speil) + 34 lenestoler (24 hvilestoler) from Bohus, Skeidar, Fagmøbler, Møbelringen, Jysk, IKEA and Mio
+const COUNTS = { sofa: 11, lenestol: 55, bord: 10, stoler: 8, skjenk: 14, tvbenk: 7, vitrineskap: 5, hylle: 11, seng: 20, nattbord: 10, kommode: 10, garderobe: 9, speil: 13, bad: 19, gang: 14, taklampe: 19, smalamper: 34, tekstil: 24, teppe: 19, solskjerming: 22, akustikk: 16, smatt: 22 };
+check('counts per category – 372 products', Object.entries(COUNTS).every(([k, n]) => counts[k] === n) && catalog.allProducts().length === 372, JSON.stringify(counts));
 const NEW_DIR = path.join(ROOT, 'research', 'catalog-new');
 const fresh = fs.readdirSync(NEW_DIR).filter((f) => f.endsWith('.json')).flatMap((f) => readJson(`research/catalog-new/${f}`));
 const KEEP = ['category', 'subcategory', 'name', 'brand', 'store', 'url', 'priceNok', 'salePriceNok', 'priceNote', 'priceConfidence', 'archetype', 'defaultVariant', 'description', 'why', 'imageUrl', 'verified', 'verifiedNote', 'light'];
@@ -155,7 +155,7 @@ for (const src of fresh) {
     for (const [part, hex] of Object.entries(v.colors)) if (pv?.colors?.[part] !== hex || pv?.materials?.[part] !== v.materials[part]) freshProblems.push(`${src.id}#${i}: ${part}`);
   });
 }
-check(`all ${fresh.length} new products kept: prices, sale prices, variant prices/urls, notes, image URLs, params (shape notes, profilePoints)`, fresh.length === 178 && !freshProblems.length,
+check(`all ${fresh.length} new products kept: prices, sale prices, variant prices/urls, notes, image URLs, params (shape notes, profilePoints)`, fresh.length === 212 && !freshProblems.length,
   freshProblems.slice(0, 8).join(' | '));
 const pr = (id, vi) => {
   const x = catalog.priceOf(catalog.getProduct(id), vi);
@@ -163,20 +163,21 @@ const pr = (id, vi) => {
 };
 const PRICES = [
   ['christiania-belysning-secto-design-secto-4200-taklampe', 0, '7495/7495/-'], ['christiania-belysning-secto-design-secto-4200-taklampe', 1, '8090/8090/-'],
-  ['christiania-belysning-secto-design-secto-4201-small-taklampe', 0, '5412/6765/sale'], ['christiania-belysning-secto-design-secto-4201-small-taklampe', 1, '5876/7345/sale'],
-  ['christiania-belysning-secto-design-octo-4240-taklampe-o54', 3, '9116/11395/sale'], ['christiania-belysning-secto-design-octo-4241-small-taklampe-o45', 1, '8736/10920/sale'],
+  // the Secto -20 % campaign ended (checked 2026-10-21)
+  ['christiania-belysning-secto-design-secto-4201-small-taklampe', 0, '6765/6765/-'], ['christiania-belysning-secto-design-secto-4201-small-taklampe', 1, '7345/7345/-'],
+  ['christiania-belysning-secto-design-octo-4240-taklampe-o54', 3, '11395/11395/-'], ['christiania-belysning-secto-design-octo-4241-small-taklampe-o45', 1, '10920/10920/-'],
   ['bohus-actona-chicago-hvilestol-med-fotskammel', 0, '7999/7999/-'], ['bohus-actona-chicago-hvilestol-med-fotskammel', 1, '6999/8999/sale'],
   ['bohus-conform-timeout-hvilestol-med-fotskammel', 0, '20298/31498/sale'], ['bohus-conform-timeout-hvilestol-med-fotskammel', 1, '31498/31498/-'],
   ['bohus-conform-timeout-hvilestol-med-fotskammel', 6, '33998/42498/sale'], ['bohus-castle-mark-zermatt-hvilestol-med-fotskammel', 0, '23330/23330/-'],
   ['bohus-castle-mark-grande-hvilestol-med-fothviler', 1, '10999/18332/sale'], ['bohus-img-taycan-hvilestol-med-fothviler', 2, '29379/48965/sale'],
   ['bohus-sagene-vitrineskap-med-lys-90x40', 0, '7799/12999/sale'], ['bohus-sagene-vitrineskap-med-lys-90x40', 1, '13999/13999/-'],
   ['bohus-scandi-vitrineskap-med-lys-60x40', 0, '20599/20599/-'], ['bohus-scandi-vitrineskap-med-lys-60x40', 1, '14399/20699/sale'],
-  ['bohus-belfort-vitrineskap-med-lys-120x40', 1, '16799/20999/sale'], ['bohus-signature-1860-vitrineskap-90x40', 0, '13499/18299/sale'],
+  ['bohus-belfort-vitrineskap-med-lys-120x40', 1, '16799/20999/sale'], ['bohus-signature-1860-vitrineskap-90x40', 0, '12799/18299/sale'],
   ['ikea-besta-veggmontert-60x42x64-glassvik-rokfarget', 0, '1495/1695/sale'], ['ikea-besta-veggmontert-60x42x64-glassvik-rokfarget', 1, '1495/1695/sale'],
 ];
 const badPrices = PRICES.filter(([id, vi, want]) => pr(id, vi) !== want).map(([id, vi, want]) => `${id}#${vi} ${pr(id, vi)} ≠ ${want}`);
 check('priceOf: sale / regular / per-variant prices of the new products', !badPrices.length, badPrices.join(' | '));
-check('Sagene brown variant: «sjekk prisen» (the category list showed another price)', catalog.priceOf(catalog.getProduct('bohus-sagene-vitrineskap-med-lys-90x40'), 1).confidence === 'check');
+check('Sagene brown variant: its own price, confirmed on the product data (2026-10-21)', catalog.priceOf(catalog.getProduct('bohus-sagene-vitrineskap-med-lys-90x40'), 1).confidence === 'checked');
 const besta = catalog.productToItemSpec('ikea-besta-veggmontert-60x42x64-glassvik-rokfarget', 1);
 check('BESTÅ vitrine: wall-hung item, variant «klart glass» overrides doorStyle', besta.mount === 'wall' && besta.params.doorStyle === 'glass-framed' && besta.params.base === 'wall'
   && catalog.productToItemSpec('ikea-besta-veggmontert-60x42x64-glassvik-rokfarget', 0).params.doorStyle === 'glass-smoked');
@@ -187,7 +188,7 @@ check('Secto/Octo pendants: ceiling, drop = the shop cable default, 806 lm (shop
   && catalog.getProduct('christiania-belysning-secto-design-octo-4240-taklampe-o54').light.colorK === 3000
   && secto.light.colorK === catalog.NEW_LAMP.colorK && secto.light.dimmer === catalog.NEW_LAMP.dimmer
   && secto.params.profilePoints.length === 21 && secto.params.profilePoints[13][1] === 0.54);
-check('subcategories: every recliner «hvilestol» (7), every pendant «pendel» (18)', catalog.products('lenestol').filter((p) => p.subcategory === 'hvilestol').length === 7
+check('subcategories: every recliner «hvilestol» (32), every pendant «pendel» (18)', catalog.products('lenestol').filter((p) => p.subcategory === 'hvilestol').length === 32
   && catalog.products('lenestol').filter((p) => p.archetype === 'recliner').every((p) => p.subcategory === 'hvilestol')
   && catalog.products('taklampe').filter((p) => p.subcategory === 'pendel').length === 18 && catalog.SUBCATEGORY_LABELS.hvilestol === 'Hvilestoler');
 check('search finds the new products', catalog.products('vitrineskap').every((p) => catalog.search('vitrineskap').includes(p)) && catalog.search('secto').length === 4 && catalog.search('hvilestol fotskammel').length >= 4
@@ -259,6 +260,37 @@ check('search: «seng 180», «speilskap», «skoskap», «håndkle», «gardero
   && catalog.search('skoskap').length >= 4 && catalog.search('håndkle').length >= 3 && catalog.search('garderobe').length >= 8);
 
 // ---------------------------------------------------------------------------------------------------------------
+section('Lenestoler and real colours (research/catalog-new/lenestol-*.json)');
+const ARM_FILES = ['lenestol-bohus-hvilestoler', 'lenestol-bohus-lenestoler', 'lenestol-skeidar', 'lenestol-fagmobler-mobelringen', 'lenestol-jysk-ikea-mio'];
+const arms = ARM_FILES.flatMap((n) => readJson(`research/catalog-new/${n}.json`));
+const armStores = arms.reduce((m, p) => ({ ...m, [p.store]: (m[p.store] || 0) + 1 }), {});
+console.log('  lenestoler per store', JSON.stringify(armStores));
+const armProblems = arms.filter((p) => !p.verified || !/2026-10-21/.test(p.priceNote) || !/^https:\/\//.test(p.url) || !/^https:\/\//.test(p.imageUrl) || !p.variants.length).map((p) => p.id);
+check(`${arms.length} more lenestoler, verified 2026-10-21 with url + image + variants, from ${Object.keys(armStores).length} stores (Bohus first)`, arms.length === 34 && !armProblems.length
+  && Object.keys(armStores).length >= 5 && armStores.Bohus === Math.max(...Object.values(armStores)), armProblems.join(', '));
+check('25 of them are hvilestoler (recline / footstool) in subcategory «hvilestol»', arms.filter((p) => catalog.getProduct(p.id)?.subcategory === 'hvilestol').length === 25);
+check('Zermatt hvilestol med fothviler (the owner\'s photo): 9 999 / 16 665, beige and grey Breeze, black star base', pr('bohus-castle-mark-zermatt-hvilestol-med-fothviler', 0) === '9999/16665/sale'
+  && catalog.getProduct('bohus-castle-mark-zermatt-hvilestol-med-fothviler').variants.map((v) => v.name.split(',')[0]).join() === 'Breeze 120 Beige,Breeze 453 Grå');
+// every reference in fixes.mjs still hits its product and variants after the colour audit renamed variants
+const fixRefs = [];
+for (const [id, fx] of Object.entries(FIXES)) {
+  const p = catalog.getProduct(id);
+  if (!p) {
+    fixRefs.push(`${id}: no product`);
+    continue;
+  }
+  for (const [match] of fx.variants || []) if (!p.variants.some((v) => v.name.includes(match))) fixRefs.push(`${id}: variant «${match}»`);
+  if (typeof fx.defaultVariant === 'string' && !p.variants.some((v) => v.name.includes(fx.defaultVariant))) fixRefs.push(`${id}: default «${fx.defaultVariant}»`);
+}
+check('fixes.mjs: every product id, variant match and default variant still hits the catalogue', !fixRefs.length, fixRefs.join(' | '));
+const allProducts = catalog.allProducts();
+check('variants are the stores\' own: unique names per product, no «utgående» / «tilbud» / own colours left in the names', allProducts.every((p) => new Set(p.variants.map((v) => v.name)).size === p.variants.length
+  && p.variants.every((v) => v.name && !/utgående|\(tilbud\)|egen farge/i.test(v.name))));
+check('propParts: bedding on a bed, towels and coats only dress the model (free colour); everything else follows the variants', catalog.archetypeInfo('bed').propParts.join() === 'bedding,throw'
+  && ['towel-ladder', 'towel-rail', 'coat-rack', 'coat-stand'].every((a) => catalog.archetypeInfo(a).propParts.join() === 'fabric')
+  && catalog.archetypeInfo('recliner').propParts.length === 0 && catalog.archetypeInfo('sofa-straight').propParts.length === 0);
+
+// ---------------------------------------------------------------------------------------------------------------
 section('Layout');
 const { layout } = await imp('src/home/layout.js');
 console.log(`  volume ${layout.volume.toFixed(2)} m³, floor ${layout.floorArea.toFixed(2)} m², walls ${layout.walls.length}, windows ${layout.windows.length}, doors ${layout.doors.length}`);
@@ -307,11 +339,12 @@ check('starts with the original design and no history', d.items.size === origina
 const events = [];
 for (const ev of ['item:add', 'item:update', 'item:remove', 'wall', 'window', 'paint', 'env', 'load', 'change', 'history']) d.on(ev, (p) => events.push(ev));
 const chairSpec = { ...catalog.productToItemSpec('bohus-scapa-vilde-loungestol'), position: [4.0, 0, 9.8] };
+const vildeFabric = catalog.getProduct('bohus-scapa-vilde-loungestol').variants[0].colors.upholstery;
 const uid = d.add(chairSpec);
 check('add → events item:add, change, history', events.join(',') === 'item:add,change,history', events.join(','));
-check('add stores a normalised item', d.get(uid)?.archetype === 'tub-swivel' && d.get(uid).colors.upholstery === '#6e7256' && d.get(uid).position[0] === 4);
+check('add stores a normalised item', d.get(uid)?.archetype === 'tub-swivel' && d.get(uid).colors.upholstery === vildeFabric && d.get(uid).position[0] === 4);
 d.update(uid, { position: { x: 4.2, y: 0, z: 9.9 }, colors: { legs: '#ffffff' } });
-check('update merges colours, accepts {x,y,z}', d.get(uid).position[0] === 4.2 && d.get(uid).colors.legs === '#ffffff' && d.get(uid).colors.upholstery === '#6e7256');
+check('update merges colours, accepts {x,y,z}', d.get(uid).position[0] === 4.2 && d.get(uid).colors.legs === '#ffffff' && d.get(uid).colors.upholstery === vildeFabric);
 d.undo();
 check('undo update', d.get(uid).position[0] === 4 && d.get(uid).colors.legs === '#1c1c1c');
 d.redo();
@@ -446,9 +479,13 @@ const opened = ac.computeAcoustics(orig, { layout }).absorption - r0.absorption;
 check(`curtains absorb by area and closedness (closed ${closed.toFixed(2)} m², open ${opened.toFixed(2)} m²)`, closed > 2 && closed < 3.5 && near(opened, closed * 0.4, 0.05));
 orig.setWindow('win-s2', null);
 check('back to the original → 0.86 s', near(ac.computeAcoustics(orig, { layout }).rt60, 0.86, 0.005));
-const recl = catalog.products('lenestol').filter((p) => fresh.some((f) => f.id === p.id));
+const recl = catalog.products('lenestol').filter((p) => readJson('research/catalog-new/lenestol-ny.json').some((f) => f.id === p.id));
 const reclAbs = recl.map((p) => ac.itemAbsorption(catalog.productToItemSpec(p)));
 check(`new hvilestoler absorb 0.7–0.9 m² (${reclAbs.map((v) => v.toFixed(2)).join(', ')})`, recl.length === 5 && reclAbs.every((v) => v >= 0.7 - 1e-9 && v <= 0.9 + 1e-9));
+// the 34 lenestoler of the second round: small lounge chairs ~0.5 m², big upholstered recliners up to 0.9 m²
+const arm2 = fresh.filter((f) => f.category === 'lenestol' && !readJson('research/catalog-new/lenestol-ny.json').some((x) => x.id === f.id));
+const arm2Abs = arm2.map((f) => ac.itemAbsorption(catalog.productToItemSpec(f.id)));
+check(`${arm2.length} more lenestoler absorb 0.45–0.95 m² (min ${Math.min(...arm2Abs).toFixed(2)}, max ${Math.max(...arm2Abs).toFixed(2)})`, arm2.length === 34 && arm2Abs.every((v) => v >= 0.45 && v <= 0.95));
 const vitAbs = catalog.products('vitrineskap').map((p) => ac.itemAbsorption(catalog.productToItemSpec(p)));
 check('vitrineskap absorb ≈ 0 (also without catalogue data)', vitAbs.every((v) => v === 0) && ac.itemAbsorption({ archetype: 'display-cabinet', dims: { w: 0.9, d: 0.4, h: 1.8 } }) === 0);
 const est = (footstool) => ac.itemAbsorption({ archetype: 'recliner', dims: { w: 0.8, d: 0.85, h: 1.05 }, params: { footstool } });

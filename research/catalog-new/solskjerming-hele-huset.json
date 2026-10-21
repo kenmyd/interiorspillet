@@ -30,7 +30,7 @@
     },
     "variants": [
       {
-        "name": "Fløyel beige",
+        "name": "Beige",
         "colors": {
           "fabric": "#b8ad91",
           "slat": "#b8ad91",
@@ -44,7 +44,7 @@
         "url": "https://www.bohus.no/gardiner/ferdigsydde-gardiner/anna-gardin-140x280"
       },
       {
-        "name": "Fløyel grå",
+        "name": "Grå",
         "colors": {
           "fabric": "#9a9b97",
           "slat": "#9a9b97",
@@ -65,7 +65,7 @@
     "why": "Myk fløyel i beige gir et rolig soverom (3,11 × 3,69) og demper både lys og lyd; to lengder dekker et vanlig soveromsvindu. Vil du ha det helt mørkt om sommeren, sett en lystett rullegardin bak.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Home%20Of%20Textile/Produkter/ANNA/319741/image-thumb__319741__PDP-Product/306102%20-%20Anna%20gardin%20140x280%20polyester%20lysdempende%20beige%20-%201.289472d2.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 140x280, polyester fløyel, «Lysdempende» (lystett: nei), 599 kr (før 1 199) for beige og grå, utgående. Antall per pakke og opphengstype står ikke på siden (bildet viser rynket kanal-topp); lystransmisjon anslått.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 140x280, polyester fløyel, «Lysdempende» (lystett: nei), 599 kr (før 1 199) for beige og grå, utgående. Antall per pakke og opphengstype står ikke på siden (bildet viser rynket kanal-topp); lystransmisjon anslått. Farger og stoff kontrollert 2026-10-21 mot bohus.no: beige (306102) og grå (306104) finnes, begge utgående. Brun (306103) er utløpt og er ikke lagt til. Navnene er rettet til leverandørfargene, og fløyel (polyester) stemmer.",
     "priceConfidence": "checked"
   },
   {
@@ -99,7 +99,7 @@
     },
     "variants": [
       {
-        "name": "Beige (mørk khaki)",
+        "name": "Beige",
         "colors": {
           "fabric": "#6e654f",
           "slat": "#6e654f",
@@ -125,6 +125,22 @@
           "rail": "black-metal"
         },
         "url": "https://www.bohus.no/gardiner/ferdigsydde-gardiner/sandra-gardin-135x220-1"
+      },
+      {
+        "name": "Oliven",
+        "colors": {
+          "fabric": "#42463a",
+          "slat": "#42463a",
+          "rail": "#1e1e1e"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "woven",
+          "rail": "black-metal"
+        },
+        "url": "https://www.bohus.no/gardiner/ferdigsydde-gardiner/sandra-gardin-135x220-2",
+        "priceNok": 449,
+        "salePriceNok": 180
       }
     ],
     "defaultVariant": 0,
@@ -134,7 +150,7 @@
     "why": "Det billigste alternativet for soverommet i kjelleren (7,4 m²): 220 cm rekker fra en stang rett under taket ned mot gulvet, og antrasitt gir et mørkere rom. Fargen «beige» er i praksis en mørk khaki.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Sweden%20AB/Produkter/SANDRA/153083/image-thumb__153083__PDP-Product/252787%20-%20Sandra%20gardin%20135x160%20polyester%20beige%20-%202.abcb2c73.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 135x220 (tittelen sier 140x220), polyester, lysdempende/dimout, multibånd, 150 kr (før 449) for beige og antrasitt, utgående. Produktbildet er av 135x160; fargene anslått fra bildet og fargenavnet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 135x220 (tittelen sier 140x220), polyester, lysdempende/dimout, multibånd, 150 kr (før 449) for beige og antrasitt, utgående. Produktbildet er av 135x160; fargene anslått fra bildet og fargenavnet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: beige (252791) og antrasitt (252792) finnes, og oliven (252793, 180 kr) er lagt til. Offwhite (252794) er utløpt og er ikke med. Navnet «Beige» er leverandørfargen (stoffet ser mørk khaki ut på bildet).",
     "priceConfidence": "checked"
   },
   {
@@ -216,7 +232,7 @@
     "why": "Ekte mørklegging til soverommet – lyse sommernetter blir mørke. Beige er rolig mot SAND-veggene; hengt i takskinne og lagt opp til gulvet slipper lite lys rundt kantene.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/korgmott-lystette-gardiner-1-par-beige-med-multiband__1308497_pe939874_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 1 par 145x250, lystett (blokkerer alt lys ifølge siden), laminert polyester, 799 kr, tre farger, vaskeråd. Lystransmisjon satt til 0,01; mørk grå og hvit farge anslått fra fargenavnet.",
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 1 par 145x250, lystett (blokkerer alt lys ifølge siden), laminert polyester, 799 kr, tre farger, vaskeråd. Lystransmisjon satt til 0,01; mørk grå og hvit farge anslått fra fargenavnet. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle variantene finnes (beige, mørk grå og hvit i 145x250 med multibånd, 799 kr), og fargene stemmer med produktbildene.",
     "priceConfidence": "checked"
   }
 ]

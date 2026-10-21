@@ -44,14 +44,15 @@
           "top": "smoked-oak",
           "legs": "black-metal",
           "handle": "black-metal"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/nola-skjenk-180x45-2"
       },
       {
         "name": "Hvitoljet eikefiner / svarte metallben",
         "colors": {
-          "body": "#d8cab3",
-          "front": "#d8cab3",
-          "top": "#d4c6ae",
+          "body": "#b4a083",
+          "front": "#b4a083",
+          "top": "#bfad95",
           "legs": "#1c1c1c",
           "handle": "#1c1c1c"
         },
@@ -61,7 +62,10 @@
           "top": "white-oak",
           "legs": "black-metal",
           "handle": "black-metal"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/nola-skjenk-180x45",
+        "priceNok": 10329,
+        "salePriceNok": 5164
       }
     ],
     "defaultVariant": 0,
@@ -70,7 +74,7 @@
     "why": "Røykfarget eik og svarte ben knytter skjenken til det mørke spisebordet og de svarte kjøkkendetaljene, og de myke, avrundede formene passer de runde boucle-stolene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOLA/345893/image-thumb__345893__PDP-Product/312261%20-%20Nola%20skjenk%20180x45%20H76%202%20sjalusid%C3%B8rer%202%20hyllerplater%20lakkert%20eikefiner%20r%C3%B8ykfarget%20med%20metallben%20svart%20-%201.c391f8fb.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, mål og røykfarget variant stemmer. Lys variant heter «Hvitoljet» (ikke hvitpigmentert) – rettet."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, pris, mål og røykfarget variant stemmer. Lys variant heter «Hvitoljet» (ikke hvitpigmentert) – rettet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (røykfarget 10 329 kr, hvitoljet 5 164 kr, før 10 329 kr); svart i 180 cm er utløpt. Hvitoljet farge rettet etter produktbildet (mørkere, varmere beige), egne lenker og pris lagt inn."
   },
   {
     "id": "bohus-nola-skjenk-140x45",
@@ -117,7 +121,8 @@
           "top": "black-oak",
           "legs": "black-metal",
           "handle": "black-metal"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/nola-skjenk-b-140-1"
       },
       {
         "name": "Røykfarget lakkert eikefiner / svarte metallben",
@@ -134,7 +139,28 @@
           "top": "smoked-oak",
           "legs": "black-metal",
           "handle": "black-metal"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/nola-skjenk-140x45"
+      },
+      {
+        "name": "Hvitoljet eikefiner / svarte metallben",
+        "colors": {
+          "body": "#b5a689",
+          "front": "#b5a689",
+          "top": "#c2b294",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/nola-skjenk-b-140",
+        "priceNok": 9329,
+        "salePriceNok": 4664
       }
     ],
     "defaultVariant": 0,
@@ -143,7 +169,7 @@
     "why": "Den svarte varianten matcher det svarte kjøkkenet og hyllene på veggen, og 140 cm bredde får plass uten å stjele gulvplass mellom spisebordet og sittegruppen.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOLA/264360/image-thumb__264360__PDP-Product/280162%20-%20Nola%20skjenk%20140x45%20H76%202%20d%C3%B8rer%20svart%20lakkert%20eikefiner%20med%20svarte%20metall%20ben%20-%202.9e567475.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, svart og røykfarget variant (begge 9 329 kr)."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, svart og røykfarget variant (begge 9 329 kr). Farger og stoff kontrollert 2026-10-21 mot bohus.no: svart og røykfarget finnes (9 329 kr, ingen kampanje); hvitoljet (varenr. 280161, 4 664 kr, før 9 329 kr) lagt til. Kampanjeprisen 4 664 kr gjelder bare hvitoljet."
   },
   {
     "id": "bohus-wolin-skjenk-180x40",
@@ -191,16 +217,17 @@
           "top": "smoked-oak",
           "legs": "smoked-oak",
           "handle": "smoked-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/wolin-skjenk-180x40-3"
       },
       {
         "name": "Hvitoljet eikefiner",
         "colors": {
-          "body": "#d8cab3",
-          "front": "#dacdb7",
-          "top": "#d8cab3",
-          "legs": "#d4c5ad",
-          "handle": "#bfae94"
+          "body": "#c8a98d",
+          "front": "#caab8f",
+          "top": "#d4b9a6",
+          "legs": "#c4a487",
+          "handle": "#b39880"
         },
         "materials": {
           "body": "white-oak",
@@ -208,7 +235,10 @@
           "top": "white-oak",
           "legs": "white-oak",
           "handle": "white-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/wolin-skjenk-180x40-2",
+        "priceNok": 11699,
+        "salePriceNok": 6999
       }
     ],
     "defaultVariant": 0,
@@ -217,7 +247,7 @@
     "why": "Rolig, tidløs form i mørk eik som spiller på lag med det mørke ovale spisebordet uten å konkurrere med de myke stolene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/WOLIN/342885/image-thumb__342885__PDP-Product/314136%20-%20Wolin%20skjenk%20180x40%20H80%203%20d%C3%B8rer%203%20hyllerplater%20lakkert%20eikefiner%20r%C3%B8ykfarget%20-%201.174edef7.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål og røykfarget variant. Lys variant heter «Hvitoljet» (ikke hvitpigmentert) – rettet."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål og røykfarget variant. Lys variant heter «Hvitoljet» (ikke hvitpigmentert) – rettet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (røykfarget 11 699 kr, hvitoljet 6 999 kr, før 11 699 kr). Hvitoljet farge rettet etter produktbildet (varmere beige), egne lenker og pris lagt inn."
   },
   {
     "id": "bohus-oland-skjenk-160x40",
@@ -254,8 +284,8 @@
       {
         "name": "Røykfarget eikefiner / ben i heltre eik",
         "colors": {
-          "body": "#5e4634",
-          "front": "#674c38",
+          "body": "#5c4533",
+          "front": "#5e4734",
           "top": "#5e4634",
           "legs": "#4f3a2b",
           "handle": "#4f3a2b"
@@ -266,16 +296,17 @@
           "top": "smoked-oak",
           "legs": "smoked-oak",
           "handle": "smoked-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/oland-skjenk-160x40-2"
       },
       {
         "name": "Hvitoljet eikefiner / ben i heltre eik",
         "colors": {
-          "body": "#d8cab3",
-          "front": "#ddd0bb",
-          "top": "#d8cab3",
-          "legs": "#cdbca1",
-          "handle": "#cdbca1"
+          "body": "#d0b69b",
+          "front": "#d0b69b",
+          "top": "#d6c1a8",
+          "legs": "#cbb393",
+          "handle": "#cbb393"
         },
         "materials": {
           "body": "white-oak",
@@ -283,7 +314,9 @@
           "top": "white-oak",
           "legs": "white-oak",
           "handle": "white-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/oland-skjenk-160x40-3",
+        "priceNok": 9199
       }
     ],
     "defaultVariant": 0,
@@ -292,7 +325,7 @@
     "why": "Fiskebensmønsteret gir varme og tekstur mot de glatte SAND-veggene, og den røykfargede eiken matcher spisebordet til en lav pris.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/%C3%98LAND/349492/image-thumb__349492__PDP-Product/318229%20-%20%C3%98land%20skjenk%20160x40%20H80%203%20skyved%C3%B8rer%203%20hyllerplater%20fiskebenm%C3%B8nster%20eikefiner%20r%C3%B8ykfarget%20med%20ben%20heltre%20eik%20-%203.10687c4f.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, fiskebensfront og heltre eikeben. Lys variant heter «Hvitoljet» (9 199 kr) – rettet."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, fiskebensfront og heltre eikeben. Lys variant heter «Hvitoljet» (9 199 kr) – rettet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (røykfarget 9 699 kr, hvitoljet 9 199 kr, ingen kampanje). Fargene justert etter produktbildene, egne lenker og pris lagt inn."
   },
   {
     "id": "bohus-storm-acro-skjenk-192x45",
@@ -328,11 +361,11 @@
       {
         "name": "Oljet eikefiner espresso / beige marmorplate",
         "colors": {
-          "body": "#3a2a22",
-          "front": "#3d2c23",
+          "body": "#3f3630",
+          "front": "#3f3630",
           "top": "#cfc3ad",
-          "legs": "#33251e",
-          "handle": "#2e211b"
+          "legs": "#2a2420",
+          "handle": "#2e2722"
         },
         "materials": {
           "body": "smoked-oak",
@@ -340,16 +373,17 @@
           "top": "marble-white",
           "legs": "smoked-oak",
           "handle": "smoked-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/acro-skjenk-192x45-4"
       },
       {
         "name": "Hvitoljet eikefiner / beige travertinplate",
         "colors": {
-          "body": "#d8cab3",
-          "front": "#dacdb7",
+          "body": "#c2a67f",
+          "front": "#c2a67f",
           "top": "#d9cbb2",
-          "legs": "#cdbca1",
-          "handle": "#c2b196"
+          "legs": "#b0946f",
+          "handle": "#b39873"
         },
         "materials": {
           "body": "white-oak",
@@ -357,7 +391,10 @@
           "top": "travertine",
           "legs": "white-oak",
           "handle": "white-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/acro-skjenk-192x45-3",
+        "priceNok": 21999,
+        "salePriceNok": 15399
       }
     ],
     "defaultVariant": 0,
@@ -366,7 +403,7 @@
     "why": "Espresso-eiken matcher det mørke spisebordet, og den beige marmortoppen gjentar de lyse boucle-tonene og SAND-veggene – et tydelig blikkfang ved spiseplassen.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/ACRO/351177/image-thumb__351177__PDP-Product/317213%20-%20Acro%20skjenk%20med%20beige%20marmorplate%20192x45%20H75%204%20d%C3%B8rer%202%20hyllerplater%20oljet%20eikefiner%20espresso%20-%204.d36c832c.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, marmortopp og 12,5 cm ben. Lys variant er hvitoljet eik med travertintopp (ikke hvitpigmentert/marmor) – rettet."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, marmortopp og 12,5 cm ben. Lys variant er hvitoljet eik med travertintopp (ikke hvitpigmentert/marmor) – rettet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (espresso med beige marmor 21 999 kr, hvitoljet med beige travertin 15 399 kr, før 21 999 kr). Treverket justert etter produktbildene, egne lenker og pris lagt inn."
   },
   {
     "id": "bohus-kontur-skjenk-201x45",
@@ -402,11 +439,11 @@
       {
         "name": "Oljet eikefiner mocca",
         "colors": {
-          "body": "#4a372c",
-          "front": "#4d392d",
-          "top": "#4a372c",
-          "legs": "#433227",
-          "handle": "#3f2f25"
+          "body": "#4f4038",
+          "front": "#4f4038",
+          "top": "#4f4038",
+          "legs": "#463830",
+          "handle": "#43352d"
         },
         "materials": {
           "body": "smoked-oak",
@@ -414,7 +451,66 @@
           "top": "smoked-oak",
           "legs": "smoked-oak",
           "handle": "smoked-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/kontur-skjenk-201x45"
+      },
+      {
+        "name": "Hvitoljet eikefiner",
+        "colors": {
+          "body": "#c2ac95",
+          "front": "#c2ac95",
+          "top": "#c2ac95",
+          "legs": "#bba48b",
+          "handle": "#b49d84"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/kontur-skjenk-201x45-1",
+        "priceNok": 25399,
+        "salePriceNok": 17499
+      },
+      {
+        "name": "Lakkert eikefiner matt svart",
+        "colors": {
+          "body": "#242422",
+          "front": "#242422",
+          "top": "#242422",
+          "legs": "#1f1f1d",
+          "handle": "#1f1f1d"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/kontur-skjenk-201x45-2",
+        "priceNok": 27999,
+        "salePriceNok": 19599
+      },
+      {
+        "name": "Oljet eikefiner røykfarget",
+        "colors": {
+          "body": "#69533b",
+          "front": "#69533b",
+          "top": "#69533b",
+          "legs": "#5e4a35",
+          "handle": "#5a4632"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/kontur-skjenk-201x45-3"
       }
     ],
     "defaultVariant": 0,
@@ -423,7 +519,7 @@
     "why": "Med 2 meters bredde har den proporsjoner som tåler den store, høye veggen, og den mørke mocca-tonen knytter an til spisebordet og MARRAKESH-veggene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Baltic%20Furniture/Produkter/KONTUR/616412/image-thumb__616412__PDP-Product/331595%20-%20Kontur%20skjenk%20201x45%20H80%204%20d%C3%B8rer%202%20hyller%20oljet%20eikefiner%20mocca%20-%201.918a972e.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål (201x45x80), mocca, 4 dører, vertikale tregrep, 15 cm ben."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål (201x45x80), mocca, 4 dører, vertikale tregrep, 15 cm ben. Farger og stoff kontrollert 2026-10-21 mot bohus.no: mocca finnes (25 399 kr, ingen kampanje nå); hvitoljet (17 499 kr, før 25 399 kr), matt svart (19 599 kr, før 27 999 kr) og røykfarget (25 399 kr) lagt til. Mocca-fargen justert etter bildet med lukkede dører."
   },
   {
     "id": "bohus-honey-skjenk-170x45",
@@ -471,16 +567,17 @@
           "top": "black-oak",
           "legs": "black-oak",
           "handle": "black-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/honey-skjenk-170x45-3"
       },
       {
         "name": "Oljet eikefiner mocca",
         "colors": {
-          "body": "#5a4334",
-          "front": "#5d4536",
-          "top": "#5a4334",
-          "legs": "#523d2f",
-          "handle": "#523d2f"
+          "body": "#3a2f28",
+          "front": "#3c3029",
+          "top": "#3a2f28",
+          "legs": "#342a24",
+          "handle": "#342a24"
         },
         "materials": {
           "body": "smoked-oak",
@@ -488,16 +585,18 @@
           "top": "smoked-oak",
           "legs": "smoked-oak",
           "handle": "smoked-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/honey-skjenk-170x45-1",
+        "priceNok": 23499
       },
       {
         "name": "Oljet eikefiner Nordic White",
         "colors": {
-          "body": "#d9cbb4",
-          "front": "#dccfb9",
-          "top": "#d9cbb4",
-          "legs": "#cfbfa5",
-          "handle": "#cfbfa5"
+          "body": "#c9b598",
+          "front": "#c9b598",
+          "top": "#c9b598",
+          "legs": "#c0ab8e",
+          "handle": "#c0ab8e"
         },
         "materials": {
           "body": "white-oak",
@@ -505,7 +604,30 @@
           "top": "white-oak",
           "legs": "white-oak",
           "handle": "white-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/honey-skjenk-170x45",
+        "priceNok": 23499,
+        "salePriceNok": 16449
+      },
+      {
+        "name": "Oljet eikefiner røykfarget",
+        "colors": {
+          "body": "#63503b",
+          "front": "#63503b",
+          "top": "#63503b",
+          "legs": "#5a4835",
+          "handle": "#5a4835"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/honey-skjenk-170x45-2",
+        "priceNok": 23499,
+        "salePriceNok": 16449
       }
     ],
     "defaultVariant": 0,
@@ -514,7 +636,7 @@
     "why": "De runde gavlene speiler de ovale sofabordene og de runde snurrestolene, og matt svart gir en elegant kontrast til de lyse veggene og eikegulvet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Baltic%20Furniture/Produkter/HONEY/327794/image-thumb__327794__PDP-Product/310099%20-%20Honey%20skjenk%20170x45%20H75%203%20d%C3%B8rer%203%20hyller%20lakkert%20finer%20svart%20-%204.1f782f90.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål og alle tre fargevarianter (svart, mocca, Nordic White)."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål og alle tre fargevarianter (svart, mocca, Nordic White). Farger og stoff kontrollert 2026-10-21 mot bohus.no: svart (25 799 kr, ingen kampanje nå), mocca (23 499 kr) og Nordic White (16 449 kr, før 23 499 kr) finnes; røykfarget (16 449 kr, før 23 499 kr) lagt til. Mocca og Nordic White justert etter produktbildene."
   },
   {
     "id": "bohus-sagene-skjenk-155x41",
@@ -525,7 +647,7 @@
     "url": "https://www.bohus.no/oppbevaring/skjenk/sagene-skjenk-155x41-2",
     "priceNok": 11199,
     "salePriceNok": 6699,
-    "priceNote": "Pris sjekket 2026-10-18 på produktsiden (varenr. 318696, svart, SPAR 40 %). Brun lakkert eik (varenr. 318695, /oppbevaring/skjenk/sagene-skjenk-155x41-1) koster 11 249 kr; kategorisiden viste kampanje 6 749 kr.",
+    "priceNote": "Pris sjekket 2026-10-18 på produktsiden (varenr. 318696, svart, SPAR 40 %). Brun lakkert eik (varenr. 318695, /oppbevaring/skjenk/sagene-skjenk-155x41-1) koster 11 249 kr uten kampanje (sjekket 2026-10-21).",
     "dims": {
       "w": 1.55,
       "d": 0.41,
@@ -554,32 +676,53 @@
           "front": "#1f1f1f",
           "top": "#1d1d1d",
           "legs": "#1b1b1b",
-          "handle": "#111111"
+          "handle": "#1f1f1f"
         },
         "materials": {
           "body": "black-oak",
           "front": "black-oak",
           "top": "black-oak",
           "legs": "black-oak",
-          "handle": "black-metal"
-        }
+          "handle": "black-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/sagene-skjenk-155x41-2"
       },
       {
         "name": "Lakkert eikefiner brun",
         "colors": {
-          "body": "#5c4230",
-          "front": "#5f4532",
-          "top": "#5c4230",
-          "legs": "#543c2c",
-          "handle": "#1c1c1c"
+          "body": "#3b3029",
+          "front": "#3d322a",
+          "top": "#3b3029",
+          "legs": "#352b24",
+          "handle": "#3b3029"
         },
         "materials": {
           "body": "smoked-oak",
           "front": "smoked-oak",
           "top": "smoked-oak",
           "legs": "smoked-oak",
-          "handle": "black-metal"
-        }
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/sagene-skjenk-155x41-1",
+        "priceNok": 11249
+      },
+      {
+        "name": "Lakkert eikefiner hvitpigmentert",
+        "colors": {
+          "body": "#dcc2a5",
+          "front": "#dfc4a7",
+          "top": "#dcc2a5",
+          "legs": "#cbb6a5",
+          "handle": "#d3b99c"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/sagene-skjenk-155x41"
       }
     ],
     "defaultVariant": 0,
@@ -588,7 +731,7 @@
     "why": "Et rimelig og rolig valg i svart som går sammen med kjøkkenfrontene og de svarte metalldetaljene i stua.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/SAGENE/351307/image-thumb__351307__PDP-Product/318696%20-%20Sagene%20skjenk%20155x41%20H75%203%20d%C3%B8rer%203%20hyllerplater%20lakkert%20eikefiner%20svart%20-%201.d4edfd0e.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: kampanjepris 6 699 (før 11 199), mål, svart og brun variant."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: kampanjepris 6 699 (før 11 199), mål, svart og brun variant. Farger og stoff kontrollert 2026-10-21 mot bohus.no: svart (6 699 kr, før 11 199 kr) og brun (11 249 kr, ingen kampanje nå) finnes; hvitpigmentert (6 699 kr, før 11 199 kr) lagt til. Rettet: grepene er av tre i samme farge som fronten (ikke svart metall), og brun er mye mørkere sjokoladebrun på bildet."
   },
   {
     "id": "bohus-signature-1850-skjenk-180x43-5",
@@ -598,8 +741,8 @@
     "store": "Bohus",
     "url": "https://www.bohus.no/oppbevaring/skjenk/signature-1850-skjenk-180x43-5-5",
     "priceNok": 26999,
-    "salePriceNok": 19999,
-    "priceNote": "Pris sjekket 2026-10-18 på produktsiden (varenr. 308665, SPAR 25 %). Kategorisiden viste samtidig 26 999 kr uten rabatt – sjekk i butikk.",
+    "salePriceNok": 18899,
+    "priceNote": "Pris sjekket 2026-10-18 på produktsiden (varenr. 308665, SPAR 25 %). Kategorisiden viste samtidig 26 999 kr uten rabatt – sjekk i butikk. Rettet 2026-10-21: kampanjeprisen er nå 18 899 kr (før 26 999 kr) for svart og brun.",
     "dims": {
       "w": 1.8,
       "d": 0.435,
@@ -629,7 +772,7 @@
           "front": "#242322",
           "top": "#222120",
           "legs": "#1a1a1a",
-          "handle": "#9c7c4e"
+          "handle": "#8a6a45"
         },
         "materials": {
           "body": "black-oak",
@@ -637,7 +780,45 @@
           "top": "black-oak",
           "legs": "black-metal",
           "handle": "brass"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/signature-1850-skjenk-180x43-5-5"
+      },
+      {
+        "name": "Oljet eikefiner brun / svarte metallben / børstet messing",
+        "colors": {
+          "body": "#4a392b",
+          "front": "#4a392b",
+          "top": "#4d3c2e",
+          "legs": "#1a1a1a",
+          "handle": "#b3a687"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "black-metal",
+          "handle": "brass"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/signature-1850-skjenk-180x43-5-4"
+      },
+      {
+        "name": "Oljet eikefiner grå med dører i jute / svarte metallben / børstet messing",
+        "colors": {
+          "body": "#5e5546",
+          "front": "#5a5143",
+          "top": "#625949",
+          "legs": "#1a1a1a",
+          "handle": "#4a3f33"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "black-metal",
+          "handle": "brass"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/signature-1850-skjenk-180x43-5-1",
+        "priceNok": 26999
       }
     ],
     "defaultVariant": 0,
@@ -646,7 +827,7 @@
     "why": "Svart eik og metallramme passer det svarte kjøkkenet, mens messinggrepene gir en varm detalj som spiller med den varme LED-listen og SAND-veggene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/SIGNATURE%201850/330501/image-thumb__330501__PDP-Product/308665%20-%20Signature%201850%20skjenk%20180x43.5%20H83%204%20d%C3%B8rer%204%20hyllerplater%20lakkert%20eikefiner%20svart%20med%20metallben%20svart%20-%201.95fbd1a9.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, svart eik, metallben og messinghåndtak. Benhøyde ikke oppgitt (0,06 m anslått fra bilde)."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, svart eik, metallben og messinghåndtak. Benhøyde ikke oppgitt (0,06 m anslått fra bilde). Farger og stoff kontrollert 2026-10-21 mot bohus.no: svart finnes; brun (18 899 kr, før 26 999 kr) og grå med jutepaneler i dørene (26 999 kr) lagt til. Den brune med jutedører (varenr. 308661) er utgående og er ikke tatt med. Kampanjeprisen er rettet til 18 899 kr. Jutepanelet er tegnet som et rammepanel i trefargen."
   },
   {
     "id": "bohus-scandi-skjenk-180x45",
@@ -695,16 +876,17 @@
           "top": "smoked-oak",
           "legs": "smoked-oak",
           "handle": "smoked-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/scandi-skjenk-180x45-3"
       },
       {
         "name": "Oljet eikefiner Nordic White",
         "colors": {
-          "body": "#d9cbb4",
-          "front": "#dccfb9",
-          "top": "#d9cbb4",
-          "legs": "#cdbca1",
-          "handle": "#bfae94"
+          "body": "#d6bca6",
+          "front": "#d8bea8",
+          "top": "#d6bca6",
+          "legs": "#cdb39d",
+          "handle": "#bfa58f"
         },
         "materials": {
           "body": "white-oak",
@@ -712,7 +894,48 @@
           "top": "white-oak",
           "legs": "white-oak",
           "handle": "white-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/scandi-skjenk-180x45"
+      },
+      {
+        "name": "Lakkert eikefiner matt svart",
+        "colors": {
+          "body": "#1a1a1a",
+          "front": "#1a1a1a",
+          "top": "#1a1a1a",
+          "legs": "#161616",
+          "handle": "#101010"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/scandi-skjenk-180x45-1",
+        "priceNok": 30359,
+        "salePriceNok": 21199
+      },
+      {
+        "name": "Oljet eikefiner mocca",
+        "colors": {
+          "body": "#3e3029",
+          "front": "#3e3029",
+          "top": "#3e3029",
+          "legs": "#362a24",
+          "handle": "#2c221d"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/scandi-skjenk-180x45-2",
+        "priceNok": 27599,
+        "salePriceNok": 19299
       }
     ],
     "defaultVariant": 0,
@@ -721,7 +944,7 @@
     "why": "Mye lukket oppbevaring nær spiseplassen, og den smoked oljede eiken har samme dype tone som spisebordet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Baltic%20Furniture/Produkter/SCANDI/346264/image-thumb__346264__PDP-Product/318125%20-%20Scandi%20skjenk%20180x45%20H75%204%20rammed%C3%B8rer%202%20skuffer%204%20hyllerplater%20oljet%20eik%20smoked%20-%202.5505eec3.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, 4 dører + 2 skuffer, smoked og Nordic White."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, 4 dører + 2 skuffer, smoked og Nordic White. Farger og stoff kontrollert 2026-10-21 mot bohus.no: smoked og Nordic White finnes (27 599 kr, ingen kampanje nå); matt svart (21 199 kr, før 30 359 kr) og mocca (19 299 kr, før 27 599 kr) lagt til. Nordic White justert etter produktbildet."
   },
   {
     "id": "bohus-ullern-skjenk-180x45",
@@ -757,11 +980,11 @@
       {
         "name": "Lakkert eikefiner brun / keramisk topp",
         "colors": {
-          "body": "#4f3b2e",
-          "front": "#523d30",
-          "top": "#c9c0b2",
-          "legs": "#46342a",
-          "handle": "#46342a"
+          "body": "#58493e",
+          "front": "#5a4b40",
+          "top": "#d9d4ca",
+          "legs": "#3f3229",
+          "handle": "#5a4b40"
         },
         "materials": {
           "body": "smoked-oak",
@@ -769,7 +992,8 @@
           "top": "ceramic",
           "legs": "smoked-oak",
           "handle": "smoked-oak"
-        }
+        },
+        "url": "https://www.bohus.no/oppbevaring/skjenk/ullern-skjenk-180x45"
       }
     ],
     "defaultVariant": 0,
@@ -778,7 +1002,7 @@
     "why": "Den lyse keramiske toppen tåler varme fat ved spisebordet, og de runde gavlene og den brune eiken passer de myke formene og det mørke bordet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/ULLERN/339583/image-thumb__339583__PDP-Product/318078%20-%20Ullern%20skjenk%20keramisk%20topp%20180x45%20H80%202%20d%C3%B8rer%203%20skuffer%20lakkert%20eikefiner%20brun%20-%201.40e1209b.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, keramisk topp, 2 dører + 3 skuffer, grepsløse fronter."
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: pris, mål, keramisk topp, 2 dører + 3 skuffer, grepsløse fronter. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Ullern finnes bare i brun med keramisk topp (19 299 kr, ingen kampanje nå). Farger justert etter produktbildet (gråere brun, lysere keramikktopp)."
   },
   {
     "id": "ikea-besta-veggmontert-180x42x64-bjorkoviken",
@@ -815,11 +1039,11 @@
       {
         "name": "Brunsvart / Björköviken brun beiset eikefiner",
         "colors": {
-          "body": "#2b2421",
-          "front": "#6a4a33",
-          "top": "#2b2421",
-          "legs": "#2b2421",
-          "handle": "#2b2421"
+          "body": "#343233",
+          "front": "#806656",
+          "top": "#343233",
+          "legs": "#343233",
+          "handle": "#343233"
         },
         "materials": {
           "body": "black-oak",
@@ -827,16 +1051,17 @@
           "top": "black-oak",
           "legs": "black-oak",
           "handle": "black-oak"
-        }
+        },
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-bjoerkoeviken-brun-beiset-eikefiner-s89421790/"
       },
       {
         "name": "Brunsvart / Lappviken brunsvart",
         "colors": {
-          "body": "#2b2421",
-          "front": "#2e2723",
-          "top": "#2b2421",
-          "legs": "#2b2421",
-          "handle": "#2b2421"
+          "body": "#343233",
+          "front": "#2a2929",
+          "top": "#343233",
+          "legs": "#343233",
+          "handle": "#343233"
         },
         "materials": {
           "body": "black-oak",
@@ -847,16 +1072,19 @@
         },
         "paramsOverride": {
           "frontStyle": "flat"
-        }
+        },
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-lappviken-brunsvart-s09425909/",
+        "priceNok": 4335,
+        "salePriceNok": 3585
       },
       {
         "name": "Brunsvart / Hedeviken eikefiner",
         "colors": {
-          "body": "#2b2421",
-          "front": "#c8a57a",
-          "top": "#2b2421",
-          "legs": "#2b2421",
-          "handle": "#2b2421"
+          "body": "#343233",
+          "front": "#c99f7c",
+          "top": "#343233",
+          "legs": "#343233",
+          "handle": "#343233"
         },
         "materials": {
           "body": "black-oak",
@@ -866,17 +1094,21 @@
           "handle": "black-oak"
         },
         "paramsOverride": {
-          "frontStyle": "flat"
-        }
+          "frontStyle": "flat",
+          "frontPattern": "herringbone"
+        },
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-eikefiner-s19424117/",
+        "priceNok": 5085,
+        "salePriceNok": 4485
       },
       {
         "name": "Brunsvart / Studsviken mørk brun flettet poppel",
         "colors": {
-          "body": "#2b2421",
-          "front": "#5a4232",
-          "top": "#2b2421",
-          "legs": "#2b2421",
-          "handle": "#2b2421"
+          "body": "#343233",
+          "front": "#a87a55",
+          "top": "#343233",
+          "legs": "#343233",
+          "handle": "#343233"
         },
         "materials": {
           "body": "black-oak",
@@ -887,26 +1119,79 @@
         },
         "paramsOverride": {
           "frontStyle": "cane"
-        }
+        },
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-studsviken-mork-brun-flettet-poppel-s99421775/",
+        "priceNok": 5085,
+        "salePriceNok": 4485
       },
       {
         "name": "Hvit / Hedeviken eikefiner",
         "colors": {
-          "body": "#f1efe9",
-          "front": "#c8a57a",
-          "top": "#f1efe9",
-          "legs": "#f1efe9",
-          "handle": "#f1efe9"
+          "body": "#f0efea",
+          "front": "#d2a986",
+          "top": "#f0efea",
+          "legs": "#f0efea",
+          "handle": "#f0efea"
         },
         "materials": {
-          "body": "lacquer",
+          "body": "painted",
           "front": "oak",
-          "top": "lacquer",
-          "legs": "lacquer",
-          "handle": "lacquer"
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
         },
         "paramsOverride": {
+          "frontStyle": "flat",
+          "frontPattern": "herringbone"
+        },
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-hvit-hedeviken-eikefiner-s49417865/",
+        "priceNok": 5085,
+        "salePriceNok": 4485
+      },
+      {
+        "name": "Hvitbeiset eikemønster / Lappviken hvitbeiset eikemønster",
+        "colors": {
+          "body": "#d8c3a8",
+          "front": "#dcc7ac",
+          "top": "#d8c3a8",
+          "legs": "#d8c3a8",
+          "handle": "#d8c3a8"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-hvitbeiset-eikemonster-lappviken-hvitbeiset-eikemonster-s29412487/",
+        "priceNok": 4335,
+        "salePriceNok": 3585,
+        "paramsOverride": {
           "frontStyle": "flat"
+        }
+      },
+      {
+        "name": "Hvit / Studsviken hvit flettet poppel",
+        "colors": {
+          "body": "#edece7",
+          "front": "#e3c8a6",
+          "top": "#edece7",
+          "legs": "#edece7",
+          "handle": "#edece7"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "rattan",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-hvit-studsviken-hvit-flettet-poppel-s59421777/",
+        "priceNok": 5085,
+        "salePriceNok": 4485,
+        "paramsOverride": {
+          "frontStyle": "cane"
         }
       }
     ],
@@ -916,7 +1201,7 @@
     "why": "Hengt på veggen holder den gulvet fritt og rommet luftig, og den mørke riflede fronten passer det svarte kjøkkenet og det mørke spisebordet til en svært lav pris.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/besta-veggmontert-skapkombinasjon-brunsvart-bjoerkoeviken-brun-beiset-eikefiner__1603855_pe1044542_s5.jpg?f=s",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: pris 4 635 (før 5 235), 180x42x64, 3 Björköviken-dører, veggskinne. Alle fem front/korpus-kombinasjoner finnes. Bilde byttet fra miniatyr (f=u) til større (f=s)."
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: pris 4 635 (før 5 235), 180x42x64, 3 Björköviken-dører, veggskinne. Alle fem front/korpus-kombinasjoner finnes. Bilde byttet fra miniatyr (f=u) til større (f=s). Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle fem front/korpus-kombinasjonene finnes i 180x42x64 (egne lenker og priser lagt inn: Lappviken 3 585 kr, Hedeviken og Studsviken 4 485 kr, før 4 335/5 085 kr). Lagt til hvitbeiset eikemønster/Lappviken (3 585 kr) og hvit/Studsviken (4 485 kr). Rettet: hvitt korpus er foliert (painted, ikke lakk), Hedeviken har fiskebensmønster, og Björköviken/Studsviken-fargene er tatt fra produktbildene (Studsviken-flettet er lys brun på bildet, rammen er brunsvart)."
   },
   {
     "id": "bolia-case-skjenk-3-glassdorer-veggmontert",
@@ -953,11 +1238,11 @@
       {
         "name": "Hvitpigmentert oljet eik / riflet glass",
         "colors": {
-          "body": "#ddd0bb",
+          "body": "#d4bb9b",
           "front": "#cdd6d4",
-          "top": "#ddd0bb",
-          "legs": "#ddd0bb",
-          "handle": "#ddd0bb"
+          "top": "#d4bb9b",
+          "legs": "#d4bb9b",
+          "handle": "#d4bb9b"
         },
         "materials": {
           "body": "white-oak",
@@ -965,16 +1250,17 @@
           "top": "white-oak",
           "legs": "white-oak",
           "handle": "white-oak"
-        }
+        },
+        "url": "https://www.bolia.com/nb-no/produkter/04-009-15_00002/"
       },
       {
         "name": "Oljet eik / riflet glass",
         "colors": {
-          "body": "#c9a87c",
+          "body": "#c09c76",
           "front": "#cdd6d4",
-          "top": "#c9a87c",
-          "legs": "#c9a87c",
-          "handle": "#c9a87c"
+          "top": "#c09c76",
+          "legs": "#c09c76",
+          "handle": "#c09c76"
         },
         "materials": {
           "body": "oak",
@@ -982,7 +1268,8 @@
           "top": "oak",
           "legs": "oak",
           "handle": "oak"
-        }
+        },
+        "url": "https://www.bolia.com/nb-no/produkter/04-009-15_00001/"
       }
     ],
     "defaultVariant": 0,
@@ -991,7 +1278,7 @@
     "why": "Glassdørene gir plass til å vise frem glass og keramikk ved spisebordet, og den lyse eiken tar opp fargen i eikegulvet mens den svever over det.",
     "imageUrl": "https://images.bolia.com/cdn-cgi/image/width=1100,height=530,fit=pad/products/04-009-15_00002.webp?cachebusting=2",
     "verified": true,
-    "verifiedNote": "Bekreftet på bolia.com 2026-10-18: pris 25 499, mål 152x40x53, OOOJA, veggmontert. Rettet: riflet glass, produsert i Danmark, URL-varianten er hvitpigmentert (satt som standard), bilde lagt til."
+    "verifiedNote": "Bekreftet på bolia.com 2026-10-18: pris 25 499, mål 152x40x53, OOOJA, veggmontert. Rettet: riflet glass, produsert i Danmark, URL-varianten er hvitpigmentert (satt som standard), bilde lagt til. Farger og stoff kontrollert 2026-10-21 mot bolia.com: begge variantene finnes (hvitpigmentert oljet eik og oljet eik, begge 25 499 kr); andre treslag finnes ikke for denne veggmonterte Case-skjenken. Trefargene justert etter produktbildene."
   },
   {
     "id": "skeidar-a-line-skjenk",
@@ -1025,11 +1312,11 @@
       {
         "name": "Warm Beige – hvitoljet eikefiner / ben i heltre eik",
         "colors": {
-          "body": "#d6c2a4",
-          "front": "#d9c6a9",
-          "top": "#d6c2a4",
-          "legs": "#cdb898",
-          "handle": "#b9a283"
+          "body": "#d2ae94",
+          "front": "#d4b096",
+          "top": "#d6b49b",
+          "legs": "#ca9c80",
+          "handle": "#bf9a7e"
         },
         "materials": {
           "body": "white-oak",
@@ -1037,16 +1324,17 @@
           "top": "white-oak",
           "legs": "white-oak",
           "handle": "white-oak"
-        }
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/skjenker/a-line-skjenk?VariationId=P_5637156966"
       },
       {
-        "name": "Walnut – mørk eikefiner / ben i heltre eik",
+        "name": "Walnut – røkt eikefinér / ben i heltre eik",
         "colors": {
-          "body": "#6b4226",
-          "front": "#6e4529",
-          "top": "#6b4226",
-          "legs": "#5e3a22",
-          "handle": "#4a2e1b"
+          "body": "#735a3e",
+          "front": "#735a3e",
+          "top": "#7a6045",
+          "legs": "#5f4a33",
+          "handle": "#4a3826"
         },
         "materials": {
           "body": "smoked-oak",
@@ -1054,7 +1342,10 @@
           "top": "smoked-oak",
           "legs": "smoked-oak",
           "handle": "smoked-oak"
-        }
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/skjenker/a-line-skjenk?VariationId=V_5637445346",
+        "priceNok": 22399,
+        "salePriceNok": 11999
       }
     ],
     "defaultVariant": 0,
@@ -1063,6 +1354,6 @@
     "why": "Skuffene er praktiske for duker, servietter og stearinlys ved spiseplassen; den hvitoljede eiken matcher eikegulvet, og Walnut-varianten går mot det mørke spisebordet.",
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/2267900/2267900_V10195852-ALineSkjenk.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på skeidar.no 2026-10-18 (gammel URL ga 404 – rettet til /alle-oppbevaring-og-skap/). Rettet pris 22 399 → 15 999, mål 160x45x74 bekreftet, varianter Warm Beige og Walnut, frontoppsett 4 skuffer + 1 dør."
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-18 (gammel URL ga 404 – rettet til /alle-oppbevaring-og-skap/). Rettet pris 22 399 → 15 999, mål 160x45x74 bekreftet, varianter Warm Beige og Walnut, frontoppsett 4 skuffer + 1 dør. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: begge variantene finnes (Warm Beige 15 999 kr, Walnut 11 999 kr, før 22 399 kr). Rettet: Walnut er røkt eikefinér (navnet sa «mørk eikefiner»); fargene justert etter produktbildene, egne lenker og pris lagt inn."
   }
 ]

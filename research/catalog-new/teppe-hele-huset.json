@@ -11,7 +11,7 @@
     "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 101855 natur): 949 kr, ingen kampanje. Samme pris i hvit (278685), sølv (100576) og brungrå (278686). Finnes også 70x140 (649 kr) og 60x90 (379 kr), og som stort teppe (Frigg teppe 200x290 i katalogen). 100 % ull, håndvevd, vendbar, 1 cm.",
     "dims": {
       "w": 0.7,
-      "d": 2.0,
+      "d": 2,
       "h": 0.01
     },
     "archetype": "rug",
@@ -42,9 +42,9 @@
       {
         "name": "Hvit",
         "colors": {
-          "base": "#ebe8e1",
-          "accent": "#d9d4ca",
-          "accent2": "#f3f1ec"
+          "base": "#e0dfdb",
+          "accent": "#cecbc4",
+          "accent2": "#e8e8e6"
         },
         "materials": {
           "base": "wool",
@@ -56,9 +56,9 @@
       {
         "name": "Sølv",
         "colors": {
-          "base": "#b9b8b3",
-          "accent": "#9f9e99",
-          "accent2": "#cfcec9"
+          "base": "#a7aba7",
+          "accent": "#8d918d",
+          "accent2": "#bdc1bd"
         },
         "materials": {
           "base": "wool",
@@ -70,9 +70,9 @@
       {
         "name": "Brungrå",
         "colors": {
-          "base": "#8a8073",
-          "accent": "#736a5e",
-          "accent2": "#a0978a"
+          "base": "#b2a08f",
+          "accent": "#9b8a7a",
+          "accent2": "#c8b7a6"
         },
         "materials": {
           "base": "wool",
@@ -89,7 +89,7 @@
     "why": "200 cm lang passer den på den frie delen av gangen ved trappa (ca. 1,57 × 2,07 m) og demper skritt mot gulvet; den naturhvite melangen er rolig mot SAND-veggene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/FRIGG/623391/image-thumb__623391__PDP-Product/Frigg_natur_70x200.c2626289.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 70x200, 1 cm, 100 % ull, håndvevd, vendbar, 949 kr, varenr. og lenker for alle fire farger. Fargene hentet fra Frigg-teppet i katalogen, natur justert etter løperbildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 70x200, 1 cm, 100 % ull, håndvevd, vendbar, 949 kr, varenr. og lenker for alle fire farger. Fargene hentet fra Frigg-teppet i katalogen, natur justert etter løperbildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire fargene i 70x200 finnes (Natur, Hvit, Sølv og Brungrå, alle 949 kr; sølv er merket som utgående, granitt er utgått). Hvit, sølv og brungrå har fått farger fra produktbildene (brungrå er lysere enn før).",
     "priceConfidence": "checked"
   },
   {
@@ -105,7 +105,7 @@
     "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 243378 gråmix / 278703 brun): 839 kr, før 1 199 kr. Finnes også 80x250 (664 kr, før 949), 80x200 (489 kr, før 699) og 80x150 (384 kr, før 549). 100 % polypropylen, maskinvevd, gummiert sklisikker bakside, tåler støvsuger med børste.",
     "dims": {
       "w": 0.8,
-      "d": 3.0,
+      "d": 3,
       "h": 0.005
     },
     "archetype": "rug",
@@ -123,8 +123,8 @@
       {
         "name": "Gråmix",
         "colors": {
-          "base": "#8f8d89",
-          "accent": "#85837f",
+          "base": "#7c7a77",
+          "accent": "#72706d",
           "accent2": "#1f1f1f"
         },
         "materials": {
@@ -137,8 +137,8 @@
       {
         "name": "Brun",
         "colors": {
-          "base": "#a8988a",
-          "accent": "#9f8f81",
+          "base": "#c2b2a5",
+          "accent": "#b9a99c",
           "accent2": "#e9e1d3"
         },
         "materials": {
@@ -156,7 +156,7 @@
     "why": "Kjellergangen (12,5 m²) med trapp og inngang får mest slitasje og vått fottøy; Trio tåler hard bruk og er lett å støvsuge, og 300 cm dekker gangen fra trappa. Gråmix med svart linje følger de svarte detaljene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/TRIO/122483/image-thumb__122483__PDP-Product/243378%20-%20Trio%20l%C3%B8per%2080x300%20polypropylen%20gr%C3%A5mix%20-%201.538924a9.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 80x300, polypropylen, maskinvevd, gummiert bakside, 839 kr (før 1 199) for gråmix og brun. Luggen oppgis til 0,5 cm (gråmix) og 1 cm (brun); farger fra bildene (brun-bildet er 80x250).",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 80x300, polypropylen, maskinvevd, gummiert bakside, 839 kr (før 1 199) for gråmix og brun. Luggen oppgis til 0,5 cm (gråmix) og 1 cm (brun); farger fra bildene (brun-bildet er 80x250). Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge fargene i 80x300 finnes (Gråmix og Brun, 100 % polypropylen, begge 839 kr, før 1 199 kr), og bunnfargene er justert etter produktbildene (kantlinjene er uendret).",
     "priceConfidence": "checked"
   },
   {
@@ -188,9 +188,9 @@
       {
         "name": "Sand",
         "colors": {
-          "base": "#ddd6c6",
-          "accent": "#cfc7b5",
-          "accent2": "#e8e2d5"
+          "base": "#ddd1bb",
+          "accent": "#cfc2aa",
+          "accent2": "#e8ddca"
         },
         "materials": {
           "base": "wool",
@@ -202,9 +202,9 @@
       {
         "name": "Varm grå",
         "colors": {
-          "base": "#8a857d",
-          "accent": "#78736b",
-          "accent2": "#9c978f"
+          "base": "#827c73",
+          "accent": "#706a61",
+          "accent2": "#948e85"
         },
         "materials": {
           "base": "wool",
@@ -216,9 +216,9 @@
       {
         "name": "Muldvarp",
         "colors": {
-          "base": "#a59c8b",
-          "accent": "#958c7b",
-          "accent2": "#b5ad9d"
+          "base": "#afa492",
+          "accent": "#9f9482",
+          "accent2": "#bfb5a4"
         },
         "materials": {
           "base": "wool",
@@ -235,7 +235,7 @@
     "why": "160x230 kan ligge på tvers under nedre del av en 160/180-seng på soverommet (3,11 × 3,69), så du går på ull morgen og kveld; sand er varmt og rolig mot SAND/Marrakesh-veggene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/SVAL/337596/image-thumb__337596__PDP-Product/314755%20-%20Sval%20teppe%20160x230%20100-%20ull%20sand%20-%204.154d2ca0.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 160x230, 100 % ull, håndvevd, lugg 1 cm, 2 939 kr (før 4 199) for alle tre farger, varenr. og lenker.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 160x230, 100 % ull, håndvevd, lugg 1 cm, 2 939 kr (før 4 199) for alle tre farger, varenr. og lenker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre fargene i 160x230 finnes (Sand, Varm Grå og Muldvarp, 100 % ull, alle 2 939 kr, før 4 199 kr), og fargene er finjustert etter produktbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -249,7 +249,7 @@
     "salePriceNok": 3499,
     "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 314938 beige): 3 499 kr, før 4 999 kr. Samme pris i grå (314940) og hvit (314936). Bohus har ikke 200x300 – 200x290 er nærmeste størrelse. Finnes også 160x230 (2 099 kr, før 2 999). 100 % ull, håndtuftet, 2 cm lugg, bakside av resirkulert bomull.",
     "dims": {
-      "w": 2.0,
+      "w": 2,
       "d": 2.9,
       "h": 0.02
     },
@@ -282,9 +282,9 @@
       {
         "name": "Grå",
         "colors": {
-          "base": "#6f6a64",
-          "accent": "#635e58",
-          "accent2": "#7d7872"
+          "base": "#7b746a",
+          "accent": "#6f685e",
+          "accent2": "#898278"
         },
         "materials": {
           "base": "wool",
@@ -296,9 +296,9 @@
       {
         "name": "Hvit",
         "colors": {
-          "base": "#e4dfd4",
-          "accent": "#d6d0c4",
-          "accent2": "#eeeae1"
+          "base": "#d4d3cc",
+          "accent": "#c6c4bc",
+          "accent2": "#deded9"
         },
         "materials": {
           "base": "wool",
@@ -315,7 +315,7 @@
     "why": "Kjellerstua (20,6 m²) har harde flater og trenger lyddemping; 2 cm ull-lugg demper mer enn et flatvevd teppe, og den varme beigen holder seg rolig under en sofagruppe.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Inhouse%20Group/Produkter/BOLZANO/342016/image-thumb__342016__PDP-Product/314937%20-%20Bolzano%20teppe%20160x230%20100-%20ull%20beige%20-%202.8dcc46a1.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 200x290, 2 cm, 100 % ull, håndtuftet, 3 499 kr (før 4 999) for beige, grå og hvit. Merke ikke oppgitt (leverandør Inhouse Group); produktbildet er av 160x230. Hvit-fargen anslått fra fargenavnet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 200x290, 2 cm, 100 % ull, håndtuftet, 3 499 kr (før 4 999) for beige, grå og hvit. Merke ikke oppgitt (leverandør Inhouse Group); produktbildet er av 160x230. Hvit-fargen anslått fra fargenavnet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre fargene i 200x290 finnes (Beige, Grå og Hvit, 100 % ull, alle 3 499 kr, før 4 999 kr). Grå og hvit er justert etter produktbildene (hvit er en kjølig, lys gråhvit).",
     "priceConfidence": "checked"
   },
   {
@@ -361,9 +361,9 @@
       {
         "name": "Grå",
         "colors": {
-          "base": "#a7a19a",
-          "accent": "#8f8880",
-          "accent2": "#bdb8b1"
+          "base": "#b3a9a0",
+          "accent": "#9b9086",
+          "accent2": "#c9c0b7"
         },
         "materials": {
           "base": "wool",
@@ -389,9 +389,9 @@
       {
         "name": "Koksgrå",
         "colors": {
-          "base": "#4f4d4b",
-          "accent": "#403e3c",
-          "accent2": "#605e5b"
+          "base": "#38302b",
+          "accent": "#29211c",
+          "accent2": "#49413b"
         },
         "materials": {
           "base": "wool",
@@ -408,7 +408,7 @@
     "why": "Et rundt teppe myker opp det lille soverommet i kjelleren (7,4 m²) eller en lesekrok uten å dekke hele gulvet; hvit berber er lys og ren, grå og koksgrå tåler mer.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/KLEBER/351583/image-thumb__351583__PDP-Product/314739%20-%20Kleber%20rundt%20teppe%20%C3%98160%20100-%20ull%20hvit%20berber%20-%201.aaf7ddbb.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: Ø160, 1 cm, 100 % ull, håndvevd, vendbar, 2 729 kr (før 3 899) for alle fire farger, varenr. og lenker. Brun og koksgrå farge anslått fra fargenavnet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: Ø160, 1 cm, 100 % ull, håndvevd, vendbar, 2 729 kr (før 3 899) for alle fire farger, varenr. og lenker. Brun og koksgrå farge anslått fra fargenavnet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire fargene i Ø160 finnes (Hvit berber, Grå, Brun og Koksgrå, 100 % ull, alle 2 729 kr, før 3 899 kr). Grå og koksgrå er justert etter produktbildene (koksgrå er nesten svart med en brun tone).",
     "priceConfidence": "checked"
   }
 ]

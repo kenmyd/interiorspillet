@@ -1,0 +1,677 @@
+[
+  {
+    "id": "bohus-brunstad-delta-gyngestol",
+    "category": "lenestol",
+    "name": "Delta gyngestol",
+    "brand": "Brunstad",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/delta-hvilestol-8",
+    "priceNok": 32770,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 288302): Delta gyngestol (Delta Comfort) i Fåreskinn Scandinavian blonde med ben i hvitpigmentert eik koster 32 770,- (ordinær pris, ingen kampanje). Samme stol i Bardal 420 Oransje (varenr. 288301) koster 28 990,-. Gyngestolen med matchende fotskammel på meier selges som egne produkter: Bardal 420 Oransje 36 110,- (varenr. 288312) og Fåreskinn Scandinavian blonde, large 41 420,- (varenr. 288300). Delta uten gyng ligger under hvilestoler hos Bohus og er ikke med her.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.69,
+      "d": 0.9,
+      "h": 1.03
+    },
+    "archetype": "rocking",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.44,
+      "seatD": 0.5,
+      "backH": 1.03,
+      "armH": 0.59,
+      "armW": 0.05,
+      "backShape": "high",
+      "cushion": "tight",
+      "footstool": false,
+      "headrest": true,
+      "notes": "Gyngestol med høy, smal og svakt S-formet rygg som er polstret helt opp, med en loddrett søm midt nedover ryggen og litt utoverbøyde «ører» øverst. En separat, rektangulær nakkepute henger i en stropp over toppen av ryggen og kan flyttes opp og ned (femtrinns nakkestøtte). Setet er en tykk, avrundet pute som buer ned over forkanten. Rammen er i hvitpigmentert eik: på hver side går en bred, buet armlenebue fra bak ryggen fram over armlenet og ned i et framben, et skrått bakben bøyer seg ned til meien, og to lange, flate gyngemeier stikker ut foran og bak. En bred tverrslå under setet binder sidene sammen; ryggen står fritt mellom armlenebuene uten noen topplist i tre. Ryggen kan vippes trinnløst bakover, og setehøyden kan justeres med beslag. I fåreskinnsvarianten er sete og forside av ryggen kledd med krøllete fåreskinn, mens nakkeputen er i lyst grågrønt skinn og baksiden av ryggen i beige stoff; i Bardal-varianten er alt i samme ullstoff. Armlenshøyden (ca. 59 cm) er anslått fra sidebildet."
+    },
+    "variants": [
+      {
+        "name": "Fåreskinn Scandinavian blonde, ben hvitpigmentert eik",
+        "colors": {
+          "upholstery": "#cbc4b4",
+          "legs": "#d6c3aa",
+          "frame": "#d6c3aa"
+        },
+        "materials": {
+          "upholstery": "teddy",
+          "legs": "white-oak",
+          "frame": "white-oak"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/delta-hvilestol-8"
+      },
+      {
+        "name": "Bardal 420 Oransje, ben hvitpigmentert eik",
+        "colors": {
+          "upholstery": "#a8845e",
+          "legs": "#d6c3aa",
+          "frame": "#d6c3aa"
+        },
+        "materials": {
+          "upholstery": "wool",
+          "legs": "white-oak",
+          "frame": "white-oak"
+        },
+        "priceNok": 28990,
+        "url": "https://www.bohus.no/stoler/lenestol/delta-hvilestol-5"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.5,
+    "description": "Norskprodusert gyngestol fra Brunstad med høy, polstret rygg, flyttbar nakkepute og buede armlener og meier i hvitpigmentert eik. Ryggen kan vippes trinnløst bakover og nakkestøtten reguleres i fem trinn, så du kan lene deg godt tilbake mens du gynger.",
+    "why": "En rolig gyngestol med lys eik og lyst fåreskinn passer til eikegulvet og de lyse tekstilene i stua, og den høye ryggen med nakkepute gjør den til en ekte hvilestol å lene seg tilbake i. Den smale formen (69 cm) gjør at den også får plass i et hjørne av kjellerstua eller soverommet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Brunstad%20AS/Produkter/DELTA/279993/image-thumb__279993__PDP-Product/288302%20-%20Delta%20Comfort%20hvilestol%20med%20gyng%2C%20regulerbar%20nakkest%C3%B8tte%20eik%20hvitoljet%20-%201.ffb8795c.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21: navn, pris, mål (69 × 90 × 103 cm, sete 44/50 cm), ben og trevanger i hvitpigmentert eik, produsert i Norge (Brunstad), trinnløs ryggregulering og femtrinns nakkestøtte. Sett på alle produktbildene (forfra og fra siden). Armlenshøyden er anslått fra sidebildet. Bardal er et ullstoff (Gudbrandsdalens Uldvarefabrik, ca. 70 % ull) – stoffinnholdet står ikke på Bohus-siden. Farger og stoff kontrollert 2026-10-21 mot Bohus: gyngestolen selges bare i Fåreskinn Scandinavian blonde og Bardal 420 Oransje, begge med ben i hvitpigmentert eik; begge variantene finnes."
+  },
+  {
+    "id": "bohus-brunstad-paz-loungestol",
+    "category": "lenestol",
+    "name": "Paz loungestol",
+    "brand": "Brunstad",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/loungestoler/paz-stol-1",
+    "priceNok": 20110,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 260397): Paz loungestol, Standard sittekomfort, Abby 26 Beige med S20 stålunderstell svartlakkert koster 20 110,- (ordinær pris, ingen kampanje). Abby 27 Silver med S20 (varenr. 297683) og variantene med S04 svingfot svartlakkert i Abby 26 Beige (varenr. 279845), Abby 27 Silver (varenr. 298636) og Soft Lord 176 Sepia (varenr. 322644) koster også 20 110,-; Ida Rød 581 med svingfot og regulerbar rygg (varenr. 297667) koster 21 070,-.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.75,
+      "d": 0.76,
+      "h": 0.89
+    },
+    "archetype": "shell-legs",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.44,
+      "seatD": 0.5,
+      "backH": 0.89,
+      "armH": 0.58,
+      "armW": 0.12,
+      "legStyle": "slim-metal",
+      "legH": 0.24,
+      "backShape": "round",
+      "cushion": "tight",
+      "footstool": false,
+      "headrest": false,
+      "notes": "Organisk, eggformet skall som omslutter sete og rygg i ett stykke og er trukket helt i stoff, uten løse puter. Ryggen er høy (89 cm) og smalner litt inn ved skuldrene før den vider seg ut til en bred, avrundet topp som støtter hodet; en vannrett søm går tvers over ryggen i skulderhøyde, og en loddrett søm går ned midt på baksiden. Armlenene er brede, avrundede «vinger» som bøyer seg utover og fremover fra skallet og går ned i setekanten, slik at skallet sett fra siden er nesten sirkelrundt under armlenene. Setet er fast og ligger nedfelt i skallet. S20 stålunderstell: fire tynne, svartlakkerte stålstag som spriker utover og møtes i en ring under skallet (ca. 24 cm høyt, anslått). S04: svartlakkert, firearmet svingfot med søyle (stolen dreier), og flere S04-varianter har regulerbar rygg. Armlenshøyden er anslått fra bildene."
+    },
+    "variants": [
+      {
+        "name": "Abby 26 Beige, S20 stålunderstell svartlakkert",
+        "colors": {
+          "upholstery": "#968670",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/paz-stol-1"
+      },
+      {
+        "name": "Abby 27 Silver, S20 stålunderstell svartlakkert",
+        "colors": {
+          "upholstery": "#81827c",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/paz-loungestol-1"
+      },
+      {
+        "name": "Abby 26 Beige, med sving, S04 svartlakkert",
+        "colors": {
+          "upholstery": "#aba29a",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/paz-stol-2",
+        "paramsOverride": {
+          "legStyle": "swivel-star",
+          "legH": 0.2
+        }
+      },
+      {
+        "name": "Abby 27 Silver, med sving, S04 svartlakkert",
+        "colors": {
+          "upholstery": "#8d8e88",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/paz-loungestol-2",
+        "paramsOverride": {
+          "legStyle": "swivel-star",
+          "legH": 0.2
+        }
+      },
+      {
+        "name": "Lord 176 Sepia (Soft), ben S04 svartlakkert stål",
+        "colors": {
+          "upholstery": "#867b73",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/paz-loungestol-26",
+        "paramsOverride": {
+          "legStyle": "swivel-star",
+          "legH": 0.2
+        }
+      },
+      {
+        "name": "Ida Rød 581, med sving og regulerbar rygg, S04 svartlakkert",
+        "colors": {
+          "upholstery": "#612524",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 21070,
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/paz-loungestol",
+        "paramsOverride": {
+          "legStyle": "swivel-star",
+          "legH": 0.2
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.55,
+    "description": "Norskprodusert loungestol fra Brunstad med organisk, eggformet skall, høy rygg og brede, utoverbøyde armlener. Leveres på et lett understell i svartlakkert stål eller på svingfot, og noen varianter har regulerbar rygg.",
+    "why": "Det myke, beige Abby-trekket og den svarte foten knytter stolen til de svarte detaljene og de lyse tekstilene i stua, og det høye, omsluttende skallet gjør den til en god lesestol å lene seg inn i. Svingfoten passer i kjellerstua, der stolen kan snus mot TV-en eller samtalen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Brunstad%20AS/Produkter/PAZ/237823/image-thumb__237823__PDP-Product/260397%20-%20Paz%20stol%20abby%2026%20beige%20-%209.f6198b15.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21: navn, pris, mål (75 × 76 × 89 cm, sete 44/50 cm), produsert i Norge (Brunstad), «leveres med sving sokkel eller stålunderstell» og «kan leveres med regulering i ryggen». Sett på produktbildene til alle seks variantene (forfra, fra siden og skrått). Armlenshøyden og høyden på S20-understellet er anslått fra bildene. Abby 26 Beige med sving heter «lav rygg» hos Bohus og oppgis 91 cm høy, men ser lik ut på bildet. Stoffarten oppgis ikke av Bohus: Abby er satt som velur og Lord som bouclé etter bildene, Ida som vevd stoff. Farger og stoff kontrollert 2026-10-21 mot Bohus: Bohus selger Paz loungestol i nøyaktig disse seks kombinasjonene av stoff og understell; alle variantene finnes, og S04-variantene har svingfot via paramsOverride."
+  },
+  {
+    "id": "bohus-signature-700-loungestol-svingfot",
+    "category": "lenestol",
+    "name": "Signature 700 loungestol med svingfot",
+    "brand": "Signature Collection by Halvor Bakke (Vilmers)",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-700-loungestol-11",
+    "priceNok": 19341,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 322410): Signature 700 loungestol i Tobias Mist med svingfot svart koster 19 341,- (ordinær pris). Tobias Shadow (322412) og Sebastian Liver (322414) koster også 19 341,-; Jonas Beige (322406) og Jonas Brown (322408) koster 13 499,- (før 19 341,-, kampanje fra 08.04.2026 uten oppgitt sluttdato); Julian Canvas (320231) koster 23 999,-. Samme stol med treben svart 6 cm i stedet for svingfot koster 1 393,- mindre (Tobias 17 948,-, Jonas 12 499,- før 17 948,-, Julian 22 665,-), og eldre varianter med treben svart 3 cm finnes i Solid Marble/Onyx/Brown (20 621,-) og Pepita Stone (15 799,- før 22 665,-).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.86,
+      "d": 0.97,
+      "h": 0.85
+    },
+    "archetype": "club-box",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.43,
+      "seatD": 0.54,
+      "backH": 0.85,
+      "armH": 0.56,
+      "armW": 0.12,
+      "legStyle": "swivel-disc",
+      "legH": 0.03,
+      "backShape": "square",
+      "cushion": "loose",
+      "footstool": false,
+      "headrest": false,
+      "notes": "Dyp, kubisk loungestol der armlenene og ryggrammen går i ett: armlenene er smale (ca. 12 cm), rette og flate på toppen og like lange som setet, og bak buer sidene seg mykt (konkavt) opp i en høyere ryggramme som vider seg litt utover mot toppen. Løs, tykk seteputen har kantsøm rundt, og en stor, løs og vendbar ryggpute ligger mot ryggrammen og stikker opp over den. Hele stolen er trukket ned mot gulvet som en kasse uten synlige ben; den står på en svart, rund svingfot (stålring) som nesten skjules under bunnen, ca. 3 cm høy, og kan dreies. Armlenshøyden (ca. 56 cm) er anslått fra sidebildet. Julian Canvas er et mønstret jacquardstoff i lys beige med et labyrintmønster i gråbrun bouclé; modellen viser bare gjennomsnittsfargen."
+    },
+    "variants": [
+      {
+        "name": "Tobias Mist, svingfot svart",
+        "colors": {
+          "upholstery": "#c0b6a9",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-700-loungestol-11"
+      },
+      {
+        "name": "Tobias Shadow, svingfot svart",
+        "colors": {
+          "upholstery": "#6e6a63",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-700-loungestol-13"
+      },
+      {
+        "name": "Jonas Beige, svingfot svart",
+        "colors": {
+          "upholstery": "#d6cdc0",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "priceNok": 19341,
+        "salePriceNok": 13499,
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-700-loungestol-7"
+      },
+      {
+        "name": "Jonas Brown, svingfot svart",
+        "colors": {
+          "upholstery": "#665e58",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "priceNok": 19341,
+        "salePriceNok": 13499,
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-700-loungestol-9"
+      },
+      {
+        "name": "Sebastian Liver, svingfot svart",
+        "colors": {
+          "upholstery": "#c1b5a3",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-700-loungestol-15"
+      },
+      {
+        "name": "Julian Canvas, svingfot svart",
+        "colors": {
+          "upholstery": "#c9bfaf",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 23999,
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-700-loungestol-5"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.7,
+    "description": "Romslig og dyp loungestol designet av Halvor Bakke, med løse sete- og ryggputer og en skjult svingfot, så stolen kan dreies. Rammen er i heltre og kryssfiner, setet har nozagfjæring, og de vendbare ryggputene er fylt med ballfiber, fjær og skumbiter.",
+    "why": "Den dype, myke stolen med greige Tobias Mist er en stol du synker ned i, og den skjulte svingfoten gjør at den kan snus mellom TV og vindu i kjellerstua. Den rolige, kubiske formen passer også ved siden av en sofa i stua uten å virke rotete.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/SIGNATURE%20700/608428/image-thumb__608428__PDP-Product/322410%20-%20Signature%20700%20loungestol%20Tobias%20Mist%20med%20svingfot%20svart%20-%201.1755b7fe.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21: navn, pris, mål (86 × 97 × 85 cm, sete 43/54 cm), svingfot svart, design Halvor Bakke, løse og vendbare ryggputer. Sett på alle produktbildene for svingfotvariantene (forfra, fra siden og skrått). Armlenshøyden er anslått fra sidebildet. Stoffarten oppgis ikke av Bohus: Tobias og Julian er satt som vevd stoff, Jonas som velur og Sebastian som bouclé etter bildene. Farger og stoff kontrollert 2026-10-21 mot Bohus: Signature 700 med svingfot selges i nøyaktig disse seks stoffene; alle variantene finnes."
+  },
+  {
+    "id": "bohus-scapa-frame-lenestol",
+    "category": "lenestol",
+    "name": "Frame lenestol",
+    "brand": "Scapa",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/frame-stol-1",
+    "priceNok": 14020,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 335124): Frame lenestol i Enzo 7262 Champagne med ben svart 4 cm koster 14 020,- (ordinær pris, ingen kampanje). Elegante 1822 Marron (335123) koster også 14 020,-, Subway 0410 Nature (332119) 15 855,- og Amra 1614 Turtle (335122) 11 900,-.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.94,
+      "d": 1.05,
+      "h": 0.85
+    },
+    "archetype": "club-box",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.44,
+      "seatD": 0.65,
+      "backH": 0.85,
+      "armH": 0.63,
+      "armW": 0.1,
+      "legStyle": "block",
+      "legH": 0.04,
+      "backShape": "square",
+      "cushion": "loose",
+      "footstool": false,
+      "headrest": false,
+      "notes": "Dyp og lav lenestol med tuxedo-form: armlenene og ryggrammen er like høye og danner en sammenhengende, tynn ramme rundt sete og rygg. Armlenene er smale på toppen (ca. 10 cm), har en tydelig kantsøm langs overkanten og heller svakt utover; framkanten av armlenene er rett og loddrett. Den store, puffete seteputen med avrundet forkant ligger på en dyp, polstret sokkel, og en løs, myk og vendbar ryggpute ligger mot ryggrammen og stikker opp over den. Trekket går helt ned mot gulvet på alle sider; stolen står på fire lave, svarte føtter (4 cm) som nesten ikke synes. Armlenshøyden (ca. 63 cm) er anslått fra bildene. Subway-varianten oppgis med setehøyde 42 cm og setedybde 60 cm, de andre med 44/65 cm."
+    },
+    "variants": [
+      {
+        "name": "Enzo 7262 Champagne, ben svart 4 cm",
+        "colors": {
+          "upholstery": "#c9c0b4",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "plastic"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/frame-stol-1"
+      },
+      {
+        "name": "Subway 0410 Nature, ben svart 4 cm",
+        "colors": {
+          "upholstery": "#d3d1cc",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "plastic"
+        },
+        "priceNok": 15855,
+        "url": "https://www.bohus.no/stoler/lenestol/frame-stol",
+        "paramsOverride": {
+          "seatH": 0.42,
+          "seatD": 0.6
+        }
+      },
+      {
+        "name": "Amra 1614 Turtle, ben svart 4 cm",
+        "colors": {
+          "upholstery": "#737260",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "plastic"
+        },
+        "priceNok": 11900,
+        "url": "https://www.bohus.no/stoler/lenestol/frame-stol-3"
+      },
+      {
+        "name": "Elegante 1822 Marron, ben svart 4 cm",
+        "colors": {
+          "upholstery": "#7a4c3b",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "plastic"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/frame-stol-2"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.7,
+    "description": "Dyp og myk lenestol fra Scapa med setepute i kaldskum med myk topp, vendbar ryggpute med fiber- og skumfyll og avtagbare trekk. Den lave, kubiske formen med tynne armlener gjør den til en stol å synke ned i.",
+    "why": "Det varme, champagnefargede trekket passer til sandveggene, og den svært dype seteputen (65 cm) gjør stolen ideell for å lene seg tilbake med en bok i kjellerstua. Den rene formen uten synlige ben gir et rolig og ryddig uttrykk.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Scapa%20UAB/Produkter/FRAME/622173/image-thumb__622173__PDP-Product/335124%20-%20Frame%20stol%20Enzo%207262%20Champagne%20med%20ben%20svart%204cm%20-%201.c75c5766.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21: navn, pris, mål (94 × 105 × 85 cm; sete 44/65 cm, Subway 42/60 cm), ben svart 4 cm, kaldskum med soft topp i setet, vendbare ryggputer og avtagbare trekk. Sett på produktbildene til alle fire variantene og miljøbildene. Armlenshøyden er anslått, og materialet i de lave svarte føttene er ikke oppgitt (satt som plast). Stoffarten oppgis ikke: Elegante er satt som velur, de andre som vevd stoff etter bildene. Farger og stoff kontrollert 2026-10-21 mot Bohus: Frame lenestol selges i nøyaktig disse fire stoffene; alle variantene finnes."
+  },
+  {
+    "id": "bohus-scapa-noelle-lenestol",
+    "category": "lenestol",
+    "name": "Noelle lenestol",
+    "brand": "Scapa",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/noelle-lenestol-1",
+    "priceNok": 15998,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 318414): Noelle lenestol i Hevre 0980 Light beige med ben 631 hvitoljet 16 cm koster 15 998,- (ordinær pris). Milan 4081 Grey med ben 627 smoked (318416) og Hevre 0982 Blue med ben 629 svart (318415) koster også 15 998,-; Berga 1212 Sand med ben 627 brunbeiset (332114) koster 15 285,-; Amra 1614 Turtle med ben 631 hvitoljet (318413) koster 7 140,- (før 14 280,-, kampanje fra 06.11.2025 uten oppgitt sluttdato).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.97,
+      "d": 1.0,
+      "h": 0.84
+    },
+    "archetype": "club-box",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.45,
+      "seatD": 0.56,
+      "backH": 0.84,
+      "armH": 0.62,
+      "armW": 0.1,
+      "legStyle": "wood-taper",
+      "legH": 0.16,
+      "backShape": "square",
+      "cushion": "loose",
+      "footstool": false,
+      "headrest": false,
+      "notes": "Bred og dyp lenestol med rette, smale armlener (ca. 10 cm) som er like høye som ryggrammen og har skarpe, rette kanter. Armlenene slutter et stykke bak forkanten av setet og har en buet innsving nederst foran, slik at seteputen og sokkelen stikker frem foran armlenene. Under seteputen går en polstret sokkelramme rundt hele stolen. Løs, tykk setepute (kaldskum toppet med en dyne), en stor løs og vendbar ryggpute og en løs, rektangulær pyntepute i samme stoff. Står på fire runde, rette og svakt koniske treben (16 cm) som er satt litt inn fra hjørnene; benfargen følger varianten (hvitoljet, smoked/brunbeiset eller svart). Armlenshøyden (ca. 62 cm) er anslått fra bildene."
+    },
+    "variants": [
+      {
+        "name": "Hevre 0980 Light beige, ben 631 hvitoljet 16 cm",
+        "colors": {
+          "upholstery": "#d6d0c8",
+          "legs": "#c2aa8c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "white-oak"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/noelle-lenestol-1"
+      },
+      {
+        "name": "Berga 1212 Sand, ben 627 brunbeiset 16 cm",
+        "colors": {
+          "upholstery": "#b9ab9c",
+          "legs": "#2f2724"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "smoked-oak"
+        },
+        "priceNok": 15285,
+        "url": "https://www.bohus.no/stoler/lenestol/noelle-lenestol-5"
+      },
+      {
+        "name": "Milan 4081 Grey, ben 627 smoked 16 cm",
+        "colors": {
+          "upholstery": "#c8c3bc",
+          "legs": "#4a372d"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/noelle-lenestol-3"
+      },
+      {
+        "name": "Amra 1614 Turtle, ben 631 hvitoljet 16 cm",
+        "colors": {
+          "upholstery": "#7d7766",
+          "legs": "#c2aa8c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "white-oak"
+        },
+        "priceNok": 14280,
+        "salePriceNok": 7140,
+        "url": "https://www.bohus.no/stoler/lenestol/noelle-lenestol"
+      },
+      {
+        "name": "Hevre 0982 Blue, ben 629 svart 16 cm",
+        "colors": {
+          "upholstery": "#5f6767",
+          "legs": "#201f1d"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/noelle-lenestol-2"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.7,
+    "description": "Svanemerket, bred og dyp lenestol fra Scapa med seteputer i kaldskum toppet med dyne, vendbar ryggpute med løst fyll og avtagbare trekk. Smale armlener og ben i tre gir et lett, skandinavisk uttrykk.",
+    "why": "Nesten en meter bred og dyp, så den er god å lene seg tilbake i med beina trukket opp – en lesestol til kjellerstua eller et rolig hjørne i stua. Det lyse Hevre-trekket med hvitoljede ben matcher eikegulvet og de lyse veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Scapa%20UAB/Produkter/NOELLE/350682/image-thumb__350682__PDP-Product/318414%20-%20Noelle%20lenestol%20Hevre%200980%20Light%20beige%20med%20ben%20631%20hvitoljet%2016cm%20-%201.7334daf6.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21: navn, pris, mål (97 × 100 × 84 cm, sete 45/56 cm, Berga 45/55), ben 16 cm i fargen som følger hvert trekk, kaldskum med dyne i setet, vendbare ryggputer, avtagbare trekk og Svanemerket. Sett på produktbildene til alle fem variantene. Armlenshøyden er anslått. Bohus oppgir ikke stoffinnholdet; alle trekkene ser ut som vevde møbelstoffer. Benfargene er tatt fra bildene i lyset (hvitoljet ben ligger i skygge under stolen). Farger og stoff kontrollert 2026-10-21 mot Bohus: Noelle lenestol selges i nøyaktig disse fem kombinasjonene av stoff og ben; alle variantene finnes."
+  },
+  {
+    "id": "bohus-jakobsen-fjell-loungestol",
+    "category": "lenestol",
+    "name": "Fjell loungestol",
+    "brand": "Jakobsen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/loungestoler/fjell-loungestol-69",
+    "priceNok": 12305,
+    "salePriceNok": 9229,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316807): Fjell loungestol i Lodge 05 Beige med heltre eikeben 44 mocca koster 9 229,- (før 12 305,-, kampanje fra 05.05.2025 uten oppgitt sluttdato); samme pris for Lodge 05 Beige med ben 46 hvitoljet (302772) og 40 svart (316808). Himalaya 904 Ivory (316809) og Sometimes 09 Taupe (310577) koster 12 999,-, Perfect Harmony 04 Oyster (310571) 11 332,-, Mito 109 Desert (310554) 8 449,- (før 12 999,-) og Boston Black (310496) 14 665,-. Bohus har 13 trekk × 4 rammefarger (40 svart, 44 mocca, 45 espresso, 46 hvitoljet); også Lodge 165 Lava/216 Curry, Oasis 108 Wood/196 Shell (9 229,- før 12 305,-), Mito 10 Liver/156 Hunter (8 449,-), Perfect Harmony 77 Navy (11 332,-), Fushion Desert/Thyme (12 305,-), Sometimes 94 Brown/98 Antracite (12 999,-) og Boston Chocolate (14 665,-).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.67,
+      "d": 0.78,
+      "h": 0.75
+    },
+    "archetype": "lounge-wood",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.4,
+      "seatD": 0.55,
+      "backH": 0.75,
+      "armH": 0.53,
+      "armW": 0.05,
+      "legStyle": "wood-frame",
+      "legH": 0.22,
+      "backShape": "curved",
+      "cushion": "tight",
+      "footstool": false,
+      "headrest": false,
+      "notes": "Lav loungestol i midtcentury-stil med åpen ramme i heltre eik. Armlenet er én sammenhengende, rund og bøyd trebue som går rundt bak ryggen i armlenshøyde (ca. 53 cm) og fram til to rette armlener med avrundede ender. Frambena går rett opp til armlenene og bakbena opp til buen bak; bena er runde, svakt koniske og skrår litt utover. Under setet binder et Y-formet tre-stag bena sammen, og setet hviler på korte messingstag (messingdetaljer). Sete og rygg er to separate, ovale og tynne polstrede skall med avrundede kanter uten løse puter: setet heller bakover, og ryggen er en frittstående oval plate som lener seg kraftig bakover og når 75 cm. Ingen topplist på ryggen. Rammefargen følger varianten (mocca, svart, espresso eller hvitoljet eik). Armlenshøyden og setedybden er anslått fra sidebildet; Bohus oppgir setedybde 71 cm."
+    },
+    "variants": [
+      {
+        "name": "Lodge 05 Beige, heltre eikeben 44 mocca",
+        "colors": {
+          "upholstery": "#c4bcab",
+          "legs": "#4a362a",
+          "frame": "#4a362a"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "smoked-oak",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/fjell-loungestol-69"
+      },
+      {
+        "name": "Lodge 05 Beige, heltre eikeben 46 hvitoljet",
+        "colors": {
+          "upholstery": "#bdb4a2",
+          "legs": "#b8a28c",
+          "frame": "#b8a28c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "white-oak",
+          "frame": "white-oak"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/fjell-loungestol-2"
+      },
+      {
+        "name": "Lodge 05 Beige, heltre eikeben 40 svart",
+        "colors": {
+          "upholstery": "#c4bcab",
+          "legs": "#1c1b19",
+          "frame": "#1c1b19"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak",
+          "frame": "black-oak"
+        },
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/fjell-loungestol-70"
+      },
+      {
+        "name": "Himalaya 904 Ivory, heltre eikeben 45 espresso",
+        "colors": {
+          "upholstery": "#dacbb2",
+          "legs": "#33241c",
+          "frame": "#33241c"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "smoked-oak",
+          "frame": "smoked-oak"
+        },
+        "priceNok": 12999,
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/fjell-loungestol-71"
+      },
+      {
+        "name": "Sometimes 09 Taupe, heltre eikeben 40 svart",
+        "colors": {
+          "upholstery": "#afa49e",
+          "legs": "#1c1b19",
+          "frame": "#1c1b19"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-oak",
+          "frame": "black-oak"
+        },
+        "priceNok": 12999,
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/fjell-loungestol-23"
+      },
+      {
+        "name": "Perfect Harmony 04 Oyster, heltre eikeben 46 hvitoljet",
+        "colors": {
+          "upholstery": "#a59d99",
+          "legs": "#b8a28c",
+          "frame": "#b8a28c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "white-oak",
+          "frame": "white-oak"
+        },
+        "priceNok": 11332,
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/fjell-loungestol-11"
+      },
+      {
+        "name": "Mito 109 Desert, heltre eikeben 44 mocca",
+        "colors": {
+          "upholstery": "#b5af9a",
+          "legs": "#4a362a",
+          "frame": "#4a362a"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "smoked-oak",
+          "frame": "smoked-oak"
+        },
+        "priceNok": 12999,
+        "salePriceNok": 8449,
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/fjell-loungestol-54"
+      },
+      {
+        "name": "Boston Black, heltre eikeben 44 mocca",
+        "colors": {
+          "upholstery": "#2e2e2e",
+          "legs": "#4a362a",
+          "frame": "#4a362a"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "smoked-oak",
+          "frame": "smoked-oak"
+        },
+        "priceNok": 14665,
+        "url": "https://www.bohus.no/stoler/lenestol/loungestoler/fjell-loungestol-62"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.5,
+    "description": "Ferdig montert loungestol fra Jakobsen i midtcentury-stil, med ramme i heltre eik, messingdetaljer og avrundet, buet sete og rygg som heller slakt bakover, så du sitter godt plantet og tilbakelent. 5 års leverandørgaranti.",
+    "why": "Den åpne eikerammen i mocca gjentar den røkte eiken i stua, og den slanke stolen (67 cm bred) tar lite plass i et hjørne eller i soverommet. Den tilbakelente ryggen gjør den mer avslappende enn en vanlig lenestol uten å virke tung.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/FJELL/341217/image-thumb__341217__PDP-Product/316807%20-%20Fjell%20loungestol%20Lodge%2005%20Beige%20heltre%20eikeben%2044%20mocca%20-%202.78675b8b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21: navn, pris, mål (67 × 78 × 75 cm, sete 40 cm; den eldre Lodge-varianten med hvitoljet ramme oppgis 70 × ? × 79 cm), ramme i heltre eik, messingdetaljer, montert levering og 5 års garanti. Sett på produktbildene (forfra, skrått og fra siden) for alle åtte variantene. Armlenshøyde og setedybde er anslått fra sidebildet (Bohus oppgir setedybde 71 cm). Bohus' egne lenker (canonical) peker for mange Fjell-varianter til samme side, så variantlenkene bruker hver variants egen nettadresse, som er kontrollert. Stoffarten oppgis ikke: Lodge og Mito er satt som vevd stoff, Himalaya som bouclé, Sometimes og Perfect Harmony som velur og Boston som skinn etter bildene. Farger og stoff kontrollert 2026-10-21 mot Bohus: åtte av de 52 ekte kombinasjonene (13 trekk × 4 rammefarger) er valgt, med vekt på rolige farger; alle variantene finnes."
+  }
+]

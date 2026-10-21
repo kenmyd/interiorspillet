@@ -35,9 +35,9 @@
       {
         "name": "Røykfarget",
         "colors": {
-          "body": "#4b3d33",
-          "front": "#4d3e34",
-          "top": "#4b3d33",
+          "body": "#433730",
+          "front": "#4a3c32",
+          "top": "#433730",
           "legs": "#1c1c1c",
           "handle": "#1a1a1a"
         },
@@ -53,9 +53,9 @@
       {
         "name": "Lys eik",
         "colors": {
-          "body": "#caa673",
-          "front": "#cda977",
-          "top": "#caa673",
+          "body": "#d0ae7e",
+          "front": "#dabb91",
+          "top": "#d0ae7e",
           "legs": "#1c1c1c",
           "handle": "#1a1a1a"
         },
@@ -76,7 +76,7 @@
     "why": "25 cm dybde gjør at det får plass i den smale delen av gangen i 1. etasje (ca. 1,57 m fri bredde ved siden av trappa) uten å stjele gangareal, og røykfarget eik med spiler matcher Vinstra-garderobeskapet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/VINSTRA/322122/image-thumb__322122__PDP-Product/299060%20-%20Vinstra%20skoskap%2071.6x25%20H140.4%203%20skuffer%20melamin%20r%C3%B8ykfarget%20med%20svarte%20metallben%20-%202.d32b6abb.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (røykfarget 2 499 før 3 599, lys eik 3 599), mål 71x25x140 (71,6x25x140,4 i beskrivelsen), 3 rom, svarte metallben. Understellshøyde (ca. 21 cm) anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (røykfarget 2 499 før 3 599, lys eik 3 599), mål 71x25x140 (71,6x25x140,4 i beskrivelsen), 3 rom, svarte metallben. Understellshøyde (ca. 21 cm) anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (røykfarget og lys eik); lys eik er justert etter produktbildet (lysere og varmere).",
     "priceConfidence": "checked"
   },
   {
@@ -133,10 +133,10 @@
       {
         "name": "Matt svart",
         "colors": {
-          "body": "#222121",
-          "front": "#242323",
-          "top": "#222121",
-          "legs": "#222121",
+          "body": "#424242",
+          "front": "#454545",
+          "top": "#424242",
+          "legs": "#424242",
           "handle": "#8f5530"
         },
         "materials": {
@@ -151,10 +151,10 @@
       {
         "name": "Eik",
         "colors": {
-          "body": "#c9a77b",
-          "front": "#c9a77b",
-          "top": "#c6a478",
-          "legs": "#c9a77b",
+          "body": "#bea48a",
+          "front": "#c1a78d",
+          "top": "#bea48a",
+          "legs": "#bea48a",
           "handle": "#1c1b1a"
         },
         "materials": {
@@ -174,7 +174,7 @@
     "why": "103 cm høyde gir en ryddig flate ved ytterdøra i entréen i kjelleren (2,51 × 2,93 m), og 24 cm dybde tar nesten ingen gulvplass. Samme serie som Madrid-garderobeskapet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/132539/image-thumb__132539__PDP-Product/249314%20-%20Madrid%20skoskap%20103x25%20H103%204%20skuffer%20hvit%20foliert%20sponplate%20-%208.fad564d9.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (hvit og matt svart 1 874 før 3 749, eik 3 749), mål 103x24x103, 4 rom med 2 lag hver, plass til ca. 16 par. Eik-varianten beskrives som «vegghengt 4 dører», men bildet viser samme skap på ben. Benhøyde anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (hvit og matt svart 1 874 før 3 749, eik 3 749), mål 103x24x103, 4 rom med 2 lag hver, plass til ca. 16 par. Eik-varianten beskrives som «vegghengt 4 dører», men bildet viser samme skap på ben. Benhøyde anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre variantene finnes (hvit, matt svart og eik; cashmere finnes bare i 54 cm); matt svart og eik er justert etter produktbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -250,10 +250,10 @@
       {
         "name": "Eik/hvit",
         "colors": {
-          "body": "#c9a77c",
-          "front": "#f4f4f2",
-          "top": "#c9a77c",
-          "legs": "#c9a77c",
+          "body": "#d1c2a8",
+          "front": "#e4e4e2",
+          "top": "#d1c2a8",
+          "legs": "#d1c2a8",
           "handle": "#d0d2d4"
         },
         "materials": {
@@ -266,6 +266,26 @@
         "priceNok": 2449,
         "salePriceNok": 1837,
         "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skoskap/shoes-skoskap-71x25-8"
+      },
+      {
+        "name": "Matt grå",
+        "colors": {
+          "body": "#4a4a4a",
+          "front": "#4c4c4c",
+          "top": "#4a4a4a",
+          "legs": "#484848",
+          "handle": "#d0d2d4"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "chrome"
+        },
+        "priceNok": 4099,
+        "salePriceNok": 2999,
+        "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skoskap/shoes-skoskap-70x24"
       }
     ],
     "defaultVariant": 0,
@@ -274,7 +294,7 @@
     "why": "Den rimeligste ryddige løsningen for sko i kjellergangen (12,5 m²) eller entréen: glatte fronter uten detaljer, og matt svart henger sammen med de svarte detaljene i resten av huset.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/SHOES/263582/image-thumb__263582__PDP-Product/236247%20-%20Shoes%20skoskap%2071x25%20H124%203%20d%C3%B8rer%20matt%20svart%20foliert%20sponplate%20-%207.c11f7586.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser for matt svart, hvit, eik/hvit og grå i H124 samt H86/H162 (priceNote), mål 71x25x124, 3 klaffer med 2 rom. Sokkel og grep anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser for matt svart, hvit, eik/hvit og grå i H124 samt H86/H162 (priceNote), mål 71x25x124, 3 klaffer med 2 rom. Sokkel og grep anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: matt svart, hvit og eik/hvit finnes; matt grå (varenr. 266911, samme skap 71x25x124 listet som «Shoes skoskap 70X24», 2 999 kr, før 4 099 kr) er lagt til, og eik/hvit er rettet etter bildet (eikeskrog, hvite klaffer).",
     "priceConfidence": "checked"
   },
   {
@@ -287,7 +307,7 @@
     "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skoskap/vinstra-skoskap-71-6x17-1",
     "priceNok": 1499,
     "salePriceNok": 999,
-    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 299029, røykfarget, kampanje 999 kr, før 1 499 kr). Lys eik (varenr. 299028, /vinstra-skoskap-71-6x17) 1 499 kr uten kampanje. Vegghengt, én vippeklaff.",
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 299029, røykfarget, kampanje 999 kr, før 1 499 kr). Lys eik (varenr. 299028, /vinstra-skoskap-71-6x17) 1 499 kr uten kampanje. Vegghengt, én vippeklaff. Lys eik er utgående og sluttsolgt på sentrallageret (sjekket 2026-10-21).",
     "dims": {
       "w": 0.716,
       "d": 0.17,
@@ -312,10 +332,10 @@
       {
         "name": "Røykfarget",
         "colors": {
-          "body": "#4b3d33",
-          "front": "#4d3e34",
-          "top": "#4b3d33",
-          "legs": "#4b3d33",
+          "body": "#45372d",
+          "front": "#4a3b30",
+          "top": "#45372d",
+          "legs": "#45372d",
           "handle": "#1a1a1a"
         },
         "materials": {
@@ -326,25 +346,6 @@
           "handle": "black-metal"
         },
         "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skoskap/vinstra-skoskap-71-6x17-1"
-      },
-      {
-        "name": "Lys eik",
-        "colors": {
-          "body": "#caa673",
-          "front": "#cda977",
-          "top": "#caa673",
-          "legs": "#caa673",
-          "handle": "#1a1a1a"
-        },
-        "materials": {
-          "body": "oak",
-          "front": "oak",
-          "top": "oak",
-          "legs": "oak",
-          "handle": "black-metal"
-        },
-        "priceNok": 1499,
-        "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skoskap/vinstra-skoskap-71-6x17"
       }
     ],
     "defaultVariant": 0,
@@ -353,7 +354,7 @@
     "why": "Svever over gulvet og er bare 17 cm dypt, så gangen i 1. etasje (3,11 × 2,07 m, trappa tar 1,54 m) beholder fri gulvflate og blir lett å holde ryddig.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/VINSTRA/322102/image-thumb__322102__PDP-Product/299029%20-%20Vinstra%20skoskap%2071.6x17%20H43%20vegghengt%201%20skuff%20melamin%20r%C3%B8ykfarget%20-%201.cb73b1c2.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (røykfarget 999 før 1 499, lys eik 1 499), mål 71x17x43 (71,6 i beskrivelsen), vegghengt, 1 rom. Monteringshøyde er et forslag, ikke oppgitt av Bohus.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (røykfarget 999 før 1 499, lys eik 1 499), mål 71x17x43 (71,6 i beskrivelsen), vegghengt, 1 rom. Monteringshøyde er et forslag, ikke oppgitt av Bohus. Farger og stoff kontrollert 2026-10-21 mot bohus.no: lys eik (varenr. 299028) er merket utgående og er sluttsolgt på sentrallageret (bare enkelteksemplarer i noen få butikker), så den er fjernet – røykfarget er eneste farge. Røykfarget er justert etter produktbildet.",
     "priceConfidence": "checked"
   },
   {
@@ -384,10 +385,10 @@
     },
     "variants": [
       {
-        "name": "Natur (hvitoljet eik)",
+        "name": "Natur",
         "colors": {
-          "body": "#c4ab8c",
-          "accent": "#c4ab8c",
+          "body": "#a08a76",
+          "accent": "#a08a76",
           "fabric": "#a57b52"
         },
         "materials": {
@@ -400,8 +401,8 @@
       {
         "name": "Brun",
         "colors": {
-          "body": "#5d4433",
-          "accent": "#5d4433",
+          "body": "#6c5845",
+          "accent": "#6c5845",
           "fabric": "#8a8580"
         },
         "materials": {
@@ -414,8 +415,8 @@
       {
         "name": "Svart",
         "colors": {
-          "body": "#1f1d1c",
-          "accent": "#1f1d1c",
+          "body": "#161614",
+          "accent": "#161614",
           "fabric": "#a57b52"
         },
         "materials": {
@@ -432,7 +433,7 @@
     "why": "Gir jakker og vesker et fast sted i entréen i kjelleren (2,51 × 2,93 m) uten å skru i veggen, og den hvitoljede eiken passer de lyse eikegulvene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/FRIKK/70727/image-thumb__70727__PDP-Product/165411%20-%20Frikk%20stumtjener%20H169%20eik%20natur%20-%201.4aaeff11.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 539 kr (før 899) for natur, brun og svart, høyde 169 cm, Ø60, 12 knagger, heltre eik, maks 20 kg. Knaggplassering anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 539 kr (før 899) for natur, brun og svart, høyde 169 cm, Ø60, 12 knagger, heltre eik, maks 20 kg. Knaggplassering anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre variantene finnes (natur = hvitoljet heltre eik, brun og svart); «Natur (hvitoljet eik)» heter nå «Natur» som hos Bohus, og fargene er justert etter produktbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -482,7 +483,7 @@
     "why": "Tar nesten ingen gulvplass (Ø28,5 cm), så den kan stå i hjørnet ved trappa i gangen i 1. etasje eller i kjellergangen, og den svarte metallen går igjen i de svarte detaljene i stua.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/BUTLER/141312/image-thumb__141312__PDP-Product/252484%20-%20Butler%20stumtjener%20H177%20metall%20svart%20-%201.7d10c1b0.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 999 kr, høyde 177 cm, Ø28,5, 6 knagger, metall svart. Knagghøyder anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 999 kr, høyde 177 cm, Ø28,5, 6 knagger, metall svart. Knagghøyder anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Butler selges bare i svart metall, og den varianten er med.",
     "priceConfidence": "checked"
   },
   {
@@ -515,8 +516,8 @@
       {
         "name": "Natur",
         "colors": {
-          "body": "#cfb48e",
-          "accent": "#cbb08a",
+          "body": "#b08f68",
+          "accent": "#a3835e",
           "fabric": "#a57b52"
         },
         "materials": {
@@ -529,8 +530,8 @@
       {
         "name": "Brun",
         "colors": {
-          "body": "#5d4433",
-          "accent": "#5a4231",
+          "body": "#4b4643",
+          "accent": "#3a3532",
           "fabric": "#8a8580"
         },
         "materials": {
@@ -547,7 +548,7 @@
     "why": "Samler jakker og luer på én enkel list i gangen i 1. etasje, så resten av den smale gangen ved trappa kan stå tom. Lys eik passer de lyse gulvene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/FRIKK/347843/image-thumb__347843__PDP-Product/317188%20-%20Frikk%20vegghylle%2080x10%20med%206%20knagger%20heltre%20eik%20s%C3%A5pevasket%20natur%20-%201.00f99195.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 539 kr (før 899) for natur og brun, mål 80x10, 6 knagger, heltre eik, vegghengt. Høyde anslått til ca. 10 cm fra bildet (Bohus oppgir H6); monteringshøyde er et forslag.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 539 kr (før 899) for natur og brun, mål 80x10, 6 knagger, heltre eik, vegghengt. Høyde anslått til ca. 10 cm fra bildet (Bohus oppgir H6); monteringshøyde er et forslag. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (natur = såpevasket heltre eik, og brun; ingen svart i 80 cm); fargene er justert etter produktbildene (brun er en mørk, grålig brun).",
     "priceConfidence": "checked"
   },
   {
@@ -579,8 +580,8 @@
       {
         "name": "Sand",
         "colors": {
-          "body": "#cdc5b9",
-          "accent": "#cdc5b9",
+          "body": "#cbc0b8",
+          "accent": "#cbc0b8",
           "fabric": "#8a8580"
         },
         "materials": {
@@ -593,8 +594,8 @@
       {
         "name": "Svart",
         "colors": {
-          "body": "#1c1c1c",
-          "accent": "#1c1c1c",
+          "body": "#302c2b",
+          "accent": "#302c2b",
           "fabric": "#a57b52"
         },
         "materials": {
@@ -611,7 +612,7 @@
     "why": "Sandfargen glir inn i SAND-veggene, så rekka nesten forsvinner når den er tom – ryddig i entréen i kjelleren eller i gangen i 1. etasje.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Consilimo%20AS/Produkter/STORD/320951/image-thumb__320951__PDP-Product/298270%20-%20Stord%20knaggrekke%20B-50%20med%205%20knagger%20st%C3%A5l%20sand%20-%201.7beb7967.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 499 kr for sand og svart, mål 50x7x7, 5 knagger, stål, vegghengt. Monteringshøyde er et forslag.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 499 kr for sand og svart, mål 50x7x7, 5 knagger, stål, vegghengt. Monteringshøyde er et forslag. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (sand og svart, pulverlakkert stål); fargene er justert etter produktbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -643,8 +644,8 @@
       {
         "name": "Natur",
         "colors": {
-          "body": "#c9b08a",
-          "accent": "#c9b08a",
+          "body": "#b0a07f",
+          "accent": "#b0a07f",
           "fabric": "#a57b52"
         },
         "materials": {
@@ -657,8 +658,8 @@
       {
         "name": "Brun",
         "colors": {
-          "body": "#5a4231",
-          "accent": "#5a4231",
+          "body": "#332e2a",
+          "accent": "#332e2a",
           "fabric": "#8a8580"
         },
         "materials": {
@@ -671,8 +672,8 @@
       {
         "name": "Svart",
         "colors": {
-          "body": "#1e1c1a",
-          "accent": "#1e1c1a",
+          "body": "#2f2f2f",
+          "accent": "#2f2f2f",
           "fabric": "#a57b52"
         },
         "materials": {
@@ -689,7 +690,7 @@
     "why": "Små, rolige trelokk i stedet for en lang rekke – nok til et par jakker og en veske på den korte veggen ved trappa i gangen i 1. etasje, uten at det ser rotete ut.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/MONDO/122235/image-thumb__122235__PDP-Product/243982%20-%20Mondo%20knagg%20%C3%9813%20eik%20natur%20-%201.b81b48db.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (99/119/139 kr) og farger (natur, brun, svart) for alle tre størrelser, dybde 8 cm, heltre eik og metall, maks 3 kg per knagg. Settet er satt sammen av oss (selges enkeltvis); avstand og monteringshøyde er et forslag.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (99/119/139 kr) og farger (natur, brun, svart) for alle tre størrelser, dybde 8 cm, heltre eik og metall, maks 3 kg per knagg. Settet er satt sammen av oss (selges enkeltvis); avstand og monteringshøyde er et forslag. Farger og stoff kontrollert 2026-10-21 mot bohus.no: natur (hvitoljet eik), brun og svart finnes i alle tre størrelser (Ø7, Ø9, Ø13) til samme priser; fargene er justert etter produktbildene av Ø13.",
     "priceConfidence": "checked"
   },
   {
@@ -699,10 +700,9 @@
     "name": "Millie benk med skohylle B70",
     "brand": "Sindig",
     "store": "Bohus",
-    "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skohyller/millie-benk-med-skohylle-b70-1",
+    "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skohyller/millie-benk-med-skohylle-b70",
     "priceNok": 2499,
-    "salePriceNok": 1250,
-    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 316748, varmgrå, kampanje 1 250 kr, før 2 499 kr). Beige (varenr. 316747, /millie-benk-med-skohylle-b70) 2 499 kr uten kampanje. Større søster Blonville benk med skohylle B100 (beige/varmgrå) 2 999 kr. Maks 120 kg.",
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316747, beige, 2 499 kr, ingen kampanje). Varmgrå (varenr. 316748, 1 250 kr, før 2 499 kr) er merket utgående og sluttsolgt på sentrallageret, så den er ikke lenger med. Større søster Blonville benk med skohylle B100 (beige/varmgrå) 2 999 kr. Maks 120 kg.",
     "dims": {
       "w": 0.7,
       "d": 0.35,
@@ -723,23 +723,9 @@
     },
     "variants": [
       {
-        "name": "Varmgrå",
-        "colors": {
-          "upholstery": "#7d7568",
-          "legs": "#1c1c1c",
-          "frame": "#1c1c1c"
-        },
-        "materials": {
-          "upholstery": "woven",
-          "legs": "black-metal",
-          "frame": "black-metal"
-        },
-        "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skohyller/millie-benk-med-skohylle-b70-1"
-      },
-      {
         "name": "Beige",
         "colors": {
-          "upholstery": "#b0a18a",
+          "upholstery": "#bcb29f",
           "legs": "#1c1c1c",
           "frame": "#1c1c1c"
         },
@@ -748,18 +734,17 @@
           "legs": "black-metal",
           "frame": "black-metal"
         },
-        "priceNok": 2499,
         "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skohyller/millie-benk-med-skohylle-b70"
       }
     ],
     "defaultVariant": 0,
     "absorption": 0.2,
     "absorptionNote": "Polstret benk ≈ 0,2 m² Sabine.",
-    "description": "Liten benk med tykt, polstret sete i varmgrått eller beige stoff på tynt svart stålstell, med skohylle under.",
+    "description": "Liten benk med tykt, polstret sete i beige stoff på tynt svart stålstell, med skohylle under.",
     "why": "70 cm bred, så den får plass i den frie delen av gangen i 1. etasje (ca. 1,57 × 2,07 m ved siden av trappa) – et sted å sitte og ta på sko, med skoene ryddig på hylla under. Det myke setet demper også litt klang i det harde rommet.",
-    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/MILLIE/349748/image-thumb__349748__PDP-Product/316748%20-%20Millie%20benk%20med%20skohylle%20B70%20H45%201%20hylle%20Gr%C3%A5%20-%202.77d01265.jpg",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/MILLIE/349750/image-thumb__349750__PDP-Product/316747%20-%20Millie%20benk%20med%20skohylle%20B70%20H45%201%20hylle%20Beige%20-%204.e99abde8.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (varmgrå 1 250 før 2 499, beige 2 499), mål 70x35x45, polyester/metall/kryssfiner/skumgummi, 1 hylle, maks 120 kg. Setetykkelse og hyllehøyde anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (varmgrå 1 250 før 2 499, beige 2 499), mål 70x35x45, polyester/metall/kryssfiner/skumgummi, 1 hylle, maks 120 kg. Setetykkelse og hyllehøyde anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: varmgrå (varenr. 316748) er merket utgående og er sluttsolgt på sentrallageret (bare enkelteksemplarer i noen få butikker), så den er fjernet; beige er nå hovedvarianten med eget bilde, lenke og pris (2 499 kr, ingen kampanje), og stoffargen er justert etter produktbildet.",
     "priceConfidence": "checked"
   },
   {
@@ -794,7 +779,7 @@
       {
         "name": "Natur",
         "colors": {
-          "upholstery": "#d3b88f",
+          "upholstery": "#c3ad8e",
           "legs": "#1c1c1c",
           "frame": "#1c1c1c"
         },
@@ -808,7 +793,7 @@
       {
         "name": "Brun",
         "colors": {
-          "upholstery": "#5d4535",
+          "upholstery": "#74706a",
           "legs": "#1c1c1c",
           "frame": "#1c1c1c"
         },
@@ -826,7 +811,7 @@
     "why": "115 cm gir sitteplass for to og plass til mange par sko i entréen i kjelleren (2,51 × 2,93 m) eller langs veggen i kjellergangen. Eik og svart stål er det samme uttrykket som i stua.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/MONDO/122255/image-thumb__122255__PDP-Product/243976%20-%20Mondo%20benk%20med%20skohylle%20B-115%20H43%20eik%20svart%20natur%20-%202.72fb0a08.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 2 599 kr for natur og brun, mål 115x35x43, eikefiner og metall, maks 120 kg. Setetykkelse og hyllehøyde anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, pris 2 599 kr for natur og brun, mål 115x35x43, eikefiner og metall, maks 120 kg. Setetykkelse og hyllehøyde anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (natur = hvitpigmentert lakkert eikefiner, og brun); setefargene er justert etter produktbildene (brun er en grålig mørk brun).",
     "priceConfidence": "checked"
   }
 ]

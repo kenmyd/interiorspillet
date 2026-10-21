@@ -1,0 +1,510 @@
+[
+  {
+    "id": "jysk-tankedal-recliner-med-krakk",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Recliner TANKEDAL m/krakk",
+    "brand": "Jysk",
+    "store": "Jysk",
+    "url": "https://jysk.no/stue/lenestoler/recliner-tankedal-m-krakk-beige-stoff-krom",
+    "priceNok": 2999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3660004, beige stoff/børstet krom): 2 999 kr, ingen kampanje. Mørk grå stoff med svart fot (varenr. 3660003) har samme pris. Krakken følger med i prisen. Leveres flatpakket i 1 kolli, og frakt kan komme i tillegg.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.7,
+      "d": 0.77,
+      "h": 1.07
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "seatD": 0.48,
+      "backH": 1.07,
+      "armH": 0.62,
+      "armW": 0.1,
+      "legStyle": "swivel-star",
+      "legH": 0.26,
+      "body": "tulip",
+      "sides": "fabric",
+      "headStyle": "integrated",
+      "backSeams": "cross",
+      "footrest": "stool",
+      "footrestOpen": false,
+      "footstool": true,
+      "headrest": true,
+      "stoolW": 0.48,
+      "stoolD": 0.42,
+      "stoolH": 0.39,
+      "star": "slim",
+      "starArms": 4,
+      "lever": false,
+      "backShape": "high",
+      "cushion": "tight",
+      "notes": "Tulipanformet hvilestol. Et helpolstret ytterskall omslutter ryggen og buer ut til to smale, polstrede armlener. Armlenene står litt ut til sidene øverst og smalner ned mot setet. Ryggen er høy, med en innebygd nakkedel øverst som er skilt fra ryggputen med en tverrsøm. Bak på skallet går en loddrett søm på midten. Setet har en tykk, avrundet pute. Stolen har trinnløs vippemekanisme: ryggen vippes når man lener seg bakover, og strammingen justeres med et rundt hjul under setet. Den har ingen hendel på siden. Stolen står på en svingfot med søyle og en firearmet stjernefot med flate, tynne armer og svarte glidesko, i børstet krom på den beige varianten og svart på den mørk grå. Fotskammelen er 48 × 42 × 39 cm (fra Jysk) og er en avrundet, litt trapesformet pute på en egen firearmet stjernefot i samme metall. Skallets underkant står ca. 28 cm over gulvet. Setedybden og armlenshøyden er anslått fra sidebildet."
+    },
+    "variants": [
+      {
+        "name": "Beige stoff / børstet krom",
+        "colors": {
+          "upholstery": "#c9c1bc",
+          "legs": "#b2aea6"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "chrome"
+        },
+        "url": "https://jysk.no/stue/lenestoler/recliner-tankedal-m-krakk-beige-stoff-krom"
+      },
+      {
+        "name": "Mørk grå stoff / svart",
+        "colors": {
+          "upholstery": "#46474c",
+          "legs": "#1e1e1f"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://jysk.no/stue/lenestoler/recliner-tankedal-m-krakk-mork-gra-stoff"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.75,
+    "description": "Rimelig hvilestol med høy rygg, nakkedel og trinnløs vippemekanisme, på svingfot med firearmet stjernefot. Krakken følger med. Trekket er flatvevd polyester.",
+    "why": "Den lyse beige varianten med børstet krom er en rimelig lesestol til kjellerstua (20,6 m²) eller stua. Den er smal (70 cm) og tar liten plass, og krakken kan skyves under setet når stolen ikke er i bruk.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/263956",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., pris 2 999 kr for begge farger (hver fargeside er lest), mål B70 × H107 × D77 cm, setehøyde 46 cm, krakk B48 × H39 × D42 cm, svingfot og trinnløs vippefunksjon. Fargene er beige med børstet krom og mørk grå med svart fot (Jysk oppgir «Mørk grå, Svart»). Jysk selger bare disse to. Setedybden, armlenshøyden og basehøyden er anslått fra bildene, og fargene er hentet fra produktbildene til hver variant."
+  },
+  {
+    "id": "jysk-nakskov-recliner",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Recliner NAKSKOV",
+    "brand": "Jysk",
+    "store": "Jysk",
+    "url": "https://jysk.no/stue/lenestoler/recliner-nakskov-beige-stoff",
+    "priceNok": 3699,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3620306, beige stoff): 3 699 kr, ingen kampanje. Mørk grå (varenr. 7200431) har samme pris. Leveres flatpakket i 1 kolli, og frakt kan komme i tillegg.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.73,
+      "d": 0.93,
+      "h": 1.06
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "seatD": 0.53,
+      "backH": 1.06,
+      "armH": 0.6,
+      "armW": 0.12,
+      "legStyle": "swivel-disc",
+      "legH": 0.04,
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "integrated",
+      "backSeams": "cross",
+      "footrest": "integrated",
+      "footrestOpen": false,
+      "footstool": false,
+      "headrest": true,
+      "lever": true,
+      "backShape": "high",
+      "cushion": "tight",
+      "notes": "Kantete, helpolstret recliner med innebygd fothviler. Tykke, polstrede sidevanger danner armlenene. Toppen av armlenene er avrundet og buer ned foran i en stor radius. Ryggen består av tre polstrede felt stablet oppå hverandre, med tverrsømmer mellom; det øverste feltet er nakkedelen. Setet har en tykk, fast pute. Under setet sitter et høyt frontpanel som felles ut som leggstøtte når man drar i en spak: et innfelt, svart håndtak på utsiden av høyre armlen. Ryggen vippes trinnløst bakover. Stolen kan ikke dreies. Den står på to lave, svarte metallmeier som nesten er skjult under stoffet, og legStyle swivel-disc med legH 0,04 brukes bare som en lav, skjult sokkel. Fullt utslått er stolen 168 cm dyp, med liggelengde 177 cm. Armlenshøyden og armbredden er anslått fra bildene."
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "upholstery": "#d0c6ba",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://jysk.no/stue/lenestoler/recliner-nakskov-beige-stoff"
+      },
+      {
+        "name": "Mørk grå",
+        "colors": {
+          "upholstery": "#3e3e3f",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://jysk.no/stue/lenestoler/recliner-nakskov-mork-gra"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.8,
+    "description": "Helpolstret recliner med innebygd fotstøtte som felles ut med et håndtak på siden, og trinnløst vippbar rygg. Trekket er flatvevd stoff av polyester og polyamid.",
+    "why": "En rimelig hvilestol til TV-hjørnet i kjellerstua (20,6 m²), der man kan legge seg helt bakover. Den lyse beige fargen passer til de varme sandfargede veggene.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/284065",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., pris 3 699 kr for beige og mørk grå (hver fargeside er lest), mål B73 (mørk grå: B72) × H106 × D93 cm, utslått D168 cm, setehøyde 46 cm og setedybde 53 cm. Stolen har innebygd benstøtte og trinnløs vippefunksjon, og Jysk selger bare disse to fargene. Armlenshøyden er anslått fra bildene, og fargene er hentet fra produktbildene til hver variant."
+  },
+  {
+    "id": "jysk-bredbjerg-recliner",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Recliner BREDBJERG",
+    "brand": "Jysk",
+    "store": "Jysk",
+    "url": "https://jysk.no/stue/lenestoler/recliner-bredbjerg-beige-stoff",
+    "priceNok": 3299,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3610231, beige stoff): 3 299 kr, ingen kampanje. Stolen finnes bare i beige. Leveres flatpakket i 1 kolli, og frakt kan komme i tillegg.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.82,
+      "d": 0.96,
+      "h": 1.01
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.5,
+      "seatD": 0.57,
+      "backH": 1.01,
+      "armH": 0.63,
+      "armW": 0.14,
+      "legStyle": "swivel-disc",
+      "legH": 0.05,
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "none",
+      "backSeams": "none",
+      "footrest": "integrated",
+      "footrestOpen": false,
+      "footstool": false,
+      "headrest": false,
+      "lever": true,
+      "backShape": "high",
+      "cushion": "tight",
+      "notes": "Avrundet, helpolstret recliner med sving og innebygd fothviler. Ryggen er én høy, myk pute med avrundet topp og avrundede hjørner. Den har ingen egen nakkepute og ingen sømmer på forsiden. Armlenene er tykke, polstrede sidevanger med avrundet front og topp, og setet har en tykk pute. Setefronten er et panel som felles ut som leggstøtte når man drar i en spak: et innfelt, svart håndtak på utsiden av høyre armlen. Stolen står på en lav, svart, rund svingplate av stål (ca. 5 cm) som nesten er skjult under stolen. Stoffet er et meleret, tweedaktig strukturstoff i varm gråbeige. Jysk oppgir B74 × H75 × D73 cm i produktteksten, men målene i spesifikasjonen (B82 × H101 × D96, sete 50/57) stemmer med bildene og er brukt her. Armlenshøyden og armbredden er anslått fra bildene."
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "upholstery": "#b3a698",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://jysk.no/stue/lenestoler/recliner-bredbjerg-beige-stoff"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.85,
+    "description": "Myk, avrundet recliner med svingfot og innebygd fotstøtte som felles ut med et håndtak på siden. Setet har pocketfjærer, og trekket er et meleret, strukturert beige stoff.",
+    "why": "Den varme, melerte gråbeige fargen og de myke, runde formene passer til sandveggene og bouclé-preget i stua. Svingfoten gjør at stolen kan snus mot TV-en i kjellerstua.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/284055",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., pris 3 299 kr, eneste farge beige, spesifikasjon B82 × H101 × D96 cm, setehøyde 50 cm, setedybde 57 cm, innebygd benstøtte, svingfot og pocketfjærer. Produktteksten oppgir B74 × H75 × D73, men det stemmer ikke med bildene, så spesifikasjonen er brukt. Armlenshøyden er anslått, og fargen er hentet fra produktbildene."
+  },
+  {
+    "id": "ikea-muren-hvilestol",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "MUREN hvilestol",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/muren-hvilestol-remmarn-lys-gra-00438553/",
+    "priceNok": 3995,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 004.385.53, Remmarn lys grå): 3 995 kr, ingen førpris eller kampanje. IKEA Norge selger nå bare trekket Remmarn lys grå. Trekket kan tas av og vaskes på 40 °C. Garantien er 10 år.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.85,
+      "d": 0.94,
+      "h": 0.97
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.45,
+      "seatD": 0.54,
+      "backH": 0.97,
+      "armH": 0.61,
+      "armW": 0.155,
+      "legStyle": "block",
+      "legH": 0.1,
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "integrated",
+      "backSeams": "none",
+      "footrest": "integrated",
+      "footrestOpen": false,
+      "footstool": false,
+      "headrest": true,
+      "lever": false,
+      "backShape": "high",
+      "cushion": "tight",
+      "notes": "Klassisk, kantete hvilestol med innebygd fothviler. Armlenene er brede og polstrede, og de er rullet utover foran med en rund front (rullearmlen). Alle kanter har kantbånd. Ryggen er høy og ruller litt bakover øverst. Øverst foran er en tynn, polstret nakkepute sydd fast som en klaff; ellers er ryggen glatt. Setet har en tykk pute med kantbånd, og under den sitter et frontpanel som felles ut som leggstøtte når man lener seg bakover. Stolen har ingen hendel og kan stilles i tre stillinger. På utsiden av venstre armlen henger en stofflomme til fjernkontrollen. Stolen står på fire korte, rette og litt skrå ben i mørkbeiset bjørk (ca. 10 cm) og har ikke svingfot. legStyle «block» er satt fordi hvilestolmodellen foreløpig bare har svingfot. Fullt utslått er stolen 162 cm dyp og 68 cm høy. Armlenshøyden er anslått fra bildet."
+    },
+    "variants": [
+      {
+        "name": "Remmarn lys grå",
+        "colors": {
+          "upholstery": "#838383",
+          "legs": "#353231"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/muren-hvilestol-remmarn-lys-gra-00438553/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.8,
+    "description": "IKEAs hvilestol med innebygd fotstøtte. Ryggen senkes og fotstøtten kommer opp når man lener seg bakover, og stolen har tre stillinger. Trekket kan tas av og vaskes, og bena er i beiset massiv bjørk.",
+    "why": "Den eneste ekte hvilestolen fra IKEA og et rimelig valg til TV-hjørnet i kjellerstua (20,6 m²). Det lyse grå trekket kan vaskes, og stolen har ingen motor eller ledning.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/muren-hvilestol-remmarn-lys-gra__0908542_pe783275_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21: navn, art.nr., pris 3 995 kr, mål B85 × D94 × H97 cm (målskissen viser D93), setebredde 54, setedybde 54, setehøyde 45 cm, utslått D162 × H68 cm, innebygd fotstøtte med tre stillinger, avtakbart trekk og ben i beiset massiv bjørk. Remmarn lys grå er det eneste trekket i salg. Armlenshøyden er anslått fra bildet, og fargene er hentet fra produktbildet."
+  },
+  {
+    "id": "ikea-havberg-svinglenestol-og-fotskammel",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "HAVBERG svinglenestol og fotskammel",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/havberg-svinglenestol-og-fotskammel-grann-bomstad-gyllenbrun-s39485322/",
+    "priceNok": 6990,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 394.853.22, Grann/Bomstad gyllenbrun): 6 990 kr for svinglenestol og fotskammel, ingen kampanje. Stolen alene (705.151.09) koster 4 795 kr og fotskammelen alene (105.151.07) 2 195 kr. IKEA Norge selger bare Grann/Bomstad gyllenbrun. Settet leveres i 2 kolli.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.66,
+      "d": 0.99,
+      "h": 0.92
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.41,
+      "seatD": 0.54,
+      "backH": 0.92,
+      "armH": 0.49,
+      "armW": 0.05,
+      "legStyle": "swivel-star",
+      "legH": 0.2,
+      "body": "shell",
+      "sides": "fabric",
+      "headStyle": "block",
+      "backSeams": "buttons",
+      "footrest": "stool",
+      "footrestOpen": false,
+      "footstool": true,
+      "headrest": true,
+      "stoolW": 0.64,
+      "stoolD": 0.64,
+      "stoolH": 0.44,
+      "starArms": 5,
+      "lever": false,
+      "backShape": "high",
+      "cushion": "tight",
+      "notes": "Armløs svinglenestol med høy, skrå rygg. Stolen har ingen hvilefunksjon, men sittestillingen er tilbakelent. Et tynt, formet ytterskall i Bomstad, et belagt tekstil i samme farge som skinnet, omslutter sete og rygg. Under setet smalner skallet ned til et kjegleformet nav over svingfoten. Skallets sidekant står bare noen få cm over setet, så stolen har ingen egentlige armlener, og armH er derfor satt lavt. Inne i skallet ligger en tykk setepute og en ryggpute i Grann narvskinn med kvadratisk tufting (3 × 3 felt). Øverst sitter en separat, rektangulær nakkepute med samme tufting. Setet heller bakover og er 41 cm høyt foran og 33 cm bak. Stolen står på en svart, pulverlakkert stjernefot med 5 armer, nedbøyde føtter og kort søyle. Fotskammelen er 64 × 64 × 44 cm (fra IKEA). Den er en tykk, tuftet skinnpute i et grunt skall på en egen svart stjernefot med 5 armer, men modellen tegner fire. Høyden på basen er anslått fra målskissen."
+    },
+    "variants": [
+      {
+        "name": "Grann/Bomstad gyllenbrun",
+        "colors": {
+          "upholstery": "#b3825b",
+          "frame": "#a87a57",
+          "legs": "#1b1b1b"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "frame": "leather",
+          "legs": "black-metal"
+        },
+        "url": "https://www.ikea.com/no/no/p/havberg-svinglenestol-og-fotskammel-grann-bomstad-gyllenbrun-s39485322/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.7,
+    "description": "Tilbakelent svinglenestol i narvskinn med tuftet sete, rygg og nakkepute, og en fotskammel som også kan brukes som ekstra sete. Foten er en svart stjernefot i stål.",
+    "why": "Den gyllenbrune skinnfargen gir varme mot de lyse sandveggene, og den svarte stjernefoten går igjen i de svarte detaljene i huset. Stolen er bare 66 cm bred, så den passer i et lesehjørne i kjellerstua.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/havberg-svinglenestol-og-fotskammel-grann-bomstad-gyllenbrun__1099122_pe865608_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21: navn, art.nr. for settet og hver del, pris 6 990 kr (4 795 + 2 195), stolens mål B66 × D99 × H92 cm, setehøyde 41 cm, setedybde 54 cm, fotskammel 64 × 64 × 44 cm, svingfunksjon, Grann narvskinn på sittedelene og Bomstad belagt tekstil på resten. Gyllenbrun er den eneste fargen i salg. IKEA nevner ingen vippe- eller hvilefunksjon. Basehøyden er anslått fra målskissen, og fargene er hentet fra produktbildene."
+  },
+  {
+    "id": "ikea-poang-lenestol",
+    "category": "lenestol",
+    "name": "POÄNG lenestol",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-bjorkefiner-knisa-lys-beige-s39240787/",
+    "priceNok": 1495,
+    "salePriceNok": 995,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 392.407.87, bjørkefiner/Knisa lys beige): 995 kr, merket «Ny lavere pris», før 1 495 kr. Prisen avhenger av ramme og trekk. Med Knisa-trekk koster stolen 995 kr på bjørkefiner og 1 195 kr på hvitbeiset eikefiner eller brunsvart (før 1 495). Med Kelinge beige koster den 1 495 kr på eik og valnøttmønstret (før 1 695). Med Gunnared koster den 1 795 kr på bjørkefiner (før 2 195) og 1 995 kr på hvitbeiset eikefiner eller brunsvart (før 2 195). Rammen finnes også i mørk grønn, og trekket også i Knisa svart, Vissle dypgrønn, Kelinge mørk gul, Gunnared lys grønn, Hillared antrasitt/mørk blå og Grann skinn (2 495). POÄNG fotskammel koster fra 595 kr (før 795), og settet med stol og fotskammel i eik/Kelinge beige 2 390 kr (før 2 690).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.68,
+      "d": 0.82,
+      "h": 1
+    },
+    "archetype": "lounge-wood",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.42,
+      "seatD": 0.5,
+      "backH": 1,
+      "armH": 0.57,
+      "armW": 0.05,
+      "legStyle": "wood-frame",
+      "legH": 0.22,
+      "backShape": "curved",
+      "cushion": "tight",
+      "footstool": false,
+      "headrest": false,
+      "notes": "Frittbærende lenestol med ramme i limt, bøyd finér. To sammenhengende, flate finérvanger (ca. 5 cm brede) går fra et rektangulært gulvmeie, fram og opp som armlener og bakover til ryggrammen. Stolen har ingen bakben og fjærer når man sitter i den. Sete og rygg er én sammenhengende, svakt S-formet ramme med spent duk. Over dem ligger én lang, løs pute med en egen nakkedel øverst: Knisa har tverrkanaler, Gunnared er tuftet i ruter og Kelinge er glatt. Under setet sitter en tverrslå foran og en bak. Modellen lounge-wood tegner ben i hjørnene, men det virkelige understellet er to flate meier på gulvet. Armlenshøyden er anslått fra bildet."
+    },
+    "variants": [
+      {
+        "name": "bjørkefiner/Knisa lys beige",
+        "colors": {
+          "upholstery": "#b8b1a7",
+          "legs": "#e2cda9",
+          "frame": "#e2cda9"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "ash",
+          "frame": "ash"
+        },
+        "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-bjorkefiner-knisa-lys-beige-s39240787/"
+      },
+      {
+        "name": "bjørkefiner/Gunnared beige",
+        "colors": {
+          "upholstery": "#c0b7ab",
+          "legs": "#e2cda9",
+          "frame": "#e2cda9"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "ash",
+          "frame": "ash"
+        },
+        "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-bjorkefiner-gunnared-beige-s59514385/",
+        "priceNok": 2195,
+        "salePriceNok": 1795
+      },
+      {
+        "name": "hvitbeiset eikefiner/Knisa lys beige",
+        "colors": {
+          "upholstery": "#b9b1a6",
+          "legs": "#d9bea0",
+          "frame": "#d9bea0"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "white-oak",
+          "frame": "white-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-hvitbeiset-eikefiner-knisa-lys-beige-s29286610/",
+        "priceNok": 1495,
+        "salePriceNok": 1195
+      },
+      {
+        "name": "hvitbeiset eikefiner/Gunnared beige",
+        "colors": {
+          "upholstery": "#c1b8ac",
+          "legs": "#d9bea0",
+          "frame": "#d9bea0"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "white-oak",
+          "frame": "white-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-hvitbeiset-eikefiner-gunnared-beige-s69501995/",
+        "priceNok": 2195,
+        "salePriceNok": 1995
+      },
+      {
+        "name": "eik/Kelinge beige",
+        "colors": {
+          "upholstery": "#c4b5a2",
+          "legs": "#b39670",
+          "frame": "#b39670"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak",
+          "frame": "oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-eik-kelinge-beige-s39625011/",
+        "priceNok": 1695,
+        "salePriceNok": 1495
+      },
+      {
+        "name": "brunsvart/Knisa lys beige",
+        "colors": {
+          "upholstery": "#b6aea5",
+          "legs": "#36302d",
+          "frame": "#36302d"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak",
+          "frame": "black-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-brunsvart-knisa-lys-beige-s39240792/",
+        "priceNok": 1495,
+        "salePriceNok": 1195
+      },
+      {
+        "name": "brunsvart/Gunnared mørk grå",
+        "colors": {
+          "upholstery": "#535257",
+          "legs": "#36302d",
+          "frame": "#36302d"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak",
+          "frame": "black-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-brunsvart-gunnared-mork-gra-s69502061/",
+        "priceNok": 2195,
+        "salePriceNok": 1995
+      },
+      {
+        "name": "valnøttmønstret/Kelinge beige",
+        "colors": {
+          "upholstery": "#c4b5a2",
+          "legs": "#4a3a2a",
+          "frame": "#4a3a2a"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "walnut",
+          "frame": "walnut"
+        },
+        "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-valnottmonstret-kelinge-beige-s49617708/",
+        "priceNok": 1695,
+        "salePriceNok": 1495
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.5,
+    "description": "Klassisk frittbærende lenestol fra IKEA i bøyd, limt finér som fjærer litt. Den høye ryggen støtter nakken, og den løse puten kan tas av og vaskes.",
+    "why": "En rimelig og lett stol å lene seg tilbake i, med lys bjørk eller eik som passer til eikegulvet og beige puter som passer til sandveggene. Den er bare 68 cm bred og passer i et hjørne på soverommet (3,11 × 3,69 m) eller i kjellerstua.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/poaeng-lenestol-bjorkefiner-knisa-lys-beige__0571500_pe666933_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21: navn, art.nr., pris 995 kr («Ny lavere pris», før 1 495), mål B68 × D82 × H100 cm, setebredde 56, setedybde 50, setehøyde 42 cm, ramme i limt, bøyd finér og avtakbart trekk. Alle de åtte variantene er tatt fra IKEAs fargeliste for POÄNG lenestol, med pris, førpris og lenke for hver. Armlenshøyden er anslått fra bildet, og fargene er hentet fra produktbildet til hver variant."
+  }
+]

@@ -12,12 +12,14 @@
     "archetype": "tub-swivel",
     "params": { "seatH": 0.41, "seatD": 0.54, "backH": 0.77, "armH": 0.6, "armW": 0.14, "legStyle": "swivel-disc", "legH": 0.06, "backShape": "round", "cushion": "tight", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Egon 0994 Moss, ben svart", "colors": { "upholstery": "#6e7256", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" } },
-      { "name": "Egon 0997 Nature, ben svart", "colors": { "upholstery": "#e6dfd2", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" } },
-      { "name": "Egon 0990 Light grey, ben svart", "colors": { "upholstery": "#c4c2bd", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" } },
-      { "name": "Egon 0996 Brown, ben svart", "colors": { "upholstery": "#6b5443", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" } },
-      { "name": "Egon 0995 Honey, ben svart", "colors": { "upholstery": "#b8894a", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" } },
-      { "name": "Egon 0992 Black, ben svart", "colors": { "upholstery": "#2b2a28", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" } }
+      { "name": "Egon 0994 Moss, ben svart", "colors": { "upholstery": "#606247", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/vilde-loungestol-23" },
+      { "name": "Egon 0997 Nature, ben svart", "colors": { "upholstery": "#b6b1a7", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/vilde-loungestol-18" },
+      { "name": "Egon 0990 Light grey, ben svart", "colors": { "upholstery": "#b0b2af", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/vilde-loungestol-19" },
+      { "name": "Egon 0996 Brown, ben svart", "colors": { "upholstery": "#847469", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/vilde-loungestol-17" },
+      { "name": "Egon 0995 Honey, ben svart", "colors": { "upholstery": "#8f7257", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/vilde-loungestol-24" },
+      { "name": "Egon 0992 Black, ben svart", "colors": { "upholstery": "#262a2e", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/vilde-loungestol-21" },
+      { "name": "Bitzer 1622 Beige, ben svart", "colors": { "upholstery": "#c5b6a4", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/vilde-loungestol-1", "priceNok": 11999, "salePriceNok": 5400 },
+      { "name": "Bitzer 1620 Nature, ben svart", "colors": { "upholstery": "#c6c1b5", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/vilde-loungestol", "priceNok": 11999, "salePriceNok": 5400 }
     ],
     "defaultVariant": 0,
     "absorption": 0.6,
@@ -25,7 +27,7 @@
     "why": "Den runde formen snakker med de to boucle-svingstolene i sittegruppen, og mosegrønn gir en rolig fargeklatt som henter inn grønnfargen fra elva og trærne utenfor sørvinduene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Scapa%20UAB/Produkter/VILDE/609215/image-thumb__609215__PDP-Product/328248%20-%20Vilde%20loungestol%20med%20sving%2C%20Egon%200994%20Moss%20ben%20svart%20-%201.a9e61fa5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris, mål (74×74×77, sete 41/54), sving og alle Egon-farger stemmer. Kampanjeprisen gjelder Bitzer-stoffet."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris, mål (74×74×77, sete 41/54), sving og alle Egon-farger stemmer. Kampanjeprisen gjelder Bitzer-stoffet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle seks Egon-variantene finnes, fargene er justert etter produktbildene (Nature og Honey var for lyse), og Bitzer 1622 Beige og Bitzer 1620 Nature (bouclé, 5 400,- før 11 999,-) er lagt til."
   },
   {
     "id": "bohus-jakobsen-ronda-lenestol",
@@ -41,11 +43,12 @@
     "archetype": "tub-swivel",
     "params": { "seatH": 0.45, "seatD": 0.5, "backH": 0.79, "armH": 0.62, "armW": 0.1, "legStyle": "swivel-star", "legH": 0.12, "backShape": "round", "cushion": "tight", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Adore 68 Dark grey, kryssfot svart", "colors": { "upholstery": "#4a4948", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" } },
-      { "name": "Adore 156 Hunter, kryssfot svart", "colors": { "upholstery": "#2f4a3c", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" } },
-      { "name": "Adore 126 Copper, kryssfot svart", "colors": { "upholstery": "#a0623a", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" } },
-      { "name": "Storm 54 Rust, kryssfot svart (med sving)", "colors": { "upholstery": "#9a4b2f", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "priceNok": 7999 },
-      { "name": "Storm 09 Taupe, kryssfot svart (med sving)", "colors": { "upholstery": "#8a7d70", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "priceNok": 7999 }
+      { "name": "Adore 68 Dark grey, kryssfot svart", "colors": { "upholstery": "#5f5c5f", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/ronda-lenestol-2" },
+      { "name": "Adore 156 Hunter, kryssfot svart", "colors": { "upholstery": "#5e6055", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/ronda-lenestol-1" },
+      { "name": "Adore 126 Copper, kryssfot svart", "colors": { "upholstery": "#8e4f40", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/ronda-lenestol" },
+      { "name": "Storm 54 Rust, kryssfot svart (med sving)", "colors": { "upholstery": "#985a3c", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/ronda-lenestol-3", "priceNok": 7999 },
+      { "name": "Storm 09 Taupe, kryssfot svart (med sving)", "colors": { "upholstery": "#9e9082", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/ronda-lenestol-4", "priceNok": 7999 },
+      { "name": "Storm 02 Natural, kryssfot svart (med sving)", "colors": { "upholstery": "#d3cabd", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/ronda-lenestol-5", "priceNok": 7999 }
     ],
     "defaultVariant": 0,
     "absorption": 0.55,
@@ -53,7 +56,7 @@
     "why": "Den smale bredden passer i overgangen mellom TV-stua og sittegruppen, og mørk grå velur matcher den grå hjørnesofaen og de svarte metalldetaljene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/RONDA/238180/image-thumb__238180__PDP-Product/283567%20-%20Ronda%20lenestol%20adore%2068%20dark%20grey%20svart%20-%204.6bf85fb9.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål stemmer. Rettet: Bohus oppgir sving bare for Storm-variantene, ikke Adore. Bilde byttet til standardvarianten."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål stemmer. Rettet: Bohus oppgir sving bare for Storm-variantene, ikke Adore. Bilde byttet til standardvarianten. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle variantene finnes, fargene er rettet etter produktbildene (Adore 156 Hunter er grågrønn, ikke mørk grønn), og Storm 02 Natural (med sving, 7 999,-) er lagt til."
   },
   {
     "id": "bohus-dominari-beetle-loungestol",
@@ -68,11 +71,13 @@
     "archetype": "tub-swivel",
     "params": { "seatH": 0.42, "seatD": 0.5, "backH": 0.82, "armH": 0.62, "armW": 0.14, "legStyle": "swivel-disc", "legH": 0.04, "backShape": "round", "cushion": "loose", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Koos 04 Greybeige, ben svart", "colors": { "upholstery": "#b5aca0", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Lincoln krem, ben svart", "colors": { "upholstery": "#ddd2c0", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Golden 68 Burgunder, ben svart", "colors": { "upholstery": "#5e2430", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" } },
-      { "name": "Golden 29 Mørk brun, ben svart", "colors": { "upholstery": "#4a3529", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" } },
-      { "name": "Coco 87 Lys grå, ben svart (utgående)", "colors": { "upholstery": "#9a9893", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } }
+      { "name": "Koos 04 Greybeige, ben svart", "colors": { "upholstery": "#aaa5a0", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/beetle-loungestol-4" },
+      { "name": "Lincoln krem, ben svart", "colors": { "upholstery": "#e8dfd4", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/beetle-loungestol-2", "priceNok": 13845, "salePriceNok": 8999 },
+      { "name": "Golden 68 Burgunder, ben svart", "colors": { "upholstery": "#643a37", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/beetle-loungestol-5", "priceNok": 14666, "salePriceNok": 9499 },
+      { "name": "Golden 29 Mørk brun, ben svart", "colors": { "upholstery": "#322a20", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/beetle-loungestol-9", "priceNok": 14666 },
+      { "name": "Koos 02 Ecru, ben svart", "colors": { "upholstery": "#e2dfda", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/belmont-loungestol-1" },
+      { "name": "Golden 21 Beige, ben svart", "colors": { "upholstery": "#b8a68e", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/beetle-loungestol-7", "priceNok": 14666 },
+      { "name": "Lincoln grønn, ben svart", "colors": { "upholstery": "#746649", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/beetle-loungestol-1", "priceNok": 13845, "salePriceNok": 8999 }
     ],
     "defaultVariant": 0,
     "absorption": 0.65,
@@ -80,7 +85,7 @@
     "why": "Den runde formen og den lyse gråbeige fargen gir en rolig helhet med svingstolene ved vinduet, mens burgunder kan bli en varm aksent mot SAND- og MARRAKESH-veggene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Dominari%20Grupe%20UAB/Produkter/BEETLE/352454/image-thumb__352454__PDP-Product/320931%20-%20Beetle%20loungestol%20med%20sving%2C%20Koos%2004%20Greybeige%20ben%20svart%20-%202.97bd0375.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no. Rettet: dybde 92 cm (ikke 82) for dagens varianter, løse ryggputer, URL byttet fra utgående Coco-variant til Koos 04. Setedybde oppgis 44–53 cm."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no. Rettet: dybde 92 cm (ikke 82) for dagens varianter, løse ryggputer, URL byttet fra utgående Coco-variant til Koos 04. Setedybde oppgis 44–53 cm. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Coco 87 Lys grå er fjernet (under utfasing og bare i 82 cm dybde), Koos er chenille og Lincoln kordfløyel (velur, ikke vevd), og Koos 02 Ecru, Golden 21 Beige og Lincoln grønn (8 999,- før 13 845,-) er lagt til."
   },
   {
     "id": "bohus-actona-meno-loungestol",
@@ -96,16 +101,16 @@
     "archetype": "shell-legs",
     "params": { "seatH": 0.415, "seatD": 0.53, "backH": 0.75, "armH": 0, "armW": 0, "legStyle": "wood-taper", "legH": 0.15, "backShape": "round", "cushion": "tight", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Bay gråbrun 440, ben smoked eik", "colors": { "upholstery": "#8a7c6e", "legs": "#4a3628" }, "materials": { "upholstery": "teddy", "legs": "smoked-oak" } },
-      { "name": "Bay creme 110, ben smoked eik", "colors": { "upholstery": "#e3d6c3", "legs": "#4a3628" }, "materials": { "upholstery": "teddy", "legs": "smoked-oak" } }
+      { "name": "Bay gråbrun 440, ben smoked eik", "colors": { "upholstery": "#6a5244", "legs": "#4a3628" }, "materials": { "upholstery": "teddy", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/meno-loungestol" },
+      { "name": "Bay creme 110, ben smoked eik", "colors": { "upholstery": "#dccdbf", "legs": "#4a3628" }, "materials": { "upholstery": "teddy", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/meno-loungestol-1", "priceNok": 5999 }
     ],
     "defaultVariant": 0,
     "absorption": 0.6,
     "description": "Lav og bred, armløs loungestol i langhåret, pelsaktig stoff med rund rygg, på skrå ben i heltre røkt eik.",
     "why": "Den røkte eika går rett i hop med det mørke spisebordet, og det myke, langhårede stoffet demper lyd og gjør overgangen mellom TV-stua og sittegruppen lun.",
-    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/MENO/318183/image-thumb__318183__PDP-Product/298247%20-%20Meno%20loungestol%20Bay%20creme%20110%20ben%20smoked%20eik%20-%201.0d89179c.jpg",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/MENO/318180/image-thumb__318180__PDP-Product/298248%20-%20Meno%20loungestol%20Bay%20gr%C3%A5brun%20440%20ben%20smoked%20eik%20-%203.b0257aea.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris, mål og begge farger stemmer. Rettet: stolen er armløs med polstret skall på fire treben (ikke synlig treramme med løse puter); stoffet er langhåret."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris, mål og begge farger stemmer. Rettet: stolen er armløs med polstret skall på fire treben (ikke synlig treramme med løse puter); stoffet er langhåret. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes; Bay gråbrun er mørkere brun etter produktbildet, og bildet er byttet til gråbrun-varianten, som er standardvarianten og den produktlenken og tilbudsprisen gjelder."
   },
   {
     "id": "bohus-actona-ellis-loungestol",
@@ -120,7 +125,7 @@
     "archetype": "lounge-wood",
     "params": { "seatH": 0.435, "seatD": 0.55, "backH": 0.71, "armH": 0.66, "armW": 0.16, "legStyle": "wood-frame", "legH": 0.22, "backShape": "curved", "cushion": "tight", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Juto 04 Beige, ben røykfarget", "colors": { "upholstery": "#cbbfae", "frame": "#5a4232", "legs": "#5a4232" }, "materials": { "upholstery": "woven", "frame": "smoked-oak", "legs": "smoked-oak" } }
+      { "name": "Juto 04 Beige, ben røykfarget", "colors": { "upholstery": "#c9bdb0", "frame": "#614935", "legs": "#614935" }, "materials": { "upholstery": "woven", "frame": "smoked-oak", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/ellis-loungestol" }
     ],
     "defaultVariant": 0,
     "absorption": 0.45,
@@ -128,7 +133,7 @@
     "why": "Et rimelig og luftig valg som ikke tar mye plass mellom TV-stua og sittegruppen, og den mørke ramma gjentar fargen på spisebordet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/ELLIS/340463/image-thumb__340463__PDP-Product/313250%20-%20Ellis%20loungestol%20Juto%2004%20Beige%20ben%20r%C3%B8ykfarget%20-%202.a39b8ac7.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål stemmer. Rettet: fast polstring (ikke løse puter) og buet rygg/armlen-rull; kampanjeprisen 3 999,- ble ikke funnet."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål stemmer. Rettet: fast polstring (ikke løse puter) og buet rygg/armlen-rull; kampanjeprisen 3 999,- ble ikke funnet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Juto 04 Beige er eneste farge og selges fortsatt (under utfasing)."
   },
   {
     "id": "bohus-signature-920-loungestol",
@@ -138,15 +143,19 @@
     "store": "Bohus",
     "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-920-loungestol",
     "priceNok": 17959,
-    "priceNote": "pris sjekket 2026-10-18: Solid Onyx/Marble/Brown 17 959,-; Jesper Natural 17 332,-; Sebastian Forest og Sebastian Liver med svart treramme 12 999,- (før 17 332,-); Noah Liver 13 199,- (før 17 658,-)",
+    "priceNote": "pris sjekket 2026-10-18: Solid Onyx/Marble/Brown 17 959,-; Jesper Natural 17 332,-; Sebastian Forest og Sebastian Liver med svart treramme 12 999,- (før 17 332,-); Noah Liver 13 199,- (før 17 658,-). Oppdatert 2026-10-21: Sebastian Forest og Sebastian Liver 11 999,- (før 17 332,-), Noah Liver 12 299,- (før 17 658,-); Solid Brown og Solid-fargene med svart treramme 17 959,-",
     "dims": { "w": 0.73, "d": 0.86, "h": 0.83 },
     "archetype": "lounge-wood",
     "params": { "seatH": 0.42, "seatD": 0.55, "backH": 0.83, "armH": 0.58, "armW": 0.05, "legStyle": "wood-frame", "legH": 0.22, "backShape": "curved", "cushion": "loose", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Solid Onyx, treramme mocca", "colors": { "upholstery": "#2c2b2a", "frame": "#3f2e24", "legs": "#3f2e24" }, "materials": { "upholstery": "woven", "frame": "smoked-oak", "legs": "smoked-oak" } },
-      { "name": "Solid Marble, treramme mocca", "colors": { "upholstery": "#cfc9bf", "frame": "#3f2e24", "legs": "#3f2e24" }, "materials": { "upholstery": "woven", "frame": "smoked-oak", "legs": "smoked-oak" } },
-      { "name": "Jesper Natural, treramme mocca", "colors": { "upholstery": "#d8cfbf", "frame": "#3f2e24", "legs": "#3f2e24" }, "materials": { "upholstery": "woven", "frame": "smoked-oak", "legs": "smoked-oak" } },
-      { "name": "Sebastian Forest, treramme svart", "colors": { "upholstery": "#3c4a3a", "frame": "#1f1d1b", "legs": "#1f1d1b" }, "materials": { "upholstery": "velour", "frame": "black-oak", "legs": "black-oak" } }
+      { "name": "Solid Onyx, treramme mocca", "colors": { "upholstery": "#3b3935", "frame": "#4a3a30", "legs": "#4a3a30" }, "materials": { "upholstery": "woven", "frame": "smoked-oak", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-920-loungestol" },
+      { "name": "Solid Marble, treramme mocca", "colors": { "upholstery": "#c4beaf", "frame": "#4a3a30", "legs": "#4a3a30" }, "materials": { "upholstery": "woven", "frame": "smoked-oak", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-920-loungestol-2" },
+      { "name": "Jesper Natural, treramme mocca", "colors": { "upholstery": "#bfae9c", "frame": "#4a3a30", "legs": "#4a3a30" }, "materials": { "upholstery": "boucle", "frame": "smoked-oak", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-920-loungestol-3", "priceNok": 17332 },
+      { "name": "Sebastian Forest, treramme svart", "colors": { "upholstery": "#6d705e", "frame": "#1f1d1b", "legs": "#1f1d1b" }, "materials": { "upholstery": "boucle", "frame": "black-oak", "legs": "black-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-920-loungestol-9", "priceNok": 17332, "salePriceNok": 11999 },
+      { "name": "Solid Brown, treramme mocca", "colors": { "upholstery": "#625a50", "frame": "#4a3a30", "legs": "#4a3a30" }, "materials": { "upholstery": "woven", "frame": "smoked-oak", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-920-loungestol-1" },
+      { "name": "Solid Onyx, treramme svart", "colors": { "upholstery": "#3b3935", "frame": "#1f1d1b", "legs": "#1f1d1b" }, "materials": { "upholstery": "woven", "frame": "black-oak", "legs": "black-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-920-loungestol-6" },
+      { "name": "Solid Marble, treramme svart", "colors": { "upholstery": "#c4beaf", "frame": "#1f1d1b", "legs": "#1f1d1b" }, "materials": { "upholstery": "woven", "frame": "black-oak", "legs": "black-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-920-loungestol-5" },
+      { "name": "Sebastian Liver, treramme svart", "colors": { "upholstery": "#c1b8a8", "frame": "#1f1d1b", "legs": "#1f1d1b" }, "materials": { "upholstery": "boucle", "frame": "black-oak", "legs": "black-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/signature-920-loungestol-8", "priceNok": 17332, "salePriceNok": 11999 }
     ],
     "defaultVariant": 0,
     "absorption": 0.5,
@@ -154,7 +163,7 @@
     "why": "Mocca-farget eik og svart Onyx-stoff knytter stolen til det mørke spisebordet og det svarte kjøkkenet, mens den åpne ramma holder rommet luftig.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/SIGNATURE%20920/319865/image-thumb__319865__PDP-Product/298825%20-%20Signature%20920%20loungestol%20Solid%20Onyx%20treben%20mocca%20farget%20-%203.a64eabbf.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris, mål (73×86×83) og variantene stemmer. Rammefargen mocca justert mørkere etter produktbildet."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris, mål (73×86×83) og variantene stemmer. Rammefargen mocca justert mørkere etter produktbildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle variantene finnes; Jesper og Sebastian er bouclé (Sebastian Forest sto som velur), mocca-ramma er justert etter bildene, og Solid Brown (mocca), Solid Onyx og Solid Marble med svart ramme og Sebastian Liver er lagt til."
   },
   {
     "id": "bohus-scapa-avila-hvilestol",
@@ -169,11 +178,14 @@
     "archetype": "wingback",
     "params": { "seatH": 0.45, "seatD": 0.54, "backH": 1.0, "armH": 0.62, "armW": 0.1, "legStyle": "wood-taper", "legH": 0.24, "backShape": "wing", "cushion": "loose", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Storm 2861 Taupe, treben hvitoljet", "colors": { "upholstery": "#8c7f72", "legs": "#d9ccb6" }, "materials": { "upholstery": "woven", "legs": "white-oak" } },
-      { "name": "Storm 2861 Taupe, treben smoked", "colors": { "upholstery": "#8c7f72", "legs": "#7a5e47" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" } },
-      { "name": "Storm 2865 Dark grey, treben hvitoljet", "colors": { "upholstery": "#4f4e4c", "legs": "#d9ccb6" }, "materials": { "upholstery": "woven", "legs": "white-oak" } },
-      { "name": "Storm 2864 Green, treben svart", "colors": { "upholstery": "#4f5a45", "legs": "#1f1d1b" }, "materials": { "upholstery": "woven", "legs": "black-oak" } },
-      { "name": "Ager 7149 Winter moss, treben smoked (tilbud)", "colors": { "upholstery": "#6b6f5a", "legs": "#7a5e47" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" } }
+      { "name": "Storm 2861 Taupe, treben hvitoljet", "colors": { "upholstery": "#8d8177", "legs": "#cfbfa6" }, "materials": { "upholstery": "woven", "legs": "white-oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/avila-hvilestol-26" },
+      { "name": "Storm 2861 Taupe, treben smoked", "colors": { "upholstery": "#8a7f76", "legs": "#4a3629" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/avila-hvilestol-6" },
+      { "name": "Storm 2865 Dark grey, treben hvitoljet", "colors": { "upholstery": "#5d5a57", "legs": "#cfbfa6" }, "materials": { "upholstery": "woven", "legs": "white-oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/avila-hvilestol-9" },
+      { "name": "Storm 2864 Green, treben svart", "colors": { "upholstery": "#4b5549", "legs": "#1f1d1b" }, "materials": { "upholstery": "woven", "legs": "black-oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/avila-hvilestol-25" },
+      { "name": "Ager 7149 Winter moss, treben smoked", "colors": { "upholstery": "#4f4d3e", "legs": "#4a3629" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/avila-hvilestol-14", "priceNok": 11248, "salePriceNok": 4499 },
+      { "name": "Ager 7146 Stone, treben hvitoljet", "colors": { "upholstery": "#957f68", "legs": "#cfbfa6" }, "materials": { "upholstery": "woven", "legs": "white-oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/avila-hvilestol-13", "priceNok": 11248, "salePriceNok": 4499 },
+      { "name": "Glore White, treben hvitoljet", "colors": { "upholstery": "#ded9d3", "legs": "#cfbfa6" }, "materials": { "upholstery": "teddy", "legs": "white-oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/avila-hvilestol-19", "priceNok": 11665, "salePriceNok": 6999 },
+      { "name": "Storm 2862 Brown, treben smoked", "colors": { "upholstery": "#4f4b47", "legs": "#4a3629" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/avila-hvilestol-20" }
     ],
     "defaultVariant": 0,
     "absorption": 0.7,
@@ -181,7 +193,7 @@
     "why": "En god lesestol med ørelapper som støtter hodet, men som ikke ser tung ut på de høye bena. Taupe passer de varme SAND- og MARRAKESH-veggene, og hvitoljede ben går fint med det lyse eikegulvet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Scapa%20UAB/Produkter/AVILA/616751/image-thumb__616751__PDP-Product/332533%20-%20Avila%20hvilestol%20Storm%202861%20Taupe%20treben%20hvitoljet%20-%201.a10e665d.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris, mål og farger stemmer. Rettet: stolen er en ørelappstol på treben (ikke en hvilestol med vippemekanisme); kampanjeprisen 4 499,- gjelder Ager-stoffet."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris, mål og farger stemmer. Rettet: stolen er en ørelappstol på treben (ikke en hvilestol med vippemekanisme); kampanjeprisen 4 499,- gjelder Ager-stoffet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle variantene finnes; smoked-bena er mørkere brune og Winter moss mørkere grønn etter produktbildene, og Ager 7146 Stone, Glore White (krøllete teddystoff, 6 999,- før 11 665,-) og Storm 2862 Brown er lagt til."
   },
   {
     "id": "bohus-stressless-opal-hvilestol-med-fotskammel",
@@ -196,9 +208,9 @@
     "archetype": "recliner",
     "params": { "seatH": 0.4, "seatD": 0.5, "backH": 1.0, "armH": 0.58, "armW": 0.08, "legStyle": "swivel-disc", "legH": 0.14, "backShape": "high", "cushion": "tight", "footstool": true, "headrest": true },
     "variants": [
-      { "name": "Paloma 40 New cognac, Classic eik natur", "colors": { "upholstery": "#8b5a35", "legs": "#c39b6e" }, "materials": { "upholstery": "leather", "legs": "oak" } },
-      { "name": "Paloma 19 Black, Classic svart", "colors": { "upholstery": "#1f1e1d", "legs": "#1f1d1b" }, "materials": { "upholstery": "leather", "legs": "black-oak" } },
-      { "name": "Daisy 12 Grey (stoff), Classic svart", "colors": { "upholstery": "#8c8a86", "legs": "#1f1d1b" }, "materials": { "upholstery": "woven", "legs": "black-oak" } }
+      { "name": "Paloma 40 New cognac, Classic eik natur", "colors": { "upholstery": "#8a5c42", "legs": "#c39b6e" }, "materials": { "upholstery": "leather", "legs": "oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/opal-hvilestol-med-fotskammel-7" },
+      { "name": "Paloma 19 Black, Classic svart", "colors": { "upholstery": "#272727", "legs": "#1f1d1b" }, "materials": { "upholstery": "leather", "legs": "black-oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/opal-hvilestol-med-fotskammel-6" },
+      { "name": "Daisy 12 Grey (stoff), Classic svart", "colors": { "upholstery": "#8a8985", "legs": "#1f1d1b" }, "materials": { "upholstery": "woven", "legs": "black-oak" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/opal-hvilestol-med-fotskammel", "priceNok": 27099 }
     ],
     "defaultVariant": 0,
     "absorption": 0.4,
@@ -206,7 +218,7 @@
     "why": "Den mest komfortable lese- og TV-stolen i utvalget, og cognac-skinn gir varme mot de grå tekstilene uten å ta mye gulvplass.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Ekornes%20AS/Produkter/OPAL/325990/image-thumb__325990__PDP-Product/309225%20-%20Opal%20hvilestol%20med%20fotskammel%20%28m%29%20Paloma%20New%20cognac%2040%20classic%20eik%20natur%20-%204.fb090c38.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål (75×71×100) stemmer. Rettet: oppdiktede varianter (Paloma Rock, Black/wenge) byttet med ekte; Classic-foten er rund; kampanjeprisen 15 999,- ble ikke funnet."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål (75×71×100) stemmer. Rettet: oppdiktede varianter (Paloma Rock, Black/wenge) byttet med ekte; Classic-foten er rund; kampanjeprisen 15 999,- ble ikke funnet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre variantene finnes og er de eneste i størrelse M med Classic-understell og fotskammel (Cross-understell og størrelse L er egne produkter)."
   },
   {
     "id": "bohus-castle-mark-bern-hvilestol-med-fotskammel",
@@ -221,8 +233,8 @@
     "archetype": "recliner",
     "params": { "seatH": 0.45, "seatD": 0.49, "backH": 1.1, "armH": 0.62, "armW": 0.12, "legStyle": "swivel-star", "legH": 0.1, "backShape": "high", "cushion": "tight", "footstool": true, "headrest": true },
     "variants": [
-      { "name": "Loft 2 Beige, alufot svart", "colors": { "upholstery": "#cbbfae", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Loft 19 Grå, alufot svart", "colors": { "upholstery": "#8f8d89", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } }
+      { "name": "Loft 2 Beige, alufot svart", "colors": { "upholstery": "#95918a", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/bern-hvilestol-med-fotskammel" },
+      { "name": "Loft 19 Grå, alufot svart", "colors": { "upholstery": "#8f8f90", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/hvilestol/bern-hvilestol-med-fotskammel-1", "priceNok": 7999, "salePriceNok": 5599 }
     ],
     "defaultVariant": 0,
     "absorption": 0.7,
@@ -230,7 +242,7 @@
     "why": "Et rimelig hvilestol-alternativ med fotskammel, der svart fot matcher de svarte metalldetaljene og beige stoff går i ett med de lyse tekstilene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Castle%20Mark%20Enterprises%20Ltd/Produkter/BERN/301118/image-thumb__301118__PDP-Product/293433%20-%20Bern%20hvilestol%20med%20fotskammel%20med%20sving%2C%20regulerbar%20rygg%20Loft%202%20beige%20alufot%20svart%20-%206.ed65b4c5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris, mål (77×78×110), sving og regulerbar rygg stemmer. Kampanjeprisen 5 599,- gjelder grå Loft 19, som er lagt til som variant."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris, mål (77×78×110), sving og regulerbar rygg stemmer. Kampanjeprisen 5 599,- gjelder grå Loft 19, som er lagt til som variant. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes; Loft 2 Beige er en lys gråbeige på produktbildet og er gjort grårere."
   },
   {
     "id": "bohus-brunstad-bella-loungestol",
@@ -245,9 +257,14 @@
     "archetype": "wingback",
     "params": { "seatH": 0.43, "seatD": 0.51, "backH": 0.89, "armH": 0.6, "armW": 0.08, "legStyle": "swivel-star", "legH": 0.18, "backShape": "wing", "cushion": "tight", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Varde 74 Olive, ben S04 svartlakkert stål", "colors": { "upholstery": "#5f6345", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Varde 39 Sepia, ben S04 svartlakkert stål", "colors": { "upholstery": "#6e5847", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Varde 28 Kitt, ben S04 svartlakkert stål", "colors": { "upholstery": "#b9ab96", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } }
+      { "name": "Varde 74 Olive, ben S04 svartlakkert stål", "colors": { "upholstery": "#5f6154", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/bella-loungestol-12" },
+      { "name": "Varde 39 Sepia, ben S04 svartlakkert stål", "colors": { "upholstery": "#87796d", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/bella-loungestol-13" },
+      { "name": "Varde 28 Kitt, ben S04 svartlakkert stål", "colors": { "upholstery": "#c6bdb0", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/bella-loungestol-11" },
+      { "name": "Leroy 31 Sand, ben S04 svartlakkert stål", "colors": { "upholstery": "#bbac92", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/bella-loungestol-2", "priceNok": 21370 },
+      { "name": "Lord 01 Natural, ben S04 svartlakkert stål", "colors": { "upholstery": "#beb7a7", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/bella-loungestol-4", "priceNok": 21370 },
+      { "name": "Vega 102 Ecru, ben S04 svartlakkert stål", "colors": { "upholstery": "#e4e0d8", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/bella-loungestol-14", "priceNok": 21370, "salePriceNok": 12822 },
+      { "name": "Leroy 23 Beige, ben S04 svartlakkert stål", "colors": { "upholstery": "#ddd5c1", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/bella-loungestol", "priceNok": 21370 },
+      { "name": "Trym 16 Caramel, ben S04 svartlakkert stål", "colors": { "upholstery": "#ab966f", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/bella-loungestol-17", "priceNok": 21370 }
     ],
     "defaultVariant": 0,
     "absorption": 0.6,
@@ -255,7 +272,7 @@
     "why": "Ørelappene gir lun skjerming i overgangen mellom TV-stua og sittegruppen, og den svarte stjernefoten gjentar spisestolenes og kjøkkenets svarte metall.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Brunstad%20AS/Produkter/BELLA/594183/image-thumb__594183__PDP-Product/322534%20-%20Bella%20loungestol%20Varde%2074%20Olive%20ben%20s04%20svartlakkert%20st%C3%A5l%20-%201.cd1d1aa2.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål stemmer. Rettet: ben S04 er en stjernefot (ikke slanke ben), «Standard» er sittekomfort (ikke lav rygg), og kampanjeprisen 10 599,- ble ikke funnet."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål stemmer. Rettet: ben S04 er en stjernefot (ikke slanke ben), «Standard» er sittekomfort (ikke lav rygg), og kampanjeprisen 10 599,- ble ikke funnet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle Varde-variantene finnes (fargene justert etter bildene), og Leroy 31 Sand, Lord 01 Natural, Vega 102 Ecru (12 822,- før 21 370,-), Leroy 23 Beige og Trym 16 Caramel er lagt til."
   },
   {
     "id": "bohus-vilmers-nordal-loungestol",
@@ -270,11 +287,14 @@
     "archetype": "club-box",
     "params": { "seatH": 0.44, "seatD": 0.59, "backH": 0.82, "armH": 0, "armW": 0, "legStyle": "wood-taper", "legH": 0.1, "backShape": "square", "cushion": "loose", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Tin Solitary star (beige/natur), ben mocca 10 cm", "colors": { "upholstery": "#d6ccbb", "legs": "#4a3628" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" } },
-      { "name": "Adore Cognac, ben mocca 10 cm", "colors": { "upholstery": "#9a5b32", "legs": "#4a3628" }, "materials": { "upholstery": "velour", "legs": "smoked-oak" } },
-      { "name": "Adore Hunter, ben mocca 10 cm", "colors": { "upholstery": "#2f4a3c", "legs": "#4a3628" }, "materials": { "upholstery": "velour", "legs": "smoked-oak" } },
-      { "name": "Dolomite Myrtle, ben mocca 10 cm", "colors": { "upholstery": "#5e6650", "legs": "#4a3628" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" } },
-      { "name": "Marble Ash, ben mocca 10 cm", "colors": { "upholstery": "#a9a49c", "legs": "#4a3628" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" } }
+      { "name": "Tin Solitary star (beige/natur), ben mocca 10 cm", "colors": { "upholstery": "#dbd7cb", "legs": "#4a3628" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/nordal-loungestol-7" },
+      { "name": "Adore Cognac, ben mocca 10 cm", "colors": { "upholstery": "#9a6438", "legs": "#4a3628" }, "materials": { "upholstery": "velour", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/nordal-loungestol", "priceNok": 9332, "salePriceNok": 6999 },
+      { "name": "Adore Hunter, ben mocca 10 cm", "colors": { "upholstery": "#5f6356", "legs": "#4a3628" }, "materials": { "upholstery": "velour", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/nordal-loungestol-2", "priceNok": 9332, "salePriceNok": 6999 },
+      { "name": "Dolomite Myrtle, ben mocca 10 cm", "colors": { "upholstery": "#62604b", "legs": "#4a3628" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/nordal-loungestol-4", "priceNok": 9999, "salePriceNok": 5999 },
+      { "name": "Marble Ash, ben mocca 10 cm", "colors": { "upholstery": "#b9b9b2", "legs": "#4a3628" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/nordal-loungestol-5", "priceNok": 7999 },
+      { "name": "Tin Mocca, ben mocca 10 cm", "colors": { "upholstery": "#aea69a", "legs": "#4a3628" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/nordal-loungestol-8" },
+      { "name": "Marble Rainy day, ben mocca 10 cm", "colors": { "upholstery": "#cfcbbf", "legs": "#4a3628" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/nordal-loungestol-6", "priceNok": 7999 },
+      { "name": "Dolomite Aluminium, ben mocca 10 cm", "colors": { "upholstery": "#b5ad9d", "legs": "#4a3628" }, "materials": { "upholstery": "woven", "legs": "smoked-oak" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/nordal-loungestol-3", "priceNok": 9999, "salePriceNok": 5999 }
     ],
     "defaultVariant": 0,
     "absorption": 0.7,
@@ -282,7 +302,7 @@
     "why": "Dyp og myk stol med rette linjer som matcher den kubiske hjørnesofaen i TV-stua. Uten armlener er den lett å sette inn i overgangen, og det lyse stoffet løfter det mørkere hjørnet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/NORDAL/343781/image-thumb__343781__PDP-Product/318557%20-%20Nordal%20loungestol%20Tin%20Solitary%20star%20ben%20mocca%2010cm%20-%201.1fb23480.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål (84×89×82) stemmer. Rettet: stolen er armløs; kampanjeprisen gjelder andre stoffer, som er lagt til som varianter."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål (84×89×82) stemmer. Rettet: stolen er armløs; kampanjeprisen gjelder andre stoffer, som er lagt til som varianter. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle variantene finnes; Adore Hunter er grågrønn og Marble Ash lysere etter bildene, og Tin Mocca, Marble Rainy day og Dolomite Aluminium (5 999,- før 9 999,-) er lagt til."
   },
   {
     "id": "bohus-jakobsen-cooper-loungestol",
@@ -297,10 +317,10 @@
     "archetype": "club-box",
     "params": { "seatH": 0.43, "seatD": 0.58, "backH": 0.72, "armH": 0, "armW": 0, "legStyle": "block", "legH": 0.025, "backShape": "curved", "cushion": "tight", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Island 15 Brown, ben svart 2,5 cm", "colors": { "upholstery": "#5a4636", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Lamb 05 Beige, ben svart 2,5 cm", "colors": { "upholstery": "#d8ccb8", "legs": "#1c1c1c" }, "materials": { "upholstery": "teddy", "legs": "black-metal" } },
-      { "name": "Perfect Harmony 39 Hunter, ben svart 2,5 cm", "colors": { "upholstery": "#2f4a3c", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" } },
-      { "name": "Seven 18 Dark brown, ben svart 2,5 cm", "colors": { "upholstery": "#4a372b", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } }
+      { "name": "Island 15 Brown, ben svart 2,5 cm", "colors": { "upholstery": "#5f4a3d", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/cooper-loungestol" },
+      { "name": "Lamb 05 Beige, ben svart 2,5 cm", "colors": { "upholstery": "#b3aa9e", "legs": "#1c1c1c" }, "materials": { "upholstery": "teddy", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/cooper-loungestol-6", "priceNok": 7832, "salePriceNok": 5399 },
+      { "name": "Perfect Harmony 39 Hunter, ben svart 2,5 cm", "colors": { "upholstery": "#636449", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/cooper-loungestol-1", "priceNok": 7415, "salePriceNok": 5550 },
+      { "name": "Seven 18 Dark brown, ben svart 2,5 cm", "colors": { "upholstery": "#4a3222", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/loungestoler/cooper-loungestol-2", "priceNok": 7415 }
     ],
     "defaultVariant": 0,
     "absorption": 0.75,
@@ -308,7 +328,7 @@
     "why": "Den lave, myke formen gir en avslappet sofa-følelse uten å stenge sikten mot vinduene, og brunt stoff varmer opp den grå paletten.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/COOPER/342514/image-thumb__342514__PDP-Product/317102%20-%20Cooper%20loungestol%20Island%2015%20Brown%20ben%20svart%202.5cm%20-%204.3a6a8a42.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål (77×104×72) stemmer. Rettet: stolen er armløs; kampanjeprisen 4 999,- ble ikke funnet, tilbudene gjelder Lamb og Perfect Harmony."
+    "verifiedNote": "Bekreftet 2026-10-18 på bohus.no: pris og mål (77×104×72) stemmer. Rettet: stolen er armløs; kampanjeprisen 4 999,- ble ikke funnet, tilbudene gjelder Lamb og Perfect Harmony. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fire variantene finnes; Island er chenille og Seven velur (ikke vevd), Perfect Harmony 39 Hunter er olivengrønn og Lamb 05 Beige gråere etter bildene."
   },
   {
     "id": "ikea-strandmon-orelappstol-med-fotskammel",
@@ -318,25 +338,25 @@
     "store": "IKEA",
     "url": "https://www.ikea.com/no/no/p/strandmon-orelappstol-med-fotskammel-nordvalla-mork-gra-s39618100/",
     "priceNok": 3990,
-    "priceNote": "pris sjekket 2026-10-18: stol + fotskammel i Nordvalla mørk grå 3 990,-; stolen alene i Nordvalla 2 995,-; settet i Talliden beige/brun 5 290,-. Prisen varierer med trekk",
+    "priceNote": "pris sjekket 2026-10-18: stol + fotskammel i Nordvalla mørk grå 3 990,-; stolen alene i Nordvalla 2 995,-; settet i Talliden beige/brun 5 290,-. Prisen varierer med trekk. Oppdatert 2026-10-21: settet i Tommaboda dypbeige og rødbrun 4 790,-; Sulviken og Tibbleby 3 990,-",
     "dims": { "w": 0.82, "d": 0.96, "h": 1.01 },
     "archetype": "wingback",
     "params": { "seatH": 0.45, "seatD": 0.54, "backH": 1.01, "armH": 0.64, "armW": 0.14, "legStyle": "wood-taper", "legH": 0.14, "backShape": "wing", "cushion": "tight", "footstool": true, "headrest": false },
     "variants": [
-      { "name": "Nordvalla mørk grå", "colors": { "upholstery": "#4d4c4a", "legs": "#3b2e26" }, "materials": { "upholstery": "woven", "legs": "walnut" } },
-      { "name": "Talliden beige/brun", "colors": { "upholstery": "#a89580", "legs": "#3b2e26" }, "materials": { "upholstery": "wool", "legs": "walnut" } },
-      { "name": "Tommaboda dypbeige", "colors": { "upholstery": "#b29c80", "legs": "#3b2e26" }, "materials": { "upholstery": "woven", "legs": "walnut" } },
-      { "name": "Tommaboda rødbrun", "colors": { "upholstery": "#7a4434", "legs": "#3b2e26" }, "materials": { "upholstery": "woven", "legs": "walnut" } },
-      { "name": "Sulviken blå/beige", "colors": { "upholstery": "#5b6a7e", "legs": "#3b2e26" }, "materials": { "upholstery": "woven", "legs": "walnut" } },
-      { "name": "Tibbleby gul", "colors": { "upholstery": "#c9a443", "legs": "#3b2e26" }, "materials": { "upholstery": "woven", "legs": "walnut" } }
+      { "name": "Nordvalla mørk grå", "colors": { "upholstery": "#5e5e5e", "legs": "#1f1d1b" }, "materials": { "upholstery": "woven", "legs": "black-oak" }, "url": "https://www.ikea.com/no/no/p/strandmon-orelappstol-med-fotskammel-nordvalla-mork-gra-s39618100/" },
+      { "name": "Talliden beige/brun", "colors": { "upholstery": "#958a75", "legs": "#1f1d1b" }, "materials": { "upholstery": "woven", "legs": "black-oak" }, "url": "https://www.ikea.com/no/no/p/strandmon-orelappstol-med-fotskammel-talliden-beige-brun-s09628596/", "priceNok": 5290 },
+      { "name": "Tommaboda dypbeige", "colors": { "upholstery": "#cdbca4", "legs": "#1f1d1b" }, "materials": { "upholstery": "velour", "legs": "black-oak" }, "url": "https://www.ikea.com/no/no/p/strandmon-orelappstol-med-fotskammel-tommaboda-dypbeige-s29590366/", "priceNok": 4790 },
+      { "name": "Tommaboda rødbrun", "colors": { "upholstery": "#8c3528", "legs": "#d2a77c" }, "materials": { "upholstery": "velour", "legs": "oak" }, "url": "https://www.ikea.com/no/no/p/strandmon-orelappstol-med-fotskammel-tommaboda-rodbrun-s19590362/", "priceNok": 4790 },
+      { "name": "Sulviken blå/beige", "colors": { "upholstery": "#858e93", "legs": "#d2a77c" }, "materials": { "upholstery": "woven", "legs": "oak" }, "url": "https://www.ikea.com/no/no/p/strandmon-orelappstol-med-fotskammel-sulviken-bla-beige-s99590339/" },
+      { "name": "Tibbleby gul", "colors": { "upholstery": "#d6b05f", "legs": "#d2a77c" }, "materials": { "upholstery": "woven", "legs": "oak" }, "url": "https://www.ikea.com/no/no/p/strandmon-orelappstol-med-fotskammel-tibbleby-gul-s29590347/" }
     ],
     "defaultVariant": 0,
     "absorption": 0.75,
     "description": "Klassisk ørelappstol med høy rygg som støtter nakken, her med tilhørende fotskammel. Ben i massivt tre med innfarget lakk.",
     "why": "Et rimelig og komfortabelt lesestol-sett der mørk grå matcher hjørnesofaen i TV-stua, og den høye ryggen demper lyd i overgangen mellom sonene.",
-    "imageUrl": "https://www.ikea.com/no/no/images/products/strandmon-orelappstol-talliden-beige-brun__1543840_pe1018955_s5.jpg?f=u",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/strandmon-orelappstol-med-fotskammel-nordvalla-mork-gra__1094843_pe863646_s5.jpg?f=u",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: pris for settet og mål for stolen (82×96×101, sete 45/54) stemmer. Rettet: Talliden-prisen (settet koster 5 290,-), og Tibbleby gul er lagt til."
+    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: pris for settet og mål for stolen (82×96×101, sete 45/54) stemmer. Rettet: Talliden-prisen (settet koster 5 290,-), og Tibbleby gul er lagt til. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle seks trekkene finnes; Talliden er polyester med ullpreg (vevd, ikke ull) og Tommaboda velur, bena er svarte på Nordvalla, Talliden og Tommaboda dypbeige og lyst tre på de andre (ikke valnøtt), og bildet er byttet til settet i Nordvalla, som er standardvarianten."
   },
   {
     "id": "ikea-ekenaset-lenestol",
@@ -351,18 +371,20 @@
     "archetype": "lounge-wood",
     "params": { "seatH": 0.44, "seatD": 0.52, "backH": 0.75, "armH": 0.58, "armW": 0.05, "legStyle": "wood-frame", "legH": 0.22, "backShape": "curved", "cushion": "tight", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "eikemønstret/Kilanda lys beige", "colors": { "upholstery": "#d9cfbf", "frame": "#b8935f", "legs": "#b8935f" }, "materials": { "upholstery": "woven", "frame": "oak", "legs": "oak" } },
-      { "name": "valnøttmønstret/Kilanda lys beige", "colors": { "upholstery": "#d9cfbf", "frame": "#5c4030", "legs": "#5c4030" }, "materials": { "upholstery": "woven", "frame": "walnut", "legs": "walnut" } },
-      { "name": "valnøttmønstret/Axvall mørk gråblå", "colors": { "upholstery": "#4d5866", "frame": "#5c4030", "legs": "#5c4030" }, "materials": { "upholstery": "woven", "frame": "walnut", "legs": "walnut" } },
-      { "name": "eikemønstret/Grann/Bomstad gyllenbrun", "colors": { "upholstery": "#a0682f", "frame": "#b8935f", "legs": "#b8935f" }, "materials": { "upholstery": "leather", "frame": "oak", "legs": "oak" } }
+      { "name": "eikemønstret/Kilanda lys beige", "colors": { "upholstery": "#cbc1b7", "frame": "#c4a27a", "legs": "#c4a27a" }, "materials": { "upholstery": "woven", "frame": "oak", "legs": "oak" }, "url": "https://www.ikea.com/no/no/p/ekenaeset-lenestol-eikemonstret-kilanda-lys-beige-10624328/" },
+      { "name": "valnøttmønstret/Kilanda lys beige", "colors": { "upholstery": "#c8beb5", "frame": "#54453a", "legs": "#54453a" }, "materials": { "upholstery": "woven", "frame": "walnut", "legs": "walnut" }, "url": "https://www.ikea.com/no/no/p/ekenaeset-lenestol-valnottmonstret-kilanda-lys-beige-80624344/" },
+      { "name": "valnøttmønstret/Axvall mørk gråblå", "colors": { "upholstery": "#3f5868", "frame": "#54453a", "legs": "#54453a" }, "materials": { "upholstery": "woven", "frame": "walnut", "legs": "walnut" }, "url": "https://www.ikea.com/no/no/p/ekenaeset-lenestol-valnottmonstret-axvall-mork-grabla-50624331/", "priceNok": 2495 },
+      { "name": "eikemønstret/Grann/Bomstad gyllenbrun", "colors": { "upholstery": "#a66a42", "frame": "#c4a27a", "legs": "#c4a27a" }, "materials": { "upholstery": "leather", "frame": "oak", "legs": "oak" }, "url": "https://www.ikea.com/no/no/p/ekenaeset-lenestol-eikemonstret-grann-bomstad-gyllenbrun-20624342/", "priceNok": 3495 },
+      { "name": "eikemønstret/Axvall offwhite", "colors": { "upholstery": "#cfd0c3", "frame": "#c4a27a", "legs": "#c4a27a" }, "materials": { "upholstery": "woven", "frame": "oak", "legs": "oak" }, "url": "https://www.ikea.com/no/no/p/ekenaeset-lenestol-eikemonstret-axvall-offwhite-30624332/", "priceNok": 2495 },
+      { "name": "valnøttmønstret/Grann/Bomstad svart", "colors": { "upholstery": "#2b2927", "frame": "#54453a", "legs": "#54453a" }, "materials": { "upholstery": "leather", "frame": "walnut", "legs": "walnut" }, "url": "https://www.ikea.com/no/no/p/ekenaeset-lenestol-valnottmonstret-grann-bomstad-svart-60624335/", "priceNok": 3495 }
     ],
-    "defaultVariant": 1,
+    "defaultVariant": 0,
     "absorption": 0.35,
     "description": "Retrostol inspirert av skandinavisk 1950-tallsdesign med ramme i massivt tre og høye ben. Smal og lett, enkel å støvsuge under.",
     "why": "Det rimeligste alternativet og det smaleste (65 cm), og valnøttfarget ramme går godt sammen med det mørke spisebordet.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/ekenaeset-lenestol-eikemonstret-kilanda-lys-beige__1489627_pe1003901_s5.jpg?f=u",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: pris, mål (65×74×75, sete 44/52) og variantene stemmer. Axvall mørk gråblå er lagt til."
+    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: pris, mål (65×74×75, sete 44/52) og variantene stemmer. Axvall mørk gråblå er lagt til. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle variantene finnes; Axvall mørk gråblå er petrolblå og den eikemønstrede ramma lysere etter bildene, eikemønstret/Axvall offwhite og valnøttmønstret/Grann/Bomstad svart er lagt til, og standardvarianten er nå eikemønstret/Kilanda som på bildet."
   },
   {
     "id": "ikea-saltsjobaden-gynge-og-svingstol",
@@ -372,28 +394,28 @@
     "store": "IKEA",
     "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-fridtuna-lys-beige-s29599098/",
     "priceNok": 4495,
-    "priceNote": "pris sjekket 2026-10-18: 4 495,- i alle trekk (stamme 2 700,- + trekk). Mål fra produktsiden for stammen til gynge-/svingstolen: 77 × 88 × 75 cm, setehøyde 45 cm",
+    "priceNote": "pris sjekket 2026-10-18: 4 495,- i alle trekk (stamme 2 700,- + trekk). Mål fra produktsiden for stammen til gynge-/svingstolen: 77 × 88 × 75 cm, setehøyde 45 cm. Rettet 2026-10-21: prisen varierer med trekket – Fridtuna og Gunnared 4 495,-, Tonerud 3 795,-, Blekinge og Vittangi 3 495,-",
     "dims": { "w": 0.77, "d": 0.88, "h": 0.75 },
     "archetype": "club-box",
     "params": { "seatH": 0.45, "seatD": 0.6, "backH": 0.75, "armH": 0.62, "armW": 0.12, "legStyle": "none", "legH": 0, "backShape": "square", "cushion": "loose", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Fridtuna lys beige", "colors": { "upholstery": "#d8cdb9", "legs": "#2a2a2a" }, "materials": { "upholstery": "cotton", "legs": "black-metal" } },
-      { "name": "Gunnared mellomgrå", "colors": { "upholstery": "#7d7b78", "legs": "#2a2a2a" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Gunnared beige", "colors": { "upholstery": "#b9ab95", "legs": "#2a2a2a" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Gunnared lys grønn", "colors": { "upholstery": "#a7b199", "legs": "#2a2a2a" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Tonerud grå", "colors": { "upholstery": "#8e8b86", "legs": "#2a2a2a" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Tonerud rødbrun", "colors": { "upholstery": "#7d4a3a", "legs": "#2a2a2a" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Vittangi lys beige/hvit", "colors": { "upholstery": "#e2dacb", "legs": "#2a2a2a" }, "materials": { "upholstery": "boucle", "legs": "black-metal" } },
-      { "name": "Blekinge hvit", "colors": { "upholstery": "#ece8df", "legs": "#2a2a2a" }, "materials": { "upholstery": "cotton", "legs": "black-metal" } },
-      { "name": "Fridtuna gul", "colors": { "upholstery": "#d1b15c", "legs": "#2a2a2a" }, "materials": { "upholstery": "cotton", "legs": "black-metal" } }
+      { "name": "Fridtuna lys beige", "colors": { "upholstery": "#c8c1b3", "legs": "#2a2a2a" }, "materials": { "upholstery": "cotton", "legs": "black-metal" }, "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-fridtuna-lys-beige-s29599098/" },
+      { "name": "Gunnared mellomgrå", "colors": { "upholstery": "#6f767a", "legs": "#2a2a2a" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-gunnared-mellomgra-s39602646/" },
+      { "name": "Gunnared beige", "colors": { "upholstery": "#d6d6c9", "legs": "#2a2a2a" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-gunnared-beige-s29602642/" },
+      { "name": "Gunnared lys grønn", "colors": { "upholstery": "#a0ab9f", "legs": "#2a2a2a" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-gunnared-lys-gronn-s19602652/" },
+      { "name": "Tonerud grå", "colors": { "upholstery": "#abada8", "legs": "#2a2a2a" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-tonerud-gra-s69602409/", "priceNok": 3795 },
+      { "name": "Tonerud rødbrun", "colors": { "upholstery": "#c4643d", "legs": "#2a2a2a" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-tonerud-rodbrun-s69602414/", "priceNok": 3795 },
+      { "name": "Vittangi lys beige/hvit", "colors": { "upholstery": "#e1dbcc", "legs": "#2a2a2a" }, "materials": { "upholstery": "cotton", "legs": "black-metal" }, "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-vittangi-lys-beige-hvit-s19621429/", "priceNok": 3495 },
+      { "name": "Blekinge hvit", "colors": { "upholstery": "#ecebe3", "legs": "#2a2a2a" }, "materials": { "upholstery": "cotton", "legs": "black-metal" }, "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-blekinge-hvit-s49602405/", "priceNok": 3495 },
+      { "name": "Fridtuna gul", "colors": { "upholstery": "#cab667", "legs": "#2a2a2a" }, "materials": { "upholstery": "cotton", "legs": "black-metal" }, "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-fridtuna-gul-s49602622/" }
     ],
-    "defaultVariant": 1,
+    "defaultVariant": 0,
     "absorption": 0.7,
     "description": "Myk, kubisk lenestol med skjørt-trekk som både gynger og svinger på en skjult mekanisme. Løse puter og avtakbart, vaskbart trekk.",
     "why": "Gynge- og svingfunksjonen lar deg snu deg mot TV-en eller mot vinduene og elva, og mellomgrå Gunnared passer den grå hjørnesofaen.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/saltsjoebaden-gynge-og-svingstol-fridtuna-lys-beige__1489517_pe1003842_s5.jpg?f=u",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: pris, gynge- og svingfunksjon og trekkene stemmer. Rettet: målene (77×88×75, ikke 93×88×90) og formen, som er en kubisk stol med skjørt der mekanismen ikke synes."
+    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: pris, gynge- og svingfunksjon og trekkene stemmer. Rettet: målene (77×88×75, ikke 93×88×90) og formen, som er en kubisk stol med skjørt der mekanismen ikke synes. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle ni trekkene finnes; Vittangi er 100 % bomull (ikke bouclé), Gunnared beige er lys gråbeige og Tonerud rødbrun oransjebrun etter bildene, og standardvarianten er nå Fridtuna lys beige som på bildet."
   },
   {
     "id": "fagmobler-conform-daisy-lenestol",
@@ -409,10 +431,10 @@
     "archetype": "shell-legs",
     "params": { "seatH": 0.41, "seatD": 0.48, "backH": 0.79, "armH": 0.55, "armW": 0.08, "legStyle": "swivel-star", "legH": 0.22, "backShape": "curved", "cushion": "tight", "footstool": false, "headrest": false },
     "variants": [
-      { "name": "Gianni Mole, svart kryssfot i aluminium", "colors": { "upholstery": "#7a6c60", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" } },
-      { "name": "Denali Olive, svart kryssfot i aluminium", "colors": { "upholstery": "#5d5e3e", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Ito Stone, kryssfot i aluminium", "colors": { "upholstery": "#a7a198", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" } },
-      { "name": "Benson Bronze, svart kryssfot i aluminium", "colors": { "upholstery": "#8a6a45", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" } }
+      { "name": "Gianni Mole, svart kryssfot i aluminium", "colors": { "upholstery": "#867c74", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.fagmobler.no/rom/stue/stoler/hvilestoler/CMFDAIFGQGIA1478-63" },
+      { "name": "Denali Olive, svart kryssfot i aluminium", "colors": { "upholstery": "#8f8b75", "legs": "#1c1c1c" }, "materials": { "upholstery": "boucle", "legs": "black-metal" }, "url": "https://www.fagmobler.no/rom/stue/stoler/hvilestoler/CMFDAIFGQDEN1501-28" },
+      { "name": "Ito Stone, kryssfot i aluminium", "colors": { "upholstery": "#aaa5a2", "legs": "#b4b4b4" }, "materials": { "upholstery": "velour", "legs": "chrome" }, "url": "https://www.fagmobler.no/rom/stue/stoler/hvilestoler/CMFDAIFGAITO1502-73", "priceNok": 13799 },
+      { "name": "Benson Bronze, svart kryssfot i aluminium", "colors": { "upholstery": "#85533e", "legs": "#1c1c1c" }, "materials": { "upholstery": "woven", "legs": "black-metal" }, "url": "https://www.fagmobler.no/rom/stue/stoler/hvilestoler/CMFDAIFGQBEN1500-19", "priceNok": 13799 }
     ],
     "defaultVariant": 0,
     "absorption": 0.55,
@@ -420,6 +442,6 @@
     "why": "Kompakt svingstol som kan snus mot både TV-stua og sittegruppen, og den gråbrune Mole-fargen ligger tett på MARRAKESH-veggene.",
     "imageUrl": "https://imagedelivery.net/LfHarEEHw85fo7v7-lUDxQ/898df25e-a4e8-4678-4d77-3645b0361a00/public",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på fagmobler.no: pris, tilbud, mål (71×78×79, sete 41/48) og stoffene stemmer. Rettet: formen er et skall med høy rygg på kryssfot (ikke en rund skålstol), og Gianni er bouclé."
+    "verifiedNote": "Bekreftet 2026-10-18 på fagmobler.no: pris, tilbud, mål (71×78×79, sete 41/48) og stoffene stemmer. Rettet: formen er et skall med høy rygg på kryssfot (ikke en rund skålstol), og Gianni er bouclé. Farger og stoff kontrollert 2026-10-21 mot fagmobler.no: alle fire stoffene finnes (en skinnmiks til 18 799,- er ikke tatt med); Denali er bouclé og lys salviegrønn, Ito er chenille på blank aluminiumsfot (ikke svart), og Benson er vevd og rustbrun etter bildene."
   }
 ]

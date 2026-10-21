@@ -1,0 +1,783 @@
+[
+  {
+    "id": "skeidar-stressless-mayfair-m-classic-hvilestol-med-krakk",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Mayfair (M) Classic lenestol med krakk",
+    "brand": "Stressless",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/mayfair-m-classic-lenestol-med-krakk?VariationId=V_5637538859",
+    "priceNok": 30599,
+    "salePriceNok": 21419,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 2966097, hud Velaro Beige med Classic understell eikbeiset, kampanje 21 419 kr til 15.11, før 30 599 kr). Krakken er inkludert. Velaro Forest Green med Classic eikbeiset (2966087) koster 18 999 kr (før 30 599). Tekstil Daisy Beige (2966057) og Daisy Green (2966072) med Classic valnøttbeiset koster 22 499 kr, og hud Batick New Caramel med Classic eik (2966010) 24 399 kr, uten kampanje. Samme stol med Signature- eller Cross-understell koster 25 619 kr (før 36 599), og Mayfair Classic med elektrisk fothviler koster 37 599 kr. Bestillingsvare med leveringstid ca. 7–8 uker.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.83,
+      "d": 0.74,
+      "h": 1.02
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.44,
+      "seatD": 0.48,
+      "backH": 1.02,
+      "armH": 0.61,
+      "armW": 0.12,
+      "legStyle": "swivel-disc",
+      "legH": 0.2,
+      "backShape": "high",
+      "cushion": "tight",
+      "body": "classic",
+      "headStyle": "integrated",
+      "backSeams": "cross-v",
+      "footrest": "stool",
+      "footrestOpen": false,
+      "stoolW": 0.55,
+      "stoolD": 0.39,
+      "stoolH": 0.41,
+      "lever": true,
+      "footstool": true,
+      "headrest": true,
+      "notes": "Stressless Mayfair i størrelse M med Classic-understell. Ryggen er ett polstret stykke med en loddrett søm i midten og vannrette, puffede felt med tverrsømmer, og øverst en innebygd, avrundet nakkerull med en tverrsøm under. Brede, myke armputer ligger over setet og hviler bak på korte, S-buede stolper i tre i samme farge som foten. Setet er tykt og mykt, og stolen vippes med kroppsvekten (Plus- og BalanceAdapt-system). På høyre side sitter et lite glideratt (spak) under armlenet. Foten er Stressless Classic: en flat, oval ring i tre på gulvet med to S-buede stolper opp til setet og 360° sving. Krakken har samme skinn eller stoff, en buet og puffet topp og egen ringfot i tre. Den er ca. 55 × 39 × 41 cm, anslått fra bildet og Skeidars Mayfair-krakk Cross (L), som måler 55 × 38 × 40 cm. Armlenshøyden er målt på sidebildet."
+    },
+    "variants": [
+      {
+        "name": "Velaro Beige (hud), Classic understell eikbeiset",
+        "colors": {
+          "upholstery": "#cbb893",
+          "legs": "#8a6c4e"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/mayfair-m-classic-lenestol-med-krakk?VariationId=V_5637538859"
+      },
+      {
+        "name": "Velaro Forest Green (hud), Classic understell eikbeiset",
+        "colors": {
+          "upholstery": "#847f70",
+          "legs": "#8a6c4e"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "oak"
+        },
+        "priceNok": 30599,
+        "salePriceNok": 18999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/mayfair-classic-lenestol-med-krakk-m?VariationId=V_5637538858"
+      },
+      {
+        "name": "Daisy Beige (tekstil), Classic understell valnøttbeiset",
+        "colors": {
+          "upholstery": "#cfc1ab",
+          "legs": "#4e3f33"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "walnut"
+        },
+        "priceNok": 22499,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/mayfair-classic-lenestol-med-krakk-m?VariationId=V_5637538723"
+      },
+      {
+        "name": "Daisy Green (tekstil), Classic understell valnøttbeiset",
+        "colors": {
+          "upholstery": "#696c60",
+          "legs": "#4e3f33"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "walnut"
+        },
+        "priceNok": 22499,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/mayfair-classic-lenestol-med-krakk-m?VariationId=V_5637538726"
+      },
+      {
+        "name": "Batick New Caramel (hud), Classic understell eik",
+        "colors": {
+          "upholstery": "#c79060",
+          "legs": "#8f7152"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "oak"
+        },
+        "priceNok": 24399,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/mayfair-classic-lenestol-med-krakk-m?VariationId=V_5637512856"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.85,
+    "absorptionNote": "Hvilestol med krakk: øvre del av 0,7–0,9 m².",
+    "description": "Stressless sin klassiske hvilestol Mayfair i medium størrelse, med matchende krakk. Rygg og sete følger kroppen når du lener deg tilbake, og stolen står på det runde Classic-understellet i tre med 360° sving.",
+    "why": "Den lyse Velaro Beige-huden og eikefoten passer til de varme Sand/Marrakesh-veggene og eikegulvet. Med krakk er det en ekte stol å legge seg bakover i, i stua eller kjellerstua, og den tar ikke mer enn 83 × 74 cm.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/2966097/2966097_V10195852-StresslessMayfairLenestol1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, art.nr., pris og kampanje, mål (83 × 74 × 102 cm, sittehøyde 44, sittedybde 48), at krakken er inkludert, Classic-understellet og de fem fargene med Classic-understell, hver med egen side (VariationId). Armlenshøyden og krakkens mål er anslått fra bildene. Variantene med Signature- og Cross-understell er ikke tatt med, fordi foten er en annen modell. Farger og stoff kontrollert 2026-10-21 mot Skeidar: alle fem variantene finnes, og fargene er hentet fra hver variants eget bilde."
+  },
+  {
+    "id": "skeidar-hjort-knudsen-sublim-hvilestol-med-fothviler",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Sublim lenestol",
+    "brand": "Hjort Knudsen",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/sublim-lenestol?VariationId=V_5637564697",
+    "priceNok": 16939,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 2524507, tekstil Bloq 3460 Beige, medium størrelse, manuell funksjon, sort Orion-sokkel, 16 939 kr). Andre farger i medium med manuell funksjon: Adore 3151 Antracite (2524503) 10 999 kr, Adore 3156 Cooper og 3155 Gold 11 999 kr og Adore 3216 Coffee 13 551 kr, alle før 16 939 kr med kampanje til 15.11. Brego 3591 Light Brown, 3596 Antracite og 3593 Grønn koster 16 389 kr, og Holms 9400–9407 med Polaris-sokkel 15 799 kr. Med elektrisk løftefunksjon koster stolen 24 999 kr (før 35 699). Bestillingsvare med leveringstid ca. 7–8 uker.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.83,
+      "d": 0.96,
+      "h": 1.06
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "seatD": 0.5,
+      "backH": 1.06,
+      "armH": 0.62,
+      "armW": 0.13,
+      "armTuck": 0.03,
+      "legStyle": "swivel-star",
+      "legH": 0.15,
+      "backShape": "high",
+      "cushion": "tight",
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "block",
+      "backSeams": "cross-v",
+      "footrest": "integrated",
+      "footrestOpen": false,
+      "star": "slim",
+      "starArms": 4,
+      "lever": false,
+      "footstool": false,
+      "headrest": true,
+      "notes": "Slank hvilestol med innebygd fothviler som felles ut fra setefronten, med ekstra lang leggstøtte. Rygg, fothviler og nakke reguleres manuelt med en innvendig hendel, så det er ikke noe synlig håndtak på siden. Sidevangene er brede, polstrede paneler som smalner litt inn mot foten og buer utover i en avrundet armlenstopp. Ryggen har to puter med en loddrett søm i midten. Over den sitter en separat, rektangulær nakkepute på to metallpinner, og den kan heves og vinkles (høyde 106–114 cm). Setet er tykt og går i ett med fothviler-panelet foran. Orion-sokkelen er en tynn, firearmet stjernefot i sort stål med søyle og sving. Polaris-sokkelen på Holms-variantene har fem tynne armer. Armlenshøyden er anslått fra bildet."
+    },
+    "variants": [
+      {
+        "name": "Bloq 3460 Beige, Orion-sokkel sort",
+        "colors": {
+          "upholstery": "#dacbb9",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/sublim-lenestol?VariationId=V_5637564697"
+      },
+      {
+        "name": "Holms 9401 Beige, Polaris-sokkel sort",
+        "colors": {
+          "upholstery": "#c7bfac",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 15799,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/sublim-lenestol?VariationId=V_5637602439",
+        "paramsOverride": {
+          "starArms": 5
+        }
+      },
+      {
+        "name": "Holms 9404 Light Grey, Polaris-sokkel sort",
+        "colors": {
+          "upholstery": "#b0b2ac",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 15799,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/sublim-lenestol?VariationId=V_5637602442",
+        "paramsOverride": {
+          "starArms": 5
+        }
+      },
+      {
+        "name": "Brego 3591 Light Brown, Orion-sokkel sort",
+        "colors": {
+          "upholstery": "#cdbdb0",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 16389,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/sublim-lenestol?VariationId=V_5637431118"
+      },
+      {
+        "name": "Holms 9403 Olive, Polaris-sokkel sort",
+        "colors": {
+          "upholstery": "#7e7e68",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 15799,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/sublim-lenestol?VariationId=V_5637602441",
+        "paramsOverride": {
+          "starArms": 5
+        }
+      },
+      {
+        "name": "Holms 9405 Steel, Polaris-sokkel sort",
+        "colors": {
+          "upholstery": "#696c68",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 15799,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/sublim-lenestol?VariationId=V_5637602443",
+        "paramsOverride": {
+          "starArms": 5
+        }
+      },
+      {
+        "name": "Adore 3216 Coffee, Orion-sokkel sort",
+        "colors": {
+          "upholstery": "#4b3a2f",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "priceNok": 16939,
+        "salePriceNok": 13551,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/sublim-lenestol?VariationId=V_5637603999"
+      },
+      {
+        "name": "Adore 3151 Antracite, Orion-sokkel sort",
+        "colors": {
+          "upholstery": "#484445",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "priceNok": 16939,
+        "salePriceNok": 10999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/sublim-lenestol?VariationId=V_5637318679"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.8,
+    "description": "Slank, høyrygget hvilestol fra danske Hjort Knudsen med ekstra lang innebygd fothviler, justerbar nakkepute og sving. Rygg, fothviler og nakke reguleres manuelt.",
+    "why": "Den lyse Bloq Beige-varianten med sort stjernefot passer til de varme, lyse veggene og de svarte detaljene i stua. Fothvileren er innebygd, så stolen trenger ingen krakk på gulvet.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/2524507/2524507_V10235454-SublimLenestol1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, art.nr., priser og kampanje, bredde 83 cm, høyde 106 cm (114 cm med nakkeputen hevet), sittehøyde 46, sittedybde 50, manuell funksjon med innebygd fothviler og alle 18 variantene. Åtte av dem er tatt med. Skeidar oppgir dybden som 96 cm for de fleste variantene og 114 cm for noen; 96 cm er brukt. Armlenshøyden er anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot Skeidar: alle åtte variantene finnes, fargene er hentet fra hver variants eget bilde, og Holms-variantene står på femarmet Polaris-sokkel."
+  },
+  {
+    "id": "skeidar-kansas-hvilestol-elektrisk-med-fothviler",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Kansas recliner med elektrisk regulering",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/kansas-recliner-med-eleketrisk-regulering?VariationId=V_5637508367",
+    "priceNok": 15999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 4610101, stoff Lord Mørk Beige, sortlakkert understell, 15 999 kr). Lord Grå (4610102) og Brego 34 Stone (4610104) koster også 15 999 kr. Dakota Mørk Grå (4610100) er på utsalg til 7 999 kr (før 15 999) så langt lageret rekker; den er utsolgt på nett, men kan hentes i butikk. Lord-fargene er bestillingsvare med leveringstid ca. 8–9 uker, og Brego 34 Stone er på nettlager (3–7 virkedager).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.64,
+      "d": 0.84,
+      "h": 1.09
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.47,
+      "seatD": 0.5,
+      "backH": 1.09,
+      "armH": 0.62,
+      "armW": 0.11,
+      "armBottom": 0.125,
+      "legStyle": "swivel-star",
+      "legH": 0.1,
+      "backShape": "high",
+      "cushion": "tight",
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "integrated",
+      "backSeams": "cross",
+      "footrest": "integrated",
+      "footrestOpen": false,
+      "star": "slim",
+      "starArms": 4,
+      "lever": false,
+      "footstool": false,
+      "headrest": true,
+      "notes": "Smal, elektrisk hvilestol (recliner) med innebygd fothviler som felles ut fra setefronten. Rygg og fothviler reguleres hver for seg med et lite betjeningspanel med knapper på utsiden av høyre sidevange. Sidevangene er tykke, polstrede paneler som går nesten ned til foten, med avrundede armlenstopper som bøyer litt utover. Den høye ryggen har tre vannrette, puffede felt: en innebygd nakkedel øverst med en tverrsøm under, et midtfelt og et korsryggfelt med en tverrsøm over setet. Setet er tykt og går i ett med fothviler-panelet. Stolen står på en lav, tynn, firearmet stjernefot i sortlakkert stål med sving. Sittehøyde og armlenshøyde er anslått fra bildene."
+    },
+    "variants": [
+      {
+        "name": "Lord Mørk Beige",
+        "colors": {
+          "upholstery": "#b3a296",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/kansas-recliner-med-eleketrisk-regulering?VariationId=V_5637508367"
+      },
+      {
+        "name": "Lord Grå",
+        "colors": {
+          "upholstery": "#a8a4a5",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/kansas-recliner-med-eleketrisk-regulering?VariationId=V_5637508368"
+      },
+      {
+        "name": "Brego 34 Stone",
+        "colors": {
+          "upholstery": "#93857d",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/kansas-recliner-med-eleketrisk-regulering?VariationId=V_1818024610104"
+      },
+      {
+        "name": "Dakota Mørk Grå (utsalg så langt lageret rekker)",
+        "colors": {
+          "upholstery": "#76716e",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "priceNok": 15999,
+        "salePriceNok": 7999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/kansas-recliner-med-eleketrisk-regulering?VariationId=V_5637555209"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.75,
+    "description": "Smal og høyrygget elektrisk recliner med innebygd fothviler, egen regulering av rygg og fotstøtte og sving på sort stjernefot.",
+    "why": "Den er bare 64 cm bred, så den får plass i et hjørne av stua eller kjellerstua, og Lord Mørk Beige ligger nær de varme Sand/Marrakesh-veggene.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/4610101/4610101_V10235454-KansasRecliner1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn (Skeidar skriver «eleketrisk»), art.nr., priser, mål (64 × 84 × 109 cm), elektrisk regulering av rygg og fotstøtte hver for seg, sving og de fire fargene. Skeidar oppgir ikke merke (Skeidars eget sortiment) og heller ikke sitte- eller armlenshøyde; disse er anslått fra bildene. Farger og stoff kontrollert 2026-10-21 mot Skeidar: alle fire variantene finnes, og fargene er hentet fra hver variants eget bilde. Dakota Mørk Grå selges bare til lageret er tomt."
+  },
+  {
+    "id": "skeidar-brian-hvilestol-med-krakk",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Brian hvilestol med krakk",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/brian-hvilestol-med-krakk?VariationId=V_5637434990",
+    "priceNok": 7999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 2977508, stoff Neve 16 Capuchino, sortlakkert understell, 7 999 kr). Krakken er inkludert. Neve 85 Grå (2977507) og Malmø 95 Mørk Grå (2977529) koster også 7 999 kr. På nettlager med leveringstid 3–7 virkedager.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.77,
+      "d": 0.755,
+      "h": 1.045
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.485,
+      "seatD": 0.47,
+      "backH": 1.045,
+      "armH": 0.6,
+      "armW": 0.1,
+      "legStyle": "swivel-star",
+      "legH": 0.22,
+      "backShape": "high",
+      "cushion": "tight",
+      "body": "tulip",
+      "headStyle": "integrated",
+      "backSeams": "cross-v",
+      "footrest": "stool",
+      "footrestOpen": false,
+      "stoolW": 0.55,
+      "stoolD": 0.42,
+      "stoolH": 0.44,
+      "starArms": 5,
+      "lever": false,
+      "footstool": true,
+      "headrest": true,
+      "notes": "Hvilestol med løs krakk. Armlenene er tynne og tulipanformede: smale nede ved setet og brede, avrundede og utoverbøyde øverst. Den høye ryggen har en loddrett søm fra setet og opp, og øverst en innebygd nakkedel med en tverrsøm under. Setet er en tykk pute som ligger mellom armlenene. Stolen står på en femarmet stjernefot i sortlakkert stål med høy søyle og sving. Krakken har samme stoff, en tykk pute med avrundede kanter og egen femarmet fot med søyle. Den er ca. 55 × 42 × 44 cm, anslått fra bildene fordi Skeidar ikke oppgir målene. Armlenshøyden er også anslått."
+    },
+    "variants": [
+      {
+        "name": "Neve 16 Capuchino",
+        "colors": {
+          "upholstery": "#b8ab95",
+          "legs": "#2f302e"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/brian-hvilestol-med-krakk?VariationId=V_5637434990"
+      },
+      {
+        "name": "Neve 85 Grå",
+        "colors": {
+          "upholstery": "#c2c0b8",
+          "legs": "#2f302e"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/brian-hvilestol-med-krakk?VariationId=V_5637434989"
+      },
+      {
+        "name": "Malmø 95 Mørk Grå",
+        "colors": {
+          "upholstery": "#737176",
+          "legs": "#2f302e"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/lenestoler/brian-hvilestol-med-krakk?VariationId=V_5637609339"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.8,
+    "absorptionNote": "Hvilestol med krakk.",
+    "description": "Rimelig hvilestol med høy rygg, tulipanformede armlener og matchende krakk, begge på sort stjernefot. Stolen svinger.",
+    "why": "Den varme Capuchino-fargen og den sorte foten passer i stua og kjellerstua, og settet er det rimeligste alternativet når du vil kunne legge beina opp.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/2977508/2977508_V10195852-BrianHvilestol1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, art.nr., pris, mål (77 × 75,5 × 104,5 cm, sittehøyde 48,5, sittedybde 47, oppgitt på Malmø-varianten), sving, løs krakk og de tre fargene. Alle tre bildene viser stolen med krakk. Skeidar oppgir ikke merke, krakkens mål eller vippefunksjon; krakken og armlenshøyden er anslått fra bildene. Farger og stoff kontrollert 2026-10-21 mot Skeidar: alle tre variantene finnes, og fargene er hentet fra hver variants eget bilde."
+  },
+  {
+    "id": "skeidar-brunstad-bella-hvilestol",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Bella hvilestol",
+    "brand": "Brunstad",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/bella-hvilestol?VariationId=V_5637476099",
+    "priceNok": 23660,
+    "salePriceNok": 14999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 2219114, tekstil Uno Kitt med sortlakkert S04-sokkel, kampanje 14 999 kr til 15.11, før 23 660 kr). Dragon-, Alfa- og Viva-tekstilene koster 23 660 kr, Bardal 340 koster 26 020 kr, hud Classic Nero 27 210 kr og fåreskinn Scandinavian 56 699 kr, alle uten kampanje. Krakk følger ikke med: Bella krakk i Uno Kitt (52 × 40 × 43 cm) koster 4 999 kr (før 7 400). Bestillingsvare med leveringstid ca. 6–7 uker. Norskprodusert, med 10 års garanti på seteputer og rammeverk.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.73,
+      "d": 0.87,
+      "h": 1.1
+    },
+    "archetype": "wingback",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.43,
+      "seatD": 0.51,
+      "backH": 1.1,
+      "armH": 0.58,
+      "armW": 0.08,
+      "legStyle": "swivel-star",
+      "legH": 0.24,
+      "backShape": "wing",
+      "cushion": "tight",
+      "buttons": false,
+      "footstool": false,
+      "headrest": true,
+      "notes": "Høy, moderne øreklappstol med vippbar rygg. Den er én sammenhengende, buet skallform der ørelappene øverst går i en myk bue ned i lave, smale armlener. Innsiden er stramt polstret uten knapper. En separat, pølseformet nakkepute sitter øverst foran på ryggen, men den vises ikke i modellen. Rygg og sete glir trinnløst bakover med gassfjær, og vangene følger ryggen. Stolen står på Brunstads S04-sokkel: en svart, firearmet stjernefot i lakkert stål med søyle og sving. Armlenshøyden er anslått fra bildet. Den lavere søsterstolen Bella loungestol (Bohus) er laget med samme arketype."
+    },
+    "variants": [
+      {
+        "name": "Uno Kitt",
+        "colors": {
+          "upholstery": "#dedcd2",
+          "legs": "#151515"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/bella-hvilestol?VariationId=V_5637476099"
+      },
+      {
+        "name": "Dragon Light Beige",
+        "colors": {
+          "upholstery": "#d8d2c7",
+          "legs": "#151515"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 23660,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/bella-hvilestol?VariationId=V_5637569210"
+      },
+      {
+        "name": "Dragon Beige",
+        "colors": {
+          "upholstery": "#c5bfb0",
+          "legs": "#151515"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 23660,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/bella-hvilestol?VariationId=V_5637569206"
+      },
+      {
+        "name": "Bardal 340",
+        "colors": {
+          "upholstery": "#b2a99b",
+          "legs": "#151515"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 26020,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/bella-hvilestol?VariationId=V_5637476098"
+      },
+      {
+        "name": "Alfa Natural",
+        "colors": {
+          "upholstery": "#b2b1a1",
+          "legs": "#151515"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal"
+        },
+        "priceNok": 23660,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/bella-hvilestol?VariationId=V_5637476102"
+      },
+      {
+        "name": "Alfa Beige",
+        "colors": {
+          "upholstery": "#9e9982",
+          "legs": "#151515"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal"
+        },
+        "priceNok": 23660,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/bella-hvilestol?VariationId=V_5637476101"
+      },
+      {
+        "name": "Hud Classic Nero",
+        "colors": {
+          "upholstery": "#3d3e3f",
+          "legs": "#151515"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "black-metal"
+        },
+        "priceNok": 27210,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/bella-hvilestol?VariationId=V_5637478687"
+      },
+      {
+        "name": "Fåreskinn Scandinavian Blond",
+        "colors": {
+          "upholstery": "#ddd7cd",
+          "legs": "#151515"
+        },
+        "materials": {
+          "upholstery": "teddy",
+          "legs": "black-metal"
+        },
+        "priceNok": 56699,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/bella-hvilestol?VariationId=V_5637577386"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.7,
+    "description": "Høy øreklappstol fra norske Brunstad, designet av Helge Taraldsen. Den har vippbar rygg med trinnløs glidefunksjon, pølseformet nakkepute og svingfot.",
+    "why": "Uno Kitt eller Dragon Light Beige gir en rolig, lys lesestol som passer til de lyse tekstilene og de svarte detaljene i stua, og den høye ryggen støtter nakken når du lener deg tilbake.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/2219114/2219114_V10195852-BellaHvilestol.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, art.nr., priser og kampanje, mål (73 × 87 × 110 cm, sittehøyde 43, sittedybde 51), designer Helge Taraldsen, glidefunksjon med gassfjær, S04-sokkelen og alle 17 variantene. Åtte av dem er tatt med. Skeidar kaller Alfa «fåreskinn» i beskrivelsen, men varen ligger under tekstil, koster 23 660 kr og har bouclé-struktur på bildene. Armlenshøyden er anslått. Farger og stoff kontrollert 2026-10-21 mot Skeidar: alle åtte variantene finnes, og fargene er hentet fra hver variants eget bilde. Dragon Sand er utelatt fordi bildet viser en grå stol."
+  },
+  {
+    "id": "skeidar-conform-gaga-loungestol",
+    "category": "lenestol",
+    "name": "Gaga hvilestol",
+    "brand": "Conform",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/gaga-hvilestol?VariationId=V_5637581158",
+    "priceNok": 16699,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 2543207, tekstil Benson 1500-03 Cream, 4-bensfot med sving i klarlakkert eik, 16 699 kr). Alle 21 variantene koster 16 699 kr: sju Benson-farger, hver med fot i aluminium, klarlakkert eik eller svartbeiset eik. Bestillingsvare med leveringstid ca. 6–7 uker.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.76,
+      "d": 0.76,
+      "h": 0.9
+    },
+    "archetype": "shell-legs",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.43,
+      "seatD": 0.5,
+      "backH": 0.9,
+      "armH": 0.6,
+      "armW": 0,
+      "legStyle": "wood-taper",
+      "legH": 0.24,
+      "backShape": "round",
+      "cushion": "tight",
+      "footstool": false,
+      "headrest": false,
+      "notes": "Loungestol med høyt, avrundet skall som går i ett med armlenene. Skallet er høyest bak, buer ned langs sidene og ender i lave, runde armlener foran. To trekknapper sitter midt i ryggen. En tykk, rund setepute ligger inne i skallet over en tynn, avrundet sokkel. Stolen står på fire skrå, avsmalnende ben (klarlakkert eik, svartbeiset eik eller aluminium) som møtes i et svingkryss under setet. Sittehøyde og armlenshøyde er anslått fra bildet."
+    },
+    "variants": [
+      {
+        "name": "Benson 1500-03 Cream, 4-bensfot klarlakkert eik",
+        "colors": {
+          "upholstery": "#dcd7c8",
+          "legs": "#d4b48a"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/gaga-hvilestol?VariationId=V_5637581158"
+      },
+      {
+        "name": "Benson 1500-03 Cream, 4-bensfot aluminium",
+        "colors": {
+          "upholstery": "#dcd7c8",
+          "legs": "#c4c6c6"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "chrome"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/gaga-hvilestol?VariationId=V_5637581151"
+      },
+      {
+        "name": "Benson 1500-03 Cream, 4-bensfot svartbeiset eik",
+        "colors": {
+          "upholstery": "#dcd7c8",
+          "legs": "#2e2d2b"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/gaga-hvilestol?VariationId=V_5637581165"
+      },
+      {
+        "name": "Benson 1500-64 Taupe, 4-bensfot klarlakkert eik",
+        "colors": {
+          "upholstery": "#9a8a77",
+          "legs": "#d4b48a"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/gaga-hvilestol?VariationId=V_5637581162"
+      },
+      {
+        "name": "Benson 1500-64 Taupe, 4-bensfot svartbeiset eik",
+        "colors": {
+          "upholstery": "#9a8a77",
+          "legs": "#2e2d2b"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/gaga-hvilestol?VariationId=V_5637581169"
+      },
+      {
+        "name": "Benson 1500-78 Silver, 4-bensfot aluminium",
+        "colors": {
+          "upholstery": "#a6a59e",
+          "legs": "#c4c6c6"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "chrome"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/gaga-hvilestol?VariationId=V_5637581156"
+      },
+      {
+        "name": "Benson 1500-19 Bronze, 4-bensfot klarlakkert eik",
+        "colors": {
+          "upholstery": "#68331a",
+          "legs": "#d4b48a"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/gaga-hvilestol?VariationId=V_5637581159"
+      },
+      {
+        "name": "Benson 1500-26 Green, 4-bensfot svartbeiset eik",
+        "colors": {
+          "upholstery": "#535537",
+          "legs": "#2e2d2b"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-stoler/hvilestoler/gaga-hvilestol?VariationId=V_5637581167"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.55,
+    "description": "Myk loungestol designet av Niels Gammelgaard for svenske Conform, med høyt, avrundet skall, knapper i ryggen og svingbar 4-bensfot.",
+    "why": "Kremfarget Benson med ben i klarlakkert eik passer til eikegulvet og de lyse tekstilene i stua. Stolen måler bare 76 × 76 cm og er fin som lesestol på soverommet eller i kjellerstua.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/2543207/2543207_V10235454-GagaStol1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, art.nr., pris, mål (76 × 76 × 90 cm), designer Niels Gammelgaard, svensk produksjon, 4-bensfot med sving og alle 21 variantene. Åtte av dem er tatt med. Skeidar oppgir ikke sitte- eller armlenshøyde (anslått fra bildet) og ingen vippefunksjon, så stolen er ført som loungestol selv om Skeidar kaller den hvilestol. Farger og stoff kontrollert 2026-10-21 mot Skeidar: alle åtte variantene finnes, og fargene er hentet fra hver variants eget bilde."
+  }
+]

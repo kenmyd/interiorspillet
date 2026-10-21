@@ -29,10 +29,10 @@
     },
     "variants": [
       {
-        "name": "Ull lysdempende grå-beige",
+        "name": "Grå beige",
         "colors": {
-          "fabric": "#b4a998",
-          "slat": "#b4a998",
+          "fabric": "#837b70",
+          "slat": "#837b70",
           "rail": "#1e1e1e"
         },
         "materials": {
@@ -49,7 +49,7 @@
     "why": "Tung ull i grå-beige passer til den grå vevde sofaen og SAND-veggene, og den gir mye mer lydabsorpsjon enn tynne gardiner.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norway%20AS/Produkter/SONDRE/324221/image-thumb__324221__PDP-Product/306162%20-%20Sondre%20gardinlengde%20140x220%20ull%20lysdempende%20gr%C3%A5-beige%20-%201.950162a5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, mål, pris, materiale, hemper og vaskeråd stemmer.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18: navn, mål, pris, materiale, hemper og vaskeråd stemmer. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Sondre 140x220 finnes bare i leverandørfargen «Grå beige» (ingen andre farger i serien), navnet er rettet til den, og stoffargen er rettet fra den lyse beige stripen (#b4a998) til rutemønsterets samlede gråbeige tone på produktbildet. Ull (cashwool) stemmer.",
     "priceConfidence": "checked"
   },
   {
@@ -82,10 +82,10 @@
     },
     "variants": [
       {
-        "name": "Ull svart-brun",
+        "name": "Svart brun",
         "colors": {
-          "fabric": "#3a322c",
-          "slat": "#3a322c",
+          "fabric": "#3f3833",
+          "slat": "#3f3833",
           "rail": "#1e1e1e"
         },
         "materials": {
@@ -102,7 +102,7 @@
     "why": "Den mørke svart-brune tonen tar opp det sorte kjøkkenet, de sorte vindusrammene og det røkte spisebordet, og passer godt mot de mørkere MARRAKESH-veggene i TV-stua.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norway%20AS/Produkter/STURLA/88228/image-thumb__88228__PDP-Product/222514%20-%20Sturla%20gardinlengde%20140x220%20ull%20svart-brun%20-%201.5e4ed4c7.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18 (varenr. 222514): navn, mål, pris, farge og skjulte hemper stemmer.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18 (varenr. 222514): navn, mål, pris, farge og skjulte hemper stemmer. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Sturla 140x220 finnes bare i leverandørfargen «Svart brun», navnet er rettet til den. Ull (cashwool) og fargen stemmer med produktbildet.",
     "priceConfidence": "checked"
   },
   {
@@ -181,7 +181,7 @@
     "why": "Med 240 cm bredde dekker ett sett hele det store sørvinduet, og lamellene kan vris så du ser elva og samtidig slipper lav høst- og vintersol.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Deco%20Group%20Norway%20AS/Produkter/LINE/135734/image-thumb__135734__PDP-Environment/250525%20-%20Line%20lamellsett%20240x250%20aluminium%20hvit%20-%201.43e3fca3.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-18 (varenr. 250525/250526/250524). Rettet: svart koster 869 kr på salg, ikke 1 449 kr, og dybden er 8,9 cm.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-18 (varenr. 250525/250526/250524). Rettet: svart koster 869 kr på salg, ikke 1 449 kr, og dybden er 8,9 cm. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre fargene finnes i 240x250 (hvit 250525, grå 250526 og svart 250524). Grå er en utgående vare og koster 725 kr (førpris 1 449 kr), så den har nå egen pris.",
     "priceConfidence": "checked"
   },
   {
@@ -212,15 +212,16 @@
       {
         "name": "Grå",
         "colors": {
-          "fabric": "#9b9993",
-          "slat": "#9b9993",
+          "fabric": "#73716f",
+          "slat": "#73716f",
           "rail": "#c4c4c2"
         },
         "materials": {
           "fabric": "woven",
           "slat": "woven",
           "rail": "steel"
-        }
+        },
+        "url": "https://www.ikea.com/no/no/p/skogskloever-rullegardin-gra-70314605/"
       }
     ],
     "defaultVariant": 0,
@@ -229,7 +230,7 @@
     "why": "Den grå, halvgjennomsiktige duken demper blending på TV-en og den lave sørsolen uten å stenge ute utsikten mot elva.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/skogskloever-rullegardin-gra__0602889_pe680583_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: størrelser, priser, snorløs med demper og at den ikke kan kuttes stemmer.",
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: størrelser, priser, snorløs med demper og at den ikke kan kuttes stemmer. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: SKOGSKLÖVER finnes bare i grå. Varianten lenker nå til 140x195-siden (art. 703.146.05, 549 kr), og stoffargen er rettet til den mellomgrå tonen på produktbildet (var for lys).",
     "priceConfidence": "checked"
   },
   {
@@ -270,20 +271,6 @@
           "rail": "painted"
         },
         "url": "https://www.ikea.com/no/no/p/hoppvals-plissegardin-dobbel-hvit-20290621/"
-      },
-      {
-        "name": "Grå",
-        "colors": {
-          "fabric": "#a3a19c",
-          "slat": "#a3a19c",
-          "rail": "#9a9a98"
-        },
-        "materials": {
-          "fabric": "woven",
-          "slat": "woven",
-          "rail": "steel"
-        },
-        "url": "https://www.ikea.com/no/no/p/hoppvals-plissegardin-dobbel-gra-40376732/"
       }
     ],
     "defaultVariant": 0,
@@ -292,7 +279,7 @@
     "why": "Et rimelig alternativ for kjøkkenvinduet og det smale vinduet i TV-stua, og den lyse cellestrukturen forsvinner mot de lyse vindusnisjene.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/hoppvals-plissegardin-dobbel-hvit__0602283_pe680560_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: pris, størrelser, skjult snor og at den ikke kan kuttes stemmer. Grå variant finnes.",
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: pris, størrelser, skjult snor og at den ikke kan kuttes stemmer. Grå variant finnes. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: dobbel HOPPVALS i 140x155 finnes bare i hvit, så grå er fjernet (grå dobbel finnes bare i 90x210 og 110x155, og «HOPPVALS lysdempende» er en annen modell).",
     "priceConfidence": "checked"
   },
   {
@@ -325,26 +312,27 @@
       {
         "name": "Lys beige/med multibånd",
         "colors": {
-          "fabric": "#d4c6b1",
-          "slat": "#d4c6b1",
+          "fabric": "#c8b6a6",
+          "slat": "#c8b6a6",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "velour",
-          "slat": "velour",
+          "fabric": "velvet",
+          "slat": "velvet",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.ikea.com/no/no/p/sanela-gardiner-1-par-lys-beige-med-multiband-40589880/"
       },
       {
         "name": "Mørk brun/med multibånd",
         "colors": {
-          "fabric": "#4a3a2f",
-          "slat": "#4a3a2f",
+          "fabric": "#44362c",
+          "slat": "#44362c",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "velour",
-          "slat": "velour",
+          "fabric": "velvet",
+          "slat": "velvet",
           "rail": "black-metal"
         },
         "url": "https://www.ikea.com/no/no/p/sanela-gardiner-1-par-mork-brun-med-multiband-40631558/"
@@ -352,41 +340,44 @@
       {
         "name": "Mørk grå/med multibånd",
         "colors": {
-          "fabric": "#4c4c4d",
-          "slat": "#4c4c4d",
+          "fabric": "#4f4f51",
+          "slat": "#4f4f51",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "velour",
-          "slat": "velour",
+          "fabric": "velvet",
+          "slat": "velvet",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.ikea.com/no/no/p/sanela-gardiner-1-par-mork-gra-med-multiband-60591410/"
       },
       {
         "name": "Offwhite/med multibånd",
         "colors": {
-          "fabric": "#ebe5d9",
-          "slat": "#ebe5d9",
+          "fabric": "#e8e6dd",
+          "slat": "#e8e6dd",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "velour",
-          "slat": "velour",
+          "fabric": "velvet",
+          "slat": "velvet",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.ikea.com/no/no/p/sanela-gardiner-1-par-offwhite-med-multiband-10591403/"
       },
       {
         "name": "Mørk gråturkis/med multibånd",
         "colors": {
-          "fabric": "#3e5857",
-          "slat": "#3e5857",
+          "fabric": "#4a6a6a",
+          "slat": "#4a6a6a",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "velour",
-          "slat": "velour",
+          "fabric": "velvet",
+          "slat": "velvet",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.ikea.com/no/no/p/sanela-gardiner-1-par-mork-graturkis-med-multiband-30589885/"
       },
       {
         "name": "Mørk blå/med multibånd",
@@ -396,19 +387,34 @@
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "velour",
-          "slat": "velour",
+          "fabric": "velvet",
+          "slat": "velvet",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.ikea.com/no/no/p/sanela-gardiner-1-par-mork-bla-med-multiband-40591406/"
+      },
+      {
+        "name": "Blekrosa/med multibånd",
+        "colors": {
+          "fabric": "#d9b8b0",
+          "slat": "#d9b8b0",
+          "rail": "#1e1e1e"
+        },
+        "materials": {
+          "fabric": "velvet",
+          "slat": "velvet",
+          "rail": "black-metal"
+        },
+        "url": "https://www.ikea.com/no/no/p/sanela-gardiner-1-par-blekrosa-med-multiband-50589889/"
       }
     ],
-    "defaultVariant": 0,
+    "defaultVariant": 1,
     "absorption": 2.8,
     "description": "Lysdempende gardiner i tung bomullsfløyel (2,0 kg per par) med multibånd for stang eller skinne. De gir en myk, matt glans og demper gjenskinn på TV-en.",
     "why": "Tung fløyel i lys beige eller mørk brun gir mye lydabsorpsjon i det harde rommet med parkett og store glassflater, og den varme tonen passer til SAND-veggene.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/sanela-gardiner-1-par-mork-brun-med-multiband__1478265_pe999479_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: pris, størrelser og farger stemmer (finnes også i blekrosa). Rettet: vekten er 2,0 kg per par, ikke 2,4 kg.",
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: pris, størrelser og farger stemmer (finnes også i blekrosa). Rettet: vekten er 2,0 kg per par, ikke 2,4 kg. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle seks fargene finnes i 140x250 med multibånd, og blekrosa er lagt til. Stoffet er rettet fra velour til fløyel (bomullsfløyel), hver farge har fått egen lenke, og standardvarianten er nå mørk brun, som på produktbildet.",
     "priceConfidence": "checked"
   },
   {
@@ -449,7 +455,8 @@
           "fabric": "linen",
           "slat": "linen",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.ikea.com/no/no/p/stockholm-2025-flortynn-gardin-1-stk-offwhite-med-multiband-80600994/"
       }
     ],
     "defaultVariant": 0,
@@ -458,7 +465,7 @@
     "why": "Den lyse linstrukturen myker opp de store sorte vindusrammene og slipper fortsatt inn lyset fra sør og utsikten mot elva.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/stockholm-2025-flortynn-gardin-1-stk-offwhite-med-multiband__1353674_pe952281_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18 (art. 806.009.94): mål, pris, 55 % lin/45 % bomull og krymping stemmer.",
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18 (art. 806.009.94): mål, pris, 55 % lin/45 % bomull og krymping stemmer. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: den flortynne gardinen finnes bare i offwhite (lin/bomull), og alt stemmer.",
     "priceConfidence": "checked"
   },
   {
@@ -502,7 +509,7 @@
         "url": "https://www.ikea.com/no/no/p/vecklarfly-persienne-bambus-30616308/"
       },
       {
-        "name": "Hvit (aluminium)",
+        "name": "Hvit",
         "colors": {
           "fabric": "#f1efe9",
           "slat": "#f1efe9",
@@ -523,7 +530,7 @@
     "why": "Den varme bambustonen passer til det lyse eikegulvet og bryter opp de mange grå og sorte flatene.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/vecklarfly-persienne-bambus__1431245_pe982295_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: bambusvarianten stemmer. Rettet: den hvite varianten har aluminiumslameller (ikke bambus) og koster 699 kr.",
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-18: bambusvarianten stemmer. Rettet: den hvite varianten har aluminiumslameller (ikke bambus) og koster 699 kr. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: begge fargene finnes i 140x155. Den hvite heter bare «hvit» hos IKEA og har nå sin egen pris (699 kr).",
     "priceConfidence": "checked"
   },
   {
@@ -553,8 +560,8 @@
       {
         "name": "Taupe",
         "colors": {
-          "fabric": "#8d8277",
-          "slat": "#8d8277",
+          "fabric": "#a5977f",
+          "slat": "#a5977f",
           "rail": "#d9d6d0"
         },
         "materials": {
@@ -585,7 +592,7 @@
     "why": "Taupe ligger tett på MARRAKESH-tonen, og duo-stripene gjør det enkelt å skru ned lyset gradvis mot den lave sørsolen.",
     "imageUrl": "https://img.jysk.io?url=https%3A%2F%2Fcdn1.jysk.com%2Fgetimage%2Fwd3.large%2F245607&w=2744",
     "verified": true,
-    "verifiedNote": "Bekreftet på jysk.no 2026-10-18: pris, mål, stoffbredde og kjededrift stemmer. Begge fargene er midlertidig utsolgt for levering.",
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-18: pris, mål, stoffbredde og kjededrift stemmer. Begge fargene er midlertidig utsolgt for levering. Farger og stoff kontrollert 2026-10-21 mot jysk.no: begge fargene (taupe og hvit) finnes i 140x180 og er nå på lager. Taupe er rettet til den lysere tonen på produktbildet.",
     "priceConfidence": "checked"
   },
   {
@@ -618,15 +625,31 @@
       {
         "name": "Natur",
         "colors": {
-          "fabric": "#cbbfa8",
-          "slat": "#cbbfa8",
+          "fabric": "#c6bba9",
+          "slat": "#c6bba9",
           "rail": "#1e1e1e"
         },
         "materials": {
           "fabric": "linen",
           "slat": "linen",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.kid.no/gardiner/lingardiner/atelier-ekstra-bred-lingardin-natur?v=212465250070"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "fabric": "#f4f2ee",
+          "slat": "#f4f2ee",
+          "rail": "#1e1e1e"
+        },
+        "materials": {
+          "fabric": "linen",
+          "slat": "linen",
+          "rail": "black-metal"
+        },
+        "url": "https://www.kid.no/gardiner/lingardiner/atelier-ce68da43?v=212465240000",
+        "priceNok": 2499.9
       }
     ],
     "defaultVariant": 0,
@@ -635,7 +658,7 @@
     "why": "Naturfarget lin passer perfekt til SAND-veggene og de lyse bouclé-stolene, og gir en luftig, eksklusiv ramme rundt utsikten mot elva.",
     "imageUrl": "https://www.kid.no/globalassets/productimages/212465250070.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på kid.no 2026-10-18: pris, størrelser og multibånd stemmer. Rettet: siden sier 100 % lin, ikke økologisk lin.",
+    "verifiedNote": "Bekreftet på kid.no 2026-10-18: pris, størrelser og multibånd stemmer. Rettet: siden sier 100 % lin, ikke økologisk lin. Farger og stoff kontrollert 2026-10-21 mot kid.no: natur finnes, og hvit i 240x250 (2 499,90 kr) er lagt til. Mørk sand finnes bare i 240x300 og er derfor ikke med.",
     "priceConfidence": "checked"
   },
   {
@@ -674,7 +697,7 @@
           "slat": "woven",
           "rail": "steel"
         },
-        "url": "https://www.kid.no/solskjerming/plissegardiner/leah-oppned-lysfiltrerende-plissegardin-lys-natur"
+        "url": "https://www.kid.no/solskjerming/plissegardiner/leah-oppned-lysfiltrerende-plissegardin-lys-natur?v=6279080230"
       },
       {
         "name": "Hvit",
@@ -688,15 +711,15 @@
           "slat": "woven",
           "rail": "painted"
         },
-        "url": "https://www.kid.no/solskjerming/plissegardiner/leah-oppned-lysfiltrerende-plissegardin-hvit",
+        "url": "https://www.kid.no/solskjerming/plissegardiner/leah-oppned-lysfiltrerende-plissegardin-hvit?v=627908001",
         "priceNok": 899.9,
         "priceConfidence": "check"
       },
       {
         "name": "Grå",
         "colors": {
-          "fabric": "#8f8d89",
-          "slat": "#8f8d89",
+          "fabric": "#a39f98",
+          "slat": "#a39f98",
           "rail": "#9a9a98"
         },
         "materials": {
@@ -704,13 +727,13 @@
           "slat": "woven",
           "rail": "steel"
         },
-        "url": "https://www.kid.no/solskjerming/plissegardiner/leah-oppned-lysfiltrerende-plissegardin-gra"
+        "url": "https://www.kid.no/solskjerming/plissegardiner/leah-oppned-lysfiltrerende-plissegardin-gra?v=627908037"
       },
       {
         "name": "Svart",
         "colors": {
-          "fabric": "#1f1f1f",
-          "slat": "#1f1f1f",
+          "fabric": "#262628",
+          "slat": "#262628",
           "rail": "#1a1a1a"
         },
         "materials": {
@@ -718,7 +741,7 @@
           "slat": "woven",
           "rail": "black-metal"
         },
-        "url": "https://www.kid.no/solskjerming/plissegardiner/leah-oppned-lysfiltrerende-plissegardin-svart",
+        "url": "https://www.kid.no/solskjerming/plissegardiner/leah-oppned-lysfiltrerende-plissegardin-svart?v=6279080900",
         "priceConfidence": "check"
       }
     ],
@@ -728,7 +751,7 @@
     "why": "Opp&ned-funksjonen gir skjerming mot innsyn nederst og lys øverst på kjøkkenvinduet, og svart variant matcher det sorte kjøkkenet.",
     "imageUrl": "https://www.kid.no/globalassets/productimages/leah-lifestyle-beige-2.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på kid.no 2026-10-18 for alle fire farger. Rettet: bredder fra 40 cm (ikke 60 cm), og prisene for de andre fargene.",
+    "verifiedNote": "Bekreftet på kid.no 2026-10-18 for alle fire farger. Rettet: bredder fra 40 cm (ikke 60 cm), og prisene for de andre fargene. Farger og stoff kontrollert 2026-10-21 mot kid.no: alle fire fargene finnes i 80x160, og alle koster 749,90 kr i denne størrelsen (også hvit). Lenkene åpner nå 80x160, og grå og svart er justert etter produktbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -758,15 +781,44 @@
       {
         "name": "Beige",
         "colors": {
-          "fabric": "#c9b9a1",
-          "slat": "#c9b9a1",
+          "fabric": "#c1b0a2",
+          "slat": "#c1b0a2",
           "rail": "#d0cdc6"
         },
         "materials": {
           "fabric": "woven",
           "slat": "woven",
           "rail": "steel"
-        }
+        },
+        "url": "https://www.kid.no/gardiner/liftgardiner/lystette-liftgardiner/aino-liftgardin-beige?v=211916120210"
+      },
+      {
+        "name": "Grå",
+        "colors": {
+          "fabric": "#8f8783",
+          "slat": "#8f8783",
+          "rail": "#d0cdc6"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "woven",
+          "rail": "steel"
+        },
+        "url": "https://www.kid.no/gardiner/liftgardiner/lystette-liftgardiner/aino-liftgardin-gra?v=211916120920"
+      },
+      {
+        "name": "Gråblå",
+        "colors": {
+          "fabric": "#7c7d8a",
+          "slat": "#7c7d8a",
+          "rail": "#d0cdc6"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "woven",
+          "rail": "steel"
+        },
+        "url": "https://www.kid.no/gardiner/liftgardiner/lystette-liftgardiner/aino-liftgardin-grabla?v=211916120627"
       }
     ],
     "defaultVariant": 0,
@@ -775,7 +827,7 @@
     "why": "Beige liftgardin gir kjøkkenvinduet en myk tekstilramme som binder kjøkkenet sammen med SAND-tonene i stua.",
     "imageUrl": "https://www.kid.no/globalassets/productimages/211916100210_2.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på kid.no 2026-10-18: pris, størrelser, kjedetrekk og 330 g/m² stemmer. Rettet: siden sier ikke at stoffet er resirkulert.",
+    "verifiedNote": "Bekreftet på kid.no 2026-10-18: pris, størrelser, kjedetrekk og 330 g/m² stemmer. Rettet: siden sier ikke at stoffet er resirkulert. Farger og stoff kontrollert 2026-10-21 mot kid.no: beige finnes, og grå og gråblå i 120x140 (samme pris, 999,90 kr) er lagt til. Lenkene åpner nå 120x140.",
     "priceConfidence": "checked"
   },
   {
@@ -808,82 +860,88 @@
       {
         "name": "Sort",
         "colors": {
-          "fabric": "#171717",
-          "slat": "#171717",
-          "rail": "#171717"
+          "fabric": "#1c1c1c",
+          "slat": "#1c1c1c",
+          "rail": "#1c1c1c"
         },
         "materials": {
           "fabric": "woven",
           "slat": "black-metal",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.gardinmaker.no/alu-persienner-25-mm?swatch=270"
       },
       {
         "name": "Antrasitt",
         "colors": {
-          "fabric": "#3a3c3f",
-          "slat": "#3a3c3f",
-          "rail": "#3a3c3f"
+          "fabric": "#3b3b3c",
+          "slat": "#3b3b3c",
+          "rail": "#3b3b3c"
         },
         "materials": {
           "fabric": "woven",
           "slat": "painted",
           "rail": "painted"
-        }
+        },
+        "url": "https://www.gardinmaker.no/alu-persienner-25-mm?swatch=269"
       },
       {
         "name": "Matt stein",
         "colors": {
-          "fabric": "#8b8478",
-          "slat": "#8b8478",
-          "rail": "#8b8478"
-        },
-        "materials": {
-          "fabric": "woven",
-          "slat": "painted",
-          "rail": "painted"
-        },
-        "priceNok": 4531
-      },
-      {
-        "name": "Sand",
-        "colors": {
-          "fabric": "#cdbf9f",
-          "slat": "#cdbf9f",
-          "rail": "#cdbf9f"
-        },
-        "materials": {
-          "fabric": "woven",
-          "slat": "painted",
-          "rail": "painted"
-        }
-      },
-      {
-        "name": "Macchiato",
-        "colors": {
-          "fabric": "#a28c76",
-          "slat": "#a28c76",
-          "rail": "#a28c76"
-        },
-        "materials": {
-          "fabric": "woven",
-          "slat": "painted",
-          "rail": "painted"
-        },
-        "priceNok": 4531
-      },
-      {
-        "name": "Sølvgrå",
-        "colors": {
-          "fabric": "#b7b9ba",
-          "slat": "#b7b9ba",
-          "rail": "#b7b9ba"
+          "fabric": "#cbcbc8",
+          "slat": "#cbcbc8",
+          "rail": "#cbcbc8"
         },
         "materials": {
           "fabric": "woven",
           "slat": "steel",
           "rail": "steel"
-        }
+        },
+        "url": "https://www.gardinmaker.no/alu-persienner-25-mm?swatch=289",
+        "priceNok": 4531
+      },
+      {
+        "name": "Sand",
+        "colors": {
+          "fabric": "#efe6d4",
+          "slat": "#efe6d4",
+          "rail": "#efe6d4"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "painted",
+          "rail": "painted"
+        },
+        "url": "https://www.gardinmaker.no/alu-persienner-25-mm?swatch=262"
+      },
+      {
+        "name": "Macchiato",
+        "colors": {
+          "fabric": "#d2c7bd",
+          "slat": "#d2c7bd",
+          "rail": "#d2c7bd"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "painted",
+          "rail": "painted"
+        },
+        "url": "https://www.gardinmaker.no/alu-persienner-25-mm?swatch=288",
+        "priceNok": 4531
+      },
+      {
+        "name": "Sølvgrå",
+        "colors": {
+          "fabric": "#c4c4c4",
+          "slat": "#c4c4c4",
+          "rail": "#c4c4c4"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "steel",
+          "rail": "steel"
+        },
+        "url": "https://www.gardinmaker.no/alu-persienner-25-mm?swatch=266"
       },
       {
         "name": "Hvit",
@@ -896,7 +954,8 @@
           "fabric": "woven",
           "slat": "painted",
           "rail": "painted"
-        }
+        },
+        "url": "https://www.gardinmaker.no/alu-persienner-25-mm?swatch=259"
       }
     ],
     "defaultVariant": 0,
@@ -905,7 +964,7 @@
     "why": "Sorte 25 mm lameller i nisjen forsvinner nesten mot de sorte vindusrammene, og gir presis kontroll over den lave sørsolen.",
     "imageUrl": "",
     "verified": true,
-    "verifiedNote": "Bekreftet på gardinmaker.no 2026-10-18, pris hentet fra konfiguratoren. Rettet: 220x180 koster 2 210 kr i Sort, ikke estimatet 1 800 kr.",
+    "verifiedNote": "Bekreftet på gardinmaker.no 2026-10-18, pris hentet fra konfiguratoren. Rettet: 220x180 koster 2 210 kr i Sort, ikke estimatet 1 800 kr. Farger og stoff kontrollert 2026-10-21 mot gardinmaker.no: alle sju fargene finnes (Sort, Antrasitt, Sand, Sølvgrå og Hvit i prisgruppe A, Matt stein og Macchiato i gruppe C, 4 531 kr for 220x180). Fargene er tatt fra fargeprøvene og bildene i konfiguratoren: Matt stein er en lys varm grå, Sand en lys kremfarge og Macchiato en lys gråbeige, ikke de mørke tonene fra før. Hver farge har fått egen lenke.",
     "shippingNok": 390,
     "priceConfidence": "checked"
   },
@@ -938,97 +997,104 @@
     },
     "variants": [
       {
-        "name": "Grå eik (bambus)",
+        "name": "Grå eik",
         "colors": {
-          "fabric": "#8f877b",
-          "slat": "#9a9182",
-          "rail": "#9a9182"
+          "fabric": "#a98f72",
+          "slat": "#b79c7d",
+          "rail": "#b79c7d"
         },
         "materials": {
           "fabric": "woven",
           "slat": "ash",
           "rail": "ash"
-        }
+        },
+        "url": "https://www.gardinmaker.no/tre-persienner-50-mm?swatch=242"
       },
       {
-        "name": "Natur (bambus)",
+        "name": "Natur",
         "colors": {
-          "fabric": "#c2a47c",
-          "slat": "#c8a77a",
-          "rail": "#c8a77a"
+          "fabric": "#d0c1aa",
+          "slat": "#decfb8",
+          "rail": "#decfb8"
         },
         "materials": {
           "fabric": "woven",
           "slat": "ash",
           "rail": "ash"
-        }
+        },
+        "url": "https://www.gardinmaker.no/tre-persienner-50-mm?swatch=241"
       },
       {
-        "name": "Eik rustikk (bambus)",
+        "name": "Eik rustikk",
         "colors": {
-          "fabric": "#a3845f",
-          "slat": "#ae8b62",
-          "rail": "#ae8b62"
+          "fabric": "#b5946d",
+          "slat": "#c5a37a",
+          "rail": "#c5a37a"
         },
         "materials": {
           "fabric": "woven",
           "slat": "ash",
           "rail": "ash"
-        }
+        },
+        "url": "https://www.gardinmaker.no/tre-persienner-50-mm?swatch=243"
       },
       {
-        "name": "Valnøtt (abachi)",
+        "name": "Valnøtt",
         "colors": {
-          "fabric": "#4f3a2d",
-          "slat": "#5c4232",
-          "rail": "#5c4232"
+          "fabric": "#33291f",
+          "slat": "#3b2f26",
+          "rail": "#3b2f26"
         },
         "materials": {
           "fabric": "woven",
-          "slat": "oak",
-          "rail": "oak"
+          "slat": "walnut",
+          "rail": "walnut"
         },
+        "url": "https://www.gardinmaker.no/tre-persienner-50-mm?swatch=2022",
         "priceNok": 8787
       },
       {
-        "name": "Askesort (bambus)",
+        "name": "Askesort",
         "colors": {
-          "fabric": "#1f1d1c",
-          "slat": "#2a2725",
-          "rail": "#2a2725"
+          "fabric": "#29261e",
+          "slat": "#312e24",
+          "rail": "#312e24"
         },
         "materials": {
           "fabric": "woven",
           "slat": "ash",
           "rail": "ash"
-        }
+        },
+        "url": "https://www.gardinmaker.no/tre-persienner-50-mm?swatch=2039"
       },
       {
-        "name": "Varm lin (Trend)",
+        "name": "Varm lin",
         "colors": {
-          "fabric": "#cfc2ab",
-          "slat": "#d8ccb6",
-          "rail": "#d8ccb6"
+          "fabric": "#8b847a",
+          "slat": "#968f85",
+          "rail": "#968f85"
         },
         "materials": {
           "fabric": "woven",
-          "slat": "oak",
-          "rail": "oak"
+          "slat": "painted",
+          "rail": "painted"
         },
+        "url": "https://www.gardinmaker.no/tre-persienner-50-mm?swatch=2027",
         "priceNok": 7105
       },
       {
-        "name": "Sort (abachi)",
+        "name": "Sort",
         "colors": {
-          "fabric": "#161616",
-          "slat": "#161616",
-          "rail": "#161616"
+          "fabric": "#1e1e1c",
+          "slat": "#1e1e1c",
+          "rail": "#1e1e1c"
         },
         "materials": {
           "fabric": "woven",
-          "slat": "oak",
-          "rail": "oak"
+          "slat": "painted",
+          "rail": "painted"
         },
+        "url": "https://www.gardinmaker.no/tre-persienner-50-mm?swatch=231",
         "priceNok": 8787
       }
     ],
@@ -1038,7 +1104,7 @@
     "why": "Askesort eller grå eik tar opp det røkte, ovale spisebordet, og de brede trelamellene gir en varm, eksklusiv kontrast til de store glassflatene.",
     "imageUrl": "",
     "verified": true,
-    "verifiedNote": "Bekreftet på gardinmaker.no 2026-10-18, pris hentet fra konfiguratoren. Rettet: 220x180 koster 7 194 kr (ikke estimatet 4 200 kr), maks høyde 300 cm, og Grå eik, Eik rustikk og Askesort er bambus.",
+    "verifiedNote": "Bekreftet på gardinmaker.no 2026-10-18, pris hentet fra konfiguratoren. Rettet: 220x180 koster 7 194 kr (ikke estimatet 4 200 kr), maks høyde 300 cm, og Grå eik, Eik rustikk og Askesort er bambus. Farger og stoff kontrollert 2026-10-21 mot gardinmaker.no: alle sju fargene finnes. Navnene er rettet til butikkens egne (uten «(bambus)», «(abachi)» og «(Trend)»), og hver farge har fått egen lenke og sin pris (gruppe A 7 194 kr, Valnøtt og Sort i gruppe B 8 787 kr, Varm lin i gruppe C 7 105 kr). Fargene er tatt fra fargeprøvene: Grå eik er en lys, varm eiketone, Natur en blek bambus og Varm lin en malt varm grå, ikke de tonene som sto før. Valnøtt er den mørke valnøtten (413350; butikken har også en lysere 411350), og Sort og Varm lin er malte lameller (materiale «painted»).",
     "shippingNok": 390,
     "priceConfidence": "checked"
   },
@@ -1074,80 +1140,86 @@
       {
         "name": "Sahara III Chalk",
         "colors": {
-          "fabric": "#e9e4d9",
-          "slat": "#e9e4d9",
+          "fabric": "#c9c2b8",
+          "slat": "#c9c2b8",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "woven",
-          "slat": "woven",
+          "fabric": "cotton",
+          "slat": "cotton",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.gardinmaker.no/gardinhoyde-med-wavefold?swatch=1510"
       },
       {
         "name": "Sahara III Linen",
         "colors": {
-          "fabric": "#d6cab3",
-          "slat": "#d6cab3",
+          "fabric": "#a69c8b",
+          "slat": "#a69c8b",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "woven",
-          "slat": "woven",
+          "fabric": "cotton",
+          "slat": "cotton",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.gardinmaker.no/gardinhoyde-med-wavefold?swatch=1511"
       },
       {
         "name": "Sahara III Pebble",
         "colors": {
-          "fabric": "#b3a998",
-          "slat": "#b3a998",
+          "fabric": "#ada196",
+          "slat": "#ada196",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "woven",
-          "slat": "woven",
+          "fabric": "cotton",
+          "slat": "cotton",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.gardinmaker.no/gardinhoyde-med-wavefold?swatch=1513"
       },
       {
         "name": "Sahara III Driftwood",
         "colors": {
-          "fabric": "#8c7e6c",
-          "slat": "#8c7e6c",
+          "fabric": "#645a53",
+          "slat": "#645a53",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "woven",
-          "slat": "woven",
+          "fabric": "cotton",
+          "slat": "cotton",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.gardinmaker.no/gardinhoyde-med-wavefold?swatch=1523"
       },
       {
         "name": "Sahara III Stone",
         "colors": {
-          "fabric": "#9b948a",
-          "slat": "#9b948a",
+          "fabric": "#e3ddcf",
+          "slat": "#e3ddcf",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "woven",
-          "slat": "woven",
+          "fabric": "cotton",
+          "slat": "cotton",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.gardinmaker.no/gardinhoyde-med-wavefold?swatch=1529"
       },
       {
         "name": "Sahara III Charcoal",
         "colors": {
-          "fabric": "#474543",
-          "slat": "#474543",
+          "fabric": "#6f6b64",
+          "slat": "#6f6b64",
           "rail": "#1e1e1e"
         },
         "materials": {
-          "fabric": "woven",
-          "slat": "woven",
+          "fabric": "cotton",
+          "slat": "cotton",
           "rail": "black-metal"
-        }
+        },
+        "url": "https://www.gardinmaker.no/gardinhoyde-med-wavefold?swatch=1532"
       }
     ],
     "defaultVariant": 1,
@@ -1156,7 +1228,7 @@
     "why": "Wave-gardin fra tak til gulv gir et rolig, hotellaktig uttrykk langs hele sørveggen, og et tett, fôret stoff hjelper mye på etterklangstiden.",
     "imageUrl": "https://thecurtainmakernopc.blob.core.windows.net/media/0005006_gardinhoyde-med-wavefold.jpeg",
     "verified": true,
-    "verifiedNote": "Bekreftet på gardinmaker.no 2026-10-18, pris hentet fra konfiguratoren og alle seks Sahara III-farger finnes. Rettet: 240x235 koster 12 205 kr, ikke estimatet 5 000 kr.",
+    "verifiedNote": "Bekreftet på gardinmaker.no 2026-10-18, pris hentet fra konfiguratoren og alle seks Sahara III-farger finnes. Rettet: 240x235 koster 12 205 kr, ikke estimatet 5 000 kr. Farger og stoff kontrollert 2026-10-21 mot gardinmaker.no: alle seks Sahara III-fargene finnes (prisgruppe A). Stoffet er rettet til bomull (100 % børstet bomull), fargene er tatt fra fargeprøvene og gardinbildene i konfiguratoren (Stone er den lyseste, Chalk en lys gråbeige), og hver farge har fått egen lenke. Produktbildet viser ingen gardin, så standardvarianten er beholdt.",
     "shippingNok": 390,
     "priceConfidence": "checked"
   },
@@ -1188,10 +1260,10 @@
     },
     "variants": [
       {
-        "name": "Sort matt profil (RAL 9005), lyst ettlags stoff",
+        "name": "Edge 1029, profil Sort matt 9005",
         "colors": {
-          "fabric": "#e6e0d4",
-          "slat": "#e6e0d4",
+          "fabric": "#e1dfd2",
+          "slat": "#e1dfd2",
           "rail": "#151515"
         },
         "materials": {
@@ -1201,10 +1273,10 @@
         }
       },
       {
-        "name": "Antrasitt matt profil (RAL 7016), grått ettlags stoff",
+        "name": "Edge 9178, profil Antrasitt matt 7016",
         "colors": {
-          "fabric": "#9e9a93",
-          "slat": "#9e9a93",
+          "fabric": "#96928f",
+          "slat": "#96928f",
           "rail": "#383e42"
         },
         "materials": {
@@ -1214,10 +1286,10 @@
         }
       },
       {
-        "name": "Mørk bronse matt profil (RAL 8017), sandfarget stoff",
+        "name": "Edge 2438, profil Mørk bronse matt 8017",
         "colors": {
-          "fabric": "#c9b99e",
-          "slat": "#c9b99e",
+          "fabric": "#c0ab94",
+          "slat": "#c0ab94",
           "rail": "#45322e"
         },
         "materials": {
@@ -1227,10 +1299,10 @@
         }
       },
       {
-        "name": "Grå matt profil (RAL 9006), lys grått stoff",
+        "name": "Edge 9251, profil Grå matt 9006",
         "colors": {
-          "fabric": "#c7c5c0",
-          "slat": "#c7c5c0",
+          "fabric": "#bfbcbb",
+          "slat": "#bfbcbb",
           "rail": "#a5a8a6"
         },
         "materials": {
@@ -1240,26 +1312,41 @@
         }
       },
       {
-        "name": "Hvit matt profil (RAL 9016), hvitt honeycomb-stoff",
+        "name": "Loft 1001 (honeycomb), profil Hvit matt 9016",
         "colors": {
-          "fabric": "#f3f1ec",
-          "slat": "#f3f1ec",
+          "fabric": "#eeeeed",
+          "slat": "#eeeeed",
           "rail": "#f1f0ea"
         },
         "materials": {
           "fabric": "woven",
           "slat": "woven",
           "rail": "painted"
-        }
+        },
+        "priceNok": 5850
+      },
+      {
+        "name": "Terra 3006 (honeycomb), profil Grå matt 9006",
+        "colors": {
+          "fabric": "#e2d5bd",
+          "slat": "#e2d5bd",
+          "rail": "#a5a8a6"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "woven",
+          "rail": "steel"
+        },
+        "priceNok": 5850
       }
     ],
-    "defaultVariant": 0,
+    "defaultVariant": 5,
     "absorption": 0.15,
     "description": "Måltilpasset, snorløs plissé uten skjøt, opptil 240 cm bred og regulerbar både ovenfra og nedenfra. Over 70 stoffarger i ettlags 15 mm, ettlags 20 mm eller isolerende honeycomb 20 mm, og 5 profilfarger uten tillegg.",
     "why": "Den kan gå i ett stykke over hele det store sørvinduet, og sort profil matcher vindusrammene. Med opp-og-ned-funksjonen skjermer du mot den lave solen og beholder utsikten øverst.",
     "imageUrl": "https://plisseshop.no/produkter/coben.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på plisseshop.no 2026-10-18, pris regnet ut fra prismatrisen på siden. Rettet: 220x180 koster fra 4 960 kr, ikke 2 600 kr, og fraktreglene og plissébredden (15 mm) er rettet.",
+    "verifiedNote": "Bekreftet på plisseshop.no 2026-10-18, pris regnet ut fra prismatrisen på siden. Rettet: 220x180 koster fra 4 960 kr, ikke 2 600 kr, og fraktreglene og plissébredden (15 mm) er rettet. Farger og stoff kontrollert 2026-10-21 mot plisseshop.no: de fem profilfargene finnes, men stoffene het bare «lyst/grått/sandfarget stoff». De er byttet med ekte Coben-stoffer i samme tone (ettlags Edge 1029, 9178, 2438 og 9251 i prisliste 1, honeycomb Loft 1001 i prisliste 2, 5 850 kr), og Terra 3006 honeycomb med grå profil er lagt til og satt som standard fordi produktbildet viser en lys beige honeycomb med grå profiler. Fargene er tatt fra stoffprøvene.",
     "priceConfidence": "checked"
   },
   {
@@ -1289,10 +1376,10 @@
     },
     "variants": [
       {
-        "name": "A662 beige (90 % lystett), mørk bronse toppskinne",
+        "name": "A662 beige (90 % lystett), profil mørk bronse",
         "colors": {
-          "fabric": "#c2b49c",
-          "slat": "#c2b49c",
+          "fabric": "#dbcfb2",
+          "slat": "#dbcfb2",
           "rail": "#45322e"
         },
         "materials": {
@@ -1302,10 +1389,10 @@
         }
       },
       {
-        "name": "A664 lys grå (94 % lystett), hvit toppskinne",
+        "name": "A664 lys grå (94 % lystett), profil hvit",
         "colors": {
-          "fabric": "#c9c8c4",
-          "slat": "#c9c8c4",
+          "fabric": "#cbcbc9",
+          "slat": "#cbcbc9",
           "rail": "#f1f0ea"
         },
         "materials": {
@@ -1315,10 +1402,10 @@
         }
       },
       {
-        "name": "A661 grå (99 % lystett), antrasitt toppskinne",
+        "name": "A661 grå (99 % lystett), profil antrasitt",
         "colors": {
-          "fabric": "#8e8c88",
-          "slat": "#8e8c88",
+          "fabric": "#94959a",
+          "slat": "#94959a",
           "rail": "#383e42"
         },
         "materials": {
@@ -1328,10 +1415,10 @@
         }
       },
       {
-        "name": "A660 svart (99 % lystett), sort toppskinne",
+        "name": "A660 svart (99 % lystett), profil sort",
         "colors": {
-          "fabric": "#1f1f1f",
-          "slat": "#1f1f1f",
+          "fabric": "#232323",
+          "slat": "#232323",
           "rail": "#151515"
         },
         "materials": {
@@ -1347,7 +1434,7 @@
     "why": "En beige duk som stenger ute 90 % av lyset demper blending og varme fra den sørvendte fasaden, og toppskinne i mørk bronse eller sort glir inn i de sorte vindusrammene. Den gir ikke utsyn gjennom duken slik en screen gjør.",
     "imageUrl": "https://plisseshop.no/produkter/MagnaM.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på plisseshop.no 2026-10-18, pris regnet ut fra prismatrisen på siden. Rettet: 220x180 koster fra 2 030 kr, og de oppdiktede screen-fargene er byttet med ekte stoffer, fordi stofflisten ikke har noen tydelige screen-duker.",
+    "verifiedNote": "Bekreftet på plisseshop.no 2026-10-18, pris regnet ut fra prismatrisen på siden. Rettet: 220x180 koster fra 2 030 kr, og de oppdiktede screen-fargene er byttet med ekte stoffer, fordi stofflisten ikke har noen tydelige screen-duker. Farger og stoff kontrollert 2026-10-21 mot plisseshop.no: stoffene A660, A661, A662 og A664 (prisgruppe 1) og profilfargene mørk bronse, hvit, antrasitt og sort finnes. Navnene sier nå «profil» i stedet for «toppskinne», fordi prisen gjelder uten toppskinne (den koster ca. 440 kr ekstra), og fargene er tatt fra stoffprøvene (A662 er lysere beige enn før).",
     "priceConfidence": "checked"
   },
   {
@@ -1382,8 +1469,8 @@
       {
         "name": "Sort profil (RAL 9005), duk 160030 mørkgrå/sort",
         "colors": {
-          "fabric": "#2f2f2e",
-          "slat": "#2f2f2e",
+          "fabric": "#27292a",
+          "slat": "#27292a",
           "rail": "#151515"
         },
         "materials": {
@@ -1395,8 +1482,8 @@
       {
         "name": "Antrasitt profil, duk 160047 antrasitt grå",
         "colors": {
-          "fabric": "#55575a",
-          "slat": "#55575a",
+          "fabric": "#3e3f40",
+          "slat": "#3e3f40",
           "rail": "#383e42"
         },
         "materials": {
@@ -1408,8 +1495,8 @@
       {
         "name": "Hvit profil (RAL 9010), duk 160026 greige",
         "colors": {
-          "fabric": "#a59d90",
-          "slat": "#a59d90",
+          "fabric": "#8f887b",
+          "slat": "#8f887b",
           "rail": "#f1efe8"
         },
         "materials": {
@@ -1419,13 +1506,13 @@
         }
       }
     ],
-    "defaultVariant": 0,
+    "defaultVariant": 1,
     "absorption": 0,
     "description": "Utvendig motorisert screen med glidelås i sideskinnene som holder duken stram i vind. Duken i PVC-belagt glassfiber stopper opptil 90 % av solvarmen før den når glasset, og du ser fortsatt ut.",
     "why": "På de store sørvinduene er utvendig screen den mest effektive måten å holde stua kjølig om sommeren, og en sort profil passer til de sorte vindusrammene.",
     "imageUrl": "https://myscreens.no/wp-content/uploads/2021/08/zipscreen-2-1024x1024.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på myscreens.no 2026-10-18: grunnpris, kampanje, mål og profil- og dukfarger stemmer. Rettet: prisen gjelder nå 220x180 (ca.), ikke bare fra-prisen.",
+    "verifiedNote": "Bekreftet på myscreens.no 2026-10-18: grunnpris, kampanje, mål og profil- og dukfarger stemmer. Rettet: prisen gjelder nå 220x180 (ca.), ikke bare fra-prisen. Farger og stoff kontrollert 2026-10-21 mot myscreens.no: profilfargene sort matt struktur (RAL 9005), antrasitt og hvit matt struktur (RAL 9010) og dukene 160030 mørkgrå/sort, 160047 antrasitt grå og 160026 greige (5 % åpenhet) finnes uten pristillegg. Dukfargene er tatt fra stoffprøvene (160047 og 160026 er mørkere enn før), og standardvarianten er nå antrasitt, som ligner mest på produktbildet.",
     "priceConfidence": "estimate"
   },
   {
@@ -1449,58 +1536,117 @@
       "mode": "duette",
       "doubleCell": true,
       "operation": "LiteRise|SmartCord|kjede|PowerView",
-      "transmission": 0.3,
-      "uvBlock": 0.85,
+      "transmission": 0.03,
+      "uvBlock": 0.97,
       "mount": "recess"
     },
     "variants": [
       {
-        "name": "Batiste Architella – lys grå (eksempelfarge)",
+        "name": "Batiste Architella® RD 9378 (grå)",
         "colors": {
-          "fabric": "#c9c7c2",
-          "slat": "#c9c7c2",
-          "rail": "#c9c7c2"
+          "fabric": "#bfc4c2",
+          "slat": "#bfc4c2",
+          "rail": "#bfc4c2"
         },
         "materials": {
           "fabric": "woven",
           "slat": "woven",
           "rail": "steel"
-        }
+        },
+        "url": "https://www.luxaflex.no/produkter/batiste-architella-rd-9378-duette/"
       },
       {
-        "name": "Batiste Architella – grå (eksempelfarge)",
+        "name": "Batiste Architella® RD 7671 (grå)",
         "colors": {
-          "fabric": "#8e8c88",
-          "slat": "#8e8c88",
-          "rail": "#8e8c88"
+          "fabric": "#a5a9a6",
+          "slat": "#a5a9a6",
+          "rail": "#a5a9a6"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "woven",
+          "rail": "steel"
+        },
+        "url": "https://www.luxaflex.no/produkter/batiste-architella-rd-7671-duette/"
+      },
+      {
+        "name": "Batiste Architella® RD 9377 (kremfarget)",
+        "colors": {
+          "fabric": "#e4e2d6",
+          "slat": "#e4e2d6",
+          "rail": "#e4e2d6"
         },
         "materials": {
           "fabric": "woven",
           "slat": "woven",
           "rail": "painted"
-        }
+        },
+        "url": "https://www.luxaflex.no/produkter/batiste-architella-rd-9377-duette/"
       },
       {
-        "name": "Batiste Architella – krem (eksempelfarge)",
+        "name": "Batiste Architella® RD 9376 (hvit)",
         "colors": {
-          "fabric": "#ece4d3",
-          "slat": "#ece4d3",
-          "rail": "#ece4d3"
+          "fabric": "#e6e8e9",
+          "slat": "#e6e8e9",
+          "rail": "#e6e8e9"
         },
         "materials": {
           "fabric": "woven",
           "slat": "woven",
           "rail": "painted"
-        }
+        },
+        "url": "https://www.luxaflex.no/produkter/batiste-architella-rd-9376-duette/"
+      },
+      {
+        "name": "Batiste Architella® RD 7668 (grå)",
+        "colors": {
+          "fabric": "#c0beab",
+          "slat": "#c0beab",
+          "rail": "#c0beab"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "woven",
+          "rail": "painted"
+        },
+        "url": "https://www.luxaflex.no/produkter/batiste-architella-rd-7668-duette/"
+      },
+      {
+        "name": "Batiste Architella® RD 9380 (beige/brun)",
+        "colors": {
+          "fabric": "#97958b",
+          "slat": "#97958b",
+          "rail": "#97958b"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "woven",
+          "rail": "painted"
+        },
+        "url": "https://www.luxaflex.no/produkter/batiste-architella-rd-9380-duette/"
+      },
+      {
+        "name": "Batiste Architella® RD 9382 (grå)",
+        "colors": {
+          "fabric": "#3d4849",
+          "slat": "#3d4849",
+          "rail": "#3d4849"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "woven",
+          "rail": "painted"
+        },
+        "url": "https://www.luxaflex.no/produkter/batiste-architella-rd-9382-duette/"
       }
     ],
-    "defaultVariant": 0,
+    "defaultVariant": 1,
     "absorption": 0.3,
     "description": "Premium honeycomb-plissé med dobbel cellestruktur (Architella) som isolerer godt, ifølge Luxaflex opptil 55 % mindre varmetap gjennom vinduet. Leveres også som Top Down/Bottom Up og med motor.",
     "why": "Den mest isolerende innvendige løsningen for de store, kalde glassflatene mot sør, og en rolig lys grå stoff passer til den varme grå paletten.",
     "imageUrl": "https://images.prismic.io/luxaflex-hd/aIFBC1GsbswqTMIl_DS_1379.jpg",
     "verified": false,
-    "verifiedNote": "Produktet, Batiste Architella-stoffene, betjeningene og høstkampanjen er bekreftet på luxaflex.no 2026-10-18, men pris og fargenavn står ikke på nett. Rettet: estimatet er hevet fra 7 000 kr til 13 000 kr.",
+    "verifiedNote": "Produktet, Batiste Architella-stoffene, betjeningene og høstkampanjen er bekreftet på luxaflex.no 2026-10-18, men pris og fargenavn står ikke på nett. Rettet: estimatet er hevet fra 7 000 kr til 13 000 kr. Farger og stoff kontrollert 2026-10-21 mot luxaflex.no: de tre «eksempelfargene» er fjernet og byttet med de sju ekte Batiste Architella® RD-fargene (7668, 7671, 9376, 9377, 9378, 9380 og 9382), hver med egen produktside, og fargene er tatt fra stoffprøvene. Alle er mørkleggende (RD), så lysgjennomgangen er rettet fra 0,3 til 0,03. Standardvarianten er RD 7671, som ligner mest på den grå gardinen på produktbildet.",
     "priceConfidence": "estimate"
   },
   {
@@ -1534,7 +1680,7 @@
     },
     "variants": [
       {
-        "name": "Fløyel beige",
+        "name": "Beige",
         "colors": {
           "fabric": "#b8ad91",
           "slat": "#b8ad91",
@@ -1548,7 +1694,7 @@
         "url": "https://www.bohus.no/gardiner/ferdigsydde-gardiner/anna-gardin-140x280"
       },
       {
-        "name": "Fløyel grå",
+        "name": "Grå",
         "colors": {
           "fabric": "#9a9b97",
           "slat": "#9a9b97",
@@ -1568,7 +1714,7 @@
     "why": "Myk fløyel i beige gir et rolig soverom (3,11 × 3,69) og demper både lys og lyd; to lengder dekker et vanlig soveromsvindu. Vil du ha det helt mørkt om sommeren, sett en lystett rullegardin bak.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Home%20Of%20Textile/Produkter/ANNA/319741/image-thumb__319741__PDP-Product/306102%20-%20Anna%20gardin%20140x280%20polyester%20lysdempende%20beige%20-%201.289472d2.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 140x280, polyester fløyel, «Lysdempende» (lystett: nei), 599 kr (før 1 199) for beige og grå, utgående. Antall per pakke og opphengstype står ikke på siden (bildet viser rynket kanal-topp); lystransmisjon anslått.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 140x280, polyester fløyel, «Lysdempende» (lystett: nei), 599 kr (før 1 199) for beige og grå, utgående. Antall per pakke og opphengstype står ikke på siden (bildet viser rynket kanal-topp); lystransmisjon anslått. Farger og stoff kontrollert 2026-10-21 mot bohus.no: beige (306102) og grå (306104) finnes, begge utgående. Brun (306103) er utløpt og er ikke lagt til. Navnene er rettet til leverandørfargene, og fløyel (polyester) stemmer.",
     "absorptionNote": "Per gardinlengde; et par tung fløyel ≈ 1,4.",
     "priceConfidence": "checked"
   },
@@ -1603,7 +1749,7 @@
     },
     "variants": [
       {
-        "name": "Beige (mørk khaki)",
+        "name": "Beige",
         "colors": {
           "fabric": "#6e654f",
           "slat": "#6e654f",
@@ -1629,6 +1775,22 @@
           "rail": "black-metal"
         },
         "url": "https://www.bohus.no/gardiner/ferdigsydde-gardiner/sandra-gardin-135x220-1"
+      },
+      {
+        "name": "Oliven",
+        "colors": {
+          "fabric": "#42463a",
+          "slat": "#42463a",
+          "rail": "#1e1e1e"
+        },
+        "materials": {
+          "fabric": "woven",
+          "slat": "woven",
+          "rail": "black-metal"
+        },
+        "url": "https://www.bohus.no/gardiner/ferdigsydde-gardiner/sandra-gardin-135x220-2",
+        "priceNok": 449,
+        "salePriceNok": 180
       }
     ],
     "defaultVariant": 0,
@@ -1637,7 +1799,7 @@
     "why": "Det billigste alternativet for soverommet i kjelleren (7,4 m²): 220 cm rekker fra en stang rett under taket ned mot gulvet, og antrasitt gir et mørkere rom. Fargen «beige» er i praksis en mørk khaki.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Sweden%20AB/Produkter/SANDRA/153083/image-thumb__153083__PDP-Product/252787%20-%20Sandra%20gardin%20135x160%20polyester%20beige%20-%202.abcb2c73.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 135x220 (tittelen sier 140x220), polyester, lysdempende/dimout, multibånd, 150 kr (før 449) for beige og antrasitt, utgående. Produktbildet er av 135x160; fargene anslått fra bildet og fargenavnet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 135x220 (tittelen sier 140x220), polyester, lysdempende/dimout, multibånd, 150 kr (før 449) for beige og antrasitt, utgående. Produktbildet er av 135x160; fargene anslått fra bildet og fargenavnet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: beige (252791) og antrasitt (252792) finnes, og oliven (252793, 180 kr) er lagt til. Offwhite (252794) er utløpt og er ikke med. Navnet «Beige» er leverandørfargen (stoffet ser mørk khaki ut på bildet).",
     "absorptionNote": "Per gardinlengde; et par ≈ 1,0.",
     "priceConfidence": "checked"
   },
@@ -1719,7 +1881,7 @@
     "why": "Ekte mørklegging til soverommet – lyse sommernetter blir mørke. Beige er rolig mot SAND-veggene; hengt i takskinne og lagt opp til gulvet slipper lite lys rundt kantene.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/korgmott-lystette-gardiner-1-par-beige-med-multiband__1308497_pe939874_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 1 par 145x250, lystett (blokkerer alt lys ifølge siden), laminert polyester, 799 kr, tre farger, vaskeråd. Lystransmisjon satt til 0,01; mørk grå og hvit farge anslått fra fargenavnet.",
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 1 par 145x250, lystett (blokkerer alt lys ifølge siden), laminert polyester, 799 kr, tre farger, vaskeråd. Lystransmisjon satt til 0,01; mørk grå og hvit farge anslått fra fargenavnet. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle variantene finnes (beige, mørk grå og hvit i 145x250 med multibånd, 799 kr), og fargene stemmer med produktbildene.",
     "absorptionNote": "For paret (to gardiner); laminert stoff demper litt mindre enn tung ull/fløyel.",
     "priceConfidence": "checked"
   }

@@ -27,7 +27,7 @@
       {
         "name": "Natural Wood, Rustic Smoked Oak, Black Felt",
         "colors": {
-          "slats": "#5b4434",
+          "slats": "#4e4337",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -40,7 +40,7 @@
       {
         "name": "Natural Wood, Classic Oak, Black Felt",
         "colors": {
-          "slats": "#c29a6b",
+          "slats": "#d6bb92",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -53,7 +53,7 @@
       {
         "name": "Natural Wood, Walnut, Black Felt",
         "colors": {
-          "slats": "#5c4030",
+          "slats": "#a8886c",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -66,7 +66,7 @@
       {
         "name": "Natural Wood, TONAL, Black Ash, Black Felt",
         "colors": {
-          "slats": "#262422",
+          "slats": "#45433f",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -79,8 +79,8 @@
       {
         "name": "Natural Wood, Rustic Grey Oak, Warm Grey Felt",
         "colors": {
-          "slats": "#8b7f72",
-          "felt": "#5f5850"
+          "slats": "#998771",
+          "felt": "#6a5f56"
         },
         "materials": {
           "slats": "oak",
@@ -92,7 +92,7 @@
       {
         "name": "Colored, Dark Cashmere, Dark Beige Felt",
         "colors": {
-          "slats": "#8e7d6d",
+          "slats": "#a59e97",
           "felt": "#7a6a5a"
         },
         "materials": {
@@ -105,7 +105,7 @@
       {
         "name": "Colored, Soft Linen, Light Beige Felt",
         "colors": {
-          "slats": "#d8ccb9",
+          "slats": "#d3c8bf",
           "felt": "#cbbda7"
         },
         "materials": {
@@ -118,7 +118,7 @@
       {
         "name": "Colored, Charcoal, Black Felt",
         "colors": {
-          "slats": "#3b3b3a",
+          "slats": "#4a4a47",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -136,7 +136,7 @@
     "why": "Røkt eik i spiler gjentar det mørke, ovale spisebordet og de svarte detaljene, og seks–sju paneler fyller den høye veggen og gir stor demping der stua trenger det mest.",
     "imageUrl": "https://cdn.shopify.com/s/files/1/0712/9874/4373/files/1007_akupanel_rusticsmokedoak_blackfelt_01_af87a219-491b-4b30-af3c-2fd11ff5349a.jpg?v=1780302843",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på woodupp.no: 1749 kr, 240 x 60 x 2,2 cm, klasse A; alle 8 variant-lenker og priser stemmer (Charcoal på tilbud 1224,30 kr)."
+    "verifiedNote": "Bekreftet 2026-10-18 på woodupp.no: 1749 kr, 240 x 60 x 2,2 cm, klasse A; alle 8 variant-lenker og priser stemmer (Charcoal på tilbud 1224,30 kr). Farger og stoff kontrollert 2026-10-21 mot woodupp.no: alle 8 variantene selges i 60 x 240 cm med samme priser (Charcoal fortsatt 1224,30 kr); spilefargene er tatt fra hver variants eget produktfoto (valnøtt, klassisk eik, sort ask, Dark Cashmere og Charcoal var for mørke, Rustic Grey Oak for grå)."
   },
   {
     "id": "woodupp-akupanel-300x60",
@@ -166,7 +166,7 @@
       {
         "name": "Natural Wood, Rustic Smoked Oak, Black Felt",
         "colors": {
-          "slats": "#5b4434",
+          "slats": "#4e4337",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -179,7 +179,7 @@
       {
         "name": "Natural Wood, Walnut, Black Felt",
         "colors": {
-          "slats": "#5c4030",
+          "slats": "#a8886c",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -192,7 +192,7 @@
       {
         "name": "Natural Wood, Classic Oak, Black Felt",
         "colors": {
-          "slats": "#c29a6b",
+          "slats": "#d6bb92",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -205,7 +205,7 @@
       {
         "name": "Natural Wood, TONAL, Black Ash, Black Felt",
         "colors": {
-          "slats": "#262422",
+          "slats": "#45433f",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -218,7 +218,7 @@
       {
         "name": "Natural Wood, Rustic Grey Oak, Black Felt",
         "colors": {
-          "slats": "#8b7f72",
+          "slats": "#8a7358",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -227,6 +227,19 @@
         },
         "priceNok": 2499,
         "url": "https://woodupp.no/products/akupanel-acoustic-panel-natural-wood-rustic-grey-oak-black-felt-300-x-60-cm"
+      },
+      {
+        "name": "Natural Wood, Rustic Natural Oak, Black Felt",
+        "colors": {
+          "slats": "#d5b484",
+          "felt": "#1b1b1b"
+        },
+        "materials": {
+          "slats": "oak",
+          "felt": "felt"
+        },
+        "priceNok": 2299,
+        "url": "https://woodupp.no/products/akupanel-acoustic-panel-natural-wood-rustic-natural-oak-black-felt-300-x-60-cm"
       }
     ],
     "defaultVariant": 0,
@@ -235,7 +248,7 @@
     "why": "Den høye veggen er ca. 3,0 m, så 300 cm-paneler gir en helhetlig spilevegg i røkt eik uten skjøter – sju paneler dekker hele bredden på ca. 390 cm.",
     "imageUrl": "https://cdn.shopify.com/s/files/1/0712/9874/4373/files/1007_akupanel_rusticsmokedoak_blackfelt_01.jpg?v=1780302868",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på woodupp.no: 2499 kr, 300 x 60 cm, klasse A; Walnut/Classic Oak 2299 kr, Black Ash/Rustic Grey Oak 2499 kr stemmer."
+    "verifiedNote": "Bekreftet 2026-10-18 på woodupp.no: 2499 kr, 300 x 60 cm, klasse A; Walnut/Classic Oak 2299 kr, Black Ash/Rustic Grey Oak 2499 kr stemmer. Farger og stoff kontrollert 2026-10-21 mot woodupp.no: alle 5 variantene selges i 60 x 300 cm med samme priser; la til Rustic Natural Oak (2299 kr) og rettet spilefargene etter hver variants produktfoto (valnøtt, klassisk eik og sort ask var for mørke, Rustic Grey Oak er varmere brun)."
   },
   {
     "id": "woodupp-akupixel-60x60",
@@ -265,7 +278,7 @@
       {
         "name": "Natural Wood, Rustic Smoked Oak, Black Felt",
         "colors": {
-          "slats": "#5b4434",
+          "slats": "#4e4337",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -278,7 +291,7 @@
       {
         "name": "Natural Wood, Classic Oak, Black Felt",
         "colors": {
-          "slats": "#c29a6b",
+          "slats": "#d6bb92",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -291,7 +304,7 @@
       {
         "name": "Natural Wood, Walnut, Black Felt",
         "colors": {
-          "slats": "#5c4030",
+          "slats": "#a8886c",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -304,7 +317,7 @@
       {
         "name": "Natural Wood, Black Ash, Black Felt",
         "colors": {
-          "slats": "#262422",
+          "slats": "#45433f",
           "felt": "#1b1b1b"
         },
         "materials": {
@@ -321,7 +334,7 @@
     "why": "Gir sjakkbrettfeltet i røkt eik (forslag P2) – et lekent, men rolig mønster som passer det mørke spisebordet og de varme veggfargene.",
     "imageUrl": "https://cdn.shopify.com/s/files/1/0712/9874/4373/files/2007_akupanel_60_rustic_rusticsmokedoak_blackfelt_01_976a12e5-25d1-47c5-b165-96f5d8c7d972.jpg?v=1780410973",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på woodupp.no: 499 kr, 60 x 60 x 2,2 cm, klasse A; variantpriser og lenker stemmer."
+    "verifiedNote": "Bekreftet 2026-10-18 på woodupp.no: 499 kr, 60 x 60 x 2,2 cm, klasse A; variantpriser og lenker stemmer. Farger og stoff kontrollert 2026-10-21 mot woodupp.no: alle 4 variantene selges i 60 x 60 cm med samme priser; spilefargene rettet etter produktfotoene (valnøtt, klassisk eik og sort ask var for mørke)."
   },
   {
     "id": "woodupp-akupixel-mose-60x60",
@@ -347,7 +360,7 @@
       {
         "name": "Mosegrønn (Moss Green)",
         "colors": {
-          "fabric": "#4f6b3a",
+          "fabric": "#2f5028",
           "backing": "#1e1e1e"
         },
         "materials": {
@@ -361,7 +374,7 @@
       {
         "name": "Eplegrønn (Apple Green)",
         "colors": {
-          "fabric": "#7fa04a",
+          "fabric": "#8fa224",
           "backing": "#1e1e1e"
         },
         "materials": {
@@ -379,7 +392,7 @@
     "why": "Kombinert med Akupixel i røkt eik gir mosen forslag M (mose + røkt eik i sjakkbrett) og bringer det grønne utsikten mot elva inn på veggen.",
     "imageUrl": "https://cdn.shopify.com/s/files/1/0712/9874/4373/files/2201_akupanel_60_moss_mossgreen_01_bc4df175-c23c-4146-8340-8d338b145de1.jpg?v=1780411092",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på woodupp.no: 1679,30 kr (ord. 2399 kr). Rettet tykkelse fra 3,5 til 2,2 cm og absorpsjonsestimat."
+    "verifiedNote": "Bekreftet 2026-10-18 på woodupp.no: 1679,30 kr (ord. 2399 kr). Rettet tykkelse fra 3,5 til 2,2 cm og absorpsjonsestimat. Farger og stoff kontrollert 2026-10-21 mot woodupp.no: begge variantene (Moss Green og Apple Green) finnes, fortsatt 1679,30 kr; mosefargene rettet etter produktfotoene (mosegrønn er mørkere, eplegrønn gulere)."
   },
   {
     "id": "maxbo-protre-spilepanel-ro-21x600x2400",
@@ -409,8 +422,8 @@
       {
         "name": "Hvitpigmentert eik",
         "colors": {
-          "slats": "#d9cbb3",
-          "felt": "#232323"
+          "slats": "#d9cab8",
+          "felt": "#262628"
         },
         "materials": {
           "slats": "white-oak",
@@ -424,7 +437,7 @@
     "why": "Lys, hvitpigmentert eik ligger tett på det lyse eikegulvet og gir en rolig, lys spilevegg til en lav pris om du vil holde veggen lys mot SAND-fargen.",
     "imageUrl": "https://pim-b2c.maxbo.no/product/images/1249366f-ba96-4f4f-aab9-95724d9cf0c4/image-thumb__428599__meta-image/transparent_4063522_728560_pb_0.jpg",
     "verified": true,
-    "verifiedNote": "Produktside live på maxbo.no 2026-10-18 (21x600x2400, 15 spiler, 9 mm bakplate); pris 989 kr bekreftet via Prisjakt. Fjernet ubekreftet kampanjepris og 18 mm-variant."
+    "verifiedNote": "Produktside live på maxbo.no 2026-10-18 (21x600x2400, 15 spiler, 9 mm bakplate); pris 989 kr bekreftet via Prisjakt. Fjernet ubekreftet kampanjepris og 18 mm-variant. Farger og stoff kontrollert 2026-10-21 mot maxbo.no: kun hvitpigmentert lakkert eik finnes (ingen fargevelger); produktfotoet viser sort/mørk grå bakplate, spilefargen litt justert."
   },
   {
     "id": "monter-opus-spilepanel-mdf-600x2400",
@@ -454,7 +467,7 @@
       {
         "name": "Lys",
         "colors": {
-          "slats": "#cfb08a",
+          "slats": "#ccbca6",
           "felt": "#1c1c1c"
         },
         "materials": {
@@ -467,7 +480,7 @@
       {
         "name": "Valnøtt",
         "colors": {
-          "slats": "#5e4332",
+          "slats": "#977f69",
           "felt": "#1c1c1c"
         },
         "materials": {
@@ -480,7 +493,7 @@
       {
         "name": "Svart",
         "colors": {
-          "slats": "#1f1f1f",
+          "slats": "#555557",
           "felt": "#1c1c1c"
         },
         "materials": {
@@ -497,7 +510,7 @@
     "why": "De brede spilene gir et roligere, mer arkitektonisk uttrykk på den store veggen, og svart variant spiller på det svarte kjøkkenet og vindusrammene.",
     "imageUrl": "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/49385594-d636-41e8-9393-ded3f571f8f1/bGt4pEqXO2KBbDAeIoPfvzmqA/ad7JMO9ewFIXDpMfE7iGlZdb6.jfif",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på monter.no: 1299 kr, 600x2400, 45 mm spiler, 8 mm sort filt. La til valnøtt-variant og senket absorpsjon (ingen måledata)."
+    "verifiedNote": "Bekreftet 2026-10-18 på monter.no: 1299 kr, 600x2400, 45 mm spiler, 8 mm sort filt. La til valnøtt-variant og senket absorpsjon (ingen måledata). Farger og stoff kontrollert 2026-10-21 mot monter.no: alle tre fargene (lys, valnøtt, svart) finnes til 1299 kr, sort filt; spilefargene rettet etter produktfotoene (lys er grålig lys eik, valnøtt og svart var for mørke)."
   },
   {
     "id": "byggmax-fibrotech-quanti-2440",
@@ -507,7 +520,7 @@
     "store": "Byggmax",
     "url": "https://www.byggmax.no/akustikkpanel-quanti-square-smoked-oak-p10140",
     "priceNok": 599,
-    "priceNote": "pris sjekket 2026-10-18 på byggmax.no: 599 kr per panel (1 pk = 1 panel = 1,27 m²) i røkt eik. Øvrige farger (Aske, Grå eik, Lys eik med grå polyester, Oiled oak, Svart eik, Valnøtt) fra 533 kr per panel på https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341 – kun online, pris kan variere per farge og butikk.",
+    "priceNote": "pris sjekket 2026-10-18 på byggmax.no: 599 kr per panel (1 pk = 1 panel = 1,27 m²) i røkt eik. Øvrige farger (Aske, Grå eik, Lys eik med grå polyester, Oiled oak, Svart eik, Valnøtt) fra 533 kr per panel på https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341 – kun online, pris kan variere per farge og butikk. Sjekket igjen 2026-10-21 (byggmax.no pris-/lagerdata): Smoked Oak 599 kr, nå kampanje 399 kr til 26.10.2026; Valnøtt 533 kr, Aske, Grå eik, Lys eik med grå polyester, Oiled oak og Svart eik 699 kr per panel.",
     "dims": {
       "w": 0.52,
       "d": 0.018,
@@ -527,7 +540,7 @@
       {
         "name": "Smoked Oak",
         "colors": {
-          "slats": "#4a3a2e",
+          "slats": "#4a423e",
           "felt": "#1a1a1a"
         },
         "materials": {
@@ -535,12 +548,13 @@
           "felt": "felt"
         },
         "priceNok": 599,
-        "url": "https://www.byggmax.no/akustikkpanel-quanti-square-smoked-oak-p10140"
+        "url": "https://www.byggmax.no/akustikkpanel-quanti-square-smoked-oak-p10140",
+        "salePriceNok": 399
       },
       {
         "name": "Valnøtt",
         "colors": {
-          "slats": "#5e4332",
+          "slats": "#9c7866",
           "felt": "#1a1a1a"
         },
         "materials": {
@@ -548,72 +562,72 @@
           "felt": "felt"
         },
         "priceNok": 533,
-        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341"
+        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341#1224=56430"
       },
       {
         "name": "Svart eik",
         "colors": {
-          "slats": "#222120",
+          "slats": "#4d4c4d",
           "felt": "#1a1a1a"
         },
         "materials": {
           "slats": "black-oak",
           "felt": "felt"
         },
-        "priceNok": 533,
-        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341"
+        "priceNok": 699,
+        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341#1224=109230"
       },
       {
         "name": "Grå eik",
         "colors": {
-          "slats": "#8a8278",
+          "slats": "#b0aaa1",
           "felt": "#1a1a1a"
         },
         "materials": {
           "slats": "oak",
           "felt": "felt"
         },
-        "priceNok": 533,
-        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341"
+        "priceNok": 699,
+        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341#1224=109228"
       },
       {
         "name": "Oiled oak",
         "colors": {
-          "slats": "#b8935f",
+          "slats": "#cfa47d",
           "felt": "#1a1a1a"
         },
         "materials": {
           "slats": "oak",
           "felt": "felt"
         },
-        "priceNok": 533,
-        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341"
+        "priceNok": 699,
+        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341#1224=109229"
       },
       {
         "name": "Lys eik med grå polyester",
         "colors": {
-          "slats": "#c9a77a",
-          "felt": "#8a8a88"
+          "slats": "#c4a079",
+          "felt": "#b6b6b6"
         },
         "materials": {
           "slats": "oak",
           "felt": "felt"
         },
-        "priceNok": 533,
-        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341"
+        "priceNok": 699,
+        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341#1224=160428"
       },
       {
         "name": "Aske",
         "colors": {
-          "slats": "#d7cfc0",
+          "slats": "#dccdb2",
           "felt": "#1a1a1a"
         },
         "materials": {
           "slats": "ash",
           "felt": "felt"
         },
-        "priceNok": 533,
-        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341"
+        "priceNok": 699,
+        "url": "https://www.byggmax.no/akustikkpanel-quanti-2440-mm-fibrotech-p68729341#1224=109231"
       }
     ],
     "defaultVariant": 0,
@@ -622,7 +636,7 @@
     "why": "Et budsjettvennlig alternativ til WoodUpp i røkt eik – ca. 470 kr per m² mot ca. 1200 kr – som fortsatt matcher det mørke spisebordet.",
     "imageUrl": "https://cdn.byggmax.se/media/catalog/product/cache/5711227b927b6b402c20744d651ecfd7/1/0/10140-2ny_2.png",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på byggmax.no. Rettet pris: 599 kr er per panel (ikke per m²) – var 760 kr; andre farger fra 533 kr (var 677 kr)."
+    "verifiedNote": "Bekreftet 2026-10-18 på byggmax.no. Rettet pris: 599 kr er per panel (ikke per m²) – var 760 kr; andre farger fra 533 kr (var 677 kr). Farger og stoff kontrollert 2026-10-21 mot byggmax.no: alle 7 utførelsene finnes (Lys eik med grå polyester midlertidig utsolgt på nett); rettet variantpriser (bare Valnøtt 533 kr, de andre 699 kr), la til fargelenker og rettet fargene etter produktfotoene (grå eik og aske er lyse, valnøtt rødbrun, filten i grå polyester lysere grå)."
   },
   {
     "id": "clasohlson-fibrotech-quanti-mini-118x36",
@@ -652,79 +666,86 @@
       {
         "name": "Røkt eik (Smoke oak)",
         "colors": {
-          "slats": "#4a3a2e",
+          "slats": "#453e39",
           "felt": "#1a1a1a"
         },
         "materials": {
           "slats": "smoked-oak",
           "felt": "felt"
-        }
+        },
+        "url": "https://www.clasohlson.com/no/Fibrotech-Quanti-Mini-akustikkpanel-vegg-og-tak,-2-pakning/p/41-8213-6"
       },
       {
         "name": "Valnøtt (walnut)",
         "colors": {
-          "slats": "#5e4332",
+          "slats": "#8f6c59",
           "felt": "#1a1a1a"
         },
         "materials": {
           "slats": "walnut",
           "felt": "felt"
-        }
+        },
+        "url": "https://www.clasohlson.com/no/Fibrotech-Quanti-Mini-akustikkpanel-vegg-og-tak,-2-pakning/p/41-8213-2"
       },
       {
         "name": "Svart eik (Black oak)",
         "colors": {
-          "slats": "#222120",
+          "slats": "#4a4a4b",
           "felt": "#1a1a1a"
         },
         "materials": {
           "slats": "black-oak",
           "felt": "felt"
-        }
+        },
+        "url": "https://www.clasohlson.com/no/Fibrotech-Quanti-Mini-akustikkpanel-vegg-og-tak,-2-pakning/p/41-8213-4"
       },
       {
         "name": "Grå eik (Grey oak)",
         "colors": {
-          "slats": "#8a8278",
+          "slats": "#a69b8e",
           "felt": "#1a1a1a"
         },
         "materials": {
           "slats": "oak",
           "felt": "felt"
-        }
+        },
+        "url": "https://www.clasohlson.com/no/Fibrotech-Quanti-Mini-akustikkpanel-vegg-og-tak,-2-pakning/p/41-8213-5"
       },
       {
         "name": "Lys eik (Light oak)",
         "colors": {
-          "slats": "#cba67a",
+          "slats": "#d0af85",
           "felt": "#1a1a1a"
         },
         "materials": {
           "slats": "oak",
           "felt": "felt"
-        }
+        },
+        "url": "https://www.clasohlson.com/no/Fibrotech-Quanti-Mini-akustikkpanel-vegg-og-tak,-2-pakning/p/41-8213-1"
       },
       {
         "name": "Lys eik med grå polyester",
         "colors": {
-          "slats": "#c9a77a",
-          "felt": "#8a8a88"
+          "slats": "#c4a27c",
+          "felt": "#b4b3b0"
         },
         "materials": {
           "slats": "oak",
           "felt": "felt"
-        }
+        },
+        "url": "https://www.clasohlson.com/no/Fibrotech-Quanti-Mini-akustikkpanel-vegg-og-tak,-2-pakning/p/41-8213-3"
       },
       {
         "name": "Oljet eik (Oiled oak)",
         "colors": {
-          "slats": "#b8935f",
+          "slats": "#b08560",
           "felt": "#1a1a1a"
         },
         "materials": {
           "slats": "oak",
           "felt": "felt"
-        }
+        },
+        "url": "https://www.clasohlson.com/no/Fibrotech-Quanti-Mini-akustikkpanel-vegg-og-tak,-2-pakning/p/41-8213-7"
       }
     ],
     "defaultVariant": 0,
@@ -733,7 +754,7 @@
     "why": "Egner seg til et smalt spilebånd over den svevende skjenken (forslag E) eller i TV-stuen der full spilevegg blir for mye.",
     "imageUrl": "https://images.clasohlson.com/medias/sys_master/h24/h80/68910179450910.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på clasohlson.com: 299,90 kr per 2-pk, 118 x 36 cm. La til manglende variant «lys eik med grå polyester»."
+    "verifiedNote": "Bekreftet 2026-10-18 på clasohlson.com: 299,90 kr per 2-pk, 118 x 36 cm. La til manglende variant «lys eik med grå polyester». Farger og stoff kontrollert 2026-10-21 mot clasohlson.com/no: alle 7 utførelsene finnes til 299,90 kr per 2-pk (flere midlertidig ikke på lager); la til lenke per utførelse og rettet fargene etter produktfotoene (valnøtt, grå eik og oljet eik var for mørke, grå polyester-filten lysere)."
   },
   {
     "id": "akustikksenter-frigg-40-tekstil-1200x2000",
@@ -759,16 +780,16 @@
       {
         "name": "Koksgrå",
         "colors": {
-          "fabric": "#4b4a48"
+          "fabric": "#373938"
         },
         "materials": {
           "fabric": "woven"
         }
       },
       {
-        "name": "Grå (lysgrå)",
+        "name": "Grå",
         "colors": {
-          "fabric": "#9b9894"
+          "fabric": "#939288"
         },
         "materials": {
           "fabric": "woven"
@@ -777,7 +798,7 @@
       {
         "name": "Beige",
         "colors": {
-          "fabric": "#c8bba5"
+          "fabric": "#b8b0a6"
         },
         "materials": {
           "fabric": "woven"
@@ -786,7 +807,7 @@
       {
         "name": "Hvit",
         "colors": {
-          "fabric": "#eceae4"
+          "fabric": "#e8e6dc"
         },
         "materials": {
           "fabric": "woven"
@@ -795,7 +816,7 @@
       {
         "name": "Svart",
         "colors": {
-          "fabric": "#1f1f1f"
+          "fabric": "#211f23"
         },
         "materials": {
           "fabric": "woven"
@@ -808,7 +829,7 @@
     "why": "Tre plater 120 x 200 i koksgrå (forslag A) gir mest demping per flate og harmonerer med den grå vevde hjørnesofaen og de mørkere MARRAKESH-veggene.",
     "imageUrl": "https://www.akustikksenter.no/wp-content/uploads/2018/03/Frigg-40-Coal-II-scaled.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på akustikksenter.no: 5869 kr / 4988,65 kr for 1200x2000, 40 mm, klasse A (αw 0,95), fem farger."
+    "verifiedNote": "Bekreftet 2026-10-18 på akustikksenter.no: 5869 kr / 4988,65 kr for 1200x2000, 40 mm, klasse A (αw 0,95), fem farger. Farger og stoff kontrollert 2026-10-21 mot akustikksenter.no: alle fem fargene (Beige, Hvit, Grå, Koksgrå, Svart) finnes i 1200 x 2000 til 5869 kr / 4988,65 kr; «Grå (lysgrå)» heter «Grå», fargene tatt fra fargebildene (beige-fotoet har kaldt lys, så beige er satt etter Hex- og Circle-fotoene)."
   },
   {
     "id": "akustikksenter-frigg-hex-40",
@@ -834,16 +855,16 @@
       {
         "name": "Beige",
         "colors": {
-          "fabric": "#c8bba5"
+          "fabric": "#c2bbb6"
         },
         "materials": {
           "fabric": "woven"
         }
       },
       {
-        "name": "Grå (lysgrå)",
+        "name": "Grå",
         "colors": {
-          "fabric": "#9b9894"
+          "fabric": "#8f9599"
         },
         "materials": {
           "fabric": "woven"
@@ -852,7 +873,7 @@
       {
         "name": "Koksgrå",
         "colors": {
-          "fabric": "#4b4a48"
+          "fabric": "#46505b"
         },
         "materials": {
           "fabric": "woven"
@@ -861,7 +882,7 @@
       {
         "name": "Hvit",
         "colors": {
-          "fabric": "#eceae4"
+          "fabric": "#e0e2e1"
         },
         "materials": {
           "fabric": "woven"
@@ -870,7 +891,7 @@
       {
         "name": "Svart",
         "colors": {
-          "fabric": "#1f1f1f"
+          "fabric": "#141a21"
         },
         "materials": {
           "fabric": "woven"
@@ -883,7 +904,7 @@
     "why": "En klynge sekskanter i beige og koksgrå gir et mykere, grafisk alternativ til trebetong-sekskantene i forslag X, og gjentar sofaens og veggenes varme gråtoner.",
     "imageUrl": "https://www.akustikksenter.no/wp-content/uploads/2024/09/IMG_20240801_114413.png",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på akustikksenter.no: 854 kr / 725,90 kr per stk, 600x520x40 mm, klasse A, fem farger på lager."
+    "verifiedNote": "Bekreftet 2026-10-18 på akustikksenter.no: 854 kr / 725,90 kr per stk, 600x520x40 mm, klasse A, fem farger på lager. Farger og stoff kontrollert 2026-10-21 mot akustikksenter.no: alle fem fargene finnes til 854 kr / 725,90 kr; «Grå (lysgrå)» heter «Grå», fargene tatt fra hver farges produktfoto (koksgrå er blågrå)."
   },
   {
     "id": "akustikksenter-frigg-circle-40-d900",
@@ -909,16 +930,16 @@
       {
         "name": "Beige",
         "colors": {
-          "fabric": "#c8bba5"
+          "fabric": "#ada396"
         },
         "materials": {
           "fabric": "woven"
         }
       },
       {
-        "name": "Grå (lysgrå)",
+        "name": "Grå",
         "colors": {
-          "fabric": "#9b9894"
+          "fabric": "#a7adb4"
         },
         "materials": {
           "fabric": "woven"
@@ -927,7 +948,7 @@
       {
         "name": "Koksgrå",
         "colors": {
-          "fabric": "#4b4a48"
+          "fabric": "#5d646e"
         },
         "materials": {
           "fabric": "woven"
@@ -936,7 +957,7 @@
       {
         "name": "Hvit",
         "colors": {
-          "fabric": "#eceae4"
+          "fabric": "#eceae6"
         },
         "materials": {
           "fabric": "woven"
@@ -945,7 +966,7 @@
       {
         "name": "Svart",
         "colors": {
-          "fabric": "#1f1f1f"
+          "fabric": "#34383f"
         },
         "materials": {
           "fabric": "woven"
@@ -958,7 +979,7 @@
     "why": "Fire sirkler i beige/koksgrå (forslag S) gir et mykt, overlappende mønster på den høye veggen som spiller på de runde bordene og de myke bouclé-stolene.",
     "imageUrl": "https://www.akustikksenter.no/wp-content/uploads/2023/10/Circle-beige-2.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på akustikksenter.no: Ø900 2311 kr / 1964 kr, 40 mm, klasse A; hvit Ø900 utsolgt."
+    "verifiedNote": "Bekreftet 2026-10-18 på akustikksenter.no: Ø900 2311 kr / 1964 kr, 40 mm, klasse A; hvit Ø900 utsolgt. Farger og stoff kontrollert 2026-10-21 mot akustikksenter.no: alle fem fargene finnes i Ø900 til 2311 kr / 1964,35 kr (hvit tomt på lager); «Grå (lysgrå)» heter «Grå», fargene tatt fra hver farges produktfoto."
   },
   {
     "id": "akustikksenter-akustikkbilde-180x120",
@@ -998,7 +1019,7 @@
     "why": "Et stort akustikkbilde 180 x 120 (forslag K) med for eksempel eget foto av elva gir kunst og kraftig demping på den høye veggen samtidig.",
     "imageUrl": "https://www.akustikksenter.no/wp-content/uploads/2022/08/Equinor-scaled.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på akustikksenter.no: 4000 kr/m² inkl. mva, minstepris 4000 kr, 25 eller 40 mm. Rettet absorpsjon (αw 0,95) og at 180x120 er spesialmål."
+    "verifiedNote": "Bekreftet 2026-10-18 på akustikksenter.no: 4000 kr/m² inkl. mva, minstepris 4000 kr, 25 eller 40 mm. Rettet absorpsjon (αw 0,95) og at 180x120 er spesialmål. Farger og stoff kontrollert 2026-10-21 mot akustikksenter.no: eget motiv trykkes på hvit Frigg-tekstilabsorbent (4000 kr/m² inkl. mva, minstepris 4000 kr) – varianten finnes."
   },
   {
     "id": "canvasbutik-lyddempende-bilde-brown-balance",
@@ -1009,7 +1030,7 @@
     "url": "https://canvasbutik.no/products/lyddempende-bilde-brown-balance",
     "priceNok": 8999,
     "salePriceNok": 7998,
-    "priceNote": "pris sjekket 2026-10-18 for 120x180 cm (veil. 8999 kr, salgspris 7998 kr). Andre størrelser: 50x70 1999 kr (veil. 3000), 70x100 2498 kr, 80x120 3498 kr, 100x150 5998 kr. Ramme i svart eller eik +600 kr. Absorpsjonsklasse ikke oppgitt – estimert.",
+    "priceNote": "pris sjekket 2026-10-18 for 120x180 cm (veil. 8999 kr, salgspris 7998 kr). Andre størrelser: 50x70 1999 kr (veil. 3000), 70x100 2498 kr, 80x120 3498 kr, 100x150 5998 kr. Ramme i svart eller eik +600 kr. Absorpsjonsklasse ikke oppgitt – estimert. Sjekket 2026-10-21: ramme (Sort ramme eller Eik ramme) til lyddempende 120x180 koster 1700 kr ekstra, ikke 600 kr (600 kr gjelder de minste størrelsene).",
     "dims": {
       "w": 1.2,
       "d": 0.035,
@@ -1024,8 +1045,8 @@
       {
         "name": "Brown Balance, uten ramme",
         "colors": {
-          "motif": "#9a7a5e",
-          "accent": "#d8c7ae",
+          "motif": "#dccebf",
+          "accent": "#4f2f22",
           "line": "#1e1e1e"
         },
         "materials": {
@@ -1039,7 +1060,7 @@
     "why": "De jordnære bruntonene og de svarte linjene binder sammen det røkte eikebordet, de svarte metalldetaljene og SAND/MARRAKESH-veggene.",
     "imageUrl": "https://cdn.shopify.com/s/files/1/1037/3087/2669/files/223957391-origpic-6d67d6.webp?v=1773040884",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på canvasbutik.no: 7998 kr (veil. 8999) for 120x180, på lager. Rettet tykkelse fra 40 til 35 mm glassull og absorpsjon (estimert αw ca. 0,8)."
+    "verifiedNote": "Bekreftet 2026-10-18 på canvasbutik.no: 7998 kr (veil. 8999) for 120x180, på lager. Rettet tykkelse fra 40 til 35 mm glassull og absorpsjon (estimert αw ca. 0,8). Farger og stoff kontrollert 2026-10-21 mot canvasbutik.no: motivet finnes i 120x180 (uten ramme; Sort ramme / Eik ramme er tilvalg); fargene rettet etter produktfotoet – bunnen er lys beige, den store sirkelen mørk rødbrun (motif = bunnfarge, accent = sirkel)."
   },
   {
     "id": "illux-akustikkbilde-med-ramme-180x120",
@@ -1063,14 +1084,25 @@
     },
     "variants": [
       {
-        "name": "Eget foto, valgfri ramme",
+        "name": "Eget foto, Mat sort ramme",
         "colors": {
           "motif": "#7d8a86",
-          "frame": "#1c1c1c"
+          "frame": "#222222"
         },
         "materials": {
           "motif": "paper",
           "frame": "painted"
+        }
+      },
+      {
+        "name": "Eget foto, Egetræ ramme",
+        "colors": {
+          "motif": "#7d8a86",
+          "frame": "#c6a989"
+        },
+        "materials": {
+          "motif": "paper",
+          "frame": "oak"
         }
       }
     ],
@@ -1078,9 +1110,9 @@
     "absorption": 0.97,
     "description": "Eget foto trykket på 20 mm akustikkplate av mineralull (70 % resirkulert glass) med halvmatt overflate, levert i ramme av ekte treliste.",
     "why": "Et innrammet bilde av egen utsikt mot elva gjør veggen personlig; den tynne plata demper mindre enn 40 mm-alternativene, men er rimeligere.",
-    "imageUrl": "https://www.illux.no/media/tiles/images/T/o/Topbillede_desktop_NO_1.jpg",
+    "imageUrl": "https://cdn.elefantprint.dk/media/c9/74/45/1783578734/akustik_m_ramme-closeup.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på illux.no: 6148 kr / 5533 kr for 180x120, 20 mm mineralullplate med treramme."
+    "verifiedNote": "Bekreftet 2026-10-18 på illux.no: 6148 kr / 5533 kr for 180x120, 20 mm mineralullplate med treramme. Farger og stoff kontrollert 2026-10-21 mot illux.no (konfiguratoren): rammen velges blant Egetræ, Sort træ, Mørk egetræ, Mat sort, Valnød og Mat hvid – «valgfri ramme» er gjort om til Mat sort (som på produktfotoet) og Egetræ er lagt til; byttet bildelenken, som ikke lenger ga et bilde."
   },
   {
     "id": "ikea-mittzon-akustikkskjerm-hengende",
@@ -1105,8 +1137,8 @@
       {
         "name": "Gunnared beige",
         "colors": {
-          "fabric": "#c9bba6",
-          "rod": "#d9c3a0",
+          "fabric": "#cdc7b6",
+          "rod": "#e3cfae",
           "wire": "#9a9a9a"
         },
         "materials": {
@@ -1122,7 +1154,7 @@
     "why": "To–tre baffler i varm beige under den høye delen av skråtaket demper ekko uten å ta veggplass, og fargen glir inn i SAND-taket.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/mittzon-akustikkskjerm-hengende-gunnared-beige__1271941_pe929634_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: 995 kr, 95x53x8 cm, Gunnared beige. Fjernet ubekreftet settpris; rettet materialer (polyester, bjørk, stål)."
+    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: 995 kr, 95x53x8 cm, Gunnared beige. Fjernet ubekreftet settpris; rettet materialer (polyester, bjørk, stål). Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: finnes bare i Gunnared beige (995 kr); stoff- og stangfarge litt justert etter produktfotoet."
   },
   {
     "id": "akustikksenter-loke-oval-flate-40",
@@ -1165,7 +1197,9 @@
         "materials": {
           "fabric": "felt",
           "wire": "steel"
-        }
+        },
+        "priceNok": 5847,
+        "salePriceNok": 4970
       }
     ],
     "defaultVariant": 0,
@@ -1174,6 +1208,6 @@
     "why": "En oval flåte under skråtaket over sittegruppen gjentar formen på spisebordet og gir stor demping i den høye delen av rommet uten å berøre veggene.",
     "imageUrl": "https://www.akustikksenter.no/wp-content/uploads/2017/06/Oval-naerbilde.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på akustikksenter.no: hvit 4992 kr / 4243 kr, 2100x1100x40 mm, αw 0,90. Rettet absorpsjon (0,9 × 1,82 m²) og fjernet ubekreftet wirepris."
+    "verifiedNote": "Bekreftet 2026-10-18 på akustikksenter.no: hvit 4992 kr / 4243 kr, 2100x1100x40 mm, αw 0,90. Rettet absorpsjon (0,9 × 1,82 m²) og fjernet ubekreftet wirepris. Farger og stoff kontrollert 2026-10-21 mot akustikksenter.no: begge fargene finnes (Hvit, nærmeste NCS 0502-Y, og Mørk grå, RAL 7039 – tomt på lager); la til egen pris for mørk grå (5847 kr / 4969,95 kr)."
   }
 ]
