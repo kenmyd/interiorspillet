@@ -1,0 +1,6 @@
+Kilde: Oslo kommune, «Krav til tegninger» – eksempel «Plantegning – tilbygg» (PDF)
+https://www.oslo.kommune.no/plan-bygg-og-eiendom/skal-du-bygge-rive-eller-endre/send-byggesoknad-selv/krav-til-tegninger/
+Hentet 2026-10-21. Kun til interne tester (privat repo) – ikke del videre.
+Hva: arkitekttegning for byggesøknad, 1. etasje med tilbygg. Målestokk 1:100, målekjeder i mm,
+skraverte vegger, en skrå vegg, trapp, kompass. Skannet bilde inni PDF-en (3309 × 2340 px).
+Blå forklaringstekster er lagt oppå av kommunen og er ikke en del av tegningen.
