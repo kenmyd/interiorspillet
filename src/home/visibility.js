@@ -31,21 +31,26 @@ import { exteriorPlan } from './exterior.js';
  *   • what hides  per room: `roots.rooms[id].contents` (lamps, built-ins, decor) when the room is not seen;
  *                 `roots.rooms[id].surfaces` (walls, floor, ceilings, doors) when the room is not seen, its facade is
  *                 not seen and no seen room DEPENDS on it – a room depends on the rooms that own a slab one of its
- *                 faces is the back of (backOf, D13) and the rooms that own a door / opening of it (the leaf, the
- *                 karm and the reveal live with the owner wall) – and its neighbours on the level (plans within a
- *                 thick wall: cracks in corners, the gap under a shut door). A room of the camera's level whose
- *                 surfaces are shown ONLY as such a dependency keeps just the meshes within TRIM of the seen rooms'
- *                 plans that need it (their boundary, and THROUGH_DOOR into each of their doors); on the other level
- *                 (seen down / up the stairwell) the cracks between the basement walls and the slab show a
- *                 neighbour's far walls, so there the dependency is shown whole
- *                 – the others are hidden per mesh with the camera layer (mesh.layers bit 0), not .visible, because the
- *                 editor's overview cut toggles .visible of the same meshes; door roots are never trimmed (&vistrim=0
- *                 turns the trimming off). The living room: roots.shell is its surfaces,
+ *                 faces is the back of (backOf, D13), the rooms that own a door / opening of it (the leaf, the karm
+ *                 and the reveal live with the owner wall) and its neighbours on the level (plans within a thick wall:
+ *                 cracks in corners, the gap under a shut door). The living room: roots.shell is its surfaces,
  *                 roots.kitchen, the wall design (roots.wall) and its furniture are its contents. The stair (hud room
  *                 `trapp`) follows the hall and the basement hall it joins. A level whose rooms are all hidden is
  *                 hidden as a whole (roots.levels[id].visible), the exterior when OUTSIDE is not reached, a window's
- *                 shading anchor with its room's surfaces, a piece of furniture with the room(s) its bounding box lies
- *                 in (none: always shown).
+ *                 shading anchor with its room's surfaces.
+ *   • per mesh    inside what is shown: a seen room's surfaces are drawn whole (the house has cracks between rooms and
+ *                 levels that show bits of them from anywhere – steg 29 check); a room shown only as a dependency keeps
+ *                 the meshes on the boundary of the seen rooms that need it – on the camera's level those within TRIM
+ *                 of their plans or THROUGH_DOOR into their doors, on the other level (seen down / up the stairwell,
+ *                 where the horizontal cracks between the basement walls and the slab show a neighbour's far walls)
+ *                 all of them; a room seen only as a FACADE keeps its outer meshes (reaching more than FACADE_IN out
+ *                 of its plan: cladding, windows, roof). The contents and the furniture of a seen room other than the
+ *                 camera's own are drawn only where they are seen through its VIEWS (each view = the screen rectangle
+ *                 and the world region of one walk that reached the room). Furniture belongs to the room(s) its
+ *                 bounding box lies in (none: always shown); a piece reaching out of its rooms' plans (a sill
+ *                 ornament in the window reveal) is also shown with its room's facade. Meshes are hidden with the
+ *                 camera layer (mesh.layers bit 0), not .visible: the editor's overview cut toggles .visible of the
+ *                 same meshes. Door roots are never culled per mesh. &vistrim=0 turns the per-mesh culling off.
  *   • overview    orbit, plan, photo and every camera that is not the player's (Game renders editor.activeCamera):
  *                 nothing is hidden (the editor cuts walls and ceilings and looks into every room). setOverview(true)
  *                 does the same on request. A render of the scene with any other camera than the one the visibility
@@ -101,7 +106,13 @@ const TRIM = 0.06;
 const NEIGHBOUR = 0.35;
 /** A seen room's trim region reaches this far through each of its doors (the gap under a shut leaf, the threshold). */
 const THROUGH_DOOR = 0.6;
+/** A mesh within this of its room's plan is an inner one (not part of the facade seen from outside). */
+const FACADE_IN = 0.08;
 const EPS = 1e-4;
+/** A cell seen through more views than this is taken as seen whole (no per-mesh culling). */
+const MAX_VIEWS = 16;
+/** "Seen whole": the cell the camera is in (the frustum culls its meshes as usual). */
+const ALL = 'all';
 
 const INF = Object.freeze({ min: [-Infinity, -Infinity, -Infinity], max: [Infinity, Infinity, Infinity] });
 
@@ -406,16 +417,23 @@ function beyond(clip, p, eye) {
  * @param {object} graph   visibilityGraph
  * @param {THREE.Camera} camera  (matrixWorld / projection up to date)
  * @param {{ eye: {x,y,z}, starts: string[], isOpen: (portal) => boolean }} o
- * @returns {{ all: boolean, seen: Set<string>, facade: Set<string>, outside: boolean, visits: number }}
+ * @returns {{ all: boolean, seen: Set<string>, facade: Set<string>, outside: boolean, visits: number,
+ *   views: Map<string, {rect, clip}[]>, vp: THREE.Matrix4 }}
  */
 export function traverse(graph, camera, { eye, starts, isOpen = () => true }) {
   const vp = new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
   const seen = new Set(), facade = new Set();
+  // every rectangle (and world region) a cell is seen through – per-mesh culling uses them (createVisibility)
+  const views = new Map();
   let outside = false, visits = 0;
   const stack = starts.map((cell) => ({ cell, rect: FULL, clip: INF, depth: 0, path: [cell] }));
   while (stack.length) {
     const s = stack.pop();
-    if (++visits > MAX_VISITS) return { all: true, seen, facade, outside: true, visits };
+    if (++visits > MAX_VISITS) return { all: true, seen, facade, outside: true, visits, views, vp };
+    let vl = views.get(s.cell);
+    if (!vl) views.set(s.cell, (vl = []));
+    if (vl.length < MAX_VIEWS) vl.push({ rect: s.rect, clip: s.clip });
+    else vl.full = true;
     if (s.cell === OUTSIDE) {
       outside = true;
       // the facades in this view of the outside: every room whose geometry (behind the portals so far) is in it
@@ -442,7 +460,20 @@ export function traverse(graph, camera, { eye, starts, isOpen = () => true }) {
       stack.push({ cell: other, rect, clip: beyond(s.clip, p, eye), depth: s.depth + 1, path: [...s.path, other] });
     }
   }
-  return { all: false, seen, facade, outside, visits };
+  return { all: false, seen, facade, outside, visits, views, vp };
+}
+
+/** Is a box seen through one of the views ({ rect, clip }) of a cell? ALL: always. */
+export function seenThrough(box, views, vp, eye) {
+  if (views === ALL) return true;
+  if (!views) return false;
+  for (const v of views) {
+    const b = v.clip === INF ? box : clipBox(box, v.clip);
+    if (!b) continue;
+    const r = projectBox(b, vp, eye);
+    if (r && rectAnd(r, v.rect)) return true;
+  }
+  return false;
 }
 
 /**
@@ -544,7 +575,25 @@ export function createVisibility(home, layout) {
       for (const c of o.children) walk(c);
     };
     for (const o of u.surfaces) walk(o);
+    // outer: the mesh reaches out of the room's plan (cladding, windows, roof, eaves) – what a facade seen from outside
+    // is made of; a mesh inside the plan (inner wall faces, floor, ceiling, trims) is only seen from inside
+    const rects = rectilinearBoxes(graph.rooms.find((r) => r.id === id)?.polygon ?? []);
+    const inside = (x, z) => rects.some((b) => x >= b.minX - FACADE_IN && x <= b.maxX + FACADE_IN && z >= b.minZ - FACADE_IN && z <= b.maxZ + FACADE_IN);
+    for (const e of list) e.outer = !rects.length || ![[e.box.min[0], e.box.min[2]], [e.box.min[0], e.box.max[2]], [e.box.max[0], e.box.min[2]], [e.box.max[0], e.box.max[2]]].every(([x, z]) => inside(x, z));
     meshesOf.set(id, list);
+  }
+  const contentMeshes = new Map();
+  for (const [id, u] of units) {
+    const list = [];
+    const walk = (o) => {
+      if ((o.isMesh || o.isLine || o.isPoints) && o.geometry && (o.layers.mask & 1)) {
+        const b = new THREE.Box3().setFromObject(o);
+        if (!b.isEmpty()) list.push({ mesh: o, box: boxOf(b) });
+      }
+      for (const c of o.children) walk(c);
+    };
+    for (const o of u.contents) walk(o);
+    contentMeshes.set(id, list);
   }
   const regionsOf = new Map(
     graph.rooms.map((r) => {
@@ -601,7 +650,7 @@ export function createVisibility(home, layout) {
       const b = tmp.setFromObject(o);
       const rooms = b.isEmpty() ? [] : roomsForBox(b);
       const pokes = rooms.length > 0 && ![[b.min.x, b.min.z], [b.min.x, b.max.z], [b.max.x, b.min.z], [b.max.x, b.max.z]].every(([x, z]) => inPlans(rooms, x, z));
-      itemRooms.set(o, { rooms, pokes });
+      itemRooms.set(o, { rooms, pokes, box: b.isEmpty() ? null : boxOf(b) });
     }
   };
 
@@ -728,7 +777,7 @@ export function createVisibility(home, layout) {
   const levelOf = new Map(graph.rooms.map((r) => [r.id, r.levelId]));
   for (const [id, r] of Object.entries(roots.rooms)) if (!levelOf.has(id)) levelOf.set(id, r.levelId);
 
-  function apply(seen, surfaces, outside, facade = new Set(), eyeLevel = null) {
+  function apply(seen, surfaces, outside, { facade = new Set(), eyeLevel = null, starts = [], views = new Map(), vp = null } = {}) {
     state.seen = seen;
     state.surfaces = surfaces;
     state.outside = outside;
@@ -742,18 +791,46 @@ export function createVisibility(home, layout) {
       if (sOn || cOn) levelOn.set(levelOf.get(id), true);
     }
     for (const [id, g] of Object.entries(roots.levels)) setUnit(g, levelOn.get(id) !== false);
-    // dependency-only rooms: the meshes on the boundary of the seen rooms that need them
+    // per mesh. Surfaces: a seen room is drawn whole (cracks between the rooms and the levels show bits of it from
+    // anywhere); a room shown but not seen keeps, as a dependency of seen rooms on the camera's level, the meshes on
+    // their boundary (within TRIM of their plans or THROUGH_DOOR into their doors; on the other level, seen down / up
+    // the stairwell, the horizontal cracks between the basement walls and the slab show a neighbour's far walls, so
+    // it is drawn whole), and as a facade its outer meshes. Contents and furniture of a seen room (not the camera's
+    // own): only the meshes seen through its views (screen rectangle + world region of each walk that reached it)
+    const startSet = new Set(starts);
+    const viewsOf = (id) => (startSet.has(id) ? ALL : views.get(id)?.full ? ALL : views.get(id) ?? null);
+    const through = (box, v) => seenThrough(box, v, vp, eye);
+    const hudViews = (links) => {
+      const vs = links.filter((x) => seen.has(x)).map(viewsOf);
+      return !vs.length || vs.includes(ALL) ? ALL : vs.flat();
+    };
     for (const [id, list] of meshesOf) {
-      // only on the camera's own level: a room of the other level is seen down (or up) the stairwell, and there the
-      // horizontal cracks between the basement walls and the slab show a neighbour's far walls (steg 29 check)
-      const trim = trimOn && surfaces.has(id) && !seen.has(id) && !facade.has(id) && levelOf.get(id) === eyeLevel;
+      let trim = trimOn && surfaces.has(id) && !seen.has(id) && !graph.hudLinks.has(id);
+      const regions = [];
+      if (trim) {
+        for (const x of seen) {
+          if (!graph.deps.get(x)?.has(id)) continue;
+          if (levelOf.get(id) !== eyeLevel) trim = false;
+          regions.push(...(regionsOf.get(x) || []));
+        }
+      }
       if (!trim) {
         for (const e of list) if (trimmed.has(e.mesh)) setTrim(e.mesh, false);
         continue;
       }
-      const regions = [];
-      for (const s of seen) if (graph.deps.get(s)?.has(id)) regions.push(...(regionsOf.get(s) || []));
-      for (const e of list) setTrim(e.mesh, !regions.some((r) => touches(r, e.box)));
+      const front = facade.has(id);
+      for (const e of list) setTrim(e.mesh, !((front && e.outer) || regions.some((r) => touches(r, e.box))));
+    }
+    // the contents of a seen room: the meshes in its views
+    for (const [id, list] of contentMeshes) {
+      if (!trimOn) {
+        for (const e of list) if (trimmed.has(e.mesh)) setTrim(e.mesh, false);
+        continue;
+      }
+      const links = graph.hudLinks.get(id);
+      if (!(links ? links.some((x) => seen.has(x)) : seen.has(id))) continue; // the contents group is hidden
+      const v = links ? hudViews(links) : viewsOf(id);
+      for (const e of list) setTrim(e.mesh, !through(e.box, v));
     }
     setUnit(roots.exterior, outside);
     for (const a of anchors) setUnit(a.obj, surfaces.has(a.roomId));
@@ -761,7 +838,8 @@ export function createVisibility(home, layout) {
     for (const [o, it] of itemRooms) {
       if (!o.parent) continue;
       const rs = it.rooms;
-      setItem(o, !rs.length || rs.some((x) => seen.has(x)) || (it.pokes && rs.some((x) => surfaces.has(x))));
+      const inView = (x) => seen.has(x) && (!trimOn || !it.box || seenThrough(it.box, viewsOf(x), vp, eye));
+      setItem(o, !rs.length || rs.some(inView) || (it.pokes && rs.some((x) => surfaces.has(x))));
     }
     for (const o of [...hiddenItems.keys()]) if (!o.parent) hiddenItems.delete(o);
   }
@@ -808,7 +886,7 @@ export function createVisibility(home, layout) {
     // a seen room needs its boundary's owners; a facade (seen from outside only) is the room's own outer walls
     const surfaces = new Set([...res.seen, ...res.facade]);
     for (const id of res.seen) for (const d of graph.deps.get(id) || []) surfaces.add(d);
-    apply(res.seen, surfaces, res.outside, res.facade, layout.house.levelAt?.(eye.y)?.id ?? null);
+    apply(res.seen, surfaces, res.outside, { facade: res.facade, eyeLevel: layout.house.levelAt?.(eye.y)?.id ?? null, starts, views: res.views, vp: res.vp });
     stats.active = true;
     stats.cells = starts;
     stats.seen = [...res.seen];

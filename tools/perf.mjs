@@ -346,6 +346,13 @@ try {
         { name: 'terrasse-hus', p: [9.6, 0, 5.0, 90, 0] },
         { name: 'hage-vest', p: [5.0, -2.95, 15.0, 180, 10] },
         { name: 'hage-vest-hus', p: [5.0, -2.95, 15.0, 0, 15] },
+        { name: 'forplass-vid', p: [13.5, -2.87, 1.0, 70, 0] },
+        { name: 'sor-hage', p: [14.0, -2.9, 6.0, 90, 8] },
+        { name: 'sorvest', p: [12.0, -2.9, 14.0, 45, 10] },
+        { name: 'nordvest', p: [-5.0, 0, 15.0, -45, 5] },
+        { name: 'nord', p: [-4.0, 0, 6.0, -90, 5] },
+        { name: 'ost', p: [3.5, 0, -4.5, 180, 5] },
+        { name: 'sorost', p: [12.0, -2.9, -3.0, 135, 8] },
       ];
       out.check = {};
       for (const doorsOpen of [false, true]) {
