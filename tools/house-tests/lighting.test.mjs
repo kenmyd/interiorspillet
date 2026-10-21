@@ -176,7 +176,33 @@ section('Andre rom sett gjennom døra, ute, sol per nivå, oversikt (rettinger e
   check('lysplasser bare ett rom unna (kjellergangen bak trappehullet konkurrerer ikke fra stua)', !spots(G).some((id) => /l-kg-/.test(id)), spots(G).join());
   check('synligheten når fortsatt to rom unna (kjellergangen)', G._reachable().has('kjeller-gang'));
   const f = lm.lightMask.uniforms.lmRoomF.value, gi = G._table.byId.gang.index * 4;
-  check('gangens romfaktor er ikke lenger blåforskjøvet (b/r ≤ 2)', f[gi + 2] / f[gi] <= 2, [...f.slice(gi, gi + 3)].map((v) => v.toFixed(1)).join('/'));
+  const fr = f[gi + 2] / f[gi], fg = f[gi + 1] / f[gi];
+  check('gangen sett fra stua får sin egen flate irradians (w ≥ 2), ikke stuas retningsavhengige kart',
+    f[gi + 3] >= 2 && f[gi] > 0, [...f.slice(gi, gi + 4)].map((v) => v.toFixed(2)).join('/'));
+  check('gangens flate irradians er nøytral til varm (b/r ≤ 1,05, g/r ≥ b/r): veggen blir sand, ikke lavendel',
+    fr <= 1.05 && fg >= fr, `g/r ${fg.toFixed(3)} b/r ${fr.toFixed(3)}`);
+  const li = G._table.byId['stue-kjokken'].index * 4;
+  check('stua (kamerarommet) og ute er som før (w = 1 / 0), kamerarommet står i lmSun.w',
+    f[li + 3] === 1 && f[G._table.outside * 4 + 3] === 0 && lm.lightMask.uniforms.lmSun.value[3] === G._table.byId['stue-kjokken'].index + 1);
+  check('maskene er på med døra åpen', G._masksWanted());
+  // the (slot, portal) pairs: every slot of the hall gets the portals of the hall, the living room's slots door-gang
+  lm.lightMask.flush(G._table.byId['stue-kjokken'].bit);
+  const pairs = lm.lightMask.pairs, pv = lm.lightMask.uniforms.lmPortal.value;
+  const slotOf = (id) => {
+    for (const kind of ['point', 'spot', 'rect']) {
+      const s = G._pool[kind].find((x) => x.cand?.id === id);
+      if (s) return { point: 0, spot: lm.MAX_SLOTS.point, rect: lm.MAX_SLOTS.point + lm.MAX_SLOTS.spot }[kind] + s.shaderIndex;
+    }
+    return -1;
+  };
+  const gs = slotOf('builtin:l-gang-tak'), ps = slotOf('builtin:pendel-oy-1');
+  const gangBit = G._table.byId.gang.bit, livBit = G._table.byId['stue-kjokken'].bit;
+  const bitsOfPortal = (p) => pv[p * 12 + 3];
+  check('par: gangens plafond får alle portalene til gangen, stuas pendel bare door-gang',
+    gs >= 0 && ps >= 0 && pairs.filter((q) => q.slot === gs).every((q) => bitsOfPortal(q.portal) & gangBit) && pairs.some((q) => q.slot === gs && (bitsOfPortal(q.portal) & livBit))
+    && pairs.filter((q) => q.slot === ps).length >= 1 && pairs.filter((q) => q.slot === ps).every((q) => (bitsOfPortal(q.portal) & livBit) && (bitsOfPortal(q.portal) & gangBit)),
+    `${gs}/${ps}: ${pairs.length} par`);
+  check(`par innenfor taket (${pairs.length} ≤ ${lm.MAX_PAIRS})`, pairs.length > 0 && pairs.length <= lm.MAX_PAIRS);
 
   // a door swing: the rooms are solved per step of the opening, not every frame, and once more when it stops
   at(G, 20, new THREE.Vector3(4.2, 1.6, 4.0));
@@ -184,6 +210,7 @@ section('Andre rom sett gjennom døra, ute, sol per nivå, oversikt (rettinger e
   door.isOpen = false;
   G.update(1 / 60, cam);
   G.update(1 / 60, cam);
+  check('stua med alle dører lukket: maskene er av (de endrer ingenting synlig, sparer bildetid)', G.cameraRoomId === 'stue-kjokken' && !G._masksWanted());
   const r0 = G.stats.recomputes;
   for (let i = 0; i < 30; i++) {
     door.t = (i + 1) / 30;
@@ -233,11 +260,39 @@ section('Andre rom sett gjennom døra, ute, sol per nivå, oversikt (rettinger e
 
 section('Uniformbudsjettet (lightmask.js)');
 {
-  check(`masken bruker ${lm.VECTORS} fragmentvektorer (≤ 170)`, lm.VECTORS <= 170);
+  check(`masken bruker ${lm.VECTORS} fragmentvektorer (≤ 200)`, lm.VECTORS <= 200);
   check('en GPU med 256 fragmentvektorer får vanlig lys (masker av), 1024 får maskene',
     !lm.lightMask.fits({ capabilities: { maxFragmentUniforms: 256 } }) && lm.lightMask.fits({ capabilities: { maxFragmentUniforms: 1024 } }));
-  const src = THREE.ShaderChunk.lights_fragment_begin;
-  check('soldelen er maskert, to plasser per vec4', src.includes('lmSunLit()') && src.includes('lmSpot[ UNROLLED_LOOP_INDEX / 2 ]'));
+  const src = THREE.ShaderChunk.lights_fragment_begin, pars = THREE.ShaderChunk.lights_pars_begin;
+  // compile time (review 2): the slot factors are computed once per fragment (a mask loop + ONE flat pair loop, no loop
+  // in a loop), the unrolled light sites only read two bits
+  const sites = src.match(/\*= float\( \( lmLo >> uint\( \d+ \+ UNROLLED_LOOP_INDEX \) \) & 1u \) \* \( 1\.0 \/ 3\.0 \) \+ float\( \( lmHi >> uint\( \d+ \+ UNROLLED_LOOP_INDEX \) \) & 1u \) \* \( 2\.0 \/ 3\.0 \);/g) || [];
+  check('soldelen er maskert, lyssetene (punkt, spot, flate) leser bare to biter', src.includes('lmSunLit()') && sites.length === 3 && !/lmLight\(/.test(src), `${sites.length}`);
+  const loc = pars.slice(pars.indexOf('void lmLocate('), pars.indexOf('float lmSunLit'));
+  const loops = (loc.match(/\bfor \(/g) || []).length;
+  check('lmLocate har tre flate løkker (bokser, masker, par) med grenser fra uniformene, ingen løkke i løkke',
+    loops === 3 && /int nq = min\( int\( lmSun\.z/.test(loc) && !/for \([^\n]*\n(?:[^\n]*\n){0,3}\t\tfor \(/.test(loc), `${loops}`);
+  check('3 · ⅓ + ⅔ = nøyaktig 1 i float32 (stuas egne lamper er uendret når maskene er på)', Math.fround(Math.fround(1 / 3) + Math.fround(2 / 3)) === 1);
+  const a = lm.lightMask.uniforms.lmSlot.value;
+  const saved = a.slice();
+  lm.lightMask.setSlot('spot', 3, 0b101, 0b100, { x: 1, y: 2, z: 3 });
+  const i = (lm.MAX_SLOTS.point + 3) * 4;
+  check('setSlot pakker posisjon og maske + 65536 · (hjemrom + 1)', a[i] === 1 && a[i + 1] === 2 && a[i + 2] === 3 && a[i + 3] === 5 + 65536 * 3, [...a.slice(i, i + 4)].join());
+  a.set(saved);
+}
+
+section('Sol under himlingen over forplassen (sidefeltene ved ytterdøra)');
+{
+  const M = manager(layout);
+  const side = M._roomWindows.find((w) => w.id === 'win-ute-ost');
+  check('sidefeltet kjenner himlingen over seg', !!side && side.soffits?.length >= 1, side?.soffits?.length);
+  if (side) {
+    const dir = (elevDeg) => new THREE.Vector3(Math.cos(elevDeg * Math.PI / 180), Math.sin(elevDeg * Math.PI / 180), 0); // due south (+x)
+    const low = M._soffitSun(side, dir(22)), high = M._soffitSun(side, dir(55));
+    check(`lav oktobersol (22°) når det meste av glasset (${low.toFixed(2)}), høy sommersol (55°) stenges nesten ute (${high.toFixed(2)})`, low > 0.6 && high < 0.35 && high < low);
+    const other = M._roomWindows.find((w) => !w.soffits?.length);
+    check('vinduer uten himling over seg: uendret (1)', !other || M._soffitSun(other, dir(55)) === 1);
+  }
 }
 
 done();

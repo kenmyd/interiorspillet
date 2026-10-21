@@ -54,13 +54,15 @@
 //                 mean exitance × the door's opening into the room (stue → gang → … in one coupling pass + one more).
 //   camera room   the room the camera is in (layout.house.roomAt, body height, level hysteresis; above the ceilings =
 //                 the overview → the living room) drives exposure, white balance, ambient and the environment map
-//                 (one PMREM per room, cached; ≤ 1 build per room change). Other rooms are scaled by their radiance
-//                 relative to it (lightmask room factors). Lkey of a room other than the living room is at least
+//                 (one PMREM per room, cached; ≤ 1 build per room change). A fragment in another room gets that
+//                 room's flat irradiance (its mean exitance × S × wb, lightmask) instead of the map, and the map's
+//                 reflections × its luminance relative to the camera's room. Lkey of a room other than the living room is at least
 //                 min(2, the largest Lkey of the rooms the camera can reach); the change eases over ≈ 1.5 s.
 //   masks         src/world/lightmask.js keeps every pooled light in its room: a slot lights its room fully (the
 //                 living room's also OUTSIDE), other rooms only through an open portal. Slots go only to sources of
 //                 the rooms the camera can reach (open portals, depth 2), so with the doors shut the living room has
-//                 exactly today's candidates.
+//                 exactly today's candidates. With every portal of the camera's room shut the masks are off for the
+//                 frame (_masksWanted: nothing they could change is seen).
 //   auto          per group (data `auto`): 'on' (rooms without windows), 'dark' (the room's own daylight), 'evening'
 //                 (entrance, outside), 'off' (storerooms); the six living-room groups follow the living room as before.
 //   sun           the shadow box follows the camera's level (hoved exactly as before, kjeller y −2.9…0), the sun's map
@@ -1126,10 +1128,11 @@ export class LightManager {
       renderer.toneMappingExposure = 1;
       renderer.shadowMap.autoUpdate = false;
       renderer.shadowMap.needsUpdate = true;
-      // the light masks add ~170 fragment uniform vectors to every lit material: a GPU with too few (many mobiles have
+      // the light masks add ~200 fragment uniform vectors to every lit material: a GPU with too few (many mobiles have
       // 256) would fail to compile them and draw black – it gets three's plain lighting instead (before the first
       // compile: the home's scene is compiled after this). &lm=0 does the same (comparisons).
-      if (lightMask.available && (!lightMask.fits(renderer) || dev?.get('lm') === '0')) lightMask.uninstall();
+      if (lightMask.available && dev?.get('lm') === '0') lightMask.uninstall('lm=0');
+      else if (lightMask.available && !lightMask.fits(renderer)) lightMask.uninstall('gpu');
     }
     if (!rectAreaReady) {
       RectAreaLightUniformsLib.init(); // LTC tables, once per page
@@ -1360,14 +1363,33 @@ export class LightManager {
     if (sm?.enabled && sm.needsUpdate && this.sun.castShadow && this.sun.shadow.needsUpdate) this.stats.sunPasses = (this.stats.sunPasses || 0) + 1;
     this._slotShadowOnly = false;
     // the scene goes straight to the screen (tone mapping in the materials, so the unlit photo backdrops stay
-    // untouched); ambient occlusion is multiplied on top afterwards. The light masks only for this render.
-    lightMask.setEnabled(!!this._table);
+    // untouched); ambient occlusion is multiplied on top afterwards. The light masks only for this render, and only
+    // when they can change something (_masksWanted)
+    const masks = !!this._table && this._masksWanted();
+    this.stats.masks = masks;
+    if (masks) lightMask.flush(this._table.byId[this._camRoomId]?.bit ?? 0);
+    lightMask.setEnabled(masks);
     try {
       renderer.render(scene, camera);
     } finally {
       lightMask.setEnabled(false);
     }
     if (this.profile.ao && camera?.isPerspectiveCamera) this._renderAO(renderer, scene, camera);
+  }
+
+  /**
+   * Whether the light masks can change what is seen. Not with the camera's room closed (every door of it shut, no open
+   * opening): all that is seen then lies in that room or outside, where every slot passes anyway (only that room's
+   * lamps compete for slots), so the frame is identical without them – and the box and slot loops cost ~30 % of it.
+   * On in an overview, outside the house and as soon as a portal of the camera's room opens (a crack is enough).
+   */
+  _masksWanted() {
+    if (this._overview || this._camOutside) return true;
+    const id = this._camRoomId;
+    const g = this._gainsNow;
+    if (!this._worlds.has(id) || !this._portalDefs?.length || !g) return true;
+    for (let i = 0; i < this._portalDefs.length; i++) if (g[i] > 1e-4 && this._portalDefs[i].connects.includes(id)) return true;
+    return false;
   }
 
   dispose() {
@@ -1512,7 +1534,8 @@ export class LightManager {
     this._table = buildRoomTable(this.layout);
     this._portalDefs = portalRects(this.layout);
     lightMask.setRooms(this._table);
-    for (let i = 0; i < 16; i++) lightMask.setRoomFactor(i, 1, 1, 1);
+    for (let i = 0; i < 16; i++) lightMask.setRoomAsIs(i);
+    this._roomFlat = [];
     this._setSunMask(this._camLevelId);
     const living = h.roomsById?.[LIVING_ID] ?? { id: LIVING_ID, name: 'Stue/kjøkken', levelId: 'hoved' };
     this._worlds.set(LIVING_ID, {
@@ -1743,6 +1766,7 @@ export class LightManager {
   _updatePortals() {
     if (!this._table || !this._portalDefs?.length) return;
     const gains = this._portalDefs.map((q) => this._portalGain(q));
+    this._gainsNow = gains;
     const key = gains.map((g) => g.toFixed(3)).join(',');
     if (key === this._portalState) {
       if (this._portalSolved !== key) {
@@ -1856,6 +1880,11 @@ export class LightManager {
           }
           if (inside) entry.coveredSky = 0.5;
         }
+        // the soffits above the glass (outsideHouse.soffits, world y) shade the sun too: _soffitSun traces toward it
+        const top = center.y + gh / 2;
+        entry.soffits = (this.layout.house.outsideHouse?.soffits || [])
+          .filter((s) => Array.isArray(s.polygon) && s.polygon.length >= 3 && Number.isFinite(s.y) && s.y > top - 0.01)
+          .map((s) => ({ y: s.y, poly: s.polygon.map((p) => ({ x: p[0], y: p[1] })) }));
         world.windows.push(entry);
         this._roomWindows.push(entry);
         if (normal.x < -0.7) world.south = true; // the glass looks south (+x)
@@ -2807,7 +2836,7 @@ export class LightManager {
         if (sunUp && cosSun > 0.01) {
           const sr = sunDir.dot(w.right), sy = sunDir.y;
           const reveal = Math.max(0, 1 - (w.glassDepth * Math.abs(sr)) / (cosSun * w.width)) * Math.max(0, 1 - (w.glassDepth * Math.abs(sy)) / (cosSun * w.height));
-          w.sunFlux = dl.Edn * cosSun * glassT * w.area * reveal * t * obstruction;
+          w.sunFlux = dl.Edn * cosSun * glassT * w.area * reveal * t * obstruction * this._soffitSun(w, sunDir);
           W.dayFlux += w.sunFlux;
           W.sunTot += w.sunFlux;
           if (w.sunFlux > 0) {
@@ -2835,6 +2864,30 @@ export class LightManager {
         p.Eday0 = (p.Eday0 || new THREE.Color()).copy(p.Eday);
       }
     }
+  }
+
+  /**
+   * Share of a window's glass the sun reaches past the soffits above it (the covered forecourt's ceiling over the
+   * entrance's side panels): 3 × 5 points on the glass, each ray toward the sun against every soffit's polygon at its
+   * height. 1 without soffits (every window but the entrance's).
+   */
+  _soffitSun(w, sunDir) {
+    if (!w.soffits?.length || !(sunDir.y > 1e-3)) return 1;
+    let lit = 0, n = 0;
+    for (const su of [-0.4, 0, 0.4]) {
+      for (const sv of [-0.45, -0.25, 0, 0.25, 0.45]) {
+        n++;
+        const x = w.center.x + w.right.x * su * w.width + w.outward.x * 0.05;
+        const y = w.center.y + sv * w.height;
+        const z = w.center.z + w.right.z * su * w.width + w.outward.z * 0.05;
+        const blocked = w.soffits.some((s) => {
+          const k = (s.y - y) / sunDir.y;
+          return k > 0 && pointInPoly(x + sunDir.x * k, z + sunDir.z * k, s.poly);
+        });
+        if (!blocked) lit++;
+      }
+    }
+    return lit / n;
   }
 
   /** The living room's mean exitance (lux, rgb; daylight part apart) – what its portals send into the hall. */
@@ -3021,9 +3074,9 @@ export class LightManager {
   }
 
   /**
-   * Drives exposure, white balance, the info numbers, the environment map and the room factors from the camera's
-   * room. The living room: exactly its own solve (as before). Another room: its Lkey, at least min(2, the largest Lkey
-   * the camera can reach) (§4.5), its white balance; the other rooms' indirect light × their radiance relative to it.
+   * Drives exposure, white balance, the info numbers, the environment map and the other rooms' indirect light from the
+   * camera's room. The living room: exactly its own solve (as before). Another room: its Lkey, at least min(2, the
+   * largest Lkey the camera can reach) (§4.5), its white balance; every other room its own flat irradiance.
    * @param {boolean} changed  the camera just changed room (ease over HOUSE.roomEase)
    */
   _selectRoom(changed) {
@@ -3075,7 +3128,7 @@ export class LightManager {
     }
     this._info.room = id;
     // white balance of every other room relative to the camera's (its light seen through a doorway in its own colour,
-    // HOUSE.wbLocal): used for its light slots and glowing lamps (_apply) and its room factor below
+    // HOUSE.wbLocal): used for its light slots and glowing lamps (_apply) and its flat irradiance below
     this._wbRel.clear();
     if (this._worlds.size > 1) {
       for (const [rid, R] of this._worlds) {
@@ -3083,24 +3136,32 @@ export class LightManager {
         this._wbRel.set(rid, this._wbRelOf(R, this._wbTarget, new THREE.Color()));
       }
     }
-    // indirect light of the other rooms relative to the camera's (lightmask); the camera's room and outside exactly 1
+    // indirect light of the other rooms (lightmask): each its own FLAT irradiance – its mean exitance in its relative
+    // white balance (+ the night floor of the ambient), × S × wb in _apply – instead of the camera room's map, whose
+    // colour at a given normal is the camera room's (from the living room the hall's wall faced the Marrakesh wall and
+    // went lavender / pink); the map's reflections × the room's luminance relative to the camera room's. The camera's
+    // room (a fragment also in it: the closed door leaf, the reveal) and outside as is: the living room looks as before
     const t = this._table;
+    this._roomFlat = [];
     if (t) {
       const C = W && !W.living ? W.M : this._worlds.get(LIVING_ID)?.M;
+      const lc = C ? lum(C) : 0;
       for (const [rid, R] of this._worlds) {
         const e = t.byId[rid];
         if (!e) continue;
-        // a fragment (also) in the camera's room uses its own environment as is (w = 1): the closed door leaf and the
-        // reveal (in both rooms' hole box) look as before from the living room
-        if (rid === id || !C || !R.M) lightMask.setRoomFactor(e.index, 1, 1, 1, rid === id);
-        else {
-          const rel = this._wbRel.get(rid);
-          const f = (a, b, w) => clamp((a / Math.max(1e-4, b)) * (w ?? 1), 0, 50);
-          lightMask.setRoomFactor(e.index, f(R.M.r, C.r, rel?.r), f(R.M.g, C.g, rel?.g), f(R.M.b, C.b, rel?.b), false);
+        if (rid === id || !R.M) {
+          lightMask.setRoomAsIs(e.index, rid === id);
+          continue;
         }
+        const base = R.M.clone();
+        const rel = this._wbRel.get(rid);
+        if (rel) base.multiply(rel);
+        addScaled(base, NIGHT_COLOR, NIGHT_FLOOR_LUX);
+        this._roomFlat.push({ id: rid, index: e.index, base, reflect: lc > 1e-6 ? clamp(lum(base) / lc, 0, 50) : 1 });
       }
-      if (!this._worlds.has(id)) lightMask.setRoomFactor(t.byId[LIVING_ID].index, 1, 1, 1, true);
-      lightMask.setRoomFactor(t.outside, 1, 1, 1, false);
+      if (!this._worlds.has(id)) lightMask.setRoomAsIs(t.byId[LIVING_ID].index, true);
+      lightMask.setRoomAsIs(t.outside, false);
+      this._applyDirty = true;
     }
     if (changed) {
       this._roomEaseUntil = this._clock + HOUSE.roomEase;
@@ -3484,9 +3545,9 @@ export class LightManager {
       for (const s of this._pool[kind]) {
         const c = s.cand;
         if (masks) {
-          // the slot lights the room of its source (lightmask.js)
+          // the slot lights the room of its source (lightmask.js), through the portals from where the light is
           const [bits, home] = c ? this._maskOf(c) : [0, 0];
-          lightMask.setSlot(kind, s.shaderIndex ?? 0, bits, home);
+          lightMask.setSlot(kind, s.shaderIndex ?? 0, bits, home, c ? _v1.setFromMatrixPosition(s.light.matrixWorld) : null);
         }
         if (!c || !c.on) {
           s.light.intensity = 0;
@@ -3505,7 +3566,7 @@ export class LightManager {
       }
     }
     // only the camera room's sources without a slot: the ambient term is the light round the camera (other rooms get
-    // theirs through the room factor of their bounce)
+    // theirs through their flat irradiance, lightmask)
     const here = (c) => !masks || (c.roomId ?? LIVING_ID) === this._camRoomId;
     for (const c of this._allLampCandidates()) if (c.on && !c.slot && here(c)) addAmbient(c);
     // a window without a rect slot is lit by its far-field spot when that has a slot (its fade-in is ambient above)
@@ -3516,6 +3577,14 @@ export class LightManager {
     if (this._ambNow == null) this._ambNow = ambLux;
     this.ambient.intensity = this._ambNow * S;
     this.ambient.color.copy(ambCol.multiplyScalar(1 / Math.max(1e-6, lum(ambCol)))).multiply(wb);
+
+    // the other rooms' flat irradiance in display units (what the camera room's map gives: exitance × S × wb)
+    if (masks) {
+      for (const f of this._roomFlat || []) {
+        _c1.copy(f.base).multiply(wb).multiplyScalar(S);
+        lightMask.setRoomFlat(f.index, _c1.r, _c1.g, _c1.b, f.reflect);
+      }
+    }
 
     // emissive meshes of every lamp (whether it has a slot or not)
     if (this._emissiveDirty || !this._emissive) this._rebuildEmissiveIndex();

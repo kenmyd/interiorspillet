@@ -25,6 +25,8 @@ const SEASONS = [
   ['Høst', 9, 23],
 ];
 const COMPASS = ['nord', 'nordøst', 'øst', 'sørøst', 'sør', 'sørvest', 'vest', 'nordvest'];
+/** Level label of a room header on another level than the camera's (two rooms are called «Gang» and «Soverom»). */
+const LEVEL_NAMES = { hoved: '1. etasje', kjeller: 'kjeller' };
 
 /** «13:05» from decimal hours. */
 export function fmtClock(hours) {
@@ -440,17 +442,21 @@ export class LightPanel extends BasePanel {
       const named = new Map(rooms.map((r) => [r.id, r]));
       const ids = [...new Set(groups.map((g) => g.roomId ?? null))];
       const order = [here, ...rooms.map((r) => r.id).filter((id) => id !== here), ...ids.filter((id) => id && !named.has(id)), null];
+      // the basement has a «Gang» and a «Soverom» too: a room on another level than the camera's carries its level
+      const camLevel = named.get(here)?.levelId ?? 'hoved';
       for (const id of order) {
         const list = groups.filter((g) => (g.roomId ?? null) === id);
         if (!list.length || sections.some((s) => s.id === id)) continue;
-        sections.push({ id, name: id === null ? 'Andre' : named.get(id)?.name ?? id, list, here: id === here });
+        const lv = named.get(id)?.levelId;
+        const level = lv && lv !== camLevel ? LEVEL_NAMES[lv] ?? lv : '';
+        sections.push({ id, name: id === null ? 'Andre' : named.get(id)?.name ?? id, level, list, here: id === here });
       }
-    } else sections.push({ id: '', name: '', list: groups, here: false });
+    } else sections.push({ id: '', name: '', level: '', list: groups, here: false });
     for (const s of sections) {
       if (s.name) {
         const anyOn = s.list.some((g) => L.groupState(g.id).on);
         specs.push({
-          key: `r:${s.id}`, header: true, name: s.name, sub: s.here ? 'her' : '', on: anyOn,
+          key: `r:${s.id}:${s.level}`, header: true, name: s.name, level: s.level, sub: s.here ? 'her' : '', on: anyOn,
           onToggle: (on) => this._setRoom(s.list.map((g) => g.id), on),
         });
       }
@@ -500,7 +506,7 @@ export class LightPanel extends BasePanel {
     if (spec.header) {
       const tg = toggle({ label: '', value: spec.on, onChange: (v) => cur.onToggle(v) });
       const hereEl = h('span.lp-room__here', { text: 'Her', title: 'Rommet du står i' });
-      const el = h('div.lp-room', {}, h('div.lp-room__name', { text: spec.name }), hereEl, tg.el);
+      const el = h('div.lp-room', {}, h('div.lp-room__name', {}, h('span', { text: spec.name }), spec.level ? h('small', { text: spec.level }) : null), hereEl, tg.el);
       const sync = (s) => {
         cur = s;
         hereEl.hidden = s.sub !== 'her';
