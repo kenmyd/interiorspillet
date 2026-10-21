@@ -187,6 +187,83 @@ export function findRooms(walls, { res = 0.02, margin = 0.6 } = {}) {
 }
 
 /**
+ * The outline of the union of some polygons (rooms + wall slabs of a level): rasterised at `res`, the outside flood
+ * filled from the border, the boundary of the largest remaining part traced and simplified. Points [x, y] (or [x, z]).
+ * The 3D view cuts the ground with it over a basement.
+ */
+export function footprint(polys, { res = 0.05 } = {}) {
+  const pts = polys.flat();
+  if (!pts.length) return [];
+  const minX = Math.min(...pts.map((p) => p[0])) - 2 * res;
+  const minY = Math.min(...pts.map((p) => p[1])) - 2 * res;
+  const W = Math.ceil((Math.max(...pts.map((p) => p[0])) - minX) / res) + 3;
+  const H = Math.ceil((Math.max(...pts.map((p) => p[1])) - minY) / res) + 3;
+  const inside = new Uint8Array(W * H);
+  for (const P of polys) {
+    if (P.length < 3) continue;
+    const ys = P.map((p) => p[1]);
+    const j0 = Math.max(0, Math.floor((Math.min(...ys) - minY) / res));
+    const j1 = Math.min(H - 1, Math.ceil((Math.max(...ys) - minY) / res));
+    for (let j = j0; j <= j1; j++) {
+      const y = minY + (j + 0.5) * res;
+      const xs = [];
+      for (let i = 0, k = P.length - 1; i < P.length; k = i++) {
+        const a = P[i];
+        const b = P[k];
+        if (a[1] > y !== b[1] > y) xs.push(a[0] + ((y - a[1]) / (b[1] - a[1])) * (b[0] - a[0]));
+      }
+      xs.sort((p, q) => p - q);
+      for (let m = 0; m + 1 < xs.length; m += 2) {
+        const i0 = Math.max(0, Math.round((xs[m] - minX) / res));
+        const i1 = Math.min(W - 1, Math.round((xs[m + 1] - minX) / res) - 1);
+        for (let i = i0; i <= i1; i++) inside[j * W + i] = 1;
+      }
+    }
+  }
+  // close hairline gaps between neighbouring polygons (rounding): one dilation + erosion
+  const grow = new Uint8Array(W * H);
+  for (let j = 1; j < H - 1; j++) for (let i = 1; i < W - 1; i++) {
+    const k = j * W + i;
+    grow[k] = inside[k] || inside[k - 1] || inside[k + 1] || inside[k - W] || inside[k + W] ? 1 : 0;
+  }
+  const solid = new Uint8Array(W * H);
+  for (let j = 1; j < H - 1; j++) for (let i = 1; i < W - 1; i++) {
+    const k = j * W + i;
+    solid[k] = grow[k] && grow[k - 1] && grow[k + 1] && grow[k - W] && grow[k + W] ? 1 : 0;
+  }
+  // the outside from the border; everything else is the house (inner courtyards would be filled – fine for a hole)
+  const labels = new Int32Array(W * H).fill(1);
+  const stack = [];
+  const push = (k) => {
+    if (labels[k] === 1 && !solid[k]) {
+      labels[k] = 0;
+      stack.push(k);
+    }
+  };
+  for (let i = 0; i < W; i++) {
+    push(i);
+    push((H - 1) * W + i);
+  }
+  for (let j = 0; j < H; j++) {
+    push(j * W);
+    push(j * W + W - 1);
+  }
+  while (stack.length) {
+    const k = stack.pop();
+    const i = k % W;
+    if (i > 0) push(k - 1);
+    if (i < W - 1) push(k + 1);
+    if (k >= W) push(k - W);
+    if (k < W * (H - 1)) push(k + W);
+  }
+  const start = labels.indexOf(1);
+  if (start < 0) return [];
+  const ring = traceOuter(labels, W, H, 1, start);
+  if (!ring) return [];
+  return dropCollinear(simplifyRing(ring.map(([i, j]) => [minX + i * res, minY + j * res]), res * 1.1), res * 0.05);
+}
+
+/**
  * Outer boundary of a 4-connected region along the cell edges, with the region on the right (screen: clockwise,
  * positive shoelace in the y-down frame). Vertices are grid corners [i, j]. At a corner where the region only touches
  * itself diagonally the walk turns right (toward the region), so a pinch never joins two loops.

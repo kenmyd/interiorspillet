@@ -177,9 +177,11 @@ export function clipArea(subject, convex) {
 
 /** Slug for ids: «Stue / kjøkken» → «stue-kjøkken» (the room-spec id syntax: a–z, 0–9, æøå, _ and -). */
 export function slug(s, fallback = 'rom') {
+  const ACCENT = { é: 'e', è: 'e', ê: 'e', ë: 'e', á: 'a', à: 'a', â: 'a', ä: 'a', ó: 'o', ò: 'o', ô: 'o', ö: 'o', ú: 'u', ù: 'u', ü: 'u', í: 'i', ì: 'i', ï: 'i', ç: 'c', ñ: 'n' };
   const out = String(s ?? '')
     .toLowerCase()
     .normalize('NFC')
+    .replace(/[éèêëáàâäóòôöúùüíìïçñ]/g, (c) => ACCENT[c])
     .replace(/[^a-z0-9æøå_]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .replace(/-+/g, '-');

@@ -9,9 +9,9 @@
  */
 import './style.css';
 import demoPlanUrl from '../../plantegning.png?url';
-import { createDoc, createLevel, applyDetection, history, rescaleLevel, ROOM_KINDS, DEFAULT_SETTINGS, wallLength, splitWall, checkLevel } from './model.js';
+import { createDoc, createLevel, applyDetection, history, rescaleLevel, ROOM_KINDS, DEFAULT_SETTINGS, wallLength, splitWall, checkLevel, stairGeometry } from './model.js';
 import { Editor, TOOL_HINT } from './editor.js';
-import { exportHouse, summary, ownerOnly, baseSpec, northFrame, labelRooms } from './export.js';
+import { exportHouse, summary, ownerOnly, baseSpec, alignLevel } from './export.js';
 import { luma } from './image.js';
 import { traceLine } from './scale.js';
 import { detectPlan } from './detect.js';
@@ -50,6 +50,7 @@ const ICONS = {
   window: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="9" width="18" height="6"/><path d="M3 12h18"/></svg>',
   opening: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12h5M17 12h5"/><path d="M7 9v6M17 9v6" /><path d="M9 12h6" stroke-dasharray="2 2"/></svg>',
   room: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M8 12h8M12 8v8"/></svg>',
+  stair: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="3" width="12" height="18"/><path d="M6 7h12M6 11h12M6 15h12M12 5v14M9.5 16.5L12 19l2.5-2.5"/></svg>',
   scale: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17L17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></svg>',
   pan: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg>',
   fit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
@@ -61,6 +62,7 @@ const TOOLS = [
   ['window', 'Vindu', 'F'],
   ['opening', 'Åpning uten dør', 'O'],
   ['room', 'Navngi rom', 'R'],
+  ['stair', 'Trapp ned til etasjen under', 'T'],
   ['scale', 'Skala', 'S'],
   ['pan', 'Flytt visningen', 'H'],
 ];
@@ -560,6 +562,15 @@ class App {
   _updateGhost() {
     const L = this.level;
     const main = this.doc?.levels[0];
+    this.editor.ghostStairs = null;
+    if (L) {
+      // the stairs that come down here from the level above
+      const above = this.doc.levels.filter((l) => (l.floorY ?? 0) > (L.floorY ?? 0) + 0.5).sort((a, b) => a.floorY - b.floorY)[0];
+      if (above?.stairs?.length) {
+        const d = sub(above.offset || [0, 0], L.offset || [0, 0]);
+        this.editor.ghostStairs = above.stairs.map((st) => ({ ...st, rect: st.rect.map((p) => add(p, d)) }));
+      }
+    }
     if (!L || !main || L === main || !main.walls.length) {
       this.editor.ghost = null;
       return;
@@ -720,6 +731,30 @@ class App {
       box.append(h('div', { class: 'pb-row' }, h('button', { class: 'pb-btn is-small is-danger', onclick: () => this.editor.deleteSelection() }, 'Slett')));
       return box;
     }
+    if (sel.kind === 'stair') {
+      const st = (L.stairs || []).find((x) => x.id === sel.id);
+      if (!st) return null;
+      const g = stairGeometry(st);
+      const below = this.doc.levels.filter((l) => (l.floorY ?? 0) < (L.floorY ?? 0) - 0.5).sort((a, b) => b.floorY - a.floorY)[0];
+      const rise = below ? (L.floorY ?? 0) - below.floorY : null;
+      const risers = rise ? Math.max(2, Math.round(rise / 0.18)) : null;
+      const going = risers ? g.length / (risers - 1) : null;
+      const set = (fn, label) => {
+        this.snapshot();
+        fn();
+        this.changed(label);
+      };
+      box.append(h('h3', {}, 'Trapp'),
+        h('p', {}, `${fmt(g.width)} × ${fmt(g.length)} m`),
+        below
+          ? h('p', { class: 'pb-note' }, `Ned til ${below.name}: ${risers} opptrinn à ${fmt(rise / risers, 3)} m, inntrinn ${fmt(going, 3)} m${going < 0.22 ? ' – for bratt for en rett trapp (minst 0,22): gjør hullet lengre' : ''}.`)
+          : h('p', { class: 'pb-note' }, 'Det er ingen etasje under denne. Legg til en etasje (+ Etasje) med lavere gulvhøyde.'),
+        h('div', { class: 'pb-row' },
+          h('button', { class: 'pb-btn is-small', onclick: () => set(() => (st.down = -st.down), 'Snudde trappa') }, 'Snu retningen'),
+          h('button', { class: 'pb-btn is-small', title: 'Løpet på tvers: for en trapp der løpet er kortere enn bredden', onclick: () => set(() => (st.axis = st.axis === 'x' ? 'y' : 'x'), 'Dreide trappa') }, 'Drei 90°'),
+          h('button', { class: 'pb-btn is-small is-danger', onclick: () => this.editor.deleteSelection() }, 'Slett trappa')));
+      return box;
+    }
     if (sel.kind === 'room') {
       const r = this.editor.rooms?.rooms[sel.index];
       if (!r) return null;
@@ -785,8 +820,9 @@ class App {
         set(() => (L.offset = [L.offset?.[0] ?? 0, m]), 'Forskyvning');
         this._updateGhost();
       }), h('p', { class: 'pb-note' }, 'Den blå stiplede omrisset er hovedetasjen. Forskyv planen til veggene som står over hverandre, ligger likt.'),
-      h('div', { class: 'pb-row' }, h('button', { class: 'pb-btn is-small', onclick: () => this._alignLevel(L) }, 'Juster hjørnet mot hovedetasjen'),
-        h('button', { class: 'pb-btn is-small is-danger', onclick: () => this._deleteLevel(L) }, 'Slett etasjen')));
+      h('div', { class: 'pb-field' }, h('label', {}, 'Juster ytterhjørnet mot hovedetasjen'),
+        h('span', { class: 'pb-row', style: 'margin:0' }, [['ne', 'NØ'], ['nw', 'NV'], ['se', 'SØ'], ['sw', 'SV']].map(([c, t]) => h('button', { class: 'pb-btn is-small', title: `Legg ${t}-hjørnet av ytterveggene oppå hovedetasjens`, onclick: () => this._alignLevel(L, c) }, t)))),
+      h('div', { class: 'pb-row' }, h('button', { class: 'pb-btn is-small is-danger', onclick: () => this._deleteLevel(L) }, 'Slett etasjen')));
     }
     return box;
   }
@@ -904,24 +940,14 @@ class App {
     this._afterLevelChange();
     this._saveSoon();
   }
-  _alignLevel(L) {
+  _alignLevel(L, corner = 'ne') {
     const main = this.doc.levels[0];
-    const nf = northFrame(this.doc.settings.north);
-    const mainRooms = labelRooms0(main, this.doc.settings);
-    const thisRooms = labelRooms0(L, this.doc.settings);
-    if (!mainRooms.length || !thisRooms.length) {
-      this.toast('Begge etasjene må ha rom før de kan justeres mot hverandre.');
+    if (!main.walls.length || !L.walls.length) {
+      this.toast('Begge etasjene må ha vegger før de kan justeres mot hverandre.');
       return;
     }
-    const minOf = (rooms, off) => {
-      const pts = rooms.flatMap((r) => r.polygon.map((p) => nf.rot(add(p, off))));
-      return [Math.min(...pts.map((p) => p[0])), Math.min(...pts.map((p) => p[1]))];
-    };
-    const gm = minOf(mainRooms, main.offset || [0, 0]);
-    const gt = minOf(thisRooms, L.offset || [0, 0]);
-    const d = nf.inv(sub(gm, gt));
     this.snapshot();
-    L.offset = [round((L.offset?.[0] ?? 0) + d[0], 3), round((L.offset?.[1] ?? 0) + d[1], 3)];
+    alignLevel(this.doc, L, main, corner);
     this._updateGhost();
     this.changed('Justerte etasjen');
   }
@@ -1088,15 +1114,6 @@ class App {
     if (this.viewer?.mode === 'walk') this.viewer.setMode('orbit');
     this.view3d.hidden = true;
     this._stepState();
-  }
-}
-
-/** The rooms of a level (polygons in its plan frame, without offset). */
-function labelRooms0(level, settings) {
-  try {
-    return labelRooms(level, settings).rooms.map((r) => r.region);
-  } catch {
-    return [];
   }
 }
 

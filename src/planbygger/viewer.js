@@ -26,6 +26,7 @@ import { Emitter } from '../core/Events.js';
 import { PlayerController } from '../player/PlayerController.js';
 import { setMaxAnisotropy } from '../world/proctex.js';
 import { baseSpec, mergeOnto } from './export.js';
+import { footprint } from './regions.js';
 
 const KINDS = ['white-oak', 'oak', 'painted', 'black-metal', 'glass-clear', 'steel', 'plastic'];
 
@@ -51,6 +52,28 @@ function houseRoots(layout) {
     rooms[r.id] = { id: r.id, name: r.name, levelId: r.levelId, kind: r.kind, hud: !!r.hud, group, surfaces, contents };
   }
   return { levels, rooms };
+}
+
+/**
+ * stairs.js (chains) takes the stair's outer side as the LONGER way round its footprint between the top and the foot –
+ * right for the half-turn stair along its shaft walls, the wrong side for a rectangular straight stair: every tread cut
+ * fails and the stair gets no treads and no collision. Workaround without touching stairs.js: buildStairs gets the
+ * straight stairs with a two-point footprint, one long side (its outer chain is then that side). The house data and
+ * the validator keep the real hole. Request to the house work: chains() should take the side opposite the inner line
+ * for a straight stair.
+ */
+function straightStairFix(layout) {
+  const H = layout.house;
+  const fixed = H.stairs.map((st) => {
+    if (st.type !== 'straight' || !st.top?.edge || !st.foot?.edge) return st;
+    const a = st.top.edge[0];
+    const d = st.top.down;
+    const L = Math.abs((st.foot.edge[0][0] - a[0]) * d[0] + (st.foot.edge[0][1] - a[1]) * d[1]);
+    const tip = [a[0] + d[0] * L, a[1] + d[1] * L];
+    const b = st.foot.edge.reduce((best, p) => (Math.hypot(p[0] - tip[0], p[1] - tip[1]) < Math.hypot(best[0] - tip[0], best[1] - tip[1]) ? p : best));
+    return { ...st, footprint: [[a[0], a[1]], [b[0], b[1]]] };
+  });
+  return { ...layout, house: { ...H, stairs: fixed } };
 }
 
 /** A minimal HUD for the interaction prompt («E Åpne døra»). */
@@ -155,7 +178,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     const roots = houseRoots(layout);
     const ctx = { scene, camera, renderer, collision, interaction, events, settings, quality, roots, audio: null, lighting: null };
     const parts = [buildRooms(ctx, layout, null)];
-    if (layout.house.stairs.length) parts.push(buildStairs(ctx, layout));
+    if (layout.house.stairs.length) parts.push(buildStairs(ctx, straightStairFix(layout)));
     scene.add(...Object.values(roots.levels));
     for (const p of parts) if (p.group && !p.group.parent) scene.add(p.group);
     for (const p of parts) {
@@ -171,15 +194,32 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     const cz = (b.minZ + b.maxZ) / 2;
     const size = Math.max(b.maxX - b.minX, b.maxZ - b.minZ, 6);
     const mainY = layout.house.levelsById.hoved?.floorY ?? 0;
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(size * 8, size * 8), new THREE.MeshStandardMaterial({ color: '#7f8f66', roughness: 0.95 }));
+    // the ground at the main floor's slab underside, with a hole over the basement (it must not see the ground): the
+    // exact outline of the levels below (their rooms + wall slabs, regions.js footprint). The ground is a mesh with its
+    // normal up, also the walkable surface outside (Octree, one-sided).
+    const lowerIds = new Set(layout.house.levels.filter((l) => l.floorY < mainY - 0.5).map((l) => l.id));
+    const polys = [];
+    for (const r of layout.house.rooms) if (lowerIds.has(r.levelId) && !r.hud && r.polygon.length >= 3) polys.push(r.polygon.map((p) => [p.x, p.y]));
+    for (const w of layout.house.walls) {
+      if (!lowerIds.has(w.levelId) || !(w.thickness > 0)) continue;
+      const o = (p, k) => [p.x - w.normal.x * k, p.y - w.normal.y * k];
+      polys.push([o(w.start, 0), o(w.end, 0), o(w.end, w.thickness), o(w.start, w.thickness)]);
+    }
+    const hole = polys.length ? footprint(polys) : [];
+    const R = size * 4;
+    // the shape lies in (x, −z): rotated −90° about x it lands in (x, z) with its normal up
+    const V = (x, z) => new THREE.Vector2(x, -z);
+    const shape = new THREE.Shape([V(cx - R, cz - R), V(cx + R, cz - R), V(cx + R, cz + R), V(cx - R, cz + R)]);
+    if (hole.length >= 3) shape.holes.push(new THREE.Path(hole.map((p) => V(p[0], p[1]))));
+    const ground = new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshStandardMaterial({ color: '#7f8f66', roughness: 0.95 }));
     ground.rotation.x = -Math.PI / 2;
-    ground.position.set(cx, mainY - 0.31, cz);
+    ground.position.y = mainY - 0.31;
     ground.receiveShadow = true;
     ground.name = 'ground';
     scene.add(ground);
+    ground.updateMatrixWorld(true);
     extra.push(ground);
-    // the walkable ground outside (a thin box just under the main floor's slab top)
-    collision.addStaticBox(new THREE.Box3(new THREE.Vector3(cx - size * 2, mainY - 0.6, cz - size * 2), new THREE.Vector3(cx + size * 2, mainY - 0.31, cz + size * 2)));
+    collision.addStatic(ground);
     const hemi = new THREE.HemisphereLight('#e8f0ff', '#8a7f6a', 1.1);
     scene.add(hemi);
     extra.push(hemi);
@@ -254,6 +294,8 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     if (!state) return;
     const walk = m === 'walk';
     for (const mesh of state.parts.flatMap((p) => p.pickables?.ceilings || [])) mesh.visible = walk;
+    // the dark deck over basement rooms outside the main floor (rooms.js «cover:<room>»): off in the dollhouse view
+    for (const g of Object.values(state.roots.levels)) g.traverse((o) => o.isMesh && o.name.startsWith('cover:') && (o.visible = walk));
     if (walk) {
       orbit?.dispose();
       orbit = null;

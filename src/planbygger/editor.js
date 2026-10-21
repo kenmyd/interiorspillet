@@ -16,13 +16,15 @@
  *   Vegg (W)     click – click – click …: a chain of walls (Esc / double click / right click ends it), snapping as above
  *   Dør (D), Vindu (F), Åpning (O)   click on a wall
  *   Rom (R)      click in a room: name, type, ceiling height
+ *   Trapp (T)    drag a rectangle from the top of a stair toward its foot (the hole in this floor; the stair goes down
+ *                to the level under it); the corners snap to the room's wall faces
  *   Skala (S)    two clicks with a known distance between them, or one click on a dimension line (it snaps to its ends)
  *   Flytt (H / space / middle or right mouse button)   pan; the wheel zooms
  */
 import { sub, add, mul, dot, dist, unit, perp, projectToSegment, round } from './geom.js';
 import { wallBand, endExtensions } from './regions.js';
 import { labelRooms } from './export.js';
-import { wallLength, wallDir, wallPoint, openingsOf, moveWall, moveWallEnd, addWall, deleteWall, addOpening, deleteOpening } from './model.js';
+import { wallLength, wallDir, wallPoint, openingsOf, moveWall, moveWallEnd, addWall, deleteWall, addOpening, deleteOpening, addStair, deleteStair, stairGeometry } from './model.js';
 
 const KIND_FILL = {
   living: 'rgba(255, 196, 96, 0.22)',
@@ -154,6 +156,7 @@ export class Editor {
     if (s.kind === 'wall') return this.level.walls.find((w) => w.id === s.id) ?? null;
     if (s.kind === 'opening') return this.level.openings.find((o) => o.id === s.id) ?? null;
     if (s.kind === 'room') return this.rooms?.rooms[s.index] ?? null;
+    if (s.kind === 'stair') return (this.level.stairs || []).find((x) => x.id === s.id) ?? null;
     return null;
   }
 
@@ -189,9 +192,29 @@ export class Editor {
       if (pr.d <= tol && (!best || pr.d < best.d)) best = { kind: 'wall', id: w.id, d: pr.d, s: pr.t * wallLength(w) };
     }
     if (best) return best;
+    for (const st of L.stairs || []) {
+      const [[x0, y0], [x1, y1]] = st.rect;
+      if (p[0] >= x0 && p[0] <= x1 && p[1] >= y0 && p[1] <= y1) return { kind: 'stair', id: st.id };
+    }
     const idx = this.rooms?.found.at(p[0], p[1]) ?? -1;
     if (idx >= 0) return { kind: 'room', index: idx };
     return null;
+  }
+
+  /** Snaps a point onto the nearest wall face of a room (the stair tool's corners), within SNAP_PX. */
+  snapFace(p) {
+    const tol = SNAP_PX / this.view.k;
+    let best = null;
+    for (const r of this.rooms?.rooms ?? []) {
+      const P = r.region.polygon;
+      for (let i = 0; i < P.length; i++) {
+        const v = P[i];
+        if (dist(p, v) <= tol && (!best || dist(p, v) * 0.5 < best.d)) best = { d: dist(p, v) * 0.5, p: [...v] };
+        const pr = projectToSegment(p, v, P[(i + 1) % P.length]);
+        if (pr.d <= tol && (!best || pr.d < best.d)) best = { d: pr.d, p: pr.point };
+      }
+    }
+    return best ? best.p : [round(p[0], 2), round(p[1], 2)];
   }
 
   // ---------------------------------------------------------------------------------------------------------------
@@ -372,6 +395,12 @@ export class Editor {
       this.select({ kind: 'opening', id: o.id });
       return;
     }
+    if (t === 'stair') {
+      const a = this.snapFace(p);
+      this.drag = { kind: 'newstair', a, b: a, started: true };
+      this.render();
+      return;
+    }
     if (t === 'room') {
       const idx = this.rooms?.found.at(p[0], p[1]) ?? -1;
       if (idx >= 0) {
@@ -409,11 +438,19 @@ export class Editor {
     if (h.kind === 'room') {
       this.select({ kind: 'room', index: h.index });
     }
+    if (h.kind === 'stair') {
+      this.select({ kind: 'stair', id: h.id });
+    }
   }
 
   _dragMove(p, s, e) {
     const d = this.drag;
     const L = this.level;
+    if (d.kind === 'newstair') {
+      d.b = e.altKey ? [round(p[0], 2), round(p[1], 2)] : this.snapFace(p);
+      this.render();
+      return;
+    }
     if (!d.started) {
       if (dist(p, d.p0) * this.view.k < 3) return;
       d.started = true;
@@ -469,6 +506,16 @@ export class Editor {
     const d = this.drag;
     this.drag = null;
     this.snapMark = null;
+    if (d.kind === 'newstair') {
+      if (Math.abs(d.b[0] - d.a[0]) >= 0.4 && Math.abs(d.b[1] - d.a[1]) >= 0.4) {
+        this.app.snapshot();
+        const st = addStair(this.level, d.a, d.b);
+        this.app.changed('Ny trapp');
+        this.select({ kind: 'stair', id: st.id });
+      } else this.app.toast?.('Dra et rektangel fra toppen av trappa mot foten (minst 0,4 × 0,4 m).');
+      this.render();
+      return;
+    }
     if (d.started) this.app.changed(d.kind === 'wall' ? 'Flyttet vegg' : d.kind === 'end' ? 'Flyttet veggende' : 'Flyttet åpning');
     this.render();
   }
@@ -606,6 +653,7 @@ export class Editor {
     this.app.snapshot();
     if (s.kind === 'wall') deleteWall(L, s.id);
     else if (s.kind === 'opening') deleteOpening(L, s.id);
+    else if (s.kind === 'stair') deleteStair(L, s.id);
     else if (s.kind === 'room') {
       const r = this.rooms?.rooms[s.index];
       if (r?.label) L.rooms = L.rooms.filter((x) => x.id !== r.label.id);
@@ -690,6 +738,17 @@ export class Editor {
     }
     // ---- openings
     for (const o of L.openings) this._drawOpening(g, o);
+    for (const st of L.stairs || []) this._drawStair(g, st, this.sel?.kind === 'stair' && this.sel.id === st.id);
+    for (const st of this.ghostStairs || []) this._drawStair(g, st, false, true);
+    if (this.drag?.kind === 'newstair') {
+      const a = this.drag.a;
+      const b = this.drag.b;
+      if (Math.abs(b[0] - a[0]) > 0.05 && Math.abs(b[1] - a[1]) > 0.05) {
+        const axis = Math.abs(b[0] - a[0]) >= Math.abs(b[1] - a[1]) ? 'x' : 'y';
+        const down = (axis === 'x' ? b[0] - a[0] : b[1] - a[1]) >= 0 ? 1 : -1;
+        this._drawStair(g, { rect: [[Math.min(a[0], b[0]), Math.min(a[1], b[1])], [Math.max(a[0], b[0]), Math.max(a[1], b[1])]], axis, down }, true);
+      }
+    }
     if (this.preview) this._drawOpening(g, { id: '_preview', wall: this.preview.wall.id, type: this.preview.type, at: this.preview.at, width: this.preview.type === 'door' ? 0.9 : this.preview.type === 'window' ? 1.2 : 1.0, hinge: 'start', side: this.preview.side }, true);
     // ---- room names
     if (this.showRooms && this.rooms) {
@@ -853,6 +912,51 @@ export class Editor {
     void k;
   }
 
+  /** A stair: the hole, a line per tread, an arrow down; dashed for the stair of the level above (ghost). */
+  _drawStair(g, st, sel = false, ghost = false) {
+    const geo = stairGeometry(st);
+    const P = geo.corners.map((p) => this.toScreen(p));
+    g.save();
+    if (ghost) g.setLineDash([6, 4]);
+    g.beginPath();
+    P.forEach((p, i) => (i ? g.lineTo(...p) : g.moveTo(...p)));
+    g.closePath();
+    g.fillStyle = ghost ? 'rgba(40, 90, 200, 0.08)' : sel ? 'rgba(243, 156, 18, 0.3)' : 'rgba(120, 110, 150, 0.22)';
+    g.fill();
+    g.lineWidth = sel ? 2.5 : 1.5;
+    g.strokeStyle = ghost ? 'rgba(40, 90, 200, 0.7)' : sel ? ACCENT : '#4b4560';
+    g.stroke();
+    // treads across the run
+    const n = Math.max(2, Math.round(geo.length / 0.25));
+    g.lineWidth = 1;
+    g.beginPath();
+    for (let i = 1; i < n; i++) {
+      const t = i / n;
+      const a = [geo.top[0][0] + (geo.foot[0][0] - geo.top[0][0]) * t, geo.top[0][1] + (geo.foot[0][1] - geo.top[0][1]) * t];
+      const b = [geo.top[1][0] + (geo.foot[1][0] - geo.top[1][0]) * t, geo.top[1][1] + (geo.foot[1][1] - geo.top[1][1]) * t];
+      g.moveTo(...this.toScreen(a));
+      g.lineTo(...this.toScreen(b));
+    }
+    g.stroke();
+    // the arrow: from the top edge's middle toward the foot
+    const m0 = this.toScreen(mul(add(geo.top[0], geo.top[1]), 0.5));
+    const m1 = this.toScreen(mul(add(geo.foot[0], geo.foot[1]), 0.5));
+    const u = unit(sub(m1, m0));
+    const tip = [m1[0] - u[0] * 6, m1[1] - u[1] * 6];
+    g.setLineDash([]);
+    g.lineWidth = 2;
+    g.beginPath();
+    g.moveTo(m0[0] + u[0] * 6, m0[1] + u[1] * 6);
+    g.lineTo(...tip);
+    g.moveTo(...tip);
+    g.lineTo(tip[0] - u[0] * 9 - u[1] * 5, tip[1] - u[1] * 9 + u[0] * 5);
+    g.moveTo(...tip);
+    g.lineTo(tip[0] - u[0] * 9 + u[1] * 5, tip[1] - u[1] * 9 - u[0] * 5);
+    g.stroke();
+    g.restore();
+    if (sel) this._dimLabel(g, geo.top[0], geo.top[1], `${geo.width.toFixed(2).replace('.', ',')} × ${geo.length.toFixed(2).replace('.', ',')} m`, -16 / this.view.k);
+  }
+
   _dimLabel(g, a, b, text, off) {
     const u = unit(sub(b, a));
     const n = perp(u);
@@ -914,6 +1018,7 @@ const TOOL_HINT = {
   opening: 'Åpning: klikk på veggen der det skal være en åpning uten dør.',
   room: 'Rom: klikk i et rom for å gi det navn, type og takhøyde.',
   scale: 'Skala: klikk på en målelinje i planen (den festes til endene), eller klikk to punkter med kjent avstand.',
+  stair: 'Trapp: dra et rektangel over trappehullet, fra toppen av trappa mot foten. Trappa går ned til etasjen under.',
   pan: 'Flytt: dra for å flytte planen. Hjulet zoomer.',
 };
 export { TOOL_HINT, endExtensions };

@@ -25,9 +25,9 @@
  * level's rooms start at x = 0, z = 0.
  */
 import idsRegistry from '../../research/house/00-ids.json';
-import { findRooms } from './regions.js';
-import { sub, add, mul, dot, cross, dist, unit, perp, signedArea, centroid, slug, round, clipPolygon } from './geom.js';
-import { DEFAULT_SETTINGS, wallLength, wallDir } from './model.js';
+import { findRooms, wallBand } from './regions.js';
+import { sub, add, mul, dot, cross, dist, unit, perp, signedArea, centroid, slug, round, clipPolygon, pointInPolygon } from './geom.js';
+import { DEFAULT_SETTINGS, wallLength, wallDir, stairGeometry } from './model.js';
 
 const RESERVED_IDS = new Set(['stue-kjokken', 'trapp', 'ute', 'forplass']);
 const MAIN = 'hoved';
@@ -83,6 +83,33 @@ export function houseFrame(doc, found) {
   const toPlan = (g, levelId) => sub(nf.inv([g[0] + origin[0], g[1] + origin[1]]), offsetOf(levelId));
   const vecToGame = (v) => nf.rot(v);
   return { toGame, toPlan, vecToGame, origin, north: doc.settings?.north ?? 0 };
+}
+
+/**
+ * The outer corner of a level's walls in game coordinates (the wall bands with their end extensions): 'ne' = the
+ * smallest x (north) and z (east), 'nw' smallest x and largest z, 'se', 'sw'.
+ */
+export function outerCorner(level, northDeg = 0, corner = 'ne') {
+  const nf = northFrame(northDeg);
+  const pts = level.walls.flatMap((w) => wallBand(w, level.walls)).map((p) => nf.rot(add(p, level.offset || [0, 0])));
+  if (!pts.length) return null;
+  const xs = pts.map((p) => p[0]);
+  const zs = pts.map((p) => p[1]);
+  return [corner[0] === 'n' ? Math.min(...xs) : Math.max(...xs), corner[1] === 'e' ? Math.min(...zs) : Math.max(...zs)];
+}
+
+/**
+ * Moves a level (its offset) so that its outer corner lies on the reference level's (avstemming V1: the basement's
+ * facades are flush with the ground floor's). Returns the shift in plan metres, or null.
+ */
+export function alignLevel(doc, level, ref, corner = 'ne') {
+  const north = doc.settings?.north ?? 0;
+  const a = outerCorner(ref, north, corner);
+  const b = outerCorner(level, north, corner);
+  if (!a || !b) return null;
+  const d = northFrame(north).inv(sub(a, b));
+  level.offset = [round((level.offset?.[0] ?? 0) + d[0], 4), round((level.offset?.[1] ?? 0) + d[1], 4)];
+  return d;
 }
 
 /**
@@ -195,7 +222,8 @@ export function exportHouse(doc, opts = {}) {
   };
   const floorOpenings = [];
   const stairs = [];
-  const counts = { rooms: 0, walls: 0, backOf: 0, exterior: 0, doors: 0, windows: 0, openings: 0 };
+  const counts = { rooms: 0, walls: 0, backOf: 0, exterior: 0, doors: 0, windows: 0, openings: 0, stairs: 0 };
+  const levelRooms = []; // per level the rooms in game coordinates (for the stairs)
 
   doc.levels.forEach((level, li) => {
     const { rooms } = perLevel[li];
@@ -224,6 +252,7 @@ export function exportHouse(doc, opts = {}) {
       }
       return { ...r, polygon, edges, ceiling: r.label?.ceiling ?? ceilingDefault };
     });
+    levelRooms[li] = R2;
     const wallsById = new Map(level.walls.map((w) => [w.id, w]));
 
     // every room edge as a line with its plan wall reference
@@ -572,6 +601,7 @@ export function exportHouse(doc, opts = {}) {
       counts.rooms++;
     }
   });
+  exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, warnings, counts, RP, R });
   if (floorOpenings.length) house.floorOpenings = floorOpenings;
   if (stairs.length) house.stairs = stairs;
 
@@ -582,6 +612,109 @@ export function exportHouse(doc, opts = {}) {
     report: { warnings, counts },
     frame,
   };
+}
+
+/**
+ * The straight stairs (model.js addStair) → floorOpenings + stairs (notes/hele-huset-design.md §1.6): the hole in the
+ * upper floor (its sides snapped onto the faces of the room it stands in), the stair from the level under it, risers
+ * from the floor heights (≈ 0,18), the top edge at the start of the rectangle and the lowest nosing at its far end,
+ * guards on the hole's free sides (not along a wall) on the upper floor.
+ */
+function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, warnings, counts, RP, R }) {
+  const levels = house.levels;
+  const inside = (p, poly) => pointInPolygon(p, poly);
+  doc.levels.forEach((level, li) => {
+    for (const st of level.stairs || []) {
+      const upper = levels[li];
+      const below = levels.filter((l) => l.floorY < upper.floorY - 0.5).sort((a, b) => b.floorY - a.floorY)[0];
+      if (!below) {
+        warnings.push(`${level.name}: trappa går ned, men det er ingen etasje under – hoppet over`);
+        continue;
+      }
+      const lowerIdx = levels.indexOf(below);
+      const g = stairGeometry(st);
+      const toG = (p) => frame.toGame(p, level.id);
+      let poly = g.corners.map(toG);
+      if (signedArea(poly) < 0) poly = poly.reverse();
+      const centre = poly.reduce((a, p) => [a[0] + p[0] / 4, a[1] + p[1] / 4], [0, 0]);
+      const room = levelRooms[li].find((r) => inside(centre, r.polygon));
+      if (!room) {
+        warnings.push(`${level.name}: trappa står ikke i noe rom – hoppet over`);
+        continue;
+      }
+      // the hole inside its room: clipped to the room (a side dragged a little into the wall lands on the face)
+      const clipped = clipPolygon(room.polygon, poly);
+      const xs = clipped.map((p) => p[0]);
+      const zs = clipped.map((p) => p[1]);
+      const box = [Math.min(...xs), Math.min(...zs), Math.max(...xs), Math.max(...zs)];
+      if (clipped.length < 3 || Math.abs(signedArea(clipped)) < 0.95 * (box[2] - box[0]) * (box[3] - box[1])) {
+        warnings.push(`${level.name}: trappehullet går over en vegg – tegn det inne i ett rom`);
+        continue;
+      }
+      const hole = [[box[0], box[1]], [box[2], box[1]], [box[2], box[3]], [box[0], box[3]]].map(RP);
+      // the way down in game coordinates, and the edges on the (clipped) hole
+      const dG = unit(frame.vecToGame(g.down));
+      const along = (p) => dot(p, dG);
+      const lo = Math.min(...hole.map(along));
+      const hi = Math.max(...hole.map(along));
+      const topPts = hole.filter((p) => Math.abs(along(p) - lo) < 1e-6);
+      const footPts = hole.filter((p) => Math.abs(along(p) - hi) < 1e-6);
+      if (topPts.length !== 2 || footPts.length !== 2) {
+        warnings.push(`${level.name}: trappa har ingen tydelig retning – hoppet over`);
+        continue;
+      }
+      const lowerRooms = levelRooms[lowerIdx] || [];
+      const footMid = mul(add(footPts[0], footPts[1]), 0.5);
+      const lowerRoom = lowerRooms.find((r) => inside(add(footMid, mul(dG, -0.3)), r.polygon)) ?? lowerRooms.find((r) => inside(mul(add(add(topPts[0], topPts[1]), mul(add(footPts[0], footPts[1]), 1)), 0.25), r.polygon));
+      if (!lowerRoom) warnings.push(`${level.name}: fant ikke rommet under trappa i ${below.name} – juster etasjene mot hverandre`);
+      const rise = upper.floorY - below.floorY;
+      const risers = Math.max(2, Math.round(rise / 0.18));
+      const id = `trapp-${++counts.stairs}`;
+      const holeId = `trappehull-${counts.stairs}`;
+      // guards: the hole's sides that are not on a wall face of the room, except the top edge
+      const onFace = (a, b) => {
+        const P = room.polygon;
+        for (let i = 0; i < P.length; i++) {
+          const c = P[i];
+          const d = P[(i + 1) % P.length];
+          const L = dist(c, d);
+          if (L < 1e-6) continue;
+          const u = [(d[0] - c[0]) / L, (d[1] - c[1]) / L];
+          const off = (p) => Math.abs((p[0] - c[0]) * u[1] - (p[1] - c[1]) * u[0]);
+          if (off(a) < 0.03 && off(b) < 0.03) return true;
+        }
+        return false;
+      };
+      const guards = [];
+      for (let i = 0; i < 4; i++) {
+        const a = hole[i];
+        const b = hole[(i + 1) % 4];
+        const isTop = Math.abs(along(a) - lo) < 1e-6 && Math.abs(along(b) - lo) < 1e-6;
+        if (isTop || onFace(a, b)) continue;
+        guards.push({ id: `rekk-${counts.stairs}-${guards.length + 1}`, level: upper.id, line: [a, b] });
+      }
+      floorOpenings.push({ id: holeId, levelId: upper.id, roomId: room.id, stairId: id, polygon: hole, edgeBand: { color: '#f2efe8', depth: 0.3 }, estimated: ['polygon'] });
+      stairs.push({
+        id,
+        name: 'Trapp',
+        type: 'straight',
+        fromLevel: below.id,
+        toLevel: upper.id,
+        openingId: holeId,
+        roomIds: [lowerRoom?.id ?? room.id, room.id],
+        risers,
+        top: { edge: topPts.map(RP), down: RP(dG) },
+        foot: { edge: footPts.map(RP), down: RP(dG) },
+        tread: { thickness: 0.04, nosing: 0.03, material: 'oak', color: '#bfab9b' },
+        openRisers: true,
+        stringers: { color: '#1d1e21', thickness: 0.05, depth: 0.28 },
+        guards,
+        guardStyle: { height: 1.0, stairHeight: 0.9, post: 0.065, baluster: 0.022, spacing: 0.13, topRail: [0.07, 0.05], color: '#1d1e21' },
+        estimated: ['*'],
+        source: `planbyggeren: ${R(dist(topPts[0], topPts[1]))} × ${R(hi - lo)} m, ${risers} opptrinn à ${R(rise / risers)}`,
+      });
+    }
+  });
 }
 
 /** An 00-ids.json for a generated house: its levels, rooms and light groups, the game's schema. */

@@ -13,6 +13,8 @@
  *   6. the scale help (scale.js)
  *   7. the 3D build in Node: the game's buildLayout + buildRooms on a generated house
  *   8. the corrections of tools/planbygger-corrections.mjs keep the house valid
+ *   9. two levels: a straight stair (export, validator, the game's stair builder), and the owner's whole house with the
+ *      basement aligned by its outer corner (avstemming V1)
  */
 import { ROOT, imp, readJson, check, section, done, planPipeline, validateGenerated, KJELLER_PLAN } from './planbygger-lib.mjs';
 import path from 'node:path';
@@ -297,6 +299,60 @@ section('7. 3D-bygget i Node (spillets buildLayout + buildRooms)');
     check('buildRooms: kollisjon for veggene', built.colliders.length > 0);
     built.dispose();
   }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+section('9. Etasjer og trapp');
+{
+  const { buildLayout } = await imp('src/home/layout.js');
+  const St = await imp('src/home/stairs.js');
+  const doc = M.createDoc('Testhus');
+  doc.settings.north = 270;
+  const box = (lv) => {
+    lv.walls = [
+      { id: 'n', a: [0, 0], b: [8, 0], t: 0.25 },
+      { id: 'e', a: [8, 0], b: [8, 6], t: 0.25 },
+      { id: 's', a: [8, 6], b: [0, 6], t: 0.25 },
+      { id: 'w', a: [0, 6], b: [0, 0], t: 0.25 },
+      { id: 'm', a: [5.5, 0], b: [5.5, 6], t: 0.1 },
+    ];
+    lv.openings = [{ id: 'd1', wall: 'm', type: 'door', at: 4.5, width: 0.9, hinge: 'start', side: 1 }];
+  };
+  box(M.createLevel(doc, { id: 'hoved', floorY: 0 }));
+  box(M.createLevel(doc, { id: 'kjeller', name: 'Kjeller', floorY: -2.6 }));
+  M.addStair(doc.levels[0], [1.0, 1.5], [4.6, 2.5]);
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  check('trapp: et hull og en trapp i husfila', ex.house.floorOpenings?.length === 1 && ex.house.stairs?.length === 1);
+  const st = ex.house.stairs[0];
+  check('trapp: 14 opptrinn à 0,186 (2,6 m), fra kjelleren til 1. etasje', st.risers === 14 && st.fromLevel === 'kjeller' && st.toLevel === 'hoved', `${st.risers}, ${st.fromLevel} → ${st.toLevel}`);
+  check('trapp: rekkverk på de tre frie sidene', st.guards.length === 3, `${st.guards.length}`);
+  check('trapp: 0 feil i validateHouse', v.errors.length === 0, v.errors.slice(0, 3).join(' | '));
+  const layout = buildLayout(E.mergeOnto(E.baseSpec(), ex.house), undefined, { devWarnings: false });
+  const H = layout.house;
+  const ls = H.stairs[0];
+  check('layout: trappeflaten går fra 0 til −2,6', near(ls.surfaceY(0.9, 1.9) ?? NaN, 0, 0.05) && near(ls.surfaceY(4.45, 1.9) ?? NaN, -2.6, 0.05), `${ls.surfaceY(0.9, 1.9)} … ${ls.surfaceY(4.45, 1.9)}`);
+  // the game's stair builder on a straight stair: with the planbygger's two-point footprint (viewer.js) it has treads
+  const raw = St.stairLayout(ls, H.levels);
+  const a = ls.top.edge[0];
+  const fixed = St.stairLayout({ ...ls, footprint: [a, ls.foot.edge.find((p) => Math.abs(p[1] - a[1]) < 1e-6 || Math.abs(p[0] - a[0]) < 1e-6)] }, H.levels);
+  check('stairs.js: en rett trapp med hullet som fotavtrykk får ingen trinn (feil i chains(), meldt videre)', raw.treads.length === 0, `${raw.treads.length} trinn`);
+  check('stairs.js: med planbyggerens omvei (fotavtrykk = én langside) får trappa 13 trinn og kollisjon', fixed.treads.length === 13 && St.stairColliders(fixed).length > 0, `${fixed.treads.length} trinn`);
+}
+if (KJELLER_PLAN) {
+  // the owner's whole house: the basement under the ground floor, aligned by the NE outer corner
+  const { doc } = await planPipeline(path.join(ROOT, 'plantegning.png'), { pxPerM: 628 / 12.21, north: 270 });
+  const img = readPng(KJELLER_PLAN);
+  const ppm = 633 / 10.5;
+  const kj = M.createLevel(doc, { id: 'kjeller', name: 'Kjeller', floorY: -2.55, image: { name: 'kjeller', width: img.width, height: img.height, pxPerM: ppm } });
+  M.applyDetection(kj, D.detectPlan(img, { pxPerM: ppm }), ppm, doc.settings);
+  E.alignLevel(doc, kj, doc.levels[0], 'ne');
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  check('hele huset: 0 feil i validateHouse', v.errors.length === 0, v.errors.slice(0, 3).join(' | '));
+  const bod1 = ex.house.rooms.find((r) => r.levelId === 'kjeller' && r.polygon.some((p) => p[0] < 0.3 && p[1] < 0.3));
+  const c = bod1 ? [Math.min(...bod1.polygon.map((p) => p[0])), Math.min(...bod1.polygon.map((p) => p[1]))] : null;
+  check('hele huset: ytterhjørnet legger kjelleren 0,13 m inn, som avstemming V1 (± 2 cm)', c && near(c[0], 0.13, 0.02) && near(c[1], 0.13, 0.02), c ? c.map((x) => x.toFixed(3)).join(', ') : 'fant ikke boden');
 }
 
 done();

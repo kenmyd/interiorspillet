@@ -12,7 +12,8 @@
  *       openings: [{ id, wall, type: 'door'|'window'|'opening', at, width, height?, sill?,
  *                    hinge: 'start'|'end', side: 1|-1, leaf?, auto? }]       at = centre, metres from the wall's a
  *       rooms:    [{ id, name, kind, seed: [x, y], ceiling?, floor? }]      labels; the polygons are found (regions.js)
- *       stairs:   [{ id, rect: [[x, y], [x, y]], down: 'n'|'e'|'s'|'w'… }]  (see export.js)
+ *       stairs:   [{ id, rect: [[x0, y0], [x1, y1]], axis: 'x'|'y', down: 1|-1 }]   a straight stair from this level
+ *                 down to the level under it: rect = the hole in this floor, axis / down = the direction it descends
  *     }],
  *   }
  *
@@ -245,6 +246,39 @@ export function addOpening(level, wallId, at, type, settings = DEFAULT_SETTINGS)
 
 export function deleteOpening(level, id) {
   level.openings = level.openings.filter((o) => o.id !== id);
+}
+
+/**
+ * A straight stair down from this level, drawn as a rectangle from its top end toward its foot: the longer side is the
+ * run, the drag direction along it the way down.
+ */
+export function addStair(level, a, b) {
+  const rect = [[round(Math.min(a[0], b[0]), 4), round(Math.min(a[1], b[1]), 4)], [round(Math.max(a[0], b[0]), 4), round(Math.max(a[1], b[1]), 4)]];
+  const dx = rect[1][0] - rect[0][0];
+  const dy = rect[1][1] - rect[0][1];
+  const axis = dx >= dy ? 'x' : 'y';
+  const down = (axis === 'x' ? b[0] - a[0] : b[1] - a[1]) >= 0 ? 1 : -1;
+  const st = { id: newId('t', new Set((level.stairs || []).map((x) => x.id))), rect, axis, down };
+  (level.stairs ||= []).push(st);
+  return st;
+}
+
+/** A stair's plan geometry: the hole, the top and foot edges, the way down, width and length. */
+export function stairGeometry(st) {
+  const [[x0, y0], [x1, y1]] = st.rect;
+  const corners = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+  const down = st.axis === 'x' ? [st.down, 0] : [0, st.down];
+  const start = st.axis === 'x' ? (st.down > 0 ? x0 : x1) : st.down > 0 ? y0 : y1;
+  const end = st.axis === 'x' ? (st.down > 0 ? x1 : x0) : st.down > 0 ? y1 : y0;
+  const top = st.axis === 'x' ? [[start, y0], [start, y1]] : [[x0, start], [x1, start]];
+  const foot = st.axis === 'x' ? [[end, y0], [end, y1]] : [[x0, end], [x1, end]];
+  const length = Math.abs(end - start);
+  const width = st.axis === 'x' ? y1 - y0 : x1 - x0;
+  return { corners, down, top, foot, length, width };
+}
+
+export function deleteStair(level, id) {
+  level.stairs = (level.stairs || []).filter((s) => s.id !== id);
 }
 
 /** Room label: the one whose seed lies in the region, or a new one. */
