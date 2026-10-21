@@ -5,7 +5,7 @@
  * furniture – supersampled 3× for antialiased edges, optionally with noise and a grey paper.
  *
  *   renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0, paper = 240, furniture = true, dims = true,
- *                      seed = 1 }) → { img: { width, height, data }, plan, origin: [px, px] }
+ *                      seed = 1, wallGrey = 8 }) → { img: { width, height, data }, plan, origin: [px, px] }
  *   plan = { walls: [{ a: [x, y], b: [x, y], t }], openings: [{ wall: index, at, width, type, hinge, side }] }  (metres)
  *   samplePlans() → named test plans (a flat, an L-shaped house, a house with a long glass wall)
  */
@@ -17,7 +17,7 @@ const mulberry = (seed) => () => {
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 };
 
-export function renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0, paper = 240, furniture = true, dims = true, seed = 1 } = {}) {
+export function renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0, paper = 240, furniture = true, dims = true, seed = 1, wallGrey = 8 } = {}) {
   const rnd = mulberry(seed);
   const pts = plan.walls.flatMap((w) => [w.a, w.b]);
   const minX = Math.min(...pts.map((p) => p[0])) - margin;
@@ -89,7 +89,7 @@ export function renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0,
     }
   }
   // ---- walls (each end reaches half its thickness past the end point: closed corners)
-  for (const w of plan.walls) rect(w.a, w.b, w.t, 8, w.t / 2);
+  for (const w of plan.walls) rect(w.a, w.b, w.t, wallGrey, w.t / 2);
   // ---- openings
   for (const o of plan.openings) {
     const w = plan.walls[o.wall];

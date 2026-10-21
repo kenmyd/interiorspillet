@@ -365,6 +365,10 @@ export class Editor {
       this._scaleClick(p);
       return;
     }
+    if (t === 'tone') {
+      this.app.sampleTone?.(p);
+      return;
+    }
     if (t === 'wall') {
       const sp = this.snap(p, { from: this.chain, free: e.altKey }).p;
       if (!this.chain) {
@@ -1019,6 +1023,7 @@ const TOOL_HINT = {
   room: 'Rom: klikk i et rom for å gi det navn, type og takhøyde.',
   scale: 'Skala: klikk på en målelinje i planen (den festes til endene), eller klikk to punkter med kjent avstand.',
   stair: 'Trapp: dra et rektangel over trappehullet, fra toppen av trappa mot foten. Trappa går ned til etasjen under.',
+  tone: 'Veggfarge: klikk midt på en vegg i plantegningen.',
   pan: 'Flytt: dra for å flytte planen. Hjulet zoomer.',
 };
 export { TOOL_HINT, endExtensions };

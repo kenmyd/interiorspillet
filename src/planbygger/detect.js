@@ -16,7 +16,8 @@
  * dimension lines, hatching and grey furniture are removed because they are thin, light or isolated.
  *
  * The pipeline (see notes/planbygger.md for the reasoning and the measured results):
- *   1. grey → dark mask (threshold in the valley after the black peak of the histogram, or options.darkThreshold)
+ *   1. grey → dark mask (threshold in the valley after the black peak of the histogram, or options.darkThreshold; or a
+ *      band around a sampled wall tone, options.wallTone = [lo, hi], for plans with grey walls and black text)
  *   2. opening with a small square: strokes thinner than the thinnest wall vanish (text, dimension lines, arcs)
  *   3. long horizontal / vertical runs (longer than the thickest wall) → wall pieces per axis; the rest (short stubs
  *      between windows) is kept when it lies in the band of a wall line
@@ -34,6 +35,8 @@ import { luma, histogram, threshold, open, longRuns, subtract, components, raste
 export const DETECT_DEFAULTS = Object.freeze({
   /** null = automatic (valley after the black peak) */
   darkThreshold: null,
+  /** [lo, hi]: walls are this grey band (sampled by a click on a wall) instead of «darker than darkThreshold» */
+  wallTone: null,
   /** thinnest / thickest wall drawn, metres */
   minWall: 0.06,
   maxWall: 0.5,
@@ -152,7 +155,7 @@ function rectanglesOf(mask, axis, minLen) {
  * positions along it, where the profile is clean (paper on both sides – not at a joint, not under a label).
  */
 function refine(grey, seg, ink, paper, opts) {
-  const { margin = 3, darkT = 60 } = opts;
+  const { margin = 3, darkT = 60, isWall = (v) => v < darkT } = opts;
   if (paper - ink < 40) return;
   const half = seg.t / 2;
   const lo = Math.floor(seg.c - half - margin);
@@ -171,7 +174,7 @@ function refine(grey, seg, ink, paper, opts) {
     // against the darker of the two, so a grey neighbour does not widen the wall
     const left = Math.max(prof[0], prof[1]);
     const right = Math.max(prof[prof.length - 1], prof[prof.length - 2]);
-    if (left < darkT + 40 || right < darkT + 40) continue; // a joint, a label or another wall: not clean
+    if (isWall(left) || isWall(right) || left < darkT + 40 || right < darkT + 40) continue; // a joint, a label or another wall: not clean
     const ref = Math.min(left, right);
     const span = ref - ink;
     if (span < 40) continue;
@@ -198,6 +201,45 @@ function refine(grey, seg, ink, paper, opts) {
     seg.t = t;
     seg.refined = true;
   }
+}
+
+/**
+ * The grey band of the walls when they are not the darkest ink: the peaks of the histogram between 20 and the paper
+ * are tried as bands out to the valleys on both sides (at most ±30), and the one whose mask (after the opening) has the
+ * most pixels in long runs wins.
+ * @returns {[number, number] | null}
+ */
+export function autoWallTone(grey, hist, paper, { r = 1, minRun = 25 } = {}) {
+  const total = grey.data.length;
+  const sm = (i) => {
+    let s = 0;
+    for (let k = -3; k <= 3; k++) s += hist[Math.max(0, Math.min(255, i + k))];
+    return s;
+  };
+  const peaks = [];
+  for (let i = 20; i <= paper - 45; i++) {
+    const v = sm(i);
+    if (v > total * 0.003 && v >= sm(i - 1) && v > sm(i + 1)) peaks.push(i);
+  }
+  let best = null;
+  for (const p of peaks.slice(0, 8)) {
+    // the band: out from the peak to where the histogram falls under 15 % of it (the valleys), at most ±30
+    const top = sm(p);
+    let lo = p;
+    let hi = p;
+    while (lo > Math.max(0, p - 30) && sm(lo - 1) > top * 0.15) lo--;
+    while (hi < Math.min(paper - 20, p + 30) && sm(hi + 1) > top * 0.15) hi++;
+    const band = [Math.max(0, lo - 4), Math.min(paper - 20, hi + 4)];
+    const m = raster(grey.w, grey.h);
+    for (let i = 0; i < total; i++) m.data[i] = grey.data[i] >= band[0] && grey.data[i] <= band[1] ? 1 : 0;
+    const c = open(m, r);
+    const H = longRuns(c, 'h', minRun);
+    const V = longRuns(c, 'v', minRun);
+    let n = 0;
+    for (let i = 0; i < total; i++) n += H.data[i] | V.data[i];
+    if (!best || n > best.n) best = { n, band };
+  }
+  return best && best.n > total * 0.002 ? best.band : null;
 }
 
 /** Bilinear upsampling of an RGBA image by an integer factor. */
@@ -263,11 +305,16 @@ export function detectPlan(img, options = {}) {
   // ---- 1. grey + dark mask
   const grey = luma(img);
   const hist = histogram(grey);
-  const darkT = o.darkThreshold ?? autoDarkThreshold(hist);
   const paper = paperGrey(hist);
+  const tone = Array.isArray(o.wallTone) && o.wallTone.length === 2 ? [Math.max(0, o.wallTone[0]), Math.min(255, o.wallTone[1])] : null;
+  // with a wall tone: «dark» is the band, and the clean-profile tests only need paper lighter than the band
+  const darkT = tone ? Math.min(tone[0], 255) : o.darkThreshold ?? autoDarkThreshold(hist);
+  const isWall = tone ? (v) => v >= tone[0] && v <= tone[1] : (v) => v < darkT;
   let ink = 0;
-  for (let i = 0; i < 60; i++) if (hist[i] > hist[ink]) ink = i;
-  const dark = threshold(grey, darkT);
+  if (tone) ink = Math.round((tone[0] + tone[1]) / 2);
+  else for (let i = 0; i < 60; i++) if (hist[i] > hist[ink]) ink = i;
+  const dark = raster(grey.w, grey.h);
+  for (let i = 0; i < grey.data.length; i++) dark.data[i] = isWall(grey.data[i]) ? 1 : 0;
   timings.mask = now();
 
   // ---- 2. opening: strokes thinner than the thinnest wall vanish
@@ -328,20 +375,23 @@ export function detectPlan(img, options = {}) {
       if (best) pieces.push(best.piece);
     }
   }
-  for (const p of pieces) refine(grey, p, ink, paper, { darkT });
+  for (const p of pieces) refine(grey, p, ink, paper, { darkT: tone ? tone[1] : darkT, isWall });
   timings.pieces = now();
 
   // ---- 5a. collinear fragments → wall lines
   const tolC = Math.max(1.5, 0.02 * ppm);
   const tolT = Math.max(2.5, 0.04 * ppm);
   let segs = mergeCollinear(pieces, tolC, tolT, 1.5);
+  // slivers (an outline corner of a window at high resolution): shorter than ~60 % of their thickness – they would
+  // block the gap analysis between the real pieces
+  segs = segs.filter((sg) => sg.s1 - sg.s0 >= Math.max(3, 0.6 * sg.t));
   // ---- 5b. joints: a free end inside / next to the band of a perpendicular wall snaps to its centre line
   const tolJ = Math.max(2, 0.03 * ppm);
   snapJoints(segs, tolJ);
   timings.joints = now();
 
   // ---- 6. gaps → openings
-  const ctx = { grey, core, darkT, paper, ink, ppm, o };
+  const ctx = { grey, core, darkT, isWall, paper, ink, ppm, o };
   const openings = [];
   segs = joinGaps(segs, openings, ctx, tolC, tolT, tolJ);
   snapJoints(segs, tolJ);
@@ -425,10 +475,19 @@ export function detectPlan(img, options = {}) {
     .filter((op) => op.to - op.from >= 0.2 * ppm)
     .sort((a, b) => a.wall - b.wall || a.from - b.from);
 
+  // grey walls (lighter than the black text): the black threshold finds (almost) nothing – try the grey band with the
+  // most long wall runs (autoWallTone) once
+  if (!tone && !options._noAutoTone && outWalls.length < 3) {
+    const t = autoWallTone(grey, hist, paper, { r, minRun });
+    if (t) {
+      const again = detectPlan(img, { ...options, wallTone: t, _noAutoTone: true });
+      if (again.walls.length > outWalls.length) return { ...again, stats: { ...again.stats, autoWallTone: t } };
+    }
+  }
   return {
     walls: outWalls,
     openings: outOpenings,
-    stats: { darkThreshold: darkT, paper, ink, coreRadius: r, minRun, pieces: pieces.length, timings },
+    stats: { darkThreshold: darkT, wallTone: tone, paper, ink, coreRadius: r, minRun, pieces: pieces.length, timings },
     debug: { dark, core, pieces, outside },
   };
 }
@@ -520,7 +579,7 @@ function touches(a, b, tol) {
  * glass, a door's threshold bar) and the share of wall-dark pixels.
  */
 function bandSymbol(ctx, axis, c, t, s0, s1) {
-  const { grey, paper, darkT } = ctx;
+  const { grey, paper, isWall } = ctx;
   const lineT = paper - 35;
   const a0 = Math.round(c - t / 2) - 1;
   const a1 = Math.round(c + t / 2);
@@ -540,7 +599,7 @@ function bandSymbol(ctx, axis, c, t, s0, s1) {
       const v = sample(grey, x, y);
       n++;
       if (v < lineT) hit++;
-      if (v < darkT) {
+      if (isWall(v)) {
         darkPx++;
         colDark[s - x0]++;
       }
@@ -784,7 +843,7 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
  * (the posts between two windows, a column beside a door). Parts shorter than 10 cm are dropped.
  */
 function splitAtPillars(ctx, seg, g0, g1) {
-  const { grey, darkT, ppm } = ctx;
+  const { grey, isWall, ppm } = ctx;
   const a0 = Math.round(seg.c - seg.t / 2);
   const a1 = Math.round(seg.c + seg.t / 2) - 1;
   const n = a1 - a0 + 1;
@@ -796,7 +855,7 @@ function splitAtPillars(ctx, seg, g0, g1) {
     let d = 0;
     for (let a = a0; a <= a1; a++) {
       const [x, y] = seg.axis === H ? [s, a] : [a, s];
-      if (sample(grey, x, y) < darkT) d++;
+      if (isWall(sample(grey, x, y))) d++;
     }
     const dark = n > 0 && d / n >= 0.7;
     if (dark && !inPillar) {

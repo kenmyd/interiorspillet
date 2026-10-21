@@ -462,18 +462,51 @@ class App {
     this._busy('Gjenkjenner vegger, dører og vinduer …');
     try {
       const t0 = performance.now();
-      const det = await runWorker('detect', im.imageData, { pxPerM: L.image.pxPerM });
+      const det = await runWorker('detect', im.imageData, { pxPerM: L.image.pxPerM, ...(L.detect || {}) });
       this.snapshot();
       applyDetection(L, det, L.image.pxPerM, this.doc.settings);
       const ms = performance.now() - t0;
       this.changed('Gjenkjenning');
       const c = (t) => det.openings.filter((o) => o.type === t).length;
+      if (det.stats?.autoWallTone && !L.detect?.wallTone) L.detectInfo = `grå vegger funnet automatisk (${det.stats.autoWallTone.join('–')})`;
+      else L.detectInfo = null;
       this.toast(`Fant ${det.walls.length} vegger, ${c('door')} dører, ${c('window')} vinduer og ${c('opening')} åpninger på ${(ms / 1000).toFixed(1)} s. Rett opp det som er feil, og gi rommene navn.`, 8);
     } catch (err) {
       console.error(err);
       this.toast(`Gjenkjenningen feilet: ${err.message}`);
     } finally {
       this._busy(null);
+    }
+  }
+
+  /** The wall tone tool: the median grey of 5 × 5 pixels under the click; black walls stay automatic. */
+  async sampleTone(p) {
+    const L = this.level;
+    const im = this.images.get(L?.id);
+    if (!im) return;
+    const ppm = L.image.pxPerM || 100;
+    const x = Math.round(p[0] * ppm);
+    const y = Math.round(p[1] * ppm);
+    const vals = [];
+    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+      const xx = x + dx;
+      const yy = y + dy;
+      if (xx >= 0 && yy >= 0 && xx < im.grey.w && yy < im.grey.h) vals.push(im.grey.data[yy * im.grey.w + xx]);
+    }
+    if (!vals.length) return;
+    vals.sort((a, b) => a - b);
+    const T = vals[vals.length >> 1];
+    if (T > 215) {
+      this.toast('Det der ser ut som papir, ikke en vegg. Klikk midt på en vegg.');
+      return;
+    }
+    this.snapshot();
+    L.detect = T < 45 ? {} : { wallTone: [Math.max(0, T - 25), Math.min(235, T + 20)] };
+    this.changed('Veggfarge');
+    this.setTool('select');
+    this.toast(T < 45 ? 'Veggene er svarte: automatisk terskel.' : `Veggfarge ${T}: veggene er gråtonene ${L.detect.wallTone.join('–')}.`);
+    if (L.image?.pxPerM) {
+      if (!L.walls.length || (await this._confirm('Gjenkjenne på nytt med veggfargen?', 'Veggene, dørene og vinduene erstattes med et nytt forslag. Romnavnene beholdes. Du kan angre.'))) await this.detect();
     }
   }
 
@@ -802,6 +835,14 @@ class App {
         if (c && c >= 2 && c <= 100) this.thickness = c / 100;
       }, 'cm'),
       h('p', { class: 'pb-note' }, L.image?.pxPerM ? `Skala: ${fmt(L.image.pxPerM, 1)} px per meter${L.image.scaleRef ? ` (målt på ${fmt(L.image.scaleRef.metres)} m)` : ''}.` : 'Skalaen er ikke satt.'),
+      L.image ? h('div', { class: 'pb-field' }, h('label', {}, `Veggfarge: ${L.detect?.wallTone ? `grå ${L.detect.wallTone.join('–')}` : L.detectInfo ?? 'automatisk'}`),
+        h('span', { class: 'pb-row', style: 'margin:0' },
+          h('button', { class: 'pb-btn is-small', title: 'For planer med grå vegger: klikk på en vegg i planen', onclick: () => this.setTool('tone') }, 'Velg'),
+          L.detect?.wallTone ? h('button', { class: 'pb-btn is-small', onclick: () => {
+            this.snapshot();
+            L.detect = {};
+            this.changed('Veggfarge');
+          } }, 'Auto') : null)) : null,
       L.image ? h('div', { class: 'pb-row' },
         h('button', { class: 'pb-btn is-small', onclick: () => this.setTool('scale') }, 'Mål skala på nytt'),
         L.image.pxPerM ? h('button', { class: 'pb-btn is-small', onclick: async () => {

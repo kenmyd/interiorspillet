@@ -192,6 +192,32 @@ for (const [name, plan] of Object.entries(samplePlans())) {
   }
 }
 
+{
+  // grey walls (lighter than the black text): found automatically (autoWallTone), and with a sampled tone
+  const plan = samplePlans().leilighet;
+  for (const g of [70, 115, 150]) {
+    const r = renderPlan(plan, { pxPerM: 60, wallGrey: g, seed: 4 });
+    const det = D.detectPlan(r.img, { pxPerM: 60 });
+    const m = matchSynthetic(plan, det, 60, r.origin);
+    check(`grå vegger (${g}) finnes automatisk: alle vegger og åpninger`, m.walls === plan.walls.length && m.found === plan.openings.length && m.typed === plan.openings.length, `${m.walls}/${plan.walls.length} vegger, ${m.typed}/${plan.openings.length} åpninger, tone ${JSON.stringify(det.stats.autoWallTone ?? null)}`);
+  }
+  const r = renderPlan(plan, { pxPerM: 60, wallGrey: 150, seed: 4 });
+  const det = D.detectPlan(r.img, { pxPerM: 60, wallTone: [125, 170] });
+  const m = matchSynthetic(plan, det, 60, r.origin);
+  check('grå vegger med prøvd veggfarge (150 → 125–170)', m.walls === plan.walls.length && m.typed === plan.openings.length, `${m.walls} vegger, ${m.typed} åpninger`);
+}
+{
+  // the same plan at 2× and 4× the resolution (a scan): the same walls, doors and windows
+  const img = readPng(path.join(ROOT, 'plantegning.png'));
+  for (const f of [2, 4]) {
+    const t0 = Date.now();
+    const det = D.detectPlan(D.upsample(img, f), { pxPerM: (628 / 12.21) * f });
+    const ms = Date.now() - t0;
+    const c = (t) => det.openings.filter((o) => o.type === t).length;
+    check(`1. etasje i ${f}× oppløsning: 11 vegger, 3 dører, 7 vinduer, 1 åpning`, det.walls.length === 11 && c('door') === 3 && c('window') === 7 && c('opening') === 1, `${det.walls.length} vegger, ${c('door')} dører, ${c('window')} vinduer, ${c('opening')} åpninger, ${ms} ms`);
+  }
+}
+
 // ---------------------------------------------------------------------------------------------------------------
 section('5. De ekte planene mot eierens hus');
 const spec = readJson('src/data/room-spec.json');
