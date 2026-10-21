@@ -32,8 +32,6 @@ const settings = new Settings();
 const audio = new AudioSystem(settings);
 const menu = new Menu(uiRoot, { settings, audio, image: MENU_IMAGE });
 let game = null;
-/** The start screen offered «Fortsett …» (then 'original' is the explicit fresh start «Start med stua …»). */
-let continueOffered = false;
 
 menu.onPlay = (mode) => startGame(mode === 'continue' ? 'continue' : 'original', { menu: true });
 
@@ -54,7 +52,6 @@ function lastDesign() {
 /** Shows the start screen with the right start buttons. */
 function showMenu() {
   const last = lastDesign();
-  continueOffered = !!last;
   menu.setContinue(last);
   menu.show();
   prefetch();
@@ -94,10 +91,10 @@ function prefetch() {
 async function startGame(mode = 'original', { menu: fromMenu = false } = {}) {
   if (game) return;
   const dev = devOverrides();
-  // the start position (Game._placeAtStart): ?spawn= wins; the start screen continues from the saved position, except
-  // the explicit fresh start «Start med stua slik den er i dag» (offered next to «Fortsett …»), which starts outside
-  // again; ?play=1 keeps the dining area of the references, tours and walkmaps
-  if (!dev.spawn) dev.spawn = !fromMenu ? 'inside' : mode === 'original' && continueOffered ? 'fresh' : 'saved';
+  // the start position (Game._placeAtStart): ?spawn= wins; the start screen starts at the saved position whichever
+  // button was used – the buttons only choose the design (§3.6: «neste lasting starter der»; integrator, bølge 1
+  // gruppe 2); ?play=1 keeps the dining area of the references, tours and walkmaps
+  if (!dev.spawn) dev.spawn = !fromMenu ? 'inside' : 'saved';
   try {
     await audio.unlock();
   } catch {

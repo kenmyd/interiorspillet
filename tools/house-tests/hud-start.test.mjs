@@ -345,8 +345,13 @@ function fakeCollision({ ready }) {
   g.running = true;
   g.time += 1 / 60;
   g._updateRoom();
+  // the start point itself is never saved (LastPosition.markStart): only a spot the player moved to
+  check('the start point is not written in the first frame (markStart)', !storage.m.has(LAST_POSITION_KEY));
+  g.player.position.set(4.6, 0, 4.0);
+  g.time += 1 / 60;
+  g._updateRoom();
   const saved = parseLastPosition(storage.m.get(LAST_POSITION_KEY));
-  check('running and on the ground → saved with level and room', saved?.pos.join() === '4.2,0,4' && saved.levelId === 'hoved' && saved.roomId === 'stue-kjokken');
+  check('running and on the ground, moved from the start → saved with level and room', saved?.pos.join() === '4.6,0,4' && saved.levelId === 'hoved' && saved.roomId === 'stue-kjokken');
   g.player.position.set(5.0, 0, 6.0);
   g.time += 0.1;
   g._updateRoom();

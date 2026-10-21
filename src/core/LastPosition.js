@@ -136,6 +136,19 @@ export class LastPosition {
     return this._write();
   }
 
+  /**
+   * The spot the game started at, as if it were written (nothing is written): a spot is saved only after the player
+   * has moved ≥ MIN_MOVE or turned ≥ MIN_TURN from it – a first visit no longer stores its start point in the first
+   * frame (the review of steg 9+26; integrator, bølge 1 gruppe 2).
+   * @param {{ x: number, y: number, z: number }} feet
+   * @param {number} yaw radians
+   */
+  markStart(feet, yaw) {
+    if (!feet || !Number.isFinite(feet.x + feet.y + feet.z)) return;
+    this._written = { pos: [round(feet.x, 1000), round(feet.y, 1000), round(feet.z, 1000)], yawDeg: round(Number.isFinite(yaw) ? yaw * RAD : 0, 10) };
+    this.pending = null;
+  }
+
   /** Writes a remembered spot now. @returns {boolean} true when nothing is left unwritten */
   flush() {
     if (!this.pending) return true;

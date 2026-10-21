@@ -42,9 +42,9 @@ const DEG = Math.PI / 180;
  *                                                          plan and the room's level band at a world y (pass the body
  *                                                          centre, feet + BODY_CENTRE); box = plan bounds × floor …
  *                                                          ceiling (WindowPanel). The living room is «Stue/kjøkken».
- *     roomAt(x, y, z, { previousLevelId, physical = false }) → home.rooms entry | null
- *                                                          the HUD variant of layout.house.roomAt: the stair first
- *                                                          (physical:true skips it, like lights and acoustics)
+ *     roomAt(x, y, z, { previousLevelId, physical = true }) → home.rooms entry | null
+ *                                                          layout.house.roomAt as home.rooms entries; physical:false
+ *                                                          is the HUD variant (the stair first – locate uses it)
  *     outdoorAreas: [{ id, name, levelName: 'Ute', outside: true, floorY, contains(x, y, z) }]   named places
  *                                                          outside (the forecourt «Forplassen»; body-centre test)
  *     locate(x, y, z, { previousLevelId }) → { room, outside, level: { id, name } | null }   where a body centre
@@ -588,13 +588,14 @@ export function createLocator(layout, rooms, outdoor = []) {
   const h = layout?.house;
   const byId = new Map(rooms.map((r) => [r.id, r]));
   const useHouse = typeof h?.roomAt === 'function' && rooms.some((r) => !r.zoneId);
-  const roomAt = (x, y, z, { previousLevelId = null, physical = false } = {}) => {
+  // physical by default, like layout.house.roomAt (lights, acoustics); locate() asks for the HUD variant (the stair)
+  const roomAt = (x, y, z, { previousLevelId = null, physical = true } = {}) => {
     if (!useHouse) return rooms.find((r) => r.contains(x, y, z)) ?? null;
     const r = h.roomAt(x, y, z, { physical, previousLevelId });
     return r ? byId.get(r.id) ?? null : null;
   };
   const locate = (x, y, z, { previousLevelId = null } = {}) => {
-    const room = roomAt(x, y, z, { previousLevelId });
+    const room = roomAt(x, y, z, { previousLevelId, physical: false });
     const outside = room ? null : outdoor.find((a) => a.contains(x, y, z)) ?? null;
     const lv = useHouse && typeof h.levelAt === 'function' ? h.levelAt(y, previousLevelId) : null;
     return { room, outside, level: lv ? { id: lv.id, name: lv.name ?? lv.id } : null };

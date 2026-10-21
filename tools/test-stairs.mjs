@@ -320,6 +320,12 @@ function stairWorld({ faceGround = true } = {}) {
   addColliders(col, useOwnSlab ? ownSlabColliders() : realSlab);
   addColliders(col, surroundings());
   col.build();
+  // the game's level bands (Game._setupLevels: hoved ≥ −0.30, kjeller ≤ −0.30) – so the walk runs below cross the band
+  // change in the middle of the stair as in the game (the review of steg 20; integrator, bølge 1 gruppe 2)
+  const lb = layout.bounds;
+  const tx = Math.max(...layout.outside.terrace.polygon.map((p) => p[0]));
+  col.setBounds(lb.minX + 0.05, Math.max(lb.maxX, tx) - 0.05, lb.minZ + 0.05, lb.maxZ - 0.05);
+  Game.prototype._setupLevels.call({ collision: col, home: { layout } });
   return col;
 }
 

@@ -142,7 +142,7 @@
       "position": [6.36, 0, 5.07],
       "rotationDeg": 0,
       "dims": { "w": 0.28, "d": 0.28, "h": 1.2 },
-      "params": { "vaseH": 0.5, "vaseD": 0.28, "flowers": "tørket pampas og greiner", "flowerTop": 1.2, "shape": "round" },
+      "params": { "vaseH": 0.5, "vaseD": 0.28, "flowers": "tørket pampas og greiner", "flowerTop": 1.2, "shape": "round", "plumeFan": 0.2 },
       "colors": { "main": "#6e625a", "stems": "#c9b9a3" },
       "materials": { "main": "ceramic" },
       "notes": "Rustikk grå-brun keramikk i innerhjørnet mellom nordveggen og søyla. Valgfri pynt.",

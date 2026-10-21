@@ -591,6 +591,8 @@ export class Game {
     this.player.teleport(reserve.position.clone(), reserve.yaw ?? 0, reserve.pitch ?? 0);
     this.player.teleport(start.position.clone(), dev.yaw ?? start.yaw ?? 0, dev.pitch ?? start.pitch ?? 0);
     this.startedFrom = from;
+    // the start itself is not a saved position: one is written only after the player has moved or turned from it
+    this.lastPosition.markStart?.(this.player.position, this.player.yaw);
     this._watchLastPosition();
   }
 
@@ -698,7 +700,7 @@ export class Game {
       if (id !== this.roomId) {
         this.roomId = id;
         const levelName = room ? (room.hud ? where.level?.name : room.levelName) ?? where.level?.name ?? null : null;
-        this.events.emit('room', room ? { id: room.id, name: room.name, levelId: room.levelId ?? where.level?.id ?? null, levelName } : null);
+        this.events.emit('room', room ? { id: room.id, name: room.name, levelId: (room.hud ? where.level?.id : room.levelId) ?? where.level?.id ?? room.levelId ?? null, levelName } : null);
       }
       if (place && key !== this._announcedRoom) {
         this._announcedRoom = key;

@@ -115,7 +115,8 @@ export function exteriorPlan(layout) {
   const out = layout.outside || {};
   const fit = fitTerrace(out.terrace);
   const oh = layout.house?.outsideHouse || null;
-  const plan = { house: !!oh, fitted: fit.fitted, t: fit.t, oh };
+  // house only with a terrace too: without one the plan below is never filled in (P.paving, P.groundY …)
+  const plan = { house: !!oh && !!fit.t, fitted: fit.fitted, t: fit.t, oh };
   if (!oh || !fit.t) return plan;
   const t0 = fit.t;
   const deckY = t0.floorY ?? -0.03;
@@ -720,6 +721,8 @@ export function buildExterior(ctx, layout) {
       const pr = new THREE.Vector2(a.x + dir.x * ur, a.y + dir.y * ur);
       kb.box(0.02, rise, w - 0.06, pr.x + dir.x * 0.01, y + rise / 2 - 0.045, pr.y + dir.y * 0.01, M.deckEdge, { rot: [0, yaw, 0], collide: false });
     }
+    // hele huset: the last riser, from the lowest tread down to the landing (the loop stops one short; integrator)
+    if (H) kb.box(0.02, rise, w - 0.06, b.x + dir.x * 0.01, bot + rise / 2 - 0.045, b.y + dir.y * 0.01, M.deckEdge, { rot: [0, yaw, 0], collide: false });
     // closed side cheeks under the treads
     const pitch = Math.atan2(top - bot, len);
     // which sides get a guard: 'outer' = only the side away from the terrace

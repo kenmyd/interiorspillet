@@ -79,7 +79,8 @@ function areaOf(g) {
 // ---------------------------------------------------------------------------------------------------------------
 section(`Build (${ms} ms): ${built.length} rooms`);
 check('rooms of both levels are built (bad, gang, soverom, the 8 basement rooms)', built.length >= 11 && ['bad', 'gang', 'soverom', 'kjeller-gang', 'vaskerom', 'kjellerstue', 'soverom-kjeller', 'entre-kjeller', 'bod-1', 'bod-2', 'bod-3'].every((id) => builtIds.has(id)), [...builtIds].join());
-check('the returned group holds only the soffits outside (no level geometry at the scene root)', R.group.children.every((c) => c.name.startsWith('soffit:')) && R.group.children.length === (H.outsideHouse?.soffits?.length ?? 0), R.group.children.map((c) => c.name).join());
+// the soffits outside are exterior.js's (steg 25, C3) since the merge of bølge 1 gruppe 2: nothing at the scene root
+check('the returned group holds no level geometry and no soffits (exterior.js builds those)', R.group.children.length === 0, R.group.children.map((c) => c.name).join());
 check('every room\'s surfaces / contents got its groups (solid, deco, lamps)', built.every((r) => roots.rooms[r.id].surfaces.getObjectByName(`room:${r.id}:solid`) && roots.rooms[r.id].contents.getObjectByName(`room:${r.id}:lamps`)));
 
 section('Walls (D13)');

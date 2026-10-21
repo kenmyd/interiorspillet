@@ -1447,7 +1447,10 @@ export function buildStairs(ctx, layout) {
         }
         if (postsAt.some((q) => dist(q, pp) < 0.03)) continue;
         postsAt.push(pp);
-        black.box(pp[0], pp[1], postW, postW, hangs(raw) ? g.y0 - 0.45 : g.y0, g.y0 + g.height);
+        // a hanging post stands 3 mm proud all round: its hole-side faces would otherwise lie in the plane of the white
+        // edge face of the hole (rooms.js, V16) and flicker (the review of steg 19; integrator, bølge 1 gruppe 2)
+        const pw = hangs(raw) ? postW + 0.006 : postW;
+        black.box(pp[0], pp[1], pw, pw, hangs(raw) ? g.y0 - 0.45 : g.y0, g.y0 + g.height);
       }
       const r0 = add(a, mul(d, postW / 2));
       const r1 = sub(b, mul(d, postW / 2));

@@ -4,10 +4,11 @@ import { paint, mat, emissive } from './materials.js';
 import { basis, MeshBatcher, prismX } from '../world/buildKit.js';
 import {
   UP, wallMatrix, openingMatrix, groupGeometry, wallLayer, mergeNotches, profileAt, profileSlice, floorGeometry,
-  ceilingGeometry, glassMaterial, frostedGlassMaterial, buildWindow,
+  ceilingGeometry, glassMaterial, frostedGlassMaterial, buildWindow, rectCells,
 } from './wallkit.js';
 import { buildDoor } from './doors.js';
 import { claddingMaterial, ledStrip } from './shell.js';
+import { wallFinish, floorFinish } from '../world/surfaces.js';
 
 /**
  * ROOMS – every room of the house except the living room / kitchen / TV-stue (notes/hele-huset-design.md §2.1,
@@ -24,7 +25,7 @@ import { claddingMaterial, ledStrip } from './shell.js';
  *   • a floor per room (oak shared with the living room / tinted for the basement, vinyl, concrete, parquet) with the
  *     stairwell cut out, the ceilings (the basement's with the hole), black ceiling trims, the white edge face on the
  *     free edges of the hole (V16), the stairwell walls (topProfile in the data), the ledge (V21) and its two corner
- *     fillers, the soffits under the overhangs and in the entrance niche (outsideHouse.soffits: V4, V6, V28);
+ *     fillers (the soffits under the overhangs and in the entrance niche are exterior.js's, steg 25);
  *   • the doors (doors.js: openAngleDeg, the storage doors closed but openable, the outer door opening outwards) with
  *     the walkable floor strip in each hole, the two entrance steps of 0.15 in the opening GANG ↔ entré (visible
  *     treads, an invisible wedge collides – §3.11);
@@ -40,7 +41,7 @@ import { claddingMaterial, ledStrip } from './shell.js';
  * ctx     the createHome ctx (scene, collision, interaction, quality …). ctx.roots holds the scene roots of the house:
  *         ctx.roots.levels[levelId] and ctx.roots.rooms[roomId] = { id, name, levelId, kind, hud, group, surfaces,
  *         contents } – a room's walls / floor / ceilings / doors go in `surfaces`, its lamp fittings in `contents`.
- *         The returned `group` (scene root) holds only the soffits outside (no single level). ctx.lighting does not
+ *         The returned `group` (scene root) holds only fallback room roots (no ctx.roots). ctx.lighting does not
  *         exist yet while building – Door.onChange reads it later.
  * layout  home/layout.js – the rooms built are layout.house.rooms without 'stue-kjokken' and without hud rooms.
  * M       the shell's shared materials (shell.materials: trim, reveal, baseboard, threshold, hallDoor, hardware,
@@ -151,6 +152,7 @@ export function buildRooms(ctx, layout, M = null) {
   if (!rooms.length) return contract();
 
   const quality = ctx?.quality || {};
+  const finishRes = quality.level === 'low' ? 0.5 : 1;
   const roomIds = new Set(rooms.map((r) => r.id));
   const spec = layout.spec || {};
   const rawWall = new Map((spec.walls || []).map((w) => [w.id, w]));
@@ -224,7 +226,16 @@ export function buildRooms(ctx, layout, M = null) {
       }
       return tintedFloors.get(color);
     }
-    if (kind === 'vinyl') return paint(color, { roughness: 0.5 });
+    if (kind === 'vinyl') {
+      // the wet-room vinyl of steg 10 (A4: surfaces.floorFinish – bathroom, laundry); paint without texture support
+      let fin = null;
+      try {
+        fin = floorFinish(f, { res: finishRes });
+      } catch {
+        fin = null;
+      }
+      return fin ?? paint(color, { roughness: 0.5 });
+    }
     if (kind === 'concrete') return paint(color, { roughness: 0.88 });
     if (kind === 'parquet') return mat('oak', color, { roughness: 0.5 });
     return paint(color);
@@ -384,6 +395,20 @@ export function buildRooms(ctx, layout, M = null) {
   const wallFaceMeshes = new Map(); // wallId → [mesh] (own slabs' room faces and the backOf faces' pieces)
   const faceGeos = new Map(); // backOf face id → [geometry pieces] (merged into one mesh per face below)
   const paintOf = (w) => w.paint ?? 'sand';
+  // the textured finishes of steg 10 (A4: stone panels, tiles …) for walls whose material is not paint; the painted
+  // kinds ('paint', 'wetroom-paint') get paint() as before. The panel / clouds come from the raw data (layout's wall
+  // does not carry them). A repaint keeps the finish in the new colour (wallFinish(wall, hex) ?? paint(hex)).
+  const wallMat = (w, color) => {
+    const hex = color ? layout.resolvePaint?.(color) ?? color : undefined;
+    const raw = rawWall.get(w.id);
+    let m = null;
+    try {
+      m = wallFinish({ ...w, panel: raw?.panel ?? w.panel, clouds: raw?.clouds ?? w.clouds }, hex, { res: finishRes });
+    } catch {
+      m = null; // no texture support (Node fixtures): paint
+    }
+    return m ?? paint(color || paintOf(w));
+  };
   for (const w of H.walls) {
     if (!roomIds.has(w.roomId) || w.backOf || !(w.thickness > 0)) continue;
     const rr = roomOf(w.roomId);
@@ -396,7 +421,12 @@ export function buildRooms(ctx, layout, M = null) {
     // the slab reaches down to the lowest floor of its faces (the entrance, bod-3) and into the stairwell
     let bottom = Math.min(0, ...faces.map((f) => f.floorY - w.floorY));
     bottom = Math.min(bottom, holeDrop(w));
-    const top = w.topProfile.map(([u, h]) => [u, h]);
+    // an inner wall that reaches the floor of the level above (the stairwell walls: topProfile up to y 0) stops 2 mm
+    // under that floor – its top face was coplanar with the floor above where it runs under it (floor:soverom over
+    // w-kg-vest at z 4.53–4.55 flickered in front of the skirting). Integrator, bølge 1 gruppe 2.
+    const lvTop = H.levelsById[w.levelId];
+    const aboveTop = lvTop?.aboveId && !w.exterior ? H.levelsById[lvTop.aboveId].floorY - w.floorY - 0.002 : Infinity;
+    const top = w.topProfile.map(([u, h]) => [u, Math.min(h, aboveTop)]);
     const notchesAll = [];
     const holesAll = [];
     const outerAll = [];
@@ -500,7 +530,7 @@ export function buildRooms(ctx, layout, M = null) {
     for (const g of roomFace) g.dispose();
     const meshes = [];
     if (faceGeo) {
-      const fm = new THREE.Mesh(keep(faceGeo), paint(paintOf(w)));
+      const fm = new THREE.Mesh(keep(faceGeo), wallMat(w));
       fm.name = `wall:${w.id}`;
       fm.castShadow = true;
       fm.receiveShadow = true;
@@ -547,7 +577,7 @@ export function buildRooms(ctx, layout, M = null) {
     if (geos.length) {
       const g = mergeGeometries(geos, false);
       for (const x of geos) x.dispose();
-      const fm = new THREE.Mesh(keep(g), paint(paintOf(f)));
+      const fm = new THREE.Mesh(keep(g), wallMat(f));
       fm.name = `wall:${f.id}`;
       fm.castShadow = true;
       fm.receiveShadow = true;
@@ -929,19 +959,9 @@ export function buildRooms(ctx, layout, M = null) {
     }
   }
 
-  // ---- soffits outside: under the overhangs of the ground floor (V4, V6) and the entrance niche (V28)
-  for (const s of H.outsideHouse?.soffits || []) {
-    if (!s.polygon?.length || !Number.isFinite(s.y)) continue;
-    const poly = s.polygon.map((p) => v2(p[0], p[1]));
-    // 2 mm below its height: the outer layers of the walls above end there with their bottom faces (no shared plane)
-    const g = keep(ceilingGeometry(poly, () => s.y - 0.002));
-    const m = new THREE.Mesh(g, s.color ? cladding(s.color) : plaster(LOOK.plaster));
-    m.name = `soffit:${s.id}`;
-    m.castShadow = true;
-    m.receiveShadow = true;
-    m.userData.noCollide = true;
-    group.add(m);
-  }
+  // ---- soffits outside (outsideHouse.soffits: V4, V6, V28): built ONCE, by exterior.js (steg 25, C3) – its niche
+  // soffit follows the deck out to its SW corner (x 10.35 · z 6.75) and has the tuned dark material (225543); a second
+  // plate here was a double, near-coplanar draw (integrator, bølge 1 gruppe 2).
 
   // ---- static boxes: the slab under the ground floor minus its holes (§2.8), the low ceilings (−0.50)
   const mainSlab = slabBoxes(H, mainId);
@@ -1003,8 +1023,16 @@ export function buildRooms(ctx, layout, M = null) {
     if (!cs.length) continue;
     const top = Math.min(...cs.map((c) => c.topAt(c.centroid.x, c.centroid.y)));
     if (top > under - 0.05) continue;
+    // one box per rectangle of the room's own outline (rectCells), not its bounds: the entrance's bounds hold the
+    // pillar cut-out, where a box 0.20 under the visible ceiling stood in kjellerstue (the review of steg 8+21+24)
+    const P = r.polygon || [];
+    const axis = P.length >= 4 && P.every((a, i) => {
+      const q = P[(i + 1) % P.length];
+      return Math.abs((a.x ?? a[0]) - (q.x ?? q[0])) < 1e-6 || Math.abs((a.y ?? a[1]) - (q.y ?? q[1])) < 1e-6;
+    });
     const b = r.bounds;
-    colliders.push(new THREE.Box3(new THREE.Vector3(b.minX, top, b.minZ), new THREE.Vector3(b.maxX, under, b.maxZ)));
+    const cells = axis ? rectCells(P) : [[b.minX, b.minZ, b.maxX, b.maxZ]];
+    for (const [x0, z0, x1, z1] of cells) colliders.push(new THREE.Box3(new THREE.Vector3(x0, top, z0), new THREE.Vector3(x1, under, z1)));
   }
 
   // ---- merge the batches into their rooms
@@ -1027,7 +1055,7 @@ export function buildRooms(ctx, layout, M = null) {
     const wm = wallFaceMeshes.get(id);
     if (wm?.length) {
       const w = H.wallsById[id];
-      const m = paint(color || w?.paint || 'sand');
+      const m = w ? wallMat(w, color) : paint(color || 'sand');
       for (const x of wm) x.material = m;
       return;
     }

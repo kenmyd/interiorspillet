@@ -213,7 +213,9 @@ function applianceBody(F, b, k, bodyHex) {
   const { w, d, h } = b.dims;
   const body = mat('plastic', bodyHex, { roughness: 0.38 });
   const yF = k.floorY ?? 0;
-  const y0 = Math.max(0, yF) + 0.01; // small feet gap
+  // small feet gap; a stacked appliance (the dryer on the washer, 225505) has none: the 1 cm between its position y
+  // (washer h + 0.02) and the washer's top is the thin stacking kit
+  const y0 = Math.max(0, yF) + (b.params?.stackedOn ? 0 : 0.01);
   F.box(w - 0.006, h - 0.012, d - 0.01, 0, y0 + (h - 0.012) / 2, -0.005, body);
   F.box(w - 0.002, 0.012, d - 0.004, 0, y0 + h - 0.006, -0.002, body); // top
   return { body, y0, w, d, h };

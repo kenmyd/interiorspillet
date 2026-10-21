@@ -1740,8 +1740,18 @@ export class LightManager {
     let id = this._camRoomId;
     const r = lv ? h.roomAt(p.x, body, p.z, { levelId: lv.id }) : null;
     let outside = false;
-    if (r && this._worlds.has(r.id)) id = p.y <= r.ceilingTop + 0.05 ? r.id : LIVING_ID;
-    else if (!r || !this._worlds.has(r.id)) {
+    if (r && this._worlds.has(r.id)) {
+      if (p.y <= r.ceilingTop + 0.05) id = r.id;
+      else if (p.y > (h.bounds?.maxY ?? 3) + 0.5) id = LIVING_ID; // an overview camera above the house
+      else {
+        // the eye is above this room's ceiling but inside the house: in the stairwell (the stair's upper part, the
+        // body already on the basement's level) it is in the room above – not the living room (integrator, bølge 1
+        // gruppe 2: gang → stue-kjokken → kjeller-gang on the stair made S jump 4–5×)
+        const upId = lv?.aboveId ?? null;
+        const up = upId ? h.roomAt(p.x, p.y, p.z, { levelId: upId }) : null;
+        id = up && this._worlds.has(up.id) ? up.id : r.id;
+      }
+    } else if (!r || !this._worlds.has(r.id)) {
       const inside = !!h.isInside?.(p.x, p.z, body, lv?.id);
       id = inside ? this._camRoomId : LIVING_ID;
       outside = !r && !inside && p.y < (h.bounds?.maxY ?? 3) + 0.5;
@@ -3051,7 +3061,10 @@ export class LightManager {
     const m = (lampL * wbp.pull) / Math.max(1e-6, dayL + lampL * wbp.pull);
     const alone = 1 - smoothstep(0, 0.08, m);
     const skyTot = W.skyTot || 0, sunTot = W.sunTot || 0;
-    const srcDayMired = skyTot + sunTot > 1e-6 ? (skyTot * 1e6 / dl.skyK + sunTot * 1e6 / dl.sunK) / (skyTot + sunTot) : 1e6 / 7000;
+    // a room without windows of its own gets its daylight through the portals, already warm from the rooms it passed:
+    // balance on that light's own colour, not on 7000 K (the hall seen from the living room at 12:00 read dark orange;
+    // the review of steg 13+27, integrator bølge 1 gruppe 2)
+    const srcDayMired = skyTot + sunTot > 1e-6 ? (skyTot * 1e6 / dl.skyK + sunTot * 1e6 / dl.sunK) / (skyTot + sunTot) : 1e6 / cctOf(illumDay);
     const dayMired = lerp(srcDayMired, 1e6 / cctOf(illumDay), alone);
     const lampSrcMired = W.lampMiredW > 1e-6 ? W.lampMired / W.lampMiredW : 1e6 / 2700;
     const lampMiredAvg = lampL > 1e-6 ? lerp(lampSrcMired, 1e6 / cctOf(illumLamp), WB.lampsMeasured * smoothstep(0.5, 0.95, m)) : lampSrcMired;

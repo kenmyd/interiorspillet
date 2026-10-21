@@ -7480,7 +7480,8 @@
         "vaseD": 0.28,
         "flowers": "tørket pampas og greiner",
         "flowerTop": 1.2,
-        "shape": "round"
+        "shape": "round",
+        "plumeFan": 0.2
       },
       "colors": {
         "main": "#6e625a",
@@ -10827,7 +10828,7 @@
       "rotationDeg": 0,
       "params": {
         "shape": "round",
-        "finish": "steel"
+        "finish": "white"
       },
       "collide": false,
       "estimated": [
@@ -11086,7 +11087,7 @@
       "name": "Vaskemaskin",
       "mount": "floor",
       "position": [
-        2.465,
+        2.46,
         0,
         7.55
       ],
@@ -11114,7 +11115,7 @@
       "name": "Tørketrommel",
       "mount": "floor",
       "position": [
-        2.465,
+        2.46,
         0.87,
         7.55
       ],

@@ -16,7 +16,8 @@
 //   busy port fails instead of silently moving to the next one;
 // - every dependency is prebundled up front (optimizeDeps entries + include), so no page triggers a re-optimisation
 //   (which would reload the page and could load a second copy of three.js);
-// - the watcher ignores the heavy folders (image originals, screenshots, other worktrees under .claude/worktrees).
+// - the watcher ignores the heavy folders (image originals, screenshots, the worktrees under <root>/.claude – never
+//   the server's own worktree, which itself lies under .claude/worktrees).
 import { defineConfig, mergeConfig } from 'vite';
 import { resolve } from 'node:path';
 import { realpathSync } from 'node:fs';
@@ -46,7 +47,9 @@ export default mergeConfig(
       // node_modules is a junction to the main tree: allow its real path as well as the worktree
       fs: { allow: [root, real(resolve(root, 'node_modules'))] },
       watch: {
-        ignored: ['**/.shots/**', '**/.claude/**', '**/bilder_hus/**', '**/bilder_stue/**', '**/dist/**', '**/deploy/**', '**/.git/**'],
+        // '<root>/.claude/**', not '**/.claude/**': a worktree's root is itself under .claude/worktrees/…, and the
+        // glob ignored every file of it (a test server never saw its own edits; integrator, bølge 1 gruppe 2)
+        ignored: ['**/.shots/**', `${root.split('\\').join('/')}/.claude/**`, '**/bilder_hus/**', '**/bilder_stue/**', '**/dist/**', '**/deploy/**', '**/.git/**'],
       },
     },
     optimizeDeps: {
