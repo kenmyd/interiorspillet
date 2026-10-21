@@ -23,7 +23,7 @@ public/
   img/stue.jpg             1920×1440 copy of bilder_stue/20261018_082901.jpg (start + loading screen background)
 src/
   main.js                  boot: start screen → loading screen → Game; URL dev params        (rewritten)
-  config.js                PLAYER, INTERACT, WALKABLE_NORMAL_Y, COMPASS                       (copied + COMPASS)
+  config.js                PLAYER, INTERACT, WALKABLE_NORMAL_Y                                (copied)
   style.css                page base layout (#app, #game-root, #ui-root)                     (copied)
   core/
     Events.js              Emitter (on/once/off/emit/clear)                                   (copied, doc updated)
@@ -39,7 +39,7 @@ src/
   ui/
     dom.js                 h(), svg(), keycap(), focus trap, UI sounds                        (copied)
     icons.js               ICONS + logoSvg() (new house logo; plant icons → home/sofa/lamp/blinds/palette)
-    Hud.js                 compass, room banner, prompt, toasts, help, fps                    (copied; compass offset)
+    Hud.js                 room banner, prompt, toasts, help, fps                             (copied; compass removed)
     PauseMenu.js           Esc menu (Fortsett / Innstillinger / Kontroller / Avslutt)         (copied, texts)
     SettingsPanel.js       settings form (mouse / graphics / sound tabs)                      (copied, sound trimmed)
     Dialog.js              modal dialog                                                       (copied)
@@ -123,8 +123,8 @@ WoW mode if something is targeted there!).
   left/north outer wall and of its top/east outer wall). Plan scale ≈ 50.5 px/m.
 - `rotationDeg` = three.js `rotation.y` in degrees. An object's front faces its local +z: 0 → faces +z (west),
   90 → +x (south), 180 → −z (east), −90 → −x (north).
-- Player yaw (radians, `camera.rotation.y`): 0 looks along −z (east); + turns left. The HUD compass shows
-  bearing = `COMPASS.yaw0Bearing (90) − yaw°`, so yaw 0 reads «Ø 90°», yaw −90° reads «S 180°».
+- Player yaw (radians, `camera.rotation.y`): 0 looks along −z (east); + turns left, so the compass bearing is
+  90° − yaw° (yaw 0 = east 90°, yaw −90° = south 180°).
 - Ceilings: TV-stue and kitchen flat 2.4 m; living/dining sloping 3.0 m at the high wall → 2.4 m at the south
   window wall. Paint «SAND» (light walls) and «MARRAKESH» (darker grey-brown, TV-stue); ceilings have the colour
   of their zone's walls. High wall ≈ 390 × 300 cm, RT60 today ≈ 0.86 s, target 0.4–0.6 s.
@@ -170,7 +170,7 @@ pixel ratio `min(devicePixelRatio, quality.pixelRatio)`, `outputColorSpace = SRG
 The old `alpha: true` canvas (needed only for the HMI CssLayer) was dropped.
 
 Frame order (`_frame`): `input.update` → Esc toggles pause → if not paused: [if no input block: H toggles help,
-`player.update`, `hud.setHeading`, `interaction.update`, crosshair, click/E → `interaction.interact({ game })`] →
+`player.update`, `interaction.update`, crosshair, click/E → `interaction.interact({ game })`] →
 room detection (`home.rooms`, first box containing the camera; emits `'room'`, shows the room banner) →
 `home.update(dt, time, state)` → `audio.update(dt, camera)` → `hud.update` → fps → render. dt is clamped to
 0.05 s. Paused: only HUD + render run (home.update is NOT called).
@@ -353,12 +353,12 @@ classes are `kv-*`; colours are CSS variables in `ui.css :root` (`--kv-accent #f
   mouse })`, `fmtNumber(v, decimals)` (nb-NO), `fmtPercent(v)` ("70 %"), `bindUiSounds(root, audio, selector)
   → off`, `focusableIn(root)`, `trapTab(e, root)`, `isTyping()`, `PAUSE_EVENT = 'kv:pause'`.
 - **`ui/icons.js`**: `ICONS` (play, sliders, keyboard, lock, rotate, close, back, check, exit, reset, mouse,
-  monitor, volume, info, warning, bulb, pin, user, pause, home, sofa, lamp, blinds, palette) – use
+  monitor, volume, info, warning, bulb, sun, pin, user, pause, home, sofa, lamp, blinds, palette) – use
   `svg(ICONS.name)`; `logoSvg(size)`.
-- **`ui/Hud.js`**: `new Hud(uiRoot, settings, { placeName = '', yaw0Bearing = COMPASS.yaw0Bearing })`;
+- **`ui/Hud.js`**: `new Hud(uiRoot, settings, { placeName = '' })`;
   `setPrompt(text|null, key='E', status?)`, `setCursor('default'|'pointer'|…)`, `setCrosshair(bool)`,
   `showRoom(name, { eyebrow })`, `toast(text, seconds=3)` (max 3, identical text refreshes), `showHelp(bool,
-  autoHideSeconds?)`, `toggleHelp()`, `setFps(n|null)`, `setHeading(yaw)`, `setPaused(bool)` (automatic via
+  autoHideSeconds?)`, `toggleHelp()`, `setFps(n|null)`, `setPaused(bool)` (automatic via
   PAUSE_EVENT), `update(dt)`, `dispose()`. Everything is `pointer-events: none`. Game passes placeName 'Hjemme'.
 - **`ui/PauseMenu.js`**: `new PauseMenu(uiRoot, settings, { onResume, onQuit, audio })`, `open()`, `close()`,
   `isOpen`, `dispose()`. Views main / settings / controls / confirm; handles Esc itself (capture phase); traps Tab;

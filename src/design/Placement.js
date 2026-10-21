@@ -7,7 +7,7 @@
 //                                 the mouse wheel sets the height of wall items
 //   handleClick(ndc) → bool       canvas click while placing
 //   beginDrag(uid, hit, event?) → bool    drag a placed item along its underlay (one undo step per drag)
-//   beginRotate(uid, event?) → bool       drag the rotate handle (15° steps)
+//   beginRotate(uid, event?) → bool       drag the rotate handle or the outline (15° steps)
 //   isActive (placing or dragging) · isPlacing · dragState ({ uid, status, message } | null)
 //   cancel()                      ends placing / reverts the drag
 //   constrain(item) → { position, rotationDeg, attach?, status, message }   keeps an item inside the room (nudges)
@@ -32,10 +32,22 @@
 // lamp may reach over a sofa. Surface / soft items stay on their support (table top, window board inside the
 // reveal, kitchen counter, the shelves of the wall design) when nudged or duplicated, else drop to what is below.
 // Wall panels taller than the wall (above the skirting) are cut to length (slat panels) or refused.
+//
+// The whole house (notes/hele-huset-design.md §5.3, steg 14 E1 + 28 E4): every operation works on ONE level – a new
+// item on the editor's level (editor.level: the overview's / plan's, else the player's), a drag / nudge / constrain
+// on the item's own (item.level). The level's plan (buildRoom) has the faces of all its rooms (backOf faces too, with
+// the holes of the slab behind them), the room polygons with the stairwell as a hole (a footprint must lie in ONE room:
+// «Utenfor rommet» / «Over trappehullet»), the kitchen, the built-ins and the stair's footprint on the lower level
+// («I trappa», blocked), and per door a clearance on both sides (a warning, as before) and the swing of a door the
+// player opens («I slaget til døra», blocked). Floors, ceilings, window boards and wall heights are the level's
+// (the entrance's floor lies 0.30 lower). Positions are world space, as the design holds them in memory; a new item
+// gets the item's `level` (DesignState v2 keeps it and saves y over the level's floor itself).
 import * as THREE from 'three';
 import { disposeModel } from '../models/kit.js';
 import { getArchetype } from '../models/registry.js';
-import { pickAt, cursorNDC, ndcFromClient, Footprint, hintUI, itemName, normDeg, underlayY, intersectFast } from './Selection.js';
+import { pickAt, cursorNDC, ndcFromClient, Footprint, hintUI, itemName, normDeg, underlayY, intersectFast, houseRoots, floorYAt, ROTATE_CURSOR } from './Selection.js';
+import { MAIN_LEVEL, itemLevel, levelFloorY, levelAtY } from './SceneSync.js';
+import { builtInFrame } from '../home/builtins.js';
 
 const DEG = Math.PI / 180;
 const GRID = 0.1;
@@ -81,13 +93,27 @@ const snap = (v, step) => Math.round(v / step) * step;
 // ---------------------------------------------------------------------------------------------------------------
 // Room geometry (plan = x/z)
 
-function buildRoom(editor) {
+/**
+ * The plan of one level for placing (notes/hele-huset-design.md §5.3): its walls (the room faces of every room of the
+ * level, backOf faces included – each with its floor and the holes in it), its rooms (polygons; the stairwell as a
+ * hole), the fixed boxes (the kitchen, the built-ins, the stair's footprint), the doors (a clearance in front of
+ * both sides; the swing of a door the player opens), the window boards. Without house data: the living room as before.
+ * @param {object} editor
+ * @param {string} [levelId]
+ */
+export function buildRoom(editor, levelId = MAIN_LEVEL) {
   const layout = editor.layout;
   const home = editor.home;
-  const walls = (home.walls?.length ? home.walls : layout.walls).map((w) => {
+  const H = layout.house;
+  const main = levelId === MAIN_LEVEL;
+  const floorY = levelFloorY(layout, levelId);
+  const houseWall = (id) => H?.wallsById?.[id] ?? layout.wallsById?.[id] ?? null;
+  const src = (home.walls?.length ? home.walls : layout.walls).filter((w) => (w.levelId ?? MAIN_LEVEL) === levelId);
+  const walls = src.map((w) => {
     const sx = w.start.x, sz = w.start.y, ex = w.end.x, ez = w.end.y;
     const L = Math.hypot(ex - sx, ez - sz) || 1;
-    const lw = layout.wallsById?.[w.id];
+    const lw = houseWall(w.id);
+    const fy = Number.isFinite(w.floorY) ? w.floorY : Number.isFinite(lw?.floorY) ? lw.floorY : floorY;
     return {
       id: w.id,
       name: w.name,
@@ -97,39 +123,144 @@ function buildRoom(editor) {
       nx: w.normal.x,
       nz: w.normal.y,
       L,
+      fy,
       heightAt: w.heightAt || lw?.heightAt || (() => 2.4),
-      openings: lw?.openings || [],
+      // the holes in this face: its own openings, or (a backOf face) those of the slab it is the back of
+      openings: (w.backOf?.length || lw?.backOf?.length ? lw?.holes : lw?.openings) || [],
     };
   });
-  const poly = layout.floor.polygon.map((p) => ({ x: p.x, z: p.y }));
+  // the rooms of the level (physical ones), with the stairwell as a hole in the hall's floor
+  const xz = (p) => ({ x: p.x, z: p.y });
+  const holes = (H?.floorOpenings || []).filter((fo) => fo.levelId === levelId).map((fo) => fo.polygon.map(xz));
+  const roomList = (H?.rooms || []).filter((r) => r.levelId === levelId && !r.hud && r.polygon?.length >= 3);
+  const rooms = roomList.length
+    ? roomList.map((r) => ({ id: r.id, name: r.name, floorY: r.floorY ?? floorY, poly: r.polygon.map(xz), holes }))
+    : [{ id: 'stue-kjokken', name: 'Stue/kjøkken', floorY: 0, poly: layout.floor.polygon.map(xz), holes: [] }];
+  const poly = rooms.find((r) => r.id === 'stue-kjokken')?.poly ?? rooms[0].poly;
   const fixed = [];
-  for (const k of layout.kitchen?.items || []) {
-    const b = k.box;
+  if (main) {
+    for (const k of layout.kitchen?.items || []) {
+      const b = k.box;
+      fixed.push({
+        name: k.name, cx: (b.min.x + b.max.x) / 2, cz: (b.min.z + b.max.z) / 2, ax: [1, 0], az: [0, 1],
+        hw: (b.max.x - b.min.x) / 2, hd: (b.max.z - b.min.z) / 2, y0: b.min.y, y1: b.max.y, floor: 0, kind: 'kitchen',
+      });
+    }
+  }
+  // the built-ins (WC, vanity, shower, the laundry's machines and bench …): their footprint box, axis-aligned
+  for (const b of H?.builtIns || []) {
+    if (b.levelId !== levelId || b.collide === false || !b.dims) continue;
+    let f;
+    try {
+      f = builtInFrame(b);
+    } catch {
+      continue;
+    }
+    const c = Math.abs(Math.cos(f.yaw)), s = Math.abs(Math.sin(f.yaw));
+    const hw = (b.dims.w * c + b.dims.d * s) / 2, hd = (b.dims.w * s + b.dims.d * c) / 2;
+    const y0 = f.centre.y;
     fixed.push({
-      name: k.name, cx: (b.min.x + b.max.x) / 2, cz: (b.min.z + b.max.z) / 2, ax: [1, 0], az: [0, 1],
-      hw: (b.max.x - b.min.x) / 2, hd: (b.max.z - b.min.z) / 2, y0: b.min.y, y1: b.max.y, kind: 'kitchen',
+      name: (b.name || 'innredningen').toLowerCase(), cx: f.centre.x, cz: f.centre.z, ax: [1, 0], az: [0, 1], hw, hd,
+      y0, y1: y0 + (b.dims.h || 0.5), floor: Number.isFinite(b.floorY) ? b.floorY : floorY, kind: 'builtin',
     });
   }
+  // the stair's footprint on its lower level (the level above has the stairwell as a hole): no furniture in it
+  const levelY = (id) => H?.levelsById?.[id]?.floorY ?? 0;
+  for (const st of H?.stairs || []) {
+    const lower = levelY(st.fromLevel) <= levelY(st.toLevel) ? st.fromLevel : st.toLevel;
+    if (lower !== levelId) continue;
+    for (const r of polygonRects((st.footprint || []).map(xz))) {
+      fixed.push({ ...r, ax: [1, 0], az: [0, 1], y0: st.bottomY ?? floorY, y1: st.topY ?? floorY + 2.5, floor: st.bottomY ?? floorY, kind: 'stair', name: 'trappa', block: true });
+    }
+  }
   const doors = [];
-  for (const d of layout.doors || []) {
+  const doorList = (H?.doors?.length ? H.doors : layout.doors || []).filter((d) => (d.levelId ?? MAIN_LEVEL) === levelId);
+  for (const d of doorList) {
     const n = d.normal, r = d.right;
+    const fy = Number.isFinite(d.floorY) ? d.floorY : floorY;
+    const name = d.type === 'terrace-door' || /terrasse/i.test(d.id) ? 'terrassedøra' : d.id === 'door-ute' ? 'ytterdøra' : 'døra';
+    // the clearance in front of the door on its owner room's side (as before the house), and on the other side when
+    // there is a room there
     doors.push({
-      name: d.type === 'terrace-door' || /terrasse/i.test(d.id) ? 'terrassedøra' : 'døra',
-      cx: d.bottomCenter.x + n.x * DOOR_CLEARANCE / 2, cz: d.bottomCenter.z + n.z * DOOR_CLEARANCE / 2,
-      ax: [r.x, r.z], az: [n.x, n.z], hw: d.width / 2, hd: DOOR_CLEARANCE / 2, y0: 0, y1: 2, kind: 'door',
+      name, cx: d.bottomCenter.x + n.x * DOOR_CLEARANCE / 2, cz: d.bottomCenter.z + n.z * DOOR_CLEARANCE / 2,
+      ax: [r.x, r.z], az: [n.x, n.z], hw: d.width / 2, hd: DOOR_CLEARANCE / 2, y0: fy, y1: fy + 2, kind: 'door',
     });
+    {
+      const t = houseWall(d.wallId)?.thickness ?? 0.1;
+      const off = t + DOOR_CLEARANCE / 2;
+      if ((d.connects || []).some((id) => id !== d.roomId && id !== 'ute')) {
+        doors.push({
+          name, cx: d.bottomCenter.x - n.x * off, cz: d.bottomCenter.z - n.z * off,
+          ax: [r.x, r.z], az: [n.x, n.z], hw: d.width / 2, hd: DOOR_CLEARANCE / 2, y0: fy - 0.35, y1: fy + 2, kind: 'door',
+        });
+      }
+    }
+    // the leaf's swing (doors the player opens): blocked – the door would hit the furniture
+    const sw = d.interactive ? swingBox(d, houseWall(d.wallId)?.thickness ?? 0.1) : null;
+    if (sw) doors.push({ ...sw, name, y0: fy - 0.35, y1: fy + 2, kind: 'swing', block: true });
   }
   // window boards: from the frame (revealDepth behind the wall face) to the overhang into the room, inside the reveal
   const sills = [];
-  for (const o of layout.windows || []) {
+  const winList = (H?.windows?.length ? H.windows : layout.windows || []).filter((o) => (o.levelId ?? MAIN_LEVEL) === levelId);
+  for (const o of winList) {
     if (!o.sillBoard || o.type !== 'window') continue;
     const b = o.bottomCenter;
     sills.push({
-      id: o.id, name: o.name, x: b.x, z: b.z, y: o.sill, rx: o.right.x, rz: o.right.z, nx: o.normal.x, nz: o.normal.z,
+      id: o.id, name: o.name, x: b.x, z: b.z, y: b.y, rx: o.right.x, rz: o.right.z, nx: o.normal.x, nz: o.normal.z,
       W: o.width, back: -(o.revealDepth ?? 0.2), front: o.sillBoard.overhang ?? 0.01,
     });
   }
-  return { walls, poly, fixed, doors, sills, gap: layout.baseboard?.thickness ?? 0.012, skirting: layout.baseboard?.height ?? 0.07 };
+  return {
+    level: levelId, floorY, walls, rooms, poly, holes, fixed, doors, sills,
+    gap: layout.baseboard?.thickness ?? 0.012, skirting: layout.baseboard?.height ?? 0.07,
+  };
+}
+
+/**
+ * The swing of a hinged door as a box on the side it opens to: leaf × leaf from the hinge (a door that opens past
+ * 90° sweeps the half disc around its hinge). null when it has no leaf (a sliding / terrace door).
+ */
+export function swingBox(d, t) {
+  const door = d.door;
+  if (!door || d.type !== 'door') return null;
+  const leaf = door.leaf?.w ?? d.width;
+  const angle = d.openAngleDeg ?? 90;
+  const n = d.normal, r = d.right;
+  // 'in' opens into the owner room (normal side), 'out' to the other side (behind the wall's thickness)
+  const side = door.swing === 'out' ? -1 : 1;
+  const z0 = side > 0 ? 0 : t;
+  const hu = door.hinge === 'to' ? d.width / 2 : -d.width / 2; // hinge along r from the middle of the hole
+  const towards = door.hinge === 'to' ? -1 : 1;
+  const u0 = angle > 95 ? hu - leaf : Math.min(hu, hu + towards * leaf);
+  const u1 = angle > 95 ? hu + leaf : Math.max(hu, hu + towards * leaf);
+  const uc = (u0 + u1) / 2, dc = z0 + leaf / 2;
+  const b = d.bottomCenter;
+  return {
+    cx: b.x + r.x * uc + n.x * side * dc, cz: b.z + r.z * uc + n.z * side * dc,
+    ax: [r.x, r.z], az: [n.x, n.z], hw: (u1 - u0) / 2, hd: leaf / 2,
+  };
+}
+
+/** An axis-aligned polygon ({ x, z } points) as rectangles { cx, cz, hw, hd } (cells of its own coordinates). */
+function polygonRects(poly) {
+  if (!poly || poly.length < 3) return [];
+  const xs = [...new Set(poly.map((p) => +p.x.toFixed(4)))].sort((a, b) => a - b);
+  const zs = [...new Set(poly.map((p) => +p.z.toFixed(4)))].sort((a, b) => a - b);
+  const out = [];
+  for (let i = 0; i + 1 < xs.length; i++) {
+    let run = null;
+    for (let k = 0; k + 1 < zs.length; k++) {
+      const inside = pointInPoly(poly, (xs[i] + xs[i + 1]) / 2, (zs[k] + zs[k + 1]) / 2);
+      if (inside && run) run.z1 = zs[k + 1];
+      else if (inside) run = { x0: xs[i], x1: xs[i + 1], z0: zs[k], z1: zs[k + 1] };
+      if (!inside && run) {
+        out.push(run);
+        run = null;
+      }
+    }
+    if (run) out.push(run);
+  }
+  return out.map((q) => ({ cx: (q.x0 + q.x1) / 2, cz: (q.z0 + q.z1) / 2, hw: (q.x1 - q.x0) / 2, hd: (q.z1 - q.z0) / 2 }));
 }
 
 /** Axes of an item footprint (deg) projected on a unit direction: half extent of a w × d footprint along (ux, uz). */
@@ -176,7 +307,7 @@ function sillAt(room, p, tol = 0.06) {
 function kitchenTopAt(room, p, tol = 0.04) {
   let best = null;
   for (const b of room.fixed) {
-    if (Math.abs(p.y - b.y1) > tol) continue;
+    if (b.kind === 'stair' || Math.abs(p.y - b.y1) > tol) continue;
     if (Math.abs(p.x - b.cx) > b.hw + 0.02 || Math.abs(p.z - b.cz) > b.hd + 0.02) continue;
     if (!best || b.hw * b.hd > best.hw * best.hd) best = b;
   }
@@ -265,19 +396,41 @@ function insideFootprint(fp, x, z, shrink = 0.005) {
   return Math.abs(dx * fp.ax[0] + dz * fp.ax[1]) < fp.hw - shrink && Math.abs(dx * fp.az[0] + dz * fp.az[1]) < fp.hd - shrink;
 }
 
-/** True when the whole footprint lies on the floor (corners inside, no reflex corner of the room poking in). */
+/** The room of the level whose floor holds a plan point (not over a hole – the stairwell), or null. */
+function roomAtXZ(room, x, z) {
+  for (const r of room.rooms) if (pointInPoly(r.poly, x, z) && !r.holes.some((hp) => pointInPoly(hp, x, z))) return r;
+  return null;
+}
+
+/**
+ * Why a footprint cannot stand where it is: null when it lies on the floor of ONE room (corners inside, no reflex
+ * corner of the room or of the stairwell poking in), else 'Utenfor rommet' / 'Over trappehullet'.
+ */
+export function footprintIssue(room, fp) {
+  const r = roomAtXZ(room, fp.cx, fp.cz);
+  const overHole = (x, z) => room.holes.some((hp) => pointInPoly(hp, x, z));
+  if (!r) return overHole(fp.cx, fp.cz) ? 'Over trappehullet' : 'Utenfor rommet';
+  for (const c of corners(fp, 0.006)) {
+    if (!pointInPoly(r.poly, c.x, c.z)) return 'Utenfor rommet';
+    if (overHole(c.x, c.z)) return 'Over trappehullet';
+  }
+  for (const p of r.poly) if (insideFootprint(fp, p.x, p.z)) return 'Utenfor rommet';
+  for (const hp of room.holes) for (const p of hp) if (insideFootprint(fp, p.x, p.z)) return 'Over trappehullet';
+  return null;
+}
+
+/** True when the whole footprint lies on the floor of one room (see footprintIssue). */
 function footprintInside(room, fp) {
-  for (const c of corners(fp, 0.006)) if (!pointInPoly(room.poly, c.x, c.z)) return false;
-  for (const p of room.poly) if (insideFootprint(fp, p.x, p.z)) return false;
-  return true;
+  return !footprintIssue(room, fp);
 }
 
 /**
  * Pushes a footprint out of every wall it penetrates (smallest push first) and back inside the room when its centre
  * left it. Mutates fp.cx / fp.cz.
  */
-function resolveWalls(room, fp, gap = 0) {
-  if (!pointInPoly(room.poly, fp.cx, fp.cz)) {
+export function resolveWalls(room, fp, gap = 0) {
+  // (over the stairwell it stays where it is: the candidate says why it cannot stand there)
+  if (!roomAtXZ(room, fp.cx, fp.cz) && !room.holes.some((hp) => pointInPoly(hp, fp.cx, fp.cz))) {
     const p = nearestInside(room, fp.cx, fp.cz, 0.02);
     fp.cx = p.x;
     fp.cz = p.z;
@@ -381,7 +534,8 @@ export class Placement {
     this.wallHeight = 1.5;
     this.target = null; // last candidate { mount, position, rotationDeg, attach?, status, message, note }
     this._drag = null;
-    this._room = null;
+    this._rooms = new Map(); // levelId → buildRoom
+    this._lv = MAIN_LEVEL; // the level the current operation works on (see _inLevel)
     this._obstacles = null;
     this._mods = { shift: false, alt: false, ctrl: false };
     this._ndc = new THREE.Vector2();
@@ -427,9 +581,41 @@ export class Placement {
     return d ? { uid: d.uid, kind: d.kind, status: d.status, message: d.message } : null;
   }
 
-  /** Room geometry, built on first use. */
+  /** Plan of the level the current operation works on (built on first use, one per level). */
   get room() {
-    return (this._room ||= buildRoom(this.editor));
+    return this.roomOf(this._lv);
+  }
+
+  /** Plan of a level (buildRoom), cached. */
+  roomOf(levelId = MAIN_LEVEL) {
+    let r = this._rooms.get(levelId);
+    if (!r) {
+      r = buildRoom(this.editor, levelId);
+      this._rooms.set(levelId, r);
+    }
+    return r;
+  }
+
+  /** Runs fn with `levelId` as the level of the operation (this.room, the floor, the obstacles). */
+  _inLevel(levelId, fn) {
+    const prev = this._lv;
+    this._lv = levelId || MAIN_LEVEL;
+    try {
+      return fn();
+    } finally {
+      this._lv = prev;
+    }
+  }
+
+  /** World y of the floor of the operation's level under (x, z) (the entrance: 0.30 under the basement's). */
+  _floorAt(x, z) {
+    return floorYAt(this.editor.layout, x, z, this._lv);
+  }
+
+  /** An item's position (world space, DesignState v2) as a copy. */
+  _world(item) {
+    const p = item.position || [0, 0, 0];
+    return [p[0], p[1] || 0, p[2]];
   }
 
   // ---- placing a new item ------------------------------------------------------------------------------------
@@ -527,7 +713,9 @@ export class Placement {
       e.events.emit('sfx', { name: 'door-locked', volume: 0.4 });
       return true;
     }
-    const spec = { ...this._patched(t.patch), position: t.position.map(r3), rotationDeg: t.rotationDeg };
+    // the item stands on the level the candidate was found on (DesignState v2 keeps `level`; positions are world)
+    const level = t.level ?? MAIN_LEVEL;
+    const spec = { ...this._patched(t.patch), level, position: t.position.map(r3), rotationDeg: t.rotationDeg };
     if (t.attach) spec.attach = t.attach;
     else delete spec.attach;
     const name = itemName(spec);
@@ -582,6 +770,8 @@ export class Placement {
   /** Aims the ghost at a point in NDC (updates this.target). */
   _aim(ndc) {
     const e = this.editor;
+    // the level the editor works on (the overview's / plan's, else the player's): new items stand on it
+    this._lv = e.level ?? MAIN_LEVEL;
     const res = this._solveFor(this.mount, ndc, {
       dims: this.spec.dims,
       theta: this.rotationDeg,
@@ -598,10 +788,11 @@ export class Placement {
       this.target = null;
       return;
     }
+    res.level = this._lv;
     this.target = res;
     this._setGhostPatch(res.patch || null);
     const dims = res.patch?.dims ? { ...this.spec.dims, ...res.patch.dims } : this.spec.dims;
-    const item = { mount: this.mount, archetype: this.spec.archetype, dims, position: res.position, rotationDeg: res.rotationDeg, attach: res.attach };
+    const item = { mount: this.mount, archetype: this.spec.archetype, dims, level: this._lv, position: res.position, rotationDeg: res.rotationDeg, attach: res.attach };
     e.sync.placeObject(this.ghost, item);
     e.sync.ghostTint(this.ghost, res.status === 'ok');
     this.ghost.visible = true;
@@ -628,12 +819,15 @@ export class Placement {
     obj.updateMatrixWorld(true);
     _box.setFromObject(obj);
     const oy = obj.position.y;
+    // the drag stays on the item's level (its plan, its floor)
+    this._lv = itemLevel(item, e.layout);
     const d = {
       uid, kind: 'move', mount: item.mount, name: itemName(item), dims: { ...item.dims }, archetype: item.archetype, params: item.params,
       theta: item.rotationDeg || 0, yRel: [_box.min.y - oy, _box.max.y - oy], status: 'ok', message: '', note: '',
-      ndc: ndc.clone(), offset: [0, 0], planeY: 0, wallId: item.attach?.wallId ?? null, colliders: obj.userData.model?.colliders,
+      ndc: ndc.clone(), offset: [0, 0], planeY: this.room.floorY, wallId: item.attach?.wallId ?? null, colliders: obj.userData.model?.colliders,
+      level: this._lv,
     };
-    const p = item.position;
+    const p = this._world(item);
     const grab = hit?.point ?? new THREE.Vector3(p[0], oy, p[2]);
     if (d.mount === 'floor' || d.mount === 'rug' || d.mount === 'ceiling') {
       d.planeY = this._dragPlaneY(grab.y);
@@ -646,7 +840,7 @@ export class Placement {
         d.wallId = w.id;
         const u = (grab.x - w.sx) * w.dx + (grab.z - w.sz) * w.dz;
         const uc = (p[0] - w.sx) * w.dx + (p[2] - w.sz) * w.dz;
-        d.offset = [uc - u, p[1] - grab.y];
+        d.offset = [uc - u, oy - grab.y];
       }
     }
     e.design.begin(`Flytt ${d.name}`);
@@ -660,7 +854,7 @@ export class Placement {
   }
 
   /**
-   * Starts rotating an item with the rotate handle (15° steps, Alt: free).
+   * Starts rotating an item with the rotate handle or its outline (15° steps, Alt: free).
    * @param {string} uid
    * @param {MouseEvent|PointerEvent} [ev]
    * @returns {boolean}
@@ -671,18 +865,19 @@ export class Placement {
     const item = e.design.get(uid);
     if (!item || item.locked || item.mount === 'wall') return false;
     const ndc = ev ? ndcFromClient(e.renderer.domElement, ev.clientX, ev.clientY, new THREE.Vector2()) : cursorNDC(e, new THREE.Vector2());
-    const fpY = e.selection?.footprint?.group?.position?.y ?? 0;
+    this._lv = itemLevel(item, e.layout);
+    const fpY = e.selection?.footprint?.group?.position?.y ?? this.room.floorY;
     const P = ndc ? this._rayPlane(ndc, fpY) : null;
     if (!P) return false;
     const p = item.position;
     this._drag = {
       uid, kind: 'rotate', mount: item.mount, name: itemName(item), dims: { ...item.dims }, archetype: item.archetype,
       theta0: item.rotationDeg || 0, theta: item.rotationDeg || 0, a0: Math.atan2(P.x - p[0], P.z - p[2]), planeY: fpY,
-      status: 'ok', message: '', note: '', ndc: ndc.clone(), yRel: [0, item.dims.h],
+      status: 'ok', message: '', note: '', ndc: ndc.clone(), yRel: [0, item.dims.h], level: this._lv,
     };
     e.design.begin(`Roter ${itemName(item)}`);
     this._listenDrag(true);
-    e.hud?.setCursor?.('grabbing');
+    e.hud?.setCursor?.(ROTATE_CURSOR);
     return true;
   }
 
@@ -713,6 +908,7 @@ export class Placement {
       this._endDrag(false);
       return;
     }
+    this._lv = d.level ?? itemLevel(item, e.layout);
     if (d.kind === 'rotate') {
       const P = this._rayPlane(d.ndc, d.planeY);
       if (!P) return;
@@ -804,7 +1000,12 @@ export class Placement {
 
   _solveFloor(ndc, mount, o) {
     const d = o.drag;
-    const P = this._rayPlane(ndc, d ? d.planeY : 0);
+    let P = this._rayPlane(ndc, d ? d.planeY : this.room.floorY);
+    // a room whose floor lies lower than its level's (the entrance): the cursor on that floor
+    if (P && !d) {
+      const fy = this._floorAt(P.x, P.z);
+      if (Math.abs(fy - this.room.floorY) > 0.01) P = this._rayPlane(ndc, fy) ?? P;
+    }
     const ray = this._cameraRay(ndc);
     // the floor point would lie behind the wall (or kitchen box) under the cursor – in the next room or outside: use
     // the floor at the foot of that wall instead, the piece turned to face away from it
@@ -860,11 +1061,11 @@ export class Placement {
       const px = O.x + D.x * t, py = O.y + D.y * t, pz = O.z + D.z * t;
       const u = (px - w.sx) * w.dx + (pz - w.sz) * w.dz;
       if (u < -0.02 || u > w.L + 0.02) continue;
-      if (py < -0.02 || py > w.heightAt(clamp(u, 0, w.L)) + 0.02) continue;
+      if (py - w.fy < -0.02 || py - w.fy > w.heightAt(clamp(u, 0, w.L)) + 0.02) continue;
       best = { t, x: px, y: py, z: pz, nx: w.nx, nz: w.nz, name: w.name };
     }
     for (const b of room.fixed) {
-      if (b.y0 > 0.3) continue; // wall cabinets: the floor below them is free
+      if (b.y0 - (b.floor ?? 0) > 0.3) continue; // wall cabinets: the floor below them is free
       const hit = rayBoxXZ(O, D, b);
       if (hit && hit.t < tMax && (!best || hit.t < best.t)) best = { ...hit, name: b.name };
     }
@@ -889,7 +1090,7 @@ export class Placement {
       // the cursor on a table / the floor, or the view from above: hang it over what is under the cursor (the table
       // top, not the floor behind it)
       const hit = pickAt(e, ndc, { want: new Set(['item', 'floor', 'other', 'wall', 'window']), pass: new Set(['ceiling']), exclude: o.uid });
-      const P = hit?.point ?? this._rayPlane(ndc, walking ? 2.4 : 0);
+      const P = hit?.point ?? this._rayPlane(ndc, this.room.floorY + (walking ? 2.4 : 0));
       if (!P) return null;
       x = P.x;
       z = P.z;
@@ -924,8 +1125,9 @@ export class Placement {
   _tableUnder(x, z, excludeUid) {
     const e = this.editor;
     let best = null;
+    const floor = this.room.floorY;
     for (const it of e.design.list()) {
-      if (it.hidden || it.uid === excludeUid || it.mount !== 'floor') continue;
+      if (it.hidden || it.uid === excludeUid || it.mount !== 'floor' || itemLevel(it, e.layout) !== this._lv) continue;
       const obj = e.sync.getObject(it.uid);
       const surfaces = obj?.userData?.model?.surfaces;
       if (!surfaces?.length) continue;
@@ -933,7 +1135,7 @@ export class Placement {
       const lp = new THREE.Vector3(x, obj.position.y, z).applyMatrix4(_m4.copy(obj.matrixWorld).invert());
       for (const s of surfaces) {
         const topY = obj.position.y + s.y;
-        if (topY < 0.55 || topY > 1.1) continue;
+        if (topY - floor < 0.55 || topY - floor > 1.1) continue;
         const [cx, cz] = s.center || [0, 0];
         if (Math.abs(lp.x - cx) > s.w / 2 + 0.05 || Math.abs(lp.z - cz) > s.d / 2 + 0.05) continue;
         if (!best || s.w * s.d > best.s.w * best.s.d) best = { item: it, obj, s, topY, lx: lp.x, lz: lp.z };
@@ -989,28 +1191,31 @@ export class Placement {
     resolveWalls(room, fp, mount === 'rug' ? 0 : room.gap * 0.5);
     let status = 'ok';
     let message = '';
-    if (!footprintInside(room, fp)) {
+    const issue = footprintIssue(room, fp);
+    if (issue) {
       status = 'blocked';
-      message = 'Utenfor rommet';
+      message = issue;
     }
-    const ceilY = mount === 'ceiling' ? this.editor.home.ceilingHeightAt?.(fp.cx, fp.cz) ?? 2.4 : 0;
+    // the floor of the room it stands in (world y), the ceiling of its level there
+    const floor = this._floorAt(fp.cx, fp.cz);
+    const ceilY = mount === 'ceiling' ? this.editor.home.ceilingHeightAt?.(fp.cx, fp.cz, room.floorY + 1) ?? floor + 2.4 : 0;
     // furniture stands ON a rug (1.5–2 cm), not sunk into it
-    const baseY = mount === 'ceiling' ? ceilY : mount === 'floor' ? r3(underlayY(this.editor, fp.cx, fp.cz, o.uid ?? null)) : 0;
+    const baseY = mount === 'ceiling' ? ceilY : mount === 'floor' ? r3(underlayY(this.editor, fp.cx, fp.cz, o.uid ?? null, 'floor', this._lv)) : floor;
     if (status === 'ok') {
       // the model's collision boxes when it has them (an arc lamp's arm may reach over the sofa)
       const boxes = o.colliders?.length && mount !== 'ceiling' ? colliderBoxes(o.colliders, fp.cx, fp.cz, fp.theta, baseY) : null;
       const yRel = o.yRel || [0, dims.h];
       const hit = this._overlap({ ...fp, y0: baseY + yRel[0], y1: baseY + yRel[1], boxes }, mount, o.uid);
       if (hit) {
-        status = 'overlap';
-        message = hit.kind === 'door' ? `Står foran ${hit.name}` : `Overlapper med ${hit.name}`;
+        status = hit.block ? 'blocked' : 'overlap';
+        message = hit.kind === 'door' ? `Står foran ${hit.name}` : hit.kind === 'swing' ? `I slaget til ${hit.name}` : hit.kind === 'stair' ? 'I trappa' : `Overlapper med ${hit.name}`;
       }
     }
     if (!note && mount !== 'ceiling') {
       const g = nearestWallGap(room, fp);
       if (Number.isFinite(g) && g < 1.2) note = g < 0.02 ? 'inntil veggen' : `${cm(g)} cm til veggen`;
     }
-    if (mount === 'ceiling') note = `${cm(ceilY)} cm takhøyde`;
+    if (mount === 'ceiling') note = `${cm(ceilY - floor)} cm takhøyde`;
     if (o.snap && this.grid && !note) note = 'rutenett 10 cm';
     return { mount, position: [fp.cx, baseY, fp.cz], rotationDeg: fp.theta, status, message, note };
   }
@@ -1034,10 +1239,10 @@ export class Placement {
     const d = o.drag;
     const hit = pickAt(e, ndc, { want: new Set(['wall']), pass: new Set(['item']), exclude: o.uid });
     let w = hit ? room.walls.find((x) => x.id === hit.wallId) : null;
-    let u, v;
+    let u, v; // v: height above the wall's floor
     if (w && (!d || w.id !== d.wallId || !d.wallId)) {
       u = (hit.point.x - w.sx) * w.dx + (hit.point.z - w.sz) * w.dz;
-      v = hit.point.y;
+      v = hit.point.y - w.fy;
       if (d) {
         if (d.wallId && w.id !== d.wallId) d.offset[0] = 0; // moved onto another wall: centre under the cursor
         d.wallId = w.id;
@@ -1051,7 +1256,7 @@ export class Placement {
       const P = _ray.ray.intersectPlane(_plane, new THREE.Vector3());
       if (!P) return null;
       u = (P.x - w.sx) * w.dx + (P.z - w.sz) * w.dz;
-      v = P.y;
+      v = P.y - w.fy;
     } else return null;
     const dims = o.dims || { w: 0.5, d: 0.05, h: 0.5 };
     if (d) {
@@ -1114,7 +1319,7 @@ export class Placement {
     const theta = normDeg(Math.atan2(w.nx, w.nz) / DEG);
     if (status === 'ok') {
       const fp = { cx: x + w.nx * dims.d / 2, cz: z + w.nz * dims.d / 2, ax: [w.dx, w.dz], az: [w.nx, w.nz], hw, hd: dims.d / 2 };
-      const hit2 = this._overlap({ ...fp, y0: v - hh, y1: v + hh }, 'wall', o.uid);
+      const hit2 = this._overlap({ ...fp, y0: w.fy + v - hh, y1: w.fy + v + hh }, 'wall', o.uid);
       if (hit2) {
         status = 'overlap';
         message = `Overlapper med ${hit2.name}`;
@@ -1122,7 +1327,7 @@ export class Placement {
     }
     if (!note) note = `midt ${cm(v)} cm · underkant ${cm(v - hh)} cm`;
     if (cutNote) note = `${cutNote} · ${note}`;
-    const res = { mount: 'wall', position: [x, v, z], rotationDeg: theta, attach: { wallId: w.id, normal: [r3(w.nx), 0, r3(w.nz)] }, status, message, note };
+    const res = { mount: 'wall', position: [x, w.fy + v, z], rotationDeg: theta, attach: { wallId: w.id, normal: [r3(w.nx), 0, r3(w.nz)] }, status, message, note };
     if (patch) res.patch = patch;
     return res;
   }
@@ -1191,7 +1396,7 @@ export class Placement {
         x = c.x;
         y = c.y;
         z = c.z;
-        note = /øy/i.test(k.name || '') ? 'på kjøkkenøya' : 'på kjøkkenbenken';
+        note = k.kind === 'builtin' ? `på ${k.name}` : /øy/i.test(k.name || '') ? 'på kjøkkenøya' : 'på kjøkkenbenken';
         if (!c.fits) {
           status = 'overlap';
           message = 'For stor for benken';
@@ -1204,9 +1409,10 @@ export class Placement {
         resolveWalls(room, fp, room.gap * 0.5);
         x = fp.cx;
         z = fp.cz;
-        if (!footprintInside(room, fp)) {
+        const issue = footprintIssue(room, fp);
+        if (issue) {
           status = 'blocked';
-          message = 'Utenfor rommet';
+          message = issue;
         }
       }
     }
@@ -1382,7 +1588,8 @@ export class Placement {
   }
 
   _dropY(x, y, z, excludeUid) {
-    return this._dropHit(x, y, z, excludeUid)?.point.y ?? 0;
+    // nothing below: the floor of the level the point is on
+    return this._dropHit(x, y, z, excludeUid)?.point.y ?? floorYAt(this.editor.layout, x, z, levelAtY(this.editor.layout, y));
   }
 
   /**
@@ -1397,10 +1604,13 @@ export class Placement {
     const skip = excludeUid instanceof Set ? excludeUid : null;
     for (const ob of e.sync.objects()) if (ob.visible && (skip ? !skip.has(ob.userData.uid) : ob.userData.uid !== excludeUid)) roots.push(ob);
     for (const k of ['shell', 'kitchen', 'wall']) if (e.home.roots?.[k]) roots.push(e.home.roots[k]);
+    roots.push(...houseRoots(e.home)); // the other rooms' floors, built-ins (the vanity top, the laundry bench …)
     for (const r of e.views?.pickRoots?.() || []) roots.push(r);
     for (const hit of intersectFast(roots, _ray)) {
       const o = hit.object;
       if (!o.isMesh || o.userData.isHighlight || o.userData.ghost || e.views?.isConcealed?.(o)) continue;
+      // a level / a room's contents that visibility.js hides (§4.12) carries nothing
+      if (!visibleChain(o)) continue;
       let m = o.material;
       if (Array.isArray(m)) m = m[hit.face?.materialIndex ?? 0];
       if (!m || m.visible === false || m.colorWrite === false || (m.transparent && m.opacity < 0.04)) continue;
@@ -1421,7 +1631,7 @@ export class Placement {
     const e = this.editor;
     const room = this.room;
     const hit = this._dropHit(x, y, z, excludeUid, maxY);
-    if (!hit) return { kind: 'floor', name: 'gulvet', y: underlayY(e, x, z, excludeUid) };
+    if (!hit) return { kind: 'floor', name: 'gulvet', y: underlayY(e, x, z, excludeUid, 'floor', this._lv) };
     const p = hit.point;
     let uid = null;
     for (let o = hit.object; o; o = o.parent) {
@@ -1462,18 +1672,19 @@ export class Placement {
     if (sill) return { kind: 'sill', name: 'vinduskarmen', y: sill.y, clamp: (cx, cz) => clampToSill(sill, cx, cz, thetaDeg, dims) };
     const k = kitchenTopAt(room, p);
     if (k) return { kind: 'kitchen', name: 'benken', y: k.y1, clamp: (cx, cz) => clampToBoxTop(k, cx, cz, thetaDeg, dims) };
-    return { kind: p.y < 0.05 ? 'floor' : 'other', name: 'gulvet', y: p.y };
+    return { kind: p.y - this._floorAt(p.x, p.z) < 0.05 ? 'floor' : 'other', name: 'gulvet', y: p.y };
   }
 
   // ---- overlap -----------------------------------------------------------------------------------------------
 
   /** Footprints of everything a candidate could collide with (cached until the design changes). */
   _obstacleList() {
-    if (this._obstacles) return this._obstacles;
+    if (this._obstacles && this._obstacles.level === this._lv) return this._obstacles;
     const e = this.editor;
     const list = [];
     for (const it of e.design.list()) {
-      if (it.hidden) continue;
+      // the furniture of the operation's level only (the basement lies under the first floor, at the same x/z)
+      if (it.hidden || itemLevel(it, e.layout) !== this._lv) continue;
       const b = e.sync.objectBounds(it.uid, new THREE.Box3());
       if (!b || !Number.isFinite(b.min.y)) continue;
       const p = it.position;
@@ -1493,7 +1704,7 @@ export class Placement {
       list.push({ ...fp, y0: b.min.y, y1: b.max.y, boxes, name: it.name || 'et møbel', uid: it.uid, mount: it.mount, kind: 'item' });
     }
     const room = this.room;
-    this._obstacles = { items: list, fixed: room.fixed, doors: room.doors };
+    this._obstacles = { level: this._lv, items: list, fixed: room.fixed, doors: room.doors };
     return this._obstacles;
   }
 
@@ -1512,13 +1723,18 @@ export class Placement {
       }
       return false;
     };
+    // what cannot be placed at all first (the stair, the swing of a door the player opens), then the rest; things on
+    // the wall or under the ceiling may hang over the stair
+    const standing = mount !== 'wall' && mount !== 'ceiling';
+    if (standing) for (const o of obs.fixed) if (o.block && hits(o)) return o;
+    if (mount === 'floor') for (const o of obs.doors) if (o.block && hits(o, 0.03)) return o;
     for (const o of obs.items) {
       if (o.uid === selfUid || o.uid === supportUid || o.mount === 'soft') continue;
       if ((mount === 'rug') !== (o.mount === 'rug')) continue;
       if (hits(o)) return o;
     }
-    for (const o of obs.fixed) if (hits(o)) return o;
-    if (mount === 'floor') for (const o of obs.doors) if (hits(o, 0.03)) return o;
+    for (const o of obs.fixed) if (!o.block && hits(o)) return o;
+    if (mount === 'floor') for (const o of obs.doors) if (!o.block && hits(o, 0.03)) return o;
     return null;
   }
 
@@ -1534,6 +1750,12 @@ export class Placement {
    *   dims: the size it would need (a slat panel taller than the wall, cut to length)
    */
   constrain(item) {
+    // on the item's own level (its plan, its floor); positions are world space
+    return this._inLevel(itemLevel(item, this.editor.layout), () => this._constrainWorld(item));
+  }
+
+  /** constrain() with world positions (on the operation's level). */
+  _constrainWorld(item) {
     const p = item.position || [0, 0, 0];
     const dims = item.dims || { w: 0.5, d: 0.5, h: 0.5 };
     const ref = item.uid ?? item._exclude ?? null;
@@ -1559,7 +1781,8 @@ export class Placement {
       const top = Math.min(w.heightAt(clamp(u - hw, 0, w.L)), w.heightAt(u), w.heightAt(clamp(u + hw, 0, w.L)));
       const fit = this._fitHeight(dims.h, top, item.archetype);
       const hh = (fit.cut ? fit.h : dims.h) / 2;
-      const v = clamp(p[1], fit.minBottom + hh, Math.max(fit.minBottom + hh, top - hh - 0.01));
+      // v: above the wall's floor
+      const v = clamp(p[1] - w.fy, fit.minBottom + hh, Math.max(fit.minBottom + hh, top - hh - 0.01));
       let status = 'ok';
       let message = '';
       if (fit.blocked) {
@@ -1578,7 +1801,7 @@ export class Placement {
         }
       }
       const out = {
-        position: [w.sx + w.dx * u, v, w.sz + w.dz * u],
+        position: [w.sx + w.dx * u, w.fy + v, w.sz + w.dz * u],
         rotationDeg: normDeg(Math.atan2(w.nx, w.nz) / DEG),
         attach: { ...(item.attach || {}), wallId: w.id, normal: [r3(w.nx), 0, r3(w.nz)] },
         status,
@@ -1598,7 +1821,8 @@ export class Placement {
     const p = item.position || [0, 0, 0];
     const theta = item.rotationDeg || 0;
     const exclude = item.uid ?? item._exclude ?? null;
-    const from = item._from ?? (item.uid ? e.design.get(item.uid)?.position : null) ?? p;
+    const stored = item.uid ? e.design.get(item.uid) : null;
+    const from = item._from ?? (stored ? this._world(stored) : null) ?? p;
     let x = p[0], y = p[1], z = p[2];
     let status = 'ok';
     let message = '';
@@ -1631,10 +1855,11 @@ export class Placement {
           z = fp.cz;
           below = this._supportAt(x, start, z, exclude, theta, dims);
         }
-        y = below.kind === 'floor' ? underlayY(e, x, z, exclude) : below.y;
-        if (!footprintInside(room, fp)) {
+        y = below.kind === 'floor' ? underlayY(e, x, z, exclude, 'floor', this._lv) : below.y;
+        const issue = footprintIssue(room, fp);
+        if (issue) {
           status = 'blocked';
-          message = 'Utenfor rommet';
+          message = issue;
         }
       }
     }
@@ -1679,15 +1904,19 @@ export class Placement {
     return fallback || [0.3, 0, 0.3];
   }
 
+  /** What an item would overlap at a position (world), on its level. */
   _overlapFor(item, position) {
     const dims = item.dims;
     if (item.mount === 'wall' || item.mount === 'soft') return null;
-    const fp = { cx: position[0], cz: position[2], hw: dims.w / 2, hd: dims.d / 2, ...axes(item.rotationDeg || 0) };
-    const y = item.mount === 'ceiling' ? (this.editor.home.ceilingHeightAt?.(position[0], position[2]) ?? 2.4) - dims.h : position[1];
-    const obj = item.mount !== 'ceiling' && item.uid ? this.editor.sync.getObject(item.uid) : null;
-    const col = obj?.userData?.model?.colliders;
-    const boxes = col?.length ? colliderBoxes(col, position[0], position[2], item.rotationDeg || 0, y) : null;
-    return this._overlap({ ...fp, y0: y, y1: y + dims.h, boxes }, item.mount, null);
+    return this._inLevel(itemLevel(item, this.editor.layout), () => {
+      const base = this.room.floorY;
+      const fp = { cx: position[0], cz: position[2], hw: dims.w / 2, hd: dims.d / 2, ...axes(item.rotationDeg || 0) };
+      const y = item.mount === 'ceiling' ? (this.editor.home.ceilingHeightAt?.(position[0], position[2], base + 1) ?? base + 2.4) - dims.h : position[1];
+      const obj = item.mount !== 'ceiling' && item.uid ? this.editor.sync.getObject(item.uid) : null;
+      const col = obj?.userData?.model?.colliders;
+      const boxes = col?.length ? colliderBoxes(col, position[0], position[2], item.rotationDeg || 0, y) : null;
+      return this._overlap({ ...fp, y0: y, y1: y + dims.h, boxes }, item.mount, null);
+    });
   }
 
   /** The room wall an item hangs on (attach.wallId, else the nearest wall facing its front). */
@@ -1714,7 +1943,7 @@ export class Placement {
     cam.updateMatrixWorld();
     const cy = _v3.setFromMatrixPosition(cam.matrixWorld).y;
     if (cam.isOrthographicCamera) return y;
-    if (Math.abs(cy - y) < 0.35) return Math.max(0, cy - 0.6);
+    if (Math.abs(cy - y) < 0.35) return Math.max(this.room.floorY, cy - 0.6);
     return y;
   }
 
@@ -1772,7 +2001,7 @@ export class Placement {
       }
       if (!this._drag) return;
       this.hint.tip({ text: d.name, sub: d.status === 'ok' ? d.note : d.message || d.note, tone: d.status === 'ok' ? 'ok' : 'warn' }, 5);
-      e.hud?.setCursor?.('grabbing');
+      e.hud?.setCursor?.(d.kind === 'rotate' ? ROTATE_CURSOR : 'grabbing');
       const items = [[['Slipp'], 'ferdig']];
       if (d.kind === 'move' && d.mount !== 'wall') items.push([['R'], 'roter']);
       items.push([['Alt'], d.kind === 'rotate' ? 'fri vinkel' : 'uten festing'], [['Esc'], 'angre']);
@@ -1887,6 +2116,11 @@ function leanDepth(o, dims) {
 function isUnder(object, root) {
   for (let o = object; o; o = o.parent) if (o === root) return true;
   return false;
+}
+
+function visibleChain(object) {
+  for (let o = object; o; o = o.parent) if (!o.visible) return false;
+  return true;
 }
 
 /** World yaw (deg) of an object (its local +z in the world, seen from above). */

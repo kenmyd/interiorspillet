@@ -1,6 +1,7 @@
 # lighting – notes for the integrator
 
-Owner of `src/home/lighting.js` (LightManager, sun/daylight helpers) and `src/ui/LightPanel.js` («Lys og sol»).
+Owner of `src/home/lighting.js` (LightManager, sun/daylight helpers), `src/ui/LightPanel.js` («Belysning», the lamps)
+and `src/ui/SunPanel.js` («Sol», time of day, date, light mode, weather, exposure, latitude).
 Exported names and signatures from the stub are kept (`LightManager`, `sunPosition`, `kelvinToColor`); new exports:
 `SITE`, `solarPosition`, `sunTimes`, `daylight`, `dayOfYear`, `dateFromDayOfYear`, `utcOffset`.
 

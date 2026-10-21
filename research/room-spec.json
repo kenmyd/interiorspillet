@@ -1071,7 +1071,7 @@
       "lightColorK": 2700,
       "lumensPerM": 300,
       "aim": "ned på benkeplata og bakveggen",
-      "notes": "I tillegg varmt lys inne i glasskapet."
+      "notes": "I tillegg en varm LED-list inne i hver av de tre seksjonene i glasskapet, på samme bryter (k-overskap.ledInside)."
     },
     {
       "id": "spot-hoyvegg-1",
@@ -1617,7 +1617,12 @@
         "glass": "#3a3632",
         "material": "glass-smoked",
         "doors": 3,
-        "notes": "Sorte alu-rammer med røykfarget glass, lys inni (vinglass, boller). Bunn 1,47, topp 1,90."
+        "interior": "#15120f",
+        "ledInside": {
+          "lumensPerM": 60,
+          "lightColorK": 2700
+        },
+        "notes": "Sorte alu-rammer med røykfarget glass, mørk (nesten sort) matt bakside og sider inni, og en varm LED-list oppe under taket rett bak dørrammen i hver av de tre seksjonene (samme bryter som lyset under skapet). Vinglass og boller inni. Bunn 1,47, topp 1,90."
       },
       {
         "id": "k-oy",

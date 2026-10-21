@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import * as catalog from '../catalog/index.js';
-import { computeAcoustics } from './Acoustics.js';
+import { computeAcoustics, acousticsFor, LIVING_ROOM_ID } from './Acoustics.js';
 import { Selection } from './Selection.js';
 import { Placement } from './Placement.js';
 import { ViewModes } from './ViewModes.js';
+import { MAIN_LEVEL, levelAtFloorY } from './SceneSync.js';
 import { Toolbar } from '../ui/Toolbar.js';
 import { CatalogPanel } from '../ui/CatalogPanel.js';
 import { Inspector } from '../ui/Inspector.js';
@@ -14,6 +15,7 @@ import { WallPanel } from '../ui/WallPanel.js';
 import { PhotoCompare } from '../ui/PhotoCompare.js';
 import { WindowPanel } from '../ui/WindowPanel.js';
 import { LightPanel } from '../ui/LightPanel.js';
+import { SunPanel } from '../ui/SunPanel.js';
 import { setPanelHost, closeTopPanel, anyModalOpen, isFormFocused } from '../ui/panelKit.js';
 import { isTyping } from '../ui/dom.js';
 
@@ -25,8 +27,11 @@ import { isTyping } from '../ui/dom.js';
  *   game, home, design, sync, saves, layout, events (= game.events), input, camera, renderer, scene, hud, uiRoot, catalog
  *   acoustics() → computeAcoustics(design, home) (cached until the next design change)
  *   selection, placement, views
- *   ui: { toolbar, catalog, inspector, wall, window, light, saves, shopping, acoustics, photo }
- *   selected: { kind: 'item'|'wall'|'window'|null, uid?, wallId?, windowId? }
+ *   level → levelId               the level the editor works on: the overview's / plan's (views.level), else the
+ *                                 player's (playerLevel()); new items are placed on it (item.level, §5.3)
+ *   ?view=plan&floor=kjeller      opens the plan (or the overview) of that level (§5.2)
+ *   ui: { toolbar, catalog, inspector, wall, window, light, sun, saves, shopping, acoustics, photo }
+ *   selected: { kind: 'item'|'wall'|'ceiling'|'window'|null, uid?, wallId?, ceilingId?, windowId? }
  *   select(target|null)          sets selected, emits 'select' { selected, previous }, opens the matching panel
  *   startPlacing(itemSpec, opts) → placement.start
  *   handleClick(ndc) → bool      canvas click (Game routes Input clicks here first; ViewModes outside walk mode)
@@ -103,6 +108,7 @@ export class Editor {
       wall: make('wall', WallPanel),
       window: make('window', WindowPanel),
       light: make('light', LightPanel),
+      sun: make('sun', SunPanel),
       saves: make('saves', SavePanel),
       shopping: make('shopping', ShoppingPanel),
       acoustics: make('acoustics', AcousticsWidget),
@@ -117,33 +123,66 @@ export class Editor {
     };
     window.addEventListener('keydown', this._onKey);
 
+    // ?view=orbit|plan, &floor=<level id> (hoved, kjeller – §5.2): that level instead of the player's
     const view = game.dev?.params?.get?.('view');
-    if (view && view !== 'walk') this.views.set(view);
+    const floor = levelParam(game.dev?.params?.get?.('floor'), this.layout);
+    if (floor) this.views.setLevel?.(floor, { instant: true });
+    if (view && view !== 'walk') this.views.set(view, floor ? { level: floor } : undefined);
   }
 
-  /** Reverberation result for the current design (cached until the next change). */
-  acoustics() {
+  /**
+   * The level the editor works on (notes/hele-huset-design.md §5.3): the overview's / plan's level, else the
+   * player's (walking, the photo camera's from its height).
+   * @returns {string} layout.house.levels id
+   */
+  get level() {
+    const v = this.views;
+    if (v && (v.mode === 'orbit' || v.mode === 'plan') && v.level) return v.level;
+    if (v?.mode === 'photo') {
+      const cam = this.activeCamera;
+      cam?.updateMatrixWorld?.();
+      return levelAtFloorY(this.layout, (cam?.getWorldPosition?.(new THREE.Vector3()).y ?? 1.6) - 1.6);
+    }
+    return this.playerLevel();
+  }
+
+  /** The player's level: Game's (with the stair's hysteresis), else from the feet. */
+  playerLevel() {
+    const g = this.game;
+    const known = this.layout?.house?.levelsById;
+    if (g?._levelId && (!known || known[g._levelId])) return g._levelId;
+    const p = g?.player?.position;
+    return p ? levelAtFloorY(this.layout, p.y) : MAIN_LEVEL;
+  }
+
+  /**
+   * Reverberation result for the current design (cached until the next change). The living room through its own cache
+   * as before; another room through Acoustics.acousticsFor (steg 16, E3).
+   * @param {string} [roomId]
+   */
+  acoustics(roomId = LIVING_ROOM_ID) {
+    if (roomId && roomId !== LIVING_ROOM_ID) return acousticsFor(this.design, this.home, roomId);
     if (!this._acoustics) this._acoustics = computeAcoustics(this.design, this.home);
     return this._acoustics;
   }
 
   /**
-   * Selects an item/wall/window (or nothing) and opens the matching panel: item → inspector, the high wall → wall
-   * panel, another wall → inspector (paint), window → window panel. null closes the inspector.
-   * @param {{ kind: 'item'|'wall'|'window', uid?: string, wallId?: string, windowId?: string }|null} target
+   * Selects an item/wall/ceiling/window (or nothing) and opens the matching panel: item → inspector, the high wall →
+   * wall panel, another wall or a ceiling → inspector (paint, slats), window → window panel. null closes the inspector.
+   * @param {{ kind: 'item'|'wall'|'ceiling'|'window', uid?: string, wallId?: string, ceilingId?: string, windowId?: string }|null} target
    */
   select(target) {
     const previous = this.selected;
     const next = target && target.kind ? { ...target } : { kind: null };
-    const same = previous.kind === next.kind && previous.uid === next.uid && previous.wallId === next.wallId && previous.windowId === next.windowId;
+    const same = previous.kind === next.kind && previous.uid === next.uid && previous.wallId === next.wallId && previous.windowId === next.windowId && previous.ceilingId === next.ceilingId;
     this.selected = next;
     if (!same) this.events.emit('select', { selected: next, previous });
     try {
       if (next.kind === 'item') this.ui.inspector.open(next);
       else if (next.kind === 'wall' && next.wallId === this.home.highWall?.wallId) this.ui.wall.open(next);
-      else if (next.kind === 'wall') this.ui.inspector.open(next);
+      else if (next.kind === 'wall' || next.kind === 'ceiling') this.ui.inspector.open(next);
       else if (next.kind === 'window') this.ui.window.open(next.windowId);
-      else if (previous.kind === 'item' || previous.kind === 'wall') this.ui.inspector.close();
+      else if (previous.kind === 'item' || previous.kind === 'wall' || previous.kind === 'ceiling') this.ui.inspector.close();
     } catch (err) {
       console.error('[editor] panel failed to open', err);
     }
@@ -277,6 +316,18 @@ export class Editor {
 
 function pickOf(object) {
   for (let o = object; o; o = o.parent) if (o.userData?.pick) return o.userData.pick;
+  return null;
+}
+
+/** ?floor= → a level id: the id itself, its name («kjeller», «1. etasje»), or 1 / 0 / -1 style numbers. */
+function levelParam(v, layout) {
+  if (!v) return null;
+  const levels = layout?.house?.levels || [];
+  const s = String(v).trim().toLowerCase();
+  const hit = levels.find((l) => l.id.toLowerCase() === s || String(l.name || '').toLowerCase() === s);
+  if (hit) return hit.id;
+  if (/^(1|hoved|1etg|1\.etg|main)$/.test(s)) return levels.find((l) => l.id === MAIN_LEVEL)?.id ?? null;
+  if (/^(0|-1|u|kjeller|underetasje|basement)$/.test(s)) return levels[levels.length - 1]?.id ?? null;
   return null;
 }
 

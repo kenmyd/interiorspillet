@@ -1,6 +1,7 @@
 import { h, svg, fmtNumber, PAUSE_EVENT } from './dom.js';
 import { ICONS } from './icons.js';
 import { createPanel, section } from './panelKit.js';
+import { acousticsFor, itemRoomId, LIVING_ROOM_ID, SURFACE_ALPHA } from '../design/Acoustics.js';
 
 /**
  * Reverberation badge (ARCHITECTURE §12): «Etterklang ≈ 0,72 s» in the bottom-left corner – green ≤ 0,60 s,
@@ -9,8 +10,13 @@ import { createPanel, section } from './panelKit.js';
  * the room needs to reach the target, what changed compared with today, what absorbs sound in the room, and a short
  * Norwegian explanation of RT60.
  *
+ * Per room (hele-huset §5.4, steg 16 E3): the widget shows the room of the selected item (or window / wall), else the
+ * room the player is in (game.roomId; on the stair the physical room at the body centre; outside the house the last
+ * room). The living room looks exactly as before; another room gets its name in the badge, its own target band and
+ * an «anslått» note (its numbers are estimated from the surfaces, see Acoustics.js).
+ *
  *   new AcousticsWidget(editor) – open() / close() / toggle() / isOpen (the badge) · openDetails() / closeDetails() ·
- *   update() · dispose()
+ *   update() · dispose() · roomId (the room shown) · currentRoomId() · acoustics(roomId?) (cached per design change)
  */
 
 const SCALE = [0.3, 1.0];
@@ -21,6 +27,14 @@ const LEVEL_TEXT = {
   yellow: 'Litt rungende',
   red: 'Rungende – lyden henger igjen',
 };
+/** The same for another room than the living room. */
+const LEVEL_TEXT_ROOM = {
+  green: 'God etterklang for rommet',
+  yellow: 'Litt rungende',
+  red: 'Rungende – lyden henger igjen',
+};
+/** «stua» / «rommet» in running text. */
+const roomWord = (r) => (r.roomId == null || r.roomId === LIVING_ROOM_ID ? 'stua' : 'rommet');
 
 const CSS = `
 /* above the HUD's «H Hjelp» hint (.kv-helphint, bottom-left at bottom 1.3em) – it is the only pointer back to the
@@ -30,6 +44,10 @@ const CSS = `
 .ipa-corner .ip-rt:hover { border-color: rgba(255, 255, 255, 0.3); background: rgba(20, 29, 40, 0.94); }
 .ipa-corner .ip-rt.is-open { border-color: var(--kv-accent); }
 .ipa-corner .ip-rt .kv-icon { width: 1.1em; height: 1.1em; color: var(--kv-ink-3); }
+/* another room: «● Soverom ≈ 0,80 s» – no wider than the living room's «Etterklang ≈ 0,86 s» (the toolbar starts right of it) */
+.ipa-room { color: var(--kv-ink-2); font-weight: 650; max-width: 6.2em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ipa-room[hidden] { display: none; }
+.ipa-note { font-size: 0.8em; color: var(--kv-ink-3); margin: -0.5em 0 0.9em; line-height: 1.4; }
 .ipa-delta { position: absolute; left: 0.6em; bottom: calc(100% + 0.45em); pointer-events: none; font-size: 0.78em; font-weight: 750; padding: 0.25em 0.6em; border-radius: 2em; opacity: 0; transform: translateY(0.4em);
   transition: opacity 0.25s, transform 0.3s var(--kv-ease-out); background: rgba(14, 21, 30, 0.9); border: 1px solid var(--kv-line-2); white-space: nowrap; }
 .ipa-delta.is-on { opacity: 1; transform: none; }
@@ -84,8 +102,9 @@ function injectCss(id, css) {
 
 const sec = (v) => `${fmtNumber(v, 2)} s`;
 const m2 = (v, d = 1) => `${fmtNumber(v, d)} m²`;
-const pct = (v) => `${((v - SCALE[0]) / (SCALE[1] - SCALE[0])) * 100}%`;
-const clampScale = (v) => Math.max(SCALE[0], Math.min(SCALE[1], v));
+/** Position on the scale (the living room: SCALE; another room may need a longer one). */
+const pctOn = (S) => (v) => `${((v - S[0]) / (S[1] - S[0])) * 100}%`;
+const clampOn = (S) => (v) => Math.max(S[0], Math.min(S[1], v));
 
 export class AcousticsWidget {
   /** @param {import('../design/Editor.js').Editor} editor */
@@ -94,6 +113,10 @@ export class AcousticsWidget {
     injectCss('ipa-css', CSS);
     this.dot = h('span.ip-rt__dot');
     this.text = h('span', { text: 'Etterklang …' });
+    // the room's name (hidden in the living room: the badge looks as before)
+    this.roomEl = h('span.ipa-room', { hidden: true });
+    /** The room the badge shows (Acoustics roomId). */
+    this.roomId = LIVING_ROOM_ID;
     this.badge = h('button.ip-rt', {
       type: 'button',
       title: 'Etterklangstid i stua (klikk for detaljer)',
@@ -106,7 +129,7 @@ export class AcousticsWidget {
           if (e.detail > 0 && document.activeElement === this.badge) this.badge.blur();
         },
       },
-    }, this.dot, this.text, svg(ICONS.info));
+    }, this.dot, this.roomEl, this.text, svg(ICONS.info));
     this.delta = h('span.ipa-delta', { 'aria-live': 'polite' });
     this.el = h('div.ipa-corner.kv-scale', {}, this.badge, this.delta);
     editor.uiRoot.append(this.el);
@@ -135,24 +158,95 @@ export class AcousticsWidget {
     this.isOpen = true;
   }
 
-  /** Every frame: refreshes the badge after a design change. */
+  /**
+   * The room to show: the selected item's (or window's / wall's), else the player's (see the top of the file).
+   * @returns {string}
+   */
+  currentRoomId() {
+    const ed = this.editor;
+    const layout = ed.layout ?? ed.home?.layout;
+    const H = layout?.house;
+    if (!H?.roomsById) return LIVING_ROOM_ID;
+    const physical = (id) => {
+      const rm = id ? H.roomsById[id] : null;
+      return rm && !rm.hud ? rm.id : null;
+    };
+    const sel = ed.selected || {};
+    if (sel.kind === 'item') {
+      const it = ed.design?.get?.(sel.uid);
+      const id = it ? physical(itemRoomId(it, layout)) : null;
+      if (id) return id;
+    } else if (sel.kind === 'window') {
+      const id = physical((H.openingsById?.[sel.windowId] ?? H.opening?.(sel.windowId))?.roomId);
+      if (id) return id;
+    } else if (sel.kind === 'wall') {
+      const id = physical(H.wallsById?.[sel.wallId]?.roomId);
+      if (id) return id;
+    }
+    const g = ed.game;
+    const own = physical(g?.roomId);
+    if (own) return own;
+    // on the stair (its hud room) or in a doorway: the physical room at the body centre; outside: the last room
+    const p = g?.player?.position;
+    if (p && typeof H.roomAt === 'function') {
+      const r = H.roomAt(p.x, p.y + 0.9, p.z, { previousLevelId: g?._levelId ?? null });
+      if (r && !r.hud) return r.id;
+    }
+    return this.roomId ?? LIVING_ROOM_ID;
+  }
+
+  /** Reverberation result for a room (default the one shown; the living room through the Editor's cache, as before). */
+  acoustics(roomId = this.roomId) {
+    if (roomId === LIVING_ROOM_ID) return this.editor.acoustics();
+    return acousticsFor(this.editor.design, this.editor.home, roomId);
+  }
+
+  /** Every frame: follows the room and refreshes the badge after a design change. */
   update() {
+    let room = this.roomId;
+    try {
+      room = this.currentRoomId();
+    } catch (err) {
+      if (!this._roomWarned) {
+        this._roomWarned = true;
+        console.warn('[acoustics] room lookup failed', err);
+      }
+    }
+    if (room !== this.roomId) {
+      this.roomId = room;
+      this._dirty = true;
+      this._roomChanged = true;
+    }
     if (!this._dirty) return;
     this._dirty = false;
     let r;
     try {
-      r = this.editor.acoustics();
+      r = this.acoustics();
     } catch (err) {
       console.warn('[acoustics] failed', err);
       return;
     }
-    this.text.textContent = r.label;
+    const living = r.roomId == null || r.roomId === LIVING_ROOM_ID;
+    // the living room as before; another room: its name instead of the word «Etterklang» (the title says it)
+    this.text.textContent = living ? r.label : r.label.replace(/^Etterklang\s*/, '');
+    this.roomEl.hidden = living;
+    this.roomEl.textContent = living ? '' : r.roomShortName ?? r.roomName;
     this.badge.className = `ip-rt ip-rt--${r.level}${this.pop.isOpen ? ' is-open' : ''}`;
-    this.badge.title = `${r.label} – mål 0,4–0,6 s (klikk for detaljer)`;
+    const lo = fmtNumber(r.target?.[0] ?? 0.4, 1);
+    const hi = fmtNumber(r.target?.[1] ?? TARGET_HI, 1);
+    this.badge.title = living
+      ? `${r.label} – mål 0,4–0,6 s (klikk for detaljer)`
+      : `${r.roomName}: ${r.label} (anslått) – mål ${lo}–${hi} s (klikk for detaljer)`;
+    if (this._title !== r.roomId) {
+      this._title = r.roomId;
+      this.pop.setTitle?.(living ? 'Etterklang i stua' : `Etterklang – ${r.roomName}`);
+    }
     const prev = this._last;
     this._last = r.rt60;
-    if (prev != null && !this._fromLoad && Math.abs(r.rt60 - prev) >= 0.005) this._showDelta(r.rt60 - prev);
+    // a delta only for a design change in the same room (not for walking into another room)
+    if (prev != null && !this._fromLoad && !this._roomChanged && Math.abs(r.rt60 - prev) >= 0.005) this._showDelta(r.rt60 - prev);
     this._fromLoad = false;
+    this._roomChanged = false;
     if (this.pop.isOpen) this._renderDetails(r);
   }
 
@@ -172,7 +266,7 @@ export class AcousticsWidget {
   openDetails() {
     let r;
     try {
-      r = this.editor.acoustics();
+      r = this.acoustics();
     } catch (err) {
       console.warn('[acoustics] failed', err);
       return;
@@ -192,28 +286,36 @@ export class AcousticsWidget {
     const scroll = body.scrollTop;
     const lo = r.target?.[0] ?? 0.4;
     const hi = r.target?.[1] ?? TARGET_HI;
-    const scale = h('div.ipa-scale', { '--g': pct(TARGET_HI), '--y': pct(0.7) },
+    const living = r.roomId == null || r.roomId === LIVING_ROOM_ID;
+    // the living room's scale is 0,3–1,0 s as before; a wet room or a storeroom may need up to 2,5 s
+    const S = living ? SCALE : [SCALE[0], Math.min(2.5, Math.max(SCALE[1], Math.ceil((Math.max(r.rt60, r.baseline, r.yellow ?? 0.7) + 0.1) * 2) / 2))];
+    const pct = pctOn(S);
+    const clampScale = clampOn(S);
+    const tickList = S[1] <= SCALE[1] + 1e-9 ? [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0] : [0.3, ...Array.from({ length: Math.round(S[1] / 0.5) }, (_, i) => 0.5 * (i + 1))];
+    const scale = h('div.ipa-scale', { '--g': pct(clampScale(hi)), '--y': pct(clampScale(r.yellow ?? 0.7)) },
       h('div.ipa-scale__band', { style: { left: pct(lo), width: `calc(${pct(hi)} - ${pct(lo)})` } }, h('span', { text: `Mål ${fmtNumber(lo, 1)}–${fmtNumber(hi, 1)} s` })),
       h('div.ipa-mark.ipa-mark--today', { style: { left: pct(clampScale(r.baseline)) } }, h('span', { text: `I dag ${sec(r.baseline)}` })),
       h('div.ipa-mark', { style: { left: pct(clampScale(r.rt60)) }, title: `Nå: ${sec(r.rt60)}` }),
     );
-    const ticks = h('div.ipa-ticks', { 'aria-hidden': 'true' }, [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0].map((t) => h('span', { text: fmtNumber(t, 1), style: { left: pct(t) } })));
+    const ticks = h('div.ipa-ticks', { 'aria-hidden': 'true' }, tickList.map((t) => h('span', { text: fmtNumber(t, 1), style: { left: pct(t) } })));
 
     // how much more absorption the room needs to reach the upper target
     const k = 0.161 * r.volume;
     const need = k / hi - r.absorption;
     const needEl = need > 0.05
-      ? h('div.ipa-need', {}, 'For å komme ned i ', h('b', { text: sec(hi) }), ' trenger stua ca. ', h('b', { text: m2(need) }),
-        ' mer demping. Til sammenligning: et stort ullteppe ≈ 1–1,5 m², fire puter ≈ 0,5 m², gardiner foran et stort vindu ≈ 1–2 m², spilevegg på den høye veggen ≈ 5–7 m².')
-      : h('div.ipa-need.ipa-need--ok', {}, 'Stua er innenfor målet. ',
-        r.rt60 < lo ? 'Den er faktisk litt «død» – litt mindre demping gjør ingenting.' : 'Samtaler blir klare og rommet føles lunt.');
+      ? h('div.ipa-need', {}, 'For å komme ned i ', h('b', { text: sec(hi) }), ` trenger ${roomWord(r)} ca. `, h('b', { text: m2(need) }),
+        living
+          ? ' mer demping. Til sammenligning: et stort ullteppe ≈ 1–1,5 m², fire puter ≈ 0,5 m², gardiner foran et stort vindu ≈ 1–2 m², spilevegg på den høye veggen ≈ 5–7 m².'
+          : ' mer demping. Til sammenligning: et ullteppe ≈ 1 m², gardiner foran vinduet ≈ 0,5–1 m², et akustikkpanel på 120 × 60 cm ≈ 0,6 m².')
+      : h('div.ipa-need.ipa-need--ok', {}, living ? 'Stua er innenfor målet. ' : 'Rommet er innenfor målet. ',
+        r.rt60 < lo ? 'Den er faktisk litt «død» – litt mindre demping gjør ingenting.' : living ? 'Samtaler blir klare og rommet føles lunt.' : 'Lyden henger ikke igjen.');
 
     const changes = (r.changes || []).slice(0, 8);
     const changeRows = changes.length
       ? h('div.ipa-rows', {}, changes.map((c) => h('div.ipa-row', {},
         h('span.ipa-row__label', { text: c.label, title: c.label }),
         h(`span.ipa-row__val${c.m2 >= 0 ? '.is-plus' : '.is-minus'}`, { text: `${c.m2 >= 0 ? '+' : '−'}${m2(Math.abs(c.m2), 2)}` }))))
-      : h('p.ipa-empty', { text: 'Ingen endringer ennå – dette er stua slik den er i dag.' });
+      : h('p.ipa-empty', { text: living ? 'Ingen endringer ennå – dette er stua slik den er i dag.' : 'Ingen endringer ennå – dette er rommet slik det er i dag.' });
 
     const max = Math.max(...(r.breakdown || []).map((b) => b.m2), 1);
     const breakdown = h('div.ipa-rows', {}, (r.breakdown || []).map((b, i) => h('div.ipa-row', {},
@@ -221,17 +323,24 @@ export class AcousticsWidget {
       h('span.ipa-row__val', { text: m2(b.m2) }),
       h('span.ipa-row__bar', {}, h(`i${i === 0 ? '.is-room' : ''}`, { style: { width: `${Math.max(2, (b.m2 / max) * 100)}%` } })))));
 
+    const fmtA = (v) => fmtNumber(v, 2);
+    const formula = living
+      ? `Beregnet med Sabines formel RT60 = 0,161 · V / A, med V = ${fmtNumber(r.volume, 0)} m³ (romvolumet) og A = ${m2(r.absorption)} absorpsjon ved 500–1000 Hz. Tallet er et anslag, kalibrert slik at stua i dag gir ${sec(r.baseline)}.`
+      : `Beregnet med Sabines formel RT60 = 0,161 · V / A, med V = ${fmtNumber(r.volume, 1)} m³ og A = ${m2(r.absorption)} ved 500–1000 Hz. Rommet er ikke målt: A er anslått fra flatene (gips og maling ${fmtA(SURFACE_ALPHA.paint)}, tregulv ${fmtA(SURFACE_ALPHA.wood)}, flis og vinyl ${fmtA(SURFACE_ALPHA.vinyl)}, glass ${fmtA(SURFACE_ALPHA.glass)}, lukkede dører ${fmtA(SURFACE_ALPHA.door)}, åpninger og trappehull ${fmtA(SURFACE_ALPHA.opening)}) pluss møblene. «I dag» er rommet med møblene som står der nå.`;
     body.replaceChildren(
       h('div.ipa-big', {}, h('b', { text: sec(r.rt60) }), h('span', { text: `(i dag ${sec(r.baseline)})` })),
-      h(`div.ipa-level.ipa-level--${r.level}`, {}, h('i'), h('span', { text: LEVEL_TEXT[r.level] || '' })),
+      h(`div.ipa-level.ipa-level--${r.level}`, {}, h('i'), h('span', { text: (living ? LEVEL_TEXT : LEVEL_TEXT_ROOM)[r.level] || '' })),
+      living ? null : h('p.ipa-note', { text: `${r.roomName} · anslått, mål ${fmtNumber(lo, 1)}–${fmtNumber(hi, 1)} s for denne romtypen` }),
       h('div.ipa-scalebox', {}, scale, ticks),
       needEl,
       section(changes.length ? 'Endringer fra i dag' : 'Endringer', changeRows),
       section('Dette demper lyden nå', breakdown),
       section('Hva betyr tallet?',
         h('p.ipa-text', { text: 'Etterklangstiden (RT60) er hvor lenge en lyd henger igjen i rommet før den har dødd ut. I en stue bør den ligge på 0,4–0,6 sekunder – da blir samtaler klare og rommet føles lunt. Over ca. 0,7 s oppleves rommet rungende og slitsomt, særlig med flere som snakker samtidig.' }),
-        h('p.ipa-text', { text: 'Glass, gulv, gipsvegger og det høye taket kaster lyden tilbake. Myke og porøse ting tar den opp: tepper, puter og pledd, stoppede møbler, gardiner, akustikkpaneler og spilevegger med filt bak.' }),
-        h('p.ipa-formula', { text: `Beregnet med Sabines formel RT60 = 0,161 · V / A, med V = ${fmtNumber(r.volume, 0)} m³ (romvolumet) og A = ${m2(r.absorption)} absorpsjon ved 500–1000 Hz. Tallet er et anslag, kalibrert slik at stua i dag gir ${sec(r.baseline)}.` }),
+        h('p.ipa-text', { text: living
+          ? 'Glass, gulv, gipsvegger og det høye taket kaster lyden tilbake. Myke og porøse ting tar den opp: tepper, puter og pledd, stoppede møbler, gardiner, akustikkpaneler og spilevegger med filt bak.'
+          : 'Glass, gulv, gipsvegger, fliser og panel kaster lyden tilbake – et bad eller en bod ringer derfor mer enn en stue, og det er helt vanlig. Myke og porøse ting tar den opp: senger, tepper, puter, stoppede møbler, gardiner og akustikkpaneler.' }),
+        h('p.ipa-formula', { text: formula }),
       ),
     );
     body.scrollTop = scroll;

@@ -1,9 +1,9 @@
 // The kitchen (owned by SHELL): graphite wood-grain tall cabinets with the integrated fridge, ovens and coffee machine,
 // handle-less matt anthracite base cabinets with grip channels, the dark stone-look worktop with soft cloudy marbling
 // (waterfall end on the island), the black tambour in the corner unit, the black composite sink and tap, the induction hob with downdraft, the smoked-glass wall
-// cabinet with dimly visible glasses and LED underneath, and the built-in kitchen lights: the LED cove in front of the
-// tall cabinets, the track with three black cylinder pendants over the island and the two ring lamps
-// (registry.buildModel → the LAMPS models).
+// cabinet (dark inside, an LED strip in each of its three sections, glasses and bowls, LED underneath), and the built-in
+// kitchen lights: the LED cove in front of the tall cabinets, the track with three black cylinder pendants over the
+// island and the two ring lamps (registry.buildModel → the LAMPS models).
 //
 // Positions/dimensions come from layout.kitchen.items (box centres) – front/unit/appliance layouts from their
 // `fronts` / `units` fields.
@@ -277,6 +277,77 @@ function tambourMaterial(pitch, y0) {
 }
 
 /**
+ * The glass cabinet's smoked door glass without RectAreaLights (its environment reflections, lamps and sun stay): the
+ * south window's sky light is a one-sided rect tilted 45° into the room right beside the cabinet, and its sharp mirror
+ * image in the glossy doors – a slanted bluish wedge with a hard diagonal edge – filled the right-hand section at
+ * dusk (owner's change list 2026-10-21). A clone of the cached material (never patch a shared one).
+ * @param {THREE.Material} m
+ * @param {string} key  program cache key
+ */
+function noRectLights(m, key) {
+  m.userData = { ...m.userData, cached: false };
+  m.name = key;
+  m.onBeforeCompile = (sh) => {
+    sh.fragmentShader = sh.fragmentShader.replace('#include <lights_fragment_begin>', '#undef RE_Direct_RectArea\n#include <lights_fragment_begin>');
+  };
+  m.customProgramCacheKey = () => `no-rect-lights:${key}`;
+  return m;
+}
+
+/** Tilt of the glass cabinet's inside LED strips from straight down toward the back panel. */
+const LED_TILT = 30 * DEG;
+/**
+ * Emissive level of the glass cabinet's back-panel wash at its brightest (userData.baseIntensity: × 150 nits ×
+ * the lamp factor in lighting.js, linear in the dimmer). A near-black panel reflects next to nothing (≈ 0.3 nit at
+ * full power); this is a few nits, so the lit sections read as lit at the owner's 16 % without a bright panel.
+ */
+const WASH_BASE = 0.015;
+
+/**
+ * Emissive map of the glass cabinet's back panel: the irradiance each section's LED strip throws on it (a Lambertian
+ * line at `led` – y, distance dz in front of the panel – tilted LED_TILT toward it), normalised to 1 at the brightest
+ * point; 0 behind the dividers. `panel` is the plane's extent in world x / y (its UVs: 0,0 at x0,y0).
+ * @param {{ x0: number, x1: number, s0: number, s1: number }[]} sections  strip ends (x0..x1) and inner walls (s0..s1)
+ * @param {{ x0: number, x1: number, y0: number, y1: number }} panel
+ * @param {{ y: number, dz: number }} led
+ * @returns {THREE.DataTexture}
+ */
+function cabinetWash(sections, panel, led) {
+  const nx = 32 * sections.length, ny = 32, K = 24;
+  const ny0 = -Math.cos(LED_TILT), nz0 = -Math.sin(LED_TILT); // strip normal (toward −z = the panel)
+  const E = new Float32Array(nx * ny);
+  let max = 1e-9;
+  for (let j = 0; j < ny; j++) {
+    const y = panel.y0 + ((j + 0.5) / ny) * (panel.y1 - panel.y0);
+    for (let i = 0; i < nx; i++) {
+      const x = panel.x0 + ((i + 0.5) / nx) * (panel.x1 - panel.x0);
+      const s = sections.find((q) => x >= q.s0 && x <= q.s1);
+      if (!s) continue;
+      let e = 0;
+      for (let k = 0; k < K; k++) {
+        const lx = x - (s.x0 + ((k + 0.5) / K) * (s.x1 - s.x0)), ly = y - led.y, lz = -led.dz;
+        const d2 = lx * lx + ly * ly + lz * lz, dl = Math.sqrt(d2);
+        const emit = (ly * ny0 + lz * nz0) / dl;
+        if (emit > 0) e += (emit * (led.dz / dl)) / d2;
+      }
+      E[j * nx + i] = e;
+      if (e > max) max = e;
+    }
+  }
+  const data = new Uint8Array(nx * ny * 4);
+  for (let p = 0; p < nx * ny; p++) {
+    const v = Math.round(255 * Math.min(1, E[p] / max));
+    data.set([v, v, v, 255], p * 4);
+  }
+  const tex = new THREE.DataTexture(data, nx, ny, THREE.RGBAFormat);
+  tex.colorSpace = THREE.NoColorSpace;
+  tex.magFilter = THREE.LinearFilter;
+  tex.minFilter = THREE.LinearFilter;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+/**
  * Builds the kitchen.
  * @param {object} ctx
  * @param {object} layout home/layout.js
@@ -308,7 +379,7 @@ export function buildKitchen(ctx, layout) {
     vent: mat('plastic', '#060606', { roughness: 0.9, flat: true }),
     alu: mat('painted', '#cfcfcc', { roughness: 0.32, metalness: 0.45 }),
     frameBlack: mat('black-metal', items['k-overskap']?.color || '#1c1c1c', { roughness: 0.4 }),
-    smoked: mat('glass-smoked', items['k-overskap']?.glass || '#3a3632', { opacity: 0.62 }),
+    smoked: noRectLights(keep(mat('glass-smoked', items['k-overskap']?.glass || '#3a3632', { opacity: 0.62 }).clone()), 'cabinet-door-glass'),
     shelfGlass: mat('glass-clear', '#e8efec', { opacity: 0.25 }),
     wineGlass: mat('glass-clear', '#ffffff', { opacity: 0.22 }),
     bowl: mat('ceramic', '#e9e5dc'),
@@ -528,20 +599,30 @@ export function buildKitchen(ctx, layout) {
   }
 
   // ---------------------------------------------------------------------------------------------------------------
-  // Glass wall cabinet: black aluminium carcass, three smoked-glass doors, a glass shelf, glasses + bowls, warm
-  // light inside (an emissive back panel that dims with the «overskap» group) and the LED strip underneath
+  // Glass wall cabinet: black aluminium frames and three smoked-glass doors over a dark matte inside (back panel, sides,
+  // top and bottom: k-overskap.interior), a glass shelf, glasses + bowls, and a warm LED strip under the top right
+  // behind the door frame in each section (k-overskap.ledInside): its glow, the faint wash it throws on the back panel
+  // and a low-priority rect light (lighting.js) dim with the «overskap» group, like the strip under the cabinet. The
+  // carcass and the back panel are Lambert (matte, and three.js lights Lambert with no RectAreaLight): rect lights
+  // have no shadows, and the south window's sky light right beside the cabinet lit the old beige back panel and the
+  // glossy black-metal sides of the right-hand section blue (its mirror image in the doors: noRectLights). The room's
+  // environment map does not reach them either – right for the inside of a closed cabinet.
   const ov = items['k-overskap'];
-  const overskapEmissive = [];
+  let overskapInside = null;
   if (ov) {
     const b = ov.box;
     const w = b.max.x - b.min.x, h = b.max.y - b.min.y, d = b.max.z - b.min.z;
     const cx = (b.min.x + b.max.x) / 2, cy = (b.min.y + b.max.y) / 2;
     const T = 0.018;
-    kb.box(w, T, d, cx, b.max.y - T / 2, b.min.z + d / 2, M.frameBlack, { collide: false });
-    kb.box(w, T, d, cx, b.min.y + T / 2, b.min.z + d / 2, M.frameBlack, { collide: false });
-    for (const s of [-1, 1]) kb.box(T, h - 2 * T, d, cx + s * (w / 2 - T / 2), cy, b.min.z + d / 2, M.frameBlack, { collide: false });
+    const interiorHex = ov.interior || '#15120f';
+    const inside = keep(new THREE.MeshLambertMaterial({ color: interiorHex }));
+    inside.name = 'cabinet-inside';
+    kb.box(w, T, d, cx, b.max.y - T / 2, b.min.z + d / 2, inside, { collide: false });
+    kb.box(w, T, d, cx, b.min.y + T / 2, b.min.z + d / 2, inside, { collide: false });
+    for (const s of [-1, 1]) kb.box(T, h - 2 * T, d, cx + s * (w / 2 - T / 2), cy, b.min.z + d / 2, inside, { collide: false });
     const doorsN = ov.doors || 3;
-    for (let i = 1; i < doorsN; i++) kb.box(0.012, h - 2 * T, d - 0.02, b.min.x + (i * w) / doorsN, cy, b.min.z + d / 2 - 0.01, M.frameBlack, { collide: false });
+    const DIV = 0.012;
+    for (let i = 1; i < doorsN; i++) kb.box(DIV, h - 2 * T, d - 0.02, b.min.x + (i * w) / doorsN, cy, b.min.z + d / 2 - 0.01, inside, { collide: false });
     // shelf + contents
     const shelfY = cy;
     const shelf = new THREE.BoxGeometry(w - 2 * T, 0.008, d - 0.05);
@@ -559,14 +640,77 @@ export function buildKitchen(ctx, layout) {
     for (let i = 0; i < 4; i++) kb.add(bowlGeo, M.bowl, { matrix: place(b.min.x + 0.25 + i * 0.12 + (i > 1 ? 0.7 : 0), shelfY + 0.004 + i * 0.006 * 0, b.min.z + 0.17), collide: false });
     wineGeo.dispose();
     bowlGeo.dispose();
-    // lit back panel
-    const backMat = keep(emissive('#ffcf9a', 0.22, { color: '#2a2622' }));
+    // LED strips: an aluminium profile under the top, just behind the door frame, with an 8 mm opal diffuser under it
+    // that shows as a warm line just below the door's top rail (its optic throws the light LED_TILT toward the back)
+    const li = ov.ledInside;
+    const yLed = b.max.y - T - 0.014; // underside of the diffuser
+    const zLed = b.max.z - 0.022;
+    const sections = [];
+    for (let i = 0; i < doorsN; i++) {
+      const x0 = b.min.x + (i * w) / doorsN + (i === 0 ? T : DIV / 2) + 0.015;
+      const x1 = b.min.x + ((i + 1) * w) / doorsN - (i === doorsN - 1 ? T : DIV / 2) - 0.015;
+      sections.push({ x0, x1, s0: b.min.x + (i * w) / doorsN + (i === 0 ? T : DIV / 2), s1: b.min.x + ((i + 1) * w) / doorsN - (i === doorsN - 1 ? T : DIV / 2) });
+    }
+    const ledMeshes = [];
+    if (li) {
+      const ledMat = keep(emissive('#ffd8a6', 2.4, { color: '#fff6ea' }));
+      // drawn after the door glass (transparent, renderOrder 1): an LED is thousands of nits and would still clip to a
+      // warm white line through the 38 % smoked glass, but the glass blends over the already tone-mapped line and left
+      // a grey bar. Its unlit opal colour carries the glass's transmission instead (switched off it stays behind the
+      // tint)
+      ledMat.transparent = true;
+      ledMat.color.multiplyScalar(1 - (M.smoked.opacity ?? 0.62));
+      for (const s of sections) {
+        const len = s.x1 - s.x0, xm = (s.x0 + s.x1) / 2;
+        kb.box(len, 0.006, 0.014, xm, b.max.y - T - 0.003, zLed, M.alu, { collide: false, castShadow: false });
+        const g = keep(new THREE.BoxGeometry(len - 0.008, 0.008, 0.01));
+        const m = new THREE.Mesh(g, ledMat);
+        m.position.set(xm, yLed + 0.004, zLed - 0.001);
+        m.name = 'overskap-led';
+        m.renderOrder = 1;
+        m.castShadow = false;
+        m.receiveShadow = false;
+        m.userData.noCollide = true;
+        group.add(m);
+        ledMeshes.push(m);
+      }
+    }
+    // back panel: dark matte Lambert like the carcass; with the strips on it carries their faint wash (an emissive map
+    // from the strips' geometry, cabinetWash) that lighting.js dims linearly with the group (userData.lightWash: no
+    // glow floor)
+    const backMat = keep(new THREE.MeshLambertMaterial({
+      color: interiorHex,
+      emissive: '#ffcf9a',
+      emissiveIntensity: 0,
+      emissiveMap: li ? keep(cabinetWash(sections, { x0: b.min.x + T, x1: b.max.x - T, y0: b.min.y + T, y1: b.max.y - T }, { y: yLed, dz: zLed - b.min.z })) : null,
+    }));
+    backMat.name = 'cabinet-back';
+    backMat.userData = { cached: false, kind: 'emissive', baseIntensity: li ? WASH_BASE : 0, lightWash: true };
     const back = new THREE.Mesh(keep(new THREE.PlaneGeometry(w - 2 * T, h - 2 * T)), backMat);
     back.position.set(cx, cy, b.min.z + 0.004);
     back.name = 'overskap-back';
     back.castShadow = false;
     group.add(back);
-    overskapEmissive.push(back);
+    if (li) {
+      const lumensPerM = Number.isFinite(li.lumensPerM) ? li.lumensPerM : 60;
+      const length = sections.reduce((s, x) => s + (x.x1 - x.x0), 0);
+      overskapInside = {
+        id: 'led-overskap-inne',
+        group: 'overskap',
+        type: 'led-strip',
+        from: new THREE.Vector3(sections[0].x0, yLed, zLed),
+        to: new THREE.Vector3(sections[sections.length - 1].x1, yLed, zLed),
+        // the rect light faces down and back onto the back panel (lighting.js uses the normal as given) and weighs its
+        // flux only for a light slot: it must not take the coves' slots from across the room
+        normal: new THREE.Vector3(0, -Math.cos(LED_TILT), -Math.sin(LED_TILT)),
+        rectHeight: 0.02,
+        stripSignature: 1,
+        direction: new THREE.Vector3(0, -1, 0),
+        colorK: li.lightColorK ?? 2700,
+        lumens: Math.round(lumensPerM * length),
+        emissiveMeshes: [...ledMeshes, back],
+      };
+    }
     // doors: thin black frames + smoked glass
     for (let i = 0; i < doorsN; i++) {
       const dw = w / doorsN - 0.004;
@@ -636,7 +780,7 @@ export function buildKitchen(ctx, layout) {
         direction: new THREE.Vector3(0, -1, 0),
         colorK: l.colorK,
         lumens: l.lumens,
-        emissiveMeshes: under ? [strip.mesh, ...overskapEmissive] : [strip.mesh],
+        emissiveMeshes: [strip.mesh],
       });
       continue;
     }
@@ -669,6 +813,9 @@ export function buildKitchen(ctx, layout) {
       builtInLights.push(...lamp.lights.map((x) => ({ ...x, label })));
     }
   }
+
+  // the LED strips inside the glass cabinet (built with it above): on the switch of the strip under it
+  if (overskapInside) builtInLights.push({ ...overskapInside, label: groupLabel[overskapInside.group] || 'Lys i glasskapet' });
 
   /** LAMPS model hung at `at`; light entries in world space (fallback: one light at the lamp's bottom). */
   function lampModel(l, archetype, spec, at, type, bottomY) {

@@ -36,8 +36,8 @@
       {
         "name": "Lakkert eikefiner brun / svarte metallben",
         "colors": {
-          "top": "#5a4232",
-          "legs": "#1e1e1e"
+          "top": "#625647",
+          "legs": "#212120"
         },
         "materials": {
           "top": "smoked-oak",
@@ -48,8 +48,8 @@
         "name": "Lakkert askefiner svart / svarte metallben",
         "url": "https://www.bohus.no/bord/sidebord/duett-sidebord-sett-o49-2",
         "colors": {
-          "top": "#232120",
-          "legs": "#1e1e1e"
+          "top": "#4b4b4f",
+          "legs": "#1c1c1f"
         },
         "materials": {
           "top": "ash",
@@ -63,7 +63,7 @@
     "why": "Brun eik og svarte ben gjentar de runde sofabordene og det mørke spisebordet, og settet kan stå ved lenestolen mellom TV-stua og sittegruppen uten å ta mye plass.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/DUETT/327244/image-thumb__327244__PDP-Product/317226%20-%20Duett%20sidebord%20sett%20%C3%9849%20H52%20-%C3%9847%20H31%20lakkert%20eikefiner%20brun%20med%20metall%20svart%20ben%20-%204.0892f7e9.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 2 299 kr, Ø49 H52, brun eikefiner (317226). Natur-varianten var feil – lenken går til svart askefiner (317225)."
+    "verifiedNote": "Bekreftet på bohus.no: 2 299 kr, Ø49 H52, brun eikefiner (317226). Natur-varianten var feil – lenken går til svart askefiner (317225). Farger og stoff kontrollert 2026-10-21 mot bohus.no: Ø49-settet finnes i lakkert eikefiner brun (317226) og lakkert askefiner svart (317225), begge med svarte metallben og 2 299 kr – alle variantene finnes; fargene er justert etter produktbildene. Eldre varenr. av samme sett (298558 brun, 298557 svart) var samme dag på kampanje til 1 200 kr (før 2 799)."
   },
   {
     "id": "bohus-basoon-sidebord-o45",
@@ -92,8 +92,8 @@
       {
         "name": "Lakkert askefiner mørk brun",
         "colors": {
-          "top": "#4a3426",
-          "base": "#4a3426"
+          "top": "#454441",
+          "base": "#484845"
         },
         "materials": {
           "top": "ash",
@@ -104,8 +104,22 @@
         "name": "Lakkert askefiner natur",
         "url": "https://www.bohus.no/bord/sidebord/basoon-sidebord-o45",
         "colors": {
-          "top": "#c8a982",
-          "base": "#c8a982"
+          "top": "#ddd3c3",
+          "base": "#dccdbd"
+        },
+        "materials": {
+          "top": "ash",
+          "base": "ash"
+        }
+      },
+      {
+        "name": "Lakkert askefiner brun",
+        "url": "https://www.bohus.no/bord/sidebord/basoon-sidebord-o45-1",
+        "salePriceNok": 399,
+        "priceConfidence": "checked",
+        "colors": {
+          "top": "#6f5a3f",
+          "base": "#6e593c"
         },
         "materials": {
           "top": "ash",
@@ -119,7 +133,7 @@
     "why": "Den runde, myke formen passer de runde boucle-stolene, og mørk brun ask matcher det røykfargede spisebordet – et rimelig bord å ha ved siden av en ny lenestol.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/BASOON/612046/image-thumb__612046__PDP-Product/328176%20-%20Basoon%20sidebord%20%C3%9845%20H50%20cm%20lakkert%20askefiner%20m%C3%B8rk%20brun%20-%201.48bb90cc.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 799 kr, Ø45 H50, lakkert askefiner mørk brun og natur."
+    "verifiedNote": "Bekreftet på bohus.no: 799 kr, Ø45 H50, lakkert askefiner mørk brun og natur. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Ø45 finnes i lakkert askefiner mørk brun (328176, 799 kr), natur (298590, 799 kr) og brun (317438, 399 kr, før 799) – brun er lagt til. Mørk brun er på produktbildet en nesten koksgrå brun og natur en svært lys ask; fargene er justert etter bildene."
   },
   {
     "id": "bohus-sindig-berg-sidebord-o40",
@@ -148,8 +162,8 @@
       {
         "name": "MgO grå (travertinlook)",
         "colors": {
-          "top": "#9d978e",
-          "base": "#9d978e"
+          "top": "#a09b95",
+          "base": "#a09b95"
         },
         "materials": {
           "top": "travertine",
@@ -160,8 +174,8 @@
         "name": "MgO beige (travertinlook)",
         "url": "https://www.bohus.no/bord/sidebord/berg-sidebord-o40-1",
         "colors": {
-          "top": "#cdbfaa",
-          "base": "#cdbfaa"
+          "top": "#b5aa98",
+          "base": "#b5aa98"
         },
         "materials": {
           "top": "travertine",
@@ -175,7 +189,7 @@
     "why": "Den grå steinfølelsen ligger mellom den grå sofaen og de lyse SAND-veggene, og den solide formen kan også brukes som pidestall for en plante eller lampe.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/BERG/612836/image-thumb__612836__PDP-Product/328678%20-%20Berg%20sidebord%20%C3%9840%20H45%20mgo%20gr%C3%A5%20-%201.49d283b4.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: Sindig, 1 999 kr, Ø40 H45, grå og beige MgO."
+    "verifiedNote": "Bekreftet på bohus.no: Sindig, 1 999 kr, Ø40 H45, grå og beige MgO. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle variantene finnes (grå 328678 og beige 328679, begge 1 999 kr); fargene er justert etter produktbildene (beige var for lys)."
   },
   {
     "id": "bohus-seaford-sidebord-35x43",
@@ -206,8 +220,8 @@
       {
         "name": "Svart ask melamin / svart metall",
         "colors": {
-          "top": "#2a2724",
-          "frame": "#1a1a1a"
+          "top": "#474649",
+          "frame": "#333436"
         },
         "materials": {
           "top": "ash",
@@ -221,7 +235,7 @@
     "why": "Svart metall og svart ask passer kjøkkenet og de svarte detaljene, og et C-bord gir avlastningsflate i hjørnesofaen i TV-stua der et vanlig sidebord ikke får plass.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S/Produkter/SEAFORD/103873/image-thumb__103873__PDP-Product/236864%20-%20Seaford%20sidebord%2035x43%20H63%20metall%20svart%20ask%20-%203.f94a7c6c.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 899 kr, 43x35 H63, svart ask melamin med metallunderstell. C-formen er antatt."
+    "verifiedNote": "Bekreftet på bohus.no: 899 kr, 43x35 H63, svart ask melamin med metallunderstell. C-formen er antatt. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Seaford 35x43 finnes bare i svart ask med svart metallunderstell (236864) – alle variantene finnes. Produktbildet bekrefter C-formen; fargene er justert etter bildet."
   },
   {
     "id": "bohus-mr-plant-oliven-h120",
@@ -247,11 +261,11 @@
     },
     "variants": [
       {
-        "name": "Silke grønn i svart Mira krukke",
+        "name": "Silke grønn i svart Mira blomsterpotte Ø30",
         "colors": {
-          "leaves": "#7b8a6a",
+          "leaves": "#919782",
           "trunk": "#6b5a48",
-          "pot": "#1f1e1c"
+          "pot": "#3f4547"
         },
         "materials": {
           "leaves": "plant-leaf",
@@ -260,11 +274,11 @@
         }
       },
       {
-        "name": "Silke grønn i brun Mira krukke",
+        "name": "Silke grønn i mørk brun Mira blomsterpotte Ø30",
         "colors": {
-          "leaves": "#7b8a6a",
+          "leaves": "#919782",
           "trunk": "#6b5a48",
-          "pot": "#6a4c38"
+          "pot": "#6a5650"
         },
         "materials": {
           "leaves": "plant-leaf",
@@ -279,7 +293,7 @@
     "why": "Det dempede grågrønne løvet harmonerer med de varme grå- og sandtonene og passer godt i et hjørne ved de store sørvinduene uten å trenge vanning.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Mr%20Plant/Produkter/OLIVEN/238522/image-thumb__238522__PDP-Product/279692%20-%20Oliven%20kunstig%20plante%20H120%20silke%20gr%C3%B8nn%20-%201.81552e42.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 2 499 kr, H120, silke/plast. Utsolgt for levering – kun lager i noen butikker."
+    "verifiedNote": "Bekreftet på bohus.no: 2 499 kr, H120, silke/plast. Utsolgt for levering – kun lager i noen butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: planten finnes bare i grønn silke. Pottevariantene er Bohus' Mira blomsterpotte Ø30 H26 i svart (202310, 399 kr, før 799) og mørk brun (223142, 499 kr) – navnene er rettet til butikkens («blomsterpotte», «mørk brun»), og farger på blader og potter er justert etter produktbildene."
   },
   {
     "id": "bohus-mr-plant-fiolficus-h150",
@@ -305,11 +319,11 @@
     },
     "variants": [
       {
-        "name": "Silke grønn i brun Aude potte",
+        "name": "Silke grønn i brun Aude blomsterpotte Ø35",
         "colors": {
-          "leaves": "#4f6b3a",
+          "leaves": "#5c6532",
           "trunk": "#6a5643",
-          "pot": "#6b4a36"
+          "pot": "#cfb08d"
         },
         "materials": {
           "leaves": "plant-leaf",
@@ -318,11 +332,11 @@
         }
       },
       {
-        "name": "Silke grønn i hvit keramikkpotte",
+        "name": "Silke grønn i hvit Aude blomsterpotte Ø35",
         "colors": {
-          "leaves": "#4f6b3a",
+          "leaves": "#5c6532",
           "trunk": "#6a5643",
-          "pot": "#e8e4dc"
+          "pot": "#dbd6cf"
         },
         "materials": {
           "leaves": "plant-leaf",
@@ -337,7 +351,7 @@
     "why": "De store mørkegrønne bladene gir en frisk kontrast til de grå og brune flatene, og høyden på 1,5 m fyller ut ved den høye veggen eller ved siden av en ny lenestol.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Mr%20Plant/Produkter/FIOLFICUS/334383/image-thumb__334383__PDP-Product/309468%20-%20Fiolficus%20kunstig%20plante%20H150%20silke%20gr%C3%B8nn%20-%203.0ab910be.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 3 199 kr, 50x50 H150. Utsolgt for levering – kun lager i noen butikker."
+    "verifiedNote": "Bekreftet på bohus.no: 3 199 kr, 50x50 H150. Utsolgt for levering – kun lager i noen butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: planten finnes bare i grønn silke. Den generiske «hvit keramikkpotte» er byttet til Bohus' Aude blomsterpotte Ø35 H32,5 hvit (293388, 1 599 kr); Aude Ø35 brun (320187, 1 599 kr) er på produktbildet lys sandbrun, og farger på blader og potter er justert etter bildene."
   },
   {
     "id": "bohus-mr-plant-bergspalme-h140",
@@ -364,11 +378,11 @@
     },
     "variants": [
       {
-        "name": "Silke grønn i hvit Aude potteskjuler",
+        "name": "Silke grønn i hvit Aude blomsterpotte Ø30",
         "colors": {
-          "leaves": "#6f8656",
+          "leaves": "#889267",
           "trunk": "#7a6a4f",
-          "pot": "#e8e4dc"
+          "pot": "#d9d2c9"
         },
         "materials": {
           "leaves": "plant-leaf",
@@ -377,16 +391,20 @@
         }
       },
       {
-        "name": "Silke grønn i svart Mira krukke",
+        "name": "Silke grønn i svart Mira blomsterpotte Ø30",
         "colors": {
-          "leaves": "#6f8656",
+          "leaves": "#889267",
           "trunk": "#7a6a4f",
-          "pot": "#1f1e1c"
+          "pot": "#3f4547"
         },
         "materials": {
           "leaves": "plant-leaf",
           "trunk": "plastic",
           "pot": "ceramic"
+        },
+        "paramsOverride": {
+          "potD": 0.3,
+          "potH": 0.26
         }
       }
     ],
@@ -396,7 +414,7 @@
     "why": "Stua har allerede en palme i hvit potte ved sofaen; en til på motsatt side eller ved TV-stua gir symmetri og myker opp de store, harde vindusflatene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Mr%20Plant/Produkter/BERGSPALME/127954/image-thumb__127954__PDP-Product/248824%20-%20Bergspalme%20kunstig%20plante%20H140%20silke%20gr%C3%B8nn%20-%201.3a511aa3.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 725 kr (før 1 449), H140. Outlet – utsolgt for levering, kun lager i noen butikker. Pottehøyde rettet til 20 cm."
+    "verifiedNote": "Bekreftet på bohus.no: 725 kr (før 1 449), H140. Outlet – utsolgt for levering, kun lager i noen butikker. Pottehøyde rettet til 20 cm. Farger og stoff kontrollert 2026-10-21 mot bohus.no: planten finnes bare i grønn silke. Pottene heter nå Aude blomsterpotte Ø30 H20 hvit (293389, 1 099 kr) og Mira blomsterpotte Ø30 H26 svart (202310, 399 kr, før 799) – navnene er rettet, Mira-varianten har fått riktig pottehøyde, og fargene er justert etter produktbildene."
   },
   {
     "id": "bohus-mr-plant-bananplante-h150",
@@ -423,11 +441,11 @@
     },
     "variants": [
       {
-        "name": "Silke grønn i gråbrun Adrielle potte",
+        "name": "Silke grønn i gråbrun Adrielle dekorpotte Ø46",
         "colors": {
-          "leaves": "#5d7a45",
+          "leaves": "#576738",
           "trunk": "#7d7050",
-          "pot": "#8a7d70"
+          "pot": "#c3bbaf"
         },
         "materials": {
           "leaves": "plant-leaf",
@@ -436,16 +454,20 @@
         }
       },
       {
-        "name": "Silke grønn i svart keramikkpotte",
+        "name": "Silke grønn i svart Eira urne Ø37",
         "colors": {
-          "leaves": "#5d7a45",
+          "leaves": "#576738",
           "trunk": "#7d7050",
-          "pot": "#1f1e1c"
+          "pot": "#262626"
         },
         "materials": {
           "leaves": "plant-leaf",
           "trunk": "plastic",
           "pot": "ceramic"
+        },
+        "paramsOverride": {
+          "potD": 0.37,
+          "potH": 0.35
         }
       }
     ],
@@ -455,7 +477,7 @@
     "why": "Med den høye veggen og 3 m takhøyde tåler stua en stor plante; den gråbrune potta matcher MARRAKESH-veggene og gir et naturlig blikkfang.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Mr%20Plant/Produkter/BANANPLANTE/90462/image-thumb__90462__PDP-Product/230183%20-%20Bananplante%20kunstig%20plante%20H150%20silke%20gr%C3%B8nn%20-%201.f651439b.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 1 749 kr (før 3 499), H150. Utgående – utsolgt for levering, kun lager i noen få butikker."
+    "verifiedNote": "Bekreftet på bohus.no: 1 749 kr (før 3 499), H150. Utgående – utsolgt for levering, kun lager i noen få butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: planten finnes bare i grønn silke. Adrielle dekorpotte Ø46 H62 gråbrun (286824) koster nå 1 600 kr (før 3 999) og er lys gråhvit med rustflammer på bildet; den generiske «svart keramikkpotte» er byttet til Bohus' Eira urne Ø37 H35 svart keramikk (308817, 399 kr, før 999, utgående). Fargene er justert etter produktbildene."
   },
   {
     "id": "bohus-verde-monstera-h64",
@@ -482,10 +504,10 @@
     },
     "variants": [
       {
-        "name": "Grønn i brunbeige Sevilla krukke",
+        "name": "Grønn i brun/beige Sevilla krukke H33",
         "colors": {
-          "leaves": "#3f6436",
-          "pot": "#a08468"
+          "leaves": "#5a6d47",
+          "pot": "#bfab9e"
         },
         "materials": {
           "leaves": "plant-leaf",
@@ -493,14 +515,18 @@
         }
       },
       {
-        "name": "Grønn i svart Mira krukke",
+        "name": "Grønn i svart Mira blomsterpotte Ø30",
         "colors": {
-          "leaves": "#3f6436",
-          "pot": "#1f1e1c"
+          "leaves": "#5a6d47",
+          "pot": "#3f4547"
         },
         "materials": {
           "leaves": "plant-leaf",
           "pot": "ceramic"
+        },
+        "paramsOverride": {
+          "potD": 0.3,
+          "potH": 0.26
         }
       }
     ],
@@ -510,7 +536,7 @@
     "why": "En lav plante fyller tomrommet ved vinduskarmen eller ved siden av en skjenk uten å skygge for utsikten mot elva.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/VERDE/162295/image-thumb__162295__PDP-Product/220769%20-%20Verde%20monstera%20H64%20gr%C3%B8nn%20-%201.a7c377df.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 300 kr (før 599), H64. Materialet er plast, ikke silke (rettet). Utgående – kun lager i noen butikker."
+    "verifiedNote": "Bekreftet på bohus.no: 300 kr (før 599), H64. Materialet er plast, ikke silke (rettet). Utgående – kun lager i noen butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: planten finnes bare i grønn plast. Pottene er Sevilla krukke Ø28,5 H33 brun/beige (286826, 549 kr, før 1 099) og Mira blomsterpotte Ø30 H26 svart (202310, 399 kr, før 799) – navnene er rettet til butikkens, Mira-varianten har fått riktige pottemål, og fargene er justert etter produktbildene."
   },
   {
     "id": "bohus-holmen-gustin-strukturbilde-80x100",
@@ -526,25 +552,25 @@
     "dims": {
       "w": 0.8,
       "d": 0.045,
-      "h": 1.0
+      "h": 1
     },
     "archetype": "art-frame",
     "params": {
       "motif": "abstract",
-      "frame": "black",
+      "frame": "white",
       "w": 0.8,
-      "h": 1.0,
+      "h": 1,
       "depth": 0.045,
       "frameW": 0.02,
       "texture": "relief"
     },
     "variants": [
       {
-        "name": "Canvas svart med svart ramme",
+        "name": "Canvas svart med ramme",
         "colors": {
-          "canvas": "#2e2b28",
-          "accent": "#7d7266",
-          "frame": "#151515"
+          "canvas": "#8a8a8b",
+          "accent": "#1f1f1f",
+          "frame": "#e0dfdd"
         },
         "materials": {
           "canvas": "linen",
@@ -554,11 +580,11 @@
     ],
     "defaultVariant": 0,
     "absorption": 0.06,
-    "description": "Strukturbilde i mørk canvas med reliefflate og tynn svart ramme.",
-    "why": "Den mørke, taktile flaten henter opp de svarte kjøkkendetaljene og det mørke spisebordet, og to–tre stykker side om side kan fylle den høye veggen.",
+    "description": "Strukturbilde med et svart, rutet relieffmotiv på hvit canvas, i tynn hvit ramme.",
+    "why": "Det grafiske svart-hvite motivet henter opp de svarte kjøkkendetaljene og det mørke spisebordet, og to–tre stykker side om side kan fylle den høye veggen.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Consilimo%20AS/Produkter/GUSTIN/312325/image-thumb__312325__PDP-Product/298260%20-%20Gustin%20strukturbilde%2080x100%20canvas%20svart%20med%20ramme%20-%201.5fe62bfe.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: Holmen, 800 kr (før 1 999), 80x100x4.5, canvas/tre. Utgående – kun lager i noen butikker."
+    "verifiedNote": "Bekreftet på bohus.no: Holmen, 800 kr (før 1 999), 80x100x4.5, canvas/tre. Utgående – kun lager i noen butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: bildet finnes bare i denne fargen («canvas svart med ramme», 298260). Produktbildet viser et svart rutemønster på hvit canvas i hvit ramme, ikke svart ramme – rammefargen, params.frame og beskrivelsen er rettet, og canvasfargen er gjennomsnittet av motivet."
   },
   {
     "id": "bohus-labyrint-strukturbilde-80x120",
@@ -569,8 +595,8 @@
     "store": "Bohus",
     "url": "https://www.bohus.no/interior/bilder/labyrint-strukturbilde-80x120",
     "priceNok": 2299,
-    "salePriceNok": 900,
-    "priceNote": "pris sjekket 2026-10-18 (outlet, SPAR 60 %, varenr. 298471). Mål 80x120x4 cm, kan henges stående eller liggende. Materialer: papir, MDF og plast. Rammefarge er ikke oppgitt – modellert som lys natur/eik.",
+    "salePriceNok": 500,
+    "priceNote": "pris sjekket 2026-10-18 (outlet, SPAR 60 %, varenr. 298471). Mål 80x120x4 cm, kan henges stående eller liggende. Materialer: papir, MDF og plast. Rammefarge er ikke oppgitt – modellert som lys natur/eik. Pris 2026-10-21: 500 kr (før 2 299).",
     "dims": {
       "w": 0.8,
       "d": 0.04,
@@ -591,9 +617,9 @@
       {
         "name": "Rispapir natur med ramme",
         "colors": {
-          "canvas": "#ddd2c0",
-          "accent": "#b8a68c",
-          "frame": "#c4a882"
+          "canvas": "#e9e7e4",
+          "accent": "#cfbead",
+          "frame": "#ab937a"
         },
         "materials": {
           "canvas": "paper",
@@ -607,7 +633,7 @@
     "why": "Den lyse, ton-i-ton-flaten glir fint inn mot SAND-veggene og boucle-møblene og gir struktur uten å bli for dominerende på den høye veggen.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/LABYRINT/316112/image-thumb__316112__PDP-Product/298471%20-%20Labyrint%20strukturbilde%2080x120%20papir%20natur%20med%20ramme%20-%201.feb0bbd6.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 900 kr (før 2 299), 80x120x4, rispapir natur. Utgående – kun 1–2 stk igjen i enkelte butikker."
+    "verifiedNote": "Bekreftet på bohus.no: 900 kr (før 2 299), 80x120x4, rispapir natur. Utgående – kun 1–2 stk igjen i enkelte butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: bildet finnes bare i papir natur med ramme (298471) – alle variantene finnes. Rammen er lys natur tre på bildet; fargene er justert etter bildet. Kampanjeprisen er nå 500 kr (før 2 299)."
   },
   {
     "id": "bohus-ramor-canvas-bilde-90x120",
@@ -628,7 +654,7 @@
     "archetype": "art-frame",
     "params": {
       "motif": "abstract",
-      "frame": "oak",
+      "frame": "black",
       "w": 0.9,
       "h": 1.2,
       "depth": 0.05,
@@ -637,25 +663,25 @@
     },
     "variants": [
       {
-        "name": "Bruntoner med brun ramme",
+        "name": "Bruntoner med ramme",
         "colors": {
-          "canvas": "#8a6a52",
+          "canvas": "#786354",
           "accent": "#c2a283",
-          "frame": "#5b4433"
+          "frame": "#1f1f1e"
         },
         "materials": {
           "canvas": "linen",
-          "frame": "walnut"
+          "frame": "painted"
         }
       }
     ],
     "defaultVariant": 0,
     "absorption": 0.06,
-    "description": "Stemningsfullt, håndmalt canvasbilde i brune og brente nyanser med brun ramme.",
+    "description": "Stemningsfullt, håndmalt canvasbilde i brune og brente nyanser med tynn, svart foliert fururamme.",
     "why": "De varme brune tonene henger sammen med det røykfargede spisebordet og MARRAKESH-veggene og gir varme over spisebordet eller på den høye veggen.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/RAMOR/596550/image-thumb__596550__PDP-Product/316526%20-%20Ramor%20canvas%20bilde%2090x120%20bruntoner%20med%20ramme%20-%201.bc12e60b.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 1 619 kr (før 2 699), 90x120x5, bruntoner med fururamme."
+    "verifiedNote": "Bekreftet på bohus.no: 1 619 kr (før 2 699), 90x120x5, bruntoner med fururamme. Farger og stoff kontrollert 2026-10-21 mot bohus.no: bildet finnes bare i bruntoner med ramme (316526). Rammen (foliert furu) er svart på produktbildet, ikke brun – variantnavn, rammefarge/-materiale, params.frame og beskrivelsen er rettet, og canvasfargen er justert etter bildet."
   },
   {
     "id": "bohus-holmen-mara-canvas-bilde-120x60",
@@ -688,9 +714,9 @@
       {
         "name": "Beige/natur med gråbrun ramme",
         "colors": {
-          "canvas": "#d6c8b4",
-          "accent": "#8f7660",
-          "frame": "#7a6a5a"
+          "canvas": "#e0dddb",
+          "accent": "#b4a8a0",
+          "frame": "#c3b7aa"
         },
         "materials": {
           "canvas": "linen",
@@ -704,7 +730,7 @@
     "why": "Det brede formatet passer over en skjenk eller over hjørnesofaen i TV-stua, og de beige tonene matcher SAND-veggene og de lyse stolene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Consilimo%20AS/Produkter/MARA/343069/image-thumb__343069__PDP-Product/316521%20-%20Mara%20canvas%20bilde%20120x60%20beige%20med%20ramme%20-%202.886561ab.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: Holmen, 1 439 kr (før 2 399), 120x60x4.5, beige/natur."
+    "verifiedNote": "Bekreftet på bohus.no: Holmen, 1 439 kr (før 2 399), 120x60x4.5, beige/natur. Farger og stoff kontrollert 2026-10-21 mot bohus.no: bildet finnes bare i beige med ramme i gråbrunt tre (316521) – alle variantene finnes. Bildet er lysere (nesten hvitt med beige og gråbrune strøk) og rammen lysere gråbrun enn før; fargene er justert etter produktbildet."
   },
   {
     "id": "bohus-applewood-speil-o90",
@@ -727,7 +753,7 @@
       "shape": "round",
       "w": 0.9,
       "h": 0.9,
-      "frameW": 0.035,
+      "frameW": 0.06,
       "frameDepth": 0.03
     },
     "variants": [
@@ -735,7 +761,19 @@
         "name": "Svart MDF-ramme",
         "colors": {
           "glass": "#c9cfd0",
-          "frame": "#1b1b1b"
+          "frame": "#202224"
+        },
+        "materials": {
+          "glass": "mirror",
+          "frame": "painted"
+        }
+      },
+      {
+        "name": "Brun MDF-ramme",
+        "url": "https://www.bohus.no/interior/speil/rundt-speil/applewood-speil-o90-1",
+        "colors": {
+          "glass": "#c9cfd0",
+          "frame": "#443325"
         },
         "materials": {
           "glass": "mirror",
@@ -749,7 +787,7 @@
     "why": "Et rundt speil med svart ramme passer de svarte detaljene og de runde formene i stua, og det speiler lys og elveutsikt inn mot den mørkere TV-stua.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/APPLEWOOD/345556/image-thumb__345556__PDP-Product/317440%20-%20Applewood%20speil%20%C3%9890%20m-ramme%20svart%20-%202.b44b5b2a.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 690 kr (før 2 299), Ø90, svart MDF-ramme. Utgående – utsolgt for levering, kun lager i noen få butikker."
+    "verifiedNote": "Bekreftet på bohus.no: 690 kr (før 2 299), Ø90, svart MDF-ramme. Utgående – utsolgt for levering, kun lager i noen få butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Ø90 finnes i svart (317440) og brun (317181), begge 690 kr (før 2 299) – brun er lagt til. Den rillede rammen er ca. 6 cm bred på produktbildet (params.frameW rettet fra 3,5 cm)."
   },
   {
     "id": "bohus-othilie-speil-90x93",
@@ -794,7 +832,7 @@
     "why": "Den myke, organiske formen spiller på de runde boucle-stolene og den buede sofaen, og den tynne svarte rammen matcher kjøkkenet og lampen over spisebordet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Opal%20East%20Trading/Produkter/OTHILIE/101512/image-thumb__101512__PDP-Product/235903%20-%20Othilie%20speil%2090x93%20-%201.d212184d.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 900 kr (før 2 299), 90x93x1.5, organisk form, matt svart metall. Utgående – kun lager i noen få butikker."
+    "verifiedNote": "Bekreftet på bohus.no: 900 kr (før 2 299), 90x93x1.5, organisk form, matt svart metall. Utgående – kun lager i noen få butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: H93 finnes bare med matt svart metallramme (235903) – alle variantene finnes."
   },
   {
     "id": "bohus-holmen-cape-speil-med-sprosser-h200",
@@ -810,17 +848,17 @@
     "dims": {
       "w": 0.9,
       "d": 0.03,
-      "h": 2.0
+      "h": 2
     },
     "archetype": "mirror",
     "params": {
       "shape": "arch",
       "w": 0.9,
-      "h": 2.0,
+      "h": 2,
       "frameW": 0.025,
       "frameDepth": 0.03,
       "mullions": true,
-      "mullionCols": 2,
+      "mullionCols": 4,
       "mullionRows": 4,
       "leaning": true
     },
@@ -829,7 +867,7 @@
         "name": "Svart metallramme",
         "colors": {
           "glass": "#c9cfd0",
-          "frame": "#1a1a1a"
+          "frame": "#2c271f"
         },
         "materials": {
           "glass": "mirror",
@@ -843,7 +881,7 @@
     "why": "Med 3 m takhøyde ved den høye veggen gir et 2 m høyt sprossespeil vertikal effekt og speiler de store sørvinduene, og de svarte sprossene gjentar de svarte vindusrammene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Martinsen%20AS/Produkter/CAPE/268139/image-thumb__268139__PDP-Product/286553%20-%20Cape%20speil%20med%20spiler%20H200%20-%201.a1fb9152.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: Holmen, 3 599 kr (før 5 999), 90x200x3, svart metall. På lager."
+    "verifiedNote": "Bekreftet på bohus.no: Holmen, 3 599 kr (før 5 999), 90x200x3, svart metall. På lager. Farger og stoff kontrollert 2026-10-21 mot bohus.no: speilet finnes bare med svart metallramme (286553) – alle variantene finnes. Produktbildet viser buet topp med fire ruter i bredden (params.mullionCols rettet fra 2 til 4) og en varm, nesten svart ramme."
   },
   {
     "id": "bohus-sindig-aude-vase-h70",
@@ -872,7 +910,7 @@
       {
         "name": "Keramikk brun",
         "colors": {
-          "body": "#6b4a36"
+          "body": "#9a8168"
         },
         "materials": {
           "body": "ceramic"
@@ -882,7 +920,7 @@
         "name": "Keramikk hvit",
         "url": "https://www.bohus.no/interior/dekor/vaser/aude-vase-h70",
         "colors": {
-          "body": "#e6e1d8"
+          "body": "#d5d0c9"
         },
         "materials": {
           "body": "ceramic"
@@ -895,7 +933,7 @@
     "why": "En høy gulvvase i brunt passer det røykfargede spisebordet og fyller et lavt hjørne ved vinduene eller ved siden av en skjenk.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Season%20ASIA%20Co.%20Ltd/Produkter/AUDE/594723/image-thumb__594723__PDP-Product/320188%20-%20Aude%20vase%20%C3%9827.5%20H70%20cm%20keramikk%20brun%20-%201.a82a6469.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: Sindig, 1 899 kr, Ø27.5 H70, brun og hvit keramikk."
+    "verifiedNote": "Bekreftet på bohus.no: Sindig, 1 899 kr, Ø27.5 H70, brun og hvit keramikk. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle variantene finnes (brun 320188 og hvit 293390, begge 1 899 kr). Brun er en lys sand-/khakibrun på produktbildet; fargene er justert etter bildene."
   },
   {
     "id": "bohus-halvor-bakke-marmi-lykt-h59",
@@ -925,11 +963,35 @@
       {
         "name": "Stål svart",
         "colors": {
-          "frame": "#1c1c1c",
+          "frame": "#2a2a29",
           "glass": "#dfe6e4"
         },
         "materials": {
           "frame": "black-metal",
+          "glass": "glass-clear"
+        }
+      },
+      {
+        "name": "Stål brun",
+        "url": "https://www.bohus.no/interior/lykter-og-lysestaker/lykter/marmi-lykt-h59-1",
+        "colors": {
+          "frame": "#4c3a2c",
+          "glass": "#dfe6e4"
+        },
+        "materials": {
+          "frame": "bronze",
+          "glass": "glass-clear"
+        }
+      },
+      {
+        "name": "Stål sølv",
+        "url": "https://www.bohus.no/interior/lykter-og-lysestaker/lykter/marmi-lykt-h59",
+        "colors": {
+          "frame": "#c9cbcc",
+          "glass": "#dfe6e4"
+        },
+        "materials": {
+          "frame": "chrome",
           "glass": "glass-clear"
         }
       }
@@ -940,7 +1002,7 @@
     "why": "Svart stål matcher vindusrammene og kjøkkenet, og en høy lykt på gulvet ved de store vinduene gir lune lyspunkter de mørke kveldene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norsk%20Dun%20AS/Produkter/MARMI/620631/image-thumb__620631__PDP-Environment/229746%20-%20Marmi%20lykt%20H59%20st%C3%A5l%20svart%20-%201.8d572e46.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: Halvor Bakke, 2 799 kr, H59, svart stål."
+    "verifiedNote": "Bekreftet på bohus.no: Halvor Bakke, 2 799 kr, H59, svart stål. Farger og stoff kontrollert 2026-10-21 mot bohus.no: H59 finnes i stål svart (229746), brun (328848) og sølv (328849), alle 2 799 kr – brun og sølv (blankpolert) er lagt til; fargene er justert etter produktbildene."
   },
   {
     "id": "bohus-halvor-bakke-ceres-lysestake-h40",
@@ -969,7 +1031,7 @@
       {
         "name": "Metall antikk brun",
         "colors": {
-          "body": "#5a4535"
+          "body": "#736b5e"
         },
         "materials": {
           "body": "bronze"
@@ -982,7 +1044,7 @@
     "why": "Antikk brun metall er en varm kontrast til de svarte detaljene og passer på det mørke spisebordet eller en skjenk sammen med lysestakene som allerede står på sofabordet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Norvigroup%20Norsk%20Dun%20AS/Produkter/CERES/339392/image-thumb__339392__PDP-Product/314602%20-%20Ceres%20lysestake%20H40%20metall%20antikk%20brun%20-%201.3d83f57f.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: Halvor Bakke, 499 kr, 13x13.5 H40, antikk brun metall."
+    "verifiedNote": "Bekreftet på bohus.no: Halvor Bakke, 499 kr, 13x13.5 H40, antikk brun metall. Farger og stoff kontrollert 2026-10-21 mot bohus.no: H40 finnes bare i metall antikk brun (314602) – alle variantene finnes. Finishen er en grålig, tinnaktig antikk brun på bildet; fargen er justert."
   },
   {
     "id": "bohus-indo-kurv-o46",
@@ -1012,7 +1074,7 @@
       {
         "name": "Rotting natur",
         "colors": {
-          "body": "#b89a6e"
+          "body": "#b0945f"
         },
         "materials": {
           "body": "rattan"
@@ -1025,6 +1087,6 @@
     "why": "En kurv med pledd ved lenestolen eller hjørnesofaen gjør det lett å ha flere tekstiler fremme (bra for akustikken), og naturrotting knytter an til det lyse eikegulvet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/INDO/128671/image-thumb__128671__PDP-Product/243994%20-%20Indo%20kurv%20%C3%9846%20H46%20rotting%20natur%20-%201.9997dbfd.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: 500 kr (før 1 299), Ø46 H46, rotting natur. Utgående – utsolgt for levering, kun lager i noen få butikker."
+    "verifiedNote": "Bekreftet på bohus.no: 500 kr (før 1 299), Ø46 H46, rotting natur. Utgående – utsolgt for levering, kun lager i noen få butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Ø46 finnes bare i rotting natur (243994) – alle variantene finnes; fargen er justert etter produktbildet."
   }
 ]

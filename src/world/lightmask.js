@@ -233,7 +233,10 @@ export function installLightMask() {
   installed = true;
   try {
     let ok = patchChunk('lights_pars_begin', 'uniform vec3 ambientLightColor;', `uniform vec3 ambientLightColor;\n${PARS}`);
-    ok = ok && patchChunk('lights_fragment_begin', 'IncidentLight directLight;', 'IncidentLight directLight;\nlmLocate( geometryPosition );');
+    // the point tested is nudged 1.5 cm along the (view-space, camera-facing) normal into the room the surface faces: a
+    // wall lying exactly on a box face (the shaft's north wall at x 0, down through the slab) flipped room per pixel and
+    // showed thin stripes of the other room's light (integrator, bølge 1 gruppe 3, from steg 22+26t)
+    ok = ok && patchChunk('lights_fragment_begin', 'IncidentLight directLight;', 'IncidentLight directLight;\nlmLocate( geometryPosition + geometryNormal * 0.015 );');
     ok = ok && patchChunk('lights_fragment_begin', 'getPointLightInfo( pointLight, geometryPosition, directLight );',
       `getPointLightInfo( pointLight, geometryPosition, directLight );\n${slotLine('point', 'directLight.color')}`);
     ok = ok && patchChunk('lights_fragment_begin', 'getSpotLightInfo( spotLight, geometryPosition, directLight );',

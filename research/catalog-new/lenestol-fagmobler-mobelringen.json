@@ -1,0 +1,687 @@
+[
+  {
+    "id": "fagmobler-conform-relieve-hvilestol",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Conform Relieve hvilestol",
+    "brand": "Conform",
+    "store": "Fagmøbler",
+    "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/CMFRELFKSQSHE1383-63",
+    "priceNok": 20699,
+    "salePriceNok": 14489,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (fagmobler.no-produktdata, varenr. CMFRELFKSQSHE1383-63): Relieve med standard rygg i stoff Sheford Mole, svart aluminiumsfot med sving, koster 14 489,- (før 20 699,-, Kupp −30 % t.o.m. 31.10.2026). Alle sju Sheford-fargene (Mole, Stone, Light grey, Forest, Dark blue, Aubergine og Mustard) har samme pris; Aubergine og Mustard er utelatt her (Mustard-siden viser dessuten et grått bilde). Fagmøbler har også Relieve i Nappa-skinn (21 299,-, før 26 699,-), Bolzano-hud Seagrass (19 999,-, før 24 999,-), stoff Eros Peach (15 999,-, før 19 999,-) og Relieve med lav rygg i Bardot grey (12 499,-, før 15 699,-, 77 × 80 × 78 cm). Conform lager fotskammel og en versjon med integrert fotstøtte, men ingen av dem ligger på fagmobler.no. Bestillingsvare.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.77,
+      "d": 0.83,
+      "h": 1.0
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.43,
+      "seatD": 0.48,
+      "backH": 1.0,
+      "armH": 0.6,
+      "armW": 0.11,
+      "legStyle": "swivel-star",
+      "legH": 0.2,
+      "backShape": "high",
+      "cushion": "tight",
+      "footstool": false,
+      "headrest": true,
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "block",
+      "backSeams": "cross",
+      "footrest": "none",
+      "footrestOpen": false,
+      "starArms": 5,
+      "lever": false,
+      "armBottom": 0.25,
+      "notes": "Conform Relieve med standard rygg, designet av Jahn Aamodt. Kantete boksform: to flate, polstrede sidevanger som sett fra siden er en kile, bredest oppe ved armlenet og smalere nede ved setet, og som stopper ca. 25 cm over gulvet slik at søylen og mekanismen under setet synes. Armlenene er brede (ca. 11 cm), flate på toppen og går rett fram til en skrå, avskåret front. Setet er én tykk, fast pute som stikker litt fram foran vangene. Ryggen er høy og bakoverlent med en tverrsøm over korsryggen og en kort quiltsøm midt på; øverst sitter en stor, separat rektangulær nakkepute med kantsømmer som følger ryggen (Syncro Backup). På utsiden av høyre sidevange sitter et innfelt håndtak i blank krom for å regulere ryggen, ikke en løs hendel. Svart femarmet svingfot (kryssfot i helstøpt aluminium) med søyle. Fagmøbler selger stolen uten fotskammel. Armlenehøyden og høyden på foten er anslått fra bildet."
+    },
+    "variants": [
+      {
+        "name": "Sheford Mole, svart aluminiumsfot med sving",
+        "colors": {
+          "upholstery": "#a69b97",
+          "legs": "#2b2b2b"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/CMFRELFKSQSHE1383-63"
+      },
+      {
+        "name": "Sheford Stone, svart aluminiumsfot med sving",
+        "colors": {
+          "upholstery": "#b3b2ae",
+          "legs": "#2b2b2b"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/CMFRELFKSQSHE1383-73"
+      },
+      {
+        "name": "Sheford Light grey, svart aluminiumsfot med sving",
+        "colors": {
+          "upholstery": "#a1a09e",
+          "legs": "#2b2b2b"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/CMFRELFKSQSHE1383-72"
+      },
+      {
+        "name": "Sheford Forest, svart aluminiumsfot med sving",
+        "colors": {
+          "upholstery": "#636858",
+          "legs": "#2b2b2b"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/CMFRELFKSQSHE1383-28"
+      },
+      {
+        "name": "Sheford Dark blue, svart aluminiumsfot med sving",
+        "colors": {
+          "upholstery": "#3f4455",
+          "legs": "#2b2b2b"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/CMFRELFKSQSHE1383-48"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.7,
+    "absorptionNote": "Anslått ca. 0,7 m² Sabine: høy, polstret rygg, tykt sete og stor nakkepute, men ingen fotskammel.",
+    "description": "Hvilestol designet av Jahn Aamodt for Conform, med kantete sidevanger, brede armlener, stor nakkepute og Syncro Backup, der rygg og nakkepute følger hverandre når du lener deg tilbake. Standard rygg, sving og svart kryssfot i helstøpt aluminium. Skandinavisk produsert.",
+    "why": "Sheford Mole og Stone er rolige, varme gråtoner som ligger tett på SAND/MARRAKESH-veggene, og den svarte foten gjentar de svarte detaljene. Med 77 cm bredde og uten skammel er den en kompakt lese- og TV-stol for stua eller kjellerstua.",
+    "imageUrl": "https://imagedelivery.net/LfHarEEHw85fo7v7-lUDxQ/60309a76-d6df-44d6-1de7-60bbe5d3eb00/public",
+    "verified": true,
+    "verifiedNote": "Bekreftet på fagmobler.no 2026-10-21: navn, pris og kampanje (Kupp t.o.m. 31.10.), mål 77 × 83 × 100 cm, setehøyde 43 og setedybde 48 cm, svart kryssfot i helstøpt aluminium med sving, og de fem Sheford-fargene med egne produktsider og bilder. Fargene er hentet fra hver variants eget produktbilde. Armlenehøyde, høyden på sidevangene og fotens høyde er anslått fra bildet."
+  },
+  {
+    "id": "fagmobler-brunstad-choice-hvilestol",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Brunstad Choice hvilestol",
+    "brand": "Brunstad",
+    "store": "Fagmøbler",
+    "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/BSZ67201100-MEGAN-BEIGE",
+    "priceNok": 31699,
+    "salePriceNok": 15849,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (fagmobler.no-produktdata, varenr. BSZ67201100-MEGAN-BEIGE): tekstil Megan 32 Beige med S04 svingsokkel svart koster 15 849,- (før 31 699,-, Kupp −50 % t.o.m. 31.10.2026), Megan 21 Dark Grey likeså. Mino Liver koster 14 399,- (før 28 799,-). Fagmøbler selger ingen fotskammel til stolen, selv om ett av bildene av Mino Liver viser en. I samme serie har Fagmøbler Brunstad Choice loungestol med lav rygg (12 399,- i Mino Liver, 13 649,- i Megan Diesel) og med regulering (15 999,-, før 31 999,-). Bestillingsvare.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.79,
+      "d": 0.84,
+      "h": 1.08
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.45,
+      "seatD": 0.52,
+      "backH": 1.08,
+      "armH": 0.62,
+      "armW": 0.14,
+      "legStyle": "swivel-star",
+      "legH": 0.17,
+      "backShape": "high",
+      "cushion": "loose",
+      "footstool": false,
+      "headrest": true,
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "block",
+      "backSeams": "cross-v",
+      "footrest": "none",
+      "footrestOpen": false,
+      "star": "slim",
+      "starArms": 4,
+      "lever": true,
+      "armBottom": 0.2,
+      "notes": "Brunstad Choice hvilestol. Polstret boksform med brede, kantete armlener (ca. 14 cm) med flat topp, som buer svakt utover mot fronten; sidevangene går ned til ca. 20 cm over gulvet. En løs, tykk setepute med kantsøm ligger mellom armlenene. Ryggen er høy og smalner tydelig inn mot toppen, med en loddrett søm midt nedover og ingen knapper. En separat, rektangulær nakkepute henger foran toppen av ryggen i en stropp over kanten. Liten spak med kule på utsiden av høyre armlene for å regulere ryggen. Stolen står på en tynn, svart firearmet svingsokkel (S04) med søyle. Fagmøbler selger stolen uten fotskammel. Armlenehøyden er anslått fra bildet."
+    },
+    "variants": [
+      {
+        "name": "Megan 32 Beige, svingsokkel S04 svart",
+        "colors": {
+          "upholstery": "#a28f7c",
+          "legs": "#222222"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/BSZ67201100-MEGAN-BEIGE"
+      },
+      {
+        "name": "Megan 21 Dark Grey, svingsokkel S04 svart",
+        "colors": {
+          "upholstery": "#3a3a38",
+          "legs": "#222222"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/BSZ67201100-MEGAN-DARKGREY"
+      },
+      {
+        "name": "Mino Liver, svingsokkel S04 svart",
+        "colors": {
+          "upholstery": "#847a71",
+          "legs": "#222222"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        },
+        "priceNok": 28799,
+        "salePriceNok": 14399,
+        "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/BSZ67201100-MINO-LIVER"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.7,
+    "absorptionNote": "Anslått ca. 0,7 m² Sabine: høy, polstret rygg, løs setepute og nakkepute, men ingen fotskammel.",
+    "description": "Hvilestol fra norske Brunstad med høy, avsmalnende rygg, løs nakkepute, løs setepute og brede armlener. Ryggen reguleres med spak, og stolen står på en tynn, svart svingsokkel. 10 års garanti på rammeverk og sittepute.",
+    "why": "Megan Beige i myk velur er varm og rolig mot SAND/MARRAKESH-veggene, og den tynne svarte sokkelen gjentar de svarte detaljene. Den høye ryggen og nakkeputen gjør den god å lene seg tilbake i foran TV-en i kjellerstua.",
+    "imageUrl": "https://imagedelivery.net/LfHarEEHw85fo7v7-lUDxQ/411ce49e-1730-4e64-404e-85a7dd123d00/public",
+    "verified": true,
+    "verifiedNote": "Bekreftet på fagmobler.no 2026-10-21: navn, priser og kampanje (Kupp t.o.m. 31.10.), mål 79 × 84 × 108 cm, setehøyde 45 og setedybde 52 cm, svart svingsokkel S04 og de tre stoffene (Megan 32 Beige, Megan 21 Dark Grey og Mino Liver) med egne produktsider og bilder. Megan er 100 % polyester med velurpreg, Mino 80 % polyester og 20 % nylon med grov vev. Armlenehøyden er anslått. Ingen fotskammel er oppført hos Fagmøbler, så modellen har ingen fotstøtte."
+  },
+  {
+    "id": "fagmobler-hjort-knudsen-amina-hvilestol-med-pall",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Amina hvilestol m/sving, vipp og pall",
+    "brand": "Hjort Knudsen",
+    "store": "Fagmøbler",
+    "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/HKAMINAFG140164-3661",
+    "priceNok": 8999,
+    "salePriceNok": 3999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (fagmobler.no-produktdata, varenr. HKAMINAFG140164-3661): tekstil Boogie 3661 Cream med svart metallunderstell koster 3 999,- (før 8 999,-, Kupp t.o.m. 31.10.2026), Boogie 3660 Clay likeså. Prisen inkluderer svart sokkel og skammel (pall). Leverandør er Hjort Knudsen.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.715,
+      "d": 0.825,
+      "h": 1.08
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.45,
+      "seatD": 0.5,
+      "backH": 1.08,
+      "armH": 0.6,
+      "armW": 0.12,
+      "legStyle": "swivel-star",
+      "legH": 0.18,
+      "backShape": "high",
+      "cushion": "tight",
+      "footstool": true,
+      "headrest": true,
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "block",
+      "backSeams": "cross-v",
+      "footrest": "stool",
+      "footrestOpen": false,
+      "starArms": 5,
+      "lever": false,
+      "armBottom": 0.26,
+      "armTuck": 0.03,
+      "stoolW": 0.52,
+      "stoolD": 0.4,
+      "stoolH": 0.43,
+      "notes": "Helkledd hvilestol i krøllete bouclé. Tykke, avrundede armlener som myke paneler på hver side av setet, som lener seg litt utover mot toppen og stopper ca. 26 cm over gulvet, slik at søylen synes under. Ryggen er et høyt, avrundet ytterskall i samme stoff med små ører øverst; innsiden har to loddrette ryggputer med en loddrett søm midt nedover og ingen knapper. Øverst sitter en separat, rektangulær nakkepute. Setet er én tykk, fast pute. Ingen hendel; vippen låses med en liten knott under setet. Svart femarmet stjernefot i metall med søyle og sving. Fotskammelen (pall) har tykk, todelt pute med en tverrsøm og står på en egen svart firearmet fot; den er ca. 52 × 40 × 43 cm (anslått fra bildet, ikke oppgitt). Sete- og armlenehøyde er anslått."
+    },
+    "variants": [
+      {
+        "name": "Boogie 3661 Cream, svart metallunderstell",
+        "colors": {
+          "upholstery": "#ece4d9",
+          "legs": "#1e1e1e"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal"
+        },
+        "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/HKAMINAFG140164-3661"
+      },
+      {
+        "name": "Boogie 3660 Clay, svart metallunderstell",
+        "colors": {
+          "upholstery": "#9b948b",
+          "legs": "#1e1e1e"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal"
+        },
+        "url": "https://fagmobler.no/rom/stue/stoler/hvilestoler/HKFG140164-3660"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.85,
+    "absorptionNote": "Anslått ca. 0,85 m² Sabine med pallen: helkledd i luvrik bouclé med høy rygg og nakkepute.",
+    "description": "Rimelig hvilestol med pall, helkledd i krøllete bouclé (Boogie), med sving og vipp, separat nakkepute og svart stjernefot i metall. Pallen er inkludert i prisen.",
+    "why": "Den kremhvite bouclé-varianten passer rett inn blant de lyse bouclé-møblene i stua, og med pall til under 4 000,- er den det klart rimeligste hvilestol-settet. Clay er et varmt gråbrunt alternativ for kjellerstua.",
+    "imageUrl": "https://imagedelivery.net/LfHarEEHw85fo7v7-lUDxQ/002e1a46-be7d-43b7-d90c-3a06a4a82300/public",
+    "verified": true,
+    "verifiedNote": "Bekreftet på fagmobler.no 2026-10-21: navn, pris og kampanje, mål 71,5 × 82,5 × 108 cm, at pall og svart metallunderstell er inkludert, sving og vipp, og de to Boogie-fargene med egne produktsider og bilder. Fagmøbler oppgir ikke sete- eller armlenehøyde; setehøyde 45, armlenehøyde 60 og pallens mål (ca. 52 × 40 × 43 cm) er anslått fra bildene."
+  },
+  {
+    "id": "mobelringen-stressless-tokyo-hvilestol-med-krakk",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Stressless Tokyo lenestol m/krakk",
+    "brand": "Stressless (Ekornes)",
+    "store": "Møbelringen",
+    "url": "https://www.mobelringen.no/stresslessr-tokyo-lenestol-m-krakk-300978034",
+    "priceNok": 29399,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (mobelringen.no-produktdata, varenr. 300978034): Tokyo med regulerbar nakkestøtte i tekstil Clover 81 Light Beige, Star-understell i aluminium og krakk koster 29 399,-. Bloom 01 off white 28 199,-; Paloma-hud (almond, black, rock, copper) 32 999,-; Velaro-hud forest green 35 399,-. Paloma black finnes også med aluminiumsfot (32 999,-). Siden viser merket «Kjøp 2, få 30 %», og produktdataene har en kampanjepris (19 199,- for Clover) med kampanjeperiode fra 26.10., som ikke gjelder ennå. Møbelringen har også Tokyo med Cross-understell (29 399–36 599,-), med høy rygg (110 cm, 29 399–32 999,-) og stolen uten krakk (21 099–28 999,-). Leveringstid 10–12 uker.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.8,
+      "d": 0.76,
+      "h": 0.99
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.47,
+      "seatD": 0.49,
+      "backH": 0.99,
+      "armH": 0.62,
+      "armW": 0.09,
+      "legStyle": "swivel-star",
+      "legH": 0.14,
+      "backShape": "high",
+      "cushion": "tight",
+      "footstool": true,
+      "headrest": true,
+      "body": "classic",
+      "headStyle": "block",
+      "backSeams": "cross",
+      "footrest": "stool",
+      "footrestOpen": false,
+      "star": "slim",
+      "starArms": 4,
+      "lever": false,
+      "stoolW": 0.55,
+      "stoolD": 0.4,
+      "stoolH": 0.41,
+      "notes": "Stressless Tokyo, medium, med regulerbar nakkestøtte. Klassisk Stressless-oppbygning: sete og rygg er én fast, polstret «dyne» uten sidevanger, med en tverrsøm i ryggen (to ryggfelt) og en separat, rektangulær nakkepute øverst som kan vinkles. Smale, polstrede armputer ligger på en buet armbøyle i metall (samme farge som foten) som går fra baksiden av setet, under armputen og ned til mekanismen. Stressless-hjulet for Glide-motstanden sitter på høyre side under armen. Understellet er Star: fire tynne, lange og svakt buede armer som spriker ut fra et nav under setet, i blank aluminium eller matt svart, ikke ringfot. Fotskammelen har buet, polstret topp med tverrsøm og står på en mindre Star-fot med fire armer; den er ca. 55 × 40 × 41 cm (anslått fra bildet, ikke oppgitt). Setedybde og armlenehøyde er anslått."
+    },
+    "variants": [
+      {
+        "name": "Clover 81 Light Beige, Star-understell aluminium",
+        "colors": {
+          "upholstery": "#cdc9bc",
+          "legs": "#c4c6c8"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "chrome"
+        },
+        "url": "https://www.mobelringen.no/stresslessr-tokyo-lenestol-m-krakk-300978034"
+      },
+      {
+        "name": "Bloom 01 Off white, Star-understell aluminium",
+        "colors": {
+          "upholstery": "#c2b9ac",
+          "legs": "#c4c6c8"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "chrome"
+        },
+        "priceNok": 28199,
+        "url": "https://www.mobelringen.no/stresslessr-tokyo-lenestol-m-krakk-300978056"
+      },
+      {
+        "name": "Hud Paloma 43 Almond, Star-understell aluminium",
+        "colors": {
+          "upholstery": "#9e846d",
+          "legs": "#c4c6c8"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "chrome"
+        },
+        "priceNok": 32999,
+        "url": "https://www.mobelringen.no/stresslessr-tokyo-lenestol-m-krakk-300978036"
+      },
+      {
+        "name": "Hud Paloma 43 Almond, Star-understell matt sort",
+        "colors": {
+          "upholstery": "#9e846d",
+          "legs": "#1f1f1f"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "black-metal"
+        },
+        "priceNok": 32999,
+        "url": "https://www.mobelringen.no/stresslessr-tokyo-lenestol-m-krakk-300978064"
+      },
+      {
+        "name": "Hud Paloma 19 Black, Star-understell matt sort",
+        "colors": {
+          "upholstery": "#2b2b2b",
+          "legs": "#1f1f1f"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "black-metal"
+        },
+        "priceNok": 32999,
+        "url": "https://www.mobelringen.no/stresslessr-tokyo-lenestol-m-krakk-300978003"
+      },
+      {
+        "name": "Hud Paloma 80 Rock, Star-understell aluminium",
+        "colors": {
+          "upholstery": "#535251",
+          "legs": "#c4c6c8"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "chrome"
+        },
+        "priceNok": 32999,
+        "url": "https://www.mobelringen.no/stresslessr-tokyo-lenestol-m-krakk-300978021"
+      },
+      {
+        "name": "Hud Paloma 42 Copper, Star-understell aluminium",
+        "colors": {
+          "upholstery": "#72452f",
+          "legs": "#c4c6c8"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "chrome"
+        },
+        "priceNok": 32999,
+        "url": "https://www.mobelringen.no/stresslessr-tokyo-lenestol-m-krakk-300978017"
+      },
+      {
+        "name": "Hud Velaro 90 Forest green, Star-understell aluminium",
+        "colors": {
+          "upholstery": "#757064",
+          "legs": "#c4c6c8"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "chrome"
+        },
+        "priceNok": 35399,
+        "url": "https://www.mobelringen.no/stresslessr-tokyo-lenestol-m-krakk-300978061"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.75,
+    "absorptionNote": "Anslått ca. 0,75 m² Sabine med krakken i tekstil; skinnvariantene demper noe mindre.",
+    "description": "Stressless Tokyo i medium størrelse med regulerbar nakkestøtte og krakk: slank rygg med myk, omsluttende dyne, smale armputer på buede armbøyler, Plus- og Glide-system og sving på et lett Star-understell.",
+    "why": "Clover Light Beige er lys og rolig mot SAND/MARRAKESH-veggene, og den slanke formen tar lite plass. Som Stressless er den laget for å lene seg helt tilbake med beina på krakken, og den er et moderne alternativ til den klassiske Opal.",
+    "imageUrl": "https://backend.mobelringen.no/media/catalog/product/3/0/300978034_8772650.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på mobelringen.no 2026-10-21: navn, priser, mål 80 × 76 × 99 cm og setehøyde 47 cm (stolen; krakken står foran), Star-understell i aluminium eller matt sort, regulerbar nakkestøtte og at krakken er inkludert, for alle åtte variantene med egne produktsider og bilder. Setedybde, armlenehøyde og krakkens mål (ca. 55 × 40 × 41 cm) er anslått fra bildene."
+  },
+  {
+    "id": "mobelringen-hjellegjerde-falcon-hvilestol-med-krakk",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Hjellegjerde Falcon lenestol m/krakk",
+    "brand": "Hjellegjerde",
+    "store": "Møbelringen",
+    "url": "https://www.mobelringen.no/hjellegjerde-falcon-lenestol-m-krakk-376945011",
+    "priceNok": 35199,
+    "salePriceNok": 18999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (mobelringen.no-produktdata, varenr. 376945011): Falcon med krakk i tekstil Guard 01 Natural, mokkaoljet eik og svingfot i børstet stål koster 18 999,- (før 35 199,-, på salg). Alpine 05 Beige, Alpine 15 Brown og Guard 12 Taupe har samme salgspris. Maple 1110 Light beige og Rio 236 koster 33 999,-, Softline-hud nougat og black 37 699,-. Møbelringen har også Maple grey og Maple charcoal (33 999,-), Safir gold (35 199,-), Softline hassel (37 699,-) og Glen light beige (33 999,-), og stolen uten krakk fra 14 999,- (Alpine brown, før 27 999,-). Leveringstid 1–2 uker.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.84,
+      "d": 0.91,
+      "h": 1.01
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.45,
+      "seatD": 0.5,
+      "backH": 1.01,
+      "armH": 0.6,
+      "armW": 0.13,
+      "legStyle": "swivel-star",
+      "legH": 0.2,
+      "backShape": "high",
+      "cushion": "tight",
+      "footstool": true,
+      "headrest": true,
+      "body": "box",
+      "sides": "veneer",
+      "headStyle": "block",
+      "backSeams": "buttons",
+      "footrest": "stool",
+      "footrestOpen": false,
+      "starArms": 4,
+      "lever": true,
+      "armTuck": 0.045,
+      "armBottom": 0.27,
+      "armCap": false,
+      "stoolW": 0.55,
+      "stoolD": 0.42,
+      "stoolH": 0.42,
+      "notes": "Hjellegjerde Falcon. Et formstøpt skall i finert eik (frame: hvitpigmentert, mokkaoljet eller sortoljet) omslutter setet og går opp på utsiden av armlenene, som tynne, tulipanformede vanger som svinger utover mot toppen, omtrent som Conform Timeout. Over skallkanten ligger polstrede armlener som er brede og runde foran og smalner bakover, og setet er en tykk, fast pute med kantsøm som går ut over skallets forkant. Skallet stopper ca. 27 cm over gulvet, så søylen synes under. Ryggen er høy og bakoverlent med en kort tverrsøm (tuft) midt på. Øverst sitter en separat, rektangulær nakkepute på to tynne metallstag, justerbar. Liten spak på høyre side under armlenet for ryggen (låsefunksjon), gassløftesylinder og sving med autoretur. Firearmet svingfot i børstet eller sort stål. Fotskammelen har samme finérskall under en tykk pute med tuft og egen firearmet fot; den er ca. 55 × 42 × 42 cm (anslått fra bildet, ikke oppgitt). Setedybde og armlenehøyde er anslått."
+    },
+    "variants": [
+      {
+        "name": "Guard 01 Natural, mokkaoljet eik, svingfot børstet stål",
+        "colors": {
+          "upholstery": "#ccc9c1",
+          "legs": "#a5a19a",
+          "frame": "#574b42"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "steel",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.mobelringen.no/hjellegjerde-falcon-lenestol-m-krakk-376945011"
+      },
+      {
+        "name": "Alpine 05 Beige, mokkaoljet eik, svingfot sort stål",
+        "colors": {
+          "upholstery": "#b0a593",
+          "legs": "#1c1c1c",
+          "frame": "#574b42"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.mobelringen.no/hjellegjerde-falcon-lenestol-m-krakk-376945008"
+      },
+      {
+        "name": "Alpine 15 Brown, mokkaoljet eik, svingfot børstet stål",
+        "colors": {
+          "upholstery": "#766f66",
+          "legs": "#a5a19a",
+          "frame": "#574b42"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "steel",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.mobelringen.no/hjellegjerde-falcon-lenestol-m-krakk-376945002"
+      },
+      {
+        "name": "Guard 12 Taupe, sortoljet eik, svingfot sort stål",
+        "colors": {
+          "upholstery": "#7a6d65",
+          "legs": "#1c1c1c",
+          "frame": "#3b3b3b"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "black-oak"
+        },
+        "url": "https://www.mobelringen.no/hjellegjerde-falcon-lenestol-m-krakk-376945012"
+      },
+      {
+        "name": "Maple 1110 Light beige, hvitpigmentert eik, svingfot børstet stål",
+        "colors": {
+          "upholstery": "#d8d0c2",
+          "legs": "#a5a19a",
+          "frame": "#c3a782"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "steel",
+          "frame": "white-oak"
+        },
+        "priceNok": 33999,
+        "url": "https://www.mobelringen.no/hjellegjerde-falcon-lenestol-m-krakk-376945003"
+      },
+      {
+        "name": "Rio 236, hvitpigmentert eik, svingfot børstet stål",
+        "colors": {
+          "upholstery": "#ada292",
+          "legs": "#a5a19a",
+          "frame": "#c3a782"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "steel",
+          "frame": "white-oak"
+        },
+        "priceNok": 33999,
+        "url": "https://www.mobelringen.no/hjellegjerde-falcon-lenestol-m-krakk-376945010"
+      },
+      {
+        "name": "Hud Softline 225 Nougat, hvitpigmentert eik, svingfot børstet stål",
+        "colors": {
+          "upholstery": "#8c7b63",
+          "legs": "#a5a19a",
+          "frame": "#c3a782"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "steel",
+          "frame": "white-oak"
+        },
+        "priceNok": 37699,
+        "url": "https://www.mobelringen.no/hjellegjerde-falcon-lenestol-m-krakk-376945005"
+      },
+      {
+        "name": "Hud Softline 201 Black, sortoljet eik, svingfot sort stål",
+        "colors": {
+          "upholstery": "#242424",
+          "legs": "#1c1c1c",
+          "frame": "#3b3b3b"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "black-metal",
+          "frame": "black-oak"
+        },
+        "priceNok": 37699,
+        "url": "https://www.mobelringen.no/hjellegjerde-falcon-lenestol-m-krakk-376945001"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.8,
+    "absorptionNote": "Anslått ca. 0,8 m² Sabine med krakken: tykke polstrede puter og nakkepute, men skallet i finér demper lite.",
+    "description": "Norskdesignet hvilestol med krakk fra Hjellegjerde: formstøpt skall i eikefinér med polstrede, utoversvungne armlener, justerbar nakkepute, regulerbar rygg med låsefunksjon, gassløftesylinder og sving med autoretur på firearmet stålfot.",
+    "why": "Guard Natural med mokkaoljet eik og børstet stål er lys og varm i stua, mens hvitpigmentert eik med Maple eller Rio går i ett med det lyse eikegulvet. Fire av stoffene er på salg nå, med krakk til under halv pris.",
+    "imageUrl": "https://backend.mobelringen.no/media/catalog/product/3/7/376945011_9094487.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på mobelringen.no 2026-10-21: navn, priser og salg, mål 84 × 91 × 101 cm (stolen alene; med krakk oppgis dybde 94 cm) og setehøyde 45 cm, og trefarge og fot for hver av de åtte variantene med egne produktsider og bilder. Alpine Beige oppgis med «børstet stål» i teksten, men varedataene og bildet viser sort stål; sort er brukt. Setedybde, armlenehøyde og krakkens mål (ca. 55 × 42 × 42 cm) er anslått fra bildene."
+  },
+  {
+    "id": "mobelringen-scapa-habo-lenestol",
+    "category": "lenestol",
+    "name": "Habo lenestol",
+    "brand": "Scapa",
+    "store": "Møbelringen",
+    "url": "https://www.mobelringen.no/habo-lenestol-378306001",
+    "priceNok": 12999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (mobelringen.no-produktdata, varenr. 378306001): Habo lenestol i tekstil Irma linen med hvitoljede ben koster 12 999,-; Irma anthracite med sorte ben koster det samme (varenr. 378306003). Prisen er uten pall: Habo pall i samme stoff og ben koster 4 899,-. Leveringstid 2–3 uker (antrasitt 6–8 uker).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.85,
+      "d": 0.92,
+      "h": 0.96
+    },
+    "archetype": "wingback",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "seatD": 0.52,
+      "backH": 0.96,
+      "armH": 0.63,
+      "armW": 0.13,
+      "armStyle": "slim",
+      "legStyle": "wood-taper",
+      "legH": 0.19,
+      "backShape": "wing",
+      "cushion": "loose",
+      "buttons": false,
+      "footstool": false,
+      "headrest": false,
+      "notes": "Scapa Habo. Høy, bred rygg med avrundede øvre hjørner som går i en myk S-kurve ned i armlenene, som lave, runde ører; ingen egne vinger over armlenene. Armlenene er tykke og runde og buer svakt utover mot fronten. En kort tverrsøm (tuft) midt på ryggen, ellers glatt trekk uten knapper; en loddrett søm midt på baksiden av ryggen. Løs, tykk setepute med kantsøm. Fire skrå, avsmalnende runde trebein (ca. 19 cm), hvitoljet eik eller sorte. Heltre rammeverk med nozag-fjæring. Pall selges separat. Armlenehøyde, beinhøyde og setedybde er anslått fra bildene."
+    },
+    "variants": [
+      {
+        "name": "Irma linen, hvitoljede ben",
+        "colors": {
+          "upholstery": "#a09e9e",
+          "legs": "#b3a291"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "white-oak"
+        },
+        "url": "https://www.mobelringen.no/habo-lenestol-378306001"
+      },
+      {
+        "name": "Irma anthracite, sorte ben",
+        "colors": {
+          "upholstery": "#363434",
+          "legs": "#1c1b1a"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.mobelringen.no/habo-lenestol-378306003"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.55,
+    "absorptionNote": "Anslått ca. 0,55 m² Sabine: helpolstret lenestol med høy rygg og løs setepute.",
+    "description": "Lett og plasseringsvennlig lenestol fra Scapa med høy, svunget rygg som går over i runde armlener, løs setepute og skrå trebein. Heltre rammeverk med nozag-fjæring og kaldskum i setet, i hardbrukstekstil.",
+    "why": "En rolig, grå lenestol med høy rygg som gir en lun lesekrok uten å ta like mye plass som en hvilestol, og de hvitoljede beina passer det lyse eikegulvet. Antrasitt med sorte ben går til de svarte detaljene.",
+    "imageUrl": "https://backend.mobelringen.no/media/catalog/product/3/7/378306001_9109546.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på mobelringen.no 2026-10-21: navn, pris, mål 85 × 92 × 96 cm, setehøyde 46 cm, de to kombinasjonene av stoff og ben med egne produktsider og bilder, og at pall selges separat. Irma linen er en lys grå farge (Møbelringen: «Grå»). Armlenehøyde, beinhøyde og setedybde er anslått fra bildene."
+  }
+]

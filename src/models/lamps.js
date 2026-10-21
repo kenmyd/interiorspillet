@@ -522,8 +522,12 @@ const MAX_SLOPE = 0.47;
  * side wins, so the edge of a bulkhead does not read as a slope.
  */
 function ceilingAt(x, y, z) {
-  const h = roomLayout?.ceilingHeightAt;
-  if (typeof h !== 'function') return null;
+  const hc = roomLayout?.ceilingHeightAt;
+  if (typeof hc !== 'function') return null;
+  // the ceiling of the level the lamp hangs in (a point half a metre under its attachment picks the level, §1.8):
+  // with the y argument layout.ceilingHeightAt answers for the whole house (world y), the living room as before
+  const yq = y - 0.5;
+  const h = (px, pz) => hc(px, pz, yq);
   const h0 = h(x, z);
   if (!Number.isFinite(h0) || Math.abs(y - h0) > 0.03) return null;
   const e = 0.1;
@@ -661,8 +665,9 @@ function ceilingPool(L, x, z, R, nits, lumens) {
   m.polygonOffset = true;
   m.polygonOffsetFactor = -2;
   // The decal must change nothing outside the pool: unlit (only the emission) and not tone-mapped (AgX lifts black a
-  // little, which drew the decal's disc). The LightManager keeps every glow at ≥ 20 nits (× 1.6 with a map), so the
-  // level is set in the shader (POOL_GAIN, matched to 082806 / 083012).
+  // little, which drew the decal's disc). The LightManager drives it linearly with the lamp's dimmer (no glow floor,
+  // no √ curve: it is light on the ceiling, not a bulb), × 1.6 for the map; the level is set in the shader (POOL_GAIN,
+  // matched to 082806 / 083012).
   const gain = { value: POOL_GAIN };
   m.toneMapped = false;
   m.onBeforeCompile = (sh) => {

@@ -60,10 +60,10 @@
       {
         "name": "Matt svart",
         "colors": {
-          "body": "#222121",
-          "front": "#242323",
-          "top": "#222121",
-          "legs": "#222121",
+          "body": "#444444",
+          "front": "#474747",
+          "top": "#444444",
+          "legs": "#444444",
           "handle": "#8f5530"
         },
         "materials": {
@@ -78,10 +78,10 @@
       {
         "name": "Eik",
         "colors": {
-          "body": "#c9a77b",
-          "front": "#c9a77b",
-          "top": "#c6a478",
-          "legs": "#c9a77b",
+          "body": "#bda489",
+          "front": "#bfa58a",
+          "top": "#bda489",
+          "legs": "#bda489",
           "handle": "#1c1b1a"
         },
         "materials": {
@@ -153,7 +153,7 @@
     "why": "Bare 103 cm bredt og 59 cm dypt, så det får plass ved siden av senga på soverommet i 1. etasje (3,11 × 3,69 m) eller i kjellersoverommet uten å ta over rommet. Rolig og enkelt – hvitt eller eik passer de lyse veggene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/132509/image-thumb__132509__PDP-Product/249312%20-%20Madrid%20garderobeskap%20103x59%20H199%202%20slagd%C3%B8rer%201%20garderobestang%205%20hyller%20foliert%20sponplate%20hvit%20-%205.1f54ffec.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (kampanje og ordinær) for alle fem varianter, mål 103x59x199, 2 slagdører/1 stang/5 hyller (speilvariantene: 1 speildør, 1 slagdør, 4 hyller, 2 skuffer). Benhøyde (ca. 12 cm) og håndtakshøyde (ca. 1,0 m) anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (kampanje og ordinær) for alle fem varianter, mål 103x59x199, 2 slagdører/1 stang/5 hyller (speilvariantene: 1 speildør, 1 slagdør, 4 hyller, 2 skuffer). Benhøyde (ca. 12 cm) og håndtakshøyde (ca. 1,0 m) anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fem variantene finnes (hvit, matt svart, eik, hvit m speil og matt svart m speil) med samme priser; matt svart og eik er justert etter produktbildene (eiken er mer grålig og mindre gul).",
     "priceConfidence": "checked"
   },
   {
@@ -165,7 +165,7 @@
     "store": "Bohus",
     "url": "https://www.bohus.no/oppbevaring/garderobe/garderobeskap/madrid-garderobeskap-150x59-2",
     "priceNok": 10899,
-    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 317854, cashmere m speil, 10 899 kr, ingen kampanje). Hvit m speil (varenr. 328816) og matt svart m speil (varenr. 289725) 5 448 kr (før 10 899 kr); matt svart m speil ligger også som varenr. 333314 til 6 499 kr. Uten speil (3 slagdører, 5 hyller): hvit (varenr. 328815) og matt svart (varenr. 249311) 4 674 kr (før 9 349 kr), eik (varenr. 333312) 7 499 kr (også listet som varenr. 308426 til 9 399 kr – velg den billigste). To sett håndtak følger med (lærstropper og sølvknotter).",
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 317854, cashmere m speil, 10 899 kr, ingen kampanje). Hvit m speil (varenr. 328816) og matt svart m speil (varenr. 289725) 5 448 kr (før 10 899 kr); matt svart m speil ligger også som varenr. 333314 til 6 499 kr. Uten speil (3 slagdører, 5 hyller): hvit (varenr. 328815) og matt svart (varenr. 249311) 4 674 kr (før 9 349 kr), eik (varenr. 333312) 7 499 kr (også listet som varenr. 308426 til 9 399 kr – velg den billigste). To sett håndtak følger med (lærstropper og sølvknotter). Rettet 2026-10-21: matt svart m speil har nytt varenr. 333314 (/madrid-garderobeskap-150x60-18, 6 499 kr, før 10 899 kr) og matt svart med 3 slagdører nytt varenr. 333313 (/madrid-garderobeskap-150x60-17, 5 599 kr, før 9 349 kr); de gamle varenumrene 289725 og 249311 er utgående.",
     "dims": {
       "w": 1.5,
       "d": 0.59,
@@ -199,10 +199,10 @@
       {
         "name": "Cashmere med speildør",
         "colors": {
-          "body": "#cbc1b5",
-          "front": "#cdc3b7",
-          "top": "#cbc1b5",
-          "legs": "#cbc1b5",
+          "body": "#c6bdb4",
+          "front": "#c8bfb6",
+          "top": "#c6bdb4",
+          "legs": "#c6bdb4",
           "handle": "#5e3a26"
         },
         "materials": {
@@ -251,8 +251,8 @@
           "handle": "leather"
         },
         "priceNok": 10899,
-        "salePriceNok": 5448,
-        "url": "https://www.bohus.no/oppbevaring/garderobe/garderobeskap/madrid-garderobeskap-150x58"
+        "salePriceNok": 6499,
+        "url": "https://www.bohus.no/oppbevaring/garderobe/garderobeskap/madrid-garderobeskap-150x60-18"
       },
       {
         "name": "Hvit, 3 dører",
@@ -284,10 +284,10 @@
       {
         "name": "Matt svart, 3 dører",
         "colors": {
-          "body": "#222121",
-          "front": "#242323",
-          "top": "#222121",
-          "legs": "#222121",
+          "body": "#434343",
+          "front": "#464646",
+          "top": "#434343",
+          "legs": "#434343",
           "handle": "#8f5530"
         },
         "materials": {
@@ -298,8 +298,8 @@
           "handle": "leather"
         },
         "priceNok": 9349,
-        "salePriceNok": 4674,
-        "url": "https://www.bohus.no/oppbevaring/garderobe/garderobeskap/madrid-garderobeskap-150x59",
+        "salePriceNok": 5599,
+        "url": "https://www.bohus.no/oppbevaring/garderobe/garderobeskap/madrid-garderobeskap-150x60-17",
         "paramsOverride": {
           "fronts": [
             "door",
@@ -311,10 +311,10 @@
       {
         "name": "Eik, 3 dører",
         "colors": {
-          "body": "#c9a77b",
-          "front": "#c9a77b",
-          "top": "#c6a478",
-          "legs": "#c9a77b",
+          "body": "#bca388",
+          "front": "#bea48a",
+          "top": "#bca388",
+          "legs": "#bca388",
           "handle": "#1c1b1a"
         },
         "materials": {
@@ -341,7 +341,7 @@
     "why": "150 cm gir plass til to personers klær langs den korte veggen på soverommet i 1. etasje (3,11 m) og har innebygd speil, så du slipper et eget gulvspeil. Cashmere ligger tett på SAND-tonen i resten av huset.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/344708/image-thumb__344708__PDP-Product/317854%20-%20Madrid%20garderobeskap%20150x59%20H199%201%20speild%C3%B8r%202%20slagd%C3%B8rer%201%20garderobestang%204%20hylleplater%202%20skuffer%20spon%20cashmere%20-%203.943ce6e5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser og innhold for alle seks varianter (speilvariantene 1 speildør/2 slagdører/4 hyller/2 skuffer, de andre 3 slagdører/5 hyller), mål 150x59x199. Merk at Bohus har to varenumre med ulik pris for flere farger (se priceNote). Benhøyde og håndtakshøyde anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser og innhold for alle seks varianter (speilvariantene 1 speildør/2 slagdører/4 hyller/2 skuffer, de andre 3 slagdører/5 hyller), mål 150x59x199. Merk at Bohus har to varenumre med ulik pris for flere farger (se priceNote). Benhøyde og håndtakshøyde anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle seks variantene finnes, men begge matt svarte har fått nye varenumre – lenker og kampanjepriser er rettet (m speil 6 499 kr, 3 dører 5 599 kr). Cashmere, eik og matt svart (3 dører) er justert etter produktbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -354,7 +354,7 @@
     "url": "https://www.bohus.no/oppbevaring/garderobe/garderobeskap/vinstra-garderobeskap-99x60-3",
     "priceNok": 6499,
     "salePriceNok": 4499,
-    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 318187, røykfarget, kampanje 4 499 kr, før 6 499 kr). Lys eik (varenr. 318186, /vinstra-garderobeskap-99x60-2) 6 499 kr uten kampanje. Samme serie finnes som Vinstra garderobeskap Smal 51x60 og som skoskap. 4 slagdører, 1 garderobestang, 6 hyller.",
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 318187, røykfarget, kampanje 4 499 kr, før 6 499 kr). Lys eik (varenr. 318186, /vinstra-garderobeskap-99x60-2) 6 499 kr uten kampanje. Samme serie finnes som Vinstra garderobeskap Smal 51x60 og som skoskap. 4 slagdører, 1 garderobestang, 6 hyller. Lys eik er utgående og sluttsolgt på sentrallageret (sjekket 2026-10-21).",
     "dims": {
       "w": 0.99,
       "d": 0.6,
@@ -390,9 +390,9 @@
       {
         "name": "Røykfarget",
         "colors": {
-          "body": "#4b3d33",
-          "front": "#4d3e34",
-          "top": "#4b3d33",
+          "body": "#43382f",
+          "front": "#3a2f28",
+          "top": "#43382f",
           "legs": "#1c1c1c",
           "handle": "#1a1a1a"
         },
@@ -404,34 +404,15 @@
           "handle": "black-metal"
         },
         "url": "https://www.bohus.no/oppbevaring/garderobe/garderobeskap/vinstra-garderobeskap-99x60-3"
-      },
-      {
-        "name": "Lys eik",
-        "colors": {
-          "body": "#caa673",
-          "front": "#cda977",
-          "top": "#caa673",
-          "legs": "#1c1c1c",
-          "handle": "#1a1a1a"
-        },
-        "materials": {
-          "body": "oak",
-          "front": "oak",
-          "top": "oak",
-          "legs": "black-metal",
-          "handle": "black-metal"
-        },
-        "priceNok": 6499,
-        "url": "https://www.bohus.no/oppbevaring/garderobe/garderobeskap/vinstra-garderobeskap-99x60-2"
       }
     ],
     "defaultVariant": 0,
     "absorption": 0,
-    "description": "Garderobeskap med fire spiledører i røykfarget eller lys eik-melamin, små svarte knotter og svart metallunderstell (ca. 20 cm). Inni: garderobestang og seks hyller.",
+    "description": "Garderobeskap med fire spiledører i røykfarget eik-melamin, små svarte knotter og svart metallunderstell (ca. 20 cm). Inni: garderobestang og seks hyller.",
     "why": "Spilene og den røykfargede eiken henger sammen med de mørke eikedetaljene i stua, og det åpne understellet gjør skapet lettere for øyet på soverommet i 1. etasje. 99 cm bredt – to stykker side om side gir en hel garderobevegg.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/VINSTRA/322115/image-thumb__322115__PDP-Product/298410%20-%20Vinstra%20garderobeskap%2099x60%20H200%204%20slagd%C3%B8rer%201%20garderobestang%206%20hyller%20melamin%20r%C3%B8ykfarget%20-%202.b50bf2e8.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (røykfarget 4 499 før 6 499, lys eik 6 499), mål 99x60x200, 4 slagdører, 1 stang, 6 hyller, svart metallunderstell. Dørinndeling, knotthøyder og understellshøyde (ca. 20 cm) anslått fra bildene.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (røykfarget 4 499 før 6 499, lys eik 6 499), mål 99x60x200, 4 slagdører, 1 stang, 6 hyller, svart metallunderstell. Dørinndeling, knotthøyder og understellshøyde (ca. 20 cm) anslått fra bildene. Farger og stoff kontrollert 2026-10-21 mot bohus.no: lys eik (varenr. 318186) er merket utgående og er sluttsolgt på sentrallageret (bare enkelteksemplarer i én butikk), så den er fjernet – røykfarget er eneste farge i 99 cm (ingen hvitpigmentert i denne bredden). Røykfarget er justert etter produktbildet.",
     "priceConfidence": "checked"
   },
   {
@@ -479,9 +460,9 @@
       {
         "name": "Røykfarget",
         "colors": {
-          "body": "#4b3d33",
-          "front": "#4d3e34",
-          "top": "#4b3d33",
+          "body": "#574839",
+          "front": "#625245",
+          "top": "#574839",
           "legs": "#1c1c1c",
           "handle": "#1a1a1a"
         },
@@ -497,9 +478,9 @@
       {
         "name": "Hvitpigmentert",
         "colors": {
-          "body": "#d8c9b0",
-          "front": "#dacbb2",
-          "top": "#d8c9b0",
+          "body": "#d2c0aa",
+          "front": "#d6c5af",
+          "top": "#d2c0aa",
           "legs": "#1c1c1c",
           "handle": "#1a1a1a"
         },
@@ -520,7 +501,7 @@
     "why": "Bare 51 cm bredt: et ryddig sted for yttertøy i entréen i kjelleren (2,51 × 2,93 m) uten å sperre døra, eller som forlengelse av Vinstra 99 på soverommet.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/VINSTRA/322107/image-thumb__322107__PDP-Product/298409%20-%20Vinstra%20garderobeskap%20smal%2051x60%20H200%202%20slagd%C3%B8rer%201%20garderobestang%202%20hyller%20melamin%20r%C3%B8ykfarget%20-%202.c5955b7a.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (røykfarget 2 799 før 3 999, hvitpigmentert 3 999), mål 51x60x200, 2 slagdører, 1 stang, 2 hyller, svart metallunderstell. Dørdeling og knotthøyder anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (røykfarget 2 799 før 3 999, hvitpigmentert 3 999), mål 51x60x200, 2 slagdører, 1 stang, 2 hyller, svart metallunderstell. Dørdeling og knotthøyder anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (røykfarget og hvitpigmentert); fargene er justert etter produktbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -612,7 +593,7 @@
     "why": "Skyvedører trenger ingen slagplass, så skapet kan stå langs langveggen på soverommet i 1. etasje (3,69 m) selv tett ved senga. Hvitt og stille, og speilvarianten erstatter et eget speil.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/NORDEN/335935/image-thumb__335935__PDP-Product/312663%20-%20Norden%20skyved%C3%B8rsgarderobe%20178.5x66%20H200.4%202%20skyved%C3%B8rer%20hvit-hvit%20-%204.5e6ed05b.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser for begge varianter og for H220/245-utgavene (priceNote), mål 178x66x200 (178,5x66x200,4 i beskrivelsen), 2 skyvedører / 1 skyvedør + 1 speildør, to stenger og to hyller. Feltinndeling og sokkelhøyde anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser for begge varianter og for H220/245-utgavene (priceNote), mål 178x66x200 (178,5x66x200,4 i beskrivelsen), 2 skyvedører / 1 skyvedør + 1 speildør, to stenger og to hyller. Feltinndeling og sokkelhøyde anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (hvit med to skyvedører og hvit med én speildør); i H200 selges Norden bare i hvitt.",
     "priceConfidence": "checked"
   },
   {
@@ -659,10 +640,10 @@
       {
         "name": "Eik",
         "colors": {
-          "body": "#caa577",
-          "front": "#cca879",
-          "top": "#caa577",
-          "legs": "#caa577",
+          "body": "#b9a187",
+          "front": "#bea68c",
+          "top": "#b9a187",
+          "legs": "#b9a187",
           "handle": "#b9bcbf"
         },
         "materials": {
@@ -700,7 +681,7 @@
     "why": "Skyvedøra tar ingen gulvplass, og de tre skuffene gjør at du slipper en egen kommode i det lille kjellersoverommet (7,4 m²). Lys eik passer de lyse eikegulvene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/NAIA/351123/image-thumb__351123__PDP-Product/312242%20-%20Naia%20garderobeskap%20118.5x60%20H200.4%201%20skyved%C3%B8r%201%20slagd%C3%B8r%201%20garderobestang%205%20hylleplater%203%20skuffer%20spon%20eik%20-%202.666452c0.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (eik 3 899 før 5 699, hvit 5 699), mål 118x60x200 (118,5x60x200,4 i beskrivelsen), 1 skyvedør, 1 slagdør, 1 stang, 5 hyller, 3 skuffer. Skuffhøyde, håndtak og sokkel anslått fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, priser (eik 3 899 før 5 699, hvit 5 699), mål 118x60x200 (118,5x60x200,4 i beskrivelsen), 1 skyvedør, 1 slagdør, 1 stang, 5 hyller, 3 skuffer. Skuffhøyde, håndtak og sokkel anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (eik og hvit); eikefargen er justert etter produktbildet (mer grålig, mindre gul).",
     "priceConfidence": "checked"
   },
   {
@@ -712,7 +693,7 @@
     "store": "IKEA",
     "url": "https://www.ikea.com/no/no/p/pax-tonstad-garderobekombinasjon-grabeige-eikefiner-s09548910/",
     "priceNok": 7695,
-    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (ikea.no, art.nr. 095.489.10, gråbeige/eikefiner, 7 695 kr, ingen kampanje). Hvit/eikefiner (art.nr. 795.489.64) 7 695 kr, mørk grå/brun beiset eikefiner (art.nr. 795.489.02) 7 665 kr. Samme kombinasjon i høyde 236 cm koster 960 kr mer. Ferdig kombinasjon: 2 PAX-stammer, 2 TONSTAD-dører med myktlukkende hengsler, 2 klesstenger, 3 skuffer, uttrekkshylle, 2 nettingkurver og 2 hylleplater. Levering kommer i tillegg.",
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (ikea.no, art.nr. 095.489.10, gråbeige/eikefiner, 7 695 kr, ingen kampanje). Hvit/eikefiner (art.nr. 795.489.64) 7 695 kr, mørk grå/brun beiset eikefiner (art.nr. 795.489.02) 7 665 kr. Samme kombinasjon i høyde 236 cm koster 960 kr mer. Ferdig kombinasjon: 2 PAX-stammer, 2 TONSTAD-dører med myktlukkende hengsler, 2 klesstenger, 3 skuffer, uttrekkshylle, 2 nettingkurver og 2 hylleplater. Levering kommer i tillegg. Hvit/offwhite (art.nr. 695.489.26, samme innhold) 7 095 kr (sjekket 2026-10-21).",
     "dims": {
       "w": 1,
       "d": 0.6,
@@ -743,11 +724,11 @@
       {
         "name": "Gråbeige / eikefiner",
         "colors": {
-          "body": "#cdc4b2",
-          "front": "#b08550",
-          "top": "#cdc4b2",
-          "legs": "#cdc4b2",
-          "handle": "#a77d4a"
+          "body": "#cdc9bd",
+          "front": "#b49b72",
+          "top": "#cdc9bd",
+          "legs": "#cdc9bd",
+          "handle": "#a8906a"
         },
         "materials": {
           "body": "painted",
@@ -761,11 +742,11 @@
       {
         "name": "Hvit / eikefiner",
         "colors": {
-          "body": "#f0efeb",
-          "front": "#b08550",
-          "top": "#f0efeb",
-          "legs": "#f0efeb",
-          "handle": "#a77d4a"
+          "body": "#f3f3f1",
+          "front": "#b49b72",
+          "top": "#f3f3f1",
+          "legs": "#f3f3f1",
+          "handle": "#a8906a"
         },
         "materials": {
           "body": "painted",
@@ -779,11 +760,11 @@
       {
         "name": "Mørk grå / brun beiset eikefiner",
         "colors": {
-          "body": "#4b4b49",
-          "front": "#5b4535",
-          "top": "#4b4b49",
-          "legs": "#4b4b49",
-          "handle": "#54402f"
+          "body": "#666563",
+          "front": "#63553f",
+          "top": "#666563",
+          "legs": "#666563",
+          "handle": "#5a4c38"
         },
         "materials": {
           "body": "painted",
@@ -794,6 +775,25 @@
         },
         "priceNok": 7665,
         "url": "https://www.ikea.com/no/no/p/pax-tonstad-garderobekombinasjon-mork-gra-brun-beiset-eikefiner-s79548902/"
+      },
+      {
+        "name": "Hvit / offwhite",
+        "colors": {
+          "body": "#f3f3f1",
+          "front": "#f1f0ea",
+          "top": "#f3f3f1",
+          "legs": "#f3f3f1",
+          "handle": "#e9e8e1"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "priceNok": 7095,
+        "url": "https://www.ikea.com/no/no/p/pax-tonstad-garderobekombinasjon-hvit-offwhite-s69548926/"
       }
     ],
     "defaultVariant": 0,
@@ -802,7 +802,7 @@
     "why": "Ekte eikefiner med enkel, rolig front passer lyse eikegulv og SAND-veggene, og den gråbeige stammen forsvinner nesten mot veggen på soverommet i 1. etasje. 201 cm høyde passer under vanlig takhøyde.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/pax-tonstad-garderobekombinasjon-grabeige-eikefiner__1303949_pe938529_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: navn, art.nr., priser for alle tre fargevalg, mål 100x60x201,2, 2 TONSTAD-dører (50x195) med integrert grep frest i massivt tre, innhold (19 kolli). Sokkelhøyde og grepets plassering anslått fra bildet.",
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: navn, art.nr., priser for alle tre fargevalg, mål 100x60x201,2, 2 TONSTAD-dører (50x195) med integrert grep frest i massivt tre, innhold (19 kolli). Sokkelhøyde og grepets plassering anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot ikea.no: alle tre variantene finnes; hvit/offwhite (art.nr. 695.489.26, 7 095 kr, samme innhold med malte TONSTAD-dører) er lagt til, og eikefiner, gråbeige og mørk grå er justert etter produktbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -847,7 +847,7 @@
         "name": "Hvit",
         "colors": {
           "body": "#f2f2ef",
-          "front": "#f4f4f1",
+          "front": "#f2f2ec",
           "top": "#f2f2ef",
           "legs": "#ececea",
           "handle": "#f0f0ee"
@@ -868,7 +868,7 @@
     "why": "Billig og grunt (50 cm), godt egnet i kjellersoverommet (7,4 m²) eller som gjesteskap i kjelleren. Speildøra gjør at du ikke trenger et eget speil.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/brimnes-garderobeskap-med-3-dorer-hvit__0176787_pe329567_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: navn, art.nr. 404.079.22, pris 1 995 kr, mål 117x50x190, 3 dører hvorav 1 speildør, klesstang og hyller, sokkel foran og bak. Håndtak, håndtakshøyde og sokkelhøyde anslått fra bildet.",
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: navn, art.nr. 404.079.22, pris 1 995 kr, mål 117x50x190, 3 dører hvorav 1 speildør, klesstang og hyller, sokkel foran og bak. Håndtak, håndtakshøyde og sokkelhøyde anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot ikea.no: BRIMNES med 3 dører selges bare i hvitt, og den varianten er med.",
     "priceConfidence": "checked"
   },
   {
@@ -947,7 +947,7 @@
         "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/garderobeskap/billund-garderobeskap-2-dors?VariationId=V_5637473105"
       },
       {
-        "name": "Cashmere folie",
+        "name": "Cashmere farget folie",
         "colors": {
           "body": "#c6c0b7",
           "front": "#c8c1b8",
@@ -967,7 +967,7 @@
         "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/garderobeskap/billund-garderobeskap-2-dors?VariationId=V_5637587146"
       },
       {
-        "name": "Smoked oak folie",
+        "name": "Smoked oak farget folie",
         "colors": {
           "body": "#4e3d2d",
           "front": "#4e3c2b",
@@ -993,7 +993,7 @@
     "why": "Bare 98,5 cm bredt, så det får plass i kjellersoverommet (7,4 m²) eller ved siden av senga i soverommet oppe uten å ta over rommet. Rammedørene gir et rolig, klassisk uttrykk, og eik- eller cashmere-folien passer de lyse, varme veggene – til en rimelig pris.",
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1019405/1019405_V10235454-Billund1.webp",
     "verified": true,
-    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 4 999 kr (før 5 999, tilbudet varer til 15.11) i eik folie og prisene for hvit, cashmere og smoked oak, 98,5x61,7x200,1, «50 cm med hattehylle, 50 cm oppheng og 4 hyller», foliert MDF i fronter, Tvilum, dansk produsert (lest fra sidens innebygde produktdata og variant-API). Sokkelhøyde (ca. 5 cm) og knottenes høyde (ca. 1,0 m) anslått fra bildet; folie-fargene fra produktbildene.",
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 4 999 kr (før 5 999, tilbudet varer til 15.11) i eik folie og prisene for hvit, cashmere og smoked oak, 98,5x61,7x200,1, «50 cm med hattehylle, 50 cm oppheng og 4 hyller», foliert MDF i fronter, Tvilum, dansk produsert (lest fra sidens innebygde produktdata og variant-API). Sokkelhøyde (ca. 5 cm) og knottenes høyde (ca. 1,0 m) anslått fra bildet; folie-fargene fra produktbildene. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: alle de fire fargene finnes i 2-dørs; navnene er rettet til Skeidars egne «Cashmere farget folie» og «Smoked oak farget folie».",
     "priceConfidence": "checked"
   }
 ]

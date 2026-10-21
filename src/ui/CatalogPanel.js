@@ -6,15 +6,21 @@ import { buildModel } from '../models/registry.js';
 import { applyShading } from '../models/shading.js';
 import { disposeModel } from '../models/kit.js';
 import { resolveColor, prepareMaterials } from '../home/materials.js';
-import { rt60For } from '../design/Acoustics.js';
+import { rt60For, acousticsFor, LIVING_ROOM_ID } from '../design/Acoustics.js';
 import * as catalogModule from '../catalog/index.js';
 
 /**
- * Product catalogue (ARCHITECTURE §12): category chips (Solskjerming opens the WindowPanel), free-text search over
+ * Product catalogue (ARCHITECTURE §12): categories (Solskjerming opens the WindowPanel), free-text search over
  * the whole catalogue, sub-category filter and sorting, product cards with a live-rendered 3D thumbnail in the
- * chosen variant's colours, name, store, price (sale price highlighted), colour swatches and a «verifisert» badge,
- * «Plasser» → editor.startPlacing(productToItemSpec(product, variant)), and a detail view (description, «Hvorfor den
- * passer», dimensions, sound absorption, light, «Se hos <butikk>»).
+ * chosen variant's colours, name, store, price (sale price highlighted), one row of colour swatches and a «verifisert»
+ * badge, «Plasser» → editor.startPlacing(productToItemSpec(product, variant)), and a detail view (description,
+ * «Hvorfor den passer», dimensions, sound absorption, light, «Se hos <butikk>»).
+ *
+ * Two sizes (the button next to × in the header, remembered per browser in localStorage):
+ *   compact  the side panel: search, a «Kategori» picker (drop-down grid) + sort, one row of sub filters, 2 columns
+ *   large    most of the screen (the toolbar stays visible): categories as a sidebar, a 4+ column grid and a
+ *            two-column detail view. «Plasser» closes the panel as before; «Velg vindu» and another panel opening
+ *            on the right switch back to the compact panel for the moment, so the room can be clicked.
  *
  *   new CatalogPanel(editor) – open(arg?) / close() / toggle() / isOpen / update() / dispose()
  *     open('lenestol')                 opens on a category
@@ -645,6 +651,9 @@ export function openExternal(url) {
 const LINK_ICON = '<svg class="kv-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.5h5.5V10"/><path d="M19.5 4.5 11 13"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg>';
 const SEARCH_ICON = '<svg class="kv-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="M15.5 15.5 20 20"/></svg>';
 const PLUS_ICON = '<svg class="kv-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13"/></svg>';
+const CHEVRON_ICON = '<svg class="kv-icon ipc-chev" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+const EXPAND_ICON = '<svg class="kv-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-6.5 6.5M10 20H4v-6M4 20l6.5-6.5"/></svg>';
+const SHRINK_ICON = '<svg class="kv-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.5V10h5.5M20 4l-6 6M10 19.5V14H4.5M4 20l6-6"/></svg>';
 export const EXTRA_ICONS = { link: LINK_ICON, search: SEARCH_ICON, plus: PLUS_ICON };
 
 /** «Se hos Bohus» link button (opens the product page in a new tab). */
@@ -663,31 +672,59 @@ export function storeLink(product, { size = 'sm', variant } = {}) {
 // Styles
 
 const CSS = `
-.ipc-panel .ip-panel__body { padding-top: 0.75em; }
-.ipc-search { position: relative; margin-bottom: 0.7em; }
+.ipc-panel .ip-panel__body { padding-top: 0; }
+.ipc-expand { width: 2.1em; height: 2.1em; }
+.ipc-expand .kv-icon { width: 1.1em; height: 1.1em; }
+/* list header (search, category picker, sort, sub filters): stays at the top while the products scroll */
+.ipc-filters { position: sticky; top: 0; z-index: 3; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'search search' 'pick sort' 'subs subs';
+  gap: 0.5em; padding: 0.75em 0 0.7em; background: var(--ip-panel-bg); }
+.ipc-filters::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 0.65em; background: linear-gradient(var(--ip-panel-bg), rgba(14, 21, 30, 0)); pointer-events: none; }
+.ipc-search { grid-area: search; position: relative; min-width: 0; }
 .ipc-search .kv-icon { position: absolute; left: 0.65em; top: 50%; width: 1.05em; height: 1.05em; transform: translateY(-50%); color: var(--kv-ink-3); pointer-events: none; }
 .ipc-search .ip-input { padding-left: 2.2em; height: 2.4em; }
 .ipc-search__clear { position: absolute; right: 0.3em; top: 50%; transform: translateY(-50%); width: 1.8em; height: 1.8em; border: 0; border-radius: 50%; background: transparent; color: var(--kv-ink-3); display: grid; place-items: center; }
 .ipc-search__clear:hover { background: var(--kv-surface-3); color: var(--kv-ink); }
 .ipc-search__clear .kv-icon { position: static; transform: none; width: 0.95em; height: 0.95em; }
-.ipc-cats { display: flex; flex-wrap: wrap; gap: 0.3em; margin-bottom: 0.7em; }
-.ipc-chip { display: inline-flex; align-items: center; gap: 0.35em; height: 2em; padding: 0 0.62em; border-radius: 2em; border: 1px solid var(--kv-line-2);
-  background: var(--kv-surface); color: var(--kv-ink-2); font-size: 0.8em; font-weight: 620; white-space: nowrap; transition: background 0.15s, color 0.15s, border-color 0.15s; }
-.ipc-chip .kv-icon { width: 1.05em; height: 1.05em; opacity: 0.8; }
-.ipc-subs { display: flex; gap: 0.3em; flex-wrap: wrap; margin: -0.2em 0 0.7em; }
+.ipc-title { grid-area: title; display: none; }
+.ipc-pick { grid-area: pick; display: flex; align-items: center; gap: 0.5em; min-width: 0; height: 2.45em; padding: 0 0.55em 0 0.65em; border-radius: var(--kv-r-sm);
+  border: 1px solid var(--kv-line-2); background: var(--kv-surface); color: var(--kv-ink); font-size: 0.86em; font-weight: 650; text-align: left; transition: background 0.15s, border-color 0.15s; }
+.ipc-pick:hover, .ipc-pick[aria-expanded='true'] { background: var(--kv-surface-3); border-color: rgba(255, 255, 255, 0.26); }
+.ipc-pick > .kv-icon:first-child { width: 1.2em; height: 1.2em; color: var(--kv-accent); }
+.ipc-pick span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ipc-pick small { color: var(--kv-ink-3); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ipc-pick .ipc-chev { width: 1em; height: 1em; color: var(--kv-ink-3); transition: transform 0.15s; }
+.ipc-pick[aria-expanded='true'] .ipc-chev { transform: rotate(180deg); }
+.ipc-sort { grid-area: sort; width: 8.6em; }
+.ipc-sort .ip-select { height: 2.45em; font-size: 0.86em; }
+/* categories: a drop-down grid under the picker (compact), the sidebar list (large) */
+.ipc-cats { position: absolute; left: 0; right: 0; z-index: 4; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 0.15em 0.3em;
+  padding: 0.4em; border-radius: var(--kv-r); border: 1px solid var(--kv-line-2); background: #18222e; box-shadow: var(--kv-shadow); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.ipc-cat { display: flex; align-items: center; gap: 0.55em; min-width: 0; height: 2.35em; padding: 0 0.6em; border-radius: var(--kv-r-sm); border: 1px solid transparent;
+  background: transparent; color: var(--kv-ink-2); font-size: 0.84em; font-weight: 620; text-align: left; transition: background 0.12s, color 0.12s; }
+.ipc-cat .kv-icon { width: 1.25em; height: 1.25em; color: var(--kv-ink-3); }
+.ipc-cat span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ipc-cat small { color: var(--kv-ink-4); font-size: 0.88em; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ipc-cat:hover { background: var(--kv-surface-2); color: var(--kv-ink); }
+.ipc-cat:hover .kv-icon { color: var(--kv-ink-2); }
+.ipc-cat.is-active { background: var(--kv-accent-soft); border-color: rgba(255, 181, 46, 0.32); color: var(--kv-accent-2); }
+.ipc-cat.is-active .kv-icon { color: var(--kv-accent); }
+.ipc-cat.is-active small { color: rgba(255, 210, 122, 0.7); }
+.ipc-subs { grid-area: subs; display: flex; gap: 0.3em; overflow-x: auto; scrollbar-width: none; margin: -0.2em -0.2em; padding: 0.2em; }
+.ipc-subs::-webkit-scrollbar { display: none; }
 .ipc-subs:empty { display: none; }
-.ipc-subs .ipc-chip { height: 1.8em; font-size: 0.76em; }
+.ipc-subs.is-more-right { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.2em), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 2.2em), transparent); }
+.ipc-subs.is-more-left { -webkit-mask-image: linear-gradient(90deg, transparent, #000 2.2em); mask-image: linear-gradient(90deg, transparent, #000 2.2em); }
+.ipc-subs.is-more-left.is-more-right { -webkit-mask-image: linear-gradient(90deg, transparent, #000 2.2em, #000 calc(100% - 2.2em), transparent); mask-image: linear-gradient(90deg, transparent, #000 2.2em, #000 calc(100% - 2.2em), transparent); }
+.ipc-chip { flex: none; display: inline-flex; align-items: center; gap: 0.35em; height: 1.85em; padding: 0 0.65em; border-radius: 2em; border: 1px solid var(--kv-line-2);
+  background: var(--kv-surface); color: var(--kv-ink-2); font-size: 0.76em; font-weight: 620; white-space: nowrap; transition: background 0.15s, color 0.15s, border-color 0.15s; }
 .ipc-chip:hover { background: var(--kv-surface-3); color: var(--kv-ink); }
 .ipc-chip.is-active { background: var(--kv-accent-soft); border-color: rgba(255, 181, 46, 0.55); color: var(--kv-accent-2); }
-.ipc-chip.is-active .kv-icon { color: var(--kv-accent); opacity: 1; }
 .ipc-chip small { font-size: 0.85em; color: var(--kv-ink-4); font-weight: 600; }
 .ipc-chip.is-active small { color: rgba(255, 210, 122, 0.7); }
-.ipc-chip--ext::after { content: '↗'; font-size: 0.85em; opacity: 0.6; }
-.ipc-tools { display: flex; align-items: center; justify-content: space-between; gap: 0.5em; margin-bottom: 0.6em; }
-.ipc-sort { flex: none; width: 9.4em; }
-.ipc-sort .ip-select { height: 2em; font-size: 0.8em; }
-.ipc-count { font-size: 0.8em; color: var(--kv-ink-3); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ipc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12.4em, 1fr)); gap: 0.6em; }
+.ipc-side, .ipc-main { min-width: 0; }
+.ipc-side { display: none; }
+.ipc-side__title { margin: 0 0 0.5em 0.75em; }
+.ipc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(11.5em, 1fr)); gap: 0.65em; padding-top: 0.15em; }
 .ipc-card { position: relative; display: flex; flex-direction: column; min-width: 0; border-radius: var(--kv-r); border: 1px solid var(--kv-line);
   background: var(--kv-surface); overflow: hidden; cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.15s var(--kv-ease); }
 .ipc-card:hover { border-color: var(--kv-line-2); background: var(--kv-surface-2); }
@@ -701,21 +738,48 @@ const CSS = `
   background-size: 200% 100%; animation: ipc-shimmer 1.3s linear infinite; }
 @keyframes ipc-shimmer { from { background-position: 150% 0; } to { background-position: -50% 0; } }
 .ipc-flags { position: absolute; left: 0.45em; top: 0.45em; display: flex; gap: 0.3em; }
-.ipc-flag { padding: 0.18em 0.5em; border-radius: 1em; font-size: 0.7em; font-weight: 800; letter-spacing: 0.02em; background: #d8432f; color: #fff; box-shadow: 0 0.15em 0.4em rgba(0,0,0,0.25); }
+.ipc-flag { padding: 0.16em 0.48em; border-radius: 1em; font-size: 0.68em; font-weight: 800; letter-spacing: 0.02em; background: #d8432f; color: #fff; box-shadow: 0 0.15em 0.4em rgba(0,0,0,0.25); }
 .ipc-flag--ok { background: rgba(255, 255, 255, 0.92); color: #1b7a49; display: inline-flex; align-items: center; gap: 0.2em; }
 .ipc-flag--ok .kv-icon { width: 1.05em; height: 1.05em; }
-.ipc-verified { position: absolute; right: 0.45em; top: 0.45em; width: 1.6em; height: 1.6em; border-radius: 50%; display: grid; place-items: center;
-  background: rgba(255, 255, 255, 0.92); color: #1b7a49; box-shadow: 0 0.15em 0.4em rgba(0,0,0,0.2); }
-.ipc-verified .kv-icon { width: 1.05em; height: 1.05em; stroke-width: 2.6; }
-.ipc-body { display: flex; flex-direction: column; gap: 0.25em; padding: 0.55em 0.65em 0.6em; flex: 1; min-width: 0; }
-.ipc-name { font-weight: 650; font-size: 0.92em; line-height: 1.22; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 2.44em; }
-.ipc-store { font-size: 0.76em; color: var(--kv-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ipc-swatches { display: flex; flex-wrap: wrap; gap: 0.28em; margin: 0.15em 0 0.1em; --ip-sw: 1.3em; min-height: 1.3em; }
-.ipc-swatches .ip-swatch { border-width: 1.5px; }
-.ipc-more { font-size: 0.72em; color: var(--kv-ink-3); align-self: center; }
-.ipc-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.4em; margin-top: auto; padding-top: 0.25em; }
-.ipc-foot .kv-btn { height: 2em; padding: 0 0.7em; font-size: 0.82em; }
+.ipc-verified { position: absolute; right: 0.45em; top: 0.45em; width: 1.35em; height: 1.35em; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(255, 255, 255, 0.85); color: #1b7a49; box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.18); }
+.ipc-verified .kv-icon { width: 0.9em; height: 0.9em; stroke-width: 2.8; }
+.ipc-body { display: flex; flex-direction: column; gap: 0.3em; padding: 0.5em 0.6em 0.55em; flex: 1; min-width: 0; }
+.ipc-titles { display: flex; flex-direction: column; gap: 0.12em; min-height: 3.3em; min-width: 0; }
+.ipc-name { font-weight: 650; font-size: 0.86em; line-height: 1.25; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.ipc-store { font-size: 0.72em; line-height: 1.3; color: var(--kv-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ipc-swatches { display: flex; flex-wrap: nowrap; align-items: center; gap: 0.3em; height: 1.5em; --ip-sw: 1.15em; padding: 0 0.12em; }
+.ipc-swatches .ip-swatch { flex: none; border-width: 1.5px; }
+.ipc-more { flex: none; display: inline-grid; place-items: center; height: 1.75em; padding: 0 0.45em; border-radius: 1em; background: var(--kv-surface-2); font-size: 0.68em; font-weight: 650; color: var(--kv-ink-3); font-variant-numeric: tabular-nums; }
+.ipc-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.4em; margin-top: auto; min-height: 2.15em; }
+.ipc-foot .kv-btn { flex: none; height: 2em; padding: 0 0.7em; font-size: 0.8em; gap: 0.4em; }
 .ipc-foot .kv-btn .kv-icon { width: 1em; height: 1em; }
+/* large catalogue: wide panel, categories as a sidebar, a wider product grid and a two-column detail view */
+.ipc-panel.is-large { width: min(80em, calc(100% - 2 * var(--ip-gap))); height: calc(100% - var(--ip-gap) - var(--ip-bottom) - 0.4em); }
+/* a panel already open on the right (Egenskaper, Handleliste …) stays uncovered */
+#ui-root:has(.ip-panel--right.is-open) .ipc-panel.is-large { width: min(80em, calc(100% - 3 * var(--ip-gap) - 28em)); }
+.ipc-panel.is-large .ip-panel__body { display: grid; grid-template-columns: 12.5em minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); padding: 0; overflow: hidden; }
+.is-large .ipc-side, .is-large .ipc-main { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.18) transparent; }
+.is-large .ipc-side { display: block; padding: 1em 0.6em 1em; border-right: 1px solid var(--kv-line); background: rgba(255, 255, 255, 0.015); }
+.is-large .ipc-main { padding: 0 1.3em 1.3em; }
+.is-large .ipc-cats { position: static; display: flex; flex-direction: column; gap: 0.08em; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; overflow: visible; max-height: none; }
+.is-large .ipc-cat { flex: none; height: 1.95em; font-size: 0.86em; }
+.is-large .ipc-filters { grid-template-columns: minmax(0, 1fr) minmax(12em, 19em) auto; grid-template-areas: 'title search sort' 'subs subs subs'; align-items: center; gap: 0.6em 0.7em; padding: 1em 0 0.8em; }
+.is-large .ipc-title { display: flex; align-items: baseline; gap: 0.65em; min-width: 0; }
+.ipc-title b { font: 720 1.3em/1.2 var(--kv-font-display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.ipc-title small { flex: none; color: var(--kv-ink-3); font-size: 0.86em; font-variant-numeric: tabular-nums; }
+.is-large .ipc-pick { display: none; }
+.is-large .ipc-subs { flex-wrap: wrap; overflow: visible; -webkit-mask-image: none; mask-image: none; }
+.is-large .ipc-grid { grid-template-columns: repeat(auto-fill, minmax(14em, 1fr)); gap: 0.9em; }
+.is-large .ipc-body { padding: 0.6em 0.75em 0.7em; }
+.is-large .ipc-name { font-size: 0.9em; }
+.is-large .ipc-titles { min-height: 3.4em; }
+.is-large .ipc-swatches { --ip-sw: 1.25em; height: 1.6em; }
+.is-large .ipc-detail { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 0 1.8em; align-items: start; padding-top: 1em; }
+.is-large .ipc-detail__back { grid-column: 1 / -1; justify-self: start; }
+.is-large .ipc-detail__media { position: sticky; top: 1em; }
+.is-large .ipc-detail__name { margin-top: 0; }
+.ipc-detail { padding-top: 0.75em; }
 .ipc-price { display: flex; flex-direction: column; line-height: 1.12; font-variant-numeric: tabular-nums; min-width: 0; }
 .ipc-price b { font-weight: 760; color: var(--kv-ink); white-space: nowrap; }
 .ipc-price s { font-size: 0.75em; color: var(--kv-ink-4); white-space: nowrap; }
@@ -729,7 +793,7 @@ const CSS = `
 .ipc-detail__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .ipc-detail__photo { margin-top: 0.5em; display: flex; gap: 0.6em; align-items: center; font-size: 0.78em; color: var(--kv-ink-3); }
 .ipc-detail__photo img { width: 4.6em; height: 4.6em; object-fit: cover; border-radius: var(--kv-r-sm); background: #fff; flex: none; }
-.ipc-detail h3 { margin: 0.75em 0 0.15em; font: 720 1.25em/1.2 var(--kv-font-display); }
+.ipc-detail__name { margin: 0.75em 0 0.15em; font: 720 1.25em/1.2 var(--kv-font-display); }
 .ipc-detail__sub { color: var(--kv-ink-3); font-size: 0.88em; margin-bottom: 0.55em; display: flex; flex-wrap: wrap; gap: 0.35em 0.6em; align-items: center; }
 .ipc-detail__price { display: flex; align-items: center; gap: 0.6em; margin: 0.3em 0 0.35em; flex-wrap: wrap; }
 .ipc-note { font-size: 0.78em; color: var(--kv-ink-4); line-height: 1.4; margin: 0 0 0.9em; }
@@ -782,6 +846,28 @@ const SORTS = [
   ['tilbud', 'Tilbud først'],
 ];
 
+/** «Stor katalog» on/off, remembered per browser (the game must work without storage). */
+const LARGE_KEY = 'interiorspillet.catalogLarge.v1';
+
+function readLargePref() {
+  try {
+    return localStorage.getItem(LARGE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function writeLargePref(on) {
+  try {
+    localStorage.setItem(LARGE_KEY, on ? '1' : '0');
+  } catch {
+    /* storage blocked: the choice lasts for this session only */
+  }
+}
+
+/** «1 produkt» / «24 produkter». */
+const productsText = (n) => `${n} ${n === 1 ? 'produkt' : 'produkter'}`;
+
 export class CatalogPanel extends BasePanel {
   /** @param {import('../design/Editor.js').Editor} editor */
   constructor(editor) {
@@ -832,34 +918,83 @@ export class CatalogPanel extends BasePanel {
     } } }, svg(ICONS.close));
     this.searchEl = h('div.ipc-search', {}, svg(SEARCH_ICON), this.searchInput, this.clearBtn);
 
-    // categories
+    // categories: one list – a drop-down grid under the «Kategori» picker in the compact panel, the sidebar in the
+    // large catalogue (moved between the two by _applyLayout)
     this.catEls = new Map();
-    this.catsEl = h('div.ipc-cats', { role: 'tablist', 'aria-label': 'Kategorier' }, this.cat.CATEGORIES.map((c) => {
-      const n = this.cat.products(c.key).length;
-      const b = h(`button.ipc-chip${c.key === 'solskjerming' ? '.ipc-chip--ext' : ''}`, {
+    this.catsEl = h('div.ipc-cats', { id: 'ipc-cats', role: 'tablist', 'aria-label': 'Kategorier', on: { keydown: (e) => this._catsKey(e) } }, this.cat.CATEGORIES.map((c) => {
+      const ext = c.key === 'solskjerming';
+      const n = ext ? 0 : this.cat.products(c.key).length;
+      const b = h(`button.ipc-cat${ext ? '.ipc-cat--ext' : ''}`, {
         type: 'button',
         role: 'tab',
-        title: c.key === 'solskjerming' ? 'Solskjerming velges per vindu – åpner Vinduer' : `${c.label} (${n})`,
-        on: { click: () => this.setCategory(c.key) },
-      }, ICONS[c.icon] ? svg(ICONS[c.icon]) : null, h('span', { text: c.label }), c.key === 'solskjerming' ? null : h('small', { text: String(n) }));
+        tabIndex: -1,
+        title: ext ? 'Solskjerming velges per vindu – åpner Vinduer' : undefined,
+        on: { click: () => this._pickCategory(c.key) },
+      }, svg(c.iconSvg || ICONS[c.icon] || ICONS.sofa), h('span', { text: c.label }), h('small', { text: ext ? '↗' : String(n) }));
       this.catEls.set(c.key, b);
       return b;
     }));
+    this.pickBtn = h('button.ipc-pick', { type: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false', 'aria-controls': 'ipc-cats', on: { click: () => (this._catsOpen ? this._closeCats() : this._openCats()) } });
+    this.titleEl = h('div.ipc-title', { 'aria-live': 'polite' });
 
-    this.subsEl = h('div.ipc-subs');
+    this.subsEl = h('div.ipc-subs', { role: 'group', 'aria-label': 'Type', on: { scroll: () => this._subsFade() } });
+    // a mouse wheel scrolls the one-line sub filter row sideways (compact panel)
+    this.subsEl.addEventListener('wheel', (e) => {
+      const el = this.subsEl;
+      if (this.large || el.scrollWidth <= el.clientWidth + 1 || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+    }, { passive: false });
     this.sortCtl = select({ options: SORTS, value: this.sort, onChange: (v) => {
       this.sort = v;
       this.sortCtl.select.blur();
       this._renderList();
     } });
     this.sortCtl.select.setAttribute('aria-label', 'Sorter');
-    this.countEl = h('div.ipc-count');
-    this.toolsEl = h('div.ipc-tools', {}, this.countEl, h('div.ipc-sort', {}, this.sortCtl.select));
+    this.filtersEl = h('div.ipc-filters', {}, this.titleEl, this.searchEl, this.pickBtn, h('div.ipc-sort', {}, this.sortCtl.select), this.subsEl, this.catsEl);
+    this.filtersEl.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !this._catsOpen) return;
+      // Esc closes the drop-down first (not the panel)
+      e.preventDefault();
+      e.stopPropagation();
+      this._closeCats({ focus: true });
+    });
+    this.filtersEl.addEventListener('focusout', (e) => {
+      if (this._catsOpen && !this.catsEl.contains(e.relatedTarget) && e.relatedTarget !== this.pickBtn) this._closeCats();
+    });
+    this._onDocDown = (e) => {
+      if (!this.catsEl.contains(e.target) && !this.pickBtn.contains(e.target)) this._closeCats();
+    };
     this.grid = h('div.ipc-grid');
-    this.listView = h('div.ipc-list', {}, this.searchEl, this.catsEl, this.subsEl, this.toolsEl, this.grid);
+    this.listView = h('div.ipc-list', {}, this.filtersEl, this.grid);
     this.detailView = h('div.ipc-detail', { hidden: true });
-    this.body.append(this.listView, this.detailView);
+    this.sideEl = h('nav.ipc-side', { 'aria-label': 'Kategorier' }, h('h3.ip-section__title.ipc-side__title', { text: 'Kategorier' }));
+    this.mainEl = h('div.ipc-main', {}, this.listView, this.detailView);
+    this.body.append(this.sideEl, this.mainEl);
 
+    // «Utvid katalogen» / «Mindre katalog» next to × in the header
+    this.expandBtn = h('button.kv-iconbtn.ipc-expand', { type: 'button', on: { click: () => this.setLarge(!this.large) } });
+    this.panel.head.insertBefore(this.expandBtn, this.panel.head.querySelector('.ip-panel__close'));
+    // another panel opening on the right or at the bottom: back to the compact panel so both can be used (the
+    // remembered choice stays – the next open is large again)
+    this._offPanel = editor.events.on?.('panel', ({ id, open } = {}) => {
+      if (!open || id === 'catalog' || !this.large || !this.isOpen) return;
+      const side = this.editor.ui?.[id]?.panel?.side;
+      if (side === 'right' || side === 'bottom') this.setLarge(false, { remember: false });
+    });
+
+    this.large = readLargePref();
+    this._applyLayout();
+  }
+
+  /** The element that scrolls the product list and the detail view (the body; the main column when large). */
+  get _scroller() {
+    return this.large ? this.mainEl : this.body;
+  }
+
+  /** Thumbnails load when a card comes near the visible part of the scroller. */
+  _makeObserver() {
+    this.observer?.disconnect();
     this.observer = typeof IntersectionObserver !== 'undefined'
       ? new IntersectionObserver((entries) => {
         for (const en of entries) {
@@ -867,11 +1002,104 @@ export class CatalogPanel extends BasePanel {
           this.observer.unobserve(en.target);
           en.target._loadThumb?.();
         }
-      }, { root: this.body, rootMargin: '220px 0px' })
+      }, { root: this._scroller, rootMargin: '220px 0px' })
       : null;
+  }
 
-    this._paintCats();
+  /**
+   * Large catalogue on/off: the panel grows to most of the screen with the categories as a sidebar and a wider
+   * product grid. The choice is remembered in this browser unless `remember` is false (a temporary switch back,
+   * e.g. to click a window in the room).
+   * @param {boolean} on
+   */
+  setLarge(on, { remember = true } = {}) {
+    on = !!on;
+    if (remember) writeLargePref(on);
+    if (on === this.large) return;
+    this.large = on;
+    this._applyLayout();
+  }
+
+  _applyLayout() {
+    const on = this.large;
+    this._closeCats();
+    this.el.classList.toggle('is-large', on);
+    const label = on ? 'Mindre katalog' : 'Utvid katalogen';
+    this.expandBtn.replaceChildren(svg(on ? SHRINK_ICON : EXPAND_ICON));
+    this.expandBtn.title = label;
+    this.expandBtn.setAttribute('aria-label', label);
+    this.expandBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    this.catsEl.setAttribute('aria-orientation', on ? 'vertical' : 'horizontal');
+    if (on) {
+      this.catsEl.hidden = false;
+      this.sideEl.append(this.catsEl);
+    } else {
+      this.catsEl.hidden = true;
+      this.filtersEl.append(this.catsEl);
+    }
+    // the scroll container changed: thumbnails observe the new one, cards are rebuilt for the new size
+    this._listScroll = 0;
+    this.body.scrollTop = 0;
+    this.mainEl.scrollTop = 0;
+    this._makeObserver();
     this._renderList();
+    if (on) this.catEls.get(this.category)?.scrollIntoView?.({ block: 'nearest' });
+  }
+
+  /** Opens the category drop-down (compact panel) and focuses the current category. */
+  _openCats() {
+    if (this.large || this._catsOpen) return;
+    this._catsOpen = true;
+    const top = this.pickBtn.offsetTop + this.pickBtn.offsetHeight + 4;
+    this.catsEl.style.top = `${top}px`;
+    this.catsEl.style.maxHeight = `${Math.max(160, this.body.clientHeight - top - 10)}px`;
+    this.catsEl.hidden = false;
+    this.pickBtn.setAttribute('aria-expanded', 'true');
+    const cur = (!this.query.trim() && this.catEls.get(this.category)) || this.catsEl.querySelector('button');
+    cur?.focus({ preventScroll: true });
+    cur?.scrollIntoView?.({ block: 'nearest' });
+    document.addEventListener('pointerdown', this._onDocDown, true);
+  }
+
+  _closeCats({ focus = false } = {}) {
+    if (!this._catsOpen) return;
+    this._catsOpen = false;
+    document.removeEventListener('pointerdown', this._onDocDown, true);
+    this.pickBtn.setAttribute('aria-expanded', 'false');
+    const had = this.catsEl.contains(document.activeElement);
+    this.catsEl.hidden = true;
+    if (focus || had) this.pickBtn.focus({ preventScroll: true });
+  }
+
+  _pickCategory(key) {
+    this._closeCats({ focus: !this.large && this.catsEl.contains(document.activeElement) });
+    this.setCategory(key);
+  }
+
+  /** Arrow keys / Home / End move between the categories (drop-down grid or sidebar list). */
+  _catsKey(e) {
+    const btns = [...this.catEls.values()];
+    const i = btns.indexOf(document.activeElement);
+    if (i < 0) return;
+    // columns of the drop-down grid: the buttons on the first row
+    const cols = this.large ? 1 : Math.max(1, btns.filter((b) => b.offsetTop === btns[0].offsetTop).length);
+    const step = { ArrowDown: cols, ArrowUp: -cols, ArrowRight: 1, ArrowLeft: -1 }[e.key];
+    let j;
+    if (step) j = i + step;
+    else if (e.key === 'Home') j = 0;
+    else if (e.key === 'End') j = btns.length - 1;
+    else return;
+    e.preventDefault();
+    e.stopPropagation();
+    btns[Math.max(0, Math.min(btns.length - 1, j))].focus();
+  }
+
+  /** Fades the edge of the one-line sub filter row where more chips are hidden. */
+  _subsFade() {
+    const el = this.subsEl;
+    const more = !this.large && el.scrollWidth > el.clientWidth + 1;
+    el.classList.toggle('is-more-left', more && el.scrollLeft > 2);
+    el.classList.toggle('is-more-right', more && el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
   }
 
   /** Creates the thumbnail renderer in idle time after the game has started (cheap now: no environment map). */
@@ -897,6 +1125,12 @@ export class CatalogPanel extends BasePanel {
    * @param {string|{ category?: string, productId?: string, query?: string }} [arg]
    */
   onOpen(arg) {
+    // the remembered size (a temporary switch back to the compact panel ends when the panel closes)
+    const large = readLargePref();
+    if (large !== this.large) {
+      this.large = large;
+      this._applyLayout();
+    }
     if (typeof arg === 'string') this.setCategory(arg, { silent: true });
     else if (arg && typeof arg === 'object') {
       if (arg.category) this.setCategory(arg.category, { silent: true });
@@ -913,6 +1147,7 @@ export class CatalogPanel extends BasePanel {
   }
 
   onClose() {
+    this._closeCats();
     thumbs().cancelPending((k) => k.endsWith(`|${THUMB_W}x${THUMB_H}`));
   }
 
@@ -941,16 +1176,20 @@ export class CatalogPanel extends BasePanel {
     if (this.detail) this._hideDetail();
     if (changed) {
       thumbs().cancelPending((k) => k.endsWith(`|${THUMB_W}x${THUMB_H}`));
-      this.body.scrollTop = 0;
+      this._scroller.scrollTop = 0;
     }
     this._renderList();
   }
 
   _paintCats() {
+    const cur = this.query.trim() ? null : this.category;
+    const tabbable = cur ?? this.catEls.keys().next().value;
     for (const [k, b] of this.catEls) {
-      const on = !this.query && k === this.category;
+      const on = k === cur;
       b.classList.toggle('is-active', on);
       b.setAttribute('aria-selected', on ? 'true' : 'false');
+      // one tab stop for the whole list (arrow keys move inside it)
+      b.tabIndex = k === tabbable ? 0 : -1;
     }
   }
 
@@ -973,14 +1212,36 @@ export class CatalogPanel extends BasePanel {
       this.subsEl.replaceChildren();
       return;
     }
-    const chip = (value, label, n) => h(`button.ipc-chip${this.sub === value ? '.is-active' : ''}`, { type: 'button', on: { click: () => {
+    const chip = (value, label, n) => h(`button.ipc-chip${this.sub === value ? '.is-active' : ''}`, { type: 'button', 'aria-pressed': this.sub === value ? 'true' : 'false', on: { click: () => {
       this.sub = value;
       this._renderList();
     } } }, h('span', { text: label }), n != null ? h('small', { text: String(n) }) : null);
+    const scroll = this._subsFor === this.category ? this.subsEl.scrollLeft : 0;
+    this._subsFor = this.category;
     this.subsEl.replaceChildren(
       chip(null, 'Alle'),
       ...subs.map((s) => chip(s, this.cat.SUBCATEGORY_LABELS?.[s] || s, all.filter((p) => p.subcategory === s).length)),
     );
+    this.subsEl.scrollLeft = scroll;
+  }
+
+  /** What the list shows: the «Kategori» picker (compact) and the heading over the grid (large). */
+  _renderHeading(list) {
+    const q = this.query.trim();
+    const c = this.cat.CATEGORIES.find((x) => x.key === this.category);
+    const subLabel = this.sub ? this.cat.SUBCATEGORY_LABELS?.[this.sub] || this.sub : null;
+    if (q) {
+      this.pickBtn.replaceChildren(svg(SEARCH_ICON), h('span', { text: `Treff på «${q}»` }), h('small', { text: String(list.length) }), svg(CHEVRON_ICON));
+      this.pickBtn.title = `${list.length} treff i hele katalogen – klikk for å velge en kategori`;
+      this.pickBtn.setAttribute('aria-label', `${list.length} treff på «${q}». Velg kategori`);
+      this.titleEl.replaceChildren(h('b', { text: `Søk: «${q}»` }), h('small', { text: `${list.length} treff i hele katalogen` }));
+      return;
+    }
+    const n = this.cat.products(this.category).length;
+    this.pickBtn.replaceChildren(svg(c?.iconSvg || ICONS[c?.icon] || ICONS.sofa), h('span', { text: c?.label || 'Kategori' }), h('small', { text: String(n) }), svg(CHEVRON_ICON));
+    this.pickBtn.title = 'Velg kategori';
+    this.pickBtn.setAttribute('aria-label', `Kategori: ${c?.label || ''} (${productsText(n)}). Velg kategori`);
+    this.titleEl.replaceChildren(h('b', { text: subLabel ? `${c?.label} · ${subLabel}` : c?.label || 'Katalog' }), h('small', { text: productsText(list.length) }));
   }
 
   _renderList() {
@@ -988,8 +1249,8 @@ export class CatalogPanel extends BasePanel {
     this._renderSubs();
     const list = this._products();
     const searching = !!this.query.trim();
-    const label = searching ? `${list.length} treff på «${this.query.trim()}»` : `${list.length} produkter${this.sub ? ` · ${this.cat.SUBCATEGORY_LABELS?.[this.sub] || this.sub}` : ''}`;
-    this.countEl.textContent = label;
+    this._renderHeading(list);
+    requestAnimationFrame(() => this._subsFade());
     this.observer?.disconnect();
     if (!list.length) {
       this.grid.replaceChildren(h('div.ipc-empty', {}, emptyState(searching ? 'Ingen produkter passer søket. Prøv et annet ord, for eksempel «bouclé», «eik» eller «IKEA».' : 'Ingen produkter her ennå.', 'info')));
@@ -1031,15 +1292,21 @@ export class CatalogPanel extends BasePanel {
       });
     };
     const priceSlot = h('div.ipc-priceslot', {}, priceEl(info));
-    const max = 7;
-    const sw = h('div.ipc-swatches', { 'aria-label': 'Farger' });
+    // one row of swatches: the first few (and the chosen one, if it is further down the list) + «+N»
+    const max = this.large ? 8 : 6;
+    const sw = h('div.ipc-swatches', { role: 'group', 'aria-label': 'Farger' });
     const paintSwatches = (cur) => {
-      sw.replaceChildren(...p.variants.slice(0, max).map((v, i) => variantSwatch(p, v, i, { active: i === cur, onPick: (j) => {
+      const vs = p.variants || [];
+      const n = vs.length > max ? max - 1 : max;
+      const shown = vs.map((v, i) => i).slice(0, n);
+      if (cur >= n && cur < vs.length) shown[n - 1] = cur;
+      const rest = vs.length - shown.length;
+      sw.replaceChildren(...shown.map((i) => variantSwatch(p, vs[i], i, { active: i === cur, onPick: (j) => {
         this.cardVariant.set(p.id, j);
         paintSwatches(j);
         priceSlot.replaceChildren(priceEl(priceInfo(this.cat, p, j)));
         setThumb(j);
-      } })), ...(p.variants.length > max ? [h('span.ipc-more', { text: `+${p.variants.length - max}` })] : []));
+      } })), ...(rest > 0 ? [h('span.ipc-more', { text: `+${rest}`, title: `${rest} ${rest === 1 ? 'farge' : 'farger'} til – åpne produktet for å se alle` })] : []));
     };
     paintSwatches(vi);
     const isShading = p.category === 'solskjerming';
@@ -1076,8 +1343,10 @@ export class CatalogPanel extends BasePanel {
     },
     thumbEl,
     h('div.ipc-body', {},
-      h('div.ipc-name', { text: p.name }),
-      h('div.ipc-store', { text: [p.store, p.brand && p.brand !== p.store ? p.brand : null].filter(Boolean).join(' · ') }),
+      h('div.ipc-titles', {},
+        h('div.ipc-name', { text: p.name }),
+        // the store (and the brand / collection in the large catalogue)
+        h('div.ipc-store', { text: [p.store, this.large && p.brand && p.brand !== p.store ? p.brand : null].filter(Boolean).join(' · ') })),
       sw,
       h('div.ipc-foot', {}, priceSlot, placeBtn),
     ));
@@ -1095,14 +1364,15 @@ export class CatalogPanel extends BasePanel {
    * @param {number} [vi] variant index
    */
   showDetail(p, vi = p.defaultVariant ?? 0) {
-    if (!this.detail) this._listScroll = this.body.scrollTop;
+    this._closeCats();
+    if (!this.detail) this._listScroll = this._scroller.scrollTop;
     if (this._pending && this._pending.productId !== p.id) this._pending = null;
     this.detail = { product: p, vi: clampVariant(p, vi) };
     this.listView.hidden = true;
     this.detailView.hidden = false;
     this.panel.setTitle(this.cat.categoryLabel(p.category) || 'Katalog');
     this._renderDetail();
-    this.body.scrollTop = 0;
+    this._scroller.scrollTop = 0;
   }
 
   _hideDetail() {
@@ -1114,7 +1384,7 @@ export class CatalogPanel extends BasePanel {
     this.foot.replaceChildren();
     this.foot.hidden = true;
     this.panel.setTitle('Katalog');
-    this.body.scrollTop = this._listScroll || 0;
+    this._scroller.scrollTop = this._listScroll || 0;
   }
 
   _renderDetail() {
@@ -1159,9 +1429,9 @@ export class CatalogPanel extends BasePanel {
             on: { click: () => {
               this.detail.vi = i;
               this.cardVariant.set(p.id, i);
-              const st = this.body.scrollTop;
+              const st = this._scroller.scrollTop;
               this._renderDetail();
-              this.body.scrollTop = st;
+              this._scroller.scrollTop = st;
             } },
           }, h('span.ip-swatch', { style: { background: b ? `linear-gradient(135deg, ${a} 0 50%, ${b} 50% 100%)` : a } }), h('span', { text: vv.name || `Variant ${i + 1}` }),
           pi.price != null && pi.price !== info.price ? h('small', { text: fmtNok(pi.price) }) : null);
@@ -1178,9 +1448,12 @@ export class CatalogPanel extends BasePanel {
     if (p.absorption) {
       let txt = `ca. ${fmtNumber(p.absorption, 2)} m² Sabine`;
       try {
-        const r = this.editor.acoustics();
+        // the room the piece would be placed in: the one the reverberation badge shows (hele-huset §5.4)
+        const roomId = this.editor.ui?.acoustics?.roomId ?? LIVING_ROOM_ID;
+        const r = roomId === LIVING_ROOM_ID ? this.editor.acoustics() : acousticsFor(this.editor.design, this.editor.home, roomId);
         const next = rt60For(r.absorption + p.absorption, r.volume);
-        txt += ` – etterklangen går fra ${fmtNumber(r.rt60, 2)} til ${fmtNumber(next, 2)} s`;
+        const where = r.roomId && r.roomId !== LIVING_ROOM_ID ? ` i rommet (${r.roomName.replace(/ \((.+)\)$/, ', $1')})` : '';
+        txt += ` – etterklangen${where} går fra ${fmtNumber(r.rt60, 2)} til ${fmtNumber(next, 2)} s`;
       } catch {
         /* acoustics optional */
       }
@@ -1193,21 +1466,23 @@ export class CatalogPanel extends BasePanel {
     if (info.onSale) badges.push(badge(info.discount >= 1 ? `Tilbud −${info.discount} %` : 'Tilbud', 'danger'));
     if (p.subcategory) badges.push(badge(this.cat.SUBCATEGORY_LABELS?.[p.subcategory] || p.subcategory));
 
-    this.detailView.replaceChildren(...[
+    // picture | text: stacked in the compact panel, side by side in the large catalogue
+    this.detailView.replaceChildren(
       button({ label: 'Tilbake', icon: 'back', variant: 'ghost', size: 'sm', onClick: () => this._hideDetail() }),
-      thumbBox,
-      photo,
-      h('h3', { text: p.name }),
-      h('div.ipc-detail__sub', {}, h('span', { text: [p.brand, p.store].filter((x, i, a) => x && a.indexOf(x) === i).join(' · ') }), ...badges),
-      h('div.ipc-detail__price', {}, priceEl(info, { big: true })),
-      p.priceNote ? h('p.ipc-note', { text: p.priceNote }) : null,
-      variants,
-      isShadingProduct(p) ? this._windowsSection(p, vi) : null,
-      p.description ? h('div.ip-section', {}, h('h3.ip-section__title', { text: 'Beskrivelse' }), h('p.ipc-text', { text: p.description })) : null,
-      p.why ? h('div.ip-section', {}, h('h3.ip-section__title', { text: 'Hvorfor den passer' }), h('p.ipc-text.ipc-why', { text: p.why })) : null,
-      h('div.ip-section', {}, h('h3.ip-section__title', { text: 'Fakta' }), h('dl.ipc-facts', {}, facts.flatMap(([k, val]) => [h('dt', { text: k }), h('dd', { text: val })])),
-        p.absorptionNote ? h('p.ipc-note', { text: p.absorptionNote, style: { margin: '0.6em 0 0' } }) : null),
-    ].filter(Boolean));
+      h('div.ipc-detail__media', {}, thumbBox, photo),
+      h('div.ipc-detail__info', {}, ...[
+        h('h3.ipc-detail__name', { text: p.name }),
+        h('div.ipc-detail__sub', {}, h('span', { text: [p.brand, p.store].filter((x, i, a) => x && a.indexOf(x) === i).join(' · ') }), ...badges),
+        h('div.ipc-detail__price', {}, priceEl(info, { big: true })),
+        p.priceNote ? h('p.ipc-note', { text: p.priceNote }) : null,
+        variants,
+        isShadingProduct(p) ? this._windowsSection(p, vi) : null,
+        p.description ? h('div.ip-section', {}, h('h3.ip-section__title', { text: 'Beskrivelse' }), h('p.ipc-text', { text: p.description })) : null,
+        p.why ? h('div.ip-section', {}, h('h3.ip-section__title', { text: 'Hvorfor den passer' }), h('p.ipc-text.ipc-why', { text: p.why })) : null,
+        h('div.ip-section', {}, h('h3.ip-section__title', { text: 'Fakta' }), h('dl.ipc-facts', {}, facts.flatMap(([k, val]) => [h('dt', { text: k }), h('dd', { text: val })])),
+          p.absorptionNote ? h('p.ipc-note', { text: p.absorptionNote, style: { margin: '0.6em 0 0' } }) : null),
+      ].filter(Boolean)),
+    );
     this.detailView.firstChild.classList.add('ipc-detail__back');
 
     const isShading = isShadingProduct(p);
@@ -1243,6 +1518,8 @@ export class CatalogPanel extends BasePanel {
    */
   chooseWindow(p, vi = p.defaultVariant ?? 0) {
     vi = clampVariant(p, vi);
+    // the windows must be visible to click on: back to the compact panel (the large one returns on the next open)
+    if (this.large) this.setLarge(false, { remember: false });
     if (!this.detail || this.detail.product !== p || this.detail.vi !== vi) this.showDetail(p, vi);
     this._pending = { productId: p.id, vi, until: performance.now() + 60000 };
     this._renderDetail();
@@ -1284,9 +1561,9 @@ export class CatalogPanel extends BasePanel {
     e.events.emit('toast', { text: `${p.name}${vName ? ` (${vName})` : ''} er satt på ${win.name.toLowerCase()}. Juster farge og hvor langt den er nede i panelet til høyre.`, seconds: 4 });
     e.events.emit('sfx', { name: 'place' });
     if (this.detail?.product === p) {
-      const st = this.body.scrollTop;
+      const st = this._scroller.scrollTop;
       this._renderDetail();
-      this.body.scrollTop = st;
+      this._scroller.scrollTop = st;
     }
     return true;
   }
@@ -1319,6 +1596,8 @@ export class CatalogPanel extends BasePanel {
     clearTimeout(this._warmTimer);
     this._disposed = true;
     this._offSel?.();
+    this._offPanel?.();
+    document.removeEventListener('pointerdown', this._onDocDown, true);
     this.observer?.disconnect();
     _users = Math.max(0, _users - 1);
     // The thumbnail renderer and its cache outlive the game session (Avslutt → «Gå inn i stua» builds a new Editor):

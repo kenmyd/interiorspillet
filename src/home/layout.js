@@ -145,13 +145,15 @@ const STAIR_HUD_TOP = 1.0;
 const DEV = !!import.meta.env?.DEV;
 
 /** Contract light groups (ARCHITECTURE §15) with Norwegian labels and the dimmer they start at (the levels the owner
- *  uses in the evening; on/off still follows the time of day until the group is switched by hand). */
+ *  uses in the evening; on/off still follows the time of day until the group is switched by hand). The light panel
+ *  shows dimmer × 100 %: the owner's change list 2026-10-21 set the island pendants to 6 % and the high-wall spots to
+ *  5 %. 'overskap' is the LED strip under the glass cabinet and the LED strips inside its three sections (kitchen.js). */
 const LIGHT_GROUPS = [
   { id: 'led', label: 'LED-lister', dimmer: 0.15 },
-  { id: 'spots', label: 'Spotter ved den høye veggen', dimmer: 0.07 },
+  { id: 'spots', label: 'Spotter ved den høye veggen', dimmer: 0.05 },
   { id: 'kjokken', label: 'Kjøkkenlys', dimmer: 0.3 },
-  { id: 'pendler', label: 'Pendler over kjøkkenøya', dimmer: 0.3 },
-  { id: 'overskap', label: 'Lys under overskapet', dimmer: 0.16 },
+  { id: 'pendler', label: 'Pendler over kjøkkenøya', dimmer: 0.06 },
+  { id: 'overskap', label: 'Lys i og under glasskapet', dimmer: 0.16 },
   { id: 'tvstue', label: 'Taklampe i TV-stua', dimmer: 0.35 },
 ];
 const LIGHT_GROUP_IDS = new Set(LIGHT_GROUPS.map((g) => g.id));

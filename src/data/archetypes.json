@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "Shared schema for the data layer: archetype → family/mount/label, canonical part names per family (ARCHITECTURE §13), valid material kinds (§4) and alias tables used to normalise research data. Labels are Norwegian (shown to the user). Optional per archetype: parts (overrides the family's list, in Inspector order), partLabels (archetype-specific names, merged over the family's), mounts (every mount a product of the archetype may have; mount is the default – display-cabinet stands on the floor or hangs on the wall).",
+  "note": "Shared schema for the data layer: archetype → family/mount/label, canonical part names per family (ARCHITECTURE §13), valid material kinds (§4) and alias tables used to normalise research data. Labels are Norwegian (shown to the user). Optional per archetype: parts (overrides the family's list, in Inspector order), partLabels (archetype-specific names, merged over the family's), mounts (every mount a product of the archetype may have; mount is the default – display-cabinet stands on the floor or hangs on the wall), propParts (parts that only dress the model and are not sold with it – bedding on a bed, towels on a ladder, coats on a rack: the Inspector lets those take any colour, everything else only the store's variants).",
   "families": {
     "seating": {
       "label": "Sittemøbler",
@@ -161,7 +161,7 @@
     "roman": { "family": "shading", "mount": "window", "label": "Liftgardin" },
     "exterior-screen": { "family": "shading", "mount": "window", "label": "Utvendig screen" },
 
-    "bed": { "family": "bed", "mount": "floor", "label": "Seng" },
+    "bed": { "family": "bed", "mount": "floor", "label": "Seng", "propParts": ["bedding", "throw"] },
     "headboard": { "family": "bed", "mount": "floor", "label": "Sengegavl", "parts": ["headboard", "legs"] },
     "bench": { "family": "seating", "mount": "floor", "label": "Benk", "parts": ["upholstery", "legs", "frame"], "partLabels": { "upholstery": "Sete", "frame": "Ramme og hylle" } },
     "chair": { "family": "seating", "mount": "floor", "label": "Spisestol med ramme", "parts": ["upholstery", "frame", "legs"], "partLabels": { "upholstery": "Trekk/sete", "frame": "Ramme og rygg" } },
@@ -174,11 +174,11 @@
     "mirror-cabinet": { "family": "storage", "mount": "wall", "label": "Speilskap", "parts": ["body", "front", "handle"], "partLabels": { "front": "Speildører" } },
     "mirror-floor": { "family": "framed", "mount": "floor", "label": "Gulvspeil", "partLabels": { "print": "Speilglass" } },
     "towel": { "family": "textile", "mount": "soft", "label": "Håndklær", "partLabels": { "fabric": "Håndkle", "piping": "Bord/stripe" } },
-    "towel-ladder": { "family": "fixture", "mount": "floor", "label": "Håndklestige", "parts": ["body", "fabric"], "partLabels": { "body": "Stige", "fabric": "Håndklær" } },
-    "towel-rail": { "family": "fixture", "mount": "wall", "label": "Håndklestang", "parts": ["body", "fabric"], "partLabels": { "body": "Stang/knagg", "fabric": "Håndklær" } },
+    "towel-ladder": { "family": "fixture", "mount": "floor", "label": "Håndklestige", "parts": ["body", "fabric"], "partLabels": { "body": "Stige", "fabric": "Håndklær" }, "propParts": ["fabric"] },
+    "towel-rail": { "family": "fixture", "mount": "wall", "label": "Håndklestang", "parts": ["body", "fabric"], "partLabels": { "body": "Stang/knagg", "fabric": "Håndklær" }, "propParts": ["fabric"] },
     "bath-accessory": { "family": "fixture", "mount": "surface", "label": "Badetilbehør", "parts": ["body", "accent"], "partLabels": { "body": "Materiale", "accent": "Pumpe/metall" } },
-    "coat-rack": { "family": "fixture", "mount": "wall", "label": "Knaggrekke", "parts": ["body", "accent", "fabric"], "partLabels": { "body": "List/hylle", "accent": "Knagger", "fabric": "Klær" } },
-    "coat-stand": { "family": "fixture", "mount": "floor", "label": "Stumtjener", "parts": ["body", "accent", "fabric"], "partLabels": { "body": "Stativ", "accent": "Knagger", "fabric": "Klær" } }
+    "coat-rack": { "family": "fixture", "mount": "wall", "label": "Knaggrekke", "parts": ["body", "accent", "fabric"], "partLabels": { "body": "List/hylle", "accent": "Knagger", "fabric": "Klær" }, "propParts": ["fabric"] },
+    "coat-stand": { "family": "fixture", "mount": "floor", "label": "Stumtjener", "parts": ["body", "accent", "fabric"], "partLabels": { "body": "Stativ", "accent": "Knagger", "fabric": "Klær" }, "propParts": ["fabric"] }
   },
   "archetypeAliases": {
     "armchair-tub-swivel": "tub-swivel",

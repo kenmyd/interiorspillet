@@ -6,15 +6,18 @@ import { openPanels } from './panelKit.js';
  * Toolbar along the bottom of the screen (ARCHITECTURE §12, §14) and the global shortcuts.
  *
  *   new Toolbar(editor)
- *   run(id)                    'catalog' | 'wall' | 'window' | 'light' | 'view' | 'compare' | 'saves' | 'shopping' | 'photo' | 'undo' | 'redo'
+ *   run(id)                    'catalog' | 'wall' | 'window' | 'light' | 'sun' | 'view' | 'compare' | 'saves' | 'shopping' |
+ *                              'photo' | 'undo' | 'redo'
  *   compareActive              true while «Før» (the original room) is shown
  *   enterCompare() / exitCompare() / toggleCompare()
- *   takePicture() → string|null   renders the current view and downloads «stua-YYYY-MM-DD-HHMM.png»
+ *   takePicture() → string|null   renders the current view and downloads «huset-YYYY-MM-DD-HHMM.png»
  *   open() / close() / toggle() / isOpen / update() / dispose()
  *
  * Shortcuts (ignored while a text field has focus, the game is paused or a modal is open – editor.keysActive()):
- * K Katalog · V Veggforslag · B Vinduer · L Lys og sol · Tab Visning · O Før/etter · M Design · I Handleliste ·
- * P Bilde · Ctrl+Z angre · Ctrl+Y / Ctrl+Shift+Z gjør om.
+ * K Katalog · V Veggforslag · B Vinduer · L Belysning · T Sol · Tab Visning · O Før/etter · M Design · I Handleliste ·
+ * P Bilde · Ctrl+Z angre · Ctrl+Y / Ctrl+Shift+Z gjør om · Page Up / Page Down etasje opp / ned (oversikt og plan).
+ * The «Etasje» button (cycleLevel) is shown in the overview and the plan only, named after the level they show
+ * (views.levelName; 'view' / 'view-level' events).
  *
  * Før/etter swaps the DesignState to the original room and back WITHOUT touching the undo history: the current
  * design (JSON) and its undo/redo stacks are kept aside, autosave is paused while the original is shown, and the
@@ -31,7 +34,8 @@ export const TOOL_ICONS = {
   catalog: ICONS.sofa,
   wall: S('<rect x="4" y="3.5" width="16" height="17" rx="1.4"/><path d="M8 3.5v17M12 3.5v17M16 3.5v17"/>'),
   window: ICONS.blinds,
-  sun: S('<circle cx="12" cy="12" r="3.8"/><path d="M12 2.6v2.1M12 19.3v2.1M2.6 12h2.1M19.3 12h2.1M5.4 5.4l1.5 1.5M17.1 17.1l1.5 1.5M5.4 18.6l1.5-1.5M17.1 6.9l1.5-1.5"/>'),
+  bulb: ICONS.bulb,
+  sun: ICONS.sun,
   view: S('<path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/>'),
   compare: S('<rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M12 2.5v19"/><path d="M8.6 9.8 6.4 12l2.2 2.2M15.4 9.8l2.2 2.2-2.2 2.2"/>'),
   folder: S('<path d="M3.5 7.4a2 2 0 0 1 2-2h3.8l2 2.1h7.2a2 2 0 0 1 2 2v8.1a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><path d="M3.5 10h17"/>'),
@@ -39,16 +43,20 @@ export const TOOL_ICONS = {
   camera: S('<path d="M4 8.6a2 2 0 0 1 2-2h2l1.5-2.1h5L16 6.6h2a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.6" r="3.4"/>'),
   undo: S('<path d="M8.6 5.6 4.2 10l4.4 4.4"/><path d="M4.6 10H14a5.6 5.6 0 0 1 0 11.2h-3"/>'),
   redo: S('<path d="M15.4 5.6 19.8 10l-4.4 4.4"/><path d="M19.4 10H10a5.6 5.6 0 0 0 0 11.2h3"/>'),
+  level: S('<path d="M3 9.2 12 4.6l9 4.6-9 4.6z"/><path d="M3 14.4l9 4.6 9-4.6"/>'),
 };
 
 const BUTTONS = [
   { id: 'catalog', label: 'Katalog', icon: 'catalog', key: 'K', code: 'KeyK', panel: 'catalog', title: 'Katalog – lenestoler, skjenker, lamper, tekstiler og akustikk' },
   { id: 'wall', label: 'Veggforslag', icon: 'wall', key: 'V', code: 'KeyV', panel: 'wall', title: 'Forslag til den høye veggen' },
   { id: 'window', label: 'Vinduer', icon: 'window', key: 'B', code: 'KeyB', panel: 'window', title: 'Vinduer og solskjerming' },
-  { id: 'light', label: 'Lys og sol', icon: 'sun', key: 'L', code: 'KeyL', panel: 'light', title: 'Lys, sol og tid på døgnet' },
+  { id: 'light', label: 'Belysning', icon: 'bulb', key: 'L', code: 'KeyL', panel: 'light', title: 'Belysning – lampene i rommene' },
+  { id: 'sun', label: 'Sol', icon: 'sun', key: 'T', code: 'KeyT', panel: 'sun', title: 'Sol – tid på døgnet, dato og vær' },
   { sep: true },
   { id: 'view', label: 'Visning', icon: 'view', key: 'Tab', code: 'Tab', title: 'Bytt visning: gå · oversikt · plan' },
-  { id: 'compare', label: 'Før/etter', icon: 'compare', key: 'O', code: 'KeyO', title: 'Før/etter – vis stua slik den er i dag' },
+  // shown in the overview and the plan only (§5.2): the level they show; PageUp / PageDown (handled in _key)
+  { id: 'level', label: 'Etasje', icon: 'level', key: 'PgUp', title: 'Bytt etasje i oversikten og planen (Page Up / Page Down)' },
+  { id: 'compare', label: 'Før/etter', icon: 'compare', key: 'O', code: 'KeyO', title: 'Før/etter – vis huset slik det er i dag' },
   { sep: true },
   { id: 'saves', label: 'Design', icon: 'folder', key: 'M', code: 'KeyM', panel: 'saves', title: 'Lagre, åpne og eksportere design' },
   { id: 'shopping', label: 'Handleliste', icon: 'bag', key: 'I', code: 'KeyI', panel: 'shopping', title: 'Handleliste med priser og lenker' },
@@ -59,10 +67,13 @@ const VIEW_LABELS = { walk: 'Gå', orbit: 'Oversikt', plan: 'Plan', photo: 'Foto
 const VIEW_ORDER = ['walk', 'orbit', 'plan'];
 
 /** Tools that may stay on while «Før» is shown (they do not change the furniture). */
-const COMPARE_SAFE = new Set(['view', 'compare', 'photo', 'light', 'undo', 'redo']);
+const COMPARE_SAFE = new Set(['view', 'level', 'compare', 'photo', 'light', 'sun', 'undo', 'redo']);
 
 const CSS = `
 .ipt-bar { gap: 0.15em; }
+/* centred, but never under the reverberation badge in the bottom-left corner (AcousticsWidget, ends ≈ 13.9em from the
+   left): a wide bar (small windows, «Etasje» in the overview and the plan) moves right of it while it still fits */
+.ipt-bar { transform: translateX(min(max(-50%, calc(14.6em - 50vw)), calc(50vw - 100% - 1em))); }
 .ipt-bar .ip-toolbtn { min-width: 4.9em; }
 .ipt-bar .ip-toolbtn .kv-icon { width: 1.55em; height: 1.55em; }
 .ipt-bar .ip-toolbtn__key { top: 0.28em; right: 0.32em; font-size: 0.72em; letter-spacing: 0.02em; }
@@ -112,9 +123,9 @@ function injectCss(id, css) {
 const clone = (v) => (v == null ? v : JSON.parse(JSON.stringify(v)));
 const pad = (n) => String(n).padStart(2, '0');
 
-/** «stua-2026-10-18-1432.png» (local time). */
+/** «huset-2026-10-18-1432.png» (local time). */
 export function pictureFileName(date = new Date()) {
-  return `stua-${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}-${pad(date.getHours())}${pad(date.getMinutes())}.png`;
+  return `huset-${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}-${pad(date.getHours())}${pad(date.getMinutes())}.png`;
 }
 
 /**
@@ -161,11 +172,12 @@ export class Toolbar {
       kids.push(h('span.ip-toolbtn__key', { text: b.key }));
       const btn = h(`button.ip-toolbtn${b.id === 'view' ? '.ip-toolbtn--view' : ''}`, {
         type: 'button',
-        title: `${b.title || b.label} (${b.key})`,
+        title: b.id === 'level' ? b.title : `${b.title || b.label} (${b.key})`,
         'aria-label': b.label,
-        'aria-keyshortcuts': b.key === 'Tab' ? 'Tab' : b.key,
+        'aria-keyshortcuts': b.key === 'Tab' ? 'Tab' : b.id === 'level' ? 'PageUp PageDown' : b.key,
         on: { click: () => this.run(b.id) },
       }, kids);
+      if (b.id === 'level') btn.hidden = true;
       this.buttons.set(b.id, btn);
       return btn;
     });
@@ -184,7 +196,7 @@ export class Toolbar {
       h('span', { text: 'Vis designet mitt' }), h('kbd.kv-key', { text: 'O' }));
     this.beforeEl = h('div.ipt-before.kv-scale', { hidden: true, role: 'status' },
       h('span.ipt-before__tag', { text: 'FØR' }),
-      h('span.ipt-before__text', {}, 'Slik stua er i dag', h('small', { text: 'Designet ditt er lagt til side – O eller Esc tar deg tilbake' })),
+      h('span.ipt-before__text', {}, 'Slik huset er i dag', h('small', { text: 'Designet ditt er lagt til side – O eller Esc tar deg tilbake' })),
       this.beforeBtn);
     this.flashEl = h('div.ipt-flash');
     editor.uiRoot.append(this.beforeEl, this.flashEl);
@@ -192,6 +204,7 @@ export class Toolbar {
 
     this._offs.push(editor.design.on('history', () => this._history()));
     this._offs.push(editor.events.on('view', () => this._paintView()));
+    this._offs.push(editor.events.on('view-level', () => this._paintView()));
     this._offs.push(editor.events.on('select', ({ selected }) => this._guardSelect(selected)));
     this._history();
     this._paintView();
@@ -223,6 +236,7 @@ export class Toolbar {
         if (p?.isOpen) p.close();
         else p?.open?.();
       } else if (id === 'view') e.views?.toggle?.();
+      else if (id === 'level') this.cycleLevel();
       else if (id === 'compare') this.toggleCompare();
       else if (id === 'photo') this.takePicture();
       else if (id === 'undo') this._undo(false);
@@ -231,6 +245,27 @@ export class Toolbar {
       console.error(`[toolbar] ${id} failed`, err);
     }
     e.events.emit('sfx', { name: 'ui-click' });
+  }
+
+  // ---- levels --------------------------------------------------------------------------------------------------
+
+  /** «Etasje»: the next level down, from the lowest back to the top (overview / plan only). */
+  cycleLevel() {
+    const v = this.editor.views;
+    if (!v || v.isWalking !== false || !(v.mode === 'orbit' || v.mode === 'plan')) return;
+    if (!v.stepLevel?.(-1)) v.setLevel?.(v.levels?.[0]?.id);
+  }
+
+  /** PageUp / PageDown: one level up / down in the overview and the plan. @returns {boolean} used */
+  _levelKey(e) {
+    const v = this.editor.views;
+    if (e.code !== 'PageUp' && e.code !== 'PageDown') return false;
+    if (!v || !(v.mode === 'orbit' || v.mode === 'plan') || (v.levels?.length ?? 1) < 2) return false;
+    e.preventDefault();
+    if (!v.stepLevel?.(e.code === 'PageUp' ? 1 : -1)) {
+      this.editor.events.emit('toast', { text: e.code === 'PageUp' ? 'Dette er øverste etasje' : 'Dette er nederste etasje', seconds: 1.6 });
+    }
+    return true;
   }
 
   // ---- Før/etter ---------------------------------------------------------------------------------------------
@@ -278,7 +313,7 @@ export class Toolbar {
     this._history();
     this._paintCompare();
     e.events.emit('compare', { active: true });
-    e.events.emit('toast', { text: 'Før: stua slik den er i dag. Trykk O igjen for å se designet ditt.', seconds: 3.5 });
+    e.events.emit('toast', { text: 'Før: huset slik det er i dag. Trykk O igjen for å se designet ditt.', seconds: 3.5 });
   }
 
   /**
@@ -338,7 +373,7 @@ export class Toolbar {
       if (!this.compareActive) return;
       e.select(null);
       for (const k of ['inspector', 'wall', 'window']) if (e.ui[k]?.isOpen) e.ui[k].close();
-      e.events.emit('toast', { text: 'Du ser på stua slik den er i dag. Trykk O for å gå tilbake til designet ditt og endre.', seconds: 3.5 });
+      e.events.emit('toast', { text: 'Du ser på huset slik det er i dag. Trykk O for å gå tilbake til designet ditt og endre.', seconds: 3.5 });
     });
   }
 
@@ -437,6 +472,18 @@ export class Toolbar {
       btn.classList.toggle('is-active', mode !== 'walk');
     }
     [...(this.viewDots?.children || [])].forEach((d, i) => d.classList.toggle('is-on', VIEW_ORDER[i] === mode));
+    // «Etasje»: only outside walking, and only when the house has more than one level; it names the level shown
+    const lb = this.buttons.get('level');
+    if (lb) {
+      const v = this.editor.views;
+      const levels = v?.levels || [];
+      const show = (mode === 'orbit' || mode === 'plan') && levels.length > 1;
+      if (lb.hidden === show) lb.hidden = !show;
+      const name = v?.levelName || 'Etasje';
+      const label = lb.querySelector('.ip-toolbtn__label');
+      if (label && label.textContent !== name) label.textContent = name;
+      lb.title = `Etasje: ${name} – klikk eller Page Up / Page Down for å bytte`;
+    }
   }
 
   _paintCompare() {
@@ -481,7 +528,8 @@ export class Toolbar {
     }
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.code === 'Tab' && (e.shiftKey || document.activeElement?.closest?.('.ip-panel, .kv-dialog'))) return; // Tab moves focus inside panels
-    const b = BUTTONS.find((x) => x.code === e.code);
+    if (this._levelKey(e)) return;
+    const b = BUTTONS.find((x) => x.code && x.code === e.code);
     if (!b) return;
     e.preventDefault();
     this.run(b.id);

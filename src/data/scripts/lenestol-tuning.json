@@ -1,0 +1,1561 @@
+{
+  "bohus-castle-mark-zermatt-hvilestol-med-fothviler": {
+    "params": {
+      "armStyle": "petal",
+      "seatNose": 0,
+      "armBottom": 0.19,
+      "armFrontR": 0.2,
+      "armRearR": 0.2,
+      "armFrontTopR": 0.2,
+      "backW": 0.5,
+      "backTaper": 0.16,
+      "backTopR": 0.05,
+      "seamCurve": 0.015,
+      "headW": 0.52,
+      "headH": 0.22,
+      "headD": 0.13,
+      "headRound": 0.55,
+      "headPuff": 0.08,
+      "headSeams": 2,
+      "footTaper": 0.85,
+      "footR": 0.12,
+      "footBottom": 0.17,
+      "armW": 0.145,
+      "armTopR": 0.045,
+      "armLip": 0.05,
+      "basePlate": 0.12,
+      "recline": 21,
+      "seatD": 0.47,
+      "headTilt": 8,
+      "armFlare": 0.012,
+      "armFlarePow": 0.7,
+      "armSplay": 0.02,
+      "armWelt": "edge",
+      "armFootR": 0.07,
+      "bodyRear": 1,
+      "footSplit": 0.02,
+      "headGap": -0.012,
+      "footBulge": 0.03,
+      "footRE": 0.06
+    }
+  },
+  "bohus-castle-mark-girona-hvilestol-med-fotskammel": {
+    "params": {
+      "armStyle": "petal",
+      "armW": 0.16,
+      "armFlare": 0.05,
+      "armLip": 0.045,
+      "armTopR": 0.05,
+      "armBottom": 0.22,
+      "armFrontR": 0.2,
+      "armRearR": 0.13,
+      "armFrontTopR": 0.08,
+      "seatNose": 0,
+      "frontPanel": true,
+      "footTaper": 0.9,
+      "footR": 0.12,
+      "footBottom": 0.24,
+      "backW": 0.46,
+      "backTopR": 0.04,
+      "recline": 22,
+      "headW": 0.46,
+      "headH": 0.24,
+      "headD": 0.14,
+      "headRound": 0.5,
+      "headPuff": 0.06,
+      "headGap": -0.08,
+      "headFwd": 0.04,
+      "headPosts": false,
+      "basePlate": 0.12,
+      "armSplay": 0.04,
+      "armFlarePow": 0.6,
+      "stoolSeam": "short",
+      "stoolT": 0.16,
+      "stoolDome": 0.02,
+      "armWelt": "edge",
+      "armFootR": 0.06,
+      "armTopTilt": 0.03
+    }
+  },
+  "skeidar-hjort-knudsen-sublim-hvilestol-med-fothviler": {
+    "params": {
+      "armStyle": "petal",
+      "armW": 0.15,
+      "armFlare": 0.07,
+      "armLip": 0.03,
+      "armTopR": 0.05,
+      "armBottom": 0.19,
+      "armFrontR": 0.18,
+      "armRearR": 0.06,
+      "armFrontTopR": 0.08,
+      "seatNose": 0,
+      "vSeam": "top",
+      "backW": 0.5,
+      "backTopR": 0.06,
+      "headW": 0.5,
+      "headH": 0.24,
+      "headD": 0.17,
+      "headRound": 0.8,
+      "headPuff": 0.15,
+      "headTilt": 18,
+      "star": "spider",
+      "starR": 0.36,
+      "footTaper": 0.95,
+      "footR": 0.06,
+      "footBottom": 0.18,
+      "basePlate": 0.12,
+      "armSplay": 0.03,
+      "backSeams": "v",
+      "starBend": 1,
+      "starBar": 0.012,
+      "starHub": 0.13,
+      "armFlarePow": 0.5,
+      "armWelt": "edge",
+      "headPosts": false,
+      "headGap": -0.01,
+      "headFwd": 0.04,
+      "backPuff": 0.03
+    }
+  },
+  "skeidar-kansas-hvilestol-elektrisk-med-fothviler": {
+    "params": {
+      "armStyle": "petal",
+      "armW": 0.1,
+      "armFlare": 0.035,
+      "armLip": 0.035,
+      "armTopR": 0.055,
+      "armFrontR": 0.08,
+      "armRearR": 0.08,
+      "armFrontTopR": 0.06,
+      "seatNose": 0.02,
+      "backPuff": 0.04,
+      "lumbarH": 0.22,
+      "neckH": 0.24,
+      "backW": 0.46,
+      "footTaper": 0.97,
+      "footR": 0.06,
+      "footBottom": 0.14,
+      "basePlate": 0.12,
+      "armBottom": 0.125,
+      "footSplit": 0.015
+    }
+  },
+  "bohus-img-taycan-hvilestol-med-fothviler": {
+    "params": {
+      "body": "box",
+      "sides": "fabric",
+      "armStyle": "petal",
+      "armH": 0.61,
+      "armW": 0.16,
+      "armFlare": 0.07,
+      "armLip": 0.04,
+      "armTopR": 0.05,
+      "armBottom": 0.2,
+      "armFrontR": 0.18,
+      "armRearR": 0.12,
+      "armFrontTopR": 0.06,
+      "seatNose": 0,
+      "headStyle": "wing",
+      "headPosts": false,
+      "footTaper": 1,
+      "footR": 0.1,
+      "footBottom": 0.07,
+      "footTilt": 5,
+      "backW": 0.43,
+      "lumbarH": 0.3,
+      "backSeams": "cross",
+      "basePlate": 0.12,
+      "armSplay": 0.04,
+      "armFlarePow": 0.5,
+      "backTopR": 0.025,
+      "headGap": -0.005,
+      "headW": 0.52,
+      "headTaper": 0.8,
+      "armTopTilt": 0.045
+    }
+  },
+  "bohus-actona-ottawa-hvilestol-med-fothviler": {
+    "params": {
+      "armStyle": "board",
+      "armW": 0.1,
+      "armFlare": 0.005,
+      "armTopR": 0.025,
+      "armFrontR": 0.08,
+      "armRearR": 0.1,
+      "armFrontTopR": 0.03,
+      "armBottom": 0.18,
+      "seatNose": 0.02,
+      "backW": 0.5,
+      "lumbarH": 0.2,
+      "headW": 0.5,
+      "headH": 0.2,
+      "headD": 0.17,
+      "headRound": 0.3,
+      "headPuff": 0.03,
+      "headGap": -0.03,
+      "headPosts": false,
+      "footTaper": 1,
+      "footR": 0.03,
+      "footBottom": 0.17,
+      "basePlate": 0.12,
+      "bodyRear": 1,
+      "recline": 10,
+      "headTilt": 0,
+      "headFwd": 0,
+      "backTopR": 0.02,
+      "backTaper": 0,
+      "footSplit": 0.02
+    }
+  },
+  "bohus-img-prince-recliner": {
+    "params": {
+      "armStyle": "petal",
+      "armW": 0.13,
+      "armFlare": 0.06,
+      "armLip": 0,
+      "armTopR": 0.06,
+      "armTopTilt": 0.01,
+      "armFrontTopR": 0.14,
+      "armFrontR": 0.04,
+      "armRearR": 0.06,
+      "armBottom": 0.08,
+      "seatNose": 0.03,
+      "legH": 0.06,
+      "discR": 0.3,
+      "backSeams": "bolster",
+      "neckH": 0.22,
+      "backTopR": 0.08,
+      "backW": 0.52,
+      "footTaper": 1,
+      "footR": 0.03,
+      "footBottom": 0.08,
+      "bodyRear": 1,
+      "footSplit": 0.03,
+      "discT": 0.05,
+      "armWelt": false
+    }
+  },
+  "bohus-img-astra-hvilestol-med-fotskammel": {
+    "params": {
+      "armStyle": "board",
+      "armW": 0.12,
+      "armFlare": 0.01,
+      "armTopR": 0.03,
+      "armFrontR": 0.08,
+      "armRearR": 0.05,
+      "armFrontTopR": 0.05,
+      "armBottom": 0.2,
+      "seatNose": 0.05,
+      "backW": 0.52,
+      "backTaper": 0.12,
+      "backTopR": 0.04,
+      "neckH": 0.24,
+      "recline": 24,
+      "basePlate": 0.12,
+      "stoolWedge": 0.05,
+      "stoolSeam": "none",
+      "stoolT": 0.17,
+      "stoolR": 0.05,
+      "armRise": -0.04,
+      "armRiseH": 0.25,
+      "seatT": 0.17
+    }
+  },
+  "bohus-actona-chicago-hvilestol-med-fotskammel": {
+    "params": {
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "integrated",
+      "backSeams": "cross-v",
+      "vSeam": "full",
+      "armStyle": "petal",
+      "armW": 0.12,
+      "armFlare": 0.03,
+      "armTopR": 0.04,
+      "armFrontR": 0.06,
+      "armRearR": 0.08,
+      "armBottom": 0.26,
+      "backTaper": 0.17,
+      "lumbarH": 0.25,
+      "starArms": 5,
+      "basePlate": 0.12,
+      "armFrontTopR": 0.06,
+      "stoolSeam": "short",
+      "stoolT": 0.16,
+      "stoolDome": 0.02,
+      "armLip": 0.015,
+      "armFlarePow": 0.8,
+      "armSplay": 0.02,
+      "seamCurve": 0.02,
+      "armWelt": false
+    }
+  },
+  "bohus-castle-mark-bern-hvilestol-med-fotskammel": {
+    "params": {
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "integrated",
+      "backSeams": "cross",
+      "armStyle": "roll",
+      "armH": 0.58,
+      "armW": 0.13,
+      "armFlare": 0.05,
+      "armRoll": 0.04,
+      "armRollH": 0.13,
+      "armFrontDrop": 0.06,
+      "armBottom": 0.24,
+      "seatNose": 0.03,
+      "legH": 0.18,
+      "backTaper": 0.1,
+      "recline": 20,
+      "star": "spider",
+      "starR": 0.38,
+      "starArms": 4,
+      "basePlate": 0.12,
+      "stoolSeam": "none",
+      "stoolWelt": true,
+      "stoolT": 0.19,
+      "stoolWedge": 0.03,
+      "stoolStarR": 0.25,
+      "armFrontR": 0.19,
+      "armRearR": 0.19,
+      "backTopR": 0.08,
+      "seatT": 0.15,
+      "bodyBowl": 0.12,
+      "armFootR": 0.08
+    }
+  },
+  "fagmobler-conform-relieve-hvilestol": {
+    "params": {
+      "armStyle": "board",
+      "armW": 0.11,
+      "armFlare": 0,
+      "armTopR": 0.02,
+      "armFrontR": 0.04,
+      "armRearR": 0.05,
+      "armFrontLean": 0.12,
+      "seatNose": 0.04,
+      "headW": 0.6,
+      "headH": 0.22,
+      "headD": 0.16,
+      "headRound": 0.5,
+      "headPuff": 0.06,
+      "headPosts": false,
+      "recline": 20,
+      "basePlate": 0.12,
+      "headGap": -0.04,
+      "headFwd": 0.03,
+      "headTaper": 0.83,
+      "headWing": 0.03,
+      "headSeams": 2,
+      "headSeamX": 0.8,
+      "backTopR": 0.02,
+      "lever": true,
+      "leverStyle": "chrome"
+    }
+  },
+  "fagmobler-brunstad-choice-hvilestol": {
+    "params": {
+      "armStyle": "board",
+      "armW": 0.14,
+      "armFlare": 0.03,
+      "armTopR": 0.025,
+      "armFrontR": 0.04,
+      "armRearR": 0.06,
+      "armFrontTopR": 0.02,
+      "backTaper": 0.3,
+      "backTopR": 0.03,
+      "headStyle": "pillow",
+      "headW": 0.38,
+      "headH": 0.13,
+      "headD": 0.07,
+      "headDrop": 0.12,
+      "backSeams": "v",
+      "basePlate": 0.12,
+      "backPuff": 0.005
+    }
+  },
+  "fagmobler-hjort-knudsen-amina-hvilestol-med-pall": {
+    "params": {
+      "armStyle": "petal",
+      "armW": 0.17,
+      "armFlare": 0.05,
+      "armTopR": 0.07,
+      "armFrontTopR": 0.15,
+      "armFrontR": 0.1,
+      "armRearR": 0.15,
+      "backTopR": 0.1,
+      "backSeams": "v",
+      "headW": 0.48,
+      "headH": 0.2,
+      "basePlate": 0.12,
+      "backWrap": 0.035,
+      "backWrapTop": 0.06,
+      "headGap": -0.18,
+      "headFwd": 0.08,
+      "headPosts": false,
+      "stoolSeam": "center",
+      "stoolT": 0.18,
+      "armLip": 0,
+      "armFlarePow": 2,
+      "armTopTilt": 0.015,
+      "armWelt": false,
+      "armFootR": 0.08
+    }
+  },
+  "jysk-nakskov-recliner": {
+    "params": {
+      "armStyle": "round",
+      "armW": 0.13,
+      "armTopR": 0.05,
+      "armFrontTopR": 0.15,
+      "armFrontR": 0.03,
+      "armRearR": 0.05,
+      "armBottom": 0.045,
+      "legStyle": "runners",
+      "backBands": 0,
+      "backPuff": 0.04,
+      "footTaper": 1,
+      "footR": 0.02,
+      "footBottom": 0.05,
+      "footSplit": 0.03,
+      "leverStyle": "inset",
+      "runnerL": 0.45
+    }
+  },
+  "jysk-bredbjerg-recliner": {
+    "params": {
+      "armStyle": "round",
+      "armW": 0.15,
+      "armTopR": 0.06,
+      "armFrontTopR": 0.16,
+      "armFrontR": 0.08,
+      "armRearR": 0.1,
+      "armBottom": 0.06,
+      "armFlare": 0.01,
+      "backTopR": 0.14,
+      "backPuff": 0.03,
+      "discR": 0.2,
+      "footTaper": 0.98,
+      "footR": 0.04,
+      "footBottom": 0.06,
+      "footSplit": 0.03,
+      "leverStyle": "inset"
+    }
+  },
+  "ikea-muren-hvilestol": {
+    "params": {
+      "armStyle": "roll",
+      "armW": 0.17,
+      "armRoll": 0.04,
+      "armRollH": 0.17,
+      "armFrontDrop": 0,
+      "armBottom": 0.1,
+      "headStyle": "flap",
+      "backTopR": 0.06,
+      "footTaper": 1,
+      "footR": 0.02,
+      "footBottom": 0.11,
+      "footSplit": 0.025,
+      "bodyRear": 1,
+      "armRearR": 0.03,
+      "backTaper": -0.22
+    }
+  },
+  "ikea-havberg-svinglenestol-og-fotskammel": {
+    "params": {
+      "body": "box",
+      "sides": "fabric",
+      "armStyle": "none",
+      "armWelt": false,
+      "armFrame": true,
+      "armBottom": 0.22,
+      "armFrontR": 0.05,
+      "armRearR": 0.06,
+      "seatT": 0.13,
+      "seatTufts": 0,
+      "headStyle": "integrated",
+      "neckH": 0.2,
+      "backSeams": "quilt",
+      "tuftCols": 2,
+      "tuftRows": 4,
+      "tuftFrom": 0.1,
+      "tuftTop": 0.08,
+      "backWrap": 0.03,
+      "backWrapT": 0.1,
+      "backWrapTop": 0.02,
+      "backTopR": 0.06,
+      "recline": 30,
+      "baseCone": 0.14,
+      "legH": 0.16,
+      "starArms": 5,
+      "stoolT": 0.12,
+      "stoolTufts": 3,
+      "stoolTray": 0.07,
+      "stoolStarArms": 5,
+      "stoolSeam": "none",
+      "stoolR": 0.04,
+      "stoolDome": 0.015,
+      "armLipH": 0.31,
+      "seatTilt": 8,
+      "basePlate": 0,
+      "tuftButtons": false,
+      "backPuff": 0.035
+    }
+  },
+  "bohus-img-nova-hvilestol-med-fotskammel": {
+    "params": {
+      "body": "box",
+      "sides": "fabric",
+      "armStyle": "roll",
+      "armW": 0.1,
+      "armRoll": 0.005,
+      "armRollH": 0.08,
+      "armRollFwd": 0.07,
+      "armFrontDrop": 0,
+      "armFlare": 0.03,
+      "armFrontR": 0.3,
+      "armRearR": 0.15,
+      "armBottom": 0.24,
+      "seatT": 0.13,
+      "backWrap": 0.03,
+      "backWrapTop": 0.03,
+      "backTaper": 0.28,
+      "backTopR": 0.2,
+      "backSeams": "cross",
+      "lumbarH": 0.3,
+      "stoolT": 0.12,
+      "stoolSeam": "center",
+      "stoolWelt": true,
+      "stoolTray": 0.05,
+      "recline": 18,
+      "basePlate": 0,
+      "seatNose": 0.07
+    }
+  },
+  "bohus-brunstad-paz-hvilestol-med-fotskammel": {
+    "params": {
+      "body": "box",
+      "sides": "fabric",
+      "armStyle": "egg",
+      "armW": 0.11,
+      "armRise": -0.15,
+      "armRiseH": 0.3,
+      "armFootR": 0.1,
+      "armBottom": 0.2,
+      "seatT": 0.12,
+      "backW": 0.44,
+      "backWaist": 0.2,
+      "backWaistY": 0.45,
+      "backTopR": 0.08,
+      "backSeams": "cross",
+      "lumbarH": 0.42,
+      "headStyle": "pillow",
+      "headW": 0.3,
+      "headH": 0.13,
+      "headD": 0.09,
+      "headDrop": 0.08,
+      "basePlate": 0,
+      "stoolT": 0.14,
+      "stoolSeam": "none",
+      "stoolR": 0.06,
+      "stoolDome": 0.02,
+      "armRearR": 0.16
+    }
+  },
+  "bohus-brunstad-split-hvilestol-med-fotskammel": {
+    "params": {
+      "body": "box",
+      "sides": "fabric",
+      "armStyle": "pad",
+      "armW": 0.18,
+      "armRollH": 0.13,
+      "armPadL": 0.42,
+      "seatT": 0.12,
+      "saucerH": 0.2,
+      "backTaper": 0.3,
+      "backWaist": -0.1,
+      "backWaistY": 0.5,
+      "backTopR": 0.06,
+      "backSeams": "none",
+      "headStyle": "block",
+      "headW": 0.44,
+      "headH": 0.22,
+      "headD": 0.2,
+      "headGap": -0.03,
+      "headFwd": -0.04,
+      "headRound": 1,
+      "headPuff": 0.18,
+      "headPosts": false,
+      "basePlate": 0,
+      "stoolT": 0.14,
+      "stoolSeam": "none",
+      "stoolR": 0.07,
+      "stoolDome": 0.015,
+      "backW": 0.5
+    }
+  },
+  "jysk-tankedal-recliner-med-krakk": {
+    "params": {
+      "body": "box",
+      "sides": "fabric",
+      "armStyle": "petal",
+      "armW": 0.1,
+      "armSplay": 0.01,
+      "armFlare": 0.04,
+      "armLip": 0,
+      "armTopR": 0.035,
+      "armBottom": 0.28,
+      "armFrontR": 0.12,
+      "armRearR": 0.2,
+      "backWrap": 0.03,
+      "backWrapTop": 0,
+      "seatT": 0.13,
+      "stoolT": 0.13,
+      "stoolSeam": "none",
+      "stoolR": 0.06,
+      "backTopR": 0.08,
+      "armRise": 0.16,
+      "armWelt": false,
+      "backSeams": "neck",
+      "basePlate": 0
+    }
+  },
+  "bohus-castle-mark-zermatt-hvilestol-med-fotskammel": {
+    "params": {
+      "legH": 0.2,
+      "body": "box",
+      "sides": "fabric",
+      "armStyle": "roll",
+      "armFrame": true,
+      "armW": 0.13,
+      "armRoll": 0.02,
+      "armRollH": 0.11,
+      "armFrontDrop": 0.2,
+      "armFlare": 0.015,
+      "seatNose": 0.05,
+      "armRearR": 0.2,
+      "armFrontR": 0.15,
+      "armBottom": 0.2,
+      "bodyRear": 0.6,
+      "recline": 21,
+      "backWrap": 0.03,
+      "backWrapT": 0.1,
+      "backWrapTop": 0.02,
+      "backTopR": 0.05,
+      "headStyle": "block",
+      "headW": 0.5,
+      "headH": 0.22,
+      "headD": 0.15,
+      "headGap": -0.01,
+      "headPosts": false,
+      "stoolT": 0.14,
+      "stoolTray": 0.07,
+      "stoolSeam": "none",
+      "stoolR": 0.05,
+      "basePlate": 0.12
+    }
+  },
+  "skeidar-brian-hvilestol-med-krakk": {
+    "params": {
+      "armBottom": 0.26,
+      "basePlate": 0.12,
+      "body": "box",
+      "sides": "fabric",
+      "armStyle": "petal",
+      "armW": 0.11,
+      "armFlare": 0.05,
+      "armFrontR": 0.2,
+      "armRearR": 0.12,
+      "backSeams": "v",
+      "seamCurve": 0.02,
+      "armWelt": false
+    }
+  },
+  "bohus-stressless-opal-hvilestol-med-fotskammel": {
+    "params": {
+      "body": "classic",
+      "armH": 0.53,
+      "armW": 0.09,
+      "seatD": 0.39,
+      "seatLip": 0.14,
+      "bodyBottom": 0.17,
+      "backFlare": -0.07,
+      "backBands": 1,
+      "stoolSeams": 2,
+      "stoolCenterSeam": true
+    }
+  },
+  "skeidar-stressless-mayfair-m-classic-hvilestol-med-krakk": {
+    "params": {
+      "armPad": "plump",
+      "armH": 0.57,
+      "armW": 0.105,
+      "seatD": 0.41,
+      "seatLip": 0.15,
+      "bodyBottom": 0.12,
+      "backFlare": 0.1,
+      "backBands": 1,
+      "stoolCenterSeam": true,
+      "vSeam": "full"
+    }
+  },
+  "bohus-stressless-paris-hvilestol-med-fotskammel": {
+    "params": {
+      "base": "cross",
+      "armH": 0.56,
+      "seatD": 0.4,
+      "armW": 0.11,
+      "backW": 0.52,
+      "backT": 0.12,
+      "legH": 0.24,
+      "seatLip": 0.15,
+      "stoolSeams": 0,
+      "stoolDome": 0.006,
+      "stoolWelt": true
+    }
+  },
+  "mobelringen-stressless-tokyo-hvilestol-med-krakk": {
+    "params": {
+      "base": "star",
+      "armH": 0.57,
+      "seatD": 0.44,
+      "legH": 0.22,
+      "seatLip": 0.15,
+      "bodyBottom": 0.2,
+      "stoolSeamAt": 0.28,
+      "stoolDome": 0.008,
+      "stoolWelt": true,
+      "headW": 0.6,
+      "headRound": 0.35,
+      "headPuff": 0.06,
+      "headD": 0.13
+    }
+  },
+  "bohus-conform-afterwork-hvilestol-med-fotskammel": {
+    "params": {
+      "armPad": "scroll",
+      "backW": 0.6,
+      "backFlare": 0.3,
+      "headStyle": "integrated",
+      "neckPillow": true,
+      "seatNose": 0.05,
+      "seatT": 0.17,
+      "shellTaper": 0.85,
+      "shellBottom": 0.22,
+      "legH": 0.2,
+      "shellFront": 0.55,
+      "flareFrom": 0.3,
+      "backEdge": 0.025,
+      "wingAngle": 20,
+      "wingX": 0.66,
+      "wingFrom": 0.4,
+      "neckH": 0.3,
+      "pillowW": 0.34,
+      "pillowH": 0.17,
+      "pillowD": 0.05,
+      "pillowDrop": 0.15,
+      "stoolTray": 0.1,
+      "stoolT": 0.07,
+      "stoolTuft": true,
+      "shellDisc": 0.09,
+      "armW": 0.12,
+      "armDrop": 0.07
+    }
+  },
+  "mobelringen-hjellegjerde-falcon-hvilestol-med-krakk": {
+    "params": {
+      "body": "shell",
+      "armPad": "petal",
+      "shellTaper": 0.5,
+      "shellBottom": 0.24,
+      "legH": 0.255,
+      "backW": 0.5,
+      "backFlare": -0.14,
+      "seatNose": 0,
+      "seatT": 0.13,
+      "armTuck": null,
+      "armBottom": null,
+      "armCap": null,
+      "shellFront": 0.85,
+      "armPadH": 0.07,
+      "armH": 0.55,
+      "starArms": 5,
+      "armTilt": 0.06,
+      "armCurl": 0.04,
+      "shellDisc": 0.07,
+      "headW": 0.43
+    }
+  },
+  "bohus-castle-mark-grande-hvilestol-med-fothviler": {
+    "params": {
+      "body": "box",
+      "legH": 0.15,
+      "armW": 0.11,
+      "star": "slim",
+      "starArms": 5,
+      "armFrontDrop": 0.3,
+      "panelRadius": 0.06,
+      "bandRear": 0.3,
+      "armTuck": 0.03,
+      "armFlare": 0.06,
+      "bandT": 0.028,
+      "seatNose": 0.04,
+      "panelRadiusFront": 0.12,
+      "panelRise": 0.08
+    }
+  },
+  "bohus-conform-timeout-hvilestol-med-fotskammel": {
+    "params": {
+      "body": "shell",
+      "headStyle": "roll",
+      "armPad": "lid",
+      "shellTop": 0.8,
+      "shellTaper": 0.62,
+      "shellBottom": 0.18,
+      "legH": 0.16,
+      "seatT": 0.12,
+      "seatNose": -0.035,
+      "backW": 0.48,
+      "backFlare": 0,
+      "armTuck": null,
+      "armBottom": null,
+      "armCap": null,
+      "shellFront": 1,
+      "armW": 0.14,
+      "armPadH": 0.065,
+      "headW": 0.58,
+      "armTilt": 0.04,
+      "armCurl": 0.03,
+      "shellDisc": 0.05
+    }
+  },
+  "bohus-scapa-avila-hvilestol": {
+    "params": {
+      "armStyle": "tulip",
+      "backDeg": 9,
+      "wingEar": 0.24,
+      "wingJoin": 0.33,
+      "taper": 0.1,
+      "wingW": 1.03,
+      "buttonRows": 1,
+      "buttonCols": 3,
+      "buttonY": 0.45,
+      "buttonR": 0.022,
+      "buttonGap": 0.11,
+      "splayF": 10,
+      "splayB": 12,
+      "backBow": 0,
+      "backCurve": 0.03,
+      "backTBot": 0.2,
+      "shelf": 0.06,
+      "backCorner": 0.16,
+      "earR": 0.04,
+      "armDrop": 0.035,
+      "rearSeam": true,
+      "cushT": 0.13,
+      "topRound": 0.04,
+      "wingLean": 0.4,
+      "wingT": 0.05,
+      "shelfRound": true,
+      "wingFillet": 0.1,
+      "flarePow": 2.5,
+      "backRound": 0.08,
+      "cornerHug": true,
+      "padBulge": true
+    }
+  },
+  "bohus-brunstad-bella-loungestol": {
+    "params": {
+      "body": "shell",
+      "armW": 0.14,
+      "legH": 0.2,
+      "backSeams": true,
+      "topDip": 0.03,
+      "wingEar": 0.3,
+      "wingJoin": 0.52,
+      "backDeg": 12,
+      "backCurve": 0.2,
+      "backRound": 0.12,
+      "earR": 0.1,
+      "taper": 0.07,
+      "taperPow": 1.4,
+      "wallT": 0.14,
+      "topRound": 0.07,
+      "underRise": 0.07,
+      "armNose": 0.1,
+      "wingFillet": 0.14,
+      "wingLean": 0.4,
+      "shelf": 0.035,
+      "shelfH": 0.14,
+      "flarePow": 2.4,
+      "wingW": 1.07
+    }
+  },
+  "skeidar-brunstad-bella-hvilestol": {
+    "params": {
+      "body": "shell",
+      "armW": 0.14,
+      "backSeams": true,
+      "topDip": 0.04,
+      "wingEar": 0.3,
+      "wingJoin": 0.52,
+      "backDeg": 12,
+      "backCurve": 0.2,
+      "backRound": 0.12,
+      "earR": 0.1,
+      "taper": 0.07,
+      "taperPow": 1.4,
+      "wallT": 0.14,
+      "topRound": 0.09,
+      "pillowH": 0.15,
+      "pillowDrop": 0.15,
+      "pillowW": 0.44,
+      "underRise": 0.07,
+      "armNose": 0.1,
+      "notes": "Høy, moderne øreklappstol med vippbar rygg. Den er én sammenhengende, buet skallform der ørelappene øverst går i en myk bue ned i lave, smale armlener. Innsiden er stramt polstret uten knapper. En separat, pølseformet nakkepute sitter øverst foran på ryggen. Rygg og sete glir trinnløst bakover med gassfjær, og vangene følger ryggen. Stolen står på Brunstads S04-sokkel: en svart, firearmet stjernefot i lakkert stål med søyle og sving. Armlenshøyden er anslått fra bildet. Den lavere søsterstolen Bella loungestol (Bohus) er laget med samme arketype.",
+      "wingFillet": 0.17,
+      "wingLean": 0.3,
+      "shelf": 0.035,
+      "shelfH": 0.14,
+      "flarePow": 2.4,
+      "wingW": 1.05
+    }
+  },
+  "ikea-strandmon-orelappstol-med-fotskammel": {
+    "params": {
+      "armStyle": "scroll",
+      "cushion": "loose",
+      "buttons": true,
+      "buttonCols": 5,
+      "buttonY": 0.4,
+      "buttonR": 0.015,
+      "buttonGap": 0.09,
+      "piping": "both",
+      "seatOver": 0.03,
+      "railWelt": true,
+      "railBow": 0.015,
+      "stoolStyle": "box",
+      "rollR": 0.055,
+      "legH": 0.12,
+      "backDeg": 8,
+      "backT": 0.14,
+      "padTop": 0.04,
+      "taper": 0.09,
+      "cushT": 0.12,
+      "wingEar": 0.44,
+      "wingJoin": 0.47,
+      "backCurve": 0.1,
+      "backTBot": 0.14,
+      "earRoll": 0.026,
+      "wingW": 1.1,
+      "earRollDrop": 0.6,
+      "earRollBack": 0.15,
+      "wingLean": 0,
+      "legR": 0.022,
+      "seatH": 0.44,
+      "armH": 0.62,
+      "armSplay": 0.035,
+      "wingFillet": 0.12,
+      "earR": 0.06,
+      "flarePow": 1
+    }
+  },
+  "mobelringen-scapa-habo-lenestol": {
+    "params": {
+      "armStyle": "tulip",
+      "backTuft": true,
+      "backDeg": 0,
+      "wingEar": 0.28,
+      "wingJoin": 0.41,
+      "taper": 0.08,
+      "backBow": 0,
+      "backCurve": 0.38,
+      "backTBot": 0.31,
+      "armH": 0.58,
+      "topRound": 0.06,
+      "wingW": 1.08,
+      "backT": 0.18,
+      "backCorner": 0.21,
+      "earR": 0.06,
+      "shelf": 0.09,
+      "armDrop": 0.03,
+      "rearSeam": true,
+      "wingLean": 0.3,
+      "tuftW": 0.085,
+      "wingT": 0.08,
+      "wingFillet": 0.14,
+      "armSplay": 0.02,
+      "flarePow": 2.2,
+      "legInsetX": 0.1,
+      "legInsetXB": 0.165,
+      "tuftD": 0.012,
+      "shelfRound": true,
+      "armW": 0.16,
+      "cornerHug": true
+    }
+  },
+  "bohus-vilmers-nordal-loungestol": {
+    "params": {
+      "cushT": 0.15,
+      "backT": 0.08,
+      "backFrameH": 0.65,
+      "backRec": 6,
+      "backCushT": 0.18,
+      "legShape": "square",
+      "legW": 0.055,
+      "legInset": 0.04,
+      "legSplay": 6,
+      "piping": true,
+      "seatWelt": "top",
+      "seatPuff": 0.05,
+      "seatRound": 0.28
+    }
+  },
+  "ikea-saltsjobaden-gynge-og-svingstol": {
+    "params": {
+      "armW": 0.1,
+      "armH": 0.62,
+      "armRound": 0.5,
+      "armFrontR": 0.03,
+      "backFull": true,
+      "backFrameH": 0.78,
+      "backT": 0.15,
+      "backCushT": 0.16,
+      "backCushRec": 5,
+      "cushT": 0.12,
+      "seatWelt": "both",
+      "skirtH": 0.22,
+      "skirtTuck": 0,
+      "apron": "flat",
+      "seatD": 0.6,
+      "backPuff": 0.06,
+      "backRound": 0.35,
+      "backSides": 0.1
+    }
+  },
+  "bohus-signature-700-loungestol-svingfot": {
+    "params": {
+      "armW": 0.1,
+      "armH": 0.56,
+      "armBackH": 0.79,
+      "armPlateau": 0.26,
+      "armRise": 0.07,
+      "armSweepR": 0.04,
+      "armTopR": 0.05,
+      "armRound": 0.45,
+      "armWelt": "both",
+      "armFlare": 2,
+      "armBackThin": 0.02,
+      "armCut": 0.03,
+      "backFrameH": 0.79,
+      "backT": 0.12,
+      "cushT": 0.12,
+      "seatWing": 0.04,
+      "apron": "flat",
+      "backCushT": 0.2,
+      "armFrontR": 0.025,
+      "backCushRec": 14,
+      "backPuff": 0.12,
+      "backRound": 0.35,
+      "backPinch": 0.45,
+      "seatRound": 0.35,
+      "seatPuff": 0.06,
+      "seatWelt": "both",
+      "backSides": 0.05,
+      "backWelt": false,
+      "seatSides": 0.06
+    }
+  },
+  "bohus-scapa-frame-lenestol": {
+    "params": {
+      "armW": 0.11,
+      "armH": 0.63,
+      "backFrameH": 0.63,
+      "backT": 0.1,
+      "armRound": 0.35,
+      "armWelt": "both",
+      "armFlare": 3,
+      "cushT": 0.19,
+      "seatPuff": 0.25,
+      "seatRound": 0.9,
+      "backCushT": 0.2,
+      "legInset": 0.06,
+      "armFrontR": 0.02,
+      "seatOver": -0.01,
+      "piping": false,
+      "armWedge": 0.008,
+      "apron": "flat",
+      "apronR": 0.02,
+      "backPuff": 0.08,
+      "backRound": 0.3,
+      "backPinch": 0.3,
+      "backSides": 0.05
+    }
+  },
+  "bohus-scapa-noelle-lenestol": {
+    "params": {
+      "armW": 0.1,
+      "armH": 0.7,
+      "backFrameH": 0.7,
+      "backT": 0.1,
+      "armCut": 0.06,
+      "armRound": 0.3,
+      "armFrontR": 0.025,
+      "cushT": 0.17,
+      "seatWing": 0.106,
+      "deckWing": true,
+      "deckInset": 0.008,
+      "apron": "flat",
+      "apronR": 0.015,
+      "backCushT": 0.2,
+      "backPuff": 0.1,
+      "backRound": 0.3,
+      "backPinch": 0.3,
+      "pillow": true,
+      "pillowRound": 0.3,
+      "legW": 0.038,
+      "legSplay": 0,
+      "legInset": 0.07,
+      "seatRound": 0.35,
+      "backSides": 0.05,
+      "seatSides": 0.06,
+      "pillowW": 0.55,
+      "armFootR": 0.045
+    }
+  },
+  "bohus-jakobsen-ronda-lenestol": {
+    "params": {
+      "backShape": "square",
+      "cushion": "tight",
+      "piping": true,
+      "seatH": 0.45,
+      "seatD": 0.5,
+      "armW": 0.09,
+      "armH": 0.58,
+      "armBackH": 0.79,
+      "armRise": 0.25,
+      "armSweepR": 0.25,
+      "armTopR": 0.06,
+      "armPlateau": 0.07,
+      "armRec": 10,
+      "armFlare": 11,
+      "armFlarePow": 2,
+      "armLean": 0.02,
+      "armToe": 4,
+      "legStyle": "swivel-star",
+      "legH": 0.25,
+      "backT": 0.07,
+      "backRec": 10,
+      "cushT": 0.2,
+      "seatPuff": 0.03,
+      "seatRound": 0.2,
+      "seatOver": -0.015,
+      "starArms": 5,
+      "starR": 0.29,
+      "armTaper": 0.05
+    }
+  },
+  "bohus-scapa-vilde-loungestol": {
+    "params": {
+      "shellToFloor": true,
+      "planN": 2,
+      "shellT": 0.09,
+      "shellH": 0.77,
+      "armH": 0.71,
+      "armSlopeFrom": 0.2,
+      "backWrapDeg": 191,
+      "wrapOffsetDeg": -10.5,
+      "flare": 0.08,
+      "bottomR": 0.15,
+      "endR": 0.1,
+      "drumR": 0.91,
+      "legH": 0.02,
+      "discR": 0.19,
+      "drumBottomR": 0.12,
+      "drumTaper": 0.85,
+      "endLean": 0.06,
+      "bulge": 0.02
+    }
+  },
+  "bohus-dominari-beetle-loungestol": {
+    "params": {
+      "shellToFloor": true,
+      "planN": 3.5,
+      "shellT": 0.125,
+      "shellH": 0.74,
+      "armH": 0.72,
+      "backWrapDeg": 190,
+      "flare": 0,
+      "bottomR": 0.08,
+      "endR": 0.12,
+      "drumR": 0.985,
+      "drumTaper": 0.92,
+      "drumBottomR": 0.08,
+      "cushion": "pillow",
+      "legH": 0.015,
+      "discR": 0.2,
+      "pillowW": 0.5,
+      "pillowH": 0.46,
+      "pillowRound": 0.45,
+      "pillowTilt": 18,
+      "pillowSink": 0.05,
+      "pillowPuff": 0.25,
+      "pillowPiping": true,
+      "shellPiping": false
+    }
+  },
+  "bohus-actona-meno-loungestol": {
+    "params": {
+      "shell": "pillow",
+      "shellT": 0.2,
+      "pile": 0.035,
+      "legR": 0.028,
+      "legH": 0.15,
+      "pileStyle": "fur",
+      "bandIn": 0.035
+    }
+  },
+  "bohus-brunstad-paz-loungestol": {
+    "params": {
+      "shell": "pod",
+      "topProfile": [
+        [
+          0,
+          0.42
+        ],
+        [
+          40,
+          0.45
+        ],
+        [
+          60,
+          0.46
+        ],
+        [
+          120,
+          0.46
+        ],
+        [
+          140,
+          0.452
+        ],
+        [
+          155,
+          0.445
+        ],
+        [
+          180,
+          0.445
+        ]
+      ],
+      "petalW": [
+        [
+          0.32,
+          0.2
+        ],
+        [
+          0.44,
+          0.21
+        ],
+        [
+          0.6,
+          0.22
+        ],
+        [
+          0.66,
+          0.25
+        ],
+        [
+          0.72,
+          0.29
+        ],
+        [
+          0.885,
+          0.29
+        ]
+      ],
+      "shoulderR": 0.07,
+      "underH": 0.19,
+      "planNFront": 3.5,
+      "lipT": 0.11,
+      "footProfile": [
+        [
+          0,
+          0.26
+        ],
+        [
+          30,
+          0.25
+        ],
+        [
+          60,
+          0.23
+        ],
+        [
+          90,
+          0.205
+        ],
+        [
+          115,
+          0.22
+        ],
+        [
+          140,
+          0.24
+        ],
+        [
+          160,
+          0.25
+        ],
+        [
+          180,
+          0.255
+        ]
+      ],
+      "tuck": 0.13,
+      "floorIn": 0.08,
+      "seamAt": 0.678,
+      "seamSpan": 0.94,
+      "seamDip": 0.03,
+      "ringProfile": [
+        [
+          0,
+          0.27
+        ],
+        [
+          90,
+          0.3
+        ],
+        [
+          180,
+          0.27
+        ]
+      ],
+      "petalFrom": 0.36,
+      "arms": "lens",
+      "armT": 0.085,
+      "armLean": 0.3,
+      "armZ": [
+        -0.34,
+        0.38
+      ],
+      "armY": [
+        0.21,
+        0.6
+      ],
+      "armZc": 0.12,
+      "armYc": 0.42,
+      "armM": [
+        3.2,
+        2.6
+      ],
+      "armR": 0.04,
+      "armBend": 0.025,
+      "podRx": 0.21,
+      "flare": 0.1,
+      "footX": 0.34,
+      "armDome": 0.012,
+      "armCurl": 0.06,
+      "recline": 13,
+      "armTilt": 8
+    }
+  },
+  "skeidar-conform-gaga-loungestol": {
+    "params": {
+      "shell": "high",
+      "footProfile": [
+        [
+          0,
+          0.252
+        ],
+        [
+          125,
+          0.252
+        ]
+      ]
+    }
+  },
+  "fagmobler-conform-daisy-lenestol": {
+    "params": {
+      "shell": "swan",
+      "seat": "skin",
+      "star": "paddle",
+      "shellT": 0.035,
+      "lipK": 1,
+      "underH": 0.31,
+      "flare": 0.4,
+      "bowlRx": 0.25,
+      "egg": 0.15,
+      "planN": 2.4,
+      "topProfile": [
+        [
+          0,
+          0.43
+        ],
+        [
+          30,
+          0.465
+        ],
+        [
+          52,
+          0.51
+        ],
+        [
+          74,
+          0.548
+        ],
+        [
+          90,
+          0.54
+        ],
+        [
+          110,
+          0.505
+        ],
+        [
+          135,
+          0.475
+        ],
+        [
+          160,
+          0.452
+        ],
+        [
+          180,
+          0.442
+        ]
+      ],
+      "footProfile": [
+        [
+          0,
+          0.35
+        ],
+        [
+          60,
+          0.35
+        ],
+        [
+          90,
+          0.37
+        ],
+        [
+          130,
+          0.39
+        ],
+        [
+          160,
+          0.4
+        ],
+        [
+          180,
+          0.4
+        ]
+      ],
+      "recline": 23,
+      "petalDepth": 0.11,
+      "shoulderR": 0.25,
+      "petalW": [
+        [
+          0.38,
+          0.13
+        ],
+        [
+          0.47,
+          0.15
+        ],
+        [
+          0.55,
+          0.22
+        ],
+        [
+          0.64,
+          0.3
+        ],
+        [
+          0.72,
+          0.34
+        ],
+        [
+          0.77,
+          0.34
+        ]
+      ],
+      "dishExp": 1.6
+    }
+  },
+  "bohus-actona-ellis-loungestol": {
+    "params": {
+      "frameStyle": "roll",
+      "armH": 0.71,
+      "armW": 0.19,
+      "apronTop": 0.25,
+      "rollW": 0.135,
+      "rollH": 0.195,
+      "rollSquare": 2.4,
+      "rearLegAngle": 45,
+      "rearLegRake": 0.045,
+      "frontLegOut": 0.01
+    }
+  },
+  "bohus-signature-920-loungestol": {
+    "params": {
+      "frameStyle": "sled",
+      "legH": 0.25,
+      "piping": false,
+      "hornDrop": 0.14,
+      "backCushionT": 0.19,
+      "backFrame": "horns",
+      "junctionZ": 0.24,
+      "armFront": 0.04,
+      "backRound": 0.55,
+      "backSides": 0.08,
+      "backPinch": 0.25,
+      "backEars": 0.015,
+      "backTrim": 0.035,
+      "hornBack": 0.06,
+      "hornRecline": 45,
+      "armBend": 0.12,
+      "rearFoot": 0.1,
+      "armDrop": 0.025
+    }
+  },
+  "ikea-ekenaset-lenestol": {
+    "params": {
+      "frameStyle": "raked",
+      "seatTilt": 4
+    }
+  },
+  "bohus-jakobsen-fjell-loungestol": {
+    "params": {
+      "frameStyle": "hoop",
+      "backW": 0.5,
+      "backTaper": 0.9,
+      "armD": 0.04,
+      "seatW": 0.56,
+      "standoffX": 0.17
+    }
+  },
+  "ikea-poang-lenestol": {
+    "params": {
+      "frameStyle": "cantilever",
+      "quilt": "channels",
+      "armRise": 0.11,
+      "runnerBack": 0.07,
+      "bandT": 0.028,
+      "cushionT": 0.062,
+      "headT": 0.07,
+      "notes": "Frittbærende lenestol med ramme i limt, bøyd finér. To sammenhengende, flate finérvanger (ca. 5 cm brede) går fra et rektangulært gulvmeie, fram og opp som armlener og bakover til ryggrammen. Stolen har ingen bakben og fjærer når man sitter i den. Sete og rygg er én sammenhengende, svakt S-formet ramme med spent duk. Over dem ligger én lang, løs pute med en egen nakkedel øverst: Knisa har tverrkanaler, Gunnared er tuftet i ruter og Kelinge er glatt. Under setet sitter en tverrslå foran og en bak. Armlenshøyden er anslått fra bildet.",
+      "armH": 0.61,
+      "armTail": 0.045,
+      "cushionTopCut": 0.045,
+      "headCrease": 0.012
+    }
+  },
+  "bohus-brunstad-delta-gyngestol": {
+    "params": {
+      "frameStyle": "bentwood",
+      "armH": 0.54
+    }
+  }
+}

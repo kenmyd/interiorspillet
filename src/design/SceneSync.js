@@ -5,6 +5,7 @@ import { disposeModel, setShadows } from '../models/kit.js';
 import { mat, ghostMaterial, placeholderMaterial, warmupMaterials } from '../home/materials.js';
 import { applyShading } from '../models/shading.js';
 import { applyWallDesign } from '../models/walldesigns.js';
+import { finishPlan, buildSurfaceFinish, disposeSurfaceFinish } from '../models/surfaceslats.js';
 
 /**
  * SceneSync – keeps the 3D scene equal to the DesignState (ARCHITECTURE §7).
@@ -25,8 +26,16 @@ import { applyWallDesign } from '../models/walldesigns.js';
  *                                programs in parallel and shows flat placeholder materials until they are ready
  *   warmUpGroup() → Group        one tiny mesh per material variant of home/materials.js (Game compiles it at load)
  *   warmUp() → Promise           compiles warmUpGroup() in parallel
+ *   finishObject(surfaceId) → Group|null   the slat finish built on a wall / ceiling (design.finishes)
  *   dispose()
- * Events (Emitter): 'built' { uid, object, item, rebuilt } · 'moved' { uid, object, item } · 'removed' { uid }
+ * Events (Emitter): 'built' { uid, object, item, rebuilt } · 'moved' { uid, object, item } · 'removed' { uid } ·
+ *   'finish' { surfaceId, object|null } (a slat finish was built, rebuilt or removed)
+ *
+ * Slat finishes (design.finishes, models/surfaceslats.js): one world-space group per finished wall / ceiling in their
+ * own root next to the items (not in the shell, so the overview's cut model never copies them). Every change of the
+ * finishes or of a paint re-plans them all and rebuilds only those whose geometry or colour changed (a wall's panel
+ * depends on its ceiling's slats and on the wall before it). Every frame a finish is shown only while its surface is:
+ * hidden with the ceilings in the overview / plan, with a cut-away dollhouse wall, a hidden level or a culled room.
  *
  * Shader compiles never block a frame: a new or rebuilt model is compiled with renderer.compile (parallel on
  * KHR_parallel_shader_compile) and, while any of its programs is still compiling, shows flat placeholder materials
@@ -40,10 +49,71 @@ import { applyWallDesign } from '../models/walldesigns.js';
  * than 0.3 m gets a collision box (collision.addDynamicBox) that follows it – one box for the whole AABB, or one per
  * entry of userData.model.colliders ([{ min: [x,y,z], max: [x,y,z] }] in model space) when the builder gives them.
  * Mount rules: floor/surface/rug/soft at item.position with rotationDeg; wall: local +z = attach.normal (else the
- * wall's normal, else rotationDeg), attach.tilt leans the top back; ceiling: hangs from home.ceilingHeightAt(x, z).
+ * wall's normal, else rotationDeg), attach.tilt leans the top back; ceiling: hangs from home.ceilingHeightAt(x, z, y).
+ *
+ * Levels (notes/hele-huset-design.md §5.3, §5.5; DesignState v2, steg 16 E3): in memory an item's position is WORLD
+ * space and `item.level` names the level it stands on (a layout.house.levels id); the saved design keeps y over the
+ * level's floor (DesignState converts). placeObject puts the model at the position as it is; a ceiling item hangs from
+ * the ceiling of its level; the collision box and the rug zone start at the floor of its level (the entrance's lower
+ * floor included). The helpers below are shared by the editor (Placement, Selection, ViewModes, Inspector): an item
+ * without a known level (a design of before the house) is on the level its y lies in, as DesignState decides.
  */
 
 const DEG = Math.PI / 180;
+/** The first floor (layout.js MAIN_LEVEL_ID): the level of an item without one. */
+export const MAIN_LEVEL = 'hoved';
+
+/**
+ * Level id of a design item: `item.level` when the layout knows it, else the level its y (world) lies in (a ceiling
+ * item hangs just under its ceiling), else the main level.
+ * @param {object} item
+ * @param {object} [layout]  home/layout.js (without it only item.level counts)
+ * @returns {string}
+ */
+export function itemLevel(item, layout = null) {
+  const lv = typeof item?.level === 'string' && item.level ? item.level : null;
+  const known = layout?.house?.levelsById;
+  if (lv && (!known || known[lv])) return lv;
+  if (!layout?.house?.levelAt) return lv ?? MAIN_LEVEL;
+  const y = Number(item?.position?.[1]) || 0;
+  return levelAtY(layout, item?.mount === 'ceiling' ? y - 0.1 : y + 0.05);
+}
+
+/**
+ * World y of a level's floor (0 for the main level and for unknown ids).
+ * @param {object} layout  home/layout.js
+ * @param {string} levelId
+ * @returns {number}
+ */
+export function levelFloorY(layout, levelId) {
+  const h = layout?.house;
+  const lv = h?.levelsById?.[levelId] ?? h?.level?.(levelId) ?? null;
+  return Number.isFinite(lv?.floorY) ? lv.floorY : 0;
+}
+
+/**
+ * The level a world point of the house is on, for the editor: the level whose floor band holds y (feet / an item's
+ * base; layout.house.levelAt takes the body centre, so 0.9 is added). Without house data: the main level.
+ * @param {object} layout
+ * @param {number} y  world y (a floor point)
+ * @returns {string}
+ */
+export function levelAtFloorY(layout, y) {
+  return levelAtY(layout, (Number.isFinite(y) ? y : 0) + 0.9);
+}
+
+/**
+ * The level a world point inside a room is on (a lamp under a ceiling, a point on a table; layout.house.levelAt).
+ * @param {object} layout
+ * @param {number} y  world y
+ * @returns {string}
+ */
+export function levelAtY(layout, y) {
+  const h = layout?.house;
+  if (typeof h?.levelAt !== 'function') return MAIN_LEVEL;
+  return h.levelAt(Number.isFinite(y) ? y : 0)?.id ?? MAIN_LEVEL;
+}
+
 const REBUILD = ['archetype', 'dims', 'params', 'mount'];
 const PLACE = ['position', 'rotationDeg', 'attach'];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -53,6 +123,13 @@ const _v = new THREE.Vector3();
 const MAX_PARKED = 48;
 /** Give up waiting for a program after this long (a driver that never reports completion). */
 const GATE_TIMEOUT_MS = 30000;
+
+/** A wall / ceiling mesh is on screen: its whole parent chain visible, its material not swapped for ViewModes' hiding one. */
+function hostShown(mesh) {
+  for (let o = mesh; o; o = o.parent) if (!o.visible) return false;
+  const m = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+  return !m?.userData?.ixConceal;
+}
 
 /** The inputs a model is built from (two items with the same key give identical models). */
 function modelKey(item) {
@@ -100,6 +177,12 @@ export class SceneSync extends Emitter {
     this._gates = new Set();
     this._wallKey = null;
     this._wallGroup = null;
+    /** surfaceId → { key, object, hosts: Mesh[]|null, gate } – the slat finishes */
+    this._finishes = new Map();
+    this.finishRoot = new THREE.Group();
+    this.finishRoot.name = 'surface-finishes';
+    this.finishRoot.userData.noCollide = true;
+    (this.root.parent ?? this.root).add(this.finishRoot);
     /** Placeholder gating of new models (off while the home is first built: Game compiles that scene as a whole). */
     this.gating = true;
     this._off = [
@@ -109,7 +192,11 @@ export class SceneSync extends Emitter {
       design.on('load', () => this.syncAll()),
       design.on('wall', () => this._syncWall()),
       design.on('window', ({ windowId }) => this._syncWindow(windowId)),
-      design.on('paint', ({ wallId }) => this._syncPaint(wallId)),
+      design.on('paint', ({ wallId }) => {
+        this._syncPaint(wallId);
+        this._syncFinishes(); // slats painted in the surface's colour follow it
+      }),
+      design.on('finish', () => this._syncFinishes()),
       design.on('env', () => this._syncEnv(true)),
     ];
   }
@@ -161,13 +248,15 @@ export class SceneSync extends Emitter {
     for (const w of this.home.windows || []) this._syncWindow(w.id);
     for (const w of this.home.walls || []) this._syncPaint(w.id);
     for (const id of Object.keys(this.design.paints || {})) if (!this.home.walls?.some((w) => w.id === id)) this._syncPaint(id);
+    this._syncFinishes();
     this._syncEnv();
     this._shadows();
   }
 
-  /** Applies queued item changes (call once per frame). */
+  /** Applies queued item changes (call once per frame); finishes follow their surface's visibility. */
   update() {
     this.flush();
+    this._finishVisibility();
   }
 
   /** Applies queued item changes now. */
@@ -229,7 +318,9 @@ export class SceneSync extends Emitter {
       const yaw = n ? Math.atan2(n[0], n[2]) : (item.rotationDeg || 0) * DEG;
       object.rotation.set(-(item.attach?.tilt || 0) * DEG, yaw, 0, 'YXZ');
     } else if (item.mount === 'ceiling') {
-      const h = this.home.ceilingHeightAt?.(p[0], p[2]);
+      // the ceiling of the item's level (world y; one metre over its floor picks the level, §1.8)
+      const base = levelFloorY(this.home.layout, itemLevel(item, this.home.layout));
+      const h = this.home.ceilingHeightAt?.(p[0], p[2], base + 1);
       if (Number.isFinite(h)) object.position.y = h;
     }
     object.updateMatrixWorld(true);
@@ -342,6 +433,11 @@ export class SceneSync extends Emitter {
     });
   }
 
+  /** The slat finish built on a wall / ceiling (null when it has none or nothing fitted). */
+  finishObject(surfaceId) {
+    return this._finishes.get(surfaceId)?.object ?? null;
+  }
+
   dispose() {
     for (const off of this._off) off();
     this._off = [];
@@ -349,6 +445,9 @@ export class SceneSync extends Emitter {
     for (const uid of [...this._entries.keys()]) this._remove(uid);
     for (const p of this._parked.values()) disposeModel(p.object);
     this._parked.clear();
+    for (const f of this._finishes.values()) disposeSurfaceFinish(f.object);
+    this._finishes.clear();
+    this.finishRoot.removeFromParent();
     this.clear();
   }
 
@@ -616,10 +715,11 @@ export class SceneSync extends Emitter {
     } else {
       boxes.push(new THREE.Box3().setFromObject(object));
     }
+    const floor = this._floorOf(item);
     for (const b of boxes) {
       // a little slack so chairs pushed under the table do not trap the player
       b.expandByVector(_v.set(-0.02, 0, -0.02));
-      b.min.y = Math.max(b.min.y, 0);
+      b.min.y = Math.max(b.min.y, floor);
     }
     if (entry.handles.length !== boxes.length) {
       for (const h of entry.handles) this.collision.removeDynamic(h);
@@ -640,9 +740,20 @@ export class SceneSync extends Emitter {
     object.updateMatrixWorld(true);
     const b = new THREE.Box3().setFromObject(object);
     if (b.isEmpty()) return;
-    b.min.y = Math.min(b.min.y, 0) - 0.05;
-    b.max.y = Math.max(b.max.y, 0) + 0.25;
+    const floor = this._floorOf(item);
+    b.min.y = Math.min(b.min.y, floor) - 0.05;
+    b.max.y = Math.max(b.max.y, floor) + 0.25;
     entry.zone = this.collision.addSurfaceZone(b, 'rug');
+  }
+
+  /**
+   * World y of the floor an item stands on: its level's floor, or lower when the item stands lower (the entrance lies
+   * 0.30 under the basement level's floor). 0 for every item of the main level, as before.
+   */
+  _floorOf(item) {
+    const lv = itemLevel(item, this.home.layout);
+    if (lv === MAIN_LEVEL) return 0;
+    return Math.min(levelFloorY(this.home.layout, lv), Number(item.position?.[1]) || 0);
   }
 
   _dropZone(entry) {
@@ -742,6 +853,88 @@ export class SceneSync extends Emitter {
 
   _syncPaint(wallId) {
     this.home.setPaint?.(wallId, this.design.paints?.[wallId] ?? null);
+  }
+
+  /** '#hex' of a wall's / ceiling's paint in use (the design's colour, else the data's). */
+  _surfacePaintHex(id) {
+    const layout = this.home.layout;
+    const own = this.design.paints?.[id];
+    const data = (layout?.house?.wallsById?.[id] ?? layout?.wallsById?.[id])?.paint
+      ?? (layout?.house?.ceilings ?? layout?.ceilings ?? []).find((c) => c.id === id)?.paint;
+    const c = own ?? data ?? 'sand';
+    return layout?.resolvePaint?.(c) ?? c;
+  }
+
+  /** The meshes of a wall / ceiling a finish is shown with (WallInfo.meshes, the ceiling mesh). */
+  _finishHosts(id) {
+    const wall = this.home.walls?.find((w) => w.id === id);
+    if (wall) return [...(wall.meshes || [])];
+    return (this.home.pickables?.ceilings || []).filter((m) => m.userData?.pick?.ceilingId === id);
+  }
+
+  /** Builds / rebuilds / removes the slat finishes so they match design.finishes (only what changed is rebuilt). */
+  _syncFinishes() {
+    const finishes = this.design.finishes || {};
+    const layout = this.home.layout;
+    let changed = false;
+    for (const [id, f] of [...this._finishes]) {
+      if (finishes[id]) continue;
+      if (f.gate) this._ungate(f.gate, false);
+      disposeSurfaceFinish(f.object);
+      this._finishes.delete(id);
+      this.emit('finish', { surfaceId: id, object: null });
+      changed = true;
+    }
+    for (const [id, spec] of Object.entries(finishes)) {
+      const paintHex = this._surfacePaintHex(id);
+      let plan = null;
+      try {
+        plan = finishPlan(layout, id, spec, { finishes, paintHex });
+      } catch (err) {
+        console.warn('[sync] finish plan failed', id, err);
+      }
+      const key = plan?.key ?? 'none';
+      const cur = this._finishes.get(id);
+      if (cur && cur.key === key) continue;
+      if (cur) {
+        if (cur.gate) this._ungate(cur.gate, false);
+        disposeSurfaceFinish(cur.object);
+      }
+      let object = null;
+      try {
+        object = plan ? buildSurfaceFinish(plan, spec, { paintHex }) : null;
+      } catch (err) {
+        console.warn('[sync] finish failed', id, err);
+      }
+      const entry = { key, object, hosts: this._finishHosts(id), gate: null };
+      if (object) {
+        this.finishRoot.add(object);
+        object.updateMatrixWorld(true);
+        entry.gate = this._gateObject(object, () => (entry.gate = null));
+      }
+      this._finishes.set(id, entry);
+      this.emit('finish', { surfaceId: id, object });
+      changed = true;
+    }
+    if (changed) {
+      this._finishVisibility();
+      this._shadows();
+    }
+  }
+
+  /** A finish is shown while its surface is (not concealed by the view, its room / level not hidden). */
+  _finishVisibility() {
+    let flipped = false;
+    for (const f of this._finishes.values()) {
+      const o = f.object;
+      if (!o) continue;
+      const show = !f.hosts.length || f.hosts.some(hostShown);
+      if (o.visible !== show) {
+        o.visible = show;
+        flipped = true;
+      }
+    }
+    if (flipped) this._shadows();
   }
 
   /** Light/time from the design. force = false (a design load): skipped when the env did not change since last time. */

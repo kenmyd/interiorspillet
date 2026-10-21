@@ -93,7 +93,8 @@ export function fixRoomSpec(spec) {
     const v = BUILT_IN_LUMENS[l.id];
     if (v) Object.assign(l, v);
   }
-  if (ch?.light) ch.light.lumens = 800;
+  // the chandelier starts at 29 % (the owner's evening level, change list 2026-10-21; the light panel shows dimmer × 100)
+  if (ch?.light) Object.assign(ch.light, { lumens: 800, dimmer: 0.29 });
   // pampas vase on the island: in reality a ≈ 24 cm wavy vase with four short, fluffy plumes, ≈ 55 cm in all – not
   // 1 m (user's photo 2026-10-20)
   const pv = byId('f-pampas');
@@ -160,7 +161,6 @@ export const PRODUCTS = {
   'bohus-storm-acro-skjenk-192x45': { set: { brand: 'Storm (Bohus Exclusive)' }, variants: [['Hvitoljet', { priceNok: 21999, salePriceNok: 15399 }]] },
   'bohus-kontur-skjenk-201x45': { set: { salePriceNok: 17779, priceConfidence: 'check' } },
   'bohus-honey-skjenk-170x45': { set: { salePriceNok: 17999, priceConfidence: 'check' }, variants: [['mocca', { priceNok: 23499 }], ['Nordic White', { priceNok: 23499, salePriceNok: 16449, priceConfidence: 'checked' }]] },
-  'bohus-sagene-skjenk-155x41': { variants: [['brun', { priceNok: 11249, salePriceNok: 6749, priceConfidence: 'check' }]] },
   'bohus-signature-1850-skjenk-180x43-5': { set: { brand: 'Signature Collection by Halvor Bakke', priceConfidence: 'check' } },
   'bohus-scandi-skjenk-180x45': { set: { salePriceNok: 18999, priceConfidence: 'check' } },
   'bohus-ullern-skjenk-180x45': { set: { salePriceNok: 14399, priceConfidence: 'check' } },
@@ -235,7 +235,7 @@ export const PRODUCTS = {
   },
   'luxaflex-duette-batiste': { set: { priceConfidence: 'estimate', verified: false } },
   // ---- akustikk
-  'woodupp-akupanel-240x60': { set: { name: 'Akupanel akustikkpanel 60x240', absorption: 0.86, absorptionNote: ABS_NOTE('0,86', '1,22') }, variants: [['Charcoal', { salePriceNok: 1224 }]] },
+  'woodupp-akupanel-240x60': { set: { name: 'Akupanel akustikkpanel 60x240', absorption: 0.86, absorptionNote: ABS_NOTE('0,86', '1,22') }, variants: [['koksgrå', { salePriceNok: 1224 }]] },
   'woodupp-akupanel-300x60': { set: { name: 'Akupanel akustikkpanel 60x300', absorption: 1.1, absorptionNote: ABS_NOTE('1,1', '1,53') } },
   'woodupp-akupixel-60x60': { set: { name: 'Akupixel akustikkpanel 60x60', absorption: 0.22, absorptionNote: ABS_NOTE('0,22', '0,31') } },
   'woodupp-akupixel-mose-60x60': { set: { name: 'Akupixel mose 60x60' } },
@@ -288,6 +288,15 @@ export const PRODUCTS = {
   'bohus-othilie-speil-90x93': { set: { subcategory: 'veggspeil' } },
   'bohus-holmen-cape-speil-med-sprosser-h200': { set: { subcategory: 'veggspeil' } },
 };
+
+// Lenestol model tuning (2026-10-21): the dims / params each armchair needs to look like the store photos from the
+// front, the side and 3/4 (measured on the photos, scaled by the store's sizes). Kept in its own file because it is
+// long; merged over the entries above (null removes a key, as in `params`).
+const ARMCHAIR_TUNING = JSON.parse(fs.readFileSync(new URL('./lenestol-tuning.json', import.meta.url), 'utf8'));
+for (const [id, t] of Object.entries(ARMCHAIR_TUNING)) {
+  const f = (PRODUCTS[id] ||= {});
+  for (const k of ['dims', 'params']) if (t[k]) f[k] = { ...(f[k] || {}), ...t[k] };
+}
 
 /**
  * Products that moved to another category (normalize-data.mjs moves them before normalising): the three mirrors of the

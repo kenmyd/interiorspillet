@@ -94,8 +94,8 @@
       {
         "name": "Bjørk",
         "colors": {
-          "shade": "#dcc6a2",
-          "inner": "#e4d3b6",
+          "shade": "#e3d5c1",
+          "inner": "#e9dccb",
           "metal": "#eeece8",
           "cord": "#e8e6e1"
         },
@@ -104,13 +104,15 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/secto-4200-taklampe-o30?variant=46925555761341",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4200_birch_frilagt.png?v=1791795696"
       },
       {
         "name": "Valnøtt",
         "colors": {
-          "shade": "#6f4f3a",
-          "inner": "#dcc6a2",
+          "shade": "#735a4a",
+          "inner": "#e3d5c1",
           "metal": "#eeece8",
           "cord": "#e8e6e1"
         },
@@ -120,13 +122,15 @@
           "metal": "painted",
           "cord": "cotton"
         },
-        "priceNok": 8090
+        "priceNok": 8090,
+        "url": "https://www.christiania-belysning.no/products/secto-4200-taklampe-o30?variant=46925555794109",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4200_walnut_frilagt.png?v=1791795707"
       },
       {
         "name": "Sort",
         "colors": {
-          "shade": "#262422",
-          "inner": "#d8c3a0",
+          "shade": "#2f2f2c",
+          "inner": "#e3d5c1",
           "metal": "#1c1c1c",
           "cord": "#1a1a1a"
         },
@@ -135,7 +139,9 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/secto-4200-taklampe-o30?variant=46925555695805",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4200_black_frilagt.png?v=1791795696"
       },
       {
         "name": "Hvit",
@@ -150,7 +156,9 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/secto-4200-taklampe-o30?variant=46925555728573",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4200_white_frilagt.png?v=1791795684"
       }
     ],
     "defaultVariant": 0,
@@ -165,7 +173,7 @@
     "why": "Den høye, slanke kjeglen utnytter takhøyden på ca. 2,65 m over spisebordet uten å ta mye plass i bredden, og de varme trespilene passer til SAND-veggene; velg valnøtt for å matche røykeikebordet eller sort for å binde lampen til det svarte kjøkkenet.",
     "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4200_birch_frilagt.png?v=1791795696",
     "verified": true,
-    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 7 495 kr (valnøtt 8 090 kr), ikke på salg, alle fire farger bestillbare. Mål Ø30 × 60 cm, 1,4 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Secto 4200, 1999). Form sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser.",
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 7 495 kr (valnøtt 8 090 kr), ikke på salg, alle fire farger bestillbare. Mål Ø30 × 60 cm, 1,4 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Secto 4200, 1999). Form sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser. Farger og stoff kontrollert 2026-10-21 mot christiania-belysning.no (variantdata): alle variantene finnes (Bjørk, Valnøtt, Sort og Hvit, alle bestillbare), hver med egen variantlenke og eget bilde; bjørkefargen er justert til den lyse, kremhvite bjørken på produktbildene og sort/valnøtt etter variantbildene.",
     "priceConfidence": "checked"
   },
   {
@@ -177,8 +185,7 @@
     "store": "Christiania Belysning",
     "url": "https://www.christiania-belysning.no/products/secto-4201-small-taklampe-o25",
     "priceNok": 6765,
-    "salePriceNok": 5412,
-    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (kampanje -20 %): 5 412 kr (før 6 765 kr) for hvit, bjørk og sort; valnøttfinér 5 876 kr (før 7 345 kr). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, 1060 lm, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no).",
+    "priceNote": "Pris sjekket 2026-10-21 hos Christiania Belysning: ordinær pris 6 765 kr for hvit, bjørk og sort, 7 345 kr for valnøttfinér – kampanjen på -20 % som gjaldt 2026-10-18 (5 412 kr, valnøtt 5 876 kr) er over (salgspris = ordinær pris i variantdataene). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, 1060 lm, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no).",
     "dims": {
       "w": 0.25,
       "d": 0.25,
@@ -260,8 +267,8 @@
       {
         "name": "Bjørk",
         "colors": {
-          "shade": "#dcc6a2",
-          "inner": "#e4d3b6",
+          "shade": "#e3d5c1",
+          "inner": "#e9dccb",
           "metal": "#eeece8",
           "cord": "#e8e6e1"
         },
@@ -270,13 +277,15 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/secto-4201-small-taklampe-o25?variant=46925251084477",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4201_birch_frilagt.png?v=1791795702"
       },
       {
         "name": "Valnøtt",
         "colors": {
-          "shade": "#6f4f3a",
-          "inner": "#dcc6a2",
+          "shade": "#735a4a",
+          "inner": "#e3d5c1",
           "metal": "#eeece8",
           "cord": "#e8e6e1"
         },
@@ -287,13 +296,14 @@
           "cord": "cotton"
         },
         "priceNok": 7345,
-        "salePriceNok": 5876
+        "url": "https://www.christiania-belysning.no/products/secto-4201-small-taklampe-o25?variant=67757065535677",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4201_walnut_frilagt.png?v=1791795705"
       },
       {
         "name": "Sort",
         "colors": {
-          "shade": "#262422",
-          "inner": "#d8c3a0",
+          "shade": "#2f2f2c",
+          "inner": "#e3d5c1",
           "metal": "#1c1c1c",
           "cord": "#1a1a1a"
         },
@@ -302,7 +312,9 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/secto-4201-small-taklampe-o25?variant=46925251018941",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4201_black_frilagt.png?v=1791795697"
       },
       {
         "name": "Hvit",
@@ -317,7 +329,9 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/secto-4201-small-taklampe-o25?variant=46925251051709",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4201_white_frilagt.png?v=1791795684"
       }
     ],
     "defaultVariant": 0,
@@ -332,7 +346,7 @@
     "why": "Med bare 45 cm høyde passer den der taket er flatt 2,4 m i TV-stua og kjøkkenet, og to–tre stykker i rekke gir jevnt lys over hele det ovale spisebordet.",
     "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Secto_4201_birch_frilagt.png?v=1791795702",
     "verified": true,
-    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 5 412 kr (før 6 765), valnøtt 5 876 kr (før 7 345). Mål Ø25 × 45 cm, 1,2 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Secto Small 4201, 2000). Fjernet ubekreftede Finnish Design Shop-priser.",
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 5 412 kr (før 6 765), valnøtt 5 876 kr (før 7 345). Mål Ø25 × 45 cm, 1,2 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Secto Small 4201, 2000). Fjernet ubekreftede Finnish Design Shop-priser. Farger og stoff kontrollert 2026-10-21 mot christiania-belysning.no (variantdata): alle variantene finnes (Bjørk, Valnøtt, Sort og Hvit, alle bestillbare), hver med egen variantlenke og eget bilde; bjørkefargen er justert til den lyse, kremhvite bjørken på produktbildene og sort/valnøtt etter variantbildene. Kampanjen er over: produktsiden og variantdataene viser nå ordinær pris 6 765 kr (valnøtt 7 345 kr), så kampanjeprisen 5 412 kr (valnøtt 5 876 kr) er fjernet.",
     "priceConfidence": "checked"
   },
   {
@@ -344,8 +358,7 @@
     "store": "Christiania Belysning",
     "url": "https://www.christiania-belysning.no/products/octo-4240-taklampe-o54",
     "priceNok": 11395,
-    "salePriceNok": 9116,
-    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (kampanje -20 %): 9 116 kr (før 11 395 kr) for hvit, bjørk og sort; valnøttfinér 9 588 kr (før 11 985 kr). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no).",
+    "priceNote": "Pris sjekket 2026-10-21 hos Christiania Belysning: ordinær pris 11 395 kr for hvit, bjørk og sort, 11 985 kr for valnøttfinér – kampanjen på -20 % som gjaldt 2026-10-18 (9 116 kr, valnøtt 9 588 kr) er over (salgspris = ordinær pris i variantdataene). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no).",
     "dims": {
       "w": 0.54,
       "d": 0.54,
@@ -471,8 +484,8 @@
       {
         "name": "Bjørk",
         "colors": {
-          "shade": "#dcc6a2",
-          "inner": "#e4d3b6",
+          "shade": "#e3d5c1",
+          "inner": "#e9dccb",
           "metal": "#eeece8",
           "cord": "#e8e6e1"
         },
@@ -481,13 +494,15 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/octo-4240-taklampe-o54?variant=46925244104893",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Octo4240_birch_frilagt_3194d8f7-719d-4ad2-87d4-01f3a5930101.png?v=1791795764"
       },
       {
         "name": "Valnøtt",
         "colors": {
-          "shade": "#6f4f3a",
-          "inner": "#dcc6a2",
+          "shade": "#735a4a",
+          "inner": "#e3d5c1",
           "metal": "#eeece8",
           "cord": "#e8e6e1"
         },
@@ -498,13 +513,14 @@
           "cord": "cotton"
         },
         "priceNok": 11985,
-        "salePriceNok": 9588
+        "url": "https://www.christiania-belysning.no/products/octo-4240-taklampe-o54?variant=46925244137661",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Octo4240_walnut_frilagt.png?v=1791795709"
       },
       {
         "name": "Sort",
         "colors": {
-          "shade": "#262422",
-          "inner": "#d8c3a0",
+          "shade": "#2f2f2c",
+          "inner": "#e3d5c1",
           "metal": "#1c1c1c",
           "cord": "#1a1a1a"
         },
@@ -513,7 +529,9 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/octo-4240-taklampe-o54?variant=46925244039357",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Octo4240_black_frilagt_f10232f8-fefa-4ab0-b929-5e88c62a9ce7.png?v=1791795818"
       },
       {
         "name": "Hvit",
@@ -528,7 +546,9 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/octo-4240-taklampe-o54?variant=46925244072125",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Octo4240_white_frilagt_4a612d5e-22ec-4af4-a43f-7e67eb634ce7.png?v=1791795795"
       }
     ],
     "defaultVariant": 0,
@@ -543,7 +563,7 @@
     "why": "Den store, runde formen fyller rommet over det ovale spisebordet på en luftig måte og blir et varmt skandinavisk midtpunkt mot elveutsikten, men den trenger takhøyde og passer derfor best i den høye delen av rommet (ca. 2,65 m eller mer).",
     "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/Octo4240_birch_frilagt_3194d8f7-719d-4ad2-87d4-01f3a5930101.png?v=1791795764",
     "verified": true,
-    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 9 116 kr (før 11 395), valnøtt 9 588 kr (før 11 985). Mål Ø54 × 68 cm, 2,0 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Octo 4240, 2005). Kolbeform (ikke åttekantet) sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser.",
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 9 116 kr (før 11 395), valnøtt 9 588 kr (før 11 985). Mål Ø54 × 68 cm, 2,0 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Octo 4240, 2005). Kolbeform (ikke åttekantet) sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser. Farger og stoff kontrollert 2026-10-21 mot christiania-belysning.no (variantdata): alle variantene finnes (Bjørk, Valnøtt, Sort og Hvit, alle bestillbare), hver med egen variantlenke og eget bilde; bjørkefargen er justert til den lyse, kremhvite bjørken på produktbildene og sort/valnøtt etter variantbildene. Kampanjen er over: produktsiden og variantdataene viser nå ordinær pris 11 395 kr (valnøtt 11 985 kr), så kampanjeprisen 9 116 kr (valnøtt 9 588 kr) er fjernet.",
     "priceConfidence": "checked"
   },
   {
@@ -555,8 +575,7 @@
     "store": "Christiania Belysning",
     "url": "https://www.christiania-belysning.no/products/octo-4241-small-taklampe-o45",
     "priceNok": 10320,
-    "salePriceNok": 8256,
-    "priceNote": "pris sjekket 2026-10-18 hos Christiania Belysning (kampanje -20 %): 8 256 kr (før 10 320 kr) for hvit, bjørk og sort; valnøttfinér 8 736 kr (før 10 920 kr). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no). Prisjakt viste samme dag lavere pris hos danske Magasin du Nord (6 160 kr, sort eller hvit).",
+    "priceNote": "Pris sjekket 2026-10-21 hos Christiania Belysning: ordinær pris 10 320 kr for hvit, bjørk og sort, 10 920 kr for valnøttfinér – kampanjen på -20 % som gjaldt 2026-10-18 (8 256 kr, valnøtt 8 736 kr) er over (salgspris = ordinær pris i variantdataene). Alle fargene kan bestilles på nett. Prisen inkluderer dimbar LED-pære (E27; Secto oppgir Philips CorePro 8 W/806 lm, butikken skriver 3000 K, pæren kan variere) og 1,5 m tekstilledning med takkopp (Ø12,2 × 11,2 cm); lengre ledning kan bestilles fra Secto mot tillegg. Sort har sort ledning og takkopp, de andre fargene hvit. Bohus selger ikke Secto Design (ikke funnet på bohus.no). Prisjakt viste samme dag lavere pris hos danske Magasin du Nord (6 160 kr, sort eller hvit).",
     "dims": {
       "w": 0.45,
       "d": 0.45,
@@ -678,8 +697,8 @@
       {
         "name": "Bjørk",
         "colors": {
-          "shade": "#dcc6a2",
-          "inner": "#e4d3b6",
+          "shade": "#e3d5c1",
+          "inner": "#e9dccb",
           "metal": "#eeece8",
           "cord": "#e8e6e1"
         },
@@ -688,13 +707,15 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/octo-4241-small-taklampe-o45?variant=46925582172349",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/OctoSmall4241_birch_frilagt_787c8fd0-0e8d-41a8-a889-9051740dabf1.png?v=1791896520"
       },
       {
         "name": "Valnøtt",
         "colors": {
-          "shade": "#6f4f3a",
-          "inner": "#dcc6a2",
+          "shade": "#735a4a",
+          "inner": "#e3d5c1",
           "metal": "#eeece8",
           "cord": "#e8e6e1"
         },
@@ -705,13 +726,14 @@
           "cord": "cotton"
         },
         "priceNok": 10920,
-        "salePriceNok": 8736
+        "url": "https://www.christiania-belysning.no/products/octo-4241-small-taklampe-o45?variant=46925582205117",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/OctoSmall4241_walnut_frilagt_5c9035c2-51c8-48f6-ba04-fabe10e12e53.png?v=1791896521"
       },
       {
         "name": "Sort",
         "colors": {
-          "shade": "#262422",
-          "inner": "#d8c3a0",
+          "shade": "#2f2f2c",
+          "inner": "#e3d5c1",
           "metal": "#1c1c1c",
           "cord": "#1a1a1a"
         },
@@ -720,7 +742,9 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/octo-4241-small-taklampe-o45?variant=46925582106813",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/OctoSmall4241_black_frilagt_8c5433d9-fcf8-47e1-99e0-8e9b945fef90.png?v=1791896520"
       },
       {
         "name": "Hvit",
@@ -735,7 +759,9 @@
           "inner": "ash",
           "metal": "painted",
           "cord": "cotton"
-        }
+        },
+        "url": "https://www.christiania-belysning.no/products/octo-4241-small-taklampe-o45?variant=46925582139581",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/OctoSmall4241_white_frilagt_33fe1669-f3e9-4763-abcf-be3b55d8fd96.png?v=1791896519"
       }
     ],
     "defaultVariant": 0,
@@ -750,7 +776,7 @@
     "why": "Octo Small gir den samme ikoniske silhuetten uten å dominere spiseplassen, og den lyse bjørken spiller fint mot det lysgrå eikegulvet og de lyse bouclé-stolene rundt bordet.",
     "imageUrl": "https://cdn.shopify.com/s/files/1/0761/8963/0653/files/OctoSmall4241_birch_frilagt_787c8fd0-0e8d-41a8-a889-9051740dabf1.png?v=1791896520",
     "verified": true,
-    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 8 256 kr (før 10 320), valnøtt 8 736 kr (før 10 920). Mål Ø45 × 55 cm, 1,3 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Octo Small 4241, 2018). Form sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser.",
+    "verifiedNote": "Bekreftet på christiania-belysning.no 2026-10-18 (produktside + variantdata): 8 256 kr (før 10 320), valnøtt 8 736 kr (før 10 920). Mål Ø45 × 55 cm, 1,3 kg, 150 cm ledning, E27 – bekreftet på sectodesign.fi (Octo Small 4241, 2018). Form sjekket mot produktbildet. Fjernet ubekreftede Finnish Design Shop-priser. Farger og stoff kontrollert 2026-10-21 mot christiania-belysning.no (variantdata): alle variantene finnes (Bjørk, Valnøtt, Sort og Hvit, alle bestillbare), hver med egen variantlenke og eget bilde; bjørkefargen er justert til den lyse, kremhvite bjørken på produktbildene og sort/valnøtt etter variantbildene. Kampanjen er over: produktsiden og variantdataene viser nå ordinær pris 10 320 kr (valnøtt 10 920 kr), så kampanjeprisen 8 256 kr (valnøtt 8 736 kr) er fjernet.",
     "priceConfidence": "checked"
   }
 ]

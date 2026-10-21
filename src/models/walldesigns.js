@@ -23,6 +23,8 @@ import { createCanvas, canvasTexture, heightToNormalCanvas, createNoise2D, hash2
  *   setWallQuality('low'|'medium'|'high')
  *   placeElement(el, existing, { prefer }?) → el moved to the freest spot · moveElement(el, du, dv) → moved copy
  *   sideboardHasLamp(el, elements) → whether a floating sideboard gets its table lamp (el.lamp, or automatic)
+ *   Batch (box batch: many boxes → one geometry per material, metre UVs), slatTones(kind, hex) → the slats' materials –
+ *   shared with the slat finishes on the other walls and the ceilings (models/surfaceslats.js)
  *
  * Shader programs: the curtain shares the moss walls' program (front side + vertex colours), the sideboard lamp and
  * the tapestry use programs the room already has – WallPanel compiles the rest once at start-up (compileAsync).
@@ -213,7 +215,7 @@ const FACES = (() => {
 })();
 const GRAIN = { x: 0, y: 1, z: 2 };
 
-class Batch {
+export class Batch {
   constructor() {
     this.buckets = new Map();
   }
@@ -1196,6 +1198,19 @@ function box3(min, max) {
 // ---------------------------------------------------------------------------------------------------------------
 // Builders – ctx = { g, B (Batch), lights, surfaces, colliders, fronts (covering faces for fixtures), index }
 
+/**
+ * The materials of a slat panel's slats: three tones of the wood (real oak slats vary), one for painted / lacquered.
+ * Also the surface finishes' slats (models/surfaceslats.js).
+ * @param {string} kind  wood kind ('oak' …, 'painted', 'lacquer'; others → oak)
+ * @param {string} base  '#hex' (or a palette name)
+ * @returns {THREE.Material[]}
+ */
+export function slatTones(kind, base) {
+  const k = woodKind(kind);
+  if (k === 'painted' || k === 'lacquer') return [mat(k, resolveColor(base))];
+  return [woodMat(k, shade(base, -0.025)), woodMat(k, base), woodMat(k, shade(base, 0.022))];
+}
+
 function buildSlats(ctx, el) {
   const u = num(el.u, 0), v = num(el.v, 0), w = Math.max(0.03, num(el.w, 1)), h = Math.max(0.03, num(el.h, 1));
   const slatW = clamp(num(el.slatW, 0.027), 0.005, 0.2);
@@ -1230,9 +1245,7 @@ function buildSlats(ctx, el) {
     B.box(dark, 'backing', u + w / 2, v + h / 2, standoff / 2, Math.max(0.01, w - 0.012), Math.max(0.01, h - 0.004), standoff, { skip: '-z+z' });
   }
   // slats: three tones (real oak slats vary), random grain offset per slat
-  const tones = kind === 'painted' || kind === 'lacquer'
-    ? [mat(kind, base)]
-    : [woodMat(kind, shade(base, -0.025)), woodMat(kind, base), woodMat(kind, shade(base, 0.022))];
+  const tones = slatTones(kind, base);
   const along = vertical ? w : h;
   const pitch = slatW + gap;
   const n = Math.max(1, Math.floor((along + gap) / pitch + 1e-6));

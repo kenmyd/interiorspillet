@@ -101,7 +101,7 @@ export class PauseMenu {
     let focus = null;
 
     if (view === 'main') {
-      const resume = this._menuBtn('play', 'Fortsett', 'Tilbake til stua', () => this.onResume(), 'primary');
+      const resume = this._menuBtn('play', 'Fortsett', 'Tilbake til huset', () => this.onResume(), 'primary');
       this.panel.replaceChildren(
         h('header.kv-pause__head', {},
           h('span.kv-pause__badge', {}, svg(ICONS.pause)),

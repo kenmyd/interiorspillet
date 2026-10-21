@@ -47,7 +47,7 @@ fra en annen modul som ikke finnes ennå, så bruk kontrakten slik den står her
 
 Kategorinøkler (katalogrekkefølge): `sofa`, `lenestol`, `bord`, `stoler`, `skjenk`, `tvbenk`, `vitrineskap`, `hylle`, `seng`,
 `nattbord`, `kommode`, `garderobe`, `speil`, `bad`, `gang`, `taklampe`, `smalamper`, `tekstil`, `teppe`, `solskjerming`,
-`akustikk`, `smatt` (338 produkter; se `notes/katalog-hele-huset.md`).
+`akustikk`, `smatt` (372 produkter; se `notes/katalog-hele-huset.md`).
 Bilder som spillet viser (fotomontasjer, stuebilder til fotosammenligning, utsikt) ligger nedskalert under
 `public/img/…` og refereres med **relative** stier (`img/forslag/B.jpg`) – bygget skal virke i en undermappe.
 
@@ -85,8 +85,10 @@ src/
     fixtures.js     gulvspeil, håndklær, håndklestiger/-stenger, badetilbehør, knaggrekker, stumtjenere (KATALOG)
     shading.js      solskjerming på vinduer                          (SHADING)
     walldesigns.js  elementene i veggforslagene                     (WALLS)
+    surfaceslats.js spiler på vegger og tak (overflatefinish) → bokser   (FINISH)
   design/
     DesignState.js  hele designet som data + angre/gjør om          (FOUNDATION)
+    Finishes.js     spiler på vegger/tak som data: utseender, mål, flaten de dekker (ren JS)   (FINISH)
     SceneSync.js    DesignState → 3D (bygger/oppdaterer modeller)   (FOUNDATION)
     Acoustics.js    etterklangstid (Sabine)                          (FOUNDATION)
     Saves.js        lagring (localStorage), eksport/import          (FOUNDATION)
@@ -99,7 +101,7 @@ src/
     Toolbar.js, CatalogPanel.js, Inspector.js, SavePanel.js, ShoppingPanel.js, AcousticsWidget.js   (UI)
     WallPanel.js, PhotoCompare.js               (WALLS)
     WindowPanel.js                              (SHADING)
-    LightPanel.js                               (LIGHTING)
+    LightPanel.js, SunPanel.js                  (LIGHTING)
 public/img/…        nedskalerte bilder           (FOUNDATION; WALLS legger til miniatyrer ved behov)
 deploy/             .htaccess-mal, README for opplasting (INTEGRATION)
 ```
@@ -243,19 +245,25 @@ params variants[{name, colors, materials}] defaultVariant absorption light? desc
 class DesignState extends Emitter {
   items: Map<uid, Item>
   wall: { proposalId: string|null, elements: Element[]|null, edited: bool }   // den høye veggen
-  paints: { [wallId]: colorOrName }          // overstyrt veggfarge; mangler = room-spec
+  paints: { [wallId]: colorOrName }          // overstyrt vegg-/takfarge; mangler = room-spec
+  finishes: { [surfaceId]: FinishSpec }      // spiler på en vegg (ikke den høye) eller et tak; mangler = bar flate
   windows: { [windowId]: ShadingSpec|null }
   env: { hour: 13, month: 6, day: 15, mode: 'auto'|'day'|'evening'|'night', builtIn: { [groupId]: { on, dimmer } }, exposure: 1 }
-  meta: { name, createdAt, updatedAt }
+  meta: { name, createdAt, updatedAt, originalRooms, originalUids, specRevision }   // se Saves (versjon 2)
 
   add(spec) → uid; update(uid, patch); remove(uid); get(uid); list(filter?)
   setWall(patch); setWindow(windowId, spec|null); setPaint(wallId, color|null); setEnv(patch)
+  setFinish(surfaceId, spec|null, { coalesce? })   // ett angresteg per endring; samme coalesce-nøkkel < 1 s = ett steg (glidere)
   transaction(label, fn)       // alt inni blir ett angresteg (dra-flytting osv.)
   undo(); redo(); canUndo; canRedo
   toJSON(); load(json); resetToOriginal()
   events: 'item:add' {uid,item} · 'item:update' {uid,item,patch} · 'item:remove' {uid,item} · 'wall' · 'window' {windowId}
-          'paint' {wallId} · 'env' {patch} · 'load' · 'change' (etter alt over) · 'history'
+          'paint' {wallId} · 'finish' {surfaceId, spec} · 'env' {patch} · 'load' · 'change' (etter alt over) · 'history'
 }
+FinishSpec = { type: 'slats', look: 'oak'|'white-oak'|'smoked-oak'|'walnut'|'black'|'white'|'surface' (malt i flatens farge),
+               slatW, gap, depth (m), backing: 'felt'|'felt-match'|'none',
+               vegg: extent: 'full'|'section', u (fra venstre, sett fra rommet), w, h (null = til taket),
+               tak: direction: 'along'|'across' }      // design/Finishes.js; et design lagret før spilene har ingen
 Item = { uid, source: 'existing'|'catalog'|'custom', refId, name, category, archetype, mount,
          position: [x,y,z], rotationDeg, dims, params, colors, materials, variantIndex,
          light?: { on, dimmer, colorK }, attach?: { wallId? , normal?: [x,y,z], tilt?: deg },
@@ -272,16 +280,35 @@ Lytter på DesignState og holder 3D-scenen lik: bygger/ombygger modeller (`regis
 `home.lighting.setItemLights(uid, lights|null)`, `applyShading(windowInfo, spec)` fra `models/shading.js`,
 `applyWallDesign(home.highWall, elements)` fra `models/walldesigns.js`, `home.setPaint?`/maling på vegger, og
 `lighting.requestShadowUpdate()`. API: `getObject(uid) → Group`, `objectBounds(uid) → Box3`.
+Spiler (`design.finishes`): én gruppe per vegg/tak i egen rot ved siden av møblene (`models/surfaceslats.js`: spilene som
+bokser i flatens plan – skråtak også –, filt bak, kuttet rundt vinduer, dører, stikkontakter og takspotter), bygget på
+nytt bare når geometri eller farge endres; vises bare mens flaten vises (skjult med taket i oversikt/plan, med
+dukkehusvegger og skjulte etasjer). `finishObject(surfaceId) → Group|null`.
 
 ### `Acoustics`
-`computeAcoustics(design, home) → { rt60, absorption, volume, baseline: 0.86, breakdown: [{ label, m2 }] }`.
-Kalibrering: rommets volum fra geometrien (≈ 141 m³), og en grunnabsorpsjon slik at originaldesignet gir
-0,86 s. Endringer: nye/fjernede elementer (`absorption` fra katalog/arketype), veggforslag (`sabineAdded` eller
-beregnet fra elementene), gardiner/solskjerming (stoff × areal × hvor lukket), tepper (luv × areal).
+`computeAcoustics(design, home, { roomId = 'stue-kjokken' }) → { rt60, absorption, volume, baseline, breakdown: [{ label, m2 }],
+changes, roomId, roomName, roomKind, mode: 'calibrated'|'estimate', estimated, target, level }`.
+Stua: kalibrering mot rommets volum fra geometrien og en grunnabsorpsjon slik at originaldesignet gir 0,86 s.
+Endringer: nye/fjernede elementer (`absorption` fra katalog/arketype), veggforslag (`sabineAdded` eller beregnet fra
+elementene), gardiner/solskjerming (stoff × areal × hvor lukket), tepper (luv × areal), spiler på filt på vegger/tak
+(`finishAbsorption`: dekket areal × 0,76 som den høye veggens spilepanel; uten filt 0) i rommet til flaten.
+Andre rom (hele huset, steg 16 E3): **anslått** fra rommets flater, dører (lukket) og åpninger (α 0,5), med eget mål per
+romtype. `roomName` får etasjen lagt til når to rom har samme navn («Soverom (kjeller)»).
+- `itemRoomId(item, layout)`: rommet et møbel teller i (veggfeste, ellers nivå + planposisjon).
+- `acousticsFor(design, home, roomId)`: `computeAcoustics` per rom, cachet til neste endring i designet.
+  `Editor.acoustics(roomId)` bruker den for andre rom enn stua (stua har sin egen cache som før).
 
 ### `Saves`
 Flere navngitte design i localStorage (`interiorspillet.designs.v1`), autolagring av det aktive, eksport til
 `.json`-fil og import, «Original» kan alltid lastes. All lagring i try/catch.
+- **DESIGN_VERSION 2** (hele huset, steg 16 E3): hvert møbel har `level` ('hoved', 'kjeller'). I minnet er y verdens-y;
+  i en lagring er y **nivålokal** (over nivåets gulv). `originalJSON()` gir verdens-y med markøren `ySpace: 'world'`.
+  - `meta.originalRooms`: rommene designet har fått originalene til. Lasting legger til originalene i rom som mangler
+    (en v1-lagring = ['stue-kjokken']).
+  - `meta.originalUids`: alle original-uid-er dataene hadde da designet ble lagret. Et original som er nytt i dataene,
+    kommer inn også i et rom designet allerede hadde. Et listet møbel brukeren fjernet, kommer ikke tilbake.
+  - `meta.specRevision`: hash per original slik dataene ga det. Et urørt original følger dataene.
+  - Før første skriving kopieres v1-lagringer til `interiorspillet.designs.v1.backup` (én gang).
 
 ## 8. Solskjerming (`models/shading.js`)
 ```js
@@ -320,8 +347,9 @@ Retning mot sola for asimut A (fra nord, med klokka) og høyde h: `(−cos A·co
 
 ## 11. Interaksjon (`design/`)
 - **Velg**: venstreklikk (uten å dra) på et objekt → velg det (Inspector åpnes). Klikk på den høye veggen →
-  WallPanel. Klikk på en annen vegg → enkel fargevelger for veggen. Klikk på et vindu → WindowPanel. Klikk i
-  tomt rom → velg bort. Hover: rim-glød (core/Highlight.js) + kort tekst («Lenestol – klikk for å endre»).
+  WallPanel. Klikk på en annen vegg → Inspector: veggfarge og «Spiler». Klikk på taket → Inspector «Tak»: takfarge og
+  «Spilepanel» (en nedforing: bare farge). Klikk på et vindu → WindowPanel. Klikk i tomt rom → velg bort. Hover:
+  rim-glød (core/Highlight.js) + kort tekst («Lenestol – klikk for å endre», «… – klikk for farge eller spilepanel»).
 - **Flytt**: hold venstre knapp på et **valgt** objekt og dra → flytter langs underlaget (gulv / vegg / tak /
   bordflate) med snapping (10 cm-rutenett av som standard, mot vegger, 15° rotasjon). `R` / `Shift+R`
   roterer ±15°, `Delete` sletter, `D` dupliserer, `Esc` velger bort, `Ctrl+Z` / `Ctrl+Y` angrer/gjør om.
@@ -342,7 +370,7 @@ min, max, step, value, unit, onInput })`, `select({ label, options, value, onCha
 `button(...)`, `paramEditor(schema, values, onChange)` (lager riktig kontroll per param-type).
 Paneler fanger tastatur når et input-felt har fokus (spillet skal da ikke gå/rotere).
 
-Verktøylinja (nederst): Katalog (K) · Veggforslag (V) · Vinduer (B) · Lys og sol (L) · Visning (Tab) ·
+Verktøylinja (nederst): Katalog (K) · Veggforslag (V) · Vinduer (B) · Belysning (L) · Sol (T) · Visning (Tab) ·
 Før/etter (O) · Design (M: lagre/åpne/eksport) · Handleliste (I) · Bilde (P) · Angre/Gjør om. Hjørnebadge:
 etterklangstid («Etterklang ≈ 0,72 s», grønn ≤ 0,6, gul ≤ 0,7, rød over), klikk viser fordelingen.
 
@@ -378,8 +406,8 @@ class Editor {
   catalog                                  // catalog/index.js-modulen
   acoustics() → resultat fra computeAcoustics(design, home)
   selection /* Selection */, placement /* Placement */, views /* ViewModes */
-  ui: { toolbar, catalog, inspector, wall, window, light, saves, shopping, acoustics, photo }
-  selected: { kind: 'item'|'wall'|'window'|null, uid?, wallId?, windowId? }
+  ui: { toolbar, catalog, inspector, wall, window, light, sun, saves, shopping, acoustics, photo }
+  selected: { kind: 'item'|'wall'|'ceiling'|'window'|null, uid?, wallId?, ceilingId?, windowId? }
   select(target|null)                      // setter selected, sender 'select', åpner riktig panel
   startPlacing(itemSpec)                   // → placement.start
   update(dt)                               // hver frame: views, selection, placement, ui.*.update
@@ -393,7 +421,7 @@ Paneler: `open(arg?)`, `close()`, `toggle()`, `isOpen`, `update?(dt)`, `dispose(
 `ViewModes`: `mode` ('walk'|'orbit'|'plan'|'photo'), `set(mode)`, `toggle()`, `setPhotoCamera(cam)`, `exitPhoto()`,
 `update(dt)` (spilleren står stille utenom 'walk'), `isWalking`.
 Snarveier: Selection eier tastene for valgt objekt (R, Shift+R, Delete, D, Esc, piltaster = små flytt);
-Toolbar eier de globale (K, V, B, L, Tab, O, M, I, P, Ctrl+Z, Ctrl+Y). Ingen snarvei virker mens et
+Toolbar eier de globale (K, V, B, L, T, Tab, O, M, I, P, Ctrl+Z, Ctrl+Y). Ingen snarvei virker mens et
 tekstfelt har fokus.
 
 ## 15. Skall → lys (innebygde armaturer)
@@ -401,7 +429,7 @@ tekstfelt har fokus.
 'pendant', from?: Vector3, to?: Vector3, position?: Vector3, direction?: Vector3, colorK, lumens, emissiveMeshes:
 Mesh[] }]` (verdenskoordinater). `group` er en av `led` (LED-lister), `spots` (spotter ved den høye veggen),
 `kjokken` (LED foran høyskapene og ringlampene i taket), `pendler` (de tre pendlene over kjøkkenøya), `tvstue`
-(taklampa i TV-stua), `overskap` (lys under overskap). Hver gruppe har en standard-dimmer (`layout.lightGroups[].dimmer`);
+(taklampa i TV-stua), `overskap` (lys i og under glassoverskapet). Hver gruppe har en standard-dimmer (`layout.lightGroups[].dimmer`);
 av/på følger tiden på døgnet til gruppen slås av eller på for hånd. LightManager lager lyskildene og styrer emissiveMeshes. `buildExterior` returnerer `{ group, setDaylight(level
 0..1, skyHex) }` så lyset kan dimme utsikten om kvelden.
 

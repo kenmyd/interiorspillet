@@ -57,7 +57,7 @@
     "why": "Smalt (37 × 32 cm), så det passer ved siden av en 140-seng i det lille kjellersoverommet; lys eik og runde heltreben hører sammen med STUBBERUP-sengen, og hyllen under holder bøkene samlet.",
     "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/283720",
     "verified": true,
-    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., 999 kr (2 for 1 499), mål B37 x H60 x D32, topp MDF/eikefinér, ben massiv eik, 1 skuff (maks 3 kg) med skuffestopper, 1 hylle (maks 5 kg), 6 kg. Skuffhøyde (ca. 10 cm) og hyllehøyde (ca. 24 cm) anslått fra bildet.",
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., 999 kr (2 for 1 499), mål B37 x H60 x D32, topp MDF/eikefinér, ben massiv eik, 1 skuff (maks 3 kg) med skuffestopper, 1 hylle (maks 5 kg), 6 kg. Skuffhøyde (ca. 10 cm) og hyllehøyde (ca. 24 cm) anslått fra bildet. Farger og stoff kontrollert 2026-10-21 mot jysk.no: alle variantene finnes (nattbordet selges bare i natur eik).",
     "priceConfidence": "checked"
   },
   {
@@ -92,7 +92,7 @@
     },
     "variants": [
       {
-        "name": "Sand (topp i eikedekor)",
+        "name": "Sand",
         "colors": {
           "body": "#d3cac1",
           "front": "#d3cac1",
@@ -190,7 +190,7 @@
     "why": "Rimeligste par til soverommet: bare 40 cm bredt, så to stykker får plass på hver side av en 180-seng i rommet på 3,11 m, og det matcher Naia-kommodene.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/NAIA/342610/image-thumb__342610__PDP-Product/314417%20-%20Naia%20nattbord%2040x50%20H50%202%20skuffer%20foliert%20spon%20sand%20-%202.987c4a66.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 799 kr (før 1 199) i sand, 40x50x50 cm (B 40, D 50), 2 skuffer, foliert spon, produsert i Danmark. Sokkel ca. 3 cm og eiketopp på sand fra produktbildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 799 kr (før 1 199) i sand, 40x50x50 cm (B 40, D 50), 2 skuffer, foliert spon, produsert i Danmark. Sokkel ca. 3 cm og eiketopp på sand fra produktbildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle fem fargene finnes i 40x50 (sand, cashmere, eik, brun eik 839 kr, matt svart 1 199 kr). «Sand (topp i eikedekor)» heter nå «Sand» som i butikken – eiketoppen er beholdt i fargene, slik produktbildet viser.",
     "priceConfidence": "checked"
   },
   {
@@ -257,6 +257,46 @@
           "handle": "leather"
         },
         "url": "https://www.bohus.no/bord/nattbord/madrid-nattbord-44x39-2"
+      },
+      {
+        "name": "Matt svart",
+        "colors": {
+          "body": "#464647",
+          "front": "#444445",
+          "top": "#464647",
+          "legs": "#424243",
+          "handle": "#ad7a5e"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "priceNok": 2199,
+        "salePriceNok": 1319,
+        "url": "https://www.bohus.no/bord/nattbord/madrid-nattbord-44x39-1"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f0f0ee",
+          "front": "#f2f2f0",
+          "top": "#f2f2f0",
+          "legs": "#ebebe9",
+          "handle": "#ad7a5e"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "priceNok": 2199,
+        "salePriceNok": 1319,
+        "url": "https://www.bohus.no/bord/nattbord/madrid-nattbord-44x39"
       }
     ],
     "defaultVariant": 0,
@@ -265,7 +305,7 @@
     "why": "Matcher Madrid-kommoden; 55 cm høyde passer til en vanlig rammeseng, og eik eller cashmere holder soverommet lyst og rolig.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/321330/image-thumb__321330__PDP-Product/308425%20-%20Madrid%20nattbord%2043x38%20H54%202%20skuffer%20foliert%20spon%20eik%20-%207.595c2777.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 2 199 kr (eik og cashmere), 44x39x55 cm, 2 skuffer, foliert spon. Produktsiden for cashmere viser bilder av den høye H70-modellen, så cashmere-fargen og det brune lærhåndtaket er hentet derfra; benhøyde ca. 10 cm anslått fra eikebildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 2 199 kr (eik og cashmere), 44x39x55 cm, 2 skuffer, foliert spon. Produktsiden for cashmere viser bilder av den høye H70-modellen, så cashmere-fargen og det brune lærhåndtaket er hentet derfra; benhøyde ca. 10 cm anslått fra eikebildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: eik og cashmere finnes; matt svart (varenr. 249303) og hvit (varenr. 249302) i samme 44x39x55-utgave med to skuffer er lagt til – 1 319 kr, før 2 199 kr, begge med konjakkfargede lærhåndtak og ben i samme farge som korpuset (farger fra produktbildene).",
     "priceConfidence": "checked"
   },
   {
@@ -344,7 +384,7 @@
     "why": "Samme spilefronter og svarte understell som Vinstra-kommoden; 70 cm høyde passer til en kontinentalseng, og det åpne understellet gjør det luftig ved sengen.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/VINSTRA/322077/image-thumb__322077__PDP-Product/298399%20-%20Vinstra%20nattbord%2046x40%20H70%202%20skuffer%20melamin%20r%C3%B8ykfarget%20med%20svart%20understell%20-%202.fb543ec2.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 1 499 kr (før 2 199) i røykfarget, 45x40x70 cm (navn 46x40), 2 skuffer, benhøyde 30 cm, melamin og stål. Stagene i understellet og knottene fra produktbildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 1 499 kr (før 2 199) i røykfarget, 45x40x70 cm (navn 46x40), 2 skuffer, benhøyde 30 cm, melamin og stål. Stagene i understellet og knottene fra produktbildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: begge variantene finnes (lys eik er merket utgående, men står fortsatt i nattbord-kategorien til 2 199 kr).",
     "priceConfidence": "checked"
   },
   {
@@ -440,7 +480,7 @@
     "why": "Matcher Bodø-kommoden; skrå ben gir luft under og et lett uttrykk ved sengen, og 65 cm høyde passer til en kontinentalseng.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/BOD%C3%98/277197/image-thumb__277197__PDP-Product/284833%20-%20Bod%C3%B8%20nattbord%2045x40%20H65%202%20skuffer%20lakkert%20eikefiner%20r%C3%B8ykfarget%20-%202.22392192.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 2 299 kr (før 3 899) i røykfarget, 45x40x65 cm, 2 skuffer, eikefiner. Benhøyde ikke oppgitt – ca. 19 cm anslått fra bildet; grepslisten tolket fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 2 299 kr (før 3 899) i røykfarget, 45x40x65 cm, 2 skuffer, eikefiner. Benhøyde ikke oppgitt – ca. 19 cm anslått fra bildet; grepslisten tolket fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre variantene finnes (svart er merket utgående, men står fortsatt i nattbord-kategorien til 2 299 kr, før 3 899 kr).",
     "priceConfidence": "checked"
   },
   {
@@ -499,9 +539,9 @@
       {
         "name": "Hvitoljet eikefiner / svarte metallben",
         "colors": {
-          "body": "#d8cab3",
-          "front": "#d8cab3",
-          "top": "#d4c6ae",
+          "body": "#cdb391",
+          "front": "#d1b896",
+          "top": "#c9b190",
           "legs": "#1c1c1c",
           "handle": "#1c1c1c"
         },
@@ -514,7 +554,6 @@
         },
         "priceNok": 5499,
         "salePriceNok": 3299,
-        "priceConfidence": "check",
         "url": "https://www.bohus.no/bord/nattbord/nola-nattbord-40x50"
       },
       {
@@ -534,7 +573,6 @@
           "handle": "black-metal"
         },
         "priceNok": 4749,
-        "priceConfidence": "check",
         "url": "https://www.bohus.no/bord/nattbord/nola-nattbord-40x50-1"
       }
     ],
@@ -544,7 +582,7 @@
     "why": "Samme Nola-design som skjenken i stuen – røykfarget eik, spiler og svarte ben – så soverommet henger sammen med resten av huset. Lukkede dører skjuler rot.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOLA/316769/image-thumb__316769__PDP-Product/299524%20-%20Nola%20nattbord%2050x50%20H70%201%20hylle%20lakkert%20eikefiner%20r%C3%B8ykfarget%20med%20ben%20metall%20svart%20-%202.f838c50b.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 5 499 kr i røykfarget, 50x40x70 cm, benhøyde 40 cm, 2 sjalusidører, 1 hylle, eikefiner, svarte metallben. Rundet form og stagene fra produktbildet (bildets filnavn sier 50x50 – sidens mål 50x40 er brukt). Hvitoljet og svart: produktdata uten plass i kategorilisten.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 5 499 kr i røykfarget, 50x40x70 cm, benhøyde 40 cm, 2 sjalusidører, 1 hylle, eikefiner, svarte metallben. Rundet form og stagene fra produktbildet (bildets filnavn sier 50x50 – sidens mål 50x40 er brukt). Hvitoljet og svart: produktdata uten plass i kategorilisten. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre variantene finnes, og hvitoljet (3 299 kr, før 5 499 kr) og svart (4 749 kr, merket utgående) står nå i nattbord-kategorien. Hvitoljet er rettet til den varmere, lyse eikefargen på produktbildet.",
     "priceConfidence": "checked"
   },
   {
@@ -641,7 +679,7 @@
     "why": "Svevende nattbord holder gulvet fritt og lett å vaske; bare 30 cm dypt, så det passer også ved sengen i det lille kjellersoverommet (7,4 m²). Matcher Sandnes-kommoden.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/SANDNES/343557/image-thumb__343557__PDP-Product/314402%20-%20Sandnes%20vegghengt%20nattbord%2046x30%20H23%201%20skuff%20melamin%20mdf%20r%C3%B8ykfarget%20-%202.a6707270.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 699 kr (før 1 199) i røykfarget, 46x30x23 cm, 1 skuff, MDF/melamin, vegghengt. Monteringshøyde 0,40 m (underkant) er et forslag; grepløs rammefront fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 699 kr (før 1 199) i røykfarget, 46x30x23 cm, 1 skuff, MDF/melamin, vegghengt. Monteringshøyde 0,40 m (underkant) er et forslag; grepløs rammefront fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle tre variantene finnes (røykfarget, lys eik og beige).",
     "priceConfidence": "checked"
   },
   {
@@ -700,7 +738,7 @@
     "why": "Samme serie som Asker-kommodene; svever over gulvet og holder soverommet ryddig, og kanten rundt toppen hindrer at mobil og bok glir ned bak sengen.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/ASKER/348705/image-thumb__348705__PDP-Product/318227%20-%20Asker%20nattbord%2045.6x30%20H24%20vegghengt%201%20skuff%20lakkert%20eikefiner%20r%C3%B8ykfarget%20-%201.3a4ffa75.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 1 999 kr, 46x30x24 cm, vegghengt, 1 skuff, lakkert eikefiner røykfarget. Monteringshøyde 0,40 m er et forslag; kantlisten og grepet tolket fra bildet.",
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 1 999 kr, 46x30x24 cm, vegghengt, 1 skuff, lakkert eikefiner røykfarget. Monteringshøyde 0,40 m er et forslag; kantlisten og grepet tolket fra bildet. Farger og stoff kontrollert 2026-10-21 mot bohus.no: røykfarget finnes; den hvitpigmenterte utgaven (varenr. 318228) er utløpt og er ikke tatt med.",
     "priceConfidence": "checked"
   },
   {
@@ -797,7 +835,7 @@
     "why": "Luftig og lett ved sengen, med eikefiner som matcher eikegulvet; 40 × 40 cm tar lite plass i soverommet, og den åpne hyllen holder bøkene samlet.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/tonstad-nattbord-eikefiner__1247217_pe922597_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 1 495 kr, 40x40x59 cm, skuff innv. 28x30 cm, fri høyde under 11 cm (hyllen), eikefiner og heltre ben. Skuffhøyde ca. 13 cm anslått fra bildet; variantpriser fra IKEAs søkedata.",
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 1 495 kr, 40x40x59 cm, skuff innv. 28x30 cm, fri høyde under 11 cm (hyllen), eikefiner og heltre ben. Skuffhøyde ca. 13 cm anslått fra bildet; variantpriser fra IKEAs søkedata. Farger og stoff kontrollert 2026-10-21 mot ikea.no: alle tre variantene finnes (eikefiner og brun beiset eikefiner 1 495 kr, offwhite 1 295 kr).",
     "priceConfidence": "checked"
   },
   {
@@ -890,7 +928,7 @@
     "why": "Billigste nattbord: 40 cm bredt og 53 cm høyt passer ved en rammeseng både i soverommet og i kjellersoverommet, og eikemønsteret matcher gulvet.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/storklinta-kommode-med-2-skuffer-eikemonstret-med-2-skuffer__1514044_pe1010804_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 595 kr, 40x50x53 cm, 2 skuffer (innv. 31x40x16 cm), integrerte grep langs øvre kant, sponplate med folie. Sokkelhøyde ca. 4 cm anslått fra bildet; variantpriser fra IKEAs søkedata.",
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 595 kr, 40x50x53 cm, 2 skuffer (innv. 31x40x16 cm), integrerte grep langs øvre kant, sponplate med folie. Sokkelhøyde ca. 4 cm anslått fra bildet; variantpriser fra IKEAs søkedata. Farger og stoff kontrollert 2026-10-21 mot ikea.no: alle tre variantene finnes (eikemønstret, hvit og mørk brun eikemønstret, alle 595 kr).",
     "priceConfidence": "checked"
   }
 ]

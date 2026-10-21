@@ -3,6 +3,7 @@ import { originalItems, RUG_ALPHA, parsePile } from '../home/existing.js';
 import { getProduct } from '../catalog/index.js';
 import schema from '../data/archetypes.json';
 import wallData from '../data/wall-proposals.json';
+import { finishArea, hasFelt, surfaceKind } from './Finishes.js';
 
 /**
  * Reverberation time (Sabine) for the open living room – ARCHITECTURE §7.
@@ -19,12 +20,69 @@ import wallData from '../data/wall-proposals.json';
  * - the high wall: the proposal's `sabineAdded`; when the user has edited the elements: Σ area × alpha.
  * - shading: fabric alpha (product absorption ÷ product area) × covered area × how closed it is (stacked curtains
  *   still absorb ~40 %).
+ * - slat finishes on walls / ceilings (design.finishes, design/Finishes.js) with felt behind: the covered area × the
+ *   high wall's slat alpha (elementAbsorption of a 'slats' element, 0.76); slats straight on the surface: 0. They
+ *   count in the room of their wall / ceiling (finishAbsorption).
  * Labels in the result are Norwegian.
+ *
+ * Per room (hele-huset §5.4, steg 16 E3): computeAcoustics(design, home, { roomId = 'stue-kjokken' }).
+ *   - V = the room's volume (layout.house.rooms[].volume; the living room's is layout.volume, 138.57 m³).
+ *   - Items count in ONE room (itemRoomId): a wall item in the room of its wall (attach.wallId, backOf faces have
+ *     their own room), anything else in the physical room of its level that contains (x, z); outside every room
+ *     (window sills, recesses) the nearest room of the level within NEAR_ROOM m; further out (the terrace, the
+ *     garden) it counts nowhere.
+ *   - The living room (`acoustic.mode 'calibrated'`) keeps the 0.86 s calibration with its own originals
+ *     (originalItems(layout), exactly as before); the high wall belongs to it alone; shading counts per room, for
+ *     the room's own windows.
+ *   - Every other room is an ESTIMATE ('estimate'): A_room = Σ surface × α (SURFACE_ALPHA: plaster/gypsum 0.05,
+ *     wooden floor 0.07, tile/vinyl 0.03, glass 0.04, closed doors 0.08, open openings and the stairwell 0.5) + air;
+ *     its «i dag» is the room with its own original furniture.
  */
 
 export const BASELINE_RT60 = 0.86;
 export const TARGET_RT60 = Object.freeze([0.4, 0.6]);
 const SABINE_K = 0.161;
+/** The living room / kitchen / TV-stue (layout.js LIVING_ROOM_ID): one acoustic room, calibrated (D12). */
+export const LIVING_ROOM_ID = 'stue-kjokken';
+const MAIN_LEVEL_ID = 'hoved';
+/** An item outside every room polygon still belongs to the nearest room of its level this close (window sills, the
+ *  TV window's recess, a radiator niche) – not further (the terrace, the garden). */
+const NEAR_ROOM = 0.6;
+
+/**
+ * Sabine α at 500–1000 Hz for the estimated rooms (§5.4). Doors count as closed (the estimate must not depend on
+ * which door the player left open); an open opening (no leaf) and the stairwell send part of the sound into the
+ * coupled room next to it.
+ */
+export const SURFACE_ALPHA = Object.freeze({
+  paint: 0.05, // painted plaster / gypsum walls
+  'stone-panel': 0.03, // laminated stone-look wall panels (bathroom): hard like tiles
+  'wetroom-paint': 0.03, // painted wet-room wall on a membrane
+  'dark-panel': 0.08, // wooden wall panelling
+  ceiling: 0.05, // painted gypsum ceiling
+  wood: 0.07, // wooden floor (oak planks, parquet)
+  vinyl: 0.03, // vinyl / tiles
+  concrete: 0.02,
+  glass: 0.04,
+  door: 0.08, // closed wooden door leaf
+  opening: 0.5, // open opening / stairwell (coupled room)
+});
+/** Air absorption 4m at ≈ 1 kHz, 50 % RH (m² per m³). */
+const AIR_PER_M3 = 0.004;
+
+/**
+ * Target and colour bands per room kind: [target low, target high, yellow up to]. A living room or bedroom should
+ * be 0.4–0.6 s; halls may ring a little more; wet rooms and storerooms are hard by nature (estimates, §5.4).
+ */
+const TARGETS = {
+  living: [0.4, 0.6, 0.7],
+  bedroom: [0.4, 0.6, 0.7],
+  hall: [0.5, 0.8, 1.0],
+  entrance: [0.5, 0.8, 1.0],
+  bathroom: [0.6, 1.0, 1.4],
+  laundry: [0.6, 1.0, 1.4],
+  storage: [0.6, 1.2, 1.6],
+};
 
 const PROPOSALS = new Map((wallData.proposals || []).map((p) => [p.id, p]));
 
@@ -154,6 +212,37 @@ export function wallAbsorption(wall) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------
+// Slat finishes on walls and ceilings
+
+/** The room a wall / ceiling belongs to (the living room for a layout without rooms). */
+function surfaceRoomId(layout, id) {
+  const w = layout?.house?.wallsById?.[id] ?? layout?.wallsById?.[id];
+  const c = w ? null : (layout?.house?.ceilings ?? layout?.ceilings ?? []).find((x) => x.id === id);
+  return (w ?? c)?.roomId ?? LIVING_ROOM_ID;
+}
+
+/**
+ * Absorption (m²) of the slat finishes in one room: felt-backed slats count as the high wall's slats (area × 0.76).
+ * @param {Object<string, Object>} finishes  design.finishes
+ * @param {Object} layout
+ * @param {string} roomId
+ * @returns {{ m2: number, list: Array<{ id: string, area: number, m2: number, kind: string }> }}
+ */
+export function finishAbsorption(finishes, layout, roomId = LIVING_ROOM_ID) {
+  const list = [];
+  let m2 = 0;
+  for (const [id, spec] of Object.entries(finishes || {})) {
+    if (!spec || !hasFelt(spec) || surfaceRoomId(layout, id) !== roomId) continue;
+    const area = finishArea(layout, id, spec, { finishes });
+    const a = elementAbsorption({ type: 'slats', w: area, h: 1 });
+    if (!(a > 0)) continue;
+    m2 += a;
+    list.push({ id, area, m2: a, kind: surfaceKind(layout, id) });
+  }
+  return { m2, list };
+}
+
+// ---------------------------------------------------------------------------------------------------------------
 // Window shading
 
 /**
@@ -175,7 +264,12 @@ export function shadingAbsorption(win, spec, layout = defaultLayout) {
   let closed;
   if (DRAPED.has(a)) {
     const width = num(spec.params?.width, win.width + 0.3);
-    const ceiling = layout?.ceilingHeightAt ? layout.ceilingHeightAt(win.center.x, win.center.z) : win.top + 0.3;
+    // the ceiling over the window's own room (3 arguments: world y, §1.8 – the living room's value is unchanged), as a
+    // height above the window's floor like win.top
+    const floorY = num(win.floorY, 0);
+    const ceiling = layout?.ceilingHeightAt
+      ? layout.house ? layout.ceilingHeightAt(win.center.x, win.center.z, win.center.y) - floorY : layout.ceilingHeightAt(win.center.x, win.center.z)
+      : win.top + 0.3;
     const height = num(spec.params?.height, spec.params?.track === 'ceiling' || spec.mount === 'ceiling' ? ceiling - 0.02 : Math.min(ceiling, win.top + 0.15));
     area = width * height;
     closed = 0.4 + 0.6 * (1 - open);
@@ -185,6 +279,150 @@ export function shadingAbsorption(win, spec, layout = defaultLayout) {
     closed = 0.03 + 0.97 * (1 - open);
   }
   return alpha * area * closed;
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Rooms (hele-huset §5.4)
+
+/** Distance from (x, z) to the edges of a plan polygon (Vector2 points, y = z). */
+function distToPolygon(x, z, poly) {
+  let best = Infinity;
+  for (let i = 0; i < poly.length; i++) {
+    const a = poly[i];
+    const b = poly[(i + 1) % poly.length];
+    const dx = b.x - a.x;
+    const dz = b.y - a.y;
+    const len2 = dx * dx + dz * dz;
+    const t = len2 > 0 ? Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.y) * dz) / len2)) : 0;
+    best = Math.min(best, Math.hypot(x - (a.x + t * dx), z - (a.y + t * dz)));
+  }
+  return best;
+}
+
+const isPhysical = (rm) => !!rm && !rm.hud && Array.isArray(rm.polygon) && rm.polygon.length >= 3;
+
+/**
+ * The room an item counts in (see the top of this file), or null outside the house. Works for design items (world y,
+ * `level`) and for original specs (level-local y, `level`; the living room's have none = 'hoved') alike: only the
+ * level, the plan position and the wall matter.
+ * @param {Object} item  { position, level?, attach?: { wallId } }
+ * @param {Object} [layout]
+ * @returns {string|null}
+ */
+export function itemRoomId(item, layout = defaultLayout) {
+  const H = layout?.house;
+  if (!H?.roomAt) return LIVING_ROOM_ID;
+  const wall = item?.attach?.wallId != null ? H.wallsById?.[item.attach.wallId] : null;
+  if (wall && isPhysical(H.roomsById?.[wall.roomId])) return wall.roomId;
+  const p = Array.isArray(item?.position) ? item.position : [0, 0, 0];
+  const levelId = H.levelsById?.[item?.level] ? item.level : MAIN_LEVEL_ID;
+  const x = num(p[0]);
+  const z = num(p[2]);
+  const r = H.roomAt(x, 0, z, { levelId });
+  if (r) return r.id;
+  let best = null;
+  let bestD = NEAR_ROOM;
+  for (const rm of H.rooms || []) {
+    if (!isPhysical(rm) || rm.levelId !== levelId) continue;
+    const d = distToPolygon(x, z, rm.polygon);
+    if (d < bestD) {
+      bestD = d;
+      best = rm;
+    }
+  }
+  return best ? best.id : null;
+}
+
+/** The room acoustics are computed for: a physical room of the house (never the stair's hud room), else the living room. */
+function acousticRoom(layout, roomId) {
+  const H = layout?.house;
+  const rm = H?.roomsById?.[roomId];
+  if (isPhysical(rm)) return rm;
+  return H?.roomsById?.[LIVING_ROOM_ID] ?? null;
+}
+
+/** Shoelace area of a polygon given as [{x, y}] or [[x, z]]. */
+function polyArea(poly) {
+  let a = 0;
+  const pts = (poly || []).map((p) => (Array.isArray(p) ? { x: p[0], y: p[1] } : p));
+  for (let i = 0; i < pts.length; i++) {
+    const p = pts[i];
+    const q = pts[(i + 1) % pts.length];
+    a += p.x * q.y - q.x * p.y;
+  }
+  return Math.abs(a) / 2;
+}
+
+/** Face area of a wall (its top profile integrated along it). */
+function wallArea(w) {
+  const L = num(w.length, 0);
+  if (!(L > 0)) return 0;
+  if (typeof w.heightAt !== 'function') return L * num(w.height, 2.4);
+  const us = [0, L, ...(w.topProfile || []).map((p) => p[0]).filter((u) => u > 0 && u < L)].sort((a, b) => a - b);
+  let a = 0;
+  for (let i = 1; i < us.length; i++) a += ((w.heightAt(us[i - 1]) + w.heightAt(us[i])) / 2) * (us[i] - us[i - 1]);
+  return a;
+}
+
+/** α of a room's floor from its data (material / surface). */
+function floorAlpha(floor) {
+  const s = `${floor?.surface ?? ''} ${floor?.material ?? ''}`.toLowerCase();
+  if (/concrete|betong/.test(s)) return SURFACE_ALPHA.concrete;
+  if (/vinyl|tile|flis|klinker|stone|stein/.test(s)) return SURFACE_ALPHA.vinyl;
+  return SURFACE_ALPHA.wood;
+}
+
+const SURFACE_LABELS = {
+  walls: 'Vegger', ceiling: 'Tak', floor: 'Gulv', glass: 'Vinduer', doors: 'Dører (lukket)', openings: 'Åpninger og trappehull',
+};
+
+/**
+ * Estimated absorption of a room's own surfaces (§5.4): walls minus their holes, windows (glass), doors (closed),
+ * open openings and floor/ceiling holes (the stairwell), ceilings, floor and air.
+ * @param {Object} layout
+ * @param {Object} room  layout.house.rooms entry
+ * @returns {{ total: number, parts: Array<{ key: string, label: string, area: number, m2: number }> }}
+ */
+export function surfaceAbsorption(layout, room) {
+  const H = layout?.house;
+  const acc = { walls: [0, 0], ceiling: [0, 0], floor: [0, 0], glass: [0, 0], doors: [0, 0], openings: [0, 0] };
+  const add = (key, area, alpha) => {
+    if (!(area > 0)) return;
+    acc[key][0] += area;
+    acc[key][1] += area * alpha;
+  };
+  for (const id of room?.wallIds || []) {
+    const w = H?.wallsById?.[id];
+    if (!w) continue;
+    let holes = 0;
+    for (const h of w.holes || []) {
+      const u0 = Math.max(0, num(h.u0, 0));
+      const u1 = Math.min(num(w.length, 0), num(h.u1, 0));
+      const a = Math.max(0, u1 - u0) * Math.max(0, num(h.top, 0) - num(h.sill, 0));
+      if (!(a > 0)) continue;
+      holes += a;
+      if (h.type === 'window' || h.type === 'terrace-door') add('glass', a, SURFACE_ALPHA.glass);
+      else if (h.type === 'door' && h.door) add('doors', a, SURFACE_ALPHA.door);
+      else add('openings', a, SURFACE_ALPHA.opening);
+    }
+    add('walls', Math.max(0, wallArea(w) - holes), SURFACE_ALPHA[w.material] ?? SURFACE_ALPHA.paint);
+  }
+  const ceilings = (room?.ceilingIds || []).map((id) => (H?.ceilings || []).find((c) => c.id === id)).filter(Boolean);
+  if (ceilings.length) {
+    for (const c of ceilings) {
+      const holeArea = (c.holes || []).reduce((s, hp) => s + polyArea(hp), 0);
+      add('ceiling', Math.max(0, num(c.area, polyArea(c.polygon)) - holeArea), SURFACE_ALPHA.ceiling);
+      add('openings', holeArea, SURFACE_ALPHA.opening);
+    }
+  } else add('ceiling', num(room?.area, 0), SURFACE_ALPHA.ceiling);
+  const net = num(room?.netArea, num(room?.area, 0));
+  add('floor', net, floorAlpha(room?.floor));
+  add('openings', Math.max(0, num(room?.area, 0) - net), SURFACE_ALPHA.opening);
+  const parts = Object.entries(acc)
+    .filter(([, [area]]) => area > 0)
+    .map(([key, [area, m2]]) => ({ key, label: SURFACE_LABELS[key], area: round(area, 2), m2 }));
+  parts.push({ key: 'air', label: 'Luft', area: 0, m2: AIR_PER_M3 * num(room?.volume, 0) });
+  return { total: parts.reduce((s, p) => s + p.m2, 0), parts };
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -199,16 +437,44 @@ function layoutOf(design, home) {
   return defaultLayout;
 }
 
-/** Original items' absorption per uid + the calibrated room absorption for a layout. */
-function calibration(layout) {
-  let cal = BASE_CACHE.get(layout);
+/** Ids of the rooms other than the living room that have furniture in the data. */
+function otherFurnitureRooms(layout) {
+  const ids = new Set();
+  for (const f of layout?.house?.furniture || []) if ((f.roomId ?? LIVING_ROOM_ID) !== LIVING_ROOM_ID) ids.add(f.roomId);
+  return [...ids];
+}
+
+/**
+ * Original items' absorption per uid + the room absorption, per room. The living room: calibrated to 0.86 s with
+ * its own originals (originalItems(layout), exactly as before the rest of the house). Another room: its surfaces
+ * (estimate) + the originals that count in it.
+ */
+function calibration(layout, roomId) {
+  let byRoom = BASE_CACHE.get(layout);
+  if (!byRoom) {
+    byRoom = new Map();
+    BASE_CACHE.set(layout, byRoom);
+  }
+  let cal = byRoom.get(roomId);
   if (cal) return cal;
-  const originals = originalItems(layout);
-  const byUid = new Map(originals.map((it) => [it.uid, { item: it, m2: itemAbsorption(it) }]));
-  const furniture = [...byUid.values()].reduce((s, x) => s + x.m2, 0);
-  const total = (SABINE_K * layout.volume) / BASELINE_RT60;
-  cal = { byUid, furniture, total, room: Math.max(1, total - furniture) };
-  BASE_CACHE.set(layout, cal);
+  if (roomId === LIVING_ROOM_ID) {
+    const originals = originalItems(layout);
+    const byUid = new Map(originals.map((it) => [it.uid, { item: it, m2: itemAbsorption(it) }]));
+    const furniture = [...byUid.values()].reduce((s, x) => s + x.m2, 0);
+    const total = (SABINE_K * layout.volume) / BASELINE_RT60;
+    cal = { byUid, furniture, total, room: Math.max(1, total - furniture), volume: layout.volume, baseline: BASELINE_RT60, mode: 'calibrated', surfaces: null };
+  } else {
+    const room = layout.house.roomsById[roomId];
+    const rooms = otherFurnitureRooms(layout);
+    const originals = [...originalItems(layout), ...(rooms.length ? originalItems(layout, { rooms }) : [])].filter((it) => itemRoomId(it, layout) === roomId);
+    const byUid = new Map(originals.map((it) => [it.uid, { item: it, m2: itemAbsorption(it) }]));
+    const furniture = [...byUid.values()].reduce((s, x) => s + x.m2, 0);
+    const est = surfaceAbsorption(layout, room);
+    const volume = num(room.volume, 0);
+    const total = est.total + furniture;
+    cal = { byUid, furniture, total, room: est.total, volume, baseline: (SABINE_K * volume) / Math.max(0.5, total), mode: 'estimate', surfaces: est.parts };
+  }
+  byRoom.set(roomId, cal);
   return cal;
 }
 
@@ -216,6 +482,7 @@ function calibration(layout) {
  * plants, art – count as «other»). */
 const GROUPS = [
   { key: 'seating', label: 'Sofaer og stoler' },
+  { key: 'bed', label: 'Senger' }, // the rest of the house (archetype family «bed»: bed, headboard)
   { key: 'textile', label: 'Puter, pledd og puffer' },
   { key: 'rug', label: 'Tepper' },
   { key: 'acoustic', label: 'Akustikkprodukter' },
@@ -223,17 +490,25 @@ const GROUPS = [
 ];
 
 /**
- * Reverberation time of a design.
+ * Reverberation time of a design in one room.
  * @param {Object} design  DesignState (or its toJSON(): items may be an array)
  * @param {Object} [home]  the home (uses home.layout) or a layout; default: design.layout / the real room
+ * @param {{ roomId?: string }} [opts]  the room (default the living room; the stair's hud room or an unknown id → the
+ *   living room)
  * @returns {{ rt60: number, absorption: number, volume: number, baseline: number, roomAbsorption: number,
- *   target: number[], level: 'green'|'yellow'|'red', label: string,
- *   breakdown: Array<{ label: string, m2: number }>, changes: Array<{ label: string, m2: number }> }}
+ *   target: number[], yellow: number, level: 'green'|'yellow'|'red', label: string,
+ *   breakdown: Array<{ label: string, m2: number }>, changes: Array<{ label: string, m2: number }>,
+ *   roomId: string, roomName: string (with the level when two rooms share the name), roomShortName: string, roomKind: string, mode: 'calibrated'|'estimate', estimated: boolean,
+ *   surfaces: Array<{ key: string, label: string, area: number, m2: number }>|null }}
  */
-export function computeAcoustics(design, home) {
+export function computeAcoustics(design, home, { roomId = LIVING_ROOM_ID } = {}) {
   const layout = layoutOf(design, home);
-  const cal = calibration(layout);
-  const items = design?.items instanceof Map ? [...design.items.values()] : Array.isArray(design?.items) ? design.items : [];
+  const room = layout.house ? acousticRoom(layout, roomId) : null;
+  const rid = room?.id ?? LIVING_ROOM_ID;
+  const living = rid === LIVING_ROOM_ID;
+  const cal = calibration(layout, rid);
+  const all = design?.items instanceof Map ? [...design.items.values()] : Array.isArray(design?.items) ? design.items : [];
+  const items = layout.house ? all.filter((it) => itemRoomId(it, layout) === rid) : all;
 
   const groups = Object.fromEntries(GROUPS.map((g) => [g.key, 0]));
   const changes = [];
@@ -253,39 +528,108 @@ export function computeAcoustics(design, home) {
     if (!seen.has(uid) && orig.m2 > 0.005) changes.push({ label: `Fjernet: ${orig.item.name}`, m2: round(-orig.m2) });
   }
 
-  const wall = wallAbsorption(design?.wall);
+  // the high wall is the living room's
+  const wall = living ? wallAbsorption(design?.wall) : { m2: 0, label: '', proposal: null };
   if (wall.m2 > 0.005) changes.push({ label: wall.label, m2: round(wall.m2) });
 
+  // shading on the room's own windows
+  const windows = living ? layout.windows : (layout.house?.windows || []).filter((w) => w.roomId === rid);
   let shading = 0;
   for (const [windowId, spec] of Object.entries(design?.windows || {})) {
-    const win = layout.windows.find((w) => w.id === windowId);
+    const win = windows.find((w) => w.id === windowId);
+    if (!win) continue;
     const m2 = shadingAbsorption(win, spec, layout);
     shading += m2;
     if (m2 > 0.005) changes.push({ label: `Solskjerming: ${win?.name || windowId}`, m2: round(m2) });
   }
 
-  const absorption = cal.room + Object.values(groups).reduce((s, v) => s + v, 0) + wall.m2 + shading;
-  const rt60 = (SABINE_K * layout.volume) / Math.max(0.5, absorption);
+  // slat finishes on the room's walls and ceilings
+  const finish = finishAbsorption(design?.finishes, layout, rid);
+  for (const f of finish.list) {
+    const name = f.kind === 'ceiling'
+      ? (layout.house?.ceilings ?? layout.ceilings ?? []).find((c) => c.id === f.id)?.name
+      : (layout.house?.wallsById?.[f.id] ?? layout.wallsById?.[f.id])?.name;
+    if (f.m2 > 0.005) changes.push({ label: `Spiler: ${name || (f.kind === 'ceiling' ? 'tak' : 'vegg')}`, m2: round(f.m2) });
+  }
 
-  const breakdown = [{ label: 'Rommet (vegger, tak, gulv, vinduer og luft)', m2: round(cal.room, 2) }];
+  const absorption = cal.room + Object.values(groups).reduce((s, v) => s + v, 0) + wall.m2 + shading + finish.m2;
+  const rt60 = (SABINE_K * cal.volume) / Math.max(0.5, absorption);
+
+  const breakdown = [{ label: living ? 'Rommet (vegger, tak, gulv, vinduer og luft)' : 'Rommet (vegger, tak, gulv, vinduer, dører og luft – anslått)', m2: round(cal.room, 2) }];
   for (const g of GROUPS) if (groups[g.key] > 0.005) breakdown.push({ label: g.label, m2: round(groups[g.key], 2) });
   if (wall.m2 > 0.005) breakdown.push({ label: 'Den høye veggen', m2: round(wall.m2, 2) });
   if (shading > 0.005) breakdown.push({ label: 'Gardiner og solskjerming', m2: round(shading, 2) });
+  if (finish.m2 > 0.005) breakdown.push({ label: 'Spiler på vegger og tak', m2: round(finish.m2, 2) });
   changes.sort((a, b) => Math.abs(b.m2) - Math.abs(a.m2));
 
-  const level = rt60 <= TARGET_RT60[1] + 1e-9 ? 'green' : rt60 <= 0.7 + 1e-9 ? 'yellow' : 'red';
+  const [lo, hi, yellow] = living ? [TARGET_RT60[0], TARGET_RT60[1], 0.7] : TARGETS[room?.kind] ?? TARGETS.living;
+  const level = rt60 <= hi + 1e-9 ? 'green' : rt60 <= yellow + 1e-9 ? 'yellow' : 'red';
   return {
     rt60,
     absorption,
-    volume: layout.volume,
-    baseline: BASELINE_RT60,
+    volume: cal.volume,
+    baseline: cal.baseline,
     roomAbsorption: cal.room,
-    target: [...TARGET_RT60],
+    target: [lo, hi],
+    yellow,
     level,
     label: `Etterklang ≈ ${rt60.toFixed(2).replace('.', ',')} s`,
     breakdown,
     changes,
+    roomId: rid,
+    roomName: displayRoomName(layout, room),
+    // the data name alone, for the narrow badge (the HUD banner above already names the level)
+    roomShortName: room?.name ?? 'Stue/kjøkken',
+    roomKind: room?.kind ?? 'living',
+    mode: cal.mode,
+    estimated: !living,
+    surfaces: cal.surfaces ? cal.surfaces.map((p) => ({ ...p, m2: round(p.m2, 3) })) : null,
   };
+}
+
+/**
+ * The room's name for the badge and the panel: the data name, with the level added when another physical room has the
+ * same name (two «Soverom», two «Gang»: «Soverom (kjeller)», «Soverom (1. etasje)»). The living room as before.
+ * @param {Object} layout
+ * @param {Object|null} room
+ */
+function displayRoomName(layout, room) {
+  const name = room?.name ?? 'Stue/kjøkken';
+  if (!room) return name;
+  const twin = (layout?.house?.rooms || []).some((r) => r !== room && r.id !== room.id && isPhysical(r) && r.name === name);
+  if (!twin) return name;
+  const lv = layout.house.levelsById?.[room.levelId]?.name;
+  return lv ? `${name} (${lv.toLowerCase()})` : name;
+}
+
+const LIVE = new WeakMap();
+
+/**
+ * computeAcoustics per room, cached until the design's next change (a Map per design: the widget, the catalogue and
+ * the inspector ask for the same room every frame). A plain object without `on` is computed every time.
+ * @param {Object} design  DesignState
+ * @param {Object} home
+ * @param {string} [roomId]
+ */
+export function acousticsFor(design, home, roomId = LIVING_ROOM_ID) {
+  if (!design || typeof design.on !== 'function') return computeAcoustics(design, home, { roomId });
+  let c = LIVE.get(design);
+  if (!c) {
+    const entry = { map: new Map(), home };
+    design.on('change', () => entry.map.clear());
+    LIVE.set(design, entry);
+    c = entry;
+  }
+  if (c.home !== home) {
+    c.map.clear();
+    c.home = home;
+  }
+  let r = c.map.get(roomId);
+  if (!r) {
+    r = computeAcoustics(design, home, { roomId });
+    c.map.set(roomId, r);
+  }
+  return r;
 }
 
 /**

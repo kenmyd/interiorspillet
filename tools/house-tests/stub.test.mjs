@@ -132,7 +132,8 @@ const visKeys = ['update', 'setOverview', 'refresh', 'levelVisible', 'contentsVi
 vis.update(1 / 60, { camera: new THREE.PerspectiveCamera(), playerPosition: new THREE.Vector3(1.3, -2.55, 6.4) });
 vis.setOverview(true);
 vis.refresh();
-check('createVisibility: the API, hides nothing (every level and room content stays visible)', visKeys.every((k) => typeof vis[k] === 'function') && vis.enabled === false
+// steg 29 (Y1) filled the module in: without a player (the sandbox) it still hides nothing – tools/house-tests/visibility.test.mjs tests the culling
+check('createVisibility: the API, hides nothing without a player (every level and room content stays visible)', visKeys.every((k) => typeof vis[k] === 'function')
   && house.house.levels.every((lv) => vis.levelVisible(lv.id)) && house.house.rooms.every((rm) => vis.contentsVisible(rm.id))
   && Object.values(fakeHome.roots.levels).every((g) => g.visible) && Object.values(fakeHome.roots.rooms).every((rm) => rm.group.visible && rm.contents.visible));
 vis.dispose();

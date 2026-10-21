@@ -53,8 +53,10 @@ exterior level and sky colour.
 - Each `builtInLights` entry is `{ id, group, label, type: 'led-strip'|'spot'|'ceiling'|'pendant', from?, to?,
   position?, direction, angle?, penumbra?, colorK, lumens, emissiveMeshes, lightType? }` in world space. These are
   emission points, not mount points: your `atMount` test sees them as new-style entries.
-  - LED strips: `from`/`to` are 1.2 cm below the ceiling, at the diffuser. `led-overskap` (group `overskap`) also lists
-    the glass cabinet's emissive back panel in `emissiveMeshes`; that is the «light inside the cabinet».
+  - LED strips: `from`/`to` are 1.2 cm below the ceiling, at the diffuser. The light inside the glass cabinet is its own
+    entry `led-overskap-inne` (group `overskap`, k-overskap.ledInside, 2026-10-21): the three strips' diffusers and the
+    back panel's wash in `emissiveMeshes`, and `normal` / `rectHeight` / `stripSignature` that the LightManager uses as
+    given (a rect facing down and back, weighed by its flux only).
   - Spots: `position` is the lens inside the can's mouth, `direction` points to `aimAt`, `angle` = beamDeg/2. All four
     spots share one lens mesh and material (same group, dimmed together).
   - Lamps from the LAMPS models: there is one entry per `userData.model.lights` entry, with world position and
