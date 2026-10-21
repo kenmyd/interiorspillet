@@ -944,7 +944,9 @@ class App {
         }),
         h('div', { class: 'pb-row' }, h('button', { class: 'pb-btn', onclick: () => close(null) }, 'Avbryt'),
           h('button', { class: 'pb-btn is-primary', onclick: () => close(Object.fromEntries(Object.entries(inputs).map(([k, el]) => [k, el.value]))) }, okText)));
-      const wrap = h('div', { class: 'pb-dialog', onclick: (e) => e.target === wrap && close(null) }, card);
+      // the backdrop closes only on a press that started on it (the press that opened the dialog ends here too)
+      let downOnWrap = false;
+      const wrap = h('div', { class: 'pb-dialog', onpointerdown: (e) => (downOnWrap = e.target === wrap), onclick: (e) => e.target === wrap && downOnWrap && close(null) }, card);
       card.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') close(Object.fromEntries(Object.entries(inputs).map(([k, el]) => [k, el.value])));
         if (e.key === 'Escape') close(null);

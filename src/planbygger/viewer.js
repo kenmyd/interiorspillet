@@ -94,7 +94,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.domElement.className = 'pb-canvas3d';
   container.appendChild(renderer.domElement);
   setMaxAnisotropy(renderer.capabilities.getMaxAnisotropy());

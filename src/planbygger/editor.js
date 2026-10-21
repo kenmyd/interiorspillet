@@ -376,7 +376,8 @@ export class Editor {
       const idx = this.rooms?.found.at(p[0], p[1]) ?? -1;
       if (idx >= 0) {
         this.select({ kind: 'room', index: idx });
-        this._nameRoom(idx);
+        // after the press: the dialog must not get its pointerup / click
+        this.canvas.addEventListener('pointerup', () => setTimeout(() => this._nameRoom(idx), 0), { once: true });
       }
       return;
     }
