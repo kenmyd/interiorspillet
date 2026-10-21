@@ -1629,7 +1629,11 @@ def prep_utsikt():
                         'is the same landscape seen 8 m further west); use ost.jpg if you give the kitchen its own '
                         'backdrop layer or for a kitchen photo comparison.')),
             dict(id='nord', file='img/utsikt/nord.jpg', fileLow='img/utsikt/lav/nord.jpg', size=list(nord.size),
-                 facing='north', windows=['win-tv'], **pano_meta(Pn), center=CENTER_NORD, **cylinder_dims(Pn, 25),
+                 facing='north', windows=['win-tv', 'win-vask'], **pano_meta(Pn), center=CENTER_NORD, **cylinder_dims(Pn, 25),
+                 windowsNote=("win-vask (the laundry room's window in the basement, same north facade, 2.9 m lower) shows "
+                              'this photo through its own glass plane (exterior.js clipFor, hele huset steg 25). The '
+                              "basement bedroom's west window (win-sk) has no photo: sky and a ground patch outside as "
+                              'the fallback.'),
                  sourcePhotos=['20261018_082800.jpg'], cameraRotations={'082800': list(cam_n)},
                  notes=('TV-room strip window (win-tv, wall x = 0, sill 1.64 m): yellow birch leaves close to the '
                         'glass (left, az 135..160), the light grey-blue commercial building with a flat roof and a '
