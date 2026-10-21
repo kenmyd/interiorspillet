@@ -30,7 +30,7 @@
  *   7. pieces not connected to the main wall network are dropped (furniture, labels), exterior walls marked by a flood
  *      fill from the image border
  */
-import { luma, histogram, threshold, open, longRuns, subtract, components, raster, minNear, sample } from './image.js';
+import { luma, histogram, threshold, open, longRuns, subtract, components, raster, minNear, sample, rotateImage } from './image.js';
 
 export const DETECT_DEFAULTS = Object.freeze({
   /** null = automatic (valley after the black peak) */
@@ -60,6 +60,8 @@ export const DETECT_DEFAULTS = Object.freeze({
   minNetworkShare: 0.12,
   /** below this resolution the plan is detected on an upsampled copy (px per metre) */
   minPxPerM: 50,
+  /** degrees the plan is skewed by (estimateSkew): it is rotated back first, the result is in the straightened frame */
+  rotate: 0,
 });
 
 const H = 'h';
@@ -68,8 +70,14 @@ const V = 'v';
 /** Point at along-coordinate s on a piece / wall line. */
 const pt = (seg, s, off = 0) => (seg.axis === H ? [s, seg.c + off] : [seg.c + off, s]);
 
-/** The threshold between ink and paper: the deepest valley of the smoothed histogram in 15 … 100 after the black peak. */
-export function autoDarkThreshold(hist) {
+/**
+ * The threshold between the walls' ink and everything lighter: the FIRST valley of the smoothed histogram after the
+ * black peak – the search stops where the histogram climbs into the next mode (dark grey furniture, a blurred scan's
+ * grey edges), so a near-black table is not taken for a wall. At most 100.
+ * firstValley = false: the deepest valley up to 100 instead – for an image we upsampled ourselves, where a thin wall
+ * has few pure-ink pixels and the blended edges form a mode of their own that belongs to the wall.
+ */
+export function autoDarkThreshold(hist, { firstValley = true } = {}) {
   let peak = 0;
   for (let i = 0; i < 60; i++) if (hist[i] > hist[peak]) peak = i;
   const sm = (i) => {
@@ -77,14 +85,17 @@ export function autoDarkThreshold(hist) {
     for (let k = -4; k <= 4; k++) s += hist[Math.max(0, Math.min(255, i + k))];
     return s;
   };
-  let best = Math.max(peak + 8, 15);
+  let total = 0;
+  for (let i = 0; i < 256; i++) total += hist[i];
+  const start = Math.max(peak + 8, firstValley ? 12 : 15);
+  let best = start;
   let bestV = Infinity;
-  for (let t = Math.max(peak + 8, 15); t <= 100; t++) {
+  for (let t = start; t <= 100; t++) {
     const v = sm(t);
     if (v < bestV - 1e-9) {
       bestV = v;
       best = t;
-    }
+    } else if (firstValley && t > best + 6 && v > bestV * 1.6 + total * 0.0002) break; // the next mode begins
   }
   // the valley is a range: take its middle (antialiased wall edges are split near half coverage)
   let lo = best;
@@ -242,6 +253,68 @@ export function autoWallTone(grey, hist, paper, { r = 1, minRun = 25 } = {}) {
   return best && best.n > total * 0.002 ? best.band : null;
 }
 
+/**
+ * How many degrees the walls of a plan are turned from the image axes (a skewed scan): the dark pixels (subsampled)
+ * are turned back by each candidate angle and binned by row and by column; aligned walls give the sharpest profile
+ * (the largest sum of squared bin counts). Coarse steps of 0.5° within ±maxDeg, then 0.05° around the best.
+ * rotateImage(img, −result) straightens the plan. Classical projection-profile deskew, no learning.
+ */
+export function estimateSkew(img, { maxDeg = 10 } = {}) {
+  const grey = luma(img);
+  const t = autoDarkThreshold(histogram(grey));
+  const { w, h } = grey;
+  let count = 0;
+  for (let i = 0; i < grey.data.length; i++) if (grey.data[i] < t) count++;
+  if (count < 50) return 0;
+  const stride = Math.max(1, Math.floor(Math.sqrt(count / 120000)));
+  const xs = [];
+  const ys = [];
+  for (let y = 0; y < h; y += stride) {
+    for (let x = 0; x < w; x += stride) {
+      if (grey.data[y * w + x] < t) {
+        xs.push(x - w / 2);
+        ys.push(y - h / 2);
+      }
+    }
+  }
+  const n = xs.length;
+  const R = Math.ceil(Math.hypot(w, h) / 2) + 2;
+  const binsX = new Float64Array(2 * R + 1);
+  const binsY = new Float64Array(2 * R + 1);
+  const score = (deg) => {
+    const a = (-deg * Math.PI) / 180;
+    const c = Math.cos(a);
+    const sn = Math.sin(a);
+    binsX.fill(0);
+    binsY.fill(0);
+    for (let i = 0; i < n; i++) {
+      binsX[Math.round(c * xs[i] - sn * ys[i]) + R]++;
+      binsY[Math.round(sn * xs[i] + c * ys[i]) + R]++;
+    }
+    let s2 = 0;
+    for (let i = 0; i < binsX.length; i++) s2 += binsX[i] * binsX[i] + binsY[i] * binsY[i];
+    return s2;
+  };
+  let best = 0;
+  let bestS = score(0);
+  for (let d = -maxDeg; d <= maxDeg + 1e-9; d += 0.5) {
+    const v = score(d);
+    if (v > bestS) {
+      bestS = v;
+      best = d;
+    }
+  }
+  const coarse = best;
+  for (let d = coarse - 0.5; d <= coarse + 0.5 + 1e-9; d += 0.05) {
+    const v = score(d);
+    if (v > bestS) {
+      bestS = v;
+      best = d;
+    }
+  }
+  return Math.round(best * 100) / 100;
+}
+
 /** Bilinear upsampling of an RGBA image by an integer factor. */
 export function upsample(img, f) {
   const { width: w, height: h, data: d } = img;
@@ -285,6 +358,11 @@ export function detectPlan(img, options = {}) {
   const o = { ...DETECT_DEFAULTS, ...options };
   const ppm = o.pxPerM;
   if (!(ppm > 0)) throw new Error('detectPlan: pxPerM (skalaen) mangler');
+  // a skewed plan (a scan, a photo of a sheet): straightened first; walls and openings come back in that frame
+  if (Math.abs(o.rotate || 0) > 0.01 && !options._rotated) {
+    const r = detectPlan(rotateImage(img, -o.rotate), { ...options, _rotated: true });
+    return { ...r, stats: { ...r.stats, rotated: o.rotate } };
+  }
   // a low-resolution plan (an interior wall of 10 cm under ~5 px) is detected on a bilinear 2–3× copy: the opening
   // that removes text would otherwise remove the thin walls too; the result is scaled back
   if (ppm < o.minPxPerM && !options._scaled) {
@@ -308,7 +386,7 @@ export function detectPlan(img, options = {}) {
   const paper = paperGrey(hist);
   const tone = Array.isArray(o.wallTone) && o.wallTone.length === 2 ? [Math.max(0, o.wallTone[0]), Math.min(255, o.wallTone[1])] : null;
   // with a wall tone: «dark» is the band, and the clean-profile tests only need paper lighter than the band
-  const darkT = tone ? Math.min(tone[0], 255) : o.darkThreshold ?? autoDarkThreshold(hist);
+  const darkT = tone ? Math.min(tone[0], 255) : o.darkThreshold ?? autoDarkThreshold(hist, { firstValley: !o._scaled });
   const isWall = tone ? (v) => v >= tone[0] && v <= tone[1] : (v) => v < darkT;
   let ink = 0;
   if (tone) ink = Math.round((tone[0] + tone[1]) / 2);
@@ -830,6 +908,10 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
       const g1 = dir > 0 ? face : e;
       const res = analyse(A, g0, g1);
       if (!res) continue;
+      // an empty gap (no lines, no arc) is a passage only for a piece that hangs on the wall network at its other end –
+      // a free-standing dark block (a table) near a wall must not grow into a wall
+      const plain = res.ops.length > 0 && res.ops.every((op) => op.type === 'opening' && !(op.symbol?.lines > 0));
+      if (plain && !A.joints[1 - k]) continue;
       for (const op of res.ops) openings.push({ ...op, seg: A });
       A[key] = P.c;
       A.joints[k] = P;

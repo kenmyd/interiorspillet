@@ -23,6 +23,8 @@ trykk «Gå rundt i 3D».
 
 1. **Last opp.** PNG, JPG eller WebP. PDF går også: første side tegnes med pdf.js, som hentes fra jsDelivr bare når
    noen faktisk åpner en PDF, så bygget får ingen ny avhengighet. Siden har en slippsone og en eksempelknapp.
+   En skjev plan (skannet eller fotografert rett ovenfra) rettes opp med en gang, se «Skjeve planer» under. Vinkelen
+   står i etasjepanelet («Rotasjon», med «Rett opp» for å finne den på nytt).
 2. **Skala.** Kunden klikker på en målelinje. Linja festes til endene sine, også over den hvite tekstboksen midt på
    (`scale.js traceLine`), og kunden skriver bare inn tallet som står på den. Det går også an å klikke to vilkårlige
    punkter. «Foreslå automatisk» gir et forslag uten OCR. Først antas den tynneste vanlige veggen å være 10 cm. Så
@@ -48,8 +50,17 @@ trykk «Gå rundt i 3D».
 
 Alle konstantene står i `DETECT_DEFAULTS` i `src/planbygger/detect.js`. Et mål i meter blir piksler gjennom skalaen.
 
-1. **Gråtoner og blekkmaske.** Terskelen ligger midt i den bredeste dalen etter det svarte toppunktet i histogrammet.
-   Den ble 26 på 1. etasje og 38 i kjelleren. Grå møbler, benker og skravur blir dermed ikke vegg.
+0. **Skjeve planer** (`estimateSkew`). Vinkelen er den der de mørke pikslene hoper seg opp i færrest rader og
+   kolonner (projeksjonsprofiler: summen av kvadrerte radtellinger, søkt over ±10° i steg på 0,5° og så 0,05°). Bildet
+   dreies tilbake bilineært før alt annet (`rotateImage`), og planens ramme er det opprettede bildet. Testet:
+   1. etasje dreid 1,5°, −3,2° og 6°, kjelleren 2,2° og en syntetisk plan −4° – vinkelen ble funnet eksakt (± 0,05°), og
+   gjenkjenningen ga de samme veggene, dørene og vinduene, under 0,3 cm fra den rette planen. Rette planer får 0°, og
+   bildet røres ikke da. Perspektiv (et skrått foto) rettes ikke.
+1. **Gråtoner og blekkmaske.** Terskelen ligger i den første dalen etter det svarte toppunktet i histogrammet: søket
+   stopper der kurven stiger mot neste topp. Den ble 11 på 1. etasje og 12 i kjelleren. Grå møbler, benker og
+   skravur blir dermed ikke vegg, heller ikke når en dreiing har gjort kantene grå (da steg den gamle regelen, «midt i
+   den bredeste dalen», til 89 og tok med salongbordet). På en kopi vi selv har skalert opp (planer under 50 px/m)
+   brukes den dypeste dalen: der er de blandede kantpikslene en del av veggen (terskel 87 ved 35 px/m).
    - **Grå vegger** (lysere enn den svarte teksten): finner den svarte terskelen nesten ingen vegger, prøves toppene i
      histogrammet som et grått bånd ut til dalene på hver side. Båndet som gir flest lange veggløp, vinner
      (`autoWallTone`).
@@ -78,8 +89,9 @@ Alle konstantene står i `DETECT_DEFAULTS` i `src/planbygger/detect.js`. Et mål
      buen er tegnet: ekte dører fikk 0,92–1,0, og de beste feiltreffene 0,46. Det som er igjen av hullet ved siden av
      døra, blir sidefelt (vindu) hvis det er over 30 cm.
    - **Vindu eller åpning:** linjer langs veggen i båndet gir vindu i en yttervegg og åpning i en innervegg.
-   - **Tomme hull:** et tomt hull under 1,3 m blir en åpning. Lengre tomme hull er ikke åpninger. Et hull med linjer kan
-     være opptil 14 m (glassvegger og vindusrekker).
+   - **Tomme hull:** et tomt hull under 1,3 m blir en åpning, men bare når biten henger fast i veggnettet i den andre
+     enden. En frittstående mørk blokk (et bord) ved en vegg vokser altså ikke inn i veggen. Lengre tomme hull er ikke
+     åpninger. Et hull med linjer kan være opptil 14 m (glassvegger og vindusrekker).
 7. **Nettverk og ytterside.** Vegger som ikke henger sammen med hovednettverket, fjernes (møbler, tekst). Yttervegger
    finnes ved å flomfylle papiret fra bildekanten med veggene lukket.
 
@@ -133,6 +145,17 @@ vinduer og dører som åpnes. Spilleren går med `PlayerController`, `Input`, `C
 Lyset er enkelt: himmel, sol fra sør og én lampe per rom. Stua i spillet (`shell.js`, `kitchen.js`, `LightManager`,
 designet) brukes ikke, siden et kundehus ikke har den.
 
+## Testene
+
+- `node tools/test-planbygger.mjs` – 121 sjekker i Node, uten nettleser: rasteroperasjoner, rom fra vegger, eksport
+  mot spillets validator, syntetiske planer med fasit (35–120 px/m, støy, grå vegger, 2× og 4× oppløsning), de ekte
+  planene mot eierens hus, skala, spillets `buildLayout` + `buildRooms`, rettingene, etasjer og trapper, og skjeve
+  planer.
+- `node tools/test-planbygger-browser.mjs --lock` – siden ende til ende i en hodeløs Edge (egen Vite-server på port
+  5272, tar GPU-låsen): eksempelplanen, klikk på målelinja, forslaget, dra en vegg og angre, navngi et rom, 3D med 0 feil
+  i validatoren, gå med W, åpne en dør med E, og en 2,5° skjev plan lastet opp gjennom filfeltet (rettes opp og gir
+  samme forslag). Skjermbilder i `.shots/planbygger/`.
+
 ## Målinger mot eierens hus
 
 Fasiten er huset som ble bygd for hånd i natt (`research/house/10-hoved-rom.json`, `30-kjeller.json` og stua i
@@ -159,7 +182,7 @@ _Generert av `node tools/planbygger-measure.mjs --write`._
 
 ### 1. etasje
 
-Skala fra målelinja «12,21 m» (628 px): 51,43 px/m. Gjenkjenningen tok 634 ms og fant 11 vegger, 3 dører, 7 vinduer og 1 åpninger.
+Skala fra målelinja «12,21 m» (628 px): 51,43 px/m. Gjenkjenningen tok 689 ms og fant 11 vegger, 3 dører, 7 vinduer og 1 åpninger.
 
 **Vegger mot dataene slik de er bygd**
 
@@ -201,20 +224,20 @@ Rettingene (7 handlinger i editoren): rommet «Bad» (bathroom); rommet «Gang»
 
 ### Kjeller
 
-Skala fra målelinja «10,50 m» (633 px): 60,29 px/m. Gjenkjenningen tok 524 ms og fant 17 vegger, 6 dører, 6 vinduer og 1 åpninger.
+Skala fra målelinja «10,50 m» (633 px): 60,29 px/m. Gjenkjenningen tok 440 ms og fant 18 vegger, 6 dører, 6 vinduer og 1 åpninger.
 
 **Vegger mot dataene slik de er bygd**
 
 | | Automatisk | Etter retting |
 |---|---|---|
 | Veggflater funnet (innen 15 cm, av lengden) | 89 % | 89 % |
-| Snittavvik, rå | 13,2 cm | 13,2 cm |
-| Median / p90 / maks, rå | 13,5 / 14,0 / 14,5 cm | 13,5 / 14,0 / 14,5 cm |
-| Beste parallellforskyvning (x, z) | 13,6, 13,1 cm | 13,6, 13,1 cm |
+| Snittavvik, rå | 12,9 cm | 12,9 cm |
+| Median / p90 / maks, rå | 13,0 / 13,6 / 14,2 cm | 13,0 / 13,6 / 14,2 cm |
+| Beste parallellforskyvning (x, z) | 13,0, 13,0 cm | 13,0, 13,0 cm |
 | Snittavvik etter forskyvning | 0,5 cm | 0,5 cm |
-| Median / p90 / maks etter forskyvning | 0,3 / 0,8 / 6,4 cm | 0,3 / 0,8 / 6,4 cm |
+| Median / p90 / maks etter forskyvning | 0,2 / 1,0 / 6,5 cm | 0,2 / 1,0 / 6,5 cm |
 | Veggflater funnet etter forskyvning | 89 % | 89 % |
-| Ekstra veggflate (ikke i fasiten) | 11,42 m av 104,5 m | 11,42 m av 104,5 m |
+| Ekstra veggflate (ikke i fasiten) | 11,44 m av 104,6 m | 11,44 m av 104,6 m |
 
 **Dører, vinduer og åpninger** (mot dataene, etter forskyvning; funnet = senteret innen 60 cm på en parallell vegg)
 
@@ -223,8 +246,8 @@ Skala fra målelinja «10,50 m» (633 px): 60,29 px/m. Gjenkjenningen tok 524 ms
 | Dører | 7 | 6 funnet, 6 riktig type, 6 slår riktig vei (6 foreslått) | 7 funnet, 7 riktig type, 7 slår riktig vei (7 foreslått) |
 | Vinduer | 6 | 6 funnet, 6 riktig type (6 foreslått) | 6 funnet, 6 riktig type (6 foreslått) |
 | Åpninger uten dør | 1 | 1 funnet, 1 riktig type (1 foreslått) | 1 funnet, 1 riktig type (1 foreslått) |
-| Senteravvik, snitt | | 8,2 cm | 8,4 cm |
-| Breddeavvik, snitt | | 7,5 cm | 6,9 cm |
+| Senteravvik, snitt | | 8,3 cm | 8,5 cm |
+| Breddeavvik, snitt | | 7,8 cm | 7,3 cm |
 | Ikke funnet | | `door-bod-2` | – |
 | Ekstra | | 0 | 0 |
 
@@ -232,13 +255,13 @@ Skala fra målelinja «10,50 m» (633 px): 60,29 px/m. Gjenkjenningen tok 524 ms
 
 | Rom (fasit) | Areal fasit | Automatisk: areal (IoU) | Etter retting: areal (IoU) |
 |---|---|---|---|
-| Gang | 13,08 m² | 12,21 m² (93 %), navn ✓, type ✓ | 12,21 m² (93 %), navn ✓, type ✓ |
-| Vaskerom | 10,26 m² | 10,66 m² (95 %), «Soverom 1», type bedroom | 10,66 m² (95 %), navn ✓, type ✓ |
-| Soverom | 7,44 m² | 7,40 m² (99 %), «Soverom 2», type ✓ | 7,40 m² (99 %), navn ✓, type ✓ |
-| Kjellerstue | 20,60 m² | 20,59 m² (100 %), «Stue», type ✓ | 20,59 m² (100 %), navn ✓, type ✓ |
-| Entré | 6,87 m² | 6,49 m² (94 %), navn ✓, type ✓ | 6,49 m² (94 %), navn ✓, type ✓ |
-| Bod | 3,47 m² | 3,83 m² (88 %), «Bod 1», type ✓ | 3,83 m² (88 %), navn ✓, type ✓ |
-| Bod (grå) | 9,91 m² | 9,89 m² (100 %), «Bod 2», type ✓ | 9,89 m² (100 %), navn ✓, type ✓ |
+| Gang | 13,08 m² | 12,23 m² (94 %), navn ✓, type ✓ | 12,23 m² (94 %), navn ✓, type ✓ |
+| Vaskerom | 10,26 m² | 10,70 m² (95 %), «Soverom 1», type bedroom | 10,70 m² (95 %), navn ✓, type ✓ |
+| Soverom | 7,44 m² | 7,46 m² (100 %), «Soverom 2», type ✓ | 7,46 m² (100 %), navn ✓, type ✓ |
+| Kjellerstue | 20,60 m² | 20,59 m² (99 %), «Stue», type ✓ | 20,59 m² (99 %), navn ✓, type ✓ |
+| Entré | 6,87 m² | 6,50 m² (93 %), navn ✓, type ✓ | 6,50 m² (93 %), navn ✓, type ✓ |
+| Bod | 3,47 m² | 3,84 m² (90 %), «Bod 1», type ✓ | 3,84 m² (90 %), navn ✓, type ✓ |
+| Bod (grå) | 9,91 m² | 9,90 m² (100 %), «Bod 2», type ✓ | 9,90 m² (100 %), navn ✓, type ✓ |
 | Bod under terrassen | 10,54 m² | 10,67 m² (98 %), «Bod 3», type ✓ | 10,67 m² (98 %), navn ✓, type ✓ |
 
 Validatoren (`validateHouse`): Automatisk: 0 feil, 0 advarsler; Etter retting: 0 feil, 0 advarsler.
@@ -252,8 +275,8 @@ Kjelleren er plassert bare med justeringsregelen «ytterhjørnet NØ mot hovedet
 | | Automatisk | Etter retting |
 |---|---|---|
 | Kjelleren: veggflater funnet (innen 15 cm) | 92 % | 92 % |
-| Kjelleren: snittavvik / median / p90 | 0,9 / 0,3 / 0,9 cm | 0,9 / 0,3 / 0,9 cm |
-| Kjelleren: rest-forskyvning (x, z) som regelen ikke fanget | 0,0, 0,0 cm | 0,0, 0,0 cm |
+| Kjelleren: snittavvik / median / p90 | 0,9 / 0,2 / 1,1 cm | 0,9 / 0,2 / 1,1 cm |
+| Kjelleren: rest-forskyvning (x, z) som regelen ikke fanget | 0,0, -0,2 cm | 0,0, -0,2 cm |
 | 1. etasje: snittavvik | 1,7 cm | 1,7 cm |
 | Dører i hele huset (fasit 11) | 10 funnet, 9 slår riktig vei | 11 funnet, 11 slår riktig vei |
 | Vinduer i hele huset (fasit 13) | 13 funnet | 13 funnet |
@@ -294,6 +317,7 @@ Rettingene i hele huset er de to listene over pluss trappa (23 handlinger): trap
 - målelinjer, tekst og skravur i trappa;
 - oppløsning fra ca. 35 px/m (oppskalert) til minst 200 px/m, også med pikselstøy (testet til ±10 grånivåer);
 - grå vegger (automatisk, eller ved å prøve veggfargen);
+- skjeve planer opptil ±10° (rettes opp automatisk);
 - flere etasjer, justert mot hverandre, med en rett trapp mellom dem;
 - dører med kvartsirkel (heltrukket eller stiplet);
 - vinduer som linjer i veggen;
@@ -314,8 +338,8 @@ Rettingene i hele huset er de to listene over pluss trappa (23 handlinger): trap
 
 **Fungerer ikke ennå:**
 
-- **Skannede eller fotograferte planer.** Skjevhet, perspektiv, ujevnt lys og JPEG-støy rundt tynne linjer. Det ville
-  krevd retting av perspektivet (fire hjørner) og en adaptiv terskel.
+- **Fotograferte planer og dårlige skanninger.** Skjevheten rettes opp, men perspektiv, ujevnt lys og JPEG-støy rundt
+  tynne linjer gjenstår. Det ville krevd retting av perspektivet (fire hjørner) og en adaptiv terskel.
 - **Arkitekttegninger med vegger som to tynne konturlinjer**, med eller uten skravur. Det ville krevd morfologisk
   lukking mellom parallelle linjer.
 - **Skrå vegger.** Gjenkjenningen finner bare vegger langs aksene. Editoren og eksporten støtter skrå vegger, så de kan
@@ -345,7 +369,7 @@ Rettingene i hele huset er de to listene over pluss trappa (23 handlinger): trap
 2. **Kontoer og lagring** (1–2 uker): én innlogging per kunde (`server.mjs` har bare ett felles passord), lagring av
    prosjekt og husfil på serveren, og sletting (en plantegning er personopplysninger etter GDPR).
 3. **Flere plantyper** (2–4 uker). Det trengs et testsett på 30–50 ekte kundeplaner. Dette må fungere:
-   - rette opp skannede planer;
+   - perspektiv og ujevnt lys i fotograferte og skannede planer (skjevheten rettes allerede opp);
    - vegger tegnet som konturlinjer;
    - skrå vegger i gjenkjenningen;
    - dobbeltdører og skyvedører.
@@ -406,6 +430,7 @@ omveier. Dette ville gjort omveiene unødvendige:
 | `src/planbygger/worker.js` | gjenkjenningen i en Web Worker |
 | `src/planbygger/shims/` | nettleserutgaver av `node:fs`, `path` og `url`, bare for `house.mjs` |
 | `tools/test-planbygger.mjs` | testene (`node tools/test-planbygger.mjs`) |
+| `tools/test-planbygger-browser.mjs` | siden ende til ende i hodeløs Edge (`--lock` tar GPU-låsen) |
 | `tools/planbygger-measure.mjs` | målingene over (`--write` oppdaterer denne fila) |
 | `tools/planbygger-truth.mjs` | sammenligningen med fasiten |
 | `tools/planbygger-corrections.mjs` | rettingene som editorhandlinger |

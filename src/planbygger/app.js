@@ -12,9 +12,9 @@ import demoPlanUrl from '../../plantegning.png?url';
 import { createDoc, createLevel, applyDetection, history, rescaleLevel, ROOM_KINDS, DEFAULT_SETTINGS, wallLength, splitWall, checkLevel, stairGeometry } from './model.js';
 import { Editor, TOOL_HINT } from './editor.js';
 import { exportHouse, summary, ownerOnly, baseSpec, alignLevel } from './export.js';
-import { luma } from './image.js';
+import { luma, rotateImage } from './image.js';
 import { traceLine } from './scale.js';
-import { detectPlan } from './detect.js';
+import { detectPlan, estimateSkew } from './detect.js';
 import { suggestScale } from './scale.js';
 import { round, slug, add, sub } from './geom.js';
 
@@ -38,6 +38,8 @@ function h(tag, attrs = {}, ...kids) {
   return el;
 }
 const fmt = (v, d = 2) => (Number.isFinite(v) ? v.toFixed(d).replace('.', ',') : '–');
+/** An estimated skew in degrees; below 0.1° the image is left as it is (no resampling for nothing). */
+const skewOf = (deg) => (Number.isFinite(deg) && Math.abs(deg) >= 0.1 ? deg : 0);
 const num = (s) => {
   const v = parseFloat(String(s).replace(',', '.'));
   return Number.isFinite(v) ? v : null;
@@ -139,7 +141,12 @@ function runWorker(kind, img, opts) {
   }
   if (!worker) {
     // no module workers: on the main thread
-    return Promise.resolve().then(() => (kind === 'detect' ? detectPlan(img, opts) : suggestScale(img)));
+    return Promise.resolve().then(() => {
+      if (kind === 'detect') return detectPlan(img, opts);
+      if (kind === 'skew') return estimateSkew(img);
+      if (kind === 'rotate') return rotateImage(img, opts.deg);
+      return suggestScale(img);
+    });
   }
   const id = ++workerSeq;
   return new Promise((resolve, reject) => {
@@ -156,7 +163,7 @@ class App {
     this.root = root;
     this.doc = null;
     this.li = 0;
-    this.images = new Map(); // level id → { bitmap, imageData, grey }
+    this.images = new Map(); // level id → { bitmap, imageData, grey, rotation, original: { bitmap, imageData } }
     this.hist = history(120);
     this.sel = null;
     this.viewer = null;
@@ -326,6 +333,7 @@ class App {
       this._afterLevelChange();
       this.setTool('scale');
       this._saveSoon();
+      if (lv.image.rotation) this.toast(`Planen står ${fmt(Math.abs(lv.image.rotation), 1)}° skjevt – den er rettet opp. Vinkelen kan endres under Etasje.`, 7);
     } catch (err) {
       console.error(err);
       this.toast(`Klarte ikke å lese fila: ${err.message}`);
@@ -344,10 +352,50 @@ class App {
     g.fillRect(0, 0, c.width, c.height);
     g.drawImage(bitmap, 0, 0);
     const imageData = g.getImageData(0, 0, c.width, c.height);
-    const grey = luma(imageData);
     if (name || !lv.image) lv.image = { ...(lv.image || {}), name: name ?? lv.image?.name ?? 'plan', width: bitmap.width, height: bitmap.height, pxPerM: name ? null : lv.image?.pxPerM ?? null };
-    this.images.set(lv.id, { bitmap, imageData, grey });
+    // a crooked scan or photo is straightened once (estimateSkew); a stored level keeps its rotation
+    if (name) lv.image.rotation = skewOf(await runWorker('skew', imageData).catch(() => 0));
+    this.images.set(lv.id, await this._working({ bitmap, imageData }, lv.image.rotation ?? 0));
     if (store) await idbPut(lv.id + ':' + lv.image.name, blob);
+  }
+  /**
+   * The working image of a level: the original turned back by the level's rotation. The editor, the scale line, the
+   * wall tone and the detection all use it, so the plan frame is the straightened image (same size, same centre).
+   */
+  async _working(original, deg) {
+    if (!deg) return { bitmap: original.bitmap, imageData: original.imageData, grey: luma(original.imageData), rotation: 0, original };
+    const r = await runWorker('rotate', original.imageData, { deg: -deg });
+    const imageData = new ImageData(r.data, r.width, r.height);
+    return { bitmap: await createImageBitmap(imageData), imageData, grey: luma(imageData), rotation: deg, original };
+  }
+  /** A new rotation for a level's image. The walls were found in the old frame, so they are found anew. */
+  async _setRotation(L, deg) {
+    const im = this.images.get(L.id);
+    if (!im || Math.abs((L.image.rotation ?? 0) - deg) < 0.005) return;
+    if (L.walls.length && !(await this._confirm('Rette opp planen på nytt?', 'Veggene, dørene og vinduene ble funnet i den gamle vinkelen og erstattes med et nytt automatisk forslag. Romnavnene beholdes. Du kan angre.'))) {
+      this._renderSide();
+      return;
+    }
+    this._busy('Retter opp planen …');
+    try {
+      this.snapshot();
+      L.image.rotation = deg;
+      this.images.set(L.id, await this._working(im.original, deg));
+      this.changed('Rotasjon');
+      if (L.image.pxPerM) await this.detect({ snapshot: false });
+      this.editor.render();
+    } finally {
+      this._busy(null);
+    }
+  }
+  /** After undo / redo: the working images follow the levels' rotations. */
+  async _syncImages() {
+    for (const lv of this.doc.levels) {
+      const im = this.images.get(lv.id);
+      const deg = lv.image?.rotation ?? 0;
+      if (im && Math.abs(im.rotation - deg) > 0.005) this.images.set(lv.id, await this._working(im.original, deg));
+    }
+    this.editor.render();
   }
 
   // ---- tools, steps
@@ -460,7 +508,7 @@ class App {
   }
 
   /** Runs the detection on the level's plan (replaces its walls and openings, keeps the room names). */
-  async detect() {
+  async detect({ snapshot = true } = {}) {
     const L = this.level;
     const im = this.images.get(L.id);
     if (!im || !L.image?.pxPerM) return;
@@ -468,7 +516,7 @@ class App {
     try {
       const t0 = performance.now();
       const det = await runWorker('detect', im.imageData, { pxPerM: L.image.pxPerM, ...(L.detect || {}) });
-      this.snapshot();
+      if (snapshot) this.snapshot();
       applyDetection(L, det, L.image.pxPerM, this.doc.settings);
       const ms = performance.now() - t0;
       this.changed('Gjenkjenning');
@@ -560,6 +608,7 @@ class App {
     this.editor.refresh();
     this._refreshAll();
     this._saveSoon();
+    this._syncImages();
   }
   redo() {
     const d = this.hist.redo(this.doc);
@@ -568,6 +617,7 @@ class App {
     this.editor.refresh();
     this._refreshAll();
     this._saveSoon();
+    this._syncImages();
   }
   select(sel) {
     this.sel = sel;
@@ -882,6 +932,17 @@ class App {
         if (c && c >= 2 && c <= 100) this.thickness = c / 100;
       }, 'cm'),
       h('p', { class: 'pb-note' }, L.image?.pxPerM ? `Skala: ${fmt(L.image.pxPerM, 1)} px per meter${L.image.scaleRef ? ` (målt på ${fmt(L.image.scaleRef.metres)} m)` : ''}.` : 'Skalaen er ikke satt.'),
+      L.image ? h('div', { class: 'pb-field' }, h('label', { title: 'Hvor skjevt planen står i bildet (skannet eller fotografert). Den rettes opp før gjenkjenningen.' }, 'Rotasjon'),
+        h('span', { class: 'pb-row', style: 'margin:0' },
+          h('input', { type: 'text', inputmode: 'decimal', value: fmt(L.image.rotation ?? 0, 2), style: 'width:64px', onchange: (e) => {
+            const d = num(e.target.value);
+            if (d == null || Math.abs(d) > 45) return;
+            this._setRotation(L, d);
+          } }), h('span', { class: 'pb-unit' }, '°'),
+          h('button', { class: 'pb-btn is-small', title: 'Finn skjevheten automatisk', onclick: async () => {
+            const im = this.images.get(L.id);
+            if (im) this._setRotation(L, skewOf(await runWorker('skew', im.original.imageData)));
+          } }, 'Rett opp'))) : null,
       L.image ? h('div', { class: 'pb-field' }, h('label', {}, `Veggfarge: ${L.detect?.wallTone ? `grå ${L.detect.wallTone.join('–')}` : L.detectInfo ?? 'automatisk'}`),
         h('span', { class: 'pb-row', style: 'margin:0' },
           h('button', { class: 'pb-btn is-small', title: 'For planer med grå vegger: klikk på en vegg i planen', onclick: () => this.setTool('tone') }, 'Velg'),
@@ -1141,10 +1202,11 @@ class App {
     for (const lv of this.doc.levels) {
       const im = this.images.get(lv.id);
       if (!im) continue;
+      const bm = im.original?.bitmap ?? im.bitmap;
       const c = document.createElement('canvas');
-      c.width = im.bitmap.width;
-      c.height = im.bitmap.height;
-      c.getContext('2d').drawImage(im.bitmap, 0, 0);
+      c.width = bm.width;
+      c.height = bm.height;
+      c.getContext('2d').drawImage(bm, 0, 0);
       images[lv.id] = c.toDataURL('image/png');
     }
     download(`${slug(this.doc.name, 'plan')}-planbygger.json`, JSON.stringify({ format: 'planbygger/1', doc: this.doc, images }));

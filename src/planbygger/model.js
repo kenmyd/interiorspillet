@@ -6,7 +6,8 @@
  *     settings: { north, ceiling, doorHeight, windowSill, windowHeight, exteriorMin, origin },
  *     levels: [{
  *       id, name, floorY, ceiling,
- *       image: { name, width, height, pxPerM, scaleRef: { a: [px], b: [px], metres } | null },
+ *       image: { name, width, height, pxPerM, scaleRef: { a: [px], b: [px], metres } | null, rotation? },
+ *              rotation: degrees the image is skewed by; the plan frame is the image turned back (straightened)
  *       offset: [dx, dy],                 metres: where this level's plan frame lies in the main level's frame
  *       walls:    [{ id, a: [x, y], b: [x, y], t }]                          plan metres (pixels / pxPerM), a → b
  *       openings: [{ id, wall, type: 'door'|'window'|'opening', at, width, height?, sill?,

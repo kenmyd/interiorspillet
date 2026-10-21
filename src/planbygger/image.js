@@ -277,3 +277,49 @@ export function medianGrey(grey) {
   }
   return 255;
 }
+
+/**
+ * An RGBA image rotated by `deg` degrees about its centre (positive = clockwise on the screen, the image's y points
+ * down), same size, bilinear, the uncovered corners white. A source point p lands at R(deg)·(p − c) + c, with R the
+ * rotation matrix [cos −sin; sin cos] – the same sense as canvas rotate().
+ */
+export function rotateImage(img, deg) {
+  const { width: w, height: h, data: d } = img;
+  const out = new Uint8ClampedArray(w * h * 4).fill(255);
+  const t = (deg * Math.PI) / 180;
+  const cos = Math.cos(t);
+  const sin = Math.sin(t);
+  const cx = w / 2;
+  const cy = h / 2;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      // inverse map: the source point whose image is (x, y)
+      const dx = x + 0.5 - cx;
+      const dy = y + 0.5 - cy;
+      const sx = cos * dx + sin * dy + cx - 0.5;
+      const sy = -sin * dx + cos * dy + cy - 0.5;
+      if (sx < 0 || sy < 0 || sx > w - 1 || sy > h - 1) continue;
+      const x0 = Math.floor(sx);
+      const y0 = Math.floor(sy);
+      const x1 = Math.min(w - 1, x0 + 1);
+      const y1 = Math.min(h - 1, y0 + 1);
+      const fx = sx - x0;
+      const fy = sy - y0;
+      const o = (y * w + x) * 4;
+      for (let c = 0; c < 4; c++) {
+        const a = d[(y0 * w + x0) * 4 + c] * (1 - fx) + d[(y0 * w + x1) * 4 + c] * fx;
+        const b = d[(y1 * w + x0) * 4 + c] * (1 - fx) + d[(y1 * w + x1) * 4 + c] * fx;
+        out[o + c] = a * (1 - fy) + b * fy;
+      }
+    }
+  }
+  return { width: w, height: h, data: out };
+}
+
+/** Where rotateImage(img, deg) puts the source point p (and back with −deg). */
+export function rotatePoint(p, deg, w, h) {
+  const t = (deg * Math.PI) / 180;
+  const dx = p[0] - w / 2;
+  const dy = p[1] - h / 2;
+  return [Math.cos(t) * dx - Math.sin(t) * dy + w / 2, Math.sin(t) * dx + Math.cos(t) * dy + h / 2];
+}

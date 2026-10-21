@@ -14,13 +14,16 @@
  *   5. names a room with the Rom tool and its dialog
  *   6. «Gå rundt i 3D»: the game's validator has 0 errors, the house is built; a screenshot to .shots/planbygger/
  *   7. walks (W for a second: the player moves) and opens a door
+ *   8. uploads the plan turned 2.5° (a crooked scan) through the file field: the skew is found and the plan straightened,
+ *      and the same scale click gives the same proposal
  * --lock takes the shared GPU lock of the house work (notes/hele-huset-design.md §0), --keep leaves the server running.
  * Exit code 1 when a check fails.
  */
 import { createServer } from 'vite';
 import path from 'node:path';
 import fs from 'node:fs';
-import { ROOT, check, section, done } from './planbygger-lib.mjs';
+import { ROOT, imp, check, section, done } from './planbygger-lib.mjs';
+import { readPng, writePng } from './planbygger-png.mjs';
 import { launchBrowser, watchPage, acquireGpuLock, parseArgs } from './lib/hus.mjs';
 
 const { opt } = parseArgs();
@@ -160,6 +163,36 @@ try {
   });
   check('E på en dør åpner den', door.ok && door.open, JSON.stringify(door));
   await page.screenshot({ path: path.join(outDir, '3d-dor.png') });
+
+  section('8. En skjev plan rettes opp');
+  const I = await imp('src/planbygger/image.js');
+  const crooked = path.join(outDir, 'skjev-plan.png');
+  writePng(crooked, I.rotateImage(readPng(path.join(ROOT, 'plantegning.png')), 2.5));
+  await page.evaluate(() => window.__planbygger.close3d());
+  await page.locator('input[type=file][accept*="image/png"]').setInputFiles(crooked);
+  await page.waitForFunction(() => window.__planbygger.level?.image?.name === 'skjev-plan.png' && window.__planbygger.tool === 'scale', null, { timeout: 30000 });
+  const rot = await page.evaluate(() => window.__planbygger.level.image.rotation);
+  check('vinkelen finnes ved opplastingen (2,5° ± 0,1°)', Math.abs(rot - 2.5) <= 0.1, `${rot}°`);
+  const click2 = await page.evaluate(() => {
+    const ed = window.__planbygger.editor;
+    ed.fit();
+    const r = ed.canvas.getBoundingClientRect();
+    const s = ed.toScreen([541 / ed.ppm, 300 / ed.ppm]);
+    return [r.left + s[0], r.top + s[1]];
+  });
+  await page.mouse.click(click2[0], click2[1]);
+  await page.locator('.pb-scalebox input').fill('12,21');
+  await page.locator('.pb-scalebox input').press('Enter');
+  await page.waitForFunction(() => window.__planbygger.level.walls.length > 0, null, { timeout: 60000 });
+  await page.waitForTimeout(300);
+  const prop2 = await page.evaluate(() => {
+    const L = window.__planbygger.level;
+    const c = (t) => L.openings.filter((o) => o.type === t).length;
+    const skew = L.walls.filter((w) => Math.abs(w.a[0] - w.b[0]) > 0.005 && Math.abs(w.a[1] - w.b[1]) > 0.005).length;
+    return { ppm: L.image.pxPerM, walls: L.walls.length, doors: c('door'), windows: c('window'), openings: c('opening'), skew };
+  });
+  check('den opprettede planen: 11 rette vegger, 3 dører, 7 vinduer, 1 åpning (skala 51,4 ± 0,3)', prop2.walls === 11 && prop2.skew === 0 && prop2.doors === 3 && prop2.windows === 7 && prop2.openings === 1 && Math.abs(prop2.ppm - 51.43) < 0.3, JSON.stringify(prop2));
+  await page.screenshot({ path: path.join(outDir, 'skjev-rettet.png') });
   check('ingen feil i nettleserkonsollen', watch.errors === 0, `${watch.errors} feil`);
   await context.close();
 } catch (err) {

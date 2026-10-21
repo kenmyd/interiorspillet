@@ -15,6 +15,7 @@
  *   8. the corrections of tools/planbygger-corrections.mjs keep the house valid
  *   9. two levels: a straight stair (export, validator, the game's stair builder), and the owner's whole house with the
  *      basement aligned by its outer corner (avstemming V1)
+ *  10. crooked plans (a scan or a photo): the skew is found (estimateSkew) and the plan straightened before detection
  */
 import { ROOT, imp, readJson, check, section, done, planPipeline, validateGenerated, KJELLER_PLAN } from './planbygger-lib.mjs';
 import path from 'node:path';
@@ -408,6 +409,52 @@ if (KJELLER_PLAN) {
   const bod1 = ex.house.rooms.find((r) => r.levelId === 'kjeller' && r.polygon.some((p) => p[0] < 0.3 && p[1] < 0.3));
   const c = bod1 ? [Math.min(...bod1.polygon.map((p) => p[0])), Math.min(...bod1.polygon.map((p) => p[1]))] : null;
   check('hele huset: ytterhjørnet legger kjelleren 0,13 m inn, som avstemming V1 (± 2 cm)', c && near(c[0], 0.13, 0.02) && near(c[1], 0.13, 0.02), c ? c.map((x) => x.toFixed(3)).join(', ') : 'fant ikke boden');
+}
+
+section('10. Skjeve planer: vinkelen finnes, planen rettes opp');
+{
+  const img = readPng(path.join(ROOT, 'plantegning.png'));
+  const ppm = 628 / 12.21;
+  const base = D.detectPlan(img, { pxPerM: ppm });
+  const kinds = (det) => ['door', 'window', 'opening'].map((t) => det.openings.filter((o) => o.type === t).length).join('/');
+  // the largest distance from a wall of the straight plan to its nearest twin in the straightened one, in cm
+  const drift = (det) => {
+    let worst = 0;
+    for (const w of base.walls) {
+      let best = Infinity;
+      for (const v of det.walls) {
+        const d1 = Math.max(Math.hypot(w.a[0] - v.a[0], w.a[1] - v.a[1]), Math.hypot(w.b[0] - v.b[0], w.b[1] - v.b[1]));
+        const d2 = Math.max(Math.hypot(w.a[0] - v.b[0], w.a[1] - v.b[1]), Math.hypot(w.b[0] - v.a[0], w.b[1] - v.a[1]));
+        best = Math.min(best, d1, d2);
+      }
+      worst = Math.max(worst, best);
+    }
+    return (worst / ppm) * 100;
+  };
+  check('den rette planen: vinkelen er 0', Math.abs(D.estimateSkew(img)) < 0.05, `${D.estimateSkew(img)}°`);
+  for (const deg of [1.5, -3.2, 6]) {
+    const r = I.rotateImage(img, deg);
+    const est = D.estimateSkew(r);
+    check(`1. etasje ${deg}° skjev: vinkelen finnes (± 0,1°)`, near(est, deg, 0.1), `${est}°`);
+    const det = D.detectPlan(r, { pxPerM: ppm, rotate: est });
+    const dr = drift(det);
+    check(`1. etasje ${deg}° skjev: de samme ${base.walls.length} veggene og ${kinds(base)} dører/vinduer/åpninger, ≤ 3 cm fra den rette`, det.walls.length === base.walls.length && kinds(det) === kinds(base) && dr <= 3, `${det.walls.length} vegger, ${kinds(det)}, ${dr.toFixed(1)} cm`);
+  }
+  if (KJELLER_PLAN) {
+    const k = readPng(KJELLER_PLAN);
+    const kb = D.detectPlan(k, { pxPerM: 633 / 10.5 });
+    const r = I.rotateImage(k, 2.2);
+    const est = D.estimateSkew(r);
+    const det = D.detectPlan(r, { pxPerM: 633 / 10.5, rotate: est });
+    check('kjelleren 2,2° skjev: vinkelen, og de samme veggene, dørene og vinduene', near(est, 2.2, 0.1) && det.walls.length === kb.walls.length && kinds(det) === kinds(kb), `${est}°, ${det.walls.length}/${kb.walls.length} vegger, ${kinds(det)} mot ${kinds(kb)}`);
+  }
+  // a synthetic plan with a known answer, 4° skew, 80 px/m with noise: all walls and openings in the straightened frame
+  const plan = samplePlans().lhus;
+  const rr = renderPlan(plan, { pxPerM: 80, noise: 6, seed: 8 });
+  const rot = I.rotateImage(rr.img, -4);
+  const est = D.estimateSkew(rot);
+  const m = matchSynthetic(plan, D.detectPlan(rot, { pxPerM: 80, rotate: est }), 80, rr.origin);
+  check('syntetisk plan −4° skjev: vinkelen, alle vegger (≤ 3 cm) og åpninger med riktig type', near(est, -4, 0.1) && m.walls === plan.walls.length && m.typed === plan.openings.length, `${est}°, ${m.walls}/${plan.walls.length} vegger, ${m.typed}/${plan.openings.length} åpninger, verste ${(m.worst * 100).toFixed(1)} cm`);
 }
 
 done();
