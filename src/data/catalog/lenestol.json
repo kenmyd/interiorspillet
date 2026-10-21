@@ -19,14 +19,30 @@
       "seatH": 0.41,
       "seatD": 0.54,
       "backH": 0.77,
-      "armH": 0.6,
+      "armH": 0.71,
       "armW": 0.14,
       "legStyle": "swivel-disc",
-      "legH": 0.06,
+      "legH": 0.02,
       "backShape": "round",
       "cushion": "tight",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "shellToFloor": true,
+      "planN": 2,
+      "shellT": 0.09,
+      "shellH": 0.77,
+      "armSlopeFrom": 0.2,
+      "backWrapDeg": 191,
+      "wrapOffsetDeg": -10.5,
+      "flare": 0.08,
+      "bottomR": 0.15,
+      "endR": 0.1,
+      "drumR": 0.91,
+      "discR": 0.19,
+      "drumBottomR": 0.12,
+      "drumTaper": 0.85,
+      "endLean": 0.06,
+      "bulge": 0.02
     },
     "variants": [
       {
@@ -154,20 +170,40 @@
       "d": 0.75,
       "h": 0.79
     },
-    "archetype": "tub-swivel",
+    "archetype": "club-box",
     "mount": "floor",
     "params": {
       "seatH": 0.45,
       "seatD": 0.5,
       "backH": 0.79,
-      "armH": 0.62,
-      "armW": 0.1,
+      "armH": 0.58,
+      "armW": 0.09,
       "legStyle": "swivel-star",
-      "legH": 0.12,
-      "backShape": "round",
+      "legH": 0.25,
+      "backShape": "square",
       "cushion": "tight",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "piping": true,
+      "armBackH": 0.79,
+      "armRise": 0.25,
+      "armSweepR": 0.25,
+      "armTopR": 0.06,
+      "armPlateau": 0.07,
+      "armRec": 10,
+      "armFlare": 11,
+      "armFlarePow": 2,
+      "armLean": 0.02,
+      "armToe": 4,
+      "backT": 0.07,
+      "backRec": 10,
+      "cushT": 0.2,
+      "seatPuff": 0.03,
+      "seatRound": 0.2,
+      "seatOver": -0.015,
+      "starArms": 5,
+      "starR": 0.29,
+      "armTaper": 0.05
     },
     "variants": [
       {
@@ -275,14 +311,34 @@
       "seatH": 0.42,
       "seatD": 0.53,
       "backH": 0.82,
-      "armH": 0.62,
+      "armH": 0.72,
       "armW": 0.14,
       "legStyle": "swivel-disc",
-      "legH": 0.04,
+      "legH": 0.015,
       "backShape": "round",
-      "cushion": "loose",
+      "cushion": "pillow",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "shellToFloor": true,
+      "planN": 3.5,
+      "shellT": 0.125,
+      "shellH": 0.74,
+      "backWrapDeg": 190,
+      "flare": 0,
+      "bottomR": 0.08,
+      "endR": 0.12,
+      "drumR": 0.985,
+      "drumTaper": 0.92,
+      "drumBottomR": 0.08,
+      "discR": 0.2,
+      "pillowW": 0.5,
+      "pillowH": 0.46,
+      "pillowRound": 0.45,
+      "pillowTilt": 18,
+      "pillowSink": 0.05,
+      "pillowPuff": 0.25,
+      "pillowPiping": true,
+      "shellPiping": false
     },
     "variants": [
       {
@@ -415,7 +471,13 @@
       "backShape": "round",
       "cushion": "tight",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "shell": "pillow",
+      "shellT": 0.2,
+      "pile": 0.035,
+      "legR": 0.028,
+      "pileStyle": "fur",
+      "bandIn": 0.035
     },
     "variants": [
       {
@@ -473,14 +535,22 @@
       "seatH": 0.435,
       "seatD": 0.55,
       "backH": 0.71,
-      "armH": 0.66,
-      "armW": 0.16,
+      "armH": 0.71,
+      "armW": 0.19,
       "legStyle": "wood-frame",
       "legH": 0.22,
       "backShape": "curved",
       "cushion": "tight",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "frameStyle": "roll",
+      "apronTop": 0.25,
+      "rollW": 0.135,
+      "rollH": 0.195,
+      "rollSquare": 2.4,
+      "rearLegAngle": 45,
+      "rearLegRake": 0.045,
+      "frontLegOut": 0.01
     },
     "variants": [
       {
@@ -530,11 +600,28 @@
       "armH": 0.58,
       "armW": 0.05,
       "legStyle": "wood-frame",
-      "legH": 0.22,
+      "legH": 0.25,
       "backShape": "curved",
       "cushion": "loose",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "frameStyle": "sled",
+      "piping": false,
+      "hornDrop": 0.14,
+      "backCushionT": 0.19,
+      "backFrame": "horns",
+      "junctionZ": 0.24,
+      "armFront": 0.04,
+      "backRound": 0.55,
+      "backSides": 0.08,
+      "backPinch": 0.25,
+      "backEars": 0.015,
+      "backTrim": 0.035,
+      "hornBack": 0.06,
+      "hornRecline": 45,
+      "armBend": 0.12,
+      "rearFoot": 0.1,
+      "armDrop": 0.025
     },
     "variants": [
       {
@@ -691,7 +778,38 @@
       "backShape": "wing",
       "cushion": "loose",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "armStyle": "tulip",
+      "backDeg": 9,
+      "wingEar": 0.24,
+      "wingJoin": 0.33,
+      "taper": 0.1,
+      "wingW": 1.03,
+      "buttonRows": 1,
+      "buttonCols": 3,
+      "buttonY": 0.45,
+      "buttonR": 0.022,
+      "buttonGap": 0.11,
+      "splayF": 10,
+      "splayB": 12,
+      "backBow": 0,
+      "backCurve": 0.03,
+      "backTBot": 0.2,
+      "shelf": 0.06,
+      "backCorner": 0.16,
+      "earR": 0.04,
+      "armDrop": 0.035,
+      "rearSeam": true,
+      "cushT": 0.13,
+      "topRound": 0.04,
+      "wingLean": 0.4,
+      "wingT": 0.05,
+      "shelfRound": true,
+      "wingFillet": 0.1,
+      "flarePow": 2.5,
+      "backRound": 0.08,
+      "cornerHug": true,
+      "padBulge": true
     },
     "variants": [
       {
@@ -825,10 +943,10 @@
     "mount": "floor",
     "params": {
       "seatH": 0.4,
-      "seatD": 0.5,
+      "seatD": 0.39,
       "backH": 1,
-      "armH": 0.58,
-      "armW": 0.08,
+      "armH": 0.53,
+      "armW": 0.09,
       "legStyle": "swivel-disc",
       "legH": 0.14,
       "backShape": "high",
@@ -837,7 +955,14 @@
       "headrest": true,
       "stoolW": 0.54,
       "stoolD": 0.4,
-      "stoolH": 0.39
+      "stoolH": 0.39,
+      "body": "classic",
+      "seatLip": 0.14,
+      "bodyBottom": 0.17,
+      "backFlare": -0.07,
+      "backBands": 1,
+      "stoolSeams": 2,
+      "stoolCenterSeam": true
     },
     "variants": [
       {
@@ -908,14 +1033,42 @@
       "seatH": 0.45,
       "seatD": 0.49,
       "backH": 1.1,
-      "armH": 0.62,
-      "armW": 0.12,
+      "armH": 0.58,
+      "armW": 0.13,
       "legStyle": "swivel-star",
-      "legH": 0.1,
+      "legH": 0.18,
       "backShape": "high",
       "cushion": "tight",
       "footstool": true,
-      "headrest": true
+      "headrest": true,
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "integrated",
+      "backSeams": "cross",
+      "armStyle": "roll",
+      "armFlare": 0.05,
+      "armRoll": 0.04,
+      "armRollH": 0.13,
+      "armFrontDrop": 0.06,
+      "armBottom": 0.24,
+      "seatNose": 0.03,
+      "backTaper": 0.1,
+      "recline": 20,
+      "star": "spider",
+      "starR": 0.38,
+      "starArms": 4,
+      "basePlate": 0.12,
+      "stoolSeam": "none",
+      "stoolWelt": true,
+      "stoolT": 0.19,
+      "stoolWedge": 0.03,
+      "stoolStarR": 0.25,
+      "armFrontR": 0.19,
+      "armRearR": 0.19,
+      "backTopR": 0.08,
+      "seatT": 0.15,
+      "bodyBowl": 0.12,
+      "armFootR": 0.08
     },
     "variants": [
       {
@@ -975,13 +1128,34 @@
       "seatD": 0.51,
       "backH": 0.89,
       "armH": 0.6,
-      "armW": 0.08,
+      "armW": 0.14,
       "legStyle": "swivel-star",
-      "legH": 0.18,
+      "legH": 0.2,
       "backShape": "wing",
       "cushion": "tight",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "body": "shell",
+      "backSeams": true,
+      "topDip": 0.03,
+      "wingEar": 0.3,
+      "wingJoin": 0.52,
+      "backDeg": 12,
+      "backCurve": 0.2,
+      "backRound": 0.12,
+      "earR": 0.1,
+      "taper": 0.07,
+      "taperPow": 1.4,
+      "wallT": 0.14,
+      "topRound": 0.07,
+      "underRise": 0.07,
+      "armNose": 0.1,
+      "wingFillet": 0.14,
+      "wingLean": 0.4,
+      "shelf": 0.035,
+      "shelfH": 0.14,
+      "flarePow": 2.4,
+      "wingW": 1.07
     },
     "variants": [
       {
@@ -1123,7 +1297,20 @@
       "backShape": "square",
       "cushion": "loose",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "cushT": 0.15,
+      "backT": 0.08,
+      "backFrameH": 0.65,
+      "backRec": 6,
+      "backCushT": 0.18,
+      "legShape": "square",
+      "legW": 0.055,
+      "legInset": 0.04,
+      "legSplay": 6,
+      "piping": true,
+      "seatWelt": "top",
+      "seatPuff": 0.05,
+      "seatRound": 0.28
     },
     "variants": [
       {
@@ -1352,20 +1539,51 @@
     "archetype": "wingback",
     "mount": "floor",
     "params": {
-      "seatH": 0.45,
+      "seatH": 0.44,
       "seatD": 0.54,
       "backH": 1.01,
-      "armH": 0.64,
+      "armH": 0.62,
       "armW": 0.14,
       "legStyle": "wood-taper",
-      "legH": 0.14,
+      "legH": 0.12,
       "backShape": "wing",
-      "cushion": "tight",
+      "cushion": "loose",
       "footstool": true,
       "headrest": false,
       "stoolW": 0.6,
       "stoolD": 0.4,
-      "stoolH": 0.44
+      "stoolH": 0.44,
+      "armStyle": "scroll",
+      "buttons": true,
+      "buttonCols": 5,
+      "buttonY": 0.4,
+      "buttonR": 0.015,
+      "buttonGap": 0.09,
+      "piping": "both",
+      "seatOver": 0.03,
+      "railWelt": true,
+      "railBow": 0.015,
+      "stoolStyle": "box",
+      "rollR": 0.055,
+      "backDeg": 8,
+      "backT": 0.14,
+      "padTop": 0.04,
+      "taper": 0.09,
+      "cushT": 0.12,
+      "wingEar": 0.44,
+      "wingJoin": 0.47,
+      "backCurve": 0.1,
+      "backTBot": 0.14,
+      "earRoll": 0.026,
+      "wingW": 1.1,
+      "earRollDrop": 0.6,
+      "earRollBack": 0.15,
+      "wingLean": 0,
+      "legR": 0.022,
+      "armSplay": 0.035,
+      "wingFillet": 0.12,
+      "earR": 0.06,
+      "flarePow": 1
     },
     "variants": [
       {
@@ -1484,7 +1702,9 @@
       "backShape": "curved",
       "cushion": "tight",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "frameStyle": "raked",
+      "seatTilt": 4
     },
     "variants": [
       {
@@ -1597,22 +1817,37 @@
     "dims": {
       "w": 0.77,
       "d": 0.88,
-      "h": 0.75
+      "h": 0.9
     },
     "archetype": "club-box",
     "mount": "floor",
     "params": {
       "seatH": 0.45,
-      "seatD": 0.65,
+      "seatD": 0.6,
       "backH": 0.75,
       "armH": 0.62,
-      "armW": 0.12,
+      "armW": 0.1,
       "legStyle": "none",
       "legH": 0,
       "backShape": "square",
       "cushion": "loose",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "armRound": 0.5,
+      "armFrontR": 0.03,
+      "backFull": true,
+      "backFrameH": 0.78,
+      "backT": 0.15,
+      "backCushT": 0.16,
+      "backCushRec": 5,
+      "cushT": 0.12,
+      "seatWelt": "both",
+      "skirtH": 0.22,
+      "skirtTuck": 0,
+      "apron": "flat",
+      "backPuff": 0.06,
+      "backRound": 0.35,
+      "backSides": 0.1
     },
     "variants": [
       {
@@ -1734,7 +1969,7 @@
     "why": "Gynge- og svingfunksjonen lar deg snu deg mot TV-en eller mot vinduene og elva, og mellomgrå Gunnared passer den grå hjørnesofaen.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/saltsjoebaden-gynge-og-svingstol-fridtuna-lys-beige__1489517_pe1003842_s5.jpg?f=u",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: pris, gynge- og svingfunksjon og trekkene stemmer. Rettet: målene (77×88×75, ikke 93×88×90) og formen, som er en kubisk stol med skjørt der mekanismen ikke synes. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle ni trekkene finnes; Vittangi er 100 % bomull (ikke bouclé), Gunnared beige er lys gråbeige og Tonerud rødbrun oransjebrun etter bildene, og standardvarianten er nå Fridtuna lys beige som på bildet.",
+    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: pris, gynge- og svingfunksjon og trekkene stemmer. Rettet: målene (77×88×75, ikke 93×88×90) og formen, som er en kubisk stol med skjørt der mekanismen ikke synes. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle ni trekkene finnes; Vittangi er 100 % bomull (ikke bouclé), Gunnared beige er lys gråbeige og Tonerud rødbrun oransjebrun etter bildene, og standardvarianten er nå Fridtuna lys beige som på bildet. Høyden med ryggputen er satt til ca. 90 cm, anslått fra produktbildene med setehøyden 45 cm som mål (2026-10-21): 75 cm gjelder stammen alene, og produktsiden viser i dag bare pakkemål.",
     "priceConfidence": "checked"
   },
   {
@@ -1765,7 +2000,111 @@
       "backShape": "curved",
       "cushion": "tight",
       "footstool": false,
-      "headrest": false
+      "headrest": false,
+      "shell": "swan",
+      "seat": "skin",
+      "star": "paddle",
+      "shellT": 0.035,
+      "lipK": 1,
+      "underH": 0.31,
+      "flare": 0.4,
+      "bowlRx": 0.25,
+      "egg": 0.15,
+      "planN": 2.4,
+      "topProfile": [
+        [
+          0,
+          0.43
+        ],
+        [
+          30,
+          0.465
+        ],
+        [
+          52,
+          0.51
+        ],
+        [
+          74,
+          0.548
+        ],
+        [
+          90,
+          0.54
+        ],
+        [
+          110,
+          0.505
+        ],
+        [
+          135,
+          0.475
+        ],
+        [
+          160,
+          0.452
+        ],
+        [
+          180,
+          0.442
+        ]
+      ],
+      "footProfile": [
+        [
+          0,
+          0.35
+        ],
+        [
+          60,
+          0.35
+        ],
+        [
+          90,
+          0.37
+        ],
+        [
+          130,
+          0.39
+        ],
+        [
+          160,
+          0.4
+        ],
+        [
+          180,
+          0.4
+        ]
+      ],
+      "recline": 23,
+      "petalDepth": 0.11,
+      "shoulderR": 0.25,
+      "petalW": [
+        [
+          0.38,
+          0.13
+        ],
+        [
+          0.47,
+          0.15
+        ],
+        [
+          0.55,
+          0.22
+        ],
+        [
+          0.64,
+          0.3
+        ],
+        [
+          0.72,
+          0.34
+        ],
+        [
+          0.77,
+          0.34
+        ]
+      ],
+      "dishExp": 1.6
     },
     "variants": [
       {
@@ -1848,10 +2187,10 @@
     "mount": "floor",
     "params": {
       "seatH": 0.48,
-      "seatD": 0.5,
+      "seatD": 0.47,
       "backH": 1.09,
       "armH": 0.6,
-      "armW": 0.13,
+      "armW": 0.145,
       "armTuck": 0.03,
       "legStyle": "swivel-star",
       "legH": 0.09,
@@ -1866,7 +2205,41 @@
       "star": "standard",
       "starArms": 5,
       "lever": true,
-      "notes": "Recliner med innebygd fothviler som felles ut fra setefronten; når den er lukket, henger setefronten ned nesten til foten. Brede, polstrede sidevanger i samme stoff, formet som en «D» sett fra siden, som buer utover mot en tykk, avrundet armlenstopp (sett forfra smalner de litt nedover). Høy rygg med én tverrsøm over korsryggen og en separat, rektangulær nakkepute (to sømmer på langs av puten) som sitter på to blanke metallpinner og kan heves. Manuell regulering av rygg og fothviler med en svart spak på høyre sidevange, og sving som går tilbake i utgangsposisjon. Lav, svart femarmet stjernefot i aluminium med kort søyle. Samme mål og setehøyde som Grande med fothviler, men med sider i stoff i stedet for eikevanger. Stoffet Breeze er et strukturert, vevd stoff med chenilleaktig overflate."
+      "notes": "Recliner med innebygd fothviler som felles ut fra setefronten; når den er lukket, henger setefronten ned nesten til foten. Brede, polstrede sidevanger i samme stoff, formet som en «D» sett fra siden, som buer utover mot en tykk, avrundet armlenstopp (sett forfra smalner de litt nedover). Høy rygg med én tverrsøm over korsryggen og en separat, rektangulær nakkepute (to sømmer på langs av puten) som sitter på to blanke metallpinner og kan heves. Manuell regulering av rygg og fothviler med en svart spak på høyre sidevange, og sving som går tilbake i utgangsposisjon. Lav, svart femarmet stjernefot i aluminium med kort søyle. Samme mål og setehøyde som Grande med fothviler, men med sider i stoff i stedet for eikevanger. Stoffet Breeze er et strukturert, vevd stoff med chenilleaktig overflate.",
+      "armStyle": "petal",
+      "seatNose": 0,
+      "armBottom": 0.19,
+      "armFrontR": 0.2,
+      "armRearR": 0.2,
+      "armFrontTopR": 0.2,
+      "backW": 0.5,
+      "backTaper": 0.16,
+      "backTopR": 0.05,
+      "seamCurve": 0.015,
+      "headW": 0.52,
+      "headH": 0.22,
+      "headD": 0.13,
+      "headRound": 0.55,
+      "headPuff": 0.08,
+      "headSeams": 2,
+      "footTaper": 0.85,
+      "footR": 0.12,
+      "footBottom": 0.17,
+      "armTopR": 0.045,
+      "armLip": 0.05,
+      "basePlate": 0.12,
+      "recline": 21,
+      "headTilt": 8,
+      "armFlare": 0.012,
+      "armFlarePow": 0.7,
+      "armSplay": 0.02,
+      "armWelt": "edge",
+      "armFootR": 0.07,
+      "bodyRear": 1,
+      "footSplit": 0.02,
+      "headGap": -0.012,
+      "footBulge": 0.03,
+      "footRE": 0.06
     },
     "variants": [
       {
@@ -1928,7 +2301,7 @@
       "seatD": 0.53,
       "backH": 1.03,
       "armH": 0.6,
-      "armW": 0.12,
+      "armW": 0.16,
       "armTuck": 0.03,
       "legStyle": "swivel-star",
       "legH": 0.12,
@@ -1946,7 +2319,40 @@
       "stoolW": 0.55,
       "stoolD": 0.42,
       "stoolH": 0.42,
-      "notes": "Polstrede sidevanger i samme stoff, avrundet som en «D» sett fra siden, som buer kraftig utover mot en tykk, avrundet armlenstopp foran (sett forfra som brede kronblader). Ryggen har et ytre skall i stoff og består av en glatt ryggpute uten tverrsøm og en separat, rektangulær nakkepute i nesten full bredde som står litt foran ryggen. Ryggen er gassregulert og vippes med en svart spak på høyre sidevange, og stolen har 360 graders sving. Svart femarmet stjernefot med flate armer og søyle. Fotskammelen er ca. 55 × 42 × 42 cm (anslått fra bildet, ikke oppgitt), har en tykk, avrundet topp med en fordypning på midten og står på en egen svart firearmet fot."
+      "notes": "Polstrede sidevanger i samme stoff, avrundet som en «D» sett fra siden, som buer kraftig utover mot en tykk, avrundet armlenstopp foran (sett forfra som brede kronblader). Ryggen har et ytre skall i stoff og består av en glatt ryggpute uten tverrsøm og en separat, rektangulær nakkepute i nesten full bredde som står litt foran ryggen. Ryggen er gassregulert og vippes med en svart spak på høyre sidevange, og stolen har 360 graders sving. Svart femarmet stjernefot med flate armer og søyle. Fotskammelen er ca. 55 × 42 × 42 cm (anslått fra bildet, ikke oppgitt), har en tykk, avrundet topp med en fordypning på midten og står på en egen svart firearmet fot.",
+      "armStyle": "petal",
+      "armFlare": 0.05,
+      "armLip": 0.045,
+      "armTopR": 0.05,
+      "armBottom": 0.22,
+      "armFrontR": 0.2,
+      "armRearR": 0.13,
+      "armFrontTopR": 0.08,
+      "seatNose": 0,
+      "frontPanel": true,
+      "footTaper": 0.9,
+      "footR": 0.12,
+      "footBottom": 0.24,
+      "backW": 0.46,
+      "backTopR": 0.04,
+      "recline": 22,
+      "headW": 0.46,
+      "headH": 0.24,
+      "headD": 0.14,
+      "headRound": 0.5,
+      "headPuff": 0.06,
+      "headGap": -0.08,
+      "headFwd": 0.04,
+      "headPosts": false,
+      "basePlate": 0.12,
+      "armSplay": 0.04,
+      "armFlarePow": 0.6,
+      "stoolSeam": "short",
+      "stoolT": 0.16,
+      "stoolDome": 0.02,
+      "armWelt": "edge",
+      "armFootR": 0.06,
+      "armTopTilt": 0.03
     },
     "variants": [
       {
@@ -2022,7 +2428,35 @@
       "star": "standard",
       "starArms": 5,
       "lever": false,
-      "notes": "Rett, kantete hvilestol: armlenene er flate, polstrede sidevanger i samme stoff med avrundede hjørner, som går rett ned nesten til foten uten å bue utover. Høy, rett rygg med én tverrsøm over korsryggen (stoffet er rynket litt langs sømmen) og en separat, rektangulær nakkepute i full bredde som er hektet over toppen av ryggen. Baksiden av ryggen har to sømmer på langs. Innebygd fothviler: setefronten er et høyt, polstret panel som felles ut. Utløseren er skjult; det ses ingen håndtak på sidene. Svart femarmet stjernefot med flate armer og søyle (sving). Stoffet Apia er et nuppete, vevd polyesterstoff."
+      "notes": "Rett, kantete hvilestol: armlenene er flate, polstrede sidevanger i samme stoff med avrundede hjørner, som går rett ned nesten til foten uten å bue utover. Høy, rett rygg med én tverrsøm over korsryggen (stoffet er rynket litt langs sømmen) og en separat, rektangulær nakkepute i full bredde som er hektet over toppen av ryggen. Baksiden av ryggen har to sømmer på langs. Innebygd fothviler: setefronten er et høyt, polstret panel som felles ut. Utløseren er skjult; det ses ingen håndtak på sidene. Svart femarmet stjernefot med flate armer og søyle (sving). Stoffet Apia er et nuppete, vevd polyesterstoff.",
+      "armStyle": "board",
+      "armFlare": 0.005,
+      "armTopR": 0.025,
+      "armFrontR": 0.08,
+      "armRearR": 0.1,
+      "armFrontTopR": 0.03,
+      "armBottom": 0.18,
+      "seatNose": 0.02,
+      "backW": 0.5,
+      "lumbarH": 0.2,
+      "headW": 0.5,
+      "headH": 0.2,
+      "headD": 0.17,
+      "headRound": 0.3,
+      "headPuff": 0.03,
+      "headGap": -0.03,
+      "headPosts": false,
+      "footTaper": 1,
+      "footR": 0.03,
+      "footBottom": 0.17,
+      "basePlate": 0.12,
+      "bodyRear": 1,
+      "recline": 10,
+      "headTilt": 0,
+      "headFwd": 0,
+      "backTopR": 0.02,
+      "backTaper": 0,
+      "footSplit": 0.02
     },
     "variants": [
       {
@@ -2068,12 +2502,12 @@
     "mount": "floor",
     "params": {
       "seatH": 0.46,
-      "seatD": 0.49,
+      "seatD": 0.4,
       "backH": 1.1,
-      "armH": 0.6,
-      "armW": 0.09,
+      "armH": 0.56,
+      "armW": 0.11,
       "legStyle": "swivel-star",
-      "legH": 0.18,
+      "legH": 0.24,
       "body": "classic",
       "headStyle": "integrated",
       "headrest": true,
@@ -2087,7 +2521,14 @@
       "stoolW": 0.54,
       "stoolD": 0.41,
       "stoolH": 0.42,
-      "notes": "Stressless-konstruksjon: slank, høy rygg med innebygd nakkeparti øverst (adskilt med en tverrsøm) og en tverrsøm over korsryggen, fast sete. Armlenene er korte, polstrede armputer som sitter på buede metallbraketter fra setet, åpne under. Under sitter et svingunderstell, ikke ringfot: «Cross» er et svart kryss med fire rette armer på søyle; «Star» er et kryss med fire tynne, svungne armer i polert metall eller aluminium. Fotskammelen er 54 × 41 × 42 cm (Paris fotskammel hos Bohus), har samme trekk og står på en egen fot av samme type. Paloma og Batick er skinn, Peony er stoff."
+      "notes": "Stressless-konstruksjon: slank, høy rygg med innebygd nakkeparti øverst (adskilt med en tverrsøm) og en tverrsøm over korsryggen, fast sete. Armlenene er korte, polstrede armputer som sitter på buede metallbraketter fra setet, åpne under. Under sitter et svingunderstell, ikke ringfot: «Cross» er et svart kryss med fire rette armer på søyle; «Star» er et kryss med fire tynne, svungne armer i polert metall eller aluminium. Fotskammelen er 54 × 41 × 42 cm (Paris fotskammel hos Bohus), har samme trekk og står på en egen fot av samme type. Paloma og Batick er skinn, Peony er stoff.",
+      "base": "cross",
+      "backW": 0.52,
+      "backT": 0.12,
+      "seatLip": 0.15,
+      "stoolSeams": 0,
+      "stoolDome": 0.006,
+      "stoolWelt": true
     },
     "variants": [
       {
@@ -2116,7 +2557,8 @@
         "priceNok": 31999,
         "salePriceNok": 18499,
         "paramsOverride": {
-          "star": "slim"
+          "star": "slim",
+          "base": "star"
         }
       },
       {
@@ -2132,7 +2574,8 @@
         "url": "https://www.bohus.no/stoler/lenestol/hvilestol/paris-hvilestol-med-fotskammel-10",
         "priceNok": 31999,
         "paramsOverride": {
-          "star": "slim"
+          "star": "slim",
+          "base": "star"
         }
       },
       {
@@ -2148,7 +2591,8 @@
         "url": "https://www.bohus.no/stoler/lenestol/hvilestol/paris-hvilestol-med-fotskammel-7",
         "priceNok": 29999,
         "paramsOverride": {
-          "star": "slim"
+          "star": "slim",
+          "base": "star"
         }
       }
     ],
@@ -2188,7 +2632,7 @@
       "armW": 0.13,
       "armTuck": 0.02,
       "legStyle": "swivel-disc",
-      "legH": 0.07,
+      "legH": 0.06,
       "body": "box",
       "sides": "fabric",
       "headStyle": "integrated",
@@ -2196,9 +2640,30 @@
       "footrest": "integrated",
       "footstool": false,
       "footrestOpen": false,
-      "backSeams": "cross",
+      "backSeams": "bolster",
       "lever": false,
-      "notes": "Klassisk recliner: polstrede sidevanger i samme stoff som går nesten ned til foten og buer litt utover mot en bred, avrundet armlenstopp. Rygg med innebygd nakkeparti øverst i full bredde (tverrsøm under) og et midtfelt som smalner nedover mellom to sidebolstre, med skrå sømmer. Innebygd fothviler: setefronten er et tykt, polstret panel som felles ut på et svart stålbeslag. Stolen står på en lav, rund, svart dreieplate (sving og gyng), bare noen centimeter under setekassen. Rygg og fothviler reguleres manuelt med et håndgrep; nakkestøtten følger med ryggen. Milla er et chenilleaktig stoff, Stella, Hannah og Raven er vevde stoffer, og Prime er skinn på sitteflatene med PVC på resten."
+      "notes": "Klassisk recliner: polstrede sidevanger i samme stoff som går nesten ned til foten og buer litt utover mot en bred, avrundet armlenstopp. Rygg med innebygd nakkeparti øverst i full bredde (tverrsøm under) og et midtfelt som smalner nedover mellom to sidebolstre, med skrå sømmer. Innebygd fothviler: setefronten er et tykt, polstret panel som felles ut på et svart stålbeslag. Stolen står på en lav, rund, svart dreieplate (sving og gyng), bare noen centimeter under setekassen. Rygg og fothviler reguleres manuelt med et håndgrep; nakkestøtten følger med ryggen. Milla er et chenilleaktig stoff, Stella, Hannah og Raven er vevde stoffer, og Prime er skinn på sitteflatene med PVC på resten.",
+      "armStyle": "petal",
+      "armFlare": 0.06,
+      "armLip": 0,
+      "armTopR": 0.06,
+      "armTopTilt": 0.01,
+      "armFrontTopR": 0.14,
+      "armFrontR": 0.04,
+      "armRearR": 0.06,
+      "armBottom": 0.08,
+      "seatNose": 0.03,
+      "discR": 0.3,
+      "neckH": 0.22,
+      "backTopR": 0.08,
+      "backW": 0.52,
+      "footTaper": 1,
+      "footR": 0.03,
+      "footBottom": 0.08,
+      "bodyRear": 1,
+      "footSplit": 0.03,
+      "discT": 0.05,
+      "armWelt": false
     },
     "variants": [
       {
@@ -2352,7 +2817,28 @@
       "stoolW": 0.51,
       "stoolD": 0.44,
       "stoolH": 0.45,
-      "notes": "Høy, stram hvilestol med glatte, flate sidevanger i samme stoff som danner armlenene; armlenene er brede og flate på toppen, og vangene går nesten ned til foten. Ryggen er høy og smalner litt oppover, med innebygd nakkeparti øverst (én tverrsøm der ryggen bøyer fremover) og ellers glatt. Rygg og nakkestøtte reguleres, og stolen har sving. Firearmet stjernefot med søyle, 19 cm høy: Classic med bredere armer (svart eller blank aluminium) eller Slimline med tynnere armer (svart eller børstet aluminium). Fotskammelen er 51 × 44 × 45 cm (Astra fotskammel hos Bohus), har avrundet, polstret topp og står på en egen firearmet fot; høyden kan reguleres. Milla er chenilleaktig, Trend T410 Nature er et cognacfarget skinnlignende trekk, de andre er vevde stoffer."
+      "notes": "Høy, stram hvilestol med glatte, flate sidevanger i samme stoff som danner armlenene; armlenene er brede og flate på toppen, og vangene går nesten ned til foten. Ryggen er høy og smalner litt oppover, med innebygd nakkeparti øverst (én tverrsøm der ryggen bøyer fremover) og ellers glatt. Rygg og nakkestøtte reguleres, og stolen har sving. Firearmet stjernefot med søyle, 19 cm høy: Classic med bredere armer (svart eller blank aluminium) eller Slimline med tynnere armer (svart eller børstet aluminium). Fotskammelen er 51 × 44 × 45 cm (Astra fotskammel hos Bohus), har avrundet, polstret topp og står på en egen firearmet fot; høyden kan reguleres. Milla er chenilleaktig, Trend T410 Nature er et cognacfarget skinnlignende trekk, de andre er vevde stoffer.",
+      "armStyle": "board",
+      "armFlare": 0.01,
+      "armTopR": 0.03,
+      "armFrontR": 0.08,
+      "armRearR": 0.05,
+      "armFrontTopR": 0.05,
+      "armBottom": 0.2,
+      "seatNose": 0.05,
+      "backW": 0.52,
+      "backTaper": 0.12,
+      "backTopR": 0.04,
+      "neckH": 0.24,
+      "recline": 24,
+      "basePlate": 0.12,
+      "stoolWedge": 0.05,
+      "stoolSeam": "none",
+      "stoolT": 0.17,
+      "stoolR": 0.05,
+      "armRise": -0.04,
+      "armRiseH": 0.25,
+      "seatT": 0.17
     },
     "variants": [
       {
@@ -2501,10 +2987,10 @@
       "seatD": 0.46,
       "backH": 1.08,
       "armH": 0.6,
-      "armW": 0.09,
+      "armW": 0.1,
       "legStyle": "swivel-star",
       "legH": 0.17,
-      "body": "shell",
+      "body": "box",
       "headStyle": "integrated",
       "headrest": true,
       "footrest": "stool",
@@ -2517,7 +3003,30 @@
       "stoolW": 0.54,
       "stoolD": 0.42,
       "stoolH": 0.44,
-      "notes": "Høyt, formstøpt skall trukket i stoff (helkledd, ingen synlig ramme), som er bredest ved armlenene og smalner og buer innover mot en avrundet topp; ryggen har innebygd nakkeparti og to svake tverrsømmer, og kantene har kantbånd. Armlenene er tykke, avrundede armputer som ligger langs skallets kant og stikker litt frem foran. Løs, tykk seteinnsats. Rygg og nakkepute reguleres, og stolen har sving og tre sittehøyder. Firearmet stjernefot med søyle, 19 cm høy (Classic, blank aluminium eller svart). Fotskammelen har en løs, quiltet toppute med kantbånd på en tynn ramme, står på en egen firearmet fot og kan høydereguleres; den er ca. 54 × 42 × 44 cm (Bohus oppgir 42 × 54 × 44 cm for Nova fotskammel, men bildene viser at den er bredere enn dyp)."
+      "notes": "Høyt, formstøpt skall trukket i stoff (helkledd, ingen synlig ramme), som er bredest ved armlenene og smalner og buer innover mot en avrundet topp; ryggen har innebygd nakkeparti og to svake tverrsømmer, og kantene har kantbånd. Armlenene er tykke, avrundede armputer som ligger langs skallets kant og stikker litt frem foran. Løs, tykk seteinnsats. Rygg og nakkepute reguleres, og stolen har sving og tre sittehøyder. Firearmet stjernefot med søyle, 19 cm høy (Classic, blank aluminium eller svart). Fotskammelen har en løs, quiltet toppute med kantbånd på en tynn ramme, står på en egen firearmet fot og kan høydereguleres; den er ca. 54 × 42 × 44 cm (Bohus oppgir 42 × 54 × 44 cm for Nova fotskammel, men bildene viser at den er bredere enn dyp).",
+      "sides": "fabric",
+      "armStyle": "roll",
+      "armRoll": 0.005,
+      "armRollH": 0.08,
+      "armRollFwd": 0.07,
+      "armFrontDrop": 0,
+      "armFlare": 0.03,
+      "armFrontR": 0.3,
+      "armRearR": 0.15,
+      "armBottom": 0.24,
+      "seatT": 0.13,
+      "backWrap": 0.03,
+      "backWrapTop": 0.03,
+      "backTaper": 0.28,
+      "backTopR": 0.2,
+      "lumbarH": 0.3,
+      "stoolT": 0.12,
+      "stoolSeam": "center",
+      "stoolWelt": true,
+      "stoolTray": 0.05,
+      "recline": 18,
+      "basePlate": 0,
+      "seatNose": 0.07
     },
     "variants": [
       {
@@ -2592,11 +3101,11 @@
       "seatD": 0.5,
       "backH": 1.03,
       "armH": 0.56,
-      "armW": 0.08,
+      "armW": 0.11,
       "legStyle": "swivel-star",
       "legH": 0.16,
-      "body": "shell",
-      "headStyle": "block",
+      "body": "box",
+      "headStyle": "pillow",
       "headrest": true,
       "footrest": "stool",
       "footstool": true,
@@ -2608,7 +3117,29 @@
       "stoolW": 0.59,
       "stoolD": 0.44,
       "stoolH": 0.42,
-      "notes": "Organisk, eggformet skall trukket i stoff (helkledd): setet ligger i en dyp skål der sidene svinger opp og danner lave, avrundede armlener, og ryggen er høy med en innsnevring (midje) over korsryggen og et bredere nakkeparti øverst, adskilt med en tverrsøm. En liten, separat, rektangulær nakkepute henger foran nakkepartiet og kan reguleres. Ryggen vippes med en svart spak på høyre side, og stolen har sving. Svart firearmet kryssfot (S04) i lakkert stål med søyle. Fotskammelen er 59 × 44 × 42 cm (Bohus), har en buet, polstret topp og står på en egen svart firearmet fot."
+      "notes": "Organisk, eggformet skall trukket i stoff (helkledd): setet ligger i en dyp skål der sidene svinger opp og danner lave, avrundede armlener, og ryggen er høy med en innsnevring (midje) over korsryggen og et bredere nakkeparti øverst, adskilt med en tverrsøm. En liten, separat, rektangulær nakkepute henger foran nakkepartiet og kan reguleres. Ryggen vippes med en svart spak på høyre side, og stolen har sving. Svart firearmet kryssfot (S04) i lakkert stål med søyle. Fotskammelen er 59 × 44 × 42 cm (Bohus), har en buet, polstret topp og står på en egen svart firearmet fot.",
+      "sides": "fabric",
+      "armStyle": "egg",
+      "armRise": -0.15,
+      "armRiseH": 0.3,
+      "armFootR": 0.1,
+      "armBottom": 0.2,
+      "seatT": 0.12,
+      "backW": 0.44,
+      "backWaist": 0.2,
+      "backWaistY": 0.45,
+      "backTopR": 0.08,
+      "lumbarH": 0.42,
+      "headW": 0.3,
+      "headH": 0.13,
+      "headD": 0.09,
+      "headDrop": 0.08,
+      "basePlate": 0,
+      "stoolT": 0.14,
+      "stoolSeam": "none",
+      "stoolR": 0.06,
+      "stoolDome": 0.02,
+      "armRearR": 0.16
     },
     "variants": [
       {
@@ -2722,12 +3253,12 @@
       "seatD": 0.5,
       "backH": 1.08,
       "armH": 0.6,
-      "armW": 0.1,
+      "armW": 0.12,
       "legStyle": "swivel-star",
-      "legH": 0.17,
+      "legH": 0.2,
       "body": "shell",
       "sides": "veneer",
-      "headStyle": "block",
+      "headStyle": "integrated",
       "headrest": true,
       "footrest": "stool",
       "footstool": true,
@@ -2739,7 +3270,31 @@
       "stoolW": 0.52,
       "stoolD": 0.4,
       "stoolH": 0.42,
-      "notes": "Formstøpt skall (skrog) i finér som omslutter sete og nedre del av rygg og sider – valnøtt, eik eller svart eik (frame). Innenfor er sete, rygg og armlener polstret: høy rygg med ørelapper som gjør den bredere øverst, en tverrsøm over korsryggen og et nakkeparti med en separat, rektangulær nakkepute som holdes på plass med magnet og kan flyttes opp og ned. Armlenene er polstrede armputer langs skrogets kant som svinger litt utover foran. Sving med retur og regulerbar rygg (Syncro Backup). Quattro-fot: firearmet fot med søyle i polert aluminium eller svart aluminium. Fotskammelen er ca. 52 × 40 × 42 cm (bredde og høyde fra Bohus, dybden anslått), har samme trekk på et skrog i finér og står på en egen firearmet fot. Grizzly og Sorrento er skinn, Denali er bouclé."
+      "notes": "Formstøpt skall (skrog) i finér som omslutter sete og nedre del av rygg og sider – valnøtt, eik eller svart eik (frame). Innenfor er sete, rygg og armlener polstret: høy rygg med ørelapper som gjør den bredere øverst, en tverrsøm over korsryggen og et nakkeparti med en separat, rektangulær nakkepute som holdes på plass med magnet og kan flyttes opp og ned. Armlenene er polstrede armputer langs skrogets kant som svinger litt utover foran. Sving med retur og regulerbar rygg (Syncro Backup). Quattro-fot: firearmet fot med søyle i polert aluminium eller svart aluminium. Fotskammelen er ca. 52 × 40 × 42 cm (bredde og høyde fra Bohus, dybden anslått), har samme trekk på et skrog i finér og står på en egen firearmet fot. Grizzly og Sorrento er skinn, Denali er bouclé.",
+      "armPad": "scroll",
+      "backW": 0.6,
+      "backFlare": 0.3,
+      "neckPillow": true,
+      "seatNose": 0.05,
+      "seatT": 0.17,
+      "shellTaper": 0.85,
+      "shellBottom": 0.22,
+      "shellFront": 0.55,
+      "flareFrom": 0.3,
+      "backEdge": 0.025,
+      "wingAngle": 20,
+      "wingX": 0.66,
+      "wingFrom": 0.4,
+      "neckH": 0.3,
+      "pillowW": 0.34,
+      "pillowH": 0.17,
+      "pillowD": 0.05,
+      "pillowDrop": 0.15,
+      "stoolTray": 0.1,
+      "stoolT": 0.07,
+      "stoolTuft": true,
+      "shellDisc": 0.09,
+      "armDrop": 0.07
     },
     "variants": [
       {
@@ -2821,10 +3376,10 @@
       "seatD": 0.52,
       "backH": 1.1,
       "armH": 0.57,
-      "armW": 0.11,
+      "armW": 0.18,
       "legStyle": "swivel-star",
       "legH": 0.15,
-      "body": "shell",
+      "body": "box",
       "headStyle": "block",
       "headrest": true,
       "footrest": "stool",
@@ -2837,7 +3392,31 @@
       "stoolW": 0.66,
       "stoolD": 0.5,
       "stoolH": 0.42,
-      "notes": "Organisk, skulpturert hvilestol: setet ligger i en bred, lav, avrundet skål (helkledd i stoff) som smalner under mot foten. Armlenene er separate, tykke, avrundede armputer som ligger oppå skålens kant og stikker frem foran. Ryggen er høy, glatt og smalner oppover, med et V-formet innsnitt øverst på midten der en stor, separat nakkepute ligger over toppen; nakkeputen justeres med en stropp bak. Formstøpt setepute, ryggpute og armlener; rygg og nakkestøtte reguleres, og stolen har sving. Svart firearmet kryssfot (S04) i lakkert stål med søyle. Fotskammelen er 66 × 50 × 42 cm (Bohus), har en bred, avrundet skål med flat topp og står på en egen svart firearmet fot."
+      "notes": "Organisk, skulpturert hvilestol: setet ligger i en bred, lav, avrundet skål (helkledd i stoff) som smalner under mot foten. Armlenene er separate, tykke, avrundede armputer som ligger oppå skålens kant og stikker frem foran. Ryggen er høy, glatt og smalner oppover, med et V-formet innsnitt øverst på midten der en stor, separat nakkepute ligger over toppen; nakkeputen justeres med en stropp bak. Formstøpt setepute, ryggpute og armlener; rygg og nakkestøtte reguleres, og stolen har sving. Svart firearmet kryssfot (S04) i lakkert stål med søyle. Fotskammelen er 66 × 50 × 42 cm (Bohus), har en bred, avrundet skål med flat topp og står på en egen svart firearmet fot.",
+      "sides": "fabric",
+      "armStyle": "pad",
+      "armRollH": 0.13,
+      "armPadL": 0.42,
+      "seatT": 0.12,
+      "saucerH": 0.2,
+      "backTaper": 0.3,
+      "backWaist": -0.1,
+      "backWaistY": 0.5,
+      "backTopR": 0.06,
+      "headW": 0.44,
+      "headH": 0.22,
+      "headD": 0.2,
+      "headGap": -0.03,
+      "headFwd": -0.04,
+      "headRound": 1,
+      "headPuff": 0.18,
+      "headPosts": false,
+      "basePlate": 0,
+      "stoolT": 0.14,
+      "stoolSeam": "none",
+      "stoolR": 0.07,
+      "stoolDome": 0.015,
+      "backW": 0.5
     },
     "variants": [
       {
@@ -2921,13 +3500,14 @@
       "seatH": 0.44,
       "seatD": 0.5,
       "backH": 1.03,
-      "armH": 0.59,
+      "armH": 0.54,
       "armW": 0.05,
       "backShape": "high",
       "cushion": "tight",
       "footstool": false,
       "headrest": true,
-      "notes": "Gyngestol med høy, smal og svakt S-formet rygg som er polstret helt opp, med en loddrett søm midt nedover ryggen og litt utoverbøyde «ører» øverst. En separat, rektangulær nakkepute henger i en stropp over toppen av ryggen og kan flyttes opp og ned (femtrinns nakkestøtte). Setet er en tykk, avrundet pute som buer ned over forkanten. Rammen er i hvitpigmentert eik: på hver side går en bred, buet armlenebue fra bak ryggen fram over armlenet og ned i et framben, et skrått bakben bøyer seg ned til meien, og to lange, flate gyngemeier stikker ut foran og bak. En bred tverrslå under setet binder sidene sammen; ryggen står fritt mellom armlenebuene uten noen topplist i tre. Ryggen kan vippes trinnløst bakover, og setehøyden kan justeres med beslag. I fåreskinnsvarianten er sete og forside av ryggen kledd med krøllete fåreskinn, mens nakkeputen er i lyst grågrønt skinn og baksiden av ryggen i beige stoff; i Bardal-varianten er alt i samme ullstoff. Armlenshøyden (ca. 59 cm) er anslått fra sidebildet."
+      "notes": "Gyngestol med høy, smal og svakt S-formet rygg som er polstret helt opp, med en loddrett søm midt nedover ryggen og litt utoverbøyde «ører» øverst. En separat, rektangulær nakkepute henger i en stropp over toppen av ryggen og kan flyttes opp og ned (femtrinns nakkestøtte). Setet er en tykk, avrundet pute som buer ned over forkanten. Rammen er i hvitpigmentert eik: på hver side går en bred, buet armlenebue fra bak ryggen fram over armlenet og ned i et framben, et skrått bakben bøyer seg ned til meien, og to lange, flate gyngemeier stikker ut foran og bak. En bred tverrslå under setet binder sidene sammen; ryggen står fritt mellom armlenebuene uten noen topplist i tre. Ryggen kan vippes trinnløst bakover, og setehøyden kan justeres med beslag. I fåreskinnsvarianten er sete og forside av ryggen kledd med krøllete fåreskinn, mens nakkeputen er i lyst grågrønt skinn og baksiden av ryggen i beige stoff; i Bardal-varianten er alt i samme ullstoff. Armlenshøyden (ca. 59 cm) er anslått fra sidebildet.",
+      "frameStyle": "bentwood"
     },
     "variants": [
       {
@@ -2997,7 +3577,148 @@
       "cushion": "tight",
       "footstool": false,
       "headrest": false,
-      "notes": "Organisk, eggformet skall som omslutter sete og rygg i ett stykke og er trukket helt i stoff, uten løse puter. Ryggen er høy (89 cm) og smalner litt inn ved skuldrene før den vider seg ut til en bred, avrundet topp som støtter hodet; en vannrett søm går tvers over ryggen i skulderhøyde, og en loddrett søm går ned midt på baksiden. Armlenene er brede, avrundede «vinger» som bøyer seg utover og fremover fra skallet og går ned i setekanten, slik at skallet sett fra siden er nesten sirkelrundt under armlenene. Setet er fast og ligger nedfelt i skallet. S20 stålunderstell: fire tynne, svartlakkerte stålstag som spriker utover og møtes i en ring under skallet (ca. 24 cm høyt, anslått). S04: svartlakkert, firearmet svingfot med søyle (stolen dreier), og flere S04-varianter har regulerbar rygg. Armlenshøyden er anslått fra bildene."
+      "notes": "Organisk, eggformet skall som omslutter sete og rygg i ett stykke og er trukket helt i stoff, uten løse puter. Ryggen er høy (89 cm) og smalner litt inn ved skuldrene før den vider seg ut til en bred, avrundet topp som støtter hodet; en vannrett søm går tvers over ryggen i skulderhøyde, og en loddrett søm går ned midt på baksiden. Armlenene er brede, avrundede «vinger» som bøyer seg utover og fremover fra skallet og går ned i setekanten, slik at skallet sett fra siden er nesten sirkelrundt under armlenene. Setet er fast og ligger nedfelt i skallet. S20 stålunderstell: fire tynne, svartlakkerte stålstag som spriker utover og møtes i en ring under skallet (ca. 24 cm høyt, anslått). S04: svartlakkert, firearmet svingfot med søyle (stolen dreier), og flere S04-varianter har regulerbar rygg. Armlenshøyden er anslått fra bildene.",
+      "shell": "pod",
+      "topProfile": [
+        [
+          0,
+          0.42
+        ],
+        [
+          40,
+          0.45
+        ],
+        [
+          60,
+          0.46
+        ],
+        [
+          120,
+          0.46
+        ],
+        [
+          140,
+          0.452
+        ],
+        [
+          155,
+          0.445
+        ],
+        [
+          180,
+          0.445
+        ]
+      ],
+      "petalW": [
+        [
+          0.32,
+          0.2
+        ],
+        [
+          0.44,
+          0.21
+        ],
+        [
+          0.6,
+          0.22
+        ],
+        [
+          0.66,
+          0.25
+        ],
+        [
+          0.72,
+          0.29
+        ],
+        [
+          0.885,
+          0.29
+        ]
+      ],
+      "shoulderR": 0.07,
+      "underH": 0.19,
+      "planNFront": 3.5,
+      "lipT": 0.11,
+      "footProfile": [
+        [
+          0,
+          0.26
+        ],
+        [
+          30,
+          0.25
+        ],
+        [
+          60,
+          0.23
+        ],
+        [
+          90,
+          0.205
+        ],
+        [
+          115,
+          0.22
+        ],
+        [
+          140,
+          0.24
+        ],
+        [
+          160,
+          0.25
+        ],
+        [
+          180,
+          0.255
+        ]
+      ],
+      "tuck": 0.13,
+      "floorIn": 0.08,
+      "seamAt": 0.678,
+      "seamSpan": 0.94,
+      "seamDip": 0.03,
+      "ringProfile": [
+        [
+          0,
+          0.27
+        ],
+        [
+          90,
+          0.3
+        ],
+        [
+          180,
+          0.27
+        ]
+      ],
+      "petalFrom": 0.36,
+      "arms": "lens",
+      "armT": 0.085,
+      "armLean": 0.3,
+      "armZ": [
+        -0.34,
+        0.38
+      ],
+      "armY": [
+        0.21,
+        0.6
+      ],
+      "armZc": 0.12,
+      "armYc": 0.42,
+      "armM": [
+        3.2,
+        2.6
+      ],
+      "armR": 0.04,
+      "armBend": 0.025,
+      "podRx": 0.21,
+      "flare": 0.1,
+      "footX": 0.34,
+      "armDome": 0.012,
+      "armCurl": 0.06,
+      "recline": 13,
+      "armTilt": 8
     },
     "variants": [
       {
@@ -3120,14 +3841,41 @@
       "seatD": 0.54,
       "backH": 0.85,
       "armH": 0.56,
-      "armW": 0.12,
+      "armW": 0.1,
       "legStyle": "swivel-disc",
       "legH": 0.03,
       "backShape": "square",
       "cushion": "loose",
       "footstool": false,
       "headrest": false,
-      "notes": "Dyp, kubisk loungestol der armlenene og ryggrammen går i ett: armlenene er smale (ca. 12 cm), rette og flate på toppen og like lange som setet, og bak buer sidene seg mykt (konkavt) opp i en høyere ryggramme som vider seg litt utover mot toppen. Løs, tykk seteputen har kantsøm rundt, og en stor, løs og vendbar ryggpute ligger mot ryggrammen og stikker opp over den. Hele stolen er trukket ned mot gulvet som en kasse uten synlige ben; den står på en svart, rund svingfot (stålring) som nesten skjules under bunnen, ca. 3 cm høy, og kan dreies. Armlenshøyden (ca. 56 cm) er anslått fra sidebildet. Julian Canvas er et mønstret jacquardstoff i lys beige med et labyrintmønster i gråbrun bouclé; modellen viser bare gjennomsnittsfargen."
+      "notes": "Dyp, kubisk loungestol der armlenene og ryggrammen går i ett: armlenene er smale (ca. 12 cm), rette og flate på toppen og like lange som setet, og bak buer sidene seg mykt (konkavt) opp i en høyere ryggramme som vider seg litt utover mot toppen. Løs, tykk seteputen har kantsøm rundt, og en stor, løs og vendbar ryggpute ligger mot ryggrammen og stikker opp over den. Hele stolen er trukket ned mot gulvet som en kasse uten synlige ben; den står på en svart, rund svingfot (stålring) som nesten skjules under bunnen, ca. 3 cm høy, og kan dreies. Armlenshøyden (ca. 56 cm) er anslått fra sidebildet. Julian Canvas er et mønstret jacquardstoff i lys beige med et labyrintmønster i gråbrun bouclé; modellen viser bare gjennomsnittsfargen.",
+      "armBackH": 0.79,
+      "armPlateau": 0.26,
+      "armRise": 0.07,
+      "armSweepR": 0.04,
+      "armTopR": 0.05,
+      "armRound": 0.45,
+      "armWelt": "both",
+      "armFlare": 2,
+      "armBackThin": 0.02,
+      "armCut": 0.03,
+      "backFrameH": 0.79,
+      "backT": 0.12,
+      "cushT": 0.12,
+      "seatWing": 0.04,
+      "apron": "flat",
+      "backCushT": 0.2,
+      "armFrontR": 0.025,
+      "backCushRec": 14,
+      "backPuff": 0.12,
+      "backRound": 0.35,
+      "backPinch": 0.45,
+      "seatRound": 0.35,
+      "seatPuff": 0.06,
+      "seatWelt": "both",
+      "backSides": 0.05,
+      "backWelt": false,
+      "seatSides": 0.06
     },
     "variants": [
       {
@@ -3238,14 +3986,34 @@
       "seatD": 0.65,
       "backH": 0.85,
       "armH": 0.63,
-      "armW": 0.1,
+      "armW": 0.11,
       "legStyle": "block",
       "legH": 0.04,
       "backShape": "square",
       "cushion": "loose",
       "footstool": false,
       "headrest": false,
-      "notes": "Dyp og lav lenestol med tuxedo-form: armlenene og ryggrammen er like høye og danner en sammenhengende, tynn ramme rundt sete og rygg. Armlenene er smale på toppen (ca. 10 cm), har en tydelig kantsøm langs overkanten og heller svakt utover; framkanten av armlenene er rett og loddrett. Den store, puffete seteputen med avrundet forkant ligger på en dyp, polstret sokkel, og en løs, myk og vendbar ryggpute ligger mot ryggrammen og stikker opp over den. Trekket går helt ned mot gulvet på alle sider; stolen står på fire lave, svarte føtter (4 cm) som nesten ikke synes. Armlenshøyden (ca. 63 cm) er anslått fra bildene. Subway-varianten oppgis med setehøyde 42 cm og setedybde 60 cm, de andre med 44/65 cm."
+      "notes": "Dyp og lav lenestol med tuxedo-form: armlenene og ryggrammen er like høye og danner en sammenhengende, tynn ramme rundt sete og rygg. Armlenene er smale på toppen (ca. 10 cm), har en tydelig kantsøm langs overkanten og heller svakt utover; framkanten av armlenene er rett og loddrett. Den store, puffete seteputen med avrundet forkant ligger på en dyp, polstret sokkel, og en løs, myk og vendbar ryggpute ligger mot ryggrammen og stikker opp over den. Trekket går helt ned mot gulvet på alle sider; stolen står på fire lave, svarte føtter (4 cm) som nesten ikke synes. Armlenshøyden (ca. 63 cm) er anslått fra bildene. Subway-varianten oppgis med setehøyde 42 cm og setedybde 60 cm, de andre med 44/65 cm.",
+      "backFrameH": 0.63,
+      "backT": 0.1,
+      "armRound": 0.35,
+      "armWelt": "both",
+      "armFlare": 3,
+      "cushT": 0.19,
+      "seatPuff": 0.25,
+      "seatRound": 0.9,
+      "backCushT": 0.2,
+      "legInset": 0.06,
+      "armFrontR": 0.02,
+      "seatOver": -0.01,
+      "piping": false,
+      "armWedge": 0.008,
+      "apron": "flat",
+      "apronR": 0.02,
+      "backPuff": 0.08,
+      "backRound": 0.3,
+      "backPinch": 0.3,
+      "backSides": 0.05
     },
     "variants": [
       {
@@ -3332,7 +4100,7 @@
       "seatH": 0.45,
       "seatD": 0.56,
       "backH": 0.84,
-      "armH": 0.62,
+      "armH": 0.7,
       "armW": 0.1,
       "legStyle": "wood-taper",
       "legH": 0.16,
@@ -3340,7 +4108,32 @@
       "cushion": "loose",
       "footstool": false,
       "headrest": false,
-      "notes": "Bred og dyp lenestol med rette, smale armlener (ca. 10 cm) som er like høye som ryggrammen og har skarpe, rette kanter. Armlenene slutter et stykke bak forkanten av setet og har en buet innsving nederst foran, slik at seteputen og sokkelen stikker frem foran armlenene. Under seteputen går en polstret sokkelramme rundt hele stolen. Løs, tykk setepute (kaldskum toppet med en dyne), en stor løs og vendbar ryggpute og en løs, rektangulær pyntepute i samme stoff. Står på fire runde, rette og svakt koniske treben (16 cm) som er satt litt inn fra hjørnene; benfargen følger varianten (hvitoljet, smoked/brunbeiset eller svart). Armlenshøyden (ca. 62 cm) er anslått fra bildene."
+      "notes": "Bred og dyp lenestol med rette, smale armlener (ca. 10 cm) som er like høye som ryggrammen og har skarpe, rette kanter. Armlenene slutter et stykke bak forkanten av setet og har en buet innsving nederst foran, slik at seteputen og sokkelen stikker frem foran armlenene. Under seteputen går en polstret sokkelramme rundt hele stolen. Løs, tykk setepute (kaldskum toppet med en dyne), en stor løs og vendbar ryggpute og en løs, rektangulær pyntepute i samme stoff. Står på fire runde, rette og svakt koniske treben (16 cm) som er satt litt inn fra hjørnene; benfargen følger varianten (hvitoljet, smoked/brunbeiset eller svart). Armlenshøyden (ca. 62 cm) er anslått fra bildene.",
+      "backFrameH": 0.7,
+      "backT": 0.1,
+      "armCut": 0.06,
+      "armRound": 0.3,
+      "armFrontR": 0.025,
+      "cushT": 0.17,
+      "seatWing": 0.106,
+      "deckWing": true,
+      "deckInset": 0.008,
+      "apron": "flat",
+      "apronR": 0.015,
+      "backCushT": 0.2,
+      "backPuff": 0.1,
+      "backRound": 0.3,
+      "backPinch": 0.3,
+      "pillow": true,
+      "pillowRound": 0.3,
+      "legW": 0.038,
+      "legSplay": 0,
+      "legInset": 0.07,
+      "seatRound": 0.35,
+      "backSides": 0.05,
+      "seatSides": 0.06,
+      "pillowW": 0.55,
+      "armFootR": 0.045
     },
     "variants": [
       {
@@ -3445,7 +4238,13 @@
       "cushion": "tight",
       "footstool": false,
       "headrest": false,
-      "notes": "Lav loungestol i midtcentury-stil med åpen ramme i heltre eik. Armlenet er én sammenhengende, rund og bøyd trebue som går rundt bak ryggen i armlenshøyde (ca. 53 cm) og fram til to rette armlener med avrundede ender. Frambena går rett opp til armlenene og bakbena opp til buen bak; bena er runde, svakt koniske og skrår litt utover. Under setet binder et Y-formet tre-stag bena sammen, og setet hviler på korte messingstag (messingdetaljer). Sete og rygg er to separate, ovale og tynne polstrede skall med avrundede kanter uten løse puter: setet heller bakover, og ryggen er en frittstående oval plate som lener seg kraftig bakover og når 75 cm. Ingen topplist på ryggen. Rammefargen følger varianten (mocca, svart, espresso eller hvitoljet eik). Armlenshøyden og setedybden er anslått fra sidebildet; Bohus oppgir setedybde 71 cm."
+      "notes": "Lav loungestol i midtcentury-stil med åpen ramme i heltre eik. Armlenet er én sammenhengende, rund og bøyd trebue som går rundt bak ryggen i armlenshøyde (ca. 53 cm) og fram til to rette armlener med avrundede ender. Frambena går rett opp til armlenene og bakbena opp til buen bak; bena er runde, svakt koniske og skrår litt utover. Under setet binder et Y-formet tre-stag bena sammen, og setet hviler på korte messingstag (messingdetaljer). Sete og rygg er to separate, ovale og tynne polstrede skall med avrundede kanter uten løse puter: setet heller bakover, og ryggen er en frittstående oval plate som lener seg kraftig bakover og når 75 cm. Ingen topplist på ryggen. Rammefargen følger varianten (mocca, svart, espresso eller hvitoljet eik). Armlenshøyden og setedybden er anslått fra sidebildet; Bohus oppgir setedybde 71 cm.",
+      "frameStyle": "hoop",
+      "backW": 0.5,
+      "backTaper": 0.9,
+      "armD": 0.04,
+      "seatW": 0.56,
+      "standoffX": 0.17
     },
     "variants": [
       {
@@ -3613,9 +4412,32 @@
       "footrest": "none",
       "footrestOpen": false,
       "starArms": 5,
-      "lever": false,
+      "lever": true,
       "armBottom": 0.25,
-      "notes": "Conform Relieve med standard rygg, designet av Jahn Aamodt. Kantete boksform: to flate, polstrede sidevanger som sett fra siden er en kile, bredest oppe ved armlenet og smalere nede ved setet, og som stopper ca. 25 cm over gulvet slik at søylen og mekanismen under setet synes. Armlenene er brede (ca. 11 cm), flate på toppen og går rett fram til en skrå, avskåret front. Setet er én tykk, fast pute som stikker litt fram foran vangene. Ryggen er høy og bakoverlent med en tverrsøm over korsryggen og en kort quiltsøm midt på; øverst sitter en stor, separat rektangulær nakkepute med kantsømmer som følger ryggen (Syncro Backup). På utsiden av høyre sidevange sitter et innfelt håndtak i blank krom for å regulere ryggen, ikke en løs hendel. Svart femarmet svingfot (kryssfot i helstøpt aluminium) med søyle. Fagmøbler selger stolen uten fotskammel. Armlenehøyden og høyden på foten er anslått fra bildet."
+      "notes": "Conform Relieve med standard rygg, designet av Jahn Aamodt. Kantete boksform: to flate, polstrede sidevanger som sett fra siden er en kile, bredest oppe ved armlenet og smalere nede ved setet, og som stopper ca. 25 cm over gulvet slik at søylen og mekanismen under setet synes. Armlenene er brede (ca. 11 cm), flate på toppen og går rett fram til en skrå, avskåret front. Setet er én tykk, fast pute som stikker litt fram foran vangene. Ryggen er høy og bakoverlent med en tverrsøm over korsryggen og en kort quiltsøm midt på; øverst sitter en stor, separat rektangulær nakkepute med kantsømmer som følger ryggen (Syncro Backup). På utsiden av høyre sidevange sitter et innfelt håndtak i blank krom for å regulere ryggen, ikke en løs hendel. Svart femarmet svingfot (kryssfot i helstøpt aluminium) med søyle. Fagmøbler selger stolen uten fotskammel. Armlenehøyden og høyden på foten er anslått fra bildet.",
+      "armStyle": "board",
+      "armFlare": 0,
+      "armTopR": 0.02,
+      "armFrontR": 0.04,
+      "armRearR": 0.05,
+      "armFrontLean": 0.12,
+      "seatNose": 0.04,
+      "headW": 0.6,
+      "headH": 0.22,
+      "headD": 0.16,
+      "headRound": 0.5,
+      "headPuff": 0.06,
+      "headPosts": false,
+      "recline": 20,
+      "basePlate": 0.12,
+      "headGap": -0.04,
+      "headFwd": 0.03,
+      "headTaper": 0.83,
+      "headWing": 0.03,
+      "headSeams": 2,
+      "headSeamX": 0.8,
+      "backTopR": 0.02,
+      "leverStyle": "chrome"
     },
     "variants": [
       {
@@ -3721,15 +4543,29 @@
       "headrest": true,
       "body": "box",
       "sides": "fabric",
-      "headStyle": "block",
-      "backSeams": "cross-v",
+      "headStyle": "pillow",
+      "backSeams": "v",
       "footrest": "none",
       "footrestOpen": false,
       "star": "slim",
       "starArms": 4,
       "lever": true,
       "armBottom": 0.2,
-      "notes": "Brunstad Choice hvilestol. Polstret boksform med brede, kantete armlener (ca. 14 cm) med flat topp, som buer svakt utover mot fronten; sidevangene går ned til ca. 20 cm over gulvet. En løs, tykk setepute med kantsøm ligger mellom armlenene. Ryggen er høy og smalner tydelig inn mot toppen, med en loddrett søm midt nedover og ingen knapper. En separat, rektangulær nakkepute henger foran toppen av ryggen i en stropp over kanten. Liten spak med kule på utsiden av høyre armlene for å regulere ryggen. Stolen står på en tynn, svart firearmet svingsokkel (S04) med søyle. Fagmøbler selger stolen uten fotskammel. Armlenehøyden er anslått fra bildet."
+      "notes": "Brunstad Choice hvilestol. Polstret boksform med brede, kantete armlener (ca. 14 cm) med flat topp, som buer svakt utover mot fronten; sidevangene går ned til ca. 20 cm over gulvet. En løs, tykk setepute med kantsøm ligger mellom armlenene. Ryggen er høy og smalner tydelig inn mot toppen, med en loddrett søm midt nedover og ingen knapper. En separat, rektangulær nakkepute henger foran toppen av ryggen i en stropp over kanten. Liten spak med kule på utsiden av høyre armlene for å regulere ryggen. Stolen står på en tynn, svart firearmet svingsokkel (S04) med søyle. Fagmøbler selger stolen uten fotskammel. Armlenehøyden er anslått fra bildet.",
+      "armStyle": "board",
+      "armFlare": 0.03,
+      "armTopR": 0.025,
+      "armFrontR": 0.04,
+      "armRearR": 0.06,
+      "armFrontTopR": 0.02,
+      "backTaper": 0.3,
+      "backTopR": 0.03,
+      "headW": 0.38,
+      "headH": 0.13,
+      "headD": 0.07,
+      "headDrop": 0.12,
+      "basePlate": 0.12,
+      "backPuff": 0.005
     },
     "variants": [
       {
@@ -3804,7 +4640,7 @@
       "seatD": 0.5,
       "backH": 1.08,
       "armH": 0.6,
-      "armW": 0.12,
+      "armW": 0.17,
       "legStyle": "swivel-star",
       "legH": 0.18,
       "backShape": "high",
@@ -3814,7 +4650,7 @@
       "body": "box",
       "sides": "fabric",
       "headStyle": "block",
-      "backSeams": "cross-v",
+      "backSeams": "v",
       "footrest": "stool",
       "footrestOpen": false,
       "starArms": 5,
@@ -3824,7 +4660,29 @@
       "stoolW": 0.52,
       "stoolD": 0.4,
       "stoolH": 0.43,
-      "notes": "Helkledd hvilestol i krøllete bouclé. Tykke, avrundede armlener som myke paneler på hver side av setet, som lener seg litt utover mot toppen og stopper ca. 26 cm over gulvet, slik at søylen synes under. Ryggen er et høyt, avrundet ytterskall i samme stoff med små ører øverst; innsiden har to loddrette ryggputer med en loddrett søm midt nedover og ingen knapper. Øverst sitter en separat, rektangulær nakkepute. Setet er én tykk, fast pute. Ingen hendel; vippen låses med en liten knott under setet. Svart femarmet stjernefot i metall med søyle og sving. Fotskammelen (pall) har tykk, todelt pute med en tverrsøm og står på en egen svart firearmet fot; den er ca. 52 × 40 × 43 cm (anslått fra bildet, ikke oppgitt). Sete- og armlenehøyde er anslått."
+      "notes": "Helkledd hvilestol i krøllete bouclé. Tykke, avrundede armlener som myke paneler på hver side av setet, som lener seg litt utover mot toppen og stopper ca. 26 cm over gulvet, slik at søylen synes under. Ryggen er et høyt, avrundet ytterskall i samme stoff med små ører øverst; innsiden har to loddrette ryggputer med en loddrett søm midt nedover og ingen knapper. Øverst sitter en separat, rektangulær nakkepute. Setet er én tykk, fast pute. Ingen hendel; vippen låses med en liten knott under setet. Svart femarmet stjernefot i metall med søyle og sving. Fotskammelen (pall) har tykk, todelt pute med en tverrsøm og står på en egen svart firearmet fot; den er ca. 52 × 40 × 43 cm (anslått fra bildet, ikke oppgitt). Sete- og armlenehøyde er anslått.",
+      "armStyle": "petal",
+      "armFlare": 0.05,
+      "armTopR": 0.07,
+      "armFrontTopR": 0.15,
+      "armFrontR": 0.1,
+      "armRearR": 0.15,
+      "backTopR": 0.1,
+      "headW": 0.48,
+      "headH": 0.2,
+      "basePlate": 0.12,
+      "backWrap": 0.035,
+      "backWrapTop": 0.06,
+      "headGap": -0.18,
+      "headFwd": 0.08,
+      "headPosts": false,
+      "stoolSeam": "center",
+      "stoolT": 0.18,
+      "armLip": 0,
+      "armFlarePow": 2,
+      "armTopTilt": 0.015,
+      "armWelt": false,
+      "armFootR": 0.08
     },
     "variants": [
       {
@@ -3881,12 +4739,12 @@
     "mount": "floor",
     "params": {
       "seatH": 0.47,
-      "seatD": 0.49,
+      "seatD": 0.44,
       "backH": 0.99,
-      "armH": 0.62,
+      "armH": 0.57,
       "armW": 0.09,
       "legStyle": "swivel-star",
-      "legH": 0.14,
+      "legH": 0.22,
       "backShape": "high",
       "cushion": "tight",
       "footstool": true,
@@ -3902,7 +4760,17 @@
       "stoolW": 0.55,
       "stoolD": 0.4,
       "stoolH": 0.41,
-      "notes": "Stressless Tokyo, medium, med regulerbar nakkestøtte. Klassisk Stressless-oppbygning: sete og rygg er én fast, polstret «dyne» uten sidevanger, med en tverrsøm i ryggen (to ryggfelt) og en separat, rektangulær nakkepute øverst som kan vinkles. Smale, polstrede armputer ligger på en buet armbøyle i metall (samme farge som foten) som går fra baksiden av setet, under armputen og ned til mekanismen. Stressless-hjulet for Glide-motstanden sitter på høyre side under armen. Understellet er Star: fire tynne, lange og svakt buede armer som spriker ut fra et nav under setet, i blank aluminium eller matt svart, ikke ringfot. Fotskammelen har buet, polstret topp med tverrsøm og står på en mindre Star-fot med fire armer; den er ca. 55 × 40 × 41 cm (anslått fra bildet, ikke oppgitt). Setedybde og armlenehøyde er anslått."
+      "notes": "Stressless Tokyo, medium, med regulerbar nakkestøtte. Klassisk Stressless-oppbygning: sete og rygg er én fast, polstret «dyne» uten sidevanger, med en tverrsøm i ryggen (to ryggfelt) og en separat, rektangulær nakkepute øverst som kan vinkles. Smale, polstrede armputer ligger på en buet armbøyle i metall (samme farge som foten) som går fra baksiden av setet, under armputen og ned til mekanismen. Stressless-hjulet for Glide-motstanden sitter på høyre side under armen. Understellet er Star: fire tynne, lange og svakt buede armer som spriker ut fra et nav under setet, i blank aluminium eller matt svart, ikke ringfot. Fotskammelen har buet, polstret topp med tverrsøm og står på en mindre Star-fot med fire armer; den er ca. 55 × 40 × 41 cm (anslått fra bildet, ikke oppgitt). Setedybde og armlenehøyde er anslått.",
+      "base": "star",
+      "seatLip": 0.15,
+      "bodyBottom": 0.2,
+      "stoolSeamAt": 0.28,
+      "stoolDome": 0.008,
+      "stoolWelt": true,
+      "headW": 0.6,
+      "headRound": 0.35,
+      "headPuff": 0.06,
+      "headD": 0.13
     },
     "variants": [
       {
@@ -4041,29 +4909,39 @@
       "seatH": 0.45,
       "seatD": 0.5,
       "backH": 1.01,
-      "armH": 0.6,
+      "armH": 0.55,
       "armW": 0.13,
       "legStyle": "swivel-star",
-      "legH": 0.2,
+      "legH": 0.255,
       "backShape": "high",
       "cushion": "tight",
       "footstool": true,
       "headrest": true,
-      "body": "box",
+      "body": "shell",
       "sides": "veneer",
       "headStyle": "block",
       "backSeams": "buttons",
       "footrest": "stool",
       "footrestOpen": false,
-      "starArms": 4,
+      "starArms": 5,
       "lever": true,
-      "armTuck": 0.045,
-      "armBottom": 0.27,
-      "armCap": false,
       "stoolW": 0.55,
       "stoolD": 0.42,
       "stoolH": 0.42,
-      "notes": "Hjellegjerde Falcon. Et formstøpt skall i finert eik (frame: hvitpigmentert, mokkaoljet eller sortoljet) omslutter setet og går opp på utsiden av armlenene, som tynne, tulipanformede vanger som svinger utover mot toppen, omtrent som Conform Timeout. Over skallkanten ligger polstrede armlener som er brede og runde foran og smalner bakover, og setet er en tykk, fast pute med kantsøm som går ut over skallets forkant. Skallet stopper ca. 27 cm over gulvet, så søylen synes under. Ryggen er høy og bakoverlent med en kort tverrsøm (tuft) midt på. Øverst sitter en separat, rektangulær nakkepute på to tynne metallstag, justerbar. Liten spak på høyre side under armlenet for ryggen (låsefunksjon), gassløftesylinder og sving med autoretur. Firearmet svingfot i børstet eller sort stål. Fotskammelen har samme finérskall under en tykk pute med tuft og egen firearmet fot; den er ca. 55 × 42 × 42 cm (anslått fra bildet, ikke oppgitt). Setedybde og armlenehøyde er anslått."
+      "notes": "Hjellegjerde Falcon. Et formstøpt skall i finert eik (frame: hvitpigmentert, mokkaoljet eller sortoljet) omslutter setet og går opp på utsiden av armlenene, som tynne, tulipanformede vanger som svinger utover mot toppen, omtrent som Conform Timeout. Over skallkanten ligger polstrede armlener som er brede og runde foran og smalner bakover, og setet er en tykk, fast pute med kantsøm som går ut over skallets forkant. Skallet stopper ca. 27 cm over gulvet, så søylen synes under. Ryggen er høy og bakoverlent med en kort tverrsøm (tuft) midt på. Øverst sitter en separat, rektangulær nakkepute på to tynne metallstag, justerbar. Liten spak på høyre side under armlenet for ryggen (låsefunksjon), gassløftesylinder og sving med autoretur. Firearmet svingfot i børstet eller sort stål. Fotskammelen har samme finérskall under en tykk pute med tuft og egen firearmet fot; den er ca. 55 × 42 × 42 cm (anslått fra bildet, ikke oppgitt). Setedybde og armlenehøyde er anslått.",
+      "armPad": "petal",
+      "shellTaper": 0.5,
+      "shellBottom": 0.24,
+      "backW": 0.5,
+      "backFlare": -0.14,
+      "seatNose": 0,
+      "seatT": 0.13,
+      "shellFront": 0.85,
+      "armPadH": 0.07,
+      "armTilt": 0.06,
+      "armCurl": 0.04,
+      "shellDisc": 0.07,
+      "headW": 0.43
     },
     "variants": [
       {
@@ -4213,9 +5091,9 @@
       "seatH": 0.46,
       "seatD": 0.52,
       "backH": 0.96,
-      "armH": 0.63,
-      "armW": 0.13,
-      "armStyle": "slim",
+      "armH": 0.58,
+      "armW": 0.16,
+      "armStyle": "tulip",
       "legStyle": "wood-taper",
       "legH": 0.19,
       "backShape": "wing",
@@ -4223,7 +5101,34 @@
       "buttons": false,
       "footstool": false,
       "headrest": false,
-      "notes": "Scapa Habo. Høy, bred rygg med avrundede øvre hjørner som går i en myk S-kurve ned i armlenene, som lave, runde ører; ingen egne vinger over armlenene. Armlenene er tykke og runde og buer svakt utover mot fronten. En kort tverrsøm (tuft) midt på ryggen, ellers glatt trekk uten knapper; en loddrett søm midt på baksiden av ryggen. Løs, tykk setepute med kantsøm. Fire skrå, avsmalnende runde trebein (ca. 19 cm), hvitoljet eik eller sorte. Heltre rammeverk med nozag-fjæring. Pall selges separat. Armlenehøyde, beinhøyde og setedybde er anslått fra bildene."
+      "notes": "Scapa Habo. Høy, bred rygg med avrundede øvre hjørner som går i en myk S-kurve ned i armlenene, som lave, runde ører; ingen egne vinger over armlenene. Armlenene er tykke og runde og buer svakt utover mot fronten. En kort tverrsøm (tuft) midt på ryggen, ellers glatt trekk uten knapper; en loddrett søm midt på baksiden av ryggen. Løs, tykk setepute med kantsøm. Fire skrå, avsmalnende runde trebein (ca. 19 cm), hvitoljet eik eller sorte. Heltre rammeverk med nozag-fjæring. Pall selges separat. Armlenehøyde, beinhøyde og setedybde er anslått fra bildene.",
+      "backTuft": true,
+      "backDeg": 0,
+      "wingEar": 0.28,
+      "wingJoin": 0.41,
+      "taper": 0.08,
+      "backBow": 0,
+      "backCurve": 0.38,
+      "backTBot": 0.31,
+      "topRound": 0.06,
+      "wingW": 1.08,
+      "backT": 0.18,
+      "backCorner": 0.21,
+      "earR": 0.06,
+      "shelf": 0.09,
+      "armDrop": 0.03,
+      "rearSeam": true,
+      "wingLean": 0.3,
+      "tuftW": 0.085,
+      "wingT": 0.08,
+      "wingFillet": 0.14,
+      "armSplay": 0.02,
+      "flarePow": 2.2,
+      "legInsetX": 0.1,
+      "legInsetXB": 0.165,
+      "tuftD": 0.012,
+      "shelfRound": true,
+      "cornerHug": true
     },
     "variants": [
       {
@@ -4286,10 +5191,10 @@
       "armW": 0.1,
       "legStyle": "swivel-star",
       "legH": 0.26,
-      "body": "tulip",
+      "body": "box",
       "sides": "fabric",
       "headStyle": "integrated",
-      "backSeams": "cross",
+      "backSeams": "neck",
       "footrest": "stool",
       "footrestOpen": false,
       "footstool": true,
@@ -4302,7 +5207,25 @@
       "lever": false,
       "backShape": "high",
       "cushion": "tight",
-      "notes": "Tulipanformet hvilestol. Et helpolstret ytterskall omslutter ryggen og buer ut til to smale, polstrede armlener. Armlenene står litt ut til sidene øverst og smalner ned mot setet. Ryggen er høy, med en innebygd nakkedel øverst som er skilt fra ryggputen med en tverrsøm. Bak på skallet går en loddrett søm på midten. Setet har en tykk, avrundet pute. Stolen har trinnløs vippemekanisme: ryggen vippes når man lener seg bakover, og strammingen justeres med et rundt hjul under setet. Den har ingen hendel på siden. Stolen står på en svingfot med søyle og en firearmet stjernefot med flate, tynne armer og svarte glidesko, i børstet krom på den beige varianten og svart på den mørk grå. Fotskammelen er 48 × 42 × 39 cm (fra Jysk) og er en avrundet, litt trapesformet pute på en egen firearmet stjernefot i samme metall. Skallets underkant står ca. 28 cm over gulvet. Setedybden og armlenshøyden er anslått fra sidebildet."
+      "notes": "Tulipanformet hvilestol. Et helpolstret ytterskall omslutter ryggen og buer ut til to smale, polstrede armlener. Armlenene står litt ut til sidene øverst og smalner ned mot setet. Ryggen er høy, med en innebygd nakkedel øverst som er skilt fra ryggputen med en tverrsøm. Bak på skallet går en loddrett søm på midten. Setet har en tykk, avrundet pute. Stolen har trinnløs vippemekanisme: ryggen vippes når man lener seg bakover, og strammingen justeres med et rundt hjul under setet. Den har ingen hendel på siden. Stolen står på en svingfot med søyle og en firearmet stjernefot med flate, tynne armer og svarte glidesko, i børstet krom på den beige varianten og svart på den mørk grå. Fotskammelen er 48 × 42 × 39 cm (fra Jysk) og er en avrundet, litt trapesformet pute på en egen firearmet stjernefot i samme metall. Skallets underkant står ca. 28 cm over gulvet. Setedybden og armlenshøyden er anslått fra sidebildet.",
+      "armStyle": "petal",
+      "armSplay": 0.01,
+      "armFlare": 0.04,
+      "armLip": 0,
+      "armTopR": 0.035,
+      "armBottom": 0.28,
+      "armFrontR": 0.12,
+      "armRearR": 0.2,
+      "backWrap": 0.03,
+      "backWrapTop": 0,
+      "seatT": 0.13,
+      "stoolT": 0.13,
+      "stoolSeam": "none",
+      "stoolR": 0.06,
+      "backTopR": 0.08,
+      "armRise": 0.16,
+      "armWelt": false,
+      "basePlate": 0
     },
     "variants": [
       {
@@ -4361,8 +5284,8 @@
       "seatD": 0.53,
       "backH": 1.06,
       "armH": 0.6,
-      "armW": 0.12,
-      "legStyle": "swivel-disc",
+      "armW": 0.13,
+      "legStyle": "runners",
       "legH": 0.04,
       "body": "box",
       "sides": "fabric",
@@ -4375,7 +5298,21 @@
       "lever": true,
       "backShape": "high",
       "cushion": "tight",
-      "notes": "Kantete, helpolstret recliner med innebygd fothviler. Tykke, polstrede sidevanger danner armlenene. Toppen av armlenene er avrundet og buer ned foran i en stor radius. Ryggen består av tre polstrede felt stablet oppå hverandre, med tverrsømmer mellom; det øverste feltet er nakkedelen. Setet har en tykk, fast pute. Under setet sitter et høyt frontpanel som felles ut som leggstøtte når man drar i en spak: et innfelt, svart håndtak på utsiden av høyre armlen. Ryggen vippes trinnløst bakover. Stolen kan ikke dreies. Den står på to lave, svarte metallmeier som nesten er skjult under stoffet, og legStyle swivel-disc med legH 0,04 brukes bare som en lav, skjult sokkel. Fullt utslått er stolen 168 cm dyp, med liggelengde 177 cm. Armlenshøyden og armbredden er anslått fra bildene."
+      "notes": "Kantete, helpolstret recliner med innebygd fothviler. Tykke, polstrede sidevanger danner armlenene. Toppen av armlenene er avrundet og buer ned foran i en stor radius. Ryggen består av tre polstrede felt stablet oppå hverandre, med tverrsømmer mellom; det øverste feltet er nakkedelen. Setet har en tykk, fast pute. Under setet sitter et høyt frontpanel som felles ut som leggstøtte når man drar i en spak: et innfelt, svart håndtak på utsiden av høyre armlen. Ryggen vippes trinnløst bakover. Stolen kan ikke dreies. Den står på to lave, svarte metallmeier som nesten er skjult under stoffet, og legStyle swivel-disc med legH 0,04 brukes bare som en lav, skjult sokkel. Fullt utslått er stolen 168 cm dyp, med liggelengde 177 cm. Armlenshøyden og armbredden er anslått fra bildene.",
+      "armStyle": "round",
+      "armTopR": 0.05,
+      "armFrontTopR": 0.15,
+      "armFrontR": 0.03,
+      "armRearR": 0.05,
+      "armBottom": 0.045,
+      "backBands": 0,
+      "backPuff": 0.04,
+      "footTaper": 1,
+      "footR": 0.02,
+      "footBottom": 0.05,
+      "footSplit": 0.03,
+      "leverStyle": "inset",
+      "runnerL": 0.45
     },
     "variants": [
       {
@@ -4434,7 +5371,7 @@
       "seatD": 0.57,
       "backH": 1.01,
       "armH": 0.63,
-      "armW": 0.14,
+      "armW": 0.15,
       "legStyle": "swivel-disc",
       "legH": 0.05,
       "body": "box",
@@ -4448,7 +5385,22 @@
       "lever": true,
       "backShape": "high",
       "cushion": "tight",
-      "notes": "Avrundet, helpolstret recliner med sving og innebygd fothviler. Ryggen er én høy, myk pute med avrundet topp og avrundede hjørner. Den har ingen egen nakkepute og ingen sømmer på forsiden. Armlenene er tykke, polstrede sidevanger med avrundet front og topp, og setet har en tykk pute. Setefronten er et panel som felles ut som leggstøtte når man drar i en spak: et innfelt, svart håndtak på utsiden av høyre armlen. Stolen står på en lav, svart, rund svingplate av stål (ca. 5 cm) som nesten er skjult under stolen. Stoffet er et meleret, tweedaktig strukturstoff i varm gråbeige. Jysk oppgir B74 × H75 × D73 cm i produktteksten, men målene i spesifikasjonen (B82 × H101 × D96, sete 50/57) stemmer med bildene og er brukt her. Armlenshøyden og armbredden er anslått fra bildene."
+      "notes": "Avrundet, helpolstret recliner med sving og innebygd fothviler. Ryggen er én høy, myk pute med avrundet topp og avrundede hjørner. Den har ingen egen nakkepute og ingen sømmer på forsiden. Armlenene er tykke, polstrede sidevanger med avrundet front og topp, og setet har en tykk pute. Setefronten er et panel som felles ut som leggstøtte når man drar i en spak: et innfelt, svart håndtak på utsiden av høyre armlen. Stolen står på en lav, svart, rund svingplate av stål (ca. 5 cm) som nesten er skjult under stolen. Stoffet er et meleret, tweedaktig strukturstoff i varm gråbeige. Jysk oppgir B74 × H75 × D73 cm i produktteksten, men målene i spesifikasjonen (B82 × H101 × D96, sete 50/57) stemmer med bildene og er brukt her. Armlenshøyden og armbredden er anslått fra bildene.",
+      "armStyle": "round",
+      "armTopR": 0.06,
+      "armFrontTopR": 0.16,
+      "armFrontR": 0.08,
+      "armRearR": 0.1,
+      "armBottom": 0.06,
+      "armFlare": 0.01,
+      "backTopR": 0.14,
+      "backPuff": 0.03,
+      "discR": 0.2,
+      "footTaper": 0.98,
+      "footR": 0.04,
+      "footBottom": 0.06,
+      "footSplit": 0.03,
+      "leverStyle": "inset"
     },
     "variants": [
       {
@@ -4495,12 +5447,12 @@
       "seatD": 0.54,
       "backH": 0.97,
       "armH": 0.61,
-      "armW": 0.155,
+      "armW": 0.17,
       "legStyle": "block",
       "legH": 0.1,
       "body": "box",
       "sides": "fabric",
-      "headStyle": "integrated",
+      "headStyle": "flap",
       "backSeams": "none",
       "footrest": "integrated",
       "footrestOpen": false,
@@ -4509,7 +5461,20 @@
       "lever": false,
       "backShape": "high",
       "cushion": "tight",
-      "notes": "Klassisk, kantete hvilestol med innebygd fothviler. Armlenene er brede og polstrede, og de er rullet utover foran med en rund front (rullearmlen). Alle kanter har kantbånd. Ryggen er høy og ruller litt bakover øverst. Øverst foran er en tynn, polstret nakkepute sydd fast som en klaff; ellers er ryggen glatt. Setet har en tykk pute med kantbånd, og under den sitter et frontpanel som felles ut som leggstøtte når man lener seg bakover. Stolen har ingen hendel og kan stilles i tre stillinger. På utsiden av venstre armlen henger en stofflomme til fjernkontrollen. Stolen står på fire korte, rette og litt skrå ben i mørkbeiset bjørk (ca. 10 cm) og har ikke svingfot. legStyle «block» er satt fordi hvilestolmodellen foreløpig bare har svingfot. Fullt utslått er stolen 162 cm dyp og 68 cm høy. Armlenshøyden er anslått fra bildet."
+      "notes": "Klassisk, kantete hvilestol med innebygd fothviler. Armlenene er brede og polstrede, og de er rullet utover foran med en rund front (rullearmlen). Alle kanter har kantbånd. Ryggen er høy og ruller litt bakover øverst. Øverst foran er en tynn, polstret nakkepute sydd fast som en klaff; ellers er ryggen glatt. Setet har en tykk pute med kantbånd, og under den sitter et frontpanel som felles ut som leggstøtte når man lener seg bakover. Stolen har ingen hendel og kan stilles i tre stillinger. På utsiden av venstre armlen henger en stofflomme til fjernkontrollen. Stolen står på fire korte, rette og litt skrå ben i mørkbeiset bjørk (ca. 10 cm) og har ikke svingfot. legStyle «block» er satt fordi hvilestolmodellen foreløpig bare har svingfot. Fullt utslått er stolen 162 cm dyp og 68 cm høy. Armlenshøyden er anslått fra bildet.",
+      "armStyle": "roll",
+      "armRoll": 0.04,
+      "armRollH": 0.17,
+      "armFrontDrop": 0,
+      "armBottom": 0.1,
+      "backTopR": 0.06,
+      "footTaper": 1,
+      "footR": 0.02,
+      "footBottom": 0.11,
+      "footSplit": 0.025,
+      "bodyRear": 1,
+      "armRearR": 0.03,
+      "backTaper": -0.22
     },
     "variants": [
       {
@@ -4558,11 +5523,11 @@
       "armH": 0.49,
       "armW": 0.05,
       "legStyle": "swivel-star",
-      "legH": 0.2,
-      "body": "shell",
+      "legH": 0.16,
+      "body": "box",
       "sides": "fabric",
-      "headStyle": "block",
-      "backSeams": "buttons",
+      "headStyle": "integrated",
+      "backSeams": "quilt",
       "footrest": "stool",
       "footrestOpen": false,
       "footstool": true,
@@ -4574,7 +5539,38 @@
       "lever": false,
       "backShape": "high",
       "cushion": "tight",
-      "notes": "Armløs svinglenestol med høy, skrå rygg. Stolen har ingen hvilefunksjon, men sittestillingen er tilbakelent. Et tynt, formet ytterskall i Bomstad, et belagt tekstil i samme farge som skinnet, omslutter sete og rygg. Under setet smalner skallet ned til et kjegleformet nav over svingfoten. Skallets sidekant står bare noen få cm over setet, så stolen har ingen egentlige armlener, og armH er derfor satt lavt. Inne i skallet ligger en tykk setepute og en ryggpute i Grann narvskinn med kvadratisk tufting (3 × 3 felt). Øverst sitter en separat, rektangulær nakkepute med samme tufting. Setet heller bakover og er 41 cm høyt foran og 33 cm bak. Stolen står på en svart, pulverlakkert stjernefot med 5 armer, nedbøyde føtter og kort søyle. Fotskammelen er 64 × 64 × 44 cm (fra IKEA). Den er en tykk, tuftet skinnpute i et grunt skall på en egen svart stjernefot med 5 armer, men modellen tegner fire. Høyden på basen er anslått fra målskissen."
+      "notes": "Armløs svinglenestol med høy, skrå rygg. Stolen har ingen hvilefunksjon, men sittestillingen er tilbakelent. Et tynt, formet ytterskall i Bomstad, et belagt tekstil i samme farge som skinnet, omslutter sete og rygg. Under setet smalner skallet ned til et kjegleformet nav over svingfoten. Skallets sidekant står bare noen få cm over setet, så stolen har ingen egentlige armlener, og armH er derfor satt lavt. Inne i skallet ligger en tykk setepute og en ryggpute i Grann narvskinn med kvadratisk tufting (3 × 3 felt). Øverst sitter en separat, rektangulær nakkepute med samme tufting. Setet heller bakover og er 41 cm høyt foran og 33 cm bak. Stolen står på en svart, pulverlakkert stjernefot med 5 armer, nedbøyde føtter og kort søyle. Fotskammelen er 64 × 64 × 44 cm (fra IKEA). Den er en tykk, tuftet skinnpute i et grunt skall på en egen svart stjernefot med 5 armer, men modellen tegner fire. Høyden på basen er anslått fra målskissen.",
+      "armStyle": "none",
+      "armWelt": false,
+      "armFrame": true,
+      "armBottom": 0.22,
+      "armFrontR": 0.05,
+      "armRearR": 0.06,
+      "seatT": 0.13,
+      "seatTufts": 0,
+      "neckH": 0.2,
+      "tuftCols": 2,
+      "tuftRows": 4,
+      "tuftFrom": 0.1,
+      "tuftTop": 0.08,
+      "backWrap": 0.03,
+      "backWrapT": 0.1,
+      "backWrapTop": 0.02,
+      "backTopR": 0.06,
+      "recline": 30,
+      "baseCone": 0.14,
+      "stoolT": 0.12,
+      "stoolTufts": 3,
+      "stoolTray": 0.07,
+      "stoolStarArms": 5,
+      "stoolSeam": "none",
+      "stoolR": 0.04,
+      "stoolDome": 0.015,
+      "armLipH": 0.31,
+      "seatTilt": 8,
+      "basePlate": 0,
+      "tuftButtons": false,
+      "backPuff": 0.035
     },
     "variants": [
       {
@@ -4622,7 +5618,7 @@
       "seatH": 0.42,
       "seatD": 0.5,
       "backH": 1,
-      "armH": 0.57,
+      "armH": 0.61,
       "armW": 0.05,
       "legStyle": "wood-frame",
       "legH": 0.22,
@@ -4630,7 +5626,17 @@
       "cushion": "tight",
       "footstool": false,
       "headrest": false,
-      "notes": "Frittbærende lenestol med ramme i limt, bøyd finér. To sammenhengende, flate finérvanger (ca. 5 cm brede) går fra et rektangulært gulvmeie, fram og opp som armlener og bakover til ryggrammen. Stolen har ingen bakben og fjærer når man sitter i den. Sete og rygg er én sammenhengende, svakt S-formet ramme med spent duk. Over dem ligger én lang, løs pute med en egen nakkedel øverst: Knisa har tverrkanaler, Gunnared er tuftet i ruter og Kelinge er glatt. Under setet sitter en tverrslå foran og en bak. Modellen lounge-wood tegner ben i hjørnene, men det virkelige understellet er to flate meier på gulvet. Armlenshøyden er anslått fra bildet."
+      "notes": "Frittbærende lenestol med ramme i limt, bøyd finér. To sammenhengende, flate finérvanger (ca. 5 cm brede) går fra et rektangulært gulvmeie, fram og opp som armlener og bakover til ryggrammen. Stolen har ingen bakben og fjærer når man sitter i den. Sete og rygg er én sammenhengende, svakt S-formet ramme med spent duk. Over dem ligger én lang, løs pute med en egen nakkedel øverst: Knisa har tverrkanaler, Gunnared er tuftet i ruter og Kelinge er glatt. Under setet sitter en tverrslå foran og en bak. Armlenshøyden er anslått fra bildet.",
+      "frameStyle": "cantilever",
+      "quilt": "channels",
+      "armRise": 0.11,
+      "runnerBack": 0.07,
+      "bandT": 0.028,
+      "cushionT": 0.062,
+      "headT": 0.07,
+      "armTail": 0.045,
+      "cushionTopCut": 0.045,
+      "headCrease": 0.012
     },
     "variants": [
       {
@@ -4661,7 +5667,10 @@
         },
         "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-bjorkefiner-gunnared-beige-s59514385/",
         "priceNok": 2195,
-        "salePriceNok": 1795
+        "salePriceNok": 1795,
+        "paramsOverride": {
+          "quilt": "tufted"
+        }
       },
       {
         "name": "hvitbeiset eikefiner/Knisa lys beige",
@@ -4693,7 +5702,10 @@
         },
         "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-hvitbeiset-eikefiner-gunnared-beige-s69501995/",
         "priceNok": 2195,
-        "salePriceNok": 1995
+        "salePriceNok": 1995,
+        "paramsOverride": {
+          "quilt": "tufted"
+        }
       },
       {
         "name": "eik/Kelinge beige",
@@ -4709,7 +5721,10 @@
         },
         "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-eik-kelinge-beige-s39625011/",
         "priceNok": 1695,
-        "salePriceNok": 1495
+        "salePriceNok": 1495,
+        "paramsOverride": {
+          "quilt": "plain"
+        }
       },
       {
         "name": "brunsvart/Knisa lys beige",
@@ -4741,7 +5756,10 @@
         },
         "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-brunsvart-gunnared-mork-gra-s69502061/",
         "priceNok": 2195,
-        "salePriceNok": 1995
+        "salePriceNok": 1995,
+        "paramsOverride": {
+          "quilt": "tufted"
+        }
       },
       {
         "name": "valnøttmønstret/Kelinge beige",
@@ -4757,7 +5775,10 @@
         },
         "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-valnottmonstret-kelinge-beige-s49617708/",
         "priceNok": 1695,
-        "salePriceNok": 1495
+        "salePriceNok": 1495,
+        "paramsOverride": {
+          "quilt": "plain"
+        }
       }
     ],
     "defaultVariant": 0,
@@ -4798,7 +5819,31 @@
       "cushion": "tight",
       "footstool": true,
       "headrest": true,
-      "notes": "Høy, rett rygg der den øverste delen er formet som en innebygd nakkepute, med en tverrsøm under. Ryggen har også en loddrett søm på midten og en tverrsøm over korsryggen. Armlenene er brede og avrundede, går i ett med sidevangene og buer litt utover. Polstringen er fast. Stolen står på en svart femarmet stjernefot med søyle (svingfot). Ryggen kan vippes manuelt bakover til hvilestilling, og stolen har ingen innebygd fothviler. Fotskammelen er ca. 50 × 40 × 42 cm (anslått fra bildet, ikke oppgitt), har samme stoff med en tverrsøm og står på en egen svart firearmet fot. Armlenshøyden er også anslått."
+      "notes": "Høy, rett rygg der den øverste delen er formet som en innebygd nakkepute, med en tverrsøm under. Ryggen har også en loddrett søm på midten og en tverrsøm over korsryggen. Armlenene er brede og avrundede, går i ett med sidevangene og buer litt utover. Polstringen er fast. Stolen står på en svart femarmet stjernefot med søyle (svingfot). Ryggen kan vippes manuelt bakover til hvilestilling, og stolen har ingen innebygd fothviler. Fotskammelen er ca. 50 × 40 × 42 cm (anslått fra bildet, ikke oppgitt), har samme stoff med en tverrsøm og står på en egen svart firearmet fot. Armlenshøyden er også anslått.",
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "integrated",
+      "backSeams": "cross-v",
+      "vSeam": "full",
+      "armStyle": "petal",
+      "armFlare": 0.03,
+      "armTopR": 0.04,
+      "armFrontR": 0.06,
+      "armRearR": 0.08,
+      "armBottom": 0.26,
+      "backTaper": 0.17,
+      "lumbarH": 0.25,
+      "starArms": 5,
+      "basePlate": 0.12,
+      "armFrontTopR": 0.06,
+      "stoolSeam": "short",
+      "stoolT": 0.16,
+      "stoolDome": 0.02,
+      "armLip": 0.015,
+      "armFlarePow": 0.8,
+      "armSplay": 0.02,
+      "seamCurve": 0.02,
+      "armWelt": false
     },
     "variants": [
       {
@@ -4861,22 +5906,33 @@
       "seatD": 0.5,
       "backH": 1.01,
       "armH": 0.55,
-      "armW": 0.13,
+      "armW": 0.14,
       "legStyle": "swivel-star",
-      "legH": 0.22,
+      "legH": 0.16,
       "backShape": "high",
       "cushion": "loose",
       "footstool": true,
       "headrest": true,
       "notes": "Formstøpt, buet skall (skrog) som omslutter sete og rygg og danner armlenene, med polstrede armlenstopper. Skallet ses fra siden og bak og er frame-delen: finér i eik, valnøtt eller svart eik, eller trukket i samme stoff når varianten heter «helkledd» (da er frame = stofffargen). Inne i skallet ligger tykke, polstrede sete- og ryggputer som er festet, og en separat, pølseformet nakkepute sitter på to metallpinner øverst. Ryggen vippes med en spak på høyre side. Svingfoten har søyle og 5 armer i svart eller blank aluminium, på noen varianter kledd med tre; x-fot og quattro har 4 armer. Fotskammelen er 51 × 38 × 39 cm (fra Bohus), har samme stoff og skall og står på en egen firearmet fot. Armlenshøyden er anslått. Bohus oppgir dybde 50 cm for noen varianter, men det er setedybden; stolen er 81 cm dyp.",
-      "body": "box",
-      "headStyle": "block",
-      "armTuck": 0.045,
-      "armBottom": 0.27,
-      "armCap": false,
+      "body": "shell",
+      "headStyle": "roll",
       "stoolW": 0.51,
       "stoolD": 0.38,
-      "stoolH": 0.39
+      "stoolH": 0.39,
+      "armPad": "lid",
+      "shellTop": 0.8,
+      "shellTaper": 0.62,
+      "shellBottom": 0.18,
+      "seatT": 0.12,
+      "seatNose": -0.035,
+      "backW": 0.48,
+      "backFlare": 0,
+      "shellFront": 1,
+      "armPadH": 0.065,
+      "headW": 0.58,
+      "armTilt": 0.04,
+      "armCurl": 0.03,
+      "shellDisc": 0.05
     },
     "variants": [
       {
@@ -5035,12 +6091,41 @@
       "armH": 0.62,
       "armW": 0.13,
       "legStyle": "swivel-star",
-      "legH": 0.17,
+      "legH": 0.2,
       "backShape": "high",
       "cushion": "tight",
       "footstool": true,
       "headrest": true,
-      "notes": "Stolen har to materialer. Sete, rygg, armlenstopper, nakkepute og toppen av fotskammelen er i krøllete fåreskinn (upholstery). Det buede ytterskallet og sidene er trukket i glatt stoff (Sunny beige); bruk frame for dette stoffskallet, som ikke er av tre eller metall. En separat nakkepute sitter øverst, og ryggen vippes med en spak på høyre side. Stolen står på en svart femarmet stjernefot med søyle (trolig sving, men Bohus oppgir det ikke). Fotskammelen står på en egen svart firearmet fot og er ca. 55 × 45 × 42 cm (anslått fra bildet, ikke oppgitt). Bohus kaller fargen beige, men fåreskinnet ser oliven-/gråbrunt ut på bildene."
+      "notes": "Stolen har to materialer. Sete, rygg, armlenstopper, nakkepute og toppen av fotskammelen er i krøllete fåreskinn (upholstery). Det buede ytterskallet og sidene er trukket i glatt stoff (Sunny beige); bruk frame for dette stoffskallet, som ikke er av tre eller metall. En separat nakkepute sitter øverst, og ryggen vippes med en spak på høyre side. Stolen står på en svart femarmet stjernefot med søyle (trolig sving, men Bohus oppgir det ikke). Fotskammelen står på en egen svart firearmet fot og er ca. 55 × 45 × 42 cm (anslått fra bildet, ikke oppgitt). Bohus kaller fargen beige, men fåreskinnet ser oliven-/gråbrunt ut på bildene.",
+      "body": "box",
+      "sides": "fabric",
+      "armStyle": "roll",
+      "armFrame": true,
+      "armRoll": 0.02,
+      "armRollH": 0.11,
+      "armFrontDrop": 0.2,
+      "armFlare": 0.015,
+      "seatNose": 0.05,
+      "armRearR": 0.2,
+      "armFrontR": 0.15,
+      "armBottom": 0.2,
+      "bodyRear": 0.6,
+      "recline": 21,
+      "backWrap": 0.03,
+      "backWrapT": 0.1,
+      "backWrapTop": 0.02,
+      "backTopR": 0.05,
+      "headStyle": "block",
+      "headW": 0.5,
+      "headH": 0.22,
+      "headD": 0.15,
+      "headGap": -0.01,
+      "headPosts": false,
+      "stoolT": 0.14,
+      "stoolTray": 0.07,
+      "stoolSeam": "none",
+      "stoolR": 0.05,
+      "basePlate": 0.12
     },
     "variants": [
       {
@@ -5090,15 +6175,26 @@
       "seatD": 0.5,
       "backH": 1.09,
       "armH": 0.6,
-      "armW": 0.13,
+      "armW": 0.11,
       "legStyle": "swivel-star",
-      "legH": 0.08,
+      "legH": 0.15,
       "backShape": "high",
       "cushion": "tight",
       "footstool": false,
       "headrest": true,
       "notes": "Recliner med innebygd fothviler som felles ut fra setefronten, uten separat skammel. Når fothvileren er lukket, henger setefronten ned nesten til foten. Manuell regulering med spak på høyre vange, og sving. En separat, rektangulær nakkepute sitter på to metallpinner øverst og kan heves, og ryggen har en tverrsøm med knappetrykk. Utsiden av armlenene har buede vanger i finert hvitpigmentert eik (frame); stoffet dekker armlenstoppen og innsiden. Lav, svart femarmet stjernefot i aluminium med søyle. Stålramme med nozag og formstøpt kaldskum i setet. Høyden er anslått (se priceNote).",
-      "armTuck": 0.03
+      "armTuck": 0.03,
+      "body": "box",
+      "star": "slim",
+      "starArms": 5,
+      "armFrontDrop": 0.3,
+      "panelRadius": 0.06,
+      "bandRear": 0.3,
+      "armFlare": 0.06,
+      "bandT": 0.028,
+      "seatNose": 0.04,
+      "panelRadiusFront": 0.12,
+      "panelRise": 0.08
     },
     "variants": [
       {
@@ -5163,15 +6259,43 @@
       "seatH": 0.51,
       "seatD": 0.52,
       "backH": 1.01,
-      "armH": 0.64,
-      "armW": 0.12,
+      "armH": 0.61,
+      "armW": 0.16,
       "legStyle": "swivel-star",
       "legH": 0.15,
       "backShape": "high",
       "cushion": "tight",
       "footstool": false,
       "headrest": true,
-      "notes": "Recliner med innebygd fothviler: setefronten er et høyt, polstret panel som felles ut som leggstøtte. Armlenene er tynne og tulipanformede, med brede, utoverbøyde topper som smalner ned mot foten. Ryggen har to felt og en separat, vingeformet nakkepute som kan tiltes. Stolen har sving og står på en tynn, firearmet stjernefot (Slimline B1, 15 cm) i børstet aluminium. Taycan Wood har buede vanger i valnøtt på utsiden av armlenene (frame); på stoffvariantene er vangene trukket i stoff (frame = stofffargen). Motorvarianten har femarmet svart fot (19 cm), betjeningspanel og batteri under høyre vange, og lavere rygg (95 cm)."
+      "notes": "Recliner med innebygd fothviler: setefronten er et høyt, polstret panel som felles ut som leggstøtte. Armlenene er tynne og tulipanformede, med brede, utoverbøyde topper som smalner ned mot foten. Ryggen har to felt og en separat, vingeformet nakkepute som kan tiltes. Stolen har sving og står på en tynn, firearmet stjernefot (Slimline B1, 15 cm) i børstet aluminium. Taycan Wood har buede vanger i valnøtt på utsiden av armlenene (frame); på stoffvariantene er vangene trukket i stoff (frame = stofffargen). Motorvarianten har femarmet svart fot (19 cm), betjeningspanel og batteri under høyre vange, og lavere rygg (95 cm).",
+      "body": "box",
+      "sides": "fabric",
+      "armStyle": "petal",
+      "armFlare": 0.07,
+      "armLip": 0.04,
+      "armTopR": 0.05,
+      "armBottom": 0.2,
+      "armFrontR": 0.18,
+      "armRearR": 0.12,
+      "armFrontTopR": 0.06,
+      "seatNose": 0,
+      "headStyle": "wing",
+      "headPosts": false,
+      "footTaper": 1,
+      "footR": 0.1,
+      "footBottom": 0.07,
+      "footTilt": 5,
+      "backW": 0.43,
+      "lumbarH": 0.3,
+      "backSeams": "cross",
+      "basePlate": 0.12,
+      "armSplay": 0.04,
+      "armFlarePow": 0.5,
+      "backTopR": 0.025,
+      "headGap": -0.005,
+      "headW": 0.52,
+      "headTaper": 0.8,
+      "armTopTilt": 0.045
     },
     "variants": [
       {
@@ -5250,10 +6374,10 @@
     "mount": "floor",
     "params": {
       "seatH": 0.44,
-      "seatD": 0.48,
+      "seatD": 0.41,
       "backH": 1.02,
-      "armH": 0.61,
-      "armW": 0.12,
+      "armH": 0.57,
+      "armW": 0.105,
       "legStyle": "swivel-disc",
       "legH": 0.2,
       "backShape": "high",
@@ -5269,7 +6393,14 @@
       "lever": true,
       "footstool": true,
       "headrest": true,
-      "notes": "Stressless Mayfair i størrelse M med Classic-understell. Ryggen er ett polstret stykke med en loddrett søm i midten og vannrette, puffede felt med tverrsømmer, og øverst en innebygd, avrundet nakkerull med en tverrsøm under. Brede, myke armputer ligger over setet og hviler bak på korte, S-buede stolper i tre i samme farge som foten. Setet er tykt og mykt, og stolen vippes med kroppsvekten (Plus- og BalanceAdapt-system). På høyre side sitter et lite glideratt (spak) under armlenet. Foten er Stressless Classic: en flat, oval ring i tre på gulvet med to S-buede stolper opp til setet og 360° sving. Krakken har samme skinn eller stoff, en buet og puffet topp og egen ringfot i tre. Den er ca. 55 × 39 × 41 cm, anslått fra bildet og Skeidars Mayfair-krakk Cross (L), som måler 55 × 38 × 40 cm. Armlenshøyden er målt på sidebildet."
+      "notes": "Stressless Mayfair i størrelse M med Classic-understell. Ryggen er ett polstret stykke med en loddrett søm i midten og vannrette, puffede felt med tverrsømmer, og øverst en innebygd, avrundet nakkerull med en tverrsøm under. Brede, myke armputer ligger over setet og hviler bak på korte, S-buede stolper i tre i samme farge som foten. Setet er tykt og mykt, og stolen vippes med kroppsvekten (Plus- og BalanceAdapt-system). På høyre side sitter et lite glideratt (spak) under armlenet. Foten er Stressless Classic: en flat, oval ring i tre på gulvet med to S-buede stolper opp til setet og 360° sving. Krakken har samme skinn eller stoff, en buet og puffet topp og egen ringfot i tre. Den er ca. 55 × 39 × 41 cm, anslått fra bildet og Skeidars Mayfair-krakk Cross (L), som måler 55 × 38 × 40 cm. Armlenshøyden er målt på sidebildet.",
+      "armPad": "plump",
+      "seatLip": 0.15,
+      "bodyBottom": 0.12,
+      "backFlare": 0.1,
+      "backBands": 1,
+      "stoolCenterSeam": true,
+      "vSeam": "full"
     },
     "variants": [
       {
@@ -5374,7 +6505,7 @@
       "seatD": 0.5,
       "backH": 1.06,
       "armH": 0.62,
-      "armW": 0.13,
+      "armW": 0.15,
       "armTuck": 0.03,
       "legStyle": "swivel-star",
       "legH": 0.15,
@@ -5383,15 +6514,48 @@
       "body": "box",
       "sides": "fabric",
       "headStyle": "block",
-      "backSeams": "cross-v",
+      "backSeams": "v",
       "footrest": "integrated",
       "footrestOpen": false,
-      "star": "slim",
+      "star": "spider",
       "starArms": 4,
       "lever": false,
       "footstool": false,
       "headrest": true,
-      "notes": "Slank hvilestol med innebygd fothviler som felles ut fra setefronten, med ekstra lang leggstøtte. Rygg, fothviler og nakke reguleres manuelt med en innvendig hendel, så det er ikke noe synlig håndtak på siden. Sidevangene er brede, polstrede paneler som smalner litt inn mot foten og buer utover i en avrundet armlenstopp. Ryggen har to puter med en loddrett søm i midten. Over den sitter en separat, rektangulær nakkepute på to metallpinner, og den kan heves og vinkles (høyde 106–114 cm). Setet er tykt og går i ett med fothviler-panelet foran. Orion-sokkelen er en tynn, firearmet stjernefot i sort stål med søyle og sving. Polaris-sokkelen på Holms-variantene har fem tynne armer. Armlenshøyden er anslått fra bildet."
+      "notes": "Slank hvilestol med innebygd fothviler som felles ut fra setefronten, med ekstra lang leggstøtte. Rygg, fothviler og nakke reguleres manuelt med en innvendig hendel, så det er ikke noe synlig håndtak på siden. Sidevangene er brede, polstrede paneler som smalner litt inn mot foten og buer utover i en avrundet armlenstopp. Ryggen har to puter med en loddrett søm i midten. Over den sitter en separat, rektangulær nakkepute på to metallpinner, og den kan heves og vinkles (høyde 106–114 cm). Setet er tykt og går i ett med fothviler-panelet foran. Orion-sokkelen er en tynn, firearmet stjernefot i sort stål med søyle og sving. Polaris-sokkelen på Holms-variantene har fem tynne armer. Armlenshøyden er anslått fra bildet.",
+      "armStyle": "petal",
+      "armFlare": 0.07,
+      "armLip": 0.03,
+      "armTopR": 0.05,
+      "armBottom": 0.19,
+      "armFrontR": 0.18,
+      "armRearR": 0.06,
+      "armFrontTopR": 0.08,
+      "seatNose": 0,
+      "vSeam": "top",
+      "backW": 0.5,
+      "backTopR": 0.06,
+      "headW": 0.5,
+      "headH": 0.24,
+      "headD": 0.17,
+      "headRound": 0.8,
+      "headPuff": 0.15,
+      "headTilt": 18,
+      "starR": 0.36,
+      "footTaper": 0.95,
+      "footR": 0.06,
+      "footBottom": 0.18,
+      "basePlate": 0.12,
+      "armSplay": 0.03,
+      "starBend": 1,
+      "starBar": 0.012,
+      "starHub": 0.13,
+      "armFlarePow": 0.5,
+      "armWelt": "edge",
+      "headPosts": false,
+      "headGap": -0.01,
+      "headFwd": 0.04,
+      "backPuff": 0.03
     },
     "variants": [
       {
@@ -5550,7 +6714,7 @@
       "seatD": 0.5,
       "backH": 1.09,
       "armH": 0.62,
-      "armW": 0.11,
+      "armW": 0.1,
       "armBottom": 0.125,
       "legStyle": "swivel-star",
       "legH": 0.1,
@@ -5567,7 +6731,24 @@
       "lever": false,
       "footstool": false,
       "headrest": true,
-      "notes": "Smal, elektrisk hvilestol (recliner) med innebygd fothviler som felles ut fra setefronten. Rygg og fothviler reguleres hver for seg med et lite betjeningspanel med knapper på utsiden av høyre sidevange. Sidevangene er tykke, polstrede paneler som går nesten ned til foten, med avrundede armlenstopper som bøyer litt utover. Den høye ryggen har tre vannrette, puffede felt: en innebygd nakkedel øverst med en tverrsøm under, et midtfelt og et korsryggfelt med en tverrsøm over setet. Setet er tykt og går i ett med fothviler-panelet. Stolen står på en lav, tynn, firearmet stjernefot i sortlakkert stål med sving. Sittehøyde og armlenshøyde er anslått fra bildene."
+      "notes": "Smal, elektrisk hvilestol (recliner) med innebygd fothviler som felles ut fra setefronten. Rygg og fothviler reguleres hver for seg med et lite betjeningspanel med knapper på utsiden av høyre sidevange. Sidevangene er tykke, polstrede paneler som går nesten ned til foten, med avrundede armlenstopper som bøyer litt utover. Den høye ryggen har tre vannrette, puffede felt: en innebygd nakkedel øverst med en tverrsøm under, et midtfelt og et korsryggfelt med en tverrsøm over setet. Setet er tykt og går i ett med fothviler-panelet. Stolen står på en lav, tynn, firearmet stjernefot i sortlakkert stål med sving. Sittehøyde og armlenshøyde er anslått fra bildene.",
+      "armStyle": "petal",
+      "armFlare": 0.035,
+      "armLip": 0.035,
+      "armTopR": 0.055,
+      "armFrontR": 0.08,
+      "armRearR": 0.08,
+      "armFrontTopR": 0.06,
+      "seatNose": 0.02,
+      "backPuff": 0.04,
+      "lumbarH": 0.22,
+      "neckH": 0.24,
+      "backW": 0.46,
+      "footTaper": 0.97,
+      "footR": 0.06,
+      "footBottom": 0.14,
+      "basePlate": 0.12,
+      "footSplit": 0.015
     },
     "variants": [
       {
@@ -5653,14 +6834,14 @@
       "seatD": 0.47,
       "backH": 1.045,
       "armH": 0.6,
-      "armW": 0.1,
+      "armW": 0.11,
       "legStyle": "swivel-star",
       "legH": 0.22,
       "backShape": "high",
       "cushion": "tight",
-      "body": "tulip",
+      "body": "box",
       "headStyle": "integrated",
-      "backSeams": "cross-v",
+      "backSeams": "v",
       "footrest": "stool",
       "footrestOpen": false,
       "stoolW": 0.55,
@@ -5670,7 +6851,16 @@
       "lever": false,
       "footstool": true,
       "headrest": true,
-      "notes": "Hvilestol med løs krakk. Armlenene er tynne og tulipanformede: smale nede ved setet og brede, avrundede og utoverbøyde øverst. Den høye ryggen har en loddrett søm fra setet og opp, og øverst en innebygd nakkedel med en tverrsøm under. Setet er en tykk pute som ligger mellom armlenene. Stolen står på en femarmet stjernefot i sortlakkert stål med høy søyle og sving. Krakken har samme stoff, en tykk pute med avrundede kanter og egen femarmet fot med søyle. Den er ca. 55 × 42 × 44 cm, anslått fra bildene fordi Skeidar ikke oppgir målene. Armlenshøyden er også anslått."
+      "notes": "Hvilestol med løs krakk. Armlenene er tynne og tulipanformede: smale nede ved setet og brede, avrundede og utoverbøyde øverst. Den høye ryggen har en loddrett søm fra setet og opp, og øverst en innebygd nakkedel med en tverrsøm under. Setet er en tykk pute som ligger mellom armlenene. Stolen står på en femarmet stjernefot i sortlakkert stål med høy søyle og sving. Krakken har samme stoff, en tykk pute med avrundede kanter og egen femarmet fot med søyle. Den er ca. 55 × 42 × 44 cm, anslått fra bildene fordi Skeidar ikke oppgir målene. Armlenshøyden er også anslått.",
+      "armBottom": 0.26,
+      "basePlate": 0.12,
+      "sides": "fabric",
+      "armStyle": "petal",
+      "armFlare": 0.05,
+      "armFrontR": 0.2,
+      "armRearR": 0.12,
+      "seamCurve": 0.02,
+      "armWelt": false
     },
     "variants": [
       {
@@ -5743,7 +6933,7 @@
       "seatD": 0.51,
       "backH": 1.1,
       "armH": 0.58,
-      "armW": 0.08,
+      "armW": 0.14,
       "legStyle": "swivel-star",
       "legH": 0.24,
       "backShape": "wing",
@@ -5751,7 +6941,31 @@
       "buttons": false,
       "footstool": false,
       "headrest": true,
-      "notes": "Høy, moderne øreklappstol med vippbar rygg. Den er én sammenhengende, buet skallform der ørelappene øverst går i en myk bue ned i lave, smale armlener. Innsiden er stramt polstret uten knapper. En separat, pølseformet nakkepute sitter øverst foran på ryggen, men den vises ikke i modellen. Rygg og sete glir trinnløst bakover med gassfjær, og vangene følger ryggen. Stolen står på Brunstads S04-sokkel: en svart, firearmet stjernefot i lakkert stål med søyle og sving. Armlenshøyden er anslått fra bildet. Den lavere søsterstolen Bella loungestol (Bohus) er laget med samme arketype."
+      "notes": "Høy, moderne øreklappstol med vippbar rygg. Den er én sammenhengende, buet skallform der ørelappene øverst går i en myk bue ned i lave, smale armlener. Innsiden er stramt polstret uten knapper. En separat, pølseformet nakkepute sitter øverst foran på ryggen. Rygg og sete glir trinnløst bakover med gassfjær, og vangene følger ryggen. Stolen står på Brunstads S04-sokkel: en svart, firearmet stjernefot i lakkert stål med søyle og sving. Armlenshøyden er anslått fra bildet. Den lavere søsterstolen Bella loungestol (Bohus) er laget med samme arketype.",
+      "body": "shell",
+      "backSeams": true,
+      "topDip": 0.04,
+      "wingEar": 0.3,
+      "wingJoin": 0.52,
+      "backDeg": 12,
+      "backCurve": 0.2,
+      "backRound": 0.12,
+      "earR": 0.1,
+      "taper": 0.07,
+      "taperPow": 1.4,
+      "wallT": 0.14,
+      "topRound": 0.09,
+      "pillowH": 0.15,
+      "pillowDrop": 0.15,
+      "pillowW": 0.44,
+      "underRise": 0.07,
+      "armNose": 0.1,
+      "wingFillet": 0.17,
+      "wingLean": 0.3,
+      "shelf": 0.035,
+      "shelfH": 0.14,
+      "flarePow": 2.4,
+      "wingW": 1.05
     },
     "variants": [
       {
@@ -5902,7 +7116,18 @@
       "cushion": "tight",
       "footstool": false,
       "headrest": false,
-      "notes": "Loungestol med høyt, avrundet skall som går i ett med armlenene. Skallet er høyest bak, buer ned langs sidene og ender i lave, runde armlener foran. To trekknapper sitter midt i ryggen. En tykk, rund setepute ligger inne i skallet over en tynn, avrundet sokkel. Stolen står på fire skrå, avsmalnende ben (klarlakkert eik, svartbeiset eik eller aluminium) som møtes i et svingkryss under setet. Sittehøyde og armlenshøyde er anslått fra bildet."
+      "notes": "Loungestol med høyt, avrundet skall som går i ett med armlenene. Skallet er høyest bak, buer ned langs sidene og ender i lave, runde armlener foran. To trekknapper sitter midt i ryggen. En tykk, rund setepute ligger inne i skallet over en tynn, avrundet sokkel. Stolen står på fire skrå, avsmalnende ben (klarlakkert eik, svartbeiset eik eller aluminium) som møtes i et svingkryss under setet. Sittehøyde og armlenshøyde er anslått fra bildet.",
+      "shell": "high",
+      "footProfile": [
+        [
+          0,
+          0.252
+        ],
+        [
+          125,
+          0.252
+        ]
+      ]
     },
     "variants": [
       {

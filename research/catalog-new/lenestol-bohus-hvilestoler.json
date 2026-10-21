@@ -229,7 +229,7 @@
         "url": "https://www.bohus.no/stoler/lenestol/hvilestol/paris-hvilestol-med-fotskammel-9",
         "priceNok": 31999,
         "salePriceNok": 18499,
-        "paramsOverride": { "star": "slim" }
+        "paramsOverride": { "star": "slim", "base": "star" }
       },
       {
         "name": "Batick 87 Warm brown (skinn), Star-understell polert metall",
@@ -237,7 +237,7 @@
         "materials": { "upholstery": "leather", "legs": "chrome" },
         "url": "https://www.bohus.no/stoler/lenestol/hvilestol/paris-hvilestol-med-fotskammel-10",
         "priceNok": 31999,
-        "paramsOverride": { "star": "slim" }
+        "paramsOverride": { "star": "slim", "base": "star" }
       },
       {
         "name": "Peony 81 Light beige (stoff), Star-understell aluminium",
@@ -245,7 +245,7 @@
         "materials": { "upholstery": "woven", "legs": "steel" },
         "url": "https://www.bohus.no/stoler/lenestol/hvilestol/paris-hvilestol-med-fotskammel-7",
         "priceNok": 29999,
-        "paramsOverride": { "star": "slim" }
+        "paramsOverride": { "star": "slim", "base": "star" }
       }
     ],
     "defaultVariant": 0,

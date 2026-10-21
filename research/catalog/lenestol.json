@@ -40,7 +40,7 @@
     "salePriceNok": 5999,
     "priceNote": "pris sjekket 2026-10-18: Adore 68 Dark grey, Adore 156 Hunter og Adore 126 Copper 5 999,- (før 8 599,-). Storm-variantene (54 Rust, 09 Taupe, 02 Natural) har sving og koster 7 999,-",
     "dims": { "w": 0.66, "d": 0.75, "h": 0.79 },
-    "archetype": "tub-swivel",
+    "archetype": "club-box",
     "params": { "seatH": 0.45, "seatD": 0.5, "backH": 0.79, "armH": 0.62, "armW": 0.1, "legStyle": "swivel-star", "legH": 0.12, "backShape": "round", "cushion": "tight", "footstool": false, "headrest": false },
     "variants": [
       { "name": "Adore 68 Dark grey, kryssfot svart", "colors": { "upholstery": "#5f5c5f", "legs": "#1c1c1c" }, "materials": { "upholstery": "velour", "legs": "black-metal" }, "url": "https://www.bohus.no/stoler/lenestol/ronda-lenestol-2" },
@@ -395,7 +395,7 @@
     "url": "https://www.ikea.com/no/no/p/saltsjoebaden-gynge-og-svingstol-fridtuna-lys-beige-s29599098/",
     "priceNok": 4495,
     "priceNote": "pris sjekket 2026-10-18: 4 495,- i alle trekk (stamme 2 700,- + trekk). Mål fra produktsiden for stammen til gynge-/svingstolen: 77 × 88 × 75 cm, setehøyde 45 cm. Rettet 2026-10-21: prisen varierer med trekket – Fridtuna og Gunnared 4 495,-, Tonerud 3 795,-, Blekinge og Vittangi 3 495,-",
-    "dims": { "w": 0.77, "d": 0.88, "h": 0.75 },
+    "dims": { "w": 0.77, "d": 0.88, "h": 0.9 },
     "archetype": "club-box",
     "params": { "seatH": 0.45, "seatD": 0.6, "backH": 0.75, "armH": 0.62, "armW": 0.12, "legStyle": "none", "legH": 0, "backShape": "square", "cushion": "loose", "footstool": false, "headrest": false },
     "variants": [
@@ -415,7 +415,7 @@
     "why": "Gynge- og svingfunksjonen lar deg snu deg mot TV-en eller mot vinduene og elva, og mellomgrå Gunnared passer den grå hjørnesofaen.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/saltsjoebaden-gynge-og-svingstol-fridtuna-lys-beige__1489517_pe1003842_s5.jpg?f=u",
     "verified": true,
-    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: pris, gynge- og svingfunksjon og trekkene stemmer. Rettet: målene (77×88×75, ikke 93×88×90) og formen, som er en kubisk stol med skjørt der mekanismen ikke synes. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle ni trekkene finnes; Vittangi er 100 % bomull (ikke bouclé), Gunnared beige er lys gråbeige og Tonerud rødbrun oransjebrun etter bildene, og standardvarianten er nå Fridtuna lys beige som på bildet."
+    "verifiedNote": "Bekreftet 2026-10-18 på ikea.com/no: pris, gynge- og svingfunksjon og trekkene stemmer. Rettet: målene (77×88×75, ikke 93×88×90) og formen, som er en kubisk stol med skjørt der mekanismen ikke synes. Farger og stoff kontrollert 2026-10-21 mot ikea.com/no: alle ni trekkene finnes; Vittangi er 100 % bomull (ikke bouclé), Gunnared beige er lys gråbeige og Tonerud rødbrun oransjebrun etter bildene, og standardvarianten er nå Fridtuna lys beige som på bildet. Høyden med ryggputen er satt til ca. 90 cm, anslått fra produktbildene med setehøyden 45 cm som mål (2026-10-21): 75 cm gjelder stammen alene, og produktsiden viser i dag bare pakkemål."
   },
   {
     "id": "fagmobler-conform-daisy-lenestol",

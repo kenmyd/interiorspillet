@@ -288,6 +288,15 @@ export const PRODUCTS = {
   'bohus-holmen-cape-speil-med-sprosser-h200': { set: { subcategory: 'veggspeil' } },
 };
 
+// Lenestol model tuning (2026-10-21): the dims / params each armchair needs to look like the store photos from the
+// front, the side and 3/4 (measured on the photos, scaled by the store's sizes). Kept in its own file because it is
+// long; merged over the entries above (null removes a key, as in `params`).
+const ARMCHAIR_TUNING = JSON.parse(fs.readFileSync(new URL('./lenestol-tuning.json', import.meta.url), 'utf8'));
+for (const [id, t] of Object.entries(ARMCHAIR_TUNING)) {
+  const f = (PRODUCTS[id] ||= {});
+  for (const k of ['dims', 'params']) if (t[k]) f[k] = { ...(f[k] || {}), ...t[k] };
+}
+
 /**
  * Products that moved to another category (normalize-data.mjs moves them before normalising): the three mirrors of the
  * first round lived in Smått until the Speil category came with the rest of the house.

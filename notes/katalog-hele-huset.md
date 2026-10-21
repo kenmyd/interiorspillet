@@ -180,6 +180,81 @@ Verification (port 5260):
   shoe-cabinet/coat-rack/coat-stand → gang) so «Bytt modell» offers the right products.
 - **Placement**: wall items without a `WALL_V` entry start at `params.mountHeight + h/2` – every new wall product has a
   `mountHeight`. Floor mirrors lean; their AABB is the leaning mirror.
-- **README**: product/category counts (338 / 22) and the new categories.
+- **README**: product/category counts (372 / 22) and the new categories.
 - Uncertain data is written in each product's `verifiedNote` / `params.notes` (estimated leg heights, topper
   thickness, depths read from photos, IKEA variant prices from the search API, Bohus «Expiring» stock in Bad).
+
+## 6. Lenestoler and real colours (2026-10-21)
+
+The owner asked for many more armchairs, above all ones you can lean back in (hvilestoler); for the existing armchair
+models to look like the originals; and for furniture to come only in colours and fabrics the stores really sell.
+
+**Real colours only.** Every product in the catalogue was audited against its store page:
+- wrong colours and fabrics were corrected;
+- variants were added or removed;
+- names were cleaned up (no «(tilbud)» or «(utgående)»);
+- ended campaigns were removed (Secto / Octo), and new prices were added (Signature 1860 vitrine, Sagene skjenk brun).
+
+The Inspector and WindowPanel now offer a catalogue product **only its store variants**:
+- a part's options are the variants' options;
+- picking one switches to the whole variant (the one whose other parts are closest);
+- curtains and blinds get no own-colour picker.
+
+Props that are not sold with the product (`propParts` in `archetypes.json`: bedding on a bed, towels on a ladder or rail,
+coats on a rack or stand) keep a free colour. Existing furniture and wall paint keep free colour too. These UI changes
+are in `src/ui/Inspector.js` (`_pickVariant`, part options) and `src/ui/WindowPanel.js` (`_pickProduct`, `_colorSection`).
+
+**34 new lenestoler**, 25 of them hvilestoler, all checked on the product page on 2026-10-21. They are in
+`research/catalog-new/lenestol-{bohus-hvilestoler,bohus-lenestoler,skeidar,fagmobler-mobelringen,jysk-ikea-mio}.json`:
+- Bohus 16, Skeidar 6, Fagmøbler 3, Møbelringen 3, Jysk 3, IKEA 3;
+- among them Castle Mark Zermatt hvilestol med fothviler, from the owner's photo;
+- the category now has 55 products, 372 in the whole catalogue.
+
+**Models.** The 55 armchairs were reworked in six builder groups, in parallel scratch copies of `seating.js`
+(`.shots/arm/`, not in git). Each group went through build, an independent critic, and refinement, compared with
+several store photos per chair (3/4, front and side views). Afterwards the copies were merged 3-way into
+`src/models/seating.js`. The merged models render pixel-identical to each group's copy, and sofas, chairs and beds are
+unchanged. Verdicts before → after: 33 poor / 22 close → **34 good / 21 close / 0 poor**.
+- *recliner* (31 chairs):
+  - fabric arm styles `armStyle` petal / board / round / roll / egg / pad, with arm, body, footrest and back-shape params;
+  - block / pillow / flap / wing heads with size params;
+  - back seams v / bolster / tufted / quilt / neck;
+  - Stressless Classic ring base and the Cross / Star bases (`base`), a classic «dyne» seat, Stressless arm pads and stools;
+  - shaped shells: `shellTaper`, `shellBottom`, a raised bowl on a star;
+  - veneer side panels (Grande);
+  - spider stars, block legs (MUREN), runners (Nakskov), a thick disc (Prince), a cone hub (HAVBERG);
+  - shaped footstools (`stool*`).
+- *wingback*: rewritten. The arm, wing and back are one sculpted band. Options: classic / shell body; scroll / slim /
+  tulip arms; buttons; neck pillow; legs or a star.
+- *club-box*: a new square-back path (profile-lofted arms with warps, aprons, skirts, T-cushions, a swivel star) and a
+  rewritten tufted lounge (Cooper). Ronda moved here from tub-swivel.
+- *tub-swivel*: `shellToFloor` bucket (Vilde, Beetle).
+- *shell-legs*: `shell` pillow / high / swan / pod (Meno with fur pile, Gaga, Daisy, Paz).
+- *lounge-wood*: `frameStyle` roll / sled / raked / hoop / cantilever (Ellis, Signature 920, EKENÄSET, Fjell, POÄNG).
+- *rocking*: `frameStyle` bentwood (Delta).
+
+Every new option defaults to the old look. The per-product shape params are in
+`src/data/scripts/lenestol-tuning.json`, which `fixes.mjs` merges over `PRODUCTS`. Facts are in the research files:
+Ronda's archetype, SALTSJÖBADEN's height, and the per-variant `paramsOverride` of Paris and POÄNG.
+
+Known gaps (close, not good):
+- Brunstad Split: no S-curved back sides or V-notch.
+- Paz hvilestol: the waist is too mild.
+- IMG Nova: the shell is in parts, not one piece.
+- HAVBERG: no funnel under the seat.
+- MUREN: the back top does not roll.
+- STRANDMON: no lumbar roll.
+- Cooper: catalogue depth 1.04 against about 0.92 measured on the photo.
+- Habo: the store gives no dimensions.
+
+Two colours may be too light; they are reported, not changed:
+- Mayfair Velaro Beige;
+- HAVBERG Grann gyllenbrun.
+
+Verification:
+- `node tools/test-design.mjs` → 117/117. New section «Lenestoler and real colours»: the new chairs and stores,
+  hvilestol subcategories, Zermatt's price and variants, every `fixes.mjs` reference, store-only variant names, `propParts`.
+- In the game, all 418 variants of lenestol, sofa, stoler and seng build a real model.
+- The colour-lock test passes.
+- No console errors.
+- `vite build` OK.

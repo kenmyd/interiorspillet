@@ -147,7 +147,8 @@ for (const src of fresh) {
   for (const k of KEEP) if (JSON.stringify(p[k]) !== JSON.stringify(src[k])) freshProblems.push(`${src.id}: ${k}`);
   for (const k of ['w', 'd', 'h']) if (!near(p.dims[k], fx.dims?.[k] ?? src.dims[k], 1e-9)) freshProblems.push(`${src.id}: dims.${k}`);
   if (p.mount !== src.mount) freshProblems.push(`${src.id}: mount ${p.mount} ≠ research ${src.mount}`);
-  for (const [k, v] of Object.entries(src.params || {})) if (JSON.stringify(p.params[k]) !== JSON.stringify(fx.params && k in fx.params ? fx.params[k] : v)) freshProblems.push(`${src.id}: params.${k}`);
+  // (a fix of null removes the key)
+  for (const [k, v] of Object.entries(src.params || {})) if (JSON.stringify(p.params[k]) !== JSON.stringify(fx.params && k in fx.params ? fx.params[k] ?? undefined : v)) freshProblems.push(`${src.id}: params.${k}`);
   if (p.variants.length !== src.variants.length) freshProblems.push(`${src.id}: variants`);
   src.variants.forEach((v, i) => {
     const pv = p.variants[i];

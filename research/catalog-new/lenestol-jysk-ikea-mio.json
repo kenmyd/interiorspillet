@@ -400,7 +400,10 @@
         },
         "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-bjorkefiner-gunnared-beige-s59514385/",
         "priceNok": 2195,
-        "salePriceNok": 1795
+        "salePriceNok": 1795,
+        "paramsOverride": {
+          "quilt": "tufted"
+        }
       },
       {
         "name": "hvitbeiset eikefiner/Knisa lys beige",
@@ -432,7 +435,10 @@
         },
         "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-hvitbeiset-eikefiner-gunnared-beige-s69501995/",
         "priceNok": 2195,
-        "salePriceNok": 1995
+        "salePriceNok": 1995,
+        "paramsOverride": {
+          "quilt": "tufted"
+        }
       },
       {
         "name": "eik/Kelinge beige",
@@ -448,7 +454,10 @@
         },
         "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-eik-kelinge-beige-s39625011/",
         "priceNok": 1695,
-        "salePriceNok": 1495
+        "salePriceNok": 1495,
+        "paramsOverride": {
+          "quilt": "plain"
+        }
       },
       {
         "name": "brunsvart/Knisa lys beige",
@@ -480,7 +489,10 @@
         },
         "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-brunsvart-gunnared-mork-gra-s69502061/",
         "priceNok": 2195,
-        "salePriceNok": 1995
+        "salePriceNok": 1995,
+        "paramsOverride": {
+          "quilt": "tufted"
+        }
       },
       {
         "name": "valnøttmønstret/Kelinge beige",
@@ -496,7 +508,10 @@
         },
         "url": "https://www.ikea.com/no/no/p/poaeng-lenestol-valnottmonstret-kelinge-beige-s49617708/",
         "priceNok": 1695,
-        "salePriceNok": 1495
+        "salePriceNok": 1495,
+        "paramsOverride": {
+          "quilt": "plain"
+        }
       }
     ],
     "defaultVariant": 0,
