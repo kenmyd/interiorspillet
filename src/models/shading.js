@@ -452,14 +452,16 @@ const _v = new THREE.Vector3();
  * @returns {object} fit
  */
 function computeFit(info, spec) {
-  const op = roomLayout.opening?.(info.id) || null;
+  // every window of the house (layout.house holds the living room's as the same objects): the ceiling over a
+  // basement window needs its own wall (ceilAt below)
+  const op = roomLayout.house?.opening?.(info.id) || roomLayout.opening?.(info.id) || null;
   const W = num(info.width, op?.width ?? 1.2);
   const H = num(info.height, op?.height ?? 1.2);
   const sill = num(info.sill, op?.sill ?? 0.9);
   const top = sill + H;
   const reveal = num(info.revealDepth, op?.revealDepth ?? 0.2);
   const fw = num(info.frameWidth, op?.frame?.width ?? 0.07);
-  const wall = op ? roomLayout.wall(op.wallId) : null;
+  const wall = op ? roomLayout.house?.wall?.(op.wallId) ?? roomLayout.wall(op.wallId) : null;
   const thick = wall?.thickness ?? 0.3;
   const mount = fitMount(info, spec);
 
@@ -506,8 +508,11 @@ function computeFit(info, spec) {
     if (!wall || !roomLayout.ceilingHeightAt) return 0.3;
     const p = wall.pointAt(uc + x, 0, new THREE.Vector3());
     p.addScaledVector(wall.normal3, z);
-    const c = roomLayout.ceilingHeightAt(p.x, p.z);
-    return Number.isFinite(c) ? c - top : 0.3;
+    // the ceiling of the window's own room (world y, §1.8: a point a metre over the wall's floor picks the level);
+    // top is over the wall's floor
+    const fy = Number.isFinite(wall.floorY) ? wall.floorY : 0;
+    const c = roomLayout.ceilingHeightAt(p.x, p.z, fy + 1);
+    return Number.isFinite(c) ? c - fy - top : 0.3;
   };
   const extent = (e) => [Math.max(-W / 2 - e, midL + 0.006), Math.min(W / 2 + e, midR - 0.006)];
 

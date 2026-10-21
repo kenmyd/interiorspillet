@@ -19,6 +19,7 @@ import {
 import { PLAYER } from '../config.js';
 import { products, getProduct, priceOf, productToShadingSpec } from '../catalog/index.js';
 import { shadingAbsorption } from '../design/Acoustics.js';
+import * as ACOUSTICS from '../design/Acoustics.js';
 
 const TYPE = Object.fromEntries(SHADING_TYPES.map((t) => [t.archetype, t]));
 const clone = (v) => (v == null ? v : JSON.parse(JSON.stringify(v)));
@@ -312,7 +313,37 @@ export class WindowPanel extends BasePanel {
   }
 
   _layoutWin(id = this.windowId) {
-    return this.editor.layout?.opening?.(id) || this.editor.home?.layout?.opening?.(id) || null;
+    const L = this.editor.layout || this.editor.home?.layout;
+    return L?.house?.opening?.(id) || L?.opening?.(id) || null;
+  }
+
+  /**
+   * The windows grouped per level and room (§5.6): [{ levelId, levelName, rooms: [{ roomId, name, windows }] }] in
+   * the order of layout.house.levels (top first) and of home.windows inside a level.
+   */
+  _groups() {
+    const H = this.editor.layout?.house;
+    const levels = H?.levels?.length ? H.levels : [{ id: 'hoved', name: '1. etasje' }];
+    const out = levels.map((l) => ({ levelId: l.id, levelName: l.name ?? l.id, rooms: [] }));
+    const byLevel = new Map(out.map((g) => [g.levelId, g]));
+    for (const w of this._windows()) {
+      const lw = this._layoutWin(w.id);
+      const levelId = w.levelId ?? lw?.levelId ?? 'hoved';
+      const roomId = w.roomId ?? lw?.roomId ?? 'stue-kjokken';
+      let g = byLevel.get(levelId);
+      if (!g) {
+        g = { levelId, levelName: levelId, rooms: [] };
+        byLevel.set(levelId, g);
+        out.push(g);
+      }
+      let r = g.rooms.find((x) => x.roomId === roomId);
+      if (!r) {
+        r = { roomId, name: H?.room?.(roomId)?.name ?? (roomId === 'stue-kjokken' ? 'Stue/kjøkken' : roomId), windows: [] };
+        g.rooms.push(r);
+      }
+      r.windows.push(w);
+    }
+    return out.filter((g) => g.rooms.length);
   }
 
   _spec(id = this.windowId) {
@@ -421,7 +452,9 @@ export class WindowPanel extends BasePanel {
 
   _renderList() {
     if (!this.listEl) return;
-    const rows = this._windows().map((w) => {
+    const groups = this._groups();
+    const rooms = groups.reduce((n, g) => n + g.rooms.length, 0);
+    const row = (w) => {
       const s = this._spec(w.id);
       const t = s ? TYPE[s.archetype] : null;
       const prod = s?.productId ? getProduct(s.productId) : null;
@@ -451,8 +484,16 @@ export class WindowPanel extends BasePanel {
           : h('span.ip-win-row__none', { text: 'Ingen solskjerming' }),
       ));
       return el;
-    });
-    this.listEl.replaceChildren(...rows);
+    };
+    // one heading per room (with the level when the house has more than one) once there is more than one room
+    const kids = [];
+    for (const g of groups) {
+      for (const r of g.rooms) {
+        if (rooms > 1) kids.push(h('div.ip-win-group', { role: 'presentation' }, h('span.ip-win-group__room', { text: r.name }), groups.length > 1 ? h('span.ip-win-group__level', { text: g.levelName }) : null));
+        for (const w of r.windows) kids.push(row(w));
+      }
+    }
+    this.listEl.replaceChildren(...kids);
   }
 
   _pickWindow(id) {
@@ -568,6 +609,9 @@ export class WindowPanel extends BasePanel {
       this._orbitTo(info);
       this._showHint('');
     } else {
+      // the plan shows one level: the window's
+      const level = info.levelId ?? this._layoutWin(info.id)?.levelId;
+      if (mode === 'plan' && level && views?.level && level !== views.level) views.setLevel?.(level);
       this._showHint(mode === 'plan' ? 'Vinduet er markert i planen.' : '');
     }
   }
@@ -657,7 +701,9 @@ export class WindowPanel extends BasePanel {
     const col = game.collision;
     const n = new THREE.Vector3(info.normal.x, 0, info.normal.z).normalize();
     const r = new THREE.Vector3(info.right.x, 0, info.right.z).normalize();
-    const base = new THREE.Vector3(info.center.x, 0, info.center.z);
+    // on the floor of the window's room (the basement's, the entrance's: floorY of the window, §5.6)
+    const fy = Number.isFinite(info.floorY) ? info.floorY : 0;
+    const base = new THREE.Vector3(info.center.x, fy, info.center.z);
     const d0 = THREE.MathUtils.clamp(0.9 + 1.1 * Math.max(info.width, info.height), 1.8, 3.4);
     const eyeH = PLAYER.eyeHeight;
     const target = this._aim(info);
@@ -666,8 +712,8 @@ export class WindowPanel extends BasePanel {
     for (const d of [d0, d0 - 0.4, d0 + 0.4, d0 - 0.8, d0 + 0.8, 1.4]) {
       for (const s of [0, 0.45, -0.45, 0.9, -0.9]) {
         feet.copy(base).addScaledVector(n, d).addScaledVector(r, s);
-        if (col?.isWalkable && !col.isWalkable(feet.x, feet.z)) continue;
-        if (this.editor.home?.rooms?.length && !this.editor.home.rooms.some((rm) => rm.box?.containsPoint?.(_v.set(feet.x, 0.5, feet.z)))) continue;
+        if (col?.isWalkable && !col.isWalkable(feet.x, feet.z, feet.y)) continue;
+        if (this.editor.home?.rooms?.length && !this.editor.home.rooms.some((rm) => !rm.hud && rm.box?.containsPoint?.(_v.set(feet.x, feet.y + 0.5, feet.z)))) continue;
         eye.copy(feet).setY(feet.y + eyeH);
         if (this._visibleShare(eye, info) < 0.8) continue;
         if (!this._freeSpot(feet)) continue;
@@ -738,8 +784,13 @@ export class WindowPanel extends BasePanel {
     const cam = views?.persp;
     const oc = views?.controls;
     if (!cam || !oc) return;
+    // the overview shows one level: the window's (§5.2)
+    const level = info.levelId ?? this._layoutWin(info.id)?.levelId;
+    if (level && views.level && level !== views.level) views.setLevel?.(level, { instant: true });
+    views._fresh = null; // the user's own framing from now on
+    const fy = Number.isFinite(info.floorY) ? info.floorY : 0;
     const target = info.center.clone();
-    target.y = THREE.MathUtils.clamp(info.center.y, 0.7, 1.7);
+    target.y = THREE.MathUtils.clamp(info.center.y, fy + 0.7, fy + 1.7);
     const n = new THREE.Vector3(info.normal.x, 0, info.normal.z).normalize();
     const dist = THREE.MathUtils.clamp(3.6 + 1.2 * Math.max(info.width, info.height), 4.5, 7);
     const el = THREE.MathUtils.degToRad(36);
@@ -1221,9 +1272,13 @@ export class WindowPanel extends BasePanel {
         /* acoustics optional */
       }
     }
+    // «etterklang nå» of the window's own room (§5.6): only when the acoustics speak for that room
     let rt = null;
     try {
-      rt = this.editor.acoustics?.()?.rt60 ?? null;
+      const room = this._info()?.roomId ?? 'stue-kjokken';
+      // the living room through the editor's cache, another room through Acoustics.acousticsFor (steg 16, E3)
+      const ac = room === 'stue-kjokken' ? this.editor.acoustics?.() : ACOUSTICS.acousticsFor?.(this.design, this.editor.home, room) ?? null;
+      rt = ac && (ac.roomId ?? 'stue-kjokken') === room ? ac.rt60 ?? null : null;
     } catch {
       rt = null;
     }
@@ -1340,6 +1395,9 @@ function injectStyles() {
   const css = `
 .ip-win .ip-panel__body { padding-top: 0.75em; }
 .ip-win-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.3em; }
+.ip-win-group { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 0.5em; margin: 0.45em 0 0.05em; font-size: 0.82em; font-weight: 700; color: var(--kv-ink-2); }
+.ip-win-group:first-child { margin-top: 0; }
+.ip-win-group__level { font-weight: 500; color: var(--kv-ink-3); }
 .ip-win-row { display: flex; align-items: center; gap: 0.5em; width: 100%; min-width: 0; padding: 0.38em 0.5em; text-align: left;
   border: 1px solid var(--kv-line); border-radius: var(--kv-r-sm); background: var(--kv-surface); color: var(--kv-ink);
   font: inherit; cursor: pointer; transition: background 0.15s, border-color 0.15s; }

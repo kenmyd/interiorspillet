@@ -96,8 +96,14 @@ function photoTime(pc) {
 
 function imageFor(pc) {
   if (pc.montage || pc.id === '0_for') return 'img/forslag/0.jpg';
+  if (typeof pc.image === 'string' && pc.image) return pc.image;
+  // the photos of the other rooms are prepared into a git-ignored dev folder (tools/prep-images.py, §5.6)
+  if (pc.roomId && pc.roomId !== LIVING_ROOM) return `img/foto-hus/${pc.id}.jpg`;
   return `img/foto/${pc.id}.jpg`;
 }
+
+/** The living room's id (layout.js LIVING_ROOM_ID): photo cameras without roomId are its. */
+const LIVING_ROOM = 'stue-kjokken';
 
 const clock = (hour) => `${String(Math.floor(hour)).padStart(2, '0')}:${String(Math.round((hour % 1) * 60)).padStart(2, '0')}`;
 
@@ -106,7 +112,8 @@ export class PhotoCompare extends BasePanel {
   constructor(editor) {
     super(editor, { id: 'photo', title: 'Sammenlign med bilde', icon: 'monitor', side: 'bottom', width: 46, className: 'pc-panel' });
     addStyles();
-    this.cams = editor.layout?.photoCameras || [];
+    // every room's photo cameras (layout.house.photoCameras holds the living room's as the same objects)
+    this.cams = editor.layout?.house?.photoCameras?.length ? editor.layout.house.photoCameras : editor.layout?.photoCameras || [];
     this.cam = null;
     this.url = null;
     this.mode = 'photo'; // 'montage' (follows the wall proposal) | 'photo'
@@ -193,6 +200,42 @@ export class PhotoCompare extends BasePanel {
     return opts;
   }
 
+  /** The room a photo camera belongs to (its name; the living room's for cameras without roomId). */
+  _roomName(pc) {
+    const id = pc?.roomId ?? LIVING_ROOM;
+    return this.editor.layout?.house?.room?.(id)?.name ?? (id === LIVING_ROOM ? 'Stue/kjøkken' : id);
+  }
+
+  /**
+   * Fills the photo list: one <optgroup> per room once the cameras span more than one room (§5.6); the montage stays
+   * on top. panelKit's select keeps the options' indices as values, so they only move into groups.
+   */
+  _setOptions() {
+    const list = this._options();
+    this.select.setOptions(list);
+    const sel = this.select.select;
+    const rooms = new Map();
+    for (const [id] of list.slice(1)) {
+      const name = this._roomName(this.cams.find((c) => c.id === id));
+      if (!rooms.has(name)) rooms.set(name, []);
+      rooms.get(name).push(id);
+    }
+    if (!sel || rooms.size < 2) return;
+    const opts = [...sel.options];
+    const groups = new Map();
+    for (const [name] of rooms) {
+      const g = document.createElement('optgroup');
+      g.label = name;
+      groups.set(name, g);
+    }
+    list.forEach(([id], i) => {
+      if (i === 0) return;
+      groups.get(this._roomName(this.cams.find((c) => c.id === id)))?.append(opts[i]);
+    });
+    sel.append(...groups.values());
+    this.select.set(this.select.value);
+  }
+
   _montageLabel(p = this._montageProposal()) {
     const m = this._montageFor(p);
     if (!p) return 'Fotomontasje: Før – dagens vegg';
@@ -237,8 +280,9 @@ export class PhotoCompare extends BasePanel {
    * @param {{ proposal?: object, follow?: boolean, title?: string }} [opts]
    */
   open(photoCamera, imageUrl, opts = {}) {
-    let pc = typeof photoCamera === 'string' ? this.editor.layout?.photoCamera?.(photoCamera) : photoCamera;
-    if (pc && !pc.pos && pc.id) pc = this.editor.layout?.photoCamera?.(pc.id) || pc;
+    const find = (id) => this.editor.layout?.house?.photoCamera?.(id) ?? this.editor.layout?.photoCamera?.(id) ?? null;
+    let pc = typeof photoCamera === 'string' ? find(photoCamera) : photoCamera;
+    if (pc && !pc.pos && pc.id) pc = find(pc.id) || pc;
     if (!pc || !pc.pos) pc = this.editor.layout?.photoCamera?.('0_for') || this.cams[0];
     if (!pc) {
       this.editor.events?.emit?.('toast', { text: 'Fant ingen fotovinkler i rom-dataene' });
@@ -291,7 +335,7 @@ export class PhotoCompare extends BasePanel {
       }
     } else this.kind = 'photo';
     this.url = url;
-    this.select.setOptions(this._options());
+    this._setOptions();
     this.select.set(mode === 'montage' ? 'montage' : pc.id);
     this._switching = true;
     try {

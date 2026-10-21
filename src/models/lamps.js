@@ -522,8 +522,12 @@ const MAX_SLOPE = 0.47;
  * side wins, so the edge of a bulkhead does not read as a slope.
  */
 function ceilingAt(x, y, z) {
-  const h = roomLayout?.ceilingHeightAt;
-  if (typeof h !== 'function') return null;
+  const hc = roomLayout?.ceilingHeightAt;
+  if (typeof hc !== 'function') return null;
+  // the ceiling of the level the lamp hangs in (a point half a metre under its attachment picks the level, §1.8):
+  // with the y argument layout.ceilingHeightAt answers for the whole house (world y), the living room as before
+  const yq = y - 0.5;
+  const h = (px, pz) => hc(px, pz, yq);
   const h0 = h(x, z);
   if (!Number.isFinite(h0) || Math.abs(y - h0) > 0.03) return null;
   const e = 0.1;
