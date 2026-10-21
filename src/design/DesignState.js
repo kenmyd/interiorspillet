@@ -33,6 +33,9 @@ import palette from '../data/palette.json';
  *   - meta.originalRooms: the rooms whose originals the design has received. Loading adds the originals of every room
  *     with furniture that is not in the list (a version 1 save = ['stue-kjokken']: the rest of the house comes in,
  *     living-room pieces the user removed do not come back).
+ *   - meta.originalUids: every original uid the data had when the design was saved. Loading also adds an original whose
+ *     uid is not in that list (a piece the data got later, in a room the design already had), so a new original reaches
+ *     an old save; a listed piece the user removed stays removed. Without the list only meta.originalRooms counts.
  *   - meta.specRevision: { uid: hash } of each original piece as the data gave it when the design was saved. A piece
  *     still exactly like that on load (the user never changed it) follows the current data (new photo positions).
  *   - version 1 saves load unchanged: their y is world y (= level-local on the first floor).
@@ -543,7 +546,7 @@ export class DesignState extends Emitter {
     this.env = normaliseEnv(DEFAULT_ENV);
     const now = new Date().toISOString();
     // an empty design (original: false) never gets the originals added later: it «has» every room
-    this.meta = { name: ORIGINAL_NAME, createdAt: now, updatedAt: now, originalRooms: [...originalsOf(layout).rooms] };
+    this.meta = { name: ORIGINAL_NAME, createdAt: now, updatedAt: now, originalRooms: [...originalsOf(layout).rooms], originalUids: [...originalsOf(layout).byUid.keys()] };
     this._undo = [];
     this._redo = [];
     this._tx = null; // open step { label, before, after, depth, coalesce, time }
@@ -886,6 +889,8 @@ export class DesignState extends Emitter {
     }
     const meta = clone(this.meta);
     meta.originalRooms = Array.isArray(this.meta.originalRooms) ? [...this.meta.originalRooms] : [...orig.rooms];
+    // every original the design has seen (loading added the ones it had not): a later data piece is added on load
+    meta.originalUids = [...orig.byUid.keys()];
     meta.specRevision = specRevision;
     return {
       version: DESIGN_VERSION,
@@ -957,7 +962,7 @@ export class DesignState extends Emitter {
     return {
       version: DESIGN_VERSION,
       ySpace: 'world',
-      meta: { name: ORIGINAL_NAME, createdAt: now, updatedAt: now, originalRooms: [...orig.rooms] },
+      meta: { name: ORIGINAL_NAME, createdAt: now, updatedAt: now, originalRooms: [...orig.rooms], originalUids: [...orig.byUid.keys()] },
       items: orig.items.map(clone),
       wall: { proposalId: '0', elements: [], edited: false },
       windows: {},
@@ -1012,9 +1017,13 @@ export class DesignState extends Emitter {
     // the rooms whose originals this design has not had yet (a version 1 design: every room but the living room)
     const had = Array.isArray(m.originalRooms) ? m.originalRooms.filter((r) => typeof r === 'string' && r).map((r) => r.slice(0, 60)) : [LIVING_ROOM];
     const hadSet = new Set(had);
+    // the originals the save knew (meta.originalUids): one it did not know is new in the data → added, even in a room
+    // the save already had; without the list only the rooms count (version 1, a hand-written file)
+    const knew = Array.isArray(m.originalUids) ? new Set(m.originalUids.filter((u) => typeof u === 'string')) : null;
     for (const it of orig.items) {
       if (items.size >= LIMITS.items) break;
-      if (hadSet.has(orig.roomOf.get(it.uid)) || items.has(it.uid)) continue;
+      if (items.has(it.uid)) continue;
+      if (hadSet.has(orig.roomOf.get(it.uid)) && (!knew || knew.has(it.uid))) continue;
       items.set(it.uid, clone(it));
     }
     const originalRooms = [...new Set([...had, ...orig.rooms])];
@@ -1064,6 +1073,7 @@ export class DesignState extends Emitter {
       createdAt: typeof m.createdAt === 'string' ? m.createdAt : now,
       updatedAt: typeof m.updatedAt === 'string' ? m.updatedAt : now,
       originalRooms,
+      originalUids: [...orig.byUid.keys()],
     };
   }
 

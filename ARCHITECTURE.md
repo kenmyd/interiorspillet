@@ -246,7 +246,7 @@ class DesignState extends Emitter {
   paints: { [wallId]: colorOrName }          // overstyrt veggfarge; mangler = room-spec
   windows: { [windowId]: ShadingSpec|null }
   env: { hour: 13, month: 6, day: 15, mode: 'auto'|'day'|'evening'|'night', builtIn: { [groupId]: { on, dimmer } }, exposure: 1 }
-  meta: { name, createdAt, updatedAt }
+  meta: { name, createdAt, updatedAt, originalRooms, originalUids, specRevision }   // se Saves (versjon 2)
 
   add(spec) → uid; update(uid, patch); remove(uid); get(uid); list(filter?)
   setWall(patch); setWindow(windowId, spec|null); setPaint(wallId, color|null); setEnv(patch)
@@ -274,14 +274,28 @@ Lytter på DesignState og holder 3D-scenen lik: bygger/ombygger modeller (`regis
 `lighting.requestShadowUpdate()`. API: `getObject(uid) → Group`, `objectBounds(uid) → Box3`.
 
 ### `Acoustics`
-`computeAcoustics(design, home) → { rt60, absorption, volume, baseline: 0.86, breakdown: [{ label, m2 }] }`.
-Kalibrering: rommets volum fra geometrien (≈ 141 m³), og en grunnabsorpsjon slik at originaldesignet gir
-0,86 s. Endringer: nye/fjernede elementer (`absorption` fra katalog/arketype), veggforslag (`sabineAdded` eller
-beregnet fra elementene), gardiner/solskjerming (stoff × areal × hvor lukket), tepper (luv × areal).
+`computeAcoustics(design, home, { roomId = 'stue-kjokken' }) → { rt60, absorption, volume, baseline, breakdown: [{ label, m2 }],
+changes, roomId, roomName, roomKind, mode: 'calibrated'|'estimate', estimated, target, level }`.
+Stua: kalibrering mot rommets volum fra geometrien og en grunnabsorpsjon slik at originaldesignet gir 0,86 s.
+Endringer: nye/fjernede elementer (`absorption` fra katalog/arketype), veggforslag (`sabineAdded` eller beregnet fra
+elementene), gardiner/solskjerming (stoff × areal × hvor lukket), tepper (luv × areal).
+Andre rom (hele huset, steg 16 E3): **anslått** fra rommets flater, dører (lukket) og åpninger (α 0,5), med eget mål per
+romtype. `roomName` får etasjen lagt til når to rom har samme navn («Soverom (kjeller)»).
+- `itemRoomId(item, layout)`: rommet et møbel teller i (veggfeste, ellers nivå + planposisjon).
+- `acousticsFor(design, home, roomId)`: `computeAcoustics` per rom, cachet til neste endring i designet.
+  `Editor.acoustics(roomId)` bruker den for andre rom enn stua (stua har sin egen cache som før).
 
 ### `Saves`
 Flere navngitte design i localStorage (`interiorspillet.designs.v1`), autolagring av det aktive, eksport til
 `.json`-fil og import, «Original» kan alltid lastes. All lagring i try/catch.
+- **DESIGN_VERSION 2** (hele huset, steg 16 E3): hvert møbel har `level` ('hoved', 'kjeller'). I minnet er y verdens-y;
+  i en lagring er y **nivålokal** (over nivåets gulv). `originalJSON()` gir verdens-y med markøren `ySpace: 'world'`.
+  - `meta.originalRooms`: rommene designet har fått originalene til. Lasting legger til originalene i rom som mangler
+    (en v1-lagring = ['stue-kjokken']).
+  - `meta.originalUids`: alle original-uid-er dataene hadde da designet ble lagret. Et original som er nytt i dataene,
+    kommer inn også i et rom designet allerede hadde. Et listet møbel brukeren fjernet, kommer ikke tilbake.
+  - `meta.specRevision`: hash per original slik dataene ga det. Et urørt original følger dataene.
+  - Før første skriving kopieres v1-lagringer til `interiorspillet.designs.v1.backup` (én gang).
 
 ## 8. Solskjerming (`models/shading.js`)
 ```js

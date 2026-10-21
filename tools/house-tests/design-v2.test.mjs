@@ -115,6 +115,13 @@ d7.load(j5b);
 const sovOrig = others.filter((o) => o.roomId === 'soverom').map((o) => o.uid);
 check('a room missing from the list gets its originals (the bed is back), the living room\'s removed sofa does not come back',
   !!d7.get('ex-f-sov-seng') && sovOrig.every((u) => d7.items.has(u)) && !d7.get('ex-f-hjornesofa') && d7.meta.originalRooms.includes('soverom'));
+// meta.originalUids (integrator, bølge 1 gruppe 3): a piece the data got after the save, in a room the save already had
+const j5c = { ...j5, meta: { ...j5.meta, originalUids: j5.meta.originalUids.filter((u) => u !== 'ex-f-sov-nattbord') }, items: j5.items.filter((it) => it.uid !== 'ex-f-sov-nattbord') };
+const d7b = new DesignState({ layout, original: false });
+d7b.load(j5c);
+check('meta.originalUids: a new original in a room the save had arrives (the bedside table), removed listed pieces stay removed',
+  Array.isArray(j5.meta.originalUids) && j5.meta.originalUids.includes('ex-f-sov-seng') && !!d7b.get('ex-f-sov-nattbord') && !d7b.get('ex-f-sov-seng') && !d7b.get('ex-f-hjornesofa')
+  && d7b.meta.originalUids.includes('ex-f-sov-nattbord'));
 const fxNoSofa = { ...fx, items: fx.items.filter((it) => it.uid !== 'ex-f-hjornesofa') };
 const d8 = new DesignState({ layout, original: false });
 d8.load(fxNoSofa);
@@ -179,7 +186,10 @@ check('the living room: 0.86 s, V 138.57, A = 0.161·V/0.86 exactly as before', 
   && rL.roomId === 'stue-kjokken' && rL.mode === 'calibrated' && rL.label === 'Etterklang ≈ 0,86 s', `${rL.rt60} ${rL.absorption}`);
 const rS = A.computeAcoustics(d0, { layout }, { roomId: 'soverom' });
 check(`the bedroom: estimated, «i dag» = now (${rS.rt60.toFixed(2)} s), V ${rS.volume.toFixed(1)} m³`, rS.mode === 'estimate' && rS.estimated && near(rS.rt60, rS.baseline, 1e-12)
-  && near(rS.volume, H.roomsById.soverom.volume, 1e-9) && rS.rt60 > 0.4 && rS.rt60 < 1.5 && rS.roomName === 'Soverom' && rS.surfaces.some((p) => p.key === 'floor'));
+  && near(rS.volume, H.roomsById.soverom.volume, 1e-9) && rS.rt60 > 0.4 && rS.rt60 < 1.5 && rS.roomName === 'Soverom (1. etasje)' && rS.surfaces.some((p) => p.key === 'floor'));
+// two rooms named «Soverom» (and two «Gang»): the level is added to the name; a unique name stays as it is
+check('a shared room name gets its level, a unique one does not', A.computeAcoustics(d0, { layout }, { roomId: 'soverom-kjeller' }).roomName === 'Soverom (kjeller)'
+  && A.computeAcoustics(d0, { layout }, { roomId: 'bad' }).roomName === 'Bad' && A.computeAcoustics(d0, { layout }).roomName === 'Stue/kjøkken');
 const rB = A.computeAcoustics(d0, { layout }, { roomId: 'bad' });
 check(`the bathroom rings more than the bedroom (${rB.rt60.toFixed(2)} s)`, rB.rt60 > rS.rt60 && rB.rt60 < 3);
 const rG = A.computeAcoustics(d0, { layout }, { roomId: 'gang' });

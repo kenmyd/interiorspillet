@@ -463,7 +463,7 @@ const GROUPS = [
  * @returns {{ rt60: number, absorption: number, volume: number, baseline: number, roomAbsorption: number,
  *   target: number[], yellow: number, level: 'green'|'yellow'|'red', label: string,
  *   breakdown: Array<{ label: string, m2: number }>, changes: Array<{ label: string, m2: number }>,
- *   roomId: string, roomName: string, roomKind: string, mode: 'calibrated'|'estimate', estimated: boolean,
+ *   roomId: string, roomName: string (with the level when two rooms share the name), roomShortName: string, roomKind: string, mode: 'calibrated'|'estimate', estimated: boolean,
  *   surfaces: Array<{ key: string, label: string, area: number, m2: number }>|null }}
  */
 export function computeAcoustics(design, home, { roomId = LIVING_ROOM_ID } = {}) {
@@ -532,12 +532,29 @@ export function computeAcoustics(design, home, { roomId = LIVING_ROOM_ID } = {})
     breakdown,
     changes,
     roomId: rid,
-    roomName: room?.name ?? 'Stue/kjøkken',
+    roomName: displayRoomName(layout, room),
+    // the data name alone, for the narrow badge (the HUD banner above already names the level)
+    roomShortName: room?.name ?? 'Stue/kjøkken',
     roomKind: room?.kind ?? 'living',
     mode: cal.mode,
     estimated: !living,
     surfaces: cal.surfaces ? cal.surfaces.map((p) => ({ ...p, m2: round(p.m2, 3) })) : null,
   };
+}
+
+/**
+ * The room's name for the badge and the panel: the data name, with the level added when another physical room has the
+ * same name (two «Soverom», two «Gang»: «Soverom (kjeller)», «Soverom (1. etasje)»). The living room as before.
+ * @param {Object} layout
+ * @param {Object|null} room
+ */
+function displayRoomName(layout, room) {
+  const name = room?.name ?? 'Stue/kjøkken';
+  if (!room) return name;
+  const twin = (layout?.house?.rooms || []).some((r) => r !== room && r.id !== room.id && isPhysical(r) && r.name === name);
+  if (!twin) return name;
+  const lv = layout.house.levelsById?.[room.levelId]?.name;
+  return lv ? `${name} (${lv.toLowerCase()})` : name;
 }
 
 const LIVE = new WeakMap();

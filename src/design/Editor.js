@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as catalog from '../catalog/index.js';
-import { computeAcoustics } from './Acoustics.js';
+import { computeAcoustics, acousticsFor, LIVING_ROOM_ID } from './Acoustics.js';
 import { Selection } from './Selection.js';
 import { Placement } from './Placement.js';
 import { ViewModes } from './ViewModes.js';
@@ -153,8 +153,13 @@ export class Editor {
     return p ? levelAtFloorY(this.layout, p.y) : MAIN_LEVEL;
   }
 
-  /** Reverberation result for the current design (cached until the next change). */
-  acoustics() {
+  /**
+   * Reverberation result for the current design (cached until the next change). The living room through its own cache
+   * as before; another room through Acoustics.acousticsFor (steg 16, E3).
+   * @param {string} [roomId]
+   */
+  acoustics(roomId = LIVING_ROOM_ID) {
+    if (roomId && roomId !== LIVING_ROOM_ID) return acousticsFor(this.design, this.home, roomId);
     if (!this._acoustics) this._acoustics = computeAcoustics(this.design, this.home);
     return this._acoustics;
   }

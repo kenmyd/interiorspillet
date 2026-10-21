@@ -3,7 +3,7 @@ import { h, svg, fmtNumber } from './dom.js';
 import { ICONS } from './icons.js';
 import { getArchetype } from '../models/registry.js';
 import { materialOptions, kindGroup, resolveColor, MATERIAL_LABELS, MATERIAL_KINDS, defaultColor } from '../home/materials.js';
-import { itemAbsorption, rt60For } from '../design/Acoustics.js';
+import { itemAbsorption, rt60For, itemRoomId, LIVING_ROOM_ID } from '../design/Acoustics.js';
 import { itemLevel, levelFloorY } from '../design/SceneSync.js';
 import palette from '../data/palette.json';
 import {
@@ -1414,7 +1414,9 @@ export class Inspector extends BasePanel {
     if (!(m2 > 0.02)) return null;
     let extra = '';
     try {
-      const r = this.editor.acoustics();
+      // the item's own room (steg 16, E3): a bed in the bedroom is weighed against the bedroom, not the living room
+      const roomId = itemRoomId(item, this.editor.layout) ?? LIVING_ROOM_ID;
+      const r = this.editor.acoustics(roomId);
       const without = rt60For(Math.max(0.5, r.absorption - m2), r.volume);
       if (without - r.rt60 >= 0.005) extra = ` Uten den ville etterklangen vært ${fmtNumber(without, 2)} s (nå ${fmtNumber(r.rt60, 2)} s).`;
     } catch {

@@ -716,6 +716,10 @@ export function createVisibility(home, layout) {
       const top = (r.ceilingTop ?? r.floorY + 2.4) + 0.1;
       if (b.max.x < rb.minX - 0.15 || b.min.x > rb.maxX + 0.15 || b.max.z < rb.minZ - 0.15 || b.min.z > rb.maxZ + 0.15) continue;
       if (b.max.y < r.floorY - 0.35 || b.min.y > top) continue;
+      // the room's own plan, not its bounds: the L-shaped living room's bounds hold the bath, the hall and the bedroom
+      // (integrator, bølge 1 gruppe 3, from the Y1 review)
+      const plan = planOf.get(r.id);
+      if (plan && !plan.some((p) => b.max.x >= p.minX - 0.15 && b.min.x <= p.maxX + 0.15 && b.max.z >= p.minZ - 0.15 && b.min.z <= p.maxZ + 0.15)) continue;
       out.push(r.id);
     }
     return out;

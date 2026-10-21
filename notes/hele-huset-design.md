@@ -824,9 +824,15 @@ per rom.
       solpass.
     - **Grenser:**
       - høyst +20 % tegnekall ved spawn i stua og i gangen (`pos=2.6,0,3.2&yaw=90`);
+        - *Integratoren, bølge 1 gruppe 3 (steg 29 Y1):* masters `2.6,0,3.2` ligger utenfor masters eget hus (det har
+          ingen gang). Gangen måles derfor mot **masters spawn** (≤ +20 %), slik `tools/perf.mjs` gjør. Målt: gang 76
+          mot spawn 212.
       - høyst 1 miljøbygg per romskifte;
       - 0 solpass mens man går;
       - første lasting høyst 3 s lenger enn i dag.
+        - *Status etter bølge 1 (integratoren):* holder ikke. Hele-huset laster på ca. 25 s mot masters 19,7 s, med og
+          uten Y1 (`?vis=0` gir det samme). Årsaken er flere programmer og byggere, ikke synligheten. Profiler
+          `Game._precompile` og byggerne før budsjettet regnes som nådd.
     - «50 fps i hodeløs Edge» brukes ikke som krav, fordi det ikke er pålitelig.
 14. **Miljøbygg.** Én env-scene per rom (egne patcher og portaler), slått sammen til ett mesh med vertex-farger, og én
     PMREM cachet per rom. Alle kart har samme størrelse, fordi kubehøyden er del av shader-nøkkelen (WebGLPrograms.js:64).
@@ -1205,7 +1211,10 @@ Steg 18 kjøres først. Deretter kommer den rene delen av 19, så 19–21 parall
     - *Bilder:* nei.
 22. **B-test: trappetur.**
     - *Mål:* §7.4 og walkmap over to nivåer.
-    - *Filer:* `tools/tour.mjs`, `tools/walkmap.mjs`.
+    - *Filer:* `tools/tour.mjs`, `tools/walkmap.mjs`, og (fra steg 22+26t) `tools/house-tests/_tours.mjs` og
+      `tools/house-tests/tour-routes.test.mjs`. Turene står i `_tours.mjs`, og tour-routes-testen sjekker dem mot dataene
+      i hver `test-house`. **Et steg som flytter `door-gang` eller `door-ute`, trappa eller endrer romnavn, oppdaterer
+      `_tours.mjs` i samme commit.**
     - *Avhenger av:* 19, 20 og 21.
     - *Test:* romrekkefølgen er `stue-kjokken → gang → trapp → kjeller-gang`, og alle mål i kjellergangen kan nås.
     - *Bilder:* nei.

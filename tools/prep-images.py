@@ -188,7 +188,9 @@ def prep_forslag():
 # ----------------------------------------------------------------------------------------------------------
 
 def load_room_spec():
-    for p in (os.path.join(ROOT, 'research', 'room-spec.json'), os.path.join(ROOT, 'src', 'data', 'room-spec.json')):
+    # the game's data first (the whole house, every room's photoCameras); research/room-spec.json is the living
+    # room's old research copy
+    for p in (os.path.join(ROOT, 'src', 'data', 'room-spec.json'), os.path.join(ROOT, 'research', 'room-spec.json')):
         if os.path.exists(p):
             with open(p, encoding='utf-8') as f:
                 return json.load(f)
@@ -198,19 +200,27 @@ def load_room_spec():
 def prep_foto():
     spec = load_room_spec()
     out_dir = os.path.join(OUT, 'foto')
+    # the other rooms' photos (bilder_hus/) go to a git-ignored dev folder, never into the deployed public/img/foto
+    # (hele-huset §5.6, U1): src/ui/PhotoCompare.js imageFor reads img/foto-hus/<photo camera id>.jpg for them
+    hus_dir = os.path.join(OUT, 'foto-hus')
     ensure_dir(out_dir)
     written = []
     for cam in spec.get('photoCameras', []):
         f = cam.get('file', '')
-        if not f.startswith('bilder_stue/'):
+        if f.startswith('bilder_stue/'):
+            dst_dir = out_dir
+        elif f.startswith('bilder_hus/'):
+            dst_dir = hus_dir
+        else:
             continue
         src = os.path.join(ROOT, f)
         if not os.path.exists(src):
             log('  ! missing photo', f)
             continue
+        ensure_dir(dst_dir)
         img = open_rgb(src)
         img.thumbnail((1600, 1200), RESAMPLE)
-        dst = os.path.join(out_dir, os.path.splitext(os.path.basename(f))[0] + '.jpg')
+        dst = os.path.join(dst_dir, os.path.splitext(os.path.basename(f))[0] + '.jpg')
         save_jpeg(img, dst, 80)
         written.append(dst)
     log('foto: %d photos' % len(written))

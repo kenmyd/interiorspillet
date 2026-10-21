@@ -230,7 +230,7 @@ export class AcousticsWidget {
     // the living room as before; another room: its name instead of the word «Etterklang» (the title says it)
     this.text.textContent = living ? r.label : r.label.replace(/^Etterklang\s*/, '');
     this.roomEl.hidden = living;
-    this.roomEl.textContent = living ? '' : r.roomName;
+    this.roomEl.textContent = living ? '' : r.roomShortName ?? r.roomName;
     this.badge.className = `ip-rt ip-rt--${r.level}${this.pop.isOpen ? ' is-open' : ''}`;
     const lo = fmtNumber(r.target?.[0] ?? 0.4, 1);
     const hi = fmtNumber(r.target?.[1] ?? TARGET_HI, 1);

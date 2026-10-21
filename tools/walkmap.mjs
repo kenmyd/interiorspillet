@@ -43,7 +43,7 @@
  *     --preset=hus the whole house (steg 22 / 26, notes/hele-huset-design.md §7.4 with the avstemming's §6 points):
  *                  --levels=0,-2.55 --auto-y --x=0,13 --z=0,12 --doors=open --from=4.2,0,4.0 --rooms and the targets
  *                  gang 2.5,0,3.2 · bad 1.5,0,1.3 · soverom 1.5,0,5.7 · kjeller-gang 3.5,-2.55,3.8 · kjellerstue
- *                  3.5,-2.55,6.2 · vaskerom 1.3,-2.55,6.4 · soverom-kjeller 1.3,-2.55,10.2 · entré 7.4,-2.85,4.4 ·
+ *                  3.8,-2.55,6.2 · vaskerom 1.3,-2.55,6.4 · soverom-kjeller 1.3,-2.55,10.2 · entré 7.4,-2.85,4.4 ·
  *                  ute 12.2,-2.87,4.6; with --step-name also --out / --png in .shots/hus/<step>/. Options given on the
  *                  command line win over the preset's
  *     --doors      passed on as ?doors= (main.js): open / closed / the listed doors open
@@ -72,7 +72,7 @@ const PRESETS = {
       '1.5,0,1.3', // bad
       '1.5,0,5.7', // soverom
       '3.5,-2.55,3.8', // kjeller-gang
-      '3.5,-2.55,6.2', // kjellerstue
+      '3.8,-2.55,6.2', // kjellerstue (east of the open door-kjellerstue leaf, which blocks x ≤ 3.6 at z 5.7–6.3)
       '1.3,-2.55,6.4', // vaskerom
       '1.3,-2.55,10.2', // soverom-kjeller
       '7.4,-2.85,4.4', // entré
@@ -444,7 +444,8 @@ try {
     }
     for (const t of result.targets) {
       const snap = t.snapped ? `, own cell blocked – nearest free cell ${t.snapped.x},${t.snapped.z} (${t.snapped.d} m away)` : '';
-      out.push(`${t.reached ? 'ok  ' : 'FAIL'} target ${t.label} (level ${t.level}${t.free ? `, floor ${t.floor}` : ', cell blocked'}${snap})`);
+      // a target reached only through the snap is a WARN (the snap must not hide a real blocker; exit code stays 0)
+      out.push(`${t.reached ? (t.snapped ? 'WARN' : 'ok  ') : 'FAIL'} target ${t.label} (level ${t.level}${t.free ? `, floor ${t.floor}` : ', cell blocked'}${snap})`);
       if (!t.reached) code = 2;
     }
     if (area.rooms) {

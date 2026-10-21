@@ -1182,7 +1182,7 @@ export class CatalogPanel extends BasePanel {
         const roomId = this.editor.ui?.acoustics?.roomId ?? LIVING_ROOM_ID;
         const r = roomId === LIVING_ROOM_ID ? this.editor.acoustics() : acousticsFor(this.editor.design, this.editor.home, roomId);
         const next = rt60For(r.absorption + p.absorption, r.volume);
-        const where = r.roomId && r.roomId !== LIVING_ROOM_ID ? ` i rommet (${r.roomName})` : '';
+        const where = r.roomId && r.roomId !== LIVING_ROOM_ID ? ` i rommet (${r.roomName.replace(/ \((.+)\)$/, ', $1')})` : '';
         txt += ` – etterklangen${where} går fra ${fmtNumber(r.rt60, 2)} til ${fmtNumber(next, 2)} s`;
       } catch {
         /* acoustics optional */

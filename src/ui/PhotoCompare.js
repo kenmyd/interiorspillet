@@ -97,8 +97,10 @@ function photoTime(pc) {
 function imageFor(pc) {
   if (pc.montage || pc.id === '0_for') return 'img/forslag/0.jpg';
   if (typeof pc.image === 'string' && pc.image) return pc.image;
-  // the photos of the other rooms are prepared into a git-ignored dev folder (tools/prep-images.py, §5.6)
-  if (pc.roomId && pc.roomId !== LIVING_ROOM) return `img/foto-hus/${pc.id}.jpg`;
+  // the photos of the other rooms (bilder_hus/) are prepared into a git-ignored dev folder (tools/prep-images.py
+  // prep_foto, §5.6) – by the photo's folder, the same rule as prep-images; a camera without a file: by its room
+  const file = typeof pc.file === 'string' ? pc.file : '';
+  if (file.startsWith('bilder_hus/') || (!file.startsWith('bilder_stue/') && pc.roomId && pc.roomId !== LIVING_ROOM)) return `img/foto-hus/${pc.id}.jpg`;
   return `img/foto/${pc.id}.jpg`;
 }
 
