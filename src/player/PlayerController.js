@@ -22,6 +22,14 @@ import { PLAYER, WALKABLE_NORMAL_Y } from '../config.js';
  *
  * Extras: crouching (boolean), inWater (boolean), respawn(), getState() also carries crouch, crouching,
  * justJumped, verticalSpeed, airTime, inWater, surface, bobAmount, yaw.
+ *   setReserveSpawns([{ position, yaw }])   where respawn() goes when neither the last safe point nor the first
+ *                                            teleport target is safe (Game: the forecourt, then the dining room)
+ *
+ * Levels (notes/hele-huset-design.md §3.4–3.5, steg 20): every walkability test passes the feet's y
+ * (collision.isWalkable(x, z, y)), so the basement (−2.55), the entrance (−2.85) and the forecourt (−2.87) have their
+ * own walkable rectangles; the last safe point is kept on every level. A safe spot also needs ground under it (a
+ * static or dynamic collider, or the terrain, within 1.5 m below the feet): a teleport target over a floor that is not
+ * built (yet) is never a respawn point, so falling there does not loop.
  *
  * How a frame works:
  *   1. look (mouse delta + keyboard turning), crouch state
@@ -97,6 +105,8 @@ export const MOVE = Object.freeze({
   sitBlend: 0.6,
   /** Pitch (radians) the view settles at after sitting down: a little below the horizon. */
   sitPitch: -0.08,
+  /** A safe spot needs ground within this far below the feet (_hasGround). */
+  groundReach: 1.5,
 });
 
 const _v = new THREE.Vector3();
@@ -111,6 +121,7 @@ const _walls = Array.from({ length: 8 }, () => new THREE.Vector3());
 const _terrainWalls = [new THREE.Vector3(), new THREE.Vector3()];
 const _move = new THREE.Vector3();
 const _tn = new THREE.Vector3();
+const _down = new THREE.Ray(new THREE.Vector3(), new THREE.Vector3(0, -1, 0));
 
 export class PlayerController {
   /**
@@ -172,6 +183,7 @@ export class PlayerController {
     this._safeYaw = 0;
     this._safeT = 0;
     this._hasSafe = false;
+    this._reserve = []; // [{ position, yaw }] – respawn targets after the safe point and the spawn (setReserveSpawns)
 
     this.seated = null; // { eye, yaw } while sitting
     this._standAt = new THREE.Vector3(); // feet position to stand up at
@@ -248,15 +260,34 @@ export class PlayerController {
     this._placeCamera(0);
   }
 
+  /**
+   * Where respawn() goes when neither the last safe point nor the first teleport target is safe (§3.5: the forecourt,
+   * and the dining room when the house has no outside). The first safe one of the list wins.
+   * @param {Array<{ position: THREE.Vector3|number[], yaw?: number }>} list  feet positions, yaw in radians
+   */
+  setReserveSpawns(list) {
+    this._reserve = (list || [])
+      .map((r) => {
+        const p = r?.position;
+        const v = p?.isVector3 ? p.clone() : Array.isArray(p) ? new THREE.Vector3(p[0], p[1], p[2]) : null;
+        return v && Number.isFinite(v.x + v.y + v.z) ? { position: v, yaw: Number.isFinite(r.yaw) ? r.yaw : 0 } : null;
+      })
+      .filter(Boolean);
+  }
+
   /** Move back to the last position where we stood safely on the ground, facing the way we faced there. */
   respawn(reason = '') {
     let yaw = this.yaw;
+    let reserve = null;
     if (this._hasSafe && this._isSafeSpot(this._safe)) {
       _v.copy(this._safe);
       yaw = this._safeYaw;
     } else if (this._spawn && this._isSafeSpot(this._spawn)) {
       _v.copy(this._spawn);
       yaw = this._spawnYaw;
+    } else if ((reserve = this._reserve.find((r) => this._isSafeSpot(r.position)))) {
+      _v.copy(reserve.position);
+      yaw = reserve.yaw;
     } else if (!this._findLand(this.position, _v)) {
       if (this._spawn) _v.copy(this._spawn);
       else _v.set(0, 2, 0);
@@ -345,32 +376,60 @@ export class PlayerController {
     s.airTime = 0;
   }
 
-  /** Is this feet position good for (re)spawning: finite, inside the world, on walkable ground, not in water? */
+  /**
+   * Is this feet position good for (re)spawning: finite, inside the world on its level (the feet's y picks the
+   * walkable rectangle, §3.4), not in water, with ground under it?
+   */
   _isSafeSpot(p) {
     const col = this.collision;
     return (
-      Number.isFinite(p.x + p.y + p.z) && p.y > MOVE.respawnY + 1 && p.y >= col.waterLevel && col.isWalkable(p.x, p.z)
+      Number.isFinite(p.x + p.y + p.z) &&
+      p.y > MOVE.respawnY + 1 &&
+      p.y >= col.waterLevel &&
+      col.isWalkable(p.x, p.z, p.y) &&
+      this._hasGround(p)
     );
   }
 
   /**
-   * Nearest dry walkable terrain point around a position (rings of 16 directions, 1 m apart, up to 60 m),
-   * feet on the terrain. Last resort for respawning when neither the last safe point nor the spawn is usable.
+   * Something to stand on within MOVE.groundReach below the feet (from 0.4 m above them): the terrain, or a static or
+   * dynamic collider. A collision world with nothing registered yet cannot tell and says yes.
+   * @param {THREE.Vector3} p  feet
+   */
+  _hasGround(p) {
+    const col = this.collision;
+    const hf = col.heightfield;
+    if (hf) {
+      const h = hf.getHeight(p.x, p.z);
+      if (p.y >= h - 0.4 && p.y <= h + MOVE.groundReach) return true;
+    }
+    if (typeof col.raycast !== 'function') return true;
+    if (!(col.triangleCount > 0) && !col.dynamic?.length) return !hf;
+    _down.origin.set(p.x, p.y + 0.4, p.z);
+    return !!col.raycast(_down, 0.4 + MOVE.groundReach);
+  }
+
+  /**
+   * Nearest dry walkable ground point around a position (rings of 16 directions, 1 m apart, up to 60 m), feet on the
+   * ground: the terrain, or a floor of the house on the position's level (collision.setFloorField). Last resort for
+   * respawning when neither the last safe point, the spawn nor a reserve spawn is usable.
    * @param {THREE.Vector3} from
    * @param {THREE.Vector3} out
    * @returns {boolean} true if found (written into out)
    */
   _findLand(from, out) {
     const col = this.collision;
-    if (!col.heightfield || !Number.isFinite(from.x + from.z)) return false;
+    if ((!col.heightfield && !col.floorField) || !Number.isFinite(from.x + from.z)) return false;
+    const y = Number.isFinite(from.y) ? from.y : undefined;
     for (let r = 1; r <= 60; r++) {
       for (let k = 0; k < 16; k++) {
         const a = (k / 16) * Math.PI * 2;
         const x = from.x + Math.cos(a) * r, z = from.z + Math.sin(a) * r;
-        if (!col.isWalkable(x, z)) continue;
-        const h = col.groundHeight(x, z);
-        if (h < col.waterLevel) continue; // dry land, not the shallows
+        const h = col.groundHeight(x, z, y);
+        if (!Number.isFinite(h) || h < col.waterLevel) continue; // dry land, not the shallows
+        if (!col.isWalkable(x, z, h)) continue;
         out.set(x, h, z);
+        if (!col.heightfield && !this._hasGround(out)) continue; // a floor of the data that is not built
         return true;
       }
     }
@@ -590,6 +649,14 @@ export class PlayerController {
       _before.copy(cap.start);
       const res = col.resolveCapsule(cap);
       this._copyWalls(res);
+      // Walking into a sloped walkable face of static ground (up the stair wedge, §3.1 of notes/hele-huset-design.md):
+      // climb it. The octree pushes the capsule out along the slope's normal, and that also pushes it back – up the 42°
+      // wedge only cos² θ ≈ 56 % of each step was left on top of _slopeSlowdown (0.86 instead of 1.5 m/s,
+      // tools/test-stairs.mjs). A push out of the slope against the move becomes vertical, as in the vertical pass.
+      // Floors, sills and steps (res.slope false: no sloped face under the foot) are handled as before.
+      if ((wasGrounded || this._sinceGround < 0.05) && res.onGround && res.slope && !terrainHit && (cap.start.x - _before.x) * dx + (cap.start.z - _before.z) * dz < 0) {
+        this._verticalizeGroundPush(res, _before);
+      }
       this._trackPush(_before, cap.start, Math.hypot(dx, dz));
       let progress = ((cap.start.x - sx) * dx0 + (cap.start.z - sz) * dz0) / want;
 
@@ -737,7 +804,7 @@ export class PlayerController {
    * Deep water / world bounds: never move from walkable onto unwalkable ground; slide along the edge
    * (axis-separated) when one axis alone is fine. When we already are on unwalkable ground (fell in, were
    * pushed in, teleported) only moves that get us out – toward shallower water / back inside the bounds –
-   * are allowed. Removes the blocked velocity components.
+   * are allowed. Removes the blocked velocity components. The bounds are those of the feet's level (y, §3.4).
    * @param {number} sx  capsule x before the move
    * @param {number} sz  capsule z before the move
    * @returns {boolean} true if the position was corrected
@@ -746,20 +813,21 @@ export class PlayerController {
     const col = this.collision;
     const c = this.capsule.start;
     const nx = c.x, nz = c.z;
-    if ((nx === sx && nz === sz) || col.isWalkable(nx, nz)) return false;
+    const y = c.y - this.capsule.radius; // feet
+    if ((nx === sx && nz === sz) || col.isWalkable(nx, nz, y)) return false;
     const v = this.velocity;
-    if (!col.isWalkable(sx, sz)) {
-      const outS = outsideBounds(col.bounds, sx, sz), outN = outsideBounds(col.bounds, nx, nz);
-      const better = outS > 0 ? outN < outS : outN <= 0 && col.groundHeight(nx, nz) >= col.groundHeight(sx, sz);
+    if (!col.isWalkable(sx, sz, y)) {
+      const outS = outsideOf(col, sx, sz, y), outN = outsideOf(col, nx, nz, y);
+      const better = outS > 0 ? outN < outS : outN <= 0 && col.groundHeight(nx, nz, y) >= col.groundHeight(sx, sz, y);
       if (better) return false;
       this._setCapsuleXZ(sx, sz);
       v.x = v.z = 0;
       return true;
     }
-    if (col.isWalkable(sx, nz)) {
+    if (col.isWalkable(sx, nz, y)) {
       this._setCapsuleXZ(sx, nz);
       v.x = 0;
-    } else if (col.isWalkable(nx, sz)) {
+    } else if (col.isWalkable(nx, sz, y)) {
       this._setCapsuleXZ(nx, sz);
       v.z = 0;
     } else {
@@ -790,7 +858,7 @@ export class PlayerController {
     if (climbed > MOVE.stepHeight + 0.01 || climbed < -0.02) return false;
     const progress = ((_trialCap.start.x - sx) * dx + (_trialCap.start.z - sz) * dz) / want;
     if (progress < plainProgress + want * 0.25) return false;
-    if (!col.isWalkable(_trialCap.start.x, _trialCap.start.z)) return false;
+    if (!col.isWalkable(_trialCap.start.x, _trialCap.start.z, _trialCap.start.y - _trialCap.radius)) return false;
     this.capsule.copy(_trialCap);
     this.surface = res.surface;
     this._groundNormal.copy(res.groundNormal);
@@ -965,9 +1033,9 @@ export class PlayerController {
       this.respawn('Du satt fast – flyttet tilbake.');
       return;
     }
-    // deeper than wading depth / outside the world: only moves back out are allowed (see _keepWalkable);
-    // if that does not get us out quickly, put us back on land
-    if (!this.collision.isWalkable(p.x, p.z)) {
+    // deeper than wading depth / outside the world (on the feet's level): only moves back out are allowed (see
+    // _keepWalkable); if that does not get us out quickly, put us back on land
+    if (!this.collision.isWalkable(p.x, p.z, p.y)) {
       this._deepT += dt;
       if (this._deepT > MOVE.deepWaterTime) {
         this.respawn('For dypt vann – flyttet tilbake.');
@@ -990,8 +1058,8 @@ export class PlayerController {
       this._trapT = 0;
       this._trapAnchor.copy(p);
     }
-    // remember safe ground
-    if (this.onGround && !this.inWater && this._excessPush < 0.01 && this.collision.isWalkable(p.x, p.z)) {
+    // remember safe ground – on every level (the feet's y picks the walkable rectangle)
+    if (this.onGround && !this.inWater && this._excessPush < 0.01 && this.collision.isWalkable(p.x, p.z, p.y)) {
       this._safeT += dt;
       if (this._safeT > 0.3) {
         this._safeT = 0;
@@ -1058,6 +1126,11 @@ function clipHorizontal(v, n) {
 /** How far (m) a point lies outside the world bounds; ≤ 0 inside. */
 function outsideBounds(b, x, z) {
   return Math.max(b.minX - x, x - b.maxX, b.minZ - z, z - b.maxZ);
+}
+
+/** How far (m) a point lies outside the walkable area of its level (y = feet; CollisionWorld.outsideDistance). */
+function outsideOf(col, x, z, y) {
+  return typeof col.outsideDistance === 'function' ? col.outsideDistance(x, z, y) : outsideBounds(col.bounds, x, z);
 }
 
 function smoothstep(e0, e1, x) {

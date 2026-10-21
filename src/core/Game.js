@@ -188,6 +188,7 @@ export class Game {
     onProgress(0.92, 'Bygger kollisjon');
     await new Promise((r) => setTimeout(r, 0));
     this.collision.build();
+    this._setupLevels();
 
     this.player = new PlayerController({
       camera: this.camera,
@@ -212,6 +213,7 @@ export class Game {
       this.editor = null;
     }
     this.interaction.warm(this.renderer);
+    this._setupRespawn();
 
     // every program compiles in parallel while the loading screen keeps animating; the first frame then only links
     await this._precompile((f) => onProgress(0.95 + 0.04 * f, 'Forbereder grafikken'));
@@ -285,27 +287,41 @@ export class Game {
   /**
    * A dev start point (?pos=) inside furniture (the kitchen island …) would put the player on top of it with the
    * camera near the ceiling: move it to the nearest free floor point instead (rings of 0.25 m, up to 3 m).
+   * On every level (§3.7, steg 20): the ray starts under the ceiling of pos's level (layout.house.ceilingHeightAt(x, z,
+   * y) – in the stairwell the ceiling of the floor above) and a hit within ±0.3 m of pos.y is floor; the ring points
+   * stay in pos's room on pos's level, so the search never goes through a wall or onto the other level. Points outside
+   * the house (the terrace, the forecourt) are taken as they are.
    * @param {THREE.Vector3} pos  feet
    * @returns {THREE.Vector3}
    */
   _freeFloor(pos) {
     const c = this.collision;
     const layout = this.home?.layout;
+    const house = layout?.house ?? null;
     if (!c?.raycast) return pos;
+    const y0 = Number.isFinite(pos.y) ? pos.y : 0;
     const ray = new THREE.Ray(new THREE.Vector3(), new THREE.Vector3(0, -1, 0));
-    const inside = (x, z) => !layout?.isInside || layout.isInside(x, z);
+    // the room of pos on its level (body centre, like the HUD); without the house the living room's polygon
+    const room = house?.roomAt?.(pos.x, y0 + 0.9, pos.z) ?? null;
+    const inside = (x, z) => {
+      if (house?.isInside) return house.isInside(x, z, y0) && (!room || room.contains(x, z));
+      return !layout?.isInside || layout.isInside(x, z);
+    };
+    const ceilingAt = (x, z) => (house?.ceilingHeightAt ? house.ceilingHeightAt(x, z, y0) : layout?.ceilingHeightAt?.(x, z));
     const floorAt = (x, z) => {
-      const top = (layout?.ceilingHeightAt?.(x, z) ?? 2.4) - 0.05;
+      const ceil = ceilingAt(x, z);
+      const top = (Number.isFinite(ceil) ? ceil : y0 + 2.4) - 0.05;
       ray.origin.set(x, top, z);
-      const hit = c.raycast(ray, top + 0.5);
+      const hit = c.raycast(ray, top - y0 + 0.5);
       return hit ? hit.point.y : -Infinity;
     };
     // free = no furniture top under the point higher than a step (rugs and thresholds are fine; the capsule pushes
     // itself out of anything it merely touches)
+    let hitY = -Infinity;
     const free = (x, z) => {
       if (!inside(x, z)) return false;
-      const y = floorAt(x, z);
-      return y > -0.2 && y < 0.3;
+      hitY = floorAt(x, z);
+      return hitY > y0 - 0.3 && hitY < y0 + 0.3;
     };
     if (!inside(pos.x, pos.z) || free(pos.x, pos.z)) return pos; // outside (terrace tests) or already free
     for (let r = 0.25; r <= 3; r += 0.25) {
@@ -313,12 +329,54 @@ export class Game {
         const a = (k / 16) * Math.PI * 2;
         const x = pos.x + Math.cos(a) * r, z = pos.z + Math.sin(a) * r;
         if (free(x, z)) {
-          console.warn('[dev] ?pos=' + [pos.x, pos.y, pos.z].join(',') + ' is inside furniture – starting at ' + x.toFixed(2) + ',0,' + z.toFixed(2));
-          return new THREE.Vector3(x, 0, z);
+          const y = Math.abs(hitY) < 1e-6 ? 0 : hitY;
+          console.warn('[dev] ?pos=' + [pos.x, pos.y, pos.z].join(',') + ' is inside furniture – starting at ' + [x.toFixed(2), +y.toFixed(3), z.toFixed(2)].join(','));
+          return new THREE.Vector3(x, y, z);
         }
       }
     }
     return pos;
+  }
+
+  /**
+   * The levels of the house in the collision (§3.4, steg 20), after collision.build(): the walkable area becomes one
+   * rectangle per level – the ground floor's is the one the shell and the exterior set (the living room and the
+   * terrace, as before), the others are layout.house.walkRects – plus the forecourt's (outsideHouse.walkRects), each
+   * for its band of feet heights; and groundHeight falls back to the house's floors (layout.house.floorYAt). A house
+   * with one level and no outside keeps the plain rectangle.
+   */
+  _setupLevels() {
+    const c = this.collision;
+    const house = this.home?.layout?.house;
+    if (!c?.setBoundsList || !house?.walkRects) return;
+    const outside = house.outsideHouse?.walkRects ?? [];
+    if (house.levels.length < 2 && !outside.length) return;
+    const b = c.bounds;
+    const rects = [];
+    for (const r of house.walkRects) {
+      // the ground floor: the bounds the builders set (they hold the terrace), and the level's own rectangle
+      if (r.levelId === house.levels[0]?.id && Number.isFinite(b.minX + b.maxX + b.minZ + b.maxZ)) rects.push({ ...b, minY: r.minY, maxY: r.maxY, levelId: r.levelId });
+      rects.push(r);
+    }
+    for (const r of outside) rects.push({ ...r, levelId: r.levelId ?? 'ute' });
+    c.setBoundsList(rects);
+    if (house.floorYAt) c.setFloorField((x, z, y) => house.floorYAt(x, z, y));
+  }
+
+  /**
+   * Reserve respawn points (§3.5, steg 20), after the player exists: the forecourt (outsideHouse.spawnOutside), then
+   * the home's spawn (the dining room). PlayerController.respawn() takes the first safe one when neither the last safe
+   * point nor the first teleport target (?pos=) is safe.
+   */
+  _setupRespawn() {
+    const p = this.player;
+    if (!p?.setReserveSpawns) return;
+    const list = [];
+    const out = this.home?.layout?.house?.outsideHouse?.spawnOutside;
+    if (Array.isArray(out?.pos) && out.pos.length === 3) list.push({ position: new THREE.Vector3(...out.pos), yaw: THREE.MathUtils.degToRad(out.yawDeg ?? 0) });
+    const sp = this.home?.spawn;
+    if (sp?.position) list.push({ position: sp.position.clone(), yaw: sp.yaw ?? 0 });
+    p.setReserveSpawns(list);
   }
 
   /** Writes a waiting autosave now. @returns {boolean} true when nothing unsaved is left */
