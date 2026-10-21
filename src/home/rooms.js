@@ -588,6 +588,13 @@ export function buildRooms(ctx, layout, M = null) {
 
   /** A window of a room wall: frame / sash / glass / board (wallkit), a lining in its reveal colour, the anchor. */
   function buildRoomWindow(w, o, rr) {
+    // a reveal deeper than the wall leaves room for the frame (win-sk: reveal 0.38 (V63) in a 0.30 wall (V4) would put
+    // the frame, the board and the lining 8–14 cm out of the facade). Door elements (the sidelights) keep the door's depth.
+    const fdepth = o.frame?.depth ?? 0.07;
+    const maxRd = w.thickness - fdepth - 0.005;
+    if (o.sill > EPS && !rawOpening.get(o.id)?.element && o.revealDepth > maxRd && maxRd > 0.02) {
+      o = { ...o, revealDepth: maxRd, sillBoard: o.sillBoard ? { ...o.sillBoard, depth: Math.min(o.sillBoard.depth ?? maxRd, maxRd) } : o.sillBoard };
+    }
     const sillHex = o.sillBoard?.color;
     const frameHex = o.frame?.color;
     const WM = {
@@ -940,25 +947,39 @@ export function buildRooms(ctx, layout, M = null) {
   const mainSlab = slabBoxes(H, mainId);
   colliders.push(...mainSlab);
   // a basement room that reaches out beyond the ground floor (bod-3 past the terrace edge, until the deck goes out to
-  // x 10.35, V9) is closed on top: a dark flat cover over the room and its own walls where no ground floor is above
+  // x 10.35, V9) is closed on top: a dark flat cover over the room and its own walls where no ground floor is above.
+  // "Above" is the upper level's slab footprint WITH its floor openings: the stairwell is open, never lidded (the slab
+  // boxes leave the hole out, so they alone would put a cover over the shaft at the floor above). The cover sits at
+  // most 7 cm over the slab underside of the level above (never at or above its floor).
   {
     const covered = (x, z) => mainSlab.some((b) => x > b.min.x - 1e-6 && x < b.max.x + 1e-6 && z > b.min.z - 1e-6 && z < b.max.z + 1e-6);
     const capMat = mat('painted', '#3a3734', { roughness: 0.9 });
     for (const r of rooms) {
       const lv = H.levelsById[r.levelId];
       if (!lv?.aboveId) continue;
+      const holesAbove = H.floorOpenings.filter((fo) => fo.levelId === lv.aboveId).map((fo) => fo.polygon);
+      const inHoleAbove = (x, z) => holesAbove.some((P) => inPoly(x, z, P));
+      const capY = H.levelsById[lv.aboveId].bottomY + 0.07;
       const own = H.walls.filter((w) => w.roomId === r.id && w.thickness > 0);
       const foots = own.map((w) => {
         const n = w.normal.clone().multiplyScalar(-w.thickness);
         return [w.start.clone(), w.end.clone(), w.end.clone().add(n), w.start.clone().add(n)];
       });
-      const xs = [...new Set([...r.polygon, ...foots.flat()].map((q) => Math.round(q.x * 1e4) / 1e4))].sort((a, b) => a - b);
-      const zs = [...new Set([...r.polygon, ...foots.flat()].map((q) => Math.round(q.y * 1e4) / 1e4))].sort((a, b) => a - b);
-      const top = Math.max(r.floorY + 2, ...own.map((w) => w.floorY + w.height));
+      // grid lines: the room, its walls, and (inside their range) the edges of the slab boxes and holes above, so every
+      // cell is wholly in or out of each and its midpoint decides for the whole cell
+      const pts = [...r.polygon, ...foots.flat()];
+      const rx = [Math.min(...pts.map((q) => q.x)), Math.max(...pts.map((q) => q.x))];
+      const rz = [Math.min(...pts.map((q) => q.y)), Math.max(...pts.map((q) => q.y))];
+      const gx = [...pts.map((q) => q.x), ...mainSlab.flatMap((b) => [b.min.x, b.max.x]), ...holesAbove.flat().map((q) => q.x)];
+      const gz = [...pts.map((q) => q.y), ...mainSlab.flatMap((b) => [b.min.z, b.max.z]), ...holesAbove.flat().map((q) => q.y)];
+      const grid = (vals, [lo, hi]) => [...new Set(vals.filter((v) => v >= lo - 1e-6 && v <= hi + 1e-6).map((v) => Math.round(v * 1e4) / 1e4))].sort((a, b) => a - b);
+      const xs = grid(gx, rx);
+      const zs = grid(gz, rz);
+      const top = Math.min(capY, Math.max(r.floorY + 2, ...own.map((w) => w.floorY + w.height)));
       const pos = [];
       for (let i = 0; i < xs.length - 1; i++) for (let j = 0; j < zs.length - 1; j++) {
         const x = (xs[i] + xs[i + 1]) / 2, z = (zs[j] + zs[j + 1]) / 2;
-        if (covered(x, z)) continue;
+        if (covered(x, z) || inHoleAbove(x, z)) continue;
         if (!inPoly(x, z, r.polygon) && !foots.some((P) => inPoly(x, z, P))) continue;
         const a = [xs[i], top, zs[j]], b = [xs[i + 1], top, zs[j]], c = [xs[i + 1], top, zs[j + 1]], d = [xs[i], top, zs[j + 1]];
         pos.push(...a, ...d, ...c, ...a, ...c, ...b);

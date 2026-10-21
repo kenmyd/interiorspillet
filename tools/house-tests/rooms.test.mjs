@@ -13,6 +13,9 @@
  *   • the floors: one per room at its floor (the entrance and bod-3 at −2.85), the hall's with the stairwell cut out;
  *     the basement hall's ceiling with the hole; the white edge on the three free edges of the hole only (V16);
  *   • the slab box (§2.8): under the ground floor's rooms and walls, not in the hole, y −0.30 … 0;
+ *   • the stairwell is open: no cover over the hole, every cover ≤ −0.23, a ray down through the hole hits the
+ *     basement hall's floor (−2.55) first;
+ *   • door-bod-1 (narrow): its side karms collide only with their outer 2 cm; win-sk's reveal is clamped to the wall;
  *   • the opening GANG ↔ entré: two steps of 0.15 and an invisible wedge from the hall floor to the entrance floor;
  *   • the wall slab under the entrance faces reaches down to −2.85, the stairwell's north wall down to the ledge;
  *   • Door.js: openAngleDeg, and an open leaf off the world axes is covered by its segment boxes.
@@ -186,6 +189,86 @@ section('Slab box (§2.8) and low ceilings');
   check('not in the stairwell (x 0.7 z 3.0, x 1.7 z 4.0)', !inAny(0.7, -0.15, 3.0) && !inAny(1.7, -0.15, 4.0));
   check('the slab is y −0.30 … 0, all its boxes are in the colliders', sb.every((b) => near(b.min.y, -0.3, 1e-9) && near(b.max.y, 0, 1e-9)) && sb.length > 0 && sb.length <= 60 && sb.every((b) => R.colliders.some((c) => c.isBox3 && c.equals(b))), `${sb.length} boxes`);
   check('a ceiling box under the entrance\'s low ceiling (−0.50 … −0.30)', R.colliders.some((c) => c.isBox3 && near(c.min.y, -0.5, 1e-6) && c.containsPoint(new THREE.Vector3(7.4, -0.4, 4.4))));
+}
+
+section('The stairwell is open (no cover over the hole)');
+{
+  const hole = H.floorOpenings.find((f) => f.id === 'trappehull');
+  const inHole = (x, z) => hole.contains(x, z);
+  const covers = [];
+  for (const rm of Object.values(roots.rooms)) rm.group.traverse((o) => o.isMesh && o.name.startsWith('cover:') && covers.push(o));
+  // every triangle of a cover: its centroid outside the hole, its height at most 7 cm over the slab underside (−0.30)
+  const bad = [];
+  for (const m of covers) {
+    m.updateWorldMatrix(true, false);
+    const p = m.geometry.attributes.position;
+    const v = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
+    for (let i = 0; i < p.count; i += 3) {
+      for (let k = 0; k < 3; k++) v[k].fromBufferAttribute(p, i + k).applyMatrix4(m.matrixWorld);
+      const cx = (v[0].x + v[1].x + v[2].x) / 3, cz = (v[0].z + v[1].z + v[2].z) / 3;
+      if (inHole(cx, cz) || v.some((q) => q.y > H.levelsById.hoved.bottomY + 0.07 + 1e-6)) bad.push(`${m.name}@${cx.toFixed(2)},${v[0].y.toFixed(2)},${cz.toFixed(2)}`);
+    }
+  }
+  check('no cover triangle over the hole, every cover ≤ −0.23 (the entrance and bod-3 keep theirs)', !bad.length && covers.some((c) => c.name === 'cover:bod-3') && covers.some((c) => c.name === 'cover:entre-kjeller'), bad.slice(0, 4).join(' ') || covers.map((c) => c.name).join());
+  // a ray down through the hole: the first static triangle (any side, visible or not) is the basement hall's floor
+  const meshes = [];
+  for (const rm of Object.values(roots.rooms)) rm.group.traverse((o) => o.isMesh && meshes.push(o));
+  R.group.traverse((o) => o.isMesh && meshes.push(o));
+  const firstHit = (x, z) => {
+    const ray = new THREE.Ray(new THREE.Vector3(x, 1, z), new THREE.Vector3(0, -1, 0));
+    const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), t = new THREE.Vector3();
+    let best = null;
+    for (const m of meshes) {
+      m.updateWorldMatrix(true, false);
+      const g = m.geometry;
+      const p = g.attributes.position;
+      const idx = g.index ? g.index.array : null;
+      const n = idx ? idx.length : p.count;
+      for (let i = 0; i < n; i += 3) {
+        a.fromBufferAttribute(p, idx ? idx[i] : i).applyMatrix4(m.matrixWorld);
+        b.fromBufferAttribute(p, idx ? idx[i + 1] : i + 1).applyMatrix4(m.matrixWorld);
+        c.fromBufferAttribute(p, idx ? idx[i + 2] : i + 2).applyMatrix4(m.matrixWorld);
+        if (!ray.intersectTriangle(a, b, c, false, t)) continue;
+        if (!best || t.y > best.y) best = { y: t.y, name: m.name || m.parent?.name || '?' };
+      }
+    }
+    return best;
+  };
+  for (const [x, z] of [[0.7, 3.0], [1.2, 4.0], [1.7, 4.0], [0.4, 2.5]]) {
+    const h = firstHit(x, z);
+    check(`a ray down at (${x}, ${z}) in the hole hits floor:kjeller-gang at −2.55 first (nothing between −0.30 and 0)`, h && h.name === 'floor:kjeller-gang' && near(h.y, -2.55, 1e-4), h && `${h.name} @ ${h.y.toFixed(3)}`);
+  }
+  const sb = slabBoxes(H, 'hoved');
+  const blocked = R.colliders.filter((c) => c.isBox3 && c.max.y > -2.5 && c.min.y < 0.5 && c.containsPoint(new THREE.Vector3(0.7, -0.15, 3.0)));
+  check('no static box in the hole at the slab (x 0.7 z 3.0, y −0.15)', !blocked.length && !sb.some((b) => b.containsPoint(new THREE.Vector3(0.7, -0.15, 3.0))), `${blocked.length}`);
+}
+
+section('Narrow door, deep reveal');
+{
+  // door-bod-1 (hole 0.79): the side karms collide only with their outer 2 cm, so the 0.60 capsule passes the open leaf
+  const d = H.doors.find((x) => x.id === 'door-bod-1');
+  const o = d.basis.origin;
+  const karms = R.colliders.filter((c) => c.isBox3 && near(c.min.y, d.floorY, 1e-6) && c.max.y > d.floorY + 1.5 && c.min.z < o.z + 0.05 && c.max.z > o.z - 0.15 && c.max.x > o.x - d.width / 2 - 0.01 && c.min.x < o.x + d.width / 2 + 0.01);
+  const sizes = karms.map((c) => c.max.x - c.min.x);
+  const clear = karms.length === 2 ? Math.max(...karms.map((c) => c.min.x)) - Math.min(...karms.map((c) => c.max.x)) : 0;
+  check('door-bod-1: two karm boxes 0.02 wide in the hole, 0.75 clear between them', karms.length === 2 && sizes.every((s) => near(s, 0.02, 1e-6)) && near(clear, d.width - 0.04, 1e-6), `${karms.length} ${sizes.map((s) => s.toFixed(3))} clear ${clear.toFixed(3)}`);
+  const wide = H.doors.find((x) => x.id === 'door-bod-2');
+  const o2 = wide.basis.origin;
+  check('a door ≥ 0.85 (door-bod-2) keeps its karms in the batch (no extra karm boxes)', !R.colliders.some((c) => c.isBox3 && near(c.min.y, wide.floorY, 1e-6) && c.max.y > wide.floorY + 1.5 && Math.abs((c.min.z + c.max.z) / 2 - o2.z) < 0.2 && Math.abs((c.min.x + c.max.x) / 2 - o2.x) < 0.6));
+  // win-sk: reveal 0.38 in a 0.30 wall → the frame stays inside the wall
+  const wi = R.windows.find((w) => w.id === 'win-sk');
+  const ww = H.wallsById[wi.wallId];
+  check('win-sk: reveal + frame inside the 0.30 wall (reveal clamped from 0.38), the board no deeper', wi.revealDepth + wi.frameDepth <= ww.thickness + 1e-9 && wi.sillBoard && wi.sillBoard.depth <= wi.revealDepth + 0.011, `rd ${wi.revealDepth.toFixed(3)} fd ${wi.frameDepth} t ${ww.thickness} board ${wi.sillBoard?.depth}`);
+  const wb = R.windows.find((w) => w.id === 'win-bad');
+  check('win-bad keeps its reveal 0.20 (it fits)', near(wb.revealDepth, 0.2, 1e-9));
+  // in the opening's own frame (z 0 = the room face, −z outward): frame, sash, board and lining all within the wall
+  const g = new THREE.Box3();
+  wi.group.traverse((m) => {
+    if (!m.isMesh) return;
+    m.geometry.computeBoundingBox();
+    g.union(m.geometry.boundingBox.clone().applyMatrix4(m.matrix));
+  });
+  check('win-sk: nothing of the window kit deeper than the wall (z ≥ −0.30 in the opening frame)', !g.isEmpty() && g.min.z >= -ww.thickness - 1e-4, `z ${g.min.z.toFixed(3)} … ${g.max.z.toFixed(3)}`);
 }
 
 section('Entrance steps (V24, §3.11)');

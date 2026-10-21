@@ -27,6 +27,9 @@ import { ring } from './wallkit.js';
 import { Door } from '../world/Door.js';
 
 const HALL_DOOR = '#1d1e21';
+/** Holes narrower than this get side karms that collide only with their outer NARROW_KARM (D11: bod-1 can be entered). */
+const NARROW_DOOR = 0.85;
+const NARROW_KARM = 0.02;
 
 /** Name of a room for the door prompt ('ute' and unknown ids: «Ute»). */
 function roomLabel(layout, id) {
@@ -116,8 +119,11 @@ export function buildDoor(ctx, d, { layout, M, batch, batchers }) {
   const W = d.width;
   const Hh = d.height;
   const kMat = outer ? mat('painted', d.door?.lining?.color ?? HALL_DOOR, { roughness: 0.5 }) : frameMat;
-  f.box(fw, Hh, z1 - z0, -W / 2 + fw / 2, Hh / 2, zc, kMat);
-  f.box(fw, Hh, z1 - z0, W / 2 - fw / 2, Hh / 2, zc, kMat);
+  // a narrow door (door-bod-1: 0.79 hole, 0.07 karms, an open leaf in it) would leave less than the body's 0.60: its side
+  // karms collide only with their outer NARROW_KARM (static boxes below), so the capsule fits through
+  const narrow = W < NARROW_DOOR;
+  f.box(fw, Hh, z1 - z0, -W / 2 + fw / 2, Hh / 2, zc, kMat, narrow ? { collide: false } : undefined);
+  f.box(fw, Hh, z1 - z0, W / 2 - fw / 2, Hh / 2, zc, kMat, narrow ? { collide: false } : undefined);
   f.box(W - 2 * fw, fw, z1 - z0, 0, Hh - fw / 2, zc, kMat);
   const stopZ = swing < 0 ? -depth + 0.054 : -0.054;
   f.box(0.012, Hh - fw, 0.016, -W / 2 + fw + 0.006, (Hh - fw) / 2, stopZ + 0.008 * Math.sign(-swing), kMat, { collide: false });
@@ -163,6 +169,18 @@ export function buildDoor(ctx, d, { layout, M, batch, batchers }) {
     box.min.y = o0.y - 0.3;
     box.max.y = o0.y;
     colliders.push(box);
+    if (narrow) {
+      // the outer slice of each side karm (the visible karm does not collide, see above)
+      const k = Math.min(fw, NARROW_KARM);
+      for (const s of [-1, 1]) {
+        const xa = s * (W / 2), xb = s * (W / 2 - k);
+        const q = [xa, xb].flatMap((x) => [z0, z1].map((z) => o0.clone().addScaledVector(r, x).addScaledVector(n, z)));
+        const kb = new THREE.Box3().setFromPoints(q);
+        kb.min.y = o0.y;
+        kb.max.y = o0.y + Hh;
+        colliders.push(kb);
+      }
+    }
   }
   const info = {
     id: d.id,
