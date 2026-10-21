@@ -2516,17 +2516,17 @@ function mirrorOutline(shape, w, h, inset, n = 96) {
       pts.push(new THREE.Vector2(Math.cos(t) * r, yc + Math.sin(t) * r));
     }
   } else {
-    const rr = Math.max(0.002, Math.min(w, h) * 0.03 - inset * 0.5);
+    const rr = Math.max(0.002, (shape === 'rounded' ? Math.min(w, h) * 0.22 : Math.min(w, h) * 0.03) - inset * 0.5);
     const s = K.roundedRectShape(w - 2 * inset, h - 2 * inset, rr);
-    return s.getPoints(6);
+    return s.getPoints(shape === 'rounded' ? 12 : 6);
   }
   return pts;
 }
 
-function buildMirror(spec) {
+export function buildMirror(spec) {
   const P = spec.params, C = spec.colors, M = spec.materials;
   const { w, h } = spec.dims;
-  const shape = ['round', 'rect', 'organic', 'arch'].includes(P.shape) ? P.shape : 'rect';
+  const shape = ['round', 'rect', 'organic', 'arch', 'rounded'].includes(P.shape) ? P.shape : 'rect';
   const depth = Math.max(0.006, num(P.frameDepth, spec.dims.d));
   const fw = clamp(num(P.frameW, 0.03), 0, Math.min(w, h) * 0.2);
   const g = new THREE.Group();
@@ -2546,7 +2546,13 @@ function buildMirror(spec) {
     K.planarUV(geo, 'z');
     g.add(K.partMesh(geo, glassMat, 'print'));
   }
-  if (P.mullions) {
+  if (P.mullions && P.mullionLayout === 'border') {
+    // bars inset from the edge all round (Manhattan): a big middle pane and narrow border panes
+    const b = clamp(num(P.borderW, Math.min(w, h) * 0.13), 0.04, Math.min(w, h) * 0.3);
+    const mw = Math.max(0.008, fw * 0.5), md = depth * 0.7;
+    for (const sx of [-1, 1]) g.add(K.partMesh(K.box(mw, h - 2 * fw, md), frameMat, 'frame', { position: [sx * (w / 2 - fw - b), 0, md / 2] }));
+    for (const sy of [-1, 1]) g.add(K.partMesh(K.box(w - 2 * fw, mw, md), frameMat, 'frame', { position: [0, sy * (h / 2 - fw - b), md / 2] }));
+  } else if (P.mullions) {
     const cols = clamp(Math.round(num(P.mullionCols, 2)), 1, 8), rows = clamp(Math.round(num(P.mullionRows, 3)), 1, 10);
     const iw = w - 2 * fw, ih = h - 2 * fw;
     const mw = Math.max(0.008, fw * 0.5), md = depth * 0.7;
@@ -2564,7 +2570,15 @@ function buildMirror(spec) {
       if (hw > mw) g.add(K.partMesh(K.box(hw * 2, mw, md), frameMat, 'frame', { position: [0, y, md / 2] }));
     }
   }
-  return finish(g);
+  const surfaces = [];
+  if (P.shelf === true) {
+    // a shelf board across the lower part of the mirror (Lazio), the frame colour
+    const sy = -h / 2 + h * clamp(num(P.shelfAt, 0.2), 0.05, 0.9);
+    const sd = clamp(num(P.shelfD, 0.1), 0.05, 0.25);
+    g.add(K.partMesh(K.roundedBox(w * 1.04, 0.018, sd, 0.003, 1, { grain: 'x' }), frameMat, 'frame', { position: [0, sy, sd / 2] }));
+    surfaces.push({ y: +(sy + 0.009).toFixed(4), w: +(w - 0.04).toFixed(3), d: +(sd - 0.02).toFixed(3), center: [0, +(sd / 2).toFixed(4)] });
+  }
+  return finish(g, surfaces.length ? { surfaces } : {});
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -2687,7 +2701,10 @@ function buildCandleHolder(spec) {
 
 function buildBasket(spec) {
   const P = spec.params, C = spec.colors, M = spec.materials;
-  const { w, d, h } = spec.dims;
+  const { w, d } = spec.dims;
+  // a lid (laundry baskets) takes the top of dims.h
+  const lidH = P.lid === true ? clamp(spec.dims.h * 0.06, 0.015, 0.035) : 0;
+  const h = spec.dims.h - lidH;
   const shape = P.shape || 'cylinder';
   const kind = M.body || 'rattan';
   const weave = P.weave || (kind === 'rattan' ? 'rattan' : 'none');
@@ -2702,7 +2719,8 @@ function buildBasket(spec) {
     const t = 0.008;
     const outer = K.roundedBox(w, h, d, Math.min(0.02, h / 4), 3, { bottom: true });
     g.add(K.partMesh(outer, bm, 'body'));
-    g.add(K.partMesh(K.box(w - 2 * t, 0.002, d - 2 * t), mat(kind, scaleHex(C.body, 0.7)), null, { position: [0, h - 0.004, 0] }));
+    if (lidH) g.add(K.partMesh(K.roundedBox(w + 0.008, lidH, d + 0.008, Math.min(0.012, lidH / 2), 2, { bottom: true }), bm, 'body', { position: [0, h, 0] }));
+    else g.add(K.partMesh(K.box(w - 2 * t, 0.002, d - 2 * t), mat(kind, scaleHex(C.body, 0.7)), null, { position: [0, h - 0.004, 0] }));
     return finish(g);
   }
   const wall = clamp(R * 0.04, 0.005, 0.012);
@@ -2719,6 +2737,12 @@ function buildBasket(spec) {
   const geo = K.lathe(prof, { seg: segN(spec, 44, 18) });
   if (shape === 'oval' && Math.abs(d - w) > 0.005) geo.scale(1, 1, d / w);
   g.add(K.partMesh(geo, bm, 'body'));
+  if (lidH) {
+    // a low domed lid with a small knob
+    const lid = K.lathe([[0.001, 0], [R + 0.006, 0], [R + 0.006, lidH * 0.45], [R * 0.7, lidH * 0.9], [R * 0.12, lidH], [R * 0.12, lidH + 0.012], [0.001, lidH + 0.014]], { seg: segN(spec, 44, 18) });
+    if (shape === 'oval' && Math.abs(d - w) > 0.005) lid.scale(1, 1, d / w);
+    g.add(K.partMesh(lid, bm, 'body', { position: [0, h, 0] }));
+  }
   if (P.handles) {
     for (const s of [-1, 1]) g.add(K.partMesh(K.roundedBox(0.012, 0.03, 0.09, 0.005, 2), mat('leather', '#6b4a33'), null, { position: [s * (R + 0.003), h - 0.04, 0] }));
   }
@@ -3260,8 +3284,9 @@ export const archetypes = {
       materials: { print: 'mirror', frame: 'painted' },
     },
     params: {
-      shape: { type: 'enum', label: 'Form', options: [['round', 'Rund / oval'], ['rect', 'Rektangulær'], ['organic', 'Organisk'], ['arch', 'Buet topp']] },
+      shape: { type: 'enum', label: 'Form', options: [['round', 'Rund / oval'], ['rect', 'Rektangulær'], ['rounded', 'Avrundede hjørner'], ['organic', 'Organisk'], ['arch', 'Buet topp']] },
       frameW: { type: 'number', label: 'Rammebredde', min: 0, max: 0.1, step: 0.001, unit: 'm' },
+      shelf: { type: 'bool', label: 'Hylle', default: false },
       mullions: { type: 'bool', label: 'Sprosser', default: false },
       mullionCols: { type: 'number', label: 'Sprosser – kolonner', min: 1, max: 6, step: 1, default: 2 },
       mullionRows: { type: 'number', label: 'Sprosser – rader', min: 1, max: 8, step: 1, default: 3 },
@@ -3296,6 +3321,7 @@ export const archetypes = {
       shape: { type: 'enum', label: 'Form', options: [['cylinder', 'Rund'], ['oval', 'Oval'], ['rect', 'Firkantet'], ['stack', 'Bunke (blader/bøker)'], ['pedal-bin', 'Pedalbøtte (firkantet)'], ['pedal-bin-round', 'Pedalbøtte (rund)']] },
       weave: { type: 'enum', label: 'Fletting', options: [['rattan', 'Rotting'], ['rope', 'Tau'], ['none', 'Glatt'], ['foam', 'Skum med knotter']] },
       handles: { type: 'bool', label: 'Håndtak', default: false },
+      lid: { type: 'bool', label: 'Lokk', default: false },
     },
     dimsRange: { w: [0.08, 1.0], d: [0.05, 1.0], h: [0.02, 1.0] },
     build: buildBasket,

@@ -1,0 +1,671 @@
+[
+  {
+    "id": "bohus-nola-ovalt-spisebord-95x180",
+    "category": "bord",
+    "subcategory": "spisebord",
+    "name": "Nola ovalt spisebord 95x180",
+    "brand": "Unique Furniture",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/spisebord/rundt-spisebord/nola-spisebord-95x180",
+    "priceNok": 14999,
+    "salePriceNok": 7499,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 298379, hvitoljet eikefiner, kampanje 7 499 kr, før 14 999 kr). Røykfarget eikefiner (varenr. 304885, /bord/spisebord/rundt-spisebord/nola-ovalt-spisebord-95x180) koster 14 999 kr uten kampanje. Én ileggsplate følger med (230 cm uttrukket). Leveres flatpakket i 3 kolli.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.8,
+      "d": 0.95,
+      "h": 0.75
+    },
+    "archetype": "dining-table-oval",
+    "mount": "floor",
+    "params": {
+      "shape": "stadium",
+      "legs": "pedestal",
+      "edge": "bevel",
+      "topT": 0.025,
+      "leaves": 1,
+      "apron": true,
+      "notes": "Pedestal is a slatted (vertically ribbed) stadium-shaped column about 0.95 x 0.45 m on a thin matching plinth, centred under the top; a slim skirt frame sits under the top. One 50 cm leaf included (230 cm)."
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eikefiner",
+        "colors": {
+          "body": "#cbb796",
+          "front": "#cbb796",
+          "top": "#d3c0a1",
+          "legs": "#c8b493",
+          "handle": "#c8b493"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        }
+      },
+      {
+        "name": "Røykfarget eikefiner",
+        "colors": {
+          "body": "#56432f",
+          "front": "#56432f",
+          "top": "#5d4936",
+          "legs": "#523f2d",
+          "handle": "#523f2d"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/bord/spisebord/rundt-spisebord/nola-ovalt-spisebord-95x180",
+        "priceNok": 14999,
+        "priceConfidence": "checked"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Ovalt spisebord i stadionform med spilesokkel i eikefiner, tynn plate med skråfas og én medfølgende ileggsplate som gjør bordet 230 cm langt.",
+    "why": "Samme serie som Nola-skjenken i stua; søylen gir fri beinplass rundt hele bordet, så det passer i en spisekrok i kjellerstua (20,6 m²) med plass til 6. Røykfarget variant matcher det røykfargede spisebordet oppe.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOLA/311030/image-thumb__311030__PDP-Product/298379%20-%20Nola%20spisebord%2095x180%20H75%20hvitoljet%20eikefiner%20inkludert%201%20ileggsplate%20med%20spile%20sokkel%20-%208.9a73927d.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 7 499 kr (før 14 999), 95x180 H75, ovalt, spilesokkel, platetykkelse 2,5 cm, benhøyde 72,5 cm, 1 ileggsplate inkludert (maks 230 cm); røykfarget 14 999 kr. Sokkelens mål og skjørtet under platen anslått fra bildet."
+  },
+  {
+    "id": "bohus-bastia-rundt-spisebord-o130",
+    "category": "bord",
+    "subcategory": "spisebord",
+    "name": "Bastia rundt spisebord Ø130",
+    "brand": "Actona",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/spisebord/rundt-spisebord/bastia-rundt-spisebord-o130-3",
+    "priceNok": 14999,
+    "salePriceNok": 8999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 322490, hvitoljet eikefiner, kampanje 8 999 kr, før 14 999 kr). Røykfarget lakkert eikefiner (varenr. 322491, /bord/spisebord/rundt-spisebord/bastia-rundt-spisebord-o130-2) koster 14 999 kr uten kampanje. To ileggsplater følger med (230 cm uttrukket). Flatpakket, 2 kolli.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.3,
+      "d": 1.3,
+      "h": 0.75
+    },
+    "archetype": "dining-table-oval",
+    "mount": "floor",
+    "params": {
+      "shape": "round",
+      "legs": "four",
+      "legStyle": "splayed",
+      "edge": "straight",
+      "topT": 0.04,
+      "leaves": 2,
+      "apron": false,
+      "notes": "Four wide flat solid legs (about 9 x 4 cm) splayed outward, fixed with a metal bracket under the centre; the round top splits in the middle for two 50 cm leaves (230 cm)."
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eikefiner",
+        "colors": {
+          "body": "#e0c7a8",
+          "front": "#e0c7a8",
+          "top": "#e4ccae",
+          "legs": "#dcc3a3",
+          "handle": "#dcc3a3"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        }
+      },
+      {
+        "name": "Røykfarget eikefiner",
+        "colors": {
+          "body": "#4f3a2b",
+          "front": "#4f3a2b",
+          "top": "#563f2f",
+          "legs": "#4c3829",
+          "handle": "#4c3829"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/bord/spisebord/rundt-spisebord/bastia-rundt-spisebord-o130-2",
+        "priceNok": 14999,
+        "priceConfidence": "checked"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rundt spisebord Ø130 i eikefiner med 4 cm tykk plate og fire brede, skråstilte ben; to ileggsplater følger med og gjør bordet 230 cm langt.",
+    "why": "Et rundt bord tar lite plass og gjør en spisekrok i kjellerstua myk og sosial for 4–6 personer, og blir langbord når gjestene kommer. Hvitoljet eik lyser opp kjelleren, røykfarget matcher spisebordet oppe.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/BASTIA/351651/image-thumb__351651__PDP-Product/314337%20-%20Bastia%20rundt%20spisebord%20%C3%98130%20H75%20cm%20hvitoljet%20eikefiner%20inkludert%202%20ileggsplater%20-%202.0b66b5a0.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 8 999 kr (før 14 999), Ø130 H75, platetykkelse 4 cm, benhøyde 71 cm, 2 ileggsplater inkludert (maks 230 cm); røykfarget 14 999 kr. Benenes bredde og vinkel anslått fra bildet."
+  },
+  {
+    "id": "bohus-signature-1800-spisebord-100x220",
+    "category": "bord",
+    "subcategory": "spisebord",
+    "name": "Signature 1800 spisebord 100x220",
+    "brand": "Signature Collection by Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/spisebord/uttrekkbart-spisebord/signature-1800-spisebord-100x220-2",
+    "priceNok": 19899,
+    "salePriceNok": 13999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 304875, lakkert eikefiner svart, kampanje 13 999 kr, før 19 899 kr). Brun oljet eikefiner (varenr. 304873, /bord/spisebord/uttrekkbart-spisebord/signature-1800-spisebord-100x220-1) har samme kampanjepris. Tilleggsplate 100x50 kjøpes separat (1 999 kr, før 3 099 kr, svart/brun; maks 2 plater, 320 cm). Flatpakket, 2 kolli.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 2.2,
+      "d": 1.0,
+      "h": 0.75
+    },
+    "archetype": "dining-table-oval",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "legs": "trestle",
+      "legInset": 0.3,
+      "edge": "straight",
+      "topT": 0.045,
+      "leaves": 0,
+      "apron": true,
+      "notes": "Two solid slab legs nearly the full table depth (about 0.75 m wide, 0.08 m thick) set about 0.3 m in from the ends, joined by a recessed beam under the top; thick plank-look top with one visible lengthwise joint."
+    },
+    "variants": [
+      {
+        "name": "Svart lakkert eikefiner",
+        "colors": {
+          "body": "#1e1e21",
+          "front": "#1e1e21",
+          "top": "#222225",
+          "legs": "#1c1c1f",
+          "handle": "#1c1c1f"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        }
+      },
+      {
+        "name": "Brun oljet eikefiner",
+        "colors": {
+          "body": "#56493d",
+          "front": "#56493d",
+          "top": "#5c4f42",
+          "legs": "#53463a",
+          "handle": "#53463a"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/bord/spisebord/uttrekkbart-spisebord/signature-1800-spisebord-100x220-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Stort, stramt spisebord 100x220 i eikefiner med kraftig plate og to massive vangeben; kan forlenges til 320 cm med tilleggsplater.",
+    "why": "Langbord for 8 med rolig, arkitektonisk uttrykk – svart passer de svarte detaljene i huset og står fint mot SAND-veggene, brun matcher den røykfargede eiken. Krever en romslig spisekrok; i kjellerstua (20,6 m²) bør det stå langs en vegg.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/SIGNATURE%201800/326847/image-thumb__326847__PDP-Product/304875%20-%20Signature%201800%20spisebord%20100x220%20H75%20lakkert%20eikefiner%20svart%20-%205.a848b0ff.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 13 999 kr (før 19 899) for både svart og brun, 100x220 H75, design Halvor Bakke, maks 2 tilleggsplater (320 cm). Platetykkelse (ca. 4,5 cm), vangenes mål og innrykk anslått fra bildet."
+  },
+  {
+    "id": "bohus-palma-rundt-spisebord-o130",
+    "category": "bord",
+    "subcategory": "spisebord",
+    "name": "Palma rundt spisebord Ø130",
+    "brand": "Unique Furniture",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/spisebord/rundt-spisebord/palma-rundt-spisebord-o130",
+    "priceNok": 9499,
+    "salePriceNok": 5699,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 298394, malt MDF krem, kampanje 5 699 kr, før 9 499 kr). Kun i krem. Én ileggsplate følger med (180 cm uttrukket). Flatpakket, 2 kolli.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.3,
+      "d": 1.3,
+      "h": 0.75
+    },
+    "archetype": "dining-table-oval",
+    "mount": "floor",
+    "params": {
+      "shape": "round",
+      "legs": "pedestal",
+      "edge": "bevel",
+      "topT": 0.04,
+      "leaves": 1,
+      "apron": false,
+      "notes": "Pedestal is a cross of four fluted (finely ribbed) panels about 0.75 m across, not a round column; top has a rounded edge and splits in the middle for one 50 cm leaf (180 cm)."
+    },
+    "variants": [
+      {
+        "name": "Krem",
+        "colors": {
+          "body": "#e3e0d5",
+          "front": "#e3e0d5",
+          "top": "#e6e3d8",
+          "legs": "#e1ddd1",
+          "handle": "#e1ddd1"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rundt spisebord Ø130 i kremmalt MDF med kryssformet sokkel av riflede plater og avrundet kant; én ileggsplate gjør det 180 cm langt.",
+    "why": "Det rimeligste lyse alternativet: kremhvitt reflekterer lyset i kjellerstua og gir en rolig, lys spisekrok for 4–6 uten bordben i veien. Riflene gjentar spilene i Nola-skjenken.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/PALMA/323036/image-thumb__323036__PDP-Product/298394%20-%20Palma%20rundt%20spisebord%20%C3%98130%20H75%20malt%20mdf%20krem%20inkludert%201%20ileggsplate%20-%202_copy.50bee295.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 5 699 kr (før 9 499), Ø130 H75, malt MDF krem, platetykkelse 4 cm, buet kant, 1 ileggsplate inkludert (maks 180 cm). Sokkelens bredde anslått fra bildet; modellen viser en søyle der bordet har en kryssokkel."
+  },
+  {
+    "id": "bohus-lukas-spisebord-90x220",
+    "category": "bord",
+    "subcategory": "spisebord",
+    "name": "Lukas spisebord 90x220",
+    "brand": "Actona",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/spisebord/uttrekkbart-spisebord/lukas-spisebord-90x220-1",
+    "priceNok": 13999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 322777, hvitoljet eikefiner, ingen kampanje). Kun hvitoljet. Tilleggsplate 90x40 kjøpes separat (3 899 kr; maks 2 plater, 300 cm). Flatpakket, 2 kolli.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 2.2,
+      "d": 0.9,
+      "h": 0.75
+    },
+    "archetype": "dining-table-oval",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "legs": "sled",
+      "legInset": 0.25,
+      "edge": "straight",
+      "topT": 0.025,
+      "leaves": 0,
+      "apron": true,
+      "notes": "Each end has a closed trapezoid frame of solid oak (narrow at the top, wider on the floor, rail along the floor) set about 0.25 m in from the ends; slim apron along the long sides."
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eikefiner",
+        "colors": {
+          "body": "#dcc29f",
+          "front": "#dcc29f",
+          "top": "#e0c8a6",
+          "legs": "#d8bd99",
+          "handle": "#d8bd99"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Langt, lyst spisebord 90x220 i hvitoljet eikefiner med rett kant og to trapesformede medeben i heltre; kan forlenges til 300 cm.",
+    "why": "Smalt langbord (90 cm) i lys eik som passer eikegulvet og gir plass til 8 uten å ta for mye bredde i kjellerstua; medebenene holder langsidene frie for stoler.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/LUKAS/327527/image-thumb__327527__PDP-Product/305936%20-%20Lukas%20spisebord%2090x220%20H75%20hvitoljet%20eikefiner%20-%201.b5ddc612.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 13 999 kr (ingen kampanje), 90x220 H75, platetykkelse 2,5 cm, rett kant, benhøyde 72,5 cm, maks 2 tilleggsplater (300 cm). Medebenenes innrykk og form anslått fra bildet."
+  },
+  {
+    "id": "ikea-lisabo-bord-140x78",
+    "category": "bord",
+    "subcategory": "spisebord",
+    "name": "LISABO bord 140x78 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/lisabo-bord-askefiner-70294339/",
+    "priceNok": 2595,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (ikea.no, art. 702.943.39, askefiner, ingen førpris). Svart/askefiner (art. 803.824.39, /no/no/p/lisabo-bord-svart-askefiner-80382439/) koster det samme. Finnes også 88x78, Ø105 og 200x78. Ikke uttrekkbart.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.4,
+      "d": 0.78,
+      "h": 0.74
+    },
+    "archetype": "dining-table-oval",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "legs": "four",
+      "legStyle": "splayed",
+      "edge": "bevel",
+      "topT": 0.02,
+      "leaves": 0,
+      "apron": false,
+      "notes": "Rectangle with softly rounded corners; thin top with a bevel underneath; round tapered birch legs splayed outward, fixed with one bracket each (no apron)."
+    },
+    "variants": [
+      {
+        "name": "Askefiner",
+        "colors": {
+          "body": "#e6d1b2",
+          "front": "#e6d1b2",
+          "top": "#ead6b8",
+          "legs": "#e3cdad",
+          "handle": "#e3cdad"
+        },
+        "materials": {
+          "body": "ash",
+          "front": "ash",
+          "top": "ash",
+          "legs": "ash",
+          "handle": "ash"
+        }
+      },
+      {
+        "name": "Svart/askefiner",
+        "colors": {
+          "body": "#1c1c1c",
+          "front": "#1c1c1c",
+          "top": "#202020",
+          "legs": "#1b1b1b",
+          "handle": "#1b1b1b"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/lisabo-bord-svart-askefiner-80382439/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Enkelt, lett spisebord 140x78 cm for fire i askefiner med avrundede hjørner og skrå, avsmalnende ben i heltre bjørk.",
+    "why": "Billigste løsning for en liten spisekrok i kjellerstua: 140x78 tar lite gulv og passer fire stoler, og den lyse asken (eller svart) holder uttrykket rolig og nordisk.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/lisabo-bord-askefiner__0737105_pe740883_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 2 595 kr, L140 × B78 × H74 cm, 4 sitteplasser, askefiner/bjørk; svart variant 2 595 kr i søket. Platetykkelse anslått fra bildet."
+  },
+  {
+    "id": "bohus-prato-sofabord-60x160",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "Prato sofabord 60x160",
+    "brand": "Nordic Furniture Group",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sofabord/prato-19-sofabord-60x160",
+    "priceNok": 5499,
+    "salePriceNok": 3299,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 314156, brun plate, kampanje 3 299 kr, før 5 499 kr). Svart lakkert eikefiner (varenr. 314157, /bord/sofabord/prato-19-sofabord-60x160-1) har samme kampanjepris. Begge med svart metallunderstell. Flatpakket, 1 kolli.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.6,
+      "d": 0.6,
+      "h": 0.45
+    },
+    "archetype": "coffee-table-rect",
+    "mount": "floor",
+    "params": {
+      "frame": "tube-box",
+      "tubeW": 0.02,
+      "topT": 0.02,
+      "overhang": 0,
+      "notes": "Open box frame of thin black square tube (top rectangle under the plate, four uprights, bottom rectangle on the floor); top flush with the frame."
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "body": "#1a1a1a",
+          "front": "#1a1a1a",
+          "top": "#4b4136",
+          "legs": "#1a1a1a",
+          "handle": "#1a1a1a"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "smoked-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        }
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "body": "#1a1a1a",
+          "front": "#1a1a1a",
+          "top": "#1f1f1f",
+          "legs": "#1a1a1a",
+          "handle": "#1a1a1a"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "black-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "url": "https://www.bohus.no/bord/sofabord/prato-19-sofabord-60x160-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Langt, slankt sofabord 60x160 med brun eller svart plate på et luftig kasseunderstell av tynt, svart firkantrør.",
+    "why": "Luftig og stramt foran en stor sofa i kjellerstua – den mørke platen og det svarte stålet gjentar røykfarget eik og svarte detaljer fra stua, uten å fylle rommet visuelt.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/PRATO-19/339245/image-thumb__339245__PDP-Product/314156%20-%20Prato-19%20sofabord%2060x160%20H45%20metall%20brun%20med%20metall%20understell%20svart%20-%201.e67f00d1.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 3 299 kr (før 5 499) for brun og svart, 60x160 H45, svart metallunderstell. Rørdimensjon og platetykkelse anslått fra bildet; den brune platen beskrives som «metall brun»/eikefiner – fremstår som mørk eik på bildet."
+  },
+  {
+    "id": "bohus-muran-rundt-sofabordsett-o90",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "Muran rundt sofabordsett Ø90/Ø75",
+    "brand": "Interstil",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sofabord/muran-sofabordsett-o90-3",
+    "priceNok": 4999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 284672, brun eikefiner, ingen kampanje) – prisen gjelder settet med to bord. Svart askefiner (varenr. 288546, /bord/sofabord/muran-sofabordsett-o90-1) og hvitpigmentert eikefiner (varenr. 284673, /bord/sofabord/muran-sofabordsett-o90-4) koster det samme. Flatpakket, 1 kolli.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.9,
+      "d": 0.9,
+      "h": 0.455
+    },
+    "archetype": "coffee-table-round-nesting",
+    "mount": "floor",
+    "params": {
+      "frame": "ring",
+      "legCount": 4,
+      "topT": 0.015,
+      "tables": [
+        {
+          "d": 0.9,
+          "h": 0.455
+        },
+        {
+          "d": 0.75,
+          "h": 0.4
+        }
+      ],
+      "notes": "Two round tables with thin black steel legs standing on a floor ring and a black edge band round each top; the smaller one slides partly under the larger."
+    },
+    "variants": [
+      {
+        "name": "Brun eikefiner",
+        "colors": {
+          "body": "#1b1b1b",
+          "front": "#1b1b1b",
+          "top": "#4a3f37",
+          "legs": "#1b1b1b",
+          "handle": "#1b1b1b"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "smoked-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        }
+      },
+      {
+        "name": "Svart askefiner",
+        "colors": {
+          "body": "#1b1b1b",
+          "front": "#1b1b1b",
+          "top": "#232323",
+          "legs": "#1b1b1b",
+          "handle": "#1b1b1b"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "black-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "url": "https://www.bohus.no/bord/sofabord/muran-sofabordsett-o90-1"
+      },
+      {
+        "name": "Hvitpigmentert eikefiner",
+        "colors": {
+          "body": "#1b1b1b",
+          "front": "#1b1b1b",
+          "top": "#d8c8b0",
+          "legs": "#1b1b1b",
+          "handle": "#1b1b1b"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "white-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "url": "https://www.bohus.no/bord/sofabord/muran-sofabordsett-o90-4"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Sett med to runde sofabord, Ø90 og Ø75, med plate i eikefiner og tynt svart stålunderstell med ring mot gulvet; det lave bordet skyves delvis under det høye.",
+    "why": "Samme uttrykk som settbordene i stua, så kjellerstua henger sammen med resten av huset; to runde bord kan trekkes fra hverandre når det trengs og samles igjen så rommet holdes ryddig.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/MURAN/260672/image-thumb__260672__PDP-Product/284672%20-%20Muran%20sofabordsett%20%C3%9890%20H45.5%20%C3%9875%20eikefiner%20brun%20med%20understell%20svart%20st%C3%A5l%20-%201.1846081f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 4 999 kr for alle tre farger, Ø90 H45,5 og Ø75, platetykkelse 1,5 cm, svart stålunderstell. Høyden på det lille bordet (ca. 40 cm) og antall ben anslått fra bildet."
+  },
+  {
+    "id": "bohus-hovik-rundt-sofabord-o80",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "Høvik rundt sofabord Ø80",
+    "brand": "Interstil",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sofabord/hovik-rundt-sofabord-o80-1",
+    "priceNok": 4999,
+    "salePriceNok": 3699,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 299127, svart askefiner, kampanje 3 699 kr, før 4 999 kr). Hvitpigmentert eikefiner (varenr. 299129, /bord/sofabord/hovik-rundt-sofabord-o80) og brun eikefiner (varenr. 314957, /bord/sofabord/hovik-rundt-sofabord-o80-2) koster 3 899 kr, før 5 199 kr. Finnes også Ø100 H42 (4 599–4 899 kr på kampanje). Flatpakket, 2 kolli.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.8,
+      "d": 0.8,
+      "h": 0.38
+    },
+    "archetype": "side-table-round",
+    "mount": "floor",
+    "params": {
+      "base": "pedestal",
+      "topT": 0.019,
+      "waistD": 0.35,
+      "baseD": 0.39,
+      "notes": "Solid conical pedestal (about 0.32 m across under the top, 0.39 m on the floor) with no separate foot plate; thin top with a chamfered edge."
+    },
+    "variants": [
+      {
+        "name": "Svart askefiner",
+        "colors": {
+          "body": "#1e1e1e",
+          "front": "#1e1e1e",
+          "top": "#222222",
+          "legs": "#1e1e1e",
+          "handle": "#1e1e1e"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        }
+      },
+      {
+        "name": "Brun eikefiner",
+        "colors": {
+          "body": "#574a40",
+          "front": "#574a40",
+          "top": "#5d5046",
+          "legs": "#54473d",
+          "handle": "#54473d"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/bord/sofabord/hovik-rundt-sofabord-o80-2",
+        "priceNok": 5199,
+        "salePriceNok": 3899
+      },
+      {
+        "name": "Hvitpigmentert eikefiner",
+        "colors": {
+          "body": "#d8cab4",
+          "front": "#d8cab4",
+          "top": "#dccfb9",
+          "legs": "#d5c7b0",
+          "handle": "#d5c7b0"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/bord/sofabord/hovik-rundt-sofabord-o80",
+        "priceNok": 5199,
+        "salePriceNok": 3899
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rundt, lavt sofabord Ø80 med kraftig, konisk sokkel i finer – et skulpturelt bord uten ben å snuble i.",
+    "why": "Runde former og én sokkel gir god flyt rundt en sofagruppe i kjellerstua og ser ryddig ut fra alle kanter; svart, brun eller lys finer kan velges etter sofa og teppe.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/H%C3%98VIK/326828/image-thumb__326828__PDP-Product/299127%20-%20H%C3%B8vik%20rundt%20sofabord%20%C3%9880%20H38%20lakkert%20askefiner%20svart%20med%20sokkel%20-%201.fddf1f97.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: svart 3 699 kr (før 4 999), hvitpigmentert og brun 3 899 kr (før 5 199), Ø80 H38, platetykkelse 1,9 cm, skrå kant, konisk sokkel. Den brune varianten oppgis som H32 i navnet men med sokkelhøyde 38 cm – sjekk høyden ved kjøp. Sokkelens diametre anslått fra bildet."
+  }
+]

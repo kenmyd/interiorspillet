@@ -1,0 +1,319 @@
+[
+  {
+    "id": "bohus-viridis-eucalyptus-h78",
+    "category": "smatt",
+    "subcategory": "plante",
+    "name": "Viridis eucalyptus H78",
+    "brand": "Viridis (Interstil)",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/kunstige-planter/viridis-eucalyptus-h78",
+    "priceNok": 669,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 308626): 669 kr, ingen kampanje. Leveres i svart plastpotte (ca. Ø15, anslått fra bildet). Ytterpotte f.eks. Marion blomsterpotte Ø17,5 H16 hvit riflet keramikk (https://www.bohus.no/interior/dekor/potter/marion-blomsterpotte-o17-5, 349 kr, varenr. 327264). Finnes også H54 (449 kr).",
+    "dims": {
+      "w": 0.3,
+      "d": 0.3,
+      "h": 0.78
+    },
+    "archetype": "plant-small",
+    "mount": "surface",
+    "params": {
+      "species": "eucalyptus",
+      "potD": 0.15,
+      "potH": 0.14,
+      "plantH": 0.78,
+      "potStyle": "cylinder"
+    },
+    "variants": [
+      {
+        "name": "Grønn i svart plastpotte (som levert)",
+        "colors": {
+          "leaves": "#587268",
+          "pot": "#1e1e1e"
+        },
+        "materials": {
+          "leaves": "plant-leaf",
+          "pot": "plastic"
+        }
+      },
+      {
+        "name": "Grønn i hvit Marion blomsterpotte Ø17,5",
+        "colors": {
+          "leaves": "#587268",
+          "pot": "#e8e6dd"
+        },
+        "materials": {
+          "leaves": "plant-leaf",
+          "pot": "ceramic"
+        },
+        "paramsOverride": {
+          "potD": 0.175,
+          "potH": 0.16,
+          "potStyle": "ribbed"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "description": "Kunstig eukalyptus i polyester med runde, blågrønne blader på slanke grener, levert i svart plastpotte.",
+    "why": "Den blågrønne eukalyptusen er dempet og rolig i fargen; 78 cm høy står den fint på gulvet ved kommoden på soverommet eller i et hjørne i gangen uten å ta plass.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/VIRIDIS/337743/image-thumb__337743__PDP-Product/308626%20-%20Viridis%20eucalyptus%20H78%20polyester%20gr%C3%B8nn%20-%201.3d039a0c.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 30x30 H78, polyester/jern/plast, «i potte», 669 kr, i sortiment. Pottemål anslått fra bildet; Marion-potten (349 kr) bekreftet samme dag.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-mr-plant-gullranke-l70",
+    "category": "smatt",
+    "subcategory": "plante",
+    "name": "Gullranke kunstig plante L70",
+    "brand": "Mr Plant",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/kunstige-planter/gullranke-kunstig-plante-h30",
+    "priceNok": 999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 286365): 999 kr, ingen kampanje. Plastpotte Ø11 H9 følger med. Ytterpotte f.eks. Marion blomsterpotte Ø14 H13 hvit riflet keramikk (https://www.bohus.no/interior/dekor/potter/marion-blomsterpotte-o14, 219 kr, varenr. 327263).",
+    "dims": {
+      "w": 0.5,
+      "d": 0.5,
+      "h": 0.3
+    },
+    "archetype": "plant-small",
+    "mount": "surface",
+    "params": {
+      "species": "pothos",
+      "potD": 0.11,
+      "potH": 0.09,
+      "plantH": 0.3,
+      "potStyle": "cylinder",
+      "notes": "Trailing vines about 70 cm long hang over the shelf edge."
+    },
+    "variants": [
+      {
+        "name": "Silke grønn i plastpotte (som levert)",
+        "colors": {
+          "leaves": "#5d8a3c",
+          "pot": "#222222"
+        },
+        "materials": {
+          "leaves": "plant-leaf",
+          "pot": "plastic"
+        }
+      },
+      {
+        "name": "Silke grønn i hvit Marion blomsterpotte Ø14",
+        "colors": {
+          "leaves": "#5d8a3c",
+          "pot": "#e8e6dd"
+        },
+        "materials": {
+          "leaves": "plant-leaf",
+          "pot": "ceramic"
+        },
+        "paramsOverride": {
+          "potD": 0.14,
+          "potH": 0.13,
+          "potStyle": "ribbed"
+        }
+      }
+    ],
+    "defaultVariant": 1,
+    "absorption": 0.02,
+    "description": "Kunstig gullranke i silke med hjerteformede blader og ca. 70 cm lange ranker – laget for å henge ned fra en hylle.",
+    "why": "En hengeplante øverst i bokhylla eller på vegghylla på badet gir grønt uten å ta gulvplass – rankene henger ned langs hylla. Silke tåler fuktig bad og mørk kjeller.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Mr%20Plant/Produkter/GULLRANKE/267841/image-thumb__267841__PDP-Product/286365%20-%20Gullranke%20kunstig%20plante%20H30%20silke%20gr%C3%B8nn%20-%201.06856456.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: L70 (ranker), B50 H30, silke, plastpotte Ø11 H9, 999 kr, i sortiment. Dybde satt lik bredden (anslått).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-mr-plant-ormbunke-h70",
+    "category": "smatt",
+    "subcategory": "plante",
+    "name": "Ormbunke kunstig plante H70",
+    "brand": "Mr Plant",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/kunstige-planter/ormbunke-kunstig-plante-h70",
+    "priceNok": 649,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 314491): 649 kr, ingen kampanje. Står i en svart plastpotte (pottemål ikke oppgitt, ca. Ø12 anslått fra bildet). Ytterpotte f.eks. Meja blomsterpotte Ø20 H19,5 beige keramikk (https://www.bohus.no/interior/dekor/potter/meja-blomsterpotte-o20, 379 kr, varenr. 327266). Ikke forveksle med Ormbunke H70 varenr. 282711 (1 449 kr, før 2 899, utgående).",
+    "dims": {
+      "w": 0.45,
+      "d": 0.45,
+      "h": 0.7
+    },
+    "archetype": "plant-small",
+    "mount": "surface",
+    "params": {
+      "species": "fern",
+      "potD": 0.12,
+      "potH": 0.13,
+      "plantH": 0.7,
+      "potStyle": "cylinder"
+    },
+    "variants": [
+      {
+        "name": "Silke grønn i svart plastpotte (som levert)",
+        "colors": {
+          "leaves": "#4f6a46",
+          "pot": "#1e1e1e"
+        },
+        "materials": {
+          "leaves": "plant-leaf",
+          "pot": "plastic"
+        }
+      },
+      {
+        "name": "Silke grønn i beige Meja blomsterpotte Ø20",
+        "colors": {
+          "leaves": "#4f6a46",
+          "pot": "#8f8579"
+        },
+        "materials": {
+          "leaves": "plant-leaf",
+          "pot": "ceramic"
+        },
+        "paramsOverride": {
+          "potD": 0.2,
+          "potH": 0.195,
+          "potStyle": "belly"
+        }
+      }
+    ],
+    "defaultVariant": 1,
+    "absorption": 0.03,
+    "description": "Kunstig ormbunke (bregne) i silke med lange, fjærformede blader på mørke stilker.",
+    "why": "Bregner hører hjemme på badet (2,53 × 2,22) – denne i silke trenger verken lys eller vann og gir mykhet i et hjørne eller på en krakk. Den beige Meja-potten er i samme varme toner som veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Mr%20Plant/Produkter/ORMBUNKE/338609/image-thumb__338609__PDP-Product/314491%20-%20Ormbunke%20kunstig%20plante%20H70%20silke%20gr%C3%B8nn%20-%201.53ec72f2.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: H70, Ø28 (oppgitt), silke/plast/metall, 649 kr, i sortiment. Bildet viser bredere blader (ca. 45 cm) enn Ø28 – bredden er satt til 45 cm; pottemål anslått. Meja-potten (379 kr) bekreftet samme dag.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-viridis-oliventre-h84",
+    "category": "smatt",
+    "subcategory": "plante",
+    "name": "Viridis oliventre H84",
+    "brand": "Viridis (Interstil)",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/kunstige-planter/viridis-kunstig-plante-h84",
+    "priceNok": 539,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 308625): 539 kr, ingen kampanje. Leveres i svart potte (ca. Ø12, anslått fra bildet). Ytterpotte f.eks. Meja blomsterpotte Ø20 beige (https://www.bohus.no/interior/dekor/potter/meja-blomsterpotte-o20, 379 kr). Større Mr Plant oliven H120 finnes i katalogen.",
+    "dims": {
+      "w": 0.43,
+      "d": 0.43,
+      "h": 0.84
+    },
+    "archetype": "plant-floor",
+    "mount": "floor",
+    "params": {
+      "species": "olive",
+      "potD": 0.12,
+      "potH": 0.12,
+      "plantH": 0.84,
+      "potStyle": "cylinder"
+    },
+    "variants": [
+      {
+        "name": "Grønn i svart plastpotte (som levert)",
+        "colors": {
+          "leaves": "#5f7449",
+          "pot": "#1e1e1e",
+          "trunk": "#6b5d4a"
+        },
+        "materials": {
+          "leaves": "plant-leaf",
+          "pot": "plastic",
+          "trunk": "plastic"
+        }
+      },
+      {
+        "name": "Grønn i beige Meja blomsterpotte Ø20",
+        "colors": {
+          "leaves": "#5f7449",
+          "pot": "#8f8579",
+          "trunk": "#6b5d4a"
+        },
+        "materials": {
+          "leaves": "plant-leaf",
+          "pot": "ceramic",
+          "trunk": "plastic"
+        },
+        "paramsOverride": {
+          "potD": 0.2,
+          "potH": 0.195,
+          "potStyle": "belly"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.04,
+    "description": "Lite, luftig kunstig oliventre i polyester med slanke grener og smale, tofargede blader, levert i svart potte.",
+    "why": "Et lite oliventre passer det lille soverommet i kjelleren (7,4 m²) eller ved kommoden – grønt uten å fylle rommet, og det koster en tredjedel av Mr Plant-oliventreet H90.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/VIRIDIS/337741/image-thumb__337741__PDP-Product/308625%20-%20Viridis%20oliventre%20H84%20polyester%20gr%C3%B8nn%20-%201.306a2f8a.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 43x43 H84, polyester/jern/plast, «i svart potte», 539 kr, i sortiment. Pottemål anslått fra bildet. Mr Plant oliven H90 koster 1 599 kr (varenr. 279691).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-viridis-anthurium-h80",
+    "category": "smatt",
+    "subcategory": "plante",
+    "name": "Viridis anthurium H80",
+    "brand": "Viridis (Interstil)",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/kunstige-planter/viridis-kunstig-plante-h80",
+    "priceNok": 549,
+    "salePriceNok": 275,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 279826): 275 kr, før 549 kr. Plastpotte Ø12,5 H11,5 følger med. Utgående vare (outlet) – sjekk lager. Ytterpotte f.eks. Marion blomsterpotte Ø14 hvit (https://www.bohus.no/interior/dekor/potter/marion-blomsterpotte-o14, 219 kr).",
+    "dims": {
+      "w": 0.33,
+      "d": 0.33,
+      "h": 0.8
+    },
+    "archetype": "plant-small",
+    "mount": "surface",
+    "params": {
+      "species": "anthurium",
+      "potD": 0.125,
+      "potH": 0.115,
+      "plantH": 0.8,
+      "potStyle": "cylinder",
+      "notes": "Upright: three moss poles with climbing, white-veined heart leaves (not trailing)."
+    },
+    "variants": [
+      {
+        "name": "Grønn i svart plastpotte (som levert)",
+        "colors": {
+          "leaves": "#2f4b33",
+          "pot": "#1e1e1e"
+        },
+        "materials": {
+          "leaves": "plant-leaf",
+          "pot": "plastic"
+        }
+      },
+      {
+        "name": "Grønn i hvit Marion blomsterpotte Ø14",
+        "colors": {
+          "leaves": "#2f4b33",
+          "pot": "#e8e6dd"
+        },
+        "materials": {
+          "leaves": "plant-leaf",
+          "pot": "ceramic"
+        },
+        "paramsOverride": {
+          "potD": 0.14,
+          "potH": 0.13,
+          "potStyle": "ribbed"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "description": "Kunstig anthurium på tre mosestokker med store, mørkegrønne hjerteblader med lyse nerver.",
+    "why": "Mørke hjerteblader med hvite nerver gir en rolig, grafisk plante til gangen i kjelleren eller på en skjenk i kjellerstua – smal (33 cm) og 80 cm høy, og rimelig nå.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/VIRIDIS/264912/image-thumb__264912__PDP-Product/279826%20-%20Viridis%20kunstig%20plante%20H80%20gr%C3%B8nn%20-%201.5e3fcdc4.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 33x33 H80, PE-plast/metall, plastpotte Ø12,5 H11,5, 275 kr (før 549), utgående (outlet).",
+    "priceConfidence": "checked"
+  }
+]

@@ -1,0 +1,940 @@
+[
+  {
+    "id": "bohus-base-bokhylle-79x27-h204",
+    "category": "hylle",
+    "subcategory": "bokhylle",
+    "name": "Base bokhylle 205x80",
+    "brand": "Tvilum",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/bokhyller/base-bokhylle-b-80-3",
+    "priceNok": 1899,
+    "salePriceNok": 1399,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 275693 eik / 228914 hvit): 1 399 kr, før 1 899 kr, for begge farger. Målene er 79x27 H204 (navnet sier 205x80). Samme serie finnes 41 cm bred (1 199 kr, før 1 599) og lav 79x27 H108 (eik 974 kr, før 1 299; hvit 1 199 kr). Hel dør eller glassdør i samme finish selges separat. Flatpakket, 1 kolli.",
+    "dims": {
+      "w": 0.79,
+      "d": 0.27,
+      "h": 2.04
+    },
+    "archetype": "bookcase",
+    "mount": "floor",
+    "params": {
+      "style": "closed",
+      "cols": 1,
+      "rows": 5,
+      "doorRows": 0,
+      "base": "plinth",
+      "legH": 0.06,
+      "decor": true,
+      "handle": "none",
+      "notes": "Sides run from the floor to the top; top board set between the sides; recessed plinth about 6 cm; 4 loose shelves + fixed bottom."
+    },
+    "variants": [
+      {
+        "name": "Foliert eik",
+        "colors": {
+          "body": "#c8b08e",
+          "front": "#c8b08e",
+          "top": "#c8b08e",
+          "legs": "#c2a988",
+          "handle": "#c8b08e"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/bokhyller/base-bokhylle-b-80-3"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#efeee9",
+          "front": "#efeee9",
+          "top": "#efeee9",
+          "legs": "#e9e8e3",
+          "handle": "#efeee9"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.bohus.no/oppbevaring/bokhyller/base-bokhylle-b-80"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Enkel, klassisk bokhylle i foliert sponplate med rygg, sokkel og fire flyttbare hylleplater – Bohus' svar på BILLY. Kan suppleres med hel dør eller glassdør.",
+    "why": "Den rimeligste høye hylla: bare 79 cm bred og 27 cm dyp, så den tar lite gulv på soverommet i kjelleren eller i kjellerstua. Lys eik passer eikegulvet, hvit glir inn mot veggen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/BASE/157727/image-thumb__157727__PDP-Product/275693%20-%20Base%20bokhylle%2079x27%20H204%20foliert%20sponplate%20eik%204%20hyller%20-%203.33488747.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: navn, varenr., 1 399 kr (før 1 899) for eik og hvit, 79x27 H204, 4 hylleplater, foliert spon, flatpakket. Sokkelhøyde (ca. 6 cm) anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-madrid-bokhylle-78x32",
+    "category": "hylle",
+    "subcategory": "bokhylle",
+    "name": "Madrid bokhylle 78x32",
+    "brand": "Tvilum",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/bokhyller/madrid-bokhylle-78x32-5",
+    "priceNok": 4349,
+    "salePriceNok": 2174,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 328772 svart / 328771 hvit): 2 174 kr, før 4 349 kr (SPAR 50 %). Eik (varenr. 328770) koster 4 349 kr uten kampanje. 5 flyttbare hylleplater (eik oppgis med 6), maks 13 kg per hylle. Flatpakket, 2 kolli.",
+    "dims": {
+      "w": 0.78,
+      "d": 0.32,
+      "h": 1.99
+    },
+    "archetype": "bookcase",
+    "mount": "floor",
+    "params": {
+      "style": "closed",
+      "cols": 1,
+      "rows": 6,
+      "doorRows": 0,
+      "base": "legs",
+      "legH": 0.08,
+      "decor": true,
+      "handle": "none",
+      "notes": "Side frames continue down as short square legs with a rail under the bottom shelf; top board overhangs the sides slightly."
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "body": "#1f1f1f",
+          "front": "#1f1f1f",
+          "top": "#222222",
+          "legs": "#1f1f1f",
+          "handle": "#1f1f1f"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.bohus.no/oppbevaring/bokhyller/madrid-bokhylle-78x32-5"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f0efeb",
+          "front": "#f0efeb",
+          "top": "#f0efeb",
+          "legs": "#ebeae6",
+          "handle": "#f0efeb"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.bohus.no/oppbevaring/bokhyller/madrid-bokhylle-78x32-4"
+      },
+      {
+        "name": "Eik",
+        "colors": {
+          "body": "#c49f74",
+          "front": "#c49f74",
+          "top": "#c7a378",
+          "legs": "#bf9a70",
+          "handle": "#c49f74"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/bokhyller/madrid-bokhylle-78x32-3",
+        "priceNok": 4349
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rett bokhylle med rygg, korte ben og fem flyttbare hylleplater; sidene går ned som ben og topplaten stikker litt ut.",
+    "why": "Rolig og enkel hylle på korte ben som gir luft under – svart følger de svarte detaljene i huset, hvit og eik passer soverommet (3,11 × 3,69) eller kjellerstua. Nå halv pris i svart og hvit.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/285609/image-thumb__285609__PDP-Product/289727%20-%20Madrid%20bokhylle%2078x32%20H199%20sponplate%20svart%205%20hyller%20-%202.4b88fd3f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 78x32 H199, sponplate, varenr. og priser for svart, hvit og eik, 5 (eik: 6) hylleplater, maks 13 kg. Benhøyde (ca. 8 cm) anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-seaford-bokreol-77x35-h185",
+    "category": "hylle",
+    "subcategory": "bokhylle",
+    "name": "Seaford bokreol 77x35",
+    "brand": "Actona",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/bokhyller/seaford-bokreol-b-80",
+    "priceNok": 2699,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 229950 natur/lys eik): 2 699 kr, ingen kampanje. Svart ask (varenr. 233549) 3 099 kr. Serien finnes også 77x35 H114 (natur 1 049 kr, før 1 499; svart 1 999 kr) og 114x35 H78. Flatpakket, 1 kolli.",
+    "dims": {
+      "w": 0.77,
+      "d": 0.35,
+      "h": 1.85
+    },
+    "archetype": "bookcase",
+    "mount": "floor",
+    "params": {
+      "style": "frame",
+      "cols": 2,
+      "rows": 4,
+      "doorRows": 0,
+      "base": "legs",
+      "legH": 0.07,
+      "decor": true,
+      "handle": "none",
+      "notes": "Black powder-coated steel frame (posts and rails = legs colour); shelves and top in light-oak foil (body/top colour). Asymmetric: two shelves are half-width and there is an open box in the upper half – cols 2 is an approximation."
+    },
+    "variants": [
+      {
+        "name": "Lys eik med svart ramme",
+        "colors": {
+          "body": "#cdb797",
+          "front": "#cdb797",
+          "top": "#cdb797",
+          "legs": "#1e1e1e",
+          "handle": "#1e1e1e"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "url": "https://www.bohus.no/oppbevaring/bokhyller/seaford-bokreol-b-80"
+      },
+      {
+        "name": "Svart ask med svart ramme",
+        "colors": {
+          "body": "#2b2a28",
+          "front": "#2b2a28",
+          "top": "#2b2a28",
+          "legs": "#1e1e1e",
+          "handle": "#1e1e1e"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "url": "https://www.bohus.no/oppbevaring/bokhyller/seaford-bokreol-b-80-3",
+        "priceNok": 3099
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Luftig reol med tynn ramme i matt svart pulverlakkert stål og fire asymmetriske hyller i foliert lys eik (eller svart ask).",
+    "why": "Den åpne stålrammen tar lite visuell plass og gjentar de svarte detaljene i stua; passer som rolig reol i kjellerstua (20,6 m²). Samme serie som Seaford-sidebordet i katalogen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S/Produkter/SEAFORD/113676/image-thumb__113676__PDP-Product/229950%20-%20Seaford%20bokreol%2077x35%20H185%20st%C3%A5l%20lys%20eik%204%20hyller%20med%20ramme%20i%20pulverlakkert%20svart%20matt%205%20st%C3%A5l%20-%205.1f08eb68.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 77x35 H185, 4 hylleplater, ramme i svart pulverlakkert stål, folie lys eik / melamin svart ask, priser for begge farger. Høyden under nederste hylle anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-gotland-reol-86x30-h160",
+    "category": "hylle",
+    "subcategory": "bokhylle",
+    "name": "Gotland reol B:90",
+    "brand": "Actona",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/reoler/gotland-reol-b-90",
+    "priceNok": 6599,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 276656): 6 599 kr, ingen kampanje. Heltre og finert eik, hvitpigmentert oljet. Finnes også som lav reol 169x30 H88 (6 999 kr). Flatpakket, 1 kolli.",
+    "dims": {
+      "w": 0.86,
+      "d": 0.3,
+      "h": 1.6
+    },
+    "archetype": "bookcase",
+    "mount": "floor",
+    "params": {
+      "style": "frame",
+      "cols": 1,
+      "rows": 4,
+      "doorRows": 0,
+      "base": "legs",
+      "legH": 0.15,
+      "decor": true,
+      "handle": "none",
+      "notes": "Four square solid-oak posts with a rail under each shelf; 5 boards including the top; open back and sides."
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eik",
+        "colors": {
+          "body": "#d9c7a6",
+          "front": "#d9c7a6",
+          "top": "#dbc9a8",
+          "legs": "#d4c2a1",
+          "handle": "#d9c7a6"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/reoler/gotland-reol-b-90"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Åpen reol i heltre og finert eik, hvitpigmentert oljet, med fire stolper, tynne rammer under hyllene og fem hyllebrett.",
+    "why": "Lys, ekte eik og åpen rygg lar SAND-veggen synes gjennom, så reolen virker lett på soverommet eller i kjellerstua. 160 cm høy – kan stå ved siden av et vindu uten å dominere.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S/Produkter/GOTLAND/156840/image-thumb__156840__PDP-Product/276656%20-%20Gotland%20reol%2086x30%20H160%20hvitoljet%20eik%20hvitoljet%205%20hyller%20-%203.6b380fa2.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 86x30 H160, 5 hylleplater, eikefiner/heltre hvitoljet, 6 599 kr. Benhøyde (ca. 15 cm) anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-frikk-vegghylle-60x20",
+    "category": "hylle",
+    "subcategory": "vegghylle",
+    "name": "Frikk vegghylle 60x20",
+    "brand": "Interstil",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/hyller/vegghyller/frikk-vegghylle-b-60",
+    "priceNok": 699,
+    "salePriceNok": 419,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 251706 natur): 419 kr, før 699 kr. Brun eik (varenr. 286870) samme pris; svart furu (varenr. 251707) 359 kr, før 599 kr. Finnes også 100x20 (natur 539 kr, før 899; svart 479 kr, før 799) og 40x10. Maks 5 kg. Leveres delvis montert.",
+    "dims": {
+      "w": 0.6,
+      "d": 0.2,
+      "h": 0.26
+    },
+    "archetype": "wall-shelf",
+    "mount": "wall",
+    "params": {
+      "style": "simple",
+      "shelves": 1,
+      "topT": 0.02,
+      "boardDepth": 0.2,
+      "mountHeight": 1.2,
+      "notes": "One solid board hung in two leather straps (body colour) that rise about 24 cm above the board to the wall screws; the simple style draws only the board.",
+      "brackets": "straps"
+    },
+    "variants": [
+      {
+        "name": "Natur eik med lyst lær",
+        "colors": {
+          "body": "#c79d76",
+          "front": "#c79d76",
+          "top": "#d1a874",
+          "legs": "#c79d76",
+          "handle": "#c79d76"
+        },
+        "materials": {
+          "body": "leather",
+          "front": "leather",
+          "top": "oak",
+          "legs": "leather",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/hyller/vegghyller/frikk-vegghylle-b-60"
+      },
+      {
+        "name": "Brun eik med svart lær",
+        "colors": {
+          "body": "#1d1d1d",
+          "front": "#1d1d1d",
+          "top": "#4b4138",
+          "legs": "#1d1d1d",
+          "handle": "#1d1d1d"
+        },
+        "materials": {
+          "body": "leather",
+          "front": "leather",
+          "top": "smoked-oak",
+          "legs": "leather",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/hyller/vegghyller/frikk-vegghylle-60x20"
+      },
+      {
+        "name": "Svart furu med svart lær",
+        "colors": {
+          "body": "#1a1a1a",
+          "front": "#1a1a1a",
+          "top": "#1c1c1c",
+          "legs": "#1a1a1a",
+          "handle": "#1a1a1a"
+        },
+        "materials": {
+          "body": "leather",
+          "front": "leather",
+          "top": "painted",
+          "legs": "leather",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/hyller/vegghyller/frikk-vegghylle-b-60-1",
+        "priceNok": 599,
+        "salePriceNok": 359
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Vegghylle i heltre eik (svart: lakkert furu) som henger i to lærstropper med synlige skruer.",
+    "why": "En smal hylle til nøkler og en liten plante i gangen (3,11 × 2,07) eller over nattbordet på soverommet. Brun eik med svart lær matcher smoked eik og de svarte detaljene i stua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/FRIKK/141249/image-thumb__141249__PDP-Product/251706%20-%20Frikk%20vegghylle%20B-60%20H26%20eikefiner%20natur%20-%201.9cfeda65.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 60x20 H26 (inkl. stropper), materialer, varenr. og priser for natur, brun og svart, maks 5 kg. Brettets tykkelse (ca. 2 cm) anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-tamara-vegghylle-60x49",
+    "category": "hylle",
+    "subcategory": "vegghylle",
+    "name": "Tamara vegghylle 60x49",
+    "brand": "2-Connect",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/hyller/vegghyller/tamara-vegghylle-60x14-1",
+    "priceNok": 899,
+    "salePriceNok": 599,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 327314 hvitpigmentert): 599 kr, før 899 kr. Røykfarget (varenr. 327313) 899 kr uten kampanje. Lakkert eikefiner, maks 2 kg per hylle. Finnes også som enkelthylle 60x14 H10 (hvitpigmentert 199 kr, før 299; røykfarget 299 kr) og som større oppsett 80x142, 137x82, 137x142 og 194x142. Leveres delvis montert.",
+    "dims": {
+      "w": 0.6,
+      "d": 0.14,
+      "h": 0.49
+    },
+    "archetype": "wall-shelf",
+    "mount": "wall",
+    "params": {
+      "style": "simple",
+      "shelves": 3,
+      "topT": 0.02,
+      "boardDepth": 0.14,
+      "mountHeight": 1.15,
+      "notes": "Three boards on two vertical oak battens (body colour) screwed to the wall; the battens are not drawn by the simple style.",
+      "brackets": "battens"
+    },
+    "variants": [
+      {
+        "name": "Hvitpigmentert eikefiner",
+        "colors": {
+          "body": "#c9b18e",
+          "front": "#c9b18e",
+          "top": "#c9b18e",
+          "legs": "#c9b18e",
+          "handle": "#c9b18e"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/hyller/vegghyller/tamara-vegghylle-60x14-1"
+      },
+      {
+        "name": "Røykfarget eikefiner",
+        "colors": {
+          "body": "#5a4a3d",
+          "front": "#5a4a3d",
+          "top": "#5a4a3d",
+          "legs": "#5a4a3d",
+          "handle": "#5a4a3d"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/hyller/vegghyller/tamara-vegghylle-60x14",
+        "priceNok": 899
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Tre tynne hyller i lakkert eikefiner på to vertikale lister – en liten hyllevegg til veggen.",
+    "why": "Passer over toalettet eller ved speilet på badet (2,53 × 2,22) til håndklær, såpe og en liten plante, eller ved sengen på soverommet; bare 14 cm dyp, så den stikker lite ut i rommet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/2-Connect%20Aps/Produkter/TAMARA/617206/image-thumb__617206__PDP-Product/327314%20-%20Tamara%20vegghylle%2060x14%20H49%20hvitoljet%20eikefiner%20-%201.9488cbc7.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 60x14 H49, lakkert eikefiner, varenr. og pris for hvitpigmentert og røykfarget, maks 2 kg per hylle. Antall hyller (3) og platetykkelse (ca. 2 cm) fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-billy-oxberg-bokhylle-med-dorer-80x30x202",
+    "category": "hylle",
+    "subcategory": "bokhylle",
+    "name": "BILLY / OXBERG Bokhylle med dører 80x30x202 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/billy-oxberg-bokhylle-med-dorer-eikemonstret-s09483367/",
+    "priceNok": 1895,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (art.nr. 094.833.67, eikemønstret): 1 895 kr, ingen kampanje. Samme pris i hvit, brun valnøttmønstret og svart eikemønstret. Består av BILLY bokhylle (105.089.32) og 2 OXBERG dører 40x97 cm; maks 30 kg per hylle. Knottene på bildet nevnes ikke i varelisten – sjekk om de må kjøpes separat. Finnes også med glassdører (2 395 kr) og med høye dører (2 295 kr).",
+    "dims": {
+      "w": 0.8,
+      "d": 0.3,
+      "h": 2.02
+    },
+    "archetype": "bookcase",
+    "mount": "floor",
+    "params": {
+      "style": "closed",
+      "cols": 1,
+      "rows": 6,
+      "doorRows": 3,
+      "doorStyle": "framed",
+      "base": "plinth",
+      "legH": 0.06,
+      "decor": true,
+      "handle": "knob",
+      "notes": "Two OXBERG frame-and-panel doors (40x97 cm each) cover the lower half; three open compartments above; small round knobs near the meeting edges."
+    },
+    "variants": [
+      {
+        "name": "Eikemønstret",
+        "colors": {
+          "body": "#c8a984",
+          "front": "#c8a984",
+          "top": "#c8a984",
+          "legs": "#c2a37f",
+          "handle": "#c9ab88"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/billy-oxberg-bokhylle-med-dorer-eikemonstret-s09483367/"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f1f1ee",
+          "front": "#f1f1ee",
+          "top": "#f1f1ee",
+          "legs": "#ebebe8",
+          "handle": "#f1f1ee"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/billy-oxberg-bokhylle-med-dorer-hvit-s29281066/"
+      },
+      {
+        "name": "Brun valnøttmønstret",
+        "colors": {
+          "body": "#6a4b36",
+          "front": "#6a4b36",
+          "top": "#6a4b36",
+          "legs": "#634532",
+          "handle": "#6a4b36"
+        },
+        "materials": {
+          "body": "walnut",
+          "front": "walnut",
+          "top": "walnut",
+          "legs": "walnut",
+          "handle": "walnut"
+        },
+        "url": "https://www.ikea.com/no/no/p/billy-oxberg-bokhylle-med-dorer-brun-valnottmonstret-s49483365/"
+      },
+      {
+        "name": "Svart eikemønstret",
+        "colors": {
+          "body": "#2a2927",
+          "front": "#2a2927",
+          "top": "#2a2927",
+          "legs": "#262523",
+          "handle": "#2a2927"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/billy-oxberg-bokhylle-med-dorer-svart-eikemonstret-s79483364/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Klassisk BILLY med to rammede OXBERG-dører nederst og tre åpne hyllerom over – det som roter bak dørene, bøker og pynt oppe.",
+    "why": "Dørene skjuler ladere, papirer og spill, så hylla ser ryddig ut – fint i kjellerstua eller på soverommet i kjelleren. Eikemønsteret passer det lyse eikegulvet.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/billy-oxberg-bokhylle-med-dorer-eikemonstret__1602181_pe1043273_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: navn, art.nr., 1 895 kr, 80x30x202 cm, 2 dører 40x97, 1 fast + 4 flyttbare hyller, fire farger. Knotter og sokkelhøyde fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-hemnes-bokhylle-90x197",
+    "category": "hylle",
+    "subcategory": "bokhylle",
+    "name": "HEMNES Bokhylle 90x197 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/hemnes-bokhylle-hvit-beis-lys-brun-60413502/",
+    "priceNok": 2495,
+    "salePriceNok": 2195,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (art.nr. 604.135.02, hvit beis/lys brun): 2 195 kr, «Ny lavere pris», før 2 495 kr. Samme pris i grågrønn/lys brunbeiset (405.961.59) og brunsvart/lys brun (204.522.94). Heltre furu, 1 fast + 4 flyttbare hyller, maks 30 kg per hylle. 2 kolli.",
+    "dims": {
+      "w": 0.9,
+      "d": 0.37,
+      "h": 1.97
+    },
+    "archetype": "bookcase",
+    "mount": "floor",
+    "params": {
+      "style": "closed",
+      "cols": 1,
+      "rows": 6,
+      "doorRows": 0,
+      "base": "legs",
+      "legH": 0.12,
+      "decor": true,
+      "handle": "none",
+      "notes": "Two-tone: stained frame and back (body colour), light-brown pine shelves and top (top colour – the shelves cannot be coloured separately); frame-and-panel sides on short legs."
+    },
+    "variants": [
+      {
+        "name": "Hvit beis/lys brun",
+        "colors": {
+          "body": "#ebe9e1",
+          "front": "#ebe9e1",
+          "top": "#c8975c",
+          "legs": "#e6e4dc",
+          "handle": "#ebe9e1"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "oak",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/hemnes-bokhylle-hvit-beis-lys-brun-60413502/"
+      },
+      {
+        "name": "Grågrønn/lys brunbeiset",
+        "colors": {
+          "body": "#a3b5a6",
+          "front": "#a3b5a6",
+          "top": "#c9a26c",
+          "legs": "#9db09f",
+          "handle": "#a3b5a6"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "oak",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/hemnes-bokhylle-gragronn-lys-brunbeiset-40596159/"
+      },
+      {
+        "name": "Brunsvart/lys brun",
+        "colors": {
+          "body": "#3b322d",
+          "front": "#3b322d",
+          "top": "#c29261",
+          "legs": "#372f2a",
+          "handle": "#3b322d"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "oak",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/hemnes-bokhylle-brunsvart-lys-brun-20452294/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Bokhylle i heltre furu med rammede sider, korte ben og fem hyller – beiset ramme med lys brune hyller og topp.",
+    "why": "Heltre med et mykt, landlig preg; hvit beis med lyse hyller gir et rolig soverom (3,11 × 3,69), og 37 cm dybde gir plass til store bøker og kurver. Grågrønn kan gi en dempet farge i kjellerstua.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/hemnes-bokhylle-hvit-beis-lys-brun__1590316_pe1038955_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 90x37x197 cm, 2 195 kr (før 2 495, ny lavere pris), heltre furu, 5 hyller, tre fargevarianter. Benhøyde (ca. 12 cm) anslått fra bildet; brunsvart-fargen anslått fra fargenavnet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-lack-vegghylle-110x26",
+    "category": "hylle",
+    "subcategory": "vegghylle",
+    "name": "LACK Vegghylle 110x26 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/lack-vegghylle-hvit-90282180/",
+    "priceNok": 169,
+    "salePriceNok": 129,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (art.nr. 902.821.80, hvit): 129 kr, «Ny lavere pris», før 169 kr. Brunsvart (401.036.33) samme pris; brun valnøttmønstret (706.533.27) er nyhet til 129 kr uten førpris. Skjult beslag følger med, skruer selges separat, maks 10 kg. Finnes også 30x26 (79 kr).",
+    "dims": {
+      "w": 1.1,
+      "d": 0.26,
+      "h": 0.05
+    },
+    "archetype": "wall-shelf",
+    "mount": "wall",
+    "params": {
+      "style": "simple",
+      "shelves": 1,
+      "topT": 0.05,
+      "boardDepth": 0.26,
+      "mountHeight": 1.4,
+      "notes": "Floating 5 cm thick board on hidden brackets; no visible supports."
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f1f1ef",
+          "front": "#f1f1ef",
+          "top": "#f1f1ef",
+          "legs": "#f1f1ef",
+          "handle": "#f1f1ef"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/lack-vegghylle-hvit-90282180/"
+      },
+      {
+        "name": "Brunsvart",
+        "colors": {
+          "body": "#2f2926",
+          "front": "#2f2926",
+          "top": "#2f2926",
+          "legs": "#2f2926",
+          "handle": "#2f2926"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/lack-vegghylle-brunsvart-40103633/"
+      },
+      {
+        "name": "Brun valnøttmønstret",
+        "colors": {
+          "body": "#8b5b3e",
+          "front": "#8b5b3e",
+          "top": "#8b5b3e",
+          "legs": "#8b5b3e",
+          "handle": "#8b5b3e"
+        },
+        "materials": {
+          "body": "walnut",
+          "front": "walnut",
+          "top": "walnut",
+          "legs": "walnut",
+          "handle": "walnut"
+        },
+        "url": "https://www.ikea.com/no/no/p/lack-vegghylle-brun-valnottmonstret-70653327/",
+        "priceNok": 129
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Svevende vegghylle, 5 cm tykk, med skjult feste – ingen synlige knekter.",
+    "why": "Den ryddigste vegghylla som finnes: bare en ren plate på veggen. 110 cm passer over en kommode eller et skrivebord på soverommet eller i kjellerstua.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/lack-vegghylle-hvit__0641087_pe700250_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-20: 110x26 cm, 5 cm tykk, maks 10 kg, skjult beslag, 129 kr (før 169, ny lavere pris), fargevarianter. Valnøttprisen (129 kr, nyhet) fra IKEAs søk.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "jysk-horsens-bokreol-70x29-h197",
+    "category": "hylle",
+    "subcategory": "bokhylle",
+    "name": "Bokreol HORSENS 5 hyller bred",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-lys-eikefarget",
+    "priceNok": 850,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3640339, lys eikefarget): 850 kr, ingen kampanje. Hvit (varenr. 3640334) 750 kr; varm eikefarget (varenr. 3680089) 850 kr. Lav utgave med 3 hyller 70x120 cm (hvit, varenr. 3606825) 500 kr. Mulig frakt i tillegg.",
+    "dims": {
+      "w": 0.7,
+      "d": 0.29,
+      "h": 1.97
+    },
+    "archetype": "bookcase",
+    "mount": "floor",
+    "params": {
+      "style": "closed",
+      "cols": 1,
+      "rows": 5,
+      "doorRows": 0,
+      "base": "plinth",
+      "legH": 0.06,
+      "decor": true,
+      "handle": "none",
+      "notes": "Plain melamine box with an HDF back, flush top, five equal open compartments and a low recessed plinth between the side panels. Max 5 kg per shelf."
+    },
+    "variants": [
+      {
+        "name": "Lys eikefarget",
+        "colors": {
+          "body": "#d4b38f",
+          "front": "#d4b38f",
+          "top": "#d8b993",
+          "legs": "#ccab87",
+          "handle": "#d4b38f"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-lys-eikefarget"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f0f0ee",
+          "front": "#f2f2f0",
+          "top": "#f0f0ee",
+          "legs": "#e9e9e7",
+          "handle": "#f2f2f0"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "priceNok": 750,
+        "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-hvit"
+      },
+      {
+        "name": "Varm eikefarget",
+        "colors": {
+          "body": "#c69d6f",
+          "front": "#c69d6f",
+          "top": "#caa274",
+          "legs": "#bd946a",
+          "handle": "#c69d6f"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-varm-eikefarget"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Enkel, høy bokhylle (70 × 29 × 197 cm) med fem åpne rom og lav sokkel, i lys eik, hvit eller varm eik.",
+    "why": "En rimelig, glatt bokhylle uten pynt til kjellerstua (20,6 m²) eller kjellersoverommet; bare 29 cm dyp, og lys eik eller hvit passer både eikegulvet og de lyse veggene.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/268408",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr. og priser for lys eik (850), hvit (750) og varm eik (850), mål 70x29x197 (hvit oppgitt 30 cm dyp), 5 hyller, maks 5 kg per hylle, melamin/trefiberplate med HDF-rygg, 31 kg; 3-hyllers 70x120 500 kr. Sokkelhøyde anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "jysk-hejsager-vegghylle-3-hyller-65x20",
+    "category": "hylle",
+    "subcategory": "vegghylle",
+    "name": "Vegghylle HEJSAGER 3 hyller",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/oppbevaring/hyller/vegghylle-hejsager-3-hyller-svart-natur",
+    "priceNok": 300,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3680115, svart/natur): 300 kr («Fast lav pris», ingen kampanje). Hvit/natur (varenr. 3680116) samme pris. Samme hylle med 1 hylle 65x20x27 cm (svart/natur, varenr. 3680114) 135 kr. Mulig frakt i tillegg.",
+    "dims": {
+      "w": 0.65,
+      "d": 0.2,
+      "h": 0.8
+    },
+    "archetype": "wall-shelf",
+    "mount": "wall",
+    "params": {
+      "style": "simple",
+      "shelves": 3,
+      "topT": 0.016,
+      "boardDepth": 0.2,
+      "brackets": "battens",
+      "mountHeight": 1.05,
+      "notes": "Three oak-look melamine boards hung in two thin powder-coated steel rod frames: the rods run vertically just behind the front edge of the boards and bend back to the wall at the top (≈ 15 cm above the top board). Drawn with the strap mounts in the body colour; the simple style spreads the boards over the full height."
+    },
+    "variants": [
+      {
+        "name": "Svart/natur",
+        "colors": {
+          "body": "#1c1c1c",
+          "front": "#1c1c1c",
+          "top": "#d4ad80",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "url": "https://jysk.no/oppbevaring/hyller/vegghylle-hejsager-3-hyller-svart-natur"
+      },
+      {
+        "name": "Hvit/natur",
+        "colors": {
+          "body": "#f0efec",
+          "front": "#f0efec",
+          "top": "#d4ad80",
+          "legs": "#f0efec",
+          "handle": "#f0efec"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "oak",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://jysk.no/oppbevaring/hyller/vegghylle-hejsager-3-hyller-hvit-natur"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Vegghylle 65 × 20 × 80 cm med tre hyller i natur eikefarge hengt i tynne stålbøyler, svarte eller hvite.",
+    "why": "Gir plass til kurver, nøkler og et par planter på veggen i gangen eller i inngangsrommet i kjelleren uten å ta gulvplass; den tynne svarte rammen gjentar de svarte detaljene i huset, og 300 kr er knapt mer enn en enkelt hylle hos Bohus.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/270390",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr. og 300 kr for svart/natur og hvit/natur, mål B65 x H80 x D20, 3 hyller (MDF/melamin/ABS), stål pulverlakkert, 5 kg; 1-hyllers 135 kr. Hylletykkelse og bøylenes form anslått fra bildet; maks belastning ikke oppgitt.",
+    "priceConfidence": "checked"
+  }
+]

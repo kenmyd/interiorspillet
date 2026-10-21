@@ -1,0 +1,399 @@
+[
+  {
+    "id": "jysk-karlstad-badematte-50x80",
+    "category": "bad",
+    "subcategory": "badematte",
+    "name": "Badematte KARLSTAD 50x80cm",
+    "brand": "Kronborg",
+    "store": "Jysk",
+    "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-natur",
+    "priceNok": 149,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 2521200, natur): 149 kr, ingen kampanje. Beige (varenr. 2526700), mørk sand (2525200), lys grå (2521258) og grå (2521242) samme pris; finnes også i olivengrønn. Samme matte 70x120 cm (natur, varenr. 2521300) 269 kr og rund Ø70 cm (natur, varenr. 2521400) 169 kr. Mulig frakt i tillegg.",
+    "priceConfidence": "checked",
+    "dims": { "w": 0.5, "d": 0.8, "h": 0.025 },
+    "archetype": "rug",
+    "mount": "rug",
+    "params": {
+      "shape": "rect",
+      "pile": "high",
+      "pattern": "solid",
+      "weave": "machine-woven",
+      "fringe": false,
+      "thickness": 0.025,
+      "notes": "Soft, long shaggy microfibre pile (recycled polyester, dope-dyed) in one solid colour, square corners, latex anti-slip backing. Pile height/thickness not given by Jysk – estimated from the photo."
+    },
+    "variants": [
+      {
+        "name": "Natur",
+        "colors": { "base": "#e0d9c8", "accent": "#d3cbb8", "accent2": "#ebe5d6" },
+        "materials": { "base": "teddy", "accent": "teddy", "accent2": "teddy" },
+        "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-natur"
+      },
+      {
+        "name": "Beige",
+        "colors": { "base": "#cbb8a6", "accent": "#bdaa98", "accent2": "#d8c7b6" },
+        "materials": { "base": "teddy", "accent": "teddy", "accent2": "teddy" },
+        "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-beige"
+      },
+      {
+        "name": "Mørk sand",
+        "colors": { "base": "#7f6858", "accent": "#725d4e", "accent2": "#8d7666" },
+        "materials": { "base": "teddy", "accent": "teddy", "accent2": "teddy" },
+        "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-mork-sand"
+      },
+      {
+        "name": "Lys grå",
+        "colors": { "base": "#a59d94", "accent": "#978f87", "accent2": "#b2aba3" },
+        "materials": { "base": "teddy", "accent": "teddy", "accent2": "teddy" },
+        "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-lys-gra"
+      },
+      {
+        "name": "Grå",
+        "colors": { "base": "#3a383d", "accent": "#313034", "accent2": "#47454a" },
+        "materials": { "base": "teddy", "accent": "teddy", "accent2": "teddy" },
+        "url": "https://jysk.no/baderom/badematter/badematte-karlstad-50x80cm-gra"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.13,
+    "absorptionNote": "High pile α 0,32 × 0,40 m².",
+    "description": "Myk, luvet badematte 50 × 80 cm i resirkulert polyester med sklisikker lateksbakside, ensfarget i fem rolige farger.",
+    "why": "Til 149 kr er dette den rimeligste måten å gi badet i 1. etasje (2,53 × 2,22) en myk, varm flate foran vasken; beige eller mørk sand spiller på SAND-veggene, og 50 × 80 cm fyller ikke det lille gulvet.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/61061",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr. og 149 kr for natur, beige, mørk sand, lys grå og grå (hver fargeside lest), 50x80 cm, 100 % resirkulert polyester, lateksbakside, vask 40 °C, OEKO-TEX, kvalitet GOLD; 70x120 (269 kr) og Ø70 (169 kr). Luvhøyde/tykkelse ikke oppgitt – anslått; farger fra produktbildene."
+  },
+  {
+    "id": "jysk-bakhuse-skoskap-65x25-h124",
+    "category": "gang",
+    "subcategory": "skoskap",
+    "name": "Skoskap BAKHUSE 3 rom 65x124",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/oppbevaring/skooppbevaring/skoskap-bakhuse-3-rom-hvit",
+    "priceNok": 1099,
+    "salePriceNok": 800,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3690431, hvit): kampanje 800 kr, før 1 099 kr (-27 %, kampanjepris gyldig til 2026-11-01 ifølge produktdataene). Varm eikefarget (varenr. 3690544) 850 kr, før 1 199 kr. Samme skap med 2 rom (65x85 cm): hvit (varenr. 3690433) 600 kr, før 849 kr; varm eikefarget (varenr. 3690546) 650 kr, før 899 kr. Mulig frakt i tillegg.",
+    "priceConfidence": "checked",
+    "dims": { "w": 0.65, "d": 0.25, "h": 1.24 },
+    "archetype": "shoe-cabinet",
+    "mount": "floor",
+    "params": {
+      "doors": 1,
+      "fronts": ["flip:3"],
+      "frontStyle": "flat",
+      "frontFit": "inset",
+      "handle": "none",
+      "gripRecess": "top",
+      "base": "plinth",
+      "legH": 0.03,
+      "top": "same",
+      "corners": "square",
+      "notes": "Three full-width flat tilt-out flaps set inside the carcass; no handles – an open grip gap (≈ 2 cm) above each flap is the pull. The side panels run to the floor with a low recessed plinth. Shoes up to EU 45, max 6 kg per flap."
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": { "body": "#f2f2f0", "front": "#f4f4f2", "top": "#f2f2f0", "legs": "#ebebe9", "handle": "#f4f4f2" },
+        "materials": { "body": "painted", "front": "painted", "top": "painted", "legs": "painted", "handle": "painted" },
+        "url": "https://jysk.no/oppbevaring/skooppbevaring/skoskap-bakhuse-3-rom-hvit"
+      },
+      {
+        "name": "Varm eikefarget",
+        "colors": { "body": "#d0b384", "front": "#d4b888", "top": "#d0b384", "legs": "#c9ab7c", "handle": "#d4b888" },
+        "materials": { "body": "oak", "front": "oak", "top": "oak", "legs": "oak", "handle": "oak" },
+        "priceNok": 1199,
+        "salePriceNok": 850,
+        "url": "https://jysk.no/oppbevaring/skooppbevaring/skoskap-bakhuse-3-rom-varm-eikefarget"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Smalt skoskap (65 × 25 × 124 cm) med tre glatte vippeklaffer uten håndtak – grepet er en åpen fuge over hver klaff. Hvit eller varm eikefarget folie.",
+    "why": "Bare 25 cm dypt, så det får plass langs veggen i den smale delen av gangen ved trappa (ca. 1,57 m fri bredde) uten å stjele gangareal; glatte fronter uten detaljer holder entréen rolig, og prisen er en brøkdel av Bohus-skapene.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/256187",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., kampanje- og førpriser for hvit og varm eik (3 rom) og for 2-romsutgaven, mål 65x25x124, 3 rom, sko til str. 45, maks 6 kg per rom / 9 kg på toppen, melamin/trefiberplate, 27 kg. Sokkelhøyde og gripefuge anslått fra bildet."
+  },
+  {
+    "id": "jysk-hagebro-benk-b100",
+    "category": "gang",
+    "subcategory": "benk",
+    "name": "Benk HAGEBRO sand/natur",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/inngangsparti/entremobler/entrebenker/benk-hagebro-sand-natur",
+    "priceNok": 799,
+    "salePriceNok": 475,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3670091, sand/natur): kampanje 475 kr, før 799 kr (-41 %, så langt lageret rekker). Bare én farge. Mulig frakt i tillegg.",
+    "priceConfidence": "checked",
+    "dims": { "w": 1.0, "d": 0.36, "h": 0.43 },
+    "archetype": "bench",
+    "mount": "floor",
+    "params": {
+      "seat": "upholstered",
+      "seatT": 0.12,
+      "tufted": true,
+      "storage": false,
+      "legStyle": "wood-taper",
+      "legH": 0.31,
+      "shelf": "none",
+      "seatH": 0.43,
+      "notes": "Thick, soft-edged upholstered pad (≈ 12 cm, foam 25 kg/m³ on a plywood frame) in a flat-woven sand fabric with small sunken buttons in two staggered rows; four round, slightly tapered solid rubberwood legs set ≈ 8 cm in from the ends – nearly straight (the model splays them a little)."
+    },
+    "variants": [
+      {
+        "name": "Sand/natur",
+        "colors": { "upholstery": "#b0a79b", "legs": "#d4b289", "frame": "#d4b289" },
+        "materials": { "upholstery": "woven", "legs": "oak", "frame": "oak" },
+        "url": "https://jysk.no/inngangsparti/entremobler/entrebenker/benk-hagebro-sand-natur"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.2,
+    "absorptionNote": "Polstret benk ≈ 0,2 m² Sabine.",
+    "description": "Polstret benk 100 cm med knappet sete i sandfarget, flatvevd stoff og runde ben i lyst gummitre.",
+    "why": "Et sted å sitte og ta på sko i gangen i 1. etasje eller i inngangsrommet i kjelleren: 36 cm dyp, sandfarget stoff som passer de varme veggene og lyse ben som matcher eikegulvet. Det myke setet demper også litt klang.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/256112",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., 475 kr (før 799), mål 100x36x43, sete polyester/skum 25 kg/m³, ramme kryssfinér, ben massivt gummitre, 7 kg. Setetykkelse og benhøyde anslått fra bildet; maks belastning ikke oppgitt."
+  },
+  {
+    "id": "jysk-cirkelhuse-stumtjener-h174",
+    "category": "gang",
+    "subcategory": "stumtjener",
+    "name": "Stumtjener CIRKELHUSE",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/inngangsparti/entremobler/stumtjenere/stumtjener-cirkelhuse-hvit",
+    "priceNok": 499,
+    "salePriceNok": 250,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3690413, hvit): kampanje 250 kr, før 499 kr (-50 %, kampanjepris gyldig til 2026-11-01 ifølge produktdataene). Svart (varenr. 3690414) samme pris. Mulig frakt i tillegg.",
+    "priceConfidence": "checked",
+    "dims": { "w": 0.4, "d": 0.4, "h": 1.74 },
+    "archetype": "coat-stand",
+    "mount": "floor",
+    "params": {
+      "style": "tree",
+      "hooks": 8,
+      "levels": 4,
+      "base": "round",
+      "shelf": false,
+      "coats": 1,
+      "notes": "Lacquered pole (thicker sleeve on the lower ≈ 45 cm) on a flat round MDF base plate; eight short straight pegs of solid pine angled upward like branches, spread on alternating sides between ≈ 1,1 and 1,74 m (two at the top). The pegs have plain ends, no balls."
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": { "body": "#ecebe8", "accent": "#ecebe8", "fabric": "#8a8580" },
+        "materials": { "body": "painted", "accent": "painted", "fabric": "wool" },
+        "url": "https://jysk.no/inngangsparti/entremobler/stumtjenere/stumtjener-cirkelhuse-hvit"
+      },
+      {
+        "name": "Svart",
+        "colors": { "body": "#262626", "accent": "#262626", "fabric": "#8a8580" },
+        "materials": { "body": "painted", "accent": "painted", "fabric": "wool" },
+        "url": "https://jysk.no/inngangsparti/entremobler/stumtjenere/stumtjener-cirkelhuse-svart"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Slank stumtjener i lakkert tre med åtte skrå grenknagger og rund fotplate, hvit eller svart.",
+    "why": "Tar bare 40 × 40 cm i hjørnet ved trappa i gangen eller i inngangsrommet i kjelleren og samler jakkene som ellers havner på stoler; svart gjentar de svarte detaljene, hvit forsvinner mot lyse vegger.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/256221",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr. og 250 kr (før 499) for hvit og svart, mål B40 x H174 x D40, MDF/massiv furu/stål, lakkert, 4 kg. Antall knagger (8) og knagghøyder talt/anslått fra bildet – ikke oppgitt på siden."
+  },
+  {
+    "id": "jysk-stubberup-sengeramme-140x200",
+    "category": "seng",
+    "subcategory": "rammeseng",
+    "name": "Sengeramme STUBBERUP 140x200cm natur eik",
+    "brand": "Royal Oak",
+    "store": "Jysk",
+    "url": "https://jysk.no/soverom/senger/sengebunner-lameller-og-sengerammer/sengerammer/sengeramme-stubberup-140x200cm-natur-eik",
+    "priceNok": 3499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3670406, natur eik): 3 499 kr, ingen kampanje. Samme seng 180x200 (varenr. 3670408) 3 999 kr og 90x200 (varenr. 3670529) 2 499 kr. Bare natur eik. Bunn (lameller) og madrass kjøpes separat. Mulig frakt i tillegg.",
+    "priceConfidence": "checked",
+    "dims": { "w": 1.47, "d": 2.07, "h": 1.03 },
+    "archetype": "bed",
+    "mount": "floor",
+    "params": {
+      "bedType": "frame",
+      "mattressW": 1.4,
+      "mattressL": 2,
+      "seatH": 0.52,
+      "topperH": 0,
+      "railH": 0.41,
+      "railT": 0.035,
+      "legH": 0.22,
+      "legStyle": "round",
+      "headboard": "slats",
+      "headboardH": 1.03,
+      "headboardT": 0.045,
+      "slatPitch": 0.1,
+      "footboard": false,
+      "bedding": "duvet",
+      "pillows": 2,
+      "throwRunner": false,
+      "notes": "Oiled oak-veneer frame: ≈ 19 cm tall side and end rails from 22 cm (free height under the bed) to ≈ 41 cm, round solid-oak corner posts – at the head they rise to 103 cm and carry a top rail with 14 thin round spindles; at the foot they end just above the rail (the foot end is the rail itself). Centre beam with a middle leg. A ≈ 20 cm frame mattress (sold separately) is assumed for the lying height. In the model the spindles run down to the floor behind the head rail."
+    },
+    "variants": [
+      {
+        "name": "Natur eik",
+        "colors": { "frame": "#c99a6a", "headboard": "#c99a6a", "legs": "#c4956a", "bedding": "#f1eee8" },
+        "materials": { "frame": "oak", "headboard": "oak", "legs": "oak", "bedding": "cotton" },
+        "url": "https://jysk.no/soverom/senger/sengebunner-lameller-og-sengerammer/sengerammer/sengeramme-stubberup-140x200cm-natur-eik"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.2,
+    "description": "Sengeramme 140x200 i oljet eikefinér og massiv eik med spilegavl, runde hjørnestolper og lav fotende; frihøyde 22 cm under. Bunn, madrass og sengetøy kjøpes separat (vises oppredd i spillet).",
+    "why": "En 140-seng som får plass i det lille soverommet i kjelleren (7,4 m²): 147 × 207 cm gir rom til nattbord og gangsone, og lys eik med spiler ser lett og rolig ut. 22 cm frihøyde gjør det enkelt å holde rent under.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/236146",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., 3 499 kr (180x200 3 999 kr, 90x200 2 499 kr), mål B147 x L207 x H103, frihøyde 22 cm, eikefinér/massiv eik/kryssfinér/furu, oljebehandlet, ekskl. bunn og madrass. Skinnehøyde (ca. 41 cm), antall spiler og liggehøyde (med ca. 20 cm madrass) anslått fra bildet."
+  },
+  {
+    "id": "jysk-hemme-nattbord-37x32",
+    "category": "nattbord",
+    "name": "Nattbord HEMME 1 skuff natur eik",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/soverom/nattbord/nattbord-hemme-1-skuff-natur-eik",
+    "priceNok": 999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3601423, natur eik): 999 kr per stk., ingen førpris; flerkjøpstilbud 2 for 1 499 kr. Bare natur eik. Mulig frakt i tillegg.",
+    "priceConfidence": "checked",
+    "dims": { "w": 0.37, "d": 0.32, "h": 0.6 },
+    "archetype": "bedside-table",
+    "mount": "floor",
+    "params": {
+      "fronts": ["drawers:1"],
+      "frontStyle": "flat",
+      "handle": "cutout",
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legFrame": true,
+      "legH": 0.47,
+      "lowerShelf": 0.24,
+      "top": "same",
+      "corners": "rounded",
+      "cornerR": 0.015,
+      "notes": "Open frame table like TONSTAD: four straight round solid-oak legs (Ø ≈ 3 cm) from the floor to the top; a ≈ 10 cm drawer box hangs under the slightly overhanging top between them; a fixed open shelf ≈ 24 cm above the floor. The drawer has an oval finger hole in the middle of the front (shown as a cutout grip)."
+    },
+    "variants": [
+      {
+        "name": "Natur eik",
+        "colors": { "body": "#d8bb9b", "front": "#dcbf9f", "top": "#dec3a5", "legs": "#d2b392", "handle": "#3a3029" },
+        "materials": { "body": "oak", "front": "oak", "top": "oak", "legs": "oak", "handle": "painted" },
+        "url": "https://jysk.no/soverom/nattbord/nattbord-hemme-1-skuff-natur-eik"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Luftig nattbord i eikefinér med runde ben i massiv eik, én skuff med grepshull og en åpen hylle nede.",
+    "why": "Smalt (37 × 32 cm), så det passer ved siden av en 140-seng i det lille kjellersoverommet; lys eik og runde heltreben hører sammen med STUBBERUP-sengen, og hyllen under holder bøkene samlet.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/283720",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr., 999 kr (2 for 1 499), mål B37 x H60 x D32, topp MDF/eikefinér, ben massiv eik, 1 skuff (maks 3 kg) med skuffestopper, 1 hylle (maks 5 kg), 6 kg. Skuffhøyde (ca. 10 cm) og hyllehøyde (ca. 24 cm) anslått fra bildet."
+  },
+  {
+    "id": "jysk-horsens-bokreol-70x29-h197",
+    "category": "hylle",
+    "subcategory": "bokhylle",
+    "name": "Bokreol HORSENS 5 hyller bred",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-lys-eikefarget",
+    "priceNok": 850,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3640339, lys eikefarget): 850 kr, ingen kampanje. Hvit (varenr. 3640334) 750 kr; varm eikefarget (varenr. 3680089) 850 kr. Lav utgave med 3 hyller 70x120 cm (hvit, varenr. 3606825) 500 kr. Mulig frakt i tillegg.",
+    "priceConfidence": "checked",
+    "dims": { "w": 0.7, "d": 0.29, "h": 1.97 },
+    "archetype": "bookcase",
+    "mount": "floor",
+    "params": {
+      "style": "closed",
+      "cols": 1,
+      "rows": 5,
+      "doorRows": 0,
+      "base": "plinth",
+      "legH": 0.06,
+      "decor": true,
+      "handle": "none",
+      "notes": "Plain melamine box with an HDF back, flush top, five equal open compartments and a low recessed plinth between the side panels. Max 5 kg per shelf."
+    },
+    "variants": [
+      {
+        "name": "Lys eikefarget",
+        "colors": { "body": "#d4b38f", "front": "#d4b38f", "top": "#d8b993", "legs": "#ccab87", "handle": "#d4b38f" },
+        "materials": { "body": "oak", "front": "oak", "top": "oak", "legs": "oak", "handle": "oak" },
+        "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-lys-eikefarget"
+      },
+      {
+        "name": "Hvit",
+        "colors": { "body": "#f0f0ee", "front": "#f2f2f0", "top": "#f0f0ee", "legs": "#e9e9e7", "handle": "#f2f2f0" },
+        "materials": { "body": "painted", "front": "painted", "top": "painted", "legs": "painted", "handle": "painted" },
+        "priceNok": 750,
+        "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-hvit"
+      },
+      {
+        "name": "Varm eikefarget",
+        "colors": { "body": "#c69d6f", "front": "#c69d6f", "top": "#caa274", "legs": "#bd946a", "handle": "#c69d6f" },
+        "materials": { "body": "oak", "front": "oak", "top": "oak", "legs": "oak", "handle": "oak" },
+        "url": "https://jysk.no/oppbevaring/bokhyller-og-reoler/bokreol-horsens-5-hyller-bred-varm-eikefarget"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Enkel, høy bokhylle (70 × 29 × 197 cm) med fem åpne rom og lav sokkel, i lys eik, hvit eller varm eik.",
+    "why": "En rimelig, glatt bokhylle uten pynt til kjellerstua (20,6 m²) eller kjellersoverommet; bare 29 cm dyp, og lys eik eller hvit passer både eikegulvet og de lyse veggene.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/268408",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr. og priser for lys eik (850), hvit (750) og varm eik (850), mål 70x29x197 (hvit oppgitt 30 cm dyp), 5 hyller, maks 5 kg per hylle, melamin/trefiberplate med HDF-rygg, 31 kg; 3-hyllers 70x120 500 kr. Sokkelhøyde anslått fra bildet."
+  },
+  {
+    "id": "jysk-hejsager-vegghylle-3-hyller-65x20",
+    "category": "hylle",
+    "subcategory": "vegghylle",
+    "name": "Vegghylle HEJSAGER 3 hyller",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/oppbevaring/hyller/vegghylle-hejsager-3-hyller-svart-natur",
+    "priceNok": 300,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3680115, svart/natur): 300 kr («Fast lav pris», ingen kampanje). Hvit/natur (varenr. 3680116) samme pris. Samme hylle med 1 hylle 65x20x27 cm (svart/natur, varenr. 3680114) 135 kr. Mulig frakt i tillegg.",
+    "priceConfidence": "checked",
+    "dims": { "w": 0.65, "d": 0.2, "h": 0.8 },
+    "archetype": "wall-shelf",
+    "mount": "wall",
+    "params": {
+      "style": "simple",
+      "shelves": 3,
+      "topT": 0.016,
+      "boardDepth": 0.2,
+      "brackets": "straps",
+      "mountHeight": 1.05,
+      "notes": "Three oak-look melamine boards hung in two thin powder-coated steel rod frames: the rods run vertically just behind the front edge of the boards and bend back to the wall at the top (≈ 15 cm above the top board). Drawn with the strap mounts in the body colour; the simple style spreads the boards over the full height."
+    },
+    "variants": [
+      {
+        "name": "Svart/natur",
+        "colors": { "body": "#1c1c1c", "front": "#1c1c1c", "top": "#d4ad80", "legs": "#1c1c1c", "handle": "#1c1c1c" },
+        "materials": { "body": "black-metal", "front": "black-metal", "top": "oak", "legs": "black-metal", "handle": "black-metal" },
+        "url": "https://jysk.no/oppbevaring/hyller/vegghylle-hejsager-3-hyller-svart-natur"
+      },
+      {
+        "name": "Hvit/natur",
+        "colors": { "body": "#f0efec", "front": "#f0efec", "top": "#d4ad80", "legs": "#f0efec", "handle": "#f0efec" },
+        "materials": { "body": "painted", "front": "painted", "top": "oak", "legs": "painted", "handle": "painted" },
+        "url": "https://jysk.no/oppbevaring/hyller/vegghylle-hejsager-3-hyller-hvit-natur"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Vegghylle 65 × 20 × 80 cm med tre hyller i natur eikefarge hengt i tynne stålbøyler, svarte eller hvite.",
+    "why": "Gir plass til kurver, nøkler og et par planter på veggen i gangen eller i inngangsrommet i kjelleren uten å ta gulvplass; den tynne svarte rammen gjentar de svarte detaljene i huset, og 300 kr er knapt mer enn en enkelt hylle hos Bohus.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/270390",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21: navn, varenr. og 300 kr for svart/natur og hvit/natur, mål B65 x H80 x D20, 3 hyller (MDF/melamin/ABS), stål pulverlakkert, 5 kg; 1-hyllers 135 kr. Hylletykkelse og bøylenes form anslått fra bildet; maks belastning ikke oppgitt."
+  }
+]

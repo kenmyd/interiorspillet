@@ -1089,5 +1089,417 @@
     "verified": false,
     "verifiedNote": "Bekreftet på bolia.com 2026-10-18: Dalvik Teppe 200 x 300 cm i grå, 8 344 kr, på lager, 100 % New Zealand-ull, håndvevd med boblestruktur og frynser.",
     "priceConfidence": "check"
+  },
+  {
+    "id": "bohus-frigg-loper-70x200",
+    "category": "teppe",
+    "subcategory": "lopere",
+    "name": "Frigg løper 70x200",
+    "brand": "Denina",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/tepper/ryer-og-lopere/frigg-loper-70x200",
+    "priceNok": 949,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 101855 natur): 949 kr, ingen kampanje. Samme pris i hvit (278685), sølv (100576) og brungrå (278686). Finnes også 70x140 (649 kr) og 60x90 (379 kr), og som stort teppe (Frigg teppe 200x290 i katalogen). 100 % ull, håndvevd, vendbar, 1 cm.",
+    "dims": {
+      "w": 0.7,
+      "d": 2,
+      "h": 0.01
+    },
+    "archetype": "rug",
+    "mount": "rug",
+    "params": {
+      "shape": "rect",
+      "pile": "flat",
+      "pattern": "melange",
+      "thickness": 0.01,
+      "weave": "handwoven",
+      "fringe": false
+    },
+    "variants": [
+      {
+        "name": "Natur",
+        "colors": {
+          "base": "#d5d3c8",
+          "accent": "#c3c0b3",
+          "accent2": "#e4e2d8"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/ryer-og-lopere/frigg-loper-70x200"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "base": "#ebe8e1",
+          "accent": "#d9d4ca",
+          "accent2": "#f3f1ec"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/ryer-og-lopere/frigg-loper-70x200-3"
+      },
+      {
+        "name": "Sølv",
+        "colors": {
+          "base": "#b9b8b3",
+          "accent": "#9f9e99",
+          "accent2": "#cfcec9"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/ryer-og-lopere/frigg-loper-70x200-1"
+      },
+      {
+        "name": "Brungrå",
+        "colors": {
+          "base": "#8a8073",
+          "accent": "#736a5e",
+          "accent2": "#a0978a"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/ryer-og-lopere/frigg-loper-70x200-4"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.25,
+    "description": "Håndvevd, vendbar løper i 100 % ull med grov, melert vevstruktur – samme kvalitet som Frigg-teppet.",
+    "why": "200 cm lang passer den på den frie delen av gangen ved trappa (ca. 1,57 × 2,07 m) og demper skritt mot gulvet; den naturhvite melangen er rolig mot SAND-veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/FRIGG/623391/image-thumb__623391__PDP-Product/Frigg_natur_70x200.c2626289.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 70x200, 1 cm, 100 % ull, håndvevd, vendbar, 949 kr, varenr. og lenker for alle fire farger. Fargene hentet fra Frigg-teppet i katalogen, natur justert etter løperbildet.",
+    "absorptionNote": "Flatvevd: 0,18 × 1,4 m².",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-trio-loper-80x300",
+    "category": "teppe",
+    "subcategory": "lopere",
+    "name": "Trio løper 80x300",
+    "brand": "Denina",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/tepper/ryer-og-lopere/trio-loper-80x300-1",
+    "priceNok": 1199,
+    "salePriceNok": 839,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 243378 gråmix / 278703 brun): 839 kr, før 1 199 kr. Finnes også 80x250 (664 kr, før 949), 80x200 (489 kr, før 699) og 80x150 (384 kr, før 549). 100 % polypropylen, maskinvevd, gummiert sklisikker bakside, tåler støvsuger med børste.",
+    "dims": {
+      "w": 0.8,
+      "d": 3,
+      "h": 0.005
+    },
+    "archetype": "rug",
+    "mount": "rug",
+    "params": {
+      "shape": "rect",
+      "pile": "flat",
+      "pattern": "border",
+      "thickness": 0.005,
+      "weave": "machine-woven",
+      "fringe": false,
+      "notes": "Sisal-look melange with a double thin line a few cm inside the edge (accent2); the model draws one line."
+    },
+    "variants": [
+      {
+        "name": "Gråmix",
+        "colors": {
+          "base": "#8f8d89",
+          "accent": "#85837f",
+          "accent2": "#1f1f1f"
+        },
+        "materials": {
+          "base": "woven",
+          "accent": "woven",
+          "accent2": "woven"
+        },
+        "url": "https://www.bohus.no/tepper/ryer-og-lopere/trio-loper-80x300-1"
+      },
+      {
+        "name": "Brun",
+        "colors": {
+          "base": "#a8988a",
+          "accent": "#9f8f81",
+          "accent2": "#e9e1d3"
+        },
+        "materials": {
+          "base": "woven",
+          "accent": "woven",
+          "accent2": "woven"
+        },
+        "url": "https://www.bohus.no/tepper/ryer-og-lopere/trio-loper-80x300"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.43,
+    "description": "Flatvevd løper i slitesterk polypropylen med sisalmønster og dobbel kantlinje, gummiert og sklisikker bakside.",
+    "why": "Kjellergangen (12,5 m²) med trapp og inngang får mest slitasje og vått fottøy; Trio tåler hard bruk og er lett å støvsuge, og 300 cm dekker gangen fra trappa. Gråmix med svart linje følger de svarte detaljene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/TRIO/122483/image-thumb__122483__PDP-Product/243378%20-%20Trio%20l%C3%B8per%2080x300%20polypropylen%20gr%C3%A5mix%20-%201.538924a9.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 80x300, polypropylen, maskinvevd, gummiert bakside, 839 kr (før 1 199) for gråmix og brun. Luggen oppgis til 0,5 cm (gråmix) og 1 cm (brun); farger fra bildene (brun-bildet er 80x250).",
+    "absorptionNote": "Flatvevd: 0,18 × 2,4 m².",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sval-teppe-160x230",
+    "category": "teppe",
+    "name": "Sval teppe 160x230",
+    "brand": "Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/tepper/gulvteppe/ullteppe/sval-teppe-160x230-1",
+    "priceNok": 4199,
+    "salePriceNok": 2939,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 314755 sand): 2 939 kr, før 4 199 kr. Samme pris i varm grå (314757) og muldvarp (314756). Finnes også 200x290 (4 549 kr, før 6 499). 100 % ull, håndvevd, 1 cm lugg, design Halvor Bakke.",
+    "dims": {
+      "w": 1.6,
+      "d": 2.3,
+      "h": 0.01
+    },
+    "archetype": "rug",
+    "mount": "rug",
+    "params": {
+      "shape": "rect",
+      "pile": "low",
+      "pattern": "melange",
+      "thickness": 0.01,
+      "weave": "handwoven",
+      "fringe": false
+    },
+    "variants": [
+      {
+        "name": "Sand",
+        "colors": {
+          "base": "#ddd6c6",
+          "accent": "#cfc7b5",
+          "accent2": "#e8e2d5"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/gulvteppe/ullteppe/sval-teppe-160x230-1"
+      },
+      {
+        "name": "Varm grå",
+        "colors": {
+          "base": "#8a857d",
+          "accent": "#78736b",
+          "accent2": "#9c978f"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/gulvteppe/ullteppe/sval-teppe-160x230-2"
+      },
+      {
+        "name": "Muldvarp",
+        "colors": {
+          "base": "#a59c8b",
+          "accent": "#958c7b",
+          "accent2": "#b5ad9d"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/gulvteppe/ullteppe/sval-teppe-160x230"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.92,
+    "description": "Tett, håndvevd ullteppe med filtet, svakt melert overflate og et lite skinnmerke i hjørnet – stille og nesten ensfarget.",
+    "why": "160x230 kan ligge på tvers under nedre del av en 160/180-seng på soverommet (3,11 × 3,69), så du går på ull morgen og kveld; sand er varmt og rolig mot SAND/Marrakesh-veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/SVAL/337596/image-thumb__337596__PDP-Product/314755%20-%20Sval%20teppe%20160x230%20100-%20ull%20sand%20-%204.154d2ca0.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 160x230, 100 % ull, håndvevd, lugg 1 cm, 2 939 kr (før 4 199) for alle tre farger, varenr. og lenker.",
+    "absorptionNote": "Lav lugg: 0,25 × 3,68 m².",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-bolzano-teppe-200x290",
+    "category": "teppe",
+    "name": "Bolzano teppe 200x290",
+    "brand": "Inhouse Group",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/tepper/gulvteppe/stort-teppe/bolzano-teppe-200x290-1",
+    "priceNok": 4999,
+    "salePriceNok": 3499,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 314938 beige): 3 499 kr, før 4 999 kr. Samme pris i grå (314940) og hvit (314936). Bohus har ikke 200x300 – 200x290 er nærmeste størrelse. Finnes også 160x230 (2 099 kr, før 2 999). 100 % ull, håndtuftet, 2 cm lugg, bakside av resirkulert bomull.",
+    "dims": {
+      "w": 2,
+      "d": 2.9,
+      "h": 0.02
+    },
+    "archetype": "rug",
+    "mount": "rug",
+    "params": {
+      "shape": "rect",
+      "pile": "medium",
+      "pattern": "solid",
+      "thickness": 0.02,
+      "weave": "hand-tufted",
+      "fringe": false,
+      "notes": "Very fine lengthwise rib in the pile, reads as solid."
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "base": "#a39887",
+          "accent": "#968a79",
+          "accent2": "#b0a593"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/gulvteppe/stort-teppe/bolzano-teppe-200x290-1"
+      },
+      {
+        "name": "Grå",
+        "colors": {
+          "base": "#6f6a64",
+          "accent": "#635e58",
+          "accent2": "#7d7872"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/gulvteppe/stort-teppe/bolzano-teppe-200x290-2"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "base": "#e4dfd4",
+          "accent": "#d6d0c4",
+          "accent2": "#eeeae1"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/gulvteppe/stort-teppe/bolzano-teppe-200x290"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.62,
+    "description": "Håndtuftet ullteppe med 2 cm lugg og fin, nesten usynlig ripestruktur – ensfarget og mykt under føttene.",
+    "why": "Kjellerstua (20,6 m²) har harde flater og trenger lyddemping; 2 cm ull-lugg demper mer enn et flatvevd teppe, og den varme beigen holder seg rolig under en sofagruppe.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Inhouse%20Group/Produkter/BOLZANO/342016/image-thumb__342016__PDP-Product/314937%20-%20Bolzano%20teppe%20160x230%20100-%20ull%20beige%20-%202.8dcc46a1.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 200x290, 2 cm, 100 % ull, håndtuftet, 3 499 kr (før 4 999) for beige, grå og hvit. Merke ikke oppgitt (leverandør Inhouse Group); produktbildet er av 160x230. Hvit-fargen anslått fra fargenavnet.",
+    "absorptionNote": "Middels lugg: 0,28 × 5,8 m².",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-kleber-rundt-teppe-o160",
+    "category": "teppe",
+    "name": "Kleber rundt teppe Ø160",
+    "brand": "Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/tepper/gulvteppe/rundt-teppe/kleber-rundt-teppe-o160-3",
+    "priceNok": 3899,
+    "salePriceNok": 2729,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 314739 hvit berber): 2 729 kr, før 3 899 kr. Samme pris i grå (285136), brun (285135) og koksgrå (285134). Finnes også Ø240 (6 019 kr, før 8 599), Ø300 og som løper 70x140/70x230. 100 % ny ull i naturfarger, håndvevd, vendbar.",
+    "dims": {
+      "w": 1.6,
+      "d": 1.6,
+      "h": 0.01
+    },
+    "archetype": "rug",
+    "mount": "rug",
+    "params": {
+      "shape": "round",
+      "pile": "flat",
+      "pattern": "melange",
+      "thickness": 0.01,
+      "weave": "handwoven",
+      "fringe": false
+    },
+    "variants": [
+      {
+        "name": "Hvit berber",
+        "colors": {
+          "base": "#e9e6df",
+          "accent": "#dcd7cd",
+          "accent2": "#f1efe9"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/gulvteppe/rundt-teppe/kleber-rundt-teppe-o160-3"
+      },
+      {
+        "name": "Grå",
+        "colors": {
+          "base": "#a7a19a",
+          "accent": "#8f8880",
+          "accent2": "#bdb8b1"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/gulvteppe/rundt-teppe/kleber-rundt-teppe-o160-2"
+      },
+      {
+        "name": "Brun",
+        "colors": {
+          "base": "#7b6a5a",
+          "accent": "#6a5a4b",
+          "accent2": "#8d7c6b"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/gulvteppe/rundt-teppe/kleber-rundt-teppe-o160-1"
+      },
+      {
+        "name": "Koksgrå",
+        "colors": {
+          "base": "#4f4d4b",
+          "accent": "#403e3c",
+          "accent2": "#605e5b"
+        },
+        "materials": {
+          "base": "wool",
+          "accent": "wool",
+          "accent2": "wool"
+        },
+        "url": "https://www.bohus.no/tepper/gulvteppe/rundt-teppe/kleber-rundt-teppe-o160"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.36,
+    "description": "Rundt, håndvevd og vendbart ullteppe i naturfarger med lette sjatteringer – hvert teppe blir litt ulikt.",
+    "why": "Et rundt teppe myker opp det lille soverommet i kjelleren (7,4 m²) eller en lesekrok uten å dekke hele gulvet; hvit berber er lys og ren, grå og koksgrå tåler mer.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Denina%20AS/Produkter/KLEBER/351583/image-thumb__351583__PDP-Product/314739%20-%20Kleber%20rundt%20teppe%20%C3%98160%20100-%20ull%20hvit%20berber%20-%201.aaf7ddbb.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: Ø160, 1 cm, 100 % ull, håndvevd, vendbar, 2 729 kr (før 3 899) for alle fire farger, varenr. og lenker. Brun og koksgrå farge anslått fra fargenavnet.",
+    "absorptionNote": "Flatvevd: 0,18 × 2,01 m².",
+    "priceConfidence": "checked"
   }
 ]
