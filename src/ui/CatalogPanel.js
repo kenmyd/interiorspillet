@@ -6,7 +6,7 @@ import { buildModel } from '../models/registry.js';
 import { applyShading } from '../models/shading.js';
 import { disposeModel } from '../models/kit.js';
 import { resolveColor, prepareMaterials } from '../home/materials.js';
-import { rt60For } from '../design/Acoustics.js';
+import { rt60For, acousticsFor, LIVING_ROOM_ID } from '../design/Acoustics.js';
 import * as catalogModule from '../catalog/index.js';
 
 /**
@@ -1178,9 +1178,12 @@ export class CatalogPanel extends BasePanel {
     if (p.absorption) {
       let txt = `ca. ${fmtNumber(p.absorption, 2)} m² Sabine`;
       try {
-        const r = this.editor.acoustics();
+        // the room the piece would be placed in: the one the reverberation badge shows (hele-huset §5.4)
+        const roomId = this.editor.ui?.acoustics?.roomId ?? LIVING_ROOM_ID;
+        const r = roomId === LIVING_ROOM_ID ? this.editor.acoustics() : acousticsFor(this.editor.design, this.editor.home, roomId);
         const next = rt60For(r.absorption + p.absorption, r.volume);
-        txt += ` – etterklangen går fra ${fmtNumber(r.rt60, 2)} til ${fmtNumber(next, 2)} s`;
+        const where = r.roomId && r.roomId !== LIVING_ROOM_ID ? ` i rommet (${r.roomName})` : '';
+        txt += ` – etterklangen${where} går fra ${fmtNumber(r.rt60, 2)} til ${fmtNumber(next, 2)} s`;
       } catch {
         /* acoustics optional */
       }

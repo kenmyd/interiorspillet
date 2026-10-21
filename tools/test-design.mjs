@@ -9,6 +9,9 @@
  * layout derived values, existing furniture → items, DesignState (add/update/remove, undo/redo, transactions,
  * history limit, events, toJSON → load round trip, tolerant load, resetToOriginal), Acoustics (original ≈ 0.86 s,
  * proposal B ≈ 0.68 s, edits, rugs, shading) and Saves (with an in-memory storage).
+ * Design version 2 (hele huset, steg 16): toJSON has version 2 and the original design holds every room's originals;
+ * the rest (level-local y, originalRooms, specRevision, the v1 backup, acoustics per room) is tested in
+ * tools/house-tests/design-v2.test.mjs.
  *
  * Vite imports JSON natively; Node needs import attributes, so a small in-thread loader hook turns *.json into
  * modules. three.js itself runs in Node (layout.js only uses vectors/boxes).
@@ -318,7 +321,10 @@ console.log(`  original furniture absorption ${existing.originalAbsorption(layou
 section('DesignState');
 const { DesignState, MAX_HISTORY } = await imp('src/design/DesignState.js');
 const d = new DesignState();
-check('starts with the original design and no history', d.items.size === originals.length && !d.canUndo && d.wall.proposalId === '0');
+// hele huset (steg 16): the original design holds the original furniture of every room – the living room's first
+const HOUSE = d.originalJSON().items.length;
+check('starts with the original design and no history (the living room first, then the other rooms)', d.items.size === HOUSE && HOUSE > originals.length
+  && originals.every((o, i) => [...d.items.keys()][i] === o.uid) && !d.canUndo && d.wall.proposalId === '0', `${d.items.size} items, ${originals.length} in the living room`);
 const events = [];
 for (const ev of ['item:add', 'item:update', 'item:remove', 'wall', 'window', 'paint', 'env', 'load', 'change', 'history']) d.on(ev, (p) => events.push(ev));
 const chairSpec = { ...catalog.productToItemSpec('bohus-scapa-vilde-loungestol'), position: [4.0, 0, 9.8] };
@@ -332,7 +338,7 @@ check('undo update', d.get(uid).position[0] === 4 && d.get(uid).colors.legs === 
 d.redo();
 check('redo update', d.get(uid).position[0] === 4.2);
 d.remove(uid);
-check('remove', !d.get(uid) && d.items.size === originals.length);
+check('remove', !d.get(uid) && d.items.size === HOUSE);
 d.undo();
 check('undo remove restores the item', d.get(uid)?.position[0] === 4.2);
 d.undo();
@@ -376,14 +382,16 @@ d.setWindow('win-s1', catalog.productToShadingSpec('bohus-rebell-sondre-gardinle
 d.setPaint('w-vest-stue', 'sand');
 d.setEnv({ mode: 'evening', exposure: 1.2 });
 const json = d.toJSON();
-check('toJSON has version 1', json.version === 1 && Array.isArray(json.items) && json.wall.proposalId === 'B');
+check('toJSON has version 2 (level-local y, originalRooms)', json.version === 2 && Array.isArray(json.items) && json.wall.proposalId === 'B'
+  && json.items.every((it) => typeof it.level === 'string') && json.meta.originalRooms.includes('stue-kjokken'));
 const d2 = new DesignState({ original: false });
 d2.load(JSON.stringify(json));
 check('toJSON → load round trip is identical', JSON.stringify(d2.toJSON()) === JSON.stringify(json));
 const d3 = new DesignState({ original: false });
 d3.load({ items: [{ archetype: 'rug', dims: { w: 2 }, foo: 1, position: [1, 0] }], wall: { proposalId: 'C', bar: 2 }, env: { hour: 'x' }, unknown: true });
 const rug = d3.list()[0];
-check('tolerant load: unknown fields ignored, missing ones defaulted', d3.items.size === 1 && !('foo' in rug) && rug.dims.w === 2 && rug.dims.d === 0.5 && rug.position[2] === 0
+// (no meta.originalRooms = a version 1 design: the rest of the house's originals are added after the saved items)
+check('tolerant load: unknown fields ignored, missing ones defaulted', d3.items.size === 1 + HOUSE - originals.length && d3.list().filter((it) => it.source !== 'existing').length === 1 && !('foo' in rug) && rug.dims.w === 2 && rug.dims.d === 0.5 && rug.position[2] === 0
   && rug.mount === 'rug' && d3.env.hour === 13 && d3.wall.proposalId === 'C' && !('bar' in d3.wall) && d3.meta.name === 'Uten navn');
 let threw = false;
 try {
@@ -413,7 +421,7 @@ d6.load({ items: [{ ...osloOld, params: { ...o5.params, tilt: 40 } }] });
 check('old save: Oslo Wood with a drum shade → tiltable cone (translucent kept), a cone keeps its tilt', o5.params.shadeShape === 'cone' && o5.params.shadeH === 0.3
   && o5.params.tilt === 15 && o5.params.tiltable === true && o5.params.translucent === 0.42 && d6.list()[0].params.tilt === 40);
 d.resetToOriginal();
-check('resetToOriginal (undoable)', d.items.size === originals.length && d.wall.proposalId === '0' && !Object.keys(d.windows).length && d.canUndo);
+check('resetToOriginal (undoable)', d.items.size === HOUSE && d.wall.proposalId === '0' && !Object.keys(d.windows).length && d.canUndo);
 d.undo();
 check('…undo brings the design back', d.wall.proposalId === 'B' && !!d.windows['win-s1'] && !!d.get(uid));
 
