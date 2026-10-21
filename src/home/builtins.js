@@ -12,8 +12,10 @@ import * as THREE from 'three';
  *   buildBuiltIns(ctx, layout) → { group, walls, windows, doors, pickables, builtInLights, colliders, update, setPaint, dispose }
  *
  * The entries are layout.house.builtIns (world space, each with roomId / levelId / floorY). A built-in's meshes go in
- * ctx.roots.rooms[roomId].contents (hidden with the room's contents, §4.12) or in the returned `group`. Its light
- * (`light`, e.g. the LED ring of the round mirror) goes in builtInLights → home.house.builtInLights.
+ * ctx.roots.rooms[roomId].contents (hidden with the room's contents, §4.12) – not in the returned `group`, which sits
+ * at the scene root outside every level (keep it empty or for objects of no single level). Its light (`light`, e.g.
+ * the LED ring of the round mirror) goes in builtInLights → home.house.builtInLights. The lists are read once when
+ * buildBuiltIns returns: fill them before returning.
  *
  * @param {object} ctx     createHome ctx (+ ctx.roots)
  * @param {object} layout  home/layout.js

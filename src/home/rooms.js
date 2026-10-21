@@ -15,17 +15,22 @@ import * as THREE from 'three';
  *         ctx.roots.levels[levelId] (THREE.Group per level) and ctx.roots.rooms[roomId] = { id, name, levelId, kind, hud,
  *         group, surfaces, contents } – a room's walls / floor / ceilings go in `surfaces`, its fittings and built-ins in
  *         `contents` (visibility.js hides those, §4.12). Everything put there is in the scene already (index.js adds the
- *         level groups); objects can also go in the returned `group`, which index.js adds to the scene when it has no
- *         parent. ctx.lighting does not exist yet while building (LightManager comes after) – read it when it is needed
- *         (Door.onChange → ctx.lighting?.requestShadowUpdate()).
+ *         level groups). The returned `group` goes to the scene root, outside every level (Y1 cannot hide it with its
+ *         level): keep it for objects of no single level – every room surface, fitting, door and the slab box of a
+ *         level go in ctx.roots.rooms[id] or ctx.roots.levels[id]. ctx.lighting does not exist yet while building
+ *         (LightManager comes after) – read it when it is needed (Door.onChange → ctx.lighting?.requestShadowUpdate()).
  * layout  home/layout.js – the rooms to build are layout.house.rooms without 'stue-kjokken' and without hud rooms.
- * M       the shell's shared materials (index.js passes shell.materials; null until shell.js returns them).
+ * M       the shell's shared materials (index.js passes shell.materials = buildShell's set M: trim, reveal,
+ *         baseboard, threshold, hallDoor, hardware …). Read-only: never dispose them here.
  *
  * The contract (index.js merges it into home.*, see the top of index.js): walls / windows / doors in the shape of
  * shell.js's (WallInfo, WindowInfo with `anchor`, DoorInfo with `door`), pickables { floor, walls, ceilings, windows },
  * builtInLights (→ home.house.builtInLights, not yet the LightManager's list), colliders = static THREE.Object3D /
  * THREE.Box3 that index.js registers with ctx.collision (door leaves and surface zones the builder registers itself),
  * update(dt, state) every frame (doors), setPaint(id, color) for its own surfaces (ignore other ids), dispose().
+ * The doors go in `doors` (merged into home.doors, so ?doors=open reaches them) and update() calls door.update on each.
+ * Static collision is returned in `colliders`, never also added through ctx.collision.addStatic (it would be
+ * registered twice). The lists are read once when buildRooms returns: fill them before returning.
  *
  * @param {object} ctx
  * @param {object} layout

@@ -453,7 +453,10 @@ function ceilingGeometry(poly, heightAt) {
  * @returns {{ group: THREE.Group, walls: object[], windows: object[], doors: object[], highWall: object,
  *   pickables: { floor: THREE.Mesh[], walls: THREE.Mesh[], ceilings: THREE.Mesh[], windows: THREE.Mesh[] },
  *   ceilingHeightAt: (x: number, z: number) => number, builtInLights: object[], setPaint: (id: string, color: string|null) => void,
- *   update: (dt: number, state: object) => void, dispose: () => void }}
+ *   materials: Object<string, THREE.Material>, update: (dt: number, state: object) => void, dispose: () => void }}
+ *   `materials` is the shell's shared set M (trim, reveal, baseboard, threshold, hallDoor …): index.js passes it to
+ *   buildRooms (rooms.js), so the other rooms share the same materials and programs. Read-only for the other
+ *   builders: they never dispose these (the shell's dispose handles the ones it owns, the rest are materials.js's cache).
  */
 export function buildShell(ctx, layout) {
   const quality = ctx.quality || {};
@@ -1407,6 +1410,7 @@ export function buildShell(ctx, layout) {
     pickables,
     ceilingHeightAt: layout.ceilingHeightAt,
     builtInLights,
+    materials: M,
     setPaint,
     update(dt, state) {
       for (const d of doors) d.door?.update(dt, state);

@@ -20,9 +20,11 @@ import * as THREE from 'three';
  *
  *   buildStairs(ctx, layout) → { group, walls, windows, doors, pickables, builtInLights, colliders, update, setPaint, dispose }
  *
- * The stair spans two levels: its meshes go in the returned `group` (index.js adds it to the scene when it has no
- * parent) or in ctx.roots.levels[id] / ctx.roots.rooms['trapp'] (see rooms.js for ctx.roots). The LED strip of the
- * handrail goes in builtInLights → home.house.builtInLights (group 'gang', §4.10–4.11).
+ * The stair spans two levels: its meshes go in ctx.roots.rooms['trapp'] (surfaces / contents) or, split per level,
+ * in ctx.roots.levels[id] (see rooms.js for ctx.roots). The returned `group` sits at the scene root outside every
+ * level, so Y1 (§4.12) cannot hide it with a level: use it only for what must show from both levels. The LED strip of
+ * the handrail goes in builtInLights → home.house.builtInLights (group 'gang', §4.10–4.11). The lists are read once
+ * when buildStairs returns: fill them before returning.
  */
 
 /**

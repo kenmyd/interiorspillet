@@ -1009,6 +1009,28 @@ Steg 1 kjøres først, deretter 2–5 parallelt og 6 til slutt.
    - *Avhenger av:* 4.
    - *Test:* bildediff av stua = 0 og dumpen er identisk.
    - *Bilder:* nei.
+   - *Integrator W0 (flettet):* kontrakten står øverst i `src/home/index.js`. Avvik og tillegg som nå gjelder:
+     - **`builtInLights` fra byggerne går til `home.house.builtInLights`, ikke til `home.builtInLights`.**
+       `home.builtInLights` er fortsatt bare skall + kjøkken. LightManager (`lighting.js` `_buildBuiltIns`) leser
+       `home.builtInLights`, og en ukjent gruppe starter på dimmer 1, så romlys fra A2 ville ellers lyst opp stua før
+       L1 (§4.2, D12). Steg 13 bytter kilden.
+     - Kontrakten har i tillegg `update?(dt, state)`, `setPaint?(id, color)`, `ctx.roots`, `roots.rooms[id].group` og
+       `.surfaces` (ikke bare `.contents`), og `home.house` og `home.parts`. `stairs.js` har stubbene `stairLayout`,
+       `stairColliders` og `slabColliders`.
+     - **Det returnerte `group` legges på sceneroten, utenfor alle nivåer.** Alt som hører til ett nivå, legges i
+       `ctx.roots.rooms[id].surfaces`/`.contents` eller `ctx.roots.levels[id]`, ellers kan ikke Y1 skjule det (§4.12).
+       `group` er bare for det som ikke hører til ett nivå.
+     - **Listene leses én gang**, når byggeren returnerer. Fyll dem før `return`, for det som legges til senere, når
+       aldri `home.*`.
+     - `buildShell` returnerer nå `materials: M` (felles materialer). index.js sender dem til `buildRooms`.
+     - Testen er `tools/house-tests/stub.test.mjs`. Etter flettingen var bildediffen 0 px i 9–10 av 12 bilder og 3–4 px
+       i støyvisningene (082806, 082827, 082829), under grensen på 61 px. Dumpen var identisk (12/12 og `state` i
+       `.shots/hus/w0-int-g2-post/`).
+     - **Orbit-bildene er ustabile** (gjelder også før steg 6): av og til rammes `orbit-sor` eller `orbit-nord` inn
+       annerledes, med 30–44 % endrede piksler og samme tall hver gang. Det kommer trolig fra `_fitOrbit`
+       (`ViewModes.js` 319, `hint.freeRect` og `cachedRect` leses før oppsettet har satt seg). Kjør en orbit som
+       feiler, på nytt med `--only=orbit-sor,orbit-nord` før du konkluderer. Steg 15 (E2) bør gjøre innrammingen
+       deterministisk før referansene lages på nytt etter bølge 1.
 
 ### Bølge 1: skallet i 1. etasje
 Steg 7 kjøres først (30–60 min), deretter 8–10 parallelt.
@@ -1038,6 +1060,18 @@ Steg 7 kjøres først (30–60 min), deretter 8–10 parallelt.
      - skjermbildene fra A2 i §7.5;
      - `door-gang` kan åpnes og lukkes fra begge sider, også når spilleren står i gangen.
    - *Bilder:* nei (skjermbildene sammenlignes med 225331 og 225259).
+   - *Integrator W0 (fra steg 6):*
+     - `shell.materials` (M) finnes allerede og sendes til `buildRooms` som tredje argument.
+     - Romflatene (vegger, gulv, tak, gulvstripe) legges i `ctx.roots.rooms[id].surfaces`, og lampene og fittings i
+       `.contents`. Dekkeboksen legges i `ctx.roots.levels['hoved']`. Bruk ikke det returnerte `group` for nivåets
+       geometri.
+     - Dørene returneres i `doors`, så de flettes inn i `home.doors` og `?doors=open` virker. `update()` må kalle
+       `door.update`.
+     - Statisk kollisjon returneres i `colliders` og registreres ikke i tillegg med `ctx.collision.addStatic`, ellers
+       blir den registrert to ganger. Dørblad registreres fortsatt av `Door.js` (`addDynamicBox`).
+     - Romlys i `builtInLights` havner i `home.house.builtInLights` og er ikke med i LightManager før steg 13.
+     - Nye romflater ligger ikke under `roots.shell`: Selection, Placement og kuttet i ViewModes ser dem først etter
+       steg 14 og 15. Skjermbilder av oversikt og plan fra A2 viser derfor de nye rommene uten kutt.
 9. **A3: rom i HUD og dev-parametre.**
    - *Mål:* §5.1 (`home.rooms`, banner med eyebrow, `'room'`-event og `__setView`).
    - *Filer:* `src/home/index.js`, `src/core/Game.js`, `src/ui/Hud.js` og `src/main.js`.
@@ -1053,6 +1087,9 @@ Steg 7 kjøres først (30–60 min), deretter 8–10 parallelt.
     - *Test:* bildediff av kjøkkenet = 0. Node-test av `bathroom.js` med bokser og antall verteks for hver type. Nye
       materialer gir ingen nye programmer (`renderer.info.programs`).
     - *Bilder:* via notat (Tillegget i `vaskerom.md`). 225413–225429 åpnes ved tvil om form.
+    - *Integrator W0 (fra steg 6):* meshene for innebygd utstyr legges i `ctx.roots.rooms[roomId].contents`, ikke i det
+      returnerte `group` (det ligger utenfor alle nivåer). Kollisjonsboksene returneres i `colliders` (THREE.Box3), og
+      lyset (LED-ringen i speilet) i `builtInLights`. Det havner i `home.house.builtInLights`. Fyll listene før `return`.
 
 ### Bølge 2: 1. etasje ferdig
 Steg 11 kjøres først, deretter 12–17 parallelt.
@@ -1084,18 +1121,32 @@ Steg 11 kjøres først, deretter 12–17 parallelt.
         ≤ terskel. Terskelen settes fra en referanse uten stuelys;
       - gangen er ikke svart kl. 12 med lysene av, så lenge `door-gang` er åpen.
     - *Bilder:* nei.
+    - *Integrator W0 (fra steg 6):* `_buildBuiltIns` (`lighting.js` 1151–1155) leser `home.builtInLights`, som bare har
+      stuas lys. Bytt til `this.home?.house?.builtInLights ?? this.home?.builtInLights`. `home.house.builtInLights` har stuas
+      lys først, deretter byggernes. Bytt først når romlysene har egen faktor og maske, for en ukjent gruppe starter på
+      dimmer 1.
 14. **E1: plassering per rom.**
     - *Mål:* §5.3 for ett nivå.
     - *Filer:* `src/design/Placement.js`, `SceneSync.js` og `Selection.js`.
     - *Avhenger av:* 8.
     - *Test:* et møbel kan settes i soverommet, men ikke gjennom vegg eller i dørslag.
     - *Bilder:* nei.
+    - *Integrator W0 (fra steg 6):* røttene for raycast (`Selection.js` 458 og `Placement.js` 1399) tar bare `shell`,
+      `kitchen`, `wall` (og `shading`). De nye romflatene ligger i `home.roots.rooms[*].surfaces` under
+      `home.roots.levels`. Ta med `roots.rooms[*].surfaces` (og `.contents` for innebygd utstyr). Stuas `group` er tom,
+      så ingenting telles to ganger. Ta ikke med hele `roots.levels[id]`, for `roots.shell` og `roots.kitchen` ligger
+      også der. Steg 28 (E4) gjør det samme per etasje.
 15. **E2: kutt i oversikt og plan.**
     - *Mål:* §5.2 for flere rom.
     - *Filer:* `src/design/ViewModes.js`.
     - *Avhenger av:* 8.
     - *Test:* referansene for orbit og plan er uendret for stua. Planen viser fire rom med etiketter.
     - *Bilder:* nei.
+    - *Integrator W0 (fra steg 6):*
+      - `_shellSig` (855) og `_prepareCut` (931) går bare gjennom `roots.shell`. De må også gå gjennom
+        `roots.rooms[id].surfaces`. Stuas `group` er tom, så stua telles ikke to ganger.
+      - Gjør innrammingen i `_fitOrbit` deterministisk (se steg 6: `orbit-sor`/`orbit-nord` rammes av og til inn
+        annerledes), slik at referansene etter bølge 1 og 2 er stabile.
 16. **E3: akustikk per rom og design v2.**
     - *Mål:* §5.4 og §5.5.
     - *Filer:* `src/design/Acoustics.js`, `DesignState.js`, `Saves.js` og `Editor.js`, `src/ui/AcousticsWidget.js`, `Inspector.js` og
@@ -1136,6 +1187,10 @@ Steg 18 kjøres først. Deretter kommer den rene delen av 19, så 19–21 parall
         slutter på gulvet ved nederste opptrinn;
       - skjermbilder ned trappa og fra kjellergangen.
     - *Bilder:* nei (sammenlignes med 225337 og 225349).
+    - *Integrator W0 (fra steg 6):* signaturene til `stairLayout`, `stairColliders` og `slabColliders` er stubbet i
+      `stairs.js`. Trappas mesh legges i `ctx.roots.rooms['trapp']` eller fordelt på `ctx.roots.levels[id]`. Det
+      returnerte `group` ligger utenfor alle nivåer og er bare for det som skal vises fra begge. Kollisjonen returneres
+      i `colliders`, og LED-lista i `builtInLights`.
 20. **M2: nivåer i kollisjonen, respawn og `_freeFloor`.**
     - *Mål:* §3.3–3.5 og §3.7 (Game.js).
     - *Filer:* `src/core/Collision.js`, `src/player/PlayerController.js`, `src/core/Game.js` og `tools/test-stairs.mjs`.
@@ -1216,12 +1271,19 @@ Steg 23 kjøres først, deretter 24–29 parallelt.
     - *Test:* `view=plan&floor=kjeller` og orbit for kjelleren virker, og et møbel kan settes i kjellerstua. Gardinhøyden
       stemmer for kjellervinduene.
     - *Bilder:* nei.
+    - *Integrator W0 (fra steg 6):* røttene for raycast og kutt per etasje er `home.roots.rooms[id].surfaces` og
+      `.contents` (se steg 14 og 15). Ta ikke med hele `roots.levels[id]`, for der ligger også `roots.shell` og
+      `roots.kitchen`.
 29. **Y1: synlighet og ytelse.**
     - *Mål:* §4.12–4.13.
     - *Filer:* `src/home/visibility.js` og `tools/perf.mjs` (ny).
     - *Avhenger av:* 24 og 27.
     - *Test:* budsjettene i §4.13 holder mot master, målt med `autoResolution` av.
     - *Bilder:* nei.
+    - *Integrator W0 (fra steg 6):* API-et er stubbet i `visibility.js` (`update`, `setOverview`, `refresh`,
+      `levelVisible`, `contentsVisible` og `dispose`). `home.update` kaller `visibility.update(dt, state)` etter design
+      og før lys, første gang etter `Game._precompile`. Y1 trenger derfor ingen endring i `index.js`. Det byggerne
+      returnerer i `group`, ligger utenfor nivåene og kan ikke skjules med dem.
 
 **Milepæl C, «hele huset»:** taggen er `hus-milepael-c`.
 

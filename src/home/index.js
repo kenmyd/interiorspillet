@@ -61,7 +61,12 @@ const OPEN_ROOM = Object.freeze({ id: 'stue-kjokken', name: 'Stue/kjøkken' });
  *   • colliders: static THREE.Box3 (→ collision.addStaticBox) or THREE.Object3D (→ collision.addStatic), registered
  *     here before Game.load builds the octree. Door leaves (Door.js addDynamicBox) and surface zones the builder
  *     registers itself through ctx.collision. home.house.colliders lists them all.
- *   • group: the builder's root; added to the scene when the builder left it without a parent.
+ *   • group: the builder's root; added to the scene when the builder left it without a parent – at the scene root,
+ *     outside every roots.levels group, so visibility.js (Y1, §4.12) cannot hide it with its level. Everything that
+ *     belongs to one level goes in ctx.roots.rooms[id].surfaces / .contents or ctx.roots.levels[id]; the returned group
+ *     is only for objects of no single level (integrator W0, steg 6).
+ *   • the lists (walls, windows, doors, pickables, builtInLights, colliders) are read once, when the builder returns:
+ *     fill them before returning – anything pushed to them later never reaches home.*.
  *   • update(dt, state) runs every frame after the shell's and must animate the builder's doors (a builder without
  *     update() gets door.update called on its doors here); setPaint(id, color) runs on every builder (each ignores
  *     ids it does not own); dispose() runs before the shell's.
