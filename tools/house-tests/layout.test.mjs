@@ -196,7 +196,10 @@ check('today: levelAt is always hoved', base.house.levelAt(-5).id === 'hoved' &&
 check('house-mini: levels top → bottom [hoved, kjeller], kjeller −2.55, slab underside −0.30', H.levels.map((l) => l.id).join() === 'hoved,kjeller' && H.level('kjeller').floorY === -2.55
   && near(H.level('hoved').bottomY, -0.3) && H.level('kjeller').plan.pxPerMXZ.join() === '60.3,56.8');
 check('levelAt(−1.0) = kjeller, levelAt(0) = hoved', H.levelAt(-1.0).id === 'kjeller' && H.levelAt(0).id === 'hoved');
-check('top of the stair (feet −0.18 / −0.36 + 0.9) = hoved', H.levelAt(-0.18 + 0.9).id === 'hoved' && H.levelAt(-0.36 + 0.9).id === 'hoved');
+// the two top treads: −riser and −2 × riser (13 × 0,196: −0,20 / −0,39, hele-huset-avstemming.md §2.1 and §7.2 row 4)
+const topRiser = H.stairs[0]?.riser ?? 0;
+check('top of the stair (feet −0.20 / −0.39 + 0.9, = −riser / −2 riser) = hoved', H.levelAt(-0.2 + 0.9).id === 'hoved' && H.levelAt(-0.39 + 0.9).id === 'hoved'
+  && H.levelAt(-topRiser + 0.9).id === 'hoved' && H.levelAt(-2 * topRiser + 0.9).id === 'hoved', topRiser);
 check('levelAt hysteresis: hoved stays until 0.15 below the boundary', LEVEL_HYSTERESIS === 0.15 && H.levelAt(-0.40, 'hoved').id === 'hoved' && H.levelAt(-0.40).id === 'kjeller'
   && H.levelAt(-0.46, 'hoved').id === 'kjeller');
 check('levelAt hysteresis: kjeller stays until 0.15 above the boundary', H.levelAt(-0.20, 'kjeller').id === 'kjeller' && H.levelAt(-0.20).id === 'hoved' && H.levelAt(-0.14, 'kjeller').id === 'hoved');
@@ -270,7 +273,8 @@ const cKg = H.ceilings.find((c) => c.id === 'c-kjeller-gang');
 check('basement hall ceiling: the stair hole is cut from it, topAt = world', cKg.holes.length === 1 && cKg.holes[0].length === 6 && near(cKg.topAt(3.5, 3.8), -0.3)
   && H.ceilings.find((c) => c.id === 'c-gang').holes.length === 0);
 const st = H.stairs[0];
-check('stair: 14 risers of 0.182, rise 2.55, from kjeller to hoved', st.risers === 14 && near(st.rise, 2.55) && near(st.riser, 0.1821, 1e-4) && st.fromLevel === 'kjeller' && st.toLevel === 'hoved');
+check('stair: riser = rise / risers from the data (13 → 0.196), rise 2.55, from kjeller to hoved', st.risers === mini.stairs[0].risers && near(st.rise, 2.55) && near(st.riser, 2.55 / st.risers, 1e-12)
+  && near(st.riser, 0.196, 5e-4) && st.fromLevel === 'kjeller' && st.toLevel === 'hoved', `${st.risers} ${st.riser}`);
 check('stair: mean going on the walk line 0.18–0.25 (validator has the exact number)', st.going > 0.18 && st.going < 0.25, st.going);
 const ys = st.walkLine.map((p) => st.surfaceY(p.x, p.y));
 check('stair surface along the walk line: 0 at the top nosing, −2.55 at the bottom nosing, never rising', near(ys[0], 0, 0.01) && near(ys[ys.length - 1], -2.55, 0.01)
@@ -347,6 +351,33 @@ check('2-argument ceilingHeightAt in another room: the living room\'s value, one
 const [, wq] = withWarnings(() => L.ceilingHeightAt(1.2, 1.1));
 check('no dev warnings outside Vite dev (default off in Node)', wq.length === 0);
 check('deep-frozen: house, levels, rooms, polygons, walkRects', Object.isFrozen(H) && Object.isFrozen(H.levels[1]) && Object.isFrozen(H.rooms[1].polygon[0]) && Object.isFrozen(H.walkRects[0]) && Object.isFrozen(H.stairs[0].walkLine));
+
+// ---------------------------------------------------------------------------------------------------------------
+section('The real room-spec (src/data/room-spec.json, every research/house file)');
+{
+  const realSpecJson = readJson(path.join(ROOT, 'src/data/room-spec.json'));
+  const [Lr, warns] = withWarnings(() => buildLayout(structuredClone(realSpecJson), palette));
+  // a room registered in 00-ids.json that another step's file brings (the hall «gang» of A1 for the stair hole) may
+  // still be missing in a branch: its «unknown room» warning is allowed, nothing else
+  const reg = houseData.loadRegistry(RESEARCH);
+  const pending = (w) => {
+    const m = /unknown room (\S+)$/.exec(w);
+    return !!m && !!reg.rooms?.[m[1]] && !(realSpecJson.rooms || []).some((r) => r.id === m[1]);
+  };
+  check('builds without warnings (except a registered room that another house file brings)', warns.every(pending), warns.filter((w) => !pending(w)).join(' | '));
+  // door-gang may also gain the door fields a house file patches onto it with wallOpenings (A1: 180°, casing,
+  // hardware, estimated, source) – the same set as tools/house-tests/hoved-rom.test.mjs skips
+  const PATCHED = new Set([...DERIVED_NEIGHBOUR_KEYS, 'openAngleDeg', 'casing', 'hardware', 'estimated', 'source']);
+  const snap = (X) => Object.fromEntries(OLD_FIELDS.map((k) => [k, plain(X[k], PATCHED)]));
+  const d = firstDiff(snap(base), snap(Lr));
+  check('every old field (the living room) deep-equal to today (except derived connects/interactive/opensInto and door-gang\'s patched door fields)', !d, d ?? '');
+  check('volume 138.57, floor 53.78, 12 walls, 6 windows, 2 doors, the six light groups', near(Lr.volume, 138.57, 0.01) && near(Lr.floorArea, 53.78, 0.01) && Lr.walls.length === 12
+    && Lr.windows.length === 6 && Lr.doors.length === 2 && Lr.lightGroups.map((g) => g.id).join() === 'led,spots,kjokken,pendler,overskap,tvstue', `${Lr.volume} ${Lr.floorArea} ${Lr.walls.length}`);
+  check('ceilingHeightAt(x, z) / isInside / zoneAt identical to today on a grid', gridPts.every(([x, z]) => base.ceilingHeightAt(x, z) === Lr.ceilingHeightAt(x, z)
+    && base.isInside(x, z) === Lr.isInside(x, z) && (base.zoneAt(x, z)?.id ?? null) === (Lr.zoneAt(x, z)?.id ?? null)));
+  check('house: the levels from the data, the living room first among the rooms', Lr.house.levels[0].id === 'hoved' && Lr.house.rooms[0].id === LIVING_ROOM_ID
+    && Lr.house.levels.every((lv) => (realSpecJson.levels || []).some((l) => l.id === lv.id) || lv.id === 'hoved'));
+}
 
 // ---------------------------------------------------------------------------------------------------------------
 section('DesignState keeps shading / paint of the whole house');

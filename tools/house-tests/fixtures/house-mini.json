@@ -1,5 +1,5 @@
 {
-  "$comment": "Overlay for tools/house-tests/layout.test.mjs: merged by id onto src/data/room-spec.json (arrays extended / replaced by id, new keys added). A small house after the plan in notes/hele-huset-design.md (§1.4–1.6): the bathroom and hall of the ground floor (backOf faces, doors, a frosted window, a hole for the stair), the hud room of the stair, the basement level at −2.55 with a simplified basement hall and the entrance 0.30 lower (floorOffset). Test data only – the real data lives in research/house/NN-*.json.",
+  "$comment": "Overlay for tools/house-tests/layout.test.mjs: merged by id onto src/data/room-spec.json (arrays extended / replaced by id, new keys added). A small house after the plan in notes/hele-huset-design.md (§1.4–1.6): the bathroom and hall of the ground floor (backOf faces, doors, a frosted window, a hole for the stair, 13 risers after hele-huset-avstemming.md §2.4), the hud room of the stair, the basement level at −2.55 with a simplified basement hall and the entrance 0.30 lower (floorOffset). Test data only – the real data lives in research/house/NN-*.json.",
   "levels": [
     { "id": "kjeller", "name": "Kjeller", "floorY": -2.55, "slabThickness": 0.30, "ceilingDefault": 2.25,
       "plan": { "file": "bilder_hus/plantegning_kjeller.png", "pxPerM": [60.3, 56.8], "originPx": [127, 120] },
@@ -75,16 +75,16 @@
   ],
   "floorOpenings": [
     { "id": "trappehull", "levelId": "hoved", "roomId": "gang", "stairId": "trapp-kjeller",
-      "polygon": [[0, 2.32], [1.50, 2.32], [1.50, 3.48], [1.85, 3.48], [1.85, 4.43], [0, 4.43]],
+      "polygon": [[0, 2.32], [1.45, 2.32], [1.45, 3.48], [1.85, 3.48], [1.85, 4.43], [0, 4.43]],
       "edgeBand": { "color": "#f2efe8", "depth": 0.30 }, "estimated": ["polygon"] }
   ],
   "stairs": [
     { "id": "trapp-kjeller", "name": "Trappa", "type": "half-turn-winder",
       "fromLevel": "kjeller", "toLevel": "hoved", "openingId": "trappehull", "roomIds": ["kjeller-gang", "gang"],
-      "risers": 14,
-      "top": { "edge": [[1.50, 2.32], [1.50, 3.10]], "down": [-1, 0], "straightTreads": 1 },
-      "foot": { "edge": [[1.60, 3.48], [1.60, 4.43]], "down": [1, 0], "straightTreads": 3 },
-      "well": { "polygon": [[1.20, 3.10], [1.50, 3.10], [1.50, 3.48], [1.20, 3.48]], "newel": [1.50, 3.10] },
+      "risers": 13,
+      "top": { "edge": [[1.45, 2.32], [1.45, 3.10]], "down": [-1, 0], "straightTreads": 1 },
+      "foot": { "edge": [[1.73, 3.48], [1.73, 4.43]], "down": [1, 0], "straightTreads": 3 },
+      "well": { "polygon": [[1.04, 3.10], [1.45, 3.10], [1.45, 3.48], [1.04, 3.48]], "newel": [1.45, 3.10] },
       "walkLine": "flight-centre", "going": null, "openRisers": true, "estimated": ["*"] }
   ],
   "lightGroups": [

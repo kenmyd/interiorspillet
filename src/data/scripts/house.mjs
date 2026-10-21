@@ -27,11 +27,17 @@
  *   camera (without one it lands in the living room; only the frozen ids may lack it), and the
  *   free width (≥ 0,75 m) between an open door leaf and railings / walls (D6: the opening angle is a modelling choice,
  *   so a leaf that cuts a passage is always fixable in the data, however uncertain the measurements around it are).
- *   The plausibility checks – stair numbers (§1.6), headroom, the stair footprint, doors over the stair, a door over a
- *   hole – are errors for measured values and warnings when a value involved is listed in `estimated` (§8.6). Control
- *   areas (> 10 %) and door heights under the stair are always warnings.
+ *   The plausibility checks – stair numbers (§1.6; riser = −floorY / risers, going = walk line / (risers − 1), nothing
+ *   hard-codes a number of risers), headroom, the stair footprint, doors over the stair, a door over a hole, the tread
+ *   edges (with nosing) and the stringer foot at least DOOR_FRAME_CLEARANCE from every door frame (avstemming V17, §2.4)
+ *   – are errors for measured values and warnings when a value involved is listed in `estimated` (§8.6). Control
+ *   areas (> 10 %) and door heights under the stair (an opening under a tread, not one beside the foot) are always
+ *   warnings. A room or light group that is registered in 00-ids.json but not modelled yet (another step's house file
+ *   brings it – the steps are built in parallel) is one warning per id instead of an error; an id that is not
+ *   registered stays an error.
  *
- * Pure Node (no three.js); stairWalk() is the same walk line the validator measures the going on.
+ * Pure Node (no three.js); stairWalk() is the same walk line the validator measures the going on: for a half-turn
+ * stair the line of avstemming V13 (the middle of the free width, quarter arcs around the well's two far corners).
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -58,6 +64,8 @@ export const FOOT_FIELD = 0.9;
 export const RISER_RANGE = [0.15, 0.22];
 export const STEP_RANGE = [0.6, 0.64];
 export const MIN_GOING = 0.22;
+/** Tread edges (with nosing) and the stringer foot keep at least this from every door frame (avstemming V17, §2.4). */
+export const DOOR_FRAME_CLEARANCE = 0.05;
 
 const TOL = 0.005; // 5 mm: points, distances between faces
 const AREA_EPS = 0.002; // m²: overlaps below this are rounding
@@ -441,13 +449,102 @@ export function mergeHouse(spec, researchDir = RESEARCH_DIR, opts = {}) {
 // ---------------------------------------------------------------------------------------------------------------
 // Stairs: the walk line (§1.6)
 
+/** First hit (t > 0) of the ray o + t·dir with the edges of a polygon, or null. */
+function rayHit(o, dir, poly) {
+  let best = null;
+  for (const [a, b] of edges(poly)) {
+    const e = sub(b, a);
+    const den = cross(dir, e);
+    if (Math.abs(den) < 1e-12) continue;
+    const ao = sub(a, o);
+    const t = cross(ao, e) / den;
+    const s = cross(ao, dir) / den;
+    if (t > 1e-6 && s >= -1e-9 && s <= 1 + 1e-9 && (best === null || t < best)) best = t;
+  }
+  return best === null ? null : add(o, mul(dir, best));
+}
+
 /**
- * Walk line of a stair, from the top nosing (the edge of the upper floor, u = 0) to the lowest nosing (u = length):
- * the middle of each flight and, for winders, an arc around the far end of the well whose radius goes from the top
- * flight's to the bottom flight's. going = length / (risers − 1).
- * @returns {{ length: number, at: (u: number) => { p: number[], dir: number[], halfWidth: number }, P0: number[], P3: number[] }}
+ * The walk line of a half-turn stair after hele-huset-avstemming.md V13: in the middle of the free width all the way –
+ * straight down the top flight to the far edge of the well, a quarter arc around the well's corner there (radius from
+ * half the top flight's width to half the free width between the well and the far shaft wall), straight along the
+ * far edge of the well, a quarter arc around its other corner (to half the lower flight's width) and straight down the
+ * lower flight. The cross-section in an arc is radial, from the well corner out to the shaft walls (`bound`, the stair
+ * footprint); on the straight parts it is the flight's width. null when the well has no far edge (one far point).
  */
-export function stairWalk(stair) {
+function halfTurnWalk({ P0, P3, d1, d2, w1, w2, well, bound }) {
+  const proj = well.map((p) => dot(p, d1));
+  const far = Math.max(...proj);
+  const farPts = well.filter((p, i) => Math.abs(proj[i] - far) < 1e-6);
+  const off = (p, P, d) => Math.abs(cross(d, sub(p, P)));
+  const nearest = (P, d) => farPts.reduce((best, p) => (off(p, P, d) < off(best, P, d) - 1e-9 ? p : best), farPts[0]);
+  const A = nearest(P0, d1);
+  const B = nearest(P3, d2);
+  if (farPts.length < 2 || dist(A, B) < 1e-6) return null;
+  const r1 = off(A, P0, d1);
+  const r3 = off(B, P3, d2);
+  // the far shaft wall: the footprint's extent beyond the well (without one the flights' mean half width)
+  const r2 = bound ? (Math.max(...bound.map((p) => dot(p, d1))) - far) / 2 : (r1 + r3) / 2;
+  const L1 = far - dot(P0, d1);
+  const L3 = dot(sub(P3, B), d2);
+  if (L1 < -TOL || L3 < -TOL) throw new Error('top/foot passer ikke med kjernen (well): løpene må gå mot og fra svingen');
+  const P1 = add(P0, mul(d1, Math.max(0, L1)));
+  const P2 = sub(P3, mul(d2, Math.max(0, L3)));
+  const line = (a, d, l, hw) => ({ kind: 'line', a, d, len: Math.max(0, l), hw });
+  const arc = (C, from, to, rs, re) => {
+    const a0 = Math.atan2(from[1], from[0]);
+    const da = Math.atan2(cross(from, to), dot(from, to));
+    return { kind: 'arc', C, a0, da, rs, re, len: (Math.abs(da) * (rs + re)) / 2 };
+  };
+  const e = unitv(sub(B, A));
+  const segs = [
+    line(P0, d1, L1, w1 / 2),
+    arc(A, unitv(sub(P1, A)), d1, r1, r2),
+    line(add(A, mul(d1, r2)), e, dist(A, B), r2),
+    arc(B, d1, unitv(sub(P2, B)), r2, r3),
+    line(P2, d2, L3, w2 / 2),
+  ];
+  let s0 = 0;
+  for (const g of segs) {
+    g.s0 = s0;
+    s0 += g.len;
+  }
+  const length = s0;
+  const sideOf = (p, perp, hw) => [add(p, mul(perp, hw)), add(p, mul(perp, -hw))];
+  const at = (u) => {
+    // beyond the ends the first / last flight goes on straight (headroom in front of the foot, like the old line)
+    const uu = Math.max(0, Math.min(length, u));
+    const g = u > length ? segs[segs.length - 1] : u < 0 ? segs[0] : segs.find((x) => uu <= x.s0 + x.len + 1e-12 && x.len > 0) ?? segs[segs.length - 1];
+    const t = g.len > 0 ? Math.max(0, Math.min(1, (uu - g.s0) / g.len)) : 0;
+    if (g.kind === 'line') {
+      const p = add(g.a, mul(g.d, t * g.len + (u > length ? u - length : u < 0 ? u : 0)));
+      const perp = [-g.d[1], g.d[0]];
+      return { p, dir: g.d, halfWidth: g.hw, section: sideOf(p, perp, g.hw) };
+    }
+    const ang = g.a0 + g.da * t;
+    const radial = [Math.cos(ang), Math.sin(ang)];
+    const r = lerp(g.rs, g.re, t);
+    const p = add(g.C, mul(radial, r));
+    const s = Math.sign(g.da) || 1;
+    const dir = [s * -radial[1], s * radial[0]];
+    const perp = [-dir[1], dir[0]];
+    const outer = (bound && rayHit(g.C, radial, bound)) || add(g.C, mul(radial, 2 * r));
+    const section = dot(perp, radial) > 0 ? [outer, g.C] : [g.C, outer];
+    return { p, dir, halfWidth: r, section };
+  };
+  return { length, at, P0, P1, P2, P3, A, B, r1, r2, r3, d1, d2, segments: segs.map(({ kind, s0: start, len: l }) => ({ kind, start, length: l })) };
+}
+
+/**
+ * Walk line of a stair, from the top nosing (the edge of the upper floor, u = 0) to the lowest nosing (u = length).
+ * A half-turn stair around a well with a far edge follows V13 (halfTurnWalk: the middle of the free width, quarter arcs
+ * around the well's two far corners); other winders keep an arc around the far end of the well whose radius goes from
+ * the top flight's to the bottom flight's. going = length / (risers − 1).
+ * @param {object} stair
+ * @param {{ bound?: number[][] }} [opts]  the polygon of the shaft walls (default stair.footprint)
+ * @returns {{ length: number, at: (u: number) => { p: number[], dir: number[], halfWidth: number, section?: number[][] }, P0: number[], P3: number[] }}
+ */
+export function stairWalk(stair, opts = {}) {
   const { top, foot } = stair;
   if (!top?.edge || !foot?.edge || !isPoint(top.edge[0]) || !isPoint(top.edge[1]) || !isPoint(foot.edge[0]) || !isPoint(foot.edge[1])) {
     throw new Error('top.edge og foot.edge må være to punkter hver');
@@ -468,6 +565,12 @@ export function stairWalk(stair) {
   }
   const well = stair.well?.polygon;
   if (!Array.isArray(well) || well.length < 3 || !well.every(isPoint)) throw new Error('en svingt trapp må ha well.polygon');
+  const boundRaw = opts.bound ?? stair.footprint ?? null;
+  const bound = Array.isArray(boundRaw) && boundRaw.length >= 3 && boundRaw.every(isPoint) ? boundRaw : null;
+  if (dot(d1, d2) < -0.9) {
+    const v13 = halfTurnWalk({ P0, P3, d1, d2, w1, w2, well, bound });
+    if (v13) return v13;
+  }
   const proj = well.map((p) => dot(p, d1));
   const far = Math.max(...proj);
   const end = well.filter((p, i) => Math.abs(proj[i] - far) < 1e-6);
@@ -544,6 +647,25 @@ function doorGeometry(w, o) {
     return pts;
   };
   return { L, d, n, t, fw, u0, u1, leafW, H, c, s, angleDeg, leaf, sweepPoints, clearPoints, swingIn };
+}
+
+/**
+ * Plan rectangles of a door's two jambs (frame.width inside the hole, room-spec convention), across the wall with the
+ * frame's depth proud of both faces. wi = the wall info of the owner wall (from, d, n, t).
+ */
+function doorJambs(wi, o) {
+  const fw = num(o.frame?.width) ? o.frame.width : 0.05;
+  const fd = num(o.frame?.depth) ? o.frame.depth : 0.02;
+  const P = (u, k) => add(add(wi.w.from, mul(wi.d, u)), mul(wi.n, k));
+  const u0 = o.offset;
+  const u1 = o.offset + o.width;
+  return [[u0, u0 + fw], [u1 - fw, u1]].map(([a, b]) => [P(a, fd), P(b, fd), P(b, -(wi.t + fd)), P(a, -(wi.t + fd))]);
+}
+
+/** Distance from a segment (or a point: a = b) to a polygon (0 when it touches or enters it). */
+function distSegPoly(a, b, poly) {
+  if (pointInPolygon(a, poly) || pointInPolygon(b, poly)) return 0;
+  return Math.min(...edges(poly).map(([c, d]) => distSegSeg(a, b, c, d)));
 }
 
 /**
@@ -798,9 +920,25 @@ export function validateHouse(spec, opts = {}) {
 
   // ---- references to rooms and levels
   const roomExists = (id) => roomsById.has(id) || pseudoRooms.has(id);
+  // a room or light group that is registered in 00-ids.json but not modelled yet comes from another house file (the
+  // steps are built in parallel, e.g. the stair hole in the hall of A1): one warning per id, not an error – an id that is
+  // not registered at all stays an error
+  const pendingSeen = new Set();
+  const pending = (kind, id, where) => {
+    const registered = kind === 'room' ? reg.rooms?.[id] : reg.lightGroups?.[id];
+    const there = kind === 'room' ? roomExists(id) : lightGroups.some((g) => g.id === id);
+    if (!registered || there) return false;
+    if (!pendingSeen.has(`${kind}:${id}`)) {
+      pendingSeen.add(`${kind}:${id}`);
+      report.pending.push({ kind, id, where });
+      warn(`${kind === 'room' ? 'rommet' : 'lysgruppa'} «${id}» er registrert i research/house/00-ids.json, men ikke modellert ennå (${where} venter på fila som eier ${kind === 'room' ? 'rommet' : 'gruppa'})`);
+    }
+    return true;
+  };
+  report.pending = [];
   for (const x of entries) {
     if (!isObj(x.e)) continue;
-    if (x.e.roomId != null && x.coll !== 'rooms' && !roomExists(x.e.roomId)) error(`${x.where}: rommet «${x.e.roomId}» finnes ikke`);
+    if (x.e.roomId != null && x.coll !== 'rooms' && !roomExists(x.e.roomId) && !pending('room', x.e.roomId, x.where)) error(`${x.where}: rommet «${x.e.roomId}» finnes ikke`);
     if (x.e.levelId != null && !levelsById.has(x.e.levelId)) error(`${x.where}: nivået «${x.e.levelId}» finnes ikke`);
   }
 
@@ -996,13 +1134,23 @@ export function validateHouse(spec, opts = {}) {
       if (backs.length) {
         const p0 = add(w.from, mul(wi.d, o.offset));
         const p1 = add(w.from, mul(wi.d, o.offset + o.width));
-        const fits = backs.some((b) => {
+        const span = (b) => {
           const bi = wallInfo.get(b.id);
           const a = dot(sub(p0, b.from), bi.d);
           const c = dot(sub(p1, b.from), bi.d);
-          return Math.min(a, c) >= -TOL && Math.max(a, c) <= bi.L + TOL;
+          return { lo: Math.min(a, c), hi: Math.max(a, c), L: bi.L };
+        };
+        // only the faces the hole reaches: an opening in a part of the wall with nothing modelled behind it (an
+        // exterior stretch beyond a short back face) has no face to fit
+        const reached = backs.filter((b) => {
+          const s = span(b);
+          return Math.min(s.hi, s.L) - Math.max(s.lo, 0) > TOL;
         });
-        if (!fits) warn(`${where}: hullet havner ikke helt innenfor baksideflaten(e) ${backs.map((b) => b.id).join(', ')}`);
+        const fits = reached.some((b) => {
+          const s = span(b);
+          return s.lo >= -TOL && s.hi <= s.L + TOL;
+        });
+        if (reached.length && !fits) warn(`${where}: hullet havner ikke helt innenfor baksideflaten(e) ${reached.map((b) => b.id).join(', ')}`);
       }
 
       const ownerRoom = wi.room;
@@ -1013,7 +1161,7 @@ export function validateHouse(spec, opts = {}) {
         const c = o.connects;
         if (!Array.isArray(c) || c.length !== 2 || c[0] === c[1]) error(`${where}: connects må være [rom, rom] (to forskjellige)`);
         else {
-          for (const id of c) if (!roomExists(id)) error(`${where}: connects: rommet «${id}» finnes ikke`);
+          for (const id of c) if (!roomExists(id) && !pending('room', id, where)) error(`${where}: connects: rommet «${id}» finnes ikke`);
           if (!c.includes(ownerRoom)) error(`${where}: connects ${JSON.stringify(c)} mangler eierveggens rom «${ownerRoom}»`);
           other = c.find((id) => id !== ownerRoom) ?? null;
         }
@@ -1073,7 +1221,11 @@ export function validateHouse(spec, opts = {}) {
     const [lowerId, upperId] = arr(s.roomIds);
     const lower = roomsById.get(lowerId);
     const upper = roomsById.get(upperId);
-    if (s.roomIds != null && (!lower || !upper)) error(`${where}: roomIds må være [rommet nede, rommet oppe] og finnes`);
+    if (s.roomIds != null && (!lower || !upper)) {
+      const ids = arr(s.roomIds);
+      const missing = ids.filter((id) => !roomsById.has(id));
+      if (ids.length !== 2 || !missing.every((id) => pending('room', id, where))) error(`${where}: roomIds må være [rommet nede, rommet oppe] og finnes`);
+    }
     if (lower && lo && lower.levelId !== lo.id) error(`${where}: ${lower.id} er ikke på ${lo.id}`);
     if (upper && hi && upper.levelId !== hi.id) error(`${where}: ${upper.id} er ikke på ${hi.id}`);
     if (!Number.isInteger(s.risers) || s.risers < 2) error(`${where}: risers må være et heltall ≥ 2`);
@@ -1084,7 +1236,10 @@ export function validateHouse(spec, opts = {}) {
     }
     let walk;
     try {
-      walk = stairWalk(s);
+      // the shaft walls: the stair's own footprint, else the room at its foot, else its hole
+      const holeOf = hole && Array.isArray(hole.polygon) && hole.polygon.length >= 3 && hole.polygon.every(isPoint) ? hole.polygon : undefined;
+      const lowerOf = lower && goodRooms.has(lower.id) && physical(lower) ? lower.polygon : undefined;
+      walk = stairWalk(s, { bound: Array.isArray(s.footprint) ? s.footprint : lowerOf ?? holeOf });
     } catch (err) {
       error(`${where}: ${err.message}`);
       continue;
@@ -1136,7 +1291,8 @@ export function validateHouse(spec, opts = {}) {
     for (let u = 0; u <= walk.length + 1e-9; u += 0.05) {
       const a = walk.at(Math.min(u, walk.length));
       const perp = [-a.dir[1], a.dir[0]];
-      const sec = [add(a.p, mul(perp, a.halfWidth)), add(a.p, mul(perp, -a.halfWidth)), u];
+      // the tread cross-section: radial from the well corner to the shaft walls in a winder arc (V13), else the flight
+      const sec = a.section ? [a.section[0], a.section[1], u] : [add(a.p, mul(perp, a.halfWidth)), add(a.p, mul(perp, -a.halfWidth)), u];
       if (prev) quads.push({ poly: [prev[0], prev[1], sec[1], sec[0]], u: (prev[2] + u) / 2 });
       prev = sec;
     }
@@ -1154,18 +1310,6 @@ export function validateHouse(spec, opts = {}) {
     const d2 = unitv(s.foot.down);
     const footField = [fe[0], fe[1], add(fe[1], mul(d2, FOOT_FIELD)), add(fe[0], mul(d2, FOOT_FIELD))];
     if (signedArea(footField) < 0) footField.reverse();
-    const nearestU = (p) => {
-      let best = Infinity;
-      let bu = 0;
-      for (let u = 0; u <= walk.length + 1e-9; u += step) {
-        const q = dist(walk.at(u).p, p);
-        if (q < best) {
-          best = q;
-          bu = u;
-        }
-      }
-      return { u: bu, d: best };
-    };
     // doors: none swings over the hole (upper level) or over the stair / the field in front of the lowest tread
     // (lower level); a door under the stair is cut by the builder (warning)
     const treadT = num(s.tread?.thickness) ? s.tread.thickness : 0.045;
@@ -1192,12 +1336,14 @@ export function validateHouse(spec, opts = {}) {
             let lowest = Infinity;
             for (let k = 0; k <= 10; k++) {
               const u = o.offset + (o.width * k) / 10;
-              for (const off of [0, -wi.t]) {
+              // the door's opening just in front of both faces: under a tread of the stair (inside a cross-section
+              // quad), not merely next to the stair – a door beside the foot (the laundry door) is not cut
+              for (const off of [0.02, -wi.t - 0.02]) {
                 const p = add(add(w.from, mul(wi.d, u)), mul(wi.n, off));
                 if (!inOrOn(p, holePoly, 0.02)) continue;
-                const nu = nearestU(p);
-                if (nu.d > 1.2) continue;
-                lowest = Math.min(lowest, surfaceAt(nu.u) - treadT);
+                const q = inQuad(p);
+                if (!q) continue;
+                lowest = Math.min(lowest, surfaceAt(q.u) - treadT);
               }
             }
             if (top > lowest - 0.05) {
@@ -1207,8 +1353,42 @@ export function validateHouse(spec, opts = {}) {
         }
       }
     }
+    // door frames (V17, avstemming §2.4): the tread edges with their nosing – the lowest one on the lower level, the
+    // floor edge at the top on the upper one – and the foot of the stringers (cut vertically `stringers.footCut` past
+    // the lowest nosing line) stay at least DOOR_FRAME_CLEARANCE from every door frame (jambs with their depth)
+    const nosing = num(s.tread?.nosing) ? s.tread.nosing : 0.02;
+    const footCut = num(s.stringers?.footCut) ? s.stringers.footCut : nosing;
+    const te = s.top.edge;
+    const d1 = unitv(s.top.down);
+    const features = [
+      { level: lo.id, what: 'nederste trinnkant (med nesa)', seg: [add(fe[0], mul(d2, nosing)), add(fe[1], mul(d2, nosing))] },
+      { level: lo.id, what: 'vangefoten', seg: [add(fe[0], mul(d2, footCut)), add(fe[0], mul(d2, footCut))] },
+      { level: lo.id, what: 'vangefoten', seg: [add(fe[1], mul(d2, footCut)), add(fe[1], mul(d2, footCut))] },
+      { level: hi.id, what: 'øverste trinnkant', seg: [te[0], te[1]] },
+      { level: hi.id, what: 'øverste trinnkant (med nesa)', seg: [add(te[0], mul(d1, nosing)), add(te[1], mul(d1, nosing))] },
+    ];
+    const clearances = [];
+    for (const w of walls) {
+      const wi = wallInfo.get(w.id);
+      if (!wi || (wi.level !== hi.id && wi.level !== lo.id)) continue;
+      for (const o of objs(w.openings)) {
+        if (!isObj(o.door) || !num(o.offset) || !num(o.width)) continue;
+        const jambs = doorJambs(wi, o);
+        let worst = null;
+        for (const f of features) {
+          if (f.level !== wi.level) continue;
+          const d = Math.min(...jambs.map((j) => distSegPoly(f.seg[0], f.seg[1], j)));
+          if (worst === null || d < worst.dist) worst = { what: f.what, dist: d };
+        }
+        if (!worst || worst.dist > 1.0) continue;
+        clearances.push({ door: o.id, what: worst.what, dist: worst.dist });
+        if (worst.dist < DOOR_FRAME_CLEARANCE - 1e-6) {
+          judge(estGeom || isEst(o, 'offset', 'width', 'frame'), `${where}: ${worst.what} står ${fmt(worst.dist, 3)} fra karmen til ${o.id} (minst ${fmt(DOOR_FRAME_CLEARANCE)})`);
+        }
+      }
+    }
     const capsule = 1.2 + 0.6 / Math.cos(Math.atan2(riser, going));
-    report.stairs.push({ id: s.id, risers: s.risers, riser, going, walkLength: walk.length, twoRG, slopeDeg, minHeadroom: minHead, capsuleHeadroom: capsule, estimated: estGeom });
+    report.stairs.push({ id: s.id, risers: s.risers, riser, going, walkLength: walk.length, twoRG, slopeDeg, minHeadroom: minHead, capsuleHeadroom: capsule, doorClearance: clearances, estimated: estGeom });
   }
 
   // ---- light groups
@@ -1221,7 +1401,7 @@ export function validateHouse(spec, opts = {}) {
     if (num(g.defaultDimmer) && (g.defaultDimmer < 0 || g.defaultDimmer > 1)) error(`${where}: defaultDimmer må være mellom 0 og 1`);
   }
   for (const s of stairs) {
-    for (const h of arr(s.handrails)) if (h?.led?.group != null && !groupIds.has(h.led.group)) error(`stairs/${s.id}: LED-lista i håndløperen er i gruppa «${h.led.group}», som ikke finnes i lightGroups`);
+    for (const h of arr(s.handrails)) if (h?.led?.group != null && !groupIds.has(h.led.group) && !pending('group', h.led.group, `stairs/${s.id}`)) error(`stairs/${s.id}: LED-lista i håndløperen er i gruppa «${h.led.group}», som ikke finnes i lightGroups`);
   }
   const legacySpecGroups = new Set(arr(reg.legacyLightGroups?.spec));
   for (const l of objs(spec.builtInLights)) {
