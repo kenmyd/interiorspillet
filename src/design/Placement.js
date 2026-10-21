@@ -7,7 +7,7 @@
 //                                 the mouse wheel sets the height of wall items
 //   handleClick(ndc) → bool       canvas click while placing
 //   beginDrag(uid, hit, event?) → bool    drag a placed item along its underlay (one undo step per drag)
-//   beginRotate(uid, event?) → bool       drag the rotate handle (15° steps)
+//   beginRotate(uid, event?) → bool       drag the rotate handle or the outline (15° steps)
 //   isActive (placing or dragging) · isPlacing · dragState ({ uid, status, message } | null)
 //   cancel()                      ends placing / reverts the drag
 //   constrain(item) → { position, rotationDeg, attach?, status, message }   keeps an item inside the room (nudges)
@@ -45,7 +45,7 @@
 import * as THREE from 'three';
 import { disposeModel } from '../models/kit.js';
 import { getArchetype } from '../models/registry.js';
-import { pickAt, cursorNDC, ndcFromClient, Footprint, hintUI, itemName, normDeg, underlayY, intersectFast, houseRoots, floorYAt } from './Selection.js';
+import { pickAt, cursorNDC, ndcFromClient, Footprint, hintUI, itemName, normDeg, underlayY, intersectFast, houseRoots, floorYAt, ROTATE_CURSOR } from './Selection.js';
 import { MAIN_LEVEL, itemLevel, levelFloorY, levelAtY } from './SceneSync.js';
 import { builtInFrame } from '../home/builtins.js';
 
@@ -854,7 +854,7 @@ export class Placement {
   }
 
   /**
-   * Starts rotating an item with the rotate handle (15° steps, Alt: free).
+   * Starts rotating an item with the rotate handle or its outline (15° steps, Alt: free).
    * @param {string} uid
    * @param {MouseEvent|PointerEvent} [ev]
    * @returns {boolean}
@@ -877,7 +877,7 @@ export class Placement {
     };
     e.design.begin(`Roter ${itemName(item)}`);
     this._listenDrag(true);
-    e.hud?.setCursor?.('grabbing');
+    e.hud?.setCursor?.(ROTATE_CURSOR);
     return true;
   }
 
@@ -2001,7 +2001,7 @@ export class Placement {
       }
       if (!this._drag) return;
       this.hint.tip({ text: d.name, sub: d.status === 'ok' ? d.note : d.message || d.note, tone: d.status === 'ok' ? 'ok' : 'warn' }, 5);
-      e.hud?.setCursor?.('grabbing');
+      e.hud?.setCursor?.(d.kind === 'rotate' ? ROTATE_CURSOR : 'grabbing');
       const items = [[['Slipp'], 'ferdig']];
       if (d.kind === 'move' && d.mount !== 'wall') items.push([['R'], 'roter']);
       items.push([['Alt'], d.kind === 'rotate' ? 'fri vinkel' : 'uten festing'], [['Esc'], 'angre']);
