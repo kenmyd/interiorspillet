@@ -363,6 +363,33 @@ section('house-mini (fotavtrykket er hullet)');
   check('stairLayout på en spec-oppføring (ingen topY): nivåene fra levels, hoved = 0', stairLayout(raw, spec.levels).treads.length === raw.risers - 1);
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+section('buildStairs (byggekontrakten)');
+{
+  const { buildStairs } = await imp('src/home/stairs.js');
+  const { createHouseRoots } = await imp('src/home/index.js');
+  const ctx = { scene: new THREE.Scene(), collision: null, quality: {}, roots: createHouseRoots(layout) };
+  const r = quiet(() => buildStairs(ctx, layout));
+  const room = ctx.roots.rooms.trapp;
+  const meshes = [];
+  room.surfaces.traverse((o) => o.isMesh && meshes.push(o));
+  const names = meshes.map((m) => m.name);
+  check(`trinn (eik ${raw.tread.color}), stål (${raw.stringers.color}) og LED i roots.rooms.trapp.surfaces, pynten i contents`, names.some((n) => n.startsWith('stair-treads:')) && names.some((n) => n.startsWith('stair-steel:'))
+    && meshes.find((m) => m.name.startsWith('stair-treads:')).material.userData.hex === raw.tread.color && meshes.find((m) => m.name.startsWith('stair-steel:')).material.userData.hex === raw.stringers.color
+    && room.contents.children.length >= 1 && !r.group.children.length && ctx.scene.children.length === 0, names.join(', '));
+  check('ingen synlig del er registrert som kollisjon (userData.noCollide), kollisjonen er stairColliders + slabColliders', meshes.every((m) => m.userData.noCollide)
+    && r.colliders.length === stairColliders(lay).length + slabColliders(layout, hi.id).length && r.colliders.some((c) => c.isMesh && c.name.startsWith('stair-wedge:')));
+  const leds = r.builtInLights;
+  check(`LED i håndløperen: én stripe per rett vegg (${leds.map((l) => `${l.id} ${f3(l.lumens)} lm`).join(', ')}), gruppa ${raw.handrails[0].led.group}, signatur 1`, leds.length === raw.handrails[0].led.walls.length
+    && leds.every((l) => l.group === raw.handrails[0].led.group && l.type === 'led-strip' && l.from.isVector3 && l.emissiveMeshes.length === 1 && l.signature === 1));
+  const tri = meshes.reduce((s, m) => s + m.geometry.attributes.position.count / 3, 0);
+  check(`rimelig mengde geometri (${tri} trekanter, ${meshes.length} mesh)`, tri < 20000 && meshes.length <= 12);
+  r.dispose();
+  let left = 0;
+  room.surfaces.traverse((o) => o.isMesh && left++);
+  check('dispose tar alt ut av rommene igjen', left === 0 && room.contents.children.length === 0);
+}
+
 done();
 
 // ---------------------------------------------------------------------------------------------------------------

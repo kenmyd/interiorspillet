@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mat, emissive } from './materials.js';
 
 /**
  * STAIRS – the stair between the levels (notes/hele-huset-design.md §1.6, §2.6, §3.1, §3.3; the numbers are
@@ -687,7 +689,8 @@ export function stairLayout(stair, levels = [], opts = {}) {
       const p = railSide.at(s);
       wellGuard.rail.push([p[0], railAt(s), p[1]]);
     }
-    wellGuard.posts.push({ p: railSide.at(s0), y0: bottomY, y1: bottomY + (isNum(guardStyle.height) ? guardStyle.height : 1.0) });
+    // the start post at the foot (225639: ≈ 1,0 over the floor) carries the rail
+    wellGuard.posts.push({ p: railSide.at(s0), y0: bottomY, y1: Math.max(bottomY + (isNum(guardStyle.height) ? guardStyle.height : 1.0), railAt(s0) + 0.03) });
     const spacing = isNum(guardStyle.spacing) ? guardStyle.spacing : 0.13;
     const runs = [
       [s0 + spacing * 0.8, cornerS[0] - 0.06],
@@ -1163,25 +1166,418 @@ export function slabColliders(layout, levelId) {
 // ---------------------------------------------------------------------------------------------------------------
 // buildStairs (three.js)
 
+/** Colours where the data says nothing (§2.6, avstemming V23). */
+const LOOK = Object.freeze({
+  oak: '#ada396',
+  black: '#1d1e21',
+  led: '#ffd9ad',
+  ledBase: '#fff6ea',
+  basket: '#a88b62',
+  leaf: '#5d7a52',
+});
+
 /**
- * Builds every stair of layout.house.stairs (STUB: nothing yet).
+ * Collects flat-shaded triangles (positions, normals, uvs in metres) – every triangle turned to face `want`. UVs: on
+ * faces looking up / down (x, z) projected on (along, across), on the others (along the face, y), so the oak's grain
+ * runs along `along` (the tread's nosing line).
+ */
+class Mesher {
+  constructor() {
+    this.pos = [];
+    this.nrm = [];
+    this.uv = [];
+  }
+
+  tri(a, b, c, want, along = [1, 0]) {
+    const ab = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
+    const ac = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+    let n = [ab[1] * ac[2] - ab[2] * ac[1], ab[2] * ac[0] - ab[0] * ac[2], ab[0] * ac[1] - ab[1] * ac[0]];
+    const l = Math.hypot(n[0], n[1], n[2]);
+    if (l < 1e-10) return;
+    n = [n[0] / l, n[1] / l, n[2] / l];
+    if (want && n[0] * want[0] + n[1] * want[1] + n[2] * want[2] < 0) {
+      [b, c] = [c, b];
+      n = [-n[0], -n[1], -n[2]];
+    }
+    const acr = [-along[1], along[0]];
+    let tan = null;
+    if (Math.abs(n[1]) <= 0.5) {
+      const h = Math.hypot(n[0], n[2]) || 1;
+      tan = [-n[2] / h, n[0] / h];
+    }
+    for (const p of [a, b, c]) {
+      this.pos.push(p[0], p[1], p[2]);
+      this.nrm.push(n[0], n[1], n[2]);
+      if (tan) this.uv.push(p[0] * tan[0] + p[2] * tan[1], p[1]);
+      else this.uv.push(p[0] * along[0] + p[2] * along[1], p[0] * acr[0] + p[2] * acr[1]);
+    }
+  }
+
+  quad(a, b, c, d, want, along) {
+    this.tri(a, b, c, want, along);
+    this.tri(a, c, d, want, along);
+  }
+
+  /** a vertical prism over a plan polygon (CCW or CW), y0 … y1 */
+  prism(pl, y0, y1, along = [1, 0]) {
+    if (pl.length < 3 || y1 - y0 < 1e-5) return;
+    const c = ccw(pl);
+    const idx = THREE.ShapeUtils.triangulateShape(c.map((p) => new THREE.Vector2(p[0], p[1])), []);
+    for (const [i, j, k] of idx) {
+      this.tri([c[i][0], y1, c[i][1]], [c[j][0], y1, c[j][1]], [c[k][0], y1, c[k][1]], [0, 1, 0], along);
+      this.tri([c[i][0], y0, c[i][1]], [c[j][0], y0, c[j][1]], [c[k][0], y0, c[k][1]], [0, -1, 0], along);
+    }
+    for (let i = 0; i < c.length; i++) {
+      const a = c[i];
+      const b = c[(i + 1) % c.length];
+      const e = unit(sub(b, a));
+      // CCW in (x, z): the outward normal is (e.z, −e.x)
+      const want = [e[1], 0, -e[0]];
+      this.quad([a[0], y0, a[1]], [b[0], y0, b[1]], [b[0], y1, b[1]], [a[0], y1, a[1]], want, along);
+    }
+  }
+
+  /** an axis-aligned box from its centre and size (y0 … y1) */
+  box(cx, cz, w, d, y0, y1, along = [1, 0]) {
+    this.prism([[cx - w / 2, cz - d / 2], [cx + w / 2, cz - d / 2], [cx + w / 2, cz + d / 2], [cx - w / 2, cz + d / 2]], y0, y1, along);
+  }
+
+  /** a box around the 3D segment a → b, `w` wide (horizontal, across) and `h` high (vertical) */
+  bar(a, b, w, h) {
+    const d = unit([b[0] - a[0], b[2] - a[2]]);
+    const s = mul(perp(d), w / 2);
+    const P = (p, k, dy) => [p[0] + s[0] * k, p[1] + dy, p[2] + s[1] * k];
+    const pts = [a, b].map((p) => [P(p, 1, -h / 2), P(p, -1, -h / 2), P(p, -1, h / 2), P(p, 1, h / 2)]);
+    this.sweepFaces(pts, [[d[0], 0, d[1]], [d[0], 0, d[1]]], d);
+  }
+
+  /**
+   * Faces of a swept quad profile: rings[i] = 4 points (counter-clockwise looking along the path), tangents for the end
+   * caps; the faces between consecutive rings face away from the path's axis.
+   */
+  sweepFaces(rings, tangents, along = [1, 0]) {
+    const n = rings.length;
+    for (let i = 0; i < n - 1; i++) {
+      const A = rings[i];
+      const B = rings[i + 1];
+      const axisA = A.reduce((s, p) => [s[0] + p[0] / 4, s[1] + p[1] / 4, s[2] + p[2] / 4], [0, 0, 0]);
+      for (let k = 0; k < 4; k++) {
+        const k2 = (k + 1) % 4;
+        const mid = [(A[k][0] + A[k2][0]) / 2, (A[k][1] + A[k2][1]) / 2, (A[k][2] + A[k2][2]) / 2];
+        const want = [mid[0] - axisA[0], mid[1] - axisA[1], mid[2] - axisA[2]];
+        this.quad(A[k], A[k2], B[k2], B[k], want, along);
+      }
+    }
+    const cap = (R, t) => this.quad(R[0], R[1], R[2], R[3], t, along);
+    cap(rings[0], tangents[0].map((v) => -v));
+    cap(rings[n - 1], tangents[tangents.length - 1]);
+  }
+
+  /** a rectangular profile (w across, h vertical) swept along a 3D polyline; side[i] = the horizontal across vector */
+  sweep(path, w, h, side) {
+    if (path.length < 2) return;
+    const rings = path.map((p, i) => {
+      const s = side[i];
+      return [
+        [p[0] + s[0] * (w / 2), p[1] - h / 2, p[2] + s[1] * (w / 2)],
+        [p[0] - s[0] * (w / 2), p[1] - h / 2, p[2] - s[1] * (w / 2)],
+        [p[0] - s[0] * (w / 2), p[1] + h / 2, p[2] - s[1] * (w / 2)],
+        [p[0] + s[0] * (w / 2), p[1] + h / 2, p[2] + s[1] * (w / 2)],
+      ];
+    });
+    const t0 = [path[1][0] - path[0][0], path[1][1] - path[0][1], path[1][2] - path[0][2]];
+    const m = path.length - 1;
+    const t1 = [path[m][0] - path[m - 1][0], path[m][1] - path[m - 1][1], path[m][2] - path[m - 1][2]];
+    this.sweepFaces(rings, [t0, t1], unit([t0[0], t0[2]]));
+  }
+
+  /** a vertical band along plan points p[i] with its own top / bottom, `t` thick toward nIn[i] (a stringer) */
+  band(samples, t, nIn) {
+    if (samples.length < 2) return;
+    const rings = samples.map((q, i) => {
+      const a = q.p;
+      const b = add(a, mul(nIn[i], t));
+      return [[a[0], q.bottom, a[1]], [b[0], q.bottom, b[1]], [b[0], q.top, b[1]], [a[0], q.top, a[1]]];
+    });
+    const n = samples.length;
+    const d0 = unit(sub(samples[1].p, samples[0].p));
+    const d1 = unit(sub(samples[n - 1].p, samples[n - 2].p));
+    this.sweepFaces(rings, [[d0[0], 0, d0[1]], [d1[0], 0, d1[1]]], d0);
+  }
+
+  geometry() {
+    if (!this.pos.length) return null;
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(this.pos, 3));
+    g.setAttribute('normal', new THREE.Float32BufferAttribute(this.nrm, 3));
+    g.setAttribute('uv', new THREE.Float32BufferAttribute(this.uv, 2));
+    g.computeBoundingBox();
+    g.computeBoundingSphere();
+    return g;
+  }
+}
+
+/** Horizontal across-vectors of a plan polyline for a sweep: perpendicular on the ends, mitred (scaled) inside. */
+function mitreSides(plan) {
+  const n = plan.length;
+  const dirs = [];
+  for (let i = 0; i < n - 1; i++) dirs.push(unit(sub(plan[i + 1], plan[i])));
+  return plan.map((_, i) => {
+    const a = dirs[Math.max(0, i - 1)] ?? dirs[0];
+    const b = dirs[Math.min(n - 2, i)] ?? a;
+    if (i === 0) return perp(b);
+    if (i === n - 1) return perp(a);
+    const m = unit(add(perp(a), perp(b)));
+    const c = dot(m, perp(b));
+    return len(m) > 0.5 ? mul(m, 1 / Math.max(0.3, c)) : perp(b);
+  });
+}
+
+/** Into-the-flight unit normals of a chain at each sample (mitred at the chain's corners). */
+function chainNormals(chain, sideOf, samples) {
+  return samples.map((q) => {
+    const k = segIndex(chain, q.s);
+    const n0 = mul(perp(chain.dirAt(k)), sideOf(k));
+    // exactly on an inner corner of the chain: the miter of both segments
+    const atCorner = chain.cum.findIndex((c, i) => i > 0 && i < chain.cum.length - 1 && Math.abs(c - q.s) < 1e-6);
+    if (atCorner > 0) {
+      const na = mul(perp(chain.dirAt(atCorner - 1)), sideOf(atCorner - 1));
+      const nb = mul(perp(chain.dirAt(atCorner)), sideOf(atCorner));
+      const m = unit(add(na, nb));
+      return mul(m, 1 / Math.max(0.3, dot(m, nb)));
+    }
+    return n0;
+  });
+}
+
+/**
+ * Builds every stair of layout.house.stairs (§2.6): oak treads (plate + batten, open risers), the nosing list at the
+ * top edge, black stringers along the shaft walls and the well, the guards A/B/C on the upper floor, the well guard
+ * (rail, balusters, posts), the handrail on the shaft walls with its LED strip and the decor. Everything visible has no
+ * collision (it is not registered); the stair's collision is stairColliders + slabColliders of its upper level.
  * @param {object} ctx     createHome ctx (+ ctx.roots)
  * @param {object} layout  home/layout.js
  */
 export function buildStairs(ctx, layout) {
   const group = new THREE.Group();
   group.name = 'stairs';
+  const owned = [];
+  const meshes = [];
+  const colliders = [];
+  const builtInLights = [];
+  const H = layout?.house;
+  const labels = Object.fromEntries((H?.lightGroups || layout?.lightGroups || []).map((g) => [g.id, g.label]));
+  const blackMat = mat('painted', LOOK.black, { roughness: 0.55 });
+  const slabDone = new Set();
+
+  for (const st of H?.stairs || []) {
+    const lay = stairLayout(st, H.levels);
+    if (!lay.treads.length) continue;
+    // the stair's hud room (layout keeps no stairId on rooms: the hud room around the footprint)
+    const fc = lay.walk.at(lay.walk.length / 2).p;
+    const hud = (H.rooms || []).find((r) => (r.hud || r.kind === 'hud') && (r.stairId === st.id || (r.polygon?.length >= 3 && pointInPolygon(fc, poly(r.polygon)))));
+    const room = (hud && ctx.roots?.rooms?.[hud.id]) || null;
+    const surfaces = room?.surfaces ?? ctx.roots?.levels?.[st.toLevel] ?? group;
+    const contents = room?.contents ?? surfaces;
+    const root = new THREE.Group();
+    root.name = `stair:${st.id}`;
+    root.userData.noCollide = true;
+    root.userData.stairId = st.id;
+    surfaces.add(root);
+    const add3 = (geo, material, name, { shadow = true } = {}) => {
+      if (!geo) return null;
+      owned.push(geo);
+      const m = new THREE.Mesh(geo, material);
+      m.name = name;
+      m.castShadow = shadow;
+      m.receiveShadow = true;
+      m.userData.noCollide = true;
+      m.userData.stairId = st.id;
+      root.add(m);
+      meshes.push(m);
+      return m;
+    };
+
+    // ---- treads, battens and the nosing list (oak)
+    const oakMat = mat('white-oak', st.tread?.color ?? LOOK.oak, { roughness: 0.6 });
+    const oak = new Mesher();
+    for (const t of lay.treads) {
+      oak.prism(t.plate, t.bottom, t.y, t.along);
+      if (t.batten) oak.prism(t.batten.polygon, t.batten.y0, t.batten.y1, t.along);
+    }
+    const nl = lay.nosingList;
+    const listAlong = unit(sub(lay.nosings[lay.nosings.length - 1].outer, lay.nosings[lay.nosings.length - 1].inner));
+    oak.prism(nl.lip, nl.lipY[0], nl.lipY[1], listAlong);
+    oak.prism(nl.cap, nl.capY[0], nl.capY[1], listAlong);
+    add3(oak.geometry(), oakMat, `stair-treads:${st.id}`);
+
+    // ---- stringers, guards, rails (black)
+    const black = new Mesher();
+    const strColor = st.stringers?.color;
+    for (const key of ['outer', 'inner']) {
+      const s = lay.stringers[key];
+      black.band(s.samples, s.thickness ?? lay.stringers.thickness, chainNormals(s.chain, s.side, s.samples));
+    }
+    // the well guard: posts, balusters and the rail (0.05 square) on the inner stringer
+    const gs = st.guardStyle || {};
+    const postW = isNum(gs.post) ? gs.post : 0.065;
+    const balW = isNum(gs.baluster) ? gs.baluster : 0.022;
+    const topRail = Array.isArray(gs.topRail) ? gs.topRail : [0.07, 0.05];
+    const wg = lay.wellGuard;
+    for (const p of wg.posts) black.box(p.p[0], p.p[1], postW, postW, p.y0, p.y1);
+    for (const b of wg.balusters) black.box(b.p[0], b.p[1], balW, balW, b.y0, b.y1);
+    if (wg.rail.length >= 2) black.sweep(wg.rail, 0.05, 0.05, mitreSides(wg.rail.map((p) => [p[0], p[2]])));
+    // the guards A/B/C: posts (P1′ / P2 over the stair hang down under the floor, 225349), top rail, bottom rail,
+    // balusters
+    const postsAt = [];
+    const hangs = (p) => inOrOn(p, lay.footprint, 0.02) || (lay.well.length >= 3 && inOrOn(p, lay.well, 0.02));
+    for (const g of lay.guards) {
+      const [a, b] = g.line;
+      const d = unit(sub(b, a));
+      const L = dist(a, b);
+      for (const [p, raw] of [[a, g.raw[0]], [b, g.raw[1]]]) {
+        const other = lay.guards.find((o) => o !== g && o.raw.some((q) => dist(q, raw) < 0.02));
+        // a free end goes half a post inward (off the wall / onto the floor), a shared one sits where both (shifted)
+        // guard lines meet
+        let pp = add(p, mul(dist(p, a) < 1e-9 ? d : mul(d, -1), postW / 2));
+        if (other) {
+          const e = unit(sub(other.line[1], other.line[0]));
+          const den = cross(d, e);
+          pp = Math.abs(den) > 1e-6 ? add(a, mul(d, cross(sub(other.line[0], a), e) / den)) : p;
+        }
+        if (postsAt.some((q) => dist(q, pp) < 0.03)) continue;
+        postsAt.push(pp);
+        black.box(pp[0], pp[1], postW, postW, hangs(raw) ? g.y0 - 0.45 : g.y0, g.y0 + g.height);
+      }
+      const r0 = add(a, mul(d, postW / 2));
+      const r1 = sub(b, mul(d, postW / 2));
+      black.bar([r0[0], g.y0 + g.height - topRail[1] / 2, r0[1]], [r1[0], g.y0 + g.height - topRail[1] / 2, r1[1]], topRail[0], topRail[1]);
+      black.bar([r0[0], g.y0 + 0.02, r0[1]], [r1[0], g.y0 + 0.02, r1[1]], 0.05, 0.04);
+      const count = Math.max(0, Math.round(L / (isNum(gs.spacing) ? gs.spacing : 0.13)) - 1);
+      for (let i = 1; i <= count; i++) {
+        const p = lerp2(a, b, i / (count + 1));
+        black.box(p[0], p[1], balW, balW, g.y0 + 0.04, g.y0 + g.height - topRail[1]);
+      }
+    }
+    // the handrail on the shaft walls, its brackets and LED strip
+    for (const h of lay.handrails) {
+      const [ph, pd] = h.profile;
+      black.sweep(h.path, pd, ph, mitreSides(h.path.map((p) => [p[0], p[2]])));
+      // brackets: a rod from the wall to under the rail every ≈ 0.75 m and near both ends
+      const plan = h.path.map((p) => [p[0], p[2]]);
+      const cum = [0];
+      for (let i = 1; i < plan.length; i++) cum.push(cum[i - 1] + dist(plan[i - 1], plan[i]));
+      const total = cum[cum.length - 1];
+      const nb = Math.max(2, Math.round(total / 0.75) + 1);
+      for (let j = 0; j < nb; j++) {
+        const s = lerp(0.12, total - 0.12, j / (nb - 1));
+        let i = 1;
+        while (i < cum.length - 1 && cum[i] < s) i++;
+        const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1] || 1);
+        const p = lerp2(plan[i - 1], plan[i], t);
+        const y = lerp(h.path[i - 1][1], h.path[i][1], t) - ph / 2 - 0.012;
+        const toWall = h.side3[i];
+        const w = add(p, mul(toWall, h.wallOffset));
+        black.bar([p[0], y, p[1]], [w[0], y, w[1]], 0.014, 0.014);
+        black.box(p[0], p[1], 0.014, 0.014, y, y + 0.014);
+      }
+      for (const led of h.led) {
+        const lm = new Mesher();
+        const lp = led.path;
+        lm.sweep(lp.map((p) => [p[0], p[1] - ph / 2 - 0.0012, p[2]]), 0.014, 0.0024, mitreSides(lp.map((p) => [p[0], p[2]])));
+        const ledMat = emissive(LOOK.led, 2.6, { color: LOOK.ledBase });
+        owned.push(ledMat);
+        const mesh = add3(lm.geometry(), ledMat, `led:${led.id}`, { shadow: false });
+        if (!mesh) continue;
+        mesh.receiveShadow = false;
+        builtInLights.push({
+          id: led.id,
+          group: led.group,
+          roomId: hud?.id ?? null,
+          stairId: st.id,
+          label: labels[led.group] || 'Trappa',
+          type: 'led-strip',
+          from: new THREE.Vector3(...led.from),
+          to: new THREE.Vector3(...led.to),
+          direction: new THREE.Vector3(0, -1, 0),
+          colorK: led.lightColorK,
+          lumens: led.lumens,
+          signature: 1,
+          emissiveMeshes: [mesh],
+        });
+      }
+    }
+    add3(black.geometry(), strColor && strColor !== LOOK.black ? mat('painted', strColor, { roughness: 0.55 }) : blackMat, `stair-steel:${st.id}`);
+
+    // ---- decor (optional, §1.6): the small plant in a basket on the ledge
+    for (const d of lay.decor) {
+      if (d.type !== 'plant-small' || !Array.isArray(d.at)) continue;
+      const y0 = isNum(lay.ledge?.top) ? lay.ledge.top : lay.topY - 0.27;
+      const deco = new THREE.Group();
+      deco.name = `decor:${st.id}:plant`;
+      deco.userData.optional = !!d.optional;
+      deco.userData.noCollide = true;
+      const basket = new THREE.CylinderGeometry(0.06, 0.05, 0.11, 18);
+      basket.translate(d.at[0], y0 + 0.055, d.at[1]);
+      owned.push(basket);
+      const bm = new THREE.Mesh(basket, mat('painted', LOOK.basket, { roughness: 0.85 }));
+      bm.castShadow = true;
+      deco.add(bm);
+      // eucalyptus: a few flat leaf clusters, one merged geometry
+      const spots = [[0, 0.16, 0], [0.04, 0.2, 0.03], [-0.03, 0.23, -0.02], [0.02, 0.27, -0.04], [-0.04, 0.18, 0.04], [0.0, 0.3, 0.02], [0.05, 0.25, -0.01]];
+      const parts = spots.map(([dx, dy, dz]) => {
+        const g = new THREE.IcosahedronGeometry(0.035, 0);
+        const o = new THREE.Object3D();
+        o.position.set(d.at[0] + dx * 0.7, y0 + dy, d.at[1] + dz);
+        o.scale.set(1, 0.55, 1.25);
+        o.rotation.set(dx * 9, dz * 11, dy * 4);
+        o.updateMatrix();
+        g.applyMatrix4(o.matrix);
+        return g;
+      });
+      const leaves = mergeGeometries(parts, false);
+      for (const g of parts) g.dispose();
+      if (leaves) {
+        owned.push(leaves);
+        const lm2 = new THREE.Mesh(leaves, mat('painted', LOOK.leaf, { roughness: 0.7 }));
+        lm2.castShadow = true;
+        deco.add(lm2);
+      }
+      contents.add(deco);
+      meshes.push(deco);
+    }
+
+    // ---- collision: the wedge, the stringer sides, the corner blocks; the slab and guards of the upper level once
+    colliders.push(...stairColliders(lay));
+    if (!slabDone.has(st.toLevel)) {
+      slabDone.add(st.toLevel);
+      colliders.push(...slabColliders(layout, st.toLevel));
+    }
+  }
+  for (const c of colliders) if (c.isMesh) owned.push(c.geometry);
+
   return {
     group,
     walls: [],
     windows: [],
     doors: [],
     pickables: { floor: [], walls: [], ceilings: [], windows: [] },
-    builtInLights: [],
-    colliders: [],
+    builtInLights,
+    colliders,
     update() {},
     setPaint() {},
     dispose() {
+      for (const m of meshes) m.parent?.remove(m);
+      for (const st of H?.stairs || []) {
+        for (const r of [ctx.roots?.rooms, ctx.roots?.levels]) {
+          for (const g of Object.values(r || {})) {
+            const node = g?.surfaces ?? g;
+            const s = node?.getObjectByName?.(`stair:${st.id}`);
+            if (s) s.removeFromParent();
+          }
+        }
+      }
+      for (const o of owned) o.dispose?.();
       group.removeFromParent();
     },
   };
