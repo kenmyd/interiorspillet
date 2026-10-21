@@ -6896,6 +6896,706 @@
       }
     },
     {
+      "confidence": "med",
+      "mount": "wall",
+      "id": "f-bad-hoyskap",
+      "roomId": "bad",
+      "name": "Høyskap (svart, vegghengt)",
+      "kind": "wall-cabinet",
+      "archetype": "wall-cabinet",
+      "wallId": "w-bad-ost",
+      "position": [
+        1.3,
+        0.15,
+        0
+      ],
+      "center": [
+        1.3,
+        1.1,
+        0
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.4,
+        "d": 0.3,
+        "h": 1.9
+      },
+      "params": {
+        "fronts": [
+          "door"
+        ],
+        "drawerRow": 1,
+        "drawerRowPos": "bottom",
+        "drawerH": 0.9,
+        "frontStyle": "flat",
+        "frontFit": "overlay",
+        "handle": "none",
+        "corners": "square",
+        "mountHeight": 0.15
+      },
+      "colors": {
+        "body": "#1f1f22",
+        "front": "#1f1f22",
+        "top": "#1f1f22",
+        "handle": "#1f1f22"
+      },
+      "materials": {
+        "body": "painted",
+        "front": "painted",
+        "top": "painted",
+        "handle": "painted"
+      },
+      "notes": "To glatte dører uten grep (trykklås): den nedre 0,15–1,05 og den øvre 1,05–2,05 (den nedre er tegnet som en lav front under døra). Står rett inntil servanten, med en liten luke mot dusjreturen. Modelleres lukket – toalettsakene er rot.",
+      "estimated": [
+        "dims.d",
+        "params.drawerH"
+      ],
+      "source": "hele-huset-avstemming.md V38 (x 1,10–1,50, 0,40 × 0,30 × 1,90, underkant 0,15, topp 2,05, matt svart #1f1f22, to glatte dører, lukket); bad-1etg.md; 225413, 225417, 225425, 225333"
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-sov-garderobe",
+      "roomId": "soverom",
+      "name": "Garderobeskap (antrasitt, fra gulv til tak)",
+      "kind": "wardrobe",
+      "archetype": "wardrobe",
+      "position": [
+        0.94,
+        0,
+        4.83
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 1.88,
+        "d": 0.6,
+        "h": 2.39
+      },
+      "params": {
+        "fronts": [
+          "door",
+          "door",
+          "mirror",
+          "door"
+        ],
+        "base": "plinth",
+        "legH": 0.05,
+        "frontStyle": "flat",
+        "frontFit": "overlay",
+        "handle": "bar",
+        "handleLen": 0.32,
+        "handleY": 1.05,
+        "top": "same",
+        "corners": "square",
+        "cornice": false
+      },
+      "colors": {
+        "body": "#545656",
+        "front": "#545656",
+        "top": "#545656",
+        "legs": "#545656",
+        "handle": "#2a2a2a"
+      },
+      "materials": {
+        "body": "painted",
+        "front": "painted",
+        "top": "painted",
+        "legs": "painted",
+        "handle": "black-metal"
+      },
+      "notes": "Fire fronter fra nord: to glatte dører, en smal dør med høyt speilfelt i tynn aluminiumsramme og en glatt dør. Modellen har like brede kolonner, så speildøra blir like bred som de andre. Tre stanggrep ved skjøtene. LED-lista over fronten er l-sov-garderobe (10-hoved-rom.json). Går helt opp til taket (1 cm luft mot taket på 2,40).",
+      "estimated": [
+        "dims",
+        "params.fronts"
+      ],
+      "source": "design §2.5; hele-huset-avstemming.md V53 (#545656); soverom-1etg.md (x 0–1,88, z 4,51–5,11 – her fra østveggen z 4,53 etter V54, fronten mot vest, matt antrasitt, fire fronter, tre stanggrep); 225304, 225307, 225308"
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-sov-seng",
+      "roomId": "soverom",
+      "name": "Kontinentalseng 180 × 200",
+      "kind": "bed",
+      "archetype": "bed",
+      "position": [
+        1.55,
+        0,
+        7.19
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 1.8,
+        "d": 2,
+        "h": 0.7
+      },
+      "params": {
+        "bedType": "continental",
+        "mattressW": 1.8,
+        "mattressL": 2,
+        "seatH": 0.7,
+        "topperH": 0.08,
+        "legStyle": "block",
+        "legH": 0.1,
+        "headboard": "none",
+        "footboard": false,
+        "bedding": "duvet",
+        "pillows": 2,
+        "throwRunner": false
+      },
+      "colors": {
+        "frame": "#c8b9a6",
+        "headboard": "#c8b9a6",
+        "legs": "#c4a583",
+        "bedding": "#4b4c4f"
+      },
+      "materials": {
+        "frame": "woven",
+        "headboard": "woven",
+        "legs": "oak",
+        "bedding": "cotton"
+      },
+      "notes": "Hodeenden mot vestveggen uten gavl, fotenden mot garderoben (ca. 1,1 m fri gulvflate), ca. 0,65 m klaring på begge sider. Overtrukket bunn i lys greige stoff på korte, lyse treben. Pent oppredd: mørk grå dyne (#4b4c4f med hvite bladlinjer #e9e7e2 – modellen har ensfarget sengetøy) og to puter; lakenet er lys beige #dbcdbb.",
+      "estimated": [
+        "dims.h",
+        "params.seatH",
+        "params.legH"
+      ],
+      "source": "design §2.5 (x 0,65–2,45, z 6,20–8,20, hodeenden mot vest, bunn #c8b9a6, ben #c4a583, dyne #4b4c4f); hele-huset-avstemming.md V52 (madrassoverkant 0,70, laken #dbcdbb); soverom-1etg.md; 225259, 225316"
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-sov-nattbord",
+      "roomId": "soverom",
+      "name": "Nattbord (sort kube)",
+      "kind": "bedside-table",
+      "archetype": "bedside-table",
+      "position": [
+        2.78,
+        0,
+        8.01
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 0.35,
+        "d": 0.38,
+        "h": 0.55
+      },
+      "params": {
+        "fronts": [
+          "open"
+        ],
+        "drawerRow": 1,
+        "drawerRowPos": "top",
+        "drawerH": 0.2,
+        "base": "none",
+        "legH": 0,
+        "frontStyle": "flat",
+        "handle": "none",
+        "top": "same",
+        "corners": "square"
+      },
+      "colors": {
+        "main": "#1e1e1f"
+      },
+      "materials": {
+        "main": "painted"
+      },
+      "notes": "Ett nattbord (planen har to, men på nordsiden står det ingenting), inntil hodeveggen i SV-hjørnet mellom senga og sørveggen. Toppen står ca. 0,15 under madrassen. Fronten har en skuff over et åpent rom. Flaska på bordet er rot.",
+      "estimated": [
+        "dims",
+        "params.fronts"
+      ],
+      "source": "hele-huset-avstemming.md V52 (0,35 b × 0,38 d × 0,55 h, #1e1e1f, skuff eller åpent rom nede, senter (2,78; 8,01)); soverom-1etg.md; 225259, 225316"
+    },
+    {
+      "confidence": "low",
+      "mount": "wall",
+      "id": "f-sov-knaggrekke",
+      "roomId": "soverom",
+      "name": "Knaggrekke (5 knagger)",
+      "kind": "coat-rack",
+      "archetype": "coat-rack",
+      "wallId": "w-sov-sor",
+      "position": [
+        3.12,
+        1.565,
+        5.78
+      ],
+      "center": [
+        3.12,
+        1.6,
+        5.78
+      ],
+      "rotationDeg": -90,
+      "dims": {
+        "w": 0.5,
+        "d": 0.07,
+        "h": 0.07
+      },
+      "params": {
+        "style": "rail",
+        "hooks": 5,
+        "hookStyle": "hook",
+        "coats": 0,
+        "mountHeight": 1.565
+      },
+      "colors": {
+        "body": "#2a2b2d",
+        "accent": "#2a2b2d",
+        "fabric": "#2a2b2d"
+      },
+      "materials": {
+        "body": "black-metal",
+        "accent": "black-metal",
+        "fabric": "wool"
+      },
+      "notes": "Sort/mørk grå metallskinne rett vest for det åpne dørbladet (bladet ender ved z ca. 5,4, dørstopperen på z 5,38). Henger tom – jakken er rot.",
+      "estimated": [
+        "position",
+        "center",
+        "dims"
+      ],
+      "source": "hele-huset-avstemming.md V53 (z 5,53–6,03, 5 knagger, senter h 1,60); soverom-1etg.md (ca. 0,50 lang, 1,0–1,5 m fra østhjørnet); 225259, 225304, 225316"
+    },
+    {
+      "confidence": "med",
+      "mount": "wall",
+      "id": "f-ks-tv",
+      "roomId": "kjellerstue",
+      "name": "TV (ca. 77″, veggmontert)",
+      "kind": "tv",
+      "archetype": "tv",
+      "wallId": "w-ks-vest",
+      "position": [
+        4.97,
+        1.07,
+        11.38
+      ],
+      "center": [
+        4.97,
+        1.56,
+        11.38
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 1.7,
+        "d": 0.06,
+        "h": 0.98
+      },
+      "colors": {
+        "main": "#100e0f"
+      },
+      "materials": {
+        "main": "glass-smoked"
+      },
+      "notes": "Sort, på flat brakett, litt sør for veggens midtlinje. Ingen TV-benk under. Den løse strømledningen er rot.",
+      "estimated": [
+        "dims",
+        "position",
+        "center"
+      ],
+      "source": "hele-huset-avstemming.md V65 (1,70 × 0,98 × 0,06 på vestveggen, midt x 4,97, h 1,07–2,07); kjellerstue.md (lokalt x 1,07–2,78); 225644, 225657"
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-ks-stol-a",
+      "roomId": "kjellerstue",
+      "name": "Armlenestol A (sort metall, skifergrå pute)",
+      "kind": "chair",
+      "archetype": "chair",
+      "position": [
+        4.25,
+        0,
+        10.95
+      ],
+      "rotationDeg": 135,
+      "dims": {
+        "w": 0.6,
+        "d": 0.55,
+        "h": 0.8
+      },
+      "params": {
+        "back": "panel",
+        "seat": "cushion",
+        "arms": true,
+        "legStyle": "metal-thin",
+        "seatH": 0.45,
+        "stretchers": false
+      },
+      "colors": {
+        "main": "#5a5c64",
+        "frame": "#1c1c1c",
+        "legs": "#1c1c1c"
+      },
+      "materials": {
+        "main": "woven",
+        "frame": "black-metal",
+        "legs": "black-metal"
+      },
+      "notes": "Sort buet metallramme og ryggbøyle med sort netting i ryggen og løs skifergrå setepute (modellen: bøyd rygg i rammefargen og pute på setet). Ryddig plassert i NV-hjørnet foran TV-veggen med fronten mot sørøst, så soveromsdøra og en gangsone på 0,8 m foran den er fri.",
+      "estimated": [
+        "*"
+      ],
+      "source": "hele-huset-avstemming.md V65 (stol A på (4,00; 11,02), fronten mot sørøst – flyttet til (4,25; 10,95) så stolen står innenfor vestveggen (z 11,38) og utenfor gangsonen 0,8 m foran soveromsdøra); kjellerstue.md (Møbler 7, lokalt x 0,95, z 5,70); 225657, 225700"
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-ks-stol-b",
+      "roomId": "kjellerstue",
+      "name": "Armlenestol B (sort metall, skifergrå pute)",
+      "kind": "chair",
+      "archetype": "chair",
+      "position": [
+        4.8,
+        0,
+        5.67
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.6,
+        "d": 0.55,
+        "h": 0.8
+      },
+      "params": {
+        "back": "panel",
+        "seat": "cushion",
+        "arms": true,
+        "legStyle": "metal-thin",
+        "seatH": 0.45,
+        "stretchers": false
+      },
+      "colors": {
+        "main": "#5a5c64",
+        "frame": "#1c1c1c",
+        "legs": "#1c1c1c"
+      },
+      "materials": {
+        "main": "woven",
+        "frame": "black-metal",
+        "legs": "black-metal"
+      },
+      "notes": "Lik stol A. Inntil østveggen sør for GANG-døra med fronten mot vest (mot TV-en), med samme skifergrå pute som stol A (anslått). Klærne på stolen og den store sorte løse puta på gulvet er rot.",
+      "estimated": [
+        "*"
+      ],
+      "source": "hele-huset-avstemming.md V65 (stol B på (4,80; 5,67), fronten mot vest); kjellerstue.md (Møbler 7, lokalt x 1,75, z 0,35); 225647"
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-sk-bokhylle",
+      "roomId": "soverom-kjeller",
+      "name": "Bokhylle (sortbrun, uten dører)",
+      "kind": "bookcase",
+      "archetype": "bookcase",
+      "position": [
+        0.42,
+        0,
+        10.87
+      ],
+      "rotationDeg": 90,
+      "dims": {
+        "w": 1,
+        "d": 0.58,
+        "h": 2.01
+      },
+      "params": {
+        "style": "closed",
+        "cols": 2,
+        "rows": 5,
+        "doorRows": 0,
+        "base": "plinth",
+        "legH": 0.06,
+        "decor": false,
+        "handle": "none"
+      },
+      "colors": {
+        "body": "#2b2522",
+        "front": "#2b2522",
+        "top": "#2b2522",
+        "legs": "#2b2522",
+        "handle": "#2b2522"
+      },
+      "materials": {
+        "body": "painted",
+        "front": "painted",
+        "top": "painted",
+        "legs": "painted",
+        "handle": "painted"
+      },
+      "notes": "Ser ut som IKEA PAX uten dører: to 50 cm-stammer side om side med hullrekker og uttrekkskurver nederst. Mot nordveggen med vestsida inntil vestveggen, fronten mot sør. Står tom – brettspillene og receiveren er rot.",
+      "estimated": [
+        "dims",
+        "params.rows"
+      ],
+      "source": "hele-huset-avstemming.md V66 (1,00 × 0,58 × 2,01, #2b2522, tom, x 0,13–0,71 og z 10,37–11,37, rotationDeg 90); soverom-kjeller.md (Møbler 1); 225717, 225721"
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-sk-stol",
+      "roomId": "soverom-kjeller",
+      "name": "Bouclé-stol (som spisestolene, valgfri)",
+      "kind": "dining-chair",
+      "archetype": "dining-chair",
+      "optional": true,
+      "position": [
+        2.43,
+        0,
+        9.5
+      ],
+      "rotationDeg": -90,
+      "dims": {
+        "w": 0.52,
+        "d": 0.58,
+        "h": 0.88
+      },
+      "params": {
+        "seatH": 0.47
+      },
+      "colors": {
+        "main": "#c8c8c6",
+        "legs": "#1a1a1a"
+      },
+      "materials": {
+        "main": "boucle",
+        "legs": "black-metal"
+      },
+      "notes": "Ekstrastol satt bort her (samme modell og farge som spisestolene oppe). Det er plass til én ryddig plassert stol mellom hyllefronten og dørgerikten, med setet mot nord. Valgfri.",
+      "estimated": [
+        "*"
+      ],
+      "source": "hele-huset-avstemming.md V66 (én bouclé-stol, optional, på (2,43; 9,50), rotationDeg −90); soverom-kjeller.md (Møbler 3); 225715, 225723"
+    },
+    {
+      "confidence": "med",
+      "mount": "floor",
+      "id": "f-entre-stumtjener",
+      "roomId": "entre-kjeller",
+      "name": "Stumtjener (sort metall)",
+      "kind": "coat-stand",
+      "archetype": "coat-stand",
+      "position": [
+        8.31,
+        0,
+        3.42
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.38,
+        "d": 0.38,
+        "h": 1.75
+      },
+      "params": {
+        "style": "tree",
+        "hooks": 6,
+        "levels": 2,
+        "pegStyle": "angled",
+        "base": "round",
+        "shelf": false,
+        "coats": 0
+      },
+      "colors": {
+        "body": "#1c1c1e",
+        "accent": "#1c1c1e",
+        "fabric": "#1c1c1e"
+      },
+      "materials": {
+        "body": "black-metal",
+        "accent": "black-metal",
+        "fabric": "wool"
+      },
+      "notes": "Rund fotplate Ø 0,38 og en stang på ca. 1,75 med kroker øverst, i SØ-hjørnet ved østre sidefelt (ses utenfra gjennom glasset). Uten klær – jakkene og veska er rot.",
+      "estimated": [
+        "dims",
+        "params.hooks",
+        "params.levels"
+      ],
+      "source": "entre-gang-kjeller.md (Møbler, Entré: midt lokalt x 2,15, z 0,30 → x 6,16 + 2,15, z 3,12 + 0,30 etter avstemmingen §1.3); design §2.7; 225556, 225617"
+    },
+    {
+      "confidence": "med",
+      "mount": "rug",
+      "id": "f-entre-jutematte",
+      "roomId": "entre-kjeller",
+      "name": "Oval jutematte innenfor ytterdøra",
+      "kind": "rug",
+      "archetype": "rug",
+      "position": [
+        8.01,
+        0,
+        4.22
+      ],
+      "rotationDeg": 90,
+      "dims": {
+        "w": 1.2,
+        "d": 0.75,
+        "h": 0.008
+      },
+      "params": {
+        "shape": "oval",
+        "pile": "flat",
+        "weave": "braided",
+        "pattern": "solid"
+      },
+      "colors": {
+        "main": "#b39a7c"
+      },
+      "materials": {
+        "main": "linen"
+      },
+      "notes": "Naturjute med langsiden øst–vest, rett innenfor døra.",
+      "estimated": [
+        "dims",
+        "position"
+      ],
+      "source": "entre-gang-kjeller.md (Møbler, Entré: 1,2 × 0,75, midt lokalt x 1,85, z 1,10, #b39a7c); ytterdor-ute.md; 225553, 225619"
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-entre-vase",
+      "roomId": "entre-kjeller",
+      "name": "Gulvvase med tørket pampas (valgfri)",
+      "kind": "vase",
+      "archetype": "vase",
+      "optional": true,
+      "position": [
+        6.36,
+        0,
+        5.07
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.28,
+        "d": 0.28,
+        "h": 1.2
+      },
+      "params": {
+        "vaseH": 0.5,
+        "vaseD": 0.28,
+        "flowers": "tørket pampas og greiner",
+        "flowerTop": 1.2,
+        "shape": "round"
+      },
+      "colors": {
+        "main": "#6e625a",
+        "stems": "#c9b9a3"
+      },
+      "materials": {
+        "main": "ceramic"
+      },
+      "notes": "Rustikk grå-brun keramikk i innerhjørnet mellom nordveggen og søyla. Valgfri pynt.",
+      "estimated": [
+        "*"
+      ],
+      "source": "entre-gang-kjeller.md (Møbler, Entré: Ø 0,28, h 0,5, greiner til ca. 1,2, lokalt x 0,2, z 1,95); 225559, 225600"
+    },
+    {
+      "confidence": "low",
+      "mount": "floor",
+      "id": "f-kg-oliventre",
+      "roomId": "kjeller-gang",
+      "name": "Kunstig oliventre (valgfritt)",
+      "kind": "plant-floor",
+      "archetype": "plant-floor",
+      "optional": true,
+      "position": [
+        5.52,
+        0,
+        4.99
+      ],
+      "rotationDeg": 0,
+      "dims": {
+        "w": 0.42,
+        "d": 0.42,
+        "h": 1.3
+      },
+      "params": {
+        "species": "olive",
+        "spread": 0.42,
+        "pot": {
+          "d": 0.3,
+          "h": 0.3
+        }
+      },
+      "colors": {
+        "pot": "#262626",
+        "leaves": "#5d6b45"
+      },
+      "materials": {
+        "pot": "ceramic",
+        "leaves": "plant-leaf"
+      },
+      "notes": "I sort riflet potte i SV-hjørnet av GANG. Valgfri pynt (GANG har ellers ingen møbler, V57).",
+      "estimated": [
+        "*"
+      ],
+      "source": "hele-huset-avstemming.md V57 (valgfritt); entre-gang-kjeller.md (Møbler, Gang: ca. 1,3 m, potte Ø 0,3 #262626, blader #5d6b45, lokalt x 5,40, z 2,45 → x + 0,13, z + 2,56); 225630"
+    },
+    {
+      "confidence": "med",
+      "mount": "wall",
+      "id": "f-vask-speilskap",
+      "roomId": "vaskerom",
+      "name": "Speilskap med LED-skinne",
+      "kind": "mirror-cabinet",
+      "archetype": "mirror-cabinet",
+      "wallId": "w-vask-vest",
+      "position": [
+        0.75,
+        1.25,
+        8.45
+      ],
+      "center": [
+        0.75,
+        1.6,
+        8.45
+      ],
+      "rotationDeg": 180,
+      "dims": {
+        "w": 0.8,
+        "d": 0.14,
+        "h": 0.7
+      },
+      "params": {
+        "doors": 2,
+        "led": "top",
+        "openShelf": "none",
+        "mirrorSides": false,
+        "doorFrame": true,
+        "handle": "none",
+        "mountHeight": 1.25
+      },
+      "colors": {
+        "body": "#d9d9d6",
+        "front": "#c9cfd0",
+        "handle": "#c8c8c8"
+      },
+      "materials": {
+        "body": "painted",
+        "front": "mirror",
+        "handle": "chrome"
+      },
+      "light": {
+        "on": false,
+        "colorK": 4500,
+        "lumens": 400
+      },
+      "notes": "To speildører med tynn aluminiumskant over kummen; LED-lysskinne (aluminium, ca. 0,55) på toppen, kjølig hvit (4000–5000 K). Lyset står av til lysstegene har maske per rom (§4).",
+      "estimated": [
+        "dims",
+        "position",
+        "center",
+        "light"
+      ],
+      "source": "hele-huset-avstemming.md V58 (speilskapet x 0,35–1,15, ankret fra vestveggen); vaskerom.md (Møbler: 0,80 × 0,70 × 0,14, underkant ca. 1,25, LED-skinne øverst ca. 1,97, ca. 400 lm); 225501, 225513"
+    },
+    {
       "confidence": "low",
       "mount": "surface",
       "rotationDeg": 0,
@@ -7832,6 +8532,182 @@
         "*"
       ],
       "source": "soverom-1etg.md (225316; plasseringen er usikker)"
+    },
+    {
+      "id": "fx-bad-stikk",
+      "roomId": "bad",
+      "type": "socket",
+      "name": "Dobbel stikkontakt ved servanten",
+      "wallId": "w-bad-ost",
+      "position": [
+        2.3,
+        1.03,
+        0
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position",
+        "dims"
+      ],
+      "source": "hele-huset-avstemming.md V40 (x 2,30, senter h 1,03, over servantens sørende og under speilets underkant); bad-1etg.md; 225413, 225425"
+    },
+    {
+      "id": "fx-bad-bryter",
+      "roomId": "bad",
+      "type": "switch",
+      "name": "Lysbryter ved baddøra",
+      "wallId": "w-bad-gang",
+      "position": [
+        1.45,
+        1.15,
+        2.22
+      ],
+      "dims": {
+        "w": 0.086,
+        "h": 0.086
+      },
+      "color": "#151515",
+      "estimated": [
+        "position"
+      ],
+      "source": "hele-huset-avstemming.md V45 (x 1,45 rett nord for karmen, senter h 1,15); bad-1etg.md; 225421, 225417"
+    },
+    {
+      "id": "fx-bad-dopapir",
+      "roomId": "bad",
+      "type": "toilet-roll-holder",
+      "name": "Dopapirholder (sort)",
+      "wallId": "w-bad-gang",
+      "position": [
+        0.85,
+        0.8,
+        2.22
+      ],
+      "dims": {
+        "w": 0.16,
+        "h": 0.08,
+        "d": 0.09
+      },
+      "color": "#1a1a1a",
+      "estimated": [
+        "*"
+      ],
+      "source": "hele-huset-avstemming.md V45 (x 0,85, h 0,80, sør for WC-en); bad-1etg.md; 225419, 225421"
+    },
+    {
+      "id": "fx-bad-knagg",
+      "roomId": "bad",
+      "type": "hook",
+      "name": "Knagg på sørveggen",
+      "wallId": "w-bad-sor",
+      "position": [
+        2.53,
+        1.15,
+        0.8
+      ],
+      "dims": {
+        "w": 0.03,
+        "h": 0.05,
+        "d": 0.04
+      },
+      "color": "#1a1a1a",
+      "estimated": [
+        "*"
+      ],
+      "source": "hele-huset-avstemming.md V45 (z 0,80, h 1,15); bad-1etg.md (håndkleet på den er rot); 225413, 225423"
+    },
+    {
+      "id": "fx-sov-bryter",
+      "roomId": "soverom",
+      "type": "switch",
+      "name": "Lysbryter ved soveromsdøra",
+      "wallId": "w-sov-ost",
+      "position": [
+        2.04,
+        1.15,
+        4.53
+      ],
+      "dims": {
+        "w": 0.085,
+        "h": 0.085
+      },
+      "color": "#151515",
+      "estimated": [
+        "position"
+      ],
+      "source": "hele-huset-avstemming.md V53 (x 2,04, senter h 1,15); soverom-1etg.md (ca. 6 cm nord for karmen); 225304, 225308, 225324"
+    },
+    {
+      "id": "fx-sov-uttak-nord",
+      "roomId": "soverom",
+      "type": "cable-outlet",
+      "name": "Rundt uttak på hodeveggen (nord)",
+      "wallId": "w-sov-vest",
+      "position": [
+        0.5,
+        0.9,
+        8.2
+      ],
+      "dims": {
+        "w": 0.065,
+        "h": 0.065,
+        "d": 0.01
+      },
+      "color": "#d8d8d4",
+      "accent": "#1a1a1a",
+      "estimated": [
+        "*"
+      ],
+      "source": "hele-huset-avstemming.md V53 (x 0,50, h 0,90, lys ring #d8d8d4, Ø 0,065); soverom-1etg.md (kabelutløp/lampepunkt uten lampe); 225259, 225307, 225316"
+    },
+    {
+      "id": "fx-sov-uttak-sor",
+      "roomId": "soverom",
+      "type": "cable-outlet",
+      "name": "Rundt uttak på hodeveggen (sør)",
+      "wallId": "w-sov-vest",
+      "position": [
+        2.6,
+        0.9,
+        8.2
+      ],
+      "dims": {
+        "w": 0.065,
+        "h": 0.065,
+        "d": 0.01
+      },
+      "color": "#d8d8d4",
+      "accent": "#1a1a1a",
+      "estimated": [
+        "*"
+      ],
+      "source": "hele-huset-avstemming.md V53 (x 2,60, h 0,90); soverom-1etg.md; 225259, 225316"
+    },
+    {
+      "id": "fx-sov-dorstopper",
+      "roomId": "soverom",
+      "type": "door-stop",
+      "name": "Dørstopper på sørveggen",
+      "wallId": "w-sov-sor",
+      "position": [
+        3.12,
+        1,
+        5.38
+      ],
+      "dims": {
+        "w": 0.035,
+        "h": 0.035,
+        "d": 0.035
+      },
+      "color": "#2a2b2d",
+      "estimated": [
+        "*"
+      ],
+      "source": "design §2.5 (z 5,38); soverom-1etg.md (liten rund mørk veggstopper der vrideren treffer, ca. 0,85 fra østhjørnet, h ca. 1,0); 225304, 225308"
     },
     {
       "id": "fx-kg-stikk-ost",
@@ -9611,6 +10487,228 @@
     }
   ],
   "builtIns": [
+    {
+      "id": "bi-bad-servant",
+      "roomId": "bad",
+      "type": "vanity",
+      "name": "Vegghengt servantskap med integrert servant",
+      "mount": "wall",
+      "wallId": "w-bad-ost",
+      "position": [
+        1.9,
+        0.35,
+        0
+      ],
+      "dims": {
+        "w": 0.8,
+        "d": 0.46,
+        "h": 0.5
+      },
+      "rotationDeg": 0,
+      "colors": {
+        "cabinet": "#1f1f22",
+        "basin": "#f2f2f0",
+        "tap": "#1a1a1a"
+      },
+      "materials": {
+        "cabinet": "painted",
+        "basin": "ceramic",
+        "tap": "black-metal"
+      },
+      "params": {
+        "drawers": 2,
+        "basin": "integrated",
+        "tap": "single-lever",
+        "topH": 0.85,
+        "handles": "none"
+      },
+      "estimated": [
+        "dims.h",
+        "params.drawers"
+      ],
+      "source": "hele-huset-avstemming.md V38 (x 1,50–2,30, 0,80 × 0,46 × 0,50, overkant 0,85, bare ca. 0,16 til SØ-hjørnet); bad-1etg.md (matt svart, to skuffer, hvit helstøpt servantplate, svart ettgrepsbatteri); 225413, 225425, 225429"
+    },
+    {
+      "id": "bi-bad-speil",
+      "roomId": "bad",
+      "type": "mirror-round",
+      "name": "Rundt LED-speil",
+      "mount": "wall",
+      "wallId": "w-bad-ost",
+      "position": [
+        1.9,
+        1.08,
+        0
+      ],
+      "dims": {
+        "w": 0.8,
+        "d": 0.04,
+        "h": 0.8
+      },
+      "rotationDeg": 0,
+      "params": {
+        "backlight": "ring",
+        "frame": "none"
+      },
+      "light": {
+        "lumens": 400,
+        "lightColorK": 3000,
+        "group": "bad"
+      },
+      "estimated": [
+        "dims",
+        "position",
+        "light"
+      ],
+      "source": "hele-huset-avstemming.md V39 (Ø 0,80, underkant 1,08, midt 1,48, 400 lm, 3000 K, gruppe bad; ikke speilskap); bad-1etg.md; 225413, 225417, 225425"
+    },
+    {
+      "id": "bi-bad-wc",
+      "roomId": "bad",
+      "type": "wc",
+      "name": "Vegghengt WC med innkasset sisterne",
+      "mount": "wall",
+      "wallId": "w-bad-nord",
+      "position": [
+        0,
+        0,
+        1.83
+      ],
+      "dims": {
+        "w": 0.65,
+        "d": 0.2,
+        "h": 1.1
+      },
+      "rotationDeg": 90,
+      "colors": {
+        "box": "#c8c5bf",
+        "bowl": "#f2f2f0"
+      },
+      "params": {
+        "boxFinish": "stone-panel",
+        "bowl": {
+          "w": 0.36,
+          "d": 0.54,
+          "rimH": 0.42,
+          "rimless": true,
+          "lid": "closed"
+        },
+        "flushPlate": {
+          "color": "#1d1e21",
+          "w": 0.25,
+          "h": 0.16,
+          "centerH": 0.95
+        },
+        "shelfEdge": "#a7a9a8"
+      },
+      "estimated": [
+        "position",
+        "dims",
+        "params.flushPlate",
+        "params.bowl"
+      ],
+      "source": "hele-huset-avstemming.md V44 (kassa 0,65 × 0,20 × 1,10 på z 1,50–2,15 med 0,07 vegg mot vestveggen, skålens front på x 0,74, trykkplate 0,25 × 0,16 på h 0,95, hyllekant #a7a9a8); bad-1etg.md; 225419, 225421"
+    },
+    {
+      "id": "bi-bad-dusj",
+      "roomId": "bad",
+      "type": "shower",
+      "name": "Femkantet dusj",
+      "mount": "floor",
+      "position": [
+        0.475,
+        0,
+        0.45
+      ],
+      "dims": {
+        "w": 0.95,
+        "d": 0.9,
+        "h": 2
+      },
+      "rotationDeg": 0,
+      "params": {
+        "shape": "pentagon",
+        "corner": "NE",
+        "returns": 0.37,
+        "corners": [
+          [
+            0,
+            0.9
+          ],
+          [
+            0.37,
+            0.9
+          ],
+          [
+            0.95,
+            0.37
+          ],
+          [
+            0.95,
+            0
+          ]
+        ],
+        "doors": 2,
+        "doorType": "swing",
+        "handles": [
+          "bar",
+          "d-bow"
+        ],
+        "profile": "#1a1a1a",
+        "glassHeight": 2,
+        "topProfile": false,
+        "wallPanels": "same",
+        "set": {
+          "wall": "w-bad-nord",
+          "z": 0.4,
+          "finish": "matt-black",
+          "color": "#1c1c1c",
+          "thermostatH": 1,
+          "shelf": true,
+          "head": {
+            "shape": "square",
+            "size": 0.25,
+            "h": 2.2
+          },
+          "handShower": true
+        },
+        "drainId": "bi-bad-sluk"
+      },
+      "estimated": [
+        "dims",
+        "params.returns",
+        "params.corners",
+        "params.set"
+      ],
+      "source": "hele-huset-avstemming.md V43 (hjørnene (0; 0,90) → (0,37; 0,90) → (0,95; 0,37) → (0,95; 0), returer 0,37, glass 2,0 uten topprofil, svarte profiler, to svingdører, dusjsett på nordveggen ved z 0,40, termostat h 1,0, kvadratisk takdusj 0,25 på h 2,20, samme lyse steinplater inne i dusjen); bad-1etg.md; 225417, 225419, 225425, 225429"
+    },
+    {
+      "id": "bi-bad-sluk",
+      "roomId": "bad",
+      "type": "floor-drain",
+      "name": "Sluk",
+      "mount": "floor",
+      "position": [
+        0.5,
+        0,
+        0.5
+      ],
+      "dims": {
+        "w": 0.15,
+        "d": 0.15,
+        "h": 0.005
+      },
+      "rotationDeg": 0,
+      "params": {
+        "shape": "round",
+        "finish": "steel"
+      },
+      "collide": false,
+      "estimated": [
+        "position"
+      ],
+      "source": "hele-huset-avstemming.md V43 (Ø 0,15 på [0,50; 0; 0,50]); bad-1etg.md (rundt, børstet stål); 225419, 225429"
+    },
     {
       "id": "bi-vask-dusj",
       "roomId": "vaskerom",

@@ -198,7 +198,17 @@ _Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/da
   - `ceilings/c-bad`: `height`, `paint`. Kilde: bad-1etg.md (glatt hvitt tak med svart taklist 3–4 cm rundt hele taket, 225413–225427); takhøyden 2,40 er anslått (eier: 2,4 for de flate takene)
   - `builtInLights/l-bad-tak`: `position`, `dims`, `lumens`, `lightColorK`. Kilde: bad-1etg.md (rund påbygd LED-plafond med opal front og mørk grå kant, Ø 0,40–0,45, midt i taket; 225413, 225417, 225419, 225427); hele-huset-avstemming.md V45 (mørk kant, 1500 lm)
   - `builtInLights/l-bad-spot`: hele oppføringen. Kilde: bad-1etg.md (innfelt, sort ring, nær døra; 225413, 225421); hele-huset-avstemming.md V45
+  - `furniture/f-bad-hoyskap`: `dims.d`, `params.drawerH`. Kilde: hele-huset-avstemming.md V38 (x 1,10–1,50, 0,40 × 0,30 × 1,90, underkant 0,15, topp 2,05, matt svart #1f1f22, to glatte dører, lukket); bad-1etg.md; 225413, 225417, 225425, 225333
   - `fixtures/fx-ventil-bad`: hele oppføringen. Kilde: bad-1etg.md (rund, mørk grå, Ø ca. 0,15, i taket over vinduet; 225417, 225419); design §2.3 (Lys: «en mørk ventil ved vindusveggen»)
+  - `fixtures/fx-bad-stikk`: `position`, `dims`. Kilde: hele-huset-avstemming.md V40 (x 2,30, senter h 1,03, over servantens sørende og under speilets underkant); bad-1etg.md; 225413, 225425
+  - `fixtures/fx-bad-bryter`: `position`. Kilde: hele-huset-avstemming.md V45 (x 1,45 rett nord for karmen, senter h 1,15); bad-1etg.md; 225421, 225417
+  - `fixtures/fx-bad-dopapir`: hele oppføringen. Kilde: hele-huset-avstemming.md V45 (x 0,85, h 0,80, sør for WC-en); bad-1etg.md; 225419, 225421
+  - `fixtures/fx-bad-knagg`: hele oppføringen. Kilde: hele-huset-avstemming.md V45 (z 0,80, h 1,15); bad-1etg.md (håndkleet på den er rot); 225413, 225423
+  - `builtIns/bi-bad-servant`: `dims.h`, `params.drawers`. Kilde: hele-huset-avstemming.md V38 (x 1,50–2,30, 0,80 × 0,46 × 0,50, overkant 0,85, bare ca. 0,16 til SØ-hjørnet); bad-1etg.md (matt svart, to skuffer, hvit helstøpt servantplate, svart ettgrepsbatteri); 225413, 225425, 225429
+  - `builtIns/bi-bad-speil`: `dims`, `position`, `light`. Kilde: hele-huset-avstemming.md V39 (Ø 0,80, underkant 1,08, midt 1,48, 400 lm, 3000 K, gruppe bad; ikke speilskap); bad-1etg.md; 225413, 225417, 225425
+  - `builtIns/bi-bad-wc`: `position`, `dims`, `params.flushPlate`, `params.bowl`. Kilde: hele-huset-avstemming.md V44 (kassa 0,65 × 0,20 × 1,10 på z 1,50–2,15 med 0,07 vegg mot vestveggen, skålens front på x 0,74, trykkplate 0,25 × 0,16 på h 0,95, hyllekant #a7a9a8); bad-1etg.md; 225419, 225421
+  - `builtIns/bi-bad-dusj`: `dims`, `params.returns`, `params.corners`, `params.set`. Kilde: hele-huset-avstemming.md V43 (hjørnene (0; 0,90) → (0,37; 0,90) → (0,95; 0,37) → (0,95; 0), returer 0,37, glass 2,0 uten topprofil, svarte profiler, to svingdører, dusjsett på nordveggen ved z 0,40, termostat h 1,0, kvadratisk takdusj 0,25 på h 2,20, samme lyse steinplater inne i dusjen); bad-1etg.md; 225417, 225419, 225425, 225429
+  - `builtIns/bi-bad-sluk`: `position`. Kilde: hele-huset-avstemming.md V43 (Ø 0,15 på [0,50; 0; 0,50]); bad-1etg.md (rundt, børstet stål); 225419, 225429
 - **Gang (`gang`)**
   - `rooms/gang`: `baseboard`. Kilde: eier 2026-10-20 (3,11 × 2,07); gang-1etg.md; hele-huset-avstemming.md V50 (gulvlist i lys eik), V54 (D1: vestveggen på z 4,43–4,53, sørveggen x 3,12 = baksiden av w-gang)
   - `walls/w-gang-ost`: `height`. Kilde: gang-1etg.md (225333, 225324); D13 (baksiden av w-bad-gang og w-nisje-side)
@@ -222,8 +232,16 @@ _Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/da
   - `ceilings/c-soverom`: `height`, `paint`. Kilde: soverom-1etg.md (helmalt: taket i samme mørke blågrå som veggene, 225259, 225316)
   - `builtInLights/l-sov-tak`: `position`, `dims`, `lumens`, `lightColorK`. Kilde: soverom-1etg.md (rund flat plafond med opal diffuser og lys kant, Ø 0,40, ca. midt i rommet, kjølig hvitt; 225259, 225304); design §2.5
   - `builtInLights/l-sov-garderobe`: hele oppføringen. Kilde: soverom-1etg.md (varmhvit LED-list langs hele toppen av garderobefronten, ca. 1,88 m, 225304, 225308); design §2.5 og §4.10 (gruppa soverom: plafond og garderobe-LED)
+  - `furniture/f-sov-garderobe`: `dims`, `params.fronts`. Kilde: design §2.5; hele-huset-avstemming.md V53 (#545656); soverom-1etg.md (x 0–1,88, z 4,51–5,11 – her fra østveggen z 4,53 etter V54, fronten mot vest, matt antrasitt, fire fronter, tre stanggrep); 225304, 225307, 225308
+  - `furniture/f-sov-seng`: `dims.h`, `params.seatH`, `params.legH`. Kilde: design §2.5 (x 0,65–2,45, z 6,20–8,20, hodeenden mot vest, bunn #c8b9a6, ben #c4a583, dyne #4b4c4f); hele-huset-avstemming.md V52 (madrassoverkant 0,70, laken #dbcdbb); soverom-1etg.md; 225259, 225316
+  - `furniture/f-sov-nattbord`: `dims`, `params.fronts`. Kilde: hele-huset-avstemming.md V52 (0,35 b × 0,38 d × 0,55 h, #1e1e1f, skuff eller åpent rom nede, senter (2,78; 8,01)); soverom-1etg.md; 225259, 225316
+  - `furniture/f-sov-knaggrekke`: `position`, `center`, `dims`. Kilde: hele-huset-avstemming.md V53 (z 5,53–6,03, 5 knagger, senter h 1,60); soverom-1etg.md (ca. 0,50 lang, 1,0–1,5 m fra østhjørnet); 225259, 225304, 225316
   - `fixtures/fx-takpunkt-sov-a`: hele oppføringen. Kilde: soverom-1etg.md (lite mørkt innfelt punkt, ikke tent; 225304, 225308)
   - `fixtures/fx-takpunkt-sov-b`: hele oppføringen. Kilde: soverom-1etg.md (225316; plasseringen er usikker)
+  - `fixtures/fx-sov-bryter`: `position`. Kilde: hele-huset-avstemming.md V53 (x 2,04, senter h 1,15); soverom-1etg.md (ca. 6 cm nord for karmen); 225304, 225308, 225324
+  - `fixtures/fx-sov-uttak-nord`: hele oppføringen. Kilde: hele-huset-avstemming.md V53 (x 0,50, h 0,90, lys ring #d8d8d4, Ø 0,065); soverom-1etg.md (kabelutløp/lampepunkt uten lampe); 225259, 225307, 225316
+  - `fixtures/fx-sov-uttak-sor`: hele oppføringen. Kilde: hele-huset-avstemming.md V53 (x 2,60, h 0,90); soverom-1etg.md; 225259, 225316
+  - `fixtures/fx-sov-dorstopper`: hele oppføringen. Kilde: design §2.5 (z 5,38); soverom-1etg.md (liten rund mørk veggstopper der vrideren treffer, ca. 0,85 fra østhjørnet, h ca. 1,0); 225304, 225308
 - **Trappa (`trapp`)**
   - `rooms/trapp`: `polygon`. Kilde: Trappas fotavtrykk (hele-huset-avstemming.md V19, §2.3): HUD-prismet går fra kjellergulvet (−2,55) til 1. etasje + 1 m (layout.js STAIR_HUD_TOP)
   - `stairs/trapp-kjeller`: `risers`, `top`, `foot`, `well`, `footprint`, `tread`, `stringers.footCut`, `guards`, `handrails[0].startHeight`, `handrails[0].led`, `ledge`. Kilde: hele-huset-avstemming.md V12–V23 (§2.4, footprint V19, footCut V17); gang-1etg.md, trapp.md, entre-gang-kjeller.md; 225331, 225333, 225335, 225337, 225339, 225342, 225349, 225631, 225639
@@ -246,6 +264,7 @@ _Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/da
   - `builtInLights/l-kg-3`: hele oppføringen. Kilde: V57: østraden x 2,13 / 3,33 / 4,53 på z 2,91, sørdelen x 3,93 / 5,03 på z 4,88; sort ring (225630)
   - `builtInLights/l-kg-4`: hele oppføringen. Kilde: V57: østraden x 2,13 / 3,33 / 4,53 på z 2,91, sørdelen x 3,93 / 5,03 på z 4,88; sort ring (225630)
   - `builtInLights/l-kg-5`: hele oppføringen. Kilde: V57: østraden x 2,13 / 3,33 / 4,53 på z 2,91, sørdelen x 3,93 / 5,03 på z 4,88; sort ring (225630)
+  - `furniture/f-kg-oliventre`: hele oppføringen. Kilde: hele-huset-avstemming.md V57 (valgfritt); entre-gang-kjeller.md (Møbler, Gang: ca. 1,3 m, potte Ø 0,3 #262626, blader #5d6b45, lokalt x 5,40, z 2,45 → x + 0,13, z + 2,56); 225630
   - `fixtures/fx-kg-stikk-ost`: `position`. Kilde: entre-gang-kjeller.md (x ≈ 4,45 lokalt, 5–10 cm nord for karmen), 225635
   - `fixtures/fx-kg-stikk-vest`: `position`. Kilde: entre-gang-kjeller.md (x ≈ 5,50 lokalt), 225630
 - **Vaskerom (`vaskerom`)**
@@ -262,6 +281,7 @@ _Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/da
   - `builtInLights/l-vask-6`: hele oppføringen. Kilde: V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)
   - `builtInLights/l-vask-7`: hele oppføringen. Kilde: V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)
   - `builtInLights/l-vask-8`: hele oppføringen. Kilde: V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)
+  - `furniture/f-vask-speilskap`: `dims`, `position`, `center`, `light`. Kilde: hele-huset-avstemming.md V58 (speilskapet x 0,35–1,15, ankret fra vestveggen); vaskerom.md (Møbler: 0,80 × 0,70 × 0,14, underkant ca. 1,25, LED-skinne øverst ca. 1,97, ca. 400 lm); 225501, 225513
   - `fixtures/fx-vask-bryter`: `position`. Kilde: vaskerom.md (rett inntil geriktens nordkant), 225508
   - `fixtures/fx-vask-stikk-1`: `position`. Kilde: vaskerom.md, 225501
   - `fixtures/fx-vask-stikk-2`: `position`. Kilde: vaskerom.md, 225501
@@ -287,6 +307,8 @@ _Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/da
   - `builtInLights/l-sk-3`: hele oppføringen. Kilde: soverom-kjeller.md (lokalt + 0,13 / + 8,55): østrekka 0,30 fra østveggen, vestrekka 0,27 fra vestveggen; ingen over bokhylla
   - `builtInLights/l-sk-4`: hele oppføringen. Kilde: soverom-kjeller.md (lokalt + 0,13 / + 8,55): østrekka 0,30 fra østveggen, vestrekka 0,27 fra vestveggen; ingen over bokhylla
   - `builtInLights/l-sk-5`: hele oppføringen. Kilde: soverom-kjeller.md (lokalt + 0,13 / + 8,55): østrekka 0,30 fra østveggen, vestrekka 0,27 fra vestveggen; ingen over bokhylla
+  - `furniture/f-sk-bokhylle`: `dims`, `params.rows`. Kilde: hele-huset-avstemming.md V66 (1,00 × 0,58 × 2,01, #2b2522, tom, x 0,13–0,71 og z 10,37–11,37, rotationDeg 90); soverom-kjeller.md (Møbler 1); 225717, 225721
+  - `furniture/f-sk-stol`: hele oppføringen. Kilde: hele-huset-avstemming.md V66 (én bouclé-stol, optional, på (2,43; 9,50), rotationDeg −90); soverom-kjeller.md (Møbler 3); 225715, 225723
   - `fixtures/fx-sk-termostat`: `position`. Kilde: V66; soverom-kjeller.md (sort glasspanel med blått display), 225723
   - `facadeSegments/f-nord-kjeller`: `material`, `color`. Kilde: V10 (ytterflate x −0,30, i flukt med 1. etasje), §2.8 (lys puss)
 - **Kjellerstue (`kjellerstue`)**
@@ -310,6 +332,9 @@ _Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/da
   - `builtInLights/l-ks-8`: hele oppføringen. Kilde: kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring
   - `builtInLights/l-ks-9`: hele oppføringen. Kilde: kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring
   - `builtInLights/l-ks-10`: hele oppføringen. Kilde: kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring
+  - `furniture/f-ks-tv`: `dims`, `position`, `center`. Kilde: hele-huset-avstemming.md V65 (1,70 × 0,98 × 0,06 på vestveggen, midt x 4,97, h 1,07–2,07); kjellerstue.md (lokalt x 1,07–2,78); 225644, 225657
+  - `furniture/f-ks-stol-a`: hele oppføringen. Kilde: hele-huset-avstemming.md V65 (stol A på (4,00; 11,02), fronten mot sørøst – flyttet til (4,25; 10,95) så stolen står innenfor vestveggen (z 11,38) og utenfor gangsonen 0,8 m foran soveromsdøra); kjellerstue.md (Møbler 7, lokalt x 0,95, z 5,70); 225657, 225700
+  - `furniture/f-ks-stol-b`: hele oppføringen. Kilde: hele-huset-avstemming.md V65 (stol B på (4,80; 5,67), fronten mot vest); kjellerstue.md (Møbler 7, lokalt x 1,75, z 0,35); 225647
   - `fixtures/fx-ks-bryter`: `position`. Kilde: kjellerstue.md (x 1,12 lokalt), 225647, 225704
   - `fixtures/fx-ks-stikk-dor`: `position`. Kilde: kjellerstue.md
   - `fixtures/fx-ks-stikk-v1`: `position`. Kilde: kjellerstue.md (a), 225655
@@ -334,6 +359,9 @@ _Generert av `node src/data/scripts/normalize-data.mjs` (validateHouse i `src/da
   - `builtInLights/l-entre-2`: hele oppføringen. Kilde: entre-gang-kjeller.md: 2 × 2 på x 0,9 / 1,9 og z 0,45 / 2,0 lokalt (§1.3: + 6,16 / + 3,12)
   - `builtInLights/l-entre-3`: hele oppføringen. Kilde: entre-gang-kjeller.md: 2 × 2 på x 0,9 / 1,9 og z 0,45 / 2,0 lokalt (§1.3: + 6,16 / + 3,12)
   - `builtInLights/l-entre-4`: hele oppføringen. Kilde: entre-gang-kjeller.md: 2 × 2 på x 0,9 / 1,9 og z 0,45 / 2,0 lokalt (§1.3: + 6,16 / + 3,12)
+  - `furniture/f-entre-stumtjener`: `dims`, `params.hooks`, `params.levels`. Kilde: entre-gang-kjeller.md (Møbler, Entré: midt lokalt x 2,15, z 0,30 → x 6,16 + 2,15, z 3,12 + 0,30 etter avstemmingen §1.3); design §2.7; 225556, 225617
+  - `furniture/f-entre-jutematte`: `dims`, `position`. Kilde: entre-gang-kjeller.md (Møbler, Entré: 1,2 × 0,75, midt lokalt x 1,85, z 1,10, #b39a7c); ytterdor-ute.md; 225553, 225619
+  - `furniture/f-entre-vase`: hele oppføringen. Kilde: entre-gang-kjeller.md (Møbler, Entré: Ø 0,28, h 0,5, greiner til ca. 1,2, lokalt x 0,2, z 1,95); 225559, 225600
   - `fixtures/fx-entre-bryter`: `position`. Kilde: entre-gang-kjeller.md (z ≈ 2,40 lokalt på stripa mellom foringen og garderoben), 225619, 225621
   - `builtIns/bi-entre-garderobe`: `dims`. Kilde: entre-gang-kjeller.md (x 0,56–2,50 lokalt, 0,47 dyp, fra gulv til tak); søyla stikker 0,35 fram (V7); 225600, 225609, 225621
   - `facadeSegments/f-nisje-dorvegg`: `zRange`. Kilde: V31: stående kledning fra z 3,18 til 6,75, videre over fyllvolumet bak pilaren (outsideHouse.fill); 225543
