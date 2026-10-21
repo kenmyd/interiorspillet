@@ -1067,6 +1067,15 @@ export class ViewModes {
     } catch (err) {
       console.warn('[views] visibility.setOverview failed', err);
     }
+    // the light: one exposure and one shadow box for the shown level (§4.3), not the 1st floor's from the overview
+    // camera above the house (sun bands through the slab in the basement). The 1st floor keeps the light it was shown
+    // with (camera room = the living room, its shadow box): setOverviewLevel('hoved') turns the light masks on for the
+    // whole level and leaves bedroom and bath nearly black in the overview – a question for the light step (L1+L2)
+    try {
+      this.editor.home?.lighting?.setOverviewLevel?.(on && this.level !== MAIN_LEVEL ? this.level : null);
+    } catch (err) {
+      console.warn('[views] lighting.setOverviewLevel failed', err);
+    }
   }
 
   /**
@@ -1676,7 +1685,7 @@ export class ViewModes {
           this._overlayGeos.push(geo);
         }
         if (o.door) {
-          const angle = house?.opening?.(o.id)?.openAngleDeg ?? o.openAngleDeg ?? 90;
+          const angle = planSwingAngle(o, house);
           const geo = doorSwingGeometry(o, it.t, Math.min(heightAt(o.u0), heightAt(o.u1)) + CAP_LIFT * 2, angle);
           geo.applyMatrix4(basis);
           planMarks.add(new THREE.Mesh(geo, this._mats.door));
@@ -1827,6 +1836,17 @@ export class ViewModes {
     for (const m of this._concealMats.values()) m.dispose();
     this._planHud?.root.remove();
   }
+}
+
+/**
+ * How far a door's swing is drawn in the plan (D6): a layout opening keeps it in `door.openAngleDeg` (door-gang 180°),
+ * the layout.house.doors entries carry it at the top level; 90° when neither says.
+ * @param {object} o        layout opening (with `door`)
+ * @param {object} [house]  layout.house
+ * @returns {number} degrees
+ */
+export function planSwingAngle(o, house) {
+  return o?.door?.openAngleDeg ?? o?.openAngleDeg ?? house?.doors?.find?.((d) => d.id === o?.id)?.openAngleDeg ?? 90;
 }
 
 /**

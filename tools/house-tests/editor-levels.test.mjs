@@ -53,6 +53,14 @@ const sw = main.doors.find((d) => d.kind === 'swing' && d.cz > 4.53 && d.cx < 3.
 check('dørslaget til door-soverom ligger i soverommet og sperrer', !!sw && sw.block === true, sw ? `(${sw.cx.toFixed(2)}, ${sw.cz.toFixed(2)})` : 'mangler');
 const sg = main.doors.find((d) => d.kind === 'swing' && d.hw > 0.8);
 check('door-gang slår 180°: halvsirkelen i gangen', !!sg && sg.cx < 3.12, sg ? `hw ${sg.hw.toFixed(2)}` : 'mangler');
+{
+  // the plan's mark (ViewModes' overlay draws each opening of its owner wall: layout.house.wallsById[..].openings)
+  const { planSwingAngle } = await imp('src/design/ViewModes.js');
+  const og = (H.wallsById[H.opening('door-gang')?.wallId]?.openings || []).find((o) => o.id === 'door-gang') ?? H.opening('door-gang');
+  const os = H.opening('door-soverom');
+  check('planen tegner door-gang med 180° slag (D6)', planSwingAngle(og, H) === 180, `${planSwingAngle(og, H)}°`);
+  check('planen tegner door-soverom med 90°', planSwingAngle(os, H) === 90, `${planSwingAngle(os, H)}°`);
+}
 check('terrassedøra har bare klaringen foran (som før)', main.doors.filter((d) => d.name === 'terrassedøra').length === 1);
 check('trappa sperrer i kjellergangen', base.fixed.some((f) => f.kind === 'stair' && f.block && Math.abs(0.6 - f.cx) <= f.hw && Math.abs(3.0 - f.cz) <= f.hd));
 check('trappa er ikke en hindring i 1. etasje (der er hullet)', !main.fixed.some((f) => f.kind === 'stair'));
