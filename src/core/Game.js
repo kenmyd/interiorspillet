@@ -492,10 +492,7 @@ export class Game {
 
         // the player stands still outside walk mode and while a panel field / modal owns the keyboard
         const walking = !editor || ((editor.views?.isWalking ?? true) && !editor.blocksGameInput());
-        if (walking) {
-          this.player.update(dt);
-          this.hud.setHeading(this.player.yaw);
-        }
+        if (walking) this.player.update(dt);
 
         const captured = this.input.isCaptured;
         // sitting: E on the chair / sofa under the cursor (Selection's hover) sits down, E again stands up; while

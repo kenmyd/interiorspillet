@@ -25,8 +25,8 @@ import * as LIGHTING from '../home/lighting.js';
  * home/lighting.js PHOTO_ENV; room-spec photoCameras[].env can override it per photo.
  * Proposals without a montage start as «Bare 3D» through the montage camera; «Vis før-bildet» lays today's wall over.
  * Custom proposals based on a montage proposal (basedOn) offer that montage.
- * The controls start as a slim bar (wipe slider, light, before/after) so the montage stays visible; the compass and
- * the key hints are hidden while comparing.
+ * The controls start as a slim bar (wipe slider, light, before/after) so the montage stays visible; the room banner
+ * and the key hints are hidden while comparing.
  */
 
 const PROPOSALS = wallData.proposals || [];
@@ -70,8 +70,8 @@ function addStyles() {
 .pc-note { margin: 0.5em 0 0; font-size: 0.78em; line-height: 1.4; color: var(--kv-ink-3); }
 .pc-panel.is-min .ip-panel__body, .pc-panel.is-min .ip-panel__foot { display: none; }
 .pc-min { width: 2.1em; height: 2.1em; flex: none; }
-/* while comparing: no compass over the photo's top edge, no room banner over the photo, no key bar behind the bar */
-#ui-root.pc-active .kv-compass, #ui-root.pc-active .kv-room, #ui-root.pc-active .ix-keys { visibility: hidden !important; }
+/* while comparing: no room banner over the photo, no key bar behind the bar */
+#ui-root.pc-active .kv-room, #ui-root.pc-active .ix-keys { visibility: hidden !important; }
 `;
   document.head.append(h('style', { id: 'pc-styles', text: css }));
 }
@@ -182,7 +182,7 @@ export class PhotoCompare extends BasePanel {
         this.close();
       }
     });
-    // the user changed the light (Lys og sol): the design's light wins, the override is dropped
+    // the user changed the light («Belysning» or «Sol»): the design's light wins, the override is dropped
     this._offEnv = editor.design?.on?.('env', () => {
       if (this._lightApplied) {
         this._lightApplied = null;

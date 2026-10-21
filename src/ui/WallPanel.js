@@ -455,7 +455,7 @@ export class WallPanel extends BasePanel {
     const bar = document.querySelector('.ip-toolbar');
     const br = bar && !bar.hidden ? bar.getBoundingClientRect() : null;
     const bottom = br && br.height ? Math.min(cr.bottom, br.top - 14) : cr.bottom - 20;
-    const top = cr.top + Math.min(70, cr.height * 0.1); // the compass
+    const top = cr.top + 20; // a little air at the top (no HUD there while walking)
     const nx = (x) => ((x - cr.left) / cr.width) * 2 - 1;
     const ny = (y) => 1 - ((y - cr.top) / cr.height) * 2;
     return { x0: nx(left + 16), x1: nx(right), y0: ny(bottom), y1: ny(top) };

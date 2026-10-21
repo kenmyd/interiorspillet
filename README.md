@@ -12,7 +12,7 @@ sørvinduene mot elva og TV-stua – og prøver ut interiør før du kjøper noe
   og pynt.
 - **Solskjerming** på vinduene (persienner, rullegardiner, plissé, duo, lameller, gardiner, liftgardin, screen) med
   ekte sol som slipper inn i striper gjennom lamellene.
-- **Lys og sol**: sola følger klokke og dato på 58,1° nord, kveld/natt med lampene og LED-listene på.
+- **Sol og belysning**: sola følger klokke og dato på 58,1° nord, kveld/natt med lampene og LED-listene på.
 - **Akustikk**: etterklangstiden (Sabine) regnes ut fortløpende – i dag ca. 0,86 s, målet er 0,4–0,6 s.
 - **Handleliste** med priser, lenker og totalsum, **lagring** av flere design, **før/etter** og **bilde** (PNG).
 
@@ -87,7 +87,8 @@ Nettversjonen for kenmyd.no: se **[deploy/LES_MEG_OPPLASTING.md](deploy/LES_MEG_
 | **K** | Katalog |
 | **V** | Veggforslag (← → blar mens panelet er åpent) |
 | **B** | Vinduer og solskjerming |
-| **L** | Lys og sol |
+| **L** | Belysning (lampene) |
+| **T** | Sol (tid på døgnet, dato og vær) |
 | **Tab** | Visning: gå → oversikt (dukkehus) → plan → gå |
 | **O** | Før/etter |
 | **M** | Design (lagre, åpne, eksportere) |
@@ -136,16 +137,18 @@ musehjulet. I **plan** drar du med høyre knapp og zoomer med hjulet. Alle verkt
   så **produkt** (med pris beregnet for akkurat dette vinduet) eller «Egendefinert».
 - **Farge**, skinne/beslag, **Trukket opp**, **Lamellvinkel** (persienner) og montering (i lysningen, på karmen, på
   veggen, i taket). **«Bruk på alle vinduene i denne veggen»** kopierer valget.
-- Sett klokka til f.eks. 13:00 i «Lys og sol» for å se sola komme inn i striper gjennom lamellene.
+- Sett klokka til f.eks. 13:00 i «Sol» for å se sola komme inn i striper gjennom lamellene.
 
-### Lys og sol (L)
+### Sol (T)
 - **Klokkeslett** og **dato** (snarveier for vinter, vår, sommer, høst og i dag) – sola står riktig for 58,1° nord med
-  vinduene mot sør. Soloppgang, solnedgang og dagslengde vises.
+  vinduene mot sør. Soloppgang, solnedgang, dagslengde og dagslyset inne vises.
 - **Lysmodus**: Automatisk (de faste lysene slår seg på når det blir mørkt), Dagslys, Kveldslys, Natt.
   **Vær**: sol eller overskyet.
-- **Lamper**: alle de faste lysene (LED-listene, spottene ved den høye veggen, kjøkkenlysene, taklampa i TV-stua)
-  og lampene i designet – på/av og dimmer, «Alle på», «Alle av», «Automatisk».
 - **Lysstyrke på bildet** (±2 EV) og breddegrad.
+
+### Belysning (L)
+- **Lamper**: alle de faste lysene rom for rom (rommet du står i først, hvert rom med sin egen bryter) og lampene i
+  designet – på/av og dimmer, «Alle på», «Alle av», «Automatisk». Lys merket «auto» følger tiden på døgnet.
 - Nye lamper fra katalogen lyser av seg selv; velg dem for dimmer, fargetemperatur og høyde under taket.
 
 ### Akustikk (merket nederst til venstre)

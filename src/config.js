@@ -36,11 +36,3 @@ export const INTERACT = Object.freeze({
 
 /** Walkable-surface threshold: normal.y above this counts as ground. */
 export const WALKABLE_NORMAL_Y = 0.62;
-
-/**
- * Compass: the HUD heading shown at yaw 0. The camera looks along −z at yaw 0, which is EAST in this house (the
- * kitchen end of the plan), so the bearing is 90°. Turning left (+yaw) faces north (−x), right faces south (+x).
- */
-export const COMPASS = Object.freeze({
-  yaw0Bearing: 90,
-});

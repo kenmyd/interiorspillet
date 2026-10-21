@@ -99,7 +99,7 @@ src/
     Toolbar.js, CatalogPanel.js, Inspector.js, SavePanel.js, ShoppingPanel.js, AcousticsWidget.js   (UI)
     WallPanel.js, PhotoCompare.js               (WALLS)
     WindowPanel.js                              (SHADING)
-    LightPanel.js                               (LIGHTING)
+    LightPanel.js, SunPanel.js                  (LIGHTING)
 public/img/…        nedskalerte bilder           (FOUNDATION; WALLS legger til miniatyrer ved behov)
 deploy/             .htaccess-mal, README for opplasting (INTEGRATION)
 ```
@@ -356,7 +356,7 @@ min, max, step, value, unit, onInput })`, `select({ label, options, value, onCha
 `button(...)`, `paramEditor(schema, values, onChange)` (lager riktig kontroll per param-type).
 Paneler fanger tastatur når et input-felt har fokus (spillet skal da ikke gå/rotere).
 
-Verktøylinja (nederst): Katalog (K) · Veggforslag (V) · Vinduer (B) · Lys og sol (L) · Visning (Tab) ·
+Verktøylinja (nederst): Katalog (K) · Veggforslag (V) · Vinduer (B) · Belysning (L) · Sol (T) · Visning (Tab) ·
 Før/etter (O) · Design (M: lagre/åpne/eksport) · Handleliste (I) · Bilde (P) · Angre/Gjør om. Hjørnebadge:
 etterklangstid («Etterklang ≈ 0,72 s», grønn ≤ 0,6, gul ≤ 0,7, rød over), klikk viser fordelingen.
 
@@ -392,7 +392,7 @@ class Editor {
   catalog                                  // catalog/index.js-modulen
   acoustics() → resultat fra computeAcoustics(design, home)
   selection /* Selection */, placement /* Placement */, views /* ViewModes */
-  ui: { toolbar, catalog, inspector, wall, window, light, saves, shopping, acoustics, photo }
+  ui: { toolbar, catalog, inspector, wall, window, light, sun, saves, shopping, acoustics, photo }
   selected: { kind: 'item'|'wall'|'window'|null, uid?, wallId?, windowId? }
   select(target|null)                      // setter selected, sender 'select', åpner riktig panel
   startPlacing(itemSpec)                   // → placement.start
@@ -407,7 +407,7 @@ Paneler: `open(arg?)`, `close()`, `toggle()`, `isOpen`, `update?(dt)`, `dispose(
 `ViewModes`: `mode` ('walk'|'orbit'|'plan'|'photo'), `set(mode)`, `toggle()`, `setPhotoCamera(cam)`, `exitPhoto()`,
 `update(dt)` (spilleren står stille utenom 'walk'), `isWalking`.
 Snarveier: Selection eier tastene for valgt objekt (R, Shift+R, Delete, D, Esc, piltaster = små flytt);
-Toolbar eier de globale (K, V, B, L, Tab, O, M, I, P, Ctrl+Z, Ctrl+Y). Ingen snarvei virker mens et
+Toolbar eier de globale (K, V, B, L, T, Tab, O, M, I, P, Ctrl+Z, Ctrl+Y). Ingen snarvei virker mens et
 tekstfelt har fokus.
 
 ## 15. Skall → lys (innebygde armaturer)

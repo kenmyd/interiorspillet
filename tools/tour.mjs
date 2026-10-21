@@ -121,7 +121,6 @@ function setupPage({ start, first, yawDeg }) {
     g.time += h;
     g.input.update(h);
     P.update(h);
-    g.hud.setHeading?.(P.yaw);
     g.editor?.update(h);
     g._updateRoom();
     g.home.update?.(h, g.time, { roomId: g.roomId, playerPosition: P.position, camera: g.camera, player: P, inputBlocked: g._blocks.size > 0 });
