@@ -49,7 +49,8 @@ try {
 
   section('1–2. Last opp og skala');
   await page.getByText('Prøv med eksempelplanen').click();
-  await page.waitForFunction(() => window.__planbygger.level?.image?.width > 0, null, { timeout: 30000 });
+  // the image is read, its skew estimated in the worker, and then the scale step begins
+  await page.waitForFunction(() => window.__planbygger.level?.image?.width > 0 && window.__planbygger.tool === 'scale', null, { timeout: 30000 });
   check('planen er lastet og skala-steget er aktivt', await page.evaluate(() => window.__planbygger.tool === 'scale'));
   // where the dimension line «12.21 m» (image px 541, 300) is on the screen
   const click = await page.evaluate(() => {

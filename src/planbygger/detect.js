@@ -312,7 +312,7 @@ export function estimateSkew(img, { maxDeg = 10 } = {}) {
       best = d;
     }
   }
-  return Math.round(best * 100) / 100;
+  return Math.round(best * 100) / 100 || 0; // never -0
 }
 
 /** Bilinear upsampling of an RGBA image by an integer factor. */

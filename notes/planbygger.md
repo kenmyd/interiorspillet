@@ -154,7 +154,7 @@ designet) brukes ikke, siden et kundehus ikke har den.
 - `node tools/test-planbygger-browser.mjs --lock` – siden ende til ende i en hodeløs Edge (egen Vite-server på port
   5272, tar GPU-låsen): eksempelplanen, klikk på målelinja, forslaget, dra en vegg og angre, navngi et rom, 3D med 0 feil
   i validatoren, gå med W, åpne en dør med E, og en 2,5° skjev plan lastet opp gjennom filfeltet (rettes opp og gir
-  samme forslag). Skjermbilder i `.shots/planbygger/`.
+  samme forslag). 15 sjekker. Skjermbilder i `.shots/planbygger/`.
 
 ## Målinger mot eierens hus
 
