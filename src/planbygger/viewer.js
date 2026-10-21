@@ -172,6 +172,12 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     configureMaterials({ quality });
     await prepareMaterials(KINDS);
     const spec = mergeOnto(baseSpec(), house);
+    // rooms.js lets the outer cladding of the main floor follow the living room's sloping ceiling (the owner's house)
+    // and falls back to its slope 0,16216 from x 3,22: a customer's house would get cladding 3,35 m high on one side.
+    // A flat «roof line» for the 3D view only (not in the house file): a living-room ceiling of type slope with zero
+    // slope at the highest ceiling of the main floor, far away from the house (request to the house work: a data field)
+    const mainCeil = Math.max(2.4, ...(house.ceilings || []).filter((c) => (house.rooms || []).find((r) => r.id === c.roomId)?.levelId === 'hoved').map((c) => c.height ?? 2.4));
+    spec.ceilings.push({ id: 'c-planbygger-taklinje', type: 'slope', polygon: [[-900, -900], [-899, -900], [-899, -899]], highLine: [[-900, -900], [-899, -900]], lowLine: [[-900, -899], [-899, -899]], highHeight: mainCeil, lowHeight: mainCeil, color: '#ffffff' });
     const layout = buildLayout(spec, undefined, { devWarnings: false });
     const collision = new CollisionWorld();
     const interaction = new InteractionSystem({ camera, collision, events });

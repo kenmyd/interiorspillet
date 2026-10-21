@@ -743,6 +743,7 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
       stairs.push({
         id,
         name: 'Trapp',
+        planbyggerId: st.id,
         type: u ? 'half-turn-winder' : 'straight',
         fromLevel: below.id,
         toLevel: upper.id,

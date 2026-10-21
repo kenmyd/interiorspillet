@@ -659,3 +659,27 @@ select {
     display: none;
   }
 }
+
+.pb-keys {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+.pb-keys td {
+  padding: 4px 6px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--pb-line);
+}
+.pb-keys td:first-child {
+  white-space: nowrap;
+  width: 1%;
+}
+.pb-keys kbd {
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 4px;
+  border: 1px solid var(--pb-line-2);
+  background: var(--pb-panel-2);
+  font-family: var(--pb-mono);
+  font-size: 12px;
+}

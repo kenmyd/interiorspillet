@@ -208,7 +208,8 @@ class App {
     const tools = h('aside', { class: 'pb-tools' },
       TOOLS.map(([id, label, key]) => (this.toolEls[id] = h('button', { class: 'pb-tool', title: `${label} (${key})`, html: `${ICONS[id]}<kbd>${key}</kbd>`, onclick: () => this.setTool(id) }))),
       h('hr'),
-      h('button', { class: 'pb-tool', title: 'Hele planen (0)', html: `${ICONS.fit}<kbd>0</kbd>`, onclick: () => this.editor?.fit() }));
+      h('button', { class: 'pb-tool', title: 'Hele planen (0)', html: `${ICONS.fit}<kbd>0</kbd>`, onclick: () => this.editor?.fit() }),
+      h('button', { class: 'pb-tool', title: 'Hurtigtaster (?)', html: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/></svg>', onclick: () => this._help() }));
 
     this.canvas = h('canvas', { class: 'pb-canvas2d' });
     this.hintEl = h('div', { class: 'pb-hint' });
@@ -236,6 +237,8 @@ class App {
       if (f) this._openProject(f);
     } });
     r.append(this.fileInput, this.projectInput);
+    // common room names for the Rom dialog
+    r.append(h('datalist', { id: 'pb-room-names' }, ['Stue', 'Kjøkken', 'Stue/kjøkken', 'Spisestue', 'Soverom', 'Hovedsoverom', 'Barnerom', 'Gjesterom', 'Bad', 'Toalett', 'Vaskerom', 'Gang', 'Entré', 'Bod', 'Kontor', 'Kjellerstue', 'Garderobe', 'Trapperom'].map((n) => h('option', { value: n }))));
 
     window.addEventListener('keydown', (e) => this._key(e));
     window.addEventListener('keyup', (e) => this.editor?.key(e));
@@ -358,7 +361,7 @@ class App {
   _hint() {
     const L = this.level;
     if (!L?.image) return '';
-    if (!L.image.pxPerM) return 'Steg 2: Klikk på en målelinje i planen (f.eks. «2.53 m»), eller klikk to punkter med kjent avstand. Skriv inn lengden under.';
+    if (!L.image.pxPerM) return 'Steg 2: Klikk på den lengste målelinja i planen (f.eks. «12.21 m»), eller klikk to punkter med kjent avstand. Skriv inn lengden under. En lang linje gir den sikreste skalaen.';
     return this.tool === 'select' && !this.sel ? '' : TOOL_HINT[this.tool] ?? '';
   }
   _goStep(id) {
@@ -540,6 +543,7 @@ class App {
       this.checkPill.className = `pb-pill ${n ? 'is-error' : out.warnings.length ? 'is-warn' : 'is-ok'}`;
       this.checkPill.textContent = n ? `${n} feil` : out.warnings.length ? `0 feil · ${out.warnings.length} adv.` : '0 feil';
       if (this._checkMsgs?.isConnected) this._fillMsgs(this._checkMsgs, out);
+      if (this.sel?.kind === 'stair') this._renderSide(); // the validator's stair numbers
     }, 700);
   }
   _showCheck() {
@@ -669,6 +673,7 @@ class App {
       this.setTool(tool[0]);
       e.preventDefault();
     } else if (e.key === '0') this.editor.fit();
+    else if (e.key === '?') this._help();
   }
 
   // ---- the side panel
@@ -804,8 +809,10 @@ class App {
       const below = this.doc.levels.filter((l) => (l.floorY ?? 0) < (L.floorY ?? 0) - 0.5).sort((a, b) => b.floorY - a.floorY)[0];
       const rise = below ? (L.floorY ?? 0) - below.floorY : null;
       const risers = rise ? Math.max(2, Math.round(rise / 0.18)) : null;
-      const walkLen = st.kind === 'u' ? 2 * (g.length - g.width / 2) + (Math.PI / 2) * (g.width / 2) : g.length;
-      const going = risers ? walkLen / (risers - 1) : null;
+      // the validator's numbers (its walk line) when the background check has run, else the rectangle's length
+      const exId = this._lastCheck?.ex?.house?.stairs?.find((x) => x.planbyggerId === st.id)?.id;
+      const vs = exId ? this._lastCheck.report?.stairs?.find((x) => x.id === exId) : null;
+      const going = vs?.going ?? (risers ? g.length / (risers - 1) : null);
       const set = (fn, label) => {
         this.snapshot();
         fn();
@@ -819,7 +826,7 @@ class App {
         h('p', {}, `${fmt(g.width)} × ${fmt(g.length)} m`),
         st.kind === 'u' ? h('p', { class: 'pb-note' }, 'U-trappa går ned langs den ene halvdelen, svinger rundt et smalt øye i enden og kommer tilbake langs den andre. Pila viser veien ned.') : null,
         below
-          ? h('p', { class: 'pb-note' }, `Ned til ${below.name}: ${risers} opptrinn à ${fmt(rise / risers, 3)} m, inntrinn ${fmt(going, 3)} m${going < 0.22 ? ' – for bratt for en rett trapp (minst 0,22): gjør hullet lengre' : ''}.`)
+          ? h('p', { class: 'pb-note' }, `Ned til ${below.name}: ${risers} opptrinn à ${fmt(rise / risers, 3)} m, inntrinn ${fmt(going, 3)} m på ganglinja${vs ? `, 2r + g = ${fmt(vs.twoRG, 3)}` : ''}${going < 0.22 ? ' – for bratt (minst 0,22): gjør hullet lengre' : vs && (vs.twoRG < 0.6 || vs.twoRG > 0.64) ? ' (normalt 0,60–0,64)' : ''}.`)
           : h('p', { class: 'pb-note' }, 'Det er ingen etasje under denne. Legg til en etasje (+ Etasje) med lavere gulvhøyde.'),
         h('div', { class: 'pb-row' },
           h('button', { class: 'pb-btn is-small', onclick: () => set(() => (st.down = -st.down), 'Snudde trappa') }, 'Snu retningen'),
@@ -984,6 +991,7 @@ class App {
     }
     const local = this.doc.levels.flatMap((lv) => checkLevel(lv).map((m) => `${lv.name}: ${m}`));
     let errors = [];
+    let report = null;
     let warnings = [...ex.report.warnings, ...local];
     try {
       const H = await import('../data/scripts/house.mjs');
@@ -991,12 +999,13 @@ class App {
       // no furniture in a generated house: no archetypes needed (the validator would read archetypes.json from disk)
       const rep = H.validateHouse(spec, { registry: ex.registry, archetypes: { archetypes: {}, archetypeAliases: {} }, throw: false });
       errors = rep.errors.filter((m) => !ownerOnly(m));
+      report = rep;
       warnings = [...warnings, ...rep.warnings];
     } catch (err) {
       console.warn('[planbygger] validatoren kunne ikke kjøres', err);
       warnings.push(`Spillets validator kunne ikke kjøres: ${err.message}`);
     }
-    return { ex, errors, warnings, sum: summary(ex.house) };
+    return { ex, errors, warnings, report, sum: summary(ex.house) };
   }
 
   // ---- levels
@@ -1034,6 +1043,29 @@ class App {
     this.changed('Justerte etasjen');
   }
 
+  /** The keyboard shortcuts and the mouse. */
+  _help() {
+    const rows = [
+      ['V', 'Velg og flytt: dra en vegg på tvers (Shift: fritt), dra endene, dra dører og vinduer langs veggen'],
+      ['W', 'Ny vegg: klikk, klikk … (Esc eller dobbeltklikk avslutter, Alt: uten festing)'],
+      ['D / F / O', 'Dør / vindu / åpning: klikk på en vegg'],
+      ['R', 'Navngi rom: klikk i et rom'],
+      ['T', 'Trapp ned til etasjen under: dra fra toppen mot foten'],
+      ['S', 'Skala: klikk på en målelinje, eller to punkter'],
+      ['H / mellomrom', 'Flytt visningen (også midtre eller høyre museknapp), hjulet zoomer, 0 viser hele planen'],
+      ['Delete', 'Slett det valgte'],
+      ['Piltaster', 'Flytt den valgte veggen 1 cm (Shift: 10 cm)'],
+      ['H / G', 'Valgt dør: snu hengselen / slagretningen'],
+      ['Ctrl+Z / Ctrl+Y', 'Angre / gjør om'],
+    ];
+    const wrap = h('div', { class: 'pb-dialog', onclick: (e) => e.target === wrap && wrap.remove() }, h('div', { class: 'pb-dialog-card', style: 'width:min(620px,94vw)' },
+      h('h2', {}, 'Hurtigtaster'),
+      h('table', { class: 'pb-keys' }, rows.map(([k, t]) => h('tr', {}, h('td', {}, h('kbd', {}, k)), h('td', {}, t)))),
+      h('p', { class: 'pb-note' }, 'I 3D: W A S D går, hold høyre museknapp og dra for å se rundt, Shift løper, E eller et klikk åpner dører.'),
+      h('div', { class: 'pb-row' }, h('button', { class: 'pb-btn is-primary', onclick: () => wrap.remove() }, 'Lukk'))));
+    document.body.append(wrap);
+  }
+
   // ---- dialogs
   _dialog(title, fields, okText = 'OK') {
     return new Promise((resolve) => {
@@ -1046,7 +1078,7 @@ class App {
         fields.map((f) => {
           let input;
           if (f.options) input = h('select', {}, f.options.map(([v, l]) => h('option', { value: v, selected: v === f.value }, l)));
-          else input = h('input', { type: 'text', value: f.value ?? '', placeholder: f.placeholder ?? '' });
+          else input = h('input', { type: 'text', value: f.value ?? '', placeholder: f.placeholder ?? '', list: f.list ?? null });
           inputs[f.key] = input;
           return h('div', { class: 'pb-field' }, h('label', {}, f.label), input);
         }),
@@ -1076,7 +1108,7 @@ class App {
   }
   async askRoom(r) {
     const res = await this._dialog('Rom', [
-      { key: 'name', label: 'Navn', value: r.name },
+      { key: 'name', label: 'Navn', value: r.name, list: 'pb-room-names' },
       { key: 'kind', label: 'Type', value: r.kind, options: ROOM_KINDS },
       { key: 'ceiling', label: 'Takhøyde (tom = etasjens)', value: r.label?.ceiling != null ? String(r.label.ceiling).replace('.', ',') : '' },
     ]);
