@@ -7,18 +7,19 @@
 //
 // Positions/dimensions come from layout.kitchen.items (box centres) – front/unit/appliance layouts from their
 // `fronts` / `units` fields.
+// The base-cabinet run, the worktop with its sink cut-out, the sink and the tap are fittings.js helpers (shared with
+// the wet rooms, notes/hele-huset-design.md §2.1) – the same parts in the same order as before.
 import * as THREE from 'three';
 import { mat, emissive } from './materials.js';
 import { MeshBatcher, place, prismX } from '../world/buildKit.js';
 import { createCanvas, canvasTexture, heightToNormalCanvas } from '../world/proctex.js';
-import { tube, lathe } from '../models/kit.js';
+import { lathe } from '../models/kit.js';
 import { buildModel } from '../models/registry.js';
 import { ledStrip, periodicNoise, gridSample } from './shell.js';
+import { GAP, FRONT_T, KITCHEN_CHANNELS, baseRun as fittingsBaseRun, makeWorktop, makeSink, makeTap } from './fittings.js';
 
 const UP = new THREE.Vector3(0, 1, 0);
 const DEG = Math.PI / 180;
-const GAP = 0.003; // gap between fronts
-const FRONT_T = 0.019;
 
 /** Black ceramic glass of the hob: zone outlines, the downdraft slot area, control dots (canvas). */
 function hobTexture(w, d) {
@@ -441,34 +442,8 @@ export function buildKitchen(ctx, layout) {
 
   // ---------------------------------------------------------------------------------------------------------------
   // Handle-less base cabinets: plinth, fronts with an L-channel under the worktop and a C-channel at `channelY`
-  const CH = { top: [0.85, 0.89], mid: [0.49, 0.53], plinth: 0.13 };
-  /**
-   * One run of base fronts along +x in a frame whose +z is the front, x from x0 to x1, front plane at z = zf.
-   * units: [[x0, x1, kind]] (kind 'dører' → one door, 'oppvaskmaskin' → one integrated front, others → two rows).
-   */
-  function baseRun(F, units, zf, depth, { endPanels = [] } = {}) {
-    const xa = Math.min(...units.map((u) => u[0]));
-    const xb = Math.max(...units.map((u) => u[1]));
-    const L = xb - xa;
-    const xm = (xa + xb) / 2;
-    // dark carcass set 3 cm behind the fronts (the grip channels and gaps read as deep dark lines), plinth recessed 8 cm
-    const cd = depth - FRONT_T - 0.03;
-    F.box(L, CH.top[1] - CH.plinth, cd, xm, CH.plinth + (CH.top[1] - CH.plinth) / 2, zf - 0.03 - cd / 2, M.channel);
-    F.box(L, CH.plinth, depth - 0.08, xm, CH.plinth / 2, zf + FRONT_T - 0.08 - (depth - 0.08) / 2, M.plinth);
-    for (const [a, b, kind] of units) {
-      const two = !/dør|oppvask/.test(kind);
-      const fx0 = a + GAP / 2, fx1 = b - GAP / 2;
-      const fw = fx1 - fx0, cx = (fx0 + fx1) / 2;
-      const zc = zf + FRONT_T / 2;
-      if (two) {
-        F.box(fw, CH.top[0] - CH.mid[1] - GAP, FRONT_T, cx, (CH.top[0] + CH.mid[1]) / 2, zc, M.front);
-        F.box(fw, CH.mid[0] - CH.plinth - GAP, FRONT_T, cx, (CH.mid[0] + CH.plinth) / 2, zc, M.front);
-      } else {
-        F.box(fw, CH.top[0] - CH.plinth - GAP, FRONT_T, cx, (CH.top[0] + CH.plinth) / 2, zc, M.front);
-      }
-    }
-    for (const [a, b] of endPanels) F.box(b - a, CH.top[1], depth, (a + b) / 2, CH.top[1] / 2, zf + FRONT_T - depth / 2, M.front);
-  }
+  // (fittings.js baseRun, shared with the wet rooms)
+  const baseRun = (F, units, zf, depth, o = {}) => fittingsBaseRun(F, units, zf, depth, { ...o, M, ch: KITCHEN_CHANNELS });
 
   // bench row along the east wall (front toward +z)
   const benk = items['k-benk'];
@@ -486,47 +461,14 @@ export function buildKitchen(ctx, layout) {
   const sink = items['k-vask'];
   if (wt) {
     const b = wt.box;
-    const y0 = b.min.y;
-    const t = b.max.y - b.min.y;
-    const shape = new THREE.Shape([new THREE.Vector2(b.min.x, -b.min.z), new THREE.Vector2(b.max.x, -b.min.z), new THREE.Vector2(b.max.x, -b.max.z), new THREE.Vector2(b.min.x, -b.max.z)]);
-    if (sink) {
-      const sw = sink.dims.w, sd = sink.dims.d, r = 0.03;
-      const sx = sink.position.x, sz = sink.position.z;
-      const hole = new THREE.Path();
-      roundRect(hole, sx - sw / 2, -(sz + sd / 2), sw, sd, r);
-      shape.holes.push(hole);
-    }
-    const g = new THREE.ExtrudeGeometry(shape, { depth: t, bevelEnabled: false, curveSegments: 6 });
-    g.rotateX(-Math.PI / 2);
-    g.translate(0, y0, 0);
-    worktopUV(g);
-    kb.add(g, M.top, { collide: false });
-    g.dispose();
+    const hole = sink ? { x: sink.position.x, z: sink.position.z, w: sink.dims.w, d: sink.dims.d, r: 0.03 } : null;
+    makeWorktop(kb, { x0: b.min.x, x1: b.max.x, z0: b.min.z, z1: b.max.z, y0: b.min.y, t: b.max.y - b.min.y }, M.top, { hole });
     if (sink) {
       // black composite basin (open box seen from inside) with a steel drain
-      const sw = sink.dims.w - 0.004, sd = sink.dims.d - 0.004, sh = sink.dims.h;
-      const bg = new THREE.BoxGeometry(sw, sh, sd);
-      kb.add(bg, M.sink, { matrix: place(sink.position.x, b.max.y - sh / 2 - 0.0005, sink.position.z), collide: false, boxUV: true });
-      bg.dispose();
-      kb.cylinder(0.04, 0.04, 0.003, sink.position.x + sw / 4, b.max.y - sh + 0.002, sink.position.z, M.steel, { segments: 20, collide: false, castShadow: false });
-      kb.cylinder(0.02, 0.02, 0.004, sink.position.x + sw / 4, b.max.y - sh + 0.003, sink.position.z, M.vent, { segments: 16, collide: false, castShadow: false });
+      makeSink(kb, { x: sink.position.x, z: sink.position.z, w: sink.dims.w, d: sink.dims.d, h: sink.dims.h, topY: b.max.y }, { basin: M.sink, steel: M.steel, vent: M.vent });
       // tap: base, high J-spout, lever
       const tp = sink.tap?.position ? new THREE.Vector3(...sink.tap.position) : new THREE.Vector3(sink.position.x, b.max.y, b.min.z + 0.08);
-      const th = sink.tap?.h ?? 0.35;
-      const ty = b.max.y;
-      kb.cylinder(0.024, 0.026, 0.035, tp.x, ty + 0.0175, tp.z, M.tap, { segments: 20, collide: false });
-      const spout = tube([
-        [tp.x, ty + 0.03, tp.z],
-        [tp.x, ty + th - 0.06, tp.z],
-        [tp.x, ty + th - 0.005, tp.z + 0.03],
-        [tp.x, ty + th - 0.02, tp.z + 0.13],
-        [tp.x, ty + th - 0.09, tp.z + 0.2],
-        [tp.x, ty + th - 0.13, tp.z + 0.205],
-      ], 0.012, { radial: low ? 8 : 14, seg: low ? 24 : 48 });
-      kb.add(spout, M.tap, { collide: false });
-      spout.dispose();
-      kb.box(0.012, 0.012, 0.075, tp.x + 0.03, ty + 0.11, tp.z + 0.012, M.tap, { rot: [-0.35, 0, 0], collide: false });
-      kb.cylinder(0.014, 0.014, 0.03, tp.x + 0.03, ty + 0.1, tp.z, M.tap, { rot: [0, 0, Math.PI / 2], segments: 14, collide: false });
+      makeTap(kb, { x: tp.x, z: tp.z, topY: b.max.y, h: sink.tap?.h ?? 0.35 }, M.tap, { low });
     }
   }
 
@@ -800,34 +742,6 @@ export function buildKitchen(ctx, layout) {
       for (const o of owned) o.dispose?.();
     },
   };
-}
-
-/** Rounded rectangle path (x, y = lower-left corner). */
-function roundRect(p, x, y, w, h, r) {
-  p.moveTo(x + r, y);
-  p.lineTo(x + w - r, y);
-  p.quadraticCurveTo(x + w, y, x + w, y + r);
-  p.lineTo(x + w, y + h - r);
-  p.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  p.lineTo(x + r, y + h);
-  p.quadraticCurveTo(x, y + h, x, y + h - r);
-  p.lineTo(x, y + r);
-  p.quadraticCurveTo(x, y, x + r, y);
-}
-
-/** Worktop UVs in world metres: top/bottom (x, z) with the veins along x, edges (along, y). */
-function worktopUV(g) {
-  const pos = g.attributes.position;
-  const nrm = g.attributes.normal;
-  const uv = g.attributes.uv;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-    const ny = Math.abs(nrm.getY(i));
-    if (ny > 0.5) uv.setXY(i, x, z);
-    else if (Math.abs(nrm.getX(i)) > 0.5) uv.setXY(i, z, y);
-    else uv.setXY(i, x, y);
-  }
-  uv.needsUpdate = true;
 }
 
 /** BoxGeometry UVs as world metres around a centre (top: x/z, sides: along/y); `vertical` = waterfall slab. */

@@ -1,0 +1,91 @@
+{
+  "$comment": "Innebygd utstyr på badet i 1. etasje etter hele-huset-avstemming.md V38–V45 i formatet bathroom.js / builtins.js leser (steg 10, A4). Brukes av tools/house-tests/bathroom.test.mjs. Steg 12 (A5) kan kopiere builtIns-lista rett inn i research/house/11-hoved-innredning.json (høyskapet er et møbel, wall-cabinet, og står ikke her).",
+  "builtIns": [
+    {
+      "id": "bi-bad-dusj",
+      "roomId": "bad",
+      "type": "shower",
+      "name": "Dusj",
+      "mount": "floor",
+      "position": [0.475, 0, 0.45],
+      "dims": { "w": 0.95, "d": 0.9, "h": 2.0 },
+      "rotationDeg": 0,
+      "params": {
+        "shape": "pentagon",
+        "corner": "NE",
+        "returns": 0.37,
+        "doors": 2,
+        "profile": "#1a1a1a",
+        "glassHeight": 2.0,
+        "topRail": false,
+        "set": { "wall": "w-bad-nord", "z": 0.4, "finish": "matt-black", "thermostatH": 1.0, "shelf": true, "head": { "shape": "square", "size": 0.25, "h": 2.2 }, "handShower": true },
+        "drainId": "bi-bad-sluk"
+      },
+      "estimated": ["dims", "params.returns", "params.set"],
+      "source": "hele-huset-avstemming.md V43 (hjørnene (0; 0,90) → (0,37; 0,90) → (0,95; 0,37) → (0,95; 0), returer 0,37, glass 2,0 uten topprofil, to svingdører, dusjsett på nordveggen ved z 0,40, termostat 1,0, kvadratisk takdusj 0,25 på 2,20); bad-1etg.md; 225417, 225419, 225429"
+    },
+    {
+      "id": "bi-bad-sluk",
+      "roomId": "bad",
+      "type": "floor-drain",
+      "name": "Sluk",
+      "mount": "floor",
+      "position": [0.5, 0, 0.5],
+      "dims": { "w": 0.15, "d": 0.15, "h": 0.005 },
+      "rotationDeg": 0,
+      "params": { "shape": "round", "finish": "steel" },
+      "collide": false,
+      "estimated": ["position"],
+      "source": "V43 (rundt stålsluk Ø 0,15 på [0,50; 0; 0,50]); 225419, 225429"
+    },
+    {
+      "id": "bi-bad-wc",
+      "roomId": "bad",
+      "type": "wc",
+      "name": "Vegghengt WC",
+      "mount": "wall",
+      "wallId": "w-bad-nord",
+      "position": [0, 0, 1.83],
+      "dims": { "w": 0.65, "d": 0.2, "h": 1.1 },
+      "rotationDeg": 90,
+      "colors": { "bowl": "#f2f2f0" },
+      "params": {
+        "bowl": { "w": 0.36, "d": 0.54, "rimH": 0.42, "rimless": true, "lid": "closed" },
+        "flushPlate": { "color": "#1d1e21", "w": 0.25, "h": 0.16, "centerH": 0.95 },
+        "shelfEdge": "#a7a9a8"
+      },
+      "estimated": ["position", "dims"],
+      "source": "V44 (kasse 0,65 × 0,20 × 1,10 på z 1,50–2,15, hyllekant #a7a9a8, skålens front på x 0,74, trykkplate 0,25 × 0,16 med senter 0,95); 225419, 225421. Kassen er kledd med veggens steinplater (ingen colors.box: den følger w-bad-nord)."
+    },
+    {
+      "id": "bi-bad-servant",
+      "roomId": "bad",
+      "type": "vanity",
+      "name": "Servantskap med integrert servant",
+      "mount": "wall",
+      "wallId": "w-bad-ost",
+      "position": [1.9, 0.35, 0],
+      "dims": { "w": 0.8, "d": 0.46, "h": 0.5 },
+      "rotationDeg": 0,
+      "colors": { "cabinet": "#1f1f22", "basin": "#f2f2f0" },
+      "params": { "drawers": 2, "tap": "black-metal" },
+      "estimated": ["position"],
+      "source": "V38 (x 1,50–2,30, 0,80 × 0,46 × 0,50, overkant 0,85, to skuffer, hvit integrert kum, svart ettgreps batteri); 225413, 225425, 225429"
+    },
+    {
+      "id": "bi-bad-speil",
+      "roomId": "bad",
+      "type": "mirror-round",
+      "name": "Rundt LED-speil",
+      "mount": "wall",
+      "wallId": "w-bad-ost",
+      "position": [1.9, 1.08, 0],
+      "dims": { "w": 0.8, "d": 0.04, "h": 0.8 },
+      "rotationDeg": 0,
+      "light": { "lumens": 400, "lightColorK": 3000, "group": "bad" },
+      "collide": false,
+      "estimated": ["dims", "light"],
+      "source": "V39 (Ø 0,80, underkant 1,08, midt 1,48, 400 lm, 3000 K, gruppe bad); 225413, 225417, 225425"
+    }
+  ]
+}

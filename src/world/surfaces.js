@@ -384,3 +384,348 @@ export function surfaceMaterial(set, params = {}) {
   if (set.roughnessMap) m.roughnessMap = set.roughnessMap;
   return m;
 }
+
+/* ================================================================================================================
+ * Wet-room and panel finishes of the house (notes/hele-huset-design.md §2.1, §2.3, §2.7, §4.16; avstemming V41)
+ *
+ * stonePanel / tiles / wetroom make COLOUR-NEUTRAL grey texture sets as DataTextures (no canvas: they also run in
+ * Node, tools/house-tests/bathroom.test.mjs): { map, normalMap, roughnessMap, tile, ref, roughRef }. `ref` is the mean
+ * linear luminance of the map - a material tinted with `color = hex / ref` has `hex` as its average colour, so one
+ * set per pattern serves every colour. The sets are memoized per parameter set (proctex.cached).
+ *
+ * surfaceFinish(kind, hex, opts) gives the cached MeshStandardMaterial of a finish. It always carries map, normalMap
+ * and roughnessMap (and no clearcoat / transmission / vertex colours), exactly the map set the textured kinds of
+ * home/materials.js use - a finish never compiles a new shader program (§4.16).
+ *
+ * UVs: metres (u along the wall / x, v up / z), as everywhere in buildKit.js. Panel joints sit on u = k * size[0]; to
+ * centre the joints on a wall, shift the geometry's u (panelUOffset), not texture.offset - the texture is shared.
+ * ============================================================================================================== */
+
+const _lin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+const dsz = (n, res) => Math.max(32, Math.round((n * res) / 32) * 32);
+
+/** RGBA bytes -> a repeating, mip-mapped DataTexture (flipY like the canvas textures). */
+function dataTex(data, w, h, repeat, srgb) {
+  const t = new THREE.DataTexture(data, w, h, THREE.RGBAFormat, THREE.UnsignedByteType);
+  t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+  t.wrapS = THREE.RepeatWrapping;
+  t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(repeat[0], repeat[1]);
+  t.anisotropy = 8;
+  t.flipY = true;
+  t.generateMipmaps = true;
+  t.minFilter = THREE.LinearMipmapLinearFilter;
+  t.magFilter = THREE.LinearFilter;
+  t.needsUpdate = true;
+  return t;
+}
+
+/**
+ * Grey texture set from `pixel(x, y, u, v, o)`: o.l = grey 0..1 (sRGB), o.h = height, o.rough = roughness 0..1.
+ * Always makes all three maps (map, normalMap, roughnessMap). Not cached here - callers wrap it in cached().
+ */
+function greySet({ w, h, tile, pixel, normal = 1 }) {
+  const n = w * h;
+  const color = new Uint8Array(n * 4);
+  const rough = new Uint8Array(n * 4);
+  const heights = new Float32Array(n);
+  const o = { l: 0.8, h: 0, rough: 0.6 };
+  let sum = 0, rsum = 0;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      o.l = 0.8;
+      o.h = 0;
+      o.rough = 0.6;
+      pixel(x, y, x / w, y / h, o);
+      const l = clamp(o.l), r = clamp(o.rough);
+      const i = y * w + x;
+      const k = i * 4;
+      color[k] = color[k + 1] = color[k + 2] = l * 255;
+      color[k + 3] = 255;
+      rough[k] = rough[k + 1] = rough[k + 2] = r * 255;
+      rough[k + 3] = 255;
+      heights[i] = o.h;
+      sum += _lin(Math.round(l * 255) / 255);
+      rsum += Math.round(r * 255) / 255;
+    }
+  }
+  const nrm = new Uint8Array(n * 4);
+  const H = (x, y) => heights[((y + h) % h) * w + ((x + w) % w)];
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const dx = (H(x + 1, y) - H(x - 1, y)) * normal;
+      const dy = (H(x, y + 1) - H(x, y - 1)) * normal;
+      const nx = -dx, ny = dy;
+      const len = Math.hypot(nx, ny, 1);
+      const k = (y * w + x) * 4;
+      nrm[k] = ((nx / len) * 0.5 + 0.5) * 255;
+      nrm[k + 1] = ((ny / len) * 0.5 + 0.5) * 255;
+      nrm[k + 2] = ((1 / len) * 0.5 + 0.5) * 255;
+      nrm[k + 3] = 255;
+    }
+  }
+  const repeat = [1 / tile[0], 1 / tile[1]];
+  return {
+    map: dataTex(color, w, h, repeat, true),
+    normalMap: dataTex(nrm, w, h, repeat, false),
+    roughnessMap: dataTex(rough, w, h, repeat, false),
+    tile: [tile[0], tile[1]],
+    ref: Math.max(0.02, sum / n),
+    roughRef: Math.max(0.05, rsum / n),
+    size: [w, h],
+  };
+}
+
+/**
+ * Stone-look wet-room wall panels (the bathroom of 1. etasje, V41: #c8c5bf, joint #bcb9b3, vertical joints every
+ * 0.60, no horizontal joint; the dark shower panels of the laundry #5a5657 with clouds #77726f / #3f3c3c): soft cloudy
+ * stone mottling, a faint per-panel tone shift and a thin recessed joint. The set covers two panels across
+ * (2 * size[0]) and as much up when there are no horizontal joints, else size[1].
+ * @param {object} [o]
+ * @param {number[]} [o.size=[0.6, 2.4]]   panel width x height (m)
+ * @param {boolean} [o.horizontalJoints=false]
+ * @param {boolean} [o.joints=true]        false: no joints at all (one big slab look)
+ * @param {number} [o.jointTone=0.87]      joint brightness relative to the panel (linear luminance joint / face)
+ * @param {number} [o.jointWidth=0.003]    m
+ * @param {number} [o.clouds=1]            contrast of the cloudy mottling (1 = about +-7 %, the beige bathroom; 3.5 = the dark panels)
+ * @param {number} [o.seed=51] @param {number} [o.res=1]
+ */
+export function stonePanel({ size = [0.6, 2.4], horizontalJoints = false, joints = true, jointTone = 0.87, jointWidth = 0.003, clouds = 1, seed = 51, res = 1 } = {}) {
+  const pw = size[0], ph = size[1];
+  const tileU = pw * 2;
+  const tileV = horizontalJoints ? ph : tileU;
+  const key = `surf:stonepanel:${pw}:${ph}:${horizontalJoints}:${joints}:${jointTone}:${jointWidth}:${clouds}:${seed}:${res}`;
+  return cached(key, () => {
+    const w = dsz(640, res);
+    const h = dsz(640 * (tileV / tileU), res);
+    const noise = new TileableNoise(seed);
+    const rnd = mulberry32(seed * 7 + 3);
+    const panelTone = [1 + (rnd() - 0.5) * 0.03, 1 + (rnd() - 0.5) * 0.03];
+    const pxU = tileU / w, pxV = tileV / h;
+    const half = jointWidth / 2;
+    // the map is sRGB: a linear ratio r is about an sRGB ratio of r^(1/2.2); the square root is close and keeps joints soft
+    const jt = Math.sqrt(jointTone);
+    const cyc = Math.max(1, Math.round(tileV / tileU));
+    return greySet({ w, h, tile: [tileU, tileV], normal: 1.2, pixel(x, y, u, v, o) {
+      // soft stone clouds (big blotches + mid mottling + fine grain), tileable in both directions
+      const big = noise.noise(u * 3, v * 3 * cyc, 3, 3 * cyc);
+      const mid = noise.noise(u * 9 + 11, v * 9 * cyc + 5, 9, 9 * cyc);
+      const fine = noise.noise(u * 48 + 3, v * 48 * cyc + 9, 48, 48 * cyc);
+      const speck = hash2(x, y, seed) < 0.01 ? -0.6 : 0;
+      let t = 1 + clouds * (0.045 * big + 0.03 * mid + 0.008 * fine + 0.01 * speck);
+      t *= panelTone[u < 0.5 ? 0 : 1];
+      let hh = 0.25 * mid + 0.08 * fine;
+      if (joints) {
+        // vertical joints at u = 0 and 0.5 (every panel width), horizontal at v = 0 when asked
+        let d = Math.min(u % 0.5, 0.5 - (u % 0.5)) * tileU;
+        if (horizontalJoints) d = Math.min(d, Math.min(v, 1 - v) * tileV);
+        const px = Math.min(pxU, pxV);
+        if (d < half + px) {
+          const a = smoothstep(half + px, half - px * 0.5, d);
+          t *= 1 - (1 - jt) * a;
+          hh -= 1.2 * a;
+        }
+      }
+      o.l = 0.88 * t;
+      o.h = hh;
+      o.rough = 0.62 + 0.04 * mid;
+    } });
+  });
+}
+
+/**
+ * Ceramic tiles: a grid of size[0] x size[1] tiles with grout lines, per-tile tone variation and a slight bevel. The
+ * set covers 2 x 2 tiles. Colour-neutral (tint with the tile colour).
+ * @param {object} [o]
+ * @param {number[]} [o.size=[0.3, 0.3]] @param {number} [o.grout=0.003] (m) @param {number} [o.groutTone=0.72]
+ * @param {number} [o.clouds=0.5] @param {number} [o.gloss=0.4] (0..1, lower roughness)
+ * @param {number} [o.seed=61] @param {number} [o.res=1]
+ */
+export function tiles({ size = [0.3, 0.3], grout = 0.003, groutTone = 0.72, clouds = 0.5, gloss = 0.4, seed = 61, res = 1 } = {}) {
+  const key = `surf:tiles:${size[0]}:${size[1]}:${grout}:${groutTone}:${clouds}:${gloss}:${seed}:${res}`;
+  return cached(key, () => {
+    const tileU = size[0] * 2, tileV = size[1] * 2;
+    const w = dsz(512, res);
+    const h = dsz(512 * (tileV / tileU), res);
+    const noise = new TileableNoise(seed);
+    const px = Math.max(tileU / w, tileV / h);
+    const half = grout / 2;
+    const baseRough = 0.7 - gloss * 0.5;
+    return greySet({ w, h, tile: [tileU, tileV], normal: 1.5, pixel(x, y, u, v, o) {
+      const iu = u < 0.5 ? 0 : 1, iv = v < 0.5 ? 0 : 1;
+      const du = Math.min(u % 0.5, 0.5 - (u % 0.5)) * tileU;
+      const dv = Math.min(v % 0.5, 0.5 - (v % 0.5)) * tileV;
+      const d = Math.min(du, dv);
+      const mott = noise.noise(u * 6, v * 6, 6, 6);
+      const tileTone = 1 + 0.03 * (hash2(iu, iv, seed) - 0.5);
+      let t = tileTone * (1 + clouds * 0.04 * mott);
+      let hh = 0;
+      let rough = baseRough + 0.03 * mott;
+      if (d < half + px) {
+        const a = smoothstep(half + px, half - px * 0.5, d);
+        t *= 1 - (1 - groutTone) * a;
+        hh = -1 * a;
+        rough += (0.92 - rough) * a;
+      } else if (d < half + 0.004) {
+        hh = -0.35 * (1 - (d - half) / 0.004); // bevelled tile edge
+      }
+      o.l = 0.92 * t;
+      o.h = hh;
+      o.rough = rough;
+    } });
+  });
+}
+
+/**
+ * Wet-room vinyl (the bathroom floors, cloudy concrete look): seamless, big soft dark / light clouds, a fine grain
+ * and a low satin sheen - no joints. clouds 1 = the dark grey bathroom floor of 1. etasje (#5a5759, clouds
+ * #4d4b4d-#6e6c6e, about +-12 %); the laundry floor (#8c8789, clouds #737072 / #a3a0a1) is about the same.
+ * @param {object} [o] @param {number} [o.clouds=1] @param {number} [o.tile=1.6] (m) @param {number} [o.seed=71] @param {number} [o.res=1]
+ */
+export function wetroom({ clouds = 1, tile = 1.6, seed = 71, res = 1 } = {}) {
+  const key = `surf:wetroom:${clouds}:${tile}:${seed}:${res}`;
+  return cached(key, () => {
+    const w = dsz(512, res), h = w;
+    const noise = new TileableNoise(seed);
+    return greySet({ w, h, tile: [tile, tile], normal: 0.6, pixel(x, y, u, v, o) {
+      const big = noise.fbm(u, v, 2, 3, 0.55);
+      const mid = noise.noise(u * 7 + 2, v * 7 + 5, 7, 7);
+      const streak = noise.noise(u * 16 + 9, v * 5 + 1, 16, 5);
+      const fine = noise.noise(u * 90, v * 90, 90, 90);
+      const t = 1 + clouds * (0.1 * big + 0.045 * mid + 0.02 * streak + 0.012 * fine);
+      o.l = 0.62 * t;
+      o.h = 0.2 * mid + 0.1 * fine;
+      o.rough = 0.5 + 0.06 * big;
+    } });
+  });
+}
+
+/** Linear luminance of a '#hex' (sRGB). */
+function hexLum(hex) {
+  const c = new THREE.Color(hex);
+  return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+}
+
+/**
+ * Cloud contrast for stonePanel / wetroom from a base colour and its light / dark clouds ([a, b] '#hex'), relative to
+ * the stone panel's +-7.5 % (kind 'stone') or the vinyl's +-14 % (kind 'vinyl') at clouds = 1.
+ * @param {string} hex @param {string[]} [cloudHexes] @param {'stone'|'vinyl'} [kind='stone']
+ * @returns {number|null}  null without clouds
+ */
+export function cloudContrast(hex, cloudHexes, kind = 'stone') {
+  if (!Array.isArray(cloudHexes) || !cloudHexes.length) return null;
+  const base = hexLum(hex) || 1;
+  const spread = Math.max(...cloudHexes.map((c) => Math.abs(hexLum(c) - base) / base));
+  const unit = kind === 'vinyl' ? 0.14 : 0.075;
+  return Math.round(Math.min(6, Math.max(0.2, spread / unit)) * 20) / 20;
+}
+
+const _finishes = new Map();
+
+/** Finish kinds that are painted (home/materials.js paint() paints them, not this module). */
+export const PAINT_FINISHES = Object.freeze(['paint', 'wetroom-paint']);
+
+/**
+ * The material of a textured finish, cached per (kind, colour, pattern): treat it as read-only and never dispose it
+ * (userData.cached = true). Kinds:
+ *   'stone-panel'  stonePanel (opts.panel: { size, joint '#hex', horizontalJoints }, opts.clouds)
+ *   'dark-panel'   stonePanel with strong clouds (opts.clouds, default 3.5), no joints unless opts.panel is given
+ *   'tiles'        tiles (opts.size, opts.grout, opts.groutColor '#hex')
+ *   'vinyl' | 'wetroom'   wetroom (opts.clouds)
+ *   'laminate'     stonePanel without joints, light clouds (worktops in a stone / concrete look)
+ * Returns null for the painted kinds (PAINT_FINISHES) and unknown kinds - the caller paints those.
+ * @param {string} kind
+ * @param {string} hex      '#rrggbb' - the mean colour of the finished surface
+ * @param {object} [opts]   pattern options (above) + { res, roughness }
+ * @returns {THREE.MeshStandardMaterial|null}
+ */
+export function surfaceFinish(kind, hex, opts = {}) {
+  const res = opts.res ?? 1;
+  let set = null, ns = 0.6, rough = 0.62;
+  const panel = opts.panel || {};
+  if (kind === 'stone-panel') {
+    const jointTone = panel.joint ? Math.min(1, hexLum(panel.joint) / (hexLum(hex) || 1)) : 0.87;
+    set = stonePanel({ size: panel.size || [0.6, 2.4], horizontalJoints: !!panel.horizontalJoints, jointTone: Math.round(jointTone * 100) / 100, clouds: opts.clouds ?? 1, res });
+    ns = 0.5;
+    rough = 0.6;
+  } else if (kind === 'dark-panel') {
+    set = stonePanel({ size: panel.size || [0.6, 2.4], horizontalJoints: !!panel.horizontalJoints, joints: !!opts.panel, jointTone: 0.8, clouds: opts.clouds ?? 3.5, seed: 53, res });
+    ns = 0.7;
+    rough = 0.55;
+  } else if (kind === 'tiles') {
+    const groutTone = opts.groutColor ? Math.min(1, hexLum(opts.groutColor) / (hexLum(hex) || 1)) : 0.72;
+    set = tiles({ size: opts.size || [0.3, 0.3], grout: opts.grout ?? 0.003, groutTone: Math.round(groutTone * 100) / 100, res });
+    ns = 0.8;
+    rough = 0.4;
+  } else if (kind === 'vinyl' || kind === 'wetroom') {
+    set = wetroom({ clouds: opts.clouds ?? 1, res });
+    ns = 0.35;
+    rough = 0.5;
+  } else if (kind === 'laminate') {
+    set = stonePanel({ joints: false, clouds: opts.clouds ?? 1.6, seed: 57, res });
+    ns = 0.3;
+    rough = 0.55;
+  } else {
+    return null;
+  }
+  const r = opts.roughness ?? rough;
+  const key = `${kind}|${hex}|${set.map.uuid}|${r}`;
+  let m = _finishes.get(key);
+  if (!m) {
+    const color = new THREE.Color(hex).multiplyScalar(1 / set.ref);
+    const mx = Math.max(color.r, color.g, color.b);
+    if (mx > 1.05) color.multiplyScalar(1.05 / mx);
+    m = new THREE.MeshStandardMaterial({
+      color,
+      map: set.map,
+      normalMap: set.normalMap,
+      normalScale: new THREE.Vector2(ns, ns),
+      roughnessMap: set.roughnessMap,
+      roughness: r / set.roughRef,
+      metalness: 0,
+    });
+    m.name = `${kind} ${hex}`;
+    m.userData = { cached: true, kind, hex, finish: true };
+    _finishes.set(key, m);
+  }
+  return m;
+}
+
+/**
+ * The finish of a wall of layout.house (wall.material 'stone-panel' | 'dark-panel' | 'tiles' ..., colour
+ * wall.paintHex, pattern from wall.panel / wall.clouds). null for painted walls ('paint', 'wetroom-paint'): paint
+ * those with home/materials.js paint(wall.paintHex).
+ * @param {{ material?: string, paintHex?: string, paint?: string, panel?: object, clouds?: string[] }} wall
+ * @param {string} [hex]   colour override (a repaint, DesignState paints)
+ * @param {{ res?: number }} [o]
+ */
+export function wallFinish(wall, hex, { res = 1 } = {}) {
+  const kind = wall?.material || 'paint';
+  if (PAINT_FINISHES.includes(kind)) return null;
+  const c = hex || wall.paintHex || wall.paint || '#c8c5bf';
+  if (!/^#[0-9a-f]{6}$/i.test(c)) return null;
+  return surfaceFinish(kind, c, { panel: wall.panel, clouds: cloudContrast(c, wall.clouds, 'stone') ?? undefined, res });
+}
+
+/**
+ * The finish of a room floor of layout.house (room.floor { material 'vinyl' | 'tiles' ..., color, clouds?: ['#a', '#b'] }).
+ * null for other floor kinds (wood, concrete ...), which the room builder makes itself.
+ * @param {{ material?: string, color?: string, clouds?: string[], size?: number[] }} floor
+ * @param {{ res?: number }} [o]
+ */
+export function floorFinish(floor, { res = 1 } = {}) {
+  const kind = floor?.material;
+  if (kind !== 'vinyl' && kind !== 'tiles' && kind !== 'wetroom') return null;
+  const hex = floor.color || '#8c8789';
+  return surfaceFinish(kind, hex, { clouds: cloudContrast(hex, floor.clouds, 'vinyl') ?? undefined, size: floor.size, res });
+}
+
+/**
+ * u shift that centres a panel layout on a wall of `length`: the joints then sit symmetric about the wall's middle
+ * (add it to the wall geometry's u; never to texture.offset).
+ * @param {number} length @param {number} [panelW=0.6]
+ */
+export function panelUOffset(length, panelW = 0.6) {
+  const rest = ((length % panelW) + panelW) % panelW;
+  return rest < 1e-6 ? 0 : (panelW - rest) / 2;
+}

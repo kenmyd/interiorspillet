@@ -4,7 +4,8 @@
  *   node tools/house-tests/stub.test.mjs        (from the project root; exit code 1 on failure)
  *
  *   • the stubs buildRooms / buildStairs / buildBuiltIns return the build contract { group, walls, windows, doors,
- *     pickables, builtInLights, colliders, update, setPaint, dispose } – empty, so the living room is unchanged;
+ *     pickables, builtInLights, colliders, update, setPaint, dispose } – empty, so the living room is unchanged
+ *     (buildBuiltIns is real since steg 10: for house-mini's WC it fills roots.rooms.bad.contents and colliders);
  *     stairLayout / stairColliders / slabColliders exist; createVisibility hides nothing;
  *   • createHouseRoots: one group per level, one entry per room (group → surfaces + contents) in its level, the
  *     living room's shell and kitchen first in their level – for today's living room (research/room-spec.json + the 00-files) and for house-mini;
@@ -93,6 +94,19 @@ for (const [name, build] of [
   for (const [lname, L] of name === 'buildRooms' ? [['today', today]] : [['today', today], ['house-mini', house]]) {
     const ctx = fakeCtx();
     const [r, warns] = quiet(() => build(ctx, L));
+    // steg 10 (A4): buildBuiltIns is no longer a stub – house-mini's WC is built into roots.rooms.bad.contents
+    // (tools/house-tests/bathroom.test.mjs tests it); the contract's shape and the empty scene root still hold
+    if (name === 'buildBuiltIns' && L.house?.builtIns?.length) {
+      const shape = contractProblems({ ...r, colliders: [], builtInLights: [] }, name);
+      const inRooms = Object.values(ctx.roots.rooms).every((rm) => !rm.surfaces.children.length && (rm.contents.children.length > 0) === L.house.builtIns.some((x) => x.roomId === rm.id));
+      check(`${name}(${lname}): the build contract, built into roots.rooms[…].contents only (group and scene root empty), Box3 colliders`, !shape.length && !warns.length && ctx.scene.children.length === 0 && inRooms
+        && r.colliders.length > 0 && r.colliders.every((c) => c.isBox3), [...shape, ...warns].join(' | '));
+      r.update(1 / 60, {});
+      r.setPaint('w-hoy', '#ffffff');
+      r.dispose();
+      check(`${name}(${lname}): update / setPaint run, dispose empties the rooms' contents`, Object.values(ctx.roots.rooms).every((rm) => !rm.contents.children.length));
+      continue;
+    }
     const bad = contractProblems(r, name);
     check(`${name}(${lname}): empty build contract, nothing added to the scene or the roots`, !bad.length && !warns.length && ctx.scene.children.length === 0
       && Object.values(ctx.roots.rooms).every((rm) => !rm.surfaces.children.length && !rm.contents.children.length), [...bad, ...warns].join(' | '));
