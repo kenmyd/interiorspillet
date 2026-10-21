@@ -1155,11 +1155,22 @@ function boxSofaKit({ g, ms, q, piping, plinthH, baseTop, seatH, backH, frameT, 
       grp.add(K.partMesh(geo, ms.up, 'upholstery', { position: [0, ch / 2, 0] }));
       if (piping) pipeMeshes(cushionPiping([0, ch / 2, 0], geo, ['left', 'right'], pr, q), grp);
     },
-    /** Box arm x0..x1, z0..z1 up to armH (piped side panels). */
-    arm(x0, x1, z0, z1, armH, y0 = plinthH) {
+    /** Box arm x0..x1, z0..z1 up to armH (piped side panels); style round = a fully rounded top, sloped = the top
+     * falls toward the front. */
+    arm(x0, x1, z0, z1, armH, y0 = plinthH, style = 'box') {
       const w = x1 - x0 - 0.004, d = z1 - z0 - 0.004, hh = armH - y0;
-      const R = Math.min(0.03, w * 0.2);
-      const geo = softBox(w, hh, d, 'x', { puff: 0.03, round: (2 * R) / w, sides: 0.04, top: 1, bottom: 1, q });
+      const R = style === 'round' ? w / 2 : Math.min(0.03, w * 0.2);
+      const geo = softBox(w, hh, d, 'x', { puff: style === 'round' ? 0.08 : 0.03, round: Math.min(1, (2 * R) / w), sides: 0.04, top: 1, bottom: 1, q });
+      if (style === 'sloped') {
+        // shear the top down toward the front (≈ 12 cm lower at the front edge)
+        const pos = geo.attributes.position;
+        for (let i = 0; i < pos.count; i++) {
+          const yy = pos.getY(i) + hh / 2, zz = (pos.getZ(i) + d / 2) / d;
+          pos.setY(i, pos.getY(i) - Math.min(0.12, hh * 0.35) * zz * (yy / hh));
+        }
+        pos.needsUpdate = true;
+        geo.computeVertexNormals();
+      }
       const c = [(x0 + x1) / 2, y0 + hh / 2, (z0 + z1) / 2];
       g.add(K.partMesh(geo, ms.up, 'upholstery', { position: c }));
       if (piping) pipeMeshes(cushionPiping(c, geo, ['left', 'right'], pr, q));
@@ -1194,7 +1205,9 @@ function buildSofaL(spec) {
   const swap = (s) => (s === '+x' ? '-x' : s === '-x' ? '+x' : s);
   const side = flip ? swap(P.armSide ?? '+x') : P.armSide ?? '+x';
   const armPos = side === '+x' || side === 'both';
-  const armNeg = (side === '-x' || side === 'both') && !hasChaise;
+  // layout 'chaise': an open chaise longue (no back along it), which may have its own arm along the outer side
+  const chaiseLayout = P.layout === 'chaise' && hasChaise;
+  const armNeg = (side === '-x' || side === 'both') && (!hasChaise || chaiseLayout);
   const armW = clamp(num(P.armW, 0.27), 0.08, w * 0.2);
   // modules from the short-leg end (canonical −x) toward the arm end
   let mods = Array.isArray(P.modules) ? P.modules.filter((m) => m && m.kind !== 'chaise' && num(m.w, 0) > 0).map((m) => ({ kind: m.kind, w: m.w })) : null;
@@ -1218,11 +1231,15 @@ function buildSofaL(spec) {
     const x0 = x, x1 = x + m.w * k;
     x = x1;
     if (m.kind === 'arm') {
-      kit.arm(x0, x1, zr, zf, armH);
+      kit.arm(x0, x1, zr, chaiseLayout && x0 <= -w / 2 + 1e-6 ? d / 2 : zf, armH, plinthH, P.armStyle);
       continue;
     }
     kit.base(x0, x1, zr, zf);
-    if (m.kind === 'corner') {
+    if (m.kind === 'corner' && chaiseLayout) {
+      cornerX1 = x1;
+      kit.seat(x0, x1, zr + backT, zf);
+      kit.backX(x0, x1, zr);
+    } else if (m.kind === 'corner') {
       cornerX1 = x1;
       kit.seat(x0 + backT, x1, zr + backT, zf);
       kit.backX(x0 + backT, x1, zr);
@@ -1234,7 +1251,12 @@ function buildSofaL(spec) {
     }
   }
   const colliders = [{ min: [-w / 2, 0, zr], max: [w / 2, backH, zf] }];
-  if (hasChaise) {
+  if (hasChaise && chaiseLayout) {
+    const x0 = -w / 2 + (armNeg ? armW : 0), x1 = cornerX1;
+    kit.base(x0, x1, zf, d / 2);
+    kit.seat(x0, x1, zf, d / 2);
+    colliders.push({ min: [-w / 2, 0, zf], max: [x1, seatH, d / 2] });
+  } else if (hasChaise) {
     const x0 = -w / 2, x1 = cornerX1;
     const backTo = clamp(num(P.shortLegBackTo, depth + chaiseL * 0.5), depth, d) - d / 2;
     kit.base(x0, x1, zf, d / 2);
@@ -1253,6 +1275,13 @@ function buildSofaL(spec) {
     if (hasChaise) inner.add(K.partMesh(K.roundedBox(cornerX1 + w / 2 - 0.05, plinthH + 0.004, chaiseL, 0.004, 1, { bottom: true }), pm, 'legs', { position: [(-w / 2 + cornerX1) / 2, 0, zf + chaiseL / 2 - 0.025] }));
   } else {
     addBase(inner, ms, style, { hx: w / 2, hz: depth / 2, topY: plinthH, q, z: (zr + zf) / 2, inset: 0.06 });
+    // feet under the front of the chaise too
+    if (hasChaise) {
+      const cg = new THREE.Group();
+      cg.position.x = (-w / 2 + cornerX1) / 2;
+      inner.add(cg);
+      addBase(cg, ms, style, { hx: (cornerX1 + w / 2) / 2, hz: chaiseL / 2, topY: plinthH, q, z: zf + chaiseL / 2, inset: 0.06 });
+    }
   }
   if (flip) for (const c of colliders) [c.min[0], c.max[0]] = [-c.max[0], -c.min[0]];
   return K.finishModel(g, { seatY: seatH, colliders });
@@ -1269,8 +1298,11 @@ function buildSofaStraight(spec) {
   const backH = Math.max(h, seatH + 0.2); // back cushions reach dims.h
   const backT = clamp(num(P.backT, 0.24), 0.14, d * 0.4);
   const frameT = Math.min(0.1, backT * 0.4);
-  const armW = clamp(num(P.armW, 0.2), 0, w * 0.2);
+  const armStyle = ['box', 'slim', 'round', 'sloped', 'none'].includes(P.armStyle) ? P.armStyle : 'box';
+  const armW = armStyle === 'none' ? 0 : clamp(num(P.armW, armStyle === 'slim' ? 0.1 : 0.2), 0, w * 0.2);
   const armH = clamp(num(P.armH, Math.min(backH - 0.15, seatH + 0.18)), seatH + 0.05, backH);
+  const tightBack = P.backStyle === 'tight';
+  const benchSeat = P.seatStyle === 'bench';
   const legH = clamp(num(P.legH, legHeightFor(style, 0.14)), 0.01, seatH - 0.22);
   const seatT = clamp(0.15, 0.1, seatH - legH - 0.1);
   const baseTop = seatH - seatT;
@@ -1281,18 +1313,26 @@ function buildSofaStraight(spec) {
   kit.base(ix0, ix1, zr, zf);
   const n = clamp(Math.round(num(P.seats, Math.round((ix1 - ix0) / 0.75))), 1, 5);
   const sw = (ix1 - ix0) / n;
+  if (benchSeat) kit.seat(ix0, ix1, zr + (tightBack ? frameT + 0.03 : backT), zf);
   for (let i = 0; i < n; i++) {
-    kit.seat(ix0 + i * sw, ix0 + (i + 1) * sw, zr + backT, zf);
-    kit.backX(ix0 + i * sw, ix0 + (i + 1) * sw, zr, { frame: i === 0 });
+    if (!benchSeat) kit.seat(ix0 + i * sw, ix0 + (i + 1) * sw, zr + (tightBack ? frameT + 0.03 : backT), zf);
+    if (!tightBack) kit.backX(ix0 + i * sw, ix0 + (i + 1) * sw, zr, { frame: i === 0 });
   }
-  // one continuous back frame
-  if (n > 1) {
+  if (tightBack) {
+    // a fixed upholstered back, slightly reclined, in one piece across the sofa
+    const bt = frameT + 0.03, bh = backH - legH;
+    const grp = new THREE.Group();
+    grp.position.set((ix0 + ix1) / 2, legH, zr + bt / 2);
+    grp.rotation.x = -5 * DEG;
+    g.add(grp);
+    grp.add(K.partMesh(softBox(ix1 - ix0 - 0.004, bh, bt, 'z', { puff: 0.12, round: 0.8, sides: 0.08, bottom: 0.2, q }), ms.up, 'upholstery', { position: [0, bh / 2, 0] }));
+  } else if (n > 1) {
     const fh = Math.min(backH - 0.12, seatH + 0.2) - legH;
     g.add(K.partMesh(softBox(ix1 - ix0 - 0.004, fh, frameT, 'z', { puff: 0.04, round: 0.5, sides: 0.05, q }), ms.up, 'upholstery', { position: [(ix0 + ix1) / 2, legH + fh / 2, zr + frameT / 2] }));
   }
   if (armW > 0.03) {
-    kit.arm(-w / 2, ix0, zr, zf, armH, legH);
-    kit.arm(ix1, w / 2, zr, zf, armH, legH);
+    kit.arm(-w / 2, ix0, zr, zf, armH, legH, armStyle);
+    kit.arm(ix1, w / 2, zr, zf, armH, legH, armStyle);
   }
   addBase(g, ms, style, { hx: w / 2, hz: d / 2, topY: legH, q, inset: 0.06 });
   return K.finishModel(g, { seatY: seatH });
@@ -2861,6 +2901,8 @@ export const archetypes = {
       depth: { type: 'number', min: 0.7, max: 1.1, step: 0.01, label: 'Setedybde (m)' },
       armH: ARMH,
       shortLegSide: { type: 'enum', label: 'Sjeselong', options: [['-x', 'Venstre (sett forfra)'], ['+x', 'Høyre (sett forfra)']] },
+      layout: { type: 'enum', label: 'Utforming', options: [['corner', 'Hjørnesofa (rygg rundt)'], ['chaise', 'Åpen sjeselong']], default: 'corner' },
+      armStyle: { type: 'enum', label: 'Armlener', options: [['box', 'Kantete'], ['slim', 'Smale'], ['round', 'Runde'], ['sloped', 'Skrå']], default: 'box' },
       armSide: { type: 'enum', label: 'Armlene', options: [['+x', 'Høyre (sett forfra)'], ['-x', 'Venstre (sett forfra)'], ['both', 'Begge sider'], ['none', 'Ingen']] },
       piping: PIPE,
     },
@@ -2882,6 +2924,9 @@ export const archetypes = {
       armW: ARMW,
       armH: ARMH,
       seats: { type: 'number', min: 1, max: 5, step: 1, label: 'Antall seteputer' },
+      armStyle: { type: 'enum', label: 'Armlener', options: [['box', 'Kantete'], ['slim', 'Smale'], ['round', 'Runde'], ['sloped', 'Skrå'], ['none', 'Uten']], default: 'box' },
+      backStyle: { type: 'enum', label: 'Rygg', options: [['cushions', 'Løse ryggputer'], ['tight', 'Fast rygg']], default: 'cushions' },
+      seatStyle: { type: 'enum', label: 'Sete', options: [['split', 'Én pute per plass'], ['bench', 'Gjennomgående pute']], default: 'split' },
       legStyle: legParam(['wood-taper', 'slim-metal', 'block', 'plinth']),
       legH: LEGH,
       piping: PIPE,

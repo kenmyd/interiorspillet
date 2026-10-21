@@ -244,6 +244,59 @@ export const PRODUCTS = {
   'byggmax-fibrotech-quanti-2440': { set: { name: 'Quanti akustikkpanel 18x520x2440' } },
   'clasohlson-fibrotech-quanti-mini-118x36': { set: { name: 'Quanti Mini akustikkpanel 118x36 (2-pakning)', priceNok: 149.95, packSize: 2, packPriceNok: 299.9 } },
   'akustikksenter-loke-oval-flate-40': { variants: [['Mørk grå', { priceNok: 5847, salePriceNok: 4970 }]] },
+  // ---- hele huset: model params tuned against the store photos (notes/katalog-hele-huset.md)
+  'bohus-wood-sengegavl-260x120': { params: { slatPitch: 0.045 } },
+  'bohus-sando-sengebenk-150x51': { params: { legH: 0.1 } },
+  'bohus-vinstra-nattbord-46x40': { params: { legFrame: true } },
+  'bohus-nola-nattbord-50x40': { params: { legFrame: true } },
+  'bohus-vinstra-kommode-158x40': { params: { legFrame: true } },
+  'bohus-sandnes-kommode-157x40': { params: { legFrame: true } },
+  'bohus-bodo-kommode-156x40': { params: { midLegs: true } },
+  // a sliding door over the left column, a hinged door over three drawers on the right
+  'bohus-naia-garderobeskap-118x60': { params: { fronts: ['door', 'door+drawers:3'], slidingDoors: false, cellDrawerH: 0.55 } },
+  // the low door pair under the tall doors
+  'bohus-vinstra-garderobeskap-99x60': { params: { drawerRow: 2, drawerRowDoors: true } },
+  'bohus-vinstra-garderobeskap-smal-51x60': { params: { drawerRowDoors: true } },
+  // mirror versions: the right door sits over two drawers
+  'bohus-madrid-garderobeskap-150x60': { params: { fronts: ['door', 'mirror', 'door+drawers:2'], cellDrawerH: 0.43 } },
+  'bohus-madrid-garderobeskap-103x60': { params: { cellDrawerH: 0.43 } },
+  // the store photos show bare racks: no coats (the Inspector can hang some)
+  'bohus-frikk-stumtjener-h169': { params: { coats: 0, levels: 6 } },
+  'bohus-butler-stumtjener-h177': { params: { coats: 0, levels: 6, pegStyle: 'flat' } },
+  'bohus-frikk-vegghylle-knagger-80x10': { params: { coats: 0 } },
+  'bohus-stord-knaggrekke-b50': { params: { coats: 0 } },
+  'bohus-mondo-knagger-sett-o7-o9-o13': { params: { coats: 0, hookStyle: 'disc', sizes: [0.07, 0.13, 0.09] } },
+  'bohus-nola-ovalt-spisebord-95x180': { params: { legs: 'column' } },
+  'bohus-bastia-rundt-spisebord-o130': { params: { legs: 'spider' } },
+  'bohus-signature-1800-spisebord-100x220': { params: { legs: 'panel', legInset: 0.3 } },
+  'bohus-palma-rundt-spisebord-o130': { params: { legs: 'cross' } },
+  'ikea-krylbo-stol': { params: { back: 'pad' } },
+  'bohus-noni-spisestol': { params: { hoop: true, spindles: 5 } },
+  'bohus-avanna-gulvspeil-80x198': { params: { shape: 'rounded' } },
+  'ikea-ikornnes-gulvspeil-52x167': { params: { shape: 'rounded' } },
+  'bohus-lazio-speil-med-hylle-o80': { params: { shelf: true, shelfAt: 0.16 } },
+  'ikea-stockholm-speil-o80': { params: { shelf: true, shelfAt: 0.12, shelfD: 0.07 } },
+  'bohus-manhattan-speil-med-sprosser-80x120': { params: { mullionLayout: 'border' } },
+  'ikea-hemnes-speilskap-med-2-dorer-83x98': { params: { doorFrame: true, cornice: true } },
+  'bohus-linus-sapedispenser-8x8': { params: { squareBody: true } },
+  'bohus-frikk-vegghylle-60x20': { params: { brackets: 'straps' } },
+  'bohus-tamara-vegghylle-60x49': { params: { brackets: 'battens' } },
+  'jysk-cirkelhuse-stumtjener-h174': { params: { coats: 0 } },
+  'jysk-hejsager-vegghylle-3-hyller-65x20': { params: { brackets: 'battens' } },
+  // ---- speil (moved from Smått, CATEGORY_MOVES)
+  'bohus-applewood-speil-o90': { set: { subcategory: 'veggspeil' } },
+  'bohus-othilie-speil-90x93': { set: { subcategory: 'veggspeil' } },
+  'bohus-holmen-cape-speil-med-sprosser-h200': { set: { subcategory: 'veggspeil' } },
+};
+
+/**
+ * Products that moved to another category (normalize-data.mjs moves them before normalising): the three mirrors of the
+ * first round lived in Smått until the Speil category came with the rest of the house.
+ */
+export const CATEGORY_MOVES = {
+  'bohus-applewood-speil-o90': 'speil',
+  'bohus-othilie-speil-90x93': 'speil',
+  'bohus-holmen-cape-speil-med-sprosser-h200': 'speil',
 };
 
 /** English / one-colour variant names → Norwegian (WoodUpp, Fibrotech). */

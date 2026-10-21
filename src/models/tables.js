@@ -62,7 +62,7 @@ const darkInside = () => mat('painted', '#15120f', { flat: true, roughness: 0.95
  * userData.model.recolor for SceneSync: swaps cached materials per part like the default path, but asks for a
  * rebuild (returns false) when `needsRebuild(part, kind)` says the part's look depends on derived materials.
  */
-function recolorer(group, needsRebuild = () => false) {
+export function recolorer(group, needsRebuild = () => false) {
   return (part, hex, kind) => {
     const meshes = group.userData.model?.parts?.[part];
     if (!meshes?.length) return true;
@@ -624,12 +624,129 @@ function buildDining(spec) {
     if (xs.length > 1) add(g, K.box(xs[1] - xs[0], 0.04, 0.05, { grain: 'x' }), body, 'body', 0, yUnder - 0.02, 0);
   } else if (legsStyle === 'four') {
     const s = 0.05;
+    const ls = ['square', 'round-taper', 'splayed', 'metal-thin'].includes(P.legStyle) ? P.legStyle : 'square';
     const ix = shape === 'rect' ? 0.06 : Math.min(w * 0.2, 0.35);
     const iz = shape === 'rect' ? 0.06 : d * 0.18;
+    const legsV = mat(spec.materials?.legs || 'black-metal', spec.colors?.legs, kindGroup(spec.materials?.legs || 'black-metal') === 'wood' ? { grain: 'y' } : undefined);
     for (const sx of [-1, 1]) {
-      for (const sz of [-1, 1]) add(g, K.box(s, yUnder, s, { grain: 'y' }), legs, 'legs', sx * (w / 2 - ix), yUnder / 2, sz * (d / 2 - iz));
+      for (const sz of [-1, 1]) {
+        const x = sx * (w / 2 - ix), z = sz * (d / 2 - iz);
+        if (ls === 'square') add(g, K.box(s, yUnder, s, { grain: 'y' }), legs, 'legs', x, yUnder / 2, z);
+        else if (ls === 'metal-thin') add(g, K.cylinder(0.012, 0.011, yUnder, { seg: qSeg(spec, 12) }), legsV, 'legs', x, 0, z);
+        else if (ls === 'round-taper') add(g, K.taperLeg(yUnder, 0.028, 0.019, { seg: qSeg(spec, 14) }), legsV, 'legs', x, 0, z);
+        else {
+          // splayed: the feet further out than the tops, leaning outward along the diagonal
+          const tilt = 8 * K.DEG;
+          add(g, splayedLeg(x, yUnder + 0.002, z, 0.024, 0.016, sx * tilt, sz * tilt, qSeg(spec, 14)), legsV, 'legs');
+        }
+      }
     }
-    for (const sz of [-1, 1]) add(g, K.box(w - 2 * ix - s, 0.06, 0.02, { grain: 'x' }), body, 'body', 0, yUnder - 0.03, sz * (d / 2 - iz));
+    if (ls === 'square' && P.apron !== true) for (const sz of [-1, 1]) add(g, K.box(w - 2 * ix - s, 0.06, 0.02, { grain: 'x' }), body, 'body', 0, yUnder - 0.03, sz * (d / 2 - iz));
+  } else if (legsStyle === 'column') {
+    // one wide oval (stadium) column of vertical ribs on a low plinth (Nola)
+    const cw = clamp(num(P.columnW, w * 0.42), 0.2, w - 0.2), cd = clamp(num(P.columnD, d * 0.45), 0.15, d - 0.1);
+    const pitch = 0.028;
+    const base = stadiumPts(cw, cd, qSeg(spec, 16));
+    // ribbed outline: walk the perimeter and push every other sample out by 4 mm
+    let per = 0;
+    const segs = base.map((p, i) => {
+      const q = base[(i + 1) % base.length];
+      const l = Math.hypot(q.x - p.x, q.y - p.y);
+      per += l;
+      return l;
+    });
+    const nR = Math.max(16, Math.round(per / pitch) * 2);
+    const ribbed = [];
+    let acc = 0, k = 0;
+    for (let i = 0; i < base.length && ribbed.length < nR * 2; i++) {
+      const p = base[i], q = base[(i + 1) % base.length];
+      const nx = q.y - p.y, ny = -(q.x - p.x), nl = Math.hypot(nx, ny) || 1;
+      while (acc < segs[i]) {
+        const t = acc / segs[i];
+        const out = k % 2 ? 0 : 0.004;
+        ribbed.push([p.x + (q.x - p.x) * t + (nx / nl) * out, p.y + (q.y - p.y) * t + (ny / nl) * out]);
+        acc += pitch / 2;
+        k++;
+      }
+      acc -= segs[i];
+    }
+    const colH = yUnder - 0.03;
+    const geo = K.extrudeShape(ribbed.map(([x, z]) => [x, -z]), colH, { curveSegments: 1 });
+    geo.rotateX(-Math.PI / 2);
+    K.worldUV(geo, 1, { grain: 'y' });
+    const legsV = mat(spec.materials?.legs || 'oak', spec.colors?.legs, { grain: 'y' });
+    add(g, geo, legsV, 'legs', 0, 0.03, 0);
+    add(g, planSlab(stadiumPts(cw + 0.03, cd + 0.03, qSeg(spec, 16)), 0.03, { bevel: 0.003 }), legs, 'legs', 0, 0, 0);
+  } else if (legsStyle === 'spider') {
+    // four strong legs from a hub under the middle out to the floor (Bastia)
+    const R = Math.min(w, d) * clamp(num(P.spread, 0.42), 0.2, 0.5);
+    const hub = 0.12;
+    const legsV = mat(spec.materials?.legs || 'oak', spec.colors?.legs, kindGroup(spec.materials?.legs || 'oak') === 'wood' ? { grain: 'y' } : undefined);
+    for (let k = 0; k < 4; k++) {
+      const a = Math.PI / 4 + (k * Math.PI) / 2;
+      const top = [Math.cos(a) * hub, yUnder - 0.02, Math.sin(a) * hub];
+      const foot = [Math.cos(a) * R, 0, Math.sin(a) * R];
+      const len = Math.hypot(foot[0] - top[0], foot[1] - top[1], foot[2] - top[2]);
+      const m = add(g, K.box(0.05, len, 0.05, { grain: 'y' }), legsV, 'legs', (top[0] + foot[0]) / 2, (top[1] + foot[1]) / 2, (top[2] + foot[2]) / 2);
+      m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(top[0] - foot[0], top[1] - foot[1], top[2] - foot[2]).normalize());
+    }
+    add(g, K.box(2 * hub + 0.08, 0.04, 2 * hub + 0.08), body, 'body', 0, yUnder - 0.02, 0);
+  } else if (legsStyle === 'panel' || legsStyle === 'cross') {
+    // panel: two solid slab legs across the width; cross: two crossing fluted slabs under the middle (Palma)
+    const legsV = mat(spec.materials?.legs || 'oak', spec.colors?.legs, kindGroup(spec.materials?.legs || 'oak') === 'wood' ? { grain: 'y' } : undefined);
+    if (legsStyle === 'panel') {
+      const inset = clamp(num(P.legInset, 0.25), 0.05, w / 2 - 0.1);
+      const pt = clamp(num(P.panelT, 0.07), 0.02, 0.15);
+      for (const sx of [-1, 1]) add(g, K.box(pt, yUnder, clamp(d * 0.8, 0.3, d - 0.06), { grain: 'y' }), legsV, 'legs', sx * (w / 2 - inset - pt / 2), yUnder / 2, 0);
+    } else {
+      const span = Math.min(w, d) * 0.6;
+      for (const a of [Math.PI / 4, -Math.PI / 4]) {
+        const geo = ribPanelGeometry(span, yUnder, { pitch: 0.03, depth: 0.006, t: 0.024, seg: spec.quality === 'low' ? 3 : 5 });
+        geo.translate(0, 0, -0.015);
+        geo.rotateY(a);
+        add(g, geo, legsV, 'legs', 0, yUnder / 2, 0);
+      }
+    }
+  } else if (legsStyle === 'trestle' || legsStyle === 'x' || legsStyle === 'sled' || legsStyle === 'u-frame') {
+    // two end supports ≈ legInset from the ends, a stretcher between them (trestle/x)
+    const inset = clamp(num(P.legInset, 0.3), 0.08, w / 2 - 0.1);
+    const fx = w / 2 - inset;
+    const wood = kindGroup(spec.materials?.legs || 'black-metal') === 'wood';
+    const legsV = mat(spec.materials?.legs || 'black-metal', spec.colors?.legs, wood ? { grain: 'y' } : undefined);
+    const legsZ = mat(spec.materials?.legs || 'black-metal', spec.colors?.legs, wood ? { grain: 'z' } : undefined);
+    const span = clamp(d * 0.72, 0.3, d - 0.08);
+    for (const sx of [-1, 1]) {
+      const x = sx * fx;
+      if (legsStyle === 'trestle') {
+        // a solid panel, narrower at the waist, on a foot rail
+        const pw = wood ? 0.05 : 0.02;
+        const shape2 = [[-span / 2, 0], [span / 2, 0], [span / 2, 0.05], [span * 0.2, 0.12], [span * 0.2, yUnder - 0.1], [span * 0.4, yUnder], [-span * 0.4, yUnder], [-span * 0.2, yUnder - 0.1], [-span * 0.2, 0.12], [-span / 2, 0.05]];
+        const geo = K.extrudeShape(shape2, pw, { center: true, bevel: Math.min(0.004, pw / 4), bevelSegments: 1, curveSegments: 2 });
+        geo.rotateY(Math.PI / 2);
+        K.worldUV(geo, 1, { grain: 'y' });
+        add(g, geo, legsV, 'legs', x, 0, 0);
+      } else if (legsStyle === 'x') {
+        const bw = wood ? 0.06 : 0.04, bt = wood ? 0.04 : 0.015;
+        const len = Math.hypot(span, yUnder);
+        const ang = Math.atan2(span, yUnder);
+        for (const s2 of [-1, 1]) add(g, K.box(bt, len, bw, { grain: 'y' }), legsV, 'legs', x + s2 * bt * 0.55, yUnder / 2, 0, [s2 * ang, 0, 0]);
+      } else {
+        // sled / U frame: a closed (sled) or open-bottom (u) rectangle of tube or wood, the bottom a little wider
+        const t = wood ? 0.045 : 0.025;
+        const top = span * 0.92, bot = legsStyle === 'sled' ? span : span * 0.92;
+        add(g, K.box(t, t, top, { grain: 'z' }), legsZ, 'legs', x, yUnder - t / 2, 0);
+        if (legsStyle === 'sled') add(g, K.box(t, t, bot, { grain: 'z' }), legsZ, 'legs', x, t / 2, 0);
+        for (const sz of [-1, 1]) {
+          const a = [x, legsStyle === 'sled' ? t : 0, sz * (bot / 2 - t / 2)];
+          const b = [x, yUnder - t, sz * (top / 2 - t / 2)];
+          const len = Math.hypot(b[1] - a[1], b[2] - a[2]);
+          const m = add(g, K.box(t, len, t, { grain: 'y' }), legsV, 'legs', x, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2);
+          m.rotation.x = -Math.atan2(b[2] - a[2], b[1] - a[1]);
+        }
+      }
+    }
+    if (legsStyle === 'trestle' || legsStyle === 'x') add(g, K.box(2 * fx, 0.05, 0.04, { grain: 'x' }), legs, 'legs', 0, legsStyle === 'trestle' ? 0.2 : yUnder * 0.45, 0);
+    add(g, K.box(2 * fx, 0.04, 0.04, { grain: 'x' }), body, 'body', 0, yUnder - 0.02, 0);
   } else {
     // two A-frames of black flat steel, splayed across the width, ≈ legInset from the ends (082909, 082941)
     const inset = clamp(num(P.legInset, 0.4), 0.1, w / 2 - 0.08);
@@ -648,6 +765,23 @@ function buildDining(spec) {
     }
     // hidden spine and side rails under the top (seen from a low angle)
     add(g, K.box(2 * fx - legT, 0.04, 0.04, { grain: 'x' }), body, 'body', 0, yUnder - 0.02, 0);
+  }
+  if (P.apron === true) {
+    // a frame (sarg) under the top, set in from the edge; round/oval tops get a ring of short boards
+    const ah = clamp(num(P.apronH, 0.07), 0.03, 0.14), at = 0.022;
+    if (shape === 'rect') {
+      const ax = w / 2 - 0.07, az = d / 2 - 0.07;
+      for (const sz of [-1, 1]) add(g, K.box(2 * ax, ah, at, { grain: 'x' }), body, 'body', 0, yUnder - ah / 2, sz * (az - at / 2));
+      for (const sx of [-1, 1]) add(g, K.box(at, ah, 2 * az - 2 * at, { grain: 'z' }), body, 'body', sx * (ax - at / 2), yUnder - ah / 2, 0);
+    } else {
+      const ring = diningOutline(shape, w - 0.16, d - 0.16, qSeg(spec, 24));
+      for (let i = 0; i < ring.length; i++) {
+        const a = ring[i], b = ring[(i + 1) % ring.length];
+        const len = Math.hypot(b.x - a.x, b.y - a.y);
+        if (len < 0.005) continue;
+        add(g, K.box(len + 0.004, ah, at, { grain: 'x' }), body, 'body', (a.x + b.x) / 2, yUnder - ah / 2, (a.y + b.y) / 2, [0, -Math.atan2(b.y - a.y, b.x - a.x), 0]);
+      }
+    }
   }
   const rc = recolorer(g, (part) => part === 'top' && bevelEdge);
   return K.finishModel(g, { surfaces: [{ y: h, w: +(w * 0.9).toFixed(3), d: +(d * 0.9).toFixed(3), center: [0, 0] }], recolor: rc });
@@ -753,7 +887,13 @@ function buildSideC(spec) {
 /** Parses a front column code: 'door' | 'glass' | 'open' | 'drawer' | 'drawersN'. */
 function parseCell(code) {
   const s = String(code || 'door').toLowerCase();
+  // flip:N = N tilt-out compartments (shoe cabinets): drawer-like fronts with the grip at the top edge
+  if (s.startsWith('flip')) return { kind: 'drawers', n: clamp(parseInt(s.replace(/\D/g, ''), 10) || 2, 1, 8), flip: true };
   if (s.startsWith('drawer')) return { kind: 'drawers', n: clamp(parseInt(s.replace(/\D/g, ''), 10) || (s === 'drawer' ? 1 : 3), 1, 8) };
+  if (s === 'mirror') return { kind: 'door', n: 1, mirror: true };
+  // door+drawers:N / mirror+drawers:N = a door over N drawers in the same column (wardrobes)
+  const split = /^(door|mirror)\+drawers?:?(\d*)$/.exec(s);
+  if (split) return { kind: 'door', n: 1, mirror: split[1] === 'mirror', drawersBelow: clamp(parseInt(split[2], 10) || 2, 1, 6) };
   if (s === 'glass' || s === 'open' || s === 'door') return { kind: s, n: 1 };
   return { kind: 'door', n: 1 };
 }
@@ -778,7 +918,7 @@ function handleSide(i, n) {
   return i < c ? 1 : -1;
 }
 
-function buildCabinet(spec, arch) {
+export function buildCabinet(spec, arch) {
   const { w, d, h } = spec.dims;
   const P = spec.params;
   const M = spec.materials || {}, C = spec.colors || {};
@@ -800,7 +940,7 @@ function buildCabinet(spec, arch) {
   if (style === 'cane' && frontKind !== 'rattan' && !['wood', 'other'].includes(kindGroup(frontKind))) style = 'flat';
   const herring = P.frontPattern === 'herringbone' && (style === 'flat' || style === 'ribbed');
   if (herring) style = 'flat';
-  const handle = ['bar', 'cutout', 'knob', 'none'].includes(P.handle) ? P.handle : 'none';
+  const handle = ['bar', 'cutout', 'knob', 'none', 'edge'].includes(P.handle) ? P.handle : 'none';
   const stone = P.top === 'marble' || P.top === 'stone' || STONE.has(M.top);
   const sT = stone ? clamp(num(P.topT, 0.02), 0.01, 0.05) : 0;
   const tpT = stone ? 0.016 : clamp(num(P.topT, 0.022), 0.012, 0.06);
@@ -869,17 +1009,22 @@ function buildCabinet(spec, arch) {
   const drawerRow = clamp(Math.round(num(P.drawerRow, 0)), 0, 6);
   const openH = yo1 - yo0;
   const bandH = drawerRow ? clamp(num(P.drawerH, openH * 0.24), 0.08, openH * 0.45) : 0;
-  const yCols1 = yo1 - bandH;
+  const rowBottom = drawerRow > 0 && P.drawerRowPos === 'bottom';
+  const yCols0 = rowBottom ? yo0 + bandH : yo0;
+  const yCols1 = rowBottom ? yo1 : yo1 - bandH;
+  const graduated = P.graduated === true;
+  const handleYAbs = typeof P.handleY === 'number' && Number.isFinite(P.handleY) ? P.handleY : null;
   const nCols = cells.length;
   const colW = openW / nCols;
   const doorCount = cells.filter((c) => c.kind === 'door' || c.kind === 'glass').length;
   let doorIdx = 0;
-  const complexFront = style !== 'flat' || herring || handle === 'cutout';
+  const complexFront = style !== 'flat' || herring || handle === 'cutout' || cells.some((c) => c.mirror) || P.doorFrame === 'alu';
 
   /** Interior behind a closed cell (dark) – or a lined niche (body) for open/glass cells. */
   const interior = (x0, x1, y0, y1, lined, i) => {
     if (fit === 'overlay') return;
-    const zb = -d / 2 + 0.012, ze = zf - fT - 0.0015;
+    // behind the back track of sliding doors (an aluminium-framed back door sits 2,6 cm in)
+    const zb = -d / 2 + 0.012, ze = zf - fT - 0.0015 - (P.slidingDoors ? (P.doorFrame === 'alu' ? 0.03 : 0.016) : 0);
     if (!lined) {
       add(g, K.box(x1 - x0 - 0.001, y1 - y0 - 0.001, ze - zb), dark, null, (x0 + x1) / 2, (y0 + y1) / 2, (zb + ze) / 2);
       return;
@@ -893,13 +1038,28 @@ function buildCabinet(spec, arch) {
   };
 
   /** Handle on a front: vertical near the opening edge for doors, horizontal and centred for drawers. */
-  const addHandle = (x0, x1, y0, y1, side, drawer, zFace) => {
+  const addHandle = (x0, x1, y0, y1, side, drawer, zFace, flip = false) => {
     if (handle === 'none' || handle === 'cutout') return;
     const dw = x1 - x0, dh = y1 - y0;
     const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    if (handle === 'edge') {
+      // a thin grip lip along the top edge of drawers/flaps, along the opening edge of doors
+      if (drawer) add(g, K.roundedBox(dw - 0.004, 0.014, 0.02, 0.003, 1, { grain: 'x' }), handleMat, 'handle', cx, y1 - 0.007, zFace + 0.006);
+      else {
+        const len = clamp(num(P.handleLen, Math.min(dh * 0.5, 0.6)), 0.08, dh - 0.04);
+        const hy = handleYAbs != null ? clamp(handleYAbs, y0 + len / 2 + 0.02, y1 - len / 2 - 0.02) : dh > 0.7 ? y1 - 0.04 - len / 2 : cy;
+        add(g, K.roundedBox(0.014, len, 0.02, 0.003, 1, { grain: 'y' }), handleMat, 'handle', side > 0 ? x1 - 0.007 : x0 + 0.007, hy, zFace + 0.006);
+      }
+      return;
+    }
+    if (flip && handle === 'knob') {
+      add(g, K.cylinder(0.011, 0.014, 0.024, { seg: qSeg(spec, 16) }), handleMat, 'handle', cx, y1 - 0.045, zFace, [Math.PI / 2, 0, 0]);
+      return;
+    }
     if (handle === 'knob') {
       const kx = drawer ? cx : side > 0 ? x1 - 0.04 : x0 + 0.04;
-      add(g, K.cylinder(0.011, 0.014, 0.024, { seg: qSeg(spec, 16) }), handleMat, 'handle', kx, cy, zFace, [Math.PI / 2, 0, 0]);
+      const ky = !drawer && handleYAbs != null ? clamp(handleYAbs, y0 + 0.04, y1 - 0.04) : cy;
+      add(g, K.cylinder(0.011, 0.014, 0.024, { seg: qSeg(spec, 16) }), handleMat, 'handle', kx, ky, zFace, [Math.PI / 2, 0, 0]);
       return;
     }
     const metal = kindGroup(handleKind) === 'metal';
@@ -916,7 +1076,7 @@ function buildCabinet(spec, arch) {
     }
     const len = clamp(num(P.handleLen, dh * 0.42), 0.08, dh - 0.06);
     const hx = side > 0 ? x1 - 0.034 : x0 + 0.034;
-    const hy = dh > 0.7 ? y1 - 0.06 - len / 2 : cy;
+    const hy = handleYAbs != null ? clamp(handleYAbs, y0 + len / 2 + 0.03, y1 - len / 2 - 0.03) : dh > 0.7 ? y1 - 0.06 - len / 2 : cy;
     if (metal) {
       add(g, K.box(0.011, len, 0.011, { grain: 'y' }), handleMat, 'handle', hx, hy, zFace + 0.026);
       for (const s of [-1, 1]) add(g, K.cylinder(0.0045, 0.0045, 0.022, { seg: 8, center: true }), handleMat, 'handle', hx, hy + s * (len / 2 - 0.012), zFace + 0.011, [Math.PI / 2, 0, 0]);
@@ -959,15 +1119,41 @@ function buildCabinet(spec, arch) {
   };
 
   /** One front (door or drawer) in the rect x0..x1 × y0..y1. */
-  const addFront = (x0, x1, y0, y1, { side = 1, drawer = false, glass = false, track = 0 }) => {
+  const addFront = (x0, x1, y0, y1, { side = 1, drawer = false, glass = false, track = 0, mirror = false, flip = false }) => {
     const dw = x1 - x0, dh = y1 - y0;
     if (dw < 0.02 || dh < 0.02) return;
     const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
-    const zFace = zf - track * 0.014;
+    const zFace = zf - track * (P.doorFrame === 'alu' ? 0.026 : 0.014);
     const zBack = zFace - fT;
     const grain = drawer && style === 'flat' ? 'x' : 'y';
-    const st = glass ? 'glass' : drawer && (style === 'glass' || style === 'cane') ? 'flat' : style;
-    if (st === 'ribbed') {
+    let st = glass ? 'glass' : drawer && (style === 'glass' || style === 'cane') ? 'flat' : style;
+    if (mirror) st = 'mirror';
+    if (P.slidingDoors && P.doorFrame === 'alu' && !drawer) {
+      // sliding door in a slim aluminium frame (handle part), divided into horizontal panels by thin rails
+      const fw = 0.022;
+      for (const s of [-1, 1]) add(g, K.box(fw, dh, fT + 0.006, { grain: 'y' }), handleMat, 'handle', s > 0 ? x1 - fw / 2 : x0 + fw / 2, cy, zFace - fT / 2);
+      for (const s of [-1, 1]) add(g, K.box(dw - 2 * fw, fw * 0.8, fT + 0.004, { grain: 'x' }), handleMat, 'handle', cx, s > 0 ? y1 - fw * 0.4 : y0 + fw * 0.4, zFace - fT / 2);
+      const nP = clamp(Math.round(num(P.slidingPanels, 1)), 1, 6);
+      const iw = dw - 2 * fw, ih = dh - 1.6 * fw;
+      const ph = (ih - (nP - 1) * 0.012) / nP;
+      for (let k = 0; k < nP; k++) {
+        const py0 = y0 + 0.8 * fw + k * (ph + 0.012);
+        if (k > 0) add(g, K.box(iw, 0.012, fT + 0.002, { grain: 'x' }), handleMat, 'handle', cx, py0 - 0.006, zFace - fT / 2);
+        if (mirror) add(g, K.box(iw, ph, 0.006), mat('mirror', '#c9cfd0'), null, cx, py0 + ph / 2, zFace - fT / 2);
+        else add(g, K.box(iw, ph, fT - 0.006, { grain: 'y' }), front, 'front', cx, py0 + ph / 2, zFace - fT / 2);
+      }
+      return;
+    }
+    if (st === 'mirror') {
+      // a door panel with a mirror glued on, 1 cm of the door edge showing
+      add(g, K.roundedBox(dw, dh, fT, 0.0012, 1, { grain: 'y' }), front, 'front', cx, cy, zBack + fT / 2);
+      add(g, K.box(dw - 0.02, dh - 0.02, 0.004), mat('mirror', '#c9cfd0'), null, cx, cy, zFace + 0.0015);
+    } else if (st === 'grooved') {
+      add(g, K.roundedBox(dw, dh, fT, 0.0012, 1, { grain: 'y' }), front, 'front', cx, cy, zBack + fT / 2);
+      const n = drawer ? 0 : clamp(Math.round(dw / 0.1) - 1, 2, 8);
+      const gm = mat(frontKind, tone(C.front, 0.55), { flat: true, roughness: 0.9 });
+      for (let k = 1; k <= n; k++) add(g, K.box(0.004, dh - 0.01, 0.002), gm, 'front', x0 + (k * dw) / (n + 1), cy, zFace + 0.0006);
+    } else if (st === 'ribbed') {
       const depth = ribPitch * 0.28;
       add(g, ribPanelGeometry(dw, dh, { pitch: ribPitch, depth, t: fT - depth, seg: spec.quality === 'low' ? 3 : spec.quality === 'high' ? 8 : 5 }), front, 'front', cx, cy, zBack);
     } else if (st === 'slatted') {
@@ -1002,6 +1188,19 @@ function buildCabinet(spec, arch) {
         if (P.glassPattern === 'clear') add(g, K.box(iw, ih, 0.004), gm, 'front', cx, cy, zFace - fT * 0.5);
         else add(g, ribPanelGeometry(iw, ih, { pitch: 0.011, depth: 0.0022, t: 0.003, seg: spec.quality === 'low' ? 2 : 4 }), gm, 'front', cx, cy, zFace - fT * 0.5 - 0.0026);
       }
+    } else if (P.gripRecess === 'top' && drawer) {
+      // a recessed grip channel above the front: the front is lower, a dark channel shows behind its top edge
+      const gh = Math.min(0.022, dh * 0.25);
+      add(g, K.roundedBox(dw, dh - gh, fT, 0.0012, 1, { grain }), front, 'front', cx, cy - gh / 2, zBack + fT / 2);
+      add(g, K.box(dw, gh, 0.004), darkInside(), null, cx, y1 - gh / 2, zBack - 0.012);
+      add(g, K.box(dw, 0.003, fT * 0.7), front, 'front', cx, y1 - gh + 0.0015, zBack + fT * 0.35);
+    } else if (handle === 'cutout' && !drawer && dh > 0.7) {
+      // a vertical finger slot near the opening edge of a tall door (PAX/TONSTAD style)
+      add(g, K.roundedBox(dw, dh, fT, 0.0012, 1, { grain }), front, 'front', cx, cy, zBack + fT / 2);
+      const sl = clamp(num(P.handleLen, 0.12), 0.06, 0.3);
+      const sy = handleYAbs != null ? clamp(handleYAbs, y0 + sl / 2 + 0.03, y1 - sl / 2 - 0.03) : cy;
+      const sx = side > 0 ? x1 - 0.045 : x0 + 0.045;
+      add(g, K.roundedBox(0.026, sl, 0.004, 0.012, 3), handleMat, 'handle', sx, sy, zFace + 0.0004);
     } else if (handle === 'cutout') {
       // routed finger grip in the top edge (a U notch), the darker handle colour shows behind it
       const nw = clamp(dw * 0.36, 0.06, 0.12), nd = Math.min(0.028, dh * 0.3);
@@ -1023,26 +1222,31 @@ function buildCabinet(spec, arch) {
     } else {
       add(g, K.roundedBox(dw, dh, fT, 0.0012, 1, { grain }), front, 'front', cx, cy, zBack + fT / 2);
     }
-    addHandle(x0, x1, y0, y1, side, drawer, zFace);
+    if (!(P.gripRecess === 'top' && drawer)) addHandle(x0, x1, y0, y1, side, drawer, zFace, flip);
   };
 
   // columns
   cells.forEach((cell, i) => {
     const cx0 = xo0 + i * colW, cx1 = cx0 + colW;
     const fx0 = cx0 + (i === 0 ? eg : gap / 2), fx1 = cx1 - (i === nCols - 1 ? eg : gap / 2);
-    const fy0 = yo0 + eg, fy1 = yCols1 - (drawerRow ? gap / 2 : eg);
+    const fy0 = yCols0 + (drawerRow && rowBottom ? gap / 2 : eg), fy1 = yCols1 - (drawerRow && !rowBottom ? gap / 2 : eg);
     if (cell.kind === 'open') {
-      interior(cx0, cx1, yo0, yCols1, true, i);
+      interior(cx0, cx1, yCols0, yCols1, true, i);
       return;
     }
     const glass = cell.kind === 'glass' || style === 'glass';
-    interior(cx0, cx1, yo0, yCols1, glass, i);
+    interior(cx0, cx1, yCols0, yCols1, glass, i);
     if (cell.kind === 'drawers') {
       const n = cell.n;
-      const hh = (fy1 - fy0 - gap * (n - 1)) / n;
+      // graduated: each drawer 18 % taller than the one above it (classic chests); else equal heights
+      const wts = Array.from({ length: n }, (_, k) => (graduated && !cell.flip ? 1.18 ** (n - 1 - k) : 1));
+      const sum = wts.reduce((a, b) => a + b, 0);
+      const avail = fy1 - fy0 - gap * (n - 1);
+      let y0 = fy0;
       for (let k = 0; k < n; k++) {
-        const y0 = fy0 + k * (hh + gap);
-        addFront(fx0, fx1, y0, y0 + hh, { drawer: true });
+        const hh = (avail * wts[k]) / sum;
+        addFront(fx0, fx1, y0, y0 + hh, { drawer: true, flip: !!cell.flip });
+        y0 += hh + gap;
       }
     } else {
       const side = handleSide(doorIdx, doorCount);
@@ -1050,17 +1254,42 @@ function buildCabinet(spec, arch) {
       doorIdx++;
       // a door in the back track runs behind its neighbours (no open gap between sliding doors)
       const ov = track ? 0.012 : 0;
-      addFront(fx0 - (i > 0 ? ov : 0), fx1 + (i < nCols - 1 ? ov : 0), fy0, fy1, { side, glass: cell.kind === 'glass', track });
+      let dy0 = fy0;
+      if (cell.drawersBelow) {
+        const zone = clamp(num(P.cellDrawerH, cell.drawersBelow * 0.2), 0.1, (fy1 - fy0) * 0.6);
+        const hh = (zone - gap * (cell.drawersBelow - 1)) / cell.drawersBelow;
+        for (let k = 0; k < cell.drawersBelow; k++) addFront(fx0, fx1, fy0 + k * (hh + gap), fy0 + k * (hh + gap) + hh, { drawer: true });
+        dy0 = fy0 + zone + gap;
+      }
+      addFront(fx0 - (i > 0 ? ov : 0), fx1 + (i < nCols - 1 ? ov : 0), dy0, fy1, { side, glass: cell.kind === 'glass', track, mirror: !!cell.mirror });
     }
   });
   // drawer row on top
   if (drawerRow) {
-    interior(xo0, xo1, yCols1, yo1, false, 0);
+    const ry0 = rowBottom ? yo0 : yCols1, ry1 = rowBottom ? yCols0 : yo1;
+    interior(xo0, xo1, ry0, ry1, false, 0);
     const dw = (openW - 2 * eg - gap * (drawerRow - 1)) / drawerRow;
     for (let k = 0; k < drawerRow; k++) {
       const x0 = xo0 + eg + k * (dw + gap);
-      addFront(x0, x0 + dw, yCols1 + gap / 2, yo1 - eg, { drawer: true });
+      const asDoor = P.drawerRowDoors === true;
+      addFront(x0, x0 + dw, rowBottom ? ry0 + eg : ry0 + gap / 2, rowBottom ? ry1 - gap / 2 : ry1 - eg, asDoor ? { side: handleSide(k, drawerRow) } : { drawer: true });
     }
+  }
+  // sliding doors in an aluminium frame run in a top and a bottom track
+  if (P.slidingDoors && P.doorFrame === 'alu') {
+    for (const ty of [yo0 + 0.004, yo1 - 0.004]) add(g, K.box(openW, 0.008, 0.05, { grain: 'x' }), handleMat, 'handle', 0, ty, zf - 0.03);
+  }
+  // gallery: a low rim along the back and both sides of the top (Asker)
+  if (P.gallery === true) {
+    const gh = clamp(num(P.galleryH, 0.04), 0.015, 0.1), gt = 0.014;
+    add(g, K.roundedBox(w, gh, gt, 0.004, 1, { grain: 'x' }), topMat, 'top', 0, yt + gh / 2, -d / 2 + gt / 2);
+    for (const sx of [-1, 1]) add(g, K.roundedBox(gt, gh, d - 0.02, 0.004, 1, { grain: 'z' }), topMat, 'top', sx * (w / 2 - gt / 2), yt + gh / 2, -0.01);
+  }
+  // cornice: an overhanging crown on top (classic wardrobes)
+  if (P.cornice === true && !wall) {
+    const ch = 0.045, ov = 0.022;
+    add(g, K.roundedBox(w + 2 * ov, ch * 0.45, d + ov, 0.004, 1, { grain: 'x' }), topMat, 'top', 0, yt + ch * 0.775, ov / 2);
+    add(g, K.roundedBox(w + ov, ch * 0.55, d + ov * 0.5, 0.006, 2, { grain: 'x' }), topMat, 'top', 0, yt + ch * 0.275, ov / 4);
   }
 
   // -- base ----------------------------------------------------------------------------------------------------
@@ -1077,8 +1306,18 @@ function buildCabinet(spec, arch) {
     const iz = (legStyle === 'block' && legH < 0.1 ? 0.07 : 0.045) + (curved ? 0.03 : 0);
     const spots = [];
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) spots.push([sx, sz]);
-    if (w > 1.9 && legStyle !== 'metal-frame') spots.push([0, -1], [0, 1]);
-    if (legStyle === 'metal-frame') {
+    if ((w > 1.9 || P.midLegs === true) && legStyle !== 'metal-frame') spots.push([0, -1], [0, 1]);
+    if (legStyle === 'metal-frame' && legH > 0.1) {
+      // a steel stand: square-tube legs, a frame under the carcass and low stretchers at the sides and back
+      const tw = 0.016, ax = 0.03;
+      const fw = w - 2 * ax, fd = d - 2 * ax;
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(g, K.box(tw, yb, tw, { grain: 'y' }), legsMat, 'legs', sx * (fw / 2 - tw / 2), yb / 2, sz * (fd / 2 - tw / 2));
+      for (const sz of [-1, 1]) add(g, K.box(fw, tw, tw, { grain: 'x' }), legsMat, 'legs', 0, yb - tw / 2, sz * (fd / 2 - tw / 2));
+      for (const sx of [-1, 1]) add(g, K.box(tw, tw, fd, { grain: 'z' }), legsMat, 'legs', sx * (fw / 2 - tw / 2), yb - tw / 2, 0);
+      const sy = Math.min(0.08, yb * 0.3);
+      for (const sx of [-1, 1]) add(g, K.box(tw * 0.8, tw * 0.8, fd, { grain: 'z' }), legsMat, 'legs', sx * (fw / 2 - tw / 2), sy, 0);
+      add(g, K.box(fw, tw * 0.8, tw * 0.8, { grain: 'x' }), legsMat, 'legs', 0, sy, -fd / 2 + tw / 2);
+    } else if (legStyle === 'metal-frame') {
       const fw = w - 0.04 - (curved ? r : 0), fd = d - 0.05;
       const ft = 0.006;
       for (const sz of [-1, 1]) add(g, K.box(fw, legH, ft, { grain: 'x' }), legsMat, 'legs', 0, legH / 2, sz * (fd / 2 - ft / 2));
@@ -1107,22 +1346,41 @@ function buildCabinet(spec, arch) {
         else add(g, K.roundedBox(0.05, yb + 0.001, 0.05, 0.004, 1, { grain: 'y', bottom: true }), legsMat, 'legs', x, 0, z);
       }
     } else {
-      // thin metal legs with a small mounting plate
+      // thin metal legs with a small mounting plate (legFrame: square legs in a frame with low stretchers)
       for (const [sx, sz] of spots) {
         const x = sx * (w / 2 - ix), z = sz * (d / 2 - iz);
-        add(g, K.cylinder(0.0075, 0.0068, yb, { seg: qSeg(spec, 12) }), legsMat, 'legs', x, 0, z);
-        add(g, K.box(0.04, 0.004, 0.04), legsMat, 'legs', x, yb - 0.002, z);
+        if (P.legFrame) add(g, K.box(0.014, yb, 0.014, { grain: 'y' }), legsMat, 'legs', x, yb / 2, z);
+        else {
+          add(g, K.cylinder(0.0075, 0.0068, yb, { seg: qSeg(spec, 12) }), legsMat, 'legs', x, 0, z);
+          add(g, K.box(0.04, 0.004, 0.04), legsMat, 'legs', x, yb - 0.002, z);
+        }
       }
+      if (P.legFrame) {
+        const fx = w / 2 - ix, fz = d / 2 - iz;
+        const sy = Math.min(0.1, yb * 0.3);
+        for (const y of [yb - 0.007, sy]) {
+          for (const sz of [-1, 1]) if (y > sy || sz < 0) add(g, K.box(2 * fx, 0.012, 0.012, { grain: 'x' }), legsMat, 'legs', 0, y, sz * fz);
+          for (const sx of [-1, 1]) add(g, K.box(0.012, 0.012, 2 * fz, { grain: 'z' }), legsMat, 'legs', sx * fx, y, 0);
+        }
+      }
+    }
+    // a fixed open shelf low between the legs (TONSTAD)
+    const ls = num(P.lowerShelf, 0);
+    if (ls > 0.02 && ls < yb - 0.06) {
+      const fx = legStyle === 'wood-taper' && P.legFrame ? w / 2 - 0.035 - 0.022 : w / 2 - ix;
+      const fz = legStyle === 'wood-taper' && P.legFrame ? d / 2 - 0.035 - 0.022 : d / 2 - iz;
+      add(g, K.roundedBox(2 * fx + 0.03, 0.018, 2 * fz + 0.03, 0.003, 1, { grain: 'x' }), body, 'body', 0, ls, 0);
     }
   }
 
   // -- finish --------------------------------------------------------------------------------------------------
   const curvedTop = r > 0.08;
-  const surfaces = [{ y: yt, w: +(w - (curvedTop ? r : 0.02)).toFixed(3), d: +(d - 0.03).toFixed(3), center: [0, 0] }];
+  const surfaces = [{ y: yt + (P.cornice === true && !wall ? 0.045 : 0), w: +(w - (curvedTop ? r : 0.02) - (P.gallery === true ? 0.03 : 0)).toFixed(3), d: +(d - 0.03).toFixed(3), center: [0, 0] }];
+  if (num(P.lowerShelf, 0) > 0.02 && base === 'legs') surfaces.push({ y: +(num(P.lowerShelf, 0) + 0.009).toFixed(4), w: +(w - 0.12).toFixed(3), d: +(d - 0.1).toFixed(3), center: [0, 0] });
   const colliders = wall ? [{ min: [-w / 2, lift, -d / 2], max: [w / 2, yt, d / 2] }] : undefined;
   const builtStyle = style;
   const rc = recolorer(g, (part, kind) => {
-    if (part === 'front') return complexFront || (kind && kind !== frontKind) || builtStyle === 'cane';
+    if (part === 'front') return complexFront || (kind && kind !== frontKind) || builtStyle === 'cane' || builtStyle === 'grooved';
     if (part === 'handle') return kind && kindGroup(kind) !== kindGroup(handleKind);
     if (part === 'legs') return kind && kindGroup(kind) !== kindGroup(legKind);
     if (part === 'top') return kind && STONE.has(kind) !== STONE.has(M.top);
@@ -1156,10 +1414,32 @@ function buildWallShelf(spec) {
   if (P.style === 'simple') {
     const n = clamp(Math.round(num(P.shelves, 3)), 1, 8);
     const bt = clamp(num(P.topT, 0.025), 0.01, 0.06);
-    for (let i = 0; i < n; i++) {
-      const y = n === 1 ? -bt / 2 : y0 + (i * (h - bt)) / (n - 1);
-      add(g, K.roundedBox(w, bt, d, 0.002, 1, { grain: 'x' }), top, 'top', 0, y + bt / 2, d / 2);
-      surfaces.push({ y: +(y + bt).toFixed(4), w, d, center: [0, d / 2] });
+    const mounts = ['straps', 'battens', 'brackets'].includes(P.brackets) ? P.brackets : 'none';
+    const bd = clamp(num(P.boardDepth, d), 0.05, d);
+    // straps hang from above, so a single strap shelf sits at the bottom of its box
+    const ys = Array.from({ length: n }, (_, i) => (n === 1 ? (mounts === 'straps' ? y0 : -bt / 2) : y0 + (i * (h - bt)) / (n - 1)));
+    for (const y of ys) {
+      add(g, K.roundedBox(w, bt, bd, 0.002, 1, { grain: 'x' }), top, 'top', 0, y + bt / 2, bd / 2);
+      surfaces.push({ y: +(y + bt).toFixed(4), w, d: bd, center: [0, bd / 2] });
+    }
+    const ix = w / 2 - Math.min(0.08, w * 0.12);
+    if (mounts === 'straps') {
+      // a leather strap from the wall above round the front edge of the board (body part)
+      for (const sx of [-1, 1]) {
+        const len = Math.hypot(h, bd);
+        const m = add(g, K.box(0.035, len, 0.005), body, 'body', sx * ix, y0 + h / 2, bd / 2);
+        m.rotation.x = -Math.atan2(bd, h); // top at the wall, bottom round the front edge of the board
+        add(g, K.cylinder(0.008, 0.008, 0.006, { seg: 10, center: true }), mat('brass', '#b08d57'), null, sx * ix, h / 2 - 0.015, 0.006, [Math.PI / 2, 0, 0]);
+      }
+    } else if (mounts === 'battens') {
+      // wooden battens, or thin rods for a metal frame (rising a little above the top board)
+      const rod = kindGroup(spec.materials?.body || 'oak') === 'metal';
+      for (const sx of [-1, 1]) add(g, K.roundedBox(rod ? 0.012 : 0.035, h, rod ? 0.012 : 0.02, rod ? 0.005 : 0.003, 1, { grain: 'y' }), body, 'body', sx * ix, 0, rod ? 0.02 : 0.01);
+    } else if (mounts === 'brackets') {
+      for (const y of ys) for (const sx of [-1, 1]) {
+        add(g, K.box(0.004, 0.08, 0.004), body, 'body', sx * ix, y - 0.04, 0.002);
+        add(g, K.box(0.004, 0.004, bd * 0.7), body, 'body', sx * ix, y - 0.002, bd * 0.35);
+      }
     }
     const rc = recolorer(g);
     return K.finishModel(g, { surfaces, recolor: rc });
@@ -1361,7 +1641,7 @@ function wineGlassGeometry(rg, hg, seg) {
  * @param {Function} put  (geo, material, x, y, z, rot?) → adds a decor mesh
  * @param {{ x0: number, x1: number, y: number, clear: number, z0: number, z1: number }} lv
  */
-function vitrineDecor(put, lv, rnd, seg) {
+export function vitrineDecor(put, lv, rnd, seg) {
   const avail = lv.x1 - lv.x0 - 0.03;
   const depth = lv.z1 - lv.z0;
   if (avail < 0.09 || lv.clear < 0.06 || depth < 0.06) return;
@@ -1390,7 +1670,7 @@ function vitrineDecor(put, lv, rnd, seg) {
  * Vertex-coloured decor material (a clone of the cached ceramic / matt plastic, so the textures stay shared): every
  * ceramic or book of a vitrine in one draw call. Not cached – disposed with the model.
  */
-function decorMaterial(kind) {
+export function decorMaterial(kind) {
   const base = kind === 'book' ? mat('plastic', '#ffffff', { roughness: 0.82 }) : mat('ceramic', '#ffffff');
   const m = base.clone();
   m.vertexColors = true;
@@ -2026,18 +2306,19 @@ function buildDisplayCabinet(spec) {
 // ---------------------------------------------------------------------------------------------------------------
 // Param schemas (Norwegian labels)
 
-const P_CABINET = {
+export const P_CABINET = {
   ...P_TOP,
   base: { type: 'enum', label: 'Understell', options: [['legs', 'Ben'], ['plinth', 'Sokkel'], ['wall', 'Veggmontert (svevende)'], ['none', 'Rett på gulvet']] },
   legStyle: { type: 'enum', label: 'Bentype', options: [['metal-thin', 'Tynne metallben'], ['wood-taper', 'Skrå treben'], ['block', 'Klosser / føtter'], ['metal-frame', 'Lav metallramme']] },
   legH: { type: 'number', min: 0, max: 0.35, step: 0.01, label: 'Benhøyde (m)' },
   mountHeight: { type: 'number', min: 0.1, max: 1.2, step: 0.01, label: 'Høyde over gulv (m)' },
   doors: { type: 'number', min: 1, max: 6, step: 1, label: 'Antall dører / kolonner', default: 3 },
-  drawerRow: { type: 'number', min: 0, max: 4, step: 1, label: 'Skuffer øverst', default: 0 },
-  frontStyle: { type: 'enum', label: 'Fronter', options: [['flat', 'Glatte'], ['ribbed', 'Riflede'], ['slatted', 'Spiler'], ['cane', 'Flettet'], ['glass', 'Glass i treramme'], ['framed', 'Rammedører']] },
+  drawerRow: { type: 'number', min: 0, max: 4, step: 1, label: 'Skuffer i egen rad', default: 0 },
+  drawerRowPos: { type: 'enum', label: 'Skufferaden', options: [['top', 'Øverst'], ['bottom', 'Nederst']], default: 'top' },
+  frontStyle: { type: 'enum', label: 'Fronter', options: [['flat', 'Glatte'], ['ribbed', 'Riflede'], ['slatted', 'Spiler'], ['cane', 'Flettet'], ['glass', 'Glass i treramme'], ['framed', 'Rammedører'], ['grooved', 'Med spor']] },
   frontPattern: { type: 'enum', label: 'Mønster', options: [['none', 'Ingen'], ['herringbone', 'Fiskebein']], default: 'none' },
   ribPitch: { type: 'number', min: 0.008, max: 0.04, step: 0.001, label: 'Riflebredde (m)', default: 0.016 },
-  handle: { type: 'enum', label: 'Håndtak', options: [['none', 'Uten (trykk og åpne)'], ['bar', 'Stanggrep'], ['cutout', 'Innfrest grep'], ['knob', 'Knott']] },
+  handle: { type: 'enum', label: 'Håndtak', options: [['none', 'Uten (trykk og åpne)'], ['bar', 'Stanggrep'], ['cutout', 'Innfrest grep'], ['knob', 'Knott'], ['edge', 'Grepslist']] },
   top: { type: 'enum', label: 'Topplate', options: [['same', 'Som korpus'], ['marble', 'Stein / keramikk']] },
   corners: { type: 'enum', label: 'Hjørner', options: [['square', 'Rette'], ['rounded', 'Avrundede']] },
   cornerR: { type: 'number', min: 0.005, max: 0.25, step: 0.005, label: 'Hjørneradius (m)', default: 0.04 },
@@ -2111,7 +2392,9 @@ export const archetypes = {
     params: {
       ...P_TOP,
       shape: { type: 'enum', label: 'Form', options: [['stadium', 'Stadionoval'], ['oval', 'Oval'], ['round', 'Rund'], ['rect', 'Rektangulær']] },
-      legs: { type: 'enum', label: 'Understell', options: [['a-frame', 'A-rammer'], ['four', 'Fire ben'], ['pedestal', 'Søyle']] },
+      legs: { type: 'enum', label: 'Understell', options: [['a-frame', 'A-rammer'], ['four', 'Fire ben'], ['pedestal', 'Søyle'], ['column', 'Bred riflet søyle'], ['spider', 'Fire ben fra midten'], ['panel', 'Platebein'], ['cross', 'Kryssplater'], ['trestle', 'Bukker'], ['sled', 'Mederammer'], ['x', 'Kryssben'], ['u-frame', 'U-rammer']] },
+      legStyle: { type: 'enum', label: 'Bena (fire ben)', options: [['square', 'Firkantede'], ['round-taper', 'Runde'], ['splayed', 'Skrå'], ['metal-thin', 'Tynne metallben']], default: 'square' },
+      apron: { type: 'bool', label: 'Sarg under platen', default: false },
       legInset: { type: 'number', min: 0.1, max: 0.8, step: 0.01, label: 'Understell fra enden (m)' },
       edge: { type: 'enum', label: 'Kant', options: [['bevel', 'Tynn kant med skråfas'], ['straight', 'Rett kant']] },
       leaves: { type: 'number', min: 0, max: 3, step: 1, label: 'Innleggsplater' },
@@ -2191,6 +2474,7 @@ export const archetypes = {
     params: {
       style: { type: 'enum', label: 'Type', options: [['grid', 'Rutenett i metall'], ['simple', 'Enkle hyller']] },
       shelves: { type: 'number', min: 1, max: 6, step: 1, label: 'Antall hyller (enkle)', default: 3 },
+      brackets: { type: 'enum', label: 'Oppheng (enkle)', options: [['none', 'Skjult'], ['straps', 'Lærstropper'], ['battens', 'Lister bak'], ['brackets', 'Konsoller']], default: 'none' },
       barW: { type: 'number', min: 0.008, max: 0.03, step: 0.001, label: 'Stangbredde (m)' },
     },
     dimsRange: { w: [0.4, 2.4], d: [0.12, 0.35], h: [0.2, 1.6] },

@@ -1,0 +1,782 @@
+[
+  {
+    "id": "skeidar-wave-tv-benk-veggmontert-180x39",
+    "category": "tvbenk",
+    "name": "Wave TV Benk veggmontert",
+    "brand": "SAYS WHO",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595337",
+    "priceNok": 19999,
+    "salePriceNok": 11999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 1357731, hvitoljet eikefinér, veggmontert, kampanje 11 999 kr til 15.11, før 19 999 kr). Røkt olje (1357734) og gråoljet (1357735) samme kampanjepris; oljet (1357732) 19 999 kr og sortbeiset (1357730) 21 999 kr uten kampanje. Samme benk med metallbase (180x39x58,5, står på gulvet) koster 12 899 kr (før 21 499) i hvitoljet. Delvis montert i 2 kolli; bestillingsvare, ca. 9–10 uker.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.39,
+      "h": 0.36
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "wall",
+      "mountHeight": 0.15,
+      "legH": 0,
+      "fronts": [
+        "door",
+        "door",
+        "door"
+      ],
+      "slidingDoors": true,
+      "frontStyle": "ribbed",
+      "ribPitch": 0.022,
+      "frontFit": "inset",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Wall-hung box with a thin frame round three fluted (ribbed) sliding doors – the middle one runs in front of the two outer ones; no handles. mountHeight 0,15 m (underside) follows the room photo, where it hangs just above the skirting; it can be hung higher."
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eikefinér",
+        "colors": {
+          "body": "#cfbca4",
+          "front": "#c7b49b",
+          "top": "#d6c5ad",
+          "legs": "#cfbca4",
+          "handle": "#cfbca4"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595337"
+      },
+      {
+        "name": "Røkt olje eikefinér",
+        "colors": {
+          "body": "#78654f",
+          "front": "#74614b",
+          "top": "#7d6a54",
+          "legs": "#78654f",
+          "handle": "#78654f"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595340"
+      },
+      {
+        "name": "Gråoljet eikefinér",
+        "colors": {
+          "body": "#766857",
+          "front": "#716252",
+          "top": "#7b6d5c",
+          "legs": "#766857",
+          "handle": "#766857"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595341"
+      },
+      {
+        "name": "Oljet eikefinér",
+        "colors": {
+          "body": "#a6865d",
+          "front": "#a08158",
+          "top": "#ab8b62",
+          "legs": "#a6865d",
+          "handle": "#a6865d"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "priceNok": 19999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595338"
+      },
+      {
+        "name": "Sortbeiset eikefinér",
+        "colors": {
+          "body": "#2b231d",
+          "front": "#29211a",
+          "top": "#2f2620",
+          "legs": "#2b231d",
+          "handle": "#2b231d"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "priceNok": 21999,
+        "priceConfidence": "checked",
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/wave-tv-benk?VariationId=V_5637595336"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Veggmontert TV-benk i eikefinér med tre riflede skyvedører i en slank ramme – uten grep og uten ben, så gulvet under er fritt. Design SAYS WHO.",
+    "why": "En svevende TV-benk holder gulvet fritt og gjør kjellerstua (20,6 m²) lettere å holde ryddig – ledninger og utstyr forsvinner bak skyvedørene. 180 cm passer en 65–75-tommers TV, og de riflede frontene i hvitoljet eik passer det lyse eikegulvet.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1357731/1357731_V10235454-WaveTVBenk.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 11 999 kr (før 19 999, tilbudet varer til 15.11) i hvitoljet, røkt olje og gråoljet, oljet 19 999 og sortbeiset 21 999, 180x39x36, veggmontert, design SAYS WHO (lest fra sidens innebygde produktdata og variant-API). Skyvedørene, rillene og monteringshøyden er lest av produktbildene; trefargene anslått fra bildene.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-nola-tv-benk-180x40",
+    "category": "tvbenk",
+    "name": "Nola tv-benk 180x40",
+    "brand": "Unique Furniture",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/tv-benk/nola-tv-benk-180x40-2",
+    "priceNok": 8749,
+    "salePriceNok": 4374,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 294593, hvitoljet eikefiner, kampanje 4 374 kr, før 8 749 kr). Røykfarget lakkert eikefiner (294592) 8 749 kr og svart lakkert eikefiner (298393) 7 499 kr uten kampanje. Finnes også 120x40. Leveres flatpakket.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.4,
+      "h": 0.556
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legH": 0.18,
+      "legStyle": "metal-thin",
+      "fronts": [
+        "door",
+        "door"
+      ],
+      "frontStyle": "ribbed",
+      "handle": "bar",
+      "top": "same",
+      "corners": "rounded",
+      "slidingDoors": true,
+      "notes": "Ribbed tambour (roller) doors that slide sideways into the rounded ends; two short vertical black bar handles in the middle; six thin black metal legs; two inner shelves."
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eikefiner / svarte metallben",
+        "colors": {
+          "body": "#d8cab3",
+          "front": "#d8cab3",
+          "top": "#d4c6ae",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        }
+      },
+      {
+        "name": "Røykfarget lakkert eikefiner / svarte metallben",
+        "colors": {
+          "body": "#74563c",
+          "front": "#74563c",
+          "top": "#6e5139",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "priceNok": 8749,
+        "priceConfidence": "checked",
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/nola-tv-benk-180x40-1"
+      },
+      {
+        "name": "Svart lakkert eikefiner / svarte metallben",
+        "colors": {
+          "body": "#1f1f1f",
+          "front": "#222222",
+          "top": "#1f1f1f",
+          "legs": "#1a1a1a",
+          "handle": "#141414"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "priceNok": 7499,
+        "priceConfidence": "checked",
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/nola-tv-benk-180x40"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "TV-benk med avrundede ender, riflede sjalusidører som skyves til siden, to slanke svarte grep og tynne svarte metallben; to hyller innvendig.",
+    "why": "Samme Nola-serie som skjenken i katalogen: den hvitoljede eiken er lys som eikegulvet, svarte ben og grep binder den til de svarte detaljene i huset, og til kampanjeprisen er den et rimelig TV-møbel til kjellerstua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOLA/324924/image-thumb__324924__PDP-Product/294593%20-%20Nola%20tv-benk%20med%202%20sjalusid%C3%B8rer%20180x40%20H55.6%203%20hyller%20hvitoljet%20eikefiner%20med%20ben%20svart%20metall%20-%201.be8972f1.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 4 374 kr (før 8 749), 180x40x55,6, 2 sjalusidører, 2 hyller (maks 10 kg), svarte metallben. Benhøyde (ca. 18 cm) anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-scandi-tv-benk-180x40",
+    "category": "tvbenk",
+    "name": "Scandi tv-benk 180x40",
+    "brand": "Baltic Furniture",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/tv-benk/scandi-tv-benk-180x45-1",
+    "priceNok": 18999,
+    "salePriceNok": 13299,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 318117, oljet eikefiner mocca, kampanje 13 299 kr, før 18 999 kr). Lakkert eikefiner matt svart (318150) 14 599 kr (før 20 899); oljet eikefiner smoked (318118) og hvitoljet Nordic White (318119) 18 999 kr uten kampanje. Finnes også 222x40. Leveres montert.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.4,
+      "h": 0.48
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "plinth",
+      "legH": 0.05,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "cutout",
+      "top": "same",
+      "corners": "square",
+      "notes": "Recessed plinth so the cabinet seems to float; finger grips routed into the top edge of the doors; four inner shelves."
+    },
+    "variants": [
+      {
+        "name": "Oljet eikefiner mocca",
+        "colors": {
+          "body": "#45342a",
+          "front": "#48362b",
+          "top": "#45342a",
+          "legs": "#3d2e25",
+          "handle": "#3a2b22"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      },
+      {
+        "name": "Oljet eikefiner smoked",
+        "colors": {
+          "body": "#5b4232",
+          "front": "#5e4535",
+          "top": "#5b4232",
+          "legs": "#4c372a",
+          "handle": "#3a2a20"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 18999,
+        "priceConfidence": "checked",
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/scandi-tv-benk-180x45-3"
+      },
+      {
+        "name": "Lakkert eikefiner matt svart",
+        "colors": {
+          "body": "#1e1d1c",
+          "front": "#201f1e",
+          "top": "#1e1d1c",
+          "legs": "#1a1918",
+          "handle": "#161514"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "priceNok": 20899,
+        "salePriceNok": 14599,
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/scandi-tv-benk-180x45-2"
+      },
+      {
+        "name": "Hvitoljet eikefiner Nordic White",
+        "colors": {
+          "body": "#d9cbb4",
+          "front": "#dccfb9",
+          "top": "#d9cbb4",
+          "legs": "#cdbca1",
+          "handle": "#bfae94"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "priceNok": 18999,
+        "priceConfidence": "checked",
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/scandi-tv-benk-180x45"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Stram TV-benk i oljet eikefiner med fire glatte dører, innfreste grep i overkanten og tilbaketrukket sokkel, så den ser ut til å sveve.",
+    "why": "Samme Scandi-serie som skjenken og vitrineskapet i katalogen; den mørke mokkaeiken gir tyngde under TV-en i kjellerstua og holder ledninger og spill skjult bak lukkede dører.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Baltic%20Furniture/Produkter/SCANDI/346285/image-thumb__346285__PDP-Product/318117%20-%20Scandi%20tv-benk%20180x45%20H48%204%20d%C3%B8rer%203%20hyllerplater%20oljet%20eik%20mocca%20-%201.d32b065e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 13 299 kr (før 18 999), 180x40x48, 4 dører, 4 hyller (maks 15 kg), leveres montert. Sokkelhøyde (ca. 5 cm) og grep i overkanten anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-honey-tv-benk-180x45",
+    "category": "tvbenk",
+    "name": "Honey tv-benk 180x45",
+    "brand": "Baltic Furniture",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/tv-benk/honey-tv-benk-180x45-1",
+    "priceNok": 18289,
+    "salePriceNok": 12799,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 309918, oljet eikefiner røykfarget, kampanje 12 799 kr, før 18 289 kr). Hvitoljet Nordic White (301358) samme kampanjepris; oljet mocca (301357) 18 289 kr og lakkert matt svart (309919) 19 799 kr uten kampanje. Finnes også 219x45. Leveres montert.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.45,
+      "h": 0.42
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legH": 0.05,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "open",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "rounded",
+      "roundedEndsToFloor": true,
+      "notes": "Half-round end panels run down to the floor; the middle section (two doors and an open compartment with a shelf) floats about 5 cm above the floor on a recessed base; thin raised rim around the top; no visible handles (push-open)."
+    },
+    "variants": [
+      {
+        "name": "Oljet eikefiner røykfarget",
+        "colors": {
+          "body": "#5c4836",
+          "front": "#5f4a38",
+          "top": "#6a5440",
+          "legs": "#4e3c2d",
+          "handle": "#4e3c2d"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      },
+      {
+        "name": "Hvitoljet eikefiner Nordic White",
+        "colors": {
+          "body": "#d9cbb4",
+          "front": "#dccfb9",
+          "top": "#d9cbb4",
+          "legs": "#cfbfa5",
+          "handle": "#cfbfa5"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/honey-tv-benk-180x45"
+      },
+      {
+        "name": "Oljet eikefiner mocca",
+        "colors": {
+          "body": "#5a4334",
+          "front": "#5d4536",
+          "top": "#5a4334",
+          "legs": "#523d2f",
+          "handle": "#523d2f"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 18289,
+        "priceConfidence": "checked",
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/honey-tv-benk-180x45-3"
+      },
+      {
+        "name": "Lakkert eikefiner matt svart",
+        "colors": {
+          "body": "#1e1d1c",
+          "front": "#201f1e",
+          "top": "#1e1d1c",
+          "legs": "#1a1918",
+          "handle": "#1a1918"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "priceNok": 19799,
+        "priceConfidence": "checked",
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/honey-tv-benk-180x45-2"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Lav TV-benk i røykfarget oljet eik med halvrunde endestykker helt ned til gulvet, to dører og et åpent midtrom med hylle til mediespiller og spillkonsoll.",
+    "why": "Den myke, avrundede formen og den røkte eiken passer til de mørke eiketonene i huset, og med bare 42 cm høyde kommer TV-en lavt og behagelig foran sofaen i kjellerstua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Baltic%20Furniture/Produkter/HONEY/327785/image-thumb__327785__PDP-Product/309918%20-%20Honey%20tv-benk%20180x45%20H42%202%20d%C3%B8rer%201%20hylle%20oljet%20eik%20r%C3%B8ykfarget%20-%203.03be6b28.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 12 799 kr (før 18 289), 180x45x42, 2 dører, 1 hylle (maks 35 kg; Nordic White-varianten oppgir 3 hyller), leveres montert. Luften under midtpartiet (ca. 5 cm) og trykk-åpne-dører anslått fra bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-lukas-tv-benk-160x40",
+    "category": "tvbenk",
+    "name": "Lukas tv-benk 160x40",
+    "brand": "Actona",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/tv-benk/lukas-tv-benk-160x40-3",
+    "priceNok": 7999,
+    "priceNote": "Pris sjekket 2026-10-20 på produktsiden (bohus.no-produktdata, varenr. 322782, eikefiner røykfarget, 7 999 kr, ingen kampanje). Hvitpigmentert hvitoljet eikefiner (322783) 6 999 kr. Leveres flatpakket.",
+    "dims": {
+      "w": 1.6,
+      "d": 0.4,
+      "h": 0.45
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legH": 0.17,
+      "legStyle": "wood-taper",
+      "fronts": [
+        "door",
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "cutout",
+      "top": "same",
+      "corners": "square",
+      "frontFit": "inset",
+      "notes": "Doors set inside the frame; half-round finger cut-outs in the top edge (one per door pair); splayed square wooden legs at the corners; two inner shelves."
+    },
+    "variants": [
+      {
+        "name": "Eikefiner røykfarget",
+        "colors": {
+          "body": "#5e4532",
+          "front": "#614734",
+          "top": "#5e4532",
+          "legs": "#563f2e",
+          "handle": "#3e2d21"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      },
+      {
+        "name": "Hvitoljet eikefiner hvitpigmentert",
+        "colors": {
+          "body": "#d5c3ad",
+          "front": "#d8c7b1",
+          "top": "#d5c3ad",
+          "legs": "#cdb9a1",
+          "handle": "#b8a38a"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "priceNok": 6999,
+        "priceConfidence": "checked",
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/lukas-tv-benk-160x40-2"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Enkel TV-benk med fire glatte dører, halvrunde gripehull i overkanten og skrå, kantede treben i røykfarget eik.",
+    "why": "160 cm holder til en 55–65-tommers TV i kjellerstua uten å fylle hele veggen, og den røkte eiken på høye ben gir et lett og ryddig uttrykk.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/LUKAS/604577/image-thumb__604577__PDP-Product/322782%20-%20Lukas%20tv-benk%20160x40%20H45%204%20d%C3%B8rer%202%20hyller%20eikefiner%20r%C3%B8ykfarget%20-%204.d9fd358b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-20: 7 999 kr, 160x40x45, 4 dører, 2 hyller, benhøyde 17 cm. Gripehullene og de skrå bena er lest av bildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-besta-tv-benk-med-dorer-180x42x38",
+    "category": "tvbenk",
+    "name": "BESTÅ TV-benk med dører 180x42x38",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-tv-benk-m-dorer-hvitbeiset-eikemonster-lappviken-hvitbeiset-eikemonster-s89330709/",
+    "priceNok": 2995,
+    "salePriceNok": 2445,
+    "priceNote": "Pris sjekket 2026-10-20 på ikea.com/no (art.nr. 893.307.09, hvitbeiset eikemønster/Lappviken, «Ny lavere pris» 2 445 kr, førpris 2 995 kr). Hvit/Lappviken hvit samme pris; brunsvart/Timmerviken svart 2 595 kr (før 3 295); brunsvart Björköviken/brunbeiset eikefiner 3 345 kr (før 3 745). Ben eller veggopphenging kjøpes separat. Finnes også 120 og 240 cm.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.42,
+      "h": 0.38
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "none",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Stands directly on the floor (legs or wall mounting sold separately); three handle-less doors on push-to-open soft-closing hinges; three shelves; cable openings in the back."
+    },
+    "variants": [
+      {
+        "name": "Hvitbeiset eikemønster / Lappviken hvitbeiset eikemønster",
+        "colors": {
+          "body": "#d9c7b1",
+          "front": "#dccab4",
+          "top": "#d9c7b1",
+          "legs": "#d9c7b1",
+          "handle": "#d9c7b1"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        }
+      },
+      {
+        "name": "Brunsvart / Björköviken brunbeiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#6a5446",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#2b2421"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "priceNok": 3745,
+        "salePriceNok": 3345,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-bjoerkoeviken-brun-beiset-eikefiner-s69422187/",
+        "paramsOverride": {
+          "frontStyle": "ribbed"
+        }
+      },
+      {
+        "name": "Brunsvart / Timmerviken svart",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#1f1f1f",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#1f1f1f"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "priceNok": 3295,
+        "salePriceNok": 2595,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-m-dorer-brunsvart-timmerviken-svart-s39330679/"
+      },
+      {
+        "name": "Hvit / Lappviken hvit",
+        "colors": {
+          "body": "#efeeea",
+          "front": "#f2f1ed",
+          "top": "#efeeea",
+          "legs": "#efeeea",
+          "handle": "#efeeea"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-m-dorer-hvit-lappviken-hvit-s89330691/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Lav og enkel TV-benk med tre grepsløse dører som åpnes med et trykk, tre hyller og plass til ledninger bak.",
+    "why": "Et svært rimelig og ryddig TV-møbel til kjellerstua: grepsløse fronter gir rolige flater, og den hvitbeisede eiken ligger nær det lyse eikegulvet (Björköviken gir et riflet, mørkere alternativ).",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-tv-benk-m-dorer-hvitbeiset-eikemonster-lappviken-hvitbeiset-eikemonster__0719192_pe731910_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-20: 2 445 kr (førpris 2 995), 180x42x38, 3 dører med trykk-åpne/myktlukkende hengsler, 3 hylleplater, maks TV 30 kg, ingen ben inkludert (står på gulvet, kan veggmonteres). Variantprisene er fra IKEAs søk.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-tonstad-tv-benk-178x37x55",
+    "category": "tvbenk",
+    "name": "TONSTAD TV-benk 178x37x55",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/tonstad-tv-benk-brun-beiset-eikefiner-80489303/",
+    "priceNok": 3495,
+    "priceNote": "Pris sjekket 2026-10-20 på ikea.com/no (art.nr. 804.893.03, brunbeiset eikefiner, 3 495 kr, ingen kampanje). Eikefiner (art.nr. 004.893.02) samme pris; offwhite (art.nr. 604.888.80, 177x37x56) 2 995 kr.",
+    "dims": {
+      "w": 1.784,
+      "d": 0.372,
+      "h": 0.549
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "plinth",
+      "legH": 0.07,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "cutout",
+      "top": "same",
+      "corners": "square",
+      "slidingDoors": true,
+      "frontFit": "inset",
+      "notes": "Two overlapping sliding doors inside a sturdy frame with a thick base board; small vertical finger grooves at the outer door edges; adjustable shelves and a cable outlet underneath."
+    },
+    "variants": [
+      {
+        "name": "Brunbeiset eikefiner",
+        "colors": {
+          "body": "#6e5641",
+          "front": "#715844",
+          "top": "#6e5641",
+          "legs": "#634d3a",
+          "handle": "#4a3a2c"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      },
+      {
+        "name": "Eikefiner",
+        "colors": {
+          "body": "#c9a983",
+          "front": "#ccac86",
+          "top": "#c9a983",
+          "legs": "#bf9f79",
+          "handle": "#a88a66"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/tonstad-tv-benk-eikefiner-00489302/"
+      },
+      {
+        "name": "Offwhite (177x37x56)",
+        "colors": {
+          "body": "#ecebe5",
+          "front": "#efeee8",
+          "top": "#ecebe5",
+          "legs": "#e4e3dd",
+          "handle": "#d6d5cf"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "priceNok": 2995,
+        "priceConfidence": "checked",
+        "url": "https://www.ikea.com/no/no/p/tonstad-tv-benk-offwhite-60488880/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "TV-benk i ekte eikefiner med to skyvedører i en kraftig ramme, små innfreste grep, flyttbare hyller og kabeluttak.",
+    "why": "Den brunbeisede eiken ligger nær røkt eik og gir et rolig, solid møbel under TV-en i kjellerstua; skyvedørene trenger ingen plass foran, praktisk når sofaen står tett.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/tonstad-tv-benk-brun-beiset-eikefiner__1328114_pe944673_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-20: 3 495 kr, 178,4x37,2x54,9, skyvedører, flyttbare hyller, kabeluttak, eikefiner med klar akryllakk, maks TV 30 kg. Antall dører (2) og høyden på bunnplaten (ca. 7 cm) anslått fra bildet; eikefiner- og offwhite-prisene fra IKEAs søk.",
+    "priceConfidence": "checked"
+  }
+]

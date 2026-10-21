@@ -3,6 +3,10 @@ import { archetypes as tables } from './tables.js';
 import { archetypes as lamps } from './lamps.js';
 import { archetypes as textiles } from './textiles.js';
 import { archetypes as decor } from './decor.js';
+import { archetypes as storage } from './storage.js';
+import { archetypes as beds } from './beds.js';
+import { archetypes as chairs } from './chairs.js';
+import { archetypes as fixtures } from './fixtures.js';
 import { blockout, finishModel, roundedBox, partMesh } from './kit.js';
 import { mat } from '../home/materials.js';
 import { products } from '../catalog/index.js';
@@ -10,7 +14,8 @@ import schema from '../data/archetypes.json';
 import * as THREE from 'three';
 
 /**
- * Model registry (ARCHITECTURE §5): every archetype of seating/tables/lamps/textiles/decor in one table, and
+ * Model registry (ARCHITECTURE §5): every archetype of seating/tables/lamps/textiles/decor/storage/beds/chairs/fixtures
+ * in one table, and
  * buildModel() which merges an item spec with the archetype defaults and calls its builder.
  *
  *   ARCHETYPES                       { id: Def } (frozen)
@@ -25,7 +30,7 @@ import * as THREE from 'three';
  * ({ parts, lights, surfaces, seatY? } – see kit.finishModel).
  */
 
-const SOURCES = { seating, tables, lamps, textiles, decor };
+const SOURCES = { seating, tables, lamps, textiles, decor, storage, beds, chairs, fixtures };
 
 /** All archetypes (later files win on a duplicate id, with a warning). */
 export const ARCHETYPES = (() => {
@@ -141,11 +146,7 @@ function fallbackModel(full, id, def) {
 }
 
 const EXTRA = {
-  sofa: ['sofa-modular-l', 'sofa-curved', 'sofa-straight'],
-  bord: ['coffee-table-rect', 'coffee-table-round-nesting', 'dining-table-oval'],
-  stoler: ['dining-chair', 'bar-stool'],
   elektronikk: ['tv', 'speaker'],
-  hylle: ['wall-shelf'],
 };
 
 /**
