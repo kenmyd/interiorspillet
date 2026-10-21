@@ -57,8 +57,11 @@ Bilder som spillet viser (fotomontasjer, stuebilder til fotosammenligning, utsik
 src/
   main.js, config.js, style.css               (scaffold)
   core/      Events, Input, Collision, Interaction, Highlight, Settings, Audio, Music, Game   (scaffold; Game: integrasjon; Music: bakgrunnsmusikk)
+             Device (enhetsgjenkjenning + inputMode: touch eller mus/tastatur akkurat nå)
   player/    PlayerController.js, Seats.js    (scaffold; Seats: sitte i stoler/sofaer – E over et møbel med seatY, E/WASD reiser deg)
+             AutoWalk.js (touch «Trykk for å gå dit»)
   ui/        dom, Hud, PauseMenu, SettingsPanel, Loading, Dialog, icons, controlsHelp, ui.css (scaffold)
+             TouchControls (joystick/knapper), ControlsIntro (popupen «Slik styrer du»)
   world/     proctex, surfaces, shapeUtil, propMaterials, Door                         (scaffold)
   data/      *.json                            (FOUNDATION)
   catalog/index.js                             (FOUNDATION)
