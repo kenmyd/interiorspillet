@@ -151,8 +151,15 @@ const OUTDOOR = { cap: 0.9, ground: 0.2, maxK: 7000 };
 /** Share of a flush ceiling ring's flux that leaves sideways/up (its opal ring – the halo round the kitchen ring in
  *  082937); bounce only. */
 const RING_UP_SHARE = 0.15;
-/** Downward half-space emitter for fixtures whose up-light is drawn as ceiling decals (see _itemCandidate). */
-const HALF_SPACE_SPOT = { angle: 84 * DEG, penumbra: 0.35, pointShare: 0.3, decalGain: 1.4 };
+/**
+ * Downward half-space emitter for fixtures whose up-light is drawn as ceiling decals (see _itemCandidate).
+ * pointShare: the isotropic part (half of it goes up). The molecule chandelier's shades are opaque black: what reaches
+ * the ceiling leaves through the openings of its upward/sideways shades, and those are the decals. 0.3 put 15 % of the
+ * flux straight up from under the shades – a broad glow round the canopy that the decals then multiplied into a hot spot
+ * (owner's change list 2026-10-21: «lyser litt kunstig mye opp i taket»); 0.1 keeps a faint scatter so the ceiling
+ * is not a cave. decalGain: the decals' level over their nominal luminance (they are linear in the dimmer, _applyEmissive).
+ */
+const HALF_SPACE_SPOT = { angle: 84 * DEG, penumbra: 0.35, pointShare: 0.1, decalGain: 1.0 };
 /**
  * Share of a lamp's flux that goes into the bounce (radiosity → environment map, exposure, white balance). A lamp's
  * first bounce lands near the lamp, and the single environment probe spreads every lamp's bounce over the whole
@@ -1920,19 +1927,23 @@ export class LightManager {
         const len = from.distanceTo(to);
         const along = to.clone().sub(from).normalize();
         const mid = from.clone().add(to).multiplyScalar(0.5);
-        // aim the strip at its wall (wall washer) – the nearest parallel wall within 0.4 m
-        const toward = this._nearestWallNormal(mid, along);
-        const normal = new THREE.Vector3(0, -1, 0);
-        let pos = mid.clone().setY(mid.y - 0.015);
+        // a strip with its own normal (the LED strips inside the glass cabinet: down and back onto its back panel) shines
+        // as given, from where it is; else aim it at its wall (wall washer) – the nearest parallel wall within 0.4 m
+        const own = l.normal?.isVector3 ? l.normal.clone().normalize() : null;
+        const toward = own ? null : this._nearestWallNormal(mid, along);
+        const normal = own ?? new THREE.Vector3(0, -1, 0);
+        let pos = own ? mid.clone() : mid.clone().setY(mid.y - 0.015);
         if (toward) {
           normal.multiplyScalar(Math.cos(38 * DEG)).addScaledVector(toward, -Math.sin(38 * DEG)).normalize();
           pos.addScaledVector(toward, 0.06); // a little away from the wall so the wash starts just below the ceiling
         }
-        const height = 0.05;
+        const height = l.rectHeight ?? 0.05;
         c = {
           ...base, id: `builtin:${l.id}`, kind: 'rect', position: pos, normal, right: along, width: len, height, area: len * height,
           quat: rectQuaternion(normal, along), strip: true,
         };
+        // light-slot weight of the strip over its flux (_score; default STRIP_SIGNATURE)
+        if (Number.isFinite(l.stripSignature)) c.stripSignature = l.stripSignature;
       } else if (l.position) {
         const dir = (l.direction?.clone() ?? new THREE.Vector3(0, -1, 0)).normalize();
         // old-style entries carry the mount point of room-spec; new ones (§15) the emission point of the model's light
@@ -3627,12 +3638,13 @@ export class LightManager {
 
   /** Glowing parts: luminance = lumens of their lamps over their area (half of a closed mesh faces outward), capped. */
   _applyEmissive(e, S, wb) {
-    let lm = 0;
+    let lm = 0, lmFull = 0;
     const col = _c1.setRGB(0, 0, 0);
     for (const c of e.cands) {
       if (!c.on) continue;
       const f = c.lumens * c.dimmer;
       lm += f;
+      lmFull += c.lumens;
       addScaled(col, c.color, f);
     }
     const mat = e.mat;
@@ -3643,7 +3655,16 @@ export class LightManager {
     col.multiplyScalar(1 / lm);
     let L;
     const base = mat.userData?.baseIntensity;
-    if (Number.isFinite(base) && base > 0) {
+    const blended = mat.blending === THREE.CustomBlending;
+    // light ON a surface, not a glowing part: a ceiling pool decal (lamps.js ceilingPool) or an LED's wash on a cabinet's
+    // back panel (kitchen.js, userData.lightWash)
+    const wash = (blended || mat.userData?.lightWash === true) && Number.isFinite(base) && base > 0;
+    if (wash) {
+      // its nominal luminance is for the fixture at full power, so it follows the dimmer linearly – the bulbs' √ curve
+      // with its 0.6 floor and the 20-nit minimum below kept the chandelier's ceiling pool at ≈ 80 % of full while the
+      // lamp itself was at 29 %
+      L = base * EMISSIVE_NITS_PER_UNIT * clamp(Math.sqrt(lmFull / 800), 0.6, 2.2) * (lm / Math.max(1e-6, lmFull));
+    } else if (Number.isFinite(base) && base > 0) {
       // the model's own relative glow (bulb vs. shade vs. lit inside, tuned for a night view) in nits, louder for
       // stronger lamps – keeps translucent shades and shade insides coloured instead of white-hot
       L = base * EMISSIVE_NITS_PER_UNIT * clamp(Math.sqrt(lm / 800), 0.6, 2.2);
@@ -3651,19 +3672,19 @@ export class LightManager {
       // no hint: lumens over the glowing area (half of a closed mesh faces outward)
       L = (0.8 * lm) / (Math.PI * Math.max(1e-4, e.area) * 0.5);
     }
-    L = clamp(L, 20, 30000);
+    L = clamp(L, wash ? 0 : 20, 30000);
     mat.emissive.copy(col).multiply(wb);
     const rel = this._table ? this._wbRelFor(e.cands[0]?.roomId) : null;
     if (rel) mat.emissive.multiply(rel);
     const mapK = mat.emissiveMap ? 1.6 : 1;
     let D = L * S * mapK; // display level (1 ≈ white paper)
-    if (mat.blending !== THREE.CustomBlending) {
+    if (!blended) {
       // soft cap on the brightest channel (add-lighting): an LED line or a bulb is thousands of nits – far past white –
       // and PBR Neutral then bleaches it to white (the LED coves and the kitchen ring read as cold white lines; photos:
       // amber lines with a pale core). Rolled off toward EMISSIVE_DISPLAY_CAP so the light's colour survives.
       const peak = Math.max(1e-4, mat.emissive.r, mat.emissive.g, mat.emissive.b);
       D = (EMISSIVE_DISPLAY_CAP * (1 - Math.exp(-(D * peak) / EMISSIVE_DISPLAY_CAP))) / peak;
-    } else if (e.halfSpace) D *= HALF_SPACE_SPOT.decalGain; // glow decals: their level is set in their shader (× decalGain: the point part lights less of the ceiling than the old full point light)
+    } else if (e.halfSpace) D *= HALF_SPACE_SPOT.decalGain; // glow decals: their level is set in their shader (× decalGain)
     mat.emissiveIntensity = D;
   }
 

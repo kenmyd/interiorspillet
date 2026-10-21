@@ -665,8 +665,9 @@ function ceilingPool(L, x, z, R, nits, lumens) {
   m.polygonOffset = true;
   m.polygonOffsetFactor = -2;
   // The decal must change nothing outside the pool: unlit (only the emission) and not tone-mapped (AgX lifts black a
-  // little, which drew the decal's disc). The LightManager keeps every glow at ≥ 20 nits (× 1.6 with a map), so the
-  // level is set in the shader (POOL_GAIN, matched to 082806 / 083012).
+  // little, which drew the decal's disc). The LightManager drives it linearly with the lamp's dimmer (no glow floor,
+  // no √ curve: it is light on the ceiling, not a bulb), × 1.6 for the map; the level is set in the shader (POOL_GAIN,
+  // matched to 082806 / 083012).
   const gain = { value: POOL_GAIN };
   m.toneMapped = false;
   m.onBeforeCompile = (sh) => {

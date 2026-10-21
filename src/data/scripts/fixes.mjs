@@ -93,7 +93,8 @@ export function fixRoomSpec(spec) {
     const v = BUILT_IN_LUMENS[l.id];
     if (v) Object.assign(l, v);
   }
-  if (ch?.light) ch.light.lumens = 800;
+  // the chandelier starts at 29 % (the owner's evening level, change list 2026-10-21; the light panel shows dimmer × 100)
+  if (ch?.light) Object.assign(ch.light, { lumens: 800, dimmer: 0.29 });
   // pampas vase on the island: in reality a ≈ 24 cm wavy vase with four short, fluffy plumes, ≈ 55 cm in all – not
   // 1 m (user's photo 2026-10-20)
   const pv = byId('f-pampas');

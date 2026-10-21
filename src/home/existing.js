@@ -597,7 +597,9 @@ export function originalItems(layout, opts = {}) {
     }
     if (mount === 'wall' && f.wallId) item.attach = wallAttach(layout, f.wallId);
     if (f.light) {
-      item.light = { on: f.light.on !== false, dimmer: 1, colorK: f.light.colorK ?? 2700, lumens: f.light.lumens ?? 800 };
+      // the room-spec may give the level a lamp starts at (the chandelier: 0.29), else full
+      const dimmer = Number.isFinite(f.light.dimmer) ? Math.min(1, Math.max(0, f.light.dimmer)) : 1;
+      item.light = { on: f.light.on !== false, dimmer, colorK: f.light.colorK ?? 2700, lumens: f.light.lumens ?? 800 };
     }
     items.push(clone(item));
   }
