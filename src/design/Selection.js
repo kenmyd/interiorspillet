@@ -4,13 +4,16 @@
 //   handleClick(ndc) → bool       canvas click: selects an item / wall / window (editor.select), or deselects; false
 //                                 lets the InteractionSystem have the click (doors keep working)
 //   pointerDown(event) → bool     left press on the canvas (Input.setPointerClaim in walk mode, ViewModes otherwise):
-//                                 true when it lands on the selected item or its rotate handle → drag via Placement
+//                                 true when it lands on the selected item (→ move) or on its rotate handle or outline
+//                                 (→ rotate): drag via Placement
 //   update(dt), dispose()
 //   hover                         { kind, uid?, wallId?, windowId?, name } under the cursor (null when none)
 //   hoverSeat() → { uid, name, eye, yaw } | null   the hovered chair / sofa when it can be sat on (E, Game)
 //
 // Hover: rim glow (core/Highlight.js) + a small cursor hint («Lenestol – klikk for å endre»). The selected item gets an
-// amber glow and a footprint gizmo on its underlay (outline, front arrow, rotate handle). Keys for the selected item
+// amber glow and a footprint gizmo on its underlay (outline, front arrow, rotate handle). The whole outline turns the
+// item too: within EDGE_PX screen pixels of it (not on the item itself) the cursor becomes ROTATE_CURSOR and the rotate
+// handle slides along the line under it. Keys for the selected item
 // (only when no text field has focus): R / Shift+R ±15°, Delete/Backspace removes, D (Ctrl+D in walk mode, where D
 // strafes) duplicates, arrow keys move 2 cm (Shift: 10 cm). Esc is handled by the Editor (deselect).
 //
@@ -29,10 +32,28 @@ import { MAIN_LEVEL, itemLevel, levelFloorY } from './SceneSync.js';
 const DEG = Math.PI / 180;
 /** Pixels the pointer may travel before a press on the selected item becomes a drag. */
 const DRAG_PX = 5;
+/** Screen pixels from the centre of the selected item's outline within which a press rotates the item. */
+const EDGE_PX = 10;
 const ARROWS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']);
 const SELECTABLE = new Set(['item', 'wall', 'window']);
 /** Hover picking: walls, windows and items are targets; floor, ceilings and everything else only occlude. */
 const HOVER = { want: SELECTABLE };
+/** Visibility picking: the first visible surface of any kind (floor, wall, item …). */
+const ANY = { want: { has: () => true } };
+
+/**
+ * The rotate cursor (CSS cursor value): an amber circular arrow with a dark rim, hotspot in its middle – over the
+ * selected item's outline and rotate handle, and while turning the item (Placement).
+ */
+export const ROTATE_CURSOR = `url("data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">' +
+    '<g stroke="#1d1402" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".9">' +
+    '<path d="M21.5 9.5A8.5 8.5 0 1 1 8 13.1" fill="none" stroke-width="5.6"/>' +
+    '<path d="M9.8 8.2L11.7 15.3L3.8 12.4Z" fill="#1d1402" stroke-width="2.6"/>' +
+    '<circle cx="16" cy="16" r="1.7" fill="#ffb52e" stroke-width="1.4"/></g>' +
+    '<path d="M21.5 9.5A8.5 8.5 0 1 1 8 13.1" fill="none" stroke="#ffb52e" stroke-width="2.6" stroke-linecap="round"/>' +
+    '<path d="M9.8 8.2L11.7 15.3L3.8 12.4Z" fill="#ffb52e"/></svg>',
+)}") 16 16, grab`;
 
 const _ray = new THREE.Raycaster();
 const _v2 = new THREE.Vector2();
@@ -543,6 +564,46 @@ function fillGeometry(w, d, r) {
   return new THREE.ShapeGeometry(roundedRectPath(new THREE.Shape(), w, d, r), 12);
 }
 
+/** Segments per rounded corner when the outline is measured on screen (Footprint.hitEdge). */
+const RING_ARC = 6;
+
+/**
+ * Points (local x, z) along the centre line of the outline – a rounded rectangle of half sizes hw × hd and corner
+ * radius rc – as a closed polygon, flat [x0, z0, x1, z1 …]; the straight sides are the gaps between the corners.
+ */
+function ringPoints({ hw, hd, rc }, out = []) {
+  out.length = 0;
+  const ia = hw - rc, ib = hd - rc;
+  const corners = [ia, ib, -ia, ib, -ia, -ib, ia, -ib];
+  for (let q = 0; q < 4; q++) {
+    for (let k = 0; k <= RING_ARC; k++) {
+      const a = ((q + k / RING_ARC) * Math.PI) / 2;
+      out.push(corners[q * 2] + rc * Math.cos(a), corners[q * 2 + 1] + rc * Math.sin(a));
+    }
+  }
+  return out;
+}
+
+/** The point of the outline's centre line (ringPoints) nearest to the local point (x, z). */
+function nearestOnRing(x, z, { hw, hd, rc }, out = {}) {
+  const ia = hw - rc, ib = hd - rc;
+  const cx = clamp(x, -ia, ia), cz = clamp(z, -ib, ib);
+  const dx = x - cx, dz = z - cz;
+  const len = Math.hypot(dx, dz);
+  if (len > 1e-6) {
+    out.x = cx + (dx / len) * rc;
+    out.z = cz + (dz / len) * rc;
+  } else if (hw - Math.abs(x) < hd - Math.abs(z)) {
+    // inside the straight part: out to the nearest side
+    out.x = x < 0 ? -hw : hw;
+    out.z = z;
+  } else {
+    out.x = x;
+    out.z = z < 0 ? -hd : hd;
+  }
+  return out;
+}
+
 /** Canvas texture: an amber disc with a dark circular arrow (the rotate handle). */
 function handleTexture() {
   const c = document.createElement('canvas');
@@ -578,7 +639,8 @@ function handleTexture() {
  * The footprint gizmo: an outline around the item on its underlay (floor, rug, table top) or on the wall, a front
  * arrow, a rotate handle and – for ceiling items – a dashed plumb line down to the outline on the floor. Sizes are
  * kept constant on screen. Not pickable by pickAt (it is not under any home root); the rotate handle is tested with
- * hitHandle().
+ * hitHandle(), the outline (which rotates too) with hitEdge(). The handle sits off a corner, or on the outline where
+ * setGrip() puts it (under the cursor, and where it was grabbed while turning).
  */
 export class Footprint {
   /** @param {object} editor */
@@ -626,6 +688,11 @@ export class Footprint {
     this._key = '';
     this._tone = 'selected';
     this.hasHandle = false;
+    /** Where the rotate handle sits on the outline instead of its corner ({ x, z } local), or null. */
+    this.grip = null;
+    this._ring = null; // centre line of the outline (floor-like items): { hw, hd, rc } local
+    this._home = new THREE.Vector3(); // the rotate handle's own place, off a front corner
+    this._pts = [];
   }
 
   /**
@@ -708,11 +775,19 @@ export class Footprint {
     this.arrow.visible = showHandles;
     this.handle.visible = showRotate;
     this.hasHandle = showRotate;
+    if (wall) this._ring = null;
+    else {
+      const ring = (this._ring ||= { hw: 0, hd: 0, rc: 0 });
+      ring.hw = (ow - lw) / 2;
+      ring.hd = (od - lw) / 2;
+      ring.rc = clamp(r - lw / 2, 0, Math.min(ring.hw, ring.hd));
+    }
     if (showRotate) {
       const hr = quant(clamp(11 * wpp, 0.035, 0.22), 0.005);
       this.handle.scale.setScalar(hr);
       const off = hr * 1.25 + lw;
-      this.handle.position.set(ow / 2 + off * 0.75, 0.001, od / 2 + off * 0.75);
+      this._home.set(ow / 2 + off * 0.75, 0.001, od / 2 + off * 0.75);
+      this._placeHandle();
     }
     this._setTone(tone);
     g.visible = true;
@@ -734,10 +809,30 @@ export class Footprint {
     this.group.visible = false;
     this.plumbHolder.visible = false;
     this.hasHandle = false;
+    this.grip = null;
   }
 
   get visible() {
     return this.group.visible;
+  }
+
+  /**
+   * Puts the rotate handle on the outline at a local point (from hitEdge), or back off its corner (null).
+   * @param {{ x: number, z: number }|null} p
+   */
+  setGrip(p) {
+    if (p ? this.grip?.x === p.x && this.grip?.z === p.z : !this.grip) return;
+    this.grip = p ? { x: p.x, z: p.z } : null;
+    this._placeHandle();
+  }
+
+  _placeHandle() {
+    if (!this.hasHandle) return;
+    if (this.grip && this._ring) {
+      // on the line (the outline's size follows the zoom: snap the grip onto it again)
+      const q = nearestOnRing(this.grip.x, this.grip.z, this._ring, _grip);
+      this.handle.position.set(q.x, 0.002, q.z);
+    } else this.handle.position.copy(this._home);
   }
 
   /** True when the NDC point is over the rotate handle. */
@@ -752,6 +847,75 @@ export class Footprint {
     const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -c.y);
     const p = _ray.ray.intersectPlane(plane, new THREE.Vector3());
     return !!p && p.distanceTo(c) < this.handle.scale.x * 1.35;
+  }
+
+  /**
+   * The point of the outline nearest to an NDC point, when it lies within `px` screen pixels of it and is not hidden
+   * there (behind the item itself, under a table …): { x, z } in the gizmo's local plane (for setGrip), or null.
+   * Measured on screen, so the band is equally wide at every distance and zoom, in every view.
+   * @param {{ x: number, y: number }} ndc
+   * @param {THREE.Camera} [camera]
+   * @param {number} [px]
+   * @returns {{ x: number, z: number }|null}
+   */
+  hitEdge(ndc, camera = this.editor.activeCamera, px = EDGE_PX) {
+    const ring = this._ring;
+    if (!this.group.visible || !this.hasHandle || !ring || !ndc) return null;
+    const rect = cachedRect(this.editor.renderer.domElement);
+    const W = Math.max(1, rect.width), H = Math.max(1, rect.height);
+    const mx = ((ndc.x + 1) / 2) * W, my = ((1 - ndc.y) / 2) * H;
+    camera.updateMatrixWorld();
+    this.group.updateMatrixWorld(true);
+    _pm.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).multiply(this.group.matrixWorld);
+    // segments behind the camera (walking right beside the item) are cut at its near plane
+    const wMin = camera.isPerspectiveCamera ? camera.near : -Infinity;
+    const pts = ringPoints(ring, this._pts);
+    const n = pts.length / 2;
+    let best = px, gx = 0, gz = 0, sx = 0, sy = 0, found = false;
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n;
+      let ax = pts[i * 2], az = pts[i * 2 + 1], bx = pts[j * 2], bz = pts[j * 2 + 1];
+      _ca.set(ax, 0, az, 1).applyMatrix4(_pm);
+      _cb.set(bx, 0, bz, 1).applyMatrix4(_pm);
+      if (_ca.w < wMin && _cb.w < wMin) continue;
+      if (_ca.w < wMin || _cb.w < wMin) {
+        const s = (wMin - _ca.w) / (_cb.w - _ca.w);
+        if (_ca.w < wMin) {
+          _ca.lerp(_cb, s);
+          ax += (bx - ax) * s;
+          az += (bz - az) * s;
+        } else {
+          _cb.lerpVectors(_ca, _cb, s);
+          bx = ax + (bx - ax) * s;
+          bz = az + (bz - az) * s;
+        }
+      }
+      const pax = ((_ca.x / _ca.w + 1) / 2) * W, pay = ((1 - _ca.y / _ca.w) / 2) * H;
+      const pbx = ((_cb.x / _cb.w + 1) / 2) * W, pby = ((1 - _cb.y / _cb.w) / 2) * H;
+      const dx = pbx - pax, dy = pby - pay;
+      const l2 = dx * dx + dy * dy;
+      const t = l2 > 1e-9 ? clamp(((mx - pax) * dx + (my - pay) * dy) / l2, 0, 1) : 0;
+      const d = Math.hypot(pax + dx * t - mx, pay + dy * t - my);
+      if (d >= best) continue;
+      best = d;
+      found = true;
+      sx = pax + dx * t;
+      sy = pay + dy * t;
+      // screen → segment parameter (perspective-correct)
+      const s = (t * _ca.w) / ((1 - t) * _cb.w + t * _ca.w);
+      gx = ax + (bx - ax) * s;
+      gz = az + (bz - az) * s;
+    }
+    if (!found) return null;
+    const g = nearestOnRing(gx, gz, ring, {});
+    // hidden there: something visible lies in front of the outline along the ray through it
+    _v2b.set((sx / W) * 2 - 1, 1 - (sy / H) * 2);
+    const hit = pickAt(this.editor, _v2b, { ...ANY, camera });
+    if (hit) {
+      const at = this.group.localToWorld(_tmpV.set(g.x, 0, g.z)).sub(hit.ray.origin).dot(hit.ray.direction);
+      if (hit.distance < at - 0.03) return null;
+    }
+    return g;
   }
 
   _setTone(tone) {
@@ -777,6 +941,11 @@ export class Footprint {
 
 const _tmpM = new THREE.Matrix4();
 const _tmpV = new THREE.Vector3();
+const _pm = new THREE.Matrix4();
+const _ca = new THREE.Vector4();
+const _cb = new THREE.Vector4();
+const _v2b = new THREE.Vector2();
+const _grip = { x: 0, z: 0 };
 
 function clamp(v, a, b) {
   return Math.max(a, Math.min(b, v));
@@ -1127,6 +1296,8 @@ export class Selection {
     this._lastNdc = new THREE.Vector2(9, 9);
     this._lastCam = new THREE.Matrix4();
     this._pickAge = 0;
+    this._pickUid = null; // the selected item at the last pick (a new selection picks again)
+    this._rot = null; // _rotateAt() under the cursor: a press there turns the selected item
     this._press = null;
     this._ndc = new THREE.Vector2();
     this._onKey = (e) => this._key(e);
@@ -1173,7 +1344,8 @@ export class Selection {
 
   /**
    * Left press on the canvas. Claims it (returns true) when it lands on the selected item (→ drag to move) or on
-   * its rotate handle (→ drag to rotate); a claimed press that never moves still selects like a click.
+   * its rotate handle or outline (→ drag to rotate); a claimed press on the item that never moves still selects like
+   * a click.
    * @param {PointerEvent|MouseEvent} ev
    * @returns {boolean}
    */
@@ -1187,13 +1359,13 @@ export class Selection {
     const canvas = e.renderer.domElement;
     const ndc = ndcFromClient(canvas, ev.clientX, ev.clientY, new THREE.Vector2());
     let kind = null;
-    let hit = null;
-    if (!item.locked && this.footprint.hitHandle(ndc)) kind = 'rotate';
-    else {
-      hit = pickAt(e, ndc, HOVER);
-      if (hit?.kind !== 'item' || hit.uid !== sel.uid) return false;
-      kind = 'move';
-    }
+    const hit = pickAt(e, ndc, HOVER);
+    const grip = item.locked ? null : this._rotateAt(ndc, hit);
+    if (grip) {
+      kind = 'rotate';
+      if (!grip.handle) this.footprint.setGrip(grip); // the handle jumps to where the outline was grabbed
+    } else if (hit?.kind === 'item' && hit.uid === sel.uid) kind = 'move';
+    else return false;
     if (item.locked) {
       e.events.emit('toast', { text: `${itemName(item)} er låst og kan ikke flyttes`, seconds: 2.5 });
       return false;
@@ -1220,16 +1392,36 @@ export class Selection {
     const p = this._press;
     if (!p || ev.button !== 0) return;
     this._endPress();
-    // a press without a drag is an ordinary click (on the rotate handle: nothing)
+    // a press without a drag is an ordinary click (on the rotate handle or the outline: nothing)
     if (p.kind === 'move') this.editor.handleClick(p.ndc);
   }
 
   _endPress() {
     this._press = null;
+    this._pickAge = 1; // pick again on the next frame (the cursor may still be on the outline)
     window.removeEventListener('pointermove', this._onMove, true);
     window.removeEventListener('mousemove', this._onMove, true);
     window.removeEventListener('pointerup', this._onUp, true);
     window.removeEventListener('mouseup', this._onUp, true);
+  }
+
+  /**
+   * Whether a press at ndc would turn the selected item: on its outline → { x, z } (the outline point, for
+   * Footprint.setGrip), on its rotate handle → { handle: true }, else null. The item itself wins over its outline
+   * (a press on it moves it), and so does another piece standing on the line (a stool beside the chair: a click
+   * selects that one). The handle off its corner wins over both, as before; slid onto the outline it is part of the
+   * line (the cursor moving onto the item sends it back).
+   * @param {{ x: number, y: number }} ndc
+   * @param {object|null} hit  pickAt(ndc, HOVER) – what the cursor is on
+   * @returns {{ x: number, z: number }|{ handle: true }|null}
+   */
+  _rotateAt(ndc, hit) {
+    const fp = this.footprint;
+    if (!fp.hasHandle || !ndc) return null;
+    const onItem = hit?.kind === 'item' && (hit.uid === this.editor.selected?.uid || hit.point.y > fp.group.position.y + 0.03);
+    const p = onItem ? null : fp.hitEdge(ndc);
+    if (p) return p;
+    return (!onItem || !fp.grip) && fp.hitHandle(ndc) ? { handle: true } : null;
   }
 
   // ---- per frame ---------------------------------------------------------------------------------------------
@@ -1270,18 +1462,27 @@ export class Selection {
         // the overview's damping), a refresh every 0.5 s otherwise (the scene may have changed under the cursor)
         const pointerMoved = ndc.distanceToSquared(this._lastNdc) > 1e-8;
         const camMoved = !cam.matrixWorld.equals(this._lastCam);
-        const moved = pointerMoved || (camMoved && this._pickAge > 0.16) || this._pickAge > 0.5;
+        const moved = pointerMoved || (camMoved && this._pickAge > 0.16) || this._pickAge > 0.5 || uid !== this._pickUid;
         if (moved) {
+          this._pickUid = uid;
           this._lastNdc.copy(ndc);
           this._lastCam.copy(cam.matrixWorld);
           this._pickAge = 0;
           const hit = pickAt(e, ndc, HOVER);
           const it = e.views?.isWalking !== false ? e.game?.interaction?.target : null;
           this.hover = hit && !(it && it.hit.distance <= hit.distance + 0.05) ? this._describe(hit) : null;
+          // on the selected item's outline or rotate handle: a press there turns it (no hover target under it)
+          this._rot = this._rotateAt(ndc, hit);
+          if (this._rot) this.hover = null;
         }
         hover = this.hover;
-      } else this.hover = null;
-    } else this.hover = null;
+      } else this.hover = this._rot = null;
+    } else this.hover = this._rot = null;
+
+    // the rotate handle slides along the outline under the cursor (and stays where it was grabbed while turning)
+    if (!this.footprint.hasHandle) this._rot = null; // deselected / locked since the last pick
+    const turning = this._press?.kind === 'rotate' || (drag?.kind === 'rotate' && drag.uid === uid);
+    if (!turning && !this._rot?.handle) this.footprint.setGrip(this._rot);
 
     const key = hover ? `${hover.kind}:${hover.uid || hover.wallId || hover.windowId}` : '';
     if (key !== this._hoverKey) {
@@ -1290,7 +1491,10 @@ export class Selection {
     }
     this.hoverGlow.update();
 
-    if (hover) {
+    if (item && (this._rot || this._press?.kind === 'rotate')) {
+      this.hint.tip({ text: itemName(item), sub: '– dra for å rotere' }, 1);
+      e.hud?.setCursor?.(ROTATE_CURSOR);
+    } else if (hover) {
       this.hint.tip({ text: hover.name, sub: hover.action }, 1);
       e.hud?.setCursor?.(hover.kind === 'item' && hover.uid === uid && !item?.locked ? 'grab' : 'pointer');
     } else if (!placing && !drag && !e.views?.isWalking && !e.game?.interaction?.target) {
