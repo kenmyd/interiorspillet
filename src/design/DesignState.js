@@ -22,9 +22,23 @@ import palette from '../data/palette.json';
  * History: every mutation is one undo step unless it runs inside transaction(label, fn) / begin(label)…end(), which
  * group everything into one step (a drag = one step). Steps store deep-cloned before/after snapshots of the touched
  * items/wall/windows/paints/env. Max 200 steps. setEnv() calls within 1 s coalesce into one step.
+ *
+ * Version 2 (hele-huset §5.5, steg 16 E3) – the whole house:
+ *   - every item has `level` (a level id of layout.house: 'hoved', 'kjeller'). In memory `position[1]` is WORLD y
+ *     (SceneSync, Placement and the lights use it as is); in a save (toJSON) it is LEVEL-LOCAL, above the level's
+ *     floor, so a saved piece survives a re-measured floorY. LIMITS.y bounds the level-local y. A live item without a
+ *     level (or whose y lies outside its level's band) gets the level its y is in.
+ *   - originalJSON() and the start design hold the original furniture of EVERY room (existing.js originalItems with
+ *     `rooms`; uid still 'ex-<spec id>'), in world y (`ySpace: 'world'`).
+ *   - meta.originalRooms: the rooms whose originals the design has received. Loading adds the originals of every room
+ *     with furniture that is not in the list (a version 1 save = ['stue-kjokken']: the rest of the house comes in,
+ *     living-room pieces the user removed do not come back).
+ *   - meta.specRevision: { uid: hash } of each original piece as the data gave it when the design was saved. A piece
+ *     still exactly like that on load (the user never changed it) follows the current data (new photo positions).
+ *   - version 1 saves load unchanged: their y is world y (= level-local on the first floor).
  */
 
-export const DESIGN_VERSION = 1;
+export const DESIGN_VERSION = 2;
 export const MAX_HISTORY = 200;
 export const ORIGINAL_NAME = 'Original';
 
@@ -35,9 +49,13 @@ const ENV_MODES = ['auto', 'day', 'evening', 'night'];
 const SOURCES = ['existing', 'catalog', 'custom'];
 const MOUNTS = ['floor', 'wall', 'ceiling', 'surface', 'soft', 'rug', 'window'];
 const ITEM_FIELDS = [
-  'uid', 'source', 'refId', 'name', 'category', 'archetype', 'mount', 'position', 'rotationDeg', 'dims', 'params',
+  'uid', 'source', 'refId', 'name', 'category', 'archetype', 'mount', 'position', 'level', 'rotationDeg', 'dims', 'params',
   'colors', 'materials', 'variantIndex', 'light', 'attach', 'hidden', 'locked', 'acoustic', 'notes', 'confidence',
 ];
+/** The first floor (layout.js MAIN_LEVEL_ID): the level of an item without one, and of every version 1 item. */
+const MAIN_LEVEL = 'hoved';
+/** The living room (layout.js LIVING_ROOM_ID): the only room a version 1 design has the originals of. */
+const LIVING_ROOM = 'stue-kjokken';
 /** Object fields that update() merges one level deep instead of replacing. */
 const MERGE_FIELDS = ['dims', 'params', 'colors', 'materials', 'light', 'attach'];
 const COALESCE_MS = 1000;
@@ -52,8 +70,8 @@ const SHADING_ARCHETYPES = new Set(Object.entries(schema.archetypes).filter(([, 
 /** Hard bounds that hold without any registry: metres, counts. */
 export const LIMITS = Object.freeze({
   dim: [0.005, 12], // no piece of furniture is larger than the room
-  roomMargin: 3, // positions may lie this far outside the floor rectangle (terrace, mistakes) – not further
-  y: [-1, 6],
+  roomMargin: 3, // positions may lie this far outside the house's floor rectangle (terrace, mistakes) – not further
+  y: [-0.5, 4], // LEVEL-LOCAL: above the floor of the item's level (the basement entrance lies 0.30 below it)
   items: 300,
   wallElements: 80,
   lumens: 30000,
@@ -68,6 +86,8 @@ export const LIMITS = Object.freeze({
  * Missing entries are simply not checked (only the hard LIMITS apply).
  */
 const _limits = { archetypes: null, wallTypes: null };
+/** Bumped by setDesignLimits (the cached normalised originals depend on the limits). */
+let _limitsGen = 0;
 
 /**
  * Registers model limits (see `_limits`). Calling it again replaces the given keys.
@@ -76,6 +96,7 @@ const _limits = { archetypes: null, wallTypes: null };
 export function setDesignLimits({ archetypes, wallTypes } = {}) {
   if (archetypes && typeof archetypes === 'object') _limits.archetypes = archetypes;
   if (Array.isArray(wallTypes)) _limits.wallTypes = new Set(wallTypes);
+  _limitsGen++; // the normalised originals (originalsOf) depend on the limits
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -86,6 +107,42 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const num = (v, fb) => (typeof v === 'number' && Number.isFinite(v) ? v : typeof v === 'string' && v.trim() !== '' && Number.isFinite(Number(v)) ? Number(v) : fb);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+/** World ↔ level-local y (a non-zero floorY only): rounded to the nanometre so a save → load round trip is exact. */
+const round9 = (v) => Math.round(v * 1e9) / 1e9;
+
+// ---------------------------------------------------------------------------------------------------------------
+// Levels (§5.5)
+
+/** Floor (world y) of a level of the layout; 0 for an unknown level or a layout without levels. */
+function floorYOf(layout, levelId) {
+  const y = layout?.house?.levelsById?.[levelId]?.floorY;
+  return Number.isFinite(y) ? y : 0;
+}
+
+/** Level of a world y for an item without a (fitting) level: the band it is in (a ceiling item hangs just under its ceiling). */
+function levelAtY(layout, y, mount) {
+  const H = layout?.house;
+  if (typeof H?.levelAt !== 'function') return MAIN_LEVEL;
+  return H.levelAt(mount === 'ceiling' ? y - 0.1 : y + 0.05)?.id ?? MAIN_LEVEL;
+}
+
+/** An item as it is saved: position[1] level-local (the in-memory item has world y). */
+function storedItem(item, layout) {
+  const out = clone(item);
+  const fy = floorYOf(layout, item.level);
+  if (fy && Array.isArray(out.position)) out.position[1] = round9(out.position[1] - fy);
+  return out;
+}
+
+/** FNV-1a (32 bit, hex) of a text: meta.specRevision. */
+function hashText(s) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16).padStart(8, '0');
+}
 
 function vec3(v, fb = [0, 0, 0]) {
   if (Array.isArray(v)) return [num(v[0], fb[0]), num(v[1], fb[1]), num(v[2], fb[2])];
@@ -165,15 +222,24 @@ function cleanParams(params, schemaParams) {
   return out;
 }
 
-/** Normalises an item spec (tolerant: unknown fields dropped, missing ones defaulted, numbers kept in sane ranges). */
-export function normaliseItem(spec, uid, layout = null) {
+/**
+ * Normalises an item spec (tolerant: unknown fields dropped, missing ones defaulted, numbers kept in sane ranges).
+ * The result has `level` and WORLD y (§5.5).
+ * @param {Object} spec
+ * @param {string} uid
+ * @param {Object} [layout]
+ * @param {{ stored?: boolean }} [opts]  stored: the spec comes from a saved design (version 2) or the room data, its
+ *   y is level-local (no level = 'hoved'); default: a live spec (Placement, the inspector, a duplicate …) with world y
+ */
+export function normaliseItem(spec, uid, layout = null, { stored = false } = {}) {
   const s = isObj(spec) ? spec : {};
   const archetype = typeof s.archetype === 'string' && s.archetype ? s.archetype : 'vase';
   const info = schema.archetypes[archetype];
   const lim = _limits.archetypes?.[archetype] || null;
   const dims = dimsOf(s.dims, undefined, lim?.dimsRange);
+  const mount = MOUNTS.includes(s.mount) ? s.mount : info?.mount || 'floor';
   const position = vec3(s.position);
-  const b = layout?.bounds;
+  const b = layout?.house?.bounds ?? layout?.bounds;
   const m = LIMITS.roomMargin;
   if (b && Number.isFinite(b.minX)) {
     position[0] = clamp(position[0], b.minX - m, b.maxX + m);
@@ -182,7 +248,25 @@ export function normaliseItem(spec, uid, layout = null) {
     position[0] = clamp(position[0], -50, 50);
     position[2] = clamp(position[2], -50, 50);
   }
-  position[1] = clamp(position[1], LIMITS.y[0], LIMITS.y[1]);
+  // the level and the y above its floor (LIMITS.y); in memory the world y
+  const levels = layout?.house?.levelsById || null;
+  let level = typeof s.level === 'string' && s.level && (!levels || levels[s.level]) ? s.level.slice(0, 40) : null;
+  let local;
+  if (stored) {
+    level ??= MAIN_LEVEL;
+    local = position[1];
+  } else {
+    // a live y outside its level's band (a piece carried to another floor without a new level) → the level it is on
+    if (level && levels) {
+      const l = position[1] - floorYOf(layout, level);
+      if (l < LIMITS.y[0] - 1e-9 || l > LIMITS.y[1] + 1e-9) level = null;
+    }
+    level ??= levels ? levelAtY(layout, position[1], mount) : MAIN_LEVEL;
+    local = position[1] - floorYOf(layout, level);
+  }
+  const fy = floorYOf(layout, level);
+  local = clamp(fy ? round9(local) : local, LIMITS.y[0], LIMITS.y[1]);
+  position[1] = fy ? round9(local + fy) : local;
   const item = {
     uid,
     source: SOURCES.includes(s.source) ? s.source : 'custom',
@@ -190,8 +274,9 @@ export function normaliseItem(spec, uid, layout = null) {
     name: typeof s.name === 'string' && s.name ? s.name.slice(0, 160) : info?.label || archetype,
     category: typeof s.category === 'string' ? s.category : null,
     archetype,
-    mount: MOUNTS.includes(s.mount) ? s.mount : info?.mount || 'floor',
+    mount,
     position,
+    level,
     rotationDeg: clamp(num(s.rotationDeg, 0), -720, 720),
     dims,
     params: cleanParams(s.params, lim?.params),
@@ -351,6 +436,60 @@ function windowIds(layout) {
   return Array.isArray(list) && list.length ? new Set(list.map((w) => w.id)) : null;
 }
 
+const ORIGINALS = new WeakMap();
+const NO_LAYOUT = {};
+
+/**
+ * The original furniture of the whole house for a layout (cached until setDesignLimits): the living room's first
+ * (originalItems(layout), the order of version 1), then every other room with furniture in the data, in the order of
+ * layout.house.rooms. `items` are normalised live items (world y, `level`).
+ * @returns {{ rooms: string[], items: Object[], byUid: Map<string, Object>, specs: Map<string, Object>,
+ *   roomOf: Map<string, string>, hash: (uid: string) => string|null }}
+ */
+function originalsOf(layout) {
+  const key = layout || NO_LAYOUT;
+  let c = ORIGINALS.get(key);
+  if (c && c.gen === _limitsGen) return c;
+  const living = originalItems(layout);
+  const withFurniture = new Set((layout?.house?.furniture || []).map((f) => f.roomId ?? LIVING_ROOM));
+  const others = (layout?.house?.rooms || []).map((r) => r.id).filter((id) => id !== LIVING_ROOM && withFurniture.has(id));
+  const otherSpecs = others.length ? originalItems(layout, { rooms: others }) : [];
+  const items = [];
+  const specs = new Map();
+  const roomOf = new Map();
+  for (const [spec, room] of [...living.map((s) => [s, LIVING_ROOM]), ...otherSpecs.map((s) => [s, s.roomId ?? LIVING_ROOM])]) {
+    if (specs.has(spec.uid)) continue;
+    specs.set(spec.uid, spec);
+    roomOf.set(spec.uid, room);
+    // the data's y is over the ROOM's floor; a save's is over the LEVEL's: the entrance and the room under the terrace
+    // lie floorOffset (−0.30) below their level
+    const off = room !== LIVING_ROOM ? num(layout?.house?.roomsById?.[room]?.floorOffset, 0) : 0;
+    const p = Array.isArray(spec.position) ? spec.position : null;
+    const levelLocal = off && p ? { ...spec, position: [p[0], round9(num(p[1], 0) + off), p[2]] } : spec;
+    items.push(normaliseItem(levelLocal, spec.uid, layout, { stored: true }));
+  }
+  const byUid = new Map(items.map((it) => [it.uid, it]));
+  const hashes = new Map();
+  c = {
+    gen: _limitsGen,
+    rooms: [LIVING_ROOM, ...others],
+    items,
+    byUid,
+    specs,
+    roomOf,
+    /** hash of the original as it is saved (meta.specRevision) */
+    hash(uid) {
+      if (!hashes.has(uid)) {
+        const it = byUid.get(uid);
+        hashes.set(uid, it ? hashText(JSON.stringify(storedItem(it, layout))) : null);
+      }
+      return hashes.get(uid);
+    },
+  };
+  ORIGINALS.set(key, c);
+  return c;
+}
+
 /**
  * True when `data` looks like a design of this game: an items array (or a non-empty uid → item map) with at least one
  * recognisable item, or the app marker / version with an items array.
@@ -360,7 +499,7 @@ export function looksLikeDesign(data) {
   if (!isObj(data)) return false;
   const items = Array.isArray(data.items) ? data.items : isObj(data.items) ? Object.values(data.items) : null;
   if (!items) return false;
-  const marked = data.app === 'Interiørspillet' || data.version === DESIGN_VERSION;
+  const marked = data.app === 'Interiørspillet' || data.version === 1 || data.version === DESIGN_VERSION;
   if (marked && Array.isArray(data.items)) return true;
   return items.some((it) => isObj(it) && typeof it.archetype === 'string' && !!schema.archetypes[it.archetype]);
 }
@@ -403,7 +542,8 @@ export class DesignState extends Emitter {
     this.paints = {};
     this.env = normaliseEnv(DEFAULT_ENV);
     const now = new Date().toISOString();
-    this.meta = { name: ORIGINAL_NAME, createdAt: now, updatedAt: now };
+    // an empty design (original: false) never gets the originals added later: it «has» every room
+    this.meta = { name: ORIGINAL_NAME, createdAt: now, updatedAt: now, originalRooms: [...originalsOf(layout).rooms] };
     this._undo = [];
     this._redo = [];
     this._tx = null; // open step { label, before, after, depth, coalesce, time }
@@ -733,12 +873,24 @@ export class DesignState extends Emitter {
 
   // ---- save / load ---------------------------------------------------------------------------------------------
 
-  /** Plain JSON of the design ({ version: 1, meta, items: [...], wall, windows, paints, env }). */
+  /**
+   * Plain JSON of the design ({ version: 2, meta: { name, createdAt, updatedAt, originalRooms, specRevision },
+   * items: [...] (y level-local), wall, windows, paints, env }).
+   */
   toJSON() {
+    const orig = originalsOf(this.layout);
+    const specRevision = {};
+    for (const uid of this.items.keys()) {
+      const h = orig.byUid.has(uid) ? orig.hash(uid) : null;
+      if (h) specRevision[uid] = h;
+    }
+    const meta = clone(this.meta);
+    meta.originalRooms = Array.isArray(this.meta.originalRooms) ? [...this.meta.originalRooms] : [...orig.rooms];
+    meta.specRevision = specRevision;
     return {
       version: DESIGN_VERSION,
-      meta: clone(this.meta),
-      items: [...this.items.values()].map(clone),
+      meta,
+      items: [...this.items.values()].map((it) => storedItem(it, this.layout)),
       wall: clone(this.wall),
       windows: clone(this.windows),
       paints: clone(this.paints),
@@ -794,13 +946,19 @@ export class DesignState extends Emitter {
     this._changed({ type: 'load' });
   }
 
-  /** JSON of the original design: today's furniture, no wall proposal («0»), no shading, default env. */
+  /**
+   * JSON of the original design: today's furniture of every room, no wall proposal («0»), no shading, default env.
+   * Its items are normalised live items (WORLD y, `ySpace: 'world'` – the Inspector and SavePanel compare them with
+   * the design's items as they are; load() reads the marker).
+   */
   originalJSON() {
     const now = new Date().toISOString();
+    const orig = originalsOf(this.layout);
     return {
       version: DESIGN_VERSION,
-      meta: { name: ORIGINAL_NAME, createdAt: now, updatedAt: now },
-      items: originalItems(this.layout),
+      ySpace: 'world',
+      meta: { name: ORIGINAL_NAME, createdAt: now, updatedAt: now, originalRooms: [...orig.rooms] },
+      items: orig.items.map(clone),
       wall: { proposalId: '0', elements: [], edited: false },
       windows: {},
       paints: {},
@@ -825,10 +983,19 @@ export class DesignState extends Emitter {
     return uid;
   }
 
-  /** Replaces the whole state from (tolerant) JSON without events or history. */
+  /**
+   * Replaces the whole state from (tolerant) JSON without events or history. The items' y is level-local for a
+   * version 2 design and world y for version 1 and for `ySpace: 'world'` (originalJSON); see the top of the file for
+   * meta.originalRooms and meta.specRevision.
+   */
   _replaceAll(data) {
     const items = new Map();
     const list = Array.isArray(data.items) ? data.items : isObj(data.items) ? Object.entries(data.items).map(([uid, it]) => ({ uid, ...(isObj(it) ? it : {}) })) : [];
+    const stored = (data.ySpace ?? (num(data.version, 1) >= 2 ? 'level' : 'world')) !== 'world';
+    const m = isObj(data.meta) ? data.meta : {};
+    const orig = originalsOf(this.layout);
+    // originals the user never changed follow the data (their saved form is still the one the data gave)
+    const revision = stored && isObj(m.specRevision) ? m.specRevision : null;
     for (const raw of list) {
       if (!isObj(raw)) continue;
       if (items.size >= LIMITS.items) break; // a corrupt file with 100 000 items must not freeze the tab
@@ -837,23 +1004,32 @@ export class DesignState extends Emitter {
         do uid = `it-${Date.now().toString(36)}-${(++this._seq).toString(36)}`;
         while (items.has(uid));
       }
-      items.set(uid, normaliseItem(raw, uid, this.layout));
+      const rev = revision && raw.source === 'existing' && raw.uid === uid ? revision[uid] : null;
+      const cur = typeof rev === 'string' && orig.byUid.has(uid) ? orig.hash(uid) : null;
+      if (cur && cur !== rev && hashText(JSON.stringify(raw)) === rev) items.set(uid, clone(orig.byUid.get(uid)));
+      else items.set(uid, normaliseItem(raw, uid, this.layout, { stored }));
     }
+    // the rooms whose originals this design has not had yet (a version 1 design: every room but the living room)
+    const had = Array.isArray(m.originalRooms) ? m.originalRooms.filter((r) => typeof r === 'string' && r).map((r) => r.slice(0, 60)) : [LIVING_ROOM];
+    const hadSet = new Set(had);
+    for (const it of orig.items) {
+      if (items.size >= LIMITS.items) break;
+      if (hadSet.has(orig.roomOf.get(it.uid)) || items.has(it.uid)) continue;
+      items.set(it.uid, clone(it));
+    }
+    const originalRooms = [...new Set([...had, ...orig.rooms])];
     // the lumens of today's lamps are room-spec data, not a user setting (nothing edits them): a design saved before a
     // data change (add-lighting: the chandelier 2000 → 800 lm) gets the current value
-    let orig = null;
     for (const it of items.values()) {
       if (it.source !== 'existing' || !it.light) continue;
-      orig ??= new Map(originalItems(this.layout).map((o) => [o.uid, o]));
-      const lm = orig.get(it.uid)?.light?.lumens;
+      const lm = orig.specs.get(it.uid)?.light?.lumens;
       if (lm != null) it.light.lumens = lm;
     }
     // room-data corrections to existing pieces that a design saved earlier still holds (2026-10-20: the pampas vase on
     // the island was 1 m tall in the data, the real one is ≈ 55 cm) – only while the saved piece still has the old size
     for (const it of items.values()) {
       if (it.source !== 'existing' || it.refId !== 'f-pampas' || !(it.dims?.h > 0.8)) continue;
-      orig ??= new Map(originalItems(this.layout).map((o) => [o.uid, o]));
-      const o = orig.get(it.uid);
+      const o = orig.specs.get(it.uid);
       if (o) { it.dims = { ...o.dims }; it.params = { ...it.params, ...o.params }; }
     }
     // catalogue model corrections a design saved earlier still holds (2026-10-20: Oslo Wood was drawn with a drum shade;
@@ -883,11 +1059,11 @@ export class DesignState extends Emitter {
     this.paints = paints;
     this.env = normaliseEnv(data.env);
     const now = new Date().toISOString();
-    const m = isObj(data.meta) ? data.meta : {};
     this.meta = {
       name: typeof m.name === 'string' && m.name.trim() ? m.name.trim().slice(0, 80) : 'Uten navn',
       createdAt: typeof m.createdAt === 'string' ? m.createdAt : now,
       updatedAt: typeof m.updatedAt === 'string' ? m.updatedAt : now,
+      originalRooms,
     };
   }
 

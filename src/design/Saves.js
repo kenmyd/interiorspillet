@@ -1,4 +1,4 @@
-import { ORIGINAL_NAME, DesignState, looksLikeDesign } from './DesignState.js';
+import { ORIGINAL_NAME, DESIGN_VERSION, DesignState, looksLikeDesign } from './DesignState.js';
 
 /**
  * Saved designs (ARCHITECTURE §7): several named designs in localStorage under `interiorspillet.designs.v1`,
@@ -14,9 +14,15 @@ import { ORIGINAL_NAME, DesignState, looksLikeDesign } from './DesignState.js';
  * lights) are not kept. Undo/redo across an «Åpne»/«Importer» brings the previous name back with the content
  * (DesignState records meta in the load step) and `active` follows it, so autosave never writes one design's content
  * into another design. `pending` / `flush()` let Game save on pagehide instead of asking «Forlate nettstedet?».
+ *
+ * Design version 2 (hele-huset §5.5, steg 16): the store key and format stay; the designs inside become version 2 as
+ * they are written. Before the FIRST write that would replace stored version 1 designs, the whole stored text is
+ * copied once to `interiorspillet.designs.v1.backup` (BACKUP_KEY; never overwritten). Version 1 designs still load.
  */
 
 export const STORAGE_KEY = 'interiorspillet.designs.v1';
+/** A copy of the stored designs as they were before the first version 2 write (written once, never overwritten). */
+export const BACKUP_KEY = 'interiorspillet.designs.v1.backup';
 const STORE_VERSION = 1;
 /** «Forrige økt (…)» entries kept in the Design list. */
 export const KEEP_SESSIONS = 3;
@@ -49,6 +55,18 @@ function emptyStore() {
   return { version: STORE_VERSION, active: null, designs: {}, autosave: null };
 }
 
+/** True when a stored text holds a design older than DESIGN_VERSION (a saved design or the autosave slot). */
+function hasOldDesigns(raw) {
+  try {
+    const data = JSON.parse(raw);
+    if (!data || typeof data !== 'object') return false;
+    const old = (d) => !!d && typeof d === 'object' && !(Number(d.version) >= DESIGN_VERSION);
+    return Object.values(data.designs && typeof data.designs === 'object' ? data.designs : {}).some(old) || old(data.autosave);
+  } catch {
+    return false; // unreadable: _read() treats it as empty anyway
+  }
+}
+
 export class Saves {
   /**
    * @param {import('./DesignState.js').DesignState} design
@@ -72,6 +90,9 @@ export class Saves {
     this.lastKept = null;
     /** Called with the error when a write fails (createHome shows a toast). */
     this.onWriteError = null;
+    /** True once this Saves copied the stored version 1 designs to BACKUP_KEY. */
+    this.backupWritten = false;
+    this._backupChecked = false;
     // undo/redo across an «Åpne»/«Importer» restores the design's name: the active slot follows it
     this._offHistory = design?.on?.('change', (e) => {
       if (e?.type === 'undo' || e?.type === 'redo') this._followName();
@@ -100,8 +121,27 @@ export class Saves {
     }
   }
 
+  /**
+   * Once per Saves: before the first write, copies stored version 1 designs to BACKUP_KEY (only when there are any and
+   * no backup exists yet). Best effort – a full storage only logs a warning; the version 1 designs stay loadable.
+   */
+  _backupOnce() {
+    if (this._backupChecked || !this.storage) return;
+    this._backupChecked = true;
+    try {
+      if (this.storage.getItem(BACKUP_KEY) != null) return;
+      const raw = this.storage.getItem(this.key);
+      if (!raw || !hasOldDesigns(raw)) return;
+      this.storage.setItem(BACKUP_KEY, raw);
+      this.backupWritten = true;
+    } catch (err) {
+      console.warn('[saves] could not back up the version 1 designs', err);
+    }
+  }
+
   _write(store) {
     if (!this.storage) return false;
+    this._backupOnce();
     try {
       this.storage.setItem(this.key, JSON.stringify(store));
       this.lastError = null;
@@ -154,7 +194,18 @@ export class Saves {
         _originalKey = '';
       }
     }
-    return workKey(json) !== _originalKey;
+    // an older design (version 1: no level, world y) is compared in today's form
+    let cur = json;
+    if (!(Number(json.version) >= DESIGN_VERSION)) {
+      try {
+        const d = new DesignState({ layout: this.design?.layout, original: false });
+        d.load(json);
+        cur = d.toJSON();
+      } catch {
+        cur = json;
+      }
+    }
+    return workKey(cur) !== _originalKey;
   }
 
   /**
