@@ -10,6 +10,49 @@ const _q = new THREE.Vector3();
 const _n = new THREE.Vector3();
 const _n2 = new THREE.Vector3();
 const _m = new THREE.Matrix4();
+
+/** Smallest octree cell (m): a cell this small is never split further, however many triangles it holds. */
+const OCTREE_MIN_CELL = 0.04;
+
+/**
+ * three's Octree with a floor on the cell size. Its own split() gives every subtree the default limits and goes on to
+ * level 16 wherever more than 8 triangles share a point, an edge or a plane – a wall corner where the faces, end caps
+ * and mitre slivers of several slabs meet, or nested boxes sharing faces. Over a line or an area that is hundreds of
+ * thousands of cells: with the whole house the build never finished (the page hung at «Møblerer», integrator bølge 1
+ * gruppe 2). Here a cell under OCTREE_MIN_CELL stays a leaf; the queries are three's (a node with triangles is a
+ * leaf), only the candidate lists in dense spots grow a little.
+ */
+class HouseOctree extends Octree {
+  split(level) {
+    if (!this.box) return this;
+    const half = new THREE.Vector3().copy(this.box.max).sub(this.box.min).multiplyScalar(0.5);
+    const subTrees = [];
+    for (let x = 0; x < 2; x++) {
+      for (let y = 0; y < 2; y++) {
+        for (let z = 0; z < 2; z++) {
+          const box = new THREE.Box3();
+          box.min.copy(this.box.min).add(new THREE.Vector3(x, y, z).multiply(half));
+          box.max.copy(box.min).add(half);
+          const t = new HouseOctree(box);
+          t.trianglesPerLeaf = this.trianglesPerLeaf;
+          t.maxLevel = this.maxLevel;
+          subTrees.push(t);
+        }
+      }
+    }
+    let triangle;
+    while ((triangle = this.triangles.pop())) {
+      for (let i = 0; i < subTrees.length; i++) if (subTrees[i].box.intersectsTriangle(triangle)) subTrees[i].triangles.push(triangle);
+    }
+    const splittable = Math.max(half.x, half.y, half.z) > OCTREE_MIN_CELL;
+    for (let i = 0; i < subTrees.length; i++) {
+      const len = subTrees[i].triangles.length;
+      if (len > this.trianglesPerLeaf && level < this.maxLevel && splittable) subTrees[i].split(level + 1);
+      if (len !== 0) this.subTrees.push(subTrees[i]);
+    }
+    return this;
+  }
+}
 const _mi = new THREE.Matrix4();
 const _ray = new THREE.Ray();
 /** cos 30°: a sloped summed octree push this close to a walkable face under the foot takes its normal (resolveCapsule). */
@@ -38,7 +81,7 @@ const FACE_MATCH = Math.cos((30 * Math.PI) / 180);
  */
 export class CollisionWorld {
   constructor() {
-    this.octree = new Octree();
+    this.octree = new HouseOctree();
     this._statics = [];
     this._staticBoxes = [];
     this.dynamic = [];
@@ -181,6 +224,8 @@ export class CollisionWorld {
     this.octree.clear();
     let count = 0;
     const add = (a, b, c) => {
+      // a zero-area triangle (a mitre or profile sliver) never stops a capsule, but it crowds the octree's cells
+      if (_p.subVectors(b, a).cross(_q.subVectors(c, a)).lengthSq() < 1e-14) return;
       this.octree.addTriangle(new THREE.Triangle(a.clone(), b.clone(), c.clone()));
       count++;
     };
