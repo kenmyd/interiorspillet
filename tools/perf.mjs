@@ -6,7 +6,7 @@
  *
  *   node tools/perf.mjs --port=525N [--label=hus] [--out=<file.json>] [--compare=<master.json>] [--lock] [--step=y1]
  *       [--only=load,frames,walk,check] [--loads=2] [--frames=40] [--poses=spawn,gang,…] [--vis=0]
- *       [--shots=<dir>] [--w=1280 --h=960] [--params=vistrim=0]
+ *       [--shots=<dir>] [--w=1280 --h=960] [--params=vistrim=0] [--vis0=<json>]
  *
  *   load    --loads fresh browsers (a new GPU process each: no program cache) load /?play=1&nohelp=1 – with the
  *           catalogue warm-up, like a real first visit – and the time to window.__ready is taken (median).
@@ -23,14 +23,18 @@
  *           master), 'hus' (stue → gang → bad → gang → soverom) and 'trapp' (gang → down the stair → kjeller-gang;
  *           a level change re-renders the sun's map once, §4.6), the last two only where the house exists.
  *   check   (visibility only) for many poses – every room's centre in 8 directions at three pitches, both sides of
- *           every door, the stair, outside – with every door shut and then every door open: a render with the
- *           culling on, one with everything shown (vis.setEnabled(false)) and the culled one again; any pixel that
- *           differs between culled and full (beyond the culled/culled noise) is a visibility error. Failing poses
- *           are saved to --shots (default .shots/hus/<step>/check/) as <pose>-on.png / -off.png.
+ *           every door facing it and with the back to it, the stair, outside, just out of the outer doors – with every
+ *           door shut and then every door open: a render with the culling on, one with everything shown
+ *           (vis.setEnabled(false)) and the culled one again; any pixel that differs between culled and full (beyond
+ *           the culled/culled noise) is a visibility error. Then (doors open) walks out of and into door-ute and the
+ *           terrace door with real physics, every frame compared the same way. Failing poses are saved to --shots
+ *           (default .shots/hus/<step>/check/) as <pose>-on.png / -off.png, failing walk frames as walk-<name>-f<N>-*.
  *
  * Budgets (§4.13), checked with --compare=<json of a master run>: at most +20 % draw calls at the spawn in the living
- * room and in the hall (pos 2.6,0,3.2, yaw 90), at most 1 environment build per room change, 0 sun passes while
- * walking inside a level, first load at most 3 s longer. The check must find 0 failing poses.
+ * room and in the hall (pos 2.6,0,3.2, yaw 90 – a reference whose pose is not in the same room, as master's outside
+ * its house, is replaced by the reference's spawn), at most 1 environment build per room change, 0 sun passes while
+ * walking inside a level, first load at most 3 s longer. --vis0=<json of the same tree run with --vis=0> adds the draw
+ * calls per pose against it (info). The check must find 0 failing poses.
  * Exit code: 0 ok, 1 a budget or the check failed, 2 the tool / page failed.
  */
 import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
@@ -223,6 +227,8 @@ const CHECK = `(async ({ doorsOpen, extra, save }) => {
       const x = c.x + n.x * s, z = c.z + n.z * s;
       const yaw = s > 0 ? yawIn + 180 : yawIn;
       for (const pitch of [0, -20]) poses.push({ name: d.id + (s > 0 ? ':in' : ':out') + '/' + pitch, p: [x, d.floorY, z, yaw, pitch] });
+      // with the back to the door (just through it, the open leaf beside the eye – door-ute's swings out of the walls)
+      poses.push({ name: d.id + (s > 0 ? ':in' : ':out') + ':away', p: [x, d.floorY, z, yaw + 180, 0] });
     }
   }
   for (const e of extra) poses.push(e);
@@ -277,6 +283,74 @@ const CHECK = `(async ({ doorsOpen, extra, save }) => {
   }
   return { poses: n, worstNoise, fails };
 })`;
+
+// walks through the outer doors with real physics (W held, doors open), every frame culled vs full – the cells change
+// on the way (doorway → near the plan → outside), which fixed poses can step over (steg 29 review: door-ute)
+const WALKCHECK = `(async ({ walks, save }) => {
+  const g = window.__game, r = g.renderer, gl = r.getContext(), DEG = Math.PI / 180, P = g.player, vis = g.home.visibility;
+  for (const d of g.home.doors || []) d.door && d.door.setOpen && d.door.setOpen(true, { instant: true });
+  const W = r.domElement.width, H = r.domElement.height;
+  const read = () => { const b = new Uint8Array(W * H * 4); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b); return b; };
+  const diff = (a, b) => { let n = 0, big = 0; for (let i = 0; i < a.length; i += 4) { const d = Math.max(Math.abs(a[i] - b[i]), Math.abs(a[i + 1] - b[i + 1]), Math.abs(a[i + 2] - b[i + 2])); if (d > 6) n++; if (d > 24) big++; } return { n, big }; };
+  const keys = g.input.keys, h = 1 / 60, res = [];
+  for (const w of walks) {
+    P.teleport(P.position.clone().set(w.start[0], w.start[1], w.start[2]), w.yaw * DEG, 0);
+    window.__hus.step(10, h, { render: false });
+    const p0 = P.position.clone();
+    const fails = [];
+    let frames = 0, worst = null;
+    keys.add('KeyW');
+    try {
+      for (let f = 0; f < 240; f++) {
+        if (Math.hypot(P.position.x - p0.x, P.position.z - p0.z) >= w.dist) break;
+        P.yaw = w.yaw * DEG;
+        g.time += h;
+        g.input.update(h);
+        P.update(h);
+        g.editor && g.editor.update(h);
+        g._updateRoom();
+        g.home.update(h, g.time, { roomId: g.roomId, playerPosition: P.position, camera: g.camera, player: P, inputBlocked: false });
+        g._render();
+        const A = read();
+        const cells = vis.stats.cells;
+        vis.setEnabled(false);
+        g._render();
+        const B = read();
+        vis.setEnabled(true);
+        vis.update(0, { camera: g.camera, player: P, playerPosition: P.position });
+        g._render();
+        const C = read();
+        frames++;
+        const noise = diff(A, C), err = diff(C, B);
+        if (err.n > noise.n + 4) {
+          const fl = { f, feet: P.position.toArray().map((v) => +v.toFixed(3)), px: err.n, big: err.big, noise: noise.n, cells };
+          fails.push(fl);
+          if (save && (!worst || err.n > worst.px)) {
+            worst = fl;
+            vis.setEnabled(false);
+            g._render();
+            fl.off = r.domElement.toDataURL('image/png');
+            vis.setEnabled(true);
+            vis.update(0, { camera: g.camera, player: P, playerPosition: P.position });
+            g._render();
+            fl.on = r.domElement.toDataURL('image/png');
+          }
+        }
+        if (f % 20 === 0) await new Promise((ok) => setTimeout(ok, 0));
+      }
+    } finally {
+      keys.delete('KeyW');
+    }
+    res.push({ name: w.name, frames, end: P.position.toArray().map((v) => +v.toFixed(2)), fails });
+  }
+  return res;
+})`;
+const WALKS = [
+  { name: 'ut-dora', start: [7.6, -2.85, 4.31], yaw: -90, dist: 3.0 },
+  { name: 'inn-dora', start: [10.6, -2.87, 4.31], yaw: 90, dist: 3.1 },
+  { name: 'ut-terrassedor', start: [6.3, 0, 5.9], yaw: -90, dist: 2.4 },
+  { name: 'inn-terrassedor', start: [8.7, 0, 5.9], yaw: 90, dist: 2.4 },
+];
 
 try {
   // ---- load ---------------------------------------------------------------------------------------------------------
@@ -353,6 +427,14 @@ try {
         { name: 'nord', p: [-4.0, 0, 6.0, -90, 5] },
         { name: 'ost', p: [3.5, 0, -4.5, 180, 5] },
         { name: 'sorost', p: [12.0, -2.9, -3.0, 135, 8] },
+        // out of the outer doors with the back to the house (steg 29 review: the outside vanished between the hole's
+        // IN_PORTAL and NEAR_ROOM, then the open leaf of door-ute with the entrance's box behind the eye)
+        { name: 'ut-dora', p: [9.08, -2.86, 4.31, -90, 0] },
+        { name: 'ut-dora-2', p: [9.25, -2.86, 4.31, -90, 0] },
+        { name: 'ut-dora-3', p: [9.4, -2.86, 4.6, -60, -10] },
+        { name: 'ut-dora-vest', p: [9.2, -2.86, 4.31, 180, 0] },
+        { name: 'ut-terrassedor', p: [7.6, 0, 5.9, -90, 0] },
+        { name: 'ut-terrassedor-2', p: [7.45, 0, 6.1, -120, -10] },
       ];
       out.check = {};
       for (const doorsOpen of [false, true]) {
@@ -372,6 +454,21 @@ try {
        culprits ${(f.stats.culprits || []).map((c) => `${c.kind} ${c.name} (${c.gives} px)`).join('; ') || '-'}`);
         if (res.fails.length) failed = true;
       }
+      const walks = await page.evaluate(`${WALKCHECK}(${JSON.stringify({ walks: WALKS, save: true })})`);
+      mkdirSync(shotsDir, { recursive: true });
+      out.check.walks = walks;
+      console.log('\n[check walks, doors open] culled vs full every frame');
+      for (const w of walks) {
+        console.log(`  ${w.fails.length ? 'FAIL' : 'ok  '} ${w.name}: ${w.frames} frames to ${JSON.stringify(w.end)}, ${w.fails.length} failing`);
+        for (const f of w.fails.slice(0, 8)) console.log(`       frame ${f.f} feet ${JSON.stringify(f.feet)} ${f.px} px (${f.big} strong, noise ${f.noise}) cells ${JSON.stringify(f.cells)}`);
+        for (const f of w.fails) {
+          if (f.on) writeFileSync(join(shotsDir, `walk-${w.name}-f${f.f}-on.png`), Buffer.from(f.on.split(',')[1], 'base64'));
+          if (f.off) writeFileSync(join(shotsDir, `walk-${w.name}-f${f.f}-off.png`), Buffer.from(f.off.split(',')[1], 'base64'));
+          delete f.on;
+          delete f.off;
+        }
+        if (w.fails.length) failed = true;
+      }
     });
   }
 
@@ -383,17 +480,33 @@ try {
       rows.push({ name, ok, detail });
       if (!ok) failed = true;
     };
+    const pct = (a, b) => `${a} vs ${b} (${(((a - b) / b) * 100).toFixed(0)} %)`;
+    const spawnRef = ref.frames?.spawn;
     for (const k of ['spawn', 'gang']) {
       const a = out.frames?.[k], b = ref.frames?.[k];
-      if (a && b) budget(`draw calls ${k} ≤ +20 %`, a.calls <= b.calls * 1.2 + 1e-9, `${a.calls} vs ${b.calls} (${(((a.calls - b.calls) / b.calls) * 100).toFixed(0)} %)`);
+      if (!a || !b) continue;
+      // the hall pose (2.6, 0, 3.2) lies outside a reference without the hall (master: it looks at the garden from
+      // outside its house) – such a reference is no measure for the hall; its spawn (the living room, the most
+      // expensive view master has) is the budget instead (steg 29 review)
+      if (k === 'gang' && a.room !== b.room && spawnRef) {
+        budget(`draw calls gang ≤ +20 % of ${ref.label ?? 'ref'} spawn (ref pose in room ${b.room ?? '-'}, not ${a.room ?? '-'})`, a.calls <= spawnRef.calls * 1.2 + 1e-9, pct(a.calls, spawnRef.calls));
+        continue;
+      }
+      budget(`draw calls ${k} ≤ +20 %`, a.calls <= b.calls * 1.2 + 1e-9, pct(a.calls, b.calls));
     }
-    const spawnRef = ref.frames?.spawn;
-    if (spawnRef && out.frames?.gang) rows.push({ name: 'draw calls gang vs master spawn (info)', ok: true, detail: `${out.frames.gang.calls} vs ${spawnRef.calls}` });
     for (const [k, w] of Object.entries(out.walk || {})) {
       if (w.roomChanges) budget(`env builds per room change (${k}) ≤ 1`, w.envBuilds <= w.roomChanges, `${w.envBuilds} builds / ${w.roomChanges} changes`);
       if (!w.levelChange) budget(`sun passes walking (${k}) = 0`, (w.hasSunStat ? w.sunPasses : 0) === 0, `${w.hasSunStat ? w.sunPasses : 'n/a'} (shadow-map renders ${w.shadowPasses})`);
     }
     if (out.load && ref.load) budget('first load ≤ +3 s', out.load.medianMs <= ref.load.medianMs + 3000, `${(out.load.medianMs / 1000).toFixed(1)} s vs ${(ref.load.medianMs / 1000).toFixed(1)} s`);
+    // --vis0=<json of the same tree with --vis=0>: the culling may only remove draw calls (info per pose)
+    if (opt.vis0 && out.frames) {
+      const v0 = JSON.parse(readFileSync(resolve(opt.vis0), 'utf8'));
+      for (const [k, v] of Object.entries(out.frames)) {
+        const b = v0.frames?.[k];
+        if (b) rows.push({ name: `draw calls ${k} vs ${v0.label ?? 'vis=0'} (info)`, ok: true, detail: pct(v.calls, b.calls) });
+      }
+    }
     out.budgets = rows;
     console.log(`\n[budgets] ${label} vs ${ref.label}`);
     for (const r of rows) console.log(`  ${r.ok ? 'ok  ' : 'FAIL'} ${r.name}: ${r.detail}`);

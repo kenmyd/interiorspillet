@@ -23,7 +23,9 @@ import { exteriorPlan } from './exterior.js';
  *   • outside     reached through a window or an outer door, OUTSIDE shows the exterior (terrain, terrace, backdrops)
  *                 and the FACADE of every room whose geometry box (clipped as above) falls in the rectangle – the
  *                 outer walls of both levels belong to their rooms' surfaces; going on through that room's windows
- *                 shows its contents.
+ *                 shows its contents. A room's box holds the whole swing of the doors it owns (sweptLeafBox: the open
+ *                 leaf of door-ute stands a metre out on the forecourt). An eye in no room's plan but close to one
+ *                 (just out of an outer door, in a wall's thickness) starts in those rooms and in OUTSIDE.
  *   • occluders   the floor of the upper level (its rooms' plans grown by an outer wall, minus the stairwell) joined
  *                 with the terrace deck (exteriorPlan): an eye above it never sees a box wholly under it – the box's
  *                 corners projected from the eye onto the deck plane must lie under the cover. So the living room's
@@ -73,16 +75,18 @@ import { exteriorPlan } from './exterior.js';
  *                        state = { camera, playerPosition, player, … } (Game.js; the sandbox: { camera })
  *     setOverview(on)    the editor's overview / plan: show everything (true) until called with false
  *     setEnabled(on)     turn the culling on / off at run time (off: everything shown)
- *     refresh()          recompute on the next update (a portal or the scene changed)
+ *     refresh()          recompute on the next update (a portal or the scene changed): the per-mesh lists and the
+ *                        rooms' boxes are collected again (the lists also on SceneSync 'built', the design's wall /
+ *                        window / paint / load, and when a listed mesh has left its parent)
  *     levelVisible(id), contentsVisible(roomId), surfacesVisible(roomId)
- *     stats              { active, cells, seen, surfaces, outside, hidden, items, trimmed, visits, changes, updates,
+ *     stats              { active, cells, seen, surfaces, outside, hidden, items, trimmed, visits, changes, updates, collects,
  *                          ms }
  *     graph              visibilityGraph(layout, …) (cells, portals, deps)
  *     dispose()          shows everything again and removes the hooks
  *   }
  *
  * Pure (Node-testable): visibilityGraph(layout, { boxes }), cellsAt(graph, layout, eye), traverse(graph, camera,
- * { eye, starts, isOpen }), OUTSIDE.
+ * { eye, starts, isOpen }), seenThrough(box, views, vp, eye), sweptLeafBox(door), OUTSIDE.
  */
 
 export const OUTSIDE = 'ute';
@@ -298,8 +302,9 @@ export function visibilityGraph(layout, { boxes = null } = {}) {
 }
 
 /**
- * The cell(s) an eye is in. In a doorway, a reveal or the slab of the stairwell: the two cells of that portal. Above
- * the ceiling of its room (an overview camera): null (show everything). Pure.
+ * The cell(s) an eye is in. In a doorway, a reveal or the slab of the stairwell: the two cells of that portal. In no
+ * room's plan but within NEAR_ROOM of some: those rooms and OUTSIDE. Above the ceiling of its room (an overview
+ * camera): null (show everything). Pure.
  * @param {object} graph   visibilityGraph
  * @param {object} layout
  * @param {{x:number, y:number, z:number}} eye  world
@@ -314,9 +319,11 @@ export function cellsAt(graph, layout, eye) {
   const lv = h.levelAt ? h.levelAt(eye.y) : null;
   const room = lv ? graph.rooms.find((r) => r.levelId === lv.id && inPoly(eye.x, eye.z, r.polygon)) : null;
   if (room) return eye.y > (room.ceilingTop ?? room.floorY + 2.4) + 0.3 ? null : [room.id];
-  // in the thickness of a wall, between two plans: the rooms of the level close by
+  // in the thickness of a wall or just outside an outer wall (in no plan, out of every doorway's IN_PORTAL): the rooms
+  // of the level close by AND the outside – stepping out of door-ute the eye is past the hole's far face (so the walk
+  // from the entrance may not pass it back out) but still within NEAR_ROOM of the entrance's plan
   const near = lv ? graph.rooms.filter((r) => r.levelId === lv.id && distPoly(eye.x, eye.z, r.polygon) <= NEAR_ROOM) : [];
-  if (near.length) return near.map((r) => r.id);
+  if (near.length) return [...near.map((r) => r.id), OUTSIDE];
   return [OUTSIDE];
 }
 
@@ -476,6 +483,39 @@ export function seenThrough(box, views, vp, eye) {
   return false;
 }
 
+/** Leaf positions sampled from shut to open by sweptLeafBox (every ≤ 30°: 90° is one of them for 90 / 180°). */
+const SWEEP_STEPS = 6;
+/**
+ * World box of a door's leaves over their whole swing, shut → open (world/Door.js: leaves[].pivot turns about y to
+ * door._angleFor(leaf, 1)), grown by a few cm for the angles between the samples. The leaves are left as they were.
+ * An outer door's open leaf stands outside its room's walls (door-ute opens out to x 9.88, the terrace door onto the
+ * deck): its owner's box must hold it or the facade test drops the room – and the leaf with it – once the box is behind
+ * the camera. Null without leaves.
+ * @param {object} door  world/Door.js
+ * @returns {THREE.Box3|null}
+ */
+export function sweptLeafBox(door) {
+  const box = new THREE.Box3();
+  const tmp = new THREE.Box3();
+  for (const leaf of door?.leaves || []) {
+    const pv = leaf?.pivot;
+    if (!pv?.isObject3D) continue;
+    const saved = pv.rotation.y;
+    const full = typeof door._angleFor === 'function' ? door._angleFor(leaf, 1) : (leaf.hingeSide ?? 1) * (door.swing ?? 1) * (door.openAngle ?? Math.PI / 2);
+    try {
+      for (let i = 0; i <= SWEEP_STEPS; i++) {
+        pv.rotation.y = (full * i) / SWEEP_STEPS;
+        pv.updateWorldMatrix(true, true);
+        box.union(tmp.setFromObject(pv));
+      }
+    } finally {
+      pv.rotation.y = saved;
+      pv.updateWorldMatrix(true, true);
+    }
+  }
+  return box.isEmpty() ? null : box.expandByScalar(0.05);
+}
+
 /**
  * @param {object} home    createHome result (roots, doors, windows, sync, design, lighting)
  * @param {object} layout  home/layout.js
@@ -493,7 +533,7 @@ export function createVisibility(home, layout) {
   // &vistrim=0: no per-mesh trimming of dependency-only rooms (comparisons)
   const trimOn = params?.get('vistrim') !== '0';
 
-  const stats = { active: false, cells: null, seen: [], surfaces: [], outside: true, hidden: 0, items: 0, visits: 0, changes: 0, updates: 0, ms: 0 };
+  const stats = { active: false, cells: null, seen: [], surfaces: [], outside: true, hidden: 0, items: 0, visits: 0, changes: 0, updates: 0, ms: 0, collects: 0 };
   const vis = {
     enabled: false,
     home,
@@ -525,22 +565,6 @@ export function createVisibility(home, layout) {
     if (roots.wall) living.contents.push(roots.wall);
   }
 
-  // room geometry boxes for the facade test (the scene's world matrices are up to date: createHome ran
-  // scene.updateMatrixWorld before the lights and the furniture)
-  const geomBoxes = {};
-  const tmp = new THREE.Box3();
-  for (const [id, u] of units) {
-    const b = new THREE.Box3();
-    for (const o of u.surfaces) {
-      o.updateWorldMatrix?.(true, true);
-      b.union(tmp.setFromObject(o));
-    }
-    if (!b.isEmpty()) geomBoxes[id] = b;
-  }
-  const graph = visibilityGraph(layout, { boxes: geomBoxes });
-  if (!graph) return vis;
-  vis.graph = graph;
-
   // the doors' real owners in the scene (the room group a leaf hangs in) – a dependency of both rooms it joins
   const ownerOf = (o) => {
     for (let p = o; p; p = p.parent) {
@@ -549,52 +573,105 @@ export function createVisibility(home, layout) {
     }
     return null;
   };
+  const doorList = (home.doors || []).filter((d) => d?.door);
+
+  // room geometry boxes for the facade test (the scene's world matrices are up to date: createHome ran
+  // scene.updateMatrixWorld before the lights and the furniture), each with the swing of the doors it owns (an open
+  // outer leaf stands outside the walls: sweptLeafBox)
+  const tmp = new THREE.Box3();
+  const roomGeomBoxes = () => {
+    const out = {};
+    for (const [id, u] of units) {
+      const b = new THREE.Box3();
+      for (const o of u.surfaces) {
+        o.updateWorldMatrix?.(true, true);
+        b.union(tmp.setFromObject(o));
+      }
+      if (!b.isEmpty()) out[id] = b;
+    }
+    for (const d of doorList) {
+      const owner = ownerOf(d.door.root) ?? h.openingsById?.[d.id]?.roomId ?? null;
+      const sb = owner && units.has(owner) ? sweptLeafBox(d.door) : null;
+      if (sb) out[owner] = out[owner] ? out[owner].union(sb) : sb;
+    }
+    return out;
+  };
+  const graph = visibilityGraph(layout, { boxes: roomGeomBoxes() });
+  if (!graph) return vis;
+  vis.graph = graph;
+
   const doorsById = new Map();
-  for (const d of home.doors || []) {
-    if (!d?.door) continue;
+  for (const d of doorList) {
     doorsById.set(d.id, d.door);
     const owner = ownerOf(d.door.root);
     const conn = h.openingsById?.[d.id]?.connects || d.connects || [];
     for (const c of conn) if (owner && c !== owner && graph.deps.has(c)) graph.deps.get(c).add(owner);
   }
 
+  // meshes hidden with the camera layer (dependency-only rooms, contents out of view)
+  const trimmed = new Set();
+  const setTrim = (m, hide) => {
+    if (hide) {
+      if (!trimmed.has(m)) {
+        m.layers.disable(0);
+        trimmed.add(m);
+        stats.changes++;
+      }
+    } else if (trimmed.delete(m)) {
+      m.layers.enable(0);
+      stats.changes++;
+    }
+  };
+
   // the meshes of each room's surfaces with their world boxes: a room shown only because a seen room depends on it
   // keeps just the meshes on that seen room's boundary (its plan grown by TRIM) – the rest is hidden per mesh with
   // the camera layer (layers, not .visible: the editor's cut toggles .visible of these meshes in an overview). Door
-  // roots are never trimmed (their leaves swing).
+  // roots are never trimmed (their leaves swing). The lists are collected again (collectMeshes) when the scene may
+  // have rebuilt meshes: refresh(), SceneSync 'built', the design's wall / window / paint / load, and whenever apply()
+  // meets a mesh that has left its parent.
   const doorRoots = new Set([...doorsById.values()].map((d) => d.root).filter(Boolean));
   const meshesOf = new Map();
-  for (const [id, u] of units) {
-    const list = [];
-    const walk = (o) => {
-      if (doorRoots.has(o)) return;
-      if ((o.isMesh || o.isLine || o.isPoints) && o.geometry && (o.layers.mask & 1)) {
-        const b = new THREE.Box3().setFromObject(o);
-        if (!b.isEmpty()) list.push({ mesh: o, box: boxOf(b) });
-      }
-      for (const c of o.children) walk(c);
-    };
-    for (const o of u.surfaces) walk(o);
-    // outer: the mesh reaches out of the room's plan (cladding, windows, roof, eaves) – what a facade seen from outside
-    // is made of; a mesh inside the plan (inner wall faces, floor, ceiling, trims) is only seen from inside
-    const rects = rectilinearBoxes(graph.rooms.find((r) => r.id === id)?.polygon ?? []);
-    const inside = (x, z) => rects.some((b) => x >= b.minX - FACADE_IN && x <= b.maxX + FACADE_IN && z >= b.minZ - FACADE_IN && z <= b.maxZ + FACADE_IN);
-    for (const e of list) e.outer = !rects.length || ![[e.box.min[0], e.box.min[2]], [e.box.min[0], e.box.max[2]], [e.box.max[0], e.box.min[2]], [e.box.max[0], e.box.max[2]]].every(([x, z]) => inside(x, z));
-    meshesOf.set(id, list);
-  }
   const contentMeshes = new Map();
-  for (const [id, u] of units) {
+  let meshesDirty = true;
+  const meshList = (objs, skip) => {
     const list = [];
     const walk = (o) => {
-      if ((o.isMesh || o.isLine || o.isPoints) && o.geometry && (o.layers.mask & 1)) {
+      if (skip?.has(o)) return;
+      if ((o.isMesh || o.isLine || o.isPoints) && o.geometry && (o.layers.mask & 1 || trimmed.has(o))) {
         const b = new THREE.Box3().setFromObject(o);
         if (!b.isEmpty()) list.push({ mesh: o, box: boxOf(b) });
       }
       for (const c of o.children) walk(c);
     };
-    for (const o of u.contents) walk(o);
-    contentMeshes.set(id, list);
+    for (const o of objs) if (o) walk(o);
+    return list;
+  };
+  const planOf = new Map(graph.rooms.map((r) => [r.id, rectilinearBoxes(r.polygon)]));
+  function collectMeshes() {
+    meshesDirty = false;
+    stats.collects++;
+    meshesOf.clear();
+    contentMeshes.clear();
+    const live = new Set();
+    for (const [id, u] of units) {
+      const list = meshList(u.surfaces, doorRoots);
+      // outer: the mesh reaches out of the room's plan (cladding, windows, roof, eaves) – what a facade seen from
+      // outside is made of; a mesh inside the plan (inner wall faces, floor, ceiling, trims) is only seen from inside
+      const rects = planOf.get(id) ?? [];
+      const inside = (x, z) => rects.some((b) => x >= b.minX - FACADE_IN && x <= b.maxX + FACADE_IN && z >= b.minZ - FACADE_IN && z <= b.maxZ + FACADE_IN);
+      for (const e of list) {
+        e.outer = !rects.length || ![[e.box.min[0], e.box.min[2]], [e.box.min[0], e.box.max[2]], [e.box.max[0], e.box.min[2]], [e.box.max[0], e.box.max[2]]].every(([x, z]) => inside(x, z));
+        live.add(e.mesh);
+      }
+      meshesOf.set(id, list);
+      const cl = meshList(u.contents, null);
+      for (const e of cl) live.add(e.mesh);
+      contentMeshes.set(id, cl);
+    }
+    // a mesh trimmed before and gone from the lists (rebuilt, removed) gets its camera layer back and is forgotten
+    for (const m of [...trimmed]) if (!live.has(m)) setTrim(m, false);
   }
+  collectMeshes();
   const regionsOf = new Map(
     graph.rooms.map((r) => {
       const y0 = r.floorY - 0.35, y1 = (r.ceilingTop ?? r.floorY + 2.4) + 0.35;
@@ -626,7 +703,12 @@ export function createVisibility(home, layout) {
   let itemsDirty = true;
   const sync = home.sync;
   const offs = [];
-  if (sync?.on) for (const ev of ['built', 'moved', 'removed']) offs.push(sync.on(ev, () => ((itemsDirty = true), (dirty = true))));
+  if (sync?.on) {
+    for (const ev of ['built', 'moved', 'removed']) offs.push(sync.on(ev, () => ((itemsDirty = true), (dirty = true))));
+    offs.push(sync.on('built', () => (meshesDirty = true)));
+  }
+  // the design rebuilds meshes of the room groups (the wall design, the window shading, a repaint)
+  if (home.design?.on) for (const ev of ['wall', 'window', 'paint', 'load']) offs.push(home.design.on(ev, () => ((meshesDirty = true), (dirty = true))));
   const roomsForBox = (b) => {
     const out = [];
     for (const r of graph.rooms) {
@@ -640,8 +722,7 @@ export function createVisibility(home, layout) {
   };
   // a piece that reaches out of its rooms' plans (a sill ornament in the window reveal, a plant through a wall) is also
   // seen from outside with its room's facade
-  const planRects = new Map(graph.rooms.map((r) => [r.id, rectilinearBoxes(r.polygon)]));
-  const inPlans = (ids, x, z) => ids.some((id) => (planRects.get(id) || []).some((b) => x >= b.minX - 0.02 && x <= b.maxX + 0.02 && z >= b.minZ - 0.02 && z <= b.maxZ + 0.02));
+  const inPlans = (ids, x, z) => ids.some((id) => (planOf.get(id) || []).some((b) => x >= b.minX - 0.02 && x <= b.maxX + 0.02 && z >= b.minZ - 0.02 && z <= b.maxZ + 0.02));
   const mapItems = () => {
     itemsDirty = false;
     itemRooms.clear();
@@ -706,19 +787,6 @@ export function createVisibility(home, layout) {
     for (const o of hidden) o.visible = false;
     for (const o of hiddenItems.keys()) o.visible = false;
     for (const m of trimmed) m.layers.disable(0);
-  };
-  const trimmed = new Set(); // meshes hidden with the camera layer (dependency-only rooms)
-  const setTrim = (m, hide) => {
-    if (hide) {
-      if (!trimmed.has(m)) {
-        m.layers.disable(0);
-        trimmed.add(m);
-        stats.changes++;
-      }
-    } else if (trimmed.delete(m)) {
-      m.layers.enable(0);
-      stats.changes++;
-    }
   };
   const anyHidden = () => hidden.size > 0 || hiddenItems.size > 0 || trimmed.size > 0;
 
@@ -804,6 +872,22 @@ export function createVisibility(home, layout) {
       const vs = links.filter((x) => seen.has(x)).map(viewsOf);
       return !vs.length || vs.includes(ALL) ? ALL : vs.flat();
     };
+    if (meshesDirty) collectMeshes();
+    // a mesh that has left its parent (a rebuild): out of the lists now, collected again on the next update
+    const prune = (list) => {
+      let j = 0;
+      for (let i = 0; i < list.length; i++) {
+        const e = list[i];
+        if (e.mesh.parent) list[j++] = e;
+        else {
+          setTrim(e.mesh, false);
+          meshesDirty = dirty = true;
+        }
+      }
+      list.length = j;
+    };
+    for (const list of meshesOf.values()) prune(list);
+    for (const list of contentMeshes.values()) prune(list);
     for (const [id, list] of meshesOf) {
       let trim = trimOn && surfaces.has(id) && !seen.has(id) && !graph.hudLinks.has(id);
       const regions = [];
@@ -912,6 +996,9 @@ export function createVisibility(home, layout) {
   vis.refresh = () => {
     dirty = true;
     itemsDirty = true;
+    meshesDirty = true;
+    // the rooms' geometry boxes again (never smaller than before: the facade test stays conservative)
+    for (const [id, b] of Object.entries(roomGeomBoxes())) if (graph.boxes.has(id)) graph.boxes.set(id, unionBox(graph.boxes.get(id), boxOf(b)));
   };
   vis.levelVisible = (id) => roots.levels[id]?.visible !== false;
   vis.contentsVisible = (roomId) => !state.seen || state.seen.has(roomId) || (graph.hudLinks.get(roomId) || []).some((x) => state.seen.has(x));
