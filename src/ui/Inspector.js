@@ -4,6 +4,7 @@ import { ICONS } from './icons.js';
 import { getArchetype } from '../models/registry.js';
 import { materialOptions, kindGroup, resolveColor, MATERIAL_LABELS, MATERIAL_KINDS, defaultColor } from '../home/materials.js';
 import { itemAbsorption, rt60For } from '../design/Acoustics.js';
+import { itemLevel, levelFloorY } from '../design/SceneSync.js';
 import palette from '../data/palette.json';
 import {
   thumbnail, cachedThumbnail, priceInfo, priceEl, variantSwatch, variantColors, colorDist, dimsText, storeLink,
@@ -409,13 +410,30 @@ export class Inspector extends BasePanel {
     return bestD < 110 ? best : p.defaultVariant ?? 0;
   }
 
-  _ceilingAt(x, z) {
+  /**
+   * The ceiling over (x, z), world y like the item's position: the ceiling of the item's level (§1.8 – the living
+   * room's for a first-floor item, as before).
+   */
+  _ceilingAt(x, z, item = null) {
     const home = this.editor.home;
+    const base = this._floorOfLevel(item);
     try {
-      return home.ceilingHeightAt?.(x, z) ?? this.editor.layout?.ceilingHeightAt?.(x, z) ?? 2.4;
+      const c = home.ceilingHeightAt?.(x, z, base + 1) ?? this.editor.layout?.ceilingHeightAt?.(x, z, base + 1);
+      return Number.isFinite(c) ? c : base + 2.4;
     } catch {
-      return 2.4;
+      return base + 2.4;
     }
+  }
+
+  /** World y of the floor of the item's level (0 on the first floor). */
+  _floorOfLevel(item) {
+    return levelFloorY(this.editor.layout, itemLevel(item, this.editor.layout));
+  }
+
+  /** The walls of the item's level (home.walls; the shell's carry no levelId: the main level). */
+  _wallsOf(item) {
+    const lv = itemLevel(item, this.editor.layout);
+    return (this.editor.home?.walls || []).filter((w) => (w.levelId ?? 'hoved') === lv);
   }
 
   /** Parts the built model really has (userData.model.parts with meshes), or null when the model does not say. */
@@ -459,7 +477,7 @@ export class Inspector extends BasePanel {
 
   /** The wall (home.walls entry) a wall item hangs on. */
   _wallOf(item) {
-    const walls = this.editor.home?.walls || [];
+    const walls = this._wallsOf(item);
     if (item.attach?.wallId) {
       const w = walls.find((x) => x.id === item.attach.wallId);
       if (w) return w;
@@ -510,9 +528,9 @@ export class Inspector extends BasePanel {
     for (const sx of [-0.5, 0.5]) for (const sz of [-0.5, 0.5]) {
       const x = p[0] + ax[0] * sx * (dims.w || 0) + az[0] * sz * (dims.d || 0);
       const z = p[2] + ax[1] * sx * (dims.w || 0) + az[1] * sz * (dims.d || 0);
-      min = Math.min(min, this._ceilingAt(x, z));
+      min = Math.min(min, this._ceilingAt(x, z, item));
     }
-    return Number.isFinite(min) ? min : this._ceilingAt(p[0], p[2]);
+    return Number.isFinite(min) ? min : this._ceilingAt(p[0], p[2], item);
   }
 
   /** New centre for a floor item whose depth changes, so its back stays against the wall it stood against. */
@@ -524,7 +542,7 @@ export class Inspector extends BasePanel {
     const p = old.position || [0, 0, 0];
     const bx = p[0] - (fx * old.dims.d) / 2;
     const bz = p[2] - (fz * old.dims.d) / 2;
-    for (const w of this.editor.home?.walls || []) {
+    for (const w of this._wallsOf(old)) {
       const n = w.normal;
       if (!n || n.x * fx + n.y * fz < 0.94) continue; // the wall must face the item's front
       const dist = (bx - w.start.x) * n.x + (bz - w.start.y) * n.y;
@@ -635,7 +653,7 @@ export class Inspector extends BasePanel {
    */
   _remount(item, spec) {
     if (!spec || item.mount === spec.mount) return null;
-    const walls = this.editor.home?.walls || [];
+    const walls = this._wallsOf(item);
     const p = item.position || [0, 0, 0];
     const r = ((item.rotationDeg || 0) * Math.PI) / 180;
     const fx = Math.sin(r);
@@ -657,7 +675,9 @@ export class Inspector extends BasePanel {
         if (!best || dist < best.dist) best = { w, dist, u, L };
       }
       const bottom = Number.isFinite(spec.params?.mountHeight) ? spec.params.mountHeight : 1.2;
-      const y = Math.round((bottom + h / 2) * 1000) / 1000;
+      // over the floor of the wall (world y: the basement's walls stand lower)
+      const fy = Number.isFinite(best?.w?.floorY) ? best.w.floorY : this._floorOfLevel(item);
+      const y = Math.round((fy + bottom + h / 2) * 1000) / 1000;
       if (!best) return { position: [p[0], y, p[2]], rotationDeg: item.rotationDeg || 0, attach: null };
       const { w, u, L } = best;
       const x = w.start.x + ((w.end.x - w.start.x) / L) * u;
@@ -671,7 +691,7 @@ export class Inspector extends BasePanel {
       const n = Array.isArray(nn) ? { x: nn[0], y: nn[2] } : wall?.normal ? { x: wall.normal.x, y: wall.normal.y } : { x: fx, y: fz };
       const half = (spec.dims?.d ?? 0.4) / 2 + 0.005;
       const rot = (Math.atan2(n.x, n.y) * 180) / Math.PI;
-      return { position: [p[0] + n.x * half, 0, p[2] + n.y * half], rotationDeg: Math.round(rot * 100) / 100, attach: null };
+      return { position: [p[0] + n.x * half, this._floorOfLevel(item), p[2] + n.y * half], rotationDeg: Math.round(rot * 100) / 100, attach: null };
     }
     return null;
   }
@@ -849,7 +869,7 @@ export class Inspector extends BasePanel {
     const dup = button({ label: 'Dupliser', size: 'sm', title: 'Lag en kopi ved siden av (Ctrl+D)', onClick: () => this.duplicate() });
     dup.prepend(svg(IC.copy));
     const reset = button({ label: 'Tilbakestill', icon: 'reset', size: 'sm', variant: 'ghost', title: product ? 'Tilbake til butikkens farger og mål' : 'Tilbake til slik møbelet er i dag', onClick: () => this.reset() });
-    const del = button({ label: 'Slett', size: 'sm', variant: 'danger', title: 'Fjern fra stua (Delete)', disabled: !!item.locked, onClick: () => this.remove() });
+    const del = button({ label: 'Slett', size: 'sm', variant: 'danger', title: 'Fjern fra rommet (Delete)', disabled: !!item.locked, onClick: () => this.remove() });
     del.prepend(svg(IC.trash));
     this.foot.append(dup, reset, del);
   }
@@ -874,7 +894,7 @@ export class Inspector extends BasePanel {
     } else {
       const label = item.source === 'existing' ? 'Eksisterende møbel' : 'Kopi av eksisterende møbel';
       badges.unshift(badge(label, 'info'));
-      kids.push(h('div.ipi-badges', {}, badges), h('div.ipi-store', { text: item.source === 'existing' ? 'Står i stua i dag – målt fra bilder og plantegning' : 'En kopi du har lagt til' }));
+      kids.push(h('div.ipi-badges', {}, badges), h('div.ipi-store', { text: item.source === 'existing' ? 'Står i huset i dag – målt fra bilder og plantegning' : 'En kopi du har lagt til' }));
       if (item.notes) {
         kids.push(h('details.ipi-details', {}, h('summary', { text: 'Notater fra oppmålingen' }), h('p.ipi-notes', { text: item.notes })));
       }
@@ -1164,7 +1184,8 @@ export class Inspector extends BasePanel {
     // pendants: distance from the ceiling
     if (item.mount === 'ceiling') {
       const schema = def?.params?.drop;
-      const ceil = this._ceilingAt(item.position?.[0] ?? 0, item.position?.[2] ?? 0);
+      // the ceiling's height over the floor of the lamp's level
+      const ceil = this._ceilingAt(item.position?.[0] ?? 0, item.position?.[2] ?? 0, item) - this._floorOfLevel(item);
       const values = { ...(def?.defaults?.params || {}), ...(item.params || {}) };
       const drop = typeof values.drop === 'number' ? values.drop : null;
       if (drop != null) {
@@ -1279,11 +1300,11 @@ export class Inspector extends BasePanel {
     kids.push(fitEl);
     if (ref) {
       const differs = ['w', 'd', 'h'].some((k) => Math.abs((item.dims?.[k] ?? 0) - (ref[k] ?? 0)) > 0.005);
-      const who = product ? `Mål fra ${product.store}` : item.source === 'existing' || this._original(item) ? 'Målt i stua' : 'Standardmål';
+      const who = product ? `Mål fra ${product.store}` : item.source === 'existing' || this._original(item) ? 'Målt i huset' : 'Standardmål';
       const hint = h('p.ipi-hint', { text: `${who}: ${dimsText(ref)}` });
       kids.push(hint);
       if (differs) {
-        kids.push(h('div.ipi-warn', {}, svg(ICONS.warning), h('span', { text: product ? `Egne mål – størrelsen avviker fra produktet hos ${product.store}.` : 'Størrelsen avviker fra møbelet i stua.' }),
+        kids.push(h('div.ipi-warn', {}, svg(ICONS.warning), h('span', { text: product ? `Egne mål – størrelsen avviker fra produktet hos ${product.store}.` : 'Størrelsen avviker fra møbelet som står der i dag.' }),
           h('button', { type: 'button', text: 'Bruk målene', on: { click: () => {
             this._apply(this._fit(item.uid, { dims: clone(ref) }).patch, { label: `Tilbakestill størrelse på ${item.name}` });
             this._render();
@@ -1335,16 +1356,19 @@ export class Inspector extends BasePanel {
     const kids = [];
     if (item.mount === 'wall') {
       const wallName = this.editor.home?.walls?.find((w) => w.id === item.attach?.wallId)?.name;
-      const y = item.position?.[1] ?? 1.4;
+      // heights over the floor of the wall it hangs on (world y − that floor: the basement's, the entrance's)
+      const wallInfo = this._wallOf(item);
+      const fy = Number.isFinite(wallInfo?.floorY) ? wallInfo.floorY : this._floorOfLevel(item);
+      const y = (item.position?.[1] ?? 1.4 + fy) - fy;
       const half = (item.dims?.h ?? 0.5) / 2;
-      const ceil = this._ceilingAt(item.position?.[0] ?? 0, item.position?.[2] ?? 0);
+      const ceil = this._ceilingAt(item.position?.[0] ?? 0, item.position?.[2] ?? 0, item) - fy;
       // the wall top over the item's span (sloped ceiling), not just the ceiling at its centre
       const caps = this._wallCaps(item);
       const top = caps ? caps.maxH + 0.04 : ceil;
       // through Placement.constrain: stays on the wall, under the ceiling and off windows/doors
       const setV = (v) => {
         const cur = this.design.get(item.uid)?.position || item.position;
-        this._apply(this._fit(item.uid, { position: [cur[0], v, cur[2]] }).patch, { coalesce: 'height', label: `Flytt ${item.name}` });
+        this._apply(this._fit(item.uid, { position: [cur[0], v + fy, cur[2]] }).patch, { coalesce: 'height', label: `Flytt ${item.name}` });
       };
       const live = throttle((v) => setV(v), 60);
       const hCtl = slider({

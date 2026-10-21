@@ -15,12 +15,16 @@
 // strafes) duplicates, arrow keys move 2 cm (Shift: 10 cm). Esc is handled by the Editor (deselect).
 //
 // Shared helpers for the other INTERACT modules (Placement, ViewModes): pickAt, cursorNDC, cursorClient,
-// ndcFromClient, Footprint, hintUI.
+// ndcFromClient, Footprint, hintUI, houseRoots, floorYAt, underlayY.
+// The whole house (notes/hele-huset-design.md §5.3): picking also tests every room's surfaces and contents
+// (home.roots.rooms[id], houseRoots – the bathroom, the basement …); the footprint gizmo stands on the floor of the
+// item's level (the entrance's lower floor too) and only that level's rugs lift it.
 import * as THREE from 'three';
 import { Highlighter } from '../core/Highlight.js';
 import { h, keycap } from '../ui/dom.js';
 import { openPanels } from '../ui/panelKit.js';
 import { SEAT, seatFor } from '../player/Seats.js';
+import { MAIN_LEVEL, itemLevel, levelFloorY } from './SceneSync.js';
 
 const DEG = Math.PI / 180;
 /** Pixels the pointer may travel before a press on the selected item becomes a drag. */
@@ -456,6 +460,7 @@ export function pickAt(editor, ndc, opts = {}) {
   const roots = [];
   for (const o of editor.sync.objects()) if (o.visible) roots.push(o);
   for (const k of ['shell', 'kitchen', 'wall', 'shading']) if (home.roots?.[k]) roots.push(home.roots[k]);
+  roots.push(...houseRoots(home)); // the other rooms' surfaces and built-ins (bathroom, basement …)
   for (const r of views?.pickRoots?.() || []) roots.push(r); // the overview's cut copy of the shell
   const hits = intersectFast(roots, _ray);
   for (const hit of hits) {
@@ -482,6 +487,22 @@ export function pickAt(editor, ndc, opts = {}) {
     return result;
   }
   return null;
+}
+
+/**
+ * The scene roots of the house's rooms for picking (notes/hele-huset-design.md §5.3, integrator W0): every room's
+ * surfaces (walls, floors, ceilings, doors, windows – rooms.js; the stair) and contents (built-ins, lamp fittings).
+ * Not roots.levels (roots.shell and roots.kitchen are in there too); the living room's own group is empty.
+ * @param {object} home
+ * @returns {THREE.Object3D[]}
+ */
+export function houseRoots(home) {
+  const out = [];
+  for (const r of Object.values(home?.roots?.rooms || {})) {
+    if (r?.surfaces?.children?.length) out.push(r.surfaces);
+    if (r?.contents?.children?.length) out.push(r.contents);
+  }
+  return out;
 }
 
 /** Display name for an item ('Lenestol' …). */
@@ -623,6 +644,8 @@ export class Footprint {
     const mount = it.mount || 'floor';
     const wall = mount === 'wall';
     const { w, d, h: hh } = it.dims;
+    // the item's level: its floor and its rugs (the basement lies under the first floor, at the same x/z)
+    const lv = itemLevel(it, this.editor.layout);
     const p = it.position || [0, 0, 0];
     const g = this.group;
     // position + orientation
@@ -639,10 +662,10 @@ export class Footprint {
       if (y == null && mount === 'ceiling') {
         // on whatever is below the lamp (the table top), else the floor
         if (object) _box.setFromObject(object);
-        const from = object && Number.isFinite(_box.min.y) ? _box.min.y - 0.02 : 2.2;
-        y = this.editor.placement?.dropY?.(p[0], from, p[2], it.uid) ?? underlayY(this.editor, p[0], p[2], null);
+        const from = object && Number.isFinite(_box.min.y) ? _box.min.y - 0.02 : levelFloorY(this.editor.layout, lv) + 2.2;
+        y = this.editor.placement?.dropY?.(p[0], from, p[2], it.uid) ?? underlayY(this.editor, p[0], p[2], null, 'floor', lv);
       }
-      if (y == null) y = mount === 'floor' || mount === 'rug' ? underlayY(this.editor, p[0], p[2], it.uid, mount) : p[1];
+      if (y == null) y = mount === 'floor' || mount === 'rug' ? underlayY(this.editor, p[0], p[2], it.uid, mount, lv) : p[1];
       g.position.set(p[0], y + 0.004, p[2]);
       g.rotation.set(0, (it.rotationDeg || 0) * DEG, 0);
     }
@@ -771,12 +794,33 @@ export function worldPerPixel(cam, point, renderer) {
   return (2 * dist * Math.tan((cam.fov * DEG) / 2)) / hpx;
 }
 
-/** Height of the floor or the top of a rug under (x, z) – where an outline on the floor should be drawn. */
-export function underlayY(editor, x, z, selfUid = null, mount = 'floor') {
-  let y = 0;
-  if (mount === 'rug') return 0;
+/**
+ * World y of the floor of a level under (x, z): the floor of the level's room there (the entrance lies 0.30 under
+ * the basement's floor), else the level's floor. The main level without house data: 0, as before.
+ * @param {object} layout
+ * @param {number} x
+ * @param {number} z
+ * @param {string} [level]
+ * @returns {number}
+ */
+export function floorYAt(layout, x, z, level = MAIN_LEVEL) {
+  const base = levelFloorY(layout, level);
+  const h = layout?.house;
+  if (typeof h?.roomAt !== 'function') return base;
+  const room = h.roomAt(x, base + 0.9, z, { levelId: level });
+  return Number.isFinite(room?.floorY) ? room.floorY : base;
+}
+
+/**
+ * Height (world y) of the floor or the top of a rug under (x, z) on a level – where an outline on the floor should
+ * be drawn. Only rugs of that level count (the basement lies under the first floor, at the same x/z).
+ */
+export function underlayY(editor, x, z, selfUid = null, mount = 'floor', level = MAIN_LEVEL) {
+  const layout = editor.layout;
+  let y = floorYAt(layout, x, z, level);
+  if (mount === 'rug') return y;
   for (const it of editor.design.list({ mount: 'rug' })) {
-    if (it.uid === selfUid || it.hidden) continue;
+    if (it.uid === selfUid || it.hidden || itemLevel(it, layout) !== level) continue;
     const t = (it.rotationDeg || 0) * DEG;
     const dx = x - it.position[0], dz = z - it.position[2];
     const lx = dx * Math.cos(t) - dz * Math.sin(t);
@@ -821,6 +865,8 @@ const CSS = `
 .ix-scalebar__bar { height: 0.42em; border: 2px solid var(--kv-ink); border-top: none; }
 .ix-scalebar__row { display: flex; align-items: center; justify-content: space-between; gap: 0.8em; }
 .ix-scalebar__north { font-weight: 700; color: var(--kv-accent); }
+.ix-scalebar__level { font-weight: 700; color: var(--kv-ink); letter-spacing: 0.02em; }
+.ix-scalebar__level[hidden] { display: none; }
 `;
 
 const _hints = new WeakMap();

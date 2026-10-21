@@ -40,10 +40,71 @@ import { applyWallDesign } from '../models/walldesigns.js';
  * than 0.3 m gets a collision box (collision.addDynamicBox) that follows it – one box for the whole AABB, or one per
  * entry of userData.model.colliders ([{ min: [x,y,z], max: [x,y,z] }] in model space) when the builder gives them.
  * Mount rules: floor/surface/rug/soft at item.position with rotationDeg; wall: local +z = attach.normal (else the
- * wall's normal, else rotationDeg), attach.tilt leans the top back; ceiling: hangs from home.ceilingHeightAt(x, z).
+ * wall's normal, else rotationDeg), attach.tilt leans the top back; ceiling: hangs from home.ceilingHeightAt(x, z, y).
+ *
+ * Levels (notes/hele-huset-design.md §5.3, §5.5; DesignState v2, steg 16 E3): in memory an item's position is WORLD
+ * space and `item.level` names the level it stands on (a layout.house.levels id); the saved design keeps y over the
+ * level's floor (DesignState converts). placeObject puts the model at the position as it is; a ceiling item hangs from
+ * the ceiling of its level; the collision box and the rug zone start at the floor of its level (the entrance's lower
+ * floor included). The helpers below are shared by the editor (Placement, Selection, ViewModes, Inspector): an item
+ * without a known level (a design of before the house) is on the level its y lies in, as DesignState decides.
  */
 
 const DEG = Math.PI / 180;
+/** The first floor (layout.js MAIN_LEVEL_ID): the level of an item without one. */
+export const MAIN_LEVEL = 'hoved';
+
+/**
+ * Level id of a design item: `item.level` when the layout knows it, else the level its y (world) lies in (a ceiling
+ * item hangs just under its ceiling), else the main level.
+ * @param {object} item
+ * @param {object} [layout]  home/layout.js (without it only item.level counts)
+ * @returns {string}
+ */
+export function itemLevel(item, layout = null) {
+  const lv = typeof item?.level === 'string' && item.level ? item.level : null;
+  const known = layout?.house?.levelsById;
+  if (lv && (!known || known[lv])) return lv;
+  if (!layout?.house?.levelAt) return lv ?? MAIN_LEVEL;
+  const y = Number(item?.position?.[1]) || 0;
+  return levelAtY(layout, item?.mount === 'ceiling' ? y - 0.1 : y + 0.05);
+}
+
+/**
+ * World y of a level's floor (0 for the main level and for unknown ids).
+ * @param {object} layout  home/layout.js
+ * @param {string} levelId
+ * @returns {number}
+ */
+export function levelFloorY(layout, levelId) {
+  const h = layout?.house;
+  const lv = h?.levelsById?.[levelId] ?? h?.level?.(levelId) ?? null;
+  return Number.isFinite(lv?.floorY) ? lv.floorY : 0;
+}
+
+/**
+ * The level a world point of the house is on, for the editor: the level whose floor band holds y (feet / an item's
+ * base; layout.house.levelAt takes the body centre, so 0.9 is added). Without house data: the main level.
+ * @param {object} layout
+ * @param {number} y  world y (a floor point)
+ * @returns {string}
+ */
+export function levelAtFloorY(layout, y) {
+  return levelAtY(layout, (Number.isFinite(y) ? y : 0) + 0.9);
+}
+
+/**
+ * The level a world point inside a room is on (a lamp under a ceiling, a point on a table; layout.house.levelAt).
+ * @param {object} layout
+ * @param {number} y  world y
+ * @returns {string}
+ */
+export function levelAtY(layout, y) {
+  const h = layout?.house;
+  if (typeof h?.levelAt !== 'function') return MAIN_LEVEL;
+  return h.levelAt(Number.isFinite(y) ? y : 0)?.id ?? MAIN_LEVEL;
+}
+
 const REBUILD = ['archetype', 'dims', 'params', 'mount'];
 const PLACE = ['position', 'rotationDeg', 'attach'];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -229,7 +290,9 @@ export class SceneSync extends Emitter {
       const yaw = n ? Math.atan2(n[0], n[2]) : (item.rotationDeg || 0) * DEG;
       object.rotation.set(-(item.attach?.tilt || 0) * DEG, yaw, 0, 'YXZ');
     } else if (item.mount === 'ceiling') {
-      const h = this.home.ceilingHeightAt?.(p[0], p[2]);
+      // the ceiling of the item's level (world y; one metre over its floor picks the level, §1.8)
+      const base = levelFloorY(this.home.layout, itemLevel(item, this.home.layout));
+      const h = this.home.ceilingHeightAt?.(p[0], p[2], base + 1);
       if (Number.isFinite(h)) object.position.y = h;
     }
     object.updateMatrixWorld(true);
@@ -616,10 +679,11 @@ export class SceneSync extends Emitter {
     } else {
       boxes.push(new THREE.Box3().setFromObject(object));
     }
+    const floor = this._floorOf(item);
     for (const b of boxes) {
       // a little slack so chairs pushed under the table do not trap the player
       b.expandByVector(_v.set(-0.02, 0, -0.02));
-      b.min.y = Math.max(b.min.y, 0);
+      b.min.y = Math.max(b.min.y, floor);
     }
     if (entry.handles.length !== boxes.length) {
       for (const h of entry.handles) this.collision.removeDynamic(h);
@@ -640,9 +704,20 @@ export class SceneSync extends Emitter {
     object.updateMatrixWorld(true);
     const b = new THREE.Box3().setFromObject(object);
     if (b.isEmpty()) return;
-    b.min.y = Math.min(b.min.y, 0) - 0.05;
-    b.max.y = Math.max(b.max.y, 0) + 0.25;
+    const floor = this._floorOf(item);
+    b.min.y = Math.min(b.min.y, floor) - 0.05;
+    b.max.y = Math.max(b.max.y, floor) + 0.25;
     entry.zone = this.collision.addSurfaceZone(b, 'rug');
+  }
+
+  /**
+   * World y of the floor an item stands on: its level's floor, or lower when the item stands lower (the entrance lies
+   * 0.30 under the basement level's floor). 0 for every item of the main level, as before.
+   */
+  _floorOf(item) {
+    const lv = itemLevel(item, this.home.layout);
+    if (lv === MAIN_LEVEL) return 0;
+    return Math.min(levelFloorY(this.home.layout, lv), Number(item.position?.[1]) || 0);
   }
 
   _dropZone(entry) {

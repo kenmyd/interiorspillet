@@ -4,6 +4,7 @@ import { computeAcoustics } from './Acoustics.js';
 import { Selection } from './Selection.js';
 import { Placement } from './Placement.js';
 import { ViewModes } from './ViewModes.js';
+import { MAIN_LEVEL, levelAtFloorY } from './SceneSync.js';
 import { Toolbar } from '../ui/Toolbar.js';
 import { CatalogPanel } from '../ui/CatalogPanel.js';
 import { Inspector } from '../ui/Inspector.js';
@@ -25,6 +26,9 @@ import { isTyping } from '../ui/dom.js';
  *   game, home, design, sync, saves, layout, events (= game.events), input, camera, renderer, scene, hud, uiRoot, catalog
  *   acoustics() → computeAcoustics(design, home) (cached until the next design change)
  *   selection, placement, views
+ *   level → levelId               the level the editor works on: the overview's / plan's (views.level), else the
+ *                                 player's (playerLevel()); new items are placed on it (item.level, §5.3)
+ *   ?view=plan&floor=kjeller      opens the plan (or the overview) of that level (§5.2)
  *   ui: { toolbar, catalog, inspector, wall, window, light, saves, shopping, acoustics, photo }
  *   selected: { kind: 'item'|'wall'|'window'|null, uid?, wallId?, windowId? }
  *   select(target|null)          sets selected, emits 'select' { selected, previous }, opens the matching panel
@@ -117,8 +121,36 @@ export class Editor {
     };
     window.addEventListener('keydown', this._onKey);
 
+    // ?view=orbit|plan, &floor=<level id> (hoved, kjeller – §5.2): that level instead of the player's
     const view = game.dev?.params?.get?.('view');
-    if (view && view !== 'walk') this.views.set(view);
+    const floor = levelParam(game.dev?.params?.get?.('floor'), this.layout);
+    if (floor) this.views.setLevel?.(floor, { instant: true });
+    if (view && view !== 'walk') this.views.set(view, floor ? { level: floor } : undefined);
+  }
+
+  /**
+   * The level the editor works on (notes/hele-huset-design.md §5.3): the overview's / plan's level, else the
+   * player's (walking, the photo camera's from its height).
+   * @returns {string} layout.house.levels id
+   */
+  get level() {
+    const v = this.views;
+    if (v && (v.mode === 'orbit' || v.mode === 'plan') && v.level) return v.level;
+    if (v?.mode === 'photo') {
+      const cam = this.activeCamera;
+      cam?.updateMatrixWorld?.();
+      return levelAtFloorY(this.layout, (cam?.getWorldPosition?.(new THREE.Vector3()).y ?? 1.6) - 1.6);
+    }
+    return this.playerLevel();
+  }
+
+  /** The player's level: Game's (with the stair's hysteresis), else from the feet. */
+  playerLevel() {
+    const g = this.game;
+    const known = this.layout?.house?.levelsById;
+    if (g?._levelId && (!known || known[g._levelId])) return g._levelId;
+    const p = g?.player?.position;
+    return p ? levelAtFloorY(this.layout, p.y) : MAIN_LEVEL;
   }
 
   /** Reverberation result for the current design (cached until the next change). */
@@ -277,6 +309,18 @@ export class Editor {
 
 function pickOf(object) {
   for (let o = object; o; o = o.parent) if (o.userData?.pick) return o.userData.pick;
+  return null;
+}
+
+/** ?floor= → a level id: the id itself, its name («kjeller», «1. etasje»), or 1 / 0 / -1 style numbers. */
+function levelParam(v, layout) {
+  if (!v) return null;
+  const levels = layout?.house?.levels || [];
+  const s = String(v).trim().toLowerCase();
+  const hit = levels.find((l) => l.id.toLowerCase() === s || String(l.name || '').toLowerCase() === s);
+  if (hit) return hit.id;
+  if (/^(1|hoved|1etg|1\.etg|main)$/.test(s)) return levels.find((l) => l.id === MAIN_LEVEL)?.id ?? null;
+  if (/^(0|-1|u|kjeller|underetasje|basement)$/.test(s)) return levels[levels.length - 1]?.id ?? null;
   return null;
 }
 

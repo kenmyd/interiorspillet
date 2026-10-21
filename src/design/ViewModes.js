@@ -25,12 +25,27 @@
 // key bar above the toolbar, beside open side panels): opening the catalogue or the inspector slides the view over
 // (a view offset in the overview, a shifted camera in the plan) and the selected item is panned into view. The
 // walk view's compass is hidden in the other views.
+//
+// The whole house (notes/hele-huset-design.md §5.2, steg 15 E2 + 28 E4): the overview and the plan show ONE level
+// (`level`, a layout.house.levels id) – every room of it: the living room's shell and the rooms' surfaces
+// (home.roots.rooms[id].surfaces) are cut the same way, a backOf face goes with the slab it is the back of, the plan
+// labels every room (the living room by its zones, as before) and draws each door swing once (on its owner wall).
+//   level · levels [{ id, name }] · levelName
+//   setLevel(id, { instant }) · stepLevel(+1 up | −1 down)   PageUp / PageDown and the toolbar's «Etasje» button
+//   set(mode, { level })      opening the overview / plan from walking shows the player's level (editor.playerLevel)
+// The levels above the shown one, the upper parts of the outside (deck, railings) and their furniture, shading and
+// wall designs are hidden (invisible shadow casters, so the light does not change); the stair is cut at the
+// shown level's ceiling. The plan camera stands over the level's highest ceiling and looks at its floor. Emits
+// 'view-level' { level } on editor.events when the level changes.
+// The overview's framing is refitted while the HUD settles (toolbar, key bar) until the user moves the view, so
+// the same URL always gives the same picture.
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { paint } from '../home/materials.js';
 import { anyModalOpen, openPanels } from '../ui/panelKit.js';
 import { h } from '../ui/dom.js';
 import { hintUI, ndcFromClient, cachedRect } from './Selection.js';
+import { MAIN_LEVEL, itemLevel } from './SceneSync.js';
 import { overUi } from '../core/Input.js';
 
 const MODES = ['walk', 'orbit', 'plan', 'photo'];
@@ -43,6 +58,10 @@ const PLAN_UP = new THREE.Vector3(-1, 0, 0); // north (−x) up, east (−z) rig
 const STUB_H = 0.24;
 const CAP_LIFT = 0.006;
 const CLICK_PX = 5;
+/** The plan camera of the top level stands this high over its floor (as before the house: y 6). */
+const PLAN_CAM_TOP = 6;
+/** How long (s of frames) the overview keeps refitting while the HUD settles, at most. */
+const REFIT_SECONDS = 3;
 
 const _v = new THREE.Vector3();
 const _v2 = new THREE.Vector3();
@@ -97,13 +116,19 @@ export class ViewModes {
     this._panAnim = null;
     this._compassHidden = false;
     this._hudKey = '';
+    this._cuts = new Map(); // levelId → cut model (see _prepareCut)
+    this._cutLevel = null;
+    this._overlays = new Map(); // levelId → overlay group
+    this._overlayParts = new Map(); // wallId → { cap, stub, side } (every level)
+    this._overlayGeos = [];
+    this._upper = null; // { level, meshes: Set } what the levels above the shown one hid
+    this._upperDirty = false;
+    this._overviewOn = false;
+    this._fresh = null; // the overview's framing while the user has not moved it: { dir, el, sig, t }
 
-    const layout = editor.layout;
-    const c = layout.floor?.centroid ?? { x: 4.2, y: 6.9 };
-    this._focus = new THREE.Vector3(c.x, 0.55, c.y);
-    const b = layout.bounds;
-    this._bounds = { minX: b.minX, maxX: b.maxX, minZ: b.minZ, maxZ: b.maxZ };
-    this._plan = { cx: (b.minX + b.maxX) / 2, cz: (b.minZ + b.maxZ) / 2, zoom: 1, H0: 4 };
+    this.level = MAIN_LEVEL;
+    this._plan = { cx: 0, cz: 0, zoom: 1, H0: 4 };
+    this._applyLevel(MAIN_LEVEL);
     this._fitPlan();
     this._resetPlanCenter();
 
@@ -146,6 +171,143 @@ export class ViewModes {
     this._offSelect = editor.events?.on?.('select', ({ selected }) => {
       if (selected?.kind === 'item') this._ensureAt = performance.now() + 280;
     });
+    // furniture of a hidden level that is built or moved again must stay hidden
+    const dirty = () => (this._upperDirty = true);
+    this._offSync = [editor.sync?.on?.('built', dirty), editor.sync?.on?.('moved', dirty)];
+  }
+
+  // ---- levels ------------------------------------------------------------------------------------------------
+
+  /** The levels of the house, top → bottom: [{ id, name }]. */
+  get levels() {
+    const list = this.editor.layout?.house?.levels;
+    return list?.length ? list.map((l) => ({ id: l.id, name: l.name ?? l.id })) : [{ id: MAIN_LEVEL, name: '1. etasje' }];
+  }
+
+  /** Name of the shown level («1. etasje», «Kjeller»). */
+  get levelName() {
+    return this._levelData().name;
+  }
+
+  /**
+   * Plan data of a level (cached): { id, name, index, floorY, top (highest ceiling, world y), bounds, rooms (the
+   * physical rooms), hudRooms, centroid }. The main level keeps the numbers of before: the living room's floor
+   * centroid as the overview's pivot, its bounds (= layout.bounds).
+   */
+  _levelData(id = this.level) {
+    this._lvCache ||= new Map();
+    let d = this._lvCache.get(id);
+    if (d) return d;
+    const layout = this.editor.layout;
+    const hs = layout?.house;
+    const list = hs?.levels?.length ? hs.levels : [{ id: MAIN_LEVEL, name: '1. etasje', floorY: 0 }];
+    const index = Math.max(0, list.findIndex((l) => l.id === id));
+    const lv = list[index];
+    const rooms = (hs?.rooms || []).filter((r) => r.levelId === lv.id && !r.hud && r.polygon?.length >= 3);
+    // hud rooms of a level above that reach down into this one (the stair: its meshes are in the hall's level)
+    const hudRooms = (hs?.rooms || []).filter((r) => r.hud && r.levelId !== lv.id && r.yRange && r.yRange[0] < (lv.floorY ?? 0) + 2.2 && r.yRange[1] > (lv.floorY ?? 0));
+    const main = lv.id === MAIN_LEVEL;
+    const lb = hs?.levelBounds?.(lv.id);
+    const b = main || !lb ? layout.bounds : lb;
+    const floorY = Number.isFinite(lv.floorY) ? lv.floorY : 0;
+    const top = rooms.length ? Math.max(...rooms.map((r) => (Number.isFinite(r.ceilingTop) ? r.ceilingTop : floorY + 2.4))) : floorY + 2.4;
+    const c = main && layout.floor?.centroid ? layout.floor.centroid : { x: (b.minX + b.maxX) / 2, y: (b.minZ + b.maxZ) / 2 };
+    d = {
+      id: lv.id,
+      name: lv.name ?? lv.id,
+      index,
+      main,
+      floorY,
+      top,
+      bounds: { minX: b.minX, maxX: b.maxX, minZ: b.minZ, maxZ: b.maxZ },
+      rooms,
+      hudRooms,
+      centroid: { x: c.x, y: c.y },
+    };
+    this._lvCache.set(id, d);
+    return d;
+  }
+
+  /** Makes `id` the shown level's geometry (bounds, pivot, plan centre) – no rebuild of the cut. */
+  _applyLevel(id) {
+    const d = this._levelData(id);
+    this.level = d.id;
+    this._focus = new THREE.Vector3(d.centroid.x, d.floorY + 0.55, d.centroid.y);
+    this._bounds = { ...d.bounds };
+    this._orbitSaved = null;
+    this._resetPlanCenter();
+    this._fitPlan();
+  }
+
+  /**
+   * Shows another level in the overview / plan (in walking only remembered for the next overview).
+   * @param {string} id  layout.house.levels id
+   * @param {{ instant?: boolean }} [opts]
+   */
+  setLevel(id, opts = {}) {
+    const known = this.levels.some((l) => l.id === id);
+    if (!known || id === this.level) return;
+    const over = this.mode === 'orbit' || this.mode === 'plan';
+    if (!over) {
+      this._applyLevel(id);
+      this._pinnedLevel = id;
+      this.editor.events?.emit?.('view-level', { level: this.level });
+      return;
+    }
+    // a selected piece of furniture on another level would be hidden (its gizmo floating over this one)
+    const sel = this.editor.selected;
+    if (sel?.kind === 'item') {
+      const it = this.editor.design?.get?.(sel.uid);
+      if (it && itemLevel(it, this.editor.layout) !== id) this.editor.select(null);
+    }
+    // the old level's cut, overlay and hidden upper levels go; update() builds the new level's
+    const dir = this.mode === 'orbit' ? this._orbitDir() : null;
+    this._setDollhouse(false);
+    this._setCut(false);
+    this._setOverlay(false, false);
+    this._setUpper(false);
+    this._setExterior(false);
+    this._applyLevel(id);
+    this._setExterior(true);
+    this._hudKey = '';
+    if (this._planHud) this._planHud.built = null;
+    if (this.mode === 'plan') {
+      this._fitPlan();
+      this._updateOrtho();
+    } else {
+      const fit = this._fitOrbit(this._focus.clone(), dir, 52 * DEG);
+      const to = { pos: fit.pos, quat: lookQuat(fit.pos, fit.target), fov: ORBIT_FOV, target: fit.target };
+      this._fresh = { dir: dir.clone(), el: 52 * DEG, sig: this._fitSig(), t: 0 };
+      if (opts.instant || !this.editor.game?.running) {
+        this._applyPose(this.persp, to);
+        this._arrive('orbit', to);
+      } else {
+        this.controls.enabled = false;
+        this._tween = { t: 0, dur: DUR * 0.8, from: this._currentPose(), to, fromMode: 'orbit', toMode: 'orbit' };
+      }
+    }
+    this.editor.events?.emit?.('view-level', { level: this.level });
+    this.editor.events?.emit?.('toast', { text: `Viser ${this.levelName.toLowerCase()} – PgUp / PgDn bytter etasje`, seconds: 2.2 });
+  }
+
+  /** One level up (+1) or down (−1); false when there is none. */
+  stepLevel(dir) {
+    const list = this.levels;
+    const i = list.findIndex((l) => l.id === this.level);
+    const j = i - Math.sign(dir || 0); // the list is top → bottom
+    if (i < 0 || j < 0 || j >= list.length) return false;
+    this.setLevel(list[j].id);
+    return true;
+  }
+
+  /** The overview's horizontal view direction (camera → pivot), snapped to the nearest diagonal of the plan. */
+  _orbitDir() {
+    const d = new THREE.Vector3().subVectors(this.controls.target, this.persp.position);
+    d.y = 0;
+    if (d.lengthSq() < 1e-6) d.set(-1, 0, -0.35);
+    d.normalize();
+    const a = Math.round((Math.atan2(d.z, d.x) - Math.PI / 4) / (Math.PI / 2)) * (Math.PI / 2) + Math.PI / 4;
+    return d.set(Math.cos(a), 0, Math.sin(a));
   }
 
   // ---- public ------------------------------------------------------------------------------------------------
@@ -193,6 +355,17 @@ export class ViewModes {
     const fromPose = this._currentPose();
     if (from === 'orbit' && !this._tween) this._orbitSaved = { pos: this.persp.position.clone(), target: this.controls.target.clone() };
     if (from === 'walk' && mode !== 'walk') this._leaveWalk();
+    // the overview / plan opens on the player's level (or the one asked for: ?floor=, setLevel while walking)
+    if ((mode === 'orbit' || mode === 'plan') && from !== 'orbit' && from !== 'plan') {
+      const want = opts.level ?? this._pinnedLevel ?? this.editor.playerLevel?.() ?? this.level;
+      this._pinnedLevel = null;
+      if (want && want !== this.level && this.levels.some((l) => l.id === want)) {
+        this._applyLevel(want);
+        this.editor.events?.emit?.('view-level', { level: this.level });
+      }
+    } else if ((mode === 'orbit' || mode === 'plan') && opts.level && opts.level !== this.level) {
+      this.setLevel(opts.level, { instant: true });
+    }
     this.mode = mode;
     this.controls.enabled = false;
     this._pan = null;
@@ -291,6 +464,7 @@ export class ViewModes {
   }
 
   _orbitPose(from) {
+    this._fresh = null;
     if (from !== 'walk' && this._orbitSaved) {
       const s = this._orbitSaved;
       return { pos: s.pos.clone(), quat: lookQuat(s.pos, s.target), fov: ORBIT_FOV, target: s.target.clone() };
@@ -309,7 +483,40 @@ export class ViewModes {
     dir.set(Math.cos(a), 0, Math.sin(a));
     const el = 52 * DEG;
     const fit = this._fitOrbit(target, dir, el);
+    this._fresh = { dir: dir.clone(), el, sig: this._fitSig(), t: 0 };
     return { pos: fit.pos, quat: lookQuat(fit.pos, fit.target), fov: ORBIT_FOV, target: fit.target };
+  }
+
+  /** What the overview's framing depends on: the canvas and the part of it the HUD leaves free. */
+  _fitSig() {
+    const c = cachedRect(this.canvas);
+    const f = this.hint.freeRect({ sides: false });
+    return `${Math.round(c.width)}x${Math.round(c.height)}|${Math.round(f.width)}x${Math.round(f.height)}|${this.level}`;
+  }
+
+  /**
+   * While the user has not moved the overview, its framing follows the HUD as it settles (the toolbar and the key
+   * bar appear a frame or two after a `?view=orbit` start) – so one URL always frames the same. Ends at the first
+   * turn / pan / zoom, after REFIT_SECONDS, or when another view takes over.
+   */
+  _refitOrbit(dt) {
+    const f = this._fresh;
+    if (!f || this.mode !== 'orbit' || this._tween) return;
+    f.t += dt || 0;
+    if (f.t > REFIT_SECONDS) {
+      this._fresh = null;
+      return;
+    }
+    this.hint.layout(true);
+    const sig = this._fitSig();
+    if (sig === f.sig) return;
+    f.sig = sig;
+    const fit = this._fitOrbit(this._focus.clone(), f.dir, f.el);
+    this.persp.position.copy(fit.pos);
+    this.controls.target.copy(fit.target);
+    this.persp.lookAt(fit.target);
+    this.persp.updateMatrixWorld(true);
+    this.controls.update();
   }
 
   /**
@@ -322,7 +529,10 @@ export class ViewModes {
     cam.aspect = this._aspect();
     cam.updateProjectionMatrix();
     const pts = [];
-    for (const p of this.editor.layout.floor?.polygon || []) pts.push(new THREE.Vector3(p.x, 0, p.y), new THREE.Vector3(p.x, 2.5, p.y));
+    // every room of the shown level, from its floor to the wall tops
+    const lv = this._levelData();
+    const polys = lv.rooms.length ? lv.rooms.map((r) => r.polygon) : [this.editor.layout.floor?.polygon || []];
+    for (const poly of polys) for (const p of poly) pts.push(new THREE.Vector3(p.x, lv.floorY, p.y), new THREE.Vector3(p.x, lv.floorY + 2.5, p.y));
     const place = (d, tgt) => {
       cam.position.copy(tgt).addScaledVector(dir, -Math.cos(el) * d);
       cam.position.y += Math.sin(el) * d;
@@ -376,8 +586,9 @@ export class ViewModes {
     const half = p.H0 / p.zoom;
     const height = half / Math.tan((PLAN_FOV / 2) * DEG);
     const c = this._planCamXZ();
-    const pos = new THREE.Vector3(c.x, height, c.z);
-    return { pos, quat: lookQuat(pos, new THREE.Vector3(c.x, 0, c.z), PLAN_UP), fov: PLAN_FOV };
+    const fy = this._levelData().floorY;
+    const pos = new THREE.Vector3(c.x, fy + height, c.z);
+    return { pos, quat: lookQuat(pos, new THREE.Vector3(c.x, fy, c.z), PLAN_UP), fov: PLAN_FOV };
   }
 
   _applyPose(cam, pose) {
@@ -410,6 +621,7 @@ export class ViewModes {
       this.controls.target.copy(pose?.target ?? this._focus);
       this.controls.enabled = true;
       this.controls.update();
+      if (this._fresh) this._fresh.t = 0;
     } else if (mode === 'plan') {
       this._updateOrtho();
     }
@@ -456,6 +668,7 @@ export class ViewModes {
       if (tw.t >= 1) this._arrive(tw.toMode, tw.to);
     } else if (this.mode === 'orbit') {
       this._applyViewOffset(1);
+      this._refitOrbit(dt);
       this._clampOrbit();
       this.controls.update(dt);
     } else if (this.mode === 'plan') this._updateOrtho();
@@ -472,8 +685,10 @@ export class ViewModes {
     const tm = this._tween;
     const doll = this.mode === 'orbit' || (tm && (tm.toMode === 'orbit' || tm.fromMode === 'orbit'));
     const over = doll || this.mode === 'plan' || (tm && (tm.toMode === 'plan' || tm.fromMode === 'plan'));
+    this._setOverview(!!over);
     this._setCut(!!over);
     this._syncCutMaterials();
+    this._setUpper(!!over);
     this._setDollhouse(doll);
     this._setOverlay(over, this.mode === 'plan' && !tm);
     if (doll) this._updateDollhouse();
@@ -555,14 +770,16 @@ export class ViewModes {
       // the camera moves the other way: right by −mx, up by +my
       const dx = (-el[0] * mx + el[4] * my) * wpp, dy = (-el[1] * mx + el[5] * my) * wpp, dz = (-el[2] * mx + el[6] * my) * wpp;
       this._panAnim = { dx, dy, dz, t: 0, dur: 0.4, done: 0 };
+      this._fresh = null;
     }
   }
 
   _clampOrbit() {
     const t = this.controls.target;
     const b = this._bounds;
+    const fy = this._levelData().floorY;
     const nx = clamp(t.x, b.minX - 0.5, b.maxX + 0.5);
-    const ny = clamp(t.y, 0, 2.2);
+    const ny = clamp(t.y, fy, fy + 2.2);
     const nz = clamp(t.z, b.minZ - 0.5, b.maxZ + 0.5);
     if (nx !== t.x || ny !== t.y || nz !== t.z) {
       const dx = nx - t.x, dy = ny - t.y, dz = nz - t.z;
@@ -617,10 +834,15 @@ export class ViewModes {
     cam.top = H;
     cam.bottom = -H;
     cam.zoom = p.zoom;
-    // low above the room: core/Highlight.js sizes its outline by the view distance
-    cam.position.set(c.x, 6, c.z);
+    // low above the room: core/Highlight.js sizes its outline by the view distance. The top level as before (6 m
+    // over its floor); a lower level from just over its highest ceiling (the level above is hidden)
+    const lv = this._levelData();
+    const camY = lv.index === 0 ? lv.floorY + PLAN_CAM_TOP : lv.top + 1;
+    cam.position.set(c.x, camY, c.z);
+    cam.near = 0.1;
+    cam.far = Math.max(40, camY - lv.floorY + 30);
     cam.up.copy(PLAN_UP);
-    cam.lookAt(c.x, 0, c.z);
+    cam.lookAt(c.x, lv.floorY, c.z);
     cam.updateProjectionMatrix();
     cam.updateMatrixWorld(true);
   }
@@ -668,6 +890,7 @@ export class ViewModes {
 
   _pointerDown(e) {
     this._track(e);
+    if (this.mode === 'orbit') this._fresh = null; // the user takes over the framing
     if (!this._owns() || this._tween) {
       if (this._tween) this.controls.mouseButtons.LEFT = null;
       return;
@@ -719,6 +942,7 @@ export class ViewModes {
   }
 
   _wheel(e) {
+    if (this.mode === 'orbit') this._fresh = null; // OrbitControls zooms: the user takes over the framing
     if (this.mode !== 'plan' || this._tween || !this._owns()) return;
     e.preventDefault();
     const before = this._planWorldAt(e.clientX, e.clientY);
@@ -815,17 +1039,86 @@ export class ViewModes {
       this._exteriorList = null;
       return;
     }
-    // the tall photo backdrop / sky pieces would wall the dollhouse in; the deck and the lawn stay
+    // the tall photo backdrop / sky pieces would wall the dollhouse in; the deck and the lawn stay. Under the top
+    // level also everything wholly above head height over its floor (the terrace deck over the entrance, railings)
+    const lv = this._levelData();
+    const over = lv.index > 0 ? lv.floorY + 1.4 : Infinity;
+    // (a railing that runs down the terrace stair reaches high over the level's ceiling: it goes too)
+    const top = lv.index > 0 ? lv.top + 0.6 : Infinity;
     root.updateMatrixWorld(true);
     const list = [];
     root.traverse((o) => {
       if (!o.isMesh) return;
       _box.setFromObject(o);
       if (!Number.isFinite(_box.max.y)) return;
-      if (_box.max.y > 3.6 || _box.max.x - _box.min.x > 15 || _box.max.z - _box.min.z > 15) list.push(o);
+      if (_box.max.y > 3.6 || _box.max.x - _box.min.x > 15 || _box.max.z - _box.min.z > 15 || _box.min.y > over || _box.max.y > top) list.push(o);
     });
     for (const m of list) this._conceal(m);
     this._exteriorList = list;
+  }
+
+  /** Tells visibility.js (steg 29, Y1) that an overview / plan is shown (every level stays in the scene). */
+  _setOverview(on) {
+    const key = on ? this.level : null;
+    if (key === this._overviewOn) return;
+    this._overviewOn = key;
+    try {
+      this.editor.home?.visibility?.setOverview?.(on, on ? { level: this.level } : undefined);
+    } catch (err) {
+      console.warn('[views] visibility.setOverview failed', err);
+    }
+  }
+
+  /**
+   * Hides everything of the levels above the shown one (invisible shadow casters, like the dollhouse walls): their
+   * rooms and shell, the furniture standing on them, the shading of their windows and the high wall's design. The
+   * hud rooms that reach down into the shown level (the stair) stay – they are part of its cut.
+   */
+  _setUpper(on) {
+    const lv = this._levelData();
+    const want = on && lv.index > 0 ? lv.id : null;
+    const cur = this._upper?.level ?? null;
+    if (want === cur && !(want && this._upperDirty)) {
+      // shading / wall designs are rebuilt now and then: keep their new meshes hidden too
+      if (want) for (const a of this._upper.anchors) this._concealTree(a, true);
+      return;
+    }
+    this._upperDirty = false;
+    if (this._upper && cur !== want) {
+      for (const m of this._upper.meshes) this._reveal(m);
+      for (const a of this._upper.anchors) this._concealTree(a, false);
+      this._upper = null;
+    }
+    if (!want) return;
+    const home = this.editor.home;
+    const roots = home.roots || {};
+    const above = new Set(this.levels.slice(0, lv.index).map((l) => l.id));
+    const keep = new Set(lv.hudRooms.map((r) => roots.rooms?.[r.id]?.group).filter(Boolean));
+    const meshes = this._upper?.meshes ?? new Set();
+    const hide = (o) => {
+      if (!o.isMesh || o.userData.isHighlight || this._concealed.has(o)) return;
+      this._conceal(o);
+      meshes.add(o);
+    };
+    const walk = (root) => {
+      if (!root) return;
+      if (keep.has(root)) return;
+      if (root.isMesh) hide(root);
+      for (const ch of root.children) walk(ch);
+    };
+    for (const id of above) walk(roots.levels?.[id]);
+    // furniture of the levels above (items carry their level)
+    for (const it of this.editor.design.list()) {
+      if (!above.has(itemLevel(it, this.editor.layout))) continue;
+      this.editor.sync.getObject(it.uid)?.traverse?.(hide);
+    }
+    // the shading of their windows, the high wall's design (the living room)
+    const anchors = [];
+    for (const w of home.windows || []) if (w.anchor && above.has(w.levelId ?? MAIN_LEVEL)) anchors.push(w.anchor);
+    if (above.has(MAIN_LEVEL) && home.highWall?.anchor) anchors.push(home.highWall.anchor);
+    if (above.has(MAIN_LEVEL) && roots.wall) anchors.push(roots.wall);
+    for (const a of anchors) a.traverse(hide);
+    this._upper = { level: want, meshes, anchors };
   }
 
   // The shell builder merges wall bodies, cladding, lists and the roof into shared meshes, so «hide this wall» cannot
@@ -833,56 +1126,97 @@ export class ViewModes {
   // the wall slab it belongs to (clipped at the wall's top line), into «inside the room» (kept, cut at the ceiling)
   // or dropped (roof, hallway, eaves). The cut copies are drawn instead of the originals; the originals stay in the
   // scene as invisible shadow casters, so the light in the room is the same as when walking.
+  // The house's rooms (rooms.js, home.roots.rooms[id].surfaces) are cut the same way, one level at a time (one cut
+  // model per level, built on first use): a backOf face has no slab of its own – its triangles go with the slab it is
+  // the back of; a hud room of a level above that reaches into the shown one (the stair) is only cut at the shown
+  // level's ceiling, never with a wall.
 
-  /** Plan data of the room walls for the cut. */
-  _cutWalls() {
+  /** The shown level's walls that have a slab (home.walls; the shell's carry no levelId: the main level). */
+  _levelWalls(levelId = this.level) {
+    return (this.editor.home.walls || []).filter((w) => (w.levelId ?? MAIN_LEVEL) === levelId && !(w.backOf?.length) && (w.thickness ?? 0.2) > 1e-3);
+  }
+
+  /** The layout wall (topProfile, openings, floorY) of a home wall. */
+  _layoutWall(id) {
     const layout = this.editor.layout;
-    return (this.editor.home.walls || []).map((w) => {
+    return layout.house?.wallsById?.[id] ?? layout.wallsById?.[id] ?? null;
+  }
+
+  /** Plan data of a level's walls for the cut. */
+  _cutWalls(levelId = this.level) {
+    const fy0 = this._levelData(levelId).floorY;
+    return this._levelWalls(levelId).map((w) => {
       const L = w.length ?? Math.hypot(w.end.x - w.start.x, w.end.y - w.start.y);
-      const lw = layout.wallsById?.[w.id];
+      const lw = this._layoutWall(w.id);
       const profile = lw?.topProfile?.length ? lw.topProfile : [[0, w.heightAt?.(0) ?? 2.4], [L, w.heightAt?.(L) ?? 2.4]];
+      const fy = Number.isFinite(w.floorY) ? w.floorY : Number.isFinite(lw?.floorY) ? lw.floorY : fy0;
       return {
         id: w.id, sx: w.start.x, sz: w.start.y, dx: (w.end.x - w.start.x) / L, dz: (w.end.y - w.start.y) / L,
-        nx: w.normal.x, nz: w.normal.y, L, t: w.thickness ?? 0.2, profile,
+        nx: w.normal.x, nz: w.normal.y, L, t: w.thickness ?? 0.2, profile, fy,
         windows: (this.editor.home.windows || []).filter((x) => x.wallId === w.id),
       };
     });
   }
 
-  /** Signature of the shell (re-cut when another module rebuilt it). */
-  _shellSig() {
+  /**
+   * What a level's cut is made of: [{ root, slabs }] – the living room's shell on its level, every room's surfaces,
+   * and (slabs: false: only cut at the ceiling) the hud rooms of a level above that reach down into it.
+   */
+  _cutSources(levelId = this.level) {
+    const roots = this.editor.home.roots || {};
+    const lv = this._levelData(levelId);
+    const out = [];
+    if (lv.main && roots.shell) out.push({ root: roots.shell, slabs: true });
+    for (const r of lv.rooms) {
+      const s = roots.rooms?.[r.id]?.surfaces;
+      if (s && s.children.length) out.push({ root: s, slabs: true });
+    }
+    for (const r of lv.hudRooms) {
+      const s = roots.rooms?.[r.id]?.surfaces;
+      if (s && s.children.length) out.push({ root: s, slabs: false });
+    }
+    return out;
+  }
+
+  /** Signature of a level's cut sources (re-cut when another module rebuilt them). */
+  _shellSig(levelId = this.level) {
     let n = 0, v = 0;
-    this.editor.home.roots?.shell?.traverse((o) => {
-      if (o.isMesh && !o.userData.isHighlight) {
-        n++;
-        v += o.geometry?.attributes?.position?.count || 0;
-      }
-    });
+    for (const { root } of this._cutSources(levelId)) {
+      root.traverse((o) => {
+        if (o.isMesh && !o.userData.isHighlight) {
+          n++;
+          v += o.geometry?.attributes?.position?.count || 0;
+        }
+      });
+    }
     return `${n}:${v}`;
   }
 
   /**
-   * The cut model of the shell (built on first use, rebuilt when the shell changed):
-   * { group, whole: Map<wallId, Mesh[]> (originals that belong to one wall), cut: Map<wallId, Mesh[]> (copies),
+   * The cut model of a level (built on first use, rebuilt when its sources changed):
+   * { level, group, whole: Map<wallId, Mesh[]> (originals that belong to one wall), cut: Map<wallId, Mesh[]> (copies),
    *   inside: Mesh[], replaced: Mesh[] (originals drawn by copies), dropped: Mesh[] (roof, outside), walls, sources }
    */
-  _prepareCut() {
-    if (this._cut && (this._cutOn || this._cut.sig === this._shellSig())) return this._cut;
-    const sig = this._shellSig();
-    if (this._cut) this._disposeCut();
+  _prepareCut(levelId = this.level) {
+    const old = this._cuts.get(levelId);
+    if (old && ((this._cutOn && this._cutLevel === levelId) || old.sig === this._shellSig(levelId))) return old;
+    const sig = this._shellSig(levelId);
+    if (old) this._disposeCut(levelId);
     const t0 = performance.now();
     const home = this.editor.home;
     const layout = this.editor.layout;
-    const walls = this._cutWalls();
-    const inPoly = (x, z) => layout.isInside?.(x, z) ?? true;
-    const ceilAt = (x, z) => home.ceilingHeightAt?.(x, z) ?? 2.4;
+    const lv = this._levelData(levelId);
+    const walls = this._cutWalls(levelId);
+    const inPoly = lv.rooms.length ? (x, z) => lv.rooms.some((r) => r.contains(x, z)) : (x, z) => layout.isInside?.(x, z) ?? true;
+    // the level's own ceiling (in the stairwell: not the one of the level above)
+    const ceilAt = (x, z) => Math.min(home.ceilingHeightAt?.(x, z, lv.floorY + 1) ?? lv.floorY + 2.4, lv.top);
     const skip = new Set([...(home.pickables?.floor || []), ...(home.pickables?.ceilings || [])]);
     const whole = new Map(walls.map((w) => [w.id, []]));
     const buckets = new Map();
     const replaced = [];
     const dropped = [];
     const group = new THREE.Group();
-    group.name = 'ix-shell-cut';
+    group.name = `ix-shell-cut:${levelId}`;
     group.userData.noCollide = true;
     const P = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
     const C = new THREE.Vector3();
@@ -915,7 +1249,7 @@ export class ViewModes {
       my /= l;
       mz /= l;
       const px = w.sx + w.dx * u0, pz = w.sz + w.dz * u0;
-      return [mx, my, mz, -(mx * px + my * (h0 + 0.002) + mz * pz)];
+      return [mx, my, mz, -(mx * px + my * (w.fy + h0 + 0.002) + mz * pz)];
     };
     const interactive = (o) => {
       for (let a = o; a; a = a.parent) if (a.userData?.interactItem) return true;
@@ -927,144 +1261,146 @@ export class ViewModes {
     };
     const pickKey = (pick) => (pick ? `${pick.kind}:${pick.wallId || pick.windowId || pick.ceilingId || ''}` : '');
 
-    home.roots?.shell?.updateMatrixWorld(true);
-    home.roots?.shell?.traverse((o) => {
-      if (!o.isMesh || o.userData.isHighlight || skip.has(o)) return;
-      if (o.isInstancedMesh || o.isSkinnedMesh) return;
-      const geo = o.geometry;
-      const pos = geo?.attributes?.position;
-      if (!pos || !pos.count) return;
-      if (!geo.boundingBox) geo.computeBoundingBox();
-      _box.copy(geo.boundingBox).applyMatrix4(o.matrixWorld);
-      // roof / ceiling-level sheets are not part of the cut model
-      if (_box.min.y > 2.25 && (_box.max.x - _box.min.x > 3 || _box.max.z - _box.min.z > 3)) {
-        dropped.push(o);
-        return;
-      }
-      const index = geo.index;
-      const triCount = Math.floor((index ? index.count : pos.count) / 3);
-      const vi = (t, k) => (index ? index.getX(t * 3 + k) : t * 3 + k);
-      const mats = Array.isArray(o.material) ? o.material : null;
-      const groups = mats && geo.groups.length ? geo.groups : null;
-      const matOf = (t) => {
-        if (!mats) return o.material;
-        if (!groups) return mats[0];
-        const at = t * 3;
-        for (const g of groups) if (at >= g.start && at < g.start + g.count) return mats[g.materialIndex];
-        return null;
-      };
-      // classify the triangles
-      const cls = new Array(triCount);
-      const planes = new Array(triCount);
-      let first;
-      let same = true;
-      let anyClip = false;
-      for (let t = 0; t < triCount; t++) {
-        for (let k = 0; k < 3; k++) P[k].fromBufferAttribute(pos, vi(t, k)).applyMatrix4(o.matrixWorld);
-        C.copy(P[0]).add(P[1]).add(P[2]).multiplyScalar(1 / 3);
-        const w = slabOf(C.x, C.z);
-        let c = 'drop';
-        let pl = null;
-        if (w) {
-          const u = (C.x - w.sx) * w.dx + (C.z - w.sz) * w.dz;
-          pl = topPlane(w, Math.max(0, Math.min(w.L, u)));
-          c = w.id;
-        } else if (inPoly(C.x, C.z)) {
-          pl = [0, 1, 0, -(ceilAt(C.x, C.z) + 0.03)];
-          c = 'in';
+    for (const { root, slabs } of this._cutSources(levelId)) {
+      root.updateMatrixWorld(true);
+      root.traverse((o) => {
+        if (!o.isMesh || o.userData.isHighlight || skip.has(o)) return;
+        if (o.isInstancedMesh || o.isSkinnedMesh) return;
+        const geo = o.geometry;
+        const pos = geo?.attributes?.position;
+        if (!pos || !pos.count) return;
+        if (!geo.boundingBox) geo.computeBoundingBox();
+        _box.copy(geo.boundingBox).applyMatrix4(o.matrixWorld);
+        // roof / ceiling-level sheets are not part of the cut model
+        if (_box.min.y - lv.floorY > 2.25 && (_box.max.x - _box.min.x > 3 || _box.max.z - _box.min.z > 3)) {
+          dropped.push(o);
+          return;
         }
-        if (pl) {
-          let above = 0;
-          for (let k = 0; k < 3; k++) if (pl[0] * P[k].x + pl[1] * P[k].y + pl[2] * P[k].z + pl[3] > 0) above++;
-          if (above === 3) c = 'drop';
-          else if (above) {
-            planes[t] = pl;
-            anyClip = true;
+        const index = geo.index;
+        const triCount = Math.floor((index ? index.count : pos.count) / 3);
+        const vi = (t, k) => (index ? index.getX(t * 3 + k) : t * 3 + k);
+        const mats = Array.isArray(o.material) ? o.material : null;
+        const groups = mats && geo.groups.length ? geo.groups : null;
+        const matOf = (t) => {
+          if (!mats) return o.material;
+          if (!groups) return mats[0];
+          const at = t * 3;
+          for (const g of groups) if (at >= g.start && at < g.start + g.count) return mats[g.materialIndex];
+          return null;
+        };
+        // classify the triangles
+        const cls = new Array(triCount);
+        const planes = new Array(triCount);
+        let first;
+        let same = true;
+        let anyClip = false;
+        for (let t = 0; t < triCount; t++) {
+          for (let k = 0; k < 3; k++) P[k].fromBufferAttribute(pos, vi(t, k)).applyMatrix4(o.matrixWorld);
+          C.copy(P[0]).add(P[1]).add(P[2]).multiplyScalar(1 / 3);
+          const w = slabs ? slabOf(C.x, C.z) : null;
+          let c = 'drop';
+          let pl = null;
+          if (w) {
+            const u = (C.x - w.sx) * w.dx + (C.z - w.sz) * w.dz;
+            pl = topPlane(w, Math.max(0, Math.min(w.L, u)));
+            c = w.id;
+          } else if (inPoly(C.x, C.z)) {
+            pl = [0, 1, 0, -(ceilAt(C.x, C.z) + 0.03)];
+            c = 'in';
           }
+          if (pl) {
+            let above = 0;
+            for (let k = 0; k < 3; k++) if (pl[0] * P[k].x + pl[1] * P[k].y + pl[2] * P[k].z + pl[3] > 0) above++;
+            if (above === 3) c = 'drop';
+            else if (above) {
+              planes[t] = pl;
+              anyClip = true;
+            }
+          }
+          cls[t] = c;
+          if (first === undefined) first = c;
+          else if (c !== first) same = false;
         }
-        cls[t] = c;
-        if (first === undefined) first = c;
-        else if (c !== first) same = false;
-      }
-      if (first === undefined) return;
-      if (same && !anyClip) {
-        if (first === 'in') return; // stays as it is
-        if (first === 'drop') dropped.push(o);
-        else whole.get(first).push(o);
-        return;
-      }
-      if (interactive(o)) {
-        // moving parts (door leaves) are never frozen into copies: they go with their main wall
-        const count = new Map();
-        for (const c of cls) if (c !== 'drop' && c !== 'in') count.set(c, (count.get(c) || 0) + 1);
-        const main = [...count.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
-        if (main) whole.get(main).push(o);
-        return;
-      }
-      // cut into copies (world space)
-      replaced.push(o);
-      nm.getNormalMatrix(o.matrixWorld);
-      const attrs = Object.entries(geo.attributes).map(([name, a]) => ({ name, a, size: a.itemSize }));
-      const sigA = attrs.map((x) => `${x.name}${x.size}`).join(',');
-      const pick = pickOfMesh(o);
-      const stride = attrs.reduce((s, x) => s + x.size, 0);
-      let posOff = 0;
-      for (const x of attrs) {
-        if (x.name === 'position') break;
-        posOff += x.size;
-      }
-      const vert = (t, k) => {
-        const out = new Float32Array(stride);
-        const idx = vi(t, k);
-        let off = 0;
+        if (first === undefined) return;
+        if (same && !anyClip) {
+          if (first === 'in') return; // stays as it is
+          if (first === 'drop') dropped.push(o);
+          else whole.get(first).push(o);
+          return;
+        }
+        if (interactive(o)) {
+          // moving parts (door leaves) are never frozen into copies: they go with their main wall
+          const count = new Map();
+          for (const c of cls) if (c !== 'drop' && c !== 'in') count.set(c, (count.get(c) || 0) + 1);
+          const main = [...count.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
+          if (main) whole.get(main).push(o);
+          return;
+        }
+        // cut into copies (world space)
+        replaced.push(o);
+        nm.getNormalMatrix(o.matrixWorld);
+        const attrs = Object.entries(geo.attributes).map(([name, a]) => ({ name, a, size: a.itemSize }));
+        const sigA = attrs.map((x) => `${x.name}${x.size}`).join(',');
+        const pick = pickOfMesh(o);
+        const stride = attrs.reduce((s, x) => s + x.size, 0);
+        let posOff = 0;
         for (const x of attrs) {
-          if (x.name === 'position' || x.name === 'normal') {
-            _v.fromBufferAttribute(x.a, idx);
-            if (x.name === 'position') _v.applyMatrix4(o.matrixWorld);
-            else _v.applyMatrix3(nm).normalize();
-            out[off] = _v.x;
-            out[off + 1] = _v.y;
-            out[off + 2] = _v.z;
-          } else {
-            for (let c = 0; c < x.size; c++) out[off + c] = x.a.getComponent(idx, c);
+          if (x.name === 'position') break;
+          posOff += x.size;
+        }
+        const vert = (t, k) => {
+          const out = new Float32Array(stride);
+          const idx = vi(t, k);
+          let off = 0;
+          for (const x of attrs) {
+            if (x.name === 'position' || x.name === 'normal') {
+              _v.fromBufferAttribute(x.a, idx);
+              if (x.name === 'position') _v.applyMatrix4(o.matrixWorld);
+              else _v.applyMatrix3(nm).normalize();
+              out[off] = _v.x;
+              out[off + 1] = _v.y;
+              out[off + 2] = _v.z;
+            } else {
+              for (let c = 0; c < x.size; c++) out[off + c] = x.a.getComponent(idx, c);
+            }
+            off += x.size;
           }
-          off += x.size;
-        }
-        return out;
-      };
-      const lerpV = (a, b, s) => {
-        const out = new Float32Array(stride);
-        for (let i = 0; i < stride; i++) out[i] = a[i] + (b[i] - a[i]) * s;
-        return out;
-      };
-      for (let t = 0; t < triCount; t++) {
-        const c = cls[t];
-        if (c === 'drop') continue;
-        const mat = matOf(t);
-        if (!mat) continue;
-        const key = `${c}|${mat.uuid}|${sigA}|${pickKey(pick)}|${o.receiveShadow ? 1 : 0}`;
-        let b = buckets.get(key);
-        if (!b) {
-          b = { cls: c, material: mat, attrs: attrs.map((x) => ({ name: x.name, size: x.size })), stride, data: [], pick, receive: o.receiveShadow, order: o.renderOrder, sources: new Set() };
-          buckets.set(key, b);
-        }
-        b.sources.add(o);
-        let poly = [vert(t, 0), vert(t, 1), vert(t, 2)];
-        const pl = planes[t];
-        if (pl) {
-          const dist = (v) => pl[0] * v[posOff] + pl[1] * v[posOff + 1] + pl[2] * v[posOff + 2] + pl[3];
-          const out = [];
-          for (let k = 0; k < 3; k++) {
-            const a = poly[k], bb = poly[(k + 1) % 3];
-            const da = dist(a), db = dist(bb);
-            if (da <= 0) out.push(a);
-            if ((da <= 0) !== (db <= 0)) out.push(lerpV(a, bb, da / (da - db)));
+          return out;
+        };
+        const lerpV = (a, b, s) => {
+          const out = new Float32Array(stride);
+          for (let i = 0; i < stride; i++) out[i] = a[i] + (b[i] - a[i]) * s;
+          return out;
+        };
+        for (let t = 0; t < triCount; t++) {
+          const c = cls[t];
+          if (c === 'drop') continue;
+          const mat = matOf(t);
+          if (!mat) continue;
+          const key = `${c}|${mat.uuid}|${sigA}|${pickKey(pick)}|${o.receiveShadow ? 1 : 0}`;
+          let b = buckets.get(key);
+          if (!b) {
+            b = { cls: c, material: mat, attrs: attrs.map((x) => ({ name: x.name, size: x.size })), stride, data: [], pick, receive: o.receiveShadow, order: o.renderOrder, sources: new Set() };
+            buckets.set(key, b);
           }
-          poly = out;
+          b.sources.add(o);
+          let poly = [vert(t, 0), vert(t, 1), vert(t, 2)];
+          const pl = planes[t];
+          if (pl) {
+            const dist = (v) => pl[0] * v[posOff] + pl[1] * v[posOff + 1] + pl[2] * v[posOff + 2] + pl[3];
+            const out = [];
+            for (let k = 0; k < 3; k++) {
+              const a = poly[k], bb = poly[(k + 1) % 3];
+              const da = dist(a), db = dist(bb);
+              if (da <= 0) out.push(a);
+              if ((da <= 0) !== (db <= 0)) out.push(lerpV(a, bb, da / (da - db)));
+            }
+            poly = out;
+          }
+          for (let k = 1; k + 1 < poly.length; k++) for (const v of [poly[0], poly[k], poly[k + 1]]) for (let i = 0; i < stride; i++) b.data.push(v[i]);
         }
-        for (let k = 1; k + 1 < poly.length; k++) for (const v of [poly[0], poly[k], poly[k + 1]]) for (let i = 0; i < stride; i++) b.data.push(v[i]);
-      }
-    });
+      });
+    }
 
     // build the copies
     const cut = new Map(walls.map((w) => [w.id, []]));
@@ -1101,43 +1437,53 @@ export class ViewModes {
       }
     }
     const ms = performance.now() - t0;
-    if (ms > 80) console.info(`[views] shell cut for the overview in ${ms.toFixed(0)} ms`);
-    this._cut = { sig, group, whole, cut, inside, replaced, dropped, walls, sources };
-    return this._cut;
+    if (ms > 80) console.info(`[views] cut of ${levelId} for the overview in ${ms.toFixed(0)} ms`);
+    const c = { level: levelId, sig, group, whole, cut, inside, replaced, dropped, walls, sources };
+    this._cuts.set(levelId, c);
+    return c;
   }
 
-  _disposeCut() {
-    const c = this._cut;
+  /** The cut model shown now (null when none). */
+  get _cut() {
+    return this._cutOn ? this._cuts.get(this._cutLevel) ?? null : null;
+  }
+
+  _disposeCut(levelId) {
+    const c = this._cuts.get(levelId);
     if (!c) return;
     c.group.removeFromParent();
     for (const m of c.group.children) m.geometry.dispose();
-    this._cut = null;
+    this._cuts.delete(levelId);
   }
 
-  /** Shows / removes the cut model (overview and plan). */
+  /** Shows / removes the cut model of the shown level (overview and plan). */
   _setCut(on) {
-    if (on === !!this._cutOn) return;
-    if (on) {
-      const c = this._prepareCut();
-      this._cutOn = true;
-      for (const m of c.replaced) this._conceal(m);
-      for (const m of c.dropped) this._conceal(m);
-      this.editor.scene.add(c.group);
-    } else {
+    const want = on ? this.level : null;
+    if (want === (this._cutOn ? this._cutLevel : null)) return;
+    if (this._cutOn) {
       this._setDollhouse(false);
+      const c = this._cuts.get(this._cutLevel);
       this._cutOn = false;
-      const c = this._cut;
-      if (!c) return;
-      for (const m of c.replaced) this._reveal(m);
-      for (const m of c.dropped) this._reveal(m);
-      c.group.removeFromParent();
+      this._cutLevel = null;
+      if (c) {
+        for (const m of c.replaced) this._reveal(m);
+        for (const m of c.dropped) this._reveal(m);
+        c.group.removeFromParent();
+      }
     }
+    if (!want) return;
+    const c = this._prepareCut(want);
+    this._cutOn = true;
+    this._cutLevel = want;
+    for (const m of c.replaced) this._conceal(m);
+    for (const m of c.dropped) this._conceal(m);
+    this.editor.scene.add(c.group);
   }
 
   /** The copies follow material swaps of their originals (a wall repainted while in the overview). */
   _syncCutMaterials() {
     const c = this._cut;
-    if (!c || !this._cutOn) return;
+    if (!c) return;
     for (const [src, copies] of c.sources) {
       const cur = this._concealed.get(src);
       if (!cur) continue;
@@ -1164,9 +1510,10 @@ export class ViewModes {
     this.hiddenWalls.clear();
   }
 
-  /** Cuts away every wall the camera looks at from outside. */
+  /** Cuts away every wall of the shown level the camera looks at from outside. */
   _updateDollhouse() {
-    const c = this._prepareCut();
+    const c = this._cut;
+    if (!c) return;
     const cam = this.camera;
     cam.updateMatrixWorld();
     const cp = _v.setFromMatrixPosition(cam.matrixWorld);
@@ -1184,8 +1531,8 @@ export class ViewModes {
   }
 
   _hideWall(id, hide) {
-    const c = this._prepareCut();
-    const w = c.walls.find((x) => x.id === id);
+    const c = this._cuts.get(this._cutLevel ?? this.level);
+    const w = c?.walls.find((x) => x.id === id);
     if (!w) return;
     this._wallsState.set(id, hide);
     if (hide) this.hiddenWalls.add(id);
@@ -1206,19 +1553,23 @@ export class ViewModes {
 
   /** Extra roots for picking while the cut model is shown (Selection.pickAt). */
   pickRoots() {
-    return this._cutOn && this._cut ? [this._cut.group] : [];
+    const c = this._cut;
+    return c ? [c.group] : [];
   }
 
   // ---- overlay: wall caps, cut-away stubs, plan marks -----------------------------------------------------------
 
   _setOverlay(on, plan) {
-    if (on && !this._overlay) this._buildOverlay();
-    if (!this._overlay) return;
-    this._overlay.visible = on;
-    if (!on) return;
-    this._planMarks.visible = plan;
+    const want = on ? this.level : null;
+    if (want && !this._overlays.has(want)) this._buildOverlay(want);
+    for (const [id, g] of this._overlays) if (g.visible !== (id === want)) g.visible = id === want;
+    if (!want) return;
+    const g = this._overlays.get(want);
+    g.userData.planMarks.visible = plan;
     const capMat = plan ? this._mats.capPlan : this._mats.cap;
-    for (const [id, parts] of this._overlayParts) {
+    for (const id of g.userData.wallIds) {
+      const parts = this._overlayParts.get(id);
+      if (!parts) continue;
       parts.cap.material = capMat;
       const hidden = !plan && this._wallsState.get(id);
       parts.stub.visible = !!hidden;
@@ -1226,13 +1577,13 @@ export class ViewModes {
     }
   }
 
-  _buildOverlay() {
+  /** Overlay of a level: a dark cap on every wall top, a low stub for the cut-away walls, the plan's marks. */
+  _buildOverlay(levelId) {
     const home = this.editor.home;
-    const layout = this.editor.layout;
     const g = new THREE.Group();
-    g.name = 'ix-dollhouse';
+    g.name = `ix-dollhouse:${levelId}`;
     g.userData.noCollide = true;
-    this._mats = {
+    this._mats ||= {
       // section cuts are drawn flat (unlit): a lit dark cap would burn out in the sun from above
       cap: new THREE.MeshBasicMaterial({ color: 0x3a3734, side: THREE.DoubleSide, toneMapped: false }),
       capPlan: new THREE.MeshBasicMaterial({ color: 0x2c2a27, side: THREE.DoubleSide, toneMapped: false }),
@@ -1240,25 +1591,40 @@ export class ViewModes {
       glass: new THREE.MeshBasicMaterial({ color: 0xa9c3d6, side: THREE.DoubleSide, toneMapped: false }),
       door: new THREE.MeshBasicMaterial({ color: 0x5b5752, side: THREE.DoubleSide, toneMapped: false, transparent: true, opacity: 0.9 }),
     };
-    this._overlayGeos = [];
-    this._overlayParts = new Map();
     const planMarks = new THREE.Group();
     planMarks.name = 'plan-marks';
-    const walls = home.walls || [];
+    const fy0 = this._levelData(levelId).floorY;
+    const walls = this._levelWalls(levelId);
     const info = walls.map((w) => {
       const L = w.length ?? Math.hypot(w.end.x - w.start.x, w.end.y - w.start.y);
-      return { w, L, dx: (w.end.x - w.start.x) / L, dz: (w.end.y - w.start.y) / L, t: w.thickness ?? 0.2 };
+      const lw = this._layoutWall(w.id);
+      const fy = Number.isFinite(w.floorY) ? w.floorY : Number.isFinite(lw?.floorY) ? lw.floorY : fy0;
+      return { w, lw, L, fy, dx: (w.end.x - w.start.x) / L, dz: (w.end.y - w.start.y) / L, t: w.thickness ?? 0.2 };
     });
+    const byId = new Map(info.map((it) => [it.w.id, it]));
     const near = (a, b) => Math.hypot(a.x - b.x, a.y - b.y) < 0.02;
-    info.forEach((it, i) => {
-      const prev = info[(i - 1 + info.length) % info.length];
-      const next = info[(i + 1) % info.length];
-      const convex = (a, b) => a.dx * b.dz - a.dz * b.dx > 0;
+    const convex = (a, b) => a.dx * b.dz - a.dz * b.dx > 0;
+    // the corner neighbours: the room loop's (prevId / nextId) when they meet, else any wall of the level ending there
+    const prevOf = (it) => {
+      const own = byId.get(it.lw?.prevId);
+      if (own && near(own.w.end, it.w.start)) return own;
+      return info.find((o) => o !== it && near(o.w.end, it.w.start) && convex(o, it)) ?? null;
+    };
+    const nextOf = (it) => {
+      const own = byId.get(it.lw?.nextId);
+      if (own && near(it.w.end, own.w.start)) return own;
+      return info.find((o) => o !== it && near(it.w.end, o.w.start) && convex(it, o)) ?? null;
+    };
+    const wallIds = [];
+    const house = this.editor.layout.house;
+    info.forEach((it) => {
+      const prev = prevOf(it);
+      const next = nextOf(it);
       const ext0 = prev && near(prev.w.end, it.w.start) && convex(prev, it) ? prev.t : 0;
       const ext1 = next && near(it.w.end, next.w.start) && convex(it, next) ? next.t : 0;
-      const lw = layout.wallsById?.[it.w.id];
+      const lw = it.lw;
       const profile = lw?.topProfile?.length ? lw.topProfile : [[0, it.w.heightAt?.(0) ?? 2.4], [it.L, it.w.heightAt?.(it.L) ?? 2.4]];
-      const basis = new THREE.Matrix4().makeBasis(new THREE.Vector3(it.dx, 0, it.dz), new THREE.Vector3(0, 1, 0), new THREE.Vector3(it.w.normal.x, 0, it.w.normal.y)).setPosition(it.w.start.x, 0, it.w.start.y);
+      const basis = new THREE.Matrix4().makeBasis(new THREE.Vector3(it.dx, 0, it.dz), new THREE.Vector3(0, 1, 0), new THREE.Vector3(it.w.normal.x, 0, it.w.normal.y)).setPosition(it.w.start.x, it.fy, it.w.start.y);
       const heightAt = (u) => (lw?.heightAt ? lw.heightAt(clamp(u, 0, it.L)) : it.w.heightAt?.(clamp(u, 0, it.L)) ?? 2.4);
       // cap: strip along the top profile, across the thickness (local z ∈ [−t, 0])
       const us = [-ext0, ...profile.map((p) => p[0]).filter((u) => u > 0 && u < it.L), it.L + ext1];
@@ -1299,7 +1665,7 @@ export class ViewModes {
         stub.add(m);
         this._overlayGeos.push(geo);
       }
-      // plan marks: glass in windows, door swings
+      // plan marks: glass in windows, door swings (each opening is on its owner wall only: drawn once)
       for (const o of lw?.openings || []) {
         if (o.type === 'window' || o.type === 'terrace-door') {
           const geo = new THREE.BoxGeometry(o.u1 - o.u0, 0.002, it.t * 0.36);
@@ -1310,32 +1676,8 @@ export class ViewModes {
           this._overlayGeos.push(geo);
         }
         if (o.door) {
-          const leaf = o.door.leaf?.w ?? o.width;
-          const hingeAtEnd = o.door.hinge === 'to';
-          const hu = hingeAtEnd ? o.u1 : o.u0;
-          const towards = hingeAtEnd ? -1 : 1; // along u toward the other jamb
-          const outward = o.door.swing === 'out' ? -1 : 1; // local z: + = into the room
-          const zEdge = outward > 0 ? 0 : -it.t;
-          const hy = Math.min(heightAt(o.u0), heightAt(o.u1)) + CAP_LIFT * 2;
-          const pts = [];
-          const N = 24;
-          for (let k = 0; k <= N; k++) {
-            const a = (k / N) * (Math.PI / 2);
-            pts.push([hu + towards * leaf * Math.cos(a), zEdge + outward * leaf * Math.sin(a)]);
-          }
-          const ribbon = [];
-          const wdt = 0.014;
-          for (let k = 0; k < N; k++) {
-            const [x0, z0] = pts[k], [x1, z1] = pts[k + 1];
-            const ex = z1 - z0, ez = -(x1 - x0);
-            const l = Math.hypot(ex, ez) || 1;
-            const ox = (ex / l) * wdt / 2, oz = (ez / l) * wdt / 2;
-            ribbon.push(x0 - ox, hy, z0 - oz, x1 - ox, hy, z1 - oz, x1 + ox, hy, z1 + oz, x0 - ox, hy, z0 - oz, x1 + ox, hy, z1 + oz, x0 + ox, hy, z0 + oz);
-          }
-          // the open leaf
-          const lx = hu, lz0 = zEdge, lz1 = zEdge + outward * leaf;
-          ribbon.push(lx - 0.02, hy, lz0, lx + 0.02, hy, lz0, lx + 0.02, hy, lz1, lx - 0.02, hy, lz0, lx + 0.02, hy, lz1, lx - 0.02, hy, lz1);
-          const geo = new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(ribbon, 3));
+          const angle = house?.opening?.(o.id)?.openAngleDeg ?? o.openAngleDeg ?? 90;
+          const geo = doorSwingGeometry(o, it.t, Math.min(heightAt(o.u0), heightAt(o.u1)) + CAP_LIFT * 2, angle);
           geo.applyMatrix4(basis);
           planMarks.add(new THREE.Mesh(geo, this._mats.door));
           this._overlayGeos.push(geo);
@@ -1344,17 +1686,21 @@ export class ViewModes {
       g.add(cap, stub);
       this._overlayGeos.push(capGeo);
       this._overlayParts.set(it.w.id, { cap, stub, side });
+      wallIds.push(it.w.id);
     });
     planMarks.visible = false;
     g.add(planMarks);
-    this._planMarks = planMarks;
+    g.userData.planMarks = planMarks;
+    g.userData.wallIds = wallIds;
     g.traverse((o) => {
       o.userData.noHighlight = true;
       o.userData.noCollide = true;
       if (o.isMesh) o.raycast = () => {};
     });
+    g.visible = false;
     this.editor.scene.add(g);
-    this._overlay = g;
+    this._overlays.set(levelId, g);
+    return g;
   }
 
   _repaintStub(wallId) {
@@ -1369,6 +1715,20 @@ export class ViewModes {
 
   // ---- plan HUD: room names, scale bar ---------------------------------------------------------------------------
 
+  /** The plan's labels for a level: the living room by its zones (as before), every other room by name and area. */
+  _planLabels(levelId = this.level) {
+    const lv = this._levelData(levelId);
+    const fmt = (a) => `${String(Math.round(a * 10) / 10).replace('.', ',')} m²`;
+    const out = [];
+    if (lv.main) for (const z of this.editor.layout.zones || []) out.push({ name: z.name, area: z.area, x: z.centroid.x, z: z.centroid.y });
+    for (const r of lv.rooms) {
+      if (r.id === 'stue-kjokken' && lv.main && out.length) continue;
+      const c = labelPoint(r, this.editor.layout.house);
+      out.push({ name: r.name, area: r.area, x: c.x, z: c.y });
+    }
+    return out.map((l) => ({ ...l, text: fmt(l.area) }));
+  }
+
   _updatePlanHud(on) {
     if (!on) {
       if (this._planHud && this._planHud.root.style.display !== 'none') {
@@ -1379,19 +1739,29 @@ export class ViewModes {
     }
     if (!this._planHud) {
       const root = h('div.ix-layer.kv-scale', { 'aria-hidden': 'true' });
-      const labels = (this.editor.layout.zones || []).map((z) => {
-        const el = h('div.ix-roomlabel', {}, z.name, h('small', { text: `${String(Math.round(z.area * 10) / 10).replace('.', ',')} m²` }));
-        root.append(el);
-        return { el, x: z.centroid.x, z: z.centroid.y };
-      });
       const bar = h('div.ix-scalebar__bar');
       const lab = h('span', { text: '1 m' });
-      const scale = h('div.ix-scalebar', {}, h('div.ix-scalebar__row', {}, lab, h('span.ix-scalebar__north', { text: 'N ↑' })), bar);
+      const levelEl = h('span.ix-scalebar__level', { text: '' });
+      const scale = h('div.ix-scalebar', {}, levelEl, h('div.ix-scalebar__row', {}, lab, h('span.ix-scalebar__north', { text: 'N ↑' })), bar);
       root.append(scale);
       (this.editor.uiRoot || document.body).append(root);
-      this._planHud = { root, labels, bar, lab };
+      this._planHud = { root, labels: [], bar, lab, levelEl, built: null };
     }
     const hud = this._planHud;
+    if (hud.built !== this.level) {
+      // the labels of the shown level
+      for (const l of hud.labels) l.el.remove();
+      hud.labels = this._planLabels().map((l) => {
+        const el = h('div.ix-roomlabel', {}, l.name, h('small', { text: l.text }));
+        hud.root.append(el);
+        return { el, x: l.x, z: l.z };
+      });
+      // the level's name only when the house has more than one
+      hud.levelEl.textContent = this.levels.length > 1 ? this.levelName : '';
+      hud.levelEl.hidden = this.levels.length <= 1;
+      hud.built = this.level;
+      this._hudKey = '';
+    }
     if (hud.root.style.display) hud.root.style.display = '';
     const cam = this.ortho;
     // rects cached (no forced layout per frame); the labels only move when the plan view does
@@ -1400,8 +1770,9 @@ export class ViewModes {
     const key = `${cam.position.x.toFixed(4)},${cam.position.z.toFixed(4)},${cam.zoom.toFixed(4)},${cam.top.toFixed(4)},${r.width}x${r.height},${rootRect.left},${rootRect.top}`;
     if (key === this._hudKey) return;
     this._hudKey = key;
+    const fy = this._levelData().floorY;
     for (const l of hud.labels) {
-      _v2.set(l.x, 0, l.z).project(cam);
+      _v2.set(l.x, fy, l.z).project(cam);
       const x = (_v2.x * 0.5 + 0.5) * r.width + r.left - rootRect.left;
       const y = (-_v2.y * 0.5 + 0.5) * r.height + r.top - rootRect.top;
       l.el.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px) translate(-50%, -50%)`;
@@ -1427,7 +1798,9 @@ export class ViewModes {
     this._tween = null;
     this._setDollhouse(false);
     this._setCut(false);
-    this._disposeCut();
+    for (const id of [...this._cuts.keys()]) this._disposeCut(id);
+    this._setUpper(false);
+    this._setOverview(false);
     this._setCeilings(false);
     this._setExterior(false);
     for (const [mesh] of [...this._concealed]) this._reveal(mesh);
@@ -1444,17 +1817,103 @@ export class ViewModes {
     this._offPaint?.();
     this._offLoad?.();
     this._offSelect?.();
+    for (const off of this._offSync || []) off?.();
     if (this._compassHidden && this.editor.hud?.compass) this.editor.hud.compass.style.visibility = '';
     this.persp.clearViewOffset();
     this.controls.dispose();
-    if (this._overlay) {
-      this._overlay.removeFromParent();
-      for (const g of this._overlayGeos) g.dispose();
-      for (const m of Object.values(this._mats)) m.dispose();
-    }
+    for (const g of this._overlays.values()) g.removeFromParent();
+    for (const g of this._overlayGeos) g.dispose();
+    for (const m of Object.values(this._mats || {})) m.dispose();
     for (const m of this._concealMats.values()) m.dispose();
     this._planHud?.root.remove();
   }
+}
+
+/**
+ * Plan mark of a door's swing in its owner wall's frame (x along the wall from its start, z into the owner room, y
+ * the mark's height): the arc the leaf's edge sweeps (0 … openAngleDeg, 180° for door-gang, D6) and the open leaf.
+ * @param {object} o      layout opening with `door` (leaf, hinge 'from'|'to', swing 'in'|'out')
+ * @param {number} t      wall thickness
+ * @param {number} hy     height of the mark (wall-local)
+ * @param {number} angleDeg
+ * @returns {THREE.BufferGeometry}
+ */
+function doorSwingGeometry(o, t, hy, angleDeg = 90) {
+  const leaf = o.door.leaf?.w ?? o.width;
+  const hingeAtEnd = o.door.hinge === 'to';
+  const hu = hingeAtEnd ? o.u1 : o.u0;
+  const towards = hingeAtEnd ? -1 : 1; // along u toward the other jamb
+  const outward = o.door.swing === 'out' ? -1 : 1; // local z: + = into the room
+  const zEdge = outward > 0 ? 0 : -t;
+  const A = clamp((Number.isFinite(angleDeg) ? angleDeg : 90) * DEG, 0.2, Math.PI);
+  const N = Math.max(12, Math.round((24 * A) / (Math.PI / 2)));
+  const pts = [];
+  for (let k = 0; k <= N; k++) {
+    const a = (k / N) * A;
+    pts.push([hu + towards * leaf * Math.cos(a), zEdge + outward * leaf * Math.sin(a)]);
+  }
+  const ribbon = [];
+  const wdt = 0.014;
+  for (let k = 0; k < N; k++) {
+    const [x0, z0] = pts[k], [x1, z1] = pts[k + 1];
+    const ex = z1 - z0, ez = -(x1 - x0);
+    const l = Math.hypot(ex, ez) || 1;
+    const ox = (ex / l) * wdt / 2, oz = (ez / l) * wdt / 2;
+    ribbon.push(x0 - ox, hy, z0 - oz, x1 - ox, hy, z1 - oz, x1 + ox, hy, z1 + oz, x0 - ox, hy, z0 - oz, x1 + ox, hy, z1 + oz, x0 + ox, hy, z0 + oz);
+  }
+  // the open leaf: from the hinge along the open direction, 4 cm wide
+  const dx = towards * Math.cos(A), dz = outward * Math.sin(A);
+  const px = -dz * 0.02, pz = dx * 0.02;
+  const x0 = hu, z0 = zEdge, x1 = hu + dx * leaf, z1 = zEdge + dz * leaf;
+  ribbon.push(x0 - px, hy, z0 - pz, x0 + px, hy, z0 + pz, x1 + px, hy, z1 + pz, x0 - px, hy, z0 - pz, x1 + px, hy, z1 + pz, x1 - px, hy, z1 - pz);
+  return new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(ribbon, 3));
+}
+
+/** Distance from a point to a polygon's edges (Vector2 points: x, y = z). */
+function edgeDistance(x, z, poly) {
+  let best = Infinity;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const a = poly[j], b = poly[i];
+    const ex = b.x - a.x, ez = b.y - a.y;
+    const l2 = ex * ex + ez * ez || 1;
+    const s = clamp(((x - a.x) * ex + (z - a.y) * ez) / l2, 0, 1);
+    best = Math.min(best, Math.hypot(a.x + ex * s - x, a.y + ez * s - z));
+  }
+  return best;
+}
+
+function insidePoly(x, z, poly) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const a = poly[i], b = poly[j];
+    if (a.y > z !== b.y > z && x < ((b.x - a.x) * (z - a.y)) / (b.y - a.y) + a.x) inside = !inside;
+  }
+  return inside;
+}
+
+/**
+ * Where a room's plan label goes: the point of its floor farthest from its walls, outside the stairwell and the
+ * stair (a grid search – an L-shaped room's centroid can lie outside it). @returns {{ x: number, y: number }}
+ */
+function labelPoint(room, house) {
+  const poly = room.polygon;
+  const b = room.bounds;
+  const holes = [
+    ...(house?.floorOpenings || []).filter((fo) => fo.levelId === room.levelId).map((fo) => fo.polygon),
+    ...(house?.stairs || []).map((st) => st.footprint).filter((f) => f?.length >= 3),
+  ];
+  const c = room.centroid;
+  let best = { x: c.x, y: c.y, d: -1 };
+  const N = 16;
+  for (let i = 0; i <= N; i++) {
+    for (let k = 0; k <= N; k++) {
+      const x = b.minX + ((b.maxX - b.minX) * i) / N, z = b.minZ + ((b.maxZ - b.minZ) * k) / N;
+      if (!insidePoly(x, z, poly) || holes.some((hp) => insidePoly(x, z, hp))) continue;
+      const d = Math.min(edgeDistance(x, z, poly), ...holes.map((hp) => edgeDistance(x, z, hp)));
+      if (d > best.d + 1e-6) best = { x, y: z, d };
+    }
+  }
+  return { x: best.x, y: best.y };
 }
 
 export default ViewModes;
