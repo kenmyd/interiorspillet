@@ -87,6 +87,9 @@ for (const [name, build] of [
   ['buildBuiltIns', buildBuiltIns],
 ]) {
   for (const [lname, L] of [['today', today], ['house-mini', house]]) {
+    // steg 19 (B2): buildStairs is real – it builds house-mini's stair (tools/house-tests/stair-geom.test.mjs); the
+    // empty contract still holds for a house without stairs
+    if (name === 'buildStairs' && L.house?.stairs?.length) continue;
     const ctx = fakeCtx();
     const [r, warns] = quiet(() => build(ctx, L));
     const bad = contractProblems(r, name);
