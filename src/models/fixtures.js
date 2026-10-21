@@ -590,7 +590,8 @@ export const archetypes = {
       stand: { type: 'enum', label: 'Står', options: [['lean', 'Lent mot veggen'], ['base', 'På fotplate'], ['feet', 'På føtter']] },
       towels: { type: 'number', min: 0, max: 3, step: 1, label: 'Håndklær på' },
     },
-    dimsRange: { w: [0.3, 0.8], d: [0.15, 0.5], h: [0.8, 2.0] },
+    // d from 0.03: a ladder's dims.d is its rail depth (Bambus stige 50x160 is 0.04), not the leaning footprint
+    dimsRange: { w: [0.3, 0.8], d: [0.03, 0.5], h: [0.8, 2.0] },
     build: buildTowelLadder,
   }),
   'towel-rail': def('towel-rail', {

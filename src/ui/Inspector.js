@@ -357,11 +357,19 @@ export class Inspector extends BasePanel {
   }
 
   /**
+   * The item's category: the product's own when it is a catalogue product (a design saved before a product moved category,
+   * e.g. the round-1 mirrors Smått → Speil, still has the old one in item.category), else the item's.
+   */
+  _category(item, product) {
+    return product?.category || item.category;
+  }
+
+  /**
    * Products the item can be swapped with (same category and mount, same sub-type where that matters). An archetype
    * with several mounts (vitrineskap: floor or wall-hung) swaps across them – swap() moves it onto/off the wall.
    */
   _candidates(item, product) {
-    const cat = item.category;
+    const cat = this._category(item, product);
     if (!cat || cat === 'solskjerming' || !this.catalog.CATEGORIES.some((c) => c.key === cat)) return [];
     const compatible = this.catalog.mountsCompatible || ((a, ma, b, mb) => ma === mb);
     let list = this.catalog.products(cat).filter((p) => compatible(item.archetype, item.mount, p.archetype, p.mount));
@@ -371,6 +379,14 @@ export class Inspector extends BasePanel {
     } else if (!product && (cat === 'tekstil' || cat === 'smatt' || cat === 'akustikk')) {
       const arch = list.filter((p) => p.archetype === item.archetype);
       if (arch.length >= 1) list = arch;
+    } else if (!product && (cat === 'bord' || cat === 'sofa')) {
+      // today's tables and sofas have no product: keep to the sub-type the catalogue gives their archetype, so a coffee
+      // table is offered coffee tables (sofabord), not a 1.8 m dining table
+      const subs = new Set(list.filter((p) => p.archetype === item.archetype).map((p) => p.subcategory));
+      if (subs.size && !subs.has(undefined)) {
+        const sub = list.filter((p) => subs.has(p.subcategory));
+        if (sub.length >= 2) list = sub;
+      }
     }
     return list;
   }
@@ -840,7 +856,7 @@ export class Inspector extends BasePanel {
 
   _headSection(item, product) {
     const badges = [];
-    const catLabel = this.catalog.categoryLabel?.(item.category);
+    const catLabel = this.catalog.categoryLabel?.(this._category(item, product));
     if (catLabel) badges.push(badge(catLabel));
     const kids = [];
     if (product) {
@@ -902,7 +918,7 @@ export class Inspector extends BasePanel {
     const next = iconButton({ icon: 'back', title: 'Neste modell (.)', onClick: () => this.swap(1) });
     next.replaceChildren(svg(IC.next));
     const links = [];
-    const cat = this.catalog.CATEGORIES.find((c) => c.key === item.category);
+    const cat = this.catalog.CATEGORIES.find((c) => c.key === this._category(item, product));
     if (cat) {
       links.push(h('button.ipi-link', { type: 'button', text: `Se alle ${cat.label.toLowerCase()} i katalogen`, on: { click: () => this.editor.ui.catalog?.open?.(cat.key) } }));
     }

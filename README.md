@@ -5,8 +5,9 @@ sørvinduene mot elva og TV-stua – og prøver ut interiør før du kjøper noe
 
 - **Den høye veggen** (3,91 × 3,00 m): 40 forslag (spilevegger, sjakkbrett med Akupixel, tekstilpaneler, gardinvegg,
   mose, akustikkbilder …) som du kan bla i, ta i bruk, endre og sammenligne med fotomontasjene.
-- **Møbler og lamper** fra katalogen (Bohus, IKEA, Christiania Belysning, Fagmøbler m.fl. – 174 produkter med ekte mål
-  og priser i 10 kategorier): lenestoler og hvilestoler, skjenker, vitrineskap (også veggmontert), taklamper (bl.a.
+- **Møbler og lamper** fra katalogen (Bohus, IKEA, Skeidar, Jysk, Christiania Belysning, Fagmøbler m.fl. – 338 produkter
+  med ekte mål og priser i 22 kategorier): sofaer, lenestoler og hvilestoler, bord, spisestoler, skjenker, TV-benker,
+  vitrineskap (også veggmontert), hyller, senger, nattbord, kommoder, garderobeskap, speil, bad, gang, taklamper (bl.a.
   Secto- og Octo-spilelamper i tre), gulv- og bordlamper, puter, pledd, puffer, tepper, solskjerming, akustikkprodukter
   og pynt.
 - **Solskjerming** på vinduene (persienner, rullegardiner, plissé, duo, lameller, gardiner, liftgardin, screen) med
@@ -101,8 +102,9 @@ musehjulet. I **plan** drar du med høyre knapp og zoomer med hjulet. Alle verkt
 ## Verktøyene
 
 ### Katalog (K)
-1. Velg kategori øverst (Lenestoler, Skjenker, Vitrineskap, Taklamper, Små lamper, Puter og pledd, Tepper,
-   Solskjerming, Akustikk, Smått) eller søk («bouclé», «eik», «IKEA» …). Klikk på et kort for detaljer, mål, pris og lenke til butikken.
+1. Velg kategori øverst (Sofaer, Lenestoler, Bord, Spisestoler, Skjenker, TV-benker, Vitrineskap, Hyller, Senger,
+   Nattbord, Kommoder, Garderobeskap, Speil, Bad, Gang, Taklamper, Små lamper, Puter og pledd, Tepper, Solskjerming,
+   Akustikk, Smått) eller søk («bouclé», «eik», «IKEA» …). Klikk på et kort for detaljer, mål, pris og lenke til butikken.
 2. **«Plasser»**: et halvgjennomsiktig spøkelse følger musa på riktig underlag (gulv, vegg, tak, bordplate, sofa).
    Rødt betyr at det kolliderer med noe. **Klikk** plasserer, **Shift + klikk** plasserer flere, høyreklikk/Esc avbryter.
 3. Etterpå åpnes **egenskapspanelet**:

@@ -2477,7 +2477,8 @@ export const archetypes = {
       brackets: { type: 'enum', label: 'Oppheng (enkle)', options: [['none', 'Skjult'], ['straps', 'Lærstropper'], ['battens', 'Lister bak'], ['brackets', 'Konsoller']], default: 'none' },
       barW: { type: 'number', min: 0.008, max: 0.03, step: 0.001, label: 'Stangbredde (m)' },
     },
-    dimsRange: { w: [0.4, 2.4], d: [0.12, 0.35], h: [0.2, 1.6] },
+    // h from 0.04: a single board (IKEA LACK vegghylle 110x26 is 0.05 thick) must not be clamped to 0.10
+    dimsRange: { w: [0.4, 2.4], d: [0.12, 0.35], h: [0.04, 1.6] },
     build: buildWallShelf,
   }),
 };
