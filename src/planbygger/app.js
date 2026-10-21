@@ -187,6 +187,8 @@ class App {
     this.undoBtn = h('button', { class: 'pb-btn', title: 'Angre (Ctrl+Z)', onclick: () => this.undo() }, 'Angre');
     this.redoBtn = h('button', { class: 'pb-btn', title: 'Gjør om (Ctrl+Y)', onclick: () => this.redo() }, 'Gjør om');
     this.walkBtn = h('button', { class: 'pb-btn is-primary', onclick: () => this.open3d() }, 'Gå rundt i 3D');
+    // the game's validator after every change (debounced): a pill with the number of errors
+    this.checkPill = h('button', { class: 'pb-pill', hidden: true, title: 'Spillets kontroll av huset – klikk for detaljer', onclick: () => this._showCheck() }, '');
     this.menuBtn = h('select', { class: 'pb-btn', title: 'Fil', onchange: (e) => {
       const v = e.target.value;
       e.target.value = '';
@@ -200,7 +202,7 @@ class App {
     const top = h('header', { class: 'pb-top' },
       h('div', { class: 'pb-brand' }, 'Planbygger', h('small', {}, 'Interiørspillet')),
       this.nameInput, steps,
-      h('div', { class: 'pb-actions' }, this.undoBtn, this.redoBtn, this.menuBtn, this.walkBtn));
+      h('div', { class: 'pb-actions' }, this.checkPill, this.undoBtn, this.redoBtn, this.menuBtn, this.walkBtn));
 
     this.toolEls = {};
     const tools = h('aside', { class: 'pb-tools' },
@@ -518,7 +520,33 @@ class App {
     this.editor.refresh();
     this._refreshAll();
     this._saveSoon();
+    this._checkSoon();
     if (label) this.statusMsg.textContent = label;
+  }
+  /** Export + validateHouse in the background, 700 ms after the last change. */
+  _checkSoon() {
+    clearTimeout(this._checkT);
+    if (!this.doc?.levels.some((l) => l.walls.length)) {
+      this.checkPill.hidden = true;
+      return;
+    }
+    this._checkT = setTimeout(async () => {
+      const token = (this._checkToken = (this._checkToken || 0) + 1);
+      const out = await this._validate();
+      if (token !== this._checkToken) return;
+      this._lastCheck = out;
+      const n = out.fatal ? 1 : out.errors.length;
+      this.checkPill.hidden = false;
+      this.checkPill.className = `pb-pill ${n ? 'is-error' : out.warnings.length ? 'is-warn' : 'is-ok'}`;
+      this.checkPill.textContent = n ? `${n} feil` : out.warnings.length ? `0 feil · ${out.warnings.length} adv.` : '0 feil';
+      if (this._checkMsgs?.isConnected) this._fillMsgs(this._checkMsgs, out);
+    }, 700);
+  }
+  _showCheck() {
+    if (!this.view3d.hidden) this.close3d();
+    this.select(null);
+    this.editor.select(null);
+    setTimeout(() => this._checkMsgs?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0);
   }
   undo() {
     const d = this.hist.undo(this.doc);
@@ -911,6 +939,7 @@ class App {
   _checkPanel() {
     const box = h('div', {}, h('h3', {}, 'Kontroll'));
     const msgs = h('ul', { class: 'pb-msgs' });
+    this._checkMsgs = msgs;
     box.append(h('div', { class: 'pb-row' }, h('button', { class: 'pb-btn is-small', onclick: () => this.check(msgs) }, 'Kontroller huset')), msgs);
     if (this._lastCheck) this._fillMsgs(msgs, this._lastCheck);
     return box;

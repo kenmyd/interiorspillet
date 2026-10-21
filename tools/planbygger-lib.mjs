@@ -11,7 +11,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 registerHooks({
   load(url, context, nextLoad) {
-    if (url.startsWith('file:') && url.endsWith('.json')) {
+    // only the project's own JSON (src/data, research): never a package's package.json (require in node_modules)
+    if (url.startsWith('file:') && url.endsWith('.json') && !url.includes('/node_modules/')) {
       const text = fs.readFileSync(fileURLToPath(url), 'utf8');
       return { format: 'module', source: `export default ${text};`, shortCircuit: true };
     }

@@ -117,6 +117,30 @@ select {
   opacity: 0.45;
   cursor: default;
 }
+.pb-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--pb-line-2);
+  background: var(--pb-panel-2);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.pb-pill[hidden] {
+  display: none;
+}
+.pb-pill.is-ok {
+  border-color: rgba(79, 214, 143, 0.6);
+  color: var(--pb-ok);
+}
+.pb-pill.is-warn {
+  border-color: rgba(255, 181, 46, 0.6);
+  color: var(--pb-accent);
+}
+.pb-pill.is-error {
+  border-color: rgba(255, 106, 92, 0.7);
+  color: var(--pb-danger);
+}
 .pb-actions {
   display: flex;
   gap: 6px;
