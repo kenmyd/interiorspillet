@@ -20,6 +20,8 @@ import { imp, readJson, check, section, near, done } from './_lib.mjs';
 const THREE = await import('three');
 const { buildLayout, LIVING_ROOM_ID } = await imp('src/home/layout.js');
 const { buildRooms } = await imp('src/home/rooms.js');
+// steg 8 (A2) filled buildRooms: small textures, so building house-mini's rooms in Node takes milliseconds
+(await imp('src/home/materials.js')).configureMaterials({ textureRes: 0.125 });
 const { buildStairs, stairLayout, stairColliders, slabColliders } = await imp('src/home/stairs.js');
 const { buildBuiltIns } = await imp('src/home/builtins.js');
 const { createVisibility } = await imp('src/home/visibility.js');
@@ -86,7 +88,9 @@ for (const [name, build] of [
   ['buildStairs', buildStairs],
   ['buildBuiltIns', buildBuiltIns],
 ]) {
-  for (const [lname, L] of [['today', today], ['house-mini', house]]) {
+  // buildRooms is no longer a stub (steg 8, A2): it stays empty for today's living room alone; what it builds for
+  // the other rooms is tools/house-tests/rooms.test.mjs
+  for (const [lname, L] of name === 'buildRooms' ? [['today', today]] : [['today', today], ['house-mini', house]]) {
     const ctx = fakeCtx();
     const [r, warns] = quiet(() => build(ctx, L));
     const bad = contractProblems(r, name);

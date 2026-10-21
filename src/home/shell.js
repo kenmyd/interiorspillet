@@ -2,7 +2,8 @@
 // and door openings with reveals, black aluminium window frames / sashes, glass, window boards, the black hall door
 // and the glazed terrace door (world/Door.js), the oak floor, white skirting boards, flat + sloped ceilings, the
 // bulkheads, LED coves, the four spots at the high wall, the TV-stue ceiling lamp, sockets / switches / smoke detectors,
-// the heat pump, a small hall behind the hall door and the roof / eaves seen from the terrace.
+// the heat pump and the roof / eaves seen from the terrace. The backs of the slabs that are faces of the other rooms
+// (layout.house backOf, D13) are their own meshes with the face's id and paint; the other rooms are rooms.js.
 //
 // All measurements come from home/layout.js (room-spec.json). Wall-local frame used throughout: origin at the wall's
 // start on the room-side face, +x along the wall, +y up, +z = room normal (into the room); the wall occupies
@@ -11,11 +12,15 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { paint, mat, emissive } from './materials.js';
-import { extrudeWall, basis, MeshBatcher, place, prismX } from '../world/buildKit.js';
+import { extrudeWall, basis, MeshBatcher, prismX } from '../world/buildKit.js';
+import { wallMatrix, groupGeometry, wallLayer, ring, floorGeometry, ceilingGeometry, glassMaterial, buildWindow as buildWindowKit } from './wallkit.js';
+import { buildDoor, replaceLeaf } from './doors.js';
 import { woodCladding, surfaceMaterial } from '../world/surfaces.js';
 import { createCanvas, canvasTexture, heightToNormalCanvas, mulberry32 } from '../world/proctex.js';
 import { Door } from '../world/Door.js';
 import { buildModel } from '../models/registry.js';
+
+export { glassMaterial };
 
 const UP = new THREE.Vector3(0, 1, 0);
 const EPS = 1e-4;
@@ -119,141 +124,6 @@ export function gridSample(arr, GW, GH, fx, fy) {
   const xb = xa + 1 === GW ? 0 : xa + 1, yb = ya + 1 === GH ? 0 : ya + 1;
   const a = arr[ya * GW + xa], b = arr[ya * GW + xb], c = arr[yb * GW + xa], d = arr[yb * GW + xb];
   return a + (b - a) * tx + (c - a) * ty + (a - b - c + d) * tx * ty;
-}
-
-/** Right-handed frame: x = dir, y = up, z = dir × up (must equal the wanted normal; flip dir otherwise). */
-function wallMatrix(w) {
-  return basis(w.dir3, UP, w.normal3, new THREE.Vector3(w.start.x, 0, w.start.y));
-}
-
-function openingMatrix(o, y = null) {
-  const origin = o.bottomCenter.clone();
-  if (y != null) origin.y = y;
-  return basis(o.right, UP, o.normal, origin);
-}
-
-/** Copy of one material group of a non-indexed geometry (null when empty). */
-function groupGeometry(g, materialIndex) {
-  const gr = g.groups.find((x) => x.materialIndex === materialIndex);
-  if (!gr || !gr.count) return null;
-  const sub = new THREE.BufferGeometry();
-  for (const [name, attr] of Object.entries(g.attributes)) {
-    const s = attr.itemSize;
-    sub.setAttribute(name, new THREE.BufferAttribute(attr.array.slice(gr.start * s, (gr.start + gr.count) * s), s));
-  }
-  return sub;
-}
-
-/**
- * Extruded layer of a wall in wall-local coordinates with mitred ends.
- * @param {object} o
- * @param {number} o.L                       wall length
- * @param {number} o.bottom                  bottom edge height
- * @param {Array<[number, number]>} o.top    top edge [[u, y], …] from u = 0 to u = L (steps allowed)
- * @param {Array<{x0,x1,y1}>} o.notches      openings cut from the bottom edge (doors)
- * @param {Array<{x0,x1,y0,y1}>} o.holes     openings inside (windows)
- * @param {number} o.z0 @param {number} o.z1 layer depth range (z1 > z0, both ≤ 0)
- * @param {number} o.kStart @param {number} o.kEnd  mitre factors: x += ∓k·depth at the ends (see buildWalls)
- * @returns {THREE.BufferGeometry} groups 0 back (−z), 1 front (+z), 2 sides
- */
-function wallLayer({ L, bottom, top, notches = [], holes = [], z0, z1, kStart = 0, kEnd = 0 }) {
-  const pts = [];
-  const push = (x, y) => {
-    const p = pts[pts.length - 1];
-    if (!p || Math.abs(p.x - x) > 1e-6 || Math.abs(p.y - y) > 1e-6) pts.push(v2(x, y));
-  };
-  const ns = notches.filter((n) => n.x1 > EPS && n.x0 < L - EPS).sort((a, b) => a.x0 - b.x0);
-  let startNotch = null;
-  let endNotch = null;
-  if (ns.length && ns[0].x0 <= EPS) startNotch = ns.shift();
-  if (ns.length && ns[ns.length - 1].x1 >= L - EPS) endNotch = ns.pop();
-  if (startNotch) {
-    push(0, startNotch.y1);
-    push(startNotch.x1, startNotch.y1);
-    push(startNotch.x1, bottom);
-  } else push(0, bottom);
-  for (const n of ns) {
-    push(n.x0, bottom);
-    push(n.x0, n.y1);
-    push(n.x1, n.y1);
-    push(n.x1, bottom);
-  }
-  if (endNotch) {
-    push(endNotch.x0, bottom);
-    push(endNotch.x0, endNotch.y1);
-    push(L, endNotch.y1);
-  } else push(L, bottom);
-  for (let i = top.length - 1; i >= 0; i--) push(Math.max(0, Math.min(L, top[i][0])), top[i][1]);
-  if (pts.length > 2 && pts[0].distanceTo(pts[pts.length - 1]) < 1e-6) pts.pop();
-  const shape = new THREE.Shape(pts);
-  for (const h of holes) shape.holes.push(new THREE.Path([v2(h.x0, h.y0), v2(h.x0, h.y1), v2(h.x1, h.y1), v2(h.x1, h.y0)]));
-  const g = extrudeWall(shape, z1 - z0, z0);
-  const pos = g.attributes.position;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i);
-    const d = -pos.getZ(i);
-    if (x < EPS) pos.setX(i, x - kStart * d);
-    else if (x > L - EPS) pos.setX(i, x + kEnd * d);
-  }
-  pos.needsUpdate = true;
-  g.computeVertexNormals();
-  // UVs in metres from the (mitred) positions – the mitre shift would otherwise shear the caps' texture across
-  // their long triangles: faces of the wall planes (u along the wall, v up), ends (depth, up), top/bottom (u, depth)
-  const nrm = g.attributes.normal;
-  const uv = g.attributes.uv;
-  for (let i = 0; i < pos.count; i++) {
-    const ax = Math.abs(nrm.getX(i)), ay = Math.abs(nrm.getY(i)), az = Math.abs(nrm.getZ(i));
-    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-    if (az >= ax && az >= ay) uv.setXY(i, x, y);
-    else if (ax >= ay) uv.setXY(i, -z, y);
-    else uv.setXY(i, x, -z);
-  }
-  uv.needsUpdate = true;
-  return g;
-}
-
-/** Four boxes forming a rectangular ring (outer size w × h centred on x = cx, bottom y0) in a batch frame. */
-function ring(f, cx, y0, w, h, side, topW, bottomW, z0, z1, material, o = {}) {
-  const d = z1 - z0;
-  const zc = (z0 + z1) / 2;
-  if (topW > 0) f.box(w, topW, d, cx, y0 + h - topW / 2, zc, material, o);
-  if (bottomW > 0) f.box(w, bottomW, d, cx, y0 + bottomW / 2, zc, material, o);
-  const hh = h - topW - bottomW;
-  if (hh > 0 && side > 0) {
-    f.box(side, hh, d, cx - w / 2 + side / 2, y0 + bottomW + hh / 2, zc, material, o);
-    f.box(side, hh, d, cx + w / 2 - side / 2, y0 + bottomW + hh / 2, zc, material, o);
-  }
-}
-
-/**
- * Window glass: only the specular (environment reflection with Fresnel + light highlights) is added to what lies
- * behind, which is dimmed by a constant, slightly green-grey transmission – reads as glass, costs one draw, no
- * transmission pass. Shared by every pane (do not dispose per window).
- * @returns {THREE.MeshStandardMaterial}
- */
-export function glassMaterial() {
-  if (glassMaterial._m) return glassMaterial._m;
-  const m = new THREE.MeshStandardMaterial({
-    color: 0x000000,
-    roughness: 0.035,
-    metalness: 0,
-    envMapIntensity: 1.1,
-    transparent: true,
-    depthWrite: false,
-    side: THREE.DoubleSide,
-    blending: THREE.CustomBlending,
-    blendEquation: THREE.AddEquation,
-    blendSrc: THREE.OneFactor,
-    blendDst: THREE.OneMinusConstantColorFactor,
-    blendSrcAlpha: THREE.ZeroFactor,
-    blendDstAlpha: THREE.OneFactor,
-  });
-  // transmission ≈ (0.88, 0.91, 0.895): double glazing, faintly green-grey
-  m.blendColor.setRGB(0.12, 0.09, 0.105);
-  m.name = 'window-glass';
-  m.userData = { cached: true, kind: 'glass-window' };
-  glassMaterial._m = m;
-  return m;
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -415,35 +285,6 @@ function meanColor(px, target, step = 7) {
   return new THREE.Color(target.r / (sr / n || 1), target.g / (sg / n || 1), target.b / (sb / n || 1));
 }
 
-/** Floor (x, z polygon) → horizontal ShapeGeometry with UVs u = z (along the planks), v = x, in metres. */
-function floorGeometry(poly, y = 0) {
-  const shape = new THREE.Shape(poly.map((p) => v2(p.x ?? p[0], -(p.y ?? p[1]))));
-  const g = new THREE.ShapeGeometry(shape);
-  g.rotateX(-Math.PI / 2);
-  g.translate(0, y, 0);
-  const pos = g.attributes.position;
-  const uv = g.attributes.uv;
-  for (let i = 0; i < pos.count; i++) uv.setXY(i, pos.getZ(i), pos.getX(i));
-  return g;
-}
-
-/** Ceiling polygon → downward-facing geometry, y from heightAt(x, z), UVs (x, z) metres. */
-function ceilingGeometry(poly, heightAt) {
-  const shape = new THREE.Shape(poly.map((p) => v2(p.x ?? p[0], p.y ?? p[1])));
-  const g = new THREE.ShapeGeometry(shape);
-  g.rotateX(Math.PI / 2);
-  const pos = g.attributes.position;
-  const uv = g.attributes.uv;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i);
-    const z = pos.getZ(i);
-    pos.setY(i, heightAt(x, z));
-    uv.setXY(i, x, z);
-  }
-  g.computeVertexNormals();
-  return g;
-}
-
 // ---------------------------------------------------------------------------------------------------------------
 
 /**
@@ -519,6 +360,10 @@ export function buildShell(ctx, layout) {
   // ---- floor
   const floorM = floorMaterial(layout.floor, res);
   owned.push(floorM.material, ...floorM.textures);
+  // the living room's oak is shared with the rooms that have the same floor (gang, soverom – §4.16) and tinted for
+  // the basement's lighter oak (rooms.js); floorOakColor is the albedo it was made for
+  M.floorOak = floorM.material;
+  M.floorOakColor = layout.floor.color || '#b4a99c';
   const floor = new THREE.Mesh(keep(floorGeometry(layout.floor.polygon)), floorM.material);
   floor.name = 'floor';
   floor.receiveShadow = true;
@@ -537,6 +382,15 @@ export function buildShell(ctx, layout) {
 
   const walls = [];
   const wallMeshes = new Map();
+  /** D13: face id → the back meshes of the living room's slabs that are that face (another room's wall) */
+  const faceMeshes = new Map();
+  /** The face of another room that is the back of a living-room slab (the longest one when there are several). */
+  const backFaceOf = (w) => {
+    const H = layout.house;
+    const faces = (H?.backFacesOf?.(w.id) || []).map((id) => H.wallsById[id]).filter(Boolean);
+    if (faces.length <= 1) return faces[0] ?? null;
+    return faces.reduce((a, b) => (b.length > a.length ? b : a));
+  };
   const revealBatch = newBatch('shell-walls');
   const nW = layout.walls.length;
   const cross = (a, b) => a.x * b.y - a.y * b.x;
@@ -586,9 +440,25 @@ export function buildShell(ctx, layout) {
     pickables.walls.push(faceMesh);
     wallMeshes.set(w.id, faceMesh);
     if (sides) revealBatch.add(sides, exterior ? M.reveal : M.back);
-    if (back && !exterior) revealBatch.add(back, M.back);
+    // D13: the back of a slab that is a face of another room (layout.house backOf) is that face – its own mesh with the
+    // face's id, paint and pick; rooms.js lists it in the face's WallInfo (the slab is never built twice)
+    const face0 = !exterior && back ? backFaceOf(w) : null;
+    if (face0) {
+      const bm = new THREE.Mesh(keep(back), paint(face0.paint));
+      bm.name = `wall:${face0.id}`;
+      bm.castShadow = true;
+      bm.receiveShadow = true;
+      bm.userData.pick = { kind: 'wall', wallId: face0.id };
+      bm.userData.backOf = w.id;
+      solid.add(bm);
+      pickables.walls.push(bm);
+      if (!faceMeshes.has(face0.id)) faceMeshes.set(face0.id, []);
+      faceMeshes.get(face0.id).push(bm);
+    } else {
+      if (back && !exterior) revealBatch.add(back, M.back);
+      back?.dispose();
+    }
     sides?.dispose();
-    back?.dispose();
     if (exterior) {
       // outer layer: cladding from the slab edge up under the roof, dark trim in the outer reveals
       const xs = [0, L];
@@ -760,96 +630,9 @@ export function buildShell(ctx, layout) {
     });
   }
 
-  /**
-   * Builds the frame/sash/glass/board of one opening in its local frame (origin bottom centre of the hole on the
-   * room face at y = sill). Returns { group, glass, pickMeshes, sillY }.
-   */
+  /** Frame / sash / glass / board of one opening (wallkit.js buildWindow, with the shell's materials). */
   function buildWindow(o, isDoor) {
-    const kit = new MeshBatcher(`window:${o.id}`);
-    const f = kit.frame(new THREE.Matrix4());
-    const W = o.width;
-    const H = o.height;
-    const rd = o.revealDepth;
-    const fd = o.frame?.depth ?? 0.07;
-    const fw = o.frame?.width ?? 0.07;
-    const zF = -rd; // room-side face of the frame
-    const zB = -rd - fd; // outside face
-    const opening = !isDoor && o.sashes?.some((s) => s.opening);
-    let glass = null;
-    let glassRect = null;
-    const nf = { collide: false };
-    const gk = { collide: false, castShadow: false };
-    if (isDoor) {
-      // karm (jambs + head) around the door leaf; the leaf itself is built on the Door's pivot
-      const fk = 0.055;
-      f.box(fk, H, fd, -W / 2 + fk / 2, H / 2, (zF + zB) / 2, M.frame, nf);
-      f.box(fk, H, fd, W / 2 - fk / 2, H / 2, (zF + zB) / 2, M.frame, nf);
-      f.box(W - 2 * fk, fk, fd, 0, H - fk / 2, (zF + zB) / 2, M.frame, nf);
-      // aluminium threshold sill under the leaf and the light oak threshold across the reveal floor
-      f.box(W, 0.018, fd + 0.03, 0, 0.009, zB + (fd + 0.03) / 2, M.frame, nf);
-      f.box(W, 0.012, rd, 0, 0.006, -rd / 2, M.threshold, nf);
-    } else if (opening) {
-      // top-hung window: outer frame (karm) + sash with a shadow gap and a heavier bottom rail, handle on the rail
-      const fk = Math.max(0.025, fw * 0.42);
-      const gap = 0.004;
-      const fs = Math.max(0.03, fw - fk - gap);
-      const fsB = fs + 0.012;
-      ring(f, 0, 0, W, H, fk, fk, fk, zB, zF, M.frame, nf);
-      ring(f, 0, fk, W - 2 * fk, H - 2 * fk, gap, gap, gap, zB + 0.03, zF - 0.012, M.gasket, gk);
-      const sw = W - 2 * fk - 2 * gap;
-      const sh = H - 2 * fk - 2 * gap;
-      const sy = fk + gap;
-      ring(f, 0, sy, sw, sh, fs, fs, fsB, zB + 0.012, zF + 0.002, M.frame, nf);
-      ring(f, 0, sy + fsB, sw - 2 * fs, sh - fs - fsB, 0.004, 0.004, 0.004, zB + 0.03, zF - 0.008, M.gasket, gk);
-      glassRect = { w: sw - 2 * fs + 0.01, h: sh - fs - fsB + 0.01, y: sy + fsB + (sh - fs - fsB) / 2, z: zF - 0.035 };
-      // handle: rose + horizontal lever in the middle of the bottom rail
-      const hy = sy + fsB / 2;
-      f.box(0.034, 0.07, 0.012, 0, hy + 0.005, zF + 0.008, M.hardware, nf);
-      f.box(0.12, 0.018, 0.02, 0.045, hy + 0.012, zF + 0.026, M.hardware, nf);
-    } else {
-      // fixed glazing: karm + glazing bead, glass set ~4 cm into the frame
-      const fk = Math.max(0.03, fw * 0.62);
-      const fb = Math.max(0.015, fw - fk);
-      ring(f, 0, 0, W, H, fk, fk, fk, zB, zF, M.frame, nf);
-      ring(f, 0, fk, W - 2 * fk, H - 2 * fk, fb, fb, fb, zF - 0.034, zF - 0.007, M.frame, nf);
-      ring(f, 0, fw, W - 2 * fw, H - 2 * fw, 0.004, 0.004, 0.004, zF - 0.04, zF - 0.032, M.gasket, gk);
-      glassRect = { w: W - 2 * fw + 0.01, h: H - 2 * fw + 0.01, y: H / 2, z: zF - 0.04 };
-    }
-    let sillY = null;
-    if (o.sillBoard && !isDoor) {
-      const st = o.sillBoard.thickness ?? 0.025;
-      const over = o.sillBoard.overhang ?? 0.01;
-      const depth = rd + over;
-      const g = new THREE.BoxGeometry(W, st, depth);
-      f.add(g, M.sill, { matrix: place(0, -st / 2, -rd + depth / 2), collide: false, boxUV: true });
-      g.dispose();
-      sillY = o.sill;
-      // exterior window sill (vannbrett), sloping outward
-      exteriorBatch.frame(openingMatrix(o)).box(W, 0.012, 0.075, 0, -0.012, zB - 0.025, M.trim, { rot: [0.14, 0, 0], collide: false, castShadow: false });
-    }
-    const built = kit.build();
-    batchers.push({ geometries: kit.geometries });
-    built.name = `window:${o.id}`;
-    built.matrixAutoUpdate = false;
-    built.matrix.copy(openingMatrix(o));
-    const pickMeshes = [];
-    built.traverse((m) => {
-      if (!m.isMesh) return;
-      m.matrixAutoUpdate = false;
-      if (m.material !== M.sill) pickMeshes.push(m);
-    });
-    if (glassRect) {
-      glass = new THREE.Mesh(keep(new THREE.PlaneGeometry(glassRect.w, glassRect.h)), M.glass);
-      glass.name = `glass:${o.id}`;
-      glass.position.set(0, glassRect.y, glassRect.z);
-      glass.updateMatrix();
-      glass.applyMatrix4(openingMatrix(o));
-      glass.castShadow = false;
-      glass.receiveShadow = false;
-      glass.renderOrder = 2;
-      glass.userData.pick = { kind: 'window', windowId: o.id };
-    }
-    return { group: built, glass, pickMeshes, sillY };
+    return buildWindowKit(o, isDoor, { M, exteriorBatch, batchers, keep });
   }
 
   // ---- doors: the black hall door (opens into the hall) and the glazed terrace door (opens out), both world/Door.js
@@ -884,45 +667,16 @@ export function buildShell(ctx, layout) {
       });
       replaceLeaf(door, terraceLeaf(d, lw, lh, swing));
     } else {
-      const fw = d.frame?.width ?? 0.07;
-      const lw = d.leaf?.w ?? d.width - 2 * fw;
-      const lh = (d.leaf?.h ?? d.height - fw) - 0.008;
-      const depth = wall?.thickness ?? 0.1;
-      door = new Door(ctx, {
-        id: d.id,
-        matrix,
-        width: lw + 0.076,
-        height: lh + 0.046,
-        depth,
-        materials: dm,
-        hingeSide: hinge,
-        swing,
-        frontLabel: 'Gangen',
-        backLabel: 'Stua',
-        threshold: false,
-        interactive: false, // the hall is not modelled – the door stays shut
-      });
-      replaceLeaf(door, hallLeaf(d, lw, lh, swing));
-      // karm: black lining of the reveal, 2 cm proud on the room side, door stop on the room side of the leaf
-      const f = doorBatch.frame(matrix);
-      const z0 = -depth - 0.006;
-      const z1 = 0.02;
-      const zc = (z0 + z1) / 2;
-      const W = d.width;
-      const H = d.height;
-      f.box(fw, H, z1 - z0, -W / 2 + fw / 2, H / 2, zc, M.hallDoor);
-      f.box(fw, H, z1 - z0, W / 2 - fw / 2, H / 2, zc, M.hallDoor);
-      f.box(W - 2 * fw, fw, z1 - z0, 0, H - fw / 2, zc, M.hallDoor);
-      const stopZ = swing < 0 ? -depth + 0.054 : -0.054;
-      f.box(0.012, H - fw, 0.016, -W / 2 + fw + 0.006, (H - fw) / 2, stopZ + 0.008 * Math.sign(-swing), M.hallDoor, { collide: false });
-      f.box(0.012, H - fw, 0.016, W / 2 - fw - 0.006, (H - fw) / 2, stopZ + 0.008 * Math.sign(-swing), M.hallDoor, { collide: false });
-      f.box(W - 2 * fw, 0.012, 0.016, 0, H - fw - 0.006, stopZ + 0.008 * Math.sign(-swing), M.hallDoor, { collide: false });
-      f.box(W - 2 * fw, 0.008, depth, 0, 0.004, -depth / 2, M.threshold, { collide: false });
+      // the hall door (door-gang) and any other inner door of the living room: doors.js (labels from `connects`,
+      // openAngleDeg 180 and casing.back false from the data, the walkable floor strip in the hole, §3.10)
+      const built = buildDoor(ctx, d, { layout, M, batch: doorBatch, batchers });
+      door = built.door;
+      for (const box of built.colliders) ctx.collision?.addStaticBox(box);
     }
     if (d.door?.closed === false) door.setOpen(true, { instant: true });
     door.frameGroup?.removeFromParent(); // our own frame replaces the Door's steel one
     group.add(door.root);
-    const info = { id: d.id, name: d.name, wallId: d.wallId, width: d.width, height: d.height, type: d.type, door };
+    const info = { id: d.id, name: d.name, wallId: d.wallId, width: d.width, height: d.height, type: d.type, door, roomId: d.roomId ?? null, connects: [...(d.connects || [])] };
     if (isTerrace) {
       const glass = door.root.getObjectByName(`glass:${d.id}`);
       const w = windows.find((x) => x.id === d.id);
@@ -933,13 +687,6 @@ export function buildShell(ctx, layout) {
       }
     }
     doors.push(info);
-  }
-
-  /** Swaps the Door's generic leaf meshes for our own geometry (pivot space; collisions/animation stay Door's). */
-  function replaceLeaf(door, leafGroup) {
-    const leaf = door.leaves[0];
-    for (const c of [...leaf.pivot.children]) leaf.pivot.remove(c);
-    leaf.pivot.add(leafGroup);
   }
 
   /** Glazed aluminium leaf of the terrace door (pivot space: x ∈ [−lw, 0], z ∈ [0, 0.05] for swing −1). */
@@ -982,33 +729,6 @@ export function buildShell(ctx, layout) {
     glass.castShadow = false;
     glass.userData.pick = { kind: 'window', windowId: d.id };
     g.add(glass);
-    return g;
-  }
-
-  /** Flat black hall-door leaf with one routed panel groove ~11 cm in, round roses only (no lever). */
-  function hallLeaf(d, lw, lh, swing) {
-    const kit = new MeshBatcher(`leaf:${d.id}`);
-    const T = 0.04;
-    const z0 = swing < 0 ? 0.005 : -0.045;
-    const y0 = 0.008;
-    const cx = -lw / 2;
-    kit.box(lw, lh, T, cx, y0 + lh / 2, z0 + T / 2, M.hallDoor, { collide: false });
-    const inset = 0.11;
-    for (const side of [1, -1]) {
-      const fz = side > 0 ? z0 + T + 0.0004 : z0 - 0.0004;
-      ring(kit, cx, y0 + inset, lw - 2 * inset, lh - 2 * inset, 0.004, 0.004, 0.004, fz - 0.0003, fz + 0.0003, M.hallDoorGroove, { collide: false, castShadow: false });
-      const hx = -lw + 0.07;
-      const hy = d.door?.handleHeight ?? 1.08;
-      const sz = side > 0 ? z0 + T : z0;
-      kit.cylinder(0.025, 0.025, 0.009, hx, hy, sz + side * 0.0045, M.hardware, { rot: [Math.PI / 2, 0, 0], segments: 20, collide: false });
-      kit.box(0.008, 0.008, 0.003, hx, hy, sz + side * 0.0095, M.gasket, { collide: false, castShadow: false });
-      kit.cylinder(0.018, 0.018, 0.008, hx, hy - 0.085, sz + side * 0.004, M.hardware, { rot: [Math.PI / 2, 0, 0], segments: 18, collide: false });
-      kit.box(0.003, 0.01, 0.003, hx, hy - 0.085, sz + side * 0.0085, M.gasket, { collide: false, castShadow: false });
-    }
-    // hinges on the hinge edge (visible in the hall / when open)
-    for (const y of [0.22, lh / 2 + 0.1, lh - 0.22]) kit.cylinder(0.008, 0.008, 0.1, 0.002, y, swing < 0 ? 0.002 : -0.002, M.hardware, { segments: 10, collide: false });
-    const g = kit.build();
-    batchers.push({ geometries: kit.geometries });
     return g;
   }
 
@@ -1275,56 +995,6 @@ export function buildShell(ctx, layout) {
     }
   }
 
-  // ---- the hall behind the hall door (small, dim, closed doors to bath and bedroom)
-  const hall = buildHall();
-
-  function buildHall() {
-    const gd = layout.doors.find((d) => d.type !== 'terrace-door');
-    const gw = gd ? layout.wallsById[gd.wallId] : null;
-    if (!gw) return null;
-    const xBack = gw.start.x - gw.thickness; // hall side face of the wall (3.12)
-    const nis = layout.wallsById['w-nisje-side'];
-    const z0 = nis ? nis.start.y + nis.thickness : gw.end.y + 0.1;
-    const z1 = gw.start.y + 0.1; // a little past the high-wall end of the door
-    const x0 = xBack - 1.62;
-    const hb = newBatch('shell-hall');
-    const T = 0.1;
-    const H = 2.4;
-    const nisBack = layout.wallsById['w-nisje-bak'];
-    const xNiche = nisBack ? nisBack.start.x - nisBack.thickness : x0;
-    // walls (boxes behind the hall faces)
-    hb.box(xNiche - (x0 - T), H, T, (x0 - T + xNiche) / 2, H / 2, z0 - T / 2, M.back, { boxUV: true });
-    hb.box(T, H, z1 - z0 + 2 * T, x0 - T / 2, H / 2, (z0 + z1) / 2, M.back, { boxUV: true });
-    hb.box(xBack - x0 + T, H, T, (x0 - T + xBack) / 2, H / 2, z1 + T / 2, M.back, { boxUV: true });
-    // ceiling + floor
-    const ceil = new THREE.Mesh(keep(new THREE.PlaneGeometry(xBack - x0, z1 - z0).rotateX(Math.PI / 2)), M.back);
-    ceil.position.set((x0 + xBack) / 2, H, (z0 + z1) / 2);
-    ceil.userData.noCollide = true;
-    ceil.receiveShadow = true;
-    group.add(ceil);
-    pickables.ceilings.push(ceil);
-    const fl = new THREE.Mesh(keep(floorGeometry([[x0, z0], [xBack, z0], [xBack, z1], [x0, z1]])), floorM.material);
-    fl.receiveShadow = true;
-    fl.name = 'hall-floor';
-    solid.add(fl);
-    // two closed black doors (bath on the far wall, bedroom on the north wall) with frames
-    const doorAt = (m, w) => {
-      const f = hb.frame(m);
-      f.box(w + 0.14, 2.15, 0.02, 0, 1.075, 0.01, M.hallDoor, { collide: false });
-      f.box(w, 2.08, 0.012, 0, 1.048, 0.026, M.hallDoor, { collide: false });
-      ring(f, 0, 0.12, w - 0.22, 2.08 - 0.23, 0.004, 0.004, 0.004, 0.0322, 0.0328, M.hallDoorGroove, { collide: false, castShadow: false });
-      f.cylinder(0.025, 0.025, 0.009, -w / 2 + 0.07, 1.08, 0.036, M.hardware, { rot: [Math.PI / 2, 0, 0], segments: 18, collide: false });
-      f.box(0.13, 0.019, 0.018, -w / 2 + 0.07 + 0.055, 1.08, 0.06, M.hardware, { collide: false });
-    };
-    doorAt(basis(new THREE.Vector3(0, 0, -1), UP, new THREE.Vector3(1, 0, 0), new THREE.Vector3(x0, 0, (z0 + z1) / 2)), 0.83);
-    doorAt(basis(new THREE.Vector3(-1, 0, 0), UP, new THREE.Vector3(0, 0, -1), new THREE.Vector3(x0 + 0.65, 0, z1)), 0.83);
-    // skirting
-    const bt = 0.012, bh = 0.07;
-    hb.box(xBack - x0, bh, bt, (x0 + xBack) / 2, bh / 2, z0 + bt / 2, M.baseboard, { collide: false, castShadow: false });
-    hb.box(bt, bh, z1 - z0, x0 + bt / 2, bh / 2, (z0 + z1) / 2, M.baseboard, { collide: false, castShadow: false });
-    return { x0, x1: xBack, z0, z1 };
-  }
-
   // ---- merge the batches
   for (const b of batchers) {
     if (!(b instanceof MeshBatcher)) continue;
@@ -1337,8 +1007,11 @@ export function buildShell(ctx, layout) {
   for (const g of tmpGeo.list || []) g.dispose();
 
   ctx.collision?.addStatic(solid);
+  // walk bounds: one rectangle per level once the collision world knows levels (M2, setBoundsList); until then the
+  // living room's rectangle as before (exterior.js widens it to the terrace)
   const bnd = layout.bounds;
-  ctx.collision?.setBounds(bnd.minX + 0.05, bnd.maxX - 0.05, bnd.minZ + 0.05, bnd.maxZ - 0.05);
+  if (ctx.collision?.setBoundsList && layout.house?.walkRects) ctx.collision.setBoundsList(layout.house.walkRects);
+  else ctx.collision?.setBounds(bnd.minX + 0.05, bnd.maxX - 0.05, bnd.minZ + 0.05, bnd.maxZ - 0.05);
 
   // ---- the high wall
   const hw = layout.highWall;
@@ -1385,6 +1058,13 @@ export function buildShell(ctx, layout) {
    * high wall also paints the walls that continue its plane (paintLinks) while they have no colour of their own.
    */
   function setPaint(id, color) {
+    // a face of another room on the back of a living-room slab (D13): rooms.js paints its own meshes of the same id
+    const fm = faceMeshes.get(id);
+    if (fm) {
+      const face = layout.house?.wallsById?.[id];
+      for (const m of fm) m.material = paint(color || face?.paint || 'sand');
+      return;
+    }
     if (wallMeshes.has(id)) {
       ownPaint.set(id, color || null);
       applyWallPaint(id);
@@ -1406,11 +1086,12 @@ export function buildShell(ctx, layout) {
     windows,
     doors,
     highWall,
-    hall,
     pickables,
     ceilingHeightAt: layout.ceilingHeightAt,
     builtInLights,
     materials: M,
+    /** D13: face id → the back meshes of the living room's slabs that are that face (rooms.js adds them to its WallInfo) */
+    faceMeshes,
     setPaint,
     update(dt, state) {
       for (const d of doors) d.door?.update(dt, state);
