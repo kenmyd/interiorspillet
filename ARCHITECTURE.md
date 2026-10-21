@@ -429,7 +429,7 @@ tekstfelt har fokus.
 'pendant', from?: Vector3, to?: Vector3, position?: Vector3, direction?: Vector3, colorK, lumens, emissiveMeshes:
 Mesh[] }]` (verdenskoordinater). `group` er en av `led` (LED-lister), `spots` (spotter ved den høye veggen),
 `kjokken` (LED foran høyskapene og ringlampene i taket), `pendler` (de tre pendlene over kjøkkenøya), `tvstue`
-(taklampa i TV-stua), `overskap` (lys under overskap). Hver gruppe har en standard-dimmer (`layout.lightGroups[].dimmer`);
+(taklampa i TV-stua), `overskap` (lys i og under glassoverskapet). Hver gruppe har en standard-dimmer (`layout.lightGroups[].dimmer`);
 av/på følger tiden på døgnet til gruppen slås av eller på for hånd. LightManager lager lyskildene og styrer emissiveMeshes. `buildExterior` returnerer `{ group, setDaylight(level
 0..1, skyHex) }` så lyset kan dimme utsikten om kvelden.
 
