@@ -3,6 +3,14 @@
 // horizontal-slat railing, the stair down to the concrete landing, the annex that closes the terrace to the east,
 // the white foundation, terrace furniture, and a strip of lawn below the deck that only exists for viewers outside.
 //
+// Hele huset (steg 25, C3): with layout.house.outsideHouse (research/house/35-ute.json) exteriorPlan() merges the
+// entrance into the outside: forecourt, landing, path and walk at the entrance level (−2.87) with gravel, slate and
+// concrete slabs, the terrace stair with 16 risers (walkable: an invisible wedge, §3.11), the deck out to x 10.35 over
+// rom 3,70 and the niche, the niche soffit with its downlight fittings, the fill behind the door wall, the entrance
+// pillar and a corner pier, the soffit under the overhangs, a plastered wall under the annex, ground colliders outside
+// the basement, a ground patch west of the house and the walking bounds. The walls, the door element and the
+// facades' cladding/plaster are rooms.js's (facadeSegments, C2).
+//
 // setDaylight(level 0..1, skyHex?, light?) dims/tints the backdrops and sets the sky colour (LightManager calls it);
 // light = { sky, ground: THREE.Color (display radiance), envSize } lights the 3D exterior with its own
 // sky environment instead of the room's (add-lighting).
@@ -64,6 +72,249 @@ const TERRACE_FIT = {
   nearGroundToX: 10.6,
 };
 
+/**
+ * Hele huset (steg 25, C3; notes/hele-huset-design.md §2.9, avstemmingen V25–V36): what the house data
+ * (research/house/35-ute.json → layout.house.outsideHouse, world y) changes outside. The photo projection
+ * (tools/house-tests/ute-foto.test.mjs, 082841 + 082852 with the fix-shell cameras) decided:
+ *   - the landing / forecourt level: the landing's SW corner triangulates to y −2.63 (rays 0.20 m apart); with
+ *     y −2.87 the two rays miss by 0.39 m (38 / 31 px), with TERRACE_FIT's −1.72 by 0.67 m (93 / 107 px) → −2.87
+ *     (entranceLevelY), and the stair gets 16 risers (V33);
+ *   - the terrace edge: the far top corner of the slatted screen triangulates to x 10.77, z 6.59; the deck edge at
+ *     x 10.35 reprojects 53 / 56 px off, TERRACE_FIT's 9.80 53 / 180 px → 9.80 does not fit best, so the deck goes out
+ *     to x 10.35 (V9) – over the whole width to the west edge (z 6.75), since the screen runs on to that corner;
+ *   - the white pillar in the living-room photos is NOT the entrance pillar (V30, x 10.0–10.35 · z 5.65–6.0 is hidden
+ *     behind the terrace's clad west face from both cameras); its NE edge triangulates to (10.33; 6.32) with the rays
+ *     0.06 m apart, under the deck's SW corner → a second, corner pier (CORNER_PIER, flagged).
+ */
+const HOUSE_FIT = {
+  /** the slatted screen along the west edge starts 0.73 m from the facade (was 7.65): room for the capsule (Ø 0.6) */
+  screenFromX: 7.95,
+  /** the corner pier under the deck's SW corner (0.30 × 0.30), spritputs like the entrance pillar */
+  cornerPier: { size: 0.3, color: '#a8a9aa' },
+  /** the deck's south edge railing returns to the annex's south face at the deck's east end (z −0.30) */
+  railReturn: true,
+};
+/** Set false to drop the corner pier (if the owner says there is only the entrance pillar). */
+const CORNER_PIER = true;
+
+const num = (v, d) => (Number.isFinite(v) ? v : d);
+const rectOf = (poly) => {
+  const xs = poly.map((p) => p[0]), zs = poly.map((p) => p[1]);
+  return { x0: Math.min(...xs), x1: Math.max(...xs), z0: Math.min(...zs), z1: Math.max(...zs) };
+};
+
+/**
+ * Plain numbers for the exterior of the whole house: the terrace (TERRACE_FIT + V9), the entrance level, the stair
+ * (wedge for walking, §3.11), the forecourt and its paving, the niche (soffit, fill, pillars), the ground colliders
+ * (never inside the basement: §0 / steg 25) and the walking bounds. Pure (THREE only for Vector2s) – the builder
+ * below and tools/house-tests/ute.test.mjs both use it. Without layout.house.outsideHouse it returns { house: false }
+ * plus the living-room-era terrace, and the builder behaves as before.
+ * @param {object} layout
+ */
+export function exteriorPlan(layout) {
+  const out = layout.outside || {};
+  const fit = fitTerrace(out.terrace);
+  const oh = layout.house?.outsideHouse || null;
+  const plan = { house: !!oh, fitted: fit.fitted, t: fit.t, oh };
+  if (!oh || !fit.t) return plan;
+  const t0 = fit.t;
+  const deckY = t0.floorY ?? -0.03;
+  const entranceY = num(oh.entranceLevelY, -2.87);
+  const groundY = num(oh.groundBelowY, num(oh.terrain?.nearHouseY, entranceY - 0.08));
+  const nearGroundY = num(oh.nearGround?.y, groundY);
+  const nearGroundToX = num(oh.nearGround?.toX, 12.8);
+  const polyV = t0.polygonV || [];
+  const xS = Math.max(...polyV.map((p) => p.x)); // the fitted south edge (9.80)
+  const zA = Math.min(...polyV.map((p) => p.y)); // east end of the deck (0)
+  const westZ = Math.max(...polyV.map((p) => p.y)); // the fitted west edge (6.75)
+  const an = t0.annex?.polygonV?.length ? rectOf(t0.annex.polygonV.map((p) => [p.x, p.y])) : null;
+  // ---- V9: the deck out to x 10.35 (the outer face of rom 3,70), from z −0.30 (its east face) to the west edge
+  const xE = Math.max(xS, num(oh.deck?.extendToX, xS));
+  const zE = Math.min(zA, num(oh.deck?.z?.[0], zA));
+  const ax1 = an && Math.abs(an.z1 - zA) < 1e-3 ? an.x1 : null;
+  const polygon = [];
+  for (const p of polyV) {
+    if (Math.abs(p.x - xS) < 1e-3 && Math.abs(p.y - zA) < 1e-3 && xE > xS + 1e-3) {
+      if (ax1 != null && ax1 < xE - 1e-3 && zE < zA - 1e-3) polygon.push([ax1, zA], [ax1, zE], [xE, zE]);
+      else polygon.push([xE, zA]);
+    } else if (Math.abs(p.x - xS) < 1e-3) polygon.push([xE, p.y]);
+    else polygon.push([p.x, p.y]);
+  }
+  const railingLines = [];
+  if (HOUSE_FIT.railReturn && ax1 != null && ax1 < xE - 1e-3 && zE < zA - 1e-3) railingLines.push([[ax1, zE], [xE, zE]]);
+  railingLines.push([[xE, ax1 != null && zE < zA ? zE : zA], [xE, westZ]]);
+  railingLines.push([[HOUSE_FIT.screenFromX, westZ], [xE, westZ]]);
+  const ts = oh.terraceStair || {};
+  const stair = {
+    ...(t0.stair || {}),
+    from: ts.from ?? t0.stair?.from,
+    to: ts.to ?? t0.stair?.to,
+    width: ts.width ?? t0.stair?.width ?? 0.75,
+    topY: num(ts.topY, deckY),
+    bottomY: num(ts.bottomY, entranceY),
+    risers: ts.risers ?? null,
+    guards: ts.guards ?? 'outer',
+    guardHeight: t0.stair?.guardHeight ?? 0.85,
+    closedSideFromX: num(ts.closedSideFromX, xS),
+    landing: oh.landing ?? null,
+    path: oh.path ?? null,
+    walk: oh.walk ?? null,
+  };
+  const t = {
+    ...t0,
+    polygonV: polygon.map(([x, z]) => new THREE.Vector2(x, z)),
+    railingLinesV: railingLines.map((line) => line.map(([x, z]) => new THREE.Vector2(x, z))),
+    stair,
+  };
+  // ---- the stair as a closed wedge (§3.1, §3.11): from the top nosing to the foot of the last riser
+  const a = stair.from, b = stair.to;
+  const nR = Math.max(2, stair.risers ?? Math.round((stair.topY - stair.bottomY) / 0.18));
+  const w = stair.width;
+  const zc = a[1];
+  const wedge = {
+    x0: a[0], x1: b[0], y0: stair.topY, y1: stair.bottomY, z0: zc - w / 2 + 0.02, z1: zc + w / 2 - 0.02, bottomY: groundY - 0.2,
+    risers: nR, rise: (stair.topY - stair.bottomY) / nR, going: (b[0] - a[0]) / (nR - 1),
+  };
+  // ---- static colliders (Box3 as {min,max} arrays): ground, paving, niche, pillars, stair top step and guards
+  const solids = [];
+  const box = (kind, x0, x1, y0, y1, z0, z1) => solids.push({ kind, min: [x0, y0, z0], max: [x1, y1, z1] });
+  // the basement's outer faces seen from outside (avstemmingen §1.2): never put a collider behind them
+  const fillR = oh.fill ? { x0: oh.fill.x[0], x1: oh.fill.x[1], z0: oh.fill.z[0], z1: oh.fill.z[1] } : null;
+  const fc = oh.forecourt?.polygon ? rectOf(oh.forecourt.polygon) : { x0: 8.88, x1: 12.6, z0: 3.18, z1: 6.75 };
+  const bodSouth = num(oh.deck?.extendToX, 10.35); // rom 3,70's south face (10.34) ≈ the deck edge
+  const southFace = fillR ? fillR.x0 : 6.75; // kjellerstuas sørvegg (V6)
+  const lawnTop = groundY;
+  const lawnBot = groundY - 0.25;
+  const outer = oh.walkRects?.[0] || { minX: southFace, maxX: 14, minZ: -0.2, maxZ: 9 };
+  const zMaxLawn = Math.max(outer.maxZ, layout.bounds?.maxZ ?? 0);
+  // lawn: east of the forecourt in front of rom 3,70 / beside it / west of the niche (the stair, path, walk)
+  box('lawn', bodSouth + 0.01, outer.maxX, lawnBot, lawnTop, outer.minZ, fc.z0);
+  box('lawn', fc.x1, outer.maxX, lawnBot, lawnTop, fc.z0, fc.z1);
+  box('lawn', southFace + 0.01, outer.maxX, lawnBot, lawnTop, fc.z1, zMaxLawn);
+  // paving at the entrance level (forecourt incl. the covered niche, the landing, the path, the walk)
+  const pave = (kind, poly) => {
+    if (!poly) return;
+    const r = rectOf(poly);
+    box(kind, r.x0, r.x1, entranceY - 0.2, entranceY, r.z0, r.z1);
+  };
+  pave('forecourt', oh.forecourt?.polygon ?? [[fc.x0, fc.z0], [fc.x1, fc.z1]]);
+  pave('landing', stair.landing?.polygon);
+  pave('path', stair.path?.polygon);
+  pave('walk', stair.walk?.polygon);
+  // the stair's level top step (facade → first riser) at deck level
+  const fx = layout.wallsById?.['w-sor'] ? layout.wallsById['w-sor'].start.x + 0.3 : a[0] - 0.4;
+  if (a[0] - fx > 0.02) box('topstep', fx, a[0], stair.topY - 0.2, stair.topY, zc - w / 2, zc + w / 2);
+  // the clad west face of the terrace (z = westZ) from the facade (or the fill) to the old corner (closedSideFromX)
+  const cladX0 = fillR ? fillR.x0 + 0.01 : fx;
+  const clad = { x0: cladX0, x1: stair.closedSideFromX, z: westZ, y0: nearGroundY - 0.05, y1: deckY - 0.2 };
+  box('clad', clad.x0, clad.x1, clad.y0, clad.y1, westZ - 0.035, westZ);
+  // the fill behind the door wall's cladding (V31): 1–4 cm inside every neighbour face (no coplanar faces)
+  const fill = fillR ? { x0: fillR.x0 + 0.01, x1: fillR.x1 - 0.02, z0: fillR.z0 + 0.01, z1: Math.min(fillR.z1, westZ - 0.035) - 0.005, y0: groundY - 0.05, y1: deckY - 0.2, color: oh.fill.cladding?.color ?? '#4a4642', id: oh.fill.id } : null;
+  if (fill) box('fill', fill.x0, fill.x1, fill.y0, fill.y1, fill.z0, fill.z1);
+  // the entrance pillar (V30) – both pillars stop at the niche soffit's underside (5 mm below its data y, see soffits)
+  const nicheS = (oh.soffits || []).find((s) => s.id === oh.covered?.soffitId || s.id === 'himling-nisje');
+  const nicheUnder = nicheS ? num(nicheS.y, -0.5) - 0.005 : deckY - 0.2;
+  const pl = oh.pillar ? { ...oh.pillar, x0: oh.pillar.x[0], x1: oh.pillar.x[1], z0: oh.pillar.z[0], z1: oh.pillar.z[1], y0: groundY - 0.05, y1: Math.min(num(oh.pillar.y?.[1], -0.5), nicheUnder) } : null;
+  if (pl) box('pillar', pl.x0, pl.x1, pl.y0, pl.y1, pl.z0, pl.z1);
+  // the corner pier under the deck's SW corner (seen from the living room, see HOUSE_FIT)
+  const cp = CORNER_PIER ? { x0: xE - HOUSE_FIT.cornerPier.size, x1: xE, z0: westZ - HOUSE_FIT.cornerPier.size, z1: westZ, y0: groundY - 0.05, y1: nicheUnder, color: HOUSE_FIT.cornerPier.color } : null;
+  if (cp) box('pier', cp.x0, cp.x1, cp.y0, cp.y1, cp.z0, cp.z1);
+  // guards of the walkable stair: outer side (z1) all along, inner side (z0) where the clad face ends
+  const guardTop = (x) => stair.topY + ((stair.bottomY - stair.topY) * (x - a[0])) / (b[0] - a[0]) + 1.0;
+  const guards = [
+    { side: 'outer', x0: a[0], x1: b[0], z0: zc + w / 2 - 0.02, z1: zc + w / 2 + 0.02 },
+    { side: 'inner', x0: Math.max(a[0], stair.closedSideFromX), x1: b[0], z0: zc - w / 2 - 0.02, z1: zc - w / 2 + 0.02 },
+  ].map((g) => ({ ...g, yTop0: guardTop(g.x0), yTop1: guardTop(g.x1) }));
+  // ---- the niche soffit (V28) and the soffit under the overhangs (V4, V6): one flat plate each, deck underside down
+  const soffits = (oh.soffits || []).map((s) => {
+    let rects;
+    if (s.id === oh.covered?.soffitId || s.id === 'himling-nisje') {
+      // the deck now covers the whole niche to its SW corner (the data's notch at x 9.80 · z 6.0–6.75
+      // was the old deck edge); west of the clad face's end it stops at the clad face (no coplanar faces)
+      const r = rectOf(s.polygon);
+      const xc = Math.min(Math.max(r.x0, stair.closedSideFromX), Math.max(r.x1, xE));
+      rects = [
+        { x0: r.x0, x1: xc, z0: r.z0, z1: Math.max(r.z1, westZ) - 0.035 },
+        { x0: xc, x1: Math.max(r.x1, xE), z0: r.z0, z1: Math.max(r.z1, westZ) },
+      ].filter((q) => q.x1 - q.x0 > 0.01);
+    } else rects = decomposeL(s.polygon);
+    const niche = s.id === 'himling-nisje' || s.id === oh.covered?.soffitId;
+    // 5 mm under the data's y: if rooms.js (C2) also builds a plate at y, this one shows and nothing z-fights
+    return { id: s.id, niche, y: num(s.y, -0.5) - 0.005, color: s.color ?? '#4a4642', rects, top: niche ? deckY - 0.2 : num(s.y, -0.3) - 0.001 }; // (overhang: a 4 mm plate just under the cladding's foot at −0.30)
+  });
+  // ---- walking bounds: the house's rectangles plus the outside one (V26)
+  const rects = [{ minX: outer.minX + 0.0, maxX: outer.maxX - 0.05, minZ: outer.minZ + 0.05, maxZ: outer.maxZ - 0.05, minY: num(outer.minY, -Infinity), maxY: num(outer.maxY, Infinity), levelId: 'ute' }];
+  // …and the terrace (deck + the stair's upper part, above the outside band's top): for Collision.setBoundsList (M2)
+  const dk = rectOf(polygon);
+  rects.push({ minX: dk.x0 + 0.05, maxX: dk.x1 - 0.05, minZ: Math.max(dk.z0, outer.minZ) + 0.05, maxZ: zc + w / 2 - 0.05, minY: num(outer.maxY, -0.3) - 0.05, maxY: Infinity, levelId: 'terrasse' });
+  const lb = layout.bounds || { minX: 0, maxX: 0, minZ: 0, maxZ: 0 };
+  const hb = layout.house?.bounds || lb;
+  const union = {
+    minX: Math.min(lb.minX + 0.05, hb.minX + 0.05, rects[0].minX),
+    maxX: Math.max(lb.maxX - 0.05, rects[0].maxX, xE - 0.05),
+    minZ: Math.min(Math.max(lb.minZ, zE) + 0.05, rects[0].minZ),
+    maxZ: Math.max(lb.maxZ - 0.05, rects[0].maxZ),
+  };
+  return Object.assign(plan, {
+    t, deckY, entranceY, groundY, nearGroundY, nearGroundToX, westZ, xS, xE, zE,
+    stair, wedge, solids, clad, fill, pillar: pl, cornerPier: cp, guards, soffits, forecourt: fc,
+    removeFoundation: new Set((oh.removeFoundationBoxes || []).map((r) => r.under)),
+    removeColumns: Array.isArray(oh.deck?.removeColumnsAtZ),
+    walkRects: rects, bounds: union,
+    paving: oh.paving || {},
+    lights: oh.lights || [],
+    fixtures: oh.fixtures || [],
+    spawn: oh.spawnOutside || null,
+  });
+}
+
+/**
+ * An invisible closed prism for the collision octree: a convex (x, y) profile extruded along z from z0 to z1
+ * (ExtrudeGeometry: the faces point outward, as Octree's one-sided capsule test needs). Never added to the scene.
+ */
+function prismZ(profile, z0, z1, name) {
+  const shape = new THREE.Shape(profile.map(([x, y]) => new THREE.Vector2(x, y)));
+  const g = new THREE.ExtrudeGeometry(shape, { depth: z1 - z0, bevelEnabled: false });
+  g.translate(0, 0, z0);
+  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ visible: false }));
+  m.name = name;
+  return m;
+}
+
+/** An axis-aligned L / rectangle polygon ([x, z] points) → its rectangles (split at the inner corner). */
+function decomposeL(poly) {
+  const r = rectOf(poly);
+  if (poly.length <= 4) return [r];
+  const xs = [...new Set(poly.map((p) => p[0]))].sort((a, b) => a - b);
+  const inside = (x, z) => {
+    let c = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, zi] = poly[i], [xj, zj] = poly[j];
+      if (zi > z !== zj > z && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) c = !c;
+    }
+    return c;
+  };
+  // vertical strips between consecutive x, each with its z extent (merged when equal)
+  const strips = [];
+  for (let i = 0; i < xs.length - 1; i++) {
+    const xm = (xs[i] + xs[i + 1]) / 2;
+    const zs = [...new Set(poly.map((p) => p[1]))].sort((a, b) => a - b);
+    let z0 = null, z1 = null;
+    for (let k = 0; k < zs.length - 1; k++) {
+      const zm = (zs[k] + zs[k + 1]) / 2;
+      if (inside(xm, zm)) {
+        z0 = z0 ?? zs[k];
+        z1 = zs[k + 1];
+      }
+    }
+    if (z0 == null) continue;
+    const last = strips[strips.length - 1];
+    if (last && Math.abs(last.z0 - z0) < 1e-6 && Math.abs(last.z1 - z1) < 1e-6 && Math.abs(last.x1 - xs[i]) < 1e-6) last.x1 = xs[i + 1];
+    else strips.push({ x0: xs[i], x1: xs[i + 1], z0, z1 });
+  }
+  return strips.length ? strips : [r];
+}
+
 /** The terrace spec with TERRACE_FIT applied (a copy; the layout stays untouched). */
 function fitTerrace(t) {
   const st = t?.stair;
@@ -105,9 +356,8 @@ uniform vec3 tint;
 uniform vec3 sky;
 uniform float skyFade;
 uniform float clipOn;
-uniform float planeX;
-uniform vec4 rect0;
-uniform vec4 rect1;
+uniform float planes[6];
+uniform vec4 rects[6];
 uniform float rectCount;
 uniform float edgeFade;
 uniform float horizonV;
@@ -134,11 +384,16 @@ void main() {
     vec3 d = vWorld - cameraPosition;
     bool ok = false;
     if (abs(d.x) > 1e-5) {
-      float t = (planeX - cameraPosition.x) / d.x;
-      if (t > 0.0 && t < 1.0) {
-        vec3 p = cameraPosition + d * t;
-        if (p.z > rect0.x && p.z < rect0.y && p.y > rect0.z && p.y < rect0.w) ok = true;
-        if (rectCount > 1.5 && p.z > rect1.x && p.z < rect1.y && p.y > rect1.z && p.y < rect1.w) ok = true;
+      // up to six window rectangles, each in the glass plane x = planes[i] of its wall (hele huset: the basement
+      // windows of a view sit in another wall line than the living room's)
+      for (int i = 0; i < 6; i++) {
+        if (float(i) > rectCount - 0.5) break;
+        float t = (planes[i] - cameraPosition.x) / d.x;
+        if (t > 0.0 && t < 1.0) {
+          vec3 p = cameraPosition + d * t;
+          vec4 r = rects[i];
+          if (p.z > r.x && p.z < r.y && p.y > r.z && p.y < r.w) ok = true;
+        }
       }
     }
     if (!ok) discard;
@@ -244,13 +499,16 @@ export function buildExterior(ctx, layout) {
   if (ctx.scene) ctx.scene.background = sky.clone();
 
   const out = layout.outside || {};
-  const fit = fitTerrace(out.terrace);
-  const t = fit.t;
+  // the whole house (outsideHouse, steg 25): the plan merges it into the terrace and the ground; without it, as before
+  const P = exteriorPlan(layout);
+  const H = P.house;
+  const fit = { fitted: P.fitted };
+  const t = P.t;
   const deckY = t?.floorY ?? -0.03;
-  const groundY = out.groundBelowY ?? out.terrain?.nearHouseY ?? -2.7;
+  const groundY = H ? P.groundY : out.groundBelowY ?? out.terrain?.nearHouseY ?? -2.7;
   // lawn level next to the house (the stair's landing); further out the ground falls to groundY and on to the river
-  const nearGroundY = out.nearGround?.y ?? (fit.fitted ? TERRACE_FIT.nearGroundY : groundY);
-  const nearGroundToX = out.nearGround?.toX ?? (fit.fitted ? TERRACE_FIT.nearGroundToX : 10.5);
+  const nearGroundY = H ? P.nearGroundY : out.nearGround?.y ?? (fit.fitted ? TERRACE_FIT.nearGroundY : groundY);
+  const nearGroundToX = H ? P.nearGroundToX : out.nearGround?.toX ?? (fit.fitted ? TERRACE_FIT.nearGroundToX : 10.5);
   // the stair runs along the terrace's west edge (photo fit / new room-spec): clad west face, one guard, top step
   const alongEdge = t?.stair?.guards === 'outer';
   const westZ = t?.polygonV?.length ? Math.max(...t.polygonV.map((q) => q.y)) : 0;
@@ -290,6 +548,19 @@ export function buildExterior(ctx, layout) {
     cushion: own(mat('woven', '#7c7a76')),
     tableTop: own(mat('painted', '#e9e7e2', { roughness: 0.5 })),
   };
+  if (H) {
+    // the entrance (V30, V34): grey spritputs pillars, gravel, slate, concrete slabs, ground cover, black fittings
+    M.spritputs = tinted(P.pillar?.color || '#a8a9aa', 0.98, 1.8);
+    M.gravel = tinted(P.paving.gravelStrip?.color || '#aeafb0', 1, 1.4);
+    M.slate = tinted(P.paving.slate?.color || '#9da4a8', 0.78, 0.5);
+    M.slab = tinted(P.paving.concrete?.color || '#a7a49e', 0.92, 0.7);
+    M.slab2 = tinted(new THREE.Color(P.paving.concrete?.color || '#a7a49e').multiplyScalar(0.94).getStyle(), 0.92, 0.7);
+    M.cover = own(mat('moss', P.paving.groundCover?.color || '#4e6b3a', { roughness: 1 }));
+    M.black = own(mat('painted', '#1a1a1a', { roughness: 0.6 }));
+    M.ring = own(mat('painted', '#d9d9d6', { roughness: 0.35 }));
+    M.lens = own(mat('painted', '#f4f1ea', { roughness: 0.2 }));
+    M.soffit = keep(claddingMaterial(P.soffits[0]?.color || '#4a4642', quality, { roughness: 0.9 }));
+  }
   const litMats = Object.values(M);
   // full sky light: the authored envMapIntensity (0.4 on the boards) only damped the room's bounce, which no longer lights them
   for (const m of litMats) m.userData.envBase = 1;
@@ -316,8 +587,20 @@ export function buildExterior(ctx, layout) {
     // pillars under the outer edge
     const xo = Math.max(...xs);
     const zMax = Math.max(...zs);
-    for (const z of [0.25, zMax / 2, zMax - 0.2]) kb.box(0.25, deckY - 0.2 - groundY, 0.25, xo - 0.3, (deckY - 0.2 + groundY) / 2, z, M.pillar, { collide: false });
-    if (alongEdge) {
+    // (hele huset: the deck rests on rom 3,70, the pillars and the walls; the three columns go – avstemmingen V9)
+    if (!(H && P.removeColumns)) for (const z of [0.25, zMax / 2, zMax - 0.2]) kb.box(0.25, deckY - 0.2 - groundY, 0.25, xo - 0.3, (deckY - 0.2 + groundY) / 2, z, M.pillar, { collide: false });
+    if (H) {
+      // the terrace's clad west face down to the ground (V33), the corner pier and the entrance pillar (V30)
+      const c = P.clad;
+      if (c.x1 - c.x0 > 0.02) kb.box(c.x1 - c.x0, c.y1 - c.y0, 0.035, (c.x0 + c.x1) / 2, (c.y0 + c.y1) / 2, c.z - 0.0175, M.annex, { collide: false });
+      for (const q of [P.cornerPier, P.pillar]) {
+        if (!q) continue;
+        kb.box(q.x1 - q.x0, q.y1 - q.y0, q.z1 - q.z0, (q.x0 + q.x1) / 2, (q.y0 + q.y1) / 2, (q.z0 + q.z1) / 2, M.spritputs, { collide: false });
+      }
+      // the small black box on the entrance pillar's east face (switch or sensor, h 1.4 over the ground)
+      const pb = P.pillar?.box;
+      if (pb) kb.box(pb.w ?? 0.06, pb.height ?? 0.1, 0.03, (P.pillar.x0 + P.pillar.x1) / 2, P.entranceY + (pb.h ?? 1.4), P.pillar.z0 - 0.015, M.black, { collide: false });
+    } else if (alongEdge) {
       // the terrace's west face below the deck (dark vertical boards, seen beside the stair in 082841) and the white
       // corner pier at its south-west corner (082850)
       const xa = Math.min(...t.polygonV.filter((q) => Math.abs(q.y - zMax) < 1e-3).map((q) => q.x));
@@ -328,9 +611,11 @@ export function buildExterior(ctx, layout) {
   }
   // foundation (white plaster) under the south and west facades of the living part, the kitchen part under the deck
   {
-    const sor = layout.wallsById['w-sor'];
-    const vest = layout.wallsById['w-vest-stue'];
-    const ks = layout.wallsById['w-kjokken-sor'];
+    // (hele huset: the basement's walls, the fill and the soffits replace them – outsideHouse.removeFoundationBoxes)
+    const gone = (id) => H && P.removeFoundation.has(id);
+    const sor = gone('w-sor') ? null : layout.wallsById['w-sor'];
+    const vest = gone('w-vest-stue') ? null : layout.wallsById['w-vest-stue'];
+    const ks = gone('w-kjokken-sor') ? null : layout.wallsById['w-kjokken-sor'];
     const top = -0.3;
     const h = top - groundY + 0.05;
     if (sor) kb.box(0.25, h, sor.length + 0.6, sor.start.x + 0.3 - 0.125, top - h / 2, (sor.start.y + sor.end.y) / 2, M.plaster, { collide: false });
@@ -417,7 +702,7 @@ export function buildExterior(ctx, layout) {
     const side = new THREE.Vector2(-dir.y, dir.x);
     const w = st.width ?? 1;
     const top = st.topY ?? deckY, bot = st.bottomY ?? groundY;
-    const nR = Math.max(2, Math.round((top - bot) / 0.18));
+    const nR = Math.max(2, st.risers ?? Math.round((top - bot) / 0.18));
     const rise = (top - bot) / nR;
     const nT = nR - 1;
     const run = len / nT;
@@ -441,7 +726,17 @@ export function buildExterior(ctx, layout) {
     for (const sg of [-1, 1]) {
       const c = new THREE.Vector2(a.x + dir.x * (len / 2) + side.x * sg * (w / 2 - 0.02), a.y + dir.y * (len / 2) + side.y * sg * (w / 2 - 0.02));
       kb.box(Math.hypot(len, top - bot) + 0.2, 0.3, 0.04, c.x, (top + bot) / 2 - 0.2, c.y, M.deckEdge, { rot: [0, yaw, -pitch], order: 'YXZ', collide: false });
-      if (st.guards === 'outer' && sg !== outer) continue;
+      if (st.guards === 'outer' && sg !== outer) {
+        // hele huset: the inner side gets a guard too where it passes the corner (x > closedSideFromX, V33)
+        if (H && st.closedSideFromX != null && st.closedSideFromX < b.x - 0.1) {
+          const ua = Math.max(0, ((st.closedSideFromX - a.x) / (b.x - a.x)) * len);
+          const ya = top + ((bot - top) * ua) / len;
+          const ga = new THREE.Vector2(a.x + dir.x * ua + side.x * sg * (w / 2), a.y + dir.y * ua + side.y * sg * (w / 2));
+          const gb = new THREE.Vector2(b.x + side.x * sg * (w / 2), b.y + side.y * sg * (w / 2));
+          railing(ga, gb, ya, bot, { outward: side.clone().multiplyScalar(sg), height: st.guardHeight ?? railH });
+        }
+        continue;
+      }
       const ga = new THREE.Vector2(a.x + side.x * sg * (w / 2), a.y + side.y * sg * (w / 2));
       const gb = new THREE.Vector2(b.x + side.x * sg * (w / 2), b.y + side.y * sg * (w / 2));
       railing(ga, gb, top, bot, { outward: side.clone().multiplyScalar(sg), height: st.guardHeight ?? railH });
@@ -457,9 +752,12 @@ export function buildExterior(ctx, layout) {
       // closed for the player (the stair is not walkable: the player stays on the terrace)
       const fx = layout.wallsById['w-sor'] ? layout.wallsById['w-sor'].start.x + 0.3 : a.x - 0.18;
       if (a.x - fx > 0.02) kb.box(a.x - fx, 0.045, w - 0.04, (fx + a.x) / 2, top - 0.0225, a.y, treadMat, { collide: false });
-      const rl = (t.railingLinesV || []).find((l) => l.every((q) => Math.abs(q.y - westZ) < 1e-3));
-      const x1g = rl ? Math.min(...rl.map((q) => q.x)) : a.x + 0.25;
-      solidBoxes.push(new THREE.Box3(new THREE.Vector3(fx, top, westZ - 0.03), new THREE.Vector3(x1g + 0.05, top + 1.2, westZ + 0.06)));
+      if (!H) {
+        const rl = (t.railingLinesV || []).find((l) => l.every((q) => Math.abs(q.y - westZ) < 1e-3));
+        const x1g = rl ? Math.min(...rl.map((q) => q.x)) : a.x + 0.25;
+        solidBoxes.push(new THREE.Box3(new THREE.Vector3(fx, top, westZ - 0.03), new THREE.Vector3(x1g + 0.05, top + 1.2, westZ + 0.06)));
+      }
+      // (hele huset: the stair is walkable – an invisible wedge over the treads, colliders below)
     } else {
       const gate = new THREE.Vector2(a.x, a.y);
       solidBoxes.push(new THREE.Box3(new THREE.Vector3(gate.x - w / 2 - 0.05, top, gate.y - 0.04), new THREE.Vector3(gate.x + w / 2 + 0.05, top + 1.2, gate.y + 0.06)));
@@ -470,6 +768,92 @@ export function buildExterior(ctx, layout) {
       const lx = ld.polygon.map((q) => q[0]), lz = ld.polygon.map((q) => q[1]);
       const x0 = Math.min(...lx), x1 = Math.max(...lx), z0 = Math.min(...lz), z1 = Math.max(...lz);
       kb.box(x1 - x0, 0.15, z1 - z0, (x0 + x1) / 2, (ld.y ?? bot) - 0.075, (z0 + z1) / 2, M.landing, { collide: false });
+    }
+  }
+
+  // ---------------------------------------------------------------------------------------------------------------
+  // Hele huset (steg 25): the forecourt at the entrance level with its paving (V34), the niche's soffit with the three
+  // downlights (V28, V35), the fill behind the door wall (V31), the doorbell, the soffit under the overhangs (V4, V6),
+  // the plastered wall under the annex, and the colliders: ground and paving (never inside the basement), the stair
+  // as a wedge with guards (§3.11), pillars, fill, clad face.
+  const collideMeshes = [];
+  if (H) {
+    const E = P.entranceY;
+    const fc = P.forecourt;
+    const pv = P.paving || {};
+    // gravel bed under the whole forecourt (the strip along the door wall and the joints show it)
+    kb.box(fc.x1 - fc.x0, 0.12, fc.z1 - fc.z0, (fc.x0 + fc.x1) / 2, E - 0.012 - 0.06, (fc.z0 + fc.z1) / 2, M.gravel, { collide: false });
+    const strip = pv.gravelStrip?.width ?? 0.2;
+    const xs0 = fc.x0 + strip;
+    // the low ground cover along the east side wall (rom 3,70's west face), from the strip out to the deck edge
+    const bedW = 0.22;
+    kb.box(Math.min(fc.x1, P.xE) - xs0, 0.03, bedW, (xs0 + Math.min(fc.x1, P.xE)) / 2, E - 0.005 - 0.015, fc.z0 + bedW / 2, M.cover, { collide: false });
+    // the slate in front of the door (1.5 × 0.7, a hair above the slabs)
+    const sl = pv.slate ? { x0: pv.slate.x[0], x1: pv.slate.x[1], z0: pv.slate.z[0], z1: pv.slate.z[1] } : null;
+    if (sl) kb.box(sl.x1 - sl.x0, 0.03, sl.z1 - sl.z0, (sl.x0 + sl.x1) / 2, E + 0.002 - 0.015, (sl.z0 + sl.z1) / 2, M.slate, { collide: false });
+    // concrete slabs (0.60 × 0.50, 3 cm gravel joints), cut at the strip, the bed, the slate and the pillars
+    const blocked = [sl && { ...sl, x0: sl.x0 - 0.02, x1: sl.x1 + 0.02, z0: sl.z0 - 0.02, z1: sl.z1 + 0.02 }, P.pillar, P.cornerPier].filter(Boolean);
+    const SX = 0.6, SZ = 0.5, J = 0.03;
+    const zs0 = fc.z0 + bedW + 0.02;
+    let k = 0;
+    for (let x = xs0 + 0.01; x < fc.x1 - 0.05; x += SX + J) {
+      for (let z = zs0; z < fc.z1 - 0.05; z += SZ + J) {
+        const x1 = Math.min(x + SX, fc.x1 - 0.01), z1 = Math.min(z + SZ, fc.z1 - 0.01);
+        if (x1 - x < 0.08 || z1 - z < 0.08) continue;
+        if (blocked.some((r) => x < r.x1 && x1 > r.x0 && z < r.z1 && z1 > r.z0)) continue;
+        const m = (Math.sin(k++ * 12.9898 + x * 78.233) * 43758.5453) % 1 > 0 ? M.slab : M.slab2;
+        kb.box(x1 - x, 0.04, z1 - z, (x + x1) / 2, E - 0.02, (z + z1) / 2, m, { collide: false });
+      }
+    }
+    // soffits: the niche (−0.50, boards; down from the deck's underside) and the overhangs (−0.30)
+    for (const s of P.soffits) {
+      for (const r of s.rects) {
+        const x0 = r.x0 + 0.001, z0 = r.z0 + 0.001;
+        kb.box(r.x1 - x0, s.top - s.y, r.z1 - z0, (x0 + r.x1) / 2, (s.y + s.top) / 2, (z0 + r.z1) / 2, M.soffit, { collide: false });
+      }
+    }
+    // the three downlights in the niche soffit (fittings only; lighting.js owns the light, group «ute»)
+    const ns = P.soffits.find((s) => s.niche);
+    for (const l of P.lights) {
+      const [lx, , lz] = l.position;
+      const r = (l.dims?.d ?? 0.09) / 2;
+      const y = (ns?.y ?? -0.505) - 0.004;
+      kb.cylinder(r + 0.012, r + 0.012, 0.008, lx, y, lz, M.ring, { segments: 20, collide: false });
+      kb.cylinder(r - 0.008, r - 0.008, 0.006, lx, y - 0.003, lz, M.lens, { segments: 20, collide: false });
+    }
+    // the doorbell on the cladding west of the door element (V35)
+    for (const f of P.fixtures) {
+      if (f.type !== 'doorbell') continue;
+      const [fxp, fy, fz] = f.position;
+      const r = (f.dims?.d ?? 0.03) / 2;
+      kb.cylinder(r, r, 0.024, fxp + 0.012 * (f.normal?.[0] ?? 1), fy, fz, M.black, { segments: 16, rot: [0, 0, Math.PI / 2], collide: false });
+    }
+    // the fill behind the door wall's cladding west of the entrance (V31)
+    const fl = P.fill;
+    if (fl) kb.box(fl.x1 - fl.x0, fl.y1 - fl.y0, fl.z1 - fl.z0, (fl.x0 + fl.x1) / 2, (fl.y0 + fl.y1) / 2, (fl.z0 + fl.z1) / 2, M.annex, { collide: false });
+    // a plastered wall under the annex down to the ground (§2.9: otherwise it floats 2.5 m over the forecourt)
+    const an = t?.annex?.polygonV;
+    if (an?.length) {
+      const ax = an.map((p) => p.x), az = an.map((p) => p.y);
+      const x0 = Math.min(...ax), x1 = Math.max(...ax), z0 = Math.min(...az), z1 = Math.min(Math.max(...az), P.zE - 0.01);
+      const y0 = groundY - 0.05, y1 = deckY - 0.3;
+      if (z1 > z0) kb.box(x1 - x0, y1 - y0, z1 - z0, (x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2, M.plaster, { collide: false });
+    }
+    // ---- colliders
+    for (const s of P.solids) solidBoxes.push(new THREE.Box3(new THREE.Vector3(...s.min), new THREE.Vector3(...s.max)));
+    const wd = P.wedge;
+    collideMeshes.push(prismZ([[wd.x0, wd.y0], [wd.x1, wd.y1], [wd.x1, wd.bottomY], [wd.x0, wd.bottomY]], wd.z0, wd.z1, 'terrace-stair-wedge'));
+    for (const g of P.guards) {
+      if (g.x1 - g.x0 < 0.05) continue;
+      collideMeshes.push(prismZ([[g.x0, g.yTop0 - 1.1], [g.x1, g.yTop1 - 1.1], [g.x1, g.yTop1], [g.x0, g.yTop0]], g.z0, g.z1, `terrace-stair-guard-${g.side}`));
+    }
+    // footsteps: lawn soft, paving hard, the stair wooden (later zones win)
+    if (ctx.collision) {
+      for (const s of P.solids) {
+        const surf = s.kind === 'lawn' ? 'rug' : ['forecourt', 'landing', 'path', 'walk'].includes(s.kind) ? 'tile' : null;
+        if (surf) ctx.collision.addSurfaceZone(new THREE.Box3(new THREE.Vector3(s.min[0], s.max[1] - 0.3, s.min[2]), new THREE.Vector3(s.max[0], s.max[1] + 1.0, s.max[2])), surf);
+      }
+      ctx.collision.addSurfaceZone(new THREE.Box3(new THREE.Vector3(wd.x0 - 0.4, wd.y1 - 0.3, wd.z0 - 0.05), new THREE.Vector3(wd.x1, wd.y0 + 1.0, wd.z1 + 0.05)), 'wood');
     }
   }
 
@@ -548,6 +932,18 @@ export function buildExterior(ctx, layout) {
     g.computeVertexNormals();
     return g;
   };
+  // hele huset: a ground patch west of the house (z beyond the basement's west face), falling from just under the
+  // basement bedroom's west window (sill y −1.68) to the lawn at x 6.4 – what win-sk sees instead of a photo
+  const westGroundGeometry = () => {
+    const x0 = -0.2, x1 = 6.4, z0 = 11.7, z1 = 42; // x ≥ −0.2: never in front of win-tv (glass at x −0.24)
+    const g = new THREE.PlaneGeometry(x1 - x0, z1 - z0, 12, 16);
+    g.rotateX(-Math.PI / 2);
+    g.translate((x0 + x1) / 2, 0, (z0 + z1) / 2);
+    const pos = g.attributes.position;
+    for (let i = 0; i < pos.count; i++) pos.setY(i, lerp(-1.95, nearGroundY, smooth(1.5, x1, pos.getX(i))));
+    g.computeVertexNormals();
+    return g;
+  };
 
   const built = kb.build();
   group.add(built);
@@ -555,6 +951,10 @@ export function buildExterior(ctx, layout) {
     if (m.isMesh) m.userData.noCollide = true;
   });
   for (const bx of solidBoxes) ctx.collision?.addStaticBox(bx);
+  for (const m of collideMeshes) {
+    owned.push(m.geometry, m.material);
+    ctx.collision?.addStatic(m);
+  }
   // deck walkable (static box) and bounds that include the terrace
   if (t?.polygonV?.length && ctx.collision) {
     const poly = t.polygonV;
@@ -565,8 +965,21 @@ export function buildExterior(ctx, layout) {
     const xL = layout.wallsById['w-sor'] ? layout.wallsById['w-sor'].start.x + 0.3 : xK;
     ctx.collision.addStaticBox(new THREE.Box3(new THREE.Vector3(xK, deckY - 0.2, Math.min(...zs)), new THREE.Vector3(Math.max(...xs), deckY, zK)));
     ctx.collision.addStaticBox(new THREE.Box3(new THREE.Vector3(xL, deckY - 0.2, zK), new THREE.Vector3(Math.max(...xs), deckY, Math.max(...zs))));
-    const lb = layout.bounds;
-    ctx.collision.setBounds(lb.minX + 0.05, Math.max(lb.maxX, Math.max(...xs)) - 0.05, Math.max(lb.minZ, Math.min(...zs)) + 0.05, lb.maxZ - 0.05);
+    if (H) {
+      // (the two deck boxes above already reach the extension: the polygon goes to x 10.35 · z −0.30)
+      // walking bounds: the house's rectangles + the outside one (V26). Until Collision has a list (steg 20, M2)
+      // one rectangle around both; walls, the ground colliders and the paving keep the player where it can stand.
+      if (typeof ctx.collision.setBoundsList === 'function') {
+        const have = ctx.collision.boundsList ?? layout.house?.walkRects ?? [];
+        ctx.collision.setBoundsList([...have, ...P.walkRects]);
+      } else {
+        const b = P.bounds;
+        ctx.collision.setBounds(b.minX, b.maxX, b.minZ, b.maxZ);
+      }
+    } else {
+      const lb = layout.bounds;
+      ctx.collision.setBounds(lb.minX + 0.05, Math.max(lb.maxX, Math.max(...xs)) - 0.05, Math.max(lb.minZ, Math.min(...zs)) + 0.05, lb.maxZ - 0.05);
+    }
   }
 
   // ---------------------------------------------------------------------------------------------------------------
@@ -685,9 +1098,8 @@ export function buildExterior(ctx, layout) {
       sky: { value: sky.clone() },
       skyFade: { value: def.id === 'nord' ? 0.1 : 0.14 },
       clipOn: { value: clip ? 1 : 0 },
-      planeX: { value: clip?.planeX ?? 0 },
-      rect0: { value: clip?.rects[0] ?? new THREE.Vector4() },
-      rect1: { value: clip?.rects[1] ?? new THREE.Vector4() },
+      planes: { value: Array.from({ length: 6 }, (_, i) => clip?.planes[i] ?? 0) },
+      rects: { value: Array.from({ length: 6 }, (_, i) => clip?.rects[i] ?? new THREE.Vector4()) },
       rectCount: { value: clip?.rects.length ?? 0 },
       edgeFade: { value: clip ? 0.0001 : 0.06 },
       horizonV: { value: def.horizonV ?? 0.5 },
@@ -737,20 +1149,40 @@ export function buildExterior(ctx, layout) {
     mesh.renderOrder = 1;
     group.add(mesh);
     bd.ground = { mesh, uniforms };
+    if (H) {
+      const west = new THREE.Mesh(keep(westGroundGeometry()), m);
+      west.name = 'ground-west';
+      west.userData.noCollide = true;
+      west.castShadow = false;
+      west.receiveShadow = false;
+      west.renderOrder = 1;
+      group.add(west);
+    }
   }
 
-  /** Window clip for a backdrop: the glass plane of its windows (all in one wall along z). */
+  /**
+   * Window clip for a backdrop: the glass planes of its windows (walls along z), up to six rectangles. Windows of
+   * the whole house (layout.house, e.g. win-vask under win-tv in «nord») get the glass plane of their own wall line;
+   * windows in the same line share the first one's plane (as before: the living room's views are unchanged).
+   */
   function clipFor(def) {
     const ids = def.windows || [];
-    const ops = ids.map((id) => layout.openingsById[id]).filter(Boolean);
+    const byId = layout.house?.openingsById || layout.openingsById;
+    const ops = ids.map((id) => layout.openingsById[id] || byId[id]).filter(Boolean).slice(0, 6);
     if (!ops.length || ops.some((o) => Math.abs(o.normal.x) < 0.99)) return null;
-    const o0 = ops[0];
-    const planeX = o0.center.x - o0.normal.x * (o0.revealDepth + 0.035);
-    const rects = ops.slice(0, 2).map((o) => {
+    const lines = [];
+    const planes = ops.map((o) => {
+      const line = lines.find((l) => Math.abs(l.x - o.center.x) < 0.01 && Math.sign(l.n) === Math.sign(o.normal.x));
+      if (line) return line.planeX;
+      const planeX = o.center.x - o.normal.x * (o.revealDepth + 0.035);
+      lines.push({ x: o.center.x, n: o.normal.x, planeX });
+      return planeX;
+    });
+    const rects = ops.map((o) => {
       const zs = o.corners.map((c) => c.z), ys = o.corners.map((c) => c.y);
       return new THREE.Vector4(Math.min(...zs), Math.max(...zs), Math.min(...ys), Math.max(...ys));
     });
-    return { planeX, rects };
+    return { planes, rects };
   }
 
   let skyFromPhotoDay = null;
