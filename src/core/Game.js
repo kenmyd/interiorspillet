@@ -7,8 +7,17 @@ import { PlayerController } from '../player/PlayerController.js';
 import { Hud } from '../ui/Hud.js';
 import { PauseMenu } from '../ui/PauseMenu.js';
 import { setMaxAnisotropy } from '../world/proctex.js';
+import { LastPosition } from './LastPosition.js';
 
 const _eye = new THREE.Vector3();
+const _down = new THREE.Ray(new THREE.Vector3(), new THREE.Vector3(0, -1, 0));
+const DEG = Math.PI / 180;
+/** Rooms and levels are tested at the body centre: feet + this (§1.8, §5.1). */
+const BODY_CENTRE = 0.9;
+/** Seconds a new place must hold before the HUD switches to it (a doorway or a stair edge never flickers, §5.1). */
+const ROOM_SETTLE = 0.4;
+/** A jump of the feet this far (m) between two room updates is a teleport: the new place counts at once. */
+const TELEPORT_JUMP = 1.0;
 
 /**
  * One play session: renderer, scene, player, home, editor. Created by main.js when the player presses «Gå inn i
@@ -196,9 +205,7 @@ export class Game {
       settings: this.settings,
       events: this.events,
     });
-    const spawn = this.home.spawn;
-    const pos = this.dev.pos ? this._freeFloor(new THREE.Vector3(...this.dev.pos)) : spawn.position.clone();
-    this.player.teleport(pos, this.dev.yaw ?? spawn.yaw ?? 0, this.dev.pitch ?? spawn.pitch ?? 0);
+    this._placeAtStart();
     this.design = this.home.design ?? null;
 
     // the editor first: its highlight, footprint and gizmo materials are part of the scene that gets compiled
@@ -480,25 +487,168 @@ export class Game {
     else this.renderer.render(this.scene, camera);
   }
 
+  /**
+   * Start position (notes/hele-huset-design.md §3.6, steg 26 U2; avstemming V32). By `dev.spawn` (main.js):
+   *   'saved' (default)  the position this viewer stood at last time (LastPosition, this browser's localStorage) when
+   *                      it is still on a floor; else the first-visit start: OUTSIDE on the forecourt by the front
+   *                      door (home.spawnOutside, looking at the door) – the owner's «Start ute»
+   *   'fresh'            the first-visit start, the saved position ignored (start screen «Start med stua slik den er
+   *                      i dag»)
+   *   'outside'          the forecourt (dev ?spawn=outside)
+   *   'inside'           the dining area (home.spawn, the start before the house; ?play=1 without &spawn=)
+   * ?pos=x,y,z (dev.pos, feet) overrides all of them as before (_freeFloor moves it off furniture), and &yaw / &pitch
+   * turn whatever start was chosen. The forecourt is used only once something can be stood on there (_standable: a
+   * floor under the feet in the collision, inside the walkable bounds – the exterior's forecourt, steg 25 C3, and the
+   * bounds of steg 20 M2); until then every outside start is the dining area.
+   * The player's FIRST teleport is its reserve spawn (PlayerController: where it respawns when the last safe spot is
+   * unusable, §3.5): the forecourt once it can be walked on, else the dining area.
+   * Sets this.startedFrom ('pos' | 'saved' | 'outside' | 'inside') and this.lastPosition.
+   */
+  _placeAtStart() {
+    const home = this.home;
+    const dev = this.dev || {};
+    const inside = home.spawn;
+    const outside = home.spawnOutside && this._standable(home.spawnOutside.position) ? home.spawnOutside : null;
+    if (home.spawnOutside && !outside) console.info('[game] the forecourt cannot be walked on yet – outside starts use the dining area');
+    this.lastPosition = new LastPosition({ storage: dev.lastPositionStorage, readOnly: !!dev.readOnlySaves });
+    const mode = ['saved', 'fresh', 'outside', 'inside'].includes(dev.spawn) ? dev.spawn : 'saved';
+
+    let start = null;
+    let from = null;
+    if (dev.pos) {
+      start = { position: this._freeFloor(new THREE.Vector3(...dev.pos)), yaw: inside.yaw, pitch: inside.pitch };
+      from = 'pos';
+    } else if (mode === 'saved') {
+      start = this._savedStart();
+      if (start) from = 'saved';
+    } else if (mode === 'inside') {
+      start = inside;
+      from = 'inside';
+    }
+    if (!start) {
+      start = outside ?? inside;
+      from = outside ? 'outside' : 'inside';
+    }
+    const reserve = outside ?? inside;
+    this.player.teleport(reserve.position.clone(), reserve.yaw ?? 0, reserve.pitch ?? 0);
+    this.player.teleport(start.position.clone(), dev.yaw ?? start.yaw ?? 0, dev.pitch ?? start.pitch ?? 0);
+    this.startedFrom = from;
+    this._watchLastPosition();
+  }
+
+  /** The saved position as a start, or null (nothing saved, or no floor there any more – the house changed). */
+  _savedStart() {
+    const saved = this.lastPosition?.load();
+    if (!saved) return null;
+    const position = new THREE.Vector3(...saved.pos);
+    if (!this._standable(position)) {
+      console.info('[game] the saved position ' + saved.pos.join(',') + ' is not on a floor – starting at the start point');
+      return null;
+    }
+    return { position, yaw: saved.yawDeg * DEG, pitch: saved.pitchDeg * DEG };
+  }
+
+  /**
+   * Can the player stand here (feet, world)? A floor (static collision, furniture ignored) within 0.3 m of the feet
+   * and inside the walkable bounds.
+   * @param {THREE.Vector3} p
+   */
+  _standable(p) {
+    const c = this.collision;
+    if (!p || !Number.isFinite(p.x + p.y + p.z) || typeof c?.raycast !== 'function') return false;
+    if (typeof c.isWalkable === 'function' && !c.isWalkable(p.x, p.z, p.y)) return false;
+    _down.origin.set(p.x, p.y + 1.2, p.z);
+    const hit = c.raycast(_down, 1.6, { includeDynamic: false });
+    return !!hit && Math.abs(hit.point.y - p.y) <= 0.3;
+  }
+
+  /** Writes the remembered position when the page goes away or the game quits (dispose runs this._disposers). */
+  _watchLastPosition() {
+    const flush = () => this.lastPosition?.flush();
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      this._disposers.push(flush);
+      return;
+    }
+    const onHidden = () => {
+      if (document.visibilityState === 'hidden') flush();
+    };
+    window.addEventListener('pagehide', flush);
+    document.addEventListener('visibilitychange', onHidden);
+    this._disposers.push(() => {
+      flush();
+      window.removeEventListener('pagehide', flush);
+      document.removeEventListener('visibilitychange', onHidden);
+    });
+  }
+
+  /**
+   * Remembers where the player stands (LastPosition) while the game runs: on the ground, not seated, not in water,
+   * inside the walkable bounds. Written every few seconds when it moved, and on pagehide / quit.
+   * @param {string|null} levelId
+   */
+  _recordPosition(levelId) {
+    const lp = this.lastPosition, pl = this.player;
+    if (!lp || !pl || !this.running || !pl.onGround || pl.seated || pl.inWater) return;
+    const p = pl.position;
+    if (typeof this.collision?.isWalkable === 'function' && !this.collision.isWalkable(p.x, p.z, p.y)) return;
+    lp.record(p, pl.yaw, pl.pitch, { levelId, roomId: this.roomId }, this.time);
+  }
+
+  /**
+   * The room the player is in, and the HUD banner (notes/hele-huset-design.md §5.1, steg 9 A3):
+   *   • tested at the body centre (feet + 0.9) with home.locate: the HUD variant of layout.house.roomAt (the stair
+   *     `trapp` first; lights and acoustics use physical:true and never see it), with the level's hysteresis; outside
+   *     the house a named outside area (the forecourt «Forplassen»);
+   *   • a new place must hold ROOM_SETTLE (0.4 s of game time) before it counts, so a doorway, a wall or the edge of
+   *     the stair never flickers; the first update, a teleport (the feet jumped ≥ 1 m) and arriving from no place at
+   *     all (the terrace) count at once;
+   *   • this.roomId = the room's id (null outside every room, also on the forecourt), 'room' event { id, name,
+   *     levelId, levelName } | null when it changes;
+   *   • the banner: hud.showRoom(name, { eyebrow }) with the level's name («1. etasje», «Kjeller»; the stair: the level
+   *     the body is on) or «Ute» outside. It names a place once: a gap between two rooms, a step out onto the terrace
+   *     (no named place) and back is no new banner.
+   * Also remembers the position for the next visit (_recordPosition).
+   */
   _updateRoom() {
-    this.camera.getWorldPosition(_eye);
-    let room = null;
-    for (const r of this.home.rooms ?? []) {
-      if (r.box.containsPoint(_eye)) {
-        room = r;
-        break;
+    const home = this.home;
+    if (!home) return;
+    const p = this.player?.position ?? this.camera.getWorldPosition(new THREE.Vector3()).setY(this.camera.position.y - 1.66);
+    const last = this._roomFeet;
+    const jumped = !last || Math.hypot(p.x - last.x, p.z - last.z) >= TELEPORT_JUMP || Math.abs(p.y - last.y) >= TELEPORT_JUMP;
+    this._roomFeet = (last ?? new THREE.Vector3()).copy(p);
+    if (jumped) this._levelId = null; // no hysteresis from where we were
+
+    const y = p.y + BODY_CENTRE;
+    let where;
+    if (typeof home.locate === 'function') where = home.locate(p.x, y, p.z, { previousLevelId: this._levelId ?? null });
+    else where = { room: (home.rooms || []).find((r) => (r.contains ? r.contains(p.x, y, p.z) : r.box?.containsPoint(_eye.set(p.x, y, p.z)))) ?? null, outside: null, level: null };
+    if (where.level) this._levelId = where.level.id;
+    const place = where.room ?? where.outside ?? null;
+    const key = place ? (where.room ? `room:${place.id}` : `ute:${place.id}`) : null;
+
+    if (key !== this._placeCandidate) {
+      this._placeCandidate = key;
+      this._placeSince = this.time;
+    }
+    const first = this._placeKey === undefined;
+    // from no place at all (the terrace, a garden path) a room counts at once: there is nothing to flicker against
+    const settled = first || jumped || this._placeKey === null || this.time - this._placeSince >= ROOM_SETTLE - 1e-9;
+    if (key !== this._placeKey && settled) {
+      this._placeKey = key;
+      const room = where.room;
+      const id = room ? room.id : null;
+      if (id !== this.roomId) {
+        this.roomId = id;
+        const levelName = room ? (room.hud ? where.level?.name : room.levelName) ?? where.level?.name ?? null : null;
+        this.events.emit('room', room ? { id: room.id, name: room.name, levelId: room.levelId ?? where.level?.id ?? null, levelName } : null);
+      }
+      if (place && key !== this._announcedRoom) {
+        this._announcedRoom = key;
+        const eyebrow = where.outside ? place.levelName : (place.hud ? where.level?.name : place.levelName) ?? where.level?.name;
+        this.hud.showRoom(place.name, eyebrow ? { eyebrow } : undefined);
       }
     }
-    const id = room ? room.id : null;
-    if (id !== this.roomId) {
-      this.roomId = id;
-      this.events.emit('room', room ? { id: room.id, name: room.name } : null);
-      // the banner names a room once: a gap between two zone boxes or a step out onto the terrace is no new room
-      if (room && room.id !== this._announcedRoom) {
-        this._announcedRoom = room.id;
-        this.hud.showRoom(room.name);
-      }
-    }
+    this._recordPosition(where.level?.id ?? null);
   }
 
   /**

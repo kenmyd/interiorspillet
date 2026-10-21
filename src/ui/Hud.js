@@ -24,7 +24,9 @@ import { COMPASS } from '../config.js';
  * Extras:
  *   new Hud(uiRoot, settings, { placeName, yaw0Bearing })   placeName: small line above the room name in the
  *                                   room banner (e.g. 'Hjemme'); yaw0Bearing: compass bearing at yaw 0
- *   showRoom(name, { eyebrow })     per-call override of that small line ('' hides it)
+ *   showRoom(name, { eyebrow })     per-call override of that small line ('' hides it). Game passes the level of the
+ *                                   place: «1. etasje», «Kjeller» or «Ute» (notes/hele-huset-design.md §5.1)
+ *   roomShown                       { name, eyebrow } of the last banner (null before the first), for tests / tools
  *   setPaused(bool)                 freezes the toast / room-banner / help timers (the HUD sits under the pause
  *                                   overlay, so messages would otherwise expire unseen). Called automatically when
  *                                   PauseMenu dispatches PAUSE_EVENT on the same root.
@@ -57,6 +59,7 @@ export class Hud {
     this._fps = undefined;
     this._bearing = null;
     this._roomT = 0;
+    this.roomShown = null;
     this._helpT = 0;
     this._helpTotal = 0;
     this._toasts = [];
@@ -175,9 +178,13 @@ export class Hud {
    */
   showRoom(name, { eyebrow = this.placeName } = {}) {
     if (!name) return;
+    eyebrow = eyebrow ?? '';
+    this.roomShown = { name, eyebrow };
     this.roomName.textContent = name;
-    this.roomEyebrowText.textContent = eyebrow ?? '';
+    this.roomEyebrowText.textContent = eyebrow;
     this.roomEyebrow.hidden = !eyebrow;
+    // one announcement for screen readers: «Gang, 1. etasje»
+    this.room.setAttribute('aria-label', eyebrow ? `${name}, ${eyebrow}` : name);
     this.room.classList.remove('is-visible');
     void this.room.offsetWidth; // restart the transition
     this.room.classList.add('is-visible');
