@@ -1,0 +1,76 @@
+{
+  "levelTitle": null,
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+    {
+      "text": "SOV",
+      "area": 14.8,
+      "kind": "bedroom",
+      "at": [
+        0.251,
+        0.398
+      ]
+    },
+    {
+      "text": "HALL/TRAPP",
+      "area": 15.9,
+      "kind": "hall",
+      "at": [
+        0.548,
+        0.314
+      ]
+    },
+    {
+      "text": "BOD",
+      "area": 4.4,
+      "kind": "storage",
+      "at": [
+        0.874,
+        0.128
+      ]
+    },
+    {
+      "text": "VASK",
+      "area": 5.5,
+      "kind": "laundry",
+      "at": [
+        0.854,
+        0.317
+      ]
+    },
+    {
+      "text": "STUE",
+      "area": 29.1,
+      "kind": "living",
+      "at": [
+        0.498,
+        0.723
+      ]
+    },
+    {
+      "text": "KJØKKEN",
+      "area": 16.9,
+      "kind": "kitchen",
+      "at": [
+        0.803,
+        0.676
+      ]
+    }
+  ],
+  "dimensions": [],
+  "openings": [],
+  "skylights": [],
+  "stair": {
+    "present": true,
+    "at": [
+      0.393,
+      0.252
+    ],
+    "type": "quarter-turn",
+    "up": "here"
+  },
+  "ceiling": [],
+  "furniture": [],
+  "notes": ""
+}

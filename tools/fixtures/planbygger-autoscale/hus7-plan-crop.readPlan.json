@@ -1,0 +1,69 @@
+{
+  "levelTitle": "PLAN",
+  "scaleText": "Målestokk: 1:100 (A3)",
+  "rooms": [],
+  "labels": [
+    {
+      "text": "GARASJE",
+      "area": 30.25,
+      "kind": "garage",
+      "at": [
+        0.45,
+        0.642
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "text": "5700",
+      "value": 5.7,
+      "at": [
+        0.465,
+        0.055
+      ],
+      "along": "h",
+      "what": "outer"
+    },
+    {
+      "text": "5500",
+      "value": 5.5,
+      "at": [
+        0.45,
+        0.195
+      ],
+      "along": "h",
+      "what": "other"
+    },
+    {
+      "text": "5500",
+      "value": 5.5,
+      "at": [
+        0.688,
+        0.584
+      ],
+      "along": "v",
+      "what": "other"
+    },
+    {
+      "text": "5700",
+      "value": 5.7,
+      "at": [
+        0.83,
+        0.486
+      ],
+      "along": "v",
+      "what": "outer"
+    }
+  ],
+  "openings": [],
+  "skylights": [],
+  "stair": {
+    "present": false,
+    "at": null,
+    "type": "none",
+    "up": "unknown"
+  },
+  "ceiling": [],
+  "furniture": [],
+  "notes": "Utsnitt x 400–1400, y 2350–3300 av arket (4771 × 3332). Målestokken står i tittelfeltet på arket, utenfor utsnittet."
+}

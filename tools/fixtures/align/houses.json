@@ -1,0 +1,26 @@
+{
+  "$comment": "Hand-measured answers for tools/test-planbygger-align.mjs. 'truth' is the offset of the upper drawing (level) on the lower one (ref) in plan metres (x right, y down), measured on dark-pixel profiles of both images (tools: column/row runs, see 'how'). 'ppm' is px per metre per image; 'stair' the hand-measured stair box in pixels [x0, y0, x1, y1] (tread area), used as the detect.stairs input for the no-image path.",
+  "houses": {
+    "hus3": {
+      "ref": { "file": "plantegninger/hus3/1etg.png", "ppm": 47.85, "stair": [543, 387, 590, 547] },
+      "level": { "file": "plantegninger/hus3/2etg.png", "ppm": 47.85, "stair": [291, 385, 341, 545] },
+      "truth": [5.204, 0.063],
+      "uncertainty": 0.021,
+      "how": "Same outline (6.15 × 14.95 m, both drawn 294 px wide, 717 / 715 px tall → 47.85 px/m). Outer faces: left 314 vs 65 px (+249), top 140 vs 138, bottom 856 vs 852 (+2…+4 px). Stair treads 543–590 × 387–547 vs 291–341 × 385–545 agree with (249, 3) px."
+    },
+    "hus4": {
+      "ref": { "file": "plantegninger/_png/hus4/1etg.png", "ppm": 124, "stair": [684, 221, 926, 452] },
+      "level": { "file": "plantegninger/_png/hus4/2etg.png", "ppm": 124, "stair": [689, 214, 930, 445] },
+      "truth": [-0.034, 0.05],
+      "uncertainty": 0.008,
+      "how": "Scale from the room areas (Sov 7,5 → 122.9, Bad 4,3 → 124, 2. etg Bad 4,6 → 124.8 px/m). The stair drawn alike in the right half: the start circle of the walking line at (869.5, 438) vs (873.75, 431.75) px, the bottom tread edge 438 vs 431.75, the walking line x 869.5 vs 873.75 → (−4.25, +6.25) px. The walls disagree by up to 6 px: the shaft walls left 683 vs 688, right 927 vs 931.5 px, the beam under the stair 6 px higher, the top wall 0–7 px depending on the contour line taken (plantegninger/hus4/fasit.json: «innenfor ±5 px»). The terraces and the carport differ."
+    },
+    "hus1": {
+      "ref": { "file": "plantegninger/hus1/1etg.png", "ppm": 97.3, "stair": [417, 122, 627, 354] },
+      "level": { "file": "plantegninger/hus1/2etg.png", "ppm": 93.84, "stair": [427, 142, 632, 367] },
+      "truth": [-0.276, -0.27],
+      "uncertainty": 0.015,
+      "how": "2. etg is drawn 3.5 % smaller: the outer frame is 1113 × 831 px against 1154 × 861 px on 1. etg (0.9645 and 0.9652), so 97.3 × 0.9645 = 93.84 px/m. Outer faces: left −0.275, top −0.270, right −0.275, bottom −0.276 m; the stair box edges give −0.264…−0.291 m, the tread lines (x 626/601/576/552 vs 628/605/581/557, y 252…350 vs 268…364 px) −0.266, −0.271 m. The stair itself is drawn 2–3 % smaller still (tread spacing 23.75 vs 24.25 px), so the stair and the outer walls disagree by about 1 cm."
+    }
+  }
+}

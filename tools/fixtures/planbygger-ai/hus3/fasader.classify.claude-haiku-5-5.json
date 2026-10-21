@@ -1,0 +1,97 @@
+{
+ "house": "hus3",
+ "file": "plantegninger/hus3/fasader.png",
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 262,
+  "sha256": "612e244c2ec0c795c148066cb6aa57eba81053f76c6dc1c714625f423c9733e8"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasader.png"
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "facade",
+    "bbox": [
+     0.022,
+     0.21,
+     0.218,
+     0.832
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   },
+   {
+    "kind": "facade",
+    "bbox": [
+     0.343,
+     0.21,
+     0.441,
+     0.832
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   },
+   {
+    "kind": "facade",
+    "bbox": [
+     0.558,
+     0.21,
+     0.77,
+     0.832
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   },
+   {
+    "kind": "facade",
+    "bbox": [
+     0.8875,
+     0.21,
+     0.9875,
+     0.832
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Arket viser fire fasadetegninger uten titler og målestokk. Ingen planer eller snitt."
+ },
+ "usage": {
+  "input_tokens": 2710,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 623,
+  "output_tokens_details": {
+   "thinking_tokens": 349
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000583,
+ "ms": 4324,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T18:53:53.980Z"
+}

@@ -1,0 +1,218 @@
+{
+  "levelTitle": null,
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+    {
+      "text": "Stek/mikro/kaffe",
+      "area": null,
+      "kind": "kitchen",
+      "at": [
+        0.43,
+        0.13
+      ]
+    },
+    {
+      "text": "Oppvaskmaskin",
+      "area": null,
+      "kind": "kitchen",
+      "at": [
+        0.67,
+        0.12
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "text": "2.06",
+      "value": 2.06,
+      "at": [
+        0.036,
+        0.137
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "0.99 m",
+      "value": 0.99,
+      "at": [
+        0.129,
+        0.094
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "0.75 m",
+      "value": 0.75,
+      "at": [
+        0.128,
+        0.183
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "2.53 m",
+      "value": 2.53,
+      "at": [
+        0.264,
+        0.096
+      ],
+      "along": "h",
+      "what": "other"
+    },
+    {
+      "text": "2.22 m",
+      "value": 2.22,
+      "at": [
+        0.204,
+        0.134
+      ],
+      "along": "v",
+      "what": "other"
+    },
+    {
+      "text": "1.54 m",
+      "value": 1.54,
+      "at": [
+        0.22,
+        0.222
+      ],
+      "along": "h",
+      "what": "other"
+    },
+    {
+      "text": "2.07 m",
+      "value": 2.07,
+      "at": [
+        0.036,
+        0.274
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "3.11 m",
+      "value": 3.11,
+      "at": [
+        0.292,
+        0.326
+      ],
+      "along": "h",
+      "what": "other"
+    },
+    {
+      "text": "3.11 m",
+      "value": 3.11,
+      "at": [
+        0.29,
+        0.44
+      ],
+      "along": "h",
+      "what": "other"
+    },
+    {
+      "text": "3.69 m",
+      "value": 3.69,
+      "at": [
+        0.233,
+        0.478
+      ],
+      "along": "v",
+      "what": "other"
+    },
+    {
+      "text": "3.69 m",
+      "value": 3.69,
+      "at": [
+        0.034,
+        0.474
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "3.58 m",
+      "value": 3.58,
+      "at": [
+        0.034,
+        0.727
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "3.33 m",
+      "value": 3.33,
+      "at": [
+        0.881,
+        0.168
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "2.05 m",
+      "value": 2.05,
+      "at": [
+        0.881,
+        0.353
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "6.54 m",
+      "value": 6.54,
+      "at": [
+        0.881,
+        0.627
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "12.21 m",
+      "value": 12.21,
+      "at": [
+        0.922,
+        0.455
+      ],
+      "along": "v",
+      "what": "outer"
+    },
+    {
+      "text": "6.92 m",
+      "value": 6.92,
+      "at": [
+        0.455,
+        0.915
+      ],
+      "along": "h",
+      "what": "other"
+    },
+    {
+      "text": "7.22 m",
+      "value": 7.22,
+      "at": [
+        0.458,
+        0.946
+      ],
+      "along": "h",
+      "what": "outer"
+    }
+  ],
+  "openings": [],
+  "skylights": [],
+  "stair": {
+    "present": false,
+    "at": null,
+    "type": "none",
+    "up": "unknown"
+  },
+  "ceiling": [],
+  "furniture": [],
+  "notes": "Vindu mål 48x117."
+}

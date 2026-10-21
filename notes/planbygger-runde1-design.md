@@ -253,6 +253,51 @@ Teksten er på norsk.
 - `app.js`: startsiden blir «Slipp alle tegningene her», så stabelen, «Generer», fremdrift, veiviseren og 3D. «Finjuster»
   åpner editoren fra v1.
 
+## Endringer etter fase A (gjelder fra fase B)
+
+**Kontraktene utvidet av modulene:**
+- **`detect.js`:**
+  - `openings[].variant` (`single`/`double`/`sliding`), og `leaf2` for dobbeltdører;
+  - `skylights` og `stairs` som beskrevet over;
+  - `model.js` har `OPENING_KINDS`, `openingKind(o)` og `setOpeningKind(o, kind, settings)`. Editoren og panelet skal
+    bruke dem i stedet for å sette `o.type` alene;
+  - workeren skal sende `{ walls, openings, skylights, stairs, stats }` videre, ikke bare vegger og åpninger.
+- **`autoscale.js`:**
+  - `pdfPage` får også `widthPx` og `heightPx`, sidens størrelse i px slik den ble gjengitt. Det må sendes med når bildet
+    er et utsnitt fra `sheet.js`;
+  - resultatet har `outline: { w, h }` (px);
+  - `sameSource` skal få de andre etasjenes hele resultatobjekter.
+- **`marks.js`:** `drawMarks(...)` gir også `unmarked` (små rom uten plass til et merke). Det sendes videre:
+  `aiRead('readPlan', { …, unmarked })`.
+- **`photo.js`:** `rectifyPhoto` gir også `cut` (sider av arket utenfor bildet), `aspect` og `reason` (`'unsure'` med
+  mer).
+- **`facade.js`:** resultatet har også `skew` (grader) og `workScale`.
+- **`align.js`:** `alignLevelTo(level, ref, { img, refImg })`. Med bildene finner den trapper selv der `detect` ikke fant
+  noen.
+
+**Beslutninger (kan endres av eieren):**
+- **Ryddingen:** `generate.js` sender `clean: true` til `detectPlan`. `DETECT_DEFAULTS.clean` forblir `false`, så v1 og
+  testene står stille.
+- **Inngangsrom:** et rom med inngangsdøra kan være `hall` eller `entrance`. Testene godtar begge.
+- **Garasjeport:** den eksporteres som en åpning, fordi husformatet ikke har garasjeport. Det står som en forespørsel.
+  Dobbeltdør blir to dører, og skyvedør blir åpning, til motoren støtter dem (forespørsler).
+- **`alignLevelTo`, metoden `outline`:** krever en dekning på minst 0,1. Ellers brukes trapp eller hjørne, med lavere
+  sikkerhet.
+- **Etasjer fra samme ark:** når flere fasader kommer fra samme ark, arver de skalaen fra fasaden med metoden `door` og
+  høy sikkerhet.
+- **Lav sikkerhet i fasadene:** metoden `eave` med lav sikkerhet blir et spørsmål («Hvor høy er veggen?»), ikke en
+  verdi.
+- **Fotoer:**
+  - `generate` kaller `rectifyPhoto` på alle inndata. Den avslår digitale tegninger selv.
+  - Er `cut` ikke tom, blir det et spørsmål om formen.
+  - Er `reason` `'unsure'` på et foto, ber veiviseren om et nytt bilde med hele arket synlig.
+- **Opplastingen:** bruker EXIF-retningen (`createImageBitmap(file, { imageOrientation: 'from-image' })`) og godtar AVIF.
+- **PDF:** siden gjengis i det innebygde bildets egen oppløsning, eller 200 dpi for vektor-PDF, høyst 4000 px. Med
+  sendes `pdfPage: { widthPt, heightPt, widthPx, heightPx }`.
+- **Fasade eller snitt:** KI-svaret `classify` avgjør mellom fasade og snitt når KI finnes.
+- **KI-budsjett i fase B:** opptil 80 ekte kall. Opptakene gjøres på nytt med de endelige merkene, Sonnet sammenlignes på
+  de vanskelige tilfellene, og hus9 og fasadene tas med.
+
 ## Måling
 
 `tools/planbygger-measure-all.mjs` kjører `generate` på alle husene med de lagrede KI-svarene og sammenligner med

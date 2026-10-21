@@ -1,0 +1,139 @@
+{
+  "levelTitle": null,
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+    {
+      "text": "SPORTSBOD",
+      "area": 5,
+      "kind": "storage",
+      "at": [
+        0.273,
+        0.106
+      ]
+    },
+    {
+      "text": "VASK/TEK",
+      "area": 4.8,
+      "kind": "laundry",
+      "at": [
+        0.706,
+        0.09
+      ]
+    },
+    {
+      "text": "GARD/BOD",
+      "area": 3,
+      "kind": "wardrobe",
+      "at": [
+        0.377,
+        0.275
+      ]
+    },
+    {
+      "text": "VF",
+      "area": 6.3,
+      "kind": "entrance",
+      "at": [
+        0.464,
+        0.281
+      ]
+    },
+    {
+      "text": "BAD",
+      "area": 5,
+      "kind": "bathroom",
+      "at": [
+        0.598,
+        0.281
+      ]
+    },
+    {
+      "text": "SOV",
+      "area": 14.4,
+      "kind": "bedroom",
+      "at": [
+        0.854,
+        0.24
+      ]
+    },
+    {
+      "text": "GANG",
+      "area": 9.7,
+      "kind": "hall",
+      "at": [
+        0.706,
+        0.356
+      ]
+    },
+    {
+      "text": "SPISESTUE",
+      "area": 19.7,
+      "kind": "dining",
+      "at": [
+        0.434,
+        0.413
+      ]
+    },
+    {
+      "text": "STUE/KJØKKEN",
+      "area": 46,
+      "kind": "living",
+      "at": [
+        0.184,
+        0.481
+      ]
+    },
+    {
+      "text": "SOV",
+      "area": 11.9,
+      "kind": "bedroom",
+      "at": [
+        0.854,
+        0.444
+      ]
+    },
+    {
+      "text": "BAD",
+      "area": 7.7,
+      "kind": "bathroom",
+      "at": [
+        0.815,
+        0.656
+      ]
+    },
+    {
+      "text": "GANG",
+      "area": 4.8,
+      "kind": "hall",
+      "at": [
+        0.706,
+        0.696
+      ]
+    },
+    {
+      "text": "SOV",
+      "area": 18.5,
+      "kind": "bedroom",
+      "at": [
+        0.739,
+        0.803
+      ]
+    }
+  ],
+  "dimensions": [],
+  "openings": [],
+  "skylights": [],
+  "stair": {
+    "present": false,
+    "at": null,
+    "type": "none",
+    "up": "unknown"
+  },
+  "ceiling": [
+    "Skråhiml.",
+    "Skråhiml."
+  ],
+  "furniture": [],
+  "notes": ""
+}

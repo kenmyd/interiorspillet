@@ -1,0 +1,109 @@
+{
+ "house": "hus4",
+ "file": "plantegninger/_png/hus4/fasade1.png",
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "768a942f33da0fb3e7f98fe6b20b3693579179ab1e13476137b1c2ce44fc4413"
+ },
+ "marks": [],
+ "hints": {
+  "fileName": "fasade1.avif"
+ },
+ "response": {
+  "title": null,
+  "roof": "mono-pitch",
+  "storeys": 2,
+  "windows": [
+   {
+    "bbox": [
+     0.524,
+     0.384,
+     0.582,
+     0.546
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.677,
+     0.384,
+     0.709,
+     0.546
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.774,
+     0.384,
+     0.808,
+     0.546
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.359,
+     0.637,
+     0.418,
+     0.689
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.774,
+     0.638,
+     0.808,
+     0.688
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.651,
+     0.606,
+     0.709,
+     0.773
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.176,
+     0.607,
+     0.224,
+     0.77
+    ],
+    "kind": "door"
+   }
+  ],
+  "notes": "Takform er usikker fra fasaden alene: taket har kantlist uten mønekappe, og fasaden alene avgjør ikke om det er pulttak eller saltak. To etasjer med trekledning. Til venstre et lavere flatt tak med glassrekkverk som terrasse over en tilbygg med grå flate og dør. Skorstein på taket."
+ },
+ "usage": {
+  "input_tokens": 4094,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 1130,
+  "output_tokens_details": {
+   "thinking_tokens": 753
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000974,
+ "ms": 6953,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T18:03:37.979Z"
+}

@@ -1,0 +1,81 @@
+{
+  "levelTitle": "Etasje 1",
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+    {
+      "text": "KJØKKEN/STUE",
+      "area": 53.4,
+      "kind": "living",
+      "at": [
+        0.656,
+        0.345
+      ]
+    },
+    {
+      "text": "VASK",
+      "area": 7.5,
+      "kind": "laundry",
+      "at": [
+        0.699,
+        0.689
+      ]
+    },
+    {
+      "text": "ENTRÉ",
+      "area": 8.5,
+      "kind": "entrance",
+      "at": [
+        0.535,
+        0.804
+      ]
+    },
+    {
+      "text": "WC/D",
+      "area": 4.1,
+      "kind": "wc",
+      "at": [
+        0.742,
+        0.804
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "text": "6.15",
+      "value": 6.15,
+      "at": [
+        0.466,
+        0.13
+      ],
+      "along": "h",
+      "what": "outer"
+    },
+    {
+      "text": "14.95",
+      "value": 14.95,
+      "at": [
+        0.432,
+        0.15
+      ],
+      "along": "v",
+      "what": "outer"
+    }
+  ],
+  "openings": [],
+  "skylights": [],
+  "stair": {
+    "present": true,
+    "at": [
+      0.81,
+      0.46
+    ],
+    "type": "straight",
+    "up": "here"
+  },
+  "ceiling": [
+    "ÅPENT OPP"
+  ],
+  "furniture": [],
+  "notes": ""
+}

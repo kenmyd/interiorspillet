@@ -1,0 +1,348 @@
+{
+ "house": "hus4",
+ "file": "plantegninger/_png/hus4/1etg.png",
+ "task": "readPlan",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "6b458029fe20033174ab91974050803628af53bda47b70fc7969c6d7a797b951"
+ },
+ "marks": [],
+ "hints": {
+  "fileName": "1etg.avif"
+ },
+ "response": {
+  "levelTitle": null,
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+   {
+    "text": "Sov",
+    "area": 7.5,
+    "kind": "bedroom",
+    "at": [
+     0.113,
+     0.327
+    ]
+   },
+   {
+    "text": "Entre",
+    "area": 5.7,
+    "kind": "entrance",
+    "at": [
+     0.265,
+     0.31
+    ]
+   },
+   {
+    "text": "Vask.",
+    "area": 6.4,
+    "kind": "laundry",
+    "at": [
+     0.592,
+     0.31
+    ]
+   },
+   {
+    "text": "Bad",
+    "area": 4.3,
+    "kind": "bathroom",
+    "at": [
+     0.622,
+     0.495
+    ]
+   },
+   {
+    "text": "TV-Stue",
+    "area": 15.7,
+    "kind": "living",
+    "at": [
+     0.364,
+     0.552
+    ]
+   },
+   {
+    "text": "Sov",
+    "area": 9.3,
+    "kind": "bedroom",
+    "at": [
+     0.155,
+     0.615
+    ]
+   },
+   {
+    "text": "Sov",
+    "area": 8.1,
+    "kind": "bedroom",
+    "at": [
+     0.548,
+     0.725
+    ]
+   },
+   {
+    "text": "Carport",
+    "area": 24.3,
+    "kind": "carport",
+    "at": [
+     0.832,
+     0.425
+    ]
+   },
+   {
+    "text": "Sportsbod",
+    "area": 5.7,
+    "kind": "storage",
+    "at": [
+     0.781,
+     0.875
+    ]
+   }
+  ],
+  "dimensions": [],
+  "openings": [
+   {
+    "mark": null,
+    "at": [
+     0.256,
+     0.1
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.126,
+     0.16
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.058,
+     0.31
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.062,
+     0.62
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.124,
+     0.8
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.62,
+     0.16
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.36,
+     0.8
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.57,
+     0.8
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.17,
+     0.28
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.525,
+     0.31
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.705,
+     0.31
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.54,
+     0.47
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.21,
+     0.52
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.53,
+     0.63
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.83,
+     0.78
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.48,
+     0.485
+    ],
+    "kind": "opening"
+   }
+  ],
+  "skylights": [],
+  "stair": {
+   "present": true,
+   "at": [
+    0.44,
+    0.27
+   ],
+   "type": "quarter-turn",
+   "up": "here"
+  },
+  "ceiling": [],
+  "furniture": [
+   {
+    "kind": "bed",
+    "at": [
+     0.135,
+     0.43
+    ]
+   },
+   {
+    "kind": "bed",
+    "at": [
+     0.18,
+     0.67
+    ]
+   },
+   {
+    "kind": "bed",
+    "at": [
+     0.64,
+     0.62
+    ]
+   },
+   {
+    "kind": "sofa",
+    "at": [
+     0.45,
+     0.67
+    ]
+   },
+   {
+    "kind": "table",
+    "at": [
+     0.37,
+     0.67
+    ]
+   },
+   {
+    "kind": "bathtub",
+    "at": [
+     0.61,
+     0.4
+    ]
+   },
+   {
+    "kind": "toilet",
+    "at": [
+     0.68,
+     0.52
+    ]
+   },
+   {
+    "kind": "washer",
+    "at": [
+     0.51,
+     0.2
+    ]
+   },
+   {
+    "kind": "other",
+    "at": [
+     0.115,
+     0.2
+    ]
+   }
+  ],
+  "notes": "Carport og sportsbod på høyre side. Terrasse/platting under TV-Stue."
+ },
+ "usage": {
+  "input_tokens": 7735,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 7735,
+    "output_tokens": 1100,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 1100,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.02647,
+ "ms": 10379,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T18:03:00.871Z"
+}

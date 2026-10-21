@@ -6,8 +6,11 @@
  *
  *   renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0, paper = 240, furniture = true, dims = true,
  *                      seed = 1, wallGrey = 8 }) → { img: { width, height, data }, plan, origin: [px, px] }
- *   plan = { walls: [{ a: [x, y], b: [x, y], t }], openings: [{ wall: index, at, width, type, hinge, side }] }  (metres)
+ *   plan = { walls: [{ a: [x, y], b: [x, y], t }], openings: [{ wall: index, at, width, type, hinge, side, variant? }],
+ *            skylights?: [{ x0, y0, x1, y1 }], stairs?: [{ rect, run, treads, kind }], extras?: { roofEdge, tiles,
+ *            boards } }  (metres; variant 'double' | 'sliding' for doors; see variantPlans)
  *   samplePlans() → named test plans (a flat, an L-shaped house, a house with a long glass wall)
+ *   variantPlans() → plans with double and sliding doors, skylights, stairs and things that are not walls
  */
 const mulberry = (seed) => () => {
   seed |= 0;
@@ -108,10 +111,8 @@ export function renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0,
     line(P(s0, -w.t * 0.35), P(s0, w.t * 0.35), lw, 120);
     line(P(s1, -w.t * 0.35), P(s1, w.t * 0.35), lw, 120);
     if (o.type === 'window') line(P(s0), P(s1), lw, 110);
-    if (o.type === 'door') {
-      const hingeS = o.hinge === 'end' ? s1 : s0;
-      const dir = o.hinge === 'end' ? -1 : 1;
-      const r = o.width;
+    // a hinged leaf: the dashed quarter arc and the open leaf
+    const leafArc = (hingeS, dir, r) => {
       const face = (o.side * w.t) / 2;
       let prev = null;
       for (let k = 0; k <= 60; k++) {
@@ -121,7 +122,46 @@ export function renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0,
         prev = p;
       }
       line(P(hingeS, face), P(hingeS, face + o.side * r), lw * 1.2, 110);
+    };
+    if (o.type === 'door' && o.variant === 'double') {
+      // two leaves from the jambs, each half the hole
+      leafArc(s0, 1, o.width / 2);
+      leafArc(s1, -1, o.width / 2);
+    } else if (o.type === 'door' && o.variant === 'sliding') {
+      // two leaves as dark bars off the centre line, one from each jamb, overlapping in the middle, and an arrow along
+      // the wall beside it
+      const bar = Math.max(1.5, 0.03 * pxPerM);
+      line(P(s0, -w.t * 0.15), P(s0 + o.width * 0.55, -w.t * 0.15), bar, 60);
+      line(P(s1 - o.width * 0.55, w.t * 0.15), P(s1, w.t * 0.15), bar, 60);
+      const k = w.t / 2 + 0.15;
+      line(P(o.at - o.width * 0.2, k), P(o.at + o.width * 0.2, k), lw, 90);
+      line(P(o.at + o.width * 0.2, k), P(o.at + o.width * 0.2 - 0.06, k - 0.04), lw, 90);
+      line(P(o.at + o.width * 0.2, k), P(o.at + o.width * 0.2 - 0.06, k + 0.04), lw, 90);
+    } else if (o.type === 'door') {
+      leafArc(o.hinge === 'end' ? s1 : s0, o.hinge === 'end' ? -1 : 1, o.width);
     }
+  }
+  // ---- symbols inside: skylights (dashed rectangles), stairs (outline, treads, winders, the walking line)
+  const lwThin = Math.max(1, pxPerM / 50);
+  const dashPx = 0.1 * pxPerM;
+  for (const s of plan.skylights || []) {
+    const c = [[s.x0, s.y0], [s.x1, s.y0], [s.x1, s.y1], [s.x0, s.y1]];
+    for (let i = 0; i < 4; i++) line(c[i], c[(i + 1) % 4], lwThin * 1.3, 90, dashPx);
+  }
+  for (const st of plan.stairs || []) drawStair(st, line, lwThin);
+  // ---- things that are not walls: a dashed roof edge around the house, a tile grid on a terrace outside, floor boards
+  const ex = plan.extras || {};
+  if (ex.roofEdge) {
+    const e = ex.roofEdge;
+    const c = [[minX + margin - e, minY + margin - e], [maxX - margin + e, minY + margin - e], [maxX - margin + e, maxY - margin + e], [minX + margin - e, maxY - margin + e]];
+    for (let i = 0; i < 4; i++) line(c[i], c[(i + 1) % 4], lwThin * 1.5, 70, 0.15 * pxPerM);
+  }
+  for (const t of ex.tiles || []) {
+    for (let x = t.x0; x <= t.x1 + 1e-9; x += t.size) line([x, t.y0], [x, t.y1], lwThin, 150);
+    for (let y = t.y0; y <= t.y1 + 1e-9; y += t.size) line([t.x0, y], [t.x1, y], lwThin, 150);
+  }
+  for (const b of ex.boards || []) {
+    for (let y = b.y0 + b.step / 2; y < b.y1; y += b.step) line([b.x0, y], [b.x1, y], lwThin, 170);
   }
   // ---- dimension lines with ticks and «text» outside the house and across the first room
   if (dims) {
@@ -155,6 +195,135 @@ export function renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0,
     }
   }
   return { img: { width: W, height: H, data }, plan, origin: [-minX * pxPerM, -minY * pxPerM], pxPerM };
+}
+
+/**
+ * A stair symbol: the outline, evenly spaced treads and the walking line with its arrow. kind 'straight': one flight
+ * over the rect, running along `run` ('x' | 'y'); kind 'quarter': an L – a flight down the left side (along y), a square
+ * of winders in the top-left corner radiating from the inner corner, a flight along the top (along x).
+ */
+function drawStair(st, line, lw) {
+  const [[x0, y0], [x1, y1]] = st.rect;
+  const v = 100;
+  const box = (a, b) => {
+    line([a[0], a[1]], [b[0], a[1]], lw, v);
+    line([b[0], a[1]], [b[0], b[1]], lw, v);
+    line([b[0], b[1]], [a[0], b[1]], lw, v);
+    line([a[0], b[1]], [a[0], a[1]], lw, v);
+  };
+  if (st.kind === 'quarter') {
+    const w = st.width;
+    box([x0, y0], [x1, y1]);
+    // flight 1: down the left side (x0 … x0 + w), from y0 + w to y1
+    const n1 = st.treads1;
+    for (let k = 0; k <= n1; k++) {
+      const y = y0 + w + ((y1 - y0 - w) * k) / n1;
+      line([x0, y], [x0 + w, y], lw, v);
+    }
+    // flight 2: along the top (y0 … y0 + w), from x0 + w to x1
+    const n2 = st.treads2;
+    for (let k = 0; k <= n2; k++) {
+      const x = x0 + w + ((x1 - x0 - w) * k) / n2;
+      line([x, y0], [x, y0 + w], lw, v);
+    }
+    line([x0 + w, y0 + w], [x1, y0 + w], lw, v);
+    line([x0 + w, y0 + w], [x0 + w, y1], lw, v);
+    // winders: from the inner corner to the outer sides of the corner square
+    const P = [x0 + w, y0 + w];
+    for (let k = 1; k < st.winders + 1; k++) {
+      const a = Math.PI + (Math.PI / 2) * (k / (st.winders + 1));
+      const d = [Math.cos(a), Math.sin(a)];
+      const t = Math.min(Math.abs(w / d[0]), Math.abs(w / d[1]));
+      line(P, [P[0] + d[0] * t, P[1] + d[1] * t], lw, v);
+    }
+    return;
+  }
+  box([x0, y0], [x1, y1]);
+  const n = st.treads;
+  for (let k = 1; k < n; k++) {
+    if (st.run === 'y') {
+      const y = y0 + ((y1 - y0) * k) / n;
+      line([x0, y], [x1, y], lw, v);
+    } else {
+      const x = x0 + ((x1 - x0) * k) / n;
+      line([x, y0], [x, y1], lw, v);
+    }
+  }
+  // the walking line and its arrow
+  if (st.run === 'y') {
+    const xm = (x0 + x1) / 2;
+    line([xm, y0 + 0.1], [xm, y1 - 0.1], lw, 120);
+    line([xm, y1 - 0.1], [xm - 0.06, y1 - 0.2], lw, 120);
+    line([xm, y1 - 0.1], [xm + 0.06, y1 - 0.2], lw, 120);
+  } else {
+    const ym = (y0 + y1) / 2;
+    line([x0 + 0.1, ym], [x1 - 0.1, ym], lw, 120);
+    line([x1 - 0.1, ym], [x1 - 0.2, ym - 0.06], lw, 120);
+    line([x1 - 0.1, ym], [x1 - 0.2, ym + 0.06], lw, 120);
+  }
+}
+
+/**
+ * Plans with the round 1 symbols and a known answer (metres): double and sliding doors, skylights, a straight stair
+ * and a quarter-turn stair with winders, and things that must not become walls (a dashed roof edge, a tile grid on a
+ * terrace, floor boards). Kept apart from samplePlans (their doors are all single).
+ */
+export function variantPlans() {
+  const ext = 0.25;
+  const int = 0.1;
+  return {
+    // 12 × 8 m: a living room (west), a hall with a straight stair (middle), a bedroom (north-east) and a bathroom
+    // (south-east); double doors hall → living room and to the terrace, a sliding door living room → bedroom
+    varianter: {
+      walls: [
+        { a: [0, 0], b: [12, 0], t: ext },
+        { a: [12, 0], b: [12, 8], t: ext },
+        { a: [12, 8], b: [0, 8], t: ext },
+        { a: [0, 8], b: [0, 0], t: ext },
+        { a: [5, 0], b: [5, 8], t: int },
+        { a: [8, 0], b: [8, 8], t: int },
+        { a: [8, 4.5], b: [12, 4.5], t: int },
+      ],
+      openings: [
+        { wall: 4, at: 5.6, width: 1.6, type: 'door', variant: 'double', hinge: 'start', side: 1 },
+        { wall: 2, at: 9.5, width: 1.8, type: 'door', variant: 'double', hinge: 'start', side: -1 },
+        { wall: 5, at: 2.4, width: 1.4, type: 'door', variant: 'sliding', hinge: 'start', side: 1 },
+        { wall: 6, at: 1.3, width: 0.9, type: 'door', hinge: 'start', side: 1 },
+        { wall: 0, at: 2.5, width: 1.6, type: 'window' },
+        { wall: 0, at: 10, width: 1.2, type: 'window' },
+        { wall: 1, at: 6.2, width: 1.0, type: 'window' },
+        { wall: 3, at: 4.0, width: 1.6, type: 'window' },
+        { wall: 0, at: 6.5, width: 0.9, type: 'door', hinge: 'start', side: -1 },
+      ],
+      skylights: [
+        { x0: 9.3, y0: 1.0, x1: 10.08, y1: 2.18 },
+        { x0: 1.6, y0: 5.4, x1: 2.38, y1: 6.58 },
+      ],
+      stairs: [{ rect: [[5.6, 4.2], [6.6, 7.2]], run: 'y', treads: 12, kind: 'straight' }],
+      extras: {
+        roofEdge: 0.5,
+        tiles: [{ x0: 4.2, y0: 8.6, x1: 10.6, y1: 10.4, size: 0.4 }],
+        boards: [{ x0: 8.1, y0: 0.15, x1: 11.85, y1: 4.4, step: 0.12 }],
+      },
+    },
+    // 9 × 7 m: a quarter-turn stair with winders in the north-west corner of a hall, a single door
+    kvarttrapp: {
+      walls: [
+        { a: [0, 0], b: [9, 0], t: ext },
+        { a: [9, 0], b: [9, 7], t: ext },
+        { a: [9, 7], b: [0, 7], t: ext },
+        { a: [0, 7], b: [0, 0], t: ext },
+        { a: [5, 0], b: [5, 7], t: int },
+      ],
+      openings: [
+        { wall: 4, at: 5.5, width: 0.9, type: 'door', hinge: 'start', side: 1 },
+        { wall: 0, at: 7.0, width: 1.4, type: 'window' },
+        { wall: 2, at: 2.5, width: 1.4, type: 'window' },
+      ],
+      skylights: [],
+      stairs: [{ rect: [[0.3, 0.3], [2.6, 3.4]], kind: 'quarter', width: 0.9, treads1: 6, treads2: 5, winders: 5 }],
+    },
+  };
 }
 
 /** Test plans (metres; walls as centre lines). */

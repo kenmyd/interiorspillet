@@ -11,8 +11,14 @@
  *       offset: [dx, dy],                 metres: where this level's plan frame lies in the main level's frame
  *       walls:    [{ id, a: [x, y], b: [x, y], t }]                          plan metres (pixels / pxPerM), a → b
  *       openings: [{ id, wall, type: 'door'|'window'|'opening', at, width, height?, sill?,
- *                    hinge: 'start'|'end', side: 1|-1, leaf?, openAngle?, auto? }]   at = centre, metres from a;
- *                                                                          openAngle: a door's degrees (default 90)
+ *                    hinge: 'start'|'end', side: 1|-1, leaf?, openAngle?, auto?,
+ *                    variant?: 'double'|'sliding', leaf2? }]              at = centre, metres from a;
+ *                                                                          openAngle: a door's degrees (default 90);
+ *                   variant: a double door (two leaves hinged at both jambs, leaf + leaf2) or a sliding door (hinge =
+ *                   the jamb its leaf parks at); no variant = a single hinged door
+ *       skylights: [{ id, rect: [[x0, y0], [x1, y1]], auto? }]               roof windows in the ceiling (plan metres)
+ *       stairHints: [{ rect, axis: 'x'|'y', treads, kind, auto }]            stair symbols the detection found on this
+ *                 plan (not stairs yet: a stair is drawn on both levels it joins, generate / the editor decide)
  *       rooms:    [{ id, name, kind, seed: [x, y], ceiling?, floor? }]      labels; the polygons are found (regions.js)
  *       stairs:   [{ id, rect: [[x0, y0], [x1, y1]], axis: 'x'|'y', down: 1|-1, kind?: 'straight'|'u', side?: 0|1 }]
  *                 a stair from this level
@@ -118,7 +124,10 @@ export function applyDetection(level, det, pxPerM, settings = DEFAULT_SETTINGS) 
     if (o.type === 'door') {
       base.hinge = o.hinge ?? 'start';
       base.side = o.side || 1;
-      if (o.leaf) base.leaf = round(Math.min(width, o.leaf * k), 3);
+      if (o.variant === 'double' || o.variant === 'sliding') base.variant = o.variant;
+      // (a sliding door's detected leaf is the length of its leaf line, not the radius of a hinged leaf)
+      if (o.leaf && o.variant !== 'sliding') base.leaf = round(Math.min(width, o.leaf * k), 3);
+      if (o.variant === 'double' && o.leaf2) base.leaf2 = round(Math.min(width, o.leaf2 * k), 3);
     }
     if (o.type === 'window') {
       base.sill = settings.windowSill;
@@ -126,6 +135,9 @@ export function applyDetection(level, det, pxPerM, settings = DEFAULT_SETTINGS) 
     }
     return base;
   });
+  const rectOf = (x0, y0, x1, y1) => [roundPt([x0 * k, y0 * k], 4), roundPt([x1 * k, y1 * k], 4)];
+  level.skylights = (det.skylights || []).map((s, i) => ({ id: `k${i + 1}`, rect: rectOf(s.x0, s.y0, s.x1, s.y1), auto: true }));
+  level.stairHints = (det.stairs || []).map((s) => ({ rect: rectOf(...s.bbox), axis: s.axis, treads: s.treads, kind: s.kind, auto: true }));
   return level;
 }
 
@@ -251,6 +263,49 @@ export function deleteOpening(level, id) {
   level.openings = level.openings.filter((o) => o.id !== id);
 }
 
+/** The kinds of opening the editor's type menu offers: [kind, Norwegian label]. */
+export const OPENING_KINDS = Object.freeze([
+  ['single', 'Dør'],
+  ['double', 'Dobbeltdør'],
+  ['sliding', 'Skyvedør'],
+  ['window', 'Vindu'],
+  ['opening', 'Åpning uten dør'],
+]);
+
+/** The kind of an opening: its type, or for a door its variant ('single' when it has none). */
+export const openingKind = (o) => (o.type === 'door' ? o.variant ?? 'single' : o.type);
+
+/**
+ * Makes an opening another kind (OPENING_KINDS) – type and variant together, so a sliding door chosen as a hinged door
+ * really becomes one. Fields of the old kind that the new one does not have are removed; a double door gets two equal
+ * leaves, a hinged door a hinge and a swing side.
+ */
+export function setOpeningKind(o, kind, settings = DEFAULT_SETTINGS) {
+  const was = openingKind(o);
+  const door = kind === 'single' || kind === 'double' || kind === 'sliding';
+  o.type = door ? 'door' : kind;
+  delete o.variant;
+  delete o.leaf2;
+  if (door) {
+    o.hinge ??= 'start';
+    o.side ||= 1;
+    if (kind !== 'single') o.variant = kind;
+    if (kind === 'double') {
+      o.leaf = round(o.width / 2, 3);
+      o.leaf2 = o.leaf;
+    } else if (kind === 'sliding' || was !== 'single') delete o.leaf; // (a hinged leaf as wide as the hole by default)
+    else if (o.leaf) o.leaf = Math.min(o.leaf, o.width);
+  } else {
+    delete o.leaf;
+    delete o.openAngle;
+  }
+  if (kind === 'window') {
+    o.sill ??= settings.windowSill;
+    o.height ??= settings.windowHeight;
+  }
+  return o;
+}
+
 /**
  * A straight stair down from this level, drawn as a rectangle from its top end toward its foot: the longer side is the
  * run, the drag direction along it the way down.
@@ -310,9 +365,12 @@ export function rescaleLevel(level, newPxPerM) {
     o.at = round(o.at * k, 4);
     o.width = round(o.width * k, 4);
     if (o.leaf) o.leaf = round(o.leaf * k, 4);
+    if (o.leaf2) o.leaf2 = round(o.leaf2 * k, 4);
   }
   for (const r of level.rooms) r.seed = sc(r.seed);
   for (const s of level.stairs || []) s.rect = s.rect.map(sc);
+  for (const s of level.skylights || []) s.rect = s.rect.map(sc);
+  for (const s of level.stairHints || []) s.rect = s.rect.map(sc);
   level.offset = sc(level.offset || [0, 0]);
   level.image.pxPerM = newPxPerM;
 }

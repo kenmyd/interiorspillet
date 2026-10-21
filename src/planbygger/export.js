@@ -20,7 +20,9 @@
  *   • an edge with nothing behind it is an exterior wall, thickness outward (at least settings.exteriorMin, never into
  *     another room);
  *   • each opening is defined once, on the owner piece (offset from `from`), doors with door:{ hinge, swing, opensInto,
- *     leaf … } and connects, passages as type 'opening'.
+ *     leaf … } and connects, passages as type 'opening'. What the format cannot hold is built as the nearest thing it
+ *     can: a double door as two single doors side by side (one per leaf), a sliding door as a passage; their `source`
+ *     says so. Skylights go on their room's ceiling entry as data (`skylights: [{ id, polygon }]`, nothing builds them).
  * Coordinates: the plan is rotated so that game +x = south and +z = west (settings.north), then moved so that the main
  * level's rooms start at x = 0, z = 0.
  */
@@ -222,7 +224,7 @@ export function exportHouse(doc, opts = {}) {
   };
   const floorOpenings = [];
   const stairs = [];
-  const counts = { rooms: 0, walls: 0, backOf: 0, exterior: 0, doors: 0, windows: 0, openings: 0, stairs: 0 };
+  const counts = { rooms: 0, walls: 0, backOf: 0, exterior: 0, doors: 0, windows: 0, openings: 0, stairs: 0, doubleDoors: 0, slidingDoors: 0, skylights: 0 };
   const levelRooms = []; // per level the rooms in game coordinates (for the stairs)
 
   doc.levels.forEach((level, li) => {
@@ -268,6 +270,16 @@ export function exportHouse(doc, opts = {}) {
         edgeList.push({ ri, i, a, b, L, d, n: perp(d), wall: r.edges[i]?.wall ?? null, side: r.edges[i]?.side ?? 0 });
       }
     });
+    // two plan walls of one wall line that changes thickness (flush on one face, meeting end to end, detect.js): the
+    // rooms on either side face each other through them
+    const sameLine = (a, b) => {
+      const A = wallsById.get(a);
+      const B = wallsById.get(b);
+      if (!A || !B) return false;
+      const ua = wallDir(A);
+      if (Math.abs(cross(ua, wallDir(B))) > 0.01) return false;
+      return Math.abs(dot(sub(B.a, A.a), perp(ua))) <= (A.t + B.t) / 2 + 0.01;
+    };
     // facing edges: antiparallel, behind (outward), within the wall's thickness (+ 1 cm), overlapping
     const facing = (e) => {
       const out = [];
@@ -277,13 +289,23 @@ export function exportHouse(doc, opts = {}) {
         if (f.ri === e.ri) continue;
         if (dot(f.d, e.d) > -0.999) continue;
         const off = dot(sub(f.a, e.a), e.n); // f's line relative to e's, + = into e's room
-        if (off > -0.005 || off < -maxT) continue;
-        if (e.wall && f.wall && f.wall !== e.wall) continue;
+        let lim = maxT;
+        let minOverlap = 0.01;
+        if (e.wall && f.wall && f.wall !== e.wall) {
+          if (!sameLine(e.wall, f.wall)) continue;
+          // the faces of two plan walls of one line, on opposite sides: half of each plus the offset of their centre
+          // lines; over a real stretch (not just the corner where the line changes)
+          const A = wallsById.get(e.wall);
+          const B = wallsById.get(f.wall);
+          lim = (A.t + B.t) / 2 + Math.abs(dot(sub(B.a, A.a), perp(wallDir(A)))) + 0.01;
+          minOverlap = 0.1;
+        }
+        if (off > -0.005 || off < -lim) continue;
         const fa = dot(sub(f.a, e.a), e.d);
         const fb = dot(sub(f.b, e.a), e.d);
         const lo = Math.min(fa, fb);
         const hi = Math.max(fa, fb);
-        if (overlap(0, e.L, lo, hi) < 0.01) continue;
+        if (overlap(0, e.L, lo, hi) < minOverlap) continue;
         out.push({ f, lo, hi, t: -off });
       }
       return out;
@@ -340,17 +362,22 @@ export function exportHouse(doc, opts = {}) {
         p.absorbed = true;
       });
     }
-    // groups: consecutive pieces of an edge with the same role → one wall
+    // groups: consecutive pieces of an edge with the same role → one wall; a slab is cut where the distance to the
+    // faces behind it changes (a wall line that changes thickness: each part gets its own thickness)
     const groups = [];
+    const depthOf = (p) => (p.absorbed || !p.behind ? null : p.behind.t);
     for (const e of edgeList) {
       const list = pieces.filter((p) => p.e === e);
       let g = null;
       for (const p of list) {
-        if (g && p.role === g.role && p.role !== 'free') {
+        const t = depthOf(p);
+        const sameDepth = p.role !== 'slab' || t == null || g?.depth == null || Math.abs(t - g.depth) <= 0.01;
+        if (g && p.role === g.role && p.role !== 'free' && sameDepth) {
           g.pieces.push(p);
           g.to = p.to;
+          if (g.depth == null) g.depth = t;
         } else {
-          g = { ri: e.ri, e, role: p.role, pieces: [p], from: p.from, to: p.to };
+          g = { ri: e.ri, e, role: p.role, pieces: [p], from: p.from, to: p.to, depth: t };
           groups.push(g);
         }
         p.group = g;
@@ -477,9 +504,22 @@ export function exportHouse(doc, opts = {}) {
       }
     });
 
-    // ---- openings on their owner pieces
+    // ---- openings on their owner pieces. The house format has hinged single leaves only: a double door becomes two
+    //      doors side by side in its hole (one per leaf, hinged at the jambs, the same swing), a sliding door a passage
+    //      of its width (notes/planbygger.md, «Forespørsler»)
     const roomIdOf = (ri) => R2[ri]?.id ?? null;
-    for (const o of level.openings) {
+    const asBuilt = level.openings.flatMap((o) => {
+      if (o.type === 'door' && o.variant === 'double') {
+        const half = o.width / 2;
+        return [
+          { ...o, at: o.at - half / 2, width: half, hinge: 'start', leaf: o.leaf, built: 'double', part: 1 },
+          { ...o, at: o.at + half / 2, width: half, hinge: 'end', leaf: o.leaf2 ?? o.leaf, built: 'double', part: 2 },
+        ];
+      }
+      if (o.type === 'door' && o.variant === 'sliding') return [{ ...o, type: 'opening', built: 'sliding' }];
+      return [o];
+    });
+    for (const o of asBuilt) {
       const pw = wallsById.get(o.wall);
       if (!pw) continue;
       const u = wallDir(pw);
@@ -489,7 +529,8 @@ export function exportHouse(doc, opts = {}) {
       // candidate walls: on a face of this plan wall, solid (a slab or a free wall)
       let best = null;
       for (const p of groups) {
-        if (p.e.wall !== o.wall) continue;
+        // (a room edge along a wall line that changes thickness may carry the other plan wall's id)
+        if (p.e.wall !== o.wall && !(p.e.wall && sameLine(p.e.wall, o.wall))) continue;
         if (p.role === 'face') continue;
         const L = dist(p.from, p.to);
         const a = dot(sub(P0, p.from), p.e.d);
@@ -566,9 +607,34 @@ export function exportHouse(doc, opts = {}) {
           entry.estimated = ['*'];
         }
       }
+      if (o.built === 'double') {
+        entry.source = `planbyggeren: dobbeltdør, blad ${o.part} av 2 (bygget som to dører)`;
+        if (o.part === 1) counts.doubleDoors++;
+      } else if (o.built === 'sliding') {
+        entry.source = 'planbyggeren: skyvedør (bygget som åpning)';
+        counts.slidingDoors++;
+      }
       (wall.openings ||= []).push(entry);
     }
     for (const w of house.walls) if (w.openings) w.openings.sort((a, b) => a.offset - b.offset);
+
+    // ---- skylights: on the ceiling of the room they lie in. The house format has flat ceilings without roof windows,
+    //      so they are kept as data on the ceiling entry (nothing builds them yet – a request in notes/planbygger.md)
+    const skylightsOf = new Map();
+    for (const s of level.skylights || []) {
+      const [[x0, y0], [x1, y1]] = s.rect;
+      let poly = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]].map((p) => RP(frame.toGame(p, levelId)));
+      if (signedArea(poly) < 0) poly = poly.reverse();
+      const c = frame.toGame([(x0 + x1) / 2, (y0 + y1) / 2], levelId);
+      const room = R2.find((r) => pointInPolygon(c, r.polygon));
+      if (!room) {
+        warnings.push(`${level.name}: takvinduet ${s.id} står ikke i noe rom – hoppet over`);
+        continue;
+      }
+      const list = skylightsOf.get(room) ?? skylightsOf.set(room, []).get(room);
+      list.push({ id: `sk-${room.id}-${list.length + 1}`, polygon: poly, estimated: ['*'] });
+      counts.skylights++;
+    }
 
     // ---- rooms, ceilings, lights
     for (const r of R2) {
@@ -586,7 +652,8 @@ export function exportHouse(doc, opts = {}) {
         estimated: ['polygon', 'floor'],
         source: `planbyggeren${r.auto ? ' (navn og type foreslått)' : ''}`,
       });
-      house.ceilings.push({ id: `c-${r.id}`, roomId: r.id, polygon: r.polygon.map(RP), height: R(r.ceiling), color: LOOK.ceiling, estimated: ['height'] });
+      const sky = skylightsOf.get(r);
+      house.ceilings.push({ id: `c-${r.id}`, roomId: r.id, polygon: r.polygon.map(RP), height: R(r.ceiling), color: LOOK.ceiling, ...(sky ? { skylights: sky } : {}), estimated: ['height'] });
       house.lightGroups.push({ id: r.id, label: r.name, roomId: r.id, dimmer: true, defaultDimmer: 0.6 });
       house.builtInLights.push({
         id: `l-${r.id}`,

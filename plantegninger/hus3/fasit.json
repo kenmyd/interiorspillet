@@ -1,0 +1,60 @@
+{
+  "house": "hus3",
+  "files": {
+    "1etg.png": { "kind": "plan", "level": 0 },
+    "2etg.png": { "kind": "plan", "level": 1 },
+    "fasader.png": { "kind": "facade" }
+  },
+  "levels": [
+    {
+      "level": 0, "name": "1. etasje", "file": "1etg.png",
+      "title": "Etasje 1",
+      "rooms": [
+        { "label": "KJØKKEN/STUE", "area": 53.4, "kind": "living" },
+        { "label": "VASK", "area": 7.5, "kind": "laundry" },
+        { "label": "ENTRÉ", "area": 8.5, "kind": "entrance" },
+        { "label": "WC/D", "area": 4.1, "kind": "bathroom" }
+      ],
+      "doors": { "single": 7, "double": 0, "sliding": 0, "exterior": 4 },
+      "windows": 6,
+      "skylights": 0,
+      "stair": { "type": "straight", "note": "Rett, åpen trapp langs østveggen (README: «rett åpen trapp»), ca. 0,95 m bred, 14 trinnlinjer = 13 inntrinn à ca. 0,26 m, ca. 3,35 m lang (y 385–546 px, 5,1–8,5 m fra nordveggen). Stiger mot nord: snittlinje (siksak) midt i trappa, nedre del heltrukken, øvre del stiplet, ganglinje med pil mot nord. Trappefoten (sør) er åpen mot kjøkkenet. «ST» står i den stiplede øvre delen, og nordenden av trappeboksen har en egen slagdør fra stua: trolig bod/skap under trappa (betydningen av «ST» står ikke på tegningen). «ÅPENT OPP» står langs en strek-prikk-linje som går fra trappa og sør til kjøkkenbenken (OM): åpning i dekket over, se «ÅPENT NED» i Etasje 2." },
+      "dimensions": [
+        { "text": "6.15", "m": 6.15, "what": "ytre mål, husets bredde (vannrett, vest–øst), vannrett tekst over øvre venstre hjørne, uten målelinje" },
+        { "text": "14.95", "m": 14.95, "what": "ytre mål, husets lengde (loddrett, nord–sør), loddrett tekst til venstre for øvre venstre hjørne, uten målelinje" }
+      ],
+      "scale": { "hints": ["dimensions", "areas"], "pxPerM": 47.9, "note": "Målt på veggfargen (101,110,117): ytre omriss x 314–607, y 140–856 px = 294 × 717 px. 294 / 6,15 = 47,80 px/m og 717 / 14,95 = 47,96 px/m. Ingen målestokktekst (1:100) og ingen nordpil. Yttervegger ca. 17 px = 0,36 m." },
+      "ceiling": [],
+      "notes": "Dører (alle enkle slagdører): innvendig 3 – døra i nordenden av trappeboksen (fra stua inn under trappa), ENTRÉ↔VASK og ENTRÉ↔WC/D. Ytterdører 4, alle slår utover: inngangsdøra i sørveggen (ENTRÉ, med smalt sidefelt), to terrassedører i vestveggen (nord og sør i stua, hver med et stort fast glassfelt ved siden av) og døra i østveggen fra VASK. ENTRÉ er åpen mot KJØKKEN/STUE uten dør. Åpningene i ytterveggene (målt der veggfargen mangler): nord x 331–401 (vindu); sør x 331–401 (inngangsdør ca. 0,9 m + sidefelt ca. 0,5 m); vest y 376–495 og 501–619 med en post på 5 px imellom (hver: dør ca. 0,9 m ytterst og fast felt ca. 1,55 m inn mot posten); øst y 157–227 (vindu), 559–607 (vindu) og 655–701 (døra fra VASK). Vinduer 6 = 3 vanlige vinduer (nordveggen vest, østveggen nord, østveggen like sør for trappefoten) + 3 faste glassfelt ved ytterdørene (2 i vestveggen mellom terrassedørene, adskilt av en mørk post; 1 smalt sidefelt ved inngangsdøra). Glassfeltene er tegnet med samme vindussymbol og telles som vinduer; uten dem er tallet 3. Ikke vinduer: et flatt rektangel med to skrå linjer på innsiden av nordveggen i stua (TV eller peis). Stiplede rektangler som ikke er takvinduer: et med kryss i VASK ved BVS (samme sted som FTX i etasjen over) og en stiplet hylle i ENTRÉ (trolig hattehylle). Kjøkkenet har bokstaver: HS, F, K, O/M, HS (høyskap langs trappeveggen) og OM i benken. VASK har TT, VM og BVS. Utenfor huset i vest og sør ligger terrassefliser (rutenett), en parasoll og et utebord med benker – ikke vegger. Romarealene er skrevet med punktum (53.4 m²)."
+    },
+    {
+      "level": 1, "name": "2. etasje", "file": "2etg.png",
+      "title": "Etasje 2",
+      "rooms": [
+        { "label": "SOVEROM", "area": 12.7, "kind": "bedroom" },
+        { "label": "ARBEIDSROM", "area": 10.1, "kind": "bedroom" },
+        { "label": "SOVEROM", "area": 8.7, "kind": "bedroom" },
+        { "label": "SOVEROM", "area": 8.7, "kind": "bedroom" },
+        { "label": "GANG", "area": 7.8, "kind": "hall" },
+        { "label": "BOD/BADSTUE", "area": 4.1, "kind": "storage" },
+        { "label": "BOD", "area": 1.7, "kind": "storage" },
+        { "label": "BAD", "area": 12.0, "kind": "bathroom" }
+      ],
+      "doors": { "single": 4, "double": 0, "sliding": 3, "exterior": 0 },
+      "windows": 6,
+      "skylights": 0,
+      "stair": { "type": "straight", "note": "Samme rette trapp sett ovenfra langs østveggen: 14 trinnlinjer = 13 inntrinn, y 384–544 px, samme sted som i Etasje 1. Ankommer i nordenden ved ARBEIDSROM/GANG. Rekkverk (dobbel tynn linje) langs vestsiden av åpningen fra trappa og sør til veggen ved BOD. «ÅPENT NED» står langs en strek-prikk-diagonal over trappa og den åpne delen sør for den (y ca. 545–640 px): åpning i dekket ned til kjøkkenet." },
+      "dimensions": [],
+      "scale": { "hints": ["areas"], "pxPerM": 47.8, "note": "Ingen mål eller målestokk på tegningen. Samme kilde og målestokk som Etasje 1: ytre omriss x 65–358, y 138–852 px = 294 × 715 px, altså 294 / 6,15 = 47,80 og 715 / 14,95 = 47,83 px/m. Skalaen kan arves fra Etasje 1 (sameSource) eller tas fra arealene. Bildene har ulik størrelse (701 × 1001 mot 440 × 925 px), så samme kilde må kjennes igjen på stil og skala, ikke på bildestørrelsen. Forskyvning mot Etasje 1: ca. (−249, −2) px (omrisset x 65 mot 314, trappa y 384–544 mot 386–546, vinduene 1–4 px høyere opp)." },
+      "ceiling": [],
+      "notes": "Skyvedører 3: soverommene (SOVEROM 12.7, begge SOVEROM 8.7) har en åpning i skilleveggen x ca. 232 mot ARBEIDSROM/GANG (y 273–313, 395–436 og 555–595 px, ca. 0,85 m) med en tynn linje og pilspiss som går fra den ene veggenden ca. 0,4 m inn i åpningen, ingen bue. Slagdører 4: BOD/BADSTUE→GANG (samme skillevegg, y 665–707), BAD→GANG, BOD→GANG (alle heltrukne, ca. 0,85–0,9 m, slår ut i gangen) og en stiplet dør fra BOD/BADSTUE til BAD (åpning i veggen med stiplet dørblad og bue – valgfri badstuedør). ARBEIDSROM har ingen vegg eller dør mot GANG; de er ett sammenhengende areal på tegningen (10.1 + 7.8 m²), så gjenkjenningen kan slå dem sammen. Vinduer 6: nordveggen vest x 83–152 (SOVEROM 12.7), østveggen nord y 156–226 (ARBEIDSROM), østveggen y 556–604 (ved åpningen sør for trappa), vestveggen y 374–491 og 500–616, ett i hvert SOVEROM 8.7 (hvert todelt med post, smal + bred rute), og sørveggen vest x 83–153 (BAD). Ingen takvinduer og ingen skråtakstekst. Stiplet i BOD/BADSTUE: to benkelinjer og en sirkel (valgfri badstue med ovn); stiplet badekar i BAD. Den flislagte nisjen vest for BOD/BADSTUE med to dusjsymboler (▷) hører til BAD. FTX-aggregat i BOD. Garderobeskap merket G og L i soverommene."
+    }
+  ],
+  "facades": [
+    { "file": "fasader.png", "roof": "gable", "storeys": 2, "windows": 4, "doors": 2 },
+    { "file": "fasader.png", "roof": "gable", "storeys": 2, "windows": 2, "doors": 0 },
+    { "file": "fasader.png", "roof": "gable", "storeys": 2, "windows": 4, "doors": 1 },
+    { "file": "fasader.png", "roof": "gable", "storeys": 2, "windows": 2, "doors": 1 }
+  ],
+  "notes": "Tre filer: én plan per etasje (titlene «Etasje 1» og «Etasje 2» øverst) og ett fasadeark med fire fasader i rad og uten tekst. Fasadene i rekkefølge fra venstre (blekkets x-område, y 59–228 px): 1) x 35–365, langside, vest (terrassesiden): 2. etasje 2 todelte vinduer, 1. etasje 2 enheter med smal glassdør + stort fast felt, altså 4 vinduer og 2 dører; 2) x 573–740, gavl, nord: 1 vindu oppe med smal underrute og 1 høyt vindu nede, ingen dør; 3) x 935–1291, langside, øst: 2 vinduer oppe (smalt høyt ved trappa, todelt i nord), 2 vinduer nede og døra til VASK (med håndtak); 4) x 1501–1642, gavl, sør: 1 kvadratisk vindu oppe (BAD), inngangsdør med smalt sidefelt nede (sidefeltet telles som vindu). Himmelretningene er utledet ved å legge vindu- og dørplasseringene mot planene med nord opp; det finnes ingen nordpil eller fasadenavn, så «vest/nord/øst/sør» er bare en tolkning. Saltak med mørk taktekking på langsidene, gavler på kortsidene, takvinkel ikke oppgitt (målt ca. 30° på begge gavlene; på gavlen i nord er veggen ca. 140 px bred, gesimsen ca. 123 px og mønet ca. 163 px over bakkelinja (y 222), altså ca. 5,4 m og 7,2 m hvis gavlen er 6,15 m). To fulle etasjer, kledning med stående panel. Kontroll: planene har 6 + 6 = 12 vinduer, og fasadene har 4 + 2 + 4 + 2 = 12; 4 ytterdører i Etasje 1, og fasadene viser 2 + 0 + 1 + 1 = 4. Telleregler: dørvariantene (single/double/sliding) teller alle dører, også ytterdørene, og «exterior» er de av dem som står i ytterveggene. Et fast glassfelt ved en dør (sidefelt) telles som et vindu; et vindu med post (flere ruter i én ramme) telles som ett vindu. Romtyper: ROOM_KINDS har ikke kjøkken eller kontor, så KJØKKEN/STUE er living og ARBEIDSROM er bedroom (nærmeste type); BOD/BADSTUE er storage. Sum arealer: Etasje 1 73,5 m², Etasje 2 65,8 m²; ytre fotavtrykk 6,15 × 14,95 = 91,9 m². Verifisert 2026-10-21 (uavhengig kontroll mot PNG-ene med zoom og pikselprofiler): romnavn og arealer, dører per variant (åpningene målt langs alle ytterveggene og skilleveggen i Etasje 2), vinduer, takvinduer (ingen), trappa (rett, 14 trinnlinjer med 12,3 px mellomrom i begge etasjene, stiger mot nord), målene 6.15 og 14.95, etasjenumrene (0 og 1) og fasadene stemte. Fasaderetningene er bekreftet ved at åpningene på langsiden i øst ligger 0,03–0,12, 0,58–0,65 og 0,72–0,78 av lengden fra nord, som i planene. Rettet: beskrivelsen av skyvedørene og takvinkelen; lagt til pikselposisjonene for åpningene, ulik bildestørrelse og forskyvningen mellom etasjene. Usikkert: om den stiplede (valgfrie) badstuedøra skal telles som dør, hva «ST» under trappa betyr, og romtypen for ARBEIDSROM."
+}

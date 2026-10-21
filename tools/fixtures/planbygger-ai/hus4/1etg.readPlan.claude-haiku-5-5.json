@@ -1,0 +1,333 @@
+{
+ "house": "hus4",
+ "file": "plantegninger/_png/hus4/1etg.png",
+ "task": "readPlan",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "6b458029fe20033174ab91974050803628af53bda47b70fc7969c6d7a797b951"
+ },
+ "marks": [],
+ "hints": {
+  "fileName": "1etg.avif"
+ },
+ "response": {
+  "levelTitle": null,
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+   {
+    "text": "Entre",
+    "area": 5.7,
+    "kind": "entrance",
+    "at": [
+     0.265,
+     0.294
+    ]
+   },
+   {
+    "text": "Sov",
+    "area": 7.5,
+    "kind": "bedroom",
+    "at": [
+     0.113,
+     0.333
+    ]
+   },
+   {
+    "text": "Vask.",
+    "area": 6.4,
+    "kind": "laundry",
+    "at": [
+     0.592,
+     0.307
+    ]
+   },
+   {
+    "text": "Bad",
+    "area": 4.3,
+    "kind": "bathroom",
+    "at": [
+     0.622,
+     0.492
+    ]
+   },
+   {
+    "text": "TV-Stue",
+    "area": 15.7,
+    "kind": "living",
+    "at": [
+     0.364,
+     0.546
+    ]
+   },
+   {
+    "text": "Sov",
+    "area": 9.3,
+    "kind": "bedroom",
+    "at": [
+     0.159,
+     0.604
+    ]
+   },
+   {
+    "text": "Sov",
+    "area": 8.1,
+    "kind": "bedroom",
+    "at": [
+     0.548,
+     0.722
+    ]
+   },
+   {
+    "text": "Carport",
+    "area": 24.3,
+    "kind": "carport",
+    "at": [
+     0.832,
+     0.422
+    ]
+   },
+   {
+    "text": "Sportsbod",
+    "area": 5.7,
+    "kind": "storage",
+    "at": [
+     0.781,
+     0.862
+    ]
+   }
+  ],
+  "dimensions": [],
+  "openings": [
+   {
+    "mark": null,
+    "at": [
+     0.263,
+     0.15
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.149,
+     0.15
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.626,
+     0.158
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.22,
+     0.3
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.23,
+     0.53
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.572,
+     0.46
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.52,
+     0.355
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.496,
+     0.61
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.68,
+     0.3
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.84,
+     0.77
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.054,
+     0.32
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.054,
+     0.63
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.149,
+     0.81
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.4,
+     0.81
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.6,
+     0.81
+    ],
+    "kind": "window"
+   }
+  ],
+  "skylights": [],
+  "stair": {
+   "present": true,
+   "at": [
+    0.419,
+    0.267
+   ],
+   "type": "quarter-turn",
+   "up": "here"
+  },
+  "ceiling": [],
+  "furniture": [
+   {
+    "kind": "bed",
+    "at": [
+     0.134,
+     0.436
+    ]
+   },
+   {
+    "kind": "bed",
+    "at": [
+     0.219,
+     0.693
+    ]
+   },
+   {
+    "kind": "bed",
+    "at": [
+     0.644,
+     0.616
+    ]
+   },
+   {
+    "kind": "bathtub",
+    "at": [
+     0.613,
+     0.392
+    ]
+   },
+   {
+    "kind": "toilet",
+    "at": [
+     0.681,
+     0.52
+    ]
+   },
+   {
+    "kind": "shower",
+    "at": [
+     0.681,
+     0.412
+    ]
+   },
+   {
+    "kind": "washer",
+    "at": [
+     0.691,
+     0.2
+    ]
+   },
+   {
+    "kind": "kitchen",
+    "at": [
+     0.6,
+     0.2
+    ]
+   },
+   {
+    "kind": "sofa",
+    "at": [
+     0.451,
+     0.672
+    ]
+   },
+   {
+    "kind": "table",
+    "at": [
+     0.37,
+     0.673
+    ]
+   }
+  ],
+  "notes": "Ingen målsetting, romhøyde eller tittel synlig på planen. Trappen går opp fra denne etasjen."
+ },
+ "usage": {
+  "input_tokens": 7735,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 3870,
+  "output_tokens_details": {
+   "thinking_tokens": 2763
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.002709,
+ "ms": 18082,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T18:02:50.319Z"
+}

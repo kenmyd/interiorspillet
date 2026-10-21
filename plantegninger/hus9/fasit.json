@@ -1,0 +1,73 @@
+{
+  "house": "hus9",
+  "files": {
+    "ovre-etasje.jpg": { "kind": "plan", "level": 0 },
+    "underetasje.jpg": { "kind": "plan", "level": -1 },
+    "underetasje-alternativ.jpg": { "kind": "plan", "level": -1, "alternativeOf": "underetasje.jpg" }
+  },
+  "levels": [
+    {
+      "level": 0, "name": "Øvre etasje", "file": "ovre-etasje.jpg",
+      "title": "Øvre etg",
+      "rooms": [
+        { "label": "Hall", "area": 9.07, "kind": "entrance" },
+        { "label": "Bad", "area": 5.44, "kind": "bathroom" },
+        { "label": "Vask", "area": 5.45, "kind": "laundry" },
+        { "label": "Stue", "area": 56.38, "kind": "living" },
+        { "label": "Kjøkken", "area": 14.48, "kind": "living" }
+      ],
+      "doors": { "single": 3, "double": 0, "sliding": 1, "exterior": 3 },
+      "windows": 8,
+      "skylights": 0,
+      "stair": { "type": "quarter-turn", "note": "Rett løp med svingtrinn i enden (kvartsving), i båndet mellom Hall/Bad/Vask og Kjøkken: x 322–488, y 211–250 px (167 × 40 px), ca. 3,7 × 0,9 m. Ca. 9 rette inntrinn à ca. 0,25 m fra venstre ende (nord), så ca. 5–6 svingtrinn som vrir løpet 90° mot bunnen av bildet (vest); svingtrinnslinjene stråler ut fra et punkt på underkanten ved x ≈ 450. Ganglinje fra venstre ende med pilspiss i svingen i høyre ende (peker nedover), og en liten rød prikk ved pilspissen. Venstre ende ligger i passasjen fra Hall (x 262–320, åpen mot Stue), høyre ende munner ut mot Kjøkken. Samme trappesymbol på samme sted (relativt til omrisset) som i Under etg. Opp/ned står ikke på tegningen, men geometrien i Under etg tyder på at foten er i svingtrinnsenden og at toppen er nordenden her, ved passasjen fra Hall (se Under etg). Sør for trappa (til høyre i bildet) ligger et lysegrått felt uten tekst og uten vegger (x 489–543, y 211–250, ca. 1,2 × 0,9 m), trolig et skap; neppe repos, for løpet svinger ned før det." },
+      "dimensions": [],
+      "scale": { "hints": ["areas"], "pxPerM": 45.4, "note": "Ingen målelinjer, ingen mål og ingen målestokktekst; bare romarealer (punktum som desimaltegn). Arealene gir 45,4–45,5 px/m: Hall 137 × 137 px → 45,5, Bad 82 × 137 px → 45,4, Vask 82 × 137 px → 45,4, Stue (resten av innvendig flate) → 45,5, Kjøkken 142 × 207 px → 45,1 (grensen mot Stue er bare en tynn strek, så avgrensningen er usikker). Ytre omriss x 13–562, y 50–476 px = 550 × 427 px ≈ 12,1 × 9,4 m. Yttervegger 18 px ≈ 0,40 m, innervegger 6–7 px ≈ 0,13–0,15 m. Kontroll mot standardmål: ytterdørene 46 px ≈ 1,0 m, døra Hall–Bad 45 px ≈ 0,99 m, kjøkkenbenken 27 px ≈ 0,6 m dyp. Lav oppløsning: 1 px ≈ 2,2 cm." },
+      "ceiling": [],
+      "notes": "Hovedetasjen (inngangen og kjøkkenet er her). Kompass til høyre for planen: Ø opp, S til høyre, V ned, N til venstre, altså nord til venstre i bildet (270° med klokka fra opp). Retningene under bruker kompasset. Dører: 3 slagdører, alle enkle: inngangsdøra i østveggen til Hall (x 271–316, slår ut), ytterdøra i østveggen fra Vask (x 493–538, slår ut) og døra Hall–Bad (y 129–173, slår inn i Hall). 1 skyvedør i vestveggen fra Stue (x 227–377, ca. 3,3 m): hvit luke med to tynne lyseblå glasslinjer tegnet forskjøvet, ingen bue (vinduene har i stedet et bredt blått glassbånd); trolig skyvedør til terrasse eller veranda (det kan også være et skyvevindu). Ytterdører altså 3. Ikke talt som dør: en åpning uten dørblad eller slag mellom Bad og Vask (vegg x 456–462, y 136–175, ca. 0,9 m; hvit luke med en svak strek, samme symbol som Bod og Stue–Sone i Under etg). Hall er åpen mot Stue gjennom en passasje vest for Hall (under den i bildet): Halls vestside er åpen i x 262–321 uten vegg eller dør, og passasjen (x 233–321, y 211–ca. 265) mellom veggen mot Stue (x 226–232, ender ved y ≈ 267) og trappa går over i Stue. Kjøkken og Stue skilles bare av en tynn strek (x 402 og y 251), ingen vegg, så gjenkjenningen vil se dem som ett rom. Vinduer 8: østveggen 2 (Stue x 101–174 ≈ 1,6 m, smalt sidevindu i Hall ved inngangsdøra x 323–341 ≈ 0,4 m), sørveggen 2 (Vask y 70–125 ≈ 1,2 m, Kjøkken y 331–415 ≈ 1,85 m), vestveggen 2 (Stue x 51–164 ≈ 2,5 m, Kjøkken x 423–496 ≈ 1,6 m), nordveggen 2 smale vinduer rett ved siden av hverandre (y 401–419 og 419–437 med felles rammestrek, hvert ca. 0,4 m, hver sin ramme og hvert sitt merke; som ett todelt vindu blir tallet 7). Vindusymbolet er en hvit luke i veggen med en lyseblå glasstripe og et lite hakemerke; dørene har lysegrå luke og bue. Ikke vinduer: to hvite rektangler innenfor nordveggen i Stue (x 32–48, y 278–365, møbel) og hvite høyskap innenfor sørveggen i Kjøkken. Ikke takvindu: et lite stiplet åttekantsymbol med kryss i Stue ved østveggen (x 197–224, y 73–97, ca. 0,6 m), trolig en taklampe. Gulvene er teksturer: lyst tregulv i Stue og Kjøkken, mørke fliser i Hall, flat blågrå i Bad og Vask. Møbler i farger: svart hjørnesofa, svart lenestol, sofabord, spisebord med 6 stoler, to røde lenestoler, kjøkkenøy (svart), benk langs sør- og vestveggen. I Hall: et lysegrått skap (trolig garderobe) langs nordsiden mot Stue (x 233–260, y 67–203) og en smal brun hylle langs sørsiden mot Bad (x 353–368, y 67–127). Bad: WC, dusjhjørne med buet dusjvegg (ikke dør) og servant. Vask: to hvite maskiner, svart benk og utslagsvask."
+    },
+    {
+      "level": -1, "name": "Underetasje", "file": "underetasje.jpg",
+      "title": "Under etg",
+      "rooms": [
+        { "label": "Stue", "area": 28.91, "kind": "living" },
+        { "label": "Bod", "area": 9.30, "kind": "storage" },
+        { "label": "Bad", "area": 8.94, "kind": "bathroom" },
+        { "label": "Sone", "area": 10.78, "kind": "hall" },
+        { "label": "Barnesov", "area": 10.62, "kind": "bedroom" },
+        { "label": "Barnesov", "area": 10.56, "kind": "bedroom" },
+        { "label": "Voksensov", "area": 13.71, "kind": "bedroom" }
+      ],
+      "doors": { "single": 5, "double": 0, "sliding": 0, "exterior": 1 },
+      "windows": 6,
+      "skylights": 0,
+      "stair": { "type": "quarter-turn", "note": "Samme trapp som i Øvre etg, tegnet likt: x 376–576, y 197–245 px (201 × 49 px), ca. 3,7 × 0,9 m, inne i Sone langs veggen mot Bod og Bad. Ca. 9 rette inntrinn à ca. 0,25 m (13,6 px) fra venstre ende (nord), så ca. 5–6 svingtrinn som vrir 90° mot bunnen av bildet (vest); ca. 14–15 trinnlinjer, altså ca. 15–16 inntrinn (±1 i svingen på grunn av lav oppløsning). Ganglinje fra venstre ende med pilspiss i svingen i høyre ende, rød prikk ved pilspissen. Venstre (nordre) ende står inntil veggen Stue–Sone (x 364–371, ca. 4 px klaring); åpningen i den veggen (y 250–298) ligger like vest for trappa (under den i bildet). Høyre ende svinger ned og munner ut i Sone ved døra til Bad. Opp/ned står ikke på tegningen, men nordenden kan ikke nås fra Under etg (veggen står inntil og veggen mot Bod/Bad ligger langs hele løpet), så foten er trolig svingtrinnsenden, og trappa går opp mot nord til passasjen ved Hall i Øvre etg, der nordenden er fri. Pilen går i så fall fra toppen mot foten." },
+      "dimensions": [],
+      "scale": { "hints": ["areas"], "pxPerM": 54.1, "note": "Ingen målelinjer, ingen mål og ingen målestokktekst; bare romarealer. Arealene gir 54,1–54,3 px/m: Barnesov 182 × 172 px → 54,3, Barnesov 181 × 172 → 54,3, Voksensov 235 × 172 → 54,3, Bad 161 × 163 → 54,2, Bod 167 × 163 → 54,1, Sone (med trappa) 271 × 117 → 54,2, Stue → 54,2. Ytre omriss x 10–662, y 6–512 px = 653 × 507 px; samme hus som Øvre etg (forholdet 653/550 = 507/427 = 1,187), så Øvre etg gir 54,0 px/m. Ca. 12,1 × 9,4 m. Yttervegger 20–21 px ≈ 0,38 m, innervegger 7 px ≈ 0,13 m. Kontroll mot standardmål: innerdørene 55–56 px ≈ 1,0 m (med karm), ytterdøra 44 px ≈ 0,8 m, enkeltsengene ca. 2,0 × 0,9 m, dobbeltsenga ca. 2,05 × 1,8 m. Annen målestokk i bildet enn Øvre etg (54 mot 45 px/m), men samme kilde og stil." },
+      "ceiling": [],
+      "notes": "Ingen nordpil på denne tegningen, men omrisset og trappa ligger likt som i Øvre etg (trappa på 56–87 % av bredden og 38–47 % av høyden i begge), så kompasset derfra gjelder: nord til venstre, øst opp. Dører 5, alle enkle slagdører: Barnesov (venstre) og Barnesov (midten) fra Stue (x 148–201 og 254–307 i veggen y 313–320, slår inn i Stue), Voksensov fra Sone (x 547–599, slår inn i Voksensov), Bad til Sone (x 583–635 i veggen y 189–196, slår ut i Sone) og ytterdøra i sørveggen fra Sone (y 257–300, slår ut). Ytterdører altså 1. Ikke talt som dør: to åpninger uten dørblad eller slag, hver ca. 0,9 m, med samme symbol som Bad–Vask i Øvre etg (hvit luke med en svak strek i den ene enden og et lite merke ved siden av): Bod–Stue (x 312–359 i veggen y 189–196) og Stue–Sone (veggen x 364–371, y 250–298). De kan være dørløse åpninger; Bod har ingen annen inngang. Vinduer 6: nordveggen 3 (Stue 2 vinduer rett ved siden av hverandre, y 150–257 ≈ 2,0 m og y 257–300 ≈ 0,8 m, med felles rammestrek og hvert sitt merke; Barnesov y 349–414 ≈ 1,2 m), vestveggen 3 (Barnesov x 124–205 ≈ 1,5 m, Barnesov x 280–356 ≈ 1,4 m, Voksensov x 430–539 ≈ 2,0 m). Østveggen og sørveggen har ingen vinduer (bare ytterdøra i sør): sokkelen står trolig mot terrenget i øst. Leses de to stuevinduene som ett, blir tallet 5. Sone er gangen med trappa og ytterdøra (arealet 10,78 m² tar med trappa). Gulvene er lyst tregulv overalt unntatt flat blågrå i Bad. Møbler i farger: svart sofa og sofabord, brun TV-benk med en svart rund ting, enkeltsenger med stripete og rutete tepper, fargede tepper og hvite pulter i barnesoverommene, dobbeltseng og langt garderobeskap i Voksensov, hjørnedusj (buet dusjvegg, ikke dør), badekar, WC og servant i Bad. Hvite rektangler langs veggene i soverommene er skap, ikke vinduer."
+    },
+    {
+      "level": -1, "name": "Underetasje (alternativ)", "file": "underetasje-alternativ.jpg",
+      "title": "Under etg",
+      "rooms": [
+        { "label": "Stue", "area": 28.91, "kind": "living" },
+        { "label": "Bod", "area": 9.30, "kind": "storage" },
+        { "label": "Bad", "area": 8.94, "kind": "bathroom" },
+        { "label": "Sone", "area": 10.78, "kind": "hall" },
+        { "label": "Barnesov", "area": 10.62, "kind": "bedroom" },
+        { "label": "Barnesov", "area": 10.56, "kind": "bedroom" },
+        { "label": "Voksensov", "area": 13.71, "kind": "bedroom" }
+      ],
+      "doors": { "single": 5, "double": 0, "sliding": 0, "exterior": 1 },
+      "windows": 6,
+      "skylights": 0,
+      "stair": { "type": "quarter-turn", "note": "Uendret fra underetasje.jpg: samme kvartsvingte trapp i Sone, x 376–576, y 197–245 px." },
+      "dimensions": [],
+      "scale": { "hints": ["areas"], "pxPerM": 54.1, "note": "Samme tegning som underetasje.jpg i samme størrelse (766 × 518 px), lagret på nytt som JPEG: utenfor påtegningene er forskjellen bare JPEG-støy (1,6 % av pikslene avviker mer enn 12, maks 101 i mønstrede tepper og møbler), og ingenting er flyttet. Samme skala. Arealtekstene er ikke oppdatert etter påtegningene." },
+      "ceiling": [],
+      "notes": "Kopi av underetasje.jpg med to håndtegnede svarte påtegninger (det nye svarte blekket ligger bare i x 129–391, y 191–319; ellers er forskjellen JPEG-støy): 1) En tykk L-formet strek (ca. 5 px), trolig en ny vegg: vannrett (y 191–195, i flukt med Bods vestvegg) fra Bods nordvestre hjørne (x 300) mot venstre til x 129, så loddrett (x 129–133) ned til veggen mot Barnesov (y 319). Den skiller ut en gang (ca. x 130–364, y 196–313, ca. 4,3 × 2,2 m) fra Stue, med dørene til begge barnesoverommene og til Bod. Stue blir L-formet (ca. 19 m² etter omrisset), og arealteksten 28.91 m² står uendret. Det er ikke tegnet noen dør eller åpning i den nye veggen. 2) En sikksakk-krusedull over veggen Stue–Sone (x 351–391, y 191–311), med åpningen i den: trolig at veggen skal rives, slik at den nye gangen går rett over i Sone og trappa. Begge tolkningene er usikre; tegningen har ingen tekst om endringene. Dører, vinduer og romtekster er ellers som i underetasje.jpg, og tallene over gjelder det som er tegnet (ingen nye dører)."
+    }
+  ],
+  "facades": [],
+  "notes": "Hobbytegning fra et planprogram, lagt ut i en tråd på Byggebolig.no (se info.txt). Tre JPG-filer, én plan per fil og ingen fasader eller snitt: ovre-etasje.jpg (713 × 485 px, tittel «Øvre etg» øverst til venstre, kompass til høyre), underetasje.jpg (766 × 518 px, tittel «Under etg» øverst til høyre) og underetasje-alternativ.jpg (samme underetasje med håndtegnede endringsforslag). Den alternative er ikke en egen etasje, men et alternativ for nivå −1 («alternativeOf» i files). Sokkelhus: Øvre etg er hovedetasjen med inngang, kjøkken og stue (nivå 0), Under etg er sokkelen med soverom (nivå −1). Begge planene har samme ytre omriss, ca. 12,1 × 9,4 m (ingen mål på tegningene; regnet ut fra arealene), men er tegnet i ulik målestokk i pikselbildet (45,4 og 54,1 px/m). Lagt oppå hverandre med samme orientering og øvre venstre hjørne mot øvre venstre hjørne (skalert) ligger trappa likt. Sum arealer: Øvre etg 90,82 m², Under etg 92,82 m²; ytre fotavtrykk ca. 114 m². Ingen mål, ingen målestokk, ingen takvinduer, ingen tekst om himling eller takhøyde. Lav oppløsning: tekst og symboler er lesbare, men tynne streker (rominndeling, svingtrinn) er bare 1 px. Telleregler som i hus3: dørvariantene teller alle dører, også ytterdørene, og «exterior» er de av dem som står i ytterveggene; et vindu med egen ramme og eget merke telles for seg, også når to står inntil hverandre. Romtyper: ROOM_KINDS har ikke kjøkken, så Kjøkken er living; Hall (med inngangsdøra) er entrance; Sone (gangen med trappa og ytterdøra i sokkelen) er hall. Usikkert: om de tre dørløse åpningene (Bad–Vask, Bod–Stue, Stue–Sone) er åpninger eller dører uten tegnet slag; om vestelementet i Øvre etg er skyvedør (trolig) eller skyvevindu; hvilken ende av trappa som er foten (trolig svingtrinnsenden, ut fra geometrien i Under etg); antallet svingtrinn; og hva påtegningene på alternativet betyr. Kontrollert uavhengig mot tegningene 2026-10-21 (zoomet og målt i pikselprofiler): romnavn og arealer, dører per variant, vinduer, takvinduer, trappetype, nivåene og kompasset stemmer. Rettet: fem himmelretninger som var feil (passasjen vest for Hall, skapet i Hall på nordsiden, feltet sør for trappa, åpningen Stue–Sone vest for trappa, Bods nordvestre hjørne på alternativet), trapperektangelet i Under etg, målte bredder på dører og vinduer, og at alternativet bare har JPEG-støy utenfor påtegningene."
+}

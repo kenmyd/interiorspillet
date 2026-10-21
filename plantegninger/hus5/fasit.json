@@ -1,0 +1,50 @@
+{
+  "house": "hus5",
+  "files": {
+    "1etg.avif": { "kind": "plan", "level": 0 },
+    "fasade1.avif": { "kind": "facade" },
+    "fasade2.avif": { "kind": "facade" },
+    "fasade3.avif": { "kind": "facade" },
+    "fasade4.avif": { "kind": "facade" }
+  },
+  "levels": [
+    {
+      "level": 0, "name": "1. etasje", "file": "1etg.avif",
+      "title": null,
+      "rooms": [
+        { "label": "SPORTSBOD", "area": 5.0, "kind": "storage" },
+        { "label": "GARD/BOD", "area": 3.0, "kind": "storage" },
+        { "label": "VF", "area": 6.3, "kind": "entrance" },
+        { "label": "BAD", "area": 5.0, "kind": "bathroom" },
+        { "label": "VASK/TEK", "area": 4.8, "kind": "laundry" },
+        { "label": "SOV", "area": 14.4, "kind": "bedroom" },
+        { "label": "GANG", "area": 9.7, "kind": "hall" },
+        { "label": "STUE/KJØKKEN", "area": 46.0, "kind": "living" },
+        { "label": "SPISESTUE", "area": 19.7, "kind": "living" },
+        { "label": "SOV", "area": 11.9, "kind": "bedroom" },
+        { "label": "BAD", "area": 7.7, "kind": "bathroom" },
+        { "label": "GANG", "area": 4.8, "kind": "hall" },
+        { "label": "SOV", "area": 18.5, "kind": "bedroom" }
+      ],
+      "doors": { "single": 10, "double": 0, "sliding": 4, "exterior": 5 },
+      "windows": 15,
+      "skylights": 0,
+      "stair": { "type": "none", "note": "Én etasje, ingen trapp. Det smale skapet med tverrstreker øverst langs østveggen i VF er en garderobe/skohylle, ikke en trapp." },
+      "dimensions": [],
+      "scale": {
+        "hints": ["areas"],
+        "pxPerM": 46.9,
+        "note": "Ingen mål, målekjeder eller målestokk på tegningen, bare romarealer med én desimal. pxPerM er målt av fasit-agenten på PNG-kopien (761×800, samme størrelse som AVIF-en) fra innvendige veggflater i rektangulære rom mot etikettarealet: SOV 11.9 → 46,9, BAD 5.0 → 46,7, GARD/BOD → 46,6, SPORTSBOD → 46,7, VF → 47,0, STUE/KJØKKEN-rektangelet → 47,0, SPISESTUE-rektangelet → 47,4 px/m. Usikkerhet ca. ±1 % (±1 px per vegg). SOV 14.4 (L-formet) gir 14,5 m² ved 46,9 px/m. Innervegger ca. 5 px ≈ 0,1 m."
+      },
+      "ceiling": ["Skråhiml.", "Skråhiml."],
+      "notes": "Rom: 13 etiketter, sum 156,8 m² (med SPORTSBOD). Åpne løsninger uten vegg: STUE/KJØKKEN + SPISESTUE (65,7 m² samlet) og GANG 4.8 + SOV 18.5 (23,3 m² samlet; gangen er en del av hovedsoverommet med BAD 7.7). En veggbasert gjenkjenning får derfor 11 lukkede rom. SPISESTUE og STUE/KJØKKEN er type living (det finnes ingen kjøkkentype). Takhøyde: to stiplede diagonaler merket «Skråhiml.»: én over hele STUE/KJØKKEN (fra det indre hjørnet øverst til høyre ved GARD/BOD ned til hjørnet nederst til venstre) og én over SPISESTUE (fra hjørnet ved GANG øverst til høyre ned til ildstedet ved terrassen). Ingen gradtall eller høyder står på planen. Soverommene ligger under pulttaket i østfløyen, men har ingen «Skråhiml.»-merking. Dører (single og sliding teller alle dører, inne og ute; exterior er hvor mange av dem som er ytterdører): enkle slagdører inne (6): GANG 9.7–VASK/TEK, GANG 9.7–BAD 5.0, GANG 9.7–SOV 14.4, GANG 9.7–SOV 11.9, GANG 9.7–GANG 4.8, GANG 4.8–BAD 7.7. Enkle ytterdører (4), alle slår utover: SPORTSBOD, VF (hovedinngangen, med smalt sidefelt) og VASK/TEK mot det overdekte inngangspartiet, og GANG 4.8 mot terrassen. Skyvedører (4, tegnet med forskjøvne blad og pil): GARD/BOD–VF, VF–SPISESTUE, SPISESTUE–GANG 9.7, og SPISESTUE–terrassen (ytterdør). Ingen dobbeltdører. Vinduer (15, ett per vindussymbol/åpning i veggen; noen har to rammer, tegnet med et midtmerke): venstre yttervegg 3 (KJØKKEN 0,9 m; STUE 3,2 m todelt; STUE 1,9 m todelt), stuefløyens nedre vegg 2 (0,5 m og 2,1 m todelt), SPORTSBOD øvre vegg 1 (0,5 m), sidefeltet ved inngangsdøra i VF 1 (0,3 m), SOV 14.4 øvre vegg 1 (2,1 m todelt), høyre yttervegg 5 (SOV 14.4 1,4 m og 0,9 m, SOV 11.9 1,4 m todelt, BAD 7.7 0,5 m, SOV 18.5 0,5 m), SOV 18.5 nedre vegg 1 (3,0 m todelt), SOV 18.5 venstre vegg 1 (0,9 m, mot vest sør for terrassen; terrassen slutter før vinduet). Teller man ikke sidefeltet, er det 14. Takvinduer: ingen. Den stiplede sirkelen på inngangspartiet er utenfor huset, trolig en rund åpning i taket over inngangen (uklart), og telles ikke. Andre stiplede linjer: takkanten over inngangspartiet, takutstikket tvers over terrassen, dusjsonen i BAD 5.0, badekar/dusj i BAD 7.7, en L-formet linje i SPORTSBOD (ukjent, trolig hylle eller noe over snittet) og en linje langs benken i VASK/TEK. Annen tekst: «Ild» (ildsted med pipe i STUE/KJØKKEN ved terrassehjørnet), «S.S» og «VV» (kan leses som «W») i sirkler i VASK/TEK (trolig sluk/sentralstøvsuger og varmtvannsbereder), og et el-skap-symbol i veggen mellom VASK/TEK og GANG. Et hvitt felt på ca. 0,6 m i veggen mellom VASK/TEK og SOV 14.4 (ved VV) er et ukjent symbol (nisje eller luke), uten dørbue og ikke i yttervegg, og telles verken som dør eller vindu. Utenfor rommene: et overdekket inngangsparti uten etikett mellom SPORTSBOD og VASK/TEK, og en terrasse med terrassebord mellom stuefløyen og soveromsfløyen. Ingen tittel og ingen nordpil."
+    }
+  ],
+  "facades": [
+    { "file": "fasade1.avif", "roof": "mixed", "storeys": 1, "windows": 3, "doors": 1 },
+    { "file": "fasade2.avif", "roof": "mixed", "storeys": 1, "windows": 3, "doors": 1 },
+    { "file": "fasade3.avif", "roof": "mixed", "storeys": 1, "windows": 4, "doors": 0 },
+    { "file": "fasade4.avif", "roof": "mono-pitch", "storeys": 1, "windows": 5, "doors": 0 }
+  ],
+  "notes": "Ett plan (1etg.avif) og fire fasader, én tegning per fil. Ingen info.txt. Taket: huset er tre volumer med hvert sitt pulttak: stuefløyen (vest) og soveromsfløyen (øst) har fall utover med den høye siden mot midten, og mellombygget (inngangsparti, VF, GARD/BOD, BAD 5.0, SPISESTUE) har et slakt pulttak med fall mot inngangssiden. Fasade 1 og 2 viser derfor to motsatte pulttak med et lavere midtparti (roof «mixed», ikke saltak), fasade 3 viser stuefløyens takflate pluss de høyere veggene bak (mixed), og fasade 4 viser bare soveromsfløyens takflate sett fra raftet (mono-pitch). Pipe på alle fire. Retningene under er planens (ingen nordpil). Fasade 1 = mot planens overkant (inngangssiden): vinduet i SOV 14.4 (bredt, todelt), det lille vinduet i SPORTSBOD og sidefeltet ved inngangsdøra (3), inngangsdøra i VF (1); døra til SPORTSBOD og VASK/TEK står i sideveggene til inngangspartiet og synes ikke. Fasade 2 = mot planens underkant (terrassesiden): det lille og det store stuevinduet (det store har skrå overkant langs taket) og det todelte vinduet i SOV 18.5 (3), skyvedøra fra SPISESTUE (1) med todelt overlys i samme ramme, overlyset er ikke talt som eget vindu. Fasade 3 = mot planens venstre side (stuefløyen): KJØKKEN-vinduet, de to stuevinduene (tegnet som ett langt bånd der en mørk plate dekker veggstykket mellom dem, talt som 2 slik planen har dem) og SOV 18.5-vinduet i vestveggen sør for terrassen (4); SPORTSBOD-veggen til venstre er uten vindu, og terrassedøra fra GANG 4.8 er skjult bak stuefløyen. Fasade 4 = mot planens høyre side (soverommene): de fem vinduene i høyre yttervegg (5), ingen dør. Fasadevinduene er til sammen 15, de samme som planens 15. Fasadene har ingen mål; avledet fra planen er skalaen ca. 95 px/m på fasade 1 og 2 og ca. 83 px/m på fasade 3 og 4. Kontrollert 2026-10-21 av en uavhengig agent med forstørrelser og veggløp på PNG-kopien: alle 13 etiketter og arealer, dørene per variant (10 slag, 4 skyve, 0 doble, 5 ytterdører, alle åpningene målt i veggløpene), 15 vinduer, ingen takvinduer, ingen trapp, ingen mål og nivå 0 stemmer. pxPerM målt på nytt til 46,6–47,0 (median ca. 46,85). Hvert planvindu er funnet igjen på riktig fasade med riktig bredde. Rettet: STUE-vinduet nederst i venstre vegg er 1,9 m (ikke 2,0), og SOV 18.5-vinduet i vestveggen ligger sør for terrassen, ikke mot den."
+}

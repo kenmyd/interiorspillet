@@ -1,0 +1,71 @@
+{
+ "house": "hus1",
+ "file": "plantegninger/hus1/1etg.png",
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1195,
+  "height": 954,
+  "sha256": "a4a656e41a5f5cda004fa2b135a56f11b2c7ab9e47b11936b228de95bec9c343"
+ },
+ "marks": [],
+ "hints": {
+  "fileName": "1etg.png"
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.01,
+     0.02,
+     0.98,
+     0.99
+    ],
+    "title": null,
+    "levelName": "1. etasje",
+    "level": 0,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Plantegning uten tittel og uten mål. Filnavn tyder på 1. etasje. Trapp opp i hall, hovedinngang øverst i midten."
+ },
+ "usage": {
+  "input_tokens": 3636,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 3636,
+    "output_tokens": 136,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 136,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.008632,
+ "ms": 3434,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T18:02:05.343Z"
+}
