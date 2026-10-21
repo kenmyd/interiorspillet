@@ -1,0 +1,86 @@
+{
+  "$comment": "Hele huset, steg 18 (B1): nivået «kjeller», hullet i gangen i 1. etasje, trappa og HUD-rommet «trapp». Tallene er notes/hele-huset-avstemming.md V12–V23 og §2.1–2.4 (overstyrer §1.6 i planen): 13 opptrinn à 0,196, toppen (neselista) på x 1,45, foten (nesa på trinn 1) på x 1,73, øyet x 1,04–1,45 · z 3,10–3,48, hullet med x 1,45 / 1,85, hylla x 0–0,13 med topp −0,27, håndløperen med startHeight 0,70, trinnprofil 0,04 + list og #ada396. I tillegg til §2.4: footprint (V19, også HUD-rommets polygon) og stringers.footCut 0,06 (V17: veggvangen langs z 4,43 kappes loddrett senest på x 1,79). Hullet ligger i rommet «gang» (A1, 10-hoved-rom.json); validatoren varsler til den fila er flettet. y i trappa er verdens-y (gulvet i 1. etasje = 0), slik §2.4 har det.",
+  "levels": [
+    {
+      "id": "kjeller",
+      "name": "Kjeller",
+      "floorY": -2.55,
+      "slabThickness": 0.3,
+      "ceilingDefault": 2.25,
+      "plan": { "file": "bilder_hus/plantegning_kjeller.png", "pxPerM": 60.25, "originPx": [119.2, 112.1] },
+      "estimated": ["floorY", "ceilingDefault"],
+      "source": "13 opptrinn (egen telling 2 + 5 + 5 neser + gulvkanten: 225333, 225337, 225339, 225342, 225349, 225631); tak 2,25 (225644, 225721, 225723, 225508); plan uskalert, ytterflater i flukt (+0,13) (hele-huset-avstemming.md V1–V2, V12, V56)"
+    }
+  ],
+  "rooms": [
+    {
+      "id": "trapp",
+      "name": "Trappa",
+      "levelId": "hoved",
+      "kind": "hud",
+      "polygon": [[0.13, 2.32], [1.45, 2.32], [1.45, 3.1], [1.04, 3.1], [1.04, 3.48], [1.76, 3.48], [1.76, 4.43], [0.13, 4.43]],
+      "stairId": "trapp-kjeller",
+      "openingId": "trappehull",
+      "estimated": ["polygon"],
+      "source": "Trappas fotavtrykk (hele-huset-avstemming.md V19, §2.3): HUD-prismet går fra kjellergulvet (−2,55) til 1. etasje + 1 m (layout.js STAIR_HUD_TOP)"
+    }
+  ],
+  "floorOpenings": [
+    {
+      "id": "trappehull",
+      "levelId": "hoved",
+      "roomId": "gang",
+      "stairId": "trapp-kjeller",
+      "polygon": [[0, 2.32], [1.45, 2.32], [1.45, 3.48], [1.85, 3.48], [1.85, 4.43], [0, 4.43]],
+      "edgeBand": { "color": "#f2efe8", "depth": 0.3, "edges": "free", "notes": "Bare på de frie kantene: x 1,45 under neselista og under rekkverk C, z 3,48 under B, x 1,85 under A. Langs x 0, z 2,32 og z 4,43 går sjaktveggene i veggfargen rett gjennom etasjeskillet (V16)." },
+      "estimated": ["polygon"],
+      "source": "hele-huset-avstemming.md V15–V16; 225333, 225335; eier 1,54 = til baddøra"
+    }
+  ],
+  "stairs": [
+    {
+      "id": "trapp-kjeller",
+      "name": "Trappa",
+      "type": "half-turn-winder",
+      "fromLevel": "kjeller",
+      "toLevel": "hoved",
+      "openingId": "trappehull",
+      "roomIds": ["kjeller-gang", "gang"],
+      "risers": 13,
+      "top": { "edge": [[1.45, 2.32], [1.45, 3.1]], "down": [-1, 0], "straightTreads": 1 },
+      "foot": { "edge": [[1.73, 3.48], [1.73, 4.43]], "down": [1, 0], "straightTreads": 3 },
+      "well": { "polygon": [[1.04, 3.1], [1.45, 3.1], [1.45, 3.48], [1.04, 3.48]], "newel": [1.45, 3.1] },
+      "footprint": [[0.13, 2.32], [1.45, 2.32], [1.45, 3.1], [1.04, 3.1], [1.04, 3.48], [1.76, 3.48], [1.76, 4.43], [0.13, 4.43]],
+      "walkLine": "flight-centre",
+      "going": null,
+      "winders": "balanced",
+      "tread": { "thickness": 0.04, "nosing": 0.03, "batten": { "h": 0.04, "inset": 0.025 }, "material": "oak", "color": "#ada396" },
+      "openRisers": true,
+      "stringers": { "color": "#1d1e21", "thickness": 0.05, "depth": 0.28, "footCut": 0.06 },
+      "ledge": { "x": [0, 0.13], "top": -0.27, "color": "sand" },
+      "guards": [
+        { "id": "rekk-a", "level": "hoved", "line": [[1.85, 4.43], [1.85, 3.48]] },
+        { "id": "rekk-b", "level": "hoved", "line": [[1.85, 3.48], [1.45, 3.48]] },
+        { "id": "rekk-c", "level": "hoved", "line": [[1.45, 3.48], [1.45, 3.1]] },
+        { "id": "rekk-oye", "on": "well" }
+      ],
+      "guardStyle": { "height": 1.0, "stairHeight": 0.9, "post": 0.065, "baluster": 0.022, "spacing": 0.13, "topRail": [0.07, 0.05], "color": "#1d1e21" },
+      "handrails": [
+        {
+          "side": "outer",
+          "start": [1.4, 2.32],
+          "startHeight": 0.7,
+          "walls": ["øst", "nord", "vest"],
+          "height": 0.9,
+          "profile": [0.05, 0.04],
+          "offset": 0.05,
+          "color": "#1d1e21",
+          "led": { "walls": ["øst", "nord"], "lumensPerM": 120, "lightColorK": 2900, "group": "gang" }
+        }
+      ],
+      "decor": [{ "type": "plant-small", "on": "ledge", "at": [0.07, 4.3], "optional": true }],
+      "estimated": ["risers", "top", "foot", "well", "footprint", "tread", "stringers.footCut", "guards", "handrails[0].startHeight", "handrails[0].led", "ledge"],
+      "source": "hele-huset-avstemming.md V12–V23 (§2.4, footprint V19, footCut V17); gang-1etg.md, trapp.md, entre-gang-kjeller.md; 225331, 225333, 225335, 225337, 225339, 225342, 225349, 225631, 225639"
+    }
+  ]
+}

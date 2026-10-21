@@ -814,6 +814,1718 @@
       "height": 2.4,
       "hiddenBehindCabinets": true,
       "openings": []
+    },
+    {
+      "id": "w-kg-nisje",
+      "roomId": "kjeller-gang",
+      "from": [
+        0.13,
+        2.32
+      ],
+      "to": [
+        1.85,
+        2.32
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "paint": "sand",
+      "thickness": 0.1,
+      "height": 2.25,
+      "topProfile": [
+        [
+          0,
+          2.55
+        ],
+        [
+          1.32,
+          2.55
+        ],
+        [
+          1.32,
+          2.25
+        ],
+        [
+          1.72,
+          2.25
+        ]
+      ],
+      "estimated": [
+        "thickness",
+        "topProfile"
+      ],
+      "source": "Nisjeveggen z 2,22–2,32 låst under veggen bad/gang (V3). Sjaktveggen går gjennom etasjeskillet til gulvet oppe (2,55) der hullet er (x ≤ 1,45, V16).",
+      "openings": [
+        {
+          "id": "door-bod-1",
+          "type": "door",
+          "name": "Dør til boden under trappa",
+          "offset": 0.93,
+          "width": 0.79,
+          "height": 2.05,
+          "sill": 0,
+          "frame": {
+            "color": "#1d1e21",
+            "width": 0.07,
+            "depth": 0.02
+          },
+          "reveal": {
+            "depth": 0.1,
+            "color": "#1d1e21"
+          },
+          "door": {
+            "leafColor": "#1d1e21",
+            "style": "glatt dørblad med ett innfelt felt",
+            "hinge": "to",
+            "swing": "out",
+            "opensInto": "bod-1",
+            "handleSide": "from",
+            "handleHeight": 1.05,
+            "hardware": {
+              "type": "lever",
+              "rose": "round",
+              "finish": "black"
+            },
+            "threshold": {
+              "top": "#2a2a2c",
+              "depth": 0.1
+            },
+            "leaf": {
+              "w": 0.65,
+              "h": 1.98
+            },
+            "closed": true
+          },
+          "connects": [
+            "kjeller-gang",
+            "bod-1"
+          ],
+          "interactive": true,
+          "estimated": [
+            "height",
+            "door.leaf",
+            "door.hardware"
+          ],
+          "source": "hele-huset-avstemming.md V20, §5.1: hull x 1,06–1,85, hengsler i sør, slår inn i boden, lukket. Høyden kuttes under trappa hvis vangen kommer lavere (validatoren varsler)."
+        }
+      ]
+    },
+    {
+      "id": "w-kg-nisje-side",
+      "roomId": "kjeller-gang",
+      "from": [
+        1.85,
+        2.32
+      ],
+      "to": [
+        1.85,
+        2.56
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.21,
+      "height": 2.25,
+      "estimated": [
+        "*"
+      ],
+      "source": "Nisjehjørnet (V3, 225639, 225349)"
+    },
+    {
+      "id": "w-kg-ost",
+      "roomId": "kjeller-gang",
+      "from": [
+        1.85,
+        2.56
+      ],
+      "to": [
+        5.75,
+        2.56
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "paint": "sand",
+      "thickness": 0.11,
+      "height": 2.25,
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Gangens østvegg mot bod 2, z 2,45–2,56 (§1.2, V68)",
+      "openings": [
+        {
+          "id": "door-bod-2",
+          "type": "door",
+          "name": "Dør til den grå boden",
+          "offset": 2.88,
+          "width": 0.95,
+          "height": 2.1,
+          "sill": 0,
+          "frame": {
+            "color": "#1d1e21",
+            "width": 0.07,
+            "depth": 0.02
+          },
+          "reveal": {
+            "depth": 0.11,
+            "color": "#1d1e21"
+          },
+          "door": {
+            "leafColor": "#1d1e21",
+            "style": "glatt dørblad med ett innfelt felt",
+            "hinge": "to",
+            "swing": "out",
+            "opensInto": "bod-2",
+            "handleSide": "from",
+            "handleHeight": 1.05,
+            "hardware": {
+              "type": "lever",
+              "rose": "round",
+              "finish": "black"
+            },
+            "threshold": {
+              "top": "#2a2a2c",
+              "depth": 0.11
+            },
+            "leaf": {
+              "w": 0.81,
+              "h": 2.03
+            },
+            "closed": true
+          },
+          "connects": [
+            "kjeller-gang",
+            "bod-2"
+          ],
+          "interactive": true,
+          "estimated": [
+            "height",
+            "door.leaf",
+            "door.hardware"
+          ],
+          "source": "hele-huset-avstemming.md V68, §5.1; 225635 (ikke i planen)"
+        }
+      ]
+    },
+    {
+      "id": "w-kg-sor",
+      "roomId": "kjeller-gang",
+      "from": [
+        5.75,
+        2.56
+      ],
+      "to": [
+        5.75,
+        5.23
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.41,
+      "height": 2.25,
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Veggen gang/entré x 5,75–6,16 (§1.2)",
+      "openings": [
+        {
+          "id": "open-entre",
+          "type": "opening",
+          "name": "Åpning ned til entréen",
+          "offset": 0.86,
+          "width": 0.93,
+          "height": 2.05,
+          "sill": 0,
+          "reveal": {
+            "depth": 0.41,
+            "color": "sand"
+          },
+          "steps": {
+            "count": 2,
+            "toRoom": "entre-kjeller",
+            "nosing": {
+              "color": "#1a1a1a",
+              "depth": 0.03
+            },
+            "notes": "To trinn ned til entréen. Opptrinnet = (gangens gulv − entréens gulv) / count = 0,15 (V24). Øverste trinnkant i flukt med gangens vegg (x 5,75), mellomtrinnet fyller lysningen (topp −2,70), nederste opptrinn i flukt med entréens nordvegg (x 6,16)."
+          },
+          "connects": [
+            "kjeller-gang",
+            "entre-kjeller"
+          ],
+          "estimated": [
+            "offset",
+            "width",
+            "height",
+            "steps"
+          ],
+          "source": "hele-huset-avstemming.md §5.1 (z 3,42–4,35, topp y −0,50 som entréhimlingen, 0,20 nedforing på gangsida, uten dør og karm), V24; 225553, 225559"
+        }
+      ]
+    },
+    {
+      "id": "w-kg-vest-sor",
+      "roomId": "kjeller-gang",
+      "from": [
+        5.75,
+        5.23
+      ],
+      "to": [
+        3.05,
+        5.23
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "sand",
+      "backOf": "w-ks-ost",
+      "height": 2.25
+    },
+    {
+      "id": "w-kg-knekk",
+      "roomId": "kjeller-gang",
+      "from": [
+        3.05,
+        5.23
+      ],
+      "to": [
+        3.05,
+        4.43
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.29,
+      "height": 2.25,
+      "estimated": [
+        "*"
+      ],
+      "source": "Knekken: sørflaten av muren i vaskerommets SØ-hjørne (entre-gang-kjeller.md, 225631)"
+    },
+    {
+      "id": "w-kg-vest",
+      "roomId": "kjeller-gang",
+      "from": [
+        3.05,
+        4.43
+      ],
+      "to": [
+        0.13,
+        4.43
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "sand",
+      "thickness": 0.12,
+      "height": 2.25,
+      "topProfile": [
+        [
+          0,
+          2.25
+        ],
+        [
+          1.2,
+          2.25
+        ],
+        [
+          1.2,
+          2.55
+        ],
+        [
+          2.92,
+          2.55
+        ]
+      ],
+      "estimated": [
+        "thickness",
+        "topProfile"
+      ],
+      "source": "Badveggen z 4,43–4,55 låst under veggen gang/soverom oppe (V3, V54). Sjaktveggen går til gulvet oppe der hullet er (x ≤ 1,85, V16).",
+      "openings": [
+        {
+          "id": "door-vaskerom",
+          "type": "door",
+          "name": "Dør til vaskerommet",
+          "offset": 0.34,
+          "width": 0.87,
+          "height": 2.15,
+          "sill": 0,
+          "frame": {
+            "color": "#1d1e21",
+            "width": 0.07,
+            "depth": 0.02
+          },
+          "reveal": {
+            "depth": 0.12,
+            "color": "#1d1e21"
+          },
+          "door": {
+            "leafColor": "#1d1e21",
+            "style": "glatt dørblad med ett innfelt felt",
+            "hinge": "from",
+            "swing": "out",
+            "opensInto": "vaskerom",
+            "handleSide": "to",
+            "handleHeight": 1.05,
+            "hardware": {
+              "type": "lever",
+              "rose": "round",
+              "finish": "black",
+              "small": true
+            },
+            "threshold": {
+              "top": "#cbbfb0",
+              "back": "#2a2a2c",
+              "depth": 0.12
+            },
+            "leaf": {
+              "w": 0.73,
+              "h": 2.08
+            },
+            "closed": true
+          },
+          "connects": [
+            "kjeller-gang",
+            "vaskerom"
+          ],
+          "interactive": true,
+          "estimated": [
+            "height",
+            "door.leaf",
+            "door.threshold"
+          ],
+          "source": "hele-huset-avstemming.md V17, §5.1: hull x 1,84–2,71, minst 0,05 vegg mellom nesa på trinn 1 og nordkarmen; hengsler i sør, slår inn og legger seg mot sørveggen; vaskerom.md, 225443, 225508"
+        }
+      ]
+    },
+    {
+      "id": "w-kg-nord",
+      "roomId": "kjeller-gang",
+      "from": [
+        0.13,
+        4.43
+      ],
+      "to": [
+        0.13,
+        2.32
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.43,
+      "exterior": true,
+      "height": 2.28,
+      "ledge": {
+        "top": 2.28,
+        "x": [
+          0,
+          0.13
+        ],
+        "notes": "Hylla i sjakta er toppen av denne veggen (y −0,27 = 2,28 over kjellergulvet, V21). Veggflata x 0 oppe står ned til hylla."
+      },
+      "estimated": [
+        "height"
+      ],
+      "source": "Kjellerens nordvegg x 0,13, ytterlaget ut til x −0,30 (V1, V10, V21)"
+    },
+    {
+      "id": "w-vask-ost",
+      "roomId": "vaskerom",
+      "from": [
+        0.13,
+        4.55
+      ],
+      "to": [
+        2.76,
+        4.55
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "backOf": "w-kg-vest",
+      "height": 2.25,
+      "material": "wetroom-paint",
+      "color": "#b8bfb5"
+    },
+    {
+      "id": "w-vask-sor",
+      "roomId": "vaskerom",
+      "from": [
+        2.76,
+        4.55
+      ],
+      "to": [
+        2.76,
+        8.45
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "backOf": [
+        "w-kg-knekk",
+        "w-ks-nord"
+      ],
+      "height": 2.25,
+      "material": "wetroom-paint",
+      "color": "#b8bfb5"
+    },
+    {
+      "id": "w-vask-vest",
+      "roomId": "vaskerom",
+      "from": [
+        2.76,
+        8.45
+      ],
+      "to": [
+        0.13,
+        8.45
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "thickness": 0.1,
+      "height": 2.25,
+      "material": "wetroom-paint",
+      "color": "#b8bfb5",
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Veggen vaskerom/soverom z 8,45–8,55 (V5)"
+    },
+    {
+      "id": "w-vask-nord",
+      "roomId": "vaskerom",
+      "from": [
+        0.13,
+        8.45
+      ],
+      "to": [
+        0.13,
+        4.55
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "thickness": 0.43,
+      "exterior": true,
+      "height": 2.25,
+      "material": "wetroom-paint",
+      "color": "#b8bfb5",
+      "estimated": [
+        "color"
+      ],
+      "source": "Kjellerens nordvegg x 0,13 (V1, V10). Veggfargen dempet salviegrå (vaskerom.md, anslått).",
+      "openings": [
+        {
+          "id": "win-vask",
+          "type": "window",
+          "name": "Vindu i vaskerommet",
+          "offset": 0.26,
+          "width": 1.28,
+          "sill": 1.5,
+          "height": 0.72,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.05,
+            "depth": 0.06
+          },
+          "reveal": {
+            "depth": 0.25,
+            "color": "#1f1f20"
+          },
+          "sillBoard": {
+            "depth": 0.25,
+            "color": "#1f1f20",
+            "thickness": 0.02,
+            "overhang": 0
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": true
+            }
+          ],
+          "skyView": 0.35,
+          "obstruction": 0.6,
+          "outsideView": null,
+          "estimated": [
+            "sill",
+            "height",
+            "skyView",
+            "obstruction"
+          ],
+          "source": "hele-huset-avstemming.md V58 (z 6,91–8,19, 0,26 fra NV-hjørnet); vaskerom.md (nisje 0,25 dyp, sort foring, sill 1,50, topp 2,22); 225450, 225513"
+        }
+      ]
+    },
+    {
+      "id": "w-sk-ost",
+      "roomId": "soverom-kjeller",
+      "from": [
+        0.13,
+        8.55
+      ],
+      "to": [
+        2.76,
+        8.55
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "paint": "sand",
+      "backOf": "w-vask-vest",
+      "height": 2.25
+    },
+    {
+      "id": "w-sk-sor",
+      "roomId": "soverom-kjeller",
+      "from": [
+        2.76,
+        8.55
+      ],
+      "to": [
+        2.76,
+        11.38
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "paint": "sand",
+      "backOf": "w-ks-nord",
+      "height": 2.25
+    },
+    {
+      "id": "w-sk-vest",
+      "roomId": "soverom-kjeller",
+      "from": [
+        2.76,
+        11.38
+      ],
+      "to": [
+        0.13,
+        11.38
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "sand",
+      "thickness": 0.3,
+      "exterior": true,
+      "height": 2.25,
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Rett vestlinje z 11,38, ytterflate 11,68 (V4)",
+      "openings": [
+        {
+          "id": "win-sk",
+          "type": "window",
+          "name": "Vindu i soverommet i kjelleren",
+          "offset": 0.7,
+          "width": 1.3,
+          "sill": 0.88,
+          "height": 1.31,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.05,
+            "depth": 0.06
+          },
+          "reveal": {
+            "depth": 0.38,
+            "color": "#25272b"
+          },
+          "sillBoard": {
+            "depth": 0.38,
+            "color": "#25272b",
+            "thickness": 0.07,
+            "overhang": 0,
+            "notes": "Vinduskarmplata ligger på h 0,95 (V63)."
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": true,
+              "hinge": "top"
+            }
+          ],
+          "skyView": 0.5,
+          "obstruction": 0.6,
+          "outsideView": null,
+          "estimated": [
+            "offset",
+            "sill",
+            "height",
+            "skyView",
+            "obstruction"
+          ],
+          "source": "hele-huset-avstemming.md V63; soverom-kjeller.md (nisje 0,35–0,40, sort foring, topphengslet); 225721"
+        }
+      ]
+    },
+    {
+      "id": "w-sk-nord",
+      "roomId": "soverom-kjeller",
+      "from": [
+        0.13,
+        11.38
+      ],
+      "to": [
+        0.13,
+        8.55
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.43,
+      "exterior": true,
+      "height": 2.25,
+      "source": "Kjellerens nordvegg x 0,13 (V1, V10)"
+    },
+    {
+      "id": "w-ks-ost",
+      "roomId": "kjellerstue",
+      "from": [
+        3.05,
+        5.32
+      ],
+      "to": [
+        6.45,
+        5.32
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "paint": "sand",
+      "thickness": 0.09,
+      "height": 2.25,
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Veggen gang/kjellerstue z 5,23–5,32; østre del er søylas østflate i entréen (V7)",
+      "openings": [
+        {
+          "id": "door-kjellerstue",
+          "type": "door",
+          "name": "Dør til kjellerstua",
+          "offset": 0.16,
+          "width": 0.89,
+          "height": 2.1,
+          "sill": 0,
+          "frame": {
+            "color": "#1d1e21",
+            "width": 0.07,
+            "depth": 0.02
+          },
+          "reveal": {
+            "depth": 0.09,
+            "color": "#1d1e21"
+          },
+          "door": {
+            "leafColor": "#1d1e21",
+            "style": "glatt dørblad med ett innfelt felt",
+            "hinge": "from",
+            "swing": "in",
+            "opensInto": "kjellerstue",
+            "handleSide": "to",
+            "handleHeight": 1.05,
+            "hardware": {
+              "type": "lever",
+              "lever": "L",
+              "rose": "oblong",
+              "escutcheon": "oblong",
+              "finish": "black",
+              "lockCase": "#b8b8b4"
+            },
+            "threshold": {
+              "top": "#2a2a2c",
+              "depth": 0.09
+            },
+            "leaf": {
+              "w": 0.75,
+              "h": 2.03
+            },
+            "closed": true
+          },
+          "connects": [
+            "kjeller-gang",
+            "kjellerstue"
+          ],
+          "interactive": true,
+          "estimated": [
+            "height",
+            "door.leaf",
+            "door.hardware.rose"
+          ],
+          "source": "hele-huset-avstemming.md V61, §5.1: hull x 3,21–4,10, hengsler i nord, slår inn i stua og parkerer langs østenden av nordveggen; kjellerstue.md (L-vrider på avlang rosett); 225630, 225644, 225704"
+        }
+      ]
+    },
+    {
+      "id": "w-ks-sor",
+      "roomId": "kjellerstue",
+      "from": [
+        6.45,
+        5.32
+      ],
+      "to": [
+        6.45,
+        11.38
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.3,
+      "exterior": true,
+      "height": 2.25,
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Kjellerstuas sørvegg: innerflate x 6,45, ytterflate 6,75 (V6). Nordre del er søylas sørflate i entréen (V7).",
+      "openings": [
+        {
+          "id": "win-ks-1",
+          "type": "window",
+          "name": "Vindu V1 i kjellerstua",
+          "offset": 2.09,
+          "width": 1.35,
+          "sill": 0.85,
+          "height": 1.3,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.05,
+            "depth": 0.06
+          },
+          "reveal": {
+            "depth": 0.22,
+            "color": "#25272b"
+          },
+          "sillBoard": {
+            "depth": 0.22,
+            "color": "#25272b",
+            "thickness": 0.02,
+            "overhang": 0
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": true,
+              "hinge": "top"
+            }
+          ],
+          "skyView": 0.6,
+          "obstruction": 0.5,
+          "outsideView": null,
+          "blind": {
+            "type": "pleated",
+            "color": "#a39588",
+            "position": "inside-glass",
+            "closed": true
+          },
+          "estimated": [
+            "sill",
+            "height",
+            "skyView",
+            "obstruction",
+            "blind"
+          ],
+          "source": "hele-huset-avstemming.md V64 (1,35 inkl. lista, sill 0,85, topp 2,15); kjellerstue.md (dyp sort lysning 0,22, plissé #a39588 nede); 225655"
+        },
+        {
+          "id": "win-ks-2",
+          "type": "window",
+          "name": "Vindu V2 i kjellerstua",
+          "offset": 4.18,
+          "width": 1.35,
+          "sill": 0.85,
+          "height": 1.3,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.05,
+            "depth": 0.06
+          },
+          "reveal": {
+            "depth": 0.22,
+            "color": "#25272b"
+          },
+          "sillBoard": {
+            "depth": 0.22,
+            "color": "#25272b",
+            "thickness": 0.02,
+            "overhang": 0
+          },
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": true,
+              "hinge": "top"
+            }
+          ],
+          "skyView": 0.6,
+          "obstruction": 0.5,
+          "outsideView": null,
+          "blind": {
+            "type": "pleated",
+            "color": "#a39588",
+            "position": "inside-glass",
+            "closed": true
+          },
+          "estimated": [
+            "sill",
+            "height",
+            "skyView",
+            "obstruction",
+            "blind"
+          ],
+          "source": "hele-huset-avstemming.md V64 (1,35 inkl. lista, sill 0,85, topp 2,15); kjellerstue.md (dyp sort lysning 0,22, plissé #a39588 nede); 225655"
+        }
+      ]
+    },
+    {
+      "id": "w-ks-vest",
+      "roomId": "kjellerstue",
+      "from": [
+        6.45,
+        11.38
+      ],
+      "to": [
+        3.05,
+        11.38
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "sand",
+      "thickness": 0.3,
+      "exterior": true,
+      "height": 2.25,
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Rett vestlinje z 11,38, ytterflate 11,68 (V4)"
+    },
+    {
+      "id": "w-ks-nord",
+      "roomId": "kjellerstue",
+      "from": [
+        3.05,
+        11.38
+      ],
+      "to": [
+        3.05,
+        5.32
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.29,
+      "height": 2.25,
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Vaskerom og soverom mot kjellerstua: x 2,76–3,05 (§1.2)",
+      "openings": [
+        {
+          "id": "door-soverom-kjeller",
+          "type": "door",
+          "name": "Dør til soverommet i kjelleren",
+          "offset": 0.49,
+          "width": 0.88,
+          "height": 2.12,
+          "sill": 0,
+          "frame": {
+            "color": "#1d1e21",
+            "width": 0.07,
+            "depth": 0.02
+          },
+          "reveal": {
+            "depth": 0.29,
+            "color": "#1d1e21"
+          },
+          "door": {
+            "leafColor": "#1d1e21",
+            "style": "glatt dørblad med ett innfelt felt",
+            "hinge": "from",
+            "swing": "out",
+            "opensInto": "soverom-kjeller",
+            "openAngleDeg": 130,
+            "handleSide": "to",
+            "handleHeight": 1,
+            "hardware": {
+              "type": "lever",
+              "rose": "round",
+              "escutcheon": "round",
+              "finish": "brushed-steel",
+              "color": "#8e8e8c"
+            },
+            "threshold": {
+              "top": "#5a5e63",
+              "depth": 0.1
+            },
+            "leaf": {
+              "w": 0.74,
+              "h": 2.05
+            },
+            "closed": true
+          },
+          "connects": [
+            "kjellerstue",
+            "soverom-kjeller"
+          ],
+          "interactive": true,
+          "estimated": [
+            "height",
+            "door.leaf",
+            "door.openAngleDeg"
+          ],
+          "source": "hele-huset-avstemming.md V62, §5.1: 8M, hull z 10,01–10,89 (0,49–1,37 fra vestveggen), hengsler i vest, slår inn i soverommet 130°; soverom-kjeller.md, 225721, 225723"
+        }
+      ]
+    },
+    {
+      "id": "w-entre-ost",
+      "roomId": "entre-kjeller",
+      "from": [
+        6.16,
+        3.12
+      ],
+      "to": [
+        8.67,
+        3.12
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "paint": "sand",
+      "thickness": 0.15,
+      "height": 2.62,
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Veggen entré/rom 3,70 z 2,97–3,12 (§1.2)",
+      "openings": [
+        {
+          "id": "door-bod-3",
+          "type": "door",
+          "name": "Dør til boden under terrassen",
+          "offset": 0.24,
+          "width": 1,
+          "height": 2.1,
+          "sill": 0,
+          "frame": {
+            "color": "#1d1e21",
+            "width": 0.07,
+            "depth": 0.02
+          },
+          "reveal": {
+            "depth": 0.15,
+            "color": "#1d1e21"
+          },
+          "door": {
+            "leafColor": "#1d1e21",
+            "style": "sort fyllingsdør med ett innfelt felt",
+            "hinge": "from",
+            "swing": "out",
+            "opensInto": "bod-3",
+            "handleSide": "to",
+            "handleHeight": 1.05,
+            "hardware": {
+              "type": "lever",
+              "rose": "round",
+              "escutcheon": "round",
+              "finish": "black"
+            },
+            "threshold": {
+              "top": "#1d1e21",
+              "depth": 0.15
+            },
+            "leaf": {
+              "w": 0.86,
+              "h": 2.03
+            },
+            "closed": true
+          },
+          "connects": [
+            "entre-kjeller",
+            "bod-3"
+          ],
+          "interactive": true,
+          "estimated": [
+            "offset",
+            "height",
+            "door.leaf"
+          ],
+          "source": "hele-huset-avstemming.md V68, §5.1: hull x 6,40–7,40, hengsler i nord, slår inn, lukket; 225617, 225558. Hullet starter 0,04 før rommet (6,44), karmen fyller det (Kontrollert (1))."
+        }
+      ]
+    },
+    {
+      "id": "w-entre-sor",
+      "roomId": "entre-kjeller",
+      "from": [
+        8.67,
+        3.12
+      ],
+      "to": [
+        8.67,
+        6.05
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.21,
+      "exterior": true,
+      "height": 2.62,
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Dørveggen: innerflate x 8,67, ytterflate 8,88 (V8). Utvendig stående kledning #4a4642 (V31).",
+      "openings": [
+        {
+          "id": "win-ute-ost",
+          "type": "window",
+          "name": "Østre sidefelt ved ytterdøra",
+          "offset": 0.19,
+          "width": 0.45,
+          "sill": 0,
+          "height": 2.1,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.05,
+            "depth": 0.06
+          },
+          "reveal": {
+            "depth": 0.21,
+            "color": "#1d1e21"
+          },
+          "sillBoard": null,
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": false
+            }
+          ],
+          "glass": "clear",
+          "element": "ytterdor",
+          "outsideView": null,
+          "estimated": [
+            "*"
+          ],
+          "source": "hele-huset-avstemming.md V27: elementet 2,0 × 2,1 på z 3,31–5,31, sidefeltene 0,50 inkl. posten mot bladet; 225543, 225619"
+        },
+        {
+          "id": "door-ute",
+          "type": "door",
+          "name": "Ytterdør (hovedinngangen)",
+          "offset": 0.64,
+          "width": 1.1,
+          "height": 2.1,
+          "sill": 0,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.05,
+            "depth": 0.06
+          },
+          "reveal": {
+            "depth": 0.21,
+            "color": "#1d1e21"
+          },
+          "door": {
+            "leafColor": "#2b2c2e",
+            "style": "glatt, flatt blad uten glass (matt antrasitt)",
+            "hinge": "from",
+            "swing": "out",
+            "opensInto": "ute",
+            "openAngleDeg": 95,
+            "leaf": {
+              "w": 1,
+              "h": 2.05
+            },
+            "handleSide": "to",
+            "handleHeight": 1,
+            "hardware": {
+              "type": "lever",
+              "finish": "black",
+              "lock": "keypad",
+              "lockPlate": {
+                "w": 0.07,
+                "h": 0.3,
+                "color": "#1a1a1a"
+              }
+            },
+            "hinges": {
+              "count": 3,
+              "color": "#b8b8b4"
+            },
+            "threshold": {
+              "top": "#b8b8b4",
+              "depth": 0.21
+            },
+            "lining": {
+              "color": "#1d1e21",
+              "width": 0.15,
+              "notes": "Bred sort foring innvendig rundt hele elementet, nesten opp til taket (V27, 225619)."
+            },
+            "closed": true
+          },
+          "element": {
+            "id": "ytterdor",
+            "from": 3.31,
+            "to": 5.31,
+            "height": 2.1,
+            "frameColor": "#25272b",
+            "sidelights": [
+              "win-ute-ost",
+              "win-ute-vest"
+            ]
+          },
+          "connects": [
+            "entre-kjeller",
+            "ute"
+          ],
+          "interactive": true,
+          "estimated": [
+            "offset",
+            "width",
+            "height",
+            "door.leaf",
+            "door.openAngleDeg",
+            "element"
+          ],
+          "source": "hele-huset-avstemming.md V27: blad 1,0 × 2,05 på z 3,81–4,81 (midt 4,31), hengsler i øst, slår ut 95° (stopper før potta), vrider og kodelås på vestkanten h ca. 1,0; dørslaget x 8,88–9,88 · z 3,81–4,81; 225543, 225553, 225619"
+        },
+        {
+          "id": "win-ute-vest",
+          "type": "window",
+          "name": "Vestre sidefelt ved ytterdøra",
+          "offset": 1.74,
+          "width": 0.45,
+          "sill": 0,
+          "height": 2.1,
+          "frame": {
+            "color": "#25272b",
+            "width": 0.05,
+            "depth": 0.06
+          },
+          "reveal": {
+            "depth": 0.21,
+            "color": "#1d1e21"
+          },
+          "sillBoard": null,
+          "sashes": [
+            {
+              "from": 0,
+              "to": 1,
+              "opening": false
+            }
+          ],
+          "glass": "clear",
+          "element": "ytterdor",
+          "outsideView": null,
+          "estimated": [
+            "*"
+          ],
+          "source": "hele-huset-avstemming.md V27; 225543, 225619, 225621"
+        }
+      ]
+    },
+    {
+      "id": "w-entre-vest",
+      "roomId": "entre-kjeller",
+      "from": [
+        8.67,
+        6.05
+      ],
+      "to": [
+        6.75,
+        6.05
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "sand",
+      "thickness": 0.21,
+      "exterior": true,
+      "height": 2.62,
+      "estimated": [
+        "thickness"
+      ],
+      "source": "Entréens vestvegg: innerflate z 6,05, ytterflate 6,26 (V8). Utsiden ligger bak fyllvolumet x 6,75–8,88 · z 6,26–6,75 (V31, outsideHouse.fill)."
+    },
+    {
+      "id": "w-entre-soyle-sor",
+      "roomId": "entre-kjeller",
+      "from": [
+        6.75,
+        6.05
+      ],
+      "to": [
+        6.75,
+        5.23
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "backOf": "w-ks-sor",
+      "height": 2.35,
+      "notes": "Søylas sørflate = utsiden av kjellerstuas sørvegg (V7). Partnerveggen står fra kjellergulvet (−2,55); builderen fører flata ned til entrégulvet (−2,85)."
+    },
+    {
+      "id": "w-entre-soyle-ost",
+      "roomId": "entre-kjeller",
+      "from": [
+        6.75,
+        5.23
+      ],
+      "to": [
+        6.16,
+        5.23
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "sand",
+      "backOf": "w-ks-ost",
+      "height": 2.35,
+      "notes": "Søylas østflate = baksiden av veggen gang/kjellerstue (V7). SØ-hjørnet x 6,45–6,75 · z 5,23–5,32 er kjellerstuas hjørnegjæring."
+    },
+    {
+      "id": "w-entre-nord",
+      "roomId": "entre-kjeller",
+      "from": [
+        6.16,
+        5.23
+      ],
+      "to": [
+        6.16,
+        3.12
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "backOf": "w-kg-sor",
+      "height": 2.35
+    },
+    {
+      "id": "w-b1-ost",
+      "roomId": "bod-1",
+      "from": [
+        0.13,
+        0.13
+      ],
+      "to": [
+        1.79,
+        0.13
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "paint": "sand",
+      "thickness": 0.43,
+      "exterior": true,
+      "height": 2.25,
+      "estimated": [
+        "*"
+      ],
+      "source": "Østveggen z 0,13, ytterflate −0,30 (V1, V10)"
+    },
+    {
+      "id": "w-b1-sor",
+      "roomId": "bod-1",
+      "from": [
+        1.79,
+        0.13
+      ],
+      "to": [
+        1.79,
+        2.22
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.27,
+      "height": 2.25,
+      "estimated": [
+        "*"
+      ],
+      "source": "Veggen bod 1/bod 2 x 1,79–2,06 (§1.2)"
+    },
+    {
+      "id": "w-b1-vest",
+      "roomId": "bod-1",
+      "from": [
+        1.79,
+        2.22
+      ],
+      "to": [
+        0.13,
+        2.22
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "sand",
+      "backOf": "w-kg-nisje",
+      "height": 2.25
+    },
+    {
+      "id": "w-b1-nord",
+      "roomId": "bod-1",
+      "from": [
+        0.13,
+        2.22
+      ],
+      "to": [
+        0.13,
+        0.13
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.43,
+      "exterior": true,
+      "height": 2.25,
+      "estimated": [
+        "*"
+      ],
+      "source": "Nordveggen x 0,13 (V1, V10)"
+    },
+    {
+      "id": "w-b2-ost",
+      "roomId": "bod-2",
+      "from": [
+        2.06,
+        0.13
+      ],
+      "to": [
+        6.33,
+        0.13
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "paint": "#9a958f",
+      "thickness": 0.43,
+      "exterior": true,
+      "height": 2.25,
+      "estimated": [
+        "*"
+      ],
+      "source": "Østveggen z 0,13 (V1, V10); grå betong (225635)"
+    },
+    {
+      "id": "w-b2-sor",
+      "roomId": "bod-2",
+      "from": [
+        6.33,
+        0.13
+      ],
+      "to": [
+        6.33,
+        2.45
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "paint": "#9a958f",
+      "thickness": 0.11,
+      "height": 2.25,
+      "estimated": [
+        "*"
+      ],
+      "source": "Veggen bod 2/rom 3,70 x 6,33–6,44 (§1.2)"
+    },
+    {
+      "id": "w-b2-vest-a",
+      "roomId": "bod-2",
+      "from": [
+        6.33,
+        2.45
+      ],
+      "to": [
+        5.75,
+        2.45
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "#9a958f",
+      "thickness": 0.11,
+      "height": 2.25,
+      "estimated": [
+        "*"
+      ],
+      "source": "Stripa z 2,45–2,56 sør for gangens østvegg, inntil veggen gang/entré og lomma (§1.2)"
+    },
+    {
+      "id": "w-b2-vest",
+      "roomId": "bod-2",
+      "from": [
+        5.75,
+        2.45
+      ],
+      "to": [
+        2.06,
+        2.45
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "#9a958f",
+      "backOf": "w-kg-ost",
+      "height": 2.25
+    },
+    {
+      "id": "w-b2-nord",
+      "roomId": "bod-2",
+      "from": [
+        2.06,
+        2.45
+      ],
+      "to": [
+        2.06,
+        0.13
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "#9a958f",
+      "backOf": [
+        "w-kg-nisje-side",
+        "w-b1-sor"
+      ],
+      "height": 2.25
+    },
+    {
+      "id": "w-b3-ost",
+      "roomId": "bod-3",
+      "from": [
+        6.44,
+        0.13
+      ],
+      "to": [
+        10.15,
+        0.13
+      ],
+      "normal": [
+        0,
+        1
+      ],
+      "paint": "sand",
+      "thickness": 0.43,
+      "exterior": true,
+      "height": 2.62,
+      "estimated": [
+        "*"
+      ],
+      "source": "Østveggen z 0,13, ytterflate −0,30 (V10)"
+    },
+    {
+      "id": "w-b3-sor",
+      "roomId": "bod-3",
+      "from": [
+        10.15,
+        0.13
+      ],
+      "to": [
+        10.15,
+        2.97
+      ],
+      "normal": [
+        -1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.19,
+      "exterior": true,
+      "height": 2.62,
+      "estimated": [
+        "*"
+      ],
+      "source": "Sørflaten x 10,34, i flukt med pilaren (V9); kles med #4a4642 (V31, anslått)"
+    },
+    {
+      "id": "w-b3-vest-ute",
+      "roomId": "bod-3",
+      "from": [
+        10.15,
+        2.97
+      ],
+      "to": [
+        8.88,
+        2.97
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "sand",
+      "thickness": 0.21,
+      "exterior": true,
+      "height": 2.62,
+      "estimated": [
+        "*"
+      ],
+      "source": "Østre sidevegg i nisjen, ytterflate z 3,18 (V9, V31)"
+    },
+    {
+      "id": "w-b3-vest-hjorne",
+      "roomId": "bod-3",
+      "from": [
+        8.88,
+        2.97
+      ],
+      "to": [
+        8.67,
+        2.97
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "sand",
+      "thickness": 0.15,
+      "height": 2.62,
+      "estimated": [
+        "*"
+      ],
+      "source": "Hjørnet mot dørveggen (x 8,67–8,88)"
+    },
+    {
+      "id": "w-b3-vest",
+      "roomId": "bod-3",
+      "from": [
+        8.67,
+        2.97
+      ],
+      "to": [
+        6.44,
+        2.97
+      ],
+      "normal": [
+        0,
+        -1
+      ],
+      "paint": "sand",
+      "backOf": "w-entre-ost",
+      "height": 2.35
+    },
+    {
+      "id": "w-b3-nord-a",
+      "roomId": "bod-3",
+      "from": [
+        6.44,
+        2.97
+      ],
+      "to": [
+        6.44,
+        2.56
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.28,
+      "height": 2.62,
+      "estimated": [
+        "*"
+      ],
+      "source": "Fyller lomma x 6,16–6,33 · z 2,56–2,97 (§1.2, Kontrollert (1) punkt 10)"
+    },
+    {
+      "id": "w-b3-nord-b",
+      "roomId": "bod-3",
+      "from": [
+        6.44,
+        2.56
+      ],
+      "to": [
+        6.44,
+        2.45
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "thickness": 0.11,
+      "height": 2.62,
+      "estimated": [
+        "*"
+      ],
+      "source": "Hjørnet x 6,33–6,44 · z 2,45–2,56"
+    },
+    {
+      "id": "w-b3-nord",
+      "roomId": "bod-3",
+      "from": [
+        6.44,
+        2.45
+      ],
+      "to": [
+        6.44,
+        0.13
+      ],
+      "normal": [
+        1,
+        0
+      ],
+      "paint": "sand",
+      "backOf": "w-b2-sor",
+      "height": 2.35
     }
   ],
   "ceilings": [
@@ -929,6 +2641,281 @@
       "paint": "marrakesh",
       "type": "flat",
       "height": 2.4
+    },
+    {
+      "id": "c-kjeller-gang",
+      "roomId": "kjeller-gang",
+      "name": "Tak i gangen",
+      "polygon": [
+        [
+          0.13,
+          2.32
+        ],
+        [
+          1.85,
+          2.32
+        ],
+        [
+          1.85,
+          2.56
+        ],
+        [
+          5.75,
+          2.56
+        ],
+        [
+          5.75,
+          5.23
+        ],
+        [
+          3.05,
+          5.23
+        ],
+        [
+          3.05,
+          4.43
+        ],
+        [
+          0.13,
+          4.43
+        ]
+      ],
+      "type": "flat",
+      "height": 2.25,
+      "paint": "sand",
+      "trim": null,
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "V56 (2,25), V67 (SAND); hullet skjæres ut av layout.js (floorOpenings i nivået over)"
+    },
+    {
+      "id": "c-vaskerom",
+      "roomId": "vaskerom",
+      "name": "Tak i vaskerommet",
+      "polygon": [
+        [
+          0.13,
+          4.55
+        ],
+        [
+          2.76,
+          4.55
+        ],
+        [
+          2.76,
+          8.45
+        ],
+        [
+          0.13,
+          8.45
+        ]
+      ],
+      "type": "flat",
+      "height": 2.25,
+      "paint": "#ebeae6",
+      "trim": "#1d1e21",
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "V56, V67; vaskerom.md (sort taklist 4–5 cm)"
+    },
+    {
+      "id": "c-soverom-kjeller",
+      "roomId": "soverom-kjeller",
+      "name": "Tak i soverommet",
+      "polygon": [
+        [
+          0.13,
+          8.55
+        ],
+        [
+          2.76,
+          8.55
+        ],
+        [
+          2.76,
+          11.38
+        ],
+        [
+          0.13,
+          11.38
+        ]
+      ],
+      "type": "flat",
+      "height": 2.25,
+      "paint": "#e8e4dc",
+      "trim": "#1d1e21",
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "V56, V67; soverom-kjeller.md (sort taklist)"
+    },
+    {
+      "id": "c-kjellerstue",
+      "roomId": "kjellerstue",
+      "name": "Tak i kjellerstua",
+      "polygon": [
+        [
+          3.05,
+          5.32
+        ],
+        [
+          6.45,
+          5.32
+        ],
+        [
+          6.45,
+          11.38
+        ],
+        [
+          3.05,
+          11.38
+        ]
+      ],
+      "type": "flat",
+      "height": 2.25,
+      "paint": "#e8e4dc",
+      "trim": "#1d1e21",
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "V56, V67; kjellerstue.md (sort taklist)"
+    },
+    {
+      "id": "c-entre",
+      "roomId": "entre-kjeller",
+      "name": "Tak i entréen",
+      "polygon": [
+        [
+          6.16,
+          3.12
+        ],
+        [
+          8.67,
+          3.12
+        ],
+        [
+          8.67,
+          6.05
+        ],
+        [
+          6.75,
+          6.05
+        ],
+        [
+          6.75,
+          5.23
+        ],
+        [
+          6.16,
+          5.23
+        ]
+      ],
+      "type": "flat",
+      "height": 2.35,
+      "paint": "sand",
+      "trim": null,
+      "estimated": [
+        "height",
+        "paint"
+      ],
+      "source": "V28 (entrégulvet + 2,35 = y −0,50, i plan med himlingen ute), V67 (SAND inne; 225559 viser lyst tak). Himlingen ute i #4a4642 ligger i outsideHouse.soffits."
+    },
+    {
+      "id": "c-bod-1",
+      "roomId": "bod-1",
+      "name": "Tak i boden",
+      "polygon": [
+        [
+          0.13,
+          0.13
+        ],
+        [
+          1.79,
+          0.13
+        ],
+        [
+          1.79,
+          2.22
+        ],
+        [
+          0.13,
+          2.22
+        ]
+      ],
+      "type": "flat",
+      "height": 2.25,
+      "paint": "#e8e4dc",
+      "trim": null,
+      "estimated": [
+        "*"
+      ]
+    },
+    {
+      "id": "c-bod-2",
+      "roomId": "bod-2",
+      "name": "Tak i den grå boden",
+      "polygon": [
+        [
+          2.06,
+          0.13
+        ],
+        [
+          6.33,
+          0.13
+        ],
+        [
+          6.33,
+          2.45
+        ],
+        [
+          2.06,
+          2.45
+        ]
+      ],
+      "type": "flat",
+      "height": 2.25,
+      "paint": "#9a958f",
+      "trim": null,
+      "estimated": [
+        "*"
+      ]
+    },
+    {
+      "id": "c-bod-3",
+      "roomId": "bod-3",
+      "name": "Tak i boden under terrassen",
+      "polygon": [
+        [
+          6.44,
+          0.13
+        ],
+        [
+          10.15,
+          0.13
+        ],
+        [
+          10.15,
+          2.97
+        ],
+        [
+          6.44,
+          2.97
+        ]
+      ],
+      "type": "flat",
+      "height": 2.35,
+      "paint": "sand",
+      "trim": null,
+      "estimated": [
+        "*"
+      ],
+      "source": "V28/V29: tak −0,50"
     }
   ],
   "bulkheads": [
@@ -1320,6 +3307,779 @@
       "color": "#2a2622",
       "lightColorK": 2700,
       "lumens": 500
+    },
+    {
+      "id": "l-kg-1",
+      "roomId": "kjeller-gang",
+      "group": "kjeller-gang",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        2.13,
+        2.25,
+        2.91
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2900,
+      "estimated": [
+        "*"
+      ],
+      "source": "V57: østraden x 2,13 / 3,33 / 4,53 på z 2,91, sørdelen x 3,93 / 5,03 på z 4,88; sort ring (225630)"
+    },
+    {
+      "id": "l-kg-2",
+      "roomId": "kjeller-gang",
+      "group": "kjeller-gang",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        3.33,
+        2.25,
+        2.91
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2900,
+      "estimated": [
+        "*"
+      ],
+      "source": "V57: østraden x 2,13 / 3,33 / 4,53 på z 2,91, sørdelen x 3,93 / 5,03 på z 4,88; sort ring (225630)"
+    },
+    {
+      "id": "l-kg-3",
+      "roomId": "kjeller-gang",
+      "group": "kjeller-gang",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        4.53,
+        2.25,
+        2.91
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2900,
+      "estimated": [
+        "*"
+      ],
+      "source": "V57: østraden x 2,13 / 3,33 / 4,53 på z 2,91, sørdelen x 3,93 / 5,03 på z 4,88; sort ring (225630)"
+    },
+    {
+      "id": "l-kg-4",
+      "roomId": "kjeller-gang",
+      "group": "kjeller-gang",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        3.93,
+        2.25,
+        4.88
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2900,
+      "estimated": [
+        "*"
+      ],
+      "source": "V57: østraden x 2,13 / 3,33 / 4,53 på z 2,91, sørdelen x 3,93 / 5,03 på z 4,88; sort ring (225630)"
+    },
+    {
+      "id": "l-kg-5",
+      "roomId": "kjeller-gang",
+      "group": "kjeller-gang",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        5.03,
+        2.25,
+        4.88
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2900,
+      "estimated": [
+        "*"
+      ],
+      "source": "V57: østraden x 2,13 / 3,33 / 4,53 på z 2,91, sørdelen x 3,93 / 5,03 på z 4,88; sort ring (225630)"
+    },
+    {
+      "id": "l-entre-1",
+      "roomId": "entre-kjeller",
+      "group": "entre",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        7.06,
+        2.35,
+        3.57
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2900,
+      "estimated": [
+        "*"
+      ],
+      "source": "entre-gang-kjeller.md: 2 × 2 på x 0,9 / 1,9 og z 0,45 / 2,0 lokalt (§1.3: + 6,16 / + 3,12)"
+    },
+    {
+      "id": "l-entre-2",
+      "roomId": "entre-kjeller",
+      "group": "entre",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        8.06,
+        2.35,
+        3.57
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2900,
+      "estimated": [
+        "*"
+      ],
+      "source": "entre-gang-kjeller.md: 2 × 2 på x 0,9 / 1,9 og z 0,45 / 2,0 lokalt (§1.3: + 6,16 / + 3,12)"
+    },
+    {
+      "id": "l-entre-3",
+      "roomId": "entre-kjeller",
+      "group": "entre",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        7.06,
+        2.35,
+        5.12
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2900,
+      "estimated": [
+        "*"
+      ],
+      "source": "entre-gang-kjeller.md: 2 × 2 på x 0,9 / 1,9 og z 0,45 / 2,0 lokalt (§1.3: + 6,16 / + 3,12)"
+    },
+    {
+      "id": "l-entre-4",
+      "roomId": "entre-kjeller",
+      "group": "entre",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        8.06,
+        2.35,
+        5.12
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2900,
+      "estimated": [
+        "*"
+      ],
+      "source": "entre-gang-kjeller.md: 2 × 2 på x 0,9 / 1,9 og z 0,45 / 2,0 lokalt (§1.3: + 6,16 / + 3,12)"
+    },
+    {
+      "id": "l-vask-1",
+      "roomId": "vaskerom",
+      "group": "vaskerom",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        1.38,
+        2.25,
+        4.9
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 3200,
+      "estimated": [
+        "*"
+      ],
+      "source": "V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)"
+    },
+    {
+      "id": "l-vask-2",
+      "roomId": "vaskerom",
+      "group": "vaskerom",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        1.38,
+        2.25,
+        5.35
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 3200,
+      "estimated": [
+        "*"
+      ],
+      "source": "V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)"
+    },
+    {
+      "id": "l-vask-3",
+      "roomId": "vaskerom",
+      "group": "vaskerom",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        2.23,
+        2.25,
+        5.1
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 3200,
+      "estimated": [
+        "*"
+      ],
+      "source": "V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)"
+    },
+    {
+      "id": "l-vask-4",
+      "roomId": "vaskerom",
+      "group": "vaskerom",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        1.88,
+        2.25,
+        6.37
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 3200,
+      "estimated": [
+        "*"
+      ],
+      "source": "V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)"
+    },
+    {
+      "id": "l-vask-5",
+      "roomId": "vaskerom",
+      "group": "vaskerom",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        1.88,
+        2.25,
+        7.22
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 3200,
+      "estimated": [
+        "*"
+      ],
+      "source": "V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)"
+    },
+    {
+      "id": "l-vask-6",
+      "roomId": "vaskerom",
+      "group": "vaskerom",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        1.88,
+        2.25,
+        7.97
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 3200,
+      "estimated": [
+        "*"
+      ],
+      "source": "V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)"
+    },
+    {
+      "id": "l-vask-7",
+      "roomId": "vaskerom",
+      "group": "vaskerom",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        1.18,
+        2.25,
+        7.97
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 3200,
+      "estimated": [
+        "*"
+      ],
+      "source": "V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)"
+    },
+    {
+      "id": "l-vask-8",
+      "roomId": "vaskerom",
+      "group": "vaskerom",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        0.53,
+        2.25,
+        7.97
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 3200,
+      "estimated": [
+        "*"
+      ],
+      "source": "V58 (ankret fra øst- og vestveggen); vaskerom.md (sort ring, 3000–3500 K)"
+    },
+    {
+      "id": "l-ks-1",
+      "roomId": "kjellerstue",
+      "group": "kjellerstue",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        3.35,
+        2.25,
+        7.72
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#d9d9d6",
+      "lumens": 350,
+      "lightColorK": 2800,
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring"
+    },
+    {
+      "id": "l-ks-2",
+      "roomId": "kjellerstue",
+      "group": "kjellerstue",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        3.35,
+        2.25,
+        8.52
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#d9d9d6",
+      "lumens": 350,
+      "lightColorK": 2800,
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring"
+    },
+    {
+      "id": "l-ks-3",
+      "roomId": "kjellerstue",
+      "group": "kjellerstue",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        3.35,
+        2.25,
+        9.32
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#d9d9d6",
+      "lumens": 350,
+      "lightColorK": 2800,
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring"
+    },
+    {
+      "id": "l-ks-4",
+      "roomId": "kjellerstue",
+      "group": "kjellerstue",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        3.6,
+        2.25,
+        11.08
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#d9d9d6",
+      "lumens": 350,
+      "lightColorK": 2800,
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring"
+    },
+    {
+      "id": "l-ks-5",
+      "roomId": "kjellerstue",
+      "group": "kjellerstue",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        3.8,
+        2.25,
+        11.08
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#d9d9d6",
+      "lumens": 350,
+      "lightColorK": 2800,
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring"
+    },
+    {
+      "id": "l-ks-6",
+      "roomId": "kjellerstue",
+      "group": "kjellerstue",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        5.78,
+        2.25,
+        11.08
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#d9d9d6",
+      "lumens": 350,
+      "lightColorK": 2800,
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring"
+    },
+    {
+      "id": "l-ks-7",
+      "roomId": "kjellerstue",
+      "group": "kjellerstue",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        5.98,
+        2.25,
+        11.08
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#d9d9d6",
+      "lumens": 350,
+      "lightColorK": 2800,
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring"
+    },
+    {
+      "id": "l-ks-8",
+      "roomId": "kjellerstue",
+      "group": "kjellerstue",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        6.1,
+        2.25,
+        5.77
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#d9d9d6",
+      "lumens": 350,
+      "lightColorK": 2800,
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring"
+    },
+    {
+      "id": "l-ks-9",
+      "roomId": "kjellerstue",
+      "group": "kjellerstue",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        6.1,
+        2.25,
+        6.62
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#d9d9d6",
+      "lumens": 350,
+      "lightColorK": 2800,
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring"
+    },
+    {
+      "id": "l-ks-10",
+      "roomId": "kjellerstue",
+      "group": "kjellerstue",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        4.85,
+        2.25,
+        5.67
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#d9d9d6",
+      "lumens": 350,
+      "lightColorK": 2800,
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (lokalt + 3,05 / + 5,32; rekka ved TV-veggen 0,30 fra vestveggen på z 11,08); hvit/sølv ring"
+    },
+    {
+      "id": "l-sk-1",
+      "roomId": "soverom-kjeller",
+      "group": "soverom-kjeller",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        0.48,
+        2.25,
+        8.85
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2700,
+      "estimated": [
+        "*"
+      ],
+      "source": "soverom-kjeller.md (lokalt + 0,13 / + 8,55): østrekka 0,30 fra østveggen, vestrekka 0,27 fra vestveggen; ingen over bokhylla"
+    },
+    {
+      "id": "l-sk-2",
+      "roomId": "soverom-kjeller",
+      "group": "soverom-kjeller",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        1.38,
+        2.25,
+        8.85
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2700,
+      "estimated": [
+        "*"
+      ],
+      "source": "soverom-kjeller.md (lokalt + 0,13 / + 8,55): østrekka 0,30 fra østveggen, vestrekka 0,27 fra vestveggen; ingen over bokhylla"
+    },
+    {
+      "id": "l-sk-3",
+      "roomId": "soverom-kjeller",
+      "group": "soverom-kjeller",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        2.33,
+        2.25,
+        8.85
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2700,
+      "estimated": [
+        "*"
+      ],
+      "source": "soverom-kjeller.md (lokalt + 0,13 / + 8,55): østrekka 0,30 fra østveggen, vestrekka 0,27 fra vestveggen; ingen over bokhylla"
+    },
+    {
+      "id": "l-sk-4",
+      "roomId": "soverom-kjeller",
+      "group": "soverom-kjeller",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        1.43,
+        2.25,
+        11.1
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2700,
+      "estimated": [
+        "*"
+      ],
+      "source": "soverom-kjeller.md (lokalt + 0,13 / + 8,55): østrekka 0,30 fra østveggen, vestrekka 0,27 fra vestveggen; ingen over bokhylla"
+    },
+    {
+      "id": "l-sk-5",
+      "roomId": "soverom-kjeller",
+      "group": "soverom-kjeller",
+      "type": "downlight",
+      "name": "Downlight",
+      "position": [
+        2.43,
+        2.25,
+        11.1
+      ],
+      "dims": {
+        "d": 0.09
+      },
+      "color": "#1d1e21",
+      "lumens": 350,
+      "lightColorK": 2700,
+      "estimated": [
+        "*"
+      ],
+      "source": "soverom-kjeller.md (lokalt + 0,13 / + 8,55): østrekka 0,30 fra østveggen, vestrekka 0,27 fra vestveggen; ingen over bokhylla"
+    },
+    {
+      "id": "l-bod-1",
+      "roomId": "bod-1",
+      "group": "boder",
+      "type": "plafond",
+      "name": "Pære i boden",
+      "position": [
+        0.96,
+        2.25,
+        1.175
+      ],
+      "dims": {
+        "d": 0.18,
+        "h": 0.1
+      },
+      "color": "#e8e4dc",
+      "lumens": 400,
+      "lightColorK": 2700,
+      "estimated": [
+        "*"
+      ],
+      "source": "Én pære per bod, av (§2.7)"
+    },
+    {
+      "id": "l-bod-2",
+      "roomId": "bod-2",
+      "group": "boder",
+      "type": "plafond",
+      "name": "Pære i den grå boden",
+      "position": [
+        4.2,
+        2.25,
+        1.29
+      ],
+      "dims": {
+        "d": 0.18,
+        "h": 0.1
+      },
+      "color": "#e8e4dc",
+      "lumens": 400,
+      "lightColorK": 2700,
+      "estimated": [
+        "*"
+      ],
+      "source": "Én pære per bod, av (§2.7)"
+    },
+    {
+      "id": "l-bod-3",
+      "roomId": "bod-3",
+      "group": "boder",
+      "type": "plafond",
+      "name": "Pære i boden under terrassen",
+      "position": [
+        8.3,
+        2.35,
+        1.55
+      ],
+      "dims": {
+        "d": 0.18,
+        "h": 0.1
+      },
+      "color": "#e8e4dc",
+      "lumens": 400,
+      "lightColorK": 2700,
+      "estimated": [
+        "*"
+      ],
+      "source": "Én pære per bod, av (§2.7)"
     }
   ],
   "kitchen": {
@@ -4125,6 +6885,408 @@
         "h": 0.03
       },
       "color": "#151515"
+    },
+    {
+      "id": "fx-kg-stikk-ost",
+      "roomId": "kjeller-gang",
+      "type": "socket",
+      "name": "Dobbel stikkontakt (østveggen)",
+      "wallId": "w-kg-ost",
+      "position": [
+        4.58,
+        0.13,
+        2.56
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "entre-gang-kjeller.md (x ≈ 4,45 lokalt, 5–10 cm nord for karmen), 225635"
+    },
+    {
+      "id": "fx-kg-stikk-vest",
+      "roomId": "kjeller-gang",
+      "type": "socket",
+      "name": "Dobbel stikkontakt (SV-hjørnet)",
+      "wallId": "w-kg-vest-sor",
+      "position": [
+        5.63,
+        0.12,
+        5.23
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "entre-gang-kjeller.md (x ≈ 5,50 lokalt), 225630"
+    },
+    {
+      "id": "fx-entre-bryter",
+      "roomId": "entre-kjeller",
+      "type": "switch",
+      "name": "Lysbryter ved ytterdøra",
+      "wallId": "w-entre-sor",
+      "position": [
+        8.67,
+        1,
+        5.52
+      ],
+      "dims": {
+        "w": 0.08,
+        "h": 0.08
+      },
+      "color": "#151515",
+      "estimated": [
+        "position"
+      ],
+      "source": "entre-gang-kjeller.md (z ≈ 2,40 lokalt på stripa mellom foringen og garderoben), 225619, 225621"
+    },
+    {
+      "id": "fx-vask-bryter",
+      "roomId": "vaskerom",
+      "type": "switch",
+      "name": "Lysbryter ved døra",
+      "wallId": "w-vask-ost",
+      "position": [
+        1.78,
+        1.05,
+        4.55
+      ],
+      "dims": {
+        "w": 0.08,
+        "h": 0.08
+      },
+      "color": "#151515",
+      "estimated": [
+        "position"
+      ],
+      "source": "vaskerom.md (rett inntil geriktens nordkant), 225508"
+    },
+    {
+      "id": "fx-vask-stikk-1",
+      "roomId": "vaskerom",
+      "type": "socket",
+      "name": "Stikkontakt nord for speilskapet",
+      "wallId": "w-vask-vest",
+      "position": [
+        0.31,
+        1.12,
+        8.45
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "vaskerom.md, 225501"
+    },
+    {
+      "id": "fx-vask-stikk-2",
+      "roomId": "vaskerom",
+      "type": "socket",
+      "name": "Stikkontakt sør for speilskapet",
+      "wallId": "w-vask-vest",
+      "position": [
+        1.63,
+        1.1,
+        8.45
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "vaskerom.md, 225501"
+    },
+    {
+      "id": "fx-vask-stikk-3",
+      "roomId": "vaskerom",
+      "type": "socket",
+      "name": "Stikkontakt i nisja over benkehjørnet",
+      "wallId": "w-vask-sor",
+      "position": [
+        2.76,
+        1.05,
+        8.02
+      ],
+      "dims": {
+        "w": 0.084,
+        "h": 0.084
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "vaskerom.md (z 3,65 lokalt fra vestveggen), 225505"
+    },
+    {
+      "id": "fx-vask-knagg-1",
+      "roomId": "vaskerom",
+      "type": "hook",
+      "name": "Dobbel knagg (sørveggen)",
+      "wallId": "w-vask-sor",
+      "position": [
+        2.76,
+        1.65,
+        5.9
+      ],
+      "dims": {
+        "w": 0.06,
+        "h": 0.08,
+        "d": 0.06
+      },
+      "color": "#1a1a1a",
+      "estimated": [
+        "*"
+      ],
+      "source": "V58 (z 5,90); vaskerom.md, 225505"
+    },
+    {
+      "id": "fx-vask-knagg-2",
+      "roomId": "vaskerom",
+      "type": "hook",
+      "name": "Krok under vinduet",
+      "wallId": "w-vask-nord",
+      "position": [
+        0.13,
+        0.97,
+        7.67
+      ],
+      "dims": {
+        "w": 0.03,
+        "h": 0.05,
+        "d": 0.04
+      },
+      "color": "#1a1a1a",
+      "estimated": [
+        "*"
+      ],
+      "source": "vaskerom.md (z 3,30 lokalt fra vestveggen)"
+    },
+    {
+      "id": "fx-vask-ventil",
+      "roomId": "vaskerom",
+      "type": "vent",
+      "name": "Avtrekksventil",
+      "mount": "ceiling",
+      "position": [
+        1.13,
+        2.25,
+        8.22
+      ],
+      "dims": {
+        "d": 0.13,
+        "h": 0.03
+      },
+      "color": "#1d1e21",
+      "estimated": [
+        "position"
+      ],
+      "source": "V58 (1,13; 8,22); 225501, 225513"
+    },
+    {
+      "id": "fx-ks-bryter",
+      "roomId": "kjellerstue",
+      "type": "switch",
+      "name": "Lysbryter ved døra",
+      "wallId": "w-ks-ost",
+      "position": [
+        4.17,
+        1.05,
+        5.32
+      ],
+      "dims": {
+        "w": 0.08,
+        "h": 0.08
+      },
+      "color": "#151515",
+      "estimated": [
+        "position"
+      ],
+      "source": "kjellerstue.md (x 1,12 lokalt), 225647, 225704"
+    },
+    {
+      "id": "fx-ks-stikk-dor",
+      "roomId": "kjellerstue",
+      "type": "socket",
+      "name": "Stikkontakt ved døra",
+      "wallId": "w-ks-ost",
+      "position": [
+        4.2,
+        0.18,
+        5.32
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "kjellerstue.md"
+    },
+    {
+      "id": "fx-ks-stikk-v1",
+      "roomId": "kjellerstue",
+      "type": "socket",
+      "name": "Stikkontakt under V1",
+      "wallId": "w-ks-sor",
+      "position": [
+        6.45,
+        0.2,
+        7.52
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "kjellerstue.md (a), 225655"
+    },
+    {
+      "id": "fx-ks-stikk-pilar",
+      "roomId": "kjellerstue",
+      "type": "socket",
+      "name": "Stikkontakt under pilaren",
+      "wallId": "w-ks-sor",
+      "position": [
+        6.45,
+        0.2,
+        9.07
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "kjellerstue.md (b), 225651"
+    },
+    {
+      "id": "fx-ks-stikk-tv-n",
+      "roomId": "kjellerstue",
+      "type": "socket",
+      "name": "Stikkontakt ved TV-veggen (nord)",
+      "wallId": "w-ks-vest",
+      "position": [
+        3.25,
+        0.2,
+        11.38
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "kjellerstue.md, 225657"
+    },
+    {
+      "id": "fx-ks-stikk-tv-s",
+      "roomId": "kjellerstue",
+      "type": "socket",
+      "name": "Stikkontakt ved TV-veggen (sør)",
+      "wallId": "w-ks-vest",
+      "position": [
+        6.2,
+        0.2,
+        11.38
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "kjellerstue.md, 225657"
+    },
+    {
+      "id": "fx-ks-stikk-nord",
+      "roomId": "kjellerstue",
+      "type": "socket",
+      "name": "Stikkontakt øst for soveromsdøra",
+      "wallId": "w-ks-nord",
+      "position": [
+        3.05,
+        0.2,
+        9.37
+      ],
+      "dims": {
+        "w": 0.15,
+        "h": 0.08
+      },
+      "color": "#1c1a19",
+      "estimated": [
+        "position"
+      ],
+      "source": "kjellerstue.md, 225702"
+    },
+    {
+      "id": "fx-ks-ventil",
+      "roomId": "kjellerstue",
+      "type": "vent",
+      "name": "Tallerkenventil",
+      "mount": "ceiling",
+      "position": [
+        4.75,
+        2.25,
+        8.12
+      ],
+      "dims": {
+        "d": 0.14,
+        "h": 0.04
+      },
+      "color": "#2a2b2d",
+      "estimated": [
+        "*"
+      ],
+      "source": "kjellerstue.md (midt i taket), 225648"
+    },
+    {
+      "id": "fx-sk-termostat",
+      "roomId": "soverom-kjeller",
+      "type": "thermostat",
+      "name": "Termostat (sort glass)",
+      "wallId": "w-sk-sor",
+      "position": [
+        2.76,
+        1.1,
+        9.93
+      ],
+      "dims": {
+        "w": 0.086,
+        "h": 0.086
+      },
+      "color": "#151515",
+      "accent": "#3b6fd6",
+      "estimated": [
+        "position"
+      ],
+      "source": "V66; soverom-kjeller.md (sort glasspanel med blått display), 225723"
     }
   ],
   "highWall": {
@@ -4555,6 +7717,26 @@
         "ceilingDefault"
       ],
       "source": "Planen og skalaen er meta.planFile, planPxPerM og planOriginPx (fotomålt, beholdes som alias). Dekket på 0,30 er anslått (D2, målelista punkt 1). Standardtaket 2,40 gjelder de nye rommene og er anslått (§1.4, målelista punkt 9)."
+    },
+    {
+      "id": "kjeller",
+      "name": "Kjeller",
+      "floorY": -2.55,
+      "slabThickness": 0.3,
+      "ceilingDefault": 2.25,
+      "plan": {
+        "file": "bilder_hus/plantegning_kjeller.png",
+        "pxPerM": 60.25,
+        "originPx": [
+          119.2,
+          112.1
+        ]
+      },
+      "estimated": [
+        "floorY",
+        "ceilingDefault"
+      ],
+      "source": "13 opptrinn (egen telling 2 + 5 + 5 neser + gulvkanten: 225333, 225337, 225339, 225342, 225349, 225631); tak 2,25 (225644, 225721, 225723, 225508); plan uskalert, ytterflater i flukt (+0,13) (hele-huset-avstemming.md V1–V2, V12, V56)"
     }
   ],
   "rooms": [
@@ -4619,6 +7801,1813 @@
         "mode": "calibrated"
       },
       "source": "floor.polygon, ceilings og zones i research/room-spec.json (fotomålt). Etterklangen er kalibrert mot 0,86 s (D12)."
+    },
+    {
+      "id": "trapp",
+      "name": "Trappa",
+      "levelId": "hoved",
+      "kind": "hud",
+      "polygon": [
+        [
+          0.13,
+          2.32
+        ],
+        [
+          1.45,
+          2.32
+        ],
+        [
+          1.45,
+          3.1
+        ],
+        [
+          1.04,
+          3.1
+        ],
+        [
+          1.04,
+          3.48
+        ],
+        [
+          1.76,
+          3.48
+        ],
+        [
+          1.76,
+          4.43
+        ],
+        [
+          0.13,
+          4.43
+        ]
+      ],
+      "stairId": "trapp-kjeller",
+      "openingId": "trappehull",
+      "estimated": [
+        "polygon"
+      ],
+      "source": "Trappas fotavtrykk (hele-huset-avstemming.md V19, §2.3): HUD-prismet går fra kjellergulvet (−2,55) til 1. etasje + 1 m (layout.js STAIR_HUD_TOP)"
+    },
+    {
+      "id": "kjeller-gang",
+      "levelId": "kjeller",
+      "name": "Gang",
+      "kind": "hall",
+      "polygon": [
+        [
+          0.13,
+          2.32
+        ],
+        [
+          1.85,
+          2.32
+        ],
+        [
+          1.85,
+          2.56
+        ],
+        [
+          5.75,
+          2.56
+        ],
+        [
+          5.75,
+          5.23
+        ],
+        [
+          3.05,
+          5.23
+        ],
+        [
+          3.05,
+          4.43
+        ],
+        [
+          0.13,
+          4.43
+        ]
+      ],
+      "floor": {
+        "material": "oak-plank",
+        "color": "#cbbfb0",
+        "boards": "x"
+      },
+      "baseboard": {
+        "height": 0.065,
+        "thickness": 0.012,
+        "color": "#cbbba7",
+        "profile": "rett, firkantet med liten fas"
+      },
+      "ceilingIds": [
+        "c-kjeller-gang"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "estimated": [
+        "polygon",
+        "floor.color"
+      ],
+      "source": "hele-huset-avstemming.md V57 (polygon, sørdelen 2,67 bred), V1–V3; entre-gang-kjeller.md; 225625, 225630, 225631, 225635; eier 12,50 m² med trappa"
+    },
+    {
+      "id": "vaskerom",
+      "levelId": "kjeller",
+      "name": "Vaskerom",
+      "kind": "laundry",
+      "polygon": [
+        [
+          0.13,
+          4.55
+        ],
+        [
+          2.76,
+          4.55
+        ],
+        [
+          2.76,
+          8.45
+        ],
+        [
+          0.13,
+          8.45
+        ]
+      ],
+      "floor": {
+        "material": "vinyl",
+        "color": "#8c8789",
+        "pattern": "cloudy",
+        "clouds": [
+          "#737072",
+          "#a3a0a1"
+        ]
+      },
+      "baseboard": {
+        "type": "upturn",
+        "height": 0.06,
+        "thickness": 0.005,
+        "color": "#8c8789",
+        "edge": "#2a2a2c"
+      },
+      "ceilingIds": [
+        "c-vaskerom"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "estimated": [
+        "polygon",
+        "baseboard"
+      ],
+      "source": "hele-huset-avstemming.md V5, V58; vaskerom.md (belegg brettet opp, ingen fotlist); 225443–225525"
+    },
+    {
+      "id": "soverom-kjeller",
+      "levelId": "kjeller",
+      "name": "Soverom",
+      "kind": "bedroom",
+      "polygon": [
+        [
+          0.13,
+          8.55
+        ],
+        [
+          2.76,
+          8.55
+        ],
+        [
+          2.76,
+          11.38
+        ],
+        [
+          0.13,
+          11.38
+        ]
+      ],
+      "floor": {
+        "material": "oak-plank",
+        "color": "#cbbfb0",
+        "boards": "z"
+      },
+      "baseboard": {
+        "height": 0.065,
+        "thickness": 0.012,
+        "color": "#cbbba7",
+        "profile": "rett, firkantet med liten fas"
+      },
+      "ceilingIds": [
+        "c-soverom-kjeller"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "estimated": [
+        "polygon",
+        "floor.color"
+      ],
+      "source": "hele-huset-avstemming.md V5, V62–V63, V66; soverom-kjeller.md; 225715–225726; eier 7,41 m²"
+    },
+    {
+      "id": "kjellerstue",
+      "levelId": "kjeller",
+      "name": "Kjellerstue",
+      "kind": "living",
+      "polygon": [
+        [
+          3.05,
+          5.32
+        ],
+        [
+          6.45,
+          5.32
+        ],
+        [
+          6.45,
+          11.38
+        ],
+        [
+          3.05,
+          11.38
+        ]
+      ],
+      "floor": {
+        "material": "oak-plank",
+        "color": "#cbbfb0",
+        "boards": "z"
+      },
+      "baseboard": {
+        "height": 0.065,
+        "thickness": 0.012,
+        "color": "#cbbba7",
+        "profile": "rett, firkantet med liten fas"
+      },
+      "ceilingIds": [
+        "c-kjellerstue"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "estimated": [
+        "polygon",
+        "floor.color"
+      ],
+      "source": "hele-huset-avstemming.md V5–V6, V64; kjellerstue.md; 225644–225710; eier 20,57 m²"
+    },
+    {
+      "id": "entre-kjeller",
+      "levelId": "kjeller",
+      "name": "Entré",
+      "kind": "entrance",
+      "polygon": [
+        [
+          6.16,
+          3.12
+        ],
+        [
+          8.67,
+          3.12
+        ],
+        [
+          8.67,
+          6.05
+        ],
+        [
+          6.75,
+          6.05
+        ],
+        [
+          6.75,
+          5.23
+        ],
+        [
+          6.16,
+          5.23
+        ]
+      ],
+      "floorOffset": -0.3,
+      "floor": {
+        "material": "oak-plank",
+        "color": "#cbbfb0",
+        "boards": "x"
+      },
+      "baseboard": {
+        "height": 0.065,
+        "thickness": 0.012,
+        "color": "#cbbba7",
+        "profile": "rett, firkantet med liten fas"
+      },
+      "ceilingIds": [
+        "c-entre"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "estimated": [
+        "polygon",
+        "floorOffset"
+      ],
+      "source": "hele-huset-avstemming.md V7–V8 (2,51 × 2,93 minus søyla = kjellerstuas SØ-hjørne), V24; entre-gang-kjeller.md; 225553–225621; eier 2,51 × 2,93"
+    },
+    {
+      "id": "bod-1",
+      "levelId": "kjeller",
+      "name": "Bod",
+      "kind": "storage",
+      "polygon": [
+        [
+          0.13,
+          0.13
+        ],
+        [
+          1.79,
+          0.13
+        ],
+        [
+          1.79,
+          2.22
+        ],
+        [
+          0.13,
+          2.22
+        ]
+      ],
+      "floor": {
+        "material": "concrete",
+        "color": "#8a8580"
+      },
+      "baseboard": null,
+      "ceilingIds": [
+        "c-bod-1"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "closed": true,
+      "estimated": [
+        "*"
+      ],
+      "source": "Lukket og tom (eier 2026-10-20). hele-huset-avstemming.md §1.1 og Kontrollert (1) punkt 4 (x 0,13–1,79); ingen bilder"
+    },
+    {
+      "id": "bod-2",
+      "levelId": "kjeller",
+      "name": "Bod (grå)",
+      "kind": "storage",
+      "polygon": [
+        [
+          2.06,
+          0.13
+        ],
+        [
+          6.33,
+          0.13
+        ],
+        [
+          6.33,
+          2.45
+        ],
+        [
+          2.06,
+          2.45
+        ]
+      ],
+      "floor": {
+        "material": "concrete",
+        "color": "#8a8580"
+      },
+      "baseboard": null,
+      "ceilingIds": [
+        "c-bod-2"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "closed": true,
+      "estimated": [
+        "*"
+      ],
+      "source": "Lukket og tom (eier 2026-10-20). hele-huset-avstemming.md V68; betonggulv sett gjennom døra i 225635"
+    },
+    {
+      "id": "bod-3",
+      "levelId": "kjeller",
+      "name": "Bod under terrassen",
+      "kind": "storage",
+      "polygon": [
+        [
+          6.44,
+          0.13
+        ],
+        [
+          10.15,
+          0.13
+        ],
+        [
+          10.15,
+          2.97
+        ],
+        [
+          6.44,
+          2.97
+        ]
+      ],
+      "floorOffset": -0.3,
+      "floor": {
+        "material": "parquet",
+        "color": "#a2663c"
+      },
+      "baseboard": null,
+      "ceilingIds": [
+        "c-bod-3"
+      ],
+      "acoustic": {
+        "mode": "estimate"
+      },
+      "closed": true,
+      "estimated": [
+        "*"
+      ],
+      "source": "Lukket og tom (eier 2026-10-20: 3,70 × 2,84). hele-huset-avstemming.md V9, V29, V68; oransjebrun parkett sett gjennom døra i 225556, 225558"
     }
-  ]
+  ],
+  "floorOpenings": [
+    {
+      "id": "trappehull",
+      "levelId": "hoved",
+      "roomId": "gang",
+      "stairId": "trapp-kjeller",
+      "polygon": [
+        [
+          0,
+          2.32
+        ],
+        [
+          1.45,
+          2.32
+        ],
+        [
+          1.45,
+          3.48
+        ],
+        [
+          1.85,
+          3.48
+        ],
+        [
+          1.85,
+          4.43
+        ],
+        [
+          0,
+          4.43
+        ]
+      ],
+      "edgeBand": {
+        "color": "#f2efe8",
+        "depth": 0.3,
+        "edges": "free",
+        "notes": "Bare på de frie kantene: x 1,45 under neselista og under rekkverk C, z 3,48 under B, x 1,85 under A. Langs x 0, z 2,32 og z 4,43 går sjaktveggene i veggfargen rett gjennom etasjeskillet (V16)."
+      },
+      "estimated": [
+        "polygon"
+      ],
+      "source": "hele-huset-avstemming.md V15–V16; 225333, 225335; eier 1,54 = til baddøra"
+    }
+  ],
+  "stairs": [
+    {
+      "id": "trapp-kjeller",
+      "name": "Trappa",
+      "type": "half-turn-winder",
+      "fromLevel": "kjeller",
+      "toLevel": "hoved",
+      "openingId": "trappehull",
+      "roomIds": [
+        "kjeller-gang",
+        "gang"
+      ],
+      "risers": 13,
+      "top": {
+        "edge": [
+          [
+            1.45,
+            2.32
+          ],
+          [
+            1.45,
+            3.1
+          ]
+        ],
+        "down": [
+          -1,
+          0
+        ],
+        "straightTreads": 1
+      },
+      "foot": {
+        "edge": [
+          [
+            1.73,
+            3.48
+          ],
+          [
+            1.73,
+            4.43
+          ]
+        ],
+        "down": [
+          1,
+          0
+        ],
+        "straightTreads": 3
+      },
+      "well": {
+        "polygon": [
+          [
+            1.04,
+            3.1
+          ],
+          [
+            1.45,
+            3.1
+          ],
+          [
+            1.45,
+            3.48
+          ],
+          [
+            1.04,
+            3.48
+          ]
+        ],
+        "newel": [
+          1.45,
+          3.1
+        ]
+      },
+      "footprint": [
+        [
+          0.13,
+          2.32
+        ],
+        [
+          1.45,
+          2.32
+        ],
+        [
+          1.45,
+          3.1
+        ],
+        [
+          1.04,
+          3.1
+        ],
+        [
+          1.04,
+          3.48
+        ],
+        [
+          1.76,
+          3.48
+        ],
+        [
+          1.76,
+          4.43
+        ],
+        [
+          0.13,
+          4.43
+        ]
+      ],
+      "walkLine": "flight-centre",
+      "going": null,
+      "winders": "balanced",
+      "tread": {
+        "thickness": 0.04,
+        "nosing": 0.03,
+        "batten": {
+          "h": 0.04,
+          "inset": 0.025
+        },
+        "material": "oak",
+        "color": "#ada396"
+      },
+      "openRisers": true,
+      "stringers": {
+        "color": "#1d1e21",
+        "thickness": 0.05,
+        "depth": 0.28,
+        "footCut": 0.06
+      },
+      "ledge": {
+        "x": [
+          0,
+          0.13
+        ],
+        "top": -0.27,
+        "color": "sand"
+      },
+      "guards": [
+        {
+          "id": "rekk-a",
+          "level": "hoved",
+          "line": [
+            [
+              1.85,
+              4.43
+            ],
+            [
+              1.85,
+              3.48
+            ]
+          ]
+        },
+        {
+          "id": "rekk-b",
+          "level": "hoved",
+          "line": [
+            [
+              1.85,
+              3.48
+            ],
+            [
+              1.45,
+              3.48
+            ]
+          ]
+        },
+        {
+          "id": "rekk-c",
+          "level": "hoved",
+          "line": [
+            [
+              1.45,
+              3.48
+            ],
+            [
+              1.45,
+              3.1
+            ]
+          ]
+        },
+        {
+          "id": "rekk-oye",
+          "on": "well"
+        }
+      ],
+      "guardStyle": {
+        "height": 1,
+        "stairHeight": 0.9,
+        "post": 0.065,
+        "baluster": 0.022,
+        "spacing": 0.13,
+        "topRail": [
+          0.07,
+          0.05
+        ],
+        "color": "#1d1e21"
+      },
+      "handrails": [
+        {
+          "side": "outer",
+          "start": [
+            1.4,
+            2.32
+          ],
+          "startHeight": 0.7,
+          "walls": [
+            "øst",
+            "nord",
+            "vest"
+          ],
+          "height": 0.9,
+          "profile": [
+            0.05,
+            0.04
+          ],
+          "offset": 0.05,
+          "color": "#1d1e21",
+          "led": {
+            "walls": [
+              "øst",
+              "nord"
+            ],
+            "lumensPerM": 120,
+            "lightColorK": 2900,
+            "group": "gang"
+          }
+        }
+      ],
+      "decor": [
+        {
+          "type": "plant-small",
+          "on": "ledge",
+          "at": [
+            0.07,
+            4.3
+          ],
+          "optional": true
+        }
+      ],
+      "estimated": [
+        "risers",
+        "top",
+        "foot",
+        "well",
+        "footprint",
+        "tread",
+        "stringers.footCut",
+        "guards",
+        "handrails[0].startHeight",
+        "handrails[0].led",
+        "ledge"
+      ],
+      "source": "hele-huset-avstemming.md V12–V23 (§2.4, footprint V19, footCut V17); gang-1etg.md, trapp.md, entre-gang-kjeller.md; 225331, 225333, 225335, 225337, 225339, 225342, 225349, 225631, 225639"
+    }
+  ],
+  "builtIns": [
+    {
+      "id": "bi-vask-dusj",
+      "roomId": "vaskerom",
+      "type": "shower",
+      "name": "Dusj",
+      "mount": "floor",
+      "position": [
+        0.67,
+        0,
+        5.135
+      ],
+      "dims": {
+        "w": 1.08,
+        "d": 1.17,
+        "h": 2
+      },
+      "rotationDeg": 0,
+      "params": {
+        "shape": "rect",
+        "corner": "NE",
+        "profile": "#151515",
+        "glassHeight": 2,
+        "glass": [
+          {
+            "side": "south",
+            "line": [
+              [
+                1.21,
+                4.55
+              ],
+              [
+                1.21,
+                5.72
+              ]
+            ],
+            "panels": [
+              {
+                "kind": "fixed"
+              },
+              {
+                "kind": "sliding",
+                "handle": "bar"
+              }
+            ]
+          },
+          {
+            "side": "west",
+            "line": [
+              [
+                0.13,
+                5.72
+              ],
+              [
+                1.21,
+                5.72
+              ]
+            ],
+            "panels": [
+              {
+                "kind": "fixed"
+              }
+            ]
+          }
+        ],
+        "wallPanels": {
+          "walls": [
+            "w-vask-nord",
+            "w-vask-ost"
+          ],
+          "color": "#5a5657",
+          "clouds": [
+            "#77726f",
+            "#3f3c3c"
+          ],
+          "toCeiling": true,
+          "notes": "Mørke våtromsplater fra gulv til tak på nord- og østveggen innenfor dusjen."
+        },
+        "set": {
+          "wall": "w-vask-nord",
+          "z": 5.05,
+          "finish": "matt-black",
+          "thermostatH": 1.05,
+          "shelf": true,
+          "head": {
+            "shape": "square",
+            "size": 0.25,
+            "h": 2.15
+          },
+          "handShower": true
+        },
+        "drainId": "bi-vask-sluk"
+      },
+      "estimated": [
+        "dims",
+        "params.set",
+        "params.glassHeight"
+      ],
+      "source": "hele-huset-avstemming.md V58–V59 (x 0,13–1,21 · z 4,55–5,72, front mot sør med fast felt + skyvefelt, fast sidefelt mot vest); vaskerom.md; 225446, 225450, 225517, 225525"
+    },
+    {
+      "id": "bi-vask-sluk",
+      "roomId": "vaskerom",
+      "type": "floor-drain",
+      "name": "Sluk",
+      "mount": "floor",
+      "position": [
+        0.73,
+        0,
+        5.25
+      ],
+      "dims": {
+        "w": 0.15,
+        "d": 0.15,
+        "h": 0.005
+      },
+      "rotationDeg": 0,
+      "params": {
+        "shape": "round",
+        "finish": "steel"
+      },
+      "collide": false,
+      "estimated": [
+        "position"
+      ],
+      "source": "V59 (Ø 0,15 på (0,73; 5,25))"
+    },
+    {
+      "id": "bi-vask-wc",
+      "roomId": "vaskerom",
+      "type": "wc",
+      "name": "Vegghengt WC",
+      "mount": "wall",
+      "wallId": "w-vask-nord",
+      "position": [
+        0.13,
+        0,
+        6.32
+      ],
+      "dims": {
+        "w": 0.78,
+        "d": 0.2,
+        "h": 1.15
+      },
+      "rotationDeg": 90,
+      "colors": {
+        "box": "#b8bfb5",
+        "bowl": "#f2f2f0"
+      },
+      "params": {
+        "bowl": {
+          "w": 0.36,
+          "d": 0.54,
+          "rimH": 0.42,
+          "rimless": true,
+          "lid": "closed"
+        },
+        "flushPlate": {
+          "color": "#1d1e21",
+          "w": 0.24,
+          "h": 0.16,
+          "centerH": 0.95
+        },
+        "shelfEdge": "#a7a9a8"
+      },
+      "estimated": [
+        "dims",
+        "params.flushPlate"
+      ],
+      "source": "V58 (kassa z 5,93–6,71 midt mellom dusjglasset og vindusnisjen, WC midt z 6,32); vaskerom.md, 225450, 225451"
+    },
+    {
+      "id": "bi-vask-handkletorker",
+      "roomId": "vaskerom",
+      "type": "towel-radiator",
+      "name": "Håndkletørker",
+      "mount": "wall",
+      "wallId": "w-vask-ost",
+      "position": [
+        1.31,
+        0.05,
+        4.55
+      ],
+      "dims": {
+        "w": 0.03,
+        "d": 0.06,
+        "h": 1.75
+      },
+      "rotationDeg": 0,
+      "colors": {
+        "tube": "#1a1a1a"
+      },
+      "params": {
+        "form": "single-tube",
+        "tubeD": 0.03,
+        "mountH": 0.3,
+        "hookTop": true
+      },
+      "estimated": [
+        "position"
+      ],
+      "source": "V60: ett loddrett matt svart rør Ø 0,03 fra h 0,05 til 1,80, veggfeste på 0,30, krok øverst, x 1,31; 225508"
+    },
+    {
+      "id": "bi-vask-benk",
+      "roomId": "vaskerom",
+      "type": "laundry-bench",
+      "name": "Benk med kum",
+      "mount": "wall",
+      "wallId": "w-vask-vest",
+      "position": [
+        1.445,
+        0,
+        8.45
+      ],
+      "dims": {
+        "w": 2.63,
+        "d": 0.62,
+        "h": 0.9
+      },
+      "rotationDeg": 180,
+      "colors": {
+        "top": "#938b85",
+        "fronts": "#b0a89f",
+        "handles": "#1a1a1a",
+        "sink": "#1a1a1a"
+      },
+      "params": {
+        "top": {
+          "thickness": 0.03,
+          "clouds": [
+            "#a39b95",
+            "#837b75"
+          ]
+        },
+        "plinth": 0.08,
+        "sink": {
+          "type": "composite-square",
+          "w": 0.5,
+          "d": 0.42,
+          "centerX": 0.73,
+          "tap": "black-kitchen"
+        },
+        "modules": [
+          {
+            "x": [
+              0.13,
+              0.43
+            ],
+            "kind": "drawers",
+            "count": 2
+          },
+          {
+            "x": [
+              0.43,
+              1.03
+            ],
+            "kind": "sink-drawers",
+            "count": 2
+          },
+          {
+            "x": [
+              1.03,
+              1.63
+            ],
+            "kind": "drawers",
+            "count": 2
+          },
+          {
+            "x": [
+              1.63,
+              2.17
+            ],
+            "kind": "door",
+            "hinge": "south"
+          },
+          {
+            "x": [
+              2.17,
+              2.76
+            ],
+            "kind": "corner",
+            "under": "bi-vask-skaprad"
+          }
+        ]
+      },
+      "estimated": [
+        "params.modules",
+        "params.sink"
+      ],
+      "source": "V58 (benken z 7,83–8,45, overkant 0,90, ankret fra vestveggen); vaskerom.md (modulene lokalt + 0,13); 225443, 225501"
+    },
+    {
+      "id": "bi-vask-skaprad",
+      "roomId": "vaskerom",
+      "type": "cabinet-row",
+      "name": "Skaprad med maskinsøyle",
+      "mount": "wall",
+      "wallId": "w-vask-sor",
+      "position": [
+        2.76,
+        0,
+        7.25
+      ],
+      "dims": {
+        "w": 2.4,
+        "d": 0.59,
+        "h": 2.25
+      },
+      "rotationDeg": -90,
+      "colors": {
+        "fronts": "#b0a89f",
+        "handles": "#1a1a1a"
+      },
+      "params": {
+        "frontX": 2.17,
+        "topPanelFrom": 2.13,
+        "plinth": 0.08,
+        "modules": [
+          {
+            "z": [
+              6.05,
+              6.65
+            ],
+            "kind": "hamper",
+            "tiltFronts": 3,
+            "topPanel": 0.3,
+            "closed": true
+          },
+          {
+            "z": [
+              6.65,
+              7.25
+            ],
+            "kind": "tall",
+            "notes": "Varmtvannsberederen står trolig bak (anslått)."
+          },
+          {
+            "z": [
+              7.25,
+              7.85
+            ],
+            "kind": "machine-column",
+            "washerId": "bi-vask-vaskemaskin",
+            "dryerId": "bi-vask-torketrommel",
+            "wallCabinet": {
+              "from": 1.8,
+              "to": 2.13,
+              "handle": "east-bottom"
+            }
+          },
+          {
+            "z": [
+              7.85,
+              8.45
+            ],
+            "kind": "bench-corner",
+            "niche": true,
+            "wallCabinet": {
+              "from": 1.8,
+              "to": 2.13,
+              "handle": "east-bottom"
+            }
+          }
+        ]
+      },
+      "estimated": [
+        "params.modules"
+      ],
+      "source": "V58 (z 6,05–8,45, fronter på x 2,17, ankret fra vestveggen); vaskerom.md (toppanel fra 2,13 til taket, greige #b0a89f); 225505, 225512"
+    },
+    {
+      "id": "bi-vask-vaskemaskin",
+      "roomId": "vaskerom",
+      "type": "washer",
+      "name": "Vaskemaskin",
+      "mount": "floor",
+      "position": [
+        2.465,
+        0,
+        7.55
+      ],
+      "dims": {
+        "w": 0.6,
+        "d": 0.6,
+        "h": 0.85
+      },
+      "rotationDeg": -90,
+      "colors": {
+        "body": "#e6e2dc"
+      },
+      "params": {
+        "door": "closed"
+      },
+      "estimated": [
+        "dims"
+      ],
+      "source": "vaskerom.md (eldre Whirlpool, døra lukket), 225505"
+    },
+    {
+      "id": "bi-vask-torketrommel",
+      "roomId": "vaskerom",
+      "type": "dryer",
+      "name": "Tørketrommel",
+      "mount": "floor",
+      "position": [
+        2.465,
+        0.87,
+        7.55
+      ],
+      "dims": {
+        "w": 0.6,
+        "d": 0.6,
+        "h": 0.85
+      },
+      "rotationDeg": -90,
+      "colors": {
+        "body": "#eceeef"
+      },
+      "params": {
+        "stackedOn": "bi-vask-vaskemaskin",
+        "heatPump": true
+      },
+      "estimated": [
+        "dims"
+      ],
+      "source": "vaskerom.md (Bosch varmepumpe stablet på vaskemaskinen, topp ca. 1,72), 225505, 225512"
+    },
+    {
+      "id": "bi-entre-garderobe",
+      "roomId": "entre-kjeller",
+      "type": "wardrobe-sliding",
+      "name": "Garderobe med speilskyvedører",
+      "mount": "wall",
+      "wallId": "w-entre-vest",
+      "position": [
+        7.71,
+        0,
+        6.05
+      ],
+      "dims": {
+        "w": 1.92,
+        "d": 0.47,
+        "h": 2.35
+      },
+      "rotationDeg": 180,
+      "colors": {
+        "doors": "mirror",
+        "profiles": "#1a1a1a",
+        "inside": "#262626"
+      },
+      "params": {
+        "doors": 2,
+        "topRail": true,
+        "bottomRail": true,
+        "closed": true
+      },
+      "estimated": [
+        "dims"
+      ],
+      "source": "entre-gang-kjeller.md (x 0,56–2,50 lokalt, 0,47 dyp, fra gulv til tak); søyla stikker 0,35 fram (V7); 225600, 225609, 225621"
+    }
+  ],
+  "lightGroups": [
+    {
+      "id": "kjeller-gang",
+      "label": "Kjellergang",
+      "roomId": "kjeller-gang",
+      "dimmer": true,
+      "defaultDimmer": 0.5,
+      "auto": "on"
+    },
+    {
+      "id": "entre",
+      "label": "Entré",
+      "roomId": "entre-kjeller",
+      "dimmer": true,
+      "defaultDimmer": 0.5,
+      "auto": "evening"
+    },
+    {
+      "id": "vaskerom",
+      "label": "Vaskerom",
+      "roomId": "vaskerom",
+      "dimmer": true,
+      "defaultDimmer": 0.6
+    },
+    {
+      "id": "kjellerstue",
+      "label": "Kjellerstue",
+      "roomId": "kjellerstue",
+      "dimmer": true,
+      "defaultDimmer": 0.4
+    },
+    {
+      "id": "soverom-kjeller",
+      "label": "Soverom i kjelleren",
+      "roomId": "soverom-kjeller",
+      "dimmer": true,
+      "defaultDimmer": 0.4
+    },
+    {
+      "id": "boder",
+      "label": "Boder",
+      "roomId": null,
+      "dimmer": false,
+      "defaultDimmer": 0,
+      "auto": "off"
+    },
+    {
+      "id": "ute",
+      "label": "Ute",
+      "roomId": null,
+      "dimmer": true,
+      "defaultDimmer": 0.6,
+      "auto": "evening"
+    }
+  ],
+  "facadeSegments": [
+    {
+      "id": "f-nord-kjeller",
+      "wallIds": [
+        "w-sk-nord",
+        "w-vask-nord",
+        "w-kg-nord",
+        "w-b1-nord"
+      ],
+      "material": "plaster",
+      "color": "#d9d6cf",
+      "outerFace": -0.3,
+      "estimated": [
+        "material",
+        "color"
+      ],
+      "source": "V10 (ytterflate x −0,30, i flukt med 1. etasje), §2.8 (lys puss)"
+    },
+    {
+      "id": "f-ost-kjeller",
+      "wallIds": [
+        "w-b1-ost",
+        "w-b2-ost",
+        "w-b3-ost"
+      ],
+      "material": "plaster",
+      "color": "#d9d6cf",
+      "outerFace": -0.3,
+      "estimated": [
+        "material",
+        "color"
+      ],
+      "source": "V10, §2.8"
+    },
+    {
+      "id": "f-vest-kjeller",
+      "wallIds": [
+        "w-ks-vest",
+        "w-sk-vest"
+      ],
+      "material": "plaster",
+      "color": "#d9d6cf",
+      "outerFace": 11.68,
+      "estimated": [
+        "*"
+      ],
+      "source": "V4 (ytterflate z 11,68, himling under utkragingen); vestfasaden er ikke fotografert"
+    },
+    {
+      "id": "f-sor-kjellerstue",
+      "wallIds": [
+        "w-ks-sor"
+      ],
+      "material": "plaster",
+      "color": "#d9d6cf",
+      "outerFace": 6.75,
+      "estimated": [
+        "*"
+      ],
+      "source": "V6, V36 (pusset sørvegg på x 6,75 under utkragingen)"
+    },
+    {
+      "id": "f-nisje-dorvegg",
+      "wallIds": [
+        "w-entre-sor"
+      ],
+      "material": "cladding",
+      "color": "#4a4642",
+      "outerFace": 8.88,
+      "zRange": [
+        3.18,
+        6.75
+      ],
+      "estimated": [
+        "zRange"
+      ],
+      "source": "V31: stående kledning fra z 3,18 til 6,75, videre over fyllvolumet bak pilaren (outsideHouse.fill); 225543"
+    },
+    {
+      "id": "f-nisje-ost",
+      "wallIds": [
+        "w-b3-vest-ute"
+      ],
+      "material": "cladding",
+      "color": "#4a4642",
+      "outerFace": 3.18,
+      "estimated": [
+        "color"
+      ],
+      "source": "V31 (østre sidevegg i nisjen); 225543, 225619"
+    },
+    {
+      "id": "f-bod3-sor",
+      "wallIds": [
+        "w-b3-sor"
+      ],
+      "material": "cladding",
+      "color": "#4a4642",
+      "outerFace": 10.34,
+      "estimated": [
+        "*"
+      ],
+      "source": "V31 (sørflaten av rom 3,70, ikke fotografert)"
+    }
+  ],
+  "outsideHouse": {
+    "entranceLevelY": -2.87,
+    "entranceLevelFrom": {
+      "roomId": "entre-kjeller",
+      "below": 0.02,
+      "notes": "entranceLevelY = kjellerens floorY + entréens floorOffset − 0,02 (terskelen 2–4 cm over grusen, V25)."
+    },
+    "forecourt": {
+      "polygon": [
+        [
+          8.88,
+          3.18
+        ],
+        [
+          12.6,
+          3.18
+        ],
+        [
+          12.6,
+          6.75
+        ],
+        [
+          8.88,
+          6.75
+        ]
+      ],
+      "y": -2.87,
+      "material": "concrete-slabs"
+    },
+    "covered": {
+      "polygon": [
+        [
+          8.88,
+          3.18
+        ],
+        [
+          10.35,
+          3.18
+        ],
+        [
+          10.35,
+          6
+        ],
+        [
+          9.8,
+          6
+        ],
+        [
+          9.8,
+          6.75
+        ],
+        [
+          8.88,
+          6.75
+        ]
+      ],
+      "soffitId": "himling-nisje",
+      "notes": "Den overdekte delen av forplassen: under terrassen x 8,88–10,35 for z 3,18–6,0 og bak pilaren x 8,88–9,80 for z 6,0–6,75 (§1.1, Kontrollert (1) punkt 6)."
+    },
+    "soffits": [
+      {
+        "id": "himling-nisje",
+        "polygon": [
+          [
+            8.88,
+            3.18
+          ],
+          [
+            10.35,
+            3.18
+          ],
+          [
+            10.35,
+            6
+          ],
+          [
+            9.8,
+            6
+          ],
+          [
+            9.8,
+            6.75
+          ],
+          [
+            8.88,
+            6.75
+          ]
+        ],
+        "y": -0.5,
+        "color": "#4a4642",
+        "boards": {
+          "along": "z",
+          "width": 0.1
+        },
+        "notes": "Liggende bord i samme beis som kledningen, i plan med entrétaket (V28). Ser mørk ut fordi den er ubelyst."
+      },
+      {
+        "id": "himling-utkraging",
+        "polygon": [
+          [
+            6.75,
+            6.75
+          ],
+          [
+            7.22,
+            6.75
+          ],
+          [
+            7.22,
+            12.23
+          ],
+          [
+            -0.3,
+            12.23
+          ],
+          [
+            -0.3,
+            11.68
+          ],
+          [
+            6.75,
+            11.68
+          ]
+        ],
+        "y": -0.3,
+        "color": "#4a4642",
+        "notes": "Lukker undersiden av 1. etasje der den krager ut over kjellerstua og soverommet: x 6,75–7,22 fra z 6,75 (V6) og z 11,68–12,23 for x −0,30 … 7,22 (V4). Grunnmursboksen under w-vest-stue fjernes uten erstatning, og den under w-sor (V4, V6, V36)."
+      }
+    ],
+    "removeFoundationBoxes": [
+      {
+        "under": "w-vest-stue",
+        "why": "V4: kjellerens vestvegg står på z 11,38–11,68; himlingen lukker undersiden"
+      },
+      {
+        "under": "w-sor",
+        "why": "V6: kjellerstuas sørvegg står på x 6,45–6,75; himlingen lukker undersiden"
+      },
+      {
+        "under": "w-kjokken-sor",
+        "where": "inne i entréen og rom 3,70",
+        "why": "V36, §2.8: boksen x 6,37–6,62 står ellers inne i entréen og bod-3"
+      }
+    ],
+    "fill": {
+      "id": "fyll-dorvegg",
+      "x": [
+        6.75,
+        8.88
+      ],
+      "z": [
+        6.26,
+        6.75
+      ],
+      "y": [
+        -2.87,
+        -0.23
+      ],
+      "cladding": {
+        "face": "south",
+        "color": "#4a4642"
+      },
+      "notes": "Lukket volum bak dørveggens kledning vest for entréen (V31); sørflaten kles i flukt med dørveggen (x 8,88)."
+    },
+    "pillar": {
+      "id": "pilar-inngang",
+      "x": [
+        10,
+        10.35
+      ],
+      "z": [
+        5.65,
+        6
+      ],
+      "y": [
+        -2.87,
+        -0.5
+      ],
+      "color": "#a8a9aa",
+      "material": "spritputs",
+      "box": {
+        "face": "east",
+        "h": 1.4,
+        "w": 0.06,
+        "height": 0.1,
+        "color": "#1a1a1a",
+        "notes": "Liten sort boks (bryter eller sensor), h 1,4 over bakken"
+      },
+      "notes": "V30. Hjørnepilaren i TERRACE_FIT (9,65; 6,60) bygges bare hvis eieren bekrefter at det er to pilarer."
+    },
+    "deck": {
+      "extendToX": 10.35,
+      "z": [
+        -0.3,
+        6
+      ],
+      "y": -0.03,
+      "removeColumnsAtZ": [
+        0.25,
+        3.4,
+        6.55
+      ],
+      "notes": "V9: terrassedekket og himlingen går ut til x 10,35 over rom 3,70 og nisjen (z −0,30 … 6,0). D10 forkastes."
+    },
+    "terraceStair": {
+      "risers": 16,
+      "from": [
+        7.62,
+        7.125
+      ],
+      "to": [
+        11.37,
+        7.125
+      ],
+      "width": 0.75,
+      "going": 0.25,
+      "topY": -0.03,
+      "bottomY": -2.87,
+      "guards": "outer",
+      "closedSideFromX": 9.8,
+      "notes": "V33: 16 opptrinn à (−0,03 − entranceLevelY) / 16 = 0,1775, 15 inntrinn à 0,25 fra x 7,62 til 11,37 langs terrassens vestside (z 6,75–7,50). Lukket vange eller rekkverk på østsiden forbi pilaren (x > 9,8). Gangbar som kile (§3.11)."
+    },
+    "landing": {
+      "polygon": [
+        [
+          11.37,
+          6.75
+        ],
+        [
+          12.4,
+          6.75
+        ],
+        [
+          12.4,
+          8.3
+        ],
+        [
+          11.37,
+          8.3
+        ]
+      ],
+      "y": -2.87,
+      "notes": "Reposet begynner der trappa slutter (V33). TERRACE_FITs gamle landing (x 9,55–10,5) utgår."
+    },
+    "path": {
+      "polygon": [
+        [
+          7.22,
+          7.5
+        ],
+        [
+          11.37,
+          7.5
+        ],
+        [
+          11.37,
+          8.1
+        ],
+        [
+          7.22,
+          8.1
+        ]
+      ],
+      "y": -2.87,
+      "notes": "Stien langs trappas ytterside forlenges til reposet (V33)."
+    },
+    "walk": {
+      "polygon": [
+        [
+          7.22,
+          8.1
+        ],
+        [
+          8,
+          8.1
+        ],
+        [
+          8,
+          11.6
+        ],
+        [
+          7.22,
+          11.6
+        ]
+      ],
+      "y": -2.87
+    },
+    "groundBelowY": -2.95,
+    "terrain": {
+      "nearHouseY": -2.95
+    },
+    "nearGround": {
+      "y": -2.95,
+      "toX": 12.8,
+      "notes": "Må stå eksplisitt: ellers bruker exterior.js TERRACE_FITs −1,75 så lenge fitten gjelder (V33). Terrassens kledde vestside (z 6,75) stopper også her."
+    },
+    "paving": {
+      "gravelStrip": {
+        "color": "#aeafb0",
+        "width": 0.2,
+        "along": "door-wall"
+      },
+      "slate": {
+        "color": "#9da4a8",
+        "x": [
+          9.08,
+          9.78
+        ],
+        "z": [
+          3.56,
+          5.06
+        ],
+        "notes": "Skiferhelle 1,5 × 0,7 foran døra (V34)"
+      },
+      "concrete": {
+        "color": "#a7a49e",
+        "joints": {
+          "material": "gravel",
+          "color": "#aeafb0"
+        }
+      },
+      "groundCover": {
+        "color": "#4e6b3a",
+        "notes": "Bunndekke i bedet ved østre sidevegg"
+      }
+    },
+    "lights": [
+      {
+        "id": "l-ute-1",
+        "group": "ute",
+        "type": "downlight",
+        "name": "Downlight i himlingen",
+        "position": [
+          9.46,
+          -0.5,
+          3.78
+        ],
+        "dims": {
+          "d": 0.09
+        },
+        "color": "#d9d9d6",
+        "lumens": 350,
+        "lightColorK": 2800,
+        "estimated": [
+          "lumens",
+          "lightColorK"
+        ],
+        "source": "V35 (x 9,46; z 3,78 / 4,66 / 5,54, 0,88 mellom); 225543"
+      },
+      {
+        "id": "l-ute-2",
+        "group": "ute",
+        "type": "downlight",
+        "name": "Downlight i himlingen",
+        "position": [
+          9.46,
+          -0.5,
+          4.66
+        ],
+        "dims": {
+          "d": 0.09
+        },
+        "color": "#d9d9d6",
+        "lumens": 350,
+        "lightColorK": 2800,
+        "estimated": [
+          "lumens",
+          "lightColorK"
+        ],
+        "source": "V35 (x 9,46; z 3,78 / 4,66 / 5,54, 0,88 mellom); 225543"
+      },
+      {
+        "id": "l-ute-3",
+        "group": "ute",
+        "type": "downlight",
+        "name": "Downlight i himlingen",
+        "position": [
+          9.46,
+          -0.5,
+          5.54
+        ],
+        "dims": {
+          "d": 0.09
+        },
+        "color": "#d9d9d6",
+        "lumens": 350,
+        "lightColorK": 2800,
+        "estimated": [
+          "lumens",
+          "lightColorK"
+        ],
+        "source": "V35 (x 9,46; z 3,78 / 4,66 / 5,54, 0,88 mellom); 225543"
+      }
+    ],
+    "fixtures": [
+      {
+        "id": "fx-ute-ringeklokke",
+        "type": "doorbell",
+        "name": "Ringeklokke",
+        "position": [
+          8.88,
+          -1.82,
+          5.41
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "dims": {
+          "d": 0.03
+        },
+        "color": "#1a1a1a",
+        "estimated": [
+          "position"
+        ],
+        "source": "V35 (z 5,41, h 1,05); 225543"
+      }
+    ],
+    "walkRects": [
+      {
+        "minX": 6.75,
+        "maxX": 14,
+        "minZ": -0.2,
+        "maxZ": 9,
+        "minY": -3.3,
+        "maxY": -0.3,
+        "notes": "Usynlige grenser ute (V26)"
+      }
+    ],
+    "spawnOutside": {
+      "pos": [
+        12.2,
+        -2.87,
+        4.6
+      ],
+      "yawDeg": 85,
+      "pitchDeg": -6,
+      "derivedFrom": {
+        "doorId": "door-ute",
+        "outFromFace": 3.3,
+        "westOfLeafCentre": 0.3,
+        "faceX": 8.88,
+        "leafCentreZ": 4.31
+      },
+      "url": "pos=12.2,-2.87,4.6&yaw=85&pitch=-6",
+      "notes": "V32: føttene ytterflaten + 3,3 m mot sør og bladets midte + 0,3 m mot vest, y = entranceLevelY, yaw mot bladets midte. Bare uten lagret posisjon (U2). Klar av dørslaget x 8,88–9,88 · z 3,81–4,81."
+    },
+    "estimated": [
+      "entranceLevelY",
+      "terraceStair",
+      "landing",
+      "path",
+      "groundBelowY",
+      "nearGround",
+      "pillar",
+      "deck",
+      "fill",
+      "soffits",
+      "paving"
+    ],
+    "source": "hele-huset-avstemming.md V25–V36, §1.1, §3.1, Kontrollert (1) punkt 5–7; ytterdor-ute.md; 225543, 225553, 225619, 225621"
+  }
 }

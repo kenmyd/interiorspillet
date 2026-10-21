@@ -197,8 +197,11 @@ const wall = (id, roomId, from, to, extra = {}) => {
   const d = unit(from, to);
   return { id, roomId, from, to, normal: [d[1] === 0 ? 0 : -d[1], d[0] === 0 ? 0 : d[0]], ...extra };
 };
-const HOLE = [[0, 2.32], [1.5, 2.32], [1.5, 3.48], [1.85, 3.48], [1.85, 4.43], [0, 4.43]];
-const KG = [[0, 2.32], [1.75, 2.32], [1.75, 2.56], [5.6, 2.56], [5.6, 5.36], [2.91, 5.36], [2.91, 4.43], [0, 4.43]];
+// the reconciled plan (notes/hele-huset-avstemming.md V1–V23, §2.4): hole with the top nosing on x 1,45, the basement
+// hall after V57, the stair footprint after V19
+const HOLE = [[0, 2.32], [1.45, 2.32], [1.45, 3.48], [1.85, 3.48], [1.85, 4.43], [0, 4.43]];
+const KG = [[0.13, 2.32], [1.85, 2.32], [1.85, 2.56], [5.75, 2.56], [5.75, 5.23], [3.05, 5.23], [3.05, 4.43], [0.13, 4.43]];
+const FOOTPRINT = [[0.13, 2.32], [1.45, 2.32], [1.45, 3.1], [1.04, 3.1], [1.04, 3.48], [1.76, 3.48], [1.76, 4.43], [0.13, 4.43]];
 const DOOR = (id, offset, width, height, door, connects, extra = {}) => ({
   id, type: 'door', offset, width, height, sill: 0,
   frame: { color: '#1d1e21', width: 0.07, depth: 0.02 }, reveal: { depth: 0.1, color: '#1d1e21' },
@@ -218,7 +221,7 @@ function planFiles() {
       wall('w-bad-ost', 'bad', [0, 0], [2.53, 0], { thickness: 0.3, exterior: true, height: 2.4, material: 'stone-panel', color: '#c6c1b9' }),
       wall('w-bad-sor', 'bad', [2.53, 0], [2.53, 2.22], { backOf: 'w-nisje-bak', material: 'stone-panel' }),
       wall('w-bad-gang', 'bad', [2.53, 2.22], [0, 2.22], { thickness: 0.1, height: 2.4, material: 'stone-panel',
-        openings: [DOOR('door-bad', 0.08, 0.93, 2.15, { hinge: 'from', swing: 'in', opensInto: 'bad', leaf: { w: 0.79, h: 2.08 } }, ['bad', 'gang'], { estimated: ['width', 'height', 'door.leaf'] })] }),
+        openings: [DOOR('door-bad', 0.08, 0.91, 2.15, { hinge: 'from', swing: 'in', opensInto: 'bad', leaf: { w: 0.77, h: 2.08 } }, ['bad', 'gang'], { estimated: ['width', 'height', 'door.leaf'] })] }),
       wall('w-bad-nord', 'bad', [0, 2.22], [0, 0], { thickness: 0.3, exterior: true, height: 2.4, material: 'stone-panel',
         openings: [{ id: 'win-bad', type: 'window', offset: 0.75, width: 0.48, height: 1.17, sill: 0.88, frosted: true, obstruction: 0.8, estimated: ['sill'] }] }),
       wall('w-gang-ost', 'gang', [0, 2.32], [3.12, 2.32], { backOf: ['w-bad-gang', 'w-nisje-side'] }),
@@ -256,58 +259,68 @@ function planFiles() {
     ],
   };
   const trapp = {
-    $comment: '20-trapp.json etter §1.6, med en forenklet kjellergang',
-    levels: [{ id: 'kjeller', name: 'Kjeller', floorY: -2.55, slabThickness: 0.3, ceilingDefault: 2.25, plan: { file: 'bilder_hus/plantegning_kjeller.png', pxPerM: [60.3, 56.8], originPx: [127, 120] }, estimated: ['floorY', 'ceilingDefault', 'plan.pxPerM'], source: 'D2, D3' }],
+    $comment: '20-trapp.json etter avstemmingen §2.4 (V12–V23), med kjellergangen etter V57',
+    levels: [{ id: 'kjeller', name: 'Kjeller', floorY: -2.55, slabThickness: 0.3, ceilingDefault: 2.25, plan: { file: 'bilder_hus/plantegning_kjeller.png', pxPerM: 60.25, originPx: [119.2, 112.1] }, estimated: ['floorY', 'ceilingDefault'], source: 'V1–V2, V12' }],
     rooms: [
-      { id: 'trapp', name: 'Trappa', levelId: 'hoved', kind: 'hud', polygon: HOLE },
-      { id: 'kjeller-gang', name: 'Gang (kjeller)', levelId: 'kjeller', kind: 'hall', polygon: KG, floor: { material: 'oak-plank', color: '#cbbfb0', boards: 'x' }, ceilingIds: [], acoustic: { mode: 'estimate' }, estimated: ['*'] },
+      { id: 'trapp', name: 'Trappa', levelId: 'hoved', kind: 'hud', polygon: FOOTPRINT },
+      { id: 'kjeller-gang', name: 'Gang', levelId: 'kjeller', kind: 'hall', polygon: KG, floor: { material: 'oak-plank', color: '#cbbfb0', boards: 'x' }, ceilingIds: [], acoustic: { mode: 'estimate' }, estimated: ['*'] },
     ],
     walls: [
-      wall('w-kg-nisje', 'kjeller-gang', [0, 2.32], [1.75, 2.32], { thickness: 0.1, height: 2.25, estimated: ['*'] }),
-      wall('w-kg-nisje-side', 'kjeller-gang', [1.75, 2.32], [1.75, 2.56], { thickness: 0.1, height: 2.25, estimated: ['*'] }),
-      wall('w-kg-ost', 'kjeller-gang', [1.75, 2.56], [5.6, 2.56], { thickness: 0.1, height: 2.25, estimated: ['*'] }),
-      wall('w-kg-sor', 'kjeller-gang', [5.6, 2.56], [5.6, 5.36], { thickness: 0.41, height: 2.25, estimated: ['*'] }),
-      wall('w-kg-vest-sor', 'kjeller-gang', [5.6, 5.36], [2.91, 5.36], { thickness: 0.1, height: 2.25, estimated: ['*'] }),
-      wall('w-kg-sorvest', 'kjeller-gang', [2.91, 5.36], [2.91, 4.43], { thickness: 0.1, height: 2.25, estimated: ['*'] }),
-      wall('w-kg-vest', 'kjeller-gang', [2.91, 4.43], [0, 4.43], { thickness: 0.12, height: 2.25, estimated: ['*'] }),
-      wall('w-kg-nord', 'kjeller-gang', [0, 4.43], [0, 2.32], { thickness: 0.3, exterior: true, height: 2.25, estimated: ['*'] }),
+      wall('w-kg-nisje', 'kjeller-gang', [0.13, 2.32], [1.85, 2.32], { thickness: 0.1, height: 2.25, topProfile: [[0, 2.55], [1.32, 2.55], [1.32, 2.25], [1.72, 2.25]], estimated: ['*'] }),
+      wall('w-kg-nisje-side', 'kjeller-gang', [1.85, 2.32], [1.85, 2.56], { thickness: 0.21, height: 2.25, estimated: ['*'] }),
+      wall('w-kg-ost', 'kjeller-gang', [1.85, 2.56], [5.75, 2.56], { thickness: 0.11, height: 2.25, estimated: ['*'] }),
+      wall('w-kg-sor', 'kjeller-gang', [5.75, 2.56], [5.75, 5.23], { thickness: 0.41, height: 2.25, estimated: ['*'] }),
+      wall('w-kg-vest-sor', 'kjeller-gang', [5.75, 5.23], [3.05, 5.23], { thickness: 0.09, height: 2.25, estimated: ['*'] }),
+      wall('w-kg-sorvest', 'kjeller-gang', [3.05, 5.23], [3.05, 4.43], { thickness: 0.29, height: 2.25, estimated: ['*'] }),
+      wall('w-kg-vest', 'kjeller-gang', [3.05, 4.43], [0.13, 4.43], { thickness: 0.12, height: 2.25, topProfile: [[0, 2.25], [1.2, 2.25], [1.2, 2.55], [2.92, 2.55]], estimated: ['*'],
+        openings: [DOOR('door-vaskerom', 0.34, 0.87, 2.15, { hinge: 'from', swing: 'out', opensInto: 'vaskerom', leaf: { w: 0.73, h: 2.08 } }, ['kjeller-gang', 'vaskerom'], { estimated: ['height', 'door.leaf'] })] }),
+      wall('w-kg-nord', 'kjeller-gang', [0.13, 4.43], [0.13, 2.32], { thickness: 0.43, exterior: true, height: 2.28, estimated: ['*'] }),
     ],
-    floorOpenings: [{ id: 'trappehull', levelId: 'hoved', roomId: 'gang', stairId: 'trapp-kjeller', polygon: HOLE, edgeBand: { color: '#f2efe8', depth: 0.3 }, estimated: ['polygon'], source: 'gang-1etg.md' }],
+    floorOpenings: [{ id: 'trappehull', levelId: 'hoved', roomId: 'gang', stairId: 'trapp-kjeller', polygon: HOLE, edgeBand: { color: '#f2efe8', depth: 0.3 }, estimated: ['polygon'], source: 'V15–V16' }],
     stairs: [{
       id: 'trapp-kjeller', name: 'Trappa', type: 'half-turn-winder', fromLevel: 'kjeller', toLevel: 'hoved', openingId: 'trappehull', roomIds: ['kjeller-gang', 'gang'],
-      risers: 14,
-      top: { edge: [[1.5, 2.32], [1.5, 3.1]], down: [-1, 0], straightTreads: 1 },
-      foot: { edge: [[1.6, 3.48], [1.6, 4.43]], down: [1, 0], straightTreads: 3 },
-      well: { polygon: [[1.2, 3.1], [1.5, 3.1], [1.5, 3.48], [1.2, 3.48]], newel: [1.5, 3.1] },
-      walkLine: 'flight-centre', going: null,
-      tread: { thickness: 0.045, nosing: 0.02, material: 'oak', color: '#bfab9b' },
+      risers: 13,
+      top: { edge: [[1.45, 2.32], [1.45, 3.1]], down: [-1, 0], straightTreads: 1 },
+      foot: { edge: [[1.73, 3.48], [1.73, 4.43]], down: [1, 0], straightTreads: 3 },
+      well: { polygon: [[1.04, 3.1], [1.45, 3.1], [1.45, 3.48], [1.04, 3.48]], newel: [1.45, 3.1] },
+      footprint: FOOTPRINT,
+      walkLine: 'flight-centre', going: null, winders: 'balanced',
+      tread: { thickness: 0.04, nosing: 0.03, batten: { h: 0.04, inset: 0.025 }, material: 'oak', color: '#ada396' },
       openRisers: true,
-      stringers: { color: '#1d1e21', thickness: 0.05, depth: 0.28 },
+      stringers: { color: '#1d1e21', thickness: 0.05, depth: 0.28, footCut: 0.06 },
+      ledge: { x: [0, 0.13], top: -0.27, color: 'sand' },
       guards: [
         { id: 'rekk-a', level: 'hoved', line: [[1.85, 4.43], [1.85, 3.48]] },
-        { id: 'rekk-b', level: 'hoved', line: [[1.85, 3.48], [1.5, 3.48]] },
-        { id: 'rekk-c', level: 'hoved', line: [[1.5, 3.48], [1.5, 3.1]] },
+        { id: 'rekk-b', level: 'hoved', line: [[1.85, 3.48], [1.45, 3.48]] },
+        { id: 'rekk-c', level: 'hoved', line: [[1.45, 3.48], [1.45, 3.1]] },
         { id: 'rekk-oye', on: 'well' },
       ],
-      handrails: [{ side: 'outer', start: [1.4, 2.32], walls: ['øst', 'nord', 'vest'], height: 0.9, led: { walls: ['øst', 'nord'], lumensPerM: 120, lightColorK: 2900, group: 'gang' } }],
-      estimated: ['risers', 'top', 'foot', 'well', 'tread.color', 'guards', 'handrails[0].led'],
-      source: 'gang-1etg.md, entre-gang-kjeller.md',
+      handrails: [{ side: 'outer', start: [1.4, 2.32], startHeight: 0.7, walls: ['øst', 'nord', 'vest'], height: 0.9, led: { walls: ['øst', 'nord'], lumensPerM: 120, lightColorK: 2900, group: 'gang' } }],
+      estimated: ['risers', 'top', 'foot', 'well', 'footprint', 'tread', 'stringers.footCut', 'guards', 'handrails[0].startHeight', 'handrails[0].led', 'ledge'],
+      source: 'hele-huset-avstemming.md V12–V23',
     }],
     lightGroups: [{ id: 'kjeller-gang', label: 'Kjellergang', roomId: 'kjeller-gang', dimmer: true, defaultDimmer: 0.5 }],
   };
   const kjeller = {
-    $comment: '30-kjeller.json (utdrag): bod-1 med døra i nisjeveggen under trappa',
+    $comment: '30-kjeller.json (utdrag): bod-1 med døra i nisjeveggen under trappa, og vaskerommet ved trappefoten',
     levelId: 'kjeller',
-    rooms: [{ id: 'bod-1', name: 'Bod', kind: 'storage', polygon: [[0, 0], [1.68, 0], [1.68, 2.22], [0, 2.22]], floor: { material: 'concrete', color: '#8a8580' }, ceilingIds: [], acoustic: { mode: 'estimate' }, closed: true, estimated: ['*'] }],
-    walls: [
-      wall('w-b1-ost', 'bod-1', [0, 0], [1.68, 0], { thickness: 0.3, exterior: true, height: 2.25, estimated: ['*'] }),
-      wall('w-b1-sor', 'bod-1', [1.68, 0], [1.68, 2.22], { thickness: 0.2, height: 2.25, estimated: ['*'] }),
-      wall('w-b1-vest', 'bod-1', [1.68, 2.22], [0, 2.22], { backOf: 'w-kg-nisje', estimated: ['*'] }),
-      wall('w-b1-nord', 'bod-1', [0, 2.22], [0, 0], { thickness: 0.3, exterior: true, height: 2.25, estimated: ['*'] }),
+    rooms: [
+      { id: 'bod-1', name: 'Bod', kind: 'storage', polygon: [[0.13, 0.13], [1.79, 0.13], [1.79, 2.22], [0.13, 2.22]], floor: { material: 'concrete', color: '#8a8580' }, ceilingIds: [], acoustic: { mode: 'estimate' }, closed: true, estimated: ['*'] },
+      { id: 'vaskerom', name: 'Vaskerom', kind: 'laundry', polygon: [[0.13, 4.55], [2.76, 4.55], [2.76, 8.45], [0.13, 8.45]], floor: { material: 'vinyl', color: '#8c8789' }, ceilingIds: [], acoustic: { mode: 'estimate' }, estimated: ['*'] },
     ],
-    wallOpenings: [{ wallId: 'w-kg-nisje', openings: [DOOR('door-bod-1', 0.84, 0.79, 2.1, { hinge: 'from', swing: 'out', opensInto: 'bod-1' }, ['kjeller-gang', 'bod-1'], { estimated: ['*'] })] }],
+    walls: [
+      wall('w-b1-ost', 'bod-1', [0.13, 0.13], [1.79, 0.13], { thickness: 0.43, exterior: true, height: 2.25, estimated: ['*'] }),
+      wall('w-b1-sor', 'bod-1', [1.79, 0.13], [1.79, 2.22], { thickness: 0.27, height: 2.25, estimated: ['*'] }),
+      wall('w-b1-vest', 'bod-1', [1.79, 2.22], [0.13, 2.22], { backOf: 'w-kg-nisje', estimated: ['*'] }),
+      wall('w-b1-nord', 'bod-1', [0.13, 2.22], [0.13, 0.13], { thickness: 0.43, exterior: true, height: 2.25, estimated: ['*'] }),
+      wall('w-vask-ost', 'vaskerom', [0.13, 4.55], [2.76, 4.55], { backOf: 'w-kg-vest' }),
+      wall('w-vask-sor', 'vaskerom', [2.76, 4.55], [2.76, 8.45], { backOf: 'w-kg-sorvest' }),
+      wall('w-vask-vest', 'vaskerom', [2.76, 8.45], [0.13, 8.45], { thickness: 0.1, height: 2.25, estimated: ['*'] }),
+      wall('w-vask-nord', 'vaskerom', [0.13, 8.45], [0.13, 4.55], { thickness: 0.43, exterior: true, height: 2.25, estimated: ['*'] }),
+    ],
+    wallOpenings: [{ wallId: 'w-kg-nisje', openings: [DOOR('door-bod-1', 0.93, 0.79, 2.05, { hinge: 'to', swing: 'out', opensInto: 'bod-1', leaf: { w: 0.65, h: 1.98 } }, ['kjeller-gang', 'bod-1'], { estimated: ['*'] })] }],
     lightGroups: [{ id: 'boder', label: 'Boder', roomId: null, dimmer: false, defaultDimmer: 0 }],
-    builtInLights: [{ id: 'l-bod-1', roomId: 'bod-1', group: 'boder', type: 'plafond', position: [0.84, 2.25, 1.11], dims: { d: 0.2, h: 0.1 }, lumens: 400, lightColorK: 2700, estimated: ['*'] }],
+    builtInLights: [{ id: 'l-bod-1', roomId: 'bod-1', group: 'boder', type: 'plafond', position: [0.96, 2.25, 1.175], dims: { d: 0.2, h: 0.1 }, lumens: 400, lightColorK: 2700, estimated: ['*'] }],
   };
   return [{ name: '10-hoved-rom.json', data: hoved }, { name: '20-trapp.json', data: trapp }, { name: '30-kjeller.json', data: kjeller }];
 }
@@ -316,8 +329,8 @@ function planFiles() {
  * Plan house spec, merged on top of step 3's own 00-files only (never the real 10-/20-/30- files, which would replace
  * or duplicate the fixtures); `edit(files)` may change the house files before the merge, `after(spec)` the merged spec.
  */
-function planHouse(edit, after) {
-  const files = planFiles();
+function planHouse(edit, after, drop = []) {
+  const files = planFiles().filter((f) => !drop.includes(f.name.slice(0, 2)));
   if (edit) edit(Object.fromEntries(files.map((f) => [f.name.slice(0, 2), f.data])));
   const s = fixRoomSpec(house.mergeHouse(base, RESEARCH, { files: [...own, ...files], registry }));
   if (after) after(s);
@@ -326,36 +339,66 @@ function planHouse(edit, after) {
 const opening = (s, id) => s.walls.flatMap((w) => w.openings || []).find((o) => o.id === id);
 const stairOf = (s) => s.stairs.find((x) => x.id === 'trapp-kjeller');
 
-section('Validator: the plan house (§1.4–§1.6)');
+section('Validator: the plan house (§1.4–§1.6, with the reconciliation V1–V70)');
 const plan = validate(planHouse());
 {
   check('green: no errors', !plan.errors.length, show(plan.errors));
   const area = (id) => plan.rooms.find((r) => r.id === id)?.area;
-  check('areas: bad 5,62, gang 6,58, soverom 11,45 (±0,05), kjeller-gang 13,4', near(area('bad'), 5.62, 0.05) && near(area('gang'), 6.58, 0.05) && near(area('soverom'), 11.45, 0.05) && near(area('kjeller-gang'), 13.39, 0.05),
-    ['bad', 'gang', 'soverom', 'kjeller-gang'].map(area).join(', '));
+  check('areas: bad 5,62, gang 6,58, soverom 11,45 (±0,05), kjeller-gang 13,08 (§1.1), vaskerom 10,26', near(area('bad'), 5.62, 0.05) && near(area('gang'), 6.58, 0.05) && near(area('soverom'), 11.45, 0.05)
+    && near(area('kjeller-gang'), 13.08, 0.01) && near(area('vaskerom'), 10.26, 0.01), ['bad', 'gang', 'soverom', 'kjeller-gang', 'vaskerom'].map(area).join(', '));
   check('the HUD room «trapp» overlaps the gang without an error, and has no area', plan.rooms.find((r) => r.id === 'trapp')?.area === null);
   const st = plan.stairs[0];
+  const s0 = stairOf(planHouse());
   console.log(`  trapp: opptrinn ${st?.riser.toFixed(4)}, inntrinn ${st?.going.toFixed(4)}, ganglinje ${st?.walkLength.toFixed(3)}, 2r+g ${st?.twoRG.toFixed(4)}, ${st?.slopeDeg.toFixed(1)}°, fri høyde ${st?.minHeadroom.toFixed(3)}, kapselen ${st?.capsuleHeadroom.toFixed(3)}`);
-  check('stair: 14 risers of 0,182 (14 × riser = 2,55)', st && near(st.riser, 0.182, 0.0005) && near(st.riser * st.risers, 2.55, 1e-9));
-  check('stair: going from the walk line ≈ 0,20–0,23, slope ≈ 38–42°', st && st.going >= 0.195 && st.going <= 0.23 && st.slopeDeg >= 38 && st.slopeDeg <= 43, st && st.going);
-  check('stair: headroom ≥ 1,95 everywhere (2,25 under the slab edge in front of the foot)', st && near(st.minHeadroom, 2.25, 0.01));
-  check('estimated stair: 2r+g outside 0,60–0,64 and the going under 0,22 are warnings', has(plan.warnings, /trapp-kjeller: 2·opptrinn \+ inntrinn = 0,5\d\d.*anslått/) && has(plan.warnings, /trapp-kjeller: inntrinnet på ganglinja.*under 0,22.*anslått/));
-  check('bod-1: the door height under the stair is a warning (the builder cuts it)', has(plan.warnings, /door-bod-1: dørhøyden.*trappeundersiden.*kutter/), show(plan.warnings));
+  // nothing hard-codes the number of risers: the riser is −floorY / risers, the going the walk line / (risers − 1)
+  check('stair: riser = −floorY / risers (13 → 0,196), risers × riser = 2,55', st && near(st.riser, 2.55 / s0.risers, 1e-9) && near(st.riser, 0.196, 0.0005) && near(st.riser * st.risers, 2.55, 1e-9));
+  check('stair: the V13 walk line ≈ 2,87 m, going = walk / (risers − 1) ≈ 0,24, 2r + g ≈ 0,63, slope 39–40°', st && near(st.walkLength, 2.874, 0.01) && near(st.going, st.walkLength / (s0.risers - 1), 1e-9)
+    && near(st.going, 0.24, 0.005) && near(st.twoRG, 0.632, 0.005) && st.slopeDeg >= 39 && st.slopeDeg <= 40, st && `${st.walkLength} ${st.going} ${st.twoRG} ${st.slopeDeg}`);
+  check('stair: headroom ≥ 1,95 everywhere (2,25 under the slab edge in front of the foot), the capsule needs 1,97–1,98', st && near(st.minHeadroom, 2.25, 0.01) && st.capsuleHeadroom > 1.96 && st.capsuleHeadroom < 1.99);
+  check('stair: no warning on the norms (2r + g, going), the hole or kjeller-gang (V13: the cross-sections stay inside)', !has(plan.warnings, /trapp-kjeller: (2·opptrinn|inntrinnet|trinnene går utenfor|fri høyde)/), show(plan.warnings));
+  const dv = st?.doorClearance?.find((d) => d.door === 'door-vaskerom');
+  check('door frames: the stringer foot (x 1,79) is ≥ 0,05 from the laundry door\'s north jamb (x 1,84), no warning (V17)', dv && dv.what === 'vangefoten' && near(dv.dist, 0.05, 1e-6)
+    && !has(plan.warnings, /fra karmen til/), JSON.stringify(st?.doorClearance));
+  const db = st?.doorClearance?.find((d) => d.door === 'door-bad');
+  check('door frames: the top edge (x 1,45) is 0,09 from door-bad\'s north jamb (x 1,54, V15)', db && near(db.dist, 0.09, 1e-6), JSON.stringify(st?.doorClearance));
+  check('bod-1: the door (x 1,06–1,85, 2,05 high) is not cut by the stair (Kontrollert (1)); the laundry door beside the foot neither', !has(plan.warnings, /dørhøyden/), show(plan.warnings));
+  check('bod-1: the hole runs 0,06 past bod-1\'s back face (x 1,79) – the documented warning', has(plan.warnings, /door-bod-1 \(w-kg-nisje\): hullet havner ikke helt innenfor baksideflaten\(e\) w-b1-vest/));
   check('door-gang opened 180° keeps ≥ 0,75 m free width (D6)', plan.doors.find((d) => d.id === 'door-gang')?.blocked === false && plan.doors.find((d) => d.id === 'door-gang')?.leafRoom === 'gang');
-  check('door-bad, door-soverom and door-bod-1 swing into their rooms without blocking', ['door-bad', 'door-soverom', 'door-bod-1'].every((id) => plan.doors.find((d) => d.id === id)?.blocked === false)
-    && plan.doors.find((d) => d.id === 'door-soverom').leafRoom === 'soverom', JSON.stringify(plan.doors));
-  check('no other warnings', plan.warnings.length === 3, show(plan.warnings));
+  check('door-bad, door-soverom, door-bod-1 and door-vaskerom swing into their rooms without blocking', ['door-bad', 'door-soverom', 'door-bod-1', 'door-vaskerom'].every((id) => plan.doors.find((d) => d.id === id)?.blocked === false)
+    && plan.doors.find((d) => d.id === 'door-soverom').leafRoom === 'soverom' && plan.doors.find((d) => d.id === 'door-vaskerom').leafRoom === 'vaskerom', JSON.stringify(plan.doors));
+  check('no other warnings', plan.warnings.length === 1, show(plan.warnings));
   const ml = plan.measureList;
   check('measuring list: sorted by room (levels first), stair entries under «trapp»', ml[0].room === '$levels' && ml.some((m) => m.room === 'trapp' && m.id === 'trapp-kjeller')
     && ml.some((m) => m.room === 'bad' && m.coll === 'openings' && m.id === 'door-bad') && ml.findIndex((m) => m.room === 'bad') < ml.findIndex((m) => m.room === 'kjeller-gang'));
   const md = house.measureListMarkdown(plan);
-  check('measuring list markdown: room table, stairs, estimated fields per room', /\| Bad \(`bad`\) \| 1\. etasje \| bathroom \| 5,62 m² \| 5,62 m² \|/.test(md) && /`trapp-kjeller`: 14 opptrinn à 0,182 m/.test(md)
+  check('measuring list markdown: room table, stairs, estimated fields per room', /\| Bad \(`bad`\) \| 1\. etasje \| bathroom \| 5,62 m² \| 5,62 m² \|/.test(md) && /`trapp-kjeller`: 13 opptrinn à 0,196 m/.test(md)
     && /- \*\*Trappa \(`trapp`\)\*\*/.test(md) && /`stairs\/trapp-kjeller`: `risers`, `top`/.test(md));
-  const walk = house.stairWalk(stairOf(planHouse()));
-  check('stairWalk: from the top nosing (1,50; 2,71) round the well to the lowest nosing (1,60; 3,955)', near(walk.at(0).p[0], 1.5, 1e-9) && near(walk.at(0).p[1], 2.71, 1e-9)
-    && near(walk.at(walk.length).p[0], 1.6, 1e-9) && near(walk.at(walk.length).p[1], 3.955, 1e-9) && walk.at(walk.length / 2).p[0] < 0.7);
+  const walk = house.stairWalk(s0);
+  check('stairWalk (V13): from the top nosing (1,45; 2,71) round the well to the lowest nosing (1,73; 3,955)', near(walk.at(0).p[0], 1.45, 1e-9) && near(walk.at(0).p[1], 2.71, 1e-9)
+    && near(walk.at(walk.length).p[0], 1.73, 1e-9) && near(walk.at(walk.length).p[1], 3.955, 1e-9));
+  check('stairWalk (V13): 0,41 straight, a quarter arc round the well\'s NE corner, 0,38 straight on x 0,585, a quarter arc round the NW corner, 0,69 straight', walk.segments.map((g) => g.kind).join() === 'line,arc,line,arc,line'
+    && near(walk.segments[0].length, 0.41, 1e-9) && near(walk.segments[2].length, 0.38, 1e-9) && near(walk.segments[4].length, 0.69, 1e-9) && near(walk.r2, 0.455, 1e-9)
+    && near(walk.at(walk.segments[2].start + 0.19).p[0], 0.585, 1e-9) && near(walk.segments[1].length + walk.segments[2].length + walk.segments[3].length, 1.77, 0.01), JSON.stringify(walk.segments));
+  const mid = walk.at(walk.segments[1].start + walk.segments[1].length / 2);
+  check('stairWalk (V13): the cross-section in a winder arc runs from the well corner to the shaft walls (inside x ≥ 0,13, z 2,32–4,43)', mid.section.some((q) => near(q[0], 1.04, 1e-9) && near(q[1], 3.1, 1e-9))
+    && mid.section.every((q) => q[0] >= 0.13 - 1e-9 && q[1] >= 2.32 - 1e-9 && q[1] <= 4.43 + 1e-9), JSON.stringify(mid.section));
+  check('stairWalk: beyond the foot the lower flight goes on (headroom under the slab edge)', near(walk.at(walk.length + 0.5).p[0], 2.23, 1e-9) && near(walk.at(walk.length + 0.5).p[1], 3.955, 1e-9));
   const straight = house.stairWalk({ type: 'straight', top: { edge: [[0, 0], [0, 1]], down: [1, 0] }, foot: { edge: [[3, 0], [3, 1]], down: [1, 0] } });
   check('stairWalk: a straight stair', near(straight.length, 3, 1e-9) && near(straight.at(1.5).p[0], 1.5, 1e-9));
+  const noFoot = house.stairWalk({ ...s0, footprint: undefined });
+  check('stairWalk: without a footprint (or bound) the middle stretch keeps the flights\' mean half width', near(noFoot.r2, (0.39 + 0.475) / 2, 1e-9));
+}
+
+{
+  // the steps are built in parallel: without A1's file (bad, gang, soverom) the hole, the stair and the LED wait for
+  // the hall – registered rooms / groups that are not modelled yet are warnings; an id that is not registered is not
+  const r = validate(planHouse(null, null, ['10']));
+  check('without 10-hoved-rom.json: no errors, «gang» (room and light group) is pending (one warning each)', !r.errors.length && r.pending.length === 2 && has(r.warnings, /rommet «gang» er registrert .* ikke modellert ennå/)
+    && has(r.warnings, /lysgruppa «gang» er registrert .* ikke modellert ennå/), `${show(r.errors)} / ${show(r.warnings)}`);
+  const r2 = validate(planHouse((f) => {
+    f['20'].floorOpenings[0].roomId = 'gangen';
+  }, null, ['10']));
+  check('…but a room id that is not registered in 00-ids.json stays an error', has(r2.errors, /floorOpenings\/trappehull: rommet «gangen» finnes ikke/), show(r2.errors));
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -388,11 +431,11 @@ fails('…and the missing door:{…} is named', planHouse((f) => {
     wall(`w-${p}-nord`, roomId, [x0, z1], [x0, z0], { thickness: t }),
   ];
   const bod2 = (x0) => (f) => {
-    f['30'].rooms.push({ id: 'bod-2', name: 'Bod (grå)', kind: 'storage', polygon: [[x0, 0], [6.22, 0], [6.22, 2.46], [x0, 2.46]], floor: { material: 'concrete', color: '#8a8580' }, ceilingIds: [], acoustic: { mode: 'estimate' } });
-    f['30'].walls.push(...rect('bod-2', 'b2', x0, 6.22, 0, 2.46, 0.1));
+    f['30'].rooms.push({ id: 'bod-2', name: 'Bod (grå)', kind: 'storage', polygon: [[x0, 0.13], [6.33, 0.13], [6.33, 2.45], [x0, 2.45]], floor: { material: 'concrete', color: '#8a8580' }, ceilingIds: [], acoustic: { mode: 'estimate' } });
+    f['30'].walls.push(...rect('bod-2', 'b2', x0, 6.33, 0.13, 2.45, 0.1));
   };
   fails('overlapping rooms', planHouse(bod2(1.5)), /rommene bod-1 og bod-2 overlapper/);
-  fails('rooms that only overlap through a wall thickness (bod-1\'s 0,20 wall vs bod-2 starting at 1,70)', planHouse(bod2(1.7)), /walls\/w-b1-sor \(bod-1, 0,20 tykk\) står inne i rommet bod-2/);
+  fails('rooms that only overlap through a wall thickness (bod-1\'s 0,27 wall vs bod-2 starting at 1,90)', planHouse(bod2(1.9)), /walls\/w-b1-sor \(bod-1, 0,27 tykk\) står inne i rommet bod-2/);
 }
 fails('unknown archetype (instead of becoming a vase)', planHouse((f) => {
   f['10'].furniture = [{ id: 'f-seng', roomId: 'soverom', name: 'Seng', archetype: 'flying-bed', position: [1.55, 0, 7.2], rotationDeg: 90, dims: { w: 1.8, d: 2, h: 0.62 } }];
@@ -520,20 +563,51 @@ fails('a hole outside its room', planHouse((f) => {
 fails('a door whose clear opening stands over the hole (measured)', planHouse((f) => {
   measured(f);
   const o = f['10'].walls.find((x) => x.id === 'w-bad-gang').openings[0];
-  o.offset = 0.25;
+  o.offset = 0.3;
   delete o.estimated;
 }), /door-bad.*den frie åpningen står over hullet trappehull/);
 fails('a door that swings over the stair hole (measured)', planHouse((f) => {
-  // door-bad moved 0,17 m north (x 1,35–2,28) and swinging out into the gang: the leaf sweeps x 1,42–2,21
+  // door-bad moved 0,22 m north (x 1,32–2,23) and swinging out into the gang: the leaf sweeps x 1,39–2,16
   measured(f);
   const o = f['10'].walls.find((x) => x.id === 'w-bad-gang').openings[0];
-  o.offset = 0.25;
+  o.offset = 0.3;
   Object.assign(o.door, { swing: 'out', opensInto: 'gang' });
   delete o.estimated;
 }), /door-bad: døra slår inn over trappehullet trappehull/);
 {
-  const r = fails('a measured stair outside the norms (2r+g, going) is an error', planHouse(measured), /trapp-kjeller: 2·opptrinn \+ inntrinn = 0,5\d\d er utenfor 0,60–0,64$/);
+  // 15 risers (the photo notes' 15 × 0,17) on the same walk line: 2r + g 0,545, going 0,205 – only 13 fits (V12–V13)
+  const r = fails('a measured stair outside the norms (2r+g, going) is an error', planHouse((f) => {
+    measured(f);
+    f['20'].stairs[0].risers = 15;
+  }), /trapp-kjeller: 2·opptrinn \+ inntrinn = 0,5\d\d er utenfor 0,60–0,64$/);
   check('…and so is the going under 0,22', has(r.errors, /trapp-kjeller: inntrinnet på ganglinja er 0,2\d\d, under 0,22$/));
+  const r14 = validate(planHouse((f) => {
+    f['20'].stairs[0].risers = 14;
+  }));
+  check('…and 14 risers (the plan\'s 14 × 0,182) give 2r + g 0,585 – a warning while the stair is estimated', has(r14.warnings, /trapp-kjeller: 2·opptrinn \+ inntrinn = 0,58\d er utenfor.*anslått/) && !r14.errors.length, show(r14.warnings));
+}
+{
+  // V17 / avstemming §2.4: the tread edge (with the nosing) and the stringer foot keep ≥ 0,05 from every door frame
+  const laundry = (f) => f['20'].walls.find((x) => x.id === 'w-kg-vest').openings[0];
+  fails('a measured tread edge 0,03 from a door frame (the laundry door moved 0,05 north: north jamb on x 1,79)', planHouse((f) => {
+    measured(f);
+    delete f['20'].stairs[0].stringers.footCut;
+    laundry(f).offset = 0.39;
+  }), /trapp-kjeller: nederste trinnkant \(med nesa\) står 0,030 fra karmen til door-vaskerom \(minst 0,05\)/);
+  fails('a measured stringer foot 0,01 from a door frame (the wall stringer cut on x 1,83 instead of 1,79)', planHouse((f) => {
+    measured(f);
+    f['20'].stairs[0].stringers.footCut = 0.1;
+  }), /trapp-kjeller: vangefoten står 0,010 fra karmen til door-vaskerom/);
+  const r = validate(planHouse((f) => {
+    f['20'].stairs[0].stringers.footCut = 0.1;
+  }));
+  check('…the same with an estimated stair is a warning', has(r.warnings, /trapp-kjeller: vangefoten står 0,010 fra karmen til door-vaskerom.*anslått/) && !r.errors.length, show(r.warnings));
+  fails('a measured top edge 0,02 from door-bad\'s frame (the bathroom door moved 0,07 north)', planHouse((f) => {
+    measured(f);
+    const o = f['10'].walls.find((x) => x.id === 'w-bad-gang').openings[0];
+    o.offset = 0.15;
+    delete o.estimated;
+  }), /trapp-kjeller: øverste trinnkant står 0,020 fra karmen til door-bad/);
 }
 fails('a stair that does not fit in its hole', planHouse((f) => {
   measured(f);
