@@ -169,10 +169,20 @@ const STRIP_SIGNATURE = 8;
  * at least min(reachLkeyCap, the largest Lkey the camera can reach); exposure / white balance ease over roomEase s
  * after a room change; a door counts as a portal for the light budget above portalOpen; frosted glass lets frostedT
  * through, diffuse (no tilt).
+ *   wbLocal     how far the light of another room (seen through a door / the stairwell) is shown with its own white
+ *               balance instead of the camera room's (0 = the camera's, 1 = fully its own; per channel in log space,
+ *               the ratio clamped to wbRelMax): the hall's 3800 K plafond under the living room's 2700 K night balance
+ *               was lavender, photo 225331 shows it cream
+ *   hop         light-slot weight of a source per portal on the way from the camera's room (× the door's opening):
+ *               a lamp behind a door is seen through the doorway only, so it must not take the camera room's slots;
+ *               slotDepth: light slots only for rooms this many portals away (the visibility keeps depth 2) – the
+ *               basement hall's downlights two portals away (door + stairwell) took the living room's pendants' slots
+ *   portalStep  a swinging door recomputes the rooms only per this step of its opening (and when it stops)
  */
 const HOUSE = {
   stripSignature: 1, maxDownlightSpots: 2, reachLkeyCap: 2, roomEase: 1.5, portalOpen: 0.5, frostedT: 0.5,
   downlight: { angle: 50 * DEG, penumbra: 0.7 }, plafond: { angle: 82 * DEG },
+  wbLocal: 0.9, wbRelMax: 4, hop: { door: 0.45, opening: 0.6, hole: 0.35 }, slotDepth: 1, portalStep: 0.2,
 };
 /** LAMP_BOUNCE of a house room: ≈ 1 for a small closed room (its lamps light all of it), less for a big one. */
 const roomLampBounce = (area) => clamp(1.2 - area / 40, 0.6, 1);
@@ -1014,6 +1024,8 @@ function spotSolidAngle(angle, penumbra = 0) {
  *   setItemLights(uid, lights|null) setBuiltIn(groupId, { on, dimmer } | null)  setWindowTransmission(windowId, t)
  *   builtInGroups: [{ id, label, lumens }]   requestShadowUpdate()   update(dt, camera)   render(renderer, scene, camera)
  *   info() → sun / daylight / lamp numbers for the UI   groupState(id) → { on, dimmer, auto }   itemLightUids()
+ *   cameraRoomId   roomsInfo()   setOverviewLevel('hoved'|'kjeller'|null) (orbit / plan: one value per level, §4.3)
+ *   slotColor(candidate) → the colour its light slot gets (white balance incl. its room's relative balance)
  *   events: on('change', fn) → off   (after every recompute; LightPanel listens)
  *
  * Settings read (persisted, not part of the design): 'sunLatitude' (default 58.1), 'lightWeather' ('clear'|'overcast').
@@ -1060,6 +1072,9 @@ export class LightManager {
     this._defaultLampsOn = false;
     this._camRoomId = LIVING_ID;
     this._camLevelId = 'hoved';
+    this._camOutside = false; // walking outside the house (forecourt, terrace): the outdoor lamps compete for slots
+    this._overview = null; // setOverviewLevel: the level an overview (orbit / plan) shows, else null
+    this._wbRel = new Map(); // roomId → white balance of that room relative to the camera's (HOUSE.wbLocal)
     this._worlds = new Map();
     this._roomWindows = [];
     this._houseLamps = [];
@@ -1111,6 +1126,10 @@ export class LightManager {
       renderer.toneMappingExposure = 1;
       renderer.shadowMap.autoUpdate = false;
       renderer.shadowMap.needsUpdate = true;
+      // the light masks add ~170 fragment uniform vectors to every lit material: a GPU with too few (many mobiles have
+      // 256) would fail to compile them and draw black – it gets three's plain lighting instead (before the first
+      // compile: the home's scene is compiled after this). &lm=0 does the same (comparisons).
+      if (lightMask.available && (!lightMask.fits(renderer) || dev?.get('lm') === '0')) lightMask.uninstall();
     }
     if (!rectAreaReady) {
       RectAreaLightUniformsLib.init(); // LTC tables, once per page
@@ -1412,8 +1431,23 @@ export class LightManager {
   _setShadowLevel(levelId) {
     this._shadowBox = this._shadowBoxFor(levelId);
     this._sunKey = '';
+    this._setSunMask(levelId);
     if (this._sunPhys > 0 && this._sunDir) this._placeSun(this._sunDir);
     if (this._gtao) this._gtao.setSceneClipBox(this._aoBoxFor(levelId));
+  }
+
+  /**
+   * The sun lights only the rooms of the level its shadow box covers (+ OUTSIDE, and the stairwell's box that belongs
+   * to both levels): a basement room seen from the hall through the stairwell (or the hall from the basement stair)
+   * lies outside the shadow camera and would get unshadowed sun. The living room keeps its bit: unchanged.
+   */
+  _setSunMask(levelId) {
+    const t = this._table;
+    if (!t) return;
+    let bits = t.outsideBit;
+    for (const r of t.rooms) if ((r.levelId ?? 'hoved') === levelId && r.index !== t.outside) bits |= r.bit;
+    this._sunBits = bits;
+    lightMask.setSun(bits);
   }
 
   /** GTAO's clip box: the living room's as before on the ground floor, the basement's below. */
@@ -1479,6 +1513,7 @@ export class LightManager {
     this._portalDefs = portalRects(this.layout);
     lightMask.setRooms(this._table);
     for (let i = 0; i < 16; i++) lightMask.setRoomFactor(i, 1, 1, 1);
+    this._setSunMask(this._camLevelId);
     const living = h.roomsById?.[LIVING_ID] ?? { id: LIVING_ID, name: 'Stue/kjøkken', levelId: 'hoved' };
     this._worlds.set(LIVING_ID, {
       id: LIVING_ID, living: true, room: living, model: this._model, windows: [], lamps: [], lampBounce: LAMP_BOUNCE,
@@ -1576,35 +1611,103 @@ export class LightManager {
 
   /** The rooms the camera can reach (open portals, breadth-first, depth 2), the camera's room first. */
   _reachable() {
-    const start = this._camRoomId;
-    const out = new Set([start]);
+    return new Set(this._reachWeights(2).keys());
+  }
+
+  /**
+   * The rooms the camera can reach with their light-slot weight: the camera's room 1 (outside the house also OUTSIDE,
+   * and the search goes on from there instead: door-ute → entre-kjeller), then breadth-first over the open portals
+   * (`maxDepth` portals), × HOUSE.hop per portal (× the door's opening). An overview: every room of its level (and
+   * OUTSIDE) at 1. With the doors shut inside the living room: just { living room: 1 }.
+   * @param {number} [maxDepth=2]
+   * @returns {Map<string, number>}
+   */
+  _reachWeights(maxDepth = 2) {
+    const out = new Map();
+    if (this._overview) {
+      for (const [rid, R] of this._worlds) if ((R.room?.levelId ?? 'hoved') === this._overview) out.set(rid, 1);
+      out.set(this._camRoomId, 1);
+      out.set(OUTSIDE_ID, 1);
+      return out;
+    }
+    out.set(this._camRoomId, 1);
+    // outside the house the camera's room is the living room only for its exposure: the search starts outside
+    if (this._camOutside) out.set(OUTSIDE_ID, 1);
     if (!this._portalDefs?.length) return out;
-    let front = [start];
-    for (let depth = 0; depth < 2 && front.length; depth++) {
+    let front = [this._camOutside ? OUTSIDE_ID : this._camRoomId];
+    for (let depth = 0; depth < maxDepth && front.length; depth++) {
       const next = [];
+      const found = new Map();
       for (const id of front) {
         for (const q of this._portalDefs) {
-          if (!q.connects.includes(id) || this._portalGain(q) <= HOUSE.portalOpen) continue;
+          if (!q.connects.includes(id)) continue;
+          const g = this._portalGain(q);
+          if (g <= HOUSE.portalOpen) continue;
           const o = q.connects.find((x) => x !== id);
           if (!o || out.has(o)) continue;
-          out.add(o);
-          next.push(o);
+          const w = out.get(id) * (HOUSE.hop[q.kind] ?? HOUSE.hop.door) * (q.kind === 'door' ? g : 1);
+          if (!found.has(o)) next.push(o);
+          found.set(o, Math.max(found.get(o) ?? 0, w));
         }
       }
+      for (const [o, w] of found) out.set(o, w);
       front = next;
     }
     return out;
   }
 
   /**
+   * An overview camera (orbit / plan, steg 28) shows a level: its shadow and GTAO box, one exposure and white balance
+   * for the level (area-weighted over its rooms, _levelAggregate), and every room of the level competes for the light
+   * slots. The environment map is the level's main room's (the living room / the largest room). null: back to following
+   * the camera (the next update finds its room and level again).
+   * @param {string|null} levelId  'hoved' | 'kjeller' | null
+   */
+  setOverviewLevel(levelId) {
+    const h = this.layout?.house;
+    const id = levelId && h?.levelsById?.[levelId] ? levelId : null;
+    if (id === this._overview) return;
+    this._overview = id;
+    if (id) {
+      let main = id === 'hoved' && this._worlds.has(LIVING_ID) ? LIVING_ID : null;
+      if (!main) {
+        let best = 0;
+        for (const [rid, R] of this._worlds) {
+          const a = (R.room?.levelId ?? 'hoved') === id ? R.room?.area ?? 0 : 0;
+          if (a > best) {
+            best = a;
+            main = rid;
+          }
+        }
+      }
+      if (id !== this._camLevelId) {
+        this._camLevelId = id;
+        this._setShadowLevel(id);
+      }
+      this._camOutside = false;
+      this._camRoomId = main ?? LIVING_ID;
+      const W = this._worlds.get(this._camRoomId);
+      if (W) W.env.dirty = W.env.dirty || !W.env.rt;
+    }
+    this._selectRoom(true);
+  }
+
+  /** The level an overview shows (setOverviewLevel), else null. */
+  get overviewLevel() {
+    return this._overview;
+  }
+
+  /**
    * The camera's level (shadow box) and room (exposure …): layout.house at body height (eye − 0.7) with the level's
    * hysteresis. In a doorway / wall the room stays; outside the house and above the ceilings (orbit, plan) it is the
-   * living room (its light is what the terrace and the overviews were always shown with).
+   * living room (its light is what the terrace and the overviews were always shown with). Outside the house at walking
+   * height (below the roof: the forecourt, the terrace) _camOutside: the outdoor lamps can get light slots. An overview
+   * (setOverviewLevel) fixes level and room.
    */
   _trackCamera(cam) {
     const p = cam?.position;
     const h = this.layout?.house;
-    if (!p || !h?.levelAt) return;
+    if (!p || !h?.levelAt || this._overview) return;
     const body = p.y - 0.7;
     const lv = h.levelAt(body, this._camLevelId);
     if (lv && lv.id !== this._camLevelId) {
@@ -1613,8 +1716,17 @@ export class LightManager {
     }
     let id = this._camRoomId;
     const r = lv ? h.roomAt(p.x, body, p.z, { levelId: lv.id }) : null;
+    let outside = false;
     if (r && this._worlds.has(r.id)) id = p.y <= r.ceilingTop + 0.05 ? r.id : LIVING_ID;
-    else if (!r || !this._worlds.has(r.id)) id = h.isInside?.(p.x, p.z, body, lv?.id) ? this._camRoomId : LIVING_ID;
+    else if (!r || !this._worlds.has(r.id)) {
+      const inside = !!h.isInside?.(p.x, p.z, body, lv?.id);
+      id = inside ? this._camRoomId : LIVING_ID;
+      outside = !r && !inside && p.y < (h.bounds?.maxY ?? 3) + 0.5;
+    }
+    if (outside !== this._camOutside) {
+      this._camOutside = outside;
+      this._selectAt = -1e9;
+    }
     if (id !== this._camRoomId) {
       this._camRoomId = id;
       const W = this._worlds.get(id);
@@ -1623,13 +1735,24 @@ export class LightManager {
     }
   }
 
-  /** Portal rectangles with their current opening → lightmask (only when something changed). */
+  /**
+   * Portal rectangles with their current opening → lightmask (only when something changed; cheap, every frame of a
+   * swing). The rooms are solved again (a full recompute, ~2 ms) only per HOUSE.portalStep of a door's opening, when a
+   * door crosses half open, and once when the doors stop.
+   */
   _updatePortals() {
     if (!this._table || !this._portalDefs?.length) return;
     const gains = this._portalDefs.map((q) => this._portalGain(q));
     const key = gains.map((g) => g.toFixed(3)).join(',');
-    if (key === this._portalState) return;
-    const opened = this._portalState && this._portalState.split(',').some((g, i) => (+g > HOUSE.portalOpen) !== (gains[i] > HOUSE.portalOpen));
+    if (key === this._portalState) {
+      if (this._portalSolved !== key) {
+        // stopped between two steps: solve at the final opening
+        this._portalSolved = key;
+        this._portalSolvedGains = gains;
+        this._markDirty();
+      }
+      return;
+    }
     this._portalState = key;
     const bit = (id) => this._table.byId[id]?.bit ?? 0;
     lightMask.setPortals(this._portalDefs.map((q, i) => ({
@@ -1638,8 +1761,13 @@ export class LightManager {
       gain: q.kind === 'door' ? clamp(gains[i] / HOUSE.portalOpen) : 1,
     })));
     // the portals feed the rooms' bounce, and a door crossing half open changes what the camera can reach
-    this._markDirty();
-    if (opened) this._selectAt = -1e9;
+    const solved = this._portalSolvedGains;
+    const opened = !solved || solved.some((g, i) => (g > HOUSE.portalOpen) !== (gains[i] > HOUSE.portalOpen));
+    if (opened || solved.some((g, i) => Math.abs(g - gains[i]) >= HOUSE.portalStep - 1e-9)) {
+      this._portalSolved = key;
+      this._portalSolvedGains = gains;
+      this._markDirty();
+    }
   }
 
   /** Mask bits of a source: its room (the living room's – and outside's – also OUTSIDE), home = its room. */
@@ -2385,6 +2513,7 @@ export class LightManager {
     this._wbK = [Math.round(kOf(srcM)), Math.round(kOf(appM))];
     // keep the luminance of the light on the surfaces (the exposure is S's job)
     const ref = _c1.copy(illumDay).add(illumLamp).multiplyScalar(1 / Math.max(1e-6, dayL + lampL));
+    const wbRef = ref.clone(); // the room's light colour (the other rooms' white balance relative to this one, _wbRelOf)
     ref.multiply(wbT);
     wbT.multiplyScalar(1 / Math.max(1e-4, lum(ref)));
     // eased in update() (a dimmer or the clock slider moves it); snapped on the first solve
@@ -2455,7 +2584,7 @@ export class LightManager {
     // the living room's result; the other rooms are solved from it (portals) and the camera's room is selected
     this._livingRes = {
       Lkey, Starget: this._Starget, wbT: this._wbTarget.clone(), wbK: this._wbK, wbInfo: this._wbInfo, info: this._info,
-      dayFloorLux, exteriorLevel: this._exteriorLevel, effective,
+      dayFloorLux, exteriorLevel: this._exteriorLevel, effective, wbRef,
     };
     if (this._worlds.size > 1) {
       this._livingExitance();
@@ -2884,6 +3013,7 @@ export class LightManager {
     wbT.setRGB(A.r / Math.max(1e-4, Sc.r), A.g / Math.max(1e-4, Sc.g), A.b / Math.max(1e-4, Sc.b));
     W.wbK = [Math.round(kOf(srcM)), Math.round(kOf(appM))];
     const ref = new THREE.Color().copy(illumDay).add(illumLamp).multiplyScalar(1 / Math.max(1e-6, dayL + lampL));
+    W.wbRef = ref.clone();
     ref.multiply(wbT);
     wbT.multiplyScalar(1 / Math.max(1e-4, lum(ref)));
     const dayShare = dayL / Math.max(1e-6, dayL + lampL);
@@ -2902,7 +3032,21 @@ export class LightManager {
     const id = this._camRoomId;
     const W = this._worlds.get(id);
     const reach = this._reachable();
-    if (!W || W.living) {
+    const ov = this._overview ? this._levelAggregate(this._overview) : null;
+    if (ov) {
+      // an overview (orbit / plan, setOverviewLevel): one exposure and white balance for the level, area-weighted over
+      // its rooms; the environment map stays the level's main room's (id), the other rooms scaled relative to it
+      this._Lkey = ov.Lkey;
+      this._Starget = (this._key * (MODE_KEY[L.effective] ?? 1) * this.exposure) / (Math.pow(ov.Lkey, KEY.p) * Math.pow(KEY.L0, 1 - KEY.p));
+      this._wbTarget.copy(ov.wbT);
+      this._wbK = W && !W.living ? W.wbK : L.wbK;
+      this._wbInfo = W && !W.living ? W.wbInfo : L.wbInfo;
+      this._info = {
+        ...L.info, room: id, overview: this._overview, indoorDaylightLux: Math.round(ov.dayFloorLux), lampLumens: Math.round(ov.lampFlux),
+        keyLuminance: ov.Lkey, sunInRoom: ov.sunInRoom,
+      };
+      this._applyExterior(this._Starget, ov.Lkey, `overview:${this._overview}`);
+    } else if (!W || W.living) {
       this._Lkey = L.Lkey;
       this._Starget = L.Starget;
       this._wbTarget.copy(L.wbT);
@@ -2930,6 +3074,15 @@ export class LightManager {
       this._applyExterior(this._Starget, Lkey, id);
     }
     this._info.room = id;
+    // white balance of every other room relative to the camera's (its light seen through a doorway in its own colour,
+    // HOUSE.wbLocal): used for its light slots and glowing lamps (_apply) and its room factor below
+    this._wbRel.clear();
+    if (this._worlds.size > 1) {
+      for (const [rid, R] of this._worlds) {
+        if (rid === id && !ov) continue;
+        this._wbRel.set(rid, this._wbRelOf(R, this._wbTarget, new THREE.Color()));
+      }
+    }
     // indirect light of the other rooms relative to the camera's (lightmask); the camera's room and outside exactly 1
     const t = this._table;
     if (t) {
@@ -2941,8 +3094,9 @@ export class LightManager {
         // reveal (in both rooms' hole box) look as before from the living room
         if (rid === id || !C || !R.M) lightMask.setRoomFactor(e.index, 1, 1, 1, rid === id);
         else {
-          const f = (a, b) => clamp(a / Math.max(1e-4, b), 0, 50);
-          lightMask.setRoomFactor(e.index, f(R.M.r, C.r), f(R.M.g, C.g), f(R.M.b, C.b), false);
+          const rel = this._wbRel.get(rid);
+          const f = (a, b, w) => clamp((a / Math.max(1e-4, b)) * (w ?? 1), 0, 50);
+          lightMask.setRoomFactor(e.index, f(R.M.r, C.r, rel?.r), f(R.M.g, C.g, rel?.g), f(R.M.b, C.b, rel?.b), false);
         }
       }
       if (!this._worlds.has(id)) lightMask.setRoomFactor(t.byId[LIVING_ID].index, 1, 1, 1, true);
@@ -2960,6 +3114,48 @@ export class LightManager {
         }
       }
     }
+  }
+
+  /**
+   * White balance of room R relative to the camera's (cam = the camera room's target): (R.wbT / cam)^wbLocal per
+   * channel (ratio clamped to 1/wbRelMax…wbRelMax), scaled so R's own light keeps the luminance it has under the
+   * camera's balance – only its colour adapts toward how it looks from inside R.
+   */
+  _wbRelOf(R, cam, out) {
+    const wbT = R.living ? this._livingRes?.wbT : R.wbT;
+    const ref = R.living ? this._livingRes?.wbRef : R.wbRef;
+    out.setRGB(1, 1, 1);
+    if (!wbT || !ref) return out;
+    const k = HOUSE.wbLocal, m = HOUSE.wbRelMax;
+    const ch = (a, b) => Math.pow(clamp(a / Math.max(1e-4, b), 1 / m, m), k);
+    out.setRGB(ch(wbT.r, cam.r), ch(wbT.g, cam.g), ch(wbT.b, cam.b));
+    const a = lum(_c2.copy(ref).multiply(cam)), b = lum(_c3.copy(ref).multiply(cam).multiply(out));
+    if (a > 1e-6 && b > 1e-6) out.multiplyScalar(a / b);
+    return out;
+  }
+
+  /**
+   * One value for a level (the overviews, §4.3): Lkey, white balance, daylight and lamp lumens of its rooms,
+   * area-weighted (the living room with its own solve). null when the level has no lit room.
+   */
+  _levelAggregate(levelId) {
+    const L = this._livingRes;
+    let A = 0, Lk = 0, day = 0, lamps = 0, sun = false;
+    const wb = new THREE.Color(0, 0, 0);
+    for (const R of this._worlds.values()) {
+      if ((R.room?.levelId ?? 'hoved') !== levelId) continue;
+      const a = R.living ? this.layout?.floorArea ?? R.model?.totalArea ?? 50 : R.room?.area ?? 0;
+      if (!(a > 0)) continue;
+      const wbT = R.living ? L?.wbT : R.wbT;
+      A += a;
+      Lk += a * (R.living ? L?.Lkey ?? 0.02 : R.Lkey ?? 0.02);
+      day += a * (R.living ? L?.dayFloorLux ?? 0 : R.dayFloorLux ?? 0);
+      lamps += R.living ? L?.info?.lampLumens ?? 0 : R.lampFlux ?? 0;
+      if (wbT) addScaled(wb, wbT, a);
+      sun = sun || (R.living ? !!L?.info?.sunInRoom : R.windows.some((w) => w.sunFlux > 50));
+    }
+    if (!(A > 0)) return null;
+    return { Lkey: Math.max(0.02, Lk / A), wbT: wb.multiplyScalar(1 / A), dayFloorLux: day / A, lampFlux: lamps, sunInRoom: sun };
   }
 
   /** The photo backdrop and the 3D exterior's sky light for an exposure (the same formula as in _recompute). */
@@ -3077,9 +3273,18 @@ export class LightManager {
     if (cp) this._lastCamPos.copy(cp);
     if (camera?.getWorldDirection) this._camFwd = camera.getWorldDirection(this._camFwd || new THREE.Vector3());
     const groups = { point: [], spot: [], rect: [] };
-    // only the sources of the rooms the camera can reach (§4.1: with the doors shut, the living room's own)
-    const reach = this._worlds.size > 1 ? this._reachable() : null;
+    // only the sources of the rooms the camera can reach (§4.1: with the doors shut, the living room's own), weighted
+    // by the portals on the way (a lamp behind a door is seen through the doorway: it must not take the camera room's
+    // own slots – HOUSE.hop; the camera's room and, outside the house, OUTSIDE weigh 1)
+    const reach = this._worlds.size > 1 ? this._reachWeights(this._overview ? 2 : HOUSE.slotDepth) : null;
     const ok = (c) => !reach || reach.has(c.roomId ?? LIVING_ID);
+    // the outdoor lamps hang under the forecourt's ceiling at the entrance level: from the terrace a storey higher
+    // (round the corner) they weigh like a lamp behind the stairwell
+    const weight = (c) => {
+      if (!reach) return 1;
+      const w = reach.get(c.roomId ?? LIVING_ID) ?? 0;
+      return c.roomId === OUTSIDE_ID && !this._overview && cp && Math.abs(c.position.y - cp.y) > 2 ? w * HOUSE.hop.hole : w;
+    };
     this._reach = reach;
     for (const c of this._allLampCandidates()) if (c.on && c.flux > 0 && ok(c)) groups[c.kind]?.push(c);
     for (const c of this._extraRects()) if (c.on && ok(c)) groups.rect.push(c);
@@ -3095,7 +3300,11 @@ export class LightManager {
         for (const b of this._bounces || []) if (b.on && ok(b)) groups.spot.push(b);
       }
       const list = groups[kind];
-      for (const c of list) c.score = this._score(c, cp);
+      for (const c of list) {
+        c.score = this._score(c, cp);
+        const w = weight(c);
+        if (w !== 1) c.score *= w;
+      }
       if (kind === 'spot') this._assignSpots(slots, list);
       else this._assign(slots, list);
     }
@@ -3286,6 +3495,9 @@ export class LightManager {
         const f = c.fade ?? 1;
         s.light.intensity = c.phys * S * f;
         s.light.color.copy(c.color).multiply(wb);
+        // another room's source in (mostly) its own white balance (HOUSE.wbLocal); the camera room's exactly as before
+        const rel = masks ? this._wbRelFor(c.roomId) : null;
+        if (rel) s.light.color.multiply(rel);
         if (f < 1) {
           ambLux += ambOf(c) * (1 - f);
           addScaled(ambCol, c.color, ambOf(c) * (1 - f));
@@ -3312,6 +3524,23 @@ export class LightManager {
     // environment brightness follows the scale between rebuilds
     if (this.scene.environment && this._envRT) this.scene.environmentIntensity = this._Senv > 0 ? S / this._Senv : 1;
     this.stats.S = S;
+  }
+
+  /**
+   * White balance of a source's room relative to the camera's (_wbRelOf, set in _selectRoom), or null for the camera's
+   * own room (and outside): those are drawn exactly as before.
+   */
+  _wbRelFor(roomId) {
+    const id = roomId ?? LIVING_ID;
+    if (id === this._camRoomId && !this._overview) return null;
+    return this._wbRel.get(id) ?? null;
+  }
+
+  /** The colour a source's light slot gets (its light × the white balance, × its room's relative balance). */
+  slotColor(c, out = new THREE.Color()) {
+    out.copy(c.color).multiply(this._wb);
+    const rel = this._table ? this._wbRelFor(c.roomId) : null;
+    return rel ? out.multiply(rel) : out;
   }
 
   /** Glowing parts: luminance = lumens of their lamps over their area (half of a closed mesh faces outward), capped. */
@@ -3342,6 +3571,8 @@ export class LightManager {
     }
     L = clamp(L, 20, 30000);
     mat.emissive.copy(col).multiply(wb);
+    const rel = this._table ? this._wbRelFor(e.cands[0]?.roomId) : null;
+    if (rel) mat.emissive.multiply(rel);
     const mapK = mat.emissiveMap ? 1.6 : 1;
     let D = L * S * mapK; // display level (1 ≈ white paper)
     if (mat.blending !== THREE.CustomBlending) {

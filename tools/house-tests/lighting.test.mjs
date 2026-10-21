@@ -153,4 +153,91 @@ const H = manager(layout, [{ id: 'door-gang', door: doorGang }]);
   for (const g of H.builtInGroups) H.setBuiltIn(g.id, null);
 }
 
+section('Andre rom sett gjennom døra, ute, sol per nivå, oversikt (rettinger etter gjennomgangen)');
+{
+  const door = { t: 0, isOpen: false };
+  const G = manager(layout, [{ id: 'door-gang', door }]);
+  const spots = (M) => M._pool.spot.filter((s) => s.cand?.on).map((s) => s.cand.id);
+  const stue = new THREE.Vector3(5, 1.6, 6), mot = new THREE.Vector3(2, 1.2, 3);
+  at(G, 20, stue, mot);
+  const own = spots(G).filter((id) => !/l-(gang|kg|bad|sov|entre|ute)/.test(id)).sort().join();
+  door.t = 1;
+  door.isOpen = true;
+  at(G, 20, stue, mot);
+  const tak = G._allLampCandidates().find((c) => c.id === 'builtin:l-gang-tak');
+  const col = tak ? G.slotColor(tak) : null;
+  check('door-gang åpen kl. 20, sett fra stua: gangens plafond (3800 K) i nær sin egen hvitbalanse, b/r ≤ 1,2 (ikke lavendel)',
+    !!col && col.b / col.r <= 1.2, col ? `b/r ${(col.b / col.r).toFixed(2)}` : 'ingen l-gang-tak');
+  const pend = G._allLampCandidates().find((c) => c.id === 'builtin:pendel-oy-1');
+  const pc = G.slotColor(pend), pr = pend.color.clone().multiply(G._wb);
+  check('stuas egne lamper har uendret farge', Math.abs(pc.r - pr.r) + Math.abs(pc.g - pr.g) + Math.abs(pc.b - pr.b) < 1e-9);
+  check('døra åpen: stuas egne lamper beholder alle lysplassene sine (kjøkkenøya mister ingen)',
+    spots(G).filter((id) => !/l-(gang|kg|bad|sov|entre|ute)/.test(id)).sort().join() === own, `${own} → ${spots(G).join()}`);
+  check('lysplasser bare ett rom unna (kjellergangen bak trappehullet konkurrerer ikke fra stua)', !spots(G).some((id) => /l-kg-/.test(id)), spots(G).join());
+  check('synligheten når fortsatt to rom unna (kjellergangen)', G._reachable().has('kjeller-gang'));
+  const f = lm.lightMask.uniforms.lmRoomF.value, gi = G._table.byId.gang.index * 4;
+  check('gangens romfaktor er ikke lenger blåforskjøvet (b/r ≤ 2)', f[gi + 2] / f[gi] <= 2, [...f.slice(gi, gi + 3)].map((v) => v.toFixed(1)).join('/'));
+
+  // a door swing: the rooms are solved per step of the opening, not every frame, and once more when it stops
+  at(G, 20, new THREE.Vector3(4.2, 1.6, 4.0));
+  door.t = 0;
+  door.isOpen = false;
+  G.update(1 / 60, cam);
+  G.update(1 / 60, cam);
+  const r0 = G.stats.recomputes;
+  for (let i = 0; i < 30; i++) {
+    door.t = (i + 1) / 30;
+    door.isOpen = true;
+    G.update(1 / 60, cam);
+  }
+  G.update(1 / 60, cam);
+  G.update(1 / 60, cam);
+  const n = G.stats.recomputes - r0;
+  const lkSwing = G._worlds.get('gang').Lkey;
+  G._markDirty();
+  G.update(1 / 60, cam);
+  check(`dørsving over 30 bilder: ${n} omregninger (≤ 8), sluttilstanden som en ny løsning`, n <= 8 && Math.abs(G._worlds.get('gang').Lkey - lkSwing) < 1e-9, `${n} / ${lkSwing}`);
+
+  // outside: the outdoor lamps get light slots on the forecourt; inside the living room 'ute' is not reached
+  at(G, 23, new THREE.Vector3(12.2, -1.27, 4.6), new THREE.Vector3(9.5, -1.3, 4.6));
+  check('forplassen kl. 23: kameraet er ute, en av lampene i himlingen (l-ute-*) har en spotplass',
+    G._camOutside && spots(G).some((id) => /^builtin:l-ute-/.test(id)), `${G._camOutside} ${spots(G).join()}`);
+  at(G, 23, stue, mot);
+  check('i stua kl. 23: «ute» er ikke blant rommene som konkurrerer om lysplassene', !G._camOutside && !G._reachWeights(1).has('ute') && !spots(G).some((id) => /l-ute-/.test(id)));
+  at(G, 20, new THREE.Vector3(3.5, 15, -6), new THREE.Vector3(3.5, 0, 6));
+  check('oversikten over taket regnes ikke som «ute»', !G._camOutside);
+
+  // the sun lights only the rooms of the level its shadow box covers (+ outside)
+  const t = G._table;
+  const bitsOf = (lv) => t.rooms.filter((r) => r.levelId === lv).reduce((s, r) => s | r.bit, 0);
+  at(G, 12, stue, mot);
+  check('sola i 1. etasje: stua, gangen, bad og soverom + ute, ingen kjellerrom', G._sunBits === (bitsOf('hoved') | t.outsideBit) && (G._sunBits & bitsOf('kjeller')) === 0, G._sunBits);
+  at(G, 12, new THREE.Vector3(3.5, -0.95, 3.8));
+  check('sola i kjelleren: bare kjellerrommene + ute (gangen sett gjennom trappehullet får ikke usett sol)', G._camLevelId === 'kjeller' && G._sunBits === (bitsOf('kjeller') | t.outsideBit), G._sunBits);
+  const hole = t.boxes.find((b) => /^trappehull/.test(b.roomId));
+  check('trappehullets boks hører til begge nivåene (sola slipper til fra begge)', !!hole && (hole.bits & t.byId.gang.bit) && (hole.bits & t.byId['kjeller-gang'].bit));
+
+  // the overviews (steg 28): one value per level
+  G.setOverviewLevel('kjeller');
+  at(G, 20, new THREE.Vector3(3.5, 15, -6), new THREE.Vector3(3.5, 0, 6));
+  const rooms = new Set(G._pool.spot.filter((s) => s.cand?.on).map((s) => s.cand.roomId));
+  check('setOverviewLevel(kjeller): kjellerens skyggeboks, kjellerrom i lysplassene, ingen fra 1. etasje',
+    G.overviewLevel === 'kjeller' && G._camLevelId === 'kjeller' && Math.abs(G._shadowBox.min.y + 2.9) < 1e-9 && rooms.size >= 3
+    && ![...rooms].some((r) => ['stue-kjokken', 'gang', 'bad', 'soverom'].includes(r)), [...rooms].join());
+  const agg = G._levelAggregate('kjeller');
+  check('oversikten eksponerer for nivåets samlede Lkey', Math.abs(G._Lkey - agg.Lkey) < 1e-9 && G.info().overview === 'kjeller', `${G._Lkey} / ${agg.Lkey}`);
+  G.setOverviewLevel(null);
+  at(G, 20, new THREE.Vector3(4.2, 1.6, 4.0));
+  check('setOverviewLevel(null): tilbake til kameraets rom og nivå', G.overviewLevel === null && G.cameraRoomId === 'stue-kjokken' && G._camLevelId === 'hoved');
+}
+
+section('Uniformbudsjettet (lightmask.js)');
+{
+  check(`masken bruker ${lm.VECTORS} fragmentvektorer (≤ 170)`, lm.VECTORS <= 170);
+  check('en GPU med 256 fragmentvektorer får vanlig lys (masker av), 1024 får maskene',
+    !lm.lightMask.fits({ capabilities: { maxFragmentUniforms: 256 } }) && lm.lightMask.fits({ capabilities: { maxFragmentUniforms: 1024 } }));
+  const src = THREE.ShaderChunk.lights_fragment_begin;
+  check('soldelen er maskert, to plasser per vec4', src.includes('lmSunLit()') && src.includes('lmSpot[ UNROLLED_LOOP_INDEX / 2 ]'));
+}
+
 done();

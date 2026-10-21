@@ -16,6 +16,9 @@
 //                  through a doorway lands where the doorway lets it, never through the wall next to it.
 //   • PER ROOM     an indirect-light factor (rgb) on ambient + environment (irradiance and reflections): the environment
 //                  map is the camera room's, other rooms are scaled by their radiance relative to it (§4.3).
+//   • SUN          the directional light lights only the rooms of the level whose shadow box it has (+ OUTSIDE): a room
+//                  of the other level seen through the stairwell lies outside the sun's shadow camera and would get
+//                  unshadowed sun.
 //
 // Inside the mask the factor is exactly 1.0 and the room factor of the camera's room is exactly (1, 1, 1): the living
 // room renders bit-identically. The patch is active only while LightManager.render() draws the home (setEnabled):
@@ -26,15 +29,27 @@
 //   lightMask.setEnabled(on)
 //   lightMask.setRooms({ boxes, outside })          boxes: [{ min:[x,y,z], max:[x,y,z], room }] (room = index)
 //   lightMask.setSlot(kind, index, mask, home)      kind 'point'|'spot'|'rect' (index = three's light order)
-//   lightMask.setPortals(list)          [{ center:[x,y,z], u:[…], halfU, v:[…], halfV, bits, gain }]
+//   lightMask.setPortals(list)          [{ center:[x,y,z], u:[…], halfU, v:[…], halfV, bits, gain }] (v up, or +z for a hole)
 //   lightMask.setRoomFactor(room, r, g, b)
+//   lightMask.setSun(bits)              rooms the sun may light (0 = all)
+//   lightMask.fits(renderer) / uninstall()   the uniform budget (VECTORS) against the GPU's fragment uniform limit; a
+//                                       GPU that cannot take it (many mobiles: 256) gets the plain lighting back
 // Pure (Node-testable): rectilinearBoxes(polygon), buildRoomTable(layout), portalRects(layout).
 import * as THREE from 'three';
 
-export const MAX_BOXES = 48;
+/** Sized to the house (39 boxes, 12 rooms + outside, 13 portals today) with a little room to spare. */
+export const MAX_BOXES = 44;
 export const MAX_ROOMS = 16;
 export const MAX_PORTALS = 16;
-export const MAX_SLOTS = { point: 8, spot: 16, rect: 8 };
+/** Pool sizes of the largest profile («høy»: 4 points, 14 spots, 8 rects; &pools= past that is unmasked). Two slots per vec4. */
+export const MAX_SLOTS = { point: 4, spot: 16, rect: 8 };
+/** Fragment uniform vectors the patch adds to every lit material (info + sun, boxes, room factors, portals, slots). */
+export const VECTORS = 2 + 2 * MAX_BOXES + MAX_ROOMS + 3 * MAX_PORTALS + (MAX_SLOTS.point + MAX_SLOTS.spot + MAX_SLOTS.rect) / 2;
+/**
+ * What three's standard material needs besides the patch with the largest pools (lights, shadows, material, maps):
+ * ≈ 160 vectors, with margin. The masks are used only when VECTORS + this fit the GPU's MAX_FRAGMENT_UNIFORM_VECTORS.
+ */
+export const BASE_FRAGMENT_VECTORS = 224;
 /** Boxes reach this far past the room's inner wall faces (the thinnest wall, gang/kjellerstue, is 0.09: the two sides never meet). */
 export const BOX_MARGIN = 0.04;
 /** Id of the pseudo-room outside every box. */
@@ -54,13 +69,14 @@ const PARS = /* glsl */ `
 #define LM_MAX_SPOT ${MAX_SLOTS.spot}
 #define LM_MAX_RECT ${MAX_SLOTS.rect}
 uniform vec4 lmInfo; // x enabled, y boxes, z portals, w outside room
+uniform vec4 lmSun; // x room bits the sun lights (0 = all)
 uniform vec4 lmBoxMin[ LM_BOXES ]; // xyz, w = room bits
 uniform vec4 lmBoxMax[ LM_BOXES ];
 uniform vec4 lmRoomF[ LM_ROOMS ]; // rgb indirect factor, w = 1 for the camera's room
-uniform vec4 lmPortal[ LM_PORTALS * 4 ]; // centre + bits, u + half, v + half, gain
-uniform vec4 lmPoint[ LM_MAX_POINT ]; // x mask bits, y home bits
-uniform vec4 lmSpot[ LM_MAX_SPOT ];
-uniform vec4 lmRect[ LM_MAX_RECT ];
+uniform vec4 lmPortal[ LM_PORTALS * 3 ]; // centre + bits, u + halfU, (halfV, gain, hole, 0)
+uniform vec4 lmPoint[ ( LM_MAX_POINT + 1 ) / 2 ]; // two slots per vec4: (mask bits, home bits) in xy / zw
+uniform vec4 lmSpot[ ( LM_MAX_SPOT + 1 ) / 2 ];
+uniform vec4 lmRect[ ( LM_MAX_RECT + 1 ) / 2 ];
 vec3 lmWorld;
 highp int lmBits;
 
@@ -77,7 +93,12 @@ void lmLocate( const in vec3 viewPos ) {
 	if ( lmBits == 0 ) lmBits = 1 << int( lmInfo.w + 0.5 );
 }
 
-float lmLight( const in vec4 slot, const in vec3 lightViewPos ) {
+float lmSunLit() {
+	if ( lmInfo.x < 0.5 || lmSun.x < 0.5 ) return 1.0;
+	return ( lmBits & int( lmSun.x + 0.5 ) ) != 0 ? 1.0 : 0.0;
+}
+
+float lmLight( const in vec2 slot, const in vec3 lightViewPos ) {
 	if ( lmInfo.x < 0.5 ) return 1.0;
 	highp int mask = int( slot.x + 0.5 );
 	if ( ( mask & lmBits ) != 0 ) return 1.0;
@@ -87,11 +108,12 @@ float lmLight( const in vec4 slot, const in vec3 lightViewPos ) {
 	float best = 0.0;
 	for ( int p = 0; p < LM_PORTALS; p ++ ) {
 		if ( float( p ) >= lmInfo.z ) break;
-		vec4 c = lmPortal[ p * 4 ];
+		vec4 c = lmPortal[ p * 3 ];
 		highp int pb = int( c.w + 0.5 );
 		if ( ( pb & home ) == 0 || ( pb & lmBits ) == 0 ) continue;
-		vec4 u = lmPortal[ p * 4 + 1 ];
-		vec4 v = lmPortal[ p * 4 + 2 ];
+		vec4 u = lmPortal[ p * 3 + 1 ];
+		vec4 h = lmPortal[ p * 3 + 2 ];
+		vec4 v = vec4( 0.0, h.z > 0.5 ? 0.0 : 1.0, h.z > 0.5 ? 1.0 : 0.0, h.x );
 		vec3 n = cross( u.xyz, v.xyz );
 		float sF = dot( lmWorld - c.xyz, n );
 		float sL = dot( L - c.xyz, n );
@@ -102,7 +124,7 @@ float lmLight( const in vec4 slot, const in vec3 lightViewPos ) {
 		float eu = abs( dot( d, u.xyz ) ) - u.w;
 		float ev = abs( dot( d, v.xyz ) ) - v.w;
 		float pass = ( 1.0 - smoothstep( -0.04, 0.04, eu ) ) * ( 1.0 - smoothstep( -0.04, 0.04, ev ) );
-		best = max( best, pass * lmPortal[ p * 4 + 3 ].x );
+		best = max( best, pass * h.y );
 	}
 	return best;
 }
@@ -126,14 +148,18 @@ let installed = false;
 const U = {
   // typed arrays only: UniformsUtils.clone copies three objects (a Vector4 would be one per material) but shares these
   lmInfo: { value: new Float32Array([0, 0, 0, MAX_ROOMS - 1]) },
+  lmSun: { value: new Float32Array(4) },
   lmBoxMin: { value: new Float32Array(MAX_BOXES * 4) },
   lmBoxMax: { value: new Float32Array(MAX_BOXES * 4) },
   lmRoomF: { value: new Float32Array(MAX_ROOMS * 4).fill(1) },
-  lmPortal: { value: new Float32Array(MAX_PORTALS * 16) },
-  lmPoint: { value: new Float32Array(MAX_SLOTS.point * 4) },
-  lmSpot: { value: new Float32Array(MAX_SLOTS.spot * 4) },
-  lmRect: { value: new Float32Array(MAX_SLOTS.rect * 4) },
+  lmPortal: { value: new Float32Array(MAX_PORTALS * 12) },
+  lmPoint: { value: new Float32Array(Math.ceil(MAX_SLOTS.point / 2) * 4) },
+  lmSpot: { value: new Float32Array(Math.ceil(MAX_SLOTS.spot / 2) * 4) },
+  lmRect: { value: new Float32Array(Math.ceil(MAX_SLOTS.rect / 2) * 4) },
 };
+/** The chunks as three shipped them (uninstall) and the lit ShaderLib entries the uniforms went into. */
+const ORIGINAL = {};
+const LIBS = ['standard', 'physical', 'lambert', 'phong', 'toon'];
 
 /** Replaces `from` in a chunk once; warns (and leaves the chunk) when three changed it. */
 function patchChunk(name, from, to) {
@@ -142,6 +168,7 @@ function patchChunk(name, from, to) {
     console.warn(`[lightmask] three.js chunk ${name} changed – light masks off for it`);
     return false;
   }
+  if (!(name in ORIGINAL)) ORIGINAL[name] = src;
   THREE.ShaderChunk[name] = src.replace(from, to);
   return true;
 }
@@ -157,15 +184,20 @@ export function installLightMask() {
     let ok = patchChunk('lights_pars_begin', 'uniform vec3 ambientLightColor;', `uniform vec3 ambientLightColor;\n${PARS}`);
     ok = ok && patchChunk('lights_fragment_begin', 'IncidentLight directLight;', 'IncidentLight directLight;\nlmLocate( geometryPosition );');
     ok = ok && patchChunk('lights_fragment_begin', 'getPointLightInfo( pointLight, geometryPosition, directLight );',
-      'getPointLightInfo( pointLight, geometryPosition, directLight );\n\t\t#if ( UNROLLED_LOOP_INDEX < LM_MAX_POINT )\n\t\tdirectLight.color *= lmLight( lmPoint[ i ], pointLight.position );\n\t\t#endif');
+      `getPointLightInfo( pointLight, geometryPosition, directLight );\n${slotLine('lmPoint', 'LM_MAX_POINT', 'directLight.color', 'pointLight.position')}`);
     ok = ok && patchChunk('lights_fragment_begin', 'getSpotLightInfo( spotLight, geometryPosition, directLight );',
-      'getSpotLightInfo( spotLight, geometryPosition, directLight );\n\t\t#if ( UNROLLED_LOOP_INDEX < LM_MAX_SPOT )\n\t\tdirectLight.color *= lmLight( lmSpot[ i ], spotLight.position );\n\t\t#endif');
+      `getSpotLightInfo( spotLight, geometryPosition, directLight );\n${slotLine('lmSpot', 'LM_MAX_SPOT', 'directLight.color', 'spotLight.position')}`);
     ok = ok && patchChunk('lights_fragment_begin', 'rectAreaLight = rectAreaLights[ i ];',
-      'rectAreaLight = rectAreaLights[ i ];\n\t\t#if ( UNROLLED_LOOP_INDEX < LM_MAX_RECT )\n\t\trectAreaLight.color *= lmLight( lmRect[ i ], rectAreaLight.position );\n\t\t#endif');
+      `rectAreaLight = rectAreaLights[ i ];\n${slotLine('lmRect', 'LM_MAX_RECT', 'rectAreaLight.color', 'rectAreaLight.position')}`);
+    ok = ok && patchChunk('lights_fragment_begin', 'getDirectionalLightInfo( directionalLight, directLight );',
+      'getDirectionalLightInfo( directionalLight, directLight );\n\t\tdirectLight.color *= lmSunLit();');
     ok = ok && patchChunk('lights_fragment_end', '#if defined( RE_IndirectDiffuse )',
       '{\n\tvec3 lmF = lmIndirect();\n\t#if defined( RE_IndirectDiffuse )\n\tirradiance *= lmF;\n\tiblIrradiance *= lmF;\n\t#endif\n\t#if defined( RE_IndirectSpecular )\n\tradiance *= lmF;\n\tclearcoatRadiance *= lmF;\n\t#endif\n}\n#if defined( RE_IndirectDiffuse )');
-    if (!ok) return lightMask;
-    for (const id of ['standard', 'physical', 'lambert', 'phong', 'toon']) {
+    if (!ok) {
+      uninstall();
+      return lightMask;
+    }
+    for (const id of LIBS) {
       const lib = THREE.ShaderLib[id];
       if (lib?.uniforms) Object.assign(lib.uniforms, U);
     }
@@ -174,6 +206,25 @@ export function installLightMask() {
     console.warn('[lightmask] patch failed – lights are not masked', err);
   }
   return lightMask;
+}
+
+/**
+ * The slot line in an unrolled light loop: two slots per vec4 (UNROLLED_LOOP_INDEX is a literal there, so the row and
+ * the half are constant). Slots past the array are unmasked.
+ */
+function slotLine(arr, max, color, pos) {
+  return `\t\t#if ( UNROLLED_LOOP_INDEX < ${max} )\n\t\t${color} *= lmLight( ( UNROLLED_LOOP_INDEX % 2 == 0 ) ? ${arr}[ UNROLLED_LOOP_INDEX / 2 ].xy : ${arr}[ UNROLLED_LOOP_INDEX / 2 ].zw, ${pos} );\n\t\t#endif`;
+}
+
+/** Puts three's chunks and ShaderLib uniforms back (before the first compile: nothing has the patch then). */
+function uninstall() {
+  for (const [name, src] of Object.entries(ORIGINAL)) THREE.ShaderChunk[name] = src;
+  for (const id of LIBS) {
+    const u = THREE.ShaderLib[id]?.uniforms;
+    if (u) for (const k of Object.keys(U)) if (u[k] === U[k]) delete u[k];
+  }
+  lightMask.available = false;
+  U.lmInfo.value[0] = 0;
 }
 
 /** The shared uniform state (see the top of this file). */
@@ -202,9 +253,26 @@ export const lightMask = {
   },
   setSlot(kind, index, mask, home) {
     const arr = U[kind === 'point' ? 'lmPoint' : kind === 'spot' ? 'lmSpot' : 'lmRect']?.value;
-    if (!arr || index < 0 || index * 4 >= arr.length) return;
-    arr[index * 4] = mask;
-    arr[index * 4 + 1] = home;
+    if (!arr || index < 0 || index * 2 >= arr.length) return;
+    arr[index * 2] = mask;
+    arr[index * 2 + 1] = home;
+  },
+  /** Room bits the sun (directional light) lights; 0 = every fragment (no mask). */
+  setSun(bits) {
+    U.lmSun.value[0] = bits || 0;
+  },
+  /**
+   * Whether the patch fits a renderer's fragment uniform budget (VECTORS + BASE_FRAGMENT_VECTORS ≤
+   * MAX_FRAGMENT_UNIFORM_VECTORS). A renderer that does not tell: true.
+   */
+  fits(renderer) {
+    const max = renderer?.capabilities?.maxFragmentUniforms;
+    return !(Number.isFinite(max) && max > 0) || VECTORS + BASE_FRAGMENT_VECTORS <= max;
+  },
+  /** Back to three's lighting for good (lighting.js: a GPU that does not fit, before the first compile). */
+  uninstall() {
+    if (this.available) console.warn(`[lightmask] the GPU takes too few fragment uniforms for the light masks (${VECTORS} + ${BASE_FRAGMENT_VECTORS}) – lights are not masked`);
+    uninstall();
   },
   /** @param {{ center: number[], u: number[], halfU: number, v: number[], halfV: number, bits: number, gain: number }[]} list */
   setPortals(list) {
@@ -214,7 +282,9 @@ export const lightMask = {
     for (const q of list) {
       if (n >= MAX_PORTALS) break;
       if (!(q.gain > 0) || !q.bits) continue;
-      p.set([q.center[0], q.center[1], q.center[2], q.bits, q.u[0], q.u[1], q.u[2], q.halfU, q.v[0], q.v[1], q.v[2], q.halfV, q.gain, 0, 0, 0], n * 16);
+      // v is up (a hole in a wall) or +z (the stairwell, u = +x): the third row only says which
+      const hole = Math.abs(q.v?.[2] ?? 0) > 0.5 ? 1 : 0;
+      p.set([q.center[0], q.center[1], q.center[2], q.bits, q.u[0], q.u[1], q.u[2], q.halfU, q.halfV, q.gain, hole, 0], n * 12);
       n++;
     }
     U.lmInfo.value[2] = n;
