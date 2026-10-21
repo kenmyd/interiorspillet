@@ -92,6 +92,9 @@ for (const [name, build] of [
   // buildRooms is no longer a stub (steg 8, A2): it stays empty for today's living room alone; what it builds for
   // the other rooms is tools/house-tests/rooms.test.mjs
   for (const [lname, L] of name === 'buildRooms' ? [['today', today]] : [['today', today], ['house-mini', house]]) {
+    // steg 19 (B2): buildStairs is real – it builds house-mini's stair (tools/house-tests/stair-geom.test.mjs); the
+    // empty contract still holds for a house without stairs
+    if (name === 'buildStairs' && L.house?.stairs?.length) continue;
     const ctx = fakeCtx();
     const [r, warns] = quiet(() => build(ctx, L));
     // steg 10 (A4): buildBuiltIns is no longer a stub – house-mini's WC is built into roots.rooms.bad.contents
