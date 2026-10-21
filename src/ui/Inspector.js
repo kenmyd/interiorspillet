@@ -3,8 +3,10 @@ import { h, svg, fmtNumber } from './dom.js';
 import { ICONS } from './icons.js';
 import { getArchetype } from '../models/registry.js';
 import { materialOptions, kindGroup, resolveColor, MATERIAL_LABELS, MATERIAL_KINDS, defaultColor } from '../home/materials.js';
-import { itemAbsorption, rt60For, itemRoomId, LIVING_ROOM_ID } from '../design/Acoustics.js';
+import { itemAbsorption, rt60For, itemRoomId, LIVING_ROOM_ID, finishAbsorption } from '../design/Acoustics.js';
 import { itemLevel, levelFloorY } from '../design/SceneSync.js';
+import { surfaceInfo } from '../design/Selection.js';
+import { SLAT_LOOKS, SLAT_SIZES, SLAT_BACKINGS, defaultFinish, sizeOf, hasFelt, surfaceKind } from '../design/Finishes.js';
 import palette from '../data/palette.json';
 import {
   thumbnail, cachedThumbnail, priceInfo, priceEl, variantSwatch, variantColors, colorDist, dimsText, storeLink,
@@ -14,7 +16,7 @@ import {
  * Inspector (ARCHITECTURE §12, §14) – the right-hand panel that opens when something is selected.
  *
  *   new Inspector(editor) – open(target) / close() / toggle() / isOpen / update() / dispose()
- *   target = editor.selected: { kind: 'item', uid } | { kind: 'wall', wallId }
+ *   target = editor.selected: { kind: 'item', uid } | { kind: 'wall', wallId } | { kind: 'ceiling', ceilingId }
  *
  * Item: ◀ ▶ «Bytt modell» first and sticky at the top of the panel (other products of the same category and mount at
  * the same spot – rotation and wall attachment are kept, the back stays against the wall, the colour closest to the
@@ -24,7 +26,9 @@ import {
  * part, an inline «egen farge» note below the parts – nothing is inserted above the cursor), lamp controls (på/av,
  * dimmer, fargetemperatur, avstand fra tak for pendler), size sliders within the archetype's dimsRange and the room
  * (wall items: the wall's free span; floor items: the ceiling), archetype params (paramEditor), rotation ±15°,
- * height on the wall, sound absorption, «Dupliser», «Tilbakestill», «Slett». Wall (not the high wall): paint colour.
+ * height on the wall, sound absorption, «Dupliser», «Tilbakestill», «Slett». Wall (not the high wall): paint colour
+ * and «Spiler» (a slat finish – design.setFinish: look, slat size, backing, the whole wall or a section, height). Ceiling
+ * («Tak»): paint colour and «Spilepanel» (the same, with the slats' direction instead of extent); a bulkhead: paint only.
  *
  * Every change goes through DesignState.update (sliders and colour drags coalesce into one undo step). Size and model
  * changes go through Placement.constrain(), so the item never ends up in a wall, a window or the ceiling (the position
@@ -175,6 +179,14 @@ const CSS = `
 .ipi-paint-name { font-size: 0.9em; color: var(--kv-ink-2); margin: 0 0 0.6em; }
 .ipi-paint-name b { color: var(--kv-ink); }
 .ipi-panel .ip-color .ip-swatches { --ip-sw: 1.5em; gap: 0.3em; }
+.ipi-seg { display: flex; padding: 0.2em; gap: 0.2em; margin: 0.35em 0 0.6em; border-radius: calc(var(--kv-r) + 0.1em); background: rgba(0,0,0,0.28); border: 1px solid var(--kv-line); }
+.ipi-seg button { flex: 1; min-width: 0; padding: 0.42em 0.3em; border: 0; border-radius: var(--kv-r); background: none; color: var(--kv-ink-2);
+  font: inherit; font-size: 0.84em; font-weight: 620; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ipi-seg button:hover { color: var(--kv-ink); }
+.ipi-seg button.is-active { background: var(--kv-accent); color: var(--kv-accent-ink); }
+.ipi-looks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.2em 0.3em; margin: 0.35em 0 0.6em; }
+.ipi-looks .ipi-opt { min-width: 0; }
+.ipi-looks .ipi-opt span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 `;
 
 function injectCss(id, css) {
@@ -242,6 +254,29 @@ function chevron() {
   return el;
 }
 
+/**
+ * Segmented control: options [[value, label]], the active value, onPick(value).
+ * @returns {HTMLElement}
+ */
+function seg(options, value, onPick) {
+  return h('div.ipi-seg', { role: 'radiogroup' }, options.map(([v, label]) => h(`button${v === value ? '.is-active' : ''}`, {
+    type: 'button',
+    role: 'radio',
+    'aria-checked': v === value ? 'true' : 'false',
+    title: label,
+    text: label,
+    on: { click: () => v !== value && onPick(v) },
+  })));
+}
+
+/** Compass names of a ceiling's long and short side in plan (+x = sør, +z = vest): ['nord–sør', 'øst–vest']. */
+function ceilingAxes(polygon) {
+  const xs = (polygon || []).map((p) => p.x ?? p[0]);
+  const zs = (polygon || []).map((p) => p.y ?? p[1]);
+  const longX = xs.length ? Math.max(...xs) - Math.min(...xs) >= Math.max(...zs) - Math.min(...zs) : true;
+  return longX ? ['nord–sør', 'øst–vest'] : ['øst–vest', 'nord–sør'];
+}
+
 /** Main part of an item (the colour that «is» the item), e.g. upholstery for a chair. */
 function mainPart(colors) {
   const keys = Object.keys(colors || {});
@@ -269,7 +304,10 @@ export class Inspector extends BasePanel {
         if (this.target?.kind === 'item' && uid === this.target.uid && !this._self) this._dirty = true;
       }),
       d.on('paint', ({ wallId }) => {
-        if (this.target?.kind === 'wall' && wallId === this.target.wallId && !this._self) this._dirty = true;
+        if (wallId === this._surfaceId() && !this._self) this._dirty = true;
+      }),
+      d.on('finish', ({ surfaceId }) => {
+        if (surfaceId === this._surfaceId() && !this._self) this._dirty = true;
       }),
       d.on('load', () => (this._originals = null)),
     ];
@@ -290,10 +328,10 @@ export class Inspector extends BasePanel {
     super.open(target);
   }
 
-  /** @param {{ kind: string, uid?: string, wallId?: string }} target */
+  /** @param {{ kind: string, uid?: string, wallId?: string, ceilingId?: string }} target */
   onOpen(target) {
     const t = target || this.editor.selected;
-    const changed = !this.target || t?.kind !== this.target.kind || t?.uid !== this.target.uid || t?.wallId !== this.target.wallId;
+    const changed = !this.target || t?.kind !== this.target.kind || t?.uid !== this.target.uid || t?.wallId !== this.target.wallId || t?.ceilingId !== this.target.ceilingId;
     this.target = t ? { ...t } : null;
     if (changed) {
       this._ui = { part: null, params: false };
@@ -842,10 +880,10 @@ export class Inspector extends BasePanel {
     const scroll = this.body.scrollTop;
     this.foot.replaceChildren();
     if (t?.kind === 'item') this._renderItem();
-    else if (t?.kind === 'wall') this._renderWall();
+    else if (t?.kind === 'wall' || t?.kind === 'ceiling') this._renderSurface();
     else {
       this.panel.setTitle('Egenskaper');
-      this.body.replaceChildren(emptyState('Klikk på et møbel, en lampe eller en vegg for å endre det.', 'info'));
+      this.body.replaceChildren(emptyState('Klikk på et møbel, en lampe, en vegg eller taket for å endre det.', 'info'));
     }
     this.foot.hidden = !this.foot.childElementCount;
     this.body.scrollTop = scroll;
@@ -1476,15 +1514,77 @@ export class Inspector extends BasePanel {
     return section('Lyd', h('div.ipi-sound', {}, svg(ICONS.volume), h('span', { text: `Demper ca. ${fmtNumber(m2, 2)} m² (Sabine).${extra}` })));
   }
 
-  // ---- walls (paint) -------------------------------------------------------------------------------------------
+  // ---- walls and ceilings (paint, slats) ------------------------------------------------------------------------
 
-  _renderWall() {
+  /** Id of the wall / ceiling shown (null for an item). */
+  _surfaceId() {
     const t = this.target;
+    return t?.kind === 'wall' ? t.wallId : t?.kind === 'ceiling' ? t.ceilingId : null;
+  }
+
+  /**
+   * The wall / ceiling / bulkhead shown: { id, kind: 'wall'|'ceiling', name, original (the data's paint), bulkhead,
+   * slats (may get a slat finish), roomId, length (walls), maxH (walls: the highest point of its top line) }.
+   */
+  _surface() {
+    const t = this.target;
+    const L = this.editor.layout;
+    const id = this._surfaceId();
+    if (t.kind === 'wall') {
+      const wall = this.editor.home?.walls?.find((w) => w.id === id);
+      const lw = L?.house?.wallsById?.[id] ?? L?.wallsById?.[id] ?? null;
+      const maxH = Math.max(0.5, ...(lw?.topProfile || [[0, 2.4]]).map(([, v]) => v));
+      return { id, kind: 'wall', name: wall?.name || lw?.name || 'Vegg', original: wall?.paint || lw?.paint || 'sand', bulkhead: false,
+        slats: surfaceKind(L, id) === 'wall', roomId: lw?.roomId ?? LIVING_ROOM_ID, length: lw?.length ?? wall?.length ?? 3, maxH };
+    }
+    const info = surfaceInfo(this.editor, id);
+    const c = (L?.house?.ceilings ?? L?.ceilings ?? []).find((x) => x.id === id);
+    const b = (L?.house?.bulkheads ?? L?.bulkheads ?? []).find((x) => x.id === id);
+    return { id, kind: 'ceiling', name: info?.name || 'Tak', original: (c ?? b)?.paint || 'sand', bulkhead: !!info?.bulkhead,
+      slats: surfaceKind(L, id) === 'ceiling', roomId: (c ?? b)?.roomId ?? LIVING_ROOM_ID, polygon: c?.polygon ?? null };
+  }
+
+  /** setPaint / setFinish without re-rendering from our own change. */
+  _surfaceChange(fn) {
+    this._self++;
+    try {
+      return fn(this.design);
+    } finally {
+      this._self--;
+    }
+  }
+
+  _renderSurface() {
+    const s = this._surface();
     const design = this.design;
-    const wall = this.editor.home?.walls?.find((w) => w.id === t.wallId);
-    this.panel.setTitle(wall?.name || 'Vegg');
-    const original = wall?.paint || 'sand';
-    const current = design.paints[t.wallId] || original;
+    this.panel.setTitle(s.name);
+    const painted = !!design.paints[s.id];
+    const finish = s.slats ? design.finishes?.[s.id] ?? null : null;
+    const what = s.kind === 'wall' ? 'Vegg' : s.bulkhead ? 'Nedforing' : 'Tak';
+    this.body.replaceChildren(...[
+      h('div.ipi-head', {}, h('div.ipi-badges', {}, badge(what), painted ? badge('Ny farge', 'accent') : badge('Original farge', 'info'), finish ? badge(s.kind === 'wall' ? 'Spiler' : 'Spilepanel', 'accent') : null)),
+      this._paintSection(s, finish),
+      s.slats ? this._slatSection(s, finish) : null,
+    ].filter(Boolean));
+    if (painted) {
+      this.foot.append(button({ label: 'Tilbake til original farge', icon: 'reset', size: 'sm', onClick: () => {
+        design.setPaint(s.id, null);
+        this._render();
+      } }));
+    }
+    if (finish) {
+      this.foot.append(button({ label: s.kind === 'wall' ? 'Fjern spilene' : 'Fjern spilepanelet', icon: 'close', size: 'sm', variant: 'ghost', onClick: () => {
+        design.setFinish(s.id, null);
+        this._render();
+      } }));
+    }
+  }
+
+  /** Paint colour of a wall / ceiling: the walls' palette, the native picker and a hex field. */
+  _paintSection(s, finish) {
+    const design = this.design;
+    const original = s.original;
+    const current = design.paints[s.id] || original;
     const hex = this.editor.layout?.resolvePaint?.(current) || resolveColor(current);
     const colors = [];
     for (const c of [...paletteColors('walls'), ...paletteColors('paints')]) {
@@ -1498,36 +1598,142 @@ export class Inspector extends BasePanel {
       return p ? `${p.brand || ''} ${p.code || ''} ${p.name}`.replace(/\s+/g, ' ').trim() : x;
     };
     const nameEl = h('p.ipi-paint-name', {}, 'Farge: ', h('b', { text: nameOf(current) }));
-    const live = throttle((c) => {
-      this._self++;
-      try {
-        design.setPaint(t.wallId, c);
-      } finally {
-        this._self--;
-      }
-    }, 90);
+    const live = throttle((c) => this._surfaceChange((d) => d.setPaint(s.id, c)), 90);
+    const label = s.kind === 'wall' ? 'Veggfarge' : s.bulkhead ? 'Farge' : 'Takfarge';
     const picker = colorPicker(hex, (c, { final }) => {
       nameEl.replaceChildren('Farge: ', h('b', { text: nameOf(c) }));
       if (final) {
         live.cancel();
-        this._self++;
-        try {
-          design.setPaint(t.wallId, c);
-        } finally {
-          this._self--;
-        }
+        this._surfaceChange((d) => d.setPaint(s.id, c));
       } else live(c);
-    }, { palette: colors, label: 'Veggfarge' });
+    }, { palette: colors, label });
     const origName = nameOf(original);
-    this.body.replaceChildren(
-      h('div.ipi-head', {}, h('div.ipi-badges', {}, badge('Vegg'), design.paints[t.wallId] ? badge('Ny farge', 'accent') : badge('Original farge', 'info'))),
-      section('Veggfarge', nameEl, picker.el, h('p.ipi-hint', { text: `I dag: ${origName}. De to første er fargene i stua i dag (Jotun Sand og Marrakesh). Taket i sonen har samme farge som veggene.` })),
-    );
-    if (design.paints[t.wallId]) {
-      this.foot.append(button({ label: 'Tilbake til original farge', icon: 'reset', size: 'sm', onClick: () => {
-        design.setPaint(t.wallId, null);
+    let hint = s.kind === 'wall'
+      ? `I dag: ${origName}. De to første er fargene i stua i dag (Jotun Sand og Marrakesh). Taket i sonen har samme farge som veggene.`
+      : `I dag: ${origName}.${s.bulkhead ? ' Nedforingen er den loddrette kanten der taket skifter høyde.' : ''}`;
+    if (finish && (finish.look === 'surface' || finish.backing === 'none')) hint += finish.look === 'surface' ? ' Spilene er malt i samme farge.' : ' Fargen synes mellom spilene.';
+    return section(label, nameEl, picker.el, h('p.ipi-hint', { text: hint }));
+  }
+
+  /**
+   * Slat finish of a wall («Spiler») or a ceiling («Spilepanel»): on/off, look, slat size, backing, the wall's extent
+   * and height or the ceiling's direction, and what it does to the reverberation. Discrete choices are one undo step
+   * each; a slider drag is one step (coalesced).
+   */
+  _slatSection(s, finish) {
+    const wall = s.kind === 'wall';
+    const title = wall ? 'Spiler' : 'Spilepanel';
+    const set = (patch, opts) => this._surfaceChange((d) => d.setFinish(s.id, { ...(d.finishes[s.id] || defaultFinish(s.kind)), ...patch }, opts));
+    const onOff = toggle({
+      label: wall ? 'Spiler på veggen' : 'Spilepanel i taket',
+      value: !!finish,
+      onChange: (on) => {
+        this.design.setFinish(s.id, on ? defaultFinish(s.kind) : null);
         this._render();
-      } }));
+      },
+    });
+    if (!finish) {
+      return section(title, onOff.el, h('p.ipi-hint', { text: wall
+        ? 'Lameller av eik på sort filt, fra gulv til tak. Spilene går rundt vinduer, dører og stikkontakter, og filten demper etterklangen.'
+        : 'Lameller i takflaten – følger skråtaket. Spilene går rundt spotter, lamper og røykvarslere, og filten demper etterklangen.' }));
+    }
+    const kids = [onOff.el];
+    // look: wood, black, white or painted in the surface's colour
+    const paintHex = this.editor.layout?.resolvePaint?.(this.design.paints[s.id] || s.original) || resolveColor(this.design.paints[s.id] || s.original);
+    kids.push(h('div.ipi-swlabel', { text: 'Utførelse' }), h('div.ipi-looks', {}, SLAT_LOOKS.map((l) => {
+      const label = l.id === 'surface' ? (wall ? 'Veggens farge' : 'Takets farge') : l.label;
+      const title = l.id === 'surface' ? `Spilene malt i ${wall ? 'veggens' : 'takets'} farge` : l.label;
+      return h(`button.ipi-opt${finish.look === l.id ? '.is-active' : ''}`, { type: 'button', title, on: { click: () => {
+        set({ look: l.id });
+        this._render();
+      } } }, h('span.ipi-dot', { style: { background: l.hex ?? paintHex } }), h('span', { text: label }));
+    })));
+    // slat size: presets + sliders (cm)
+    const size = sizeOf(finish);
+    kids.push(h('div.ipi-swlabel', { text: 'Spiler' }), seg([...Object.entries(SLAT_SIZES).map(([k, v]) => [k, v.label]), ...(size === 'custom' ? [['custom', 'Egne mål']] : [])], size, (k) => {
+      const p = SLAT_SIZES[k];
+      if (!p) return;
+      set({ slatW: p.slatW, gap: p.gap, depth: p.depth });
+      this._render();
+    }));
+    // a slider drag is one undo step (coalesced per slider)
+    const live = throttle((patch) => set(patch, { coalesce: Object.keys(patch).join(',') }), 80);
+    const commit = (patch) => {
+      live.cancel();
+      set(patch, { coalesce: Object.keys(patch).join(',') });
+      this._render();
+    };
+    const cmFmt = (v) => `${fmtNumber(v, 1)} cm`;
+    kids.push(
+      slider({ label: 'Spilebredde', min: 1, max: 8, step: 0.1, value: Math.round(finish.slatW * 1000) / 10, format: cmFmt, onInput: (v) => live({ slatW: v / 100 }), onChange: (v) => commit({ slatW: v / 100 }) }).el,
+      slider({ label: 'Mellomrom', min: 0.5, max: 4, step: 0.1, value: Math.round(finish.gap * 1000) / 10, format: cmFmt, onInput: (v) => live({ gap: v / 100 }), onChange: (v) => commit({ gap: v / 100 }) }).el,
+    );
+    // backing
+    const short = { felt: 'Sort filt', 'felt-match': 'Filt i fargen', none: 'Ingen filt' };
+    kids.push(h('div.ipi-swlabel', { text: 'Bakside' }), seg(SLAT_BACKINGS.map(([id, l]) => [id, short[id] ?? l]), finish.backing, (v) => {
+      set({ backing: v });
+      this._render();
+    }));
+    if (wall) {
+      // extent: the whole wall or a section; height: up to the ceiling or a chosen height
+      const L = s.length;
+      kids.push(h('div.ipi-swlabel', { text: 'Dekker' }), seg([['full', 'Hele veggen'], ['section', 'Del av veggen']], finish.extent, (v) => {
+        const patch = { extent: v };
+        if (v === 'section' && finish.extent !== 'section') {
+          const w = Math.min(L, Math.max(0.6, Math.round((L / 2) * 20) / 20));
+          Object.assign(patch, { w, u: Math.round(((L - w) / 2) * 100) / 100 });
+        }
+        set(patch);
+        this._render();
+      }));
+      if (finish.extent === 'section') {
+        const w = Math.min(finish.w, L);
+        const posCtl = slider({ label: 'Fra venstre', min: 0, max: Math.max(0.01, Math.round((L - w) * 100) / 100), step: 0.01, value: Math.min(finish.u, L - w), unit: 'm',
+          onInput: (v) => live({ u: v }), onChange: (v) => commit({ u: v }) });
+        kids.push(
+          slider({ label: 'Bredde', min: 0.2, max: Math.round(L * 100) / 100, step: 0.01, value: w, unit: 'm',
+            onInput: (v) => live({ w: v, u: Math.min(finish.u, Math.max(0, L - v)) }), onChange: (v) => commit({ w: v, u: Math.min(finish.u, Math.max(0, L - v)) }) }).el,
+          posCtl.el,
+        );
+      }
+      kids.push(h('div.ipi-swlabel', { text: 'Høyde' }), seg([['ceiling', 'Til taket'], ['custom', 'Egen høyde']], finish.h == null ? 'ceiling' : 'custom', (v) => {
+        set({ h: v === 'ceiling' ? null : Math.min(s.maxH, finish.h ?? 1.2) });
+        this._render();
+      }));
+      if (finish.h != null) {
+        kids.push(slider({ label: 'Høyde fra gulvet', min: 0.3, max: Math.round(s.maxH * 100) / 100, step: 0.01, value: Math.min(finish.h, s.maxH), unit: 'm',
+          onInput: (v) => live({ h: v }), onChange: (v) => commit({ h: v }) }).el);
+      }
+    } else {
+      // direction: along the ceiling's long side or across it (named after the compass: +x = south, +z = west)
+      const [alongName, acrossName] = ceilingAxes(s.polygon);
+      kids.push(h('div.ipi-swlabel', { text: 'Retning' }), seg([['along', `Langs (${alongName})`], ['across', `På tvers (${acrossName})`]], finish.direction, (v) => {
+        set({ direction: v });
+        this._render();
+      }));
+    }
+    kids.push(this._finishSound(s, finish));
+    kids.push(h('p.ipi-hint', { text: wall
+      ? 'Spilene stopper ved vinduer, dører, stikkontakter og taket. Møbler som står helt inntil veggen kan gå et par centimeter inn i spilene.'
+      : 'Spilepanelet følger takflaten (også skråtaket) og går rundt spotter, lamper og røykvarslere.' }));
+    return section(title, ...kids);
+  }
+
+  /** What a finish does to the reverberation of its room. */
+  _finishSound(s, finish) {
+    if (!hasFelt(finish)) {
+      return h('div.ipi-sound', {}, svg(ICONS.volume), h('span', { text: 'Uten filt bak demper spilene nesten ikke lyd – velg filt for bedre akustikk.' }));
+    }
+    try {
+      const fa = finishAbsorption(this.design.finishes, this.editor.layout, s.roomId).list.find((x) => x.id === s.id);
+      if (!fa) return null;
+      let extra = '';
+      const r = this.editor.acoustics(s.roomId);
+      const without = rt60For(Math.max(0.5, r.absorption - fa.m2), r.volume);
+      if (without - r.rt60 >= 0.005) extra = ` Etterklangen går fra ${fmtNumber(without, 2)} til ${fmtNumber(r.rt60, 2)} s.`;
+      return h('div.ipi-sound', {}, svg(ICONS.volume), h('span', { text: `${fmtNumber(fa.area, 1)} m² spiler på filt demper ca. ${fmtNumber(fa.m2, 1)} m² (Sabine).${extra}` }));
+    } catch {
+      return null;
     }
   }
 

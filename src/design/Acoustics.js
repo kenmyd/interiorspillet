@@ -3,6 +3,7 @@ import { originalItems, RUG_ALPHA, parsePile } from '../home/existing.js';
 import { getProduct } from '../catalog/index.js';
 import schema from '../data/archetypes.json';
 import wallData from '../data/wall-proposals.json';
+import { finishArea, hasFelt, surfaceKind } from './Finishes.js';
 
 /**
  * Reverberation time (Sabine) for the open living room – ARCHITECTURE §7.
@@ -19,6 +20,9 @@ import wallData from '../data/wall-proposals.json';
  * - the high wall: the proposal's `sabineAdded`; when the user has edited the elements: Σ area × alpha.
  * - shading: fabric alpha (product absorption ÷ product area) × covered area × how closed it is (stacked curtains
  *   still absorb ~40 %).
+ * - slat finishes on walls / ceilings (design.finishes, design/Finishes.js) with felt behind: the covered area × the
+ *   high wall's slat alpha (elementAbsorption of a 'slats' element, 0.76); slats straight on the surface: 0. They
+ *   count in the room of their wall / ceiling (finishAbsorption).
  * Labels in the result are Norwegian.
  *
  * Per room (hele-huset §5.4, steg 16 E3): computeAcoustics(design, home, { roomId = 'stue-kjokken' }).
@@ -205,6 +209,37 @@ export function wallAbsorption(wall) {
   else m2 = (wall.elements || []).reduce((s, el) => s + elementAbsorption(el), 0);
   const name = proposal ? `Veggforslag ${proposal.code} – ${proposal.name}` : 'Egen vegg';
   return { m2, label: wall.edited ? `${name} (endret)` : name, proposal };
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Slat finishes on walls and ceilings
+
+/** The room a wall / ceiling belongs to (the living room for a layout without rooms). */
+function surfaceRoomId(layout, id) {
+  const w = layout?.house?.wallsById?.[id] ?? layout?.wallsById?.[id];
+  const c = w ? null : (layout?.house?.ceilings ?? layout?.ceilings ?? []).find((x) => x.id === id);
+  return (w ?? c)?.roomId ?? LIVING_ROOM_ID;
+}
+
+/**
+ * Absorption (m²) of the slat finishes in one room: felt-backed slats count as the high wall's slats (area × 0.76).
+ * @param {Object<string, Object>} finishes  design.finishes
+ * @param {Object} layout
+ * @param {string} roomId
+ * @returns {{ m2: number, list: Array<{ id: string, area: number, m2: number, kind: string }> }}
+ */
+export function finishAbsorption(finishes, layout, roomId = LIVING_ROOM_ID) {
+  const list = [];
+  let m2 = 0;
+  for (const [id, spec] of Object.entries(finishes || {})) {
+    if (!spec || !hasFelt(spec) || surfaceRoomId(layout, id) !== roomId) continue;
+    const area = finishArea(layout, id, spec, { finishes });
+    const a = elementAbsorption({ type: 'slats', w: area, h: 1 });
+    if (!(a > 0)) continue;
+    m2 += a;
+    list.push({ id, area, m2: a, kind: surfaceKind(layout, id) });
+  }
+  return { m2, list };
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -508,13 +543,23 @@ export function computeAcoustics(design, home, { roomId = LIVING_ROOM_ID } = {})
     if (m2 > 0.005) changes.push({ label: `Solskjerming: ${win?.name || windowId}`, m2: round(m2) });
   }
 
-  const absorption = cal.room + Object.values(groups).reduce((s, v) => s + v, 0) + wall.m2 + shading;
+  // slat finishes on the room's walls and ceilings
+  const finish = finishAbsorption(design?.finishes, layout, rid);
+  for (const f of finish.list) {
+    const name = f.kind === 'ceiling'
+      ? (layout.house?.ceilings ?? layout.ceilings ?? []).find((c) => c.id === f.id)?.name
+      : (layout.house?.wallsById?.[f.id] ?? layout.wallsById?.[f.id])?.name;
+    if (f.m2 > 0.005) changes.push({ label: `Spiler: ${name || (f.kind === 'ceiling' ? 'tak' : 'vegg')}`, m2: round(f.m2) });
+  }
+
+  const absorption = cal.room + Object.values(groups).reduce((s, v) => s + v, 0) + wall.m2 + shading + finish.m2;
   const rt60 = (SABINE_K * cal.volume) / Math.max(0.5, absorption);
 
   const breakdown = [{ label: living ? 'Rommet (vegger, tak, gulv, vinduer og luft)' : 'Rommet (vegger, tak, gulv, vinduer, dører og luft – anslått)', m2: round(cal.room, 2) }];
   for (const g of GROUPS) if (groups[g.key] > 0.005) breakdown.push({ label: g.label, m2: round(groups[g.key], 2) });
   if (wall.m2 > 0.005) breakdown.push({ label: 'Den høye veggen', m2: round(wall.m2, 2) });
   if (shading > 0.005) breakdown.push({ label: 'Gardiner og solskjerming', m2: round(shading, 2) });
+  if (finish.m2 > 0.005) breakdown.push({ label: 'Spiler på vegger og tak', m2: round(finish.m2, 2) });
   changes.sort((a, b) => Math.abs(b.m2) - Math.abs(a.m2));
 
   const [lo, hi, yellow] = living ? [TARGET_RT60[0], TARGET_RT60[1], 0.7] : TARGETS[room?.kind] ?? TARGETS.living;

@@ -4,6 +4,7 @@ import { ICONS } from './icons.js';
 import { thumbnail, cachedThumbnail, priceInfo, EXTRA_ICONS } from './CatalogPanel.js';
 import * as shadingModule from '../models/shading.js';
 import { describeElement, elementBounds, ELEMENT_TYPES } from '../models/walldesigns.js';
+import { finishArea, hasFelt, lookOf, sizeOf, SLAT_SIZES, surfaceKind } from '../design/Finishes.js';
 import wallData from '../data/wall-proposals.json';
 
 /**
@@ -13,10 +14,11 @@ import wallData from '../data/wall-proposals.json';
  * leaves the room; the total; «Kopier liste», «Last ned CSV» and «Skriv ut».
  *
  *   new ShoppingPanel(editor) – open() / close() / toggle() / isOpen / update() / dispose()
- *   list() → { stores, wall, shading, removed, total: { min, max }, count }   (the data behind the panel)
+ *   list() → { stores, wall, shading, finishes, removed, total: { min, max }, count }   (the data behind the panel)
  *
  * Module exports (also for other panels):
  *   wallEstimate(design, { customProposal }) → the high wall's price and materials (see below), null = bare wall
+ *   finishEstimate(design, layout, home?) → the slats on the other walls and the ceilings (area, rough price)
  *   shadingEstimate(catalog, product, spec, win, { estimate }) → the same estimate the window panel shows
  *
  * High wall: a built-in proposal is listed with its own price and material list. When the elements differ from
@@ -29,7 +31,40 @@ import wallData from '../data/wall-proposals.json';
  * Shading: one estimator for the window panel and the list – models/shading.js `estimateShading` when SHADING
  * exports it, else WindowPanel's own `_estimate` (what the user saw when picking the product), else the same
  * algorithm here (shadingSize + productSizing). Its lines and warnings are printed in the list.
+ *
+ * Slats on the other walls and the ceilings (design.finishes): the covered area per surface and, for slats on felt, the
+ * price of akupaneler at the wall proposals' rate (FINISH_NOK_M2: 4 × 240 × 60 ≈ 6 800 kr, proposal B ≈ 1 400 kr/m²);
+ * loose slats without felt have no price (pris ukjent).
  */
+
+/** Akupanel on felt, kr per m² (wall-proposals.json: «4 stk 240 × 60 (ca. 6 800 kr)», «ca. 1 400 kr/m²» for B). */
+const FINISH_NOK_M2 = [1200, 1400];
+
+/**
+ * The slat finishes of a design for the list: [{ id, name, kind, area, sub, min, max, known }].
+ * @param {object} design  DesignState
+ * @param {object} layout
+ * @param {object} [home]  for the walls' names
+ */
+export function finishEstimate(design, layout, home = null) {
+  const out = [];
+  const finishes = design?.finishes || {};
+  for (const [id, spec] of Object.entries(finishes)) {
+    if (!spec) continue;
+    const kind = surfaceKind(layout, id);
+    const area = finishArea(layout, id, spec, { finishes });
+    if (!(area > 0.05)) continue;
+    const name = kind === 'ceiling'
+      ? (layout?.house?.ceilings ?? layout?.ceilings ?? []).find((c) => c.id === id)?.name || 'Tak'
+      : home?.walls?.find((w) => w.id === id)?.name || (layout?.house?.wallsById?.[id] ?? layout?.wallsById?.[id])?.name || 'Vegg';
+    const size = sizeOf(spec);
+    const felt = hasFelt(spec);
+    const backing = spec.backing === 'felt-match' ? 'filt i samme farge' : felt ? 'sort filt' : 'uten filt';
+    const sub = `${lookOf(spec).label.toLowerCase()}, ${size === 'custom' ? 'egne mål' : SLAT_SIZES[size].label.toLowerCase()} spiler, ${backing} – ${fmtNumber(area, 1)} m²`;
+    out.push({ id, name, kind, area, sub, known: felt, min: felt ? Math.round(area * FINISH_NOK_M2[0] / 100) * 100 : 0, max: felt ? Math.round(area * FINISH_NOK_M2[1] / 100) * 100 : 0 });
+  }
+  return out;
+}
 
 const S = (body) => `<svg class="kv-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
 const IC = {
@@ -597,16 +632,26 @@ export class ShoppingPanel extends BasePanel {
       /* optional */
     }
 
-    const min = total + shadingTotal + (wall?.min || 0);
-    const max = total + shadingTotal + (wall?.max || 0);
-    return { stores, wall, shading, shadingTotal, removed, total: { min, max }, count, unknown };
+    // slats on the other walls and the ceilings
+    let finishes = [];
+    try {
+      finishes = finishEstimate(d, e.layout, e.home);
+    } catch (err) {
+      console.warn('[shopping] slat estimate failed', err);
+    }
+    const fMin = finishes.reduce((s, f) => s + f.min, 0);
+    const fMax = finishes.reduce((s, f) => s + f.max, 0);
+
+    const min = total + shadingTotal + (wall?.min || 0) + fMin;
+    const max = total + shadingTotal + (wall?.max || 0) + fMax;
+    return { stores, wall, shading, shadingTotal, finishes, removed, total: { min, max }, count, unknown };
   }
 
   _render() {
     const data = this.list();
     const scroll = this.body.scrollTop;
     const kids = [];
-    const nothing = !data.stores.length && !data.wall && !data.shading.length;
+    const nothing = !data.stores.length && !data.wall && !data.shading.length && !data.finishes.length;
     if (nothing) {
       kids.push(emptyState('Ingenting nytt i designet ennå. Legg til møbler, lamper og tekstiler fra katalogen (K), velg et veggforslag (V) eller solskjerming (B) – så havner de her med pris og lenke.', 'info'));
       const b = button({ label: 'Åpne katalogen', variant: 'primary', size: 'sm', onClick: () => this.editor.ui.catalog?.open?.() });
@@ -616,10 +661,10 @@ export class ShoppingPanel extends BasePanel {
       return;
     }
     this.foot.hidden = false;
-    const approx = data.wall || data.shading.some((s) => s.est?.approx) ? 'ca. ' : '';
+    const approx = data.wall || data.finishes.length || data.shading.some((s) => s.est?.approx) ? 'ca. ' : '';
     const wallUnknown = data.wall && !data.wall.known;
     kids.push(h('div.iph-total', {},
-      h('span', {}, 'Totalt', h('small', { text: `${data.count} ${data.count === 1 ? 'vare' : 'varer'}${data.wall ? wallUnknown ? ' + vegg (pris ukjent)' : ' + vegg' : ''}${data.shading.length ? ` + solskjerming på ${data.shading.length} ${data.shading.length === 1 ? 'vindu' : 'vinduer'}` : ''}` })),
+      h('span', {}, 'Totalt', h('small', { text: `${data.count} ${data.count === 1 ? 'vare' : 'varer'}${data.wall ? wallUnknown ? ' + vegg (pris ukjent)' : ' + vegg' : ''}${data.finishes.length ? ' + spiler' : ''}${data.shading.length ? ` + solskjerming på ${data.shading.length} ${data.shading.length === 1 ? 'vindu' : 'vinduer'}` : ''}` })),
       h('b', { text: `${approx}${rangeText(data.total.min, data.total.max)}` })));
 
     for (const st of data.stores) {
@@ -639,6 +684,13 @@ export class ShoppingPanel extends BasePanel {
           h('ul', {}, w.products.map((t) => h('li', { text: t })))) : null,
         w.baseProducts.length ? h('details.iph-wall__orig', {}, h('summary', { text: `Materialliste for forslag ${w.base.code} slik det var` }),
           h('ul', {}, w.baseProducts.map((t) => h('li', { text: t })))) : null)));
+    }
+
+    if (data.finishes.length) {
+      kids.push(section('Spiler på vegger og tak', h('div.iph-rows', {}, data.finishes.map((f) => h('div.iph-wall', {},
+        h('div.iph-wall__head', {}, h('span.iph-wall__name', { text: f.name }), h(`span.iph-row__price${f.known ? '' : '.is-unknown'}`, { text: f.known ? `ca. ${rangeText(f.min, f.max)}` : 'pris ukjent' })),
+        h('div.iph-row__sub', { text: f.sub, title: f.sub })))),
+      h('p.iph-foot-note', { text: 'Akupaneler på filt (WoodUpp, Fibrotech o.l.) regnet til ca. 1 200–1 400 kr/m², som veggforslagene. Løse spiler uten filt er ikke priset.' })));
     }
 
     if (data.shading.length) {
@@ -737,6 +789,11 @@ export class ShoppingPanel extends BasePanel {
       for (const t of w.products) lines.push(`  • ${t}`);
       lines.push('');
     }
+    if (data.finishes.length) {
+      lines.push('SPILER PÅ VEGGER OG TAK');
+      for (const f of data.finishes) lines.push(`- ${f.name}: ${f.sub} – ${f.known ? `ca. ${rangeText(f.min, f.max)}` : 'pris ukjent'}`);
+      lines.push('');
+    }
     if (data.shading.length) {
       lines.push('SOLSKJERMING');
       for (const s of data.shading) {
@@ -797,6 +854,9 @@ export class ShoppingPanel extends BasePanel {
       rows.push(['Den høye veggen', `${w.name}${w.sub ? ` (${w.sub})` : ''}`, '', 1, w.known ? w.min : '', w.known ? (w.min === w.max ? w.max : `${w.min}–${w.max}`) : '', [w.text, w.note].filter(Boolean).join(' – '), '']);
       for (const t of w.products) rows.push(['', `• ${t}`, '', '', '', '', '', '']);
     }
+    for (const f of data.finishes) {
+      rows.push(['Spiler', f.name, f.sub, 1, '', f.known ? (f.min === f.max ? f.max : `${f.min}–${f.max}`) : '', f.known ? 'ca., akupanel på filt' : 'pris ukjent', '']);
+    }
     for (const s of data.shading) {
       if (!s.product) continue;
       const e = s.est;
@@ -842,6 +902,11 @@ export class ShoppingPanel extends BasePanel {
     if (data.wall) {
       const w = data.wall;
       body += `<h2>Den høye veggen</h2><p><b>${esc(w.name)}</b>${w.sub ? ` <small>(${esc(w.sub)})</small>` : ''}: ${esc(w.known ? w.text || rangeText(w.min, w.max) : w.text || 'pris ukjent')}</p>${w.note ? `<p><small>${esc(w.note)}</small></p>` : ''}${w.products.length ? `<ul>${w.products.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}`;
+    }
+    if (data.finishes.length) {
+      body += `<h2>Spiler på vegger og tak</h2><table>${data.finishes.map((f) => row([
+        `<b>${esc(f.name)}</b><br><small>${esc(f.sub)}</small>`, '', '', f.known ? `ca. ${esc(rangeText(f.min, f.max))}` : 'pris ukjent',
+      ])).join('')}</table>`;
     }
     if (data.shading.length) {
       body += `<h2>Solskjerming</h2><table>${data.shading.filter((s) => s.product).map((s) => row([
