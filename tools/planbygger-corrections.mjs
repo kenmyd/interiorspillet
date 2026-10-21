@@ -70,8 +70,7 @@ function toolkit(level, settings) {
 
 export const CORRECTIONS = {
   /** 1. etasje (plantegning.png). */
-  hoved(doc) {
-    const L = doc.levels[0];
+  hoved(doc, L = doc.levels[0]) {
     const T = toolkit(L, doc.settings);
     const edits = [];
     edits.push(T.name([150, 110], 'Bad', 'bathroom'));
@@ -95,8 +94,7 @@ export const CORRECTIONS = {
   },
 
   /** Kjeller (bilder_hus/plantegning_kjeller.png). */
-  kjeller(doc) {
-    const L = doc.levels[0];
+  kjeller(doc, L = doc.levels[0]) {
     const T = toolkit(L, doc.settings);
     const edits = [];
     edits.push(T.name([175, 190], 'Bod', 'storage'));

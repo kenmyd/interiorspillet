@@ -30,9 +30,14 @@ trykk «Gå rundt i 3D».
    1. etasje og −0,5 % på kjelleren. Det vises som en 2 m lang linje kunden kan sjekke mot en målelinje.
 3. **Gjenkjenning** (`detect.js`, i en Web Worker). Den tar 0,3–0,5 s på testplanene.
 4. **Retting** i 2D-editoren (`editor.js`). Rommene regnes ut på nytt etter hver endring.
-5. **3D** (`viewer.js`). Huset bygges med spillets egne byggere og kan sees ovenfra som et dukkehus eller gås rundt i.
+5. **Etasjer og trapp.** «+ Etasje» legger til en etasje med sin egen plantegning, skala og gulvhøyde. «Juster
+   ytterhjørnet mot hovedetasjen» (NØ, NV, SØ, SV) legger hjørnet av ytterveggene oppå hovedetasjens. Det er samme regel
+   som nattarbeidet brukte for kjelleren (avstemming V1: ytterflatene i flukt). Hovedetasjen vises stiplet over den
+   andre etasjen. Trappeverktøyet (T) tegner en rett trapp ned til etasjen under: du drar hullet fra toppen mot foten,
+   og hjørnene festes til veggflatene. Antall opptrinn regnes ut fra gulvhøydene, og rekkverket settes på de frie sidene.
+6. **3D** (`viewer.js`). Huset bygges med spillets egne byggere og kan sees ovenfra som et dukkehus eller gås rundt i.
    Dørene åpnes med E eller et klikk.
-6. **Last ned.** «Husfil» er formatet i `research/house/NN-*.json`. «Prosjektet» er dokumentet med plantegningene,
+7. **Last ned.** «Husfil» er formatet i `research/house/NN-*.json`. «Prosjektet» er dokumentet med plantegningene,
    og kan åpnes igjen. Dokumentet lagres også i nettleseren mens kunden jobber (localStorage, og bildene i IndexedDB).
 
 ## Gjenkjenningen: klassisk bildebehandling
@@ -41,10 +46,18 @@ Alle konstantene står i `DETECT_DEFAULTS` i `src/planbygger/detect.js`. Et mål
 
 1. **Gråtoner og blekkmaske.** Terskelen ligger midt i den bredeste dalen etter det svarte toppunktet i histogrammet.
    Den ble 26 på 1. etasje og 38 i kjelleren. Grå møbler, benker og skravur blir dermed ikke vegg.
+   - **Grå vegger** (lysere enn den svarte teksten): finner den svarte terskelen nesten ingen vegger, prøves toppene i
+     histogrammet som et grått bånd ut til dalene på hver side. Båndet som gir flest lange veggløp, vinner
+     (`autoWallTone`).
+   - **Prøv veggfargen:** i etasjepanelet kan kunden velge «Veggfarge – Velg» og klikke på en vegg. Tonen under klikket
+     gir båndet −25/+20.
+   - **Testet:** grå vegger på 70, 115 og 150 finnes automatisk på de syntetiske planene.
 2. **Åpning med et lite kvadrat** (3×3 ved 50 px/m). Strøk som er tynnere enn den tynneste veggen, forsvinner: tekst,
    mållinjer, dørbuer og vinduslinjer. Små klumper under 12 cm (pilspisser, fet tekst) fjernes.
    Planer under 50 px/m tolkes på en bilineært oppskalert kopi (2–3×). Ellers ville en vegg på 10 cm (3,5 px) også
-   forsvunnet.
+   forsvunnet. Fra den andre siden er 1. etasje testet i 2× og 4× oppløsning (7,5 MP, som en skanning), med samme
+   resultat på 0,5–1,7 s. Splinter kortere enn 60 % av veggtykkelsen fjernes, siden de ellers sperrer hullanalysen
+   ved høy oppløsning.
 3. **Lange løp per akse.** Piksler i horisontale eller vertikale løp som er lengre enn den tykkeste veggen (0,5 m), blir
    veggbiter langs den aksen. Det som blir igjen (korte stubber mellom vinduer, stubber ved et hjørne), beholdes når
    det ligger i båndet til en veggline, eller står på flaten av en vegg på tvers.
@@ -142,7 +155,7 @@ _Generert av `node tools/planbygger-measure.mjs --write`._
 
 ### 1. etasje
 
-Skala fra målelinja «12,21 m» (628 px): 51,43 px/m. Gjenkjenningen tok 500 ms og fant 11 vegger, 3 dører, 7 vinduer og 1 åpninger.
+Skala fra målelinja «12,21 m» (628 px): 51,43 px/m. Gjenkjenningen tok 985 ms og fant 11 vegger, 3 dører, 7 vinduer og 1 åpninger.
 
 **Vegger mot dataene slik de er bygd**
 
@@ -184,7 +197,7 @@ Rettingene (6 handlinger i editoren): rommet «Bad» (bathroom); rommet «Gang»
 
 ### Kjeller
 
-Skala fra målelinja «10,50 m» (633 px): 60,29 px/m. Gjenkjenningen tok 391 ms og fant 17 vegger, 6 dører, 6 vinduer og 1 åpninger.
+Skala fra målelinja «10,50 m» (633 px): 60,29 px/m. Gjenkjenningen tok 590 ms og fant 17 vegger, 6 dører, 6 vinduer og 1 åpninger.
 
 **Vegger mot dataene slik de er bygd**
 
@@ -216,7 +229,7 @@ Skala fra målelinja «10,50 m» (633 px): 60,29 px/m. Gjenkjenningen tok 391 ms
 | Rom (fasit) | Areal fasit | Automatisk: areal (IoU) | Etter retting: areal (IoU) |
 |---|---|---|---|
 | Gang | 13,08 m² | 12,21 m² (93 %), navn ✓, type ✓ | 12,21 m² (93 %), navn ✓, type ✓ |
-| Vaskerom | 10,26 m² | 10,67 m² (95 %), «Soverom 1», type bedroom | 10,67 m² (95 %), navn ✓, type ✓ |
+| Vaskerom | 10,26 m² | 10,66 m² (95 %), «Soverom 1», type bedroom | 10,66 m² (95 %), navn ✓, type ✓ |
 | Soverom | 7,44 m² | 7,40 m² (99 %), «Soverom 2», type ✓ | 7,40 m² (99 %), navn ✓, type ✓ |
 | Kjellerstue | 20,60 m² | 20,59 m² (100 %), «Stue», type ✓ | 20,59 m² (100 %), navn ✓, type ✓ |
 | Entré | 6,87 m² | 6,49 m² (94 %), navn ✓, type ✓ | 6,49 m² (94 %), navn ✓, type ✓ |
@@ -227,6 +240,22 @@ Skala fra målelinja «10,50 m» (633 px): 60,29 px/m. Gjenkjenningen tok 391 ms
 Validatoren (`validateHouse`): Automatisk: 0 feil, 0 advarsler; Etter retting: 0 feil, 0 advarsler.
 
 Rettingene (12 handlinger i editoren): rommet «Bod» (storage); rommet «Bod (grå)» (storage); rommet «Bod under terrassen» (storage); rommet «Gang» (hall); rommet «Entré» (entrance); rommet «Vaskerom» (laundry); rommet «Soverom» (bedroom); rommet «Kjellerstue» (living); ny dør gang/bod (grå); bredde 0,95; døra til boden: snu hengselen; døra til boden: snu slagretningen.
+
+### Hele huset: kjelleren under 1. etasje
+
+Kjelleren er plassert bare med justeringsregelen «ytterhjørnet NØ mot hovedetasjen», uten noen beste forskyvning. Tallene viser hvor nær regelen kommer eierens håndplasserte kjeller (avstemming V1: ytterflatene i flukt).
+
+| | Automatisk | Etter retting |
+|---|---|---|
+| Kjelleren: veggflater funnet (innen 15 cm) | 92 % | 92 % |
+| Kjelleren: snittavvik / median / p90 | 0,9 / 0,3 / 0,9 cm | 0,9 / 0,3 / 0,9 cm |
+| Kjelleren: rest-forskyvning (x, z) som regelen ikke fanget | 0,0, 0,0 cm | 0,0, 0,0 cm |
+| 1. etasje: snittavvik | 1,7 cm | 1,7 cm |
+| Dører i hele huset (fasit 11) | 10 funnet, 9 slår riktig vei | 11 funnet, 11 slår riktig vei |
+| Vinduer i hele huset (fasit 13) | 13 funnet | 13 funnet |
+| Validatoren | 0 feil, 0 advarsler | 0 feil, 0 advarsler |
+
+Rettingene i hele huset er de to listene over (18 handlinger). Trappa er ikke tegnet her: planbyggeren har bare rette trapper, og eierens trapp er en halvsvingt trapp med svingtrinn (`research/house/20-trapp.json`).
 
 <!-- målinger:slutt -->
 
@@ -246,6 +275,9 @@ Rettingene (12 handlinger i editoren): rommet «Bod» (storage); rommet «Bod (g
   er ikke tegnet, så den kan ikke finnes.
 - **Rettinger:** 6 handlinger i 1. etasje og 12 i kjelleren. Etter dem er alle dørene, vinduene og rommene på plass med
   riktig type, slagretning og navn. Det meste er romnavn (4 + 8).
+- **Hele huset:** justeringsregelen alene (ytterhjørnet NØ) legger kjelleren der nattarbeidet la den for hånd, med
+  0,0 cm restforskyvning. Det er 0,9 cm snittavvik på kjellerveggene uten noen manuell forskyvning. Trappa er utelatt,
+  fordi planbyggeren har bare rette trapper og eierens er halvsvingt.
 
 ## Begrensninger: hva som fungerer, og hva som må rettes
 
@@ -255,7 +287,9 @@ Rettingene (12 handlinger i editoren): rommet «Bod» (storage); rommet «Bod (g
   lignende eksporter med svarte eller nesten svarte vegger;
 - fargede rom (kjelleren har beige gulv) og grå møbler;
 - målelinjer, tekst og skravur i trappa;
-- oppløsning fra ca. 35 px/m (oppskalert) og opp, også med pikselstøy (testet til ±10 grånivåer);
+- oppløsning fra ca. 35 px/m (oppskalert) til minst 200 px/m, også med pikselstøy (testet til ±10 grånivåer);
+- grå vegger (automatisk, eller ved å prøve veggfargen);
+- flere etasjer, justert mot hverandre, med en rett trapp mellom dem;
 - dører med kvartsirkel (heltrukket eller stiplet);
 - vinduer som linjer i veggen;
 - ytterdør med sidefelt og glassvegger med søyler.
@@ -267,8 +301,9 @@ Rettingene (12 handlinger i editoren): rommet «Bod» (storage); rommet «Bod (g
   blir åpning eller vindu. Kunden bytter type med ett valg.
 - **Ting som ikke står i planen.** Det gjelder dører som ikke er tegnet, takhøyder og brystningshøyder. Vinduene får
   standardhøyden (brystning 0,9 og høyde 1,2) til de rettes.
-- **Trapper** gjenkjennes ikke. Kunden legger inn etasjer med egne plantegninger, gulvhøyde og forskyvning. Planbyggeren
-  har ingen trapp i v1, og den må tegnes i data (`stairs`-formatet finnes).
+- **Trapper** gjenkjennes ikke. Kunden tegner dem med trappeverktøyet, men bare **rette** trapper. Kvartsvingte og
+  halvsvingte trapper med svingtrinn, som eierens, finnes i spillets format (`half-turn-winder`), men ikke i editoren
+  ennå. En rett trapp i et lite trapperom blir for bratt, og validatoren advarer da om inntrinn og 2r + g.
 - **Skrå tak, nivåforskjeller i et rom (entré-trinnene) og buede vegger** støttes ikke. Takene er flate med én høyde per
   rom.
 
@@ -278,8 +313,6 @@ Rettingene (12 handlinger i editoren): rommet «Bod» (storage); rommet «Bod (g
   krevd retting av perspektivet (fire hjørner) og en adaptiv terskel.
 - **Arkitekttegninger med vegger som to tynne konturlinjer**, med eller uten skravur. Det ville krevd morfologisk
   lukking mellom parallelle linjer.
-- **Grå vegger** som er lysere enn den mørkeste teksten. Terskelen velger det svarte. En «klikk på en vegg»-prøve av
-  veggfargen er et naturlig neste steg.
 - **Skrå vegger.** Gjenkjenningen finner bare vegger langs aksene. Editoren og eksporten støtter skrå vegger, så de kan
   tegnes inn.
 - **Svarte møbler inntil vegger** kan bli vegg (de fjernes bare når de står fritt).
@@ -308,16 +341,15 @@ Rettingene (12 handlinger i editoren): rommet «Bod» (storage); rommet «Bod (g
    prosjekt og husfil på serveren, og sletting (en plantegning er personopplysninger etter GDPR).
 3. **Flere plantyper** (2–4 uker). Det trengs et testsett på 30–50 ekte kundeplaner. Dette må fungere:
    - rette opp skannede planer;
-   - prøve veggfargen;
    - vegger tegnet som konturlinjer;
    - skrå vegger i gjenkjenningen;
    - dobbeltdører og skyvedører.
 
    Uten testsettet er tallene over bare gyldige for to planer fra samme tegneverktøy.
-4. **Trapp og etasjer i editoren** (1 uke): et trappeverktøy (rektangel og retning) og automatisk justering av
-   etasjene mot hverandre.
+4. **Svingte trapper** (1 uke). Etasjer, justering og rette trapper er på plass. Kvartsvingte og halvsvingte trapper
+   (`half-turn-winder` med kjerne) mangler i editoren.
 5. **Finpuss** (1–2 uker): mobil og nettbrett (editoren er for mus i dag), hjelp i selve verktøyet, bedre feilmeldinger
-   og ytelse på store skann (en plan på 9 megapiksler bør testes).
+   og ytelse. En plan på 7,5 megapiksler tar 1,7 s i Node, og bør også testes i en svak nettleser.
 
 Samlet blir det 7–13 uker til en første betalbar versjon for rene digitale planer. Med skannede håndtegninger tar det
 klart lengre tid.
@@ -344,6 +376,13 @@ omveier. Dette ville gjort omveiene unødvendige:
 5. **`createHome` (`src/home/index.js`) får en modus for et generisk hus.** Den ville hoppe over `shell`, `kitchen` og
    `exterior` når spesen ikke har noen stue, og gi lys per rom fra `lightGroups` og `builtInLights`. Da kan et
    planbyggerhus lastes inn i det ekte spillet med katalog, maling og design (punkt 1 i anslaget over).
+6. **`stairs.js` gir en rett trapp ingen trinn.** `chains()` tar trappas ytterside som den lengste veien rundt
+   fotavtrykket mellom toppen og foten. Det stemmer for den halvsvingte trappa langs sjaktveggene. For en rektangulær,
+   rett trapp er det feil side, så alle trinnsnittene feiler, og trappa får verken trinn eller kollisjon.
+   `stairLayout` gir 0 trinn. Omveien er at `viewer.js` (`straightStairFix`) gir `buildStairs` en kopi av trappa der
+   fotavtrykket er én langside (2 punkter). Da blir det 13 trinn og 82 kolliderere. Husfila og validatoren beholder
+   det ekte hullet. Rettingen er at `chains()` tar siden overfor den indre linja for `type: 'straight'`. Testet i
+   `tools/test-planbygger.mjs` §9.
 
 ## Filene
 

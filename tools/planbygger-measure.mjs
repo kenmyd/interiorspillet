@@ -109,6 +109,34 @@ for (const P of PLANS) {
   results.push(out);
 }
 
+// ---- the whole house: the basement under the ground floor, placed only by the alignment rule (the NE outer corner,
+//      avstemming V1) – no best translation: how far is the basement from the hand-placed data?
+let whole = null;
+if (KJELLER_PLAN && fs.existsSync(KJELLER_PLAN)) {
+  const M = await imp('src/planbygger/model.js');
+  const D = await imp('src/planbygger/detect.js');
+  const hs = userScale(path.join(ROOT, 'plantegning.png'), PLANS[0].line.click, PLANS[0].line.metres);
+  const ks = userScale(KJELLER_PLAN, PLANS[1].line.click, PLANS[1].line.metres);
+  const { doc } = await planPipeline(path.join(ROOT, 'plantegning.png'), { pxPerM: hs.pxPerM, north: 270, name: 'Hele huset' });
+  const img = readPng(KJELLER_PLAN);
+  const kj = M.createLevel(doc, { id: 'kjeller', name: 'Kjeller', floorY: -2.55, image: { name: 'plantegning_kjeller.png', width: img.width, height: img.height, pxPerM: ks.pxPerM } });
+  M.applyDetection(kj, D.detectPlan(img, { pxPerM: ks.pxPerM }), ks.pxPerM, doc.settings);
+  E.alignLevel(doc, kj, doc.levels[0], 'ne');
+  const fixed = JSON.parse(JSON.stringify(doc));
+  const edits = [...CORRECTIONS.hoved(fixed, fixed.levels[0]), ...CORRECTIONS.kjeller(fixed, fixed.levels[1])];
+  whole = { edits, variants: {} };
+  for (const [name, d] of Object.entries({ auto: doc, rettet: fixed })) {
+    const ex = E.exportHouse(d);
+    const val = await validateGenerated(ex);
+    const T = truthLevel(spec, 'kjeller');
+    const G = generatedLevel(ex.house, 'kjeller');
+    const raw = compare(T, G);
+    const Th = truthLevel(spec, 'hoved');
+    const Gh = generatedLevel(ex.house, 'hoved');
+    whole.variants[name] = { errors: val.errors.length, warnings: val.warnings.length, counts: ex.report.counts, kjeller: raw, hoved: compare(Th, Gh), shift: bestShift(T, G) };
+  }
+}
+
 // ---- report
 const f1 = (v, d = 1) => (v == null || !Number.isFinite(v) ? '–' : v.toFixed(d).replace('.', ','));
 const pct = (v) => `${f1(v * 100, 0)} %`;
@@ -176,6 +204,27 @@ for (const r of results) {
     lines.push('');
     lines.push(`Rettingene (${r.edits.length} handlinger i editoren): ${r.edits.map((e) => e).join('; ')}.`);
   }
+  lines.push('');
+}
+if (whole) {
+  const cols = Object.keys(whole.variants);
+  const label = { auto: 'Automatisk', rettet: 'Etter retting' };
+  lines.push('### Hele huset: kjelleren under 1. etasje');
+  lines.push('');
+  lines.push('Kjelleren er plassert bare med justeringsregelen «ytterhjørnet NØ mot hovedetasjen», uten noen beste forskyvning. Tallene viser hvor nær regelen kommer eierens håndplasserte kjeller (avstemming V1: ytterflatene i flukt).');
+  lines.push('');
+  lines.push(`| | ${cols.map((c) => label[c]).join(' | ')} |`);
+  lines.push(`|---|${cols.map(() => '---').join('|')}|`);
+  const row = (name, fn) => lines.push(`| ${name} | ${cols.map((c) => fn(whole.variants[c])).join(' | ')} |`);
+  row('Kjelleren: veggflater funnet (innen 15 cm)', (x) => pct(x.kjeller.walls.coverage));
+  row('Kjelleren: snittavvik / median / p90', (x) => `${f1(x.kjeller.walls.meanCm)} / ${f1(x.kjeller.walls.medianCm)} / ${f1(x.kjeller.walls.p90Cm)} cm`);
+  row('Kjelleren: rest-forskyvning (x, z) som regelen ikke fanget', (x) => `${f1(x.shift[0] * 100)}, ${f1(x.shift[1] * 100)} cm`);
+  row('1. etasje: snittavvik', (x) => `${f1(x.hoved.walls.meanCm)} cm`);
+  row('Dører i hele huset (fasit 11)', (x) => `${x.hoved.openings.byType.door.found + x.kjeller.openings.byType.door.found} funnet, ${x.hoved.openings.byType.door.oriented + x.kjeller.openings.byType.door.oriented} slår riktig vei`);
+  row('Vinduer i hele huset (fasit 13)', (x) => `${x.hoved.openings.byType.window.found + x.kjeller.openings.byType.window.found} funnet`);
+  row('Validatoren', (x) => `${x.errors} feil, ${x.warnings} advarsler`);
+  lines.push('');
+  lines.push(`Rettingene i hele huset er de to listene over (${whole.edits.length} handlinger). Trappa er ikke tegnet her: planbyggeren har bare rette trapper, og eierens trapp er en halvsvingt trapp med svingtrinn (\`research/house/20-trapp.json\`).`);
   lines.push('');
 }
 const text = lines.join('\n');
