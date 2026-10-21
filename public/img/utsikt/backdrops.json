@@ -161,8 +161,10 @@
       ],
       "facing": "north",
       "windows": [
-        "win-tv"
+        "win-tv",
+        "win-vask"
       ],
+      "windowsNote": "win-vask (the laundry room's window in the basement, same north facade, 2.9 m lower) shows this photo through its own glass plane (exterior.js clipFor, hele huset steg 25). The basement bedroom's west window (win-sk) has no photo: sky and a ground patch outside as the fallback.",
       "projection": "cylinder",
       "azimuthDeg": [
         125.0,
