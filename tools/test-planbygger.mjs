@@ -365,6 +365,35 @@ section('9. Etasjer og trapp');
   check('stairs.js: en rett trapp med hullet som fotavtrykk får ingen trinn (feil i chains(), meldt videre)', raw.treads.length === 0, `${raw.treads.length} trinn`);
   check('stairs.js: med planbyggerens omvei (fotavtrykk = én langside) får trappa 13 trinn og kollisjon', fixed.treads.length === 13 && St.stairColliders(fixed).length > 0, `${fixed.treads.length} trinn`);
 }
+{
+  // a U stair (half-turn with winders, «half-turn-winder»): export, validator, the game's stair builder
+  const { buildLayout } = await imp('src/home/layout.js');
+  const St = await imp('src/home/stairs.js');
+  const doc = M.createDoc('U-trapp');
+  doc.settings.north = 270;
+  const box = (lv) => {
+    lv.walls = [
+      { id: 'n', a: [0, 0], b: [8, 0], t: 0.25 },
+      { id: 'e', a: [8, 0], b: [8, 6], t: 0.25 },
+      { id: 's', a: [8, 6], b: [0, 6], t: 0.25 },
+      { id: 'w', a: [0, 6], b: [0, 0], t: 0.25 },
+    ];
+    lv.openings = [];
+  };
+  box(M.createLevel(doc, { id: 'hoved', floorY: 0 }));
+  box(M.createLevel(doc, { id: 'kjeller', name: 'Kjeller', floorY: -2.6 }));
+  const st = M.addStair(doc.levels[0], [3.0, 1.0], [0.6, 3.2]);
+  st.kind = 'u';
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  const s = ex.house.stairs?.[0];
+  check('U-trapp: half-turn-winder med øye og to løp som går hver sin vei', s?.type === 'half-turn-winder' && s.well?.polygon?.length === 4 && s.top.down[0] === -s.foot.down[0], JSON.stringify(s?.top));
+  check('U-trapp: rekkverk rundt øyet og hullet', s.guards.some((g) => g.on === 'well') && s.guards.filter((g) => g.line).length >= 3, `${s.guards.length} rekkverk`);
+  check('U-trapp: 0 feil i validateHouse', v.errors.length === 0, v.errors.slice(0, 3).join(' | '));
+  const layout = buildLayout(E.mergeOnto(E.baseSpec(), ex.house), undefined, { devWarnings: false });
+  const lay = St.stairLayout(layout.house.stairs[0], layout.house.levels);
+  check('U-trapp: stairs.js bygger 13 trinn med svingtrinn og kollisjon', lay.treads.length === 13 && lay.treads.some((x) => x.kind === 'winder') && St.stairColliders(lay).length > 0, `${lay.treads.length} trinn, ${lay.treads.filter((x) => x.kind === 'winder').length} svingtrinn`);
+}
 if (KJELLER_PLAN) {
   // the owner's whole house: the basement under the ground floor, aligned by the NE outer corner
   const { doc } = await planPipeline(path.join(ROOT, 'plantegning.png'), { pxPerM: 628 / 12.21, north: 270 });

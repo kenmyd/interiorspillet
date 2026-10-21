@@ -33,8 +33,12 @@ trykk «Gå rundt i 3D».
 5. **Etasjer og trapp.** «+ Etasje» legger til en etasje med sin egen plantegning, skala og gulvhøyde. «Juster
    ytterhjørnet mot hovedetasjen» (NØ, NV, SØ, SV) legger hjørnet av ytterveggene oppå hovedetasjens. Det er samme regel
    som nattarbeidet brukte for kjelleren (avstemming V1: ytterflatene i flukt). Hovedetasjen vises stiplet over den
-   andre etasjen. Trappeverktøyet (T) tegner en rett trapp ned til etasjen under: du drar hullet fra toppen mot foten,
-   og hjørnene festes til veggflatene. Antall opptrinn regnes ut fra gulvhøydene, og rekkverket settes på de frie sidene.
+   andre etasjen. Trappeverktøyet (T) tegner en trapp ned til etasjen under: du drar hullet fra toppen mot foten, og
+   hjørnene festes til veggflatene. Antall opptrinn regnes ut fra gulvhøydene, og rekkverket settes på de frie sidene.
+   Trappa kan være rett eller en U-trapp. U-trappa (spillets `half-turn-winder`) går ned langs den ene halvdelen,
+   svinger rundt et smalt øye med svingtrinn og kommer tilbake langs den andre halvdelen, med rekkverk rundt øyet.
+   Dører har en åpningsvinkel. Gangdøra i eierens hus må stå på 180° (D6), ellers gir validatoren under 0,75 m fri
+   bredde mot trapperekkverket.
 6. **3D** (`viewer.js`). Huset bygges med spillets egne byggere og kan sees ovenfra som et dukkehus eller gås rundt i.
    Dørene åpnes med E eller et klikk.
 7. **Last ned.** «Husfil» er formatet i `research/house/NN-*.json`. «Prosjektet» er dokumentet med plantegningene,
@@ -155,7 +159,7 @@ _Generert av `node tools/planbygger-measure.mjs --write`._
 
 ### 1. etasje
 
-Skala fra målelinja «12,21 m» (628 px): 51,43 px/m. Gjenkjenningen tok 985 ms og fant 11 vegger, 3 dører, 7 vinduer og 1 åpninger.
+Skala fra målelinja «12,21 m» (628 px): 51,43 px/m. Gjenkjenningen tok 634 ms og fant 11 vegger, 3 dører, 7 vinduer og 1 åpninger.
 
 **Vegger mot dataene slik de er bygd**
 
@@ -193,11 +197,11 @@ Skala fra målelinja «12,21 m» (628 px): 51,43 px/m. Gjenkjenningen tok 985 ms
 
 Validatoren (`validateHouse`): Automatisk: 0 feil, 0 advarsler; Etter retting: 0 feil, 0 advarsler.
 
-Rettingene (6 handlinger i editoren): rommet «Bad» (bathroom); rommet «Gang» (hall); rommet «Soverom» (bedroom); rommet «Stue/kjøkken» (living); åpningen gang/stue → dør; yttervegg minst 0,30 m.
+Rettingene (7 handlinger i editoren): rommet «Bad» (bathroom); rommet «Gang» (hall); rommet «Soverom» (bedroom); rommet «Stue/kjøkken» (living); åpningen gang/stue → dør; døra gang/stue: åpningsvinkel 180°; yttervegg minst 0,30 m.
 
 ### Kjeller
 
-Skala fra målelinja «10,50 m» (633 px): 60,29 px/m. Gjenkjenningen tok 590 ms og fant 17 vegger, 6 dører, 6 vinduer og 1 åpninger.
+Skala fra målelinja «10,50 m» (633 px): 60,29 px/m. Gjenkjenningen tok 524 ms og fant 17 vegger, 6 dører, 6 vinduer og 1 åpninger.
 
 **Vegger mot dataene slik de er bygd**
 
@@ -253,9 +257,10 @@ Kjelleren er plassert bare med justeringsregelen «ytterhjørnet NØ mot hovedet
 | 1. etasje: snittavvik | 1,7 cm | 1,7 cm |
 | Dører i hele huset (fasit 11) | 10 funnet, 9 slår riktig vei | 11 funnet, 11 slår riktig vei |
 | Vinduer i hele huset (fasit 13) | 13 funnet | 13 funnet |
-| Validatoren | 0 feil, 0 advarsler | 0 feil, 0 advarsler |
+| Trappa (fasit: halvsvingt, 13 opptrinn) | ingen | U-trapp, 14 opptrinn, inntrinn 0,221 (fasit 0,240), fotavtrykk 76 % IoU, øverste trinnkant 16 cm unna |
+| Validatoren | 0 feil, 0 advarsler | 0 feil, 6 advarsler |
 
-Rettingene i hele huset er de to listene over (18 handlinger). Trappa er ikke tegnet her: planbyggeren har bare rette trapper, og eierens trapp er en halvsvingt trapp med svingtrinn (`research/house/20-trapp.json`).
+Rettingene i hele huset er de to listene over pluss trappa (23 handlinger): trapp tegnet over trapperommet; type U-trapp; drei 90°; snu retningen. Trappa er tegnet som U-trapp over trapperommet. Eierens trapp har et kort øvre løp (1 rett trinn) og et lengre nedre løp, mens planbyggerens U-trapp har like lange løp. Derfor ligger den øverste trinnkanten litt lenger øst. Validatoren advarer: stairs/trapp-1: 2·opptrinn + inntrinn = 0,585 er utenfor 0,60–0,64; stairs/trapp-1: trinnene går utenfor gang-2 ved (1,58; 2,31); stairs/trapp-1: øverste trinnkant (med nesa) står 0,000 fra karmen til door-bad-1 (minst 0,05).
 
 <!-- målinger:slutt -->
 
@@ -301,9 +306,9 @@ Rettingene i hele huset er de to listene over (18 handlinger). Trappa er ikke te
   blir åpning eller vindu. Kunden bytter type med ett valg.
 - **Ting som ikke står i planen.** Det gjelder dører som ikke er tegnet, takhøyder og brystningshøyder. Vinduene får
   standardhøyden (brystning 0,9 og høyde 1,2) til de rettes.
-- **Trapper** gjenkjennes ikke. Kunden tegner dem med trappeverktøyet, men bare **rette** trapper. Kvartsvingte og
-  halvsvingte trapper med svingtrinn, som eierens, finnes i spillets format (`half-turn-winder`), men ikke i editoren
-  ennå. En rett trapp i et lite trapperom blir for bratt, og validatoren advarer da om inntrinn og 2r + g.
+- **Trapper** gjenkjennes ikke. Kunden tegner dem med trappeverktøyet, som rett trapp eller U-trapp. U-trappa har like
+  lange løp. En trapp med ett kort og ett langt løp, som eierens (1 rett trinn øverst, 3 nederst), blir derfor bare
+  omtrent riktig. Kvartsvingte trapper (L-trapper) mangler: `stairs.js` støtter dem ikke heller.
 - **Skrå tak, nivåforskjeller i et rom (entré-trinnene) og buede vegger** støttes ikke. Takene er flate med én høyde per
   rom.
 
@@ -346,8 +351,8 @@ Rettingene i hele huset er de to listene over (18 handlinger). Trappa er ikke te
    - dobbeltdører og skyvedører.
 
    Uten testsettet er tallene over bare gyldige for to planer fra samme tegneverktøy.
-4. **Svingte trapper** (1 uke). Etasjer, justering og rette trapper er på plass. Kvartsvingte og halvsvingte trapper
-   (`half-turn-winder` med kjerne) mangler i editoren.
+4. **Flere trappeformer** (1 uke). Etasjer, justering, rette trapper og U-trapper er på plass. Det som mangler, er
+   løp av ulik lengde og L-trapper. L-trappene trenger også `stairs.js`.
 5. **Finpuss** (1–2 uker): mobil og nettbrett (editoren er for mus i dag), hjelp i selve verktøyet, bedre feilmeldinger
    og ytelse. En plan på 7,5 megapiksler tar 1,7 s i Node, og bør også testes i en svak nettleser.
 

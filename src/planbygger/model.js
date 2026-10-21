@@ -10,9 +10,11 @@
  *       offset: [dx, dy],                 metres: where this level's plan frame lies in the main level's frame
  *       walls:    [{ id, a: [x, y], b: [x, y], t }]                          plan metres (pixels / pxPerM), a → b
  *       openings: [{ id, wall, type: 'door'|'window'|'opening', at, width, height?, sill?,
- *                    hinge: 'start'|'end', side: 1|-1, leaf?, auto? }]       at = centre, metres from the wall's a
+ *                    hinge: 'start'|'end', side: 1|-1, leaf?, openAngle?, auto? }]   at = centre, metres from a;
+ *                                                                          openAngle: a door's degrees (default 90)
  *       rooms:    [{ id, name, kind, seed: [x, y], ceiling?, floor? }]      labels; the polygons are found (regions.js)
- *       stairs:   [{ id, rect: [[x0, y0], [x1, y1]], axis: 'x'|'y', down: 1|-1 }]   a straight stair from this level
+ *       stairs:   [{ id, rect: [[x0, y0], [x1, y1]], axis: 'x'|'y', down: 1|-1, kind?: 'straight'|'u', side?: 0|1 }]
+ *                 a stair from this level
  *                 down to the level under it: rect = the hole in this floor, axis / down = the direction it descends
  *     }],
  *   }

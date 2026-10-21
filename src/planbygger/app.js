@@ -785,6 +785,11 @@ class App {
         }));
       }
       if (o.type === 'door') {
+        box.append(field('Åpningsvinkel', o.openAngle ?? 90, (v) => {
+          const m = num(v);
+          if (!m || m < 30 || m > 180) return;
+          set(() => (o.openAngle = m), 'Åpningsvinkel');
+        }, '°'));
         box.append(h('div', { class: 'pb-row' },
           h('button', { class: 'pb-btn is-small', onclick: () => set(() => (o.hinge = o.hinge === 'end' ? 'start' : 'end'), 'Snudde hengsel') }, 'Snu hengselen (H)'),
           h('button', { class: 'pb-btn is-small', onclick: () => set(() => (o.side = -(o.side || 1)), 'Snudde slagretning') }, 'Snu slagretningen (G)')));
@@ -799,20 +804,27 @@ class App {
       const below = this.doc.levels.filter((l) => (l.floorY ?? 0) < (L.floorY ?? 0) - 0.5).sort((a, b) => b.floorY - a.floorY)[0];
       const rise = below ? (L.floorY ?? 0) - below.floorY : null;
       const risers = rise ? Math.max(2, Math.round(rise / 0.18)) : null;
-      const going = risers ? g.length / (risers - 1) : null;
+      const walkLen = st.kind === 'u' ? 2 * (g.length - g.width / 2) + (Math.PI / 2) * (g.width / 2) : g.length;
+      const going = risers ? walkLen / (risers - 1) : null;
       const set = (fn, label) => {
         this.snapshot();
         fn();
         this.changed(label);
       };
+      const kindSel = h('select', { onchange: (ev) => set(() => (st.kind = ev.target.value), 'Trappetype') },
+        h('option', { value: 'straight', selected: st.kind !== 'u' }, 'Rett trapp'),
+        h('option', { value: 'u', selected: st.kind === 'u' }, 'U-trapp (halvsving)'));
       box.append(h('h3', {}, 'Trapp'),
+        h('div', { class: 'pb-field' }, h('label', {}, 'Type'), kindSel),
         h('p', {}, `${fmt(g.width)} × ${fmt(g.length)} m`),
+        st.kind === 'u' ? h('p', { class: 'pb-note' }, 'U-trappa går ned langs den ene halvdelen, svinger rundt et smalt øye i enden og kommer tilbake langs den andre. Pila viser veien ned.') : null,
         below
           ? h('p', { class: 'pb-note' }, `Ned til ${below.name}: ${risers} opptrinn à ${fmt(rise / risers, 3)} m, inntrinn ${fmt(going, 3)} m${going < 0.22 ? ' – for bratt for en rett trapp (minst 0,22): gjør hullet lengre' : ''}.`)
           : h('p', { class: 'pb-note' }, 'Det er ingen etasje under denne. Legg til en etasje (+ Etasje) med lavere gulvhøyde.'),
         h('div', { class: 'pb-row' },
           h('button', { class: 'pb-btn is-small', onclick: () => set(() => (st.down = -st.down), 'Snudde trappa') }, 'Snu retningen'),
           h('button', { class: 'pb-btn is-small', title: 'Løpet på tvers: for en trapp der løpet er kortere enn bredden', onclick: () => set(() => (st.axis = st.axis === 'x' ? 'y' : 'x'), 'Dreide trappa') }, 'Drei 90°'),
+          st.kind === 'u' ? h('button', { class: 'pb-btn is-small', title: 'Det øverste løpet på den andre halvdelen', onclick: () => set(() => (st.side = st.side === 1 ? 0 : 1), 'Byttet side') }, 'Bytt side') : null,
           h('button', { class: 'pb-btn is-small is-danger', onclick: () => this.editor.deleteSelection() }, 'Slett trappa')));
       return box;
     }

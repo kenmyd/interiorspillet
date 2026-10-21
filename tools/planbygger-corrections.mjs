@@ -68,6 +68,22 @@ function toolkit(level, settings) {
   return { P, nearestOpening, nearestWall, orient, name, settings };
 }
 
+/**
+ * The stair of the owner's house in the hall of the ground floor, drawn with the Trapp tool as a U stair: the stairwell
+ * x 0–1,60 · z 2,32–4,43 (game) is dragged over the plan (image px 172 → 91 across, 171 → 278 along), then «U-trapp»,
+ * «Drei 90°» and «Snu retningen» so that the top flight starts at the hall and goes down northward on the east half
+ * (hele-huset-avstemming V12–V23: top edge x 1,45, foot on the west half).
+ */
+export function ownerStair(level) {
+  const ppm = level.image.pxPerM;
+  const P = (px) => [px[0] / ppm, px[1] / ppm];
+  const a = P([172.6, 170.6]);
+  const b = P([90.6, 278.8]);
+  const rect = [[Math.min(a[0], b[0]), Math.min(a[1], b[1])], [Math.max(a[0], b[0]), Math.max(a[1], b[1])]];
+  (level.stairs ||= []).push({ id: 't-eier', rect, axis: 'x', down: -1, kind: 'u', side: 0 });
+  return ['trapp tegnet over trapperommet', 'type U-trapp', 'drei 90°', 'snu retningen'];
+}
+
 export const CORRECTIONS = {
   /** 1. etasje (plantegning.png). */
   hoved(doc, L = doc.levels[0]) {
@@ -87,6 +103,11 @@ export const CORRECTIONS = {
       edits.push('åpningen gang/stue → dør');
     }
     if (dg) for (const f of T.orient(dg, [256, 224], [-1, 0])) edits.push(`døra gang/stue: ${f}`);
+    // D6: the hall door opens 180°, flat against the hall wall (with the stair railing a 90° leaf blocks the hall)
+    if (dg) {
+      dg.openAngle = 180;
+      edits.push('døra gang/stue: åpningsvinkel 180°');
+    }
     // the plan draws the exterior walls 16 cm; they are 30 cm (outward – no room changes)
     doc.settings.exteriorMin = 0.3;
     edits.push('yttervegg minst 0,30 m');

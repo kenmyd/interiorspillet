@@ -553,6 +553,7 @@ export function exportHouse(doc, opts = {}) {
             swing,
             opensInto: swing === 'in' ? owner : other,
             leaf: { w: R(leafW), h: R(h - 0.04) },
+            ...(o.openAngle && o.openAngle !== 90 ? { openAngleDeg: o.openAngle } : {}),
             handleSide: hinge === 'from' ? 'to' : 'from',
             handleHeight: 1.05,
             closed: true,
@@ -664,8 +665,8 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
         continue;
       }
       const lowerRooms = levelRooms[lowerIdx] || [];
-      const footMid = mul(add(footPts[0], footPts[1]), 0.5);
-      const lowerRoom = lowerRooms.find((r) => inside(add(footMid, mul(dG, -0.3)), r.polygon)) ?? lowerRooms.find((r) => inside(mul(add(add(topPts[0], topPts[1]), mul(add(footPts[0], footPts[1]), 1)), 0.25), r.polygon));
+      const footMid = st.kind === 'u' ? mul(add(add(topPts[0], topPts[1]), mul(add(footPts[0], footPts[1]), 1)), 0.25) : mul(add(footPts[0], footPts[1]), 0.5);
+      const lowerRoom = lowerRooms.find((r) => inside(st.kind === 'u' ? footMid : add(footMid, mul(dG, -0.3)), r.polygon)) ?? lowerRooms.find((r) => inside(mul(add(add(topPts[0], topPts[1]), mul(add(footPts[0], footPts[1]), 1)), 0.25), r.polygon));
       if (!lowerRoom) warnings.push(`${level.name}: fant ikke rommet under trappa i ${below.name} – juster etasjene mot hverandre`);
       const rise = upper.floorY - below.floorY;
       const risers = Math.max(2, Math.round(rise / 0.18));
@@ -685,33 +686,79 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
         }
         return false;
       };
+      // the flights: a straight stair runs the whole rectangle; a U stair (half-turn with winders, the game's
+      // «half-turn-winder») has its top flight on one half of the near side, descends to the far end, turns around a
+      // narrow well and comes back on the other half to the near end
+      const u = st.kind === 'u';
       const guards = [];
-      for (let i = 0; i < 4; i++) {
-        const a = hole[i];
-        const b = hole[(i + 1) % 4];
-        const isTop = Math.abs(along(a) - lo) < 1e-6 && Math.abs(along(b) - lo) < 1e-6;
-        if (isTop || onFace(a, b)) continue;
-        guards.push({ id: `rekk-${counts.stairs}-${guards.length + 1}`, level: upper.id, line: [a, b] });
+      const guard = (a, b) => guards.push({ id: `rekk-${counts.stairs}-${guards.length + 1}`, level: upper.id, line: [RP(a), RP(b)] });
+      let top;
+      let foot;
+      let extra = {};
+      if (!u) {
+        top = { edge: topPts.map(RP), down: RP(dG) };
+        foot = { edge: footPts.map(RP), down: RP(dG) };
+        for (let i = 0; i < 4; i++) {
+          const a = hole[i];
+          const b = hole[(i + 1) % 4];
+          const isTop = Math.abs(along(a) - lo) < 1e-6 && Math.abs(along(b) - lo) < 1e-6;
+          if (isTop || onFace(a, b)) continue;
+          guard(a, b);
+        }
+      } else {
+        const N0 = topPts[0];
+        const N1 = topPts[1];
+        const e = unit(sub(N1, N0));
+        const W = dist(N0, N1);
+        const L = hi - lo;
+        const wellW = Math.min(0.2, Math.max(0.06, W * 0.06));
+        const half = (W - wellW) / 2;
+        if (half < 0.6 || L < half + 0.4) {
+          warnings.push(`${level.name}: U-trappa er for liten (${round(W, 2)} × ${round(L, 2)} m) – den trenger minst 1,3 m bredde og plass til svingen`);
+          continue;
+        }
+        const P = (acr, alg) => add(add(N0, mul(e, acr)), mul(dG, alg));
+        const sideA = !(st.side === 1);
+        const topHalf = sideA ? [P(0, 0), P(half, 0)] : [P(half + wellW, 0), P(W, 0)];
+        const footHalf = sideA ? [P(half + wellW, 0), P(W, 0)] : [P(0, 0), P(half, 0)];
+        const turn = half; // the winders fill a square at the far end
+        const well = [P(half, 0), P(half + wellW, 0), P(half + wellW, L - turn), P(half, L - turn)];
+        const flight = L - turn;
+        const nStraight = Math.max(1, Math.min(Math.floor((risers - 4) / 2), Math.round(flight / 0.25)));
+        top = { edge: topHalf.map(RP), down: RP(dG), straightTreads: nStraight };
+        foot = { edge: footHalf.map(RP), down: RP(mul(dG, -1)), straightTreads: nStraight };
+        extra = { well: { polygon: (signedArea(well) < 0 ? [...well].reverse() : well).map(RP), newel: RP(sideA ? P(half, 0) : P(half + wellW, 0)) }, footprint: hole, winders: 'balanced', walkLine: 'flight-centre' };
+        // guards: the near side over the foot flight, the long sides and the far side unless along a wall, the well
+        if (!onFace(footHalf[0], footHalf[1])) guard(footHalf[0], footHalf[1]);
+        for (let i = 0; i < 4; i++) {
+          const a = hole[i];
+          const b = hole[(i + 1) % 4];
+          const isNear = Math.abs(along(a) - lo) < 1e-6 && Math.abs(along(b) - lo) < 1e-6;
+          if (isNear || onFace(a, b)) continue;
+          guard(a, b);
+        }
+        guards.push({ id: `rekk-${counts.stairs}-oye`, on: 'well' });
       }
       floorOpenings.push({ id: holeId, levelId: upper.id, roomId: room.id, stairId: id, polygon: hole, edgeBand: { color: '#f2efe8', depth: 0.3 }, estimated: ['polygon'] });
       stairs.push({
         id,
         name: 'Trapp',
-        type: 'straight',
+        type: u ? 'half-turn-winder' : 'straight',
         fromLevel: below.id,
         toLevel: upper.id,
         openingId: holeId,
         roomIds: [lowerRoom?.id ?? room.id, room.id],
         risers,
-        top: { edge: topPts.map(RP), down: RP(dG) },
-        foot: { edge: footPts.map(RP), down: RP(dG) },
+        top,
+        foot,
+        ...extra,
         tread: { thickness: 0.04, nosing: 0.03, material: 'oak', color: '#bfab9b' },
         openRisers: true,
         stringers: { color: '#1d1e21', thickness: 0.05, depth: 0.28 },
         guards,
         guardStyle: { height: 1.0, stairHeight: 0.9, post: 0.065, baluster: 0.022, spacing: 0.13, topRail: [0.07, 0.05], color: '#1d1e21' },
         estimated: ['*'],
-        source: `planbyggeren: ${R(dist(topPts[0], topPts[1]))} × ${R(hi - lo)} m, ${risers} opptrinn à ${R(rise / risers)}`,
+        source: `planbyggeren: ${u ? 'U-trapp' : 'rett trapp'} ${R(dist(topPts[0], topPts[1]))} × ${R(hi - lo)} m, ${risers} opptrinn à ${R(rise / risers)}`,
       });
     }
   });

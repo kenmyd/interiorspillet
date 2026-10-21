@@ -18,7 +18,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { readPng } from './planbygger-png.mjs';
 import { truthLevel, generatedLevel, compare } from './planbygger-truth.mjs';
-import { CORRECTIONS } from './planbygger-corrections.mjs';
+import { CORRECTIONS, ownerStair } from './planbygger-corrections.mjs';
 
 const args = process.argv.slice(2);
 const E = await imp('src/planbygger/export.js');
@@ -123,7 +123,7 @@ if (KJELLER_PLAN && fs.existsSync(KJELLER_PLAN)) {
   M.applyDetection(kj, D.detectPlan(img, { pxPerM: ks.pxPerM }), ks.pxPerM, doc.settings);
   E.alignLevel(doc, kj, doc.levels[0], 'ne');
   const fixed = JSON.parse(JSON.stringify(doc));
-  const edits = [...CORRECTIONS.hoved(fixed, fixed.levels[0]), ...CORRECTIONS.kjeller(fixed, fixed.levels[1])];
+  const edits = [...CORRECTIONS.hoved(fixed, fixed.levels[0]), ...CORRECTIONS.kjeller(fixed, fixed.levels[1]), ...ownerStair(fixed.levels[0])];
   whole = { edits, variants: {} };
   for (const [name, d] of Object.entries({ auto: doc, rettet: fixed })) {
     const ex = E.exportHouse(d);
@@ -133,7 +133,31 @@ if (KJELLER_PLAN && fs.existsSync(KJELLER_PLAN)) {
     const raw = compare(T, G);
     const Th = truthLevel(spec, 'hoved');
     const Gh = generatedLevel(ex.house, 'hoved');
-    whole.variants[name] = { errors: val.errors.length, warnings: val.warnings.length, counts: ex.report.counts, kjeller: raw, hoved: compare(Th, Gh), shift: bestShift(T, G) };
+    // the stair against 20-trapp.json: risers, going on the validator's walk line, the footprint overlap
+    let stair = null;
+    const gs = ex.house.stairs?.[0];
+    const ts = spec.stairs?.[0];
+    if (gs && ts) {
+      const H = await imp('src/data/scripts/house.mjs');
+      const walkG = H.stairWalk(gs, { bound: gs.footprint }).length;
+      const walkT = H.stairWalk(ts, { bound: ts.footprint }).length;
+      const { overlapArea } = await import('./planbygger-truth.mjs');
+      const fpT = ts.footprint;
+      const fpG = gs.footprint ?? ex.house.floorOpenings[0].polygon;
+      const areaOf = (P) => Math.abs(P.reduce((s, p, i) => s + p[0] * P[(i + 1) % P.length][1] - P[(i + 1) % P.length][0] * p[1], 0) / 2);
+      const ov = overlapArea(fpT, fpG);
+      const topT = ts.top.edge;
+      const topG = gs.top.edge;
+      stair = {
+        type: gs.type,
+        risers: [ts.risers, gs.risers],
+        going: [walkT / (ts.risers - 1), walkG / (gs.risers - 1)],
+        footprintIoU: ov / (areaOf(fpT) + areaOf(fpG) - ov),
+        topEdgeCm: Math.hypot((topT[0][0] + topT[1][0]) / 2 - (topG[0][0] + topG[1][0]) / 2, (topT[0][1] + topT[1][1]) / 2 - (topG[0][1] + topG[1][1]) / 2) * 100,
+        warnings: val.warnings.filter((w) => w.startsWith('stairs/')),
+      };
+    }
+    whole.variants[name] = { errors: val.errors.length, warnings: val.warnings.length, counts: ex.report.counts, kjeller: raw, hoved: compare(Th, Gh), shift: bestShift(T, G), stair };
   }
 }
 
@@ -222,9 +246,10 @@ if (whole) {
   row('1. etasje: snittavvik', (x) => `${f1(x.hoved.walls.meanCm)} cm`);
   row('Dører i hele huset (fasit 11)', (x) => `${x.hoved.openings.byType.door.found + x.kjeller.openings.byType.door.found} funnet, ${x.hoved.openings.byType.door.oriented + x.kjeller.openings.byType.door.oriented} slår riktig vei`);
   row('Vinduer i hele huset (fasit 13)', (x) => `${x.hoved.openings.byType.window.found + x.kjeller.openings.byType.window.found} funnet`);
+  row('Trappa (fasit: halvsvingt, 13 opptrinn)', (x) => (x.stair ? `${x.stair.type === 'half-turn-winder' ? 'U-trapp' : x.stair.type}, ${x.stair.risers[1]} opptrinn, inntrinn ${f1(x.stair.going[1], 3)} (fasit ${f1(x.stair.going[0], 3)}), fotavtrykk ${f1(x.stair.footprintIoU * 100, 0)} % IoU, øverste trinnkant ${f1(x.stair.topEdgeCm, 0)} cm unna` : 'ingen'));
   row('Validatoren', (x) => `${x.errors} feil, ${x.warnings} advarsler`);
   lines.push('');
-  lines.push(`Rettingene i hele huset er de to listene over (${whole.edits.length} handlinger). Trappa er ikke tegnet her: planbyggeren har bare rette trapper, og eierens trapp er en halvsvingt trapp med svingtrinn (\`research/house/20-trapp.json\`).`);
+  lines.push(`Rettingene i hele huset er de to listene over pluss trappa (${whole.edits.length} handlinger): ${whole.edits.slice(-4).join('; ')}. Trappa er tegnet som U-trapp over trapperommet. Eierens trapp har et kort øvre løp (1 rett trinn) og et lengre nedre løp, mens planbyggerens U-trapp har like lange løp. Derfor ligger den øverste trinnkanten litt lenger øst. ${whole.variants.rettet?.stair?.warnings?.length ? `Validatoren advarer: ${whole.variants.rettet.stair.warnings.map((w) => w.replace(/ \(anslått.*$/, '')).join('; ')}.` : ''}`);
   lines.push('');
 }
 const text = lines.join('\n');

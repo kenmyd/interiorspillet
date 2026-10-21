@@ -882,10 +882,11 @@ export class Editor {
       const r = Math.min(o.leaf ?? o.width - 0.12, o.width);
       const side = o.side || 1;
       const face = side * h;
+      const open = ((o.openAngle ?? 90) * Math.PI) / 180;
       g.beginPath();
       const steps = 24;
       for (let i = 0; i <= steps; i++) {
-        const phi = (i / steps) * (Math.PI / 2);
+        const phi = (i / steps) * open;
         const pt = P(hingeAt + dir * r * Math.cos(phi), face + side * r * Math.sin(phi));
         if (i) g.lineTo(...pt);
         else g.moveTo(...pt);
@@ -897,7 +898,7 @@ export class Editor {
       g.setLineDash([]);
       g.beginPath();
       g.moveTo(...P(hingeAt, face));
-      g.lineTo(...P(hingeAt, face + side * r));
+      g.lineTo(...P(hingeAt + dir * r * Math.cos(open), face + side * r * Math.sin(open)));
       g.lineWidth = 2.2;
       g.stroke();
     } else {
@@ -930,6 +931,12 @@ export class Editor {
     g.lineWidth = sel ? 2.5 : 1.5;
     g.strokeStyle = ghost ? 'rgba(40, 90, 200, 0.7)' : sel ? ACCENT : '#4b4560';
     g.stroke();
+    if (st.kind === 'u') {
+      this._drawUStair(g, st, geo, sel, ghost);
+      g.restore();
+      if (sel) this._dimLabel(g, geo.top[0], geo.top[1], `U-trapp ${geo.width.toFixed(2).replace('.', ',')} × ${geo.length.toFixed(2).replace('.', ',')} m`, -16 / this.view.k);
+      return;
+    }
     // treads across the run
     const n = Math.max(2, Math.round(geo.length / 0.25));
     g.lineWidth = 1;
@@ -959,6 +966,57 @@ export class Editor {
     g.stroke();
     g.restore();
     if (sel) this._dimLabel(g, geo.top[0], geo.top[1], `${geo.width.toFixed(2).replace('.', ',')} × ${geo.length.toFixed(2).replace('.', ',')} m`, -16 / this.view.k);
+  }
+
+  /** A U stair: the two flights (treads), the well between them, an arrow down the top flight, round and back. */
+  _drawUStair(g, st, geo, sel, ghost) {
+    const N0 = geo.top[0];
+    const N1 = geo.top[1];
+    const e = unit(sub(N1, N0));
+    const W = geo.width;
+    const L = geo.length;
+    const wellW = Math.min(0.2, Math.max(0.06, W * 0.06));
+    const half = (W - wellW) / 2;
+    const P = (acr, alg) => this.toScreen(add(add(N0, mul(e, acr)), mul(geo.down, alg)));
+    const sideA = !(st.side === 1);
+    const [t0, t1] = sideA ? [0, half] : [half + wellW, W];
+    const [f0, f1] = sideA ? [half + wellW, W] : [0, half];
+    g.lineWidth = 1;
+    g.beginPath();
+    for (let v = 0.25; v < L - half; v += 0.25) {
+      for (const [a, b] of [[t0, t1], [f0, f1]]) {
+        g.moveTo(...P(a, v));
+        g.lineTo(...P(b, v));
+      }
+    }
+    g.stroke();
+    // the well
+    g.beginPath();
+    for (const [i, [a, v]] of [[half, 0], [half + wellW, 0], [half + wellW, L - half], [half, L - half]].entries()) (i ? g.lineTo(...P(a, v)) : g.moveTo(...P(a, v)));
+    g.closePath();
+    g.fillStyle = ghost ? 'rgba(40, 90, 200, 0.25)' : '#4b4560';
+    g.fill();
+    // the arrow: down the top flight, across the far end, back up the foot flight's direction
+    const tm = (t0 + t1) / 2;
+    const fm = (f0 + f1) / 2;
+    const end = L - half / 2;
+    g.setLineDash([]);
+    g.lineWidth = 2;
+    g.beginPath();
+    g.moveTo(...P(tm, 0.12));
+    g.lineTo(...P(tm, end));
+    g.lineTo(...P(fm, end));
+    g.lineTo(...P(fm, 0.18));
+    g.stroke();
+    const tip = P(fm, 0.12);
+    const back = P(fm, 0.32);
+    const u = unit(sub(tip, back));
+    g.beginPath();
+    g.moveTo(...tip);
+    g.lineTo(tip[0] - u[0] * 9 - u[1] * 5, tip[1] - u[1] * 9 + u[0] * 5);
+    g.moveTo(...tip);
+    g.lineTo(tip[0] - u[0] * 9 + u[1] * 5, tip[1] - u[1] * 9 - u[0] * 5);
+    g.stroke();
   }
 
   _dimLabel(g, a, b, text, off) {
