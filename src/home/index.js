@@ -18,15 +18,38 @@ import { setWallQuality, ELEMENT_TYPES } from '../models/walldesigns.js';
 
 /** The open-plan room the HUD names (the zones of room-spec are not separate rooms). */
 const OPEN_ROOM = Object.freeze({ id: 'stue-kjokken', name: 'Stue/kjøkken' });
+/** The outside area in front of the main entrance (outsideHouse.forecourt + the landing of the terrace stair). */
+const FORECOURT = Object.freeze({ id: 'forplass', name: 'Forplassen', levelName: 'Ute' });
+/** Rooms and levels are tested at the body centre: feet + this (§1.8, §5.1). */
+export const BODY_CENTRE = 0.9;
+const DEG = Math.PI / 180;
 
 /**
  * The home – the real house (ARCHITECTURE §4, notes/hele-huset-design.md). Game.js (and dev/sandbox) call
  * createHome(ctx) once.
  *
  *   createHome(ctx) → home = {
- *     spawn: { position: Vector3 (feet), yaw, pitch },     dining area, looking toward the sitting area / windows
- *     rooms: [{ id, name, zoneId, box: Box3 }],            one box per room-spec zone, all the same room
- *                                                          (id 'stue-kjokken', HUD «Stue/kjøkken»)
+ *     spawn: { position: Vector3 (feet), yaw, pitch, levelId, where: 'inside' }   dining area, looking toward the
+ *                                                          sitting area / windows – the start before the house
+ *                                                          (dev ?spawn=inside, and the reserve while the forecourt
+ *                                                          cannot be walked on)
+ *     spawnOutside: { position, yaw, pitch, levelId: null, where: 'outside' } | null   the first visit's start
+ *                                                          (§3.6, avstemming V32): outsideHouse.spawnOutside on the
+ *                                                          forecourt, looking at the front door; Game uses it only
+ *                                                          once there is something to stand on there
+ *     rooms: [{ id, name, levelId, levelName, kind, hud,   one entry per room of layout.house.rooms (§5.1, steg 9
+ *               floorY, contains(x, y, z), box: Box3 }]    A3), the stair (`hud: true`) included; contains tests the
+ *                                                          plan and the room's level band at a world y (pass the body
+ *                                                          centre, feet + BODY_CENTRE); box = plan bounds × floor …
+ *                                                          ceiling (WindowPanel). The living room is «Stue/kjøkken».
+ *     roomAt(x, y, z, { previousLevelId, physical = false }) → home.rooms entry | null
+ *                                                          the HUD variant of layout.house.roomAt: the stair first
+ *                                                          (physical:true skips it, like lights and acoustics)
+ *     outdoorAreas: [{ id, name, levelName: 'Ute', outside: true, floorY, contains(x, y, z) }]   named places
+ *                                                          outside (the forecourt «Forplassen»; body-centre test)
+ *     locate(x, y, z, { previousLevelId }) → { room, outside, level: { id, name } | null }   where a body centre
+ *                                                          is: the HUD room (stair first), else a named outside area;
+ *                                                          level = layout.house.levelAt(y, previousLevelId)
  *     layout,                                              home/layout.js
  *     walls: WallInfo[], windows: WindowInfo[], doors: DoorInfo[]     shell.js + the house builders (merged, below)
  *     highWall: HighWallInfo                                           shell.js
@@ -196,15 +219,22 @@ export async function createHome(ctx) {
   for (const w of house.windows) if (w.anchor) roots.shading.attach(w.anchor);
   if (shell.highWall?.anchor) roots.wall.attach(shell.highWall.anchor);
 
-  // one open room: the zones' boxes all count as «Stue/kjøkken», so walking between kitchen, dining area and the two
-  // living areas never announces a new room (the HUD banner shows once, when the game starts)
-  const rooms = layout.zones.map((z) => ({ id: OPEN_ROOM.id, name: OPEN_ROOM.name, zoneId: z.id, box: z.box.clone() }));
+  // the rooms of the house for the HUD (the living room stays one open room: walking between kitchen, dining area and
+  // the two living areas never announces a new room), and the named places outside
+  const rooms = houseRooms(layout);
+  const outdoor = outdoorAreas(layout);
+  const locate = createLocator(layout, rooms, outdoor);
+  const spawns = spawnPoints(layout);
   // any wall of the house (layout.house.wallsById holds the living room's walls as the same objects)
   const paintOf = (wallId) => design.paints[wallId] ?? (layout.house?.wallsById?.[wallId] ?? layout.wallsById[wallId])?.paint ?? null;
 
   const home = {
-    spawn: spawnPoint(layout),
+    spawn: spawns.inside,
+    spawnOutside: spawns.outside,
     rooms,
+    roomAt: (x, y, z, o) => locate.roomAt(x, y, z, o),
+    outdoorAreas: outdoor,
+    locate: (x, y, z, o) => locate(x, y, z, o),
     layout,
     walls: house.walls,
     windows: house.windows,
@@ -453,4 +483,133 @@ function spawnPoint(layout) {
   const yaw = Math.atan2(-dx, -dz);
   const pitch = Math.atan2(target.y - 1.66, Math.hypot(dx, dz));
   return { position: pos, yaw, pitch };
+}
+
+/**
+ * The two start points (§3.6, steg 26 U2):
+ *   inside   the dining area (spawnPoint, as before the house), level 'hoved';
+ *   outside  outsideHouse.spawnOutside (avstemming V32: feet (12.2, −2.87, 4.6), yaw 85°, pitch −6° – on the forecourt
+ *            3.3 m in front of the front door, looking at it), or null when the data has none.
+ * yaw / pitch in radians (yawDeg uses the URL convention: 0 = east/−z, 90 = north/−x). Pure (Node-testable).
+ * @param {object} layout
+ * @returns {{ inside: object, outside: object|null }}
+ */
+export function spawnPoints(layout) {
+  const inside = { ...spawnPoint(layout), levelId: MAIN_LEVEL_ID, where: 'inside' };
+  const s = layout?.house?.outsideHouse?.spawnOutside ?? null;
+  const ok = s && Array.isArray(s.pos) && s.pos.length === 3 && s.pos.every((v) => typeof v === 'number' && Number.isFinite(v));
+  const outside = ok
+    ? {
+        position: new THREE.Vector3(...s.pos),
+        yaw: (Number.isFinite(s.yawDeg) ? s.yawDeg : 0) * DEG,
+        pitch: (Number.isFinite(s.pitchDeg) ? s.pitchDeg : 0) * DEG,
+        levelId: null,
+        where: 'outside',
+      }
+    : null;
+  return { inside, outside };
+}
+
+/**
+ * home.rooms (§5.1, steg 9 A3): one entry per room of layout.house.rooms – { id, name, levelId, levelName, kind, hud,
+ * floorY, contains(x, y, z), box }. contains is the layout's own 3D test (plan + level band, a hud room its world
+ * yRange); box is the plan bounds from the floor to the highest ceiling (a hud room: its yRange) for code that only
+ * needs a rough test. A layout without house rooms keeps the old entries: one per zone, all «Stue/kjøkken».
+ * Pure (Node-testable).
+ * @param {object} layout
+ */
+export function houseRooms(layout) {
+  const list = (layout?.house?.rooms || []).filter((r) => r.polygon?.length >= 3);
+  if (!list.length) {
+    return (layout?.zones || []).map((z) => ({
+      id: OPEN_ROOM.id,
+      name: OPEN_ROOM.name,
+      levelId: MAIN_LEVEL_ID,
+      levelName: null,
+      kind: 'living',
+      hud: false,
+      floorY: 0,
+      zoneId: z.id,
+      box: z.box.clone(),
+      contains: (x, y, zz) => z.box.containsPoint(new THREE.Vector3(x, y, zz)),
+    }));
+  }
+  return list.map((r) => {
+    const b = r.bounds;
+    const y0 = r.hud && r.yRange ? r.yRange[0] : r.floorY;
+    const y1 = r.hud && r.yRange ? r.yRange[1] : Math.max(r.ceilingTop ?? r.floorY + 2.4, r.floorY + 0.1);
+    return {
+      id: r.id,
+      name: r.id === LIVING_ROOM_ID ? r.name || OPEN_ROOM.name : r.name ?? r.id,
+      levelId: r.levelId,
+      levelName: r.levelName ?? null,
+      kind: r.kind,
+      hud: !!r.hud,
+      floorY: r.floorY,
+      box: new THREE.Box3(new THREE.Vector3(b.minX, y0, b.minZ), new THREE.Vector3(b.maxX, y1, b.maxZ)),
+      contains: (x, y, z) => r.containsPoint(x, y, z),
+    };
+  });
+}
+
+/**
+ * Named places outside the house (home.outdoorAreas): today the forecourt in front of the main entrance – the
+ * forecourt polygon and the landing at the foot of the terrace stair (outsideHouse, world y), «Forplassen» with the
+ * banner eyebrow «Ute». contains(x, y, z) takes the body centre: on the ground there (floor + 0.3 … + 1.8), so the
+ * terrace deck above the covered part is not «Forplassen». Pure (Node-testable).
+ * @param {object} layout
+ */
+export function outdoorAreas(layout) {
+  const o = layout?.house?.outsideHouse;
+  if (!o) return [];
+  const baseY = Number.isFinite(o.entranceLevelY) ? o.entranceLevelY : o.forecourt?.y;
+  const parts = [o.forecourt, o.landing]
+    .filter((p) => Array.isArray(p?.polygon) && p.polygon.length >= 3)
+    .map((p) => ({ polygon: p.polygon, y: Number.isFinite(p.y) ? p.y : baseY }))
+    .filter((p) => Number.isFinite(p.y));
+  if (!parts.length) return [];
+  return [
+    {
+      ...FORECOURT,
+      outside: true,
+      floorY: parts[0].y,
+      contains: (x, y, z) => parts.some((p) => y >= p.y + 0.3 && y <= p.y + 1.8 && inPolygon(x, z, p.polygon)),
+    },
+  ];
+}
+
+/**
+ * locate(x, y, z, { previousLevelId }) (home.locate) and locate.roomAt (home.roomAt) – see the top of this file.
+ * @param {object} layout
+ * @param {object[]} rooms     houseRooms(layout)
+ * @param {object[]} outdoor   outdoorAreas(layout)
+ */
+export function createLocator(layout, rooms, outdoor = []) {
+  const h = layout?.house;
+  const byId = new Map(rooms.map((r) => [r.id, r]));
+  const useHouse = typeof h?.roomAt === 'function' && rooms.some((r) => !r.zoneId);
+  const roomAt = (x, y, z, { previousLevelId = null, physical = false } = {}) => {
+    if (!useHouse) return rooms.find((r) => r.contains(x, y, z)) ?? null;
+    const r = h.roomAt(x, y, z, { physical, previousLevelId });
+    return r ? byId.get(r.id) ?? null : null;
+  };
+  const locate = (x, y, z, { previousLevelId = null } = {}) => {
+    const room = roomAt(x, y, z, { previousLevelId });
+    const outside = room ? null : outdoor.find((a) => a.contains(x, y, z)) ?? null;
+    const lv = useHouse && typeof h.levelAt === 'function' ? h.levelAt(y, previousLevelId) : null;
+    return { room, outside, level: lv ? { id: lv.id, name: lv.name ?? lv.id } : null };
+  };
+  locate.roomAt = roomAt;
+  return locate;
+}
+
+/** Point in polygon ([[x, z], …], even-odd). */
+function inPolygon(x, z, poly) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, zi] = poly[i];
+    const [xj, zj] = poly[j];
+    if (zi > z !== zj > z && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) inside = !inside;
+  }
+  return inside;
 }

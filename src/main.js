@@ -6,6 +6,7 @@ import { Menu } from './ui/Menu.js';
 import { LoadingScreen } from './ui/Loading.js';
 import { Game } from './core/Game.js';
 import { Saves } from './design/Saves.js';
+import { PLAYER } from './config.js';
 
 /**
  * Start-up: start screen → loading screen → game. Quitting the game shows the start screen again.
@@ -13,6 +14,10 @@ import { Saves } from './design/Saves.js';
  * (Enter) is «Fortsett: <navn>» and «Start med stua slik den er i dag» starts fresh (the previous unnamed session is
  * then kept as «Forrige økt (dato)»). Without one there is only «Gå inn i stua». Re-evaluated every time the start
  * screen is shown (also after «Avslutt til hovedmeny»).
+ * Where the player starts (Game._placeAtStart, notes/hele-huset-design.md §3.6): «Fortsett …» and «Gå inn i stua»
+ * continue from the position this viewer stood at last time (src/core/LastPosition.js) – the first visit (nothing
+ * saved) starts outside on the forecourt and walks in through the front door; «Start med stua slik den er i dag» is a
+ * fresh start, outside again. ?play=1 (tests) starts in the dining area as before unless &spawn= says otherwise.
  */
 
 const MENU_IMAGE = 'img/stue.jpg'; // relative: the build must work from any folder (e.g. kenmyd.no/stue/)
@@ -27,8 +32,10 @@ const settings = new Settings();
 const audio = new AudioSystem(settings);
 const menu = new Menu(uiRoot, { settings, audio, image: MENU_IMAGE });
 let game = null;
+/** The start screen offered «Fortsett …» (then 'original' is the explicit fresh start «Start med stua …»). */
+let continueOffered = false;
 
-menu.onPlay = (mode) => startGame(mode === 'continue' ? 'continue' : 'original');
+menu.onPlay = (mode) => startGame(mode === 'continue' ? 'continue' : 'original', { menu: true });
 
 /** What «Fortsett» would continue: { name } (null name = unnamed work), or null when there is nothing worth it. */
 function lastDesign() {
@@ -46,7 +53,9 @@ function lastDesign() {
 
 /** Shows the start screen with the right start buttons. */
 function showMenu() {
-  menu.setContinue(lastDesign());
+  const last = lastDesign();
+  continueOffered = !!last;
+  menu.setContinue(last);
   menu.show();
   prefetch();
 }
@@ -78,9 +87,17 @@ function prefetch() {
   else setTimeout(run, 800);
 }
 
-/** @param {'original'|'continue'} [mode] */
-async function startGame(mode = 'original') {
+/**
+ * @param {'original'|'continue'} [mode]
+ * @param {{ menu?: boolean }} [o]  started from the start screen (else ?play=1)
+ */
+async function startGame(mode = 'original', { menu: fromMenu = false } = {}) {
   if (game) return;
+  const dev = devOverrides();
+  // the start position (Game._placeAtStart): ?spawn= wins; the start screen continues from the saved position, except
+  // the explicit fresh start «Start med stua slik den er i dag» (offered next to «Fortsett …»), which starts outside
+  // again; ?play=1 keeps the dining area of the references, tours and walkmaps
+  if (!dev.spawn) dev.spawn = !fromMenu ? 'inside' : mode === 'original' && continueOffered ? 'fresh' : 'saved';
   try {
     await audio.unlock();
   } catch {
@@ -96,7 +113,7 @@ async function startGame(mode = 'original') {
     uiRoot,
     settings,
     audio,
-    dev: { ...devOverrides(), start: params.get('start') || mode },
+    dev: { ...dev, start: params.get('start') || mode },
     onQuit: () => {
       game?.dispose();
       game = null;
@@ -123,6 +140,47 @@ async function startGame(mode = 'original') {
   // ?nohelp=1: no controls overview at the start (tests and screenshots; the setting itself is untouched)
   if (truthy(params.get('nohelp'))) game.hud?.showHelp?.(false);
 }
+
+/**
+ * window.__setView (dev/test, the game page – like dev/sandbox's, so tools/shot.mjs --views works here too): puts the
+ * player at a view, on any level, and updates the room / banner at once.
+ *   __setView(pos, look, fov)  or  __setView({ pos, look, fov })   pos = the eye (camera) position, look = a point to
+ *                                                                  look at, fov in degrees (optional)
+ *   __setView({ feet: [x, y, z], yaw, pitch, fov })                feet + angles in degrees (as ?pos= &yaw= &pitch=)
+ * Returns { roomId, levelId } after the move. The level follows from y (a jump of the feet resets its hysteresis).
+ */
+window.__setView = (a, b, c) => {
+  const g = game;
+  if (!g?.player) return null;
+  const v = Array.isArray(a) ? { pos: a, look: b, fov: c } : a || {};
+  const P = g.player;
+  const feet = P.position.clone();
+  let yaw = P.yaw, pitch = P.pitch;
+  if (Array.isArray(v.feet)) {
+    feet.set(...v.feet);
+    if (Number.isFinite(v.yaw)) yaw = (v.yaw * Math.PI) / 180;
+    if (Number.isFinite(v.pitch)) pitch = (v.pitch * Math.PI) / 180;
+  } else if (Array.isArray(v.pos)) {
+    feet.set(v.pos[0], v.pos[1] - PLAYER.eyeHeight, v.pos[2]);
+    if (Array.isArray(v.look)) {
+      const dx = v.look[0] - v.pos[0], dy = v.look[1] - v.pos[1], dz = v.look[2] - v.pos[2];
+      yaw = Math.atan2(-dx, -dz);
+      pitch = Math.atan2(dy, Math.hypot(dx, dz));
+    }
+  }
+  P.teleport(feet, yaw, pitch);
+  if (Number.isFinite(v.fov)) {
+    g.camera.fov = v.fov;
+    g.camera.updateProjectionMatrix();
+  }
+  g._roomFeet = null; // counts as a teleport: the new room and level at once, no hysteresis from the old place
+  g._updateRoom();
+  if (!g.running) {
+    g.home?.update?.(0, g.time, { roomId: g.roomId, playerPosition: P.position, camera: g.camera, player: P, inputBlocked: g.inputBlocked });
+    g._render();
+  }
+  return { roomId: g.roomId, levelId: g._levelId ?? null };
+};
 
 /**
  * ?doors=open | closed | <id>,<id>… (dev/test): every door of the home open (or closed) at once, without animation or
@@ -152,11 +210,20 @@ function applyDoorParam(g) {
  * view (yaw 0 looks along −z = east, 90 = north/−x, −90 = south/+x toward the big windows); &view=walk|orbit|plan
  * (Editor); &design=<saved name>; &start=continue (last session instead of today's room); &doors=open|closed|<ids>
  * (every door open / closed, or the listed ones open – applyDoorParam); &nohelp=1 (no controls overview at the start);
- * &nowarm=1 (Game: skip compiling the catalogue's material variants).
+ * &nowarm=1 (Game: skip compiling the catalogue's material variants); &spawn=saved|outside|inside|fresh (Game: the
+ * saved position (else outside) / the forecourt by the front door / the dining area / outside ignoring the saved
+ * position – also ute, lagret, inne, stua; ?play=1 alone = inside, the start screen = saved). With &pos= y may be any
+ * level's floor (the room and its level follow from y).
  * dev.params carries every URL parameter, so later modules can read their own (game.dev.params.get('view')).
  */
 function devOverrides() {
   const dev = { params };
+  if (params.has('spawn')) {
+    const v = String(params.get('spawn')).trim().toLowerCase();
+    const spawn = { saved: 'saved', lagret: 'saved', outside: 'outside', ute: 'outside', inside: 'inside', inne: 'inside', stua: 'inside', fresh: 'fresh', ny: 'fresh' }[v];
+    if (spawn) dev.spawn = spawn;
+    else console.warn(`[dev] ?spawn=${params.get('spawn')} ignored – expected saved, outside, inside or fresh`);
+  }
   // only well-formed values are used (a NaN position breaks the camera and the audio listener)
   const finite = (s) => (s != null && String(s).trim() !== '' && Number.isFinite(Number(s)) ? Number(s) : null);
   if (params.has('pos')) {
