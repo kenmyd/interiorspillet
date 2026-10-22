@@ -267,6 +267,7 @@ async function testIphone() {
   await page.locator('.kv-pause__subhead .kv-iconbtn').tap();
   await sleep(300);
   await page.locator('.kv-menubtn', { hasText: 'Fortsett' }).tap();
+  await page.waitForFunction(() => !window.__game.paused && !window.__game.inputBlocked);
   await sleep(800);
   await page.evaluate((yaw) => {
     const g = window.__game;
@@ -278,12 +279,14 @@ async function testIphone() {
   const floor = await findFloor(page);
   if (!floor) check('iPhone: fant gulv å trykke på', false);
   else {
+    await page.waitForFunction(() => !window.__game.paused && !window.__game.inputBlocked);
     st = await state(page);
     await tapAt(cdp, floor.x, floor.y);
-    await sleep(700);
+    // a frame or two later the goal is set (the ring on the floor)
+    await page.waitForFunction(() => window.__game.autoWalk.active, null, { timeout: 15000 }).catch(() => {});
     const mid = await state(page);
     await shot(page, 'iphone-7-trykk-for-a-ga.png');
-    await sleep(2500);
+    await sleep(3000);
     st2 = await state(page);
     const d = Math.hypot(st2.x - st.x, st2.z - st.z);
     check('iPhone: trykk på gulvet går dit', (mid.autoWalk || d > 0.3) && d > 0.2, `gikk ${d.toFixed(2)} m av ${floor.d.toFixed(2)} m`);
@@ -291,8 +294,9 @@ async function testIphone() {
 
   // held upright: the hint
   await page.setViewportSize({ width: vp.height, height: vp.width });
-  await sleep(800);
-  check('iPhone på høykant: hint om å snu telefonen', await page.evaluate(() => !document.querySelector('.ptc-rotate')?.hidden));
+  // the hint is set in the next frame (TouchControls.update)
+  const upright = await page.waitForFunction(() => !document.querySelector('.ptc-rotate')?.hidden, null, { timeout: 15000 }).then(() => true, () => false);
+  check('iPhone på høykant: hint om å snu telefonen', upright);
   await shot(page, 'iphone-8-hoykant.png');
   await ctx.close();
 }
