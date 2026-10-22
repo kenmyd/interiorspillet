@@ -686,7 +686,32 @@ export function stairWalk(stair, opts = {}) {
 // ---------------------------------------------------------------------------------------------------------------
 // Doors
 
-/** Plan geometry of a door in its wall: hinge point, closed / swing directions, leaf width and the open leaf. */
+/** Door variants of `door.variant` (notes/dortyper.md); none = 'single'. */
+export const DOOR_VARIANTS = ['single', 'double', 'sliding', 'folding'];
+/** A folding door: its panels fold to this angle (world/FoldingDoor.js), and are this thick (home/doortypes.js). */
+const FOLD_DEG = 84;
+const FOLD_T = 0.03;
+/** Mounts of a sliding door (`door.mount`) and which way it opens (`door.slide`). */
+export const SLIDING_MOUNTS = ['surface', 'pocket', 'patio'];
+export const SLIDE_DIRECTIONS = ['from', 'to', 'both'];
+/** The figure's diameter (PLAYER.radius 0.3) and a little: the least free passage through an open door of the door types. */
+export const MIN_PASSAGE = 0.62;
+
+/** Widths of a door's sidelights on its 'from' and 'to' side (0 = none; default width 0.4, as home/doortypes.js). */
+function sidelightWidths(door) {
+  const out = { from: 0, to: 0 };
+  for (const s of Array.isArray(door?.sidelights) ? door.sidelights : []) {
+    const side = s?.side === 'to' ? 'to' : 'from';
+    if (!out[side]) out[side] = num(s?.w) && s.w > 0 ? s.w : 0.4;
+  }
+  return out;
+}
+
+/**
+ * Plan geometry of a door in its wall: hinge point, closed / swing directions, leaf width and the open leaf – and
+ * `leaves`, every hinged leaf (two for a double door, none for a sliding door), in the leaf bay between the jambs less
+ * the sidelights and their mullions. `leaf` / `H` / `c` / `leafW` are the first leaf's (a plain door: as always).
+ */
 function doorGeometry(w, o) {
   const f = w.from;
   const L = dist(w.from, w.to);
@@ -696,24 +721,52 @@ function doorGeometry(w, o) {
   const fw = num(o.frame?.width) ? o.frame.width : 0.05;
   const u0 = o.offset;
   const u1 = o.offset + o.width;
-  const leafW = num(o.door?.leaf?.w) ? o.door.leaf.w : o.width - 2 * fw;
+  const variant = o.door?.variant ?? 'single';
+  const lights = sidelightWidths(o.door);
+  const ua = u0 + fw + (lights.from ? lights.from + fw : 0);
+  const ub = u1 - fw - (lights.to ? lights.to + fw : 0);
+  const bay = ub - ua;
   const hingeFrom = (o.door?.hinge ?? 'from') === 'from';
   const swingIn = (o.door?.swing ?? 'in') === 'in';
-  const uh = hingeFrom ? u0 + fw : u1 - fw;
-  const H = add(add(f, mul(d, uh)), mul(n, swingIn ? 0 : -t));
-  const c = hingeFrom ? d : neg(d);
   const s = swingIn ? n : neg(n);
   const angleDeg = num(o.door?.openAngleDeg) ? o.door.openAngleDeg : 90;
   const angle = (angleDeg * Math.PI) / 180;
-  const dirAt = (a) => add(mul(c, Math.cos(a)), mul(s, Math.sin(a)));
-  const leaf = [H, add(H, mul(dirAt(angle), leafW))];
-  /** Points of the area the leaf sweeps from closed to open. */
+  /** A leaf hinged at u = uh, closed along c (toward the other jamb), leafW long. */
+  const hinged = (uh, c, leafW) => {
+    const H = add(add(f, mul(d, uh)), mul(n, swingIn ? 0 : -t));
+    const dirAt = (a) => add(mul(c, Math.cos(a)), mul(s, Math.sin(a)));
+    return { H, c, leafW, dirAt, leaf: [H, add(H, mul(dirAt(angle), leafW))] };
+  };
+  const atHinge = (leafW) => (hingeFrom ? hinged(ua, d, leafW) : hinged(ub, neg(d), leafW));
+  const atOther = (leafW) => (hingeFrom ? hinged(ub, neg(d), leafW) : hinged(ua, d, leafW));
+  let leaves;
+  let leafW;
+  if (variant === 'sliding' || variant === 'folding') {
+    leaves = []; // no swing: the folds of a folding door stand out one panel width at most
+    leafW = 0;
+  } else if (variant === 'double') {
+    // `leaf` on the hinge jamb, `leaf2` on the other; their widths split the bay (the builder fills it)
+    const w1 = num(o.door?.leaf?.w) && o.door.leaf.w > 0 ? o.door.leaf.w : bay / 2;
+    const w2 = num(o.door?.leaf2?.w) && o.door.leaf2.w > 0 ? o.door.leaf2.w : w1;
+    const a = (bay * w1) / (w1 + w2);
+    leaves = [atHinge(a), atOther(bay - a)];
+    leafW = (num(o.door?.leaf?.w) ? o.door.leaf.w : 0) + (num(o.door?.leaf2?.w) ? o.door.leaf2.w : 0);
+  } else {
+    leafW = lights.from || lights.to ? bay : num(o.door?.leaf?.w) ? o.door.leaf.w : o.width - 2 * fw;
+    leaves = [atHinge(leafW)];
+  }
+  const H = leaves[0]?.H ?? add(add(f, mul(d, (u0 + u1) / 2)), mul(n, swingIn ? 0 : -t));
+  const c = leaves[0]?.c ?? d;
+  const leaf = leaves[0]?.leaf ?? null;
+  /** Points of the area the leaves sweep from closed to open. */
   const sweepPoints = () => {
     const pts = [];
     const steps = Math.max(2, Math.ceil(angleDeg / 5));
-    for (let i = 0; i <= steps; i++) {
-      const dir = dirAt((angle * i) / steps);
-      for (const k of [0.2, 0.4, 0.6, 0.8, 1]) pts.push(add(H, mul(dir, leafW * k)));
+    for (const lf of leaves) {
+      for (let i = 0; i <= steps; i++) {
+        const dir = lf.dirAt((angle * i) / steps);
+        for (const k of [0.2, 0.4, 0.6, 0.8, 1]) pts.push(add(lf.H, mul(dir, lf.leafW * k)));
+      }
     }
     return pts;
   };
@@ -727,7 +780,102 @@ function doorGeometry(w, o) {
     }
     return pts;
   };
-  return { L, d, n, t, fw, u0, u1, leafW, H, c, s, angleDeg, leaf, sweepPoints, clearPoints, swingIn };
+  return { L, d, n, t, fw, u0, u1, ua, ub, bay, lights, variant, leafW, H, c, s, angleDeg, leaf, leaves, sweepPoints, clearPoints, swingIn };
+}
+
+/**
+ * The door types' own checks (notes/dortyper.md): variant, the sliding fields and the room a sliding leaf needs in or on
+ * its wall, a double door's leaves, glass, sidelights and the free passage for the figure. Plain doors (no new field)
+ * get none of them. Calls error(m) / warn(m).
+ */
+function doorTypeChecks({ w, wi, o, g, where, error, warn }) {
+  const door = o.door;
+  const variant = door.variant ?? 'single';
+  const isNew = variant !== 'single' || door.glass != null || door.sidelights != null;
+  if (!isNew) return;
+  if (!DOOR_VARIANTS.includes(variant)) {
+    error(`${where}: door.variant må være ${DOOR_VARIANTS.map((v) => `«${v}»`).join(', ')}`);
+    return;
+  }
+  const exterior = !!w.exterior && (num(w.thickness) ? w.thickness : 0.1) >= 0.2;
+  // glass: true or { from, to, margin, cols, rows, bar, frosted }
+  const glassOk = (gl, at) => {
+    if (gl == null || gl === true || gl === false) return;
+    if (!isObj(gl)) return error(`${at}: glass må være true eller { from, to, cols, rows, … }`);
+    for (const k of ['cols', 'rows']) if (gl[k] != null && !(Number.isInteger(gl[k]) && gl[k] >= 1 && gl[k] <= 8)) error(`${at}: glass.${k} må være et heltall 1–8`);
+    for (const k of ['from', 'to', 'margin', 'bar']) if (gl[k] != null && !(num(gl[k]) && gl[k] > 0)) error(`${at}: glass.${k} må være et tall over 0`);
+    if (num(gl.from) && num(gl.to) && gl.to <= gl.from + 0.1) error(`${at}: glass.to (${fmt(gl.to)}) må ligge minst 0,1 over glass.from (${fmt(gl.from)})`);
+    if (num(gl.to) && gl.to > o.height) error(`${at}: glass.to (${fmt(gl.to)}) er over hullet (${fmt(o.height)})`);
+  };
+  glassOk(door.glass, where);
+  if (door.sidelights != null) {
+    if (!Array.isArray(door.sidelights)) error(`${where}: sidelights må være en liste [{ side: «from»/«to», w }]`);
+    else {
+      const seen = new Set();
+      for (const s of door.sidelights) {
+        if (!isObj(s) || !['from', 'to'].includes(s.side)) error(`${where}: hvert sidefelt må ha side «from» eller «to»`);
+        else if (seen.has(s.side)) error(`${where}: to sidefelt på siden «${s.side}»`);
+        else seen.add(s.side);
+        if (isObj(s) && s.w != null && !(num(s.w) && s.w > 0)) error(`${where}: sidefeltets w må være over 0`);
+        if (isObj(s)) glassOk(s.glass, `${where} (sidefelt ${s.side})`);
+      }
+      if (variant === 'sliding' && door.sidelights.length) warn(`${where}: en skyvedør bygges uten sidefelt (sidelights blir ikke brukt)`);
+    }
+  }
+  if (variant === 'double') {
+    for (const k of ['leaf', 'leaf2']) if (door[k]?.w != null && !(num(door[k].w) && door[k].w > 0)) error(`${where}: ${k}.w må være over 0`);
+    if (door.active != null && door.active !== 1 && door.active !== 2) error(`${where}: active må være 1 (leaf) eller 2 (leaf2)`);
+    const sum = (num(door.leaf?.w) ? door.leaf.w : 0) + (num(door.leaf2?.w) ? door.leaf2.w : 0);
+    if (num(door.leaf?.w) && num(door.leaf2?.w) && Math.abs(sum - g.bay) > 0.05) warn(`${where}: leaf + leaf2 (${fmt(sum)}) er ikke bredden mellom karmene (${fmt(g.bay)}); bladene fyller den likevel, i forholdet ${fmt(door.leaf.w)} : ${fmt(door.leaf2.w)}`);
+  }
+  // the free passage for the figure through the open door
+  let passage;
+  if (variant === 'sliding') {
+    const mount = door.mount ?? (exterior ? 'patio' : 'surface');
+    const slide = door.slide ?? 'from';
+    if (!SLIDING_MOUNTS.includes(mount)) error(`${where}: mount må være ${SLIDING_MOUNTS.map((v) => `«${v}»`).join(', ')}`);
+    if (!SLIDE_DIRECTIONS.includes(slide)) error(`${where}: slide må være ${SLIDE_DIRECTIONS.map((v) => `«${v}»`).join(', ')}`);
+    if (mount === 'patio' && slide === 'both') error(`${where}: en patio-skyvedør har ett fast og ett skyvbart felt – slide «from» eller «to»`);
+    if (door.swing != null && !['in', 'out'].includes(door.swing)) error(`${where}: swing må være «in» eller «out» (siden bladet henger på)`);
+    if (door.hinge != null && !['from', 'to'].includes(door.hinge)) error(`${where}: hinge må være «from» eller «to»`);
+    const clear = o.width - 2 * g.fw;
+    passage = mount === 'patio' ? (o.width - 2 * g.fw - 0.006) / 2 - 0.035 : mount === 'pocket' ? clear - (slide === 'both' ? 0.05 : 0.025) : clear;
+    // the stretch of wall the open leaf needs beside the hole (on each side it slides to)
+    const sides = slide === 'both' ? ['from', 'to'] : [slide];
+    const need = (side) => (slide === 'both' ? clear / 2 : clear) + (mount === 'surface' ? 0.08 : 0.04);
+    for (const side of sides) {
+      if (mount === 'patio') break;
+      const lo = side === 'from' ? o.offset - need(side) : o.offset + o.width;
+      const hi = side === 'from' ? o.offset : o.offset + o.width + need(side);
+      const other = (w.openings || []).find((x) => isObj(x) && x !== o && num(x.offset) && num(x.width) && x.offset < hi - 0.01 && x.offset + x.width > lo + 0.01);
+      const off = lo < -TOL || hi > wi.L + TOL;
+      const what = mount === 'pocket' ? 'lommen i veggen' : 'det åpne bladet';
+      const say = mount === 'pocket' ? error : warn;
+      if (off) say(`${where}: ${what} trenger ${fmt(need(side))} m vegg mot «${side}», men veggen slutter før`);
+      else if (other) say(`${where}: ${what} (mot «${side}») går over ${other.id}`);
+    }
+    if (mount === 'pocket' && wi.t < 0.08) error(`${where}: en lommedør trenger en vegg på minst 0,08 m (denne er ${fmt(wi.t)})`);
+    if (mount === 'surface') {
+      const top = (num(o.sill) ? o.sill : 0) + o.height + 0.1;
+      const h = num(w.height) ? w.height : null;
+      if (h != null && top > h + TOL) warn(`${where}: skinna over døra (til ${fmt(top)}) går over veggen (${fmt(h)})`);
+    }
+  } else if (variant === 'folding') {
+    const slide = door.slide ?? 'from';
+    if (!SLIDE_DIRECTIONS.includes(slide)) error(`${where}: slide må være ${SLIDE_DIRECTIONS.map((v) => `«${v}»`).join(', ')}`);
+    if (door.swing != null && !['in', 'out'].includes(door.swing)) error(`${where}: swing må være «in» eller «out» (siden leddene foldes ut mot)`);
+    if (door.panels != null && !(Number.isInteger(door.panels) && door.panels >= 2 && door.panels <= 24)) error(`${where}: panels må være et heltall 2–24`);
+    // the folded stacks (world/FoldingDoor.js: the zigzag of each stack spans span · cos FOLD_DEG, plus a panel's
+    // thickness), and 2 cm to spare
+    const clear = o.width - 2 * g.fw;
+    const stacks = slide === 'both' ? 2 : 1;
+    passage = clear - stacks * ((clear / stacks) * Math.cos((FOLD_DEG * Math.PI) / 180) + FOLD_T) - 0.02;
+  } else {
+    const narrow = g.bay < 0.71 && !(g.lights.from || g.lights.to);
+    passage = (narrow ? g.bay + 2 * Math.max(0, g.fw - 0.02) : g.bay) - 0.05 * g.leaves.length;
+    if (g.bay < 0.3) error(`${where}: sidefeltene tar hele hullet (det blir ${fmt(g.bay)} m til bladet)`);
+  }
+  if (passage < MIN_PASSAGE) error(`${where}: den frie åpningen gjennom den åpne døra er ${fmt(passage)} m – figuren (Ø 0,6 m) trenger minst ${fmt(MIN_PASSAGE)}`);
 }
 
 /**
@@ -1298,7 +1446,8 @@ export function validateHouse(spec, opts = {}) {
       if (!other && behind) other = behind.id;
       if (!isObj(o.door)) continue;
       const door = o.door;
-      if (!door.hinge || !door.swing) error(`${where}: door må ha hinge («from»/«to») og swing («in»/«out»)`);
+      // a sliding / folding door has no hinge, and its swing (optional) only says which face the leaf hangs on / folds to
+      if (door.variant !== 'sliding' && door.variant !== 'folding' && (!door.hinge || !door.swing)) error(`${where}: door må ha hinge («from»/«to») og swing («in»/«out»)`);
       if (door.openAngleDeg != null && !(door.openAngleDeg > 0 && door.openAngleDeg <= 180)) error(`${where}: openAngleDeg må være mellom 0 og 180`);
       if (door.opensInto != null) {
         if (Array.isArray(o.connects) && !o.connects.includes(door.opensInto)) error(`${where}: opensInto «${door.opensInto}» står ikke i connects`);
@@ -1307,6 +1456,7 @@ export function validateHouse(spec, opts = {}) {
       }
       const g = doorGeometry(w, o);
       if (g.leafW > o.width + TOL) error(`${where}: dørbladet (${fmt(g.leafW)}) er bredere enn hullet (${fmt(o.width)})`);
+      doorTypeChecks({ w, wi, o, g, where, error, warn });
       if (num(door.leaf?.h) && door.leaf.h > o.height + TOL) error(`${where}: dørbladet (${fmt(door.leaf.h)}) er høyere enn hullet (${fmt(o.height)})`);
       const doorEst = isEst(o, 'offset', 'width', 'door');
       // the clear opening stands on floor, not over a hole (on both sides of the wall)
@@ -1317,9 +1467,12 @@ export function validateHouse(spec, opts = {}) {
       const leafRoomId = g.swingIn ? ownerRoom : (door.opensInto ?? other);
       const leafRoom = roomsById.get(leafRoomId);
       const info = { id: o.id, wallId: w.id, room: ownerRoom, leafRoom: leafRoomId ?? null, angle: g.angleDeg, blocked: null, minGuard: null };
-      if (leafRoom && goodRooms.has(leafRoom.id) && physical(leafRoom)) {
+      if (leafRoom && goodRooms.has(leafRoom.id) && physical(leafRoom) && g.leaves.length) {
         const lid = leafRoom.levelId;
-        const res = leafBlocksPassage({ region: leafRoom.polygon, holes: holes.map((h) => h.polygon), guards: guardsOfLevel(lid), leaf: g.leaf });
+        // every open leaf (a double door has two; a sliding door none – it has no swing)
+        const res = g.leaves
+          .map((lf) => leafBlocksPassage({ region: leafRoom.polygon, holes: holes.map((h) => h.polygon), guards: guardsOfLevel(lid), leaf: lf.leaf }))
+          .reduce((a, b) => ({ blocked: a.blocked || b.blocked, minGuard: a.minGuard == null ? b.minGuard : b.minGuard == null ? a.minGuard : Math.min(a.minGuard, b.minGuard) }));
         info.blocked = res.blocked;
         info.minGuard = res.minGuard;
         if (res.blocked) {

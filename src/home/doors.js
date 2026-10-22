@@ -25,21 +25,22 @@ import { basis, MeshBatcher } from '../world/buildKit.js';
 import { mat } from './materials.js';
 import { ring } from './wallkit.js';
 import { Door } from '../world/Door.js';
+import { isDoorType, buildDoorType } from './doortypes.js';
 
-const HALL_DOOR = '#1d1e21';
+export const HALL_DOOR = '#1d1e21';
 /** Holes narrower than this get side karms that collide only with their outer NARROW_KARM (D11: bod-1 can be entered). */
 const NARROW_DOOR = 0.85;
 const NARROW_KARM = 0.02;
 
 /** Name of a room for the door prompt ('ute' and unknown ids: «Ute»). */
-function roomLabel(layout, id) {
+export function roomLabel(layout, id) {
   if (!id) return null;
   if (id === 'ute') return 'Ute';
   return layout?.house?.roomsById?.[id]?.name ?? null;
 }
 
 /** Hardware material of a door (black by default; «brushed-steel» → steel). */
-function hardwareMaterial(M, hw) {
+export function hardwareMaterial(M, hw) {
   const fin = String(hw?.finish ?? 'black');
   if (/steel|stål/i.test(fin)) return mat('steel', hw?.color ?? '#8e8e8c', { roughness: 0.35 });
   if (/^#/.test(fin) && fin.toLowerCase() !== '#1a1a1a') return mat('black-metal', fin, { roughness: 0.35 });
@@ -47,7 +48,7 @@ function hardwareMaterial(M, hw) {
 }
 
 /** Threshold colours { top, front, back, depth } from the data (a plain colour = top, V48). */
-function thresholdOf(door) {
+export function thresholdOf(door) {
   const t = door?.threshold;
   if (!t) return { top: null };
   if (typeof t === 'string') return { top: t };
@@ -55,7 +56,7 @@ function thresholdOf(door) {
 }
 
 /** A threshold material: light / wood tones as oak (the hall door's), grey metal as steel, dark as painted. */
-function thresholdMaterial(M, hex) {
+export function thresholdMaterial(M, hex) {
   if (!hex) return M.threshold;
   const c = new THREE.Color(hex);
   const hsl = {};
@@ -74,6 +75,8 @@ function thresholdMaterial(M, hex) {
  * @returns {{ door: Door, info: object, colliders: THREE.Box3[] }}
  */
 export function buildDoor(ctx, d, { layout, M, batch, batchers }) {
+  // double and sliding doors, glazed leaves and sidelights: doortypes.js (notes/dortyper.md)
+  if (isDoorType(d)) return buildDoorType(ctx, d, { layout, M, batch, batchers });
   const H = layout.house;
   const wall = H?.wallsById?.[d.wallId] ?? layout.wallsById?.[d.wallId] ?? null;
   const hinge = d.hinge === 'to' ? 1 : -1;
@@ -199,8 +202,8 @@ export function buildDoor(ctx, d, { layout, M, batch, batchers }) {
 }
 
 /** Swaps the Door's generic leaf meshes for our own geometry (pivot space; collisions/animation stay Door's). */
-export function replaceLeaf(door, leafGroup) {
-  const leaf = door.leaves[0];
+export function replaceLeaf(door, leafGroup, index = 0) {
+  const leaf = door.leaves[index];
   for (const c of [...leaf.pivot.children]) leaf.pivot.remove(c);
   leaf.pivot.add(leafGroup);
 }
