@@ -250,7 +250,9 @@ class App {
     const top = h('header', { class: 'pb-top' },
       h('div', { class: 'pb-brand' }, 'Planbygger', h('small', {}, 'Interiørspillet')),
       this.nameInput, steps,
-      h('div', { class: 'pb-actions' }, this.checkPill, this.undoBtn, this.redoBtn, this.menuBtn, this.walkBtn));
+      h('div', { class: 'pb-actions' }, this.checkPill, this.undoBtn, this.redoBtn, this.menuBtn,
+        h('button', { class: 'pb-btn', title: 'Meld en feil eller en idé: skjermbilde og én setning, lagret lokalt', onclick: () => this._report() }, 'Meld feil'),
+        this.walkBtn));
 
     this.toolEls = {};
     const tools = h('aside', { class: 'pb-tools' },
@@ -1392,6 +1394,42 @@ class App {
   }
 
   // ---- dialogs
+  /** What is on screen now: the 3D view (rendered once more, so the buffer is filled), else the visible plan canvas. */
+  _screenshot() {
+    try {
+      const v = this.viewer;
+      if (!this.view3d.hidden && v?.renderer) {
+        v.renderer.render(v.scene, v.camera);
+        return v.renderer.domElement.toDataURL('image/jpeg', 0.85);
+      }
+      if (this.canvas?.getBoundingClientRect().width > 0) return this.canvas.toDataURL('image/jpeg', 0.85);
+    } catch (err) {
+      console.warn('[planbygger] skjermbildet feilet', err);
+    }
+    return null;
+  }
+  /** «Meld feil»: a screenshot, one sentence and the state go to the dev server (server/planbygger-feedback.mjs). */
+  async _report() {
+    const image = this._screenshot();
+    const where = !this.view3d.hidden ? `3D (${this.viewer?.mode === 'walk' ? 'går rundt' : 'dukkehus'})` : this.guide ? 'veiviser' : this.stack?.el?.isConnected ? 'stabel' : this.doc ? '2D-editor' : 'startside';
+    const res = await this._dialog('Meld feil eller idé', [
+      { key: 'kind', label: 'Hva', value: 'feil', options: [['feil', 'Feil'], ['ide', 'Idé / forbedring']] },
+      { key: 'text', label: 'Hva skjedde (én setning holder)', value: '', placeholder: 'f.eks. svarte rundinger i gulvet i 2. etasje' },
+    ], 'Lagre');
+    if (!res?.text?.trim()) return;
+    const files = this.gen?.inputs?.map((f) => f.name) ?? this.doc?.levels.map((l) => l.image?.name).filter(Boolean) ?? [];
+    let state = { files, doc: this.doc, questions: this.gen?.res?.questions, answers: this.gen?.answers, report: this.gen?.res?.report, check: this._lastCheck ? { errors: this._lastCheck.errors, warnings: this._lastCheck.warnings } : null };
+    if (JSON.stringify(state).length > 8e6) state = { ...state, report: null };
+    try {
+      const r = await fetch('/api/planbygger/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: res.kind, text: res.text.trim(), where: `${where}${files.length ? ` – ${files.join(', ')}` : ''}`, image, state }) });
+      const out = await r.json();
+      if (!out.ok) throw new Error(out.error);
+      this.toast(`Lagret som ${out.id}${image ? ' med skjermbilde' : ''}. Takk!`);
+    } catch (err) {
+      this.toast(`Kunne ikke lagre meldingen (${err.message}). Den lokale testserveren må kjøre.`, 8);
+    }
+  }
+
   _dialog(title, fields, okText = 'OK') {
     return new Promise((resolve) => {
       const inputs = {};

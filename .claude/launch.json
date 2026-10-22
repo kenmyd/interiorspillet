@@ -45,6 +45,19 @@
         "--strictPort"
       ],
       "port": 5270
+    },
+    {
+      "name": "planbygger-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/planbygger-vite.config.mjs",
+        "--port",
+        "5277",
+        "--strictPort"
+      ],
+      "port": 5277
     }
   ]
 }

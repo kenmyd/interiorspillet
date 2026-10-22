@@ -7,6 +7,7 @@
  *    (server/planbygger-ai/index.mjs). It is imported lazily on the first such request, so Vite starts and the page
  *    works without the SDK and without a key: the status then says available: false. The page may pick the model
  *    (aiRead(..., { model: 'sonnet' })) only with PLANBYGGER_AI_ALLOW_MODEL=1 in the environment (a dev flag).
+ * 3. POST /api/planbygger/feedback stores a «Meld feil» report (server/planbygger-feedback.mjs).
  */
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -22,6 +23,9 @@ const SHIMS = {
 };
 const AI_ROUTE = '/api/planbygger/ai';
 const AI_MODULE = resolve(ROOT, 'server/planbygger-ai/index.mjs');
+const FEEDBACK_ROUTE = '/api/planbygger/feedback';
+const FEEDBACK_MODULE = resolve(ROOT, 'server/planbygger-feedback.mjs');
+let feedbackHandler = null;
 
 /** The AI middleware, or a stand-in that says «not available» when the module cannot be loaded. */
 let aiHandler = null;
@@ -51,6 +55,12 @@ export default function planbyggerNodeShims() {
       return resolve(ROOT, SHIMS[source]);
     },
     configureServer(server) {
+      // «Meld feil»: a screenshot, one sentence and the state, stored locally (server/planbygger-feedback.mjs)
+      server.middlewares.use((req, res, next) => {
+        if ((req.url ?? '').split('?')[0] !== FEEDBACK_ROUTE) return next();
+        (feedbackHandler ??= import(pathToFileURL(FEEDBACK_MODULE).href).then((mod) => mod.createFeedbackHandler({ root: ROOT })))
+          .then((handler) => handler(req, res), next);
+      });
       server.middlewares.use((req, res, next) => {
         const path = (req.url ?? '').split('?')[0];
         if (path !== AI_ROUTE && !path.startsWith(`${AI_ROUTE}/`)) return next();
