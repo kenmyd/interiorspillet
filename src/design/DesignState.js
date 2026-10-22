@@ -1040,8 +1040,14 @@ export class DesignState extends Emitter {
     const orig = originalsOf(this.layout);
     // originals the user never changed follow the data (their saved form is still the one the data gave)
     const revision = stored && isObj(m.specRevision) ? m.specRevision : null;
+    // a level the layout left out (the game without the basement, layout.js withoutBasement): its pieces are skipped
+    // instead of landing on the main floor, and its rooms count as not had, so their originals come back with the level
+    const removed = this.layout?.spec?.removed;
+    const skipLevel = new Set(removed?.levels || []);
+    const skipRoom = new Set(removed?.rooms || []);
     for (const raw of list) {
       if (!isObj(raw)) continue;
+      if (skipLevel.has(raw.level)) continue;
       if (items.size >= LIMITS.items) break; // a corrupt file with 100 000 items must not freeze the tab
       let uid = typeof raw.uid === 'string' && raw.uid ? raw.uid : null;
       if (!uid || items.has(uid)) {
@@ -1054,7 +1060,7 @@ export class DesignState extends Emitter {
       else items.set(uid, normaliseItem(raw, uid, this.layout, { stored }));
     }
     // the rooms whose originals this design has not had yet (a version 1 design: every room but the living room)
-    const had = Array.isArray(m.originalRooms) ? m.originalRooms.filter((r) => typeof r === 'string' && r).map((r) => r.slice(0, 60)) : [LIVING_ROOM];
+    const had = Array.isArray(m.originalRooms) ? m.originalRooms.filter((r) => typeof r === 'string' && r && !skipRoom.has(r)).map((r) => r.slice(0, 60)) : [LIVING_ROOM];
     const hadSet = new Set(had);
     // the originals the save knew (meta.originalUids): one it did not know is new in the data → added, even in a room
     // the save already had; without the list only the rooms count (version 1, a hand-written file)

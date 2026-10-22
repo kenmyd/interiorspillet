@@ -1,6 +1,7 @@
 import { Box3, Vector2, Vector3 } from 'three';
 import roomSpec from '../data/room-spec.json';
 import paletteData from '../data/palette.json';
+import { HOUSE } from '../config.js';
 
 /**
  * Room layout: reads data/room-spec.json and derives typed, world-space values for every module (shell, lighting,
@@ -1409,6 +1410,48 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
   return deepFreeze(layout);
 }
 
-/** The layout of the real room (data/room-spec.json). */
+/** Room-spec collections whose entries belong to a room (roomId; none = the living room). */
+const ROOM_ENTRIES = ['walls', 'ceilings', 'bulkheads', 'builtInLights', 'fixtures', 'furniture', 'builtIns', 'photoCameras', 'lightGroups', 'zones', 'floorOpenings'];
+
+/**
+ * The room spec without the basement (config HOUSE.basement false): only the main level is kept, without the stair,
+ * its hole and its hud room; every entry of a removed room goes, and so do the facades of removed walls, the outside of
+ * the whole house (outsideHouse – the exterior falls back to the living room's terrace, exterior.js) and light groups
+ * no light is left in. Every door from the living room into the rest of the house is closed and locked. The result
+ * names what it left out in `removed: { levels, rooms }` (layout.spec.removed: saved designs skip those pieces, a saved
+ * position counts only in the living room). Pure: the input is not changed.
+ * @param {Object} spec
+ * @returns {Object}
+ */
+export function withoutBasement(spec) {
+  const out = deepClone(spec);
+  const onMain = (e) => (e.levelId ?? MAIN_LEVEL_ID) === MAIN_LEVEL_ID;
+  const gone = new Set((out.rooms || []).filter((r) => !onMain(r) || r.stairId).map((r) => r.id));
+  out.removed = { levels: (out.levels || []).filter((l) => l.id !== MAIN_LEVEL_ID).map((l) => l.id), rooms: [...gone] };
+  out.levels = (out.levels || []).filter((l) => l.id === MAIN_LEVEL_ID);
+  out.rooms = (out.rooms || []).filter((r) => !gone.has(r.id));
+  for (const key of ROOM_ENTRIES) if (Array.isArray(out[key])) out[key] = out[key].filter((e) => !gone.has(e.roomId) && onMain(e));
+  out.floorOpenings = [];
+  out.stairs = [];
+  const wallIds = new Set(out.walls.map((w) => w.id));
+  out.facadeSegments = (out.facadeSegments || []).filter((f) => (f.wallIds || []).every((id) => wallIds.has(id)));
+  delete out.outsideHouse;
+  const usedGroups = new Set(out.builtInLights.map((l) => l.group));
+  out.lightGroups = (out.lightGroups || []).filter((g) => g.roomId || usedGroups.has(g.id));
+  for (const w of out.walls) {
+    if ((w.roomId ?? LIVING_ROOM_ID) !== LIVING_ROOM_ID) continue;
+    for (const o of w.openings || []) {
+      if (!o.door || !(o.connects || []).some((id) => id !== LIVING_ROOM_ID && id !== 'ute')) continue;
+      o.locked = true;
+      o.door.closed = true;
+    }
+  }
+  return out;
+}
+
+/** The layout of the real room (data/room-spec.json): the whole house. */
 export const layout = buildLayout();
 export default layout;
+
+/** The house the game shows (config HOUSE): the whole house, or without the basement (withoutBasement). */
+export const gameLayout = HOUSE.basement ? layout : buildLayout(withoutBasement(roomSpec));
