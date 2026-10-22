@@ -1,0 +1,84 @@
+{
+ "house": "hus5",
+ "file": "fasade1.avif",
+ "part": null,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 766,
+  "sha256": "05c4cb2d00b4c5d0fb774838559d5d2409174628a9d593bd364f13deb6d43fe1"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade1.avif"
+ },
+ "source": {
+  "file": "fasade1.avif",
+  "part": null,
+  "width": 1670,
+  "height": 800,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "mixed",
+  "storeys": 1,
+  "windows": [
+   {
+    "bbox": [
+     0.086,
+     0.595,
+     0.206,
+     0.655
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.725,
+     0.598,
+     0.754,
+     0.658
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.496,
+     0.512,
+     0.569,
+     0.764
+    ],
+    "kind": "door"
+   }
+  ],
+  "notes": "Fasaden viser to skråtak som vender mot en lavere midtdel med mørk kledning; fasaden alene avgjør ikke takform. Skorstein på høyre side. Ett plan. Dør med sidelys."
+ },
+ "usage": {
+  "input_tokens": 3455,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 725,
+  "output_tokens_details": {
+   "thinking_tokens": 522
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000708,
+ "ms": 5120,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:18:39.265Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

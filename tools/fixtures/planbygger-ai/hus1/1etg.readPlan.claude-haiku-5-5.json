@@ -1,6 +1,7 @@
 {
  "house": "hus1",
- "file": "plantegninger/hus1/1etg.png",
+ "file": "1etg.png",
+ "part": null,
  "task": "readPlan",
  "promptVersion": "pb-ai-4",
  "model": "claude-haiku-5-5",
@@ -9,7 +10,7 @@
  "image": {
   "width": 1195,
   "height": 954,
-  "sha256": "f8326c669a8fead4b9b2c3cc8f1f6da166caa20cfe40e75d8a363d1297fc385d"
+  "sha256": "fe0854d8e3df2aba5c73214c0e4086e4f4f83676f1239f53eadeca0fb3e4bff0"
  },
  "marks": [
   {
@@ -47,17 +48,17 @@
    "id": "2",
    "kind": "room",
    "at": [
-    0.7266,
-    0.1224
+    0.7211,
+    0.1292
    ],
    "drawnAt": [
-    0.7266,
-    0.1224
+    0.7211,
+    0.1292
    ],
    "ref": 1,
    "polygon": [
     [
-     0.6749,
+     0.6748,
      0.0644
     ],
     [
@@ -66,11 +67,11 @@
     ],
     [
      0.9657,
-     0.1882
+     0.1881
     ],
     [
-     0.6749,
-     0.1882
+     0.6748,
+     0.1881
     ]
    ]
   },
@@ -78,12 +79,12 @@
    "id": "3",
    "kind": "room",
    "at": [
-    0.4831,
-    0.3481
+    0.4832,
+    0.348
    ],
    "drawnAt": [
-    0.4831,
-    0.3481
+    0.4832,
+    0.348
    ],
    "ref": 2,
    "polygon": [
@@ -113,11 +114,11 @@
     ],
     [
      0.6743,
-     0.3654
+     0.3657
     ],
     [
      0.6643,
-     0.3654
+     0.3657
     ],
     [
      0.6643,
@@ -164,17 +165,17 @@
    "id": "5",
    "kind": "room",
    "at": [
-    0.8221,
-    0.6147
+    0.8224,
+    0.6146
    ],
    "drawnAt": [
-    0.8221,
-    0.6147
+    0.8224,
+    0.6146
    ],
    "ref": 4,
    "polygon": [
     [
-     0.6743,
+     0.6747,
      0.4379
     ],
     [
@@ -183,11 +184,11 @@
     ],
     [
      0.9657,
-     0.9215
+     0.9214
     ],
     [
-     0.6743,
-     0.9215
+     0.6747,
+     0.9214
     ]
    ]
   },
@@ -214,14 +215,14 @@
     ],
     [
      0.6643,
-     0.8595
+     0.8596
     ],
     [
-     0.3279,
-     0.8595
+     0.328,
+     0.8596
     ],
     [
-     0.3279,
+     0.328,
      0.9214
     ],
     [
@@ -260,11 +261,11 @@
    "id": "C",
    "kind": "opening",
    "at": [
-    0.4285,
+    0.4284,
     0.1146
    ],
    "drawnAt": [
-    0.4285,
+    0.4284,
     0.0675
    ],
    "ref": "o3"
@@ -291,7 +292,7 @@
    ],
    "drawnAt": [
     0.8054,
-    0.2223
+    0.2222
    ],
    "ref": "o5"
   },
@@ -442,7 +443,7 @@
    "id": "S",
    "kind": "opening",
    "at": [
-    0.9747,
+    0.9748,
     0.3475
    ],
    "drawnAt": [
@@ -455,7 +456,7 @@
    "id": "T",
    "kind": "opening",
    "at": [
-    0.9747,
+    0.9748,
     0.6551
    ],
    "drawnAt": [
@@ -465,8 +466,18 @@
    "ref": "o18"
   }
  ],
+ "unmarked": [],
  "hints": {
-  "fileName": "1etg.png"
+  "fileName": "1etg.png",
+  "levelName": "1. etasje"
+ },
+ "source": {
+  "file": "1etg.png",
+  "part": null,
+  "width": 1195,
+  "height": 954,
+  "bbox": null,
+  "photo": null
  },
  "response": {
   "levelTitle": null,
@@ -475,8 +486,8 @@
    {
     "mark": "1",
     "at": [
-     0.27,
-     0.37
+     0.189,
+     0.277
     ],
     "name": "SOV",
     "area": 14.8,
@@ -485,18 +496,18 @@
    {
     "mark": "2",
     "at": [
-     0.92,
-     0.1
+     0.721,
+     0.129
     ],
-    "name": "BOD",
-    "area": 4.4,
-    "kind": "storage"
+    "name": "",
+    "area": null,
+    "kind": "other"
    },
    {
     "mark": "3",
     "at": [
-     0.53,
-     0.31
+     0.483,
+     0.348
     ],
     "name": "HALL/TRAPP",
     "area": 15.9,
@@ -505,8 +516,8 @@
    {
     "mark": "4",
     "at": [
-     0.85,
-     0.28
+     0.862,
+     0.254
     ],
     "name": "VASK",
     "area": 5.5,
@@ -515,8 +526,8 @@
    {
     "mark": "5",
     "at": [
-     0.8,
-     0.63
+     0.822,
+     0.615
     ],
     "name": "KJØKKEN",
     "area": 16.9,
@@ -525,54 +536,64 @@
    {
     "mark": "6",
     "at": [
-     0.5,
-     0.73
+     0.207,
+     0.666
     ],
     "name": "STUE",
     "area": 29.1,
     "kind": "living"
    }
   ],
-  "labels": [],
+  "labels": [
+   {
+    "text": "BOD",
+    "area": 4.4,
+    "kind": "storage",
+    "at": [
+     0.87,
+     0.105
+    ]
+   }
+  ],
   "dimensions": [],
   "openings": [
    {
     "mark": "A",
     "at": [
      0.799,
-     0.047
+     0.084
     ],
     "kind": "window"
    },
    {
     "mark": "B",
     "at": [
-     0.18,
-     0.047
+     0.182,
+     0.084
     ],
     "kind": "window"
    },
    {
     "mark": "C",
     "at": [
-     0.429,
-     0.1
+     0.428,
+     0.068
     ],
     "kind": "window"
    },
    {
     "mark": "D",
     "at": [
-     0.6,
-     0.1
+     0.598,
+     0.146
     ],
     "kind": "door"
    },
    {
     "mark": "E",
     "at": [
-     0.8,
-     0.2
+     0.805,
+     0.222
     ],
     "kind": "door"
    },
@@ -580,7 +601,7 @@
     "mark": "F",
     "at": [
      0.544,
-     0.5
+     0.467
     ],
     "kind": "double-door"
    },
@@ -588,7 +609,7 @@
     "mark": "G",
     "at": [
      0.502,
-     0.9
+     0.84
     ],
     "kind": "double-door"
    },
@@ -596,7 +617,7 @@
     "mark": "H",
     "at": [
      0.132,
-     0.943
+     0.978
     ],
     "kind": "window"
    },
@@ -604,7 +625,7 @@
     "mark": "J",
     "at": [
      0.232,
-     0.943
+     0.978
     ],
     "kind": "window"
    },
@@ -612,7 +633,7 @@
     "mark": "K",
     "at": [
      0.77,
-     0.943
+     0.978
     ],
     "kind": "window"
    },
@@ -620,30 +641,30 @@
     "mark": "L",
     "at": [
      0.87,
-     0.943
+     0.978
     ],
     "kind": "window"
    },
    {
     "mark": "M",
     "at": [
-     0.02,
-     0.35
+     0.053,
+     0.347
     ],
     "kind": "window"
    },
    {
     "mark": "N",
     "at": [
-     0.02,
-     0.64
+     0.053,
+     0.639
     ],
     "kind": "window"
    },
    {
     "mark": "P",
     "at": [
-     0.34,
+     0.313,
      0.43
     ],
     "kind": "door"
@@ -651,32 +672,32 @@
    {
     "mark": "Q",
     "at": [
-     0.67,
-     0.64
+     0.649,
+     0.647
     ],
     "kind": "sliding-door"
    },
    {
     "mark": "R",
     "at": [
-     0.73,
-     0.27
+     0.734,
+     0.285
     ],
     "kind": "door"
    },
    {
     "mark": "S",
     "at": [
-     0.975,
-     0.35
+     0.95,
+     0.338
     ],
     "kind": "window"
    },
    {
     "mark": "T",
     "at": [
-     0.975,
-     0.65
+     0.95,
+     0.655
     ],
     "kind": "window"
    }
@@ -685,112 +706,78 @@
   "stair": {
    "present": true,
    "at": [
-    0.39,
-    0.24
+    0.385,
+    0.25
    ],
    "type": "straight",
-   "up": "unknown"
+   "up": "elsewhere"
   },
   "ceiling": [],
   "furniture": [
    {
     "kind": "bed",
     "at": [
-     0.26,
-     0.4
+     0.189,
+     0.277
     ]
    },
    {
     "kind": "sofa",
     "at": [
      0.1,
-     0.79
-    ]
-   },
-   {
-    "kind": "table",
-    "at": [
-     0.18,
-     0.78
-    ]
-   },
-   {
-    "kind": "sofa",
-    "at": [
-     0.26,
-     0.7
-    ]
-   },
-   {
-    "kind": "sofa",
-    "at": [
-     0.26,
-     0.82
-    ]
-   },
-   {
-    "kind": "stove",
-    "at": [
-     0.255,
-     0.53
-    ]
-   },
-   {
-    "kind": "stove",
-    "at": [
-     0.937,
-     0.45
-    ]
-   },
-   {
-    "kind": "kitchen",
-    "at": [
-     0.85,
-     0.37
+     0.62
     ]
    },
    {
     "kind": "table",
     "at": [
      0.8,
-     0.83
+     0.72
+    ]
+   },
+   {
+    "kind": "stove",
+    "at": [
+     0.251,
+     0.529
+    ]
+   },
+   {
+    "kind": "bathtub",
+    "at": [
+     0.787,
+     0.398
     ]
    },
    {
     "kind": "toilet",
     "at": [
-     0.787,
-     0.4
-    ]
-   },
-   {
-    "kind": "washbasin",
-    "at": [
      0.933,
-     0.23
+     0.398
     ]
    }
   ],
-  "notes": "Ingen mål eller høydeangivelser på planen; trappen går opp til annen etasje."
+  "notes": "Planen viser ingen høydeangivelser eller målsatte mål; trappen går ned mot underetasje."
  },
  "usage": {
-  "input_tokens": 7278,
+  "input_tokens": 7297,
   "cache_creation_input_tokens": 0,
   "cache_read_input_tokens": 0,
   "cache_creation": {
    "ephemeral_5m_input_tokens": 0,
    "ephemeral_1h_input_tokens": 0
   },
-  "output_tokens": 3942,
+  "output_tokens": 2903,
   "output_tokens_details": {
-   "thinking_tokens": 2800
+   "thinking_tokens": 1833
   },
   "service_tier": "standard",
   "inference_geo": "global",
   "speed": "standard"
  },
- "cost": 0.002699,
- "ms": 18856,
+ "cost": 0.002181,
+ "ms": 13742,
  "stopReason": "end_turn",
- "recorded": "2026-10-21T18:02:24.494Z"
+ "recorded": "2026-10-21T22:13:45.079Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
 }

@@ -1,6 +1,7 @@
 {
  "house": "hus7",
- "file": "plantegninger/_png/hus7/garasje-plan-snitt-fasade.png",
+ "file": "garasje-plan-snitt-fasade.pdf",
+ "part": null,
  "task": "classify",
  "promptVersion": "pb-ai-4",
  "model": "claude-haiku-5-5",
@@ -15,6 +16,14 @@
  "unmarked": [],
  "hints": {
   "fileName": "garasje-plan-snitt-fasade.pdf"
+ },
+ "source": {
+  "file": "garasje-plan-snitt-fasade.pdf",
+  "part": null,
+  "width": 4771,
+  "height": 3332,
+  "bbox": null,
+  "photo": null
  },
  "response": {
   "drawings": [
@@ -132,5 +141,7 @@
  "cost": 0.001256,
  "ms": 10662,
  "stopReason": "end_turn",
- "recorded": "2026-10-21T18:53:32.403Z"
+ "recorded": "2026-10-21T18:53:32.403Z",
+ "via": "tools/planbygger-ai-fixtures.mjs",
+ "upgraded": "2026-10-21T22:23:37.619Z"
 }

@@ -12,11 +12,15 @@
  *     skylights: [{ x0, y0, x1, y1, sides, score }]                                    dashed rectangles inside
  *     stairs:    [{ bbox: [x0, y0, x1, y1], axis: 'x'|'y', treads, kind: 'straight'|'quarter-turn'|'half-turn'|
  *                   'unknown', flights, winders, lines, pivot? }]                     axis = the run of the main flight
+ *     separators: [{ a: [x, y], b: [x, y] }]       the dash-dot lines between open zones (a hall and a TV room): they
+ *                   split rooms (regions.js findRooms(walls, { separators })) and are never walls
  *     stats:     { darkThreshold, paper, ink, coreRadius, minRun, timings, cleaned?, clean?, autoWallTone?, upsampled?,
  *                  rotated? },
- *     debug:     { dark, core, pieces, outside, thin, stairInk }                       rasters and raw pieces
+ *     debug:     { dark, core, pieces, outside, separatorLines, thin, stairInk }       rasters, raw pieces, the dashed
+ *                                                                                    lines the separator search judged
  *   }
- *   The result is plain data (the worker posts it): walls, openings, skylights and stairs all go through postMessage.
+ *   The result is plain data (the worker posts it): walls, openings, skylights, stairs and separators all go through
+ *   postMessage.
  *
  * Scope (v1): plans with thick dark walls drawn axis-parallel (the style of Floorplanner / Planner 5D / magicplan
  * exports and most estate-agent plans), doors as quarter arcs, windows as thin lines inside the wall. Text,
@@ -33,13 +37,16 @@
  *   5. collinear fragments merged, ends snapped into the perpendicular walls (L, T and X joints)
  *   6. gaps between collinear pieces and from a free end to the next wall are examined: a quarter arc of dark dots or
  *      a line → door (hinge and swing side from the best arc), lines inside the band → window (exterior wall) or
- *      opening (interior wall), an empty short gap → opening
+ *      opening (interior wall), an empty short gap → opening – only for a piece that hangs on the house's wall network
+ *      at its other end; a long gap drawn with dashes only stays open (a separator candidate)
  *   7. pieces not connected to the main wall network are dropped (furniture, labels), exterior walls marked by a flood
  *      fill from the image border (grey walls: when the dark pass finds almost nothing, the whole detection is run once
  *      more on the grey band with the most long wall runs, before anything else is spent)
  *   8. symbols in the thin ink (the dark pixels that are not wall), only in the box of the rooms the walls enclose:
- *      skylights = dashed rectangles, stairs = ladders of evenly spaced parallel treads and fans of winders radiating
- *      from a point; a door kept on a weak arc over a drawn window becomes that window when the arc lies on a stair
+ *      skylights = dashed rectangles, stairs = ladders of evenly spaced parallel treads (followed on in dashed treads)
+ *      and fans of winders radiating from a point, and stairs winding round a narrow newel (every tread a winder); a
+ *      door kept on a weak arc over a drawn window becomes that window when the arc lies on a stair; separators =
+ *      dash-dot lines from a wall end to a wall end between open zones
  * Before 1: options.rotate straightens a skewed plan, options.clean runs the walls' cleaner (clean.js), and a plan
  * under minPxPerM is detected on an upsampled copy; the result comes back in the straightened, original-size frame.
  * Not walls: dashed lines (a roof edge, «plan himling», a beam) and hatching (deck boards, wood floors, tile grids)
@@ -406,6 +413,7 @@ export function detectPlan(img, options = {}) {
       openings: r.openings.map((op) => ({ ...op, from: op.from * k, to: op.to * k, leaf: op.leaf == null ? null : op.leaf * k, ...(op.leaf2 != null ? { leaf2: op.leaf2 * k } : {}) })),
       skylights: r.skylights.map((b) => ({ ...b, x0: b.x0 * k, y0: b.y0 * k, x1: b.x1 * k, y1: b.y1 * k })),
       stairs: r.stairs.map((st) => scaleStair(st, k)),
+      separators: (r.separators || []).map((s) => ({ a: [s.a[0] * k, s.a[1] * k], b: [s.b[0] * k, s.b[1] * k] })),
       stats: { ...r.stats, upsampled: f },
     };
   }
@@ -421,9 +429,14 @@ export function detectPlan(img, options = {}) {
   // with a wall tone: «dark» is the band, and the clean-profile tests only need paper lighter than the band
   const darkT = tone ? Math.min(tone[0], 255) : o.darkThreshold ?? autoDarkThreshold(hist, { firstValley: !o._scaled });
   const isWall = tone ? (v) => v >= tone[0] && v <= tone[1] : (v) => v < darkT;
+  // the walls' ink: the black peak, or with a tone the most common grey of the band – the fill of a light grey wall
+  // between its darker outlines (hus9, hus4), not the band's middle, so the thickness integrated across a wall
+  // (refine) reaches both outlines and the window frame lines at its faces lie in its band
   let ink = 0;
-  if (tone) ink = Math.round((tone[0] + tone[1]) / 2);
-  else for (let i = 0; i < 60; i++) if (hist[i] > hist[ink]) ink = i;
+  if (tone) {
+    ink = tone[0];
+    for (let i = tone[0]; i <= tone[1]; i++) if (hist[i] > hist[ink]) ink = i;
+  } else for (let i = 0; i < 60; i++) if (hist[i] > hist[ink]) ink = i;
   const dark = raster(grey.w, grey.h);
   for (let i = 0; i < grey.data.length; i++) dark.data[i] = isWall(grey.data[i]) ? 1 : 0;
   timings.mask = now();
@@ -505,7 +518,8 @@ export function detectPlan(img, options = {}) {
   timings.joints = now();
 
   // ---- 6. gaps → openings
-  const ctx = { grey, core, darkT, isWall, paper, ink, ppm, o };
+  // dashGaps: the gaps joinGaps found drawn with dashed lines only and left open – separator candidates (step 8)
+  const ctx = { grey, core, darkT, isWall, paper, ink, ppm, o, dashGaps: [] };
   const openings = [];
   segs = joinGaps(segs, openings, ctx, tolC, tolT, tolJ);
   snapJoints(segs, tolJ);
@@ -575,6 +589,8 @@ export function detectPlan(img, options = {}) {
   const pad = 0.1 * ppm;
   const onStair = (p) => stairs.some((st) => p[0] >= st.bbox[0] - pad && p[0] <= st.bbox[2] + pad && p[1] >= st.bbox[1] - pad && p[1] <= st.bbox[3] + pad);
   ops = ops.flatMap((op) => (op.weak && onStair(op.weak.at) ? op.weak.alt.map((x) => ({ ...x, seg: op.seg })) : [op]));
+  // the dash-dot lines that close an open zone between two wall ends: room separators, never walls
+  const { separators, tried: separatorLines } = findSeparators(sym.thin, sym.box, walls, outside, ppm, { tolC, tolJ, maxWallPx, gaps: ctx.dashGaps });
   timings.symbols = now();
 
   // classify the line symbols now that we know which walls are exterior
@@ -623,12 +639,14 @@ export function detectPlan(img, options = {}) {
     openings: outOpenings,
     skylights,
     stairs,
+    separators,
     stats: { darkThreshold: darkT, wallTone: tone, paper, ink, coreRadius: r, minRun, pieces: pieces.length, timings },
     debug: {
       dark,
       core,
       pieces,
       outside,
+      separatorLines,
       get thin() {
         return uncrop(sym.thin, sym.box, grey.w, grey.h);
       },
@@ -773,8 +791,9 @@ function bandSymbol(ctx, axis, c, t, s0, s1) {
   let inkSum = 0;
   const x0 = Math.ceil(s0 + 1);
   const x1 = Math.floor(s1 - 1);
-  if (x1 <= x0) return { lines: 0, dashed: 0, darkShare: 0, wallCols: 0, ink: 0, hatched: false };
+  if (x1 <= x0) return { lines: 0, dashed: 0, dashedOnly: false, darkShare: 0, wallCols: 0, ink: 0, hatched: false };
   const colDark = new Uint16Array(x1 - x0 + 1);
+  const colMin = new Float32Array(x1 - x0 + 1).fill(255);
   // a row along the wall: its share of ink and its breaks (light runs of 3 px or more) – drawn lines break only between
   // the parts of a gap (a door beside a window, a label), a dashed line (a roof edge, «plan himling», a beam) every few
   // decimetres: at least 3 breaks and 1.5 per metre
@@ -798,6 +817,7 @@ function bandSymbol(ctx, axis, c, t, s0, s1) {
           darkPx++;
           colDark[s - x0]++;
         }
+        if (v < colMin[s - x0]) colMin[s - x0] = v;
         inkSum += Math.max(0, paper - v);
         total++;
       }
@@ -810,6 +830,44 @@ function bandSymbol(ctx, axis, c, t, s0, s1) {
     const r = rowOf(a, true);
     if (r.line) lines++;
     else if (r.dash) dashed++;
+  }
+  // a dashed line finer than the rows see (the 1–3 px gaps of a dash-dot beam under ~90 px/m, blurred further on an
+  // upsampled copy), in a gap longer than a passage: the band's darkest pixel per column rises above the middle between
+  // the dashes' ink and the paper at least 3 times and 3 times per metre – across the whole band at once, so no solid
+  // line runs through it (a window's glass, a threshold bar: every column dark) –, regularly: dashes up to 60 cm, breaks
+  // up to 20 cm (not a door leaf or window the cleaner broke where it took the floor's hatching, hus4, nor the
+  // furniture and hatching of a scanned drawing, hus6). Its line rows are dashes
+  if (lines > 0 && x1 - x0 > ctx.o.maxPlainOpening * ppm) {
+    const sorted = Float32Array.from(colMin).sort();
+    const inkC = sorted[Math.floor(0.1 * sorted.length)];
+    if (inkC <= paper - 80) {
+      const mid = (inkC + paper) / 2;
+      let breaks = 0;
+      let runL = 0;
+      let runD = 0;
+      let started = false;
+      let regular = true;
+      for (const v of colMin) {
+        if (v >= mid) {
+          if (runD > 0.6 * ppm) regular = false;
+          runD = 0;
+          if (started) runL++;
+        } else {
+          if (runL) {
+            breaks++;
+            if (runL > 0.2 * ppm) regular = false;
+          }
+          runL = 0;
+          runD++;
+          started = true;
+        }
+      }
+      if (runD > 0.6 * ppm) regular = false;
+      if (regular && breaks >= 3 && breaks >= 3 * ((x1 - x0) / ppm)) {
+        dashed += lines;
+        lines = 0;
+      }
+    }
   }
   // hatching (deck boards, a wood floor, stair treads): lines along the wall in the strips beyond BOTH faces too – the
   // band's lines are then the hatching running through, not a window
@@ -829,37 +887,51 @@ function bandSymbol(ctx, axis, c, t, s0, s1) {
   const rows = a1 - a0 + 1;
   let wallCols = 0;
   for (const c of colDark) if (c >= Math.max(2, rows / 3)) wallCols++;
-  return { lines: hatched ? 0 : lines, dashed, darkShare: total ? darkPx / total : 0, wallCols: wallCols / colDark.length, ink: total ? inkSum / total : 0, hatched };
+  // dashedOnly: the band is drawn with dashed lines and no solid one (a beam, a roof edge) – no sliding leaf either
+  return { lines: hatched ? 0 : lines, dashed, dashedOnly: lines === 0 && dashed > 0, darkShare: total ? darkPx / total : 0, wallCols: wallCols / colDark.length, ink: total ? inkSum / total : 0, hatched };
 }
 
 /**
  * Best door arc in a gap: hinge positions along the gap, both directions along the wall, both sides, radii from
- * doorMin to min(doorMax, gap). A point of the arc is drawn when a pixel within 1.5 px is clearly darker than the paper
- * and is not wall; points that fall into a wall make the arc impossible.
+ * doorMin to min(doorMax, gap). In a gap under doorMin / 0.6 also from 60 % of the gap (at least 45 cm): a leaf drawn
+ * shorter than its hole (hus8's terrace door, 0.53 m in a 0.8 m hole at 36 px/m) is still the door – when the arc is
+ * clearly drawn (75 %, or 60 % with its leaf), so tiles or a label under a passage do not make a small door. A point of
+ * the arc is drawn when a pixel within 1.5 px is clearly darker than the paper and is not wall; points that fall into a
+ * wall make the arc impossible.
  */
 function findArc(ctx, seg, g0, g1) {
   const { ppm, o } = ctx;
   const gap = g1 - g0;
   const rMin = o.doorMin * ppm;
+  const rShort = Math.max(0.45 * ppm, Math.min(rMin, 0.6 * gap));
   const rMax = Math.min(o.doorMax * ppm, gap + 2);
-  if (rMax < rMin) return null;
+  if (rMax < rShort) return null;
   const arcAt = arcProbe(ctx, seg, o.arcScore - 0.15);
   let best = null;
+  let short = null;
   const stepH = Math.max(1, Math.round(0.02 * ppm));
   const stepR = Math.max(1, Math.round(0.025 * ppm));
+  // the radii: from doorMin up, and the short leaves under it
+  const radii = [];
+  for (let rad = rMin; rad <= rMax + 0.01; rad += stepR) radii.push(rad);
+  for (let rad = rMin - stepR; rad >= rShort - 0.01; rad -= stepR) radii.push(rad);
   for (const dirSign of [1, -1]) {
     for (let h = g0; h <= g1 + 0.01; h += stepH) {
-      for (let rad = rMin; rad <= rMax + 0.01; rad += stepR) {
+      for (const rad of radii) {
         const tip = h + dirSign * rad;
         if (tip < g0 - 2 || tip > g1 + 2) continue;
         for (const side of [1, -1]) {
           const r = arcAt(h, rad, dirSign, side);
           if (!r) continue;
-          if (!best || r.score > best.score + 1e-9 || (Math.abs(r.score - best.score) < 1e-9 && rad > best.rad)) best = r;
+          const better = (b) => !b || r.score > b.score + 1e-9 || (Math.abs(r.score - b.score) < 1e-9 && rad > b.rad);
+          if (rad < rMin - 0.01) {
+            if (better(short)) short = r;
+          } else if (better(best)) best = r;
         }
       }
     }
   }
+  if (short && (short.arc >= 0.75 || (short.arc >= o.arcScore && short.leaf >= 0.5)) && (!best || best.arc < o.arcScore || short.score > best.score + 1e-9)) return short;
   return best;
 }
 
@@ -950,7 +1022,9 @@ function findArcAt(ctx, seg, h, dirSign, sides, rLo, rHi) {
  * A sliding door in a gap: its leaf (one or two) is drawn as thin lines along the wall that cover only part of the
  * gap from one jamb – a pocket, or two leaves from opposite jambs overlapping in the middle – often with an arrow; a
  * window's lines run from jamb to jamb. Rows of the band whose longest ink run (2 cm breaks bridged) covers 25–80 % of
- * the gap and touches exactly one jamb are leaf rows, unless the run is wall core (a wall stub, not a drawn line).
+ * the gap, is 35 cm long or more and touches exactly one jamb are leaf rows, unless the run is wall core as thick as
+ * the wall (a wall stub, not a drawn line): a leaf drawn as a black bar (hus6: four leaves, two stacked at each jamb)
+ * is core too, but at most 60 % of the wall's thickness.
  * @returns {{ leaves: number, leaf: number, end: 0|1, rows: number, share: number } | null}  leaf = longest run, px
  */
 function slidingLeaf(ctx, seg, p, q) {
@@ -991,14 +1065,28 @@ function slidingLeaf(ctx, seg, p, q) {
     const share = (best[1] - best[0] + 1) / n;
     const atStart = best[0] - x0 <= near;
     const atEnd = x1 - best[1] <= near;
-    if (share < 0.25 || share > 0.8 || atStart === atEnd) continue;
+    // (a leaf of 60 cm or more may cover less than a quarter of a wide opening: four leaves stacked two and two; and
+    // none is under 35 cm – the edge of a bath, a rug or a desk at the wall is: hus9)
+    const run = best[1] - best[0] + 1;
+    if ((share < 0.25 && !(share >= 0.18 && run >= 0.6 * ppm)) || share > 0.8 || run < 0.35 * ppm || atStart === atEnd) continue;
     let coreHits = 0;
     let probes = 0;
+    let coreT = 0;
+    const inner = 0.1 * (best[1] - best[0]);
     for (let s = best[0]; s <= best[1]; s += 2) {
       probes++;
-      if (seg.axis === H ? isCore(s, a) : isCore(a, s)) coreHits++;
+      const at = (k) => (seg.axis === H ? isCore(s, k) : isCore(k, s));
+      if (!at(a)) continue;
+      coreHits++;
+      // the core's thickness across the band, away from the jamb (the wall's own end there is as thick as the wall)
+      if (s - best[0] < inner || best[1] - s < inner) continue;
+      let lo = a;
+      let hi = a;
+      while (lo > a0 - 2 && at(lo - 1)) lo--;
+      while (hi < a1 + 2 && at(hi + 1)) hi++;
+      coreT = Math.max(coreT, hi - lo + 1);
     }
-    if (coreHits > 0.5 * probes) continue;
+    if (coreHits > 0.5 * probes && coreT > 0.6 * seg.t) continue;
     rows.push({ a, r0: best[0], r1: best[1], end: atStart ? 0 : 1, share });
   }
   if (!rows.length) return null;
@@ -1089,7 +1177,7 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
         const d = smallDouble(seg, p, q, windowDrawn);
         if (d) return [double(d[0], d[1])];
       }
-      const sl = len >= 0.6 * ppm ? slidingLeaf(ctx, seg, p, q) : null;
+      const sl = len >= 0.6 * ppm && !sym.dashedOnly ? slidingLeaf(ctx, seg, p, q) : null;
       if (sl && slidingOk(sl, sym, len)) return [{ s0: p, s1: q, type: 'door', variant: 'sliding', hinge: sl.end ? 's1' : 's0', side: 0, leaf: sl.leaf, score: sl.share, symbol: { sliding: sl.rows, leaves: sl.leaves, lines: sym.lines, arc: arc?.arc ?? 0 } }];
       if (sym.lines >= 1) return [{ s0: p, s1: q, type: 'symbol', side: 0, score: sym.lines, symbol: { lines: sym.lines, arc: arc?.arc ?? 0 } }];
       if (len <= o.maxPlainOpening * ppm) return [{ s0: p, s1: q, type: 'opening', side: 0, score: 0, symbol: { lines: 0, arc: arc?.arc ?? 0, ...(sym.dashed ? { dashed: sym.dashed } : {}) } }];
@@ -1099,8 +1187,9 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
     // a weak arc over a drawn window (under 75 % drawn, or under 85 % with no leaf: a door band in some styles is drawn
     // like a window, hus8): furniture by the glass (an armchair, a shower tray, a dashed box) and stair winders sit
     // somewhere along it, a door fills its hole – it is a door only when nothing is left for a sidelight and its leaf
-    // is drawn or most of the arc is; no double door from it
-    const weakHere = windowDrawn && weak(arc);
+    // is drawn or most of the arc is; no double door from it. The same over any line in the band when no leaf is drawn
+    // (a window whose glass the cleaner took: hus9, the flowers of a rug by it make the arc)
+    const weakHere = weak(arc) && (windowDrawn || (sym.lines >= 1 && arc.leaf < 0.25));
     const r2 = weakHere ? null : secondLeaf(seg, arc, p, q, windowDrawn);
     if (r2) return [double(arc, r2)];
     const a = arc.dirSign > 0 ? arc.h : arc.h - arc.rad;
@@ -1140,13 +1229,21 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
     const sym = bandSymbol(ctx, seg.axis, seg.c, seg.t, g0, g1);
     // the wall goes on (a dark piece the runs missed, or a thinner wall in the same line)
     if (sym.darkShare > 0.45 || sym.wallCols > 0.8) return { join: true, ops: [] };
-    if (gap > maxO && sym.lines < 1) return null; // only a drawn glass wall / row of windows may be that long
+    // a long gap drawn with dashes only (a beam between open zones): no opening, and a separator candidate – also where
+    // its dashes are too fine for the thin-ink search (under ~45 px/m)
+    if (sym.dashedOnly && gap > o.maxPlainOpening * ppm) ctx.dashGaps.push({ axis: seg.axis, c: seg.c, s0: g0, s1: g1 });
+    // only a drawn glass wall / row of windows – or a wide sliding door (two leaves drawn from the jambs) – may be that
+    // long
+    if (gap > maxO && sym.lines < 1) {
+      const sl = sym.dashedOnly ? null : slidingLeaf(ctx, seg, g0, g1);
+      if (!(sl && sl.leaves === 2 && slidingOk(sl, sym, gap))) return null;
+    }
     // an empty long gap is no opening – unless a door (an arc, a sliding leaf) is drawn in it, and the door fills it:
     // a door arc somewhere in a long empty stretch is furniture (a corner bath) near a wall end
     const longEmpty = sym.lines < 1 && gap > o.maxPlainOpening * ppm;
     if (longEmpty) {
       const arc = arcOf(seg, g0, g1);
-      const sl = !arc || arc.arc < o.arcScore ? slidingLeaf(ctx, seg, g0, g1) : null;
+      const sl = (!arc || arc.arc < o.arcScore) && !sym.dashedOnly ? slidingLeaf(ctx, seg, g0, g1) : null;
       if ((!arc || arc.arc < o.arcScore) && !(sl && slidingOk(sl, sym, gap))) return null;
     }
     const ops = [];
@@ -1158,10 +1255,10 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
     return { join: true, ops };
   };
 
-  // an opening with nothing drawn in it – an empty gap, or a «sliding door» of one leaf line in an empty band (the
-  // edge of a TV or a shelf beside the gap draws the same) – is no evidence of its own: it joins only a piece that hangs
-  // on the wall network at its other end ((b), (c))
-  const bare = (op) => (op.type === 'opening' && !(op.symbol?.lines > 0)) || (op.variant === 'sliding' && !(op.symbol?.lines > 0) && op.symbol?.sliding < 2);
+  // an opening with nothing drawn in it – an empty gap, or a «sliding door» of one leaf line (1–2 rows) in an empty band
+  // (the edge of a TV, a shelf or a bed cover beside the gap draws the same: hus9) – is no evidence of its own: it joins
+  // only a piece that hangs on the wall network at its other end ((b), (c))
+  const bare = (op) => (op.type === 'opening' && !(op.symbol?.lines > 0)) || (op.variant === 'sliding' && !(op.symbol?.lines > 0) && op.symbol?.leaves === 1 && op.symbol?.sliding < 3);
   // the band of P lies inside the band of Q (± tol)
   const inBand = (P, Q, tol) => P.c - P.t / 2 >= Q.c - Q.t / 2 - tol && P.c + P.t / 2 <= Q.c + Q.t / 2 + tol;
   // two pieces of one wall line that changes thickness: the thinner band inside the thicker, one face in line (an
@@ -1195,8 +1292,11 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
         if (list.some((p) => p.axis !== A.axis && p.c > g0 + 1 && p.c < g1 - 1 && p.s0 <= thin.c + thin.t / 2 && p.s1 >= thin.c - thin.t / 2)) continue;
         // the gap is the visible half of the same wall (a fixture box drawn over the other half): one wall, no opening
         const covered = gap >= minO && list.some((p) => p !== A && p !== B && p.axis === A.axis && p.t < thin.t && p.s0 <= g0 + tolJ && p.s1 >= g1 - tolJ && inBand(p, thin, tolC) && !!flushPair(p, thin, tolC * 1.5));
-        // nothing collinear in between
-        if (!covered && list.some((p) => p !== A && p !== B && p.axis === A.axis && (Math.abs(p.c - A.c) <= tolC * 1.5 || (!collinear && Math.abs(p.c - B.c) <= tolC * 1.5)) && p.s1 > g0 + 1 && p.s0 < g1 - 1)) continue;
+        // nothing collinear in between – but in a gap of a door or window size, a piece under half as thick inside the
+        // band is something drawn in it (a sliding door's leaf drawn as a black bar, a window's frame line), not a wall:
+        // the analysis decides
+        const drawnIn = (p) => gap <= 1.1 * maxO && p.t < 0.45 * Math.min(A.t, B.t) && inBand(p, thin, tolC);
+        if (!covered && list.some((p) => p !== A && p !== B && p.axis === A.axis && (Math.abs(p.c - A.c) <= tolC * 1.5 || (!collinear && Math.abs(p.c - B.c) <= tolC * 1.5)) && p.s1 > g0 + 1 && p.s0 < g1 - 1 && !drawnIn(p))) continue;
         if (gap < minO || covered) {
           // a tiny gap, or a covered one: one wall
         } else {
@@ -1227,10 +1327,11 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
     }
   }
 
-  // a thin piece inside the band and span of a thicker wall (the visible half of it beside a fixture box) is part of it
+  // a thin piece inside the band and span of a thicker wall (the visible half of it beside a fixture box) is part of it,
+  // and so is a line under half as thick on its face (a light grey wall's outline, a window's frame line: hus9)
   for (let i = list.length - 1; i >= 0; i--) {
     const P = list[i];
-    if (list.some((Q) => Q !== P && Q.axis === P.axis && Q.t > P.t + 1 && Q.s0 <= P.s0 + tolJ && Q.s1 >= P.s1 - tolJ && inBand(P, Q, tolC))) list.splice(i, 1);
+    if (list.some((Q) => Q !== P && Q.axis === P.axis && Q.t > P.t + 1 && Q.s0 <= P.s0 + tolJ && Q.s1 >= P.s1 - tolJ && inBand(P, Q, P.t < 0.5 * Q.t ? tolC + P.t / 2 : tolC))) list.splice(i, 1);
   }
 
   // collinear pieces of different thickness that meet end to end (a wall line that changes thickness): one joint
@@ -1238,7 +1339,7 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
     for (const B of list) {
       if (A === B || A.axis !== B.axis || A.joints[1] || B.joints[0]) continue;
       const ov = Math.min(A.c + A.t / 2, B.c + B.t / 2) - Math.max(A.c - A.t / 2, B.c - B.t / 2);
-      if (ov < 0.5 * Math.min(A.t, B.t) || Math.abs(B.s0 - A.s1) > Math.max(3, 0.05 * ppm)) continue;
+      if (ov < 0.5 * Math.min(A.t, B.t) || Math.abs(B.s0 - A.s1) > Math.max(3, 0.1 * ppm)) continue;
       const m = (A.s1 + B.s0) / 2;
       A.s1 = m;
       B.s0 = m;
@@ -1246,6 +1347,32 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
       B.joints[0] = A;
     }
   }
+
+  // a piece hangs on the house's wall network when the pieces it touches (joints, collinear overlaps) add up to at
+  // least minNetworkShare of the longest such network – the share the networks need to be kept (detectPlan, step 7) –
+  // not on a frame of dark pieces that holds itself together (a rug's border, a desk: hus9) and would grow into the
+  // house through an empty gap
+  const onNetwork = (A) => {
+    const id = new Map();
+    const lens = [];
+    for (const S of list) {
+      if (id.has(S)) continue;
+      const k = lens.length;
+      lens.push(0);
+      id.set(S, k);
+      const stack = [S];
+      while (stack.length) {
+        const P = stack.pop();
+        lens[k] += P.s1 - P.s0;
+        for (const Q of list) {
+          if (id.has(Q) || !touches(P, Q, tolJ + 1)) continue;
+          id.set(Q, k);
+          stack.push(Q);
+        }
+      }
+    }
+    return lens[id.get(A)] >= o.minNetworkShare * Math.max(...lens);
+  };
 
   // (b) free ends that point at a perpendicular wall
   for (const A of list) {
@@ -1286,9 +1413,9 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
       const res = analyse(A, g0, g1);
       if (!res) continue;
       // an empty gap (no lines, no arc) is a passage only for a piece that hangs on the wall network at its other end –
-      // a free-standing dark block (a table) near a wall must not grow into a wall
+      // a free-standing dark block (a table) near a wall must not grow into a wall, nor a frame of them (a rug)
       const plain = res.ops.length > 0 && res.ops.every(bare);
-      if (plain && !A.joints[1 - k]) continue;
+      if (plain && !(A.joints[1 - k] && onNetwork(A))) continue;
       for (const op of res.ops) openings.push({ ...op, seg: A });
       A[key] = P.c;
       A.joints[k] = P;
@@ -1325,7 +1452,7 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
       const resQ = resA && gapOf(Q, Q[keyq], dirq, A, dQ);
       if (!resA || !resQ) continue;
       const plainOf = (res) => res.ops.length > 0 && res.ops.every(bare);
-      if ((plainOf(resA) && !A.joints[1 - k]) || (plainOf(resQ) && !Q.joints[1 - kq])) continue;
+      if ((plainOf(resA) && !(A.joints[1 - k] && onNetwork(A))) || (plainOf(resQ) && !(Q.joints[1 - kq] && onNetwork(Q)))) continue;
       for (const op of resA.ops) openings.push({ ...op, seg: A });
       for (const op of resQ.ops) openings.push({ ...op, seg: Q });
       A[key] = Q.c;
@@ -1379,7 +1506,8 @@ function splitAtPillars(ctx, seg, g0, g1) {
  * sheet with sections, facades or a garden round the plan costs little, and walls that enclose nothing cost nothing. The ink is the cores of the thin lines, 80 grey levels under the paper: a
  * light grey outline with antialiasing gaps is not a dashed line, and a halo does not join neighbouring strokes. Below
  * 70 px/m of the original a 1 px line is antialiased over two lighter pixels: 55 levels for the dashes, and for the
- * treads (drawn lighter still, often on a grey filled stair) 30 levels under the local background.
+ * treads (drawn lighter still, often on a grey filled stair) 30 levels under the local background – 20 under 40 px/m,
+ * where a JPEG estate-agent plan draws its treads 20–35 levels under the paper (hus8).
  * @returns {{ skylights, stairs, thin, stairInk, box }}  pixels of the image; thin / stairInk: rasters of the box
  */
 function findSymbols(grey, core, outside, paper, ppm, scaled) {
@@ -1406,8 +1534,8 @@ function findSymbols(grey, core, outside, paper, ppm, scaled) {
   const fine = ppm / scaled >= 70;
   const thin = thinInk(g, c, paper, r2, fine ? 80 : 55);
   const skylights = findSkylights(thin, c, out, ppm).map((b) => ({ ...b, x0: b.x0 + x0, y0: b.y0 + y0, x1: b.x1 + x0, y1: b.y1 + y0 }));
-  const stairInk = fine ? thin : localInk(g, c, r2, Math.max(3, Math.round(0.05 * ppm)), 30);
-  const stairs = findStairs(stairInk, c, out, ppm).map((st) => moveStair(st, x0, y0));
+  const stairInk = fine ? thin : localInk(g, c, r2, Math.max(3, Math.round(0.05 * ppm)), ppm / scaled < 40 ? 20 : 30);
+  const stairs = findStairs(stairInk, c, out, ppm, scaled).map((st) => moveStair(st, x0, y0));
   return { skylights, stairs, thin, stairInk, box: [x0, y0, x1, y1] };
 }
 
@@ -1601,6 +1729,138 @@ function findSkylights(thin, core, outside, ppm) {
 }
 
 /**
+ * Room separators: the dashed or dash-dot lines that close an open zone between two wall ends – a beam or a floor edge
+ * drawn from the end of one wall to the end of another (hus4: the hall and the TV room) – one line, or two parallel
+ * lines as far apart as a wall (the beam's two edges), as one. They split rooms (regions.js findRooms, option
+ * separators) and are never walls. A line is one when it lies inside the building, crosses no wall, does not run
+ * along one, and BOTH its ends meet a wall end within 30 cm: the end of a wall in its line (it continues that wall,
+ * also past a corner) or the end of a wall across it that does not go on past the line (a post, the start of a wall).
+ * A line with an end on the face of a wall that runs through – a section line, a beam over a room, a roof edge over a
+ * corridor, a stair's hidden flight – is not one, nor is the front of a niche (a wardrobe: under 1 m deep).
+ * @param {object|null} thin  the thin ink of the box (findSymbols)
+ * @param {number[]|null} box  [x0, y0, x1, y1] of that raster in the image
+ * @param {object[]} walls  the wall lines { axis, c, s0, s1, t } (pixels)
+ * @param {{ gaps?: object[] }} opts  gaps: the gaps in a wall line drawn with dashes only that joinGaps left open
+ *   ({ axis, c, s0, s1 }, pixels) – candidates too, for a dash-dot line finer than the thin ink resolves (under ~45 px/m)
+ * @returns {{ separators: { a: [x, y], b: [x, y] }[], tried }}  pixels, a → b along +x / +y; tried: every line looked
+ *   at, { axis, c, s0, s1, why } (why = 'ok', or the reason it is none: 'start' | 'end' | 'ends' (no wall end there) |
+ *   'short' | 'crosses' | 'along' | 'outside' | 'niche' (less than 1 m of floor on one side)), for the debug image
+ */
+function findSeparators(thin, box, walls, outside, ppm, { tolC, tolJ, maxWallPx, gaps = [] }) {
+  if (!thin || !box) return { separators: [], tried: [] };
+  const minLen = 0.8 * ppm;
+  const reach = 0.3 * ppm;
+  const minDepth = 1.0 * ppm;
+  // how far a line may run on into the wall end it meets (its last dash drawn over a post)
+  const over = 0.15 * ppm;
+  const tol = tolJ + 1;
+  const raw = [];
+  for (const axis of [H, V]) {
+    const [dc, ds] = axis === H ? [box[1], box[0]] : [box[0], box[1]];
+    for (const l of dashedLines(thin, axis, ppm, minLen)) if (l.dashes >= 4) raw.push({ axis, c: l.c + dc, s0: l.s0 + ds, s1: l.s1 + ds });
+  }
+  // the two edges of a beam (parallel, at most a wall's thickness apart, over the same stretch) → their middle line
+  const lines = [];
+  const used = new Set();
+  raw.sort((p, q) => p.c - q.c);
+  for (let i = 0; i < raw.length; i++) {
+    if (used.has(i)) continue;
+    const L = { ...raw[i] };
+    for (let j = i + 1; j < raw.length; j++) {
+      const Q = raw[j];
+      if (used.has(j) || Q.axis !== L.axis || Q.c - L.c > maxWallPx) continue;
+      const ov = Math.min(L.s1, Q.s1) - Math.max(L.s0, Q.s0);
+      if (ov < 0.7 * Math.min(L.s1 - L.s0, Q.s1 - Q.s0)) continue;
+      L.c = (L.c + Q.c) / 2;
+      L.s0 = Math.min(L.s0, Q.s0);
+      L.s1 = Math.max(L.s1, Q.s1);
+      used.add(j);
+      break;
+    }
+    lines.push(L);
+  }
+  // the dashed gaps no line found here covers
+  for (const G of gaps) {
+    const covered = lines.some((L) => L.axis === G.axis && Math.abs(L.c - G.c) <= maxWallPx / 2 + tolC && Math.min(L.s1, G.s1) - Math.max(L.s0, G.s0) >= 0.7 * (G.s1 - G.s0));
+    if (!covered) lines.push({ axis: G.axis, c: G.c, s0: G.s0, s1: G.s1 });
+  }
+  // the wall line of W goes on past its end (another wall in its line starts there): W's end is no wall end
+  const goesOn = (W, key) => {
+    const e = W[key];
+    const dir = key === 's1' ? 1 : -1;
+    return walls.some((X) => X !== W && X.axis === W.axis && Math.abs(X.c - W.c) <= Math.max(X.t, W.t) / 2 + tolC && (dir > 0 ? X.s1 > e + tol && X.s0 <= e + tol : X.s0 < e - tol && X.s1 >= e - tol));
+  };
+  // where an end of the line (at s, going outward by dir) meets a wall end: the snapped end, or null. A wall end is the
+  // end of a wall in the line (the line continues it; a corner there is fine) or the end of a wall across the line
+  // that does not go on past it (a post, a wall that starts there) – not the face of a wall that runs through
+  const endAt = (L, s, dir) => {
+    let best = null;
+    for (const W of walls) {
+      if (W.axis === L.axis) {
+        if (Math.abs(W.c - L.c) > W.t / 2 + tolC) continue;
+        const key = dir > 0 ? 's0' : 's1';
+        const d = (W[key] - s) * dir;
+        if (d < -over - W.t || d > reach) continue;
+        if (!best || Math.abs(d) < best.d) best = { s: W[key], d: Math.abs(d), W, key, inLine: true };
+      } else {
+        const d = (W.c - s) * dir;
+        if (d < -over - W.t / 2 || d > reach) continue;
+        for (const key of ['s0', 's1']) {
+          if (Math.abs(W[key] - L.c) > W.t / 2 + tol + 0.05 * ppm || goesOn(W, key)) continue;
+          if (!best || Math.abs(d) < best.d) best = { s: W.c, d: Math.abs(d), W, key, inLine: false };
+        }
+      }
+    }
+    return best;
+  };
+  const at = (m, x, y) => {
+    const xi = Math.round(x);
+    const yi = Math.round(y);
+    return xi >= 0 && yi >= 0 && xi < m.w && yi < m.h && m.data[yi * m.w + xi] === 1;
+  };
+  const out = [];
+  const tried = [];
+  for (const L of lines) {
+    const why = (() => {
+      const e0 = endAt(L, L.s0, -1);
+      const e1 = endAt(L, L.s1, 1);
+      if (!e0 || !e1) return !e0 && !e1 ? 'ends' : !e0 ? 'start' : 'end';
+      const s0 = e0.s;
+      const s1 = e1.s;
+      const len = s1 - s0;
+      if (len < minLen) return 'short';
+      // the line of the wall it continues (a beam drawn along the wall's faces lies on its centre line)
+      const c = e0.inLine ? e0.W.c : e1.inLine ? e1.W.c : L.c;
+      // no wall across it in between, none along it
+      if (walls.some((W) => W.axis !== L.axis && W.c > s0 + W.t / 2 + tol && W.c < s1 - W.t / 2 - tol && W.s0 - tol <= c && W.s1 + tol >= c)) return 'crosses';
+      if (walls.some((W) => W.axis === L.axis && Math.abs(W.c - c) < 0.5 * ppm && Math.min(W.s1, s1) - Math.max(W.s0, s0) > 0.2 * len)) return 'along';
+      // inside the building
+      const mid = (s0 + s1) / 2;
+      if (L.axis === H ? at(outside, mid, c) : at(outside, c, mid)) return 'outside';
+      // a zone on each side, not a niche (the front of a wardrobe, a shelf): free floor 1 m deep both ways at two of
+      // its quarter points
+      const deep = (q, side) => {
+        for (let k = 0.05 * ppm; k <= minDepth; k += 0.05 * ppm) {
+          const [x, y] = L.axis === H ? [q, c + side * k] : [c + side * k, q];
+          if (at(outside, x, y) || at(outside.block, x, y)) return false;
+        }
+        return true;
+      };
+      if ([0.25, 0.5, 0.75].filter((f) => { const q = s0 + f * len; return deep(q, 1) && deep(q, -1); }).length < 2) return 'niche';
+      const a = L.axis === H ? [s0, c] : [c, s0];
+      const b = L.axis === H ? [s1, c] : [c, s1];
+      if (out.some((q) => Math.hypot(q.a[0] - a[0], q.a[1] - a[1]) < 0.2 * ppm && Math.hypot(q.b[0] - b[0], q.b[1] - b[1]) < 0.2 * ppm)) return 'ok';
+      out.push({ a, b });
+      // a wall across that stops short of the line (its post is drawn up to it) reaches it, so the rooms close
+      for (const e of [e0, e1]) if (!e.inLine) e.W[e.key] = c;
+      return 'ok';
+    })();
+    tried.push({ axis: L.axis, c: L.c, s0: L.s0, s1: L.s1, why });
+  }
+  return { separators: out, tried };
+}
+
+/**
  * Thin ink against the local background instead of the paper: pixels at least margin darker than the lightest pixel
  * within rb (a separable max filter), not wall – a tread drawn light grey on a grey filled stair counts, and a filled
  * shape wider than 2·rb is its own background. For the stairs of a low-resolution plan.
@@ -1699,12 +1959,33 @@ function solidLines(mask, axis, ppm, ranges) {
 }
 
 /**
+ * The segments of a rectangle (localSegments) drawn as lines, and the broken ones that are not one of those: dashed,
+ * or a 1 px line at a slant aliased into dots (hus6) – breaks up to 8 cm bridged, 40 % on ink.
+ */
+function allSegments(mask, rect, minLen, ppm) {
+  const segs = localSegments(mask, rect, minLen);
+  for (const d of localSegments(mask, rect, minLen, { maxBreak: Math.max(4, Math.round(0.08 * ppm)), minHit: 0.4 })) {
+    const mid = [(d.a[0] + d.b[0]) / 2, (d.a[1] + d.b[1]) / 2];
+    const same = segs.some((q) => {
+      let dt = Math.abs(q.theta - d.theta);
+      dt = Math.min(dt, 180 - dt);
+      const qd = [q.b[0] - q.a[0], q.b[1] - q.a[1]];
+      const off = Math.abs((mid[0] - q.a[0]) * qd[1] - (mid[1] - q.a[1]) * qd[0]) / Math.hypot(qd[0], qd[1]);
+      return dt <= 4 && off <= 3;
+    });
+    if (!same) segs.push(d);
+  }
+  return segs;
+}
+
+/**
  * Straight thin segments of any direction inside a rectangle of a mask: a small Hough transform (1° × 1 px) of the
  * ink in it, the local maxima with at least minLen votes, each followed through the rectangle (ink within 1 px across,
- * breaks up to 2 px bridged, 85 % of it on ink); near-duplicates (the same stroke from neighbouring peaks) are dropped.
+ * breaks up to maxBreak − 1 px bridged, minHit of it on ink: 2 px and 85 % for drawn lines, more for dashed ones);
+ * near-duplicates (the same stroke from neighbouring peaks) are dropped.
  * @returns {{ a: [x, y], b: [x, y], theta: number, len: number }[]}  theta: the normal's angle 0…179°, pixels
  */
-function localSegments(mask, rect, minLen) {
+function localSegments(mask, rect, minLen, { maxBreak = 3, minHit = 0.85 } = {}) {
   const x0 = Math.max(0, Math.floor(rect[0]));
   const y0 = Math.max(0, Math.floor(rect[1]));
   const x1 = Math.min(mask.w - 1, Math.ceil(rect[2]));
@@ -1765,7 +2046,7 @@ function localSegments(mask, rect, minLen) {
     let hits = 0;
     const found = [];
     const flush = () => {
-      if (start !== null && last - start >= minLen && hits >= 0.85 * (last - start + 1)) found.push([start, last]);
+      if (start !== null && last - start >= minLen && hits >= minHit * (last - start + 1)) found.push([start, last]);
       start = null;
       hits = 0;
     };
@@ -1774,7 +2055,7 @@ function localSegments(mask, rect, minLen) {
       const y = p0[1] + d[1] * s;
       if (x < x0 - 1 || y < y0 - 1 || x > x1 + 1 || y > y1 + 1) continue;
       if (on(x, y) || on(x + n[0], y + n[1]) || on(x - n[0], y - n[1])) {
-        if (start !== null && s - last > 3) flush();
+        if (start !== null && s - last > maxBreak) flush();
         if (start === null) start = s;
         last = s;
         hits++;
@@ -1801,18 +2082,21 @@ function localSegments(mask, rect, minLen) {
 
 /**
  * Stairs: flights of evenly spaced parallel thin lines along the plan's axes (the treads: 60–170 cm long – the shelves
- * of a closet are shorter –, 14–40 cm apart, at least four, up to two lines missing under furniture, no line of the
- * same extent between them – that is hatching – and no grid across them – that is tiles), and fans of winders next to
- * a flight's end (at least four thin lines in four directions whose extensions meet in one point near their inner ends:
- * the newel, the inner corner); flights and fans that touch are one stair, and so is a fan with the flight it was found
- * beside.
+ * of a closet are shorter –, 14–40 cm apart (within 30 % or two pixels of the original image), at least three, up to
+ * two lines missing under furniture, no line of the same extent between them – that is hatching – and no grid across
+ * them – that is tiles), followed on in treads the line search missed (extendFlight: dashed or broken ones); and fans
+ * of winders next to a flight's end (at least four thin lines in four directions whose extensions meet in one point
+ * near their inner ends – the newel, the inner corner –, two of them reaching most of the way across the flight, or
+ * three that all do; the point at a side of the flight, the turn 200° at most); flights and fans that touch are one
+ * stair, and so is a fan with the flight it was found beside. A lone flight needs five lines, flights of three lines
+ * need winders.
  * kind: two parallel flights side by side → 'half-turn'; two flights at right angles → 'quarter-turn'; else a fan of
  * 150° or more → 'half-turn', a smaller fan → 'quarter-turn'; one flight (or flights one after the other) →
  * 'straight' ('unknown' is never given). axis: the run of the longest flight ('x' | 'y', as
  * model.js stairs); treads: the tread lines plus the winder lines.
  * @returns {{ bbox: [x0, y0, x1, y1], axis, treads, kind, flights, winders, lines, pivot? }[]}  pixels
  */
-function findStairs(thin, core, outside, ppm) {
+function findStairs(thin, core, outside, ppm, scaled = 1) {
   const inside = (p) => {
     const xi = Math.round(p[0]);
     const yi = Math.round(p[1]);
@@ -1824,6 +2108,8 @@ function findStairs(thin, core, outside, ppm) {
   for (const axis of [H, V]) [treadsOf[axis], longOf[axis]] = solidLines(thin, axis, ppm, [[0.6 * ppm, 1.7 * ppm], [0.4 * ppm]]);
   const tolS = Math.max(3, 0.1 * ppm);
   const dup = Math.max(3, 0.04 * ppm);
+  // a step agrees within 30 %, or two pixels of the original image (an upsampled plan's lines lie on its pixel grid)
+  const tolStep = (st) => Math.max(0.3 * st, 2 * scaled);
   const flights = [];
   for (const axis of [H, V]) {
     const items = [...treadsOf[axis]].sort((p, q) => p.c - q.c);
@@ -1838,12 +2124,15 @@ function findStairs(thin, core, outside, ppm) {
         const q = items[j];
         const gap = q.c - chain[chain.length - 1].c;
         if (gap > (step ? 2.4 * step : 0.45 * ppm)) break;
-        // the same extent: both ends in line, or one end (at a stringer) and most of the length (furniture or a label
-        // over the other end)
-        const e0 = Math.abs(q.s0 - chain[0].s0) <= tolS;
-        const e1 = Math.abs(q.s1 - chain[0].s1) <= tolS;
-        const ov = Math.min(q.s1, chain[0].s1) - Math.max(q.s0, chain[0].s0);
-        if (!(e0 && e1) && !((e0 || e1) && ov >= 0.6 * Math.max(q.s1 - q.s0, chain[0].s1 - chain[0].s0))) continue;
+        // the same extent as the first line or the last one: both ends in line, or one end (at a stringer) and most of
+        // the length (furniture or a label over the other end)
+        const same = (r) => {
+          const e0 = Math.abs(q.s0 - r.s0) <= tolS;
+          const e1 = Math.abs(q.s1 - r.s1) <= tolS;
+          const ov = Math.min(q.s1, r.s1) - Math.max(q.s0, r.s0);
+          return (e0 && e1) || ((e0 || e1) && ov >= 0.6 * Math.max(q.s1 - q.s0, r.s1 - r.s0));
+        };
+        if (!same(chain[0]) && !same(chain[chain.length - 1])) continue;
         // a parallel line of the same extent closer than a tread: hatching (a wood floor, deck boards), not a stair
         if (gap < 0.12 * ppm) {
           if (gap > dup) {
@@ -1856,11 +2145,13 @@ function findStairs(thin, core, outside, ppm) {
         if (step === null) {
           if (gap < 0.14 * ppm || gap > 0.4 * ppm) continue;
           step = gap;
-        } else if (Math.abs(gap - step) > 0.3 * step && !(missed < 2 && Math.abs(gap - 2 * step) <= 0.3 * step)) continue;
+        } else if (Math.abs(gap - step) > tolStep(step) && !(missed < 2 && Math.abs(gap - 2 * step) <= tolStep(step))) continue;
         if (step !== null && gap > 1.5 * step) missed++;
         chain.push(q);
+        // the step: the mean over the positions so far (one pixel more or less between two lines is a lot at 6 px)
+        step = (q.c - chain[0].c) / (chain.length - 1 + missed);
       }
-      if (chain.length < 4 || (dense && chain.length < 5)) continue;
+      if (chain.length < 3 || (dense && chain.length < 5)) continue;
       const c0 = chain[0].c;
       const c1 = chain[chain.length - 1].c;
       const s0 = Math.min(...chain.map((q) => q.s0));
@@ -1874,7 +2165,29 @@ function findStairs(thin, core, outside, ppm) {
       for (const q of chain) used.add(q);
       const lines = chain.map((q) => (axis === H ? [[q.s0, q.c], [q.s1, q.c]] : [[q.c, q.s0], [q.c, q.s1]]));
       // the treads: the lines found plus the ones a piece of furniture or a label hid (a gap of two steps)
-      flights.push({ bbox, axis, step, width: s1 - s0, lines, count: chain.length + missed, run: axis === H ? 'y' : 'x' });
+      const f = { bbox, axis, step, width: s1 - s0, lines, count: chain.length + missed, run: axis === H ? 'y' : 'x' };
+      // a flight that is one by itself (five lines) may go on, and one of four between two walls (a narrow stair
+      // between its walls, its other treads too faint for the line search: hus8); no tile grid across what it gained
+      const walled = () => {
+        const mid = (c0 + c1) / 2;
+        const wallAt = (from, dir) => {
+          for (let k = 0; k <= 0.15 * ppm; k++) {
+            const sAt = Math.round(from + dir * k);
+            const [x, y] = axis === H ? [sAt, Math.round(mid)] : [Math.round(mid), sAt];
+            if (x >= 0 && y >= 0 && x < core.w && y < core.h && core.data[y * core.w + x]) return true;
+          }
+          return false;
+        };
+        return wallAt(s0, -1) && wallAt(s1, 1);
+      };
+      if (chain.length >= 5 || (chain.length === 4 && walled())) {
+        const was = { bbox: [...f.bbox], lines: [...f.lines], count: f.count };
+        f.found = [...f.bbox];
+        extendFlight(f, thin, inside, ppm);
+        const [e0, e1] = axis === H ? [f.bbox[1], f.bbox[3]] : [f.bbox[0], f.bbox[2]];
+        if (f.extended && longOf[other].filter((q) => q.s0 <= e0 + 0.2 * (e1 - e0) && q.s1 >= e1 - 0.2 * (e1 - e0) && q.c > s0 + 0.15 * (s1 - s0) && q.c < s1 - 0.15 * (s1 - s0)).length >= 2) Object.assign(f, was, { extended: 0 });
+      }
+      flights.push(f);
     }
   }
   // ---- fans of winders beside the ends of the flights
@@ -1883,15 +2196,33 @@ function findStairs(thin, core, outside, ppm) {
   const near = 0.35 * ppm;
   for (const f of flights) {
     const w = f.width;
-    const [bx0, by0, bx1, by1] = f.bbox;
-    // the regions beyond both ends of the run, as wide as three flights (an L or a U turns to either side)
+    // (around the flight as the line search found it: an extension may have taken the first winders in)
+    const [bx0, by0, bx1, by1] = f.found ?? f.bbox;
+    // the regions beyond both ends of the run, as wide as four flights (an L or a U turns to either side; the outer
+    // winders of a U reach a flight and a half out: hus6)
+    const e = 1.5 * w;
     const regions = f.run === 'y'
-      ? [[bx0 - 1.1 * w, by0 - 1.1 * w, bx1 + 1.1 * w, by0 + f.step], [bx0 - 1.1 * w, by1 - f.step, bx1 + 1.1 * w, by1 + 1.1 * w]]
-      : [[bx0 - 1.1 * w, by0 - 1.1 * w, bx0 + f.step, by1 + 1.1 * w], [bx1 - f.step, by0 - 1.1 * w, bx1 + 1.1 * w, by1 + 1.1 * w]];
+      ? [[bx0 - e, by0 - e, bx1 + e, by0 + f.step], [bx0 - e, by1 - f.step, bx1 + e, by1 + e]]
+      : [[bx0 - e, by0 - e, bx0 + f.step, by1 + e], [bx1 - f.step, by0 - e, bx1 + e, by1 + e]];
     for (const rect of regions) {
-      const segs = localSegments(thin, rect, minSeg).filter((s) => s.len <= 1.8 * ppm);
-      const fan = fanOf(segs, ppm, near, inside);
-      const twin = fan && fans.find((q) => Math.hypot(q.pivot[0] - fan.pivot[0], q.pivot[1] - fan.pivot[1]) < 0.3 * ppm);
+      const segs = allSegments(thin, rect, minSeg, ppm).filter((s) => s.len <= 1.8 * ppm);
+      // four winders, two of them reaching most of the way across the flight (from the newel to the outer stringer),
+      // or three that all do (the 1 px winders of an architect's drawing cross other lines, and the line search
+      // misses some: hus6) – their point at a side of the flight (its inner stringer, the newel), not across the
+      // middle of its end (a door's jamb or threshold beyond the flight has short strokes all round it: hus8)
+      const [w0, w1] = f.axis === H ? [bx0, bx1] : [by0, by1];
+      const long = (x, n) => x.lines.filter(([a, b]) => Math.hypot(b[0] - a[0], b[1] - a[1]) >= 0.75 * w).length >= n;
+      const ok = (x, n) => x && long(x, n) && Math.min(Math.abs((f.axis === H ? x.pivot[0] : x.pivot[1]) - w0), Math.abs((f.axis === H ? x.pivot[0] : x.pivot[1]) - w1)) <= 0.3 * w;
+      const four = fanOf(segs, ppm, near, inside);
+      const three = ok(four, 2) ? null : fanOf(segs, ppm, near, inside, { minLines: 3, minMember: Math.max(0.4 * ppm, 0.75 * w) });
+      const fan = ok(four, 2) ? four : ok(three, 3) ? three : null;
+      // the same turn found from both flights (its point within 30 cm, or most of its box shared) is one fan
+      const shared = (a, b) => {
+        const ix = Math.min(a[2], b[2]) - Math.max(a[0], b[0]);
+        const iy = Math.min(a[3], b[3]) - Math.max(a[1], b[1]);
+        return ix > 0 && iy > 0 && ix * iy >= 0.5 * Math.min((a[2] - a[0]) * (a[3] - a[1]), (b[2] - b[0]) * (b[3] - b[1]));
+      };
+      const twin = fan && fans.find((q) => Math.hypot(q.pivot[0] - fan.pivot[0], q.pivot[1] - fan.pivot[1]) < 0.3 * ppm || shared(q.bbox, fan.bbox));
       if (twin) twin.from.push(f);
       else if (fan) fans.push({ ...fan, from: [f] });
     }
@@ -1917,8 +2248,9 @@ function findStairs(thin, core, outside, ppm) {
     const fl = g.filter((p) => p.f).map((p) => p.f);
     const wi = g.filter((p) => p.wf).map((p) => p.wf);
     if (!fl.length) continue;
-    // a lone flight needs five lines: an armchair or a sofa has three or four cushion lines
-    if (fl.length === 1 && !wi.length && fl[0].lines.length < 5) continue;
+    // a lone flight needs five lines (an armchair or a sofa has three or four cushion lines), and flights of three
+    // lines (a short first flight before the winders of a small stair: hus8) need winders beside them
+    if (!wi.length && ((fl.length === 1 && fl[0].lines.length < 5) || fl.every((x) => x.lines.length < 4))) continue;
     const bbox = [Math.min(...g.map((p) => p.bbox[0])), Math.min(...g.map((p) => p.bbox[1])), Math.max(...g.map((p) => p.bbox[2])), Math.max(...g.map((p) => p.bbox[3]))];
     const main = fl.reduce((b, f) => (!b || f.lines.length * f.step > b.lines.length * b.step ? f : b), null);
     const spread = wi.reduce((m, x) => Math.max(m, x.spread), 0);
@@ -1929,10 +2261,13 @@ function findStairs(thin, core, outside, ppm) {
     const sideBySide = fl.some((a) => fl.some((b) => a !== b && a.axis === b.axis && Math.min(treadSpan(a)[1], treadSpan(b)[1]) - Math.max(treadSpan(a)[0], treadSpan(b)[0]) < 0.5 * Math.min(a.width, b.width)));
     // the flights decide first – flights at right angles are an L whatever the fan between them spans (the outer
     // winders of an L lie close to the treads of both flights, ~150°) –, a fan alone by its spread
+    // a fan at each end of one flight, 1.5 m or more apart along its run: a quarter turn at both ends (hus6)
+    const runAt = (p) => (main.run === 'x' ? p[0] : p[1]);
+    const bothEnds = wi.length >= 2 && Math.max(...wi.map((x) => runAt(x.pivot))) - Math.min(...wi.map((x) => runAt(x.pivot))) >= 1.5 * ppm;
     let kind = 'straight';
     if (sideBySide) kind = 'half-turn';
     else if (perp) kind = 'quarter-turn';
-    else if (spread >= 150) kind = 'half-turn';
+    else if (spread >= 150 || bothEnds) kind = 'half-turn';
     else if (wi.length) kind = 'quarter-turn';
     stairs.push({
       bbox,
@@ -1945,17 +2280,275 @@ function findStairs(thin, core, outside, ppm) {
       ...(wi.length ? { pivot: wi[0].pivot } : {}),
     });
   }
+  // ---- stairs winding round a newel (no flight of parallel treads: every tread a winder, hus4): a stair of the flights
+  //      above in the same place takes the newel's lines, and its box and turn when the newel is a half-turn or the
+  //      flights are straight
+  for (const n of newelStairs(thin, inside, ppm)) {
+    const pad2 = 0.2 * ppm;
+    const hit = stairs.find((st) => n.pivot[0] >= st.bbox[0] - pad2 && n.pivot[0] <= st.bbox[2] + pad2 && n.pivot[1] >= st.bbox[1] - pad2 && n.pivot[1] <= st.bbox[3] + pad2);
+    if (!hit) {
+      stairs.push(n);
+      continue;
+    }
+    // (a quarter-turn newel only confirms the flights' stair: its box stays theirs)
+    if (n.kind === 'half-turn' || hit.kind === 'straight') {
+      hit.bbox = [Math.min(hit.bbox[0], n.bbox[0]), Math.min(hit.bbox[1], n.bbox[1]), Math.max(hit.bbox[2], n.bbox[2]), Math.max(hit.bbox[3], n.bbox[3])];
+      hit.kind = n.kind;
+    }
+    hit.winders = Math.max(hit.winders, n.winders);
+    hit.treads = Math.max(hit.treads, n.treads);
+    hit.lines = [...hit.lines, ...n.lines];
+    if (!hit.pivot) hit.pivot = n.pivot;
+  }
   return stairs;
+}
+
+/**
+ * Stairs that wind round a newel (hus4: a half-turn where every tread is a winder): no flight of parallel treads, but
+ * long thin lines (40 cm – 1.8 m, more than 10° off the axes) whose inner ends lie on a narrow newel and that radiate
+ * from it out to the stair's outline. The places first: clusters of long diagonal strokes in the ink (the axis runs
+ * taken out, components of 35 cm or more, 40 cm apart at most) that add up to 2 m; there the Hough segments, drawn and
+ * dashed (the flight above the cut plane is drawn dashed, hus4 1. etasje), and the newel among them (newelOf).
+ * @returns {{ bbox, axis, treads, kind, flights: 0, winders, lines, pivot }[]}  pixels of the mask
+ */
+function newelStairs(ink, inside, ppm) {
+  // (an antialiased line 10° off an axis still has runs under 12 cm)
+  const run = Math.max(6, Math.round(0.12 * ppm));
+  const diag = subtract(subtract(ink, longRuns(ink, H, run)), longRuns(ink, V, run));
+  const extent = (c) => Math.hypot(c.maxX - c.minX, c.maxY - c.minY);
+  const strokes = components(diag, 8).comps.filter((c) => extent(c) >= 0.35 * ppm);
+  // clusters of strokes whose boxes lie within 40 cm of each other
+  const gap = 0.4 * ppm;
+  const U = dsu(strokes.length);
+  for (let i = 0; i < strokes.length; i++) {
+    for (let j = i + 1; j < strokes.length; j++) {
+      const a = strokes[i];
+      const b = strokes[j];
+      if (a.minX <= b.maxX + gap && b.minX <= a.maxX + gap && a.minY <= b.maxY + gap && b.minY <= a.maxY + gap) U.union(i, j);
+    }
+  }
+  const clusters = new Map();
+  strokes.forEach((c, i) => {
+    const r = U.find(i);
+    if (!clusters.has(r)) clusters.set(r, []);
+    clusters.get(r).push(c);
+  });
+  const out = [];
+  // (a flight drawn dashed has no long strokes: the place reaches a flight's width beyond them)
+  const pad = 1.0 * ppm;
+  for (const cs of clusters.values()) {
+    if (cs.reduce((s, c) => s + extent(c), 0) < 2 * ppm) continue;
+    const rect = [Math.min(...cs.map((c) => c.minX)) - pad, Math.min(...cs.map((c) => c.minY)) - pad, Math.max(...cs.map((c) => c.maxX)) + pad, Math.max(...cs.map((c) => c.maxY)) + pad];
+    if (rect[2] - rect[0] > 9 * ppm || rect[3] - rect[1] > 9 * ppm) continue; // no stair: a whole hatched or tiled floor
+    const long = (sg) => sg.len >= 0.4 * ppm && sg.len <= 1.8 * ppm;
+    const ok = (sg) => long(sg) && sg.theta % 90 > 10 && sg.theta % 90 < 80;
+    // drawn and dashed (allSegments); the treads of the flights along the newel that lie within 10° of the axes are
+    // the stair's ends, for the box
+    const found = allSegments(ink, rect, 0.4 * ppm, ppm);
+    const segs = found.filter(ok);
+    const flat = found.filter((sg) => long(sg) && !ok(sg));
+    const n = newelOf(segs, ppm, inside, flat);
+    if (n) out.push(n);
+  }
+  return out;
+}
+
+/**
+ * The best newel among segments: a window 50 cm wide and 1.6 m long (upright or lying, placed with a segment's end at
+ * its middle or near one of its ends) that holds exactly one end of each of its lines – the inner end; the other lies
+ * 35 cm or more outside – and where the lines meet: half the pairs 8° or more apart, extended, cross within 30 cm of
+ * it (at a wall or the stair's outline the lines end too, but they meet at the newel across the stair). The window
+ * whose lines have the most directions 8° apart wins (a rotated armchair or a word has two or three); it needs eight
+ * lines in six directions, turning 60° or more from the inner ends to the outer ones, its middle inside the building.
+ * Lines leaving the newel to both sides (three or more each, 30 cm out) make a half-turn – as wide on both sides as
+ * on the wider one (a flight drawn dashed beyond the cut plane may be missing) –, else a quarter-turn. The box: the
+ * lines, one step (the spacing of the inner ends) past the newel's last ones, and the flat treads (within 10° of the
+ * axes, flat) that start on the newel's line past them.
+ * @returns {{ bbox, axis, treads, kind, flights: 0, winders, lines, pivot } | null}
+ */
+function newelOf(segs, ppm, inside, flat = []) {
+  if (segs.length < 8) return null;
+  const hw = 0.25 * ppm;
+  const hl = 0.8 * ppm;
+  const reach = 0.3 * ppm;
+  const away = 0.35 * ppm;
+  let best = null;
+  for (const S of segs) {
+    for (const E of [S.a, S.b]) {
+      for (const upright of [true, false]) {
+        for (const shift of [0, 0.75, -0.75]) {
+          const c = upright ? [E[0], E[1] + shift * hl] : [E[0] + shift * hl, E[1]];
+          const [ax, ay] = upright ? [hw, hl] : [hl, hw];
+          const inWin = (p, r = 0) => Math.abs(p[0] - c[0]) <= ax + r && Math.abs(p[1] - c[1]) <= ay + r;
+          const members = [];
+          for (const q of segs) {
+            const ia = inWin(q.a);
+            const ib = inWin(q.b);
+            // the outer end well clear of the newel (a stroke across a crowded junction is not a tread)
+            if (ia !== ib && !inWin(ia ? q.b : q.a, away)) members.push({ q, i: ia ? q.a : q.b, o: ia ? q.b : q.a });
+          }
+          if (members.length < 8) continue;
+          // the lines' own directions (a rotated armchair or a word has two or three, every tread of a winding stair
+          // its own)
+          const th = members.map(({ q }) => q.theta).sort((p, q) => p - q);
+          const distinct = th.filter((t, k) => k === 0 || t - th[k - 1] >= 8).length - (th.length > 1 && th[0] + 180 - th[th.length - 1] < 8 ? 1 : 0);
+          if (distinct < 6 || (best && distinct <= best.distinct)) continue;
+          const ang = members.map(({ i, o }) => (Math.atan2(o[1] - i[1], o[0] - i[0]) * 180) / Math.PI).sort((p, q) => p - q);
+          let gapMax = 360 - (ang[ang.length - 1] - ang[0]);
+          for (let k = 1; k < ang.length; k++) gapMax = Math.max(gapMax, ang[k] - ang[k - 1]);
+          const spread = 360 - gapMax;
+          if (spread < 60 || !inside(c)) continue;
+          // the lines meet here
+          let pairs = 0;
+          let meet = 0;
+          for (let a = 0; a < members.length; a++) {
+            for (let b = a + 1; b < members.length; b++) {
+              const A = members[a].q;
+              const B = members[b].q;
+              let dt = Math.abs(A.theta - B.theta);
+              dt = Math.min(dt, 180 - dt);
+              if (dt < 8) continue;
+              pairs++;
+              const da = [A.b[0] - A.a[0], A.b[1] - A.a[1]];
+              const db = [B.b[0] - B.a[0], B.b[1] - B.a[1]];
+              const den = da[0] * db[1] - da[1] * db[0];
+              const k = ((B.a[0] - A.a[0]) * db[1] - (B.a[1] - A.a[1]) * db[0]) / den;
+              if (inWin([A.a[0] + da[0] * k, A.a[1] + da[1] * k], reach)) meet++;
+            }
+          }
+          if (!pairs || meet < 0.5 * pairs) continue;
+          best = { members, distinct, spread, upright };
+        }
+      }
+    }
+  }
+  if (!best) return null;
+  const { members } = best;
+  const inner = members.map((m) => m.i);
+  const pts = members.flatMap((m) => [m.i, m.o]);
+  const median = (v) => [...v].sort((p, q) => p - q)[v.length >> 1];
+  // a half-turn: treads leave the newel to both sides, three or more each (two flights side by side) – across x (an
+  // upright newel) or across y; a quarter-turn: to one side and round its end
+  const sides = (k) => {
+    const m = median(inner.map((p) => p[k]));
+    const n = (sg) => members.filter((x) => (x.o[k] - m) * sg > 0.3 * ppm).length;
+    return n(1) >= 3 && n(-1) >= 3;
+  };
+  const uX = sides(0);
+  const uY = !uX && sides(1);
+  const upright = uX ? true : uY ? false : best.upright;
+  const kind = uX || uY ? 'half-turn' : 'quarter-turn';
+  // along (the newel's long axis) and across, per point
+  const al = (p) => (upright ? p[1] : p[0]);
+  const ac = (p) => (upright ? p[0] : p[1]);
+  const axisC = median(inner.map(ac));
+  const steps = inner.map(al).sort((p, q) => p - q);
+  const diffs = steps.slice(1).map((v, k) => v - steps[k]).filter((d) => d > 0.1 * ppm).sort((p, q) => p - q);
+  const step = diffs.length ? diffs[diffs.length >> 1] : 0;
+  let lo = Math.min(...pts.map(al), steps[0] - step);
+  let hi = Math.max(...pts.map(al), steps[steps.length - 1] + step);
+  // past the newel's end away from the turn (where no line leaves beyond its inner ends): the flights' last treads,
+  // across the newel within 10° of the axes (not members), from the newel's line, and the newel's own outline along
+  // it – up to 1.2 m past the last inner end
+  const last = steps[steps.length - 1];
+  const turnLo = members.filter((m) => al(m.o) < steps[0] - 0.3 * ppm).length >= 2;
+  const turnHi = members.filter((m) => al(m.o) > last + 0.3 * ppm).length >= 2;
+  for (const q of flat) {
+    const across = Math.abs(q.theta - (upright ? 90 : 0)) <= 10 || (!upright && q.theta >= 170);
+    for (const [e, o] of [[q.a, q.b], [q.b, q.a]]) {
+      if (Math.abs(ac(e) - axisC) > 0.3 * ppm || (!across && Math.abs(ac(o) - axisC) > 0.3 * ppm)) continue;
+      if (!turnHi && al(e) > last && al(e) <= last + 1.2 * ppm) hi = Math.max(hi, al(e), al(o));
+      if (!turnLo && al(e) < steps[0] && al(e) >= steps[0] - 1.2 * ppm) lo = Math.min(lo, al(e), al(o));
+    }
+  }
+  let left = Math.min(...pts.map(ac));
+  let right = Math.max(...pts.map(ac));
+  if (kind === 'half-turn') {
+    const w = Math.max(axisC - left, right - axisC);
+    left = axisC - w;
+    right = axisC + w;
+  }
+  const bbox = upright ? [left, lo, right, hi] : [lo, left, hi, right];
+  const nb = [Math.min(...inner.map((p) => p[0])), Math.min(...inner.map((p) => p[1])), Math.max(...inner.map((p) => p[0])), Math.max(...inner.map((p) => p[1]))];
+  return {
+    bbox,
+    axis: upright ? 'y' : 'x',
+    treads: members.length,
+    kind,
+    flights: 0,
+    winders: members.length,
+    lines: members.map((m) => [m.i, m.o]),
+    pivot: [(nb[0] + nb[2]) / 2, (nb[1] + nb[3]) / 2],
+  };
+}
+
+/**
+ * A flight goes on in treads the line search missed: dashed ones (the part beyond the cut line, drawn hidden), or
+ * ones the cut line, the walking line or a label broke. At each next tread position (± 30 % of a step) beyond either
+ * end, a row of the ink that covers 40 % or more of the flight's width is a tread when it is a line: the rows 4 cm to
+ * both sides have under half of its ink (winders crossing the row at a slant have it on every row), and so has the row
+ * half a step back (a filled area, hatching); and the ink does not run on past both of the flight's sides (hatching
+ * through the room). The search stops at a wall or outside, and after two positions with nothing. Mutates the flight.
+ */
+function extendFlight(f, mask, inside, ppm) {
+  const { axis, step } = f;
+  const [s0, s1] = axis === H ? [f.bbox[0], f.bbox[2]] : [f.bbox[1], f.bbox[3]];
+  const ink = (s, l) => {
+    const [x, y] = axis === H ? [s, l] : [l, s];
+    return x >= 0 && y >= 0 && x < mask.w && y < mask.h && mask.data[y * mask.w + x] === 1;
+  };
+  const cover = (l, a, b) => {
+    let hit = 0;
+    let n = 0;
+    for (let s = Math.ceil(a); s <= Math.floor(b); s++, n++) if (ink(s, l) || ink(s, l - 1) || ink(s, l + 1)) hit++;
+    return n ? hit / n : 0;
+  };
+  const out = Math.max(3, 0.3 * ppm);
+  const off = Math.max(3, Math.round(0.04 * ppm));
+  const add = [];
+  for (const dir of [-1, 1]) {
+    let c = dir < 0 ? (axis === H ? f.bbox[1] : f.bbox[0]) : axis === H ? f.bbox[3] : f.bbox[2];
+    let miss = 0;
+    for (let k = 0; k < 40 && miss < 2; k++) {
+      const want = c + dir * step;
+      const mid = (s0 + s1) / 2;
+      if (!inside(axis === H ? [mid, want] : [want, mid])) break;
+      let best = null;
+      for (let l = Math.round(want - 0.3 * step); l <= Math.round(want + 0.3 * step); l++) {
+        const v = cover(l, s0, s1);
+        if (!best || v > best.v) best = { l, v };
+      }
+      const line = cover(best.l - off, s0, s1) < 0.5 * best.v && cover(best.l + off, s0, s1) < 0.5 * best.v;
+      const back = cover(Math.round(best.l - (dir * step) / 2), s0, s1);
+      const through = cover(best.l, s0 - out, s0 - 3) > 0.6 && cover(best.l, s1 + 3, s1 + out) > 0.6;
+      if (best.v >= 0.4 && line && back < 0.5 * best.v && !through) {
+        add.push(best.l);
+        c = best.l;
+        miss = 0;
+      } else {
+        c = want;
+        miss++;
+      }
+    }
+  }
+  if (!add.length) return;
+  for (const l of add) f.lines.push(axis === H ? [[s0, l], [s1, l]] : [[l, s0], [l, s1]]);
+  f.count += add.length;
+  const cs = f.lines.map((ln) => (axis === H ? ln[0][1] : ln[0][0]));
+  if (axis === H) [f.bbox[1], f.bbox[3]] = [Math.min(...cs), Math.max(...cs)];
+  else [f.bbox[0], f.bbox[2]] = [Math.min(...cs), Math.max(...cs)];
+  f.extended = add.length;
 }
 
 /**
  * A fan of winders among segments: the point where most pairs of lines (8° or more apart) meet near the inner ends of
  * both, and the lines through it (within 8 cm: balanced winders do not all meet in one point) that start at it (within
- * 20 cm) and are 40 cm long or more – four at least, in four directions 5° apart, reaching 60 cm out. Lines within 12°
- * of the plan's axes are the flights' stringers and treads, not winders.
+ * 20 cm) and are minMember long or more (40 cm) – minLines at least (four), in as many directions 5° apart, reaching
+ * 60 cm out, turning 200° at most. Lines within 12° of the plan's axes are the flights' stringers and treads, not
+ * winders.
  * @returns {{ pivot, spread, count, lines, bbox } | null}
  */
-function fanOf(segs, ppm, near, inside) {
+function fanOf(segs, ppm, near, inside, { minLines = 4, minMember = 0.4 * ppm } = {}) {
   const cell = Math.max(2, 0.05 * ppm);
   const votes = new Map();
   const endDist = (S, X) => Math.min(Math.hypot(S.a[0] - X[0], S.a[1] - X[1]), Math.hypot(S.b[0] - X[0], S.b[1] - X[1]));
@@ -1978,15 +2571,18 @@ function fanOf(segs, ppm, near, inside) {
     }
   }
   let best = null;
-  for (const [key, v] of votes) {
-    if (v < 6) continue; // four lines through a point make six pairs
+  for (const [key, own] of votes) {
+    // the votes of the cell and its neighbours (three lines meeting in one point split their pairs over two cells)
     const [cx, cy] = key.split(',').map(Number);
+    let v = own;
+    if (minLines < 4) for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) if (dx || dy) v += votes.get(`${cx + dx},${cy + dy}`) || 0;
+    if (v < (minLines * (minLines - 1)) / 2) continue; // four lines through a point make six pairs
     const P = [cx * cell, cy * cell];
     if (!inside(P)) continue;
     const members = segs.filter((s) => {
       const d = [s.b[0] - s.a[0], s.b[1] - s.a[1]];
       const off = Math.abs((P[0] - s.a[0]) * d[1] - (P[1] - s.a[1]) * d[0]) / Math.hypot(d[0], d[1]);
-      return off <= Math.max(3, 0.08 * ppm) && endDist(s, P) <= 0.2 * ppm && s.len >= 0.4 * ppm && s.theta % 90 > 12 && s.theta % 90 < 78;
+      return off <= Math.max(3, 0.08 * ppm) && endDist(s, P) <= 0.2 * ppm && s.len >= minMember && s.theta % 90 > 12 && s.theta % 90 < 78;
     });
     const ang = members
       .map((s) => {
@@ -1995,11 +2591,13 @@ function fanOf(segs, ppm, near, inside) {
       })
       .sort((a, b) => a - b);
     const distinct = ang.filter((a, i) => i === 0 || a - ang[i - 1] >= 5).length;
-    if (distinct < 4) continue;
+    if (distinct < minLines) continue;
     const outer = Math.max(...members.map((s) => Math.max(Math.hypot(s.a[0] - P[0], s.a[1] - P[1]), Math.hypot(s.b[0] - P[0], s.b[1] - P[1]))));
     if (outer < 0.6 * ppm) continue;
     let gapMax = 360 - (ang[ang.length - 1] - ang[0]);
     for (let i = 1; i < ang.length; i++) gapMax = Math.max(gapMax, ang[i] - ang[i - 1]);
+    // winders turn a stair by 180° at most: lines all round a point are a door's jamb, a symbol, a JPEG corner
+    if (360 - gapMax > 200) continue;
     if (!best || distinct > best.count) {
       const pts = [P, ...members.flatMap((s) => [s.a, s.b])];
       best = { pivot: P, spread: 360 - gapMax, count: distinct, lines: members.map((s) => [s.a, s.b]), bbox: [Math.min(...pts.map((p) => p[0])), Math.min(...pts.map((p) => p[1])), Math.max(...pts.map((p) => p[0])), Math.max(...pts.map((p) => p[1]))] };

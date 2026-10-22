@@ -1,6 +1,7 @@
 {
  "house": "hus4",
- "file": "plantegninger/_png/hus4/fasade1.png",
+ "file": "fasade1.avif",
+ "part": null,
  "task": "readFacade",
  "promptVersion": "pb-ai-4",
  "model": "claude-sonnet-5-5",
@@ -12,8 +13,17 @@
   "sha256": "768a942f33da0fb3e7f98fe6b20b3693579179ab1e13476137b1c2ce44fc4413"
  },
  "marks": [],
+ "unmarked": [],
  "hints": {
   "fileName": "fasade1.avif"
+ },
+ "source": {
+  "file": "fasade1.avif",
+  "part": null,
+  "width": 1920,
+  "height": 1280,
+  "bbox": null,
+  "photo": null
  },
  "response": {
   "title": null,
@@ -119,5 +129,7 @@
  "cost": 0.011678,
  "ms": 4714,
  "stopReason": "end_turn",
- "recorded": "2026-10-21T18:03:42.886Z"
+ "recorded": "2026-10-21T18:03:42.886Z",
+ "via": "tools/planbygger-ai-fixtures.mjs",
+ "upgraded": "2026-10-21T22:32:16.471Z"
 }

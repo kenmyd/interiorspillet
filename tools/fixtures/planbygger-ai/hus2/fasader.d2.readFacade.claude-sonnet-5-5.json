@@ -1,0 +1,112 @@
+{
+ "house": "hus2",
+ "file": "fasader.png",
+ "part": 2,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 217,
+  "height": 81,
+  "sha256": "0b75b7917b261fd14910d793b493d8a808a7d94ec30cf0dc9ff7f27a2dfdbd44"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasader.png"
+ },
+ "source": {
+  "file": "fasader.png",
+  "part": 2,
+  "width": 980,
+  "height": 160,
+  "bbox": [
+   504,
+   29,
+   721,
+   110
+  ],
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "gable",
+  "storeys": 1,
+  "windows": [
+   {
+    "bbox": [
+     0.318,
+     0.568,
+     0.364,
+     0.704
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.512,
+     0.553,
+     0.605,
+     0.704
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.782,
+     0.531,
+     0.857,
+     0.827
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.658,
+     0.568,
+     0.714,
+     0.704
+    ],
+    "kind": "window"
+   }
+  ],
+  "notes": "Enetasjes hus med bred takflate sett fra langsiden, stående kledning. Taket kan også være pulttak, fasaden alene avgjør ikke. Tittel er ikke lesbar."
+ },
+ "usage": {
+  "input_tokens": 1852,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 1852,
+    "output_tokens": 226,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 226,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.005964,
+ "ms": 2864,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:30:33.362Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

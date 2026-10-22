@@ -7,7 +7,8 @@
  *     POST /api/planbygger/ai        { task, image: { mediaType, data (base64) }, marks, hints }
  *                                    → { ok: true, task, model, promptVersion, response, usage, cached, remaining }
  *                                    | { ok: false, error, message }   (message in Norwegian, for the page)
- *   createAiService(same options) → { status(ctx), run(input, ctx) }   the same without HTTP (record script, tests)
+ *   createAiService(same options) → { status(ctx), run(input, ctx), peek(input, ctx) }   the same without HTTP (record
+ *                                    script, tests); peek: the disk cache's answer for that input, never a call
  *
  * Guards, in a sliding 24 h window:
  * - a quota per session (cookie pb_ai) and per IP, and a cap for the whole server in calls (perServer) and in USD
@@ -49,7 +50,24 @@ export const PRICES = Object.freeze({
   'claude-sonnet-5-5': { in: 2, out: 10 },
   'claude-sonnet-5': { in: 2, out: 10 },
 });
-/** The model per task (chosen from the recorded comparison, notes/planbygger.md). */
+/**
+ * The model per task, chosen from what «Generer» builds with each model's recordings, measured against the fasit files
+ * (`node tools/planbygger-measure-all.mjs --model readPlan=sonnet` etc.; notes/planbygger.md, «KI-laget»). Sonnet was
+ * recorded on the hard cases only (17 drawings, the same image and marks as Haiku's), at about 10 × Haiku's cost per
+ * call ($0.272 against $0.027 for those 17):
+ * - readPlan (7 plans: hus2, hus3 1. and 2. etasje, hus6, hus8, hus9 both floors) – Haiku. With Sonnet «Generer» named
+ *   16 of hus2's 17 rooms against 17, got one room kind less right on hus3 2. etasje and added a skylight hus3 does not
+ *   have; it did better on hus6's scan (doors 5/0/4 against 7/0/3, fasit 2/0/6; windows 15 against 17, fasit 8). The
+ *   rest was the same, «Ferdig betyr» too. Neither model reads the sliding doors on a marked plan: by the place
+ *   checks both got 0 of the 8 on hus2 and hus3 2. etasje right («Generer» gets them from detect.js);
+ * - classify (hus1 1. etasje, hus8 plantegning-1, hus9 øvre etasje) – Haiku: both models give the same drawings and
+ *   levels (both read «Øvre etg» as level 1); «Generer» came out the same on hus1, with one question less on hus8
+ *   (the stair) and underetasje's door counts closer on hus9 (5/0/3 against 3/0/2, fasit 5/0/0) with Sonnet – too
+ *   little on 3 sheets for about 12 × the price ($0.0086 against $0.0007 on hus1);
+ * - readFacade – Haiku if it is ever asked, but the page does not ask: no part of the answer did better than the
+ *   drawing alone (src/planbygger/ai.js, AI_FACADE_USE; Sonnet on 7 facades: house roof 4 of 6 against 5 of 6 without
+ *   the AI, door counts error 10 against 5).
+ */
 export const DEFAULT_MODELS = Object.freeze({
   default: MODELS.haiku,
   classify: MODELS.haiku,
@@ -383,6 +401,23 @@ export function createAiService({ apiKey = process.env.ANTHROPIC_API_KEY, models
         promptVersion: PROMPT_VERSION,
         ...(reason ? { reason } : {}),
       };
+    },
+
+    /**
+     * What run(input, ctx) would answer from the disk cache, without a call (and without a key): the cached entry
+     * { response, usage, cost, ms, servedModel, … } with the model and effort it would use, or null. The record
+     * script's dry run uses it to count the real calls a recording would make.
+     */
+    peek(input, ctx = {}) {
+      const task = input?.task;
+      if (!TASK_NAMES.includes(task)) return null;
+      const data = typeof input.image?.data === 'string' ? input.image.data.replace(/^data:[^,]*,/, '') : null;
+      if (!data) return null;
+      const model = modelFor(task, input.model, ctx.allowModel === true || L.allowModelOverride === true);
+      const effort = L.effort[task] ?? 'medium';
+      const key = cacheKey({ task, model, data, marks: cleanMarks(input.marks, L.maxMarks), hints: cleanHints(input.hints), effort });
+      const hit = cache.get(key);
+      return hit?.response ? { ...hit, model, effort } : null;
     },
 
     /**

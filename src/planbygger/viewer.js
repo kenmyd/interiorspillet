@@ -11,6 +11,9 @@
  *
  * The game's living room (shell.js, kitchen.js, lighting.js, the design) is not used: a customer's house has none. The
  * light is simple (sky, sun from the south of the plan, one lamp per room), shadows only from the sun.
+ *
+ * Skylights (house.ceilings[].skylights, data only in the house format) are shown as bright panels in the ceiling,
+ * like the ceilings only when walking – a stand-in until rooms.js builds roof windows (request in notes/planbygger.md).
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -255,6 +258,31 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       (roots.rooms[l.roomId]?.contents ?? scene).add(pl);
       extra.push(pl);
     }
+    // ---- skylights: a light panel just under the ceiling with a dark frame (no hole, no glass: the format has none)
+    const skylights = [];
+    const skyMat = new THREE.MeshStandardMaterial({ color: '#d9efff', emissive: '#a9d8ff', emissiveIntensity: 0.85, roughness: 0.4, side: THREE.DoubleSide });
+    const frameMat = new THREE.LineBasicMaterial({ color: '#2b3440' });
+    for (const c of house.ceilings || []) {
+      const room = layout.house.roomsById[c.roomId];
+      if (!room || !c.skylights?.length) continue;
+      const y = (room.floorY ?? 0) + (c.height ?? 2.4) - 0.012;
+      for (const sk of c.skylights) {
+        if (!(sk.polygon?.length >= 3)) continue;
+        const shape = new THREE.Shape(sk.polygon.map((p) => V(p[0], p[1])));
+        const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), skyMat);
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.position.y = y;
+        mesh.name = `skylight:${sk.id}`;
+        const pts = sk.polygon.map((p) => new THREE.Vector3(p[0], y - 0.002, p[1]));
+        const frame = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), frameMat);
+        const g = new THREE.Group();
+        g.name = `skylights:${sk.id}`;
+        g.add(mesh, frame);
+        (roots.rooms[c.roomId]?.surfaces ?? scene).add(g);
+        skylights.push(g);
+        extra.push(g);
+      }
+    }
     collision.build();
     if (collision.setBounds) collision.setBounds(b.minX - size, b.maxX + size, b.minZ - size, b.maxZ + size);
     if (collision.setFloorField && layout.house.floorYAt) {
@@ -265,7 +293,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     const player = new PlayerController({ camera, collision, input, settings, events });
     const start = spawnPoint(layout);
     player.teleport(start.position, start.yaw, 0);
-    state = { layout, collision, interaction, roots, parts, extra, player, start, bounds: b, center: new THREE.Vector3(cx, mainY, cz), size };
+    state = { layout, collision, interaction, roots, parts, extra, skylights, player, start, bounds: b, center: new THREE.Vector3(cx, mainY, cz), size };
     setMode(mode);
     const realRooms = layout.house.rooms.filter((r) => !r.hud && r.area > 0.01 && r.id !== 'stue-kjokken');
     onInfo(`${realRooms.length} rom, ${layout.house.doors.length} dører, ${layout.house.windows.length} vinduer`);
@@ -300,6 +328,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     if (!state) return;
     const walk = m === 'walk';
     for (const mesh of state.parts.flatMap((p) => p.pickables?.ceilings || [])) mesh.visible = walk;
+    for (const g of state.skylights || []) g.visible = walk;
     // the dark deck over basement rooms outside the main floor (rooms.js «cover:<room>»): off in the dollhouse view
     for (const g of Object.values(state.roots.levels)) g.traverse((o) => o.isMesh && o.name.startsWith('cover:') && (o.visible = walk));
     if (walk) {

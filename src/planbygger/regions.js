@@ -1,11 +1,14 @@
 /**
  * Planbygger: rooms as the closed regions between the walls of a level (the editor's wall model, not the image).
  *
- *   findRooms(walls, { res = 0.02 }) → {
- *     rooms: [{ index, polygon: [[x, y], …], edges: [{ wall: wallId|null, side: 1|-1|0 }], area, inside: [x, y] }],
+ *   findRooms(walls, { res = 0.02, separators = [] }) → {
+ *     rooms: [{ index, polygon: [[x, y], …], edges: [{ wall: wallId|null, side: 1|-1|0, separator?: id }], area,
+ *               inside: [x, y] }],
  *     at(x, y) → room index | -1 (outside) | -2 (in a wall),
  *     raster: { w, h, x0, y0, res, labels }
  *   }
+ *   levelRooms(level, opts) → findRooms(level.walls, { ...opts, separators: level.separators }): the rooms of a level as
+ *     the editor and the house file should see them (with its separators)
  *
  * The walls are drawn into a raster (res metres per cell, the band of each wall extended by half its thickness at both
  * ends so corners close), the free cells are flood filled, the region touching the border is outside. Each room's outer
@@ -15,6 +18,10 @@
  * lies to the right of each edge and the inward normal is perp(d) = (−d.y, d.x) – the room-spec convention.
  *
  * Openings do not matter here: a door is a hole in a wall, the wall still closes the room.
+ *
+ * Separators ([{ id, a, b }], plan metres: the dash-dot lines between open zones, detect.js separators, level.separators)
+ * split a region like a wall of no thickness – a thin barrier in the raster, reaching into the walls at its ends – but
+ * are no walls: an edge along one has wall null, side 0 and separator = its id, and both rooms share its line.
  */
 import { sub, add, mul, dot, cross, dist, unit, perp, signedArea, simplifyRing, dropCollinear, lineIntersection, projectToSegment } from './geom.js';
 import { distanceToMask } from './image.js';
@@ -56,9 +63,15 @@ export function wallBand(w, walls) {
   return [add(A, mul(n, -h)), add(B, mul(n, -h)), add(B, mul(n, h)), add(A, mul(n, h))];
 }
 
-export function findRooms(walls, { res = 0.02, margin = 0.6 } = {}) {
+/** The rooms of a level with its separators (model.js level.separators): what every consumer of a level should call. */
+export function levelRooms(level, opts = {}) {
+  return findRooms(level.walls || [], { ...opts, separators: level.separators || [] });
+}
+
+export function findRooms(walls, { res = 0.02, margin = 0.6, separators = [] } = {}) {
   const good = walls.filter((w) => w && w.t > 0 && dist(w.a, w.b) > 1e-3);
   if (!good.length) return { rooms: [], at: () => -1, raster: null };
+  const seps = (separators || []).filter((s) => s && s.a && s.b && dist(s.a, s.b) > 1e-3);
   let minX = Infinity;
   let minY = Infinity;
   let maxX = -Infinity;
@@ -82,18 +95,26 @@ export function findRooms(walls, { res = 0.02, margin = 0.6 } = {}) {
   // ---- walls into the raster
   const wallMask = new Uint8Array(W * H);
   const frames = good.map((w) => ({ w, ...wallFrame(w), ext: endExtensions(w, good) }));
-  for (const { w, u, n, L, ext: E } of frames) {
+  // separators: a barrier two cells wide (no 4-connected leak past a diagonal one), into the walls at its ends; snapped
+  // to as a face of no thickness
+  const sepFrames = seps.map((s, i) => {
+    const w = { id: s.id ?? `s${i + 1}`, a: s.a, b: s.b, t: 0 };
+    const e = endExtensions(w, good);
+    return { w, ...wallFrame(w), ext: { a: e.a + res, b: e.b + res }, half: res, sep: true };
+  });
+  for (const { w, u, n, L, ext: E, half: hb } of [...frames, ...sepFrames]) {
+    const hw = hb ?? w.t / 2;
     const corners = [
-      add(add(w.a, mul(u, -E.a)), mul(n, w.t / 2)),
-      add(add(w.a, mul(u, -E.a)), mul(n, -w.t / 2)),
-      add(add(w.b, mul(u, E.b)), mul(n, w.t / 2)),
-      add(add(w.b, mul(u, E.b)), mul(n, -w.t / 2)),
+      add(add(w.a, mul(u, -E.a)), mul(n, hw)),
+      add(add(w.a, mul(u, -E.a)), mul(n, -hw)),
+      add(add(w.b, mul(u, E.b)), mul(n, hw)),
+      add(add(w.b, mul(u, E.b)), mul(n, -hw)),
     ];
     const i0 = Math.max(0, Math.floor((Math.min(...corners.map((c) => c[0])) - x0) / res) - 1);
     const i1 = Math.min(W - 1, Math.ceil((Math.max(...corners.map((c) => c[0])) - x0) / res) + 1);
     const j0 = Math.max(0, Math.floor((Math.min(...corners.map((c) => c[1])) - y0) / res) - 1);
     const j1 = Math.min(H - 1, Math.ceil((Math.max(...corners.map((c) => c[1])) - y0) / res) + 1);
-    const half = w.t / 2;
+    const half = hb ?? w.t / 2;
     for (let j = j0; j <= j1; j++) {
       const py = cellY(j);
       for (let i = i0; i <= i1; i++) {
@@ -150,7 +171,7 @@ export function findRooms(walls, { res = 0.02, margin = 0.6 } = {}) {
     if (!ring || ring.length < 4) continue;
     const metres = ring.map(([i, j]) => [x0 + i * res, y0 + j * res]);
     const simple = dropCollinear(simplifyRing(dropCollinear(metres, 1e-9), res * 1.2), res * 0.05);
-    const snapped = snapToFaces(simple, frames, res);
+    const snapped = snapToFaces(simple, [...frames, ...sepFrames], res);
     if (!snapped || snapped.polygon.length < 3 || signedArea(snapped.polygon) <= 0) continue;
     let best = -1;
     let bestK = rg.start;
@@ -336,10 +357,10 @@ function snapToFaces(ring, frames, res) {
         const sq = dot(sub(q, base), f.u);
         const ext = f.w.t / 2 + res;
         if (Math.max(sp, sq) < -ext || Math.min(sp, sq) > f.L + ext) continue;
-        if (!best || off < best.off) best = { off, base, dir: f.u, wall: f.w.id ?? null, side };
+        if (!best || off < best.off) best = f.sep ? { off, base, dir: f.u, wall: null, side: 0, separator: f.w.id } : { off, base, dir: f.u, wall: f.w.id ?? null, side };
       }
     }
-    if (best) lines.push({ p: best.base, d: dot(best.dir, d) >= 0 ? best.dir : mul(best.dir, -1), wall: best.wall, side: best.side, raw: [p, q] });
+    if (best) lines.push({ p: best.base, d: dot(best.dir, d) >= 0 ? best.dir : mul(best.dir, -1), wall: best.wall, side: best.side, separator: best.separator, raw: [p, q] });
     else lines.push({ p, d, wall: null, side: 0, raw: [p, q] });
   }
   const pts = [];
@@ -348,9 +369,10 @@ function snapToFaces(ring, frames, res) {
     const A = lines[(i + n - 1) % n];
     const B = lines[i];
     const X = lineIntersection(A.p, A.d, B.p, B.d);
+    const edgeOf = (E) => (E.separator != null ? { wall: null, side: 0, separator: E.separator } : { wall: E.wall, side: E.side });
     if (X && dist(X, ring[i]) < res * 6) {
       pts.push(X);
-      edges.push({ wall: B.wall, side: B.side });
+      edges.push(edgeOf(B));
     } else {
       // parallel (or nearly): a jog – the raster vertex projected onto both lines
       const pa = add(A.p, mul(A.d, dot(sub(ring[i], A.p), A.d)));
@@ -360,7 +382,7 @@ function snapToFaces(ring, frames, res) {
         edges.push({ wall: null, side: 0 });
       }
       pts.push(pb);
-      edges.push({ wall: B.wall, side: B.side });
+      edges.push(edgeOf(B));
     }
   }
   // drop zero-length edges and collinear vertices (keeping the edge wall references)
@@ -378,7 +400,7 @@ function snapToFaces(ring, frames, res) {
         break;
       }
       // b on the line a–c and the two edges on the same wall face (or both free): b goes
-      if (projectToSegment(b.p, a.p, c.p).d < 1e-4 && dot(sub(b.p, a.p), sub(c.p, b.p)) > 0 && a.e.wall === b.e.wall && a.e.side === b.e.side) {
+      if (projectToSegment(b.p, a.p, c.p).d < 1e-4 && dot(sub(b.p, a.p), sub(c.p, b.p)) > 0 && a.e.wall === b.e.wall && a.e.side === b.e.side && a.e.separator === b.e.separator) {
         P = P.filter((_, k) => k !== i);
         changed = true;
         break;

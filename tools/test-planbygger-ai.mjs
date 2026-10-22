@@ -6,19 +6,27 @@
  *      (tools/fixtures/planbygger-ai/<hus>/<fil>.targets.json: hus1, hus2, hus3, hus5, hus8)
  *   2. ai.js: downscaleImage, roomKindOf, tidyResponse (mark linking, the label of an unnamed or unmarked room),
  *      aiRead / aiStatus never throw (no server, a throwing transport, a refused task)
- *   3. the recorded answers (tools/fixtures/planbygger-ai/<hus>/<fil>.<oppgave>.<modell>.json) replayed through
- *      setAiTransport and compared item by item with plantegninger/<hus>/fasit.json (rooms, labels, door variants,
- *      windows, skylights, stair type, title, scale text, dimensions, ceiling texts, roof, drawings on a sheet) and
- *      with what was checked by eye on the marked images (which mark is which room, the kind per opening letter).
- *      A deviation fails unless it is listed in KNOWN (the measured model errors); a known error that is now right
- *      fails too, so the list stays true. Plus a Haiku / Sonnet table with tokens, cost and time.
- *   4. the server (server/planbygger-ai/index.mjs) with a stubbed SDK client: the request shape, the cache, the quota
+ *   3. the recorded answers (tools/fixtures/planbygger-ai/<hus>/<fil>[.d<del>].<oppgave>.<modell>.json, recorded
+ *      through «Generer» by `node tools/planbygger-measure-all.mjs --record`) replayed through setAiTransport with
+ *      their own marks and hints, and compared item by item with plantegninger/<hus>/fasit.json (every room label
+ *      with its area and kind, door variants, windows, skylights, stair type, title, scale text, dimensions, ceiling
+ *      texts, roof, drawings on a sheet) plus what was read off the drawings by eye (BY_EYE in
+ *      tools/planbygger-ai-fixtures.mjs: outer dimensions, texts, and where each room and opening is – the room the
+ *      model named must be the one at the fasit point, the opening marked there must get its kind). A deviation fails
+ *      unless it is listed in KNOWN (the measured model errors); a known error that is now right fails too, so the
+ *      list stays true. Plus a table with tokens, cost and time, and Haiku against Sonnet on the same drawings.
+ *   4. «Generer» on every house replays the recordings: every AI task the page sends (not readFacade: ai.js
+ *      AI_FACADE_USE) has one of the server's model for it, made on exactly what generate sends now (image, marks,
+ *      hints, source; a stale one is reported, and fails with --strict-fresh); the facade recordings in a run with
+ *      their parts on; no recording is left that no task uses; and no level loses most of its walls or windows with
+ *      the AI against «Generer» without it (KNOWN_DROPS: the looked-at exceptions)
+ *   5. the server (server/planbygger-ai/index.mjs) with a stubbed SDK client: the request shape, the cache, the quota
  *      per session, per IP and for the server (calls and USD), the last X-Forwarded-For entry, the model the client
  *      may not pick, the size limit, bad input, no key / no SDK → available: false, stop reasons, the SDK's typed
- *      errors, the deadline, the queue (at most 3 at a time), the Sonnet refusal fallback
- *   5. the Vite plugin: the middleware without a key, and a real Vite dev server on port 5276 (--no-vite skips it)
+ *      errors, the deadline, the queue (at most 3 at a time), the Sonnet refusal fallback, peek (the cache, no call)
+ *   6. the Vite plugin: the middleware without a key, and a real Vite dev server on port 5276 (--no-vite skips it)
  *
- *   node tools/test-planbygger-ai.mjs [--no-vite]
+ *   node tools/test-planbygger-ai.mjs [--no-vite] [--quick] [--strict-fresh]   (--quick: section 4 on hus1, hus3, hus7)
  */
 import { ROOT, imp, check, section, done } from './planbygger-lib.mjs';
 import { readPng, encodePng } from './planbygger-png.mjs';
@@ -38,6 +46,9 @@ const { pointInPolygon } = await imp('src/planbygger/geom.js');
 const SERVER = await import(pathToFileURL(path.join(ROOT, 'server/planbygger-ai/index.mjs')).href);
 const PROMPTS = await import(pathToFileURL(path.join(ROOT, 'server/planbygger-ai/prompts.mjs')).href);
 const SDK = await import(pathToFileURL(path.join(ROOT, 'server/planbygger-ai/node_modules/@anthropic-ai/sdk/index.mjs')).href).catch(() => null);
+const FX = await import(pathToFileURL(path.join(ROOT, 'tools/planbygger-ai-fixtures.mjs')).href);
+const MA = await import(pathToFileURL(path.join(ROOT, 'tools/planbygger-measure-all.mjs')).href);
+const G = await imp('src/planbygger/generate.js');
 const FIX = path.join(ROOT, 'tools/fixtures/planbygger-ai');
 const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'pb-ai-test-'));
 const DEFAULT_MODEL = SERVER.DEFAULT_MODELS.readPlan;
@@ -247,11 +258,14 @@ section('marks.js – de ekte planene (målene frosset av opptaksskriptet)');
       return core > 0;
     }).map((p) => p.m.id);
     check(`${name}: ingen åpningsmerker over mørk tekst eller strek utenfor sin egen vegg${touch.length ? ` (kanten berører en strek: ${touch.join(', ')})` : ''}`, openOverText.length === 0, openOverText.join(' '));
-    // the recorded answers are about these marks: every mark drawn now has the recording's id on the same room or
-    // opening (a disc may have moved inside its room, or along its wall, since the recording – the answer is about the
-    // room or the opening); a recorded mark that is not drawn any more must be one marks.js now leaves unmarked
+    // a recording made on these frozen targets (the record script's, without a source) is about these marks: every
+    // mark drawn now has the recording's id on the same room or opening (a disc may have moved inside its room, or
+    // along its wall, since the recording – the answer is about the room or the opening); a recorded mark that is not
+    // drawn any more must be one marks.js now leaves unmarked. The recordings made through «Generer» have the marks of
+    // generate's own detection, checked in the «Generer» section instead.
     for (const f of fs.readdirSync(path.dirname(tp)).filter((x) => x.startsWith(`${path.basename(tp, '.targets.json')}.readPlan.`))) {
       const fx = JSON.parse(fs.readFileSync(path.join(path.dirname(tp), f), 'utf8'));
+      if (fx.source) continue;
       const short = fx.model.replace('claude-', '').replace(/-5-5$/, '');
       const rec = new Map(fx.marks.map((m) => [m.id, m]));
       const now = new Map(res.marks.map((m) => [m.id, m]));
@@ -302,8 +316,13 @@ section('ai.js – tidyResponse');
   check('et rom uten navn får etiketten som ligger i polygonet', r.rooms[1].name === 'BOD' && r.rooms[1].area === 4.4 && r.rooms[1].roomKind === 'storage' && r.rooms[1].fromLabel === true && r.labels.length === 1);
   check('punkter klemmes til 0–1, tomme titler blir null, tomme himlingstekster ut', r.labels[0].at.join() === '1,0' && r.levelTitle === null && r.ceiling.length === 1);
   check('åpning med merke kobles (med ref), åpning uten merke beholder modellens punkt', r.openings[0].at.join() === '0.5,0.2' && r.openings[0].ref === 'o3' && r.openings[1].mark === null && r.openings[1].ref === null && r.openings[1].at.join() === '0.1,0.9');
-  const f = AI.tidyResponse('readFacade', { title: null, roof: 'gable', storeys: 2, windows: [{ bbox: [0.6, 0.5, 0.4, 0.3], kind: 'window' }, { bbox: [0.1], kind: 'door' }], notes: '' });
-  check('fasade: bokser ordnes, ugyldige ut', f.windows.length === 1 && f.windows[0].bbox.join() === '0.4,0.3,0.6,0.5');
+  const facade = { title: null, roof: 'gable', storeys: 2, windows: [{ bbox: [0.6, 0.5, 0.4, 0.3], kind: 'window' }, { bbox: [0.1], kind: 'door' }], notes: '' };
+  const f = AI.tidyResponse('readFacade', facade, [], [], { facadeUse: { roof: true, kinds: true } });
+  check('fasade: bokser ordnes, ugyldige ut', f.windows.length === 1 && f.windows[0].bbox.join() === '0.4,0.3,0.6,0.5' && f.roof === 'gable');
+  const f0 = AI.tidyResponse('readFacade', facade);
+  check('fasade med AI_FACADE_USE (begge av): tak null og ingen dør/vindu-typer videre, men seen har det modellen sa', AI.AI_FACADE_USE.roof === false && AI.AI_FACADE_USE.kinds === false && f0.roof === null && f0.windows.length === 0 && f0.storeys === 2 && f0.seen.roof === 'gable' && f0.seen.windows.length === 1, JSON.stringify(f0));
+  const f1 = AI.tidyResponse('readFacade', facade, [], [], { facadeUse: { roof: true, kinds: false } });
+  check('fasade med bare taket på: taket videre, typene ikke', f1.roof === 'gable' && f1.windows.length === 0);
   const cl = AI.tidyResponse('classify', { drawings: [{ kind: 'plan', bbox: [0, 0, 1, 1], title: null, levelName: '1. etasje', level: 0, detached: false }], scaleText: null, notes: 'x' });
   check('classify: formen beholdes', cl.drawings[0].level === 0 && cl.drawings[0].levelName === '1. etasje' && cl.notes === 'x');
 
@@ -351,236 +370,134 @@ section('ai.js – kaster aldri');
   });
   const st = await AI.aiStatus();
   check('aiStatus med server: { available, model, remaining }', st.available === true && st.model === 'claude-haiku-5-5' && st.remaining === 7);
+  // readFacade is not sent while no part of its answer is used (AI_FACADE_USE): null at once, no request
+  seen = null;
+  const off = await AI.aiRead('readFacade', { image: blank(200, 100) });
+  check('readFacade sendes ikke når ingen del av svaret brukes: null, ingen forespørsel, aiLastError «off» på norsk', off === null && seen === null && AI.aiLastError()?.error === 'off' && /fasadene/.test(AI.aiLastError().message) && !AI.aiTaskInUse('readFacade') && AI.aiTaskInUse('readPlan') && AI.aiTaskInUse('classify'));
+  AI.setAiFacadeUse({ roof: true });
+  check('setAiFacadeUse slår en del på igjen (for måling)', AI.aiTaskInUse('readFacade') && AI.aiFacadeUse().roof === true && AI.aiFacadeUse().kinds === false);
   const big = await AI.aiRead('readFacade', { image: blank(2400, 1200), marks: [{ id: '1', kind: 'room', at: [0.5, 0.5], polygon: [[0, 0], [1, 0], [1, 1]] }], unmarked: [{ kind: 'room', ref: 2, at: [0.1, 0.1], polygon: [[0, 0], [0.2, 0], [0.2, 0.2]] }] });
+  AI.setAiFacadeUse(null);
   check('aiRead skalerer til 1600 px og sender merkene uten polygon, og ikke de umerkede', seen.image.width === 1600 && seen.image.height === 800 && seen.marks.length === 1 && seen.marks[0].polygon === undefined && seen.marks[0].drawnAt.join() === '0.5,0.5' && !('unmarked' in seen) && !JSON.stringify(seen.marks).includes('ref'));
-  check('svaret får meta { model, promptVersion, cached }', big?.roof === 'flat' && big.meta.model === 'claude-haiku-5-5' && big.meta.cached === true);
+  check('svaret får meta { model, promptVersion, cached }; setAiFacadeUse(null) gir AI_FACADE_USE tilbake', big?.roof === 'flat' && big.meta.model === 'claude-haiku-5-5' && big.meta.cached === true && !AI.aiTaskInUse('readFacade'));
   AI.resetAiTransport();
 }
 
 // ---------------------------------------------------------------------------------------------------------------
 section('opptakene spilt av gjennom setAiTransport, mot fasiten');
 
-const fasitCache = {};
-const fasit = (house) => (fasitCache[house] ??= JSON.parse(fs.readFileSync(path.join(ROOT, 'plantegninger', house, 'fasit.json'), 'utf8')));
-const norm = (s) => String(s ?? '').replace(/\s+/g, ' ').trim().toUpperCase();
-const sameArea = (a, b) => (a == null && b == null) || (a != null && b != null && Math.abs(a - b) < 0.051);
-const iou = (a, b) => {
-  const ix = Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0]));
-  const iy = Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
-  const u = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - ix * iy;
-  return u > 0 ? (ix * iy) / u : 0;
-};
-
 /**
- * What the fasit cannot say, checked by eye on the marked images the model saw (.shots/planbygger/ai-record/):
- * which mark is which room (a label, or [label, area] when the label repeats; the area and the kind come from the
- * fasit), the rooms marks.js left unmarked, the labels outside marked rooms, the kind per opening letter, outer
- * dimensions with their direction, and texts the fasit leaves out.
- */
-const BY_EYE = {
-  'hus1/1etg.readPlan': {
-    rooms: { 1: 'SOV', 2: 'BOD', 3: 'HALL/TRAPP', 4: 'VASK', 5: 'KJØKKEN', 6: 'STUE' },
-    openings: { A: 'window', B: 'window', C: 'window', D: 'door', E: 'door', F: 'double-door', G: 'double-door', H: 'window', J: 'window', K: 'window', L: 'window', M: 'window', N: 'window', P: 'door', Q: 'sliding-door', R: 'door', S: 'window', T: 'window' },
-  },
-  'hus1/2etg.readPlan': {
-    rooms: { 1: ['SOV', 11.8], 2: 'BAD', 3: 'GANG/TRAPP', 4: 'BOD', 5: ['SOV', 11.9], 6: ['SOV', 10] },
-    labels: ['LOFTSTUE'],
-    openings: { A: 'door', B: 'window', C: 'door', D: 'window', E: 'window', F: 'window', G: 'door', H: 'door', J: 'door', K: 'door', L: 'window', M: 'window' },
-  },
-  'hus2/1etg.readPlan': {
-    // 6: STUE 32.9 shares its region with GANG, KJØKKEN and ENTRÉ (walls the detection missed); 9: WIC 4.6 with «(G)»
-    rooms: { 1: ['SOVEROM', 10], 2: 'KONTOR', 3: ['STUE', 10.7], 4: ['SOVEROM', 9.9], 5: ['SOVEROM', 11.7], 6: ['STUE', 32.9], 7: 'WC/D', 8: 'BAD', 9: ['WIC', 4.6], 10: 'VASK' },
-    unmarked: [['HALL', 1.7], ['WIC', 1.3], ['WIC', 1.3]],
-    labels: ['GANG', 'KJØKKEN', 'ENTRÉ', 'BOD'],
-  },
-  'hus3/1etg.readPlan': {
-    rooms: { 1: 'KJØKKEN/STUE', 2: 'VASK', 3: 'WC/D' },
-    labels: ['ENTRÉ'],
-    // F: the detection cut the glass wall so F holds glazing and the lower terrace door – every reading is right
-    openings: { A: 'window', B: 'door', C: 'door', D: 'window', E: 'door', G: 'door', H: 'door', J: 'window', K: 'window', L: 'door' },
-    outer: [['6.15', 'h'], ['14.95', 'v']],
-    ceiling: ['ÅPENT OPP'],
-  },
-  'hus3-foto/1etg-foto.readPlan': { labels: ['KJØKKEN/STUE', 'VASK', 'ENTRÉ', 'WC/D'], outer: [['6.15', 'h'], ['14.95', 'v']], ceiling: ['ÅPENT OPP'] },
-  'hus4/1etg.readPlan': { labels: 'all' },
-  'hus5/1etg.readPlan': {
-    // 4: STUE/KJØKKEN shares its region with SPISESTUE; 9: SOV 18.5 with GANG 4.8
-    rooms: { 1: 'SPORTSBOD', 2: 'VASK/TEK', 3: ['SOV', 14.4], 4: 'STUE/KJØKKEN', 5: 'GARD/BOD', 6: 'VF', 7: ['GANG', 9.7], 8: ['SOV', 11.9], 9: ['SOV', 18.5], 10: ['BAD', 7.7] },
-    unmarked: [['BAD', 5]],
-    labels: ['SPISESTUE', ['GANG', 4.8]],
-  },
-  'hus6/plan-1etg-tilbygg.readPlan': { labels: 'all', scaleText: '1:100' },
-  // 8: STUE shares its region with SPISESTUE; 7: the detached garage (not in the fasit's rooms)
-  'hus8/plantegning-3.readPlan': { rooms: { 1: 'SOVEROM', 2: 'GANG', 3: 'SOVEROM', 4: 'BAD', 5: 'SOVEROM', 6: 'ENTRÉ', 8: 'STUE', 9: 'KJØKKEN' }, labels: ['SPISESTUE', 'TERRASSE'] },
-  'hus7/garasje-plan-snitt-fasade.classify': { titles: ['PLAN', 'SNITT', 'VEST', 'SØR', 'ØST', 'NORD'], scaleText: '1:100' },
-};
-
-/**
- * The measured model errors: `<house>/<file>.<task> <model>` → the items that differ from the truth. Every one was
- * looked at: these are the model's mistakes, not the truth's (notes/planbygger.md).
+ * The measured model errors: `<house>/<file>[ del n] <task> <model>` → the items that differ from the truth
+ * (fasit.json, and BY_EYE in tools/planbygger-ai-fixtures.mjs). Every one was looked at: these are the model's
+ * mistakes, not the truth's (notes/planbygger.md, «KI-laget»).
  */
 const KNOWN = {
-  // rom 3: the prompt maps HALL/TRAPP to hall, the fasit says entrance (the front door opens into it): owner decides
-  'hus1/1etg.readPlan haiku': ['rom 3', 'trapp'],
-  // enkeltdører: Sonnet adds an unmarked door (the cupboard door in the kitchen corner, not a door in the fasit)
-  'hus1/1etg.readPlan sonnet': ['rom 3', 'enkeltdører'],
-  'hus1/2etg.readPlan haiku': ['trapp'],
-  // rom 9: «(G)» instead of «WIC 4.6 m²» in the same region; sliding doors read as doors; PLANTAK (rotated) missed
-  'hus2/1etg.readPlan haiku': ['rom 9', 'enkeltdører', 'skyvedører', 'vinduer', 'himling PLANTAK'],
-  // the unmarked photo: only 5 of 7 doors and none of the 6 windows listed
-  'hus3-foto/1etg-foto.readPlan haiku': ['enkeltdører', 'vinduer'],
-  // B a door read as an opening, C (door) and D (window) swapped; F read as a sliding door
-  'hus3/1etg.readPlan haiku': ['åpning B', 'åpning C', 'åpning D', 'enkeltdører', 'skyvedører', 'vinduer'],
-  'hus3/1etg.readPlan sonnet': ['vinduer', 'takvinduer'],
-  // the sliding door, an extra window, and the U stair read as an L
-  'hus4/1etg.readPlan haiku': ['skyvedører', 'vinduer', 'trapp'],
-  'hus4/1etg.readPlan sonnet': ['skyvedører', 'vinduer', 'trapp'],
-  'hus4/fasade1.readFacade sonnet': ['tak'],
-  'hus5/1etg.readPlan haiku': ['enkeltdører', 'skyvedører', 'vinduer'],
-  // the unmarked scan: no doors or windows listed at all; the module sizes M10 / M8 and one chain dimension missed
-  'hus6/plan-1etg-tilbygg.readPlan haiku': ['enkeltdører', 'skyvedører', 'vinduer', 'trapp', 'mål 1170', 'mål M10', 'mål M8'],
-  // rough boxes on the 4771 × 3332 scan (IoU 0.66–0.80)
-  'hus7/garasje-plan-snitt-fasade.classify haiku': ['plass section SNITT', 'plass facade VEST', 'plass facade SØR'],
-  // rom 6: «ENTRE» without the accent; the garage port read as a double door; 1 of 3 sliding doors
-  'hus8/plantegning-3.readPlan haiku': ['rom 6', 'dobbeltdører', 'skyvedører'],
+  // stairs: the quarter-turn stair is read as straight / unknown; Sonnet reads it right on hus9 (both floors)
+  'hus1/1etg.png readPlan haiku': ['trapp'],
+  'hus1/2etg.png readPlan haiku': ['trapp'],
+  // hus1's roof is a half-hip (the ends slope in at the top) with a dormer: both models say hip on the long sides, the
+  // fasit says gable-dormer / gable (a question of the roof kinds, see notes/planbygger.md); dormer windows counted
+  'hus1/fasade1.avif readFacade haiku': ['tak', 'fasadevinduer'],
+  'hus1/fasade1.avif readFacade sonnet': ['tak', 'fasadevinduer'],
+  'hus1/fasade2.avif readFacade haiku': ['tak'],
+  'hus1/fasade3.avif readFacade haiku': ['tak', 'fasadevinduer'],
+  'hus1/fasade3.avif readFacade sonnet': ['tak', 'fasadevinduer'],
+  'hus1/fasade4.avif readFacade haiku': ['tak'],
+  // sliding doors are not seen as such on any marked plan (both models: «opening» or «door» on all five marks; the
+  // five in «Generer» come from detect.js); PLANTAK is written rotated; mark 9 (WIC 4.6) named «(G)» (the wardrobe
+  // letter inside it) and «WC»
+  'hus2/1etg.png readPlan haiku': ['skyvedører', 'vinduer', 'himling PLANTAK', 'plass rom WIC 4.6', 'åpning 96,199', 'åpning 166,275', 'åpning 323,198', 'åpning 322,428', 'åpning 276,678'],
+  'hus2/1etg.png readPlan sonnet': ['rom WIC 4.6', 'skyvedører', 'plass rom WIC 4.6', 'åpning 96,199', 'åpning 166,275', 'åpning 323,198', 'åpning 322,428', 'åpning 276,678'],
+  // the facades on hus2's and hus3's sheets are crops of about 200 × 80 and 390 × 200 px: the long side of a gable roof
+  // is read as mono-pitch, small windows and doors are missed or doubled
+  'hus2/fasader.png del 1 readFacade haiku': ['tak', 'fasadevinduer', 'fasadedører'],
+  'hus2/fasader.png del 1 readFacade sonnet': ['fasadevinduer', 'fasadedører'],
+  'hus2/fasader.png del 2 readFacade haiku': ['tak'],
+  'hus2/fasader.png del 2 readFacade sonnet': ['tak', 'fasadevinduer', 'fasadedører'],
+  'hus2/fasader.png del 3 readFacade haiku': ['tak', 'fasadevinduer'],
+  'hus2/fasader.png del 3 readFacade sonnet': ['fasadevinduer'],
+  'hus2/fasader.png del 4 readFacade haiku': ['fasadevinduer', 'fasadedører'],
+  'hus3/fasader.png del 1 readFacade haiku': ['tak', 'fasadevinduer', 'fasadedører'],
+  'hus3/fasader.png del 2 readFacade haiku': ['fasadevinduer', 'fasadedører'],
+  'hus3/fasader.png del 3 readFacade haiku': ['tak', 'etasjer'],
+  'hus3/fasader.png del 4 readFacade haiku': ['fasadevinduer'],
+  // door variants on a marked plan: the front door and its side panel read as double doors, the door under the stair
+  // and the east window by the stair foot as plain openings, a glass panel as a sliding door; Sonnet gets the doors
+  // nearly right (the door under the stair as a window) but adds a skylight
+  'hus3/1etg.png readPlan haiku': ['enkeltdører', 'dobbeltdører', 'skyvedører', 'vinduer', 'åpning 566,383', 'åpning 353,848', 'åpning 389,848', 'åpning 599,583'],
+  'hus3/1etg.png readPlan sonnet': ['enkeltdører', 'takvinduer', 'åpning 566,383'],
+  // the three sliding doors of the bedrooms read as doors (Haiku) and openings (Sonnet)
+  'hus3/2etg.png readPlan haiku': ['enkeltdører', 'skyvedører', 'åpning 233,292', 'åpning 233,416', 'åpning 233,575'],
+  // BOD/BADSTUE (a sauna) as a bathroom
+  'hus3/2etg.png readPlan sonnet': ['rom BOD/BADSTUE 4.1', 'enkeltdører', 'dobbeltdører', 'skyvedører', 'åpning 233,292', 'åpning 233,416', 'åpning 233,575'],
+  // the phone photo: 2 of 6 windows
+  'hus3-foto/1etg-foto.jpg readPlan haiku': ['vinduer'],
+  // the U stair read as straight and as spiral; 2. etasje read as level 0 (it has the living room and the kitchen)
+  'hus4/1etg.avif readPlan haiku': ['skyvedører', 'vinduer', 'trapp'],
+  'hus4/2etg.avif classify haiku': ['etasje plan 0'],
+  'hus4/2etg.avif readPlan haiku': ['trapp'],
+  'hus4/fasade1.avif readFacade sonnet': ['tak'],
+  'hus4/fasade2.avif readFacade haiku': ['etasjer'],
+  // the mono-pitch roof seen from its side shows only a thin fascia: flat; the glass panels that reach the balcony
+  // floor counted as doors (the fasit counts them as windows)
+  'hus4/fasade3.avif readFacade haiku': ['tak', 'fasadevinduer', 'fasadedører'],
+  'hus4/fasade3.avif readFacade sonnet': ['tak', 'fasadevinduer', 'fasadedører'],
+  'hus4/fasade4.avif readFacade haiku': ['fasadevinduer'],
+  // the sliding door between GARD/BOD and VF read as a door (the other three right)
+  'hus5/1etg.avif readPlan haiku': ['skyvedører', 'åpning 313,246'],
+  'hus5/fasade1.avif readFacade haiku': ['fasadevinduer'],
+  'hus5/fasade3.avif readFacade haiku': ['tak', 'fasadevinduer'],
+  'hus5/fasade4.avif readFacade haiku': ['tak'],
+  // the scan: WC without its area, sliding doors as doors, the U stair as straight, the module sizes M10 / M8 and
+  // some chain dimensions missed
+  'hus6/plan-1etg-tilbygg.pdf readPlan haiku': ['rom WC 3', 'enkeltdører', 'skyvedører', 'vinduer', 'trapp', 'mål 6314', 'mål 4400 #2', 'mål 1020', 'mål 1170', 'mål M10', 'mål M8'],
+  'hus6/plan-1etg-tilbygg.pdf readPlan sonnet': ['rom WC 3', 'enkeltdører', 'skyvedører', 'vinduer', 'trapp', 'mål 5500', 'mål 1170', 'mål M10', 'mål M8'],
+  // rough boxes on the 4771 × 3332 scan (IoU 0.66–0.80); two gable facades as flat; «GARASJE 30,25» with the area in
+  // the text
+  'hus7/garasje-plan-snitt-fasade.pdf classify haiku': ['plass section SNITT', 'plass facade VEST', 'plass facade SØR'],
+  'hus7/garasje-plan-snitt-fasade.pdf del 1 readFacade haiku': ['tak'],
+  'hus7/garasje-plan-snitt-fasade.pdf del 3 readFacade haiku': ['tak'],
+  'hus7/garasje-plan-snitt-fasade.pdf del 5 readPlan haiku': ['rom GARASJE 30.25'],
+  'hus8/plantegning-2.jpg readPlan haiku': ['enkeltdører', 'trapp'],
+  'hus8/plantegning-3.jpg del 1 readPlan haiku': ['skyvedører'],
+  'hus8/plantegning-3.jpg del 1 readPlan sonnet': ['enkeltdører', 'skyvedører'],
+  // «Øvre etg» is the main floor of this split-level house (entrance and kitchen): both models follow the title
+  'hus9/ovre-etasje.jpg classify haiku': ['etasje plan 0'],
+  'hus9/ovre-etasje.jpg classify sonnet': ['etasje plan 0'],
+  'hus9/ovre-etasje.jpg readPlan haiku': ['enkeltdører', 'skyvedører', 'vinduer', 'trapp'],
+  'hus9/ovre-etasje.jpg readPlan sonnet': ['skyvedører', 'vinduer'],
+  // «10,56» read as 9.56
+  'hus9/underetasje.jpg readPlan haiku': ['rom Barnesov 10.56', 'enkeltdører', 'skyvedører', 'trapp'],
+  'hus9/underetasje.jpg readPlan sonnet': ['skyvedører'],
 };
 
-const fixtures = [];
-for (const house of fs.readdirSync(FIX)) {
-  const dir = path.join(FIX, house);
-  if (!fs.statSync(dir).isDirectory() || house === 'cases') continue;
-  for (const f of fs.readdirSync(dir)) if (/\.(classify|readPlan|readFacade)\.[\w.-]+\.json$/.test(f)) fixtures.push(path.join(dir, f));
-}
-const folders = new Set(fixtures.map((f) => path.basename(path.dirname(f)))).size;
-check(`opptak finnes (${fixtures.length}), fra ${folders} av de 10 husmappene`, fixtures.length >= 20 && folders >= 9);
-
-/** The items of one replayed answer: [{ id, ok, detail }]. */
-function itemsOf(fx, out, img) {
-  const items = [];
-  const add = (id, ok, detail = '') => {
-    // a repeated item (the same dimension twice) gets a number
-    const n = items.filter((i) => i.id === id || i.id.startsWith(`${id} #`)).length;
-    items.push({ id: n ? `${id} #${n + 1}` : id, ok: !!ok, detail });
-  };
-  const base = path.basename(fx.file, '.png');
-  const key = `${fx.house}/${base}.${fx.task}`;
-  const E = BY_EYE[key] ?? {};
-  const F = fasit(fx.house);
-  const original = fx.hints?.fileName;
-  if (fx.task === 'readPlan') {
-    const L = F.levels.find((l) => l.file === original);
-    const fasitRoom = (spec) => {
-      const [label, area] = Array.isArray(spec) ? spec : [spec, undefined];
-      return L.rooms.find((x) => norm(x.label) === norm(label) && (area === undefined || sameArea(x.area, area))) ?? { label, area: area ?? null, kind: null };
-    };
-    const show = (x) => (x ? `${x.name ?? x.text} ${x.area ?? '–'} ${x.roomKind}` : 'mangler');
-    for (const [mark, spec] of Object.entries(E.rooms ?? {})) {
-      const t = fasitRoom(spec);
-      const got = out.rooms.find((x) => x.mark === mark);
-      add(`rom ${mark}`, got && norm(got.name) === norm(t.label) && sameArea(got.area, t.area) && got.roomKind === t.kind, `${show(got)} (fasit ${t.label} ${t.area ?? '–'} ${t.kind})`);
-    }
-    for (const spec of E.unmarked ?? []) {
-      const t = fasitRoom(spec);
-      const got = out.rooms.find((x) => x.unmarked && norm(x.name) === norm(t.label) && sameArea(x.area, t.area));
-      add(`umerket rom ${t.label} ${t.area}`, got && got.roomKind === t.kind && got.ref != null, `${show(got)} (fasit ${t.kind})`);
-    }
-    const labels = E.labels === 'all' ? L.rooms.map((x) => [x.label, x.area]) : E.labels ?? [];
-    const pool = [...out.labels];
-    for (const spec of labels) {
-      const t = fasitRoom(spec);
-      const k = pool.findIndex((x) => norm(x.text) === norm(t.label) && sameArea(x.area, t.area));
-      const got = k >= 0 ? pool.splice(k, 1)[0] : null;
-      add(`etikett ${t.label}${t.area != null ? ` ${t.area}` : ''}`, got && got.roomKind === t.kind && !/m²|m2/.test(got.text), `${show(got)} (fasit ${t.kind})`);
-    }
-    for (const [letter, kind] of Object.entries(E.openings ?? {})) {
-      const got = out.openings.find((o) => o.mark === letter)?.kind;
-      add(`åpning ${letter}`, got === kind, `${got ?? 'mangler'} (${kind})`);
-    }
-    const count = (k) => out.openings.filter((o) => o.kind === k).length;
-    add('enkeltdører', count('door') === L.doors.single, `${count('door')} (fasit ${L.doors.single})`);
-    add('dobbeltdører', count('double-door') === L.doors.double, `${count('double-door')} (fasit ${L.doors.double})`);
-    add('skyvedører', count('sliding-door') === L.doors.sliding, `${count('sliding-door')} (fasit ${L.doors.sliding})`);
-    add('vinduer', count('window') === L.windows, `${count('window')} (fasit ${L.windows})`);
-    add('takvinduer', out.skylights.length === L.skylights, `${out.skylights.length} (fasit ${L.skylights})`);
-    const stair = L.stair?.type ?? L.stair ?? 'none';
-    add('trapp', stair === 'none' ? !out.stair.present : out.stair.present && out.stair.type === stair, `${out.stair.present ? out.stair.type : 'ingen'} (fasit ${stair})`);
-    add('tittel', out.levelTitle === L.title, `${JSON.stringify(out.levelTitle)} (fasit ${JSON.stringify(L.title)})`);
-    add('målestokk', out.scaleText === (E.scaleText ?? null), `${JSON.stringify(out.scaleText)} (${JSON.stringify(E.scaleText ?? null)})`);
-    const dims = [...out.dimensions];
-    for (const d of L.dimensions ?? []) {
-      const k = dims.findIndex((x) => x.text === d.text && x.value != null && Math.abs(x.value - d.m) < 0.005);
-      const got = k >= 0 ? dims.splice(k, 1)[0] : null;
-      add(`mål ${d.text}`, got, got ? `${got.value} ${got.along} ${got.what}` : 'mangler');
-    }
-    for (const [text, along] of E.outer ?? []) {
-      const got = out.dimensions.find((x) => x.text === text);
-      add(`ytre mål ${text}`, got && got.along === along && got.what === 'outer', got ? `${got.along} ${got.what}` : 'mangler');
-    }
-    for (const text of new Set([...(L.ceiling ?? []), ...(E.ceiling ?? [])].map(norm))) add(`himling ${text}`, out.ceiling.some((c) => norm(c) === text), JSON.stringify(out.ceiling));
-  } else if (fx.task === 'classify') {
-    const file = F.files[original];
-    const W = img.width;
-    const H = img.height;
-    const expected = file.drawings ?? (file.kind === 'facade' ? F.facades.filter((f) => f.file === original).map(() => ({ kind: 'facade' })) : [{ kind: file.kind, level: file.level }]);
-    for (const kind of ['plan', 'facade', 'section']) {
-      const want = expected.filter((d) => d.kind === kind).length;
-      const got = out.drawings.filter((d) => d.kind === kind).length;
-      add(`antall ${kind}`, got === want, `${got} (fasit ${want})`);
-    }
-    expected.forEach((d, i) => {
-      if (!['plan', 'facade', 'section'].includes(d.kind)) return;
-      const same = out.drawings.filter((x) => x.kind === d.kind);
-      const box = d.bbox ? [d.bbox[0] / W, d.bbox[1] / H, d.bbox[2] / W, d.bbox[3] / H] : null;
-      // the drawing the model meant: the best overlap, or the same place in reading order
-      const k = box ? same.reduce((b, x, j) => (iou(x.bbox, box) > (b < 0 ? -1 : iou(same[b].bbox, box)) ? j : b), -1) : expected.filter((x) => x.kind === d.kind).indexOf(d);
-      const got = same[k];
-      const name = d.title && d.title.length <= 12 ? d.title : i;
-      if (box) add(`plass ${d.kind} ${name}`, got && iou(got.bbox, box) >= 0.8, got ? `IoU ${iou(got.bbox, box).toFixed(2)}` : 'mangler');
-      if (d.kind === 'plan') {
-        // level null in the fasit: a separate building (the garage) – the model says detached; beside one, the
-        // house's floors are not detached
-        const mixed = expected.some((x) => x.kind === 'plan' && x.level == null);
-        const ok = got && (d.level == null ? got.detached : got.level === d.level && !(mixed && got.detached));
-        add(`etasje plan ${name}`, ok, got ? `${got.level}${got.detached ? ' frittstående' : ''} (fasit ${d.level ?? 'frittstående'})` : 'mangler');
-      }
-    });
-    if (expected.some((d) => d.kind === 'text')) add('tekstblokk', out.drawings.some((d) => d.kind === 'text'));
-    for (const t of E.titles ?? []) add(`tittel ${t}`, out.drawings.some((d) => d.title === t), out.drawings.map((d) => d.title).join(' '));
-    add('målestokk', out.scaleText === (E.scaleText ?? null), `${JSON.stringify(out.scaleText)} (${JSON.stringify(E.scaleText ?? null)})`);
-  } else if (fx.task === 'readFacade') {
-    const T = F.facades.find((f) => f.file === original);
-    const doors = out.windows.filter((w) => w.kind === 'door').length;
-    add('tak', out.roof === T.roof, `${out.roof} (fasit ${T.roof})`);
-    add('etasjer', out.storeys === T.storeys, `${out.storeys} (fasit ${T.storeys})`);
-    add('fasadevinduer', out.windows.length - doors === T.windows, `${out.windows.length - doors} (fasit ${T.windows})`);
-    add('fasadedører', doors === T.doors, `${doors} (fasit ${T.doors})`);
-  }
-  return items;
-}
+const fixtures = FX.listFixtures(FIX);
+const folders = new Set(fixtures.map((f) => f.fx.house)).size;
+check(`opptak finnes (${fixtures.length}), fra ${folders} av de 10 husmappene`, fixtures.length >= 60 && folders === 10);
+check('alle opptakene er tatt opp gjennom «Generer» (kilde, bilde, merker og hint lagret)', fixtures.every((f) => f.fx.via === 'tools/planbygger-ai-fixtures.mjs' && f.fx.source && f.fx.image?.sha256 && Array.isArray(f.fx.marks) && f.fx.hints), fixtures.filter((f) => !f.fx.source).map((f) => f.tag).join(', '));
+check(`alle opptakene har promptversjon ${PROMPTS.PROMPT_VERSION}`, fixtures.every((f) => f.fx.promptVersion === PROMPTS.PROMPT_VERSION), fixtures.filter((f) => f.fx.promptVersion !== PROMPTS.PROMPT_VERSION).map((f) => `${f.tag} ${f.fx.promptVersion}`).join(', '));
 
 const table = [];
 const knownSeen = [];
-for (const file of fixtures.sort()) {
-  const fx = JSON.parse(fs.readFileSync(file, 'utf8'));
-  const base = path.basename(fx.file, '.png');
-  const key = `${fx.house}/${base}.${fx.task}`;
-  const short = fx.model.replace('claude-', '').replace(/-5-5$/, '');
-  const tag = `${key} ${short}`;
+// the facade answers are scored as the model gave them (ai.js passes no part of them on: AI_FACADE_USE)
+AI.setAiFacadeUse({ roof: true, kinds: true });
+for (const { fx, tag, key, facadeIndex } of fixtures) {
   let req = null;
   AI.setAiTransport(async (r) => {
     req = r;
     return { ok: true, response: fx.response, model: fx.servedModel ?? fx.model, promptVersion: fx.promptVersion, cached: false };
   });
-  const img = readPng(path.join(ROOT, fx.file));
-  const out = await AI.aiRead(fx.task, { image: img, marks: fx.marks, unmarked: fx.unmarked, hints: fx.hints });
+  // the image the model saw is not stored (only its size and sha256): a blank one of that size stands in
+  const out = await AI.aiRead(fx.task, { image: blank(fx.image.width, fx.image.height), marks: fx.marks, unmarked: fx.unmarked, hints: fx.hints });
   AI.resetAiTransport();
-  check(`${tag}: spilt av (${fx.promptVersion}), bildet sendt i ${req?.image.width} × ${req?.image.height} som i opptaket`, out && req.task === fx.task && req.image.width === fx.image.width && req.image.height === fx.image.height && Math.max(req.image.width, req.image.height) <= 1600);
+  const sentMarks = fx.marks.map((m) => ({ id: m.id, kind: m.kind, at: m.at, drawnAt: m.drawnAt ?? m.at }));
+  check(`${tag}: spilt av, med merkene og hintene fra opptaket (${fx.image.width} × ${fx.image.height})`, out && req.task === fx.task && JSON.stringify(req.marks) === JSON.stringify(sentMarks) && JSON.stringify(req.hints) === JSON.stringify(fx.hints) && Math.max(fx.image.width, fx.image.height) <= 1600);
   if (!out) continue;
   if (fx.task === 'readPlan' && fx.marks.length) {
     const linked = out.rooms.filter((r) => r.mark && fx.marks.find((m) => m.id === r.mark)?.at.join() === r.at.join()).length;
-    check(`${tag}: rommenes at er merkenes egne posisjoner`, linked === out.rooms.filter((r) => r.mark).length);
+    check(`${tag}: rommenes at er merkenes egne posisjoner, og ref følger merket`, linked === out.rooms.filter((r) => r.mark && fx.marks.some((m) => m.id === r.mark && m.kind === 'room')).length && out.rooms.filter((r) => r.mark).every((r) => fx.marks.find((m) => m.id === r.mark)?.ref === r.ref || !fx.marks.some((m) => m.id === r.mark && m.kind === 'room')));
   }
-  const items = itemsOf(fx, out, img);
+  const items = FX.scoreAnswer(fx, out, { facadeIndex });
   const known = new Set(KNOWN[tag] ?? []);
   const ids = new Set(items.map((i) => i.id));
   const unexpected = items.filter((i) => !i.ok && !known.has(i.id));
@@ -601,13 +518,148 @@ for (const file of fixtures.sort()) {
     groups[g][0] += i.ok ? 1 : 0;
     groups[g][1]++;
   }
-  table.push({ key, model: fx.model, in: fx.usage?.input_tokens, out: fx.usage?.output_tokens, cost: fx.cost, ms: fx.ms, score: Object.entries(groups).map(([g, [a, n]]) => (n > 1 ? `${g} ${a}/${n}` : `${g} ${a ? '✓' : '✗'}`)).join(', ') });
+  table.push({ key, tag, model: fx.model, in: fx.usage?.input_tokens, out: fx.usage?.output_tokens, cost: fx.cost, ms: fx.ms, ok: okN, n: items.length, score: Object.entries(groups).map(([g, [a, n]]) => (n > 1 ? `${g} ${a}/${n}` : `${g} ${a ? '✓' : '✗'}`)).join(', ') });
 }
-check('hver oppføring i KNOWN hører til et opptak', Object.keys(KNOWN).every((k) => table.some((t) => `${t.key} ${t.model.replace('claude-', '').replace(/-5-5$/, '')}` === k)), Object.keys(KNOWN).join(', '));
+AI.setAiFacadeUse(null);
+{
+  // the place checks are there and bite: every plan with BY_EYE places got its items, and a swap fails
+  const withPlaces = fixtures.filter((f) => f.fx.task === 'readPlan' && FX.BY_EYE[`${f.fx.house}/${f.file} readPlan`]?.at);
+  const counts = withPlaces.map((f) => {
+    const out = AI.tidyResponse('readPlan', f.fx.response, f.fx.marks, f.fx.unmarked);
+    const items = FX.scoreAnswer(f.fx, out);
+    return { tag: f.tag, rooms: items.filter((i) => i.id.startsWith('plass rom')).length, openings: items.filter((i) => i.id.startsWith('åpning ')).length };
+  });
+  check(`plass-sjekkene: ${withPlaces.length} planer med fasitpunkter, ${counts.reduce((s, c) => s + c.rooms, 0)} rom og ${counts.reduce((s, c) => s + c.openings, 0)} åpninger sjekket på plass`, withPlaces.length >= 10 && counts.every((c) => c.rooms + c.openings > 0), counts.filter((c) => !(c.rooms + c.openings)).map((c) => c.tag).join(', '));
+  const h1 = fixtures.find((f) => f.key === 'hus1/1etg.png readPlan' && /haiku/.test(f.fx.model)).fx;
+  const before = new Set(FX.scoreAnswer(h1, AI.tidyResponse('readPlan', h1.response, h1.marks, h1.unmarked)).filter((i) => !i.ok).map((i) => i.id));
+  const out = AI.tidyResponse('readPlan', h1.response, h1.marks, h1.unmarked);
+  const sov = out.rooms.find((r) => r.name === 'SOV');
+  const bod = out.rooms.find((r) => r.name === 'BOD');
+  // the two rooms swap their whole reading (name, area, kind): the label list is still right, the marks are not
+  for (const k of ['name', 'area', 'kind', 'roomKind']) [sov[k], bod[k]] = [bod[k], sov[k]];
+  const sliding = out.openings.find((o) => o.kind === 'sliding-door');
+  const dbl = out.openings.find((o) => o.kind === 'double-door');
+  [sliding.kind, dbl.kind] = ['double-door', 'sliding-door'];
+  const bad = FX.scoreAnswer(h1, out).filter((i) => !i.ok && !before.has(i.id)).map((i) => i.id);
+  check('to rom som bytter lesning, og en skyvedør og en dobbeltdør som bytter type: bare plass-punktene feiler (navnelista og antallene ser det ikke)', bad.length === 4 && bad.includes('plass rom SOV') && bad.includes('plass rom BOD') && bad.filter((i) => i.startsWith('åpning ')).length === 2, bad.join(', '));
+}
+check('hver oppføring i KNOWN hører til et opptak', Object.keys(KNOWN).every((k) => table.some((t) => t.tag === k)), Object.keys(KNOWN).filter((k) => !table.some((t) => t.tag === k)).join(', '));
 console.log('\n  Opptakene (tokens inn / ut, pris, tid, punkter som fasiten):');
-for (const r of table) console.log(`    ${r.key.padEnd(40)} ${r.model.padEnd(18)} ${String(r.in).padStart(5)} / ${String(r.out).padStart(5)}  $${(r.cost ?? 0).toFixed(4)}  ${((r.ms ?? 0) / 1000).toFixed(1).padStart(5)} s  ${r.score}`);
+for (const r of table) console.log(`    ${r.tag.padEnd(56)} ${String(r.in).padStart(5)} / ${String(r.out).padStart(5)}  $${(r.cost ?? 0).toFixed(4)}  ${((r.ms ?? 0) / 1000).toFixed(1).padStart(5)} s  ${r.ok}/${r.n}  ${r.score}`);
+// Haiku against Sonnet on the same drawing (the same image and marks: the first plan of a house, a facade)
+const pairs = [...new Set(table.filter((t) => /sonnet/.test(t.model)).map((t) => t.key))];
+if (pairs.length) {
+  console.log('\n  Haiku og Sonnet på de samme tegningene (punkter som fasiten, pris):');
+  for (const k of pairs) {
+    const h = table.find((t) => t.key === k && /haiku/.test(t.model));
+    const s = table.find((t) => t.key === k && /sonnet/.test(t.model));
+    console.log(`    ${k.padEnd(48)} haiku ${h ? `${h.ok}/${h.n} $${(h.cost ?? 0).toFixed(4)}` : '–'}   sonnet ${s.ok}/${s.n} $${(s.cost ?? 0).toFixed(4)}`);
+  }
+}
 console.log(`\n  Kjente feil (${knownSeen.length}):`);
 for (const k of knownSeen) console.log(`    ${k}`);
+
+// ---------------------------------------------------------------------------------------------------------------
+section('«Generer» spiller av opptakene (alle husene, uten nøkkel)');
+{
+  // every AI task generate makes has a recording of the server's model for that task, made on exactly what it sends
+  // now (the image's sha256, the marks, the hints, the source); a recording no task uses should not be there.
+  // A stale recording (detect.js moved the marks since) still answers, linked by position: it is reported, and fails
+  // only with --strict-fresh – re-record with `node tools/planbygger-measure-all.mjs --record --budget N`.
+  const strictFresh = args.includes('--strict-fresh');
+  // a recording whose marks moved since (detect.js changed): still answered, by position, its own marks carried over
+  {
+    const rec = fixtures.find((f) => f.key === 'hus1/1etg.png readPlan' && /haiku/.test(f.fx.model))?.fx;
+    const moved = rec.marks.map((m) => ({ ...m, at: [m.at[0] + 0.01, m.at[1]], ref: `ny-${m.ref}` }));
+    const ai = FX.fixtureAi({ house: 'hus1' });
+    const out = await ai.read('readPlan', { image: blank(8, 8), marks: moved, unmarked: [], hints: rec.hints, source: rec.source });
+    const ai2 = FX.fixtureAi({ house: 'hus1', verify: true });
+    const same = await ai2.read('readPlan', { image: blank(rec.image.width, rec.image.height), marks: rec.marks, unmarked: rec.unmarked, hints: rec.hints, source: rec.source });
+    check('et opptak med flyttede merker svarer likevel: koblet etter posisjon (marksMatch false, ingen ref), samme rom', out && out.meta.marksMatch === false && out.rooms.length === rec.response.rooms.length && out.rooms.every((r) => r.ref == null) && ai.calls[0].fresh === false, JSON.stringify(ai.calls[0]));
+    check('de samme merkene: marksMatch true, ref fra merkene; et annet bilde gjør opptaket foreldet («annet bilde»)', same?.meta.marksMatch === true && same.rooms.some((r) => r.ref != null) && ai2.calls[0].fresh === false && ai2.calls[0].why.join() === 'annet bilde', JSON.stringify(ai2.calls[0].why));
+  }
+  const houses = args.includes('--quick') ? ['hus1', 'hus3', 'hus7'] : MA.HOUSES;
+  const used = new Set();
+  const models = FX.modelsByTask(null);
+  const extra = [];
+  /**
+   * A level that loses most of its walls or windows with the AI, against «Generer» without it: a scale the AI
+   * settled that the detection breaks down at, or a level that took another level's scale. `<house> <file>` → why
+   * (looked at; the cause is outside the AI layer, see the requests in notes/planbygger.md). A new one fails; one
+   * that no longer drops is reported, so the list can be emptied.
+   */
+  // Empty now. The check came from hus9: with the first «Generer» recordings «Øvre etasje» took underetasje's scale
+  // (sameSource, 53.1 px/m, +17 %; the files differ: fasit 45.4 and 54.1 px/m) and kept 5 walls and 1 of 8 windows
+  // against 13 and 8 without the AI (detect.js clean loses most walls above about 53 px/m on that plan). generate.js no
+  // longer shares the scale there (44.7 px/m, −1.6 %, 26 walls, 9 windows). hus7's garage at its true scale (117.5
+  // px/m) keeps 6 walls against 9 at the standard guess (47 px/m): above the line.
+  const KNOWN_DROPS = {};
+  const levelCounts = (doc) => new Map(doc.levels.map((L) => [`${L.image?.source?.file ?? L.id}`, { walls: L.walls.length, windows: L.openings.filter((o) => o.type === 'window').length, ppm: L.image?.pxPerM ?? null }]));
+  const dropsSeen = new Set();
+  for (const h of houses) {
+    const hasFacades = fixtures.some((f) => f.fx.house === h && f.fx.task === 'readFacade');
+    // the page's AI (readFacade off: ai.js AI_FACADE_USE), then the facade recordings with the facade parts on
+    const runs = [{ model: null, label: '' }];
+    if (hasFacades) runs.push({ model: null, facadeAi: true, only: ['readFacade'], label: ' (fasade-KI på)' });
+    // the other model's recordings of this house: replayed with that model for the tasks it has
+    for (const task of FX.TASKS) {
+      const other = Object.values(FX.MODELS).filter((m) => m !== models[task] && fixtures.some((f) => f.fx.house === h && f.fx.task === task && f.fx.model === m));
+      for (const m of other) runs.push({ model: { [task]: m }, facadeAi: task === 'readFacade' || null, label: ` (${task} ${FX.shortModel(m)})` });
+    }
+    let withAi = null;
+    for (const run of runs) {
+      const ai = FX.fixtureAi({ house: h, model: run.model, verify: true, fallbackModel: run.model ? undefined : null, facadeAi: run.facadeAi ?? null });
+      const t0 = Date.now();
+      let res = null;
+      try {
+        res = await G.generate(MA.houseInputs(h), { ai });
+      } catch (err) {
+        check(`${h}${run.label}: generate krasjer ikke`, false, String(err?.stack ?? err));
+        continue;
+      }
+      if (!run.model && !run.facadeAi) withAi = res;
+      for (const c of ai.calls) if (c.fixture) used.add(path.resolve(ROOT, c.fixture));
+      const asked = ai.calls.filter((c) => !c.off);
+      const wanted = run.model ? asked.filter((c) => run.model[c.task]) : run.only ? asked.filter((c) => run.only.includes(c.task)) : asked;
+      const missing = wanted.filter((c) => !c.fixture || (run.model && c.model !== ai.models[c.task]));
+      const stale = wanted.filter((c) => c.fixture && !c.fresh);
+      const answered = res.report.ai.filter((a) => a.ok).length;
+      const off = ai.calls.length - asked.length;
+      if (!run.model && !run.facadeAi) check(`${h}: alle ${asked.length} KI-oppgavene har et opptak (${answered} besvart${off ? `; ${off} fasadeoppgaver av, som på siden` : ''}), ${(Date.now() - t0) / 1000} s`, !missing.length && answered === asked.length && ai.calls.every((c) => !c.off || c.task === 'readFacade'), missing.map((c) => `${c.task} ${c.file}${c.part != null ? ` del ${c.part + 1}` : ''}${c.note ? `: ${c.note}` : ''}`).join('; '));
+      else if (missing.length) extra.push(`${h}${run.label}: ${missing.length} oppgaver uten opptak av den modellen`);
+      const label = `${h}${run.label}: opptakene er ferske (samme bilde, merker, hint og utsnitt som «Generer» sender nå): ${wanted.length - stale.length} av ${wanted.length}`;
+      const detail = stale.map((c) => `${c.task} ${c.file}${c.part != null ? ` del ${c.part + 1}` : ''}: ${(c.why ?? []).join(', ')}`).join('; ');
+      if (strictFresh || !stale.length) check(label, !stale.length, detail);
+      else console.log(`  MERK ${label} – ${detail}`);
+    }
+    // the floors with the AI against without: no level may lose most of its walls or windows
+    if (withAi) {
+      const plain = await G.generate(MA.houseInputs(h), { ai: null });
+      const a = levelCounts(withAi.doc);
+      const b = levelCounts(plain.doc);
+      for (const [file, n] of b) {
+        const m = a.get(file);
+        if (!m) continue;
+        const key = `${h} ${file}`;
+        const drop = (n.walls >= 5 && m.walls < 0.6 * n.walls) || (n.windows >= 3 && m.windows < 0.6 * n.windows);
+        const detail = `med KI ${m.walls} vegger, ${m.windows} vinduer ved ${m.ppm?.toFixed(1)} px/m; uten ${n.walls} vegger, ${n.windows} vinduer ved ${n.ppm?.toFixed(1)} px/m`;
+        if (KNOWN_DROPS[key]) {
+          dropsSeen.add(key);
+          if (drop) console.log(`  KJENT ${key}: ${detail} – ${KNOWN_DROPS[key]}`);
+          else console.log(`  MERK ${key} faller ikke lenger med KI (${detail}): ta den ut av KNOWN_DROPS`);
+          continue;
+        }
+        check(`${key}: med KI beholder etasjen veggene og vinduene (minst 60 % av uten KI)`, !drop, detail);
+      }
+    }
+  }
+  if (extra.length) console.log(`  ${extra.join('\n  ')}`);
+  if (!args.includes('--quick')) {
+    check('hver oppføring i KNOWN_DROPS hører til en etasje', Object.keys(KNOWN_DROPS).every((k) => dropsSeen.has(k)), Object.keys(KNOWN_DROPS).filter((k) => !dropsSeen.has(k)).join(', '));
+    const orphans = fixtures.filter((f) => !used.has(path.resolve(f.path))).map((f) => f.tag);
+    check(`ingen opptak som ingen oppgave bruker (${fixtures.length - orphans.length} av ${fixtures.length} brukt)`, !orphans.length, orphans.join(', '));
+  }
+}
 
 // ---------------------------------------------------------------------------------------------------------------
 section('serveren med en stubbet SDK-klient');
@@ -680,6 +732,9 @@ const quiet = () => {};
   const r2 = await call(h, { method: 'POST', url: '/api/planbygger/ai', body, cookie });
   const files = fs.readdirSync(cacheDir('a')).filter((f) => f.endsWith('.json'));
   check('samme bilde igjen: fra hurtigbufferen, ingen nytt kall, ingen kvote brukt', r2.status === 200 && r2.json.cached === true && api.calls.length === 1 && r2.json.remaining === 1 && files.length === 1);
+  const hit = h.service.peek(body);
+  const keyless = SERVER.createAiService({ apiKey: null, log: quiet, limits: { cacheDir: cacheDir('a') } });
+  check('peek: svaret i hurtigbufferen uten kall – også uten nøkkel; et annet bilde eller en annen modell gir null', hit?.response?.roof === 'gable' && hit.model === 'claude-haiku-5-5' && keyless.peek(body)?.response?.roof === 'gable' && h.service.peek({ ...body, image: { data: png(64, 48, 99) } }) === null && h.service.peek({ ...body, model: 'sonnet' }, { allowModel: true }) === null && h.service.peek({ ...body, model: 'sonnet' })?.model === 'claude-haiku-5-5' && api.calls.length === 1);
   const r3 = await call(h, { method: 'POST', url: '/api/planbygger/ai', body: { ...body, image: { data: png(64, 48, 2) } }, cookie });
   const r4 = await call(h, { method: 'POST', url: '/api/planbygger/ai', body: { ...body, image: { data: png(64, 48, 3) } }, cookie });
   check('kvote per økt: 2 kall, så 429', r3.status === 200 && r3.json.remaining === 0 && r4.status === 429 && r4.json.error === 'quota' && /kvoten/.test(r4.json.message));

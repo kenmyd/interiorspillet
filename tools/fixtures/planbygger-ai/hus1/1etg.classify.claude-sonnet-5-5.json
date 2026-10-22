@@ -1,6 +1,7 @@
 {
  "house": "hus1",
- "file": "plantegninger/hus1/1etg.png",
+ "file": "1etg.png",
+ "part": null,
  "task": "classify",
  "promptVersion": "pb-ai-4",
  "model": "claude-sonnet-5-5",
@@ -12,8 +13,17 @@
   "sha256": "a4a656e41a5f5cda004fa2b135a56f11b2c7ab9e47b11936b228de95bec9c343"
  },
  "marks": [],
+ "unmarked": [],
  "hints": {
   "fileName": "1etg.png"
+ },
+ "source": {
+  "file": "1etg.png",
+  "part": null,
+  "width": 1195,
+  "height": 954,
+  "bbox": null,
+  "photo": null
  },
  "response": {
   "drawings": [
@@ -67,5 +77,7 @@
  "cost": 0.008632,
  "ms": 3434,
  "stopReason": "end_turn",
- "recorded": "2026-10-21T18:02:05.343Z"
+ "recorded": "2026-10-21T18:02:05.343Z",
+ "via": "tools/planbygger-ai-fixtures.mjs",
+ "upgraded": "2026-10-21T22:33:13.922Z"
 }

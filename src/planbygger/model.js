@@ -19,6 +19,9 @@
  *       skylights: [{ id, rect: [[x0, y0], [x1, y1]], auto? }]               roof windows in the ceiling (plan metres)
  *       stairHints: [{ rect, axis: 'x'|'y', treads, kind, auto }]            stair symbols the detection found on this
  *                 plan (not stairs yet: a stair is drawn on both levels it joins, generate / the editor decide)
+ *       separators: [{ id, a: [x, y], b: [x, y], auto? }]                    room separators: the dash-dot lines between
+ *                 open zones (a hall and a living room); they split rooms (regions.js findRooms(walls, { separators }))
+ *                 and are no walls
  *       rooms:    [{ id, name, kind, seed: [x, y], ceiling?, floor? }]      labels; the polygons are found (regions.js)
  *       stairs:   [{ id, rect: [[x0, y0], [x1, y1]], axis: 'x'|'y', down: 1|-1, kind?: 'straight'|'u', side?: 0|1 }]
  *                 a stair from this level
@@ -138,6 +141,7 @@ export function applyDetection(level, det, pxPerM, settings = DEFAULT_SETTINGS) 
   const rectOf = (x0, y0, x1, y1) => [roundPt([x0 * k, y0 * k], 4), roundPt([x1 * k, y1 * k], 4)];
   level.skylights = (det.skylights || []).map((s, i) => ({ id: `k${i + 1}`, rect: rectOf(s.x0, s.y0, s.x1, s.y1), auto: true }));
   level.stairHints = (det.stairs || []).map((s) => ({ rect: rectOf(...s.bbox), axis: s.axis, treads: s.treads, kind: s.kind, auto: true }));
+  level.separators = (det.separators || []).map((s, i) => ({ id: `s${i + 1}`, a: roundPt(mul(s.a, k), 4), b: roundPt(mul(s.b, k), 4), auto: true }));
   return level;
 }
 
@@ -371,6 +375,10 @@ export function rescaleLevel(level, newPxPerM) {
   for (const s of level.stairs || []) s.rect = s.rect.map(sc);
   for (const s of level.skylights || []) s.rect = s.rect.map(sc);
   for (const s of level.stairHints || []) s.rect = s.rect.map(sc);
+  for (const s of level.separators || []) {
+    s.a = sc(s.a);
+    s.b = sc(s.b);
+  }
   level.offset = sc(level.offset || [0, 0]);
   level.image.pxPerM = newPxPerM;
 }

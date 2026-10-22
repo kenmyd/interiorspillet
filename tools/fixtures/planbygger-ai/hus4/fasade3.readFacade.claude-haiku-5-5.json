@@ -1,0 +1,111 @@
+{
+ "house": "hus4",
+ "file": "fasade3.avif",
+ "part": null,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "4b0470605f6df45c49a08f7e41d966d686915906819e965514fb213a34150559"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade3.avif"
+ },
+ "source": {
+  "file": "fasade3.avif",
+  "part": null,
+  "width": 1920,
+  "height": 1280,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "flat",
+  "storeys": 2,
+  "windows": [
+   {
+    "bbox": [
+     0.211,
+     0.332,
+     0.262,
+     0.48
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.385,
+     0.332,
+     0.488,
+     0.555
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.548,
+     0.332,
+     0.709,
+     0.555
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.211,
+     0.616,
+     0.263,
+     0.72
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.385,
+     0.616,
+     0.488,
+     0.778
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.549,
+     0.616,
+     0.654,
+     0.781
+    ],
+    "kind": "door"
+   }
+  ],
+  "notes": "Fasaden viser et flatt tak med takkant og en pipe; takform er ikke entydig. Bekledning med horisontal trepanel. Glassrekkverk på balkong i andre etasje. Til høyre et lavere volum med hvit vertikal kledning og flatt tak, trolig carport. Ingen tittel synlig."
+ },
+ "usage": {
+  "input_tokens": 4094,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 1374,
+  "output_tokens_details": {
+   "thinking_tokens": 1041
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.001096,
+ "ms": 9317,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:22:34.933Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

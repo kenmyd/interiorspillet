@@ -1,0 +1,98 @@
+{
+ "house": "hus2",
+ "file": "fasader.png",
+ "part": 2,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 217,
+  "height": 81,
+  "sha256": "0b75b7917b261fd14910d793b493d8a808a7d94ec30cf0dc9ff7f27a2dfdbd44"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasader.png"
+ },
+ "source": {
+  "file": "fasader.png",
+  "part": 2,
+  "width": 980,
+  "height": 160,
+  "bbox": [
+   504,
+   29,
+   721,
+   110
+  ],
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "mono-pitch",
+  "storeys": 1,
+  "windows": [
+   {
+    "bbox": [
+     0.17,
+     0.54,
+     0.22,
+     0.77
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.33,
+     0.54,
+     0.38,
+     0.77
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.52,
+     0.58,
+     0.6,
+     0.72
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.65,
+     0.52,
+     0.67,
+     0.77
+    ],
+    "kind": "door"
+   }
+  ],
+  "notes": "Lav fasade med bred takflate øverst; fasaden alene avgjør ikke om taket er pulttak eller saltak. Kledning med vertikale panel. Vinduenes og dørens plassering er grovt anslått fra en liten bildefil."
+ },
+ "usage": {
+  "input_tokens": 1852,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 823,
+  "output_tokens_details": {
+   "thinking_tokens": 576
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000597,
+ "ms": 12661,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:16:00.290Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

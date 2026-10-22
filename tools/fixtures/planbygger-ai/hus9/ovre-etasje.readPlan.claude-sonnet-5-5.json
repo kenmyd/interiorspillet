@@ -1,0 +1,351 @@
+{
+ "house": "hus9",
+ "file": "ovre-etasje.jpg",
+ "part": null,
+ "task": "readPlan",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 713,
+  "height": 485,
+  "sha256": "47fced2e78d1eabb57ff71bd27201953659fe55a12139f53a7f5f99f4c549af2"
+ },
+ "marks": [
+  {
+   "id": "A",
+   "kind": "opening",
+   "at": [
+    0.6273,
+    0.3935
+   ],
+   "drawnAt": [
+    0.6531,
+    0.2549
+   ],
+   "ref": "o1"
+  },
+  {
+   "id": "B",
+   "kind": "opening",
+   "at": [
+    0.6646,
+    0.3935
+   ],
+   "drawnAt": [
+    0.6776,
+    0.3275
+   ],
+   "ref": "o2"
+  },
+  {
+   "id": "C",
+   "kind": "opening",
+   "at": [
+    0.6876,
+    0.7732
+   ],
+   "drawnAt": [
+    0.6876,
+    0.8188
+   ],
+   "ref": "o3"
+  },
+  {
+   "id": "D",
+   "kind": "opening",
+   "at": [
+    0.5929,
+    0.4529
+   ],
+   "drawnAt": [
+    0.5474,
+    0.5478
+   ],
+   "ref": "o4"
+  },
+  {
+   "id": "E",
+   "kind": "opening",
+   "at": [
+    0.5929,
+    0.5338
+   ],
+   "drawnAt": [
+    0.7202,
+    0.5148
+   ],
+   "ref": "o5"
+  }
+ ],
+ "unmarked": [],
+ "hints": {
+  "fileName": "ovre-etasje.jpg",
+  "levelName": "1. etasje"
+ },
+ "source": {
+  "file": "ovre-etasje.jpg",
+  "part": null,
+  "width": 713,
+  "height": 485,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "levelTitle": "Øvre etg",
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+   {
+    "text": "Hall",
+    "area": 9.07,
+    "kind": "hall",
+    "at": [
+     0.425,
+     0.327
+    ]
+   },
+   {
+    "text": "Bad",
+    "area": 5.44,
+    "kind": "bathroom",
+    "at": [
+     0.587,
+     0.278
+    ]
+   },
+   {
+    "text": "Vask",
+    "area": 5.45,
+    "kind": "laundry",
+    "at": [
+     0.727,
+     0.2
+    ]
+   },
+   {
+    "text": "Stue",
+    "area": 56.38,
+    "kind": "living",
+    "at": [
+     0.282,
+     0.625
+    ]
+   },
+   {
+    "text": "Kjøkken",
+    "area": 14.48,
+    "kind": "kitchen",
+    "at": [
+     0.66,
+     0.545
+    ]
+   }
+  ],
+  "dimensions": [],
+  "openings": [
+   {
+    "mark": "A",
+    "at": [
+     0.632,
+     0.38
+    ],
+    "kind": "opening"
+   },
+   {
+    "mark": "B",
+    "at": [
+     0.663,
+     0.378
+    ],
+    "kind": "opening"
+   },
+   {
+    "mark": "C",
+    "at": [
+     0.66,
+     0.77
+    ],
+    "kind": "none"
+   },
+   {
+    "mark": "D",
+    "at": [
+     0.595,
+     0.435
+    ],
+    "kind": "none"
+   },
+   {
+    "mark": "E",
+    "at": [
+     0.595,
+     0.53
+    ],
+    "kind": "none"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.435,
+     0.29
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.42,
+     0.03
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.725,
+     0.03
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.18,
+     0.13
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.18,
+     0.955
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.43,
+     0.955
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.64,
+     0.955
+    ],
+    "kind": "window"
+   }
+  ],
+  "skylights": [],
+  "stair": {
+   "present": true,
+   "at": [
+    0.58,
+    0.47
+   ],
+   "type": "quarter-turn",
+   "up": "elsewhere"
+  },
+  "ceiling": [],
+  "furniture": [
+   {
+    "kind": "sofa",
+    "at": [
+     0.1,
+     0.25
+    ]
+   },
+   {
+    "kind": "table",
+    "at": [
+     0.17,
+     0.3
+    ]
+   },
+   {
+    "kind": "table",
+    "at": [
+     0.43,
+     0.79
+    ]
+   },
+   {
+    "kind": "sofa",
+    "at": [
+     0.05,
+     0.65
+    ]
+   },
+   {
+    "kind": "toilet",
+    "at": [
+     0.55,
+     0.15
+    ]
+   },
+   {
+    "kind": "washbasin",
+    "at": [
+     0.62,
+     0.4
+    ]
+   },
+   {
+    "kind": "stove",
+    "at": [
+     0.75,
+     0.72
+    ]
+   },
+   {
+    "kind": "kitchen",
+    "at": [
+     0.64,
+     0.67
+    ]
+   }
+  ],
+  "notes": "Åpen løsning stue/kjøkken med trapp ned mot kjøkkenet. Plan uten målsetting."
+ },
+ "usage": {
+  "input_tokens": 6023,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 6023,
+    "output_tokens": 845,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 845,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.020496,
+ "ms": 7646,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:29:49.109Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

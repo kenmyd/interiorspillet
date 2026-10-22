@@ -1,6 +1,7 @@
 {
  "house": "hus3",
- "file": "plantegninger/hus3/fasader.png",
+ "file": "fasader.png",
+ "part": null,
  "task": "classify",
  "promptVersion": "pb-ai-4",
  "model": "claude-haiku-5-5",
@@ -15,6 +16,14 @@
  "unmarked": [],
  "hints": {
   "fileName": "fasader.png"
+ },
+ "source": {
+  "file": "fasader.png",
+  "part": null,
+  "width": 1677,
+  "height": 275,
+  "bbox": null,
+  "photo": null
  },
  "response": {
   "drawings": [
@@ -93,5 +102,7 @@
  "cost": 0.000583,
  "ms": 4324,
  "stopReason": "end_turn",
- "recorded": "2026-10-21T18:53:53.980Z"
+ "recorded": "2026-10-21T18:53:53.980Z",
+ "via": "tools/planbygger-ai-fixtures.mjs",
+ "upgraded": "2026-10-21T22:16:13.341Z"
 }

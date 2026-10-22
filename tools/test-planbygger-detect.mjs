@@ -15,9 +15,20 @@
  *   4. not walls on the real plans: terrace tiles and parasols (hus2, hus3), the dashed roof edge (hus1 2. etasje)
  *   5. the house file: double doors as two doors, sliding doors as passages, skylights on the ceilings, validateHouse;
  *      the symbols survive the worker's postMessage
- *   6. more styles against the fasit, door by door and window by window: hus8 (estate agent, 32 and 34 px/m: the
- *      outer doors with weak arcs over a window-like band), hus4 (light grey walls, wood-floor hatching) and hus9
- *      (hobby render) with clean: true; the time on the largest sheets (hus7, hus6)
+ *   6. more styles against the fasit, door by door and window by window: hus8 (estate agent, 32–36 px/m: the
+ *      outer doors with weak arcs over a window-like band, the terrace door's short leaf), hus4 (light grey walls,
+ *      wood-floor hatching) and hus9 (hobby render) with clean: true; the time on the largest sheets (hus7, hus6)
+ *   7. room separators (the dash-dot beam between open zones): a synthetic open plan at 35–120 px/m (never a wall),
+ *      hus4 1. etasje (hall / TV room),
+ *      and none where a dash-dot line is a beam over a room, a section line or a wardrobe front (hus4 2. etasje, hus2,
+ *      hus6 and the others); a U stair; the split rooms in regions.js
+ *   8. after the round 1 follow-up: whole flights (hus3, the dashed part over the cut line), the stairs of hus1 2. etasje,
+ *      hus6 and hus8, the sliding door between STUE 2 and SPISESTUE on hus6 (was a wall), the windows of hus9's lower
+ *      floor (light grey walls: the frame line of a white window is no wall); hus9 at the scale «Generer» uses (50 px/m):
+ *      a rug's border is no wall and no sliding door, no door in a window by a flowered rug, no sliding leaf under 35 cm
+ *   9. stairs that wind round a narrow newel (every tread a winder, hus4): the synthetic U (tools/planbygger-synth.mjs
+ *      'newel', solid and with its left half dashed) at 50–120 px/m, hus4 1. and 2. etasje; no such stair from a word,
+ *      diagonal lines or a rotated armchair (hus2, hus5)
  */
 import { ROOT, imp, readJson, check, section, done, planPipeline, validateGenerated } from './planbygger-lib.mjs';
 import path from 'node:path';
@@ -39,7 +50,7 @@ const D = await importDetect();
 const I = await imp('src/planbygger/image.js');
 const M = await imp('src/planbygger/model.js');
 const E = await imp('src/planbygger/export.js');
-const { findRooms } = await imp('src/planbygger/regions.js');
+const { findRooms, levelRooms } = await imp('src/planbygger/regions.js');
 
 const f1 = (v) => v.toFixed(1);
 const f2 = (v) => v.toFixed(2);
@@ -225,7 +236,7 @@ function roomsOf(det, ppm) {
   check(`hus1 1. etasje: dører ${L.doors.single} enkle, ${L.doors.double} doble, ${L.doors.sliding} skyvedør`, cnt.single === L.doors.single && cnt.double === L.doors.double && cnt.sliding === L.doors.sliding, `${cnt.single}/${cnt.double}/${cnt.sliding}`);
   check(`hus1 1. etasje: ${L.windows} vinduer, ingen åpninger uten dør, ingen takvinduer`, cnt.window === L.windows && cnt.opening === 0 && !det.skylights.length, `${cnt.window} vinduer, ${cnt.opening} åpninger, ${det.skylights.length} takvinduer`);
   const st = det.stairs[0];
-  check('hus1 1. etasje: kvartsvingt trapp i HALL/TRAPP (fasit x 415–628, y 120–357 px), 15 ± 4 inntrinn', det.stairs.length === 1 && st.kind === 'quarter-turn' && iou(st.bbox, [415, 120, 628, 357]) >= 0.6 && Math.abs(st.treads - 15) <= 4, st ? `${st.kind}, ${(iou(st.bbox, [415, 120, 628, 357]) * 100).toFixed(0)} %, ${st.treads} inntrinn (${st.flights} løp, ${st.winders} svingtrinn)` : 'ingen');
+  check('hus1 1. etasje: kvartsvingt trapp i HALL/TRAPP (fasit x 415–628, y 120–357 px), 14 ± 2 inntrinn (fasit 14)', det.stairs.length === 1 && st.kind === 'quarter-turn' && iou(st.bbox, [415, 120, 628, 357]) >= 0.8 && Math.abs(st.treads - 14) <= 2, st ? `${st.kind}, ${(iou(st.bbox, [415, 120, 628, 357]) * 100).toFixed(0)} %, ${st.treads} inntrinn (${st.flights} løp, ${st.winders} svingtrinn)` : 'ingen');
   check('hus1 1. etasje: under 3 s', ms < 3000, `${ms} ms`);
 }
 {
@@ -242,7 +253,7 @@ function roomsOf(det, ppm) {
   const extra = det.skylights.filter((s) => !truth.some((t) => iou(t, [s.x0, s.y0, s.x1, s.y1]) >= 0.5));
   check('hus1 2. etasje: minst 3 av 4 takvinduer (overlapp ≥ 50 %), ingen ekstra', hit.length >= 3 && !extra.length, `${hit.length}/4 funnet, ${extra.length} ekstra`);
   const st = det.stairs[0];
-  check('hus1 2. etasje: trappa i GANG/TRAPP (fasit x 427–630, y 140–367 px)', det.stairs.length === 1 && iou(st.bbox, [427, 140, 630, 367]) >= 0.25, st ? `${st.kind}, ${(iou(st.bbox, [427, 140, 630, 367]) * 100).toFixed(0)} %, ${st.treads} inntrinn` : 'ingen');
+  check('hus1 2. etasje: kvartsvingt trapp i GANG/TRAPP (fasit x 427–630, y 140–367 px), overlapp ≥ 70 % (svingtrinnene ved begge løpene)', det.stairs.length === 1 && st.kind === 'quarter-turn' && iou(st.bbox, [427, 140, 630, 367]) >= 0.7, st ? `${st.kind}, ${(iou(st.bbox, [427, 140, 630, 367]) * 100).toFixed(0)} %, ${st.treads} inntrinn` : 'ingen');
   // the dashed roof edge round the drawing is no wall
   const nearEdge = det.walls.filter((w) => Math.max(w.a[0], w.b[0]) < 30 || Math.min(w.a[0], w.b[0]) > 1180 || Math.max(w.a[1], w.b[1]) < 25);
   check('hus1 2. etasje: den stiplede takkanten gir ingen vegger', !nearEdge.length, `${nearEdge.length}`);
@@ -274,7 +285,8 @@ section('4. Ikke vegger på de ekte planene: fliser, parasoller og takkanter');
   const h32 = D.detectPlan(readPng(path.join(ROOT, 'plantegninger/hus3/2etg.png')), { pxPerM: 47.8 });
   const c32 = countBy(h32);
   check('hus3 2. etasje: 3 skyvedører til soverommene, 6 vinduer, én rett trapp', c32.sliding === 3 && c32.window === 6 && h32.stairs.length === 1 && h32.stairs[0].kind === 'straight', `${JSON.stringify(c32)}, trapp ${h32.stairs.map((s) => s.kind).join(', ') || 'ingen'}`);
-  check('hus3 1. etasje: den rette trappa (lyse inntrinn på grå trappeflate)', h3.stairs.length === 1 && h3.stairs[0].kind === 'straight' && iou(h3.stairs[0].bbox, [540, 380, 590, 545]) >= 0.3, h3.stairs[0] ? `${(iou(h3.stairs[0].bbox, [540, 380, 590, 545]) * 100).toFixed(0)} % av trapperommet (den heltrukne nedre delen)` : 'ingen');
+  check('hus3 1. etasje: hele den rette trappa, også de stiplede trinnene over snittlinja (fasit y 385–546 px), 13 ± 2 inntrinn', h3.stairs.length === 1 && h3.stairs[0].kind === 'straight' && iou(h3.stairs[0].bbox, [540, 385, 590, 546]) >= 0.8 && Math.abs(h3.stairs[0].treads - 13) <= 2, h3.stairs[0] ? `${(iou(h3.stairs[0].bbox, [540, 385, 590, 546]) * 100).toFixed(0)} % av trapperommet, ${h3.stairs[0].treads} inntrinn` : 'ingen');
+  check('hus3 2. etasje: hele trappa (fasit y 384–544 px), 14 ± 2 trinnlinjer', h32.stairs.length === 1 && iou(h32.stairs[0].bbox, [291, 384, 341, 544]) >= 0.8 && Math.abs(h32.stairs[0].treads - 14) <= 2, h32.stairs[0] ? `${(iou(h32.stairs[0].bbox, [291, 384, 341, 544]) * 100).toFixed(0)} %, ${h32.stairs[0].treads}` : 'ingen');
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -377,7 +389,7 @@ const wallsIn = (det, b) => det.walls.filter((w) => {
   const doors = [[395, 626], [357, 648], [357, 734], [449, 715], [517, 742], [247, 650]];
   const windows = [[247, 574], [247, 732], [517, 590], [517, 679], [517, 856], [517, 989]];
   const img = readPng(path.join(ROOT, 'plantegninger/_png/hus8/plantegning-3.png'));
-  for (const ppm of [34, 32]) {
+  for (const ppm of [36, 34, 32]) {
     const det = D.detectPlan(img, { pxPerM: ppm });
     const md = missing(det, ppm, 'single', doors);
     const mw = missing(det, ppm, 'window', windows);
@@ -449,16 +461,210 @@ const wallsIn = (det, b) => det.walls.filter((w) => {
 }
 {
   // the time on the largest sheets (the round 1 symbols cost ~1–2 s there before they were limited to the rooms): the
-  // best of two runs, so another process on the machine does not decide it
+  // best of three runs, so another process on the machine does not decide it (hus7 measured 1.7–4.2 s in one minute
+  // while other suites ran)
   for (const [name, file, ppm, limit] of [['hus7 (4771 × 3332)', 'plantegninger/_png/hus7/garasje-plan-snitt-fasade.png', 117.4, 3000], ['hus6 (3309 × 2340)', 'plantegninger/_png/hus6/plan-1etg-tilbygg.png', 78.8, 1600]]) {
     const img = readPng(path.join(ROOT, file));
     const ms = [];
-    for (let k = 0; k < 2; k++) {
+    for (let k = 0; k < 3; k++) {
       const t0 = Date.now();
       D.detectPlan(img, { pxPerM: ppm });
       ms.push(Date.now() - t0);
     }
     check(`${name}: gjenkjenningen under ${limit / 1000} s`, Math.min(...ms) < limit, `${ms.join(' / ')} ms`);
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+section('7. Skillelinjer mellom åpne soner (strek-prikk), og en U-trapp');
+/** Rooms with and without the level's separators (model + regions.js). */
+function roomsWithSeparators(det, ppm) {
+  const doc = M.createDoc('x');
+  const lv = M.createLevel(doc, { id: 'hoved', image: { name: 'x', width: 1, height: 1, pxPerM: ppm } });
+  M.applyDetection(lv, det, ppm, doc.settings);
+  const without = findRooms(lv.walls);
+  const withSep = findRooms(lv.walls, { separators: lv.separators });
+  return { lv, without, withSep, at: (px) => withSep.at(px[0] / ppm, px[1] / ppm), area: (i) => withSep.rooms.find((r) => r.index === i)?.area ?? NaN };
+}
+{
+  const plan = variantPlans().apen;
+  // every scale strictly: under ~90 px/m the dash-dot gaps are 1–3 px (the band's column profile finds them), under
+  // 50 px/m the plan is read on an upsampled copy where the dashes merge in the thin ink (the dashed gap left open is
+  // the candidate)
+  for (const ppm of [35, 40, 50, 60, 70, 80, 90, 120]) {
+    const r = renderPlan(plan, { pxPerM: ppm, noise: ppm > 60 ? 5 : 0, seed: ppm + 3, furniture: false });
+    const det = D.detectPlan(r.img, { pxPerM: ppm });
+    const c = compareSynthetic(plan, det, ppm, r.origin);
+    const R = roomsWithSeparators(det, ppm);
+    const toM = (p) => [(p[0] - r.origin[0]) / ppm, (p[1] - r.origin[1]) / ppm];
+    const sep = det.separators.map((s) => [toM(s.a), toM(s.b)]);
+    const truth = plan.separators[0];
+    const hit = sep.filter(([a, b]) => Math.hypot(a[0] - truth.a[0], a[1] - truth.a[1]) <= 0.1 && Math.hypot(b[0] - truth.b[0], b[1] - truth.b[1]) <= 0.1);
+    // the TV room (south-west) and the hall (north-west)
+    const tv = R.at([2.5 * ppm + r.origin[0], 6.2 * ppm + r.origin[1]]);
+    const hall = R.at([2.5 * ppm + r.origin[0], 2.2 * ppm + r.origin[1]]);
+    const tag = `åpen plan ${ppm} px/m`;
+    const onLine = det.walls.filter((w) => w.axis === 'h' && Math.abs(toM(w.a)[1] - 4.5) < 0.15 && Math.min(toM(w.a)[0], toM(w.b)[0]) < 4.8 && Math.max(toM(w.a)[0], toM(w.b)[0]) > 2.7);
+    check(`${tag}: alle ${plan.walls.length} vegger, ingen ekstra, og ingen vegg langs skillelinja (bjelken og skillelinja er ikke vegger)`, c.walls === plan.walls.length && c.extraWalls === 0 && !onLine.length, `${c.walls}/${plan.walls.length}, ${c.extraWalls} ekstra, ${onLine.length} på skillelinja`);
+    check(`${tag}: skillelinja mellom gangen og TV-stua (innen 10 cm), og bare den (bjelken over soverommet er ingen)`, hit.length === 1 && det.separators.length === 1, sep.map(([a, b]) => `(${a.map(f2)}) → (${b.map(f2)})`).join('; ') || 'ingen');
+    // the TV room: from the west wall's face (0.125) to the east wall's (4.95), from the separator (4.5) to the south
+    // wall's face (7.875)
+    check(`${tag}: rommene: 2 uten skillelinja, 3 med; TV-stua ${f1(4.825 * 3.375)} m² (± 0,3)`, R.without.rooms.length === 2 && R.withSep.rooms.length === 3 && tv >= 0 && hall >= 0 && tv !== hall && Math.abs(R.area(tv) - 4.825 * 3.375) < 0.3, `${R.without.rooms.length} → ${R.withSep.rooms.length} rom, TV-stua ${f2(R.area(tv))} m²`);
+    const tvRoom = R.withSep.rooms.find((x) => x.index === tv);
+    check(`${tag}: TV-stuas kant mot gangen er skillelinja (ingen vegg)`, !!tvRoom && tvRoom.edges.some((e) => e.separator && e.wall == null), tvRoom ? tvRoom.edges.map((e) => e.separator ?? e.wall ?? '–').join(',') : 'ingen TV-stue');
+    check(`${tag}: alle ${c.ops.total} åpninger med riktig type`, c.ops.found === c.ops.total && c.ops.typed === c.ops.total, `${c.ops.found} funnet, ${c.ops.typed} riktig${c.ops.misses.length ? `; ${c.ops.misses.join(", ")}` : ""}`);
+    const st = c.stairs[0];
+    check(`${tag}: U-trappa med øye (half-turn, overlapp ≥ 40 %: reposet øverst er ikke med), ingen andre`, st.s && st.s.kind === 'half-turn' && st.iou >= 0.4 && det.stairs.length === 1, st.s ? `${st.s.kind}, ${(st.iou * 100).toFixed(0)} %, ${st.s.treads} inntrinn` : 'ingen');
+  }
+  // regions.js on its own: a separator splits a rectangle, its edge has no wall, the rest stays as it was
+  const walls = [
+    { id: 'n', a: [0, 0], b: [6, 0], t: 0.2 },
+    { id: 'e', a: [6, 0], b: [6, 4], t: 0.2 },
+    { id: 's', a: [6, 4], b: [0, 4], t: 0.2 },
+    { id: 'w', a: [0, 4], b: [0, 0], t: 0.2 },
+  ];
+  const one = findRooms(walls);
+  const two = findRooms(walls, { separators: [{ id: 'sk', a: [3, 0], b: [3, 4] }] });
+  const areas = two.rooms.map((x) => x.area).sort((p, q) => p - q);
+  check('regions.js: en skillelinje deler et rom i to like store, kanten langs den har ingen vegg', one.rooms.length === 1 && two.rooms.length === 2 && Math.abs(areas[0] - areas[1]) < 0.02 && Math.abs(areas[0] + areas[1] - one.rooms[0].area) < 0.02 && two.rooms.every((x) => x.edges.filter((e) => e.separator === 'sk' && e.wall == null && e.side === 0).length === 1), `${one.rooms.length} → ${two.rooms.length} rom, ${areas.map(f2).join(' + ')} m² (${f2(one.rooms[0].area)})`);
+  const sk = M.createDoc('x');
+  const lv = M.createLevel(sk, { id: 'hoved', image: { name: 'x', width: 1, height: 1, pxPerM: 50 } });
+  M.applyDetection(lv, { walls: [], openings: [], separators: [{ a: [100, 50], b: [100, 250] }] }, 50);
+  M.rescaleLevel(lv, 100);
+  check('modellen: skillelinjene i meter, og de følger en ny skala', lv.separators.length === 1 && lv.separators[0].a[0] === 1 && lv.separators[0].b[1] === 2.5, JSON.stringify(lv.separators));
+}
+{
+  // hus4 1. etasje: the dash-dot beam between the hall and the TV room (y ≈ 618 px, from the post at the end of the wall
+  // to Sov 9,3 to the top of the TV room's east wall) – with it the TV room is a room of its own, 12.1 m² inside its
+  // walls by the fasit (its label 15.7 takes in part of the hall)
+  const ppm = 120.5;
+  const det = D.detectPlan(readPng(path.join(ROOT, 'plantegninger/_png/hus4/1etg.png')), { pxPerM: ppm, clean: true });
+  const R = roomsWithSeparators(det, ppm);
+  const s = det.separators[0];
+  check('hus4 1. etasje: skillelinja mellom gangen og TV-stua (x 485–935, y 618 px ± 10), ingen andre', det.separators.length === 1 && Math.abs(s.a[1] - 618) <= 10 && Math.abs(s.b[1] - 618) <= 10 && Math.abs(s.a[0] - 485) <= 15 && Math.abs(s.b[0] - 935) <= 15, det.separators.map((x) => `(${x.a.map(Math.round)}) → (${x.b.map(Math.round)})`).join('; ') || 'ingen');
+  const tv = R.at([698, 700]);
+  const entre = R.at([508, 395]);
+  const lr = levelRooms(R.lv);
+  check('regions.js levelRooms(level): rommene med etasjens skillelinjer, som findRooms med dem', lr.rooms.length === R.withSep.rooms.length && lr.at(698 / ppm, 700 / ppm) === tv, `${lr.rooms.length} rom (${R.withSep.rooms.length} med, ${R.without.rooms.length} uten)`);
+  check('hus4 1. etasje: med skillelinja er TV-stua et eget rom (12,1 m² innenfor veggene ±10 %), Entré + gangen et annet', tv >= 0 && entre >= 0 && tv !== entre && Math.abs(R.area(tv) / 12.1 - 1) <= 0.1 && R.withSep.rooms.length === R.without.rooms.length + 1, `TV-stua ${f2(R.area(tv))} m², Entré + gang ${f2(R.area(entre))} m², ${R.without.rooms.length} → ${R.withSep.rooms.length} rom`);
+  // dash-dot lines that are no separators: the beam across hus4's 2nd floor (wall face to wall face), the front of the
+  // wardrobe in hus2's entrance (a niche, 0.6 m deep), hus6's section line A–A and the beams along its walls
+  const none = [
+    ['hus4 2. etasje (bjelken tvers over huset)', 'plantegninger/_png/hus4/2etg.png', 120.5, true],
+    ['hus2 (garderobefronten i entreen)', 'plantegninger/hus2/1etg.png', 55.6, false],
+    ['hus6 (snittlinja A–A, strek-prikk langs veggene)', 'tools/fixtures/clean/hus6-plan-farge.png', 78.8, true],
+    ['hus1 1. etasje', 'plantegninger/hus1/1etg.png', 97.4, false],
+    ['hus1 2. etasje (den stiplede takkanten)', 'plantegninger/hus1/2etg.png', 94, false],
+    ['hus3 1. etasje («ÅPENT OPP»)', 'plantegninger/hus3/1etg.png', 47.9, false],
+    ['hus5 (skråhimlingslinjene)', 'plantegninger/_png/hus5/1etg.png', 46.9, false],
+  ];
+  for (const [name, file, p, clean] of none) {
+    const d = D.detectPlan(readPng(path.join(ROOT, file)), { pxPerM: p, clean });
+    check(`${name}: ingen skillelinjer`, d.separators.length === 0, d.separators.map((x) => `(${x.a.map(Math.round)}) → (${x.b.map(Math.round)})`).join('; ') || `0 av ${d.debug.separatorLines.length} stiplede linjer`);
+  }
+  let cloneErr = null;
+  try {
+    structuredClone({ separators: det.separators });
+  } catch (e) {
+    cloneErr = e;
+  }
+  check('skillelinjene tåler postMessage (structuredClone)', !cloneErr, cloneErr?.message);
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+section('8. Oppfølgingen etter fase A: trapper, skyvedøra i hus6, vinduene i hus9');
+{
+  // hus6 (the colour original, as the browser gets it, with clean: true): the four black leaves between STUE 2 and
+  // SPISESTUE (x 960–1228) are a sliding door – before, the wall was joined across the opening with nothing in it
+  const ppm = 78.8;
+  const det = D.detectPlan(readPng(path.join(ROOT, 'tools/fixtures/clean/hus6-plan-farge.png')), { pxPerM: ppm, clean: true });
+  const o = openingAt(det, [1094, 1065], ppm);
+  check('hus6: STUE 2 – SPISESTUE er en skyvedør på ca. 3,4 m (fire blader), ikke en vegg', o && o.kind === 'sliding' && o.d < 0.3 * ppm && o.width >= 3.2 && o.width <= 3.8, o ? `${o.kind}, ${f2(o.width)} m, ${f1(o.d)} px unna` : 'ingen');
+  const st = det.stairs.map((x) => ({ x, iou: iou(x.bbox, [1360, 1858, 1690, 1960]) })).sort((a, b) => b.iou - a.iou)[0];
+  // a quarter turn of winders at each end of the straight flight (2 × 90°): the right-hand winders are 1 px lines aliased
+  // into dots (the broken segments find them), and the three of them meet in one point over two vote cells
+  check('hus6: trappa i ENTRE (fasit x 1360–1690, y 1858–1960 px), halvsvingt (svingtrinn i begge ender), overlapp ≥ 75 %', st && st.x.kind === 'half-turn' && st.iou >= 0.75, st ? `${st.x.kind}, ${(st.iou * 100).toFixed(0)} %, ${st.x.treads} inntrinn` : 'ingen');
+}
+{
+  // hus8 1. etasje: the straight flight of six faint tread lines (6 px apart at 34 px/m, JPEG) between its walls
+  const det = D.detectPlan(readPng(path.join(ROOT, 'plantegninger/_png/hus8/plantegning-3.png')), { pxPerM: 34, clean: true });
+  const st = det.stairs.map((x) => ({ x, iou: iou(x.bbox, [360, 572, 392, 604]) })).sort((a, b) => b.iou - a.iou)[0];
+  check('hus8 1. etasje: det rette løpet (trinnlinjene y 572–604, x 360–392 px), overlapp ≥ 50 %, ingen andre trapper', st && st.x.kind === 'straight' && st.iou >= 0.5 && det.stairs.length === 1, st ? `${st.x.kind}, ${(st.iou * 100).toFixed(0)} %, ${st.x.treads} trinnlinjer, ${det.stairs.length} trapper` : 'ingen');
+}
+{
+  // hus9 lower floor: the windows are white bars between the grey wall's outlines; the band of a light grey wall reaches
+  // both outlines (its thickness integrated against its own fill, not the middle of the grey band), so the frame line
+  // is part of the window, not a thin wall beside the gap
+  const ppm = 54.1;
+  const det = D.detectPlan(readPng(path.join(ROOT, 'plantegninger/_png/hus9/underetasje.png')), { pxPerM: ppm, clean: true });
+  const win = [[21, 226], [21, 382], [165, 502], [319, 502], [485, 502]];
+  const mw = missing(det, ppm, 'window', win);
+  const frame = det.walls.filter((w) => w.axis === 'v' && Math.abs(w.a[0] - 31.5) < 3 && w.t < 4);
+  check('hus9 underetasje: 5 av 6 vinduer (de to stuevinduene med felles ramme blir ett), ingen tynn vegg langs vindusrammene', !mw.length && !frame.length, `${mw.join('; ') || 'alle'}, ${countBy(det).window} vinduer, ${frame.length} rammevegger`);
+}
+
+{
+  // hus9 lower floor at 50 px/m (the scale «Generer» takes from the standard measures): the dark border of the rug in
+  // the middle Barnesov hangs on the house only through empty gaps to the exterior wall (now that its windows are found,
+  // that wall runs through) – it stays a frame of its own and is dropped: no walls round the rug, no «sliding door»
+  // from the rug's edge (a 20 cm leaf), none from the bath's edge by the east wall; the room count as measured (fasit 7:
+  // Voksensov is cut by the bed and the wardrobe, and a sliver by the stair – both there before round 1)
+  const ppm = 50;
+  const det = D.detectPlan(readPng(path.join(ROOT, 'plantegninger/_png/hus9/underetasje.png')), { pxPerM: ppm, clean: true });
+  const R = roomsOf(det, ppm);
+  const k = (54.1 / ppm) ** 2;
+  const rug = R.at([327, 462]);
+  const mid = R.at([300, 380]);
+  const area = R.area(mid);
+  check('hus9 underetasje ved 50 px/m: teppet i Barnesov (midten) er ingen vegg – rommet er ett, 10,56 m² ved fasitskalaen ± 10 %', rug >= 0 && rug === mid && Math.abs(area / (10.56 * k) - 1) <= 0.1, `teppet i rom ${rug}, rommet ${mid}: ${f2(area)} m² (${f2(10.56 * k)})`);
+  check('hus9 underetasje ved 50 px/m: ingen skyvedører (fasit 0), ingen dør i ytterveggen ved teppet', countBy(det).sliding === 0 && !(openingAt(det, [327, 472], ppm)?.d < 0.3 * ppm && openingAt(det, [327, 472], ppm)?.kind !== 'window'), `${countBy(det).sliding} skyvedører`);
+  check('hus9 underetasje ved 50 px/m: høyst 9 rom (fasit 7; 8 før runde 1, da det ene barnerommet var åpent ut)', R.f.rooms.length <= 9, `${R.f.rooms.length} rom: ${R.f.rooms.map((x) => f1(x.area)).join(' ')}`);
+}
+{
+  // hus9 alternative lower floor (54.1 px/m): the window of the left Barnesov (x 124–205) has its glass taken by the
+  // cleaner, and the flowers of the rug in front of it make a 75 % arc with no leaf – no door there, a window
+  const ppm = 54.1;
+  const det = D.detectPlan(readPng(path.join(ROOT, 'plantegninger/_png/hus9/underetasje-alternativ.png')), { pxPerM: ppm, clean: true });
+  const o = openingAt(det, [139, 502], ppm);
+  check('hus9 alternativet: ingen dør i vinduet til Barnesov (blomstene på teppet er ingen dørbue)', !o || o.d > 0.3 * ppm || o.kind === 'window', o ? `${o.kind}, ${f2(o.width)} m, ${f1(o.d)} px unna` : 'ingen');
+}
+{
+  // no sliding leaf under 35 cm (the true ones measured 0.41–1.31 m): hus6's open passage between KJØKKEN and STUE and
+  // hus9's bath edge were sliding doors with 0.30–0.34 m «leaves»
+  const ppm = 78.8;
+  const det = D.detectPlan(readPng(path.join(ROOT, 'tools/fixtures/clean/hus6-plan-farge.png')), { pxPerM: ppm, clean: true });
+  const short = det.openings.filter((o) => o.variant === 'sliding' && o.leaf < 0.35 * ppm);
+  const o = openingAt(det, [1274, 1580], ppm);
+  check('hus6: ingen skyvedør med blad under 35 cm, og passasjen KJØKKEN–STUE er ingen skyvedør', !short.length && !(o && o.d < 0.3 * ppm && o.kind === 'sliding'), `${short.length} korte, ${o ? `${o.kind} ${f2(o.width)} m` : 'ingen'} ved passasjen`);
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+section('9. Trapper som svinger rundt et smalt øye (hus4): den syntetiske U-trappa og hus4');
+{
+  const plans = variantPlans();
+  for (const name of ['utrapp', 'utrappStiplet']) {
+    for (const ppm of [50, 60, 90, 120]) {
+      const plan = plans[name];
+      const r = renderPlan(plan, { pxPerM: ppm, noise: ppm > 60 ? 5 : 0, seed: ppm + 3, furniture: false });
+      const det = D.detectPlan(r.img, { pxPerM: ppm });
+      const c = compareSynthetic(plan, det, ppm, r.origin);
+      const st = c.stairs[0];
+      const tag = `${name === 'utrapp' ? 'U-trapp rundt et øye' : 'U-trapp rundt et øye, venstre halvdel stiplet'} ${ppm} px/m`;
+      check(`${tag}: halvsvingt (half-turn), overlapp ≥ 80 %, ingen andre trapper; alle vegger, ingen ekstra`, st.s && st.s.kind === 'half-turn' && st.iou >= 0.8 && det.stairs.length === 1 && c.walls === plan.walls.length && c.extraWalls === 0, st.s ? `${st.s.kind}, ${(st.iou * 100).toFixed(0)} %, ${st.s.winders} svingtrinn, ${det.stairs.length} trapper, ${c.walls}/${plan.walls.length} vegger, ${c.extraWalls} ekstra` : 'ingen');
+    }
+  }
+  // hus4 (clean: true, as «Generer» detects): the half-turn that winds round its newel – on the 2nd floor every tread
+  // drawn, on the 1st the left half dashed (above the cut plane) and the floor's hatching under it
+  for (const [lvl, file, truth] of [['1. etasje', 'plantegninger/_png/hus4/1etg.png', [686, 222, 920, 465]], ['2. etasje', 'plantegninger/_png/hus4/2etg.png', [695, 220, 924, 461]]]) {
+    const det = D.detectPlan(readPng(path.join(ROOT, file)), { pxPerM: 120.5, clean: true });
+    const st = det.stairs.map((x) => ({ x, iou: iou(x.bbox, truth) })).sort((a, b) => b.iou - a.iou)[0];
+    check(`hus4 ${lvl}: U-trappa rundt øyet (fasit x ${truth[0]}–${truth[2]}, y ${truth[1]}–${truth[3]} px), halvsvingt, overlapp ≥ 70 %, ingen andre`, st && st.x.kind === 'half-turn' && st.iou >= 0.7 && det.stairs.length === 1, st ? `${st.x.kind}, ${(st.iou * 100).toFixed(0)} %, ${st.x.winders} svingtrinn, ${det.stairs.length} trapper` : 'ingen');
+  }
+  // no winding stair from diagonal strokes that do not radiate from a newel: «PLAN HIMLING» and the lines by it (hus2),
+  // a rotated armchair and the «Skråhiml.» line (hus5)
+  for (const [name, file, ppm] of [['hus2', 'plantegninger/hus2/1etg.png', 55.6], ['hus5', 'plantegninger/_png/hus5/1etg.png', 46.9]]) {
+    const det = D.detectPlan(readPng(path.join(ROOT, file)), { pxPerM: ppm, clean: true });
+    check(`${name} med rydding: ingen trapp (skrå tekst, skrå streker og en skråstilt lenestol er ingen svingtrinn)`, !det.stairs.length, det.stairs.map((x) => `${x.kind} [${x.bbox.map(Math.round)}]`).join(', ') || 'ingen');
   }
 }
 

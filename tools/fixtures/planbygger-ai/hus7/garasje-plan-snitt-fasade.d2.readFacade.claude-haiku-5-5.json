@@ -1,0 +1,62 @@
+{
+ "house": "hus7",
+ "file": "garasje-plan-snitt-fasade.pdf",
+ "part": 2,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 800,
+  "sha256": "207b516844beebbe1fa581ccea5c7c069c850c6c430ed958ba64a1700425319f"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "garasje-plan-snitt-fasade.pdf",
+  "note": "ØST"
+ },
+ "source": {
+  "file": "garasje-plan-snitt-fasade.pdf",
+  "part": 2,
+  "width": 4771,
+  "height": 3332,
+  "bbox": [
+   0,
+   1167,
+   2333,
+   2333
+  ],
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "flat",
+  "storeys": 1,
+  "windows": [],
+  "notes": "Dette er et snitt med terrenglinje, ikke en ren fasade, og viser ingen vinduer eller dører. Taket er ikke tydelig tegnet; øverste linje kan være en enkel topp uten takflate. Kote 171,2 er markert på toppen og 166,7 ved gulvnivå."
+ },
+ "usage": {
+  "input_tokens": 3531,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 467,
+  "output_tokens_details": {
+   "thinking_tokens": 326
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000587,
+ "ms": 3480,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:24:02.675Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

@@ -1,0 +1,80 @@
+{
+ "house": "hus3",
+ "file": "fasader.png",
+ "part": 1,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 196,
+  "height": 196,
+  "sha256": "0fd43f243932fa50d53f7579bca777011adf40a96e47813ece2eb71ca2db3b85"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasader.png"
+ },
+ "source": {
+  "file": "fasader.png",
+  "part": 1,
+  "width": 1677,
+  "height": 275,
+  "bbox": [
+   559,
+   45,
+   755,
+   241
+  ],
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "gable",
+  "storeys": 2,
+  "windows": [
+   {
+    "bbox": [
+     0.65,
+     0.37,
+     0.82,
+     0.52
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.65,
+     0.59,
+     0.82,
+     0.85
+    ],
+    "kind": "door"
+   }
+  ],
+  "notes": "Liggende og stående kledning med vertikale panel. Tak med gavl. Fasaden alene avgjør ikke om taket er saltak eller pulttak, og det kan ikke leses hvilke åpninger som er dører."
+ },
+ "usage": {
+  "input_tokens": 1877,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 601,
+  "output_tokens_details": {
+   "thinking_tokens": 429
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000488,
+ "ms": 4200,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:17:19.971Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

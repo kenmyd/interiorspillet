@@ -1,6 +1,7 @@
 {
  "house": "hus6",
- "file": "plantegninger/_png/hus6/plan-1etg-tilbygg.png",
+ "file": "plan-1etg-tilbygg.pdf",
+ "part": null,
  "task": "readPlan",
  "promptVersion": "pb-ai-4",
  "model": "claude-haiku-5-5",
@@ -9,17 +10,377 @@
  "image": {
   "width": 1600,
   "height": 1131,
-  "sha256": "c9ee68c73595ef0b7603e2cba07bb6a6bead435ea4754c9d527cb93ac7d95ed7"
+  "sha256": "a7c3b6e71e8556c8ef8412e4491e0bbd54db7a7a3bafe2317d31d4563be6bb30"
  },
- "marks": [],
+ "marks": [
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.4228,
+    0.7726
+   ],
+   "drawnAt": [
+    0.4228,
+    0.7726
+   ],
+   "ref": 0,
+   "polygon": [
+    [
+     0.3879,
+     0.724
+    ],
+    [
+     0.4147,
+     0.724
+    ],
+    [
+     0.4147,
+     0.745
+    ],
+    [
+     0.4172,
+     0.745
+    ],
+    [
+     0.4172,
+     0.724
+    ],
+    [
+     0.5105,
+     0.724
+    ],
+    [
+     0.5105,
+     0.7988
+    ],
+    [
+     0.4399,
+     0.7988
+    ],
+    [
+     0.4399,
+     0.8033
+    ],
+    [
+     0.5105,
+     0.8033
+    ],
+    [
+     0.5105,
+     0.8382
+    ],
+    [
+     0.3802,
+     0.8382
+    ],
+    [
+     0.3802,
+     0.7492
+    ],
+    [
+     0.3886,
+     0.7492
+    ],
+    [
+     0.3886,
+     0.7275
+    ],
+    [
+     0.3879,
+     0.7275
+    ]
+   ]
+  },
+  {
+   "id": "A",
+   "kind": "opening",
+   "at": [
+    0.3309,
+    0.4546
+   ],
+   "drawnAt": [
+    0.3309,
+    0.4742
+   ],
+   "ref": "o1"
+  },
+  {
+   "id": "B",
+   "kind": "opening",
+   "at": [
+    0.4463,
+    0.4779
+   ],
+   "drawnAt": [
+    0.4405,
+    0.5051
+   ],
+   "ref": "o2"
+  },
+  {
+   "id": "C",
+   "kind": "opening",
+   "at": [
+    0.2761,
+    0.5901
+   ],
+   "drawnAt": [
+    0.2877,
+    0.5659
+   ],
+   "ref": "o3"
+  },
+  {
+   "id": "D",
+   "kind": "opening",
+   "at": [
+    0.414,
+    0.7216
+   ],
+   "drawnAt": [
+    0.414,
+    0.6957
+   ],
+   "ref": "o4"
+  },
+  {
+   "id": "E",
+   "kind": "opening",
+   "at": [
+    0.4643,
+    0.7216
+   ],
+   "drawnAt": [
+    0.4643,
+    0.6853
+   ],
+   "ref": "o5"
+  },
+  {
+   "id": "F",
+   "kind": "opening",
+   "at": [
+    0.4139,
+    0.7223
+   ],
+   "drawnAt": [
+    0.4023,
+    0.739
+   ],
+   "ref": "o6"
+  },
+  {
+   "id": "G",
+   "kind": "opening",
+   "at": [
+    0.4642,
+    0.7223
+   ],
+   "drawnAt": [
+    0.4353,
+    0.6972
+   ],
+   "ref": "o7"
+  },
+  {
+   "id": "H",
+   "kind": "opening",
+   "at": [
+    0.3046,
+    0.744
+   ],
+   "drawnAt": [
+    0.3046,
+    0.788
+   ],
+   "ref": "o8"
+  },
+  {
+   "id": "J",
+   "kind": "opening",
+   "at": [
+    0.4947,
+    0.801
+   ],
+   "drawnAt": [
+    0.4947,
+    0.7754
+   ],
+   "ref": "o9"
+  },
+  {
+   "id": "K",
+   "kind": "opening",
+   "at": [
+    0.5051,
+    0.801
+   ],
+   "drawnAt": [
+    0.534,
+    0.8182
+   ],
+   "ref": "o10"
+  },
+  {
+   "id": "L",
+   "kind": "opening",
+   "at": [
+    0.4003,
+    0.8417
+   ],
+   "drawnAt": [
+    0.4003,
+    0.8233
+   ],
+   "ref": "o11"
+  },
+  {
+   "id": "M",
+   "kind": "opening",
+   "at": [
+    0.2623,
+    0.575
+   ],
+   "drawnAt": [
+    0.2429,
+    0.575
+   ],
+   "ref": "o12"
+  },
+  {
+   "id": "N",
+   "kind": "opening",
+   "at": [
+    0.2864,
+    0.5998
+   ],
+   "drawnAt": [
+    0.299,
+    0.6162
+   ],
+   "ref": "o13"
+  },
+  {
+   "id": "P",
+   "kind": "opening",
+   "at": [
+    0.2867,
+    0.7912
+   ],
+   "drawnAt": [
+    0.2732,
+    0.7912
+   ],
+   "ref": "o14"
+  },
+  {
+   "id": "Q",
+   "kind": "opening",
+   "at": [
+    0.3787,
+    0.7673
+   ],
+   "drawnAt": [
+    0.3908,
+    0.7673
+   ],
+   "ref": "o15"
+  },
+  {
+   "id": "R",
+   "kind": "opening",
+   "at": [
+    0.3787,
+    0.7829
+   ],
+   "drawnAt": [
+    0.3351,
+    0.7992
+   ],
+   "ref": "o16"
+  },
+  {
+   "id": "S",
+   "kind": "opening",
+   "at": [
+    0.3787,
+    0.7976
+   ],
+   "drawnAt": [
+    0.3605,
+    0.8058
+   ],
+   "ref": "o17"
+  },
+  {
+   "id": "T",
+   "kind": "opening",
+   "at": [
+    0.5137,
+    0.7317
+   ],
+   "drawnAt": [
+    0.5342,
+    0.759
+   ],
+   "ref": "o18"
+  },
+  {
+   "id": "U",
+   "kind": "opening",
+   "at": [
+    0.5137,
+    0.7733
+   ],
+   "drawnAt": [
+    0.5342,
+    0.7896
+   ],
+   "ref": "o19"
+  },
+  {
+   "id": "V",
+   "kind": "opening",
+   "at": [
+    0.538,
+    0.6748
+   ],
+   "drawnAt": [
+    0.5516,
+    0.6748
+   ],
+   "ref": "o20"
+  }
+ ],
  "unmarked": [],
  "hints": {
-  "fileName": "plan-1etg-tilbygg.pdf"
+  "fileName": "plan-1etg-tilbygg.pdf",
+  "levelName": "1. etasje"
+ },
+ "source": {
+  "file": "plan-1etg-tilbygg.pdf",
+  "part": null,
+  "width": 3309,
+  "height": 2340,
+  "bbox": null,
+  "photo": null
  },
  "response": {
   "levelTitle": "Plan 1 etg.",
   "scaleText": "1:100",
-  "rooms": [],
+  "rooms": [
+   {
+    "mark": "1",
+    "at": [
+     0.423,
+     0.773
+    ],
+    "name": "ENTRE",
+    "area": 18,
+    "kind": "entrance"
+   }
+  ],
   "labels": [
    {
     "text": "STUE",
@@ -31,21 +392,12 @@
     ]
    },
    {
-    "text": "STUE 2",
-    "area": 23.4,
-    "kind": "living",
-    "at": [
-     0.345,
-     0.407
-    ]
-   },
-   {
     "text": "SPISESTUE",
     "area": 21.5,
     "kind": "dining",
     "at": [
      0.366,
-     0.56
+     0.561
     ]
    },
    {
@@ -63,25 +415,25 @@
     "kind": "laundry",
     "at": [
      0.331,
-     0.776
+     0.774
     ]
    },
    {
     "text": "WC",
-    "area": 3,
+    "area": null,
     "kind": "wc",
     "at": [
-     0.359,
-     0.79
+     0.358,
+     0.787
     ]
    },
    {
-    "text": "ENTRE",
-    "area": 18,
-    "kind": "entrance",
+    "text": "STUE 2",
+    "area": 23.4,
+    "kind": "living",
     "at": [
-     0.396,
-     0.799
+     0.346,
+     0.406
     ]
    },
    {
@@ -89,8 +441,8 @@
     "area": 28,
     "kind": "other",
     "at": [
-     0.269,
-     0.31
+     0.267,
+     0.215
     ]
    }
   ],
@@ -99,28 +451,8 @@
     "text": "5500",
     "value": 5.5,
     "at": [
-     0.324,
-     0.196
-    ],
-    "along": "h",
-    "what": "other"
-   },
-   {
-    "text": "6314",
-    "value": 6.314,
-    "at": [
-     0.314,
-     0.252
-    ],
-    "along": "h",
-    "what": "other"
-   },
-   {
-    "text": "4400",
-    "value": 4.4,
-    "at": [
-     0.323,
-     0.258
+     0.325,
+     0.195
     ],
     "along": "h",
     "what": "other"
@@ -130,7 +462,7 @@
     "value": 3.1,
     "at": [
      0.224,
-     0.274
+     0.276
     ],
     "along": "v",
     "what": "chain"
@@ -150,40 +482,20 @@
     "value": 11.8,
     "at": [
      0.224,
-     0.648
+     0.647
     ],
     "along": "v",
     "what": "outer"
    },
    {
-    "text": "4400",
-    "value": 4.4,
+    "text": "11100",
+    "value": 11.1,
     "at": [
-     0.396,
-     0.323
+     0.578,
+     0.647
     ],
     "along": "v",
-    "what": "chain"
-   },
-   {
-    "text": "6700",
-    "value": 6.7,
-    "at": [
-     0.407,
-     0.336
-    ],
-    "along": "v",
-    "what": "chain"
-   },
-   {
-    "text": "7400",
-    "value": 7.4,
-    "at": [
-     0.419,
-     0.349
-    ],
-    "along": "v",
-    "what": "chain"
+    "what": "outer"
    },
    {
     "text": "7800",
@@ -194,16 +506,6 @@
     ],
     "along": "v",
     "what": "chain"
-   },
-   {
-    "text": "11100",
-    "value": 11.1,
-    "at": [
-     0.579,
-     0.648
-    ],
-    "along": "v",
-    "what": "outer"
    },
    {
     "text": "3050",
@@ -220,29 +522,210 @@
     "value": 9.815,
     "at": [
      0.4,
-     0.914
+     0.913
     ],
     "along": "h",
     "what": "outer"
    },
    {
-    "text": "1020",
-    "value": 1.02,
+    "text": "4400",
+    "value": 4.4,
     "at": [
-     0.271,
-     0.607
+     0.396,
+     0.323
     ],
-    "along": "h",
+    "along": "v",
+    "what": "other"
+   },
+   {
+    "text": "6700",
+    "value": 6.7,
+    "at": [
+     0.407,
+     0.336
+    ],
+    "along": "v",
+    "what": "other"
+   },
+   {
+    "text": "7400",
+    "value": 7.4,
+    "at": [
+     0.419,
+     0.349
+    ],
+    "along": "v",
     "what": "other"
    }
   ],
-  "openings": [],
+  "openings": [
+   {
+    "mark": "A",
+    "at": [
+     0.331,
+     0.474
+    ],
+    "kind": "opening"
+   },
+   {
+    "mark": "B",
+    "at": [
+     0.441,
+     0.505
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "C",
+    "at": [
+     0.288,
+     0.566
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "D",
+    "at": [
+     0.414,
+     0.696
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "E",
+    "at": [
+     0.464,
+     0.685
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "F",
+    "at": [
+     0.402,
+     0.739
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "G",
+    "at": [
+     0.435,
+     0.697
+    ],
+    "kind": "opening"
+   },
+   {
+    "mark": "H",
+    "at": [
+     0.305,
+     0.788
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "J",
+    "at": [
+     0.495,
+     0.775
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "K",
+    "at": [
+     0.534,
+     0.818
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "L",
+    "at": [
+     0.4,
+     0.823
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "M",
+    "at": [
+     0.243,
+     0.575
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "N",
+    "at": [
+     0.299,
+     0.616
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "P",
+    "at": [
+     0.273,
+     0.791
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "Q",
+    "at": [
+     0.391,
+     0.767
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "R",
+    "at": [
+     0.335,
+     0.799
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "S",
+    "at": [
+     0.361,
+     0.806
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "T",
+    "at": [
+     0.534,
+     0.759
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "U",
+    "at": [
+     0.534,
+     0.79
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "V",
+    "at": [
+     0.552,
+     0.675
+    ],
+    "kind": "window"
+   }
+  ],
   "skylights": [],
   "stair": {
    "present": true,
    "at": [
-    0.4625,
-    0.818
+    0.463,
+    0.813
    ],
    "type": "straight",
    "up": "here"
@@ -252,59 +735,60 @@
    {
     "kind": "table",
     "at": [
-     0.32,
-     0.52
+     0.331,
+     0.531
     ]
    },
    {
-    "kind": "sofa",
+    "kind": "kitchen",
     "at": [
-     0.46,
-     0.62
-    ]
-   },
-   {
-    "kind": "stove",
-    "at": [
-     0.322,
-     0.621
+     0.36,
+     0.66
     ]
    },
    {
     "kind": "toilet",
     "at": [
-     0.36,
-     0.826
+     0.388,
+     0.522
     ]
    },
    {
-    "kind": "washer",
+    "kind": "sofa",
     "at": [
-     0.33,
-     0.825
+     0.505,
+     0.52
+    ]
+   },
+   {
+    "kind": "table",
+    "at": [
+     0.478,
+     0.65
     ]
    }
   ],
-  "notes": "Tilbygg med skille mot eksisterende bolig. Trappen i entréen går opp. Mulig trapp til venstre utenfor husets vegg, ikke tydelig. Ingen rommerkinger eller åpningsmerker på planen."
+  "notes": "Tilbygg til eksisterende bolig, skillet mellom boligene er avgrenset. Rom 1 ligger i entréen. Enkelte åpninger er tolket ut fra plasseringen av blå merker, og dører uten merke er ikke funnet."
  },
  "usage": {
-  "input_tokens": 7860,
+  "input_tokens": 8135,
   "cache_creation_input_tokens": 0,
   "cache_read_input_tokens": 0,
   "cache_creation": {
    "ephemeral_5m_input_tokens": 0,
    "ephemeral_1h_input_tokens": 0
   },
-  "output_tokens": 3910,
+  "output_tokens": 5139,
   "output_tokens_details": {
-   "thinking_tokens": 2766
+   "thinking_tokens": 3557
   },
   "service_tier": "standard",
   "inference_geo": "global",
   "speed": "standard"
  },
- "cost": 0.002741,
- "ms": 19843,
+ "cost": 0.003383,
+ "ms": 24772,
  "stopReason": "end_turn",
- "recorded": "2026-10-21T18:53:19.643Z"
+ "recorded": "2026-10-21T22:23:30.181Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
 }

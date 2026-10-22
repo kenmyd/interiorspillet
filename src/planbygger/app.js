@@ -1,15 +1,24 @@
 /**
- * Planbygger – the page (planbygger.html): upload a floor plan, set the scale, get the walls, doors and windows
- * proposed automatically (classical image processing, no AI – detect.js), correct them in the 2D editor (editor.js),
- * walk around the 3D house (viewer.js, the game's own builders) and download the house data (export.js, the
- * research/house format the game validates with validateHouse).
+ * Planbygger – the page (planbygger.html). Two ways in:
  *
- * Everything runs in the browser: the plan never leaves the machine. The document is saved in localStorage (without
- * the images) and the plan images in IndexedDB, so a reload continues where you left off.
+ *   «Generer» (round 1, notes/planbygger-runde1-design.md): the start page «Slipp alle tegningene her» takes every
+ *   drawing at once (plans, facades, a sheet with several, a phone photo, PDF pages) → the drawing stack (stack.js:
+ *   floors top first, a chip per drawing, drag to reorder) → «Generer» (generate.js; its heavy steps in the worker via
+ *   opts.exec, the AI through ai.js when the server has it) with its progress → the guide (guide.js: only the questions
+ *   it could not answer) → straight into 3D. «Finjuster» opens the editor below on the generated document.
+ *
+ *   The v1 editor: upload one floor plan, set the scale, get the walls, doors and windows proposed automatically
+ *   (classical image processing – detect.js), correct them in the 2D editor (editor.js), walk around the 3D house
+ *   (viewer.js, the game's own builders) and download the house data (export.js, the research/house format the game
+ *   validates with validateHouse).
+ *
+ * The detection runs in the browser. The AI (when the server offers it) gets a scaled-down copy of a drawing to read
+ * text and symbols; without it everything still works, with more questions. The document is saved in localStorage
+ * (without the images) and the plan images in IndexedDB, so a reload continues where you left off.
  */
 import './style.css';
 import demoPlanUrl from '../../plantegning.png?url';
-import { createDoc, createLevel, applyDetection, history, rescaleLevel, ROOM_KINDS, DEFAULT_SETTINGS, wallLength, splitWall, checkLevel, stairGeometry } from './model.js';
+import { createDoc, createLevel, applyDetection, history, rescaleLevel, ROOM_KINDS, DEFAULT_SETTINGS, wallLength, splitWall, checkLevel, stairGeometry, OPENING_KINDS, openingKind, setOpeningKind } from './model.js';
 import { Editor, TOOL_HINT } from './editor.js';
 import { exportHouse, summary, ownerOnly, baseSpec, alignLevel } from './export.js';
 import { luma, rotateImage } from './image.js';
@@ -17,6 +26,10 @@ import { traceLine } from './scale.js';
 import { detectPlan, estimateSkew } from './detect.js';
 import { suggestScale } from './scale.js';
 import { round, slug, add, sub } from './geom.js';
+import { generate, applyAnswers } from './generate.js';
+import { DrawingStack, FILE_ACCEPT, renderPdf } from './stack.js';
+import { Guide } from './guide.js';
+import { aiStatus, aiRead } from './ai.js';
 
 const STORE_KEY = 'planbygger.v1.doc';
 const DB_NAME = 'planbygger';
@@ -119,7 +132,7 @@ async function idbGet(key) {
 let worker = null;
 let workerSeq = 0;
 const pending = new Map();
-function runWorker(kind, img, opts) {
+function ensureWorker() {
   try {
     if (!worker) {
       worker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
@@ -139,12 +152,19 @@ function runWorker(kind, img, opts) {
   } catch {
     worker = null;
   }
-  if (!worker) {
+  return worker;
+}
+function runWorker(kind, img, opts) {
+  if (!ensureWorker()) {
     // no module workers: on the main thread
-    return Promise.resolve().then(() => {
+    return Promise.resolve().then(async () => {
       if (kind === 'detect') return detectPlan(img, opts);
       if (kind === 'skew') return estimateSkew(img);
       if (kind === 'rotate') return rotateImage(img, opts.deg);
+      if (kind === 'analyse') {
+        const [{ splitSheet }, { isPhoto }] = await Promise.all([import('./sheet.js'), import('./photo.js')]);
+        return { blocks: splitSheet(img).blocks, photo: isPhoto(img) };
+      }
       return suggestScale(img);
     });
   }
@@ -153,6 +173,27 @@ function runWorker(kind, img, opts) {
     pending.set(id, { resolve, reject });
     worker.postMessage({ id, kind, img: { width: img.width, height: img.height, data: img.data }, opts });
   });
+}
+/**
+ * generate.js's executor (opts.exec) in the worker: one heavy step with generate's own arguments (worker.js EXEC).
+ * Without a worker – or when an argument cannot be posted – generate runs the step itself (null: no executor).
+ */
+function workerExecutor() {
+  if (!ensureWorker()) return null;
+  return (name, ...args) => {
+    const id = ++workerSeq;
+    return new Promise((resolve, reject) => {
+      pending.set(id, { resolve, reject });
+      try {
+        worker.postMessage({ id, kind: 'exec', name, args });
+      } catch (err) {
+        // (an argument that cannot be cloned): the same step here
+        pending.delete(id);
+        console.warn(`[planbygger] ${name} kjøres uten arbeideren: ${err?.message ?? err}`);
+        import('./worker.js').then((m) => resolve(m.runExec(name, args)), reject);
+      }
+    });
+  };
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -233,7 +274,7 @@ class App {
     r.append(top, h('main', { class: 'pb-main' }, tools, this.stage, this.side), status);
 
     this.editor = new Editor(this.canvas, this);
-    this.fileInput = h('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp,application/pdf', style: 'display:none', onchange: (e) => {
+    this.fileInput = h('input', { type: 'file', class: 'pb-file-one', accept: 'image/png,image/jpeg,image/webp,image/avif,application/pdf', style: 'display:none', onchange: (e) => {
       const f = e.target.files?.[0];
       e.target.value = '';
       if (f) this._onFile(f, this._pendingLevel);
@@ -243,7 +284,17 @@ class App {
       e.target.value = '';
       if (f) this._openProject(f);
     } });
-    r.append(this.fileInput, this.projectInput);
+    // «Generer»: every drawing at once (the accept list names no image type, so the one-plan field above stays the
+    // only image/png field)
+    this.filesInput = h('input', { type: 'file', class: 'pb-files', multiple: true, accept: FILE_ACCEPT, style: 'display:none', onchange: (e) => {
+      const files = [...(e.target.files || [])];
+      e.target.value = '';
+      const pick = this._pendingPick;
+      this._pendingPick = null;
+      if (pick) pick(files);
+      else if (files.length) this._addDrawings(files);
+    } });
+    r.append(this.fileInput, this.projectInput, this.filesInput);
     // common room names for the Rom dialog
     r.append(h('datalist', { id: 'pb-room-names' }, ['Stue', 'Kjøkken', 'Stue/kjøkken', 'Spisestue', 'Soverom', 'Hovedsoverom', 'Barnerom', 'Gjesterom', 'Bad', 'Toalett', 'Vaskerom', 'Gang', 'Entré', 'Bod', 'Kontor', 'Kjellerstue', 'Garderobe', 'Trapperom'].map((n) => h('option', { value: n }))));
 
@@ -253,30 +304,245 @@ class App {
     window.addEventListener('dragover', (e) => e.preventDefault());
     window.addEventListener('drop', (e) => {
       e.preventDefault();
-      const f = e.dataTransfer?.files?.[0];
-      if (f) this._onFile(f, this.doc && this.level?.image ? null : undefined);
+      const files = [...(e.dataTransfer?.files || [])];
+      if (!files.length) return;
+      // on the start page and the drawing stack: all of them into the stack; in the editor: the level's plan (v1)
+      if (!this.startEl.hidden && !this.guide) this._addDrawings(files);
+      else if (this.startEl.hidden) this._onFile(files[0], this.doc && this.level?.image ? null : undefined);
     });
   }
 
   _renderStart(saved) {
     const s = this.startEl;
+    this.guide?.dispose();
+    this.guide = null;
+    this.stack = null;
     s.innerHTML = '';
-    const drop = h('div', { class: 'pb-drop', onclick: () => this._pickFile() },
-      h('strong', {}, 'Slipp plantegningen her, eller klikk for å velge fil'),
-      'PNG, JPG eller PDF (første side). Planer med tykke, mørke vegger fungerer best.');
+    s.classList.remove('is-wide');
+    const drop = h('div', { class: 'pb-drop', role: 'button', tabindex: '0', onclick: () => this._pickDrawings(), onkeydown: (e) => (e.key === 'Enter' || e.key === ' ') && this._pickDrawings() },
+      h('strong', {}, 'Slipp alle tegningene her'),
+      h('span', {}, 'eller klikk for å velge filer'),
+      h('small', {}, 'Plantegninger og fasader, gjerne alle på en gang: PNG, JPG, WebP, AVIF eller PDF. Et mobilfoto av en utskrift går også.'));
     drop.addEventListener('dragenter', () => drop.classList.add('is-over'));
     drop.addEventListener('dragleave', () => drop.classList.remove('is-over'));
+    drop.addEventListener('drop', () => drop.classList.remove('is-over'));
     const card = h('div', { class: 'pb-start-card' },
-      h('h1', {}, 'Fra plantegning til 3D-hus'),
-      h('p', {}, 'Last opp plantegningen. Sett skalaen med én målelinje, så foreslår planbyggeren vegger, dører og vinduer. Rett opp det som er feil, gi rommene navn, og gå rundt i huset ditt i 3D.'),
+      h('h1', {}, 'Fra tegninger til 3D-hus'),
+      h('p', {}, 'Slipp plantegningene og fasadene dine, og trykk «Generer». Planbyggeren ordner etasjene, finner målestokken og rommene, spør bare om det den ikke finner selv, og åpner huset i 3D. Etterpå kan du finjustere alt i editoren.'),
       drop,
       h('div', { class: 'pb-start-foot' },
         h('button', { class: 'pb-btn', onclick: () => this._demo() }, 'Prøv med eksempelplanen'),
         saved ? h('button', { class: 'pb-btn is-primary', onclick: () => this._continueSaved(saved) }, `Fortsett med «${saved.name}»`) : null,
         h('button', { class: 'pb-btn', onclick: () => this.projectInput.click() }, 'Åpne prosjekt …'),
-        h('span', { class: 'pb-note' }, 'Ingenting lastes opp: alt skjer i nettleseren.')));
+        h('button', { class: 'pb-btn', title: 'Én plantegning, med skala og retting for hånd', onclick: () => this._pickFile() }, 'Bare én plan …'),
+        h('span', { class: 'pb-note' }, 'Gjenkjenningen skjer i nettleseren.')));
     s.append(card);
     s.hidden = false;
+  }
+
+  // ---- «Generer»: the drawing stack, the progress, the guide, 3D
+
+  _pickDrawings(onFiles = null) {
+    this._pendingPick = onFiles;
+    this.filesInput.click();
+  }
+  /** Files dropped or picked on the start page: into the drawing stack (made on the first files). */
+  _addDrawings(files) {
+    if (!this.stack) this._openStack();
+    else if (!this.stack.el.isConnected) this._openStackView();
+    return this.stack.addFiles(files);
+  }
+  _openStack() {
+    const s = this.startEl;
+    this.guide?.dispose();
+    this.guide = null;
+    s.innerHTML = '';
+    s.hidden = false;
+    s.classList.add('is-wide');
+    const el = h('div', { class: 'pb-start-stack' });
+    s.append(el);
+    this._aiPromise = this._aiStatus(); // asked again for every new stack (the server may have changed)
+    this.stack = new DrawingStack(el, {
+      analyse: (img) => runWorker('analyse', img),
+      onGenerate: (inputs) => this.generateHouse(inputs),
+      onBack: () => this._renderStart(this._savedDoc()),
+      onPick: () => this._pickDrawings(),
+      aiStatus: this._aiPromise,
+    });
+    return this.stack;
+  }
+  /** Back to the stack as it was (its element is kept). */
+  _openStackView() {
+    const s = this.startEl;
+    if (!this.stack) return this._openStack();
+    this.guide?.dispose();
+    this.guide = null;
+    s.innerHTML = '';
+    s.hidden = false;
+    s.classList.add('is-wide');
+    s.append(this.stack.el);
+    this.stack.render();
+    return this.stack;
+  }
+  _savedDoc() {
+    try {
+      const d = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+      return d?.levels?.length ? d : null;
+    } catch {
+      return null;
+    }
+  }
+  /** The AI: { available, model, remaining } (ai.js aiStatus against the page's server), or the test override. */
+  async _aiStatus() {
+    if (typeof window.__planbyggerAiOverride === 'function') return { available: true, model: 'opptak', remaining: 0, override: true };
+    return aiStatus();
+  }
+  /** generate()'s AI: ai.js aiRead, or a test's override (the replayed recordings; it gets no pixels). */
+  _ai(status) {
+    const o = window.__planbyggerAiOverride;
+    if (typeof o === 'function') return { read: (task, p) => o(task, { marks: p.marks ?? [], unmarked: p.unmarked ?? [], hints: p.hints ?? {}, source: p.source ?? null, width: p.image?.width, height: p.image?.height }) };
+    return status?.available ? { read: (task, p) => aiRead(task, p) } : null;
+  }
+
+  /** «Generer» on the stack's inputs → the guide (or straight into 3D when there is nothing to ask). */
+  async generateHouse(inputs, { answers = null } = {}) {
+    const stack = this.stack;
+    stack?.progress({ done: 0, total: 1, text: 'Starter …' });
+    window.__planbyggerLastGenerate = undefined;
+    const t0 = performance.now();
+    try {
+      const status = await (this._aiPromise ??= this._aiStatus());
+      const ai = this._ai(status);
+      const res = await generate(inputs, {
+        ai,
+        exec: workerExecutor() ?? undefined,
+        answers: answers ?? undefined,
+        onProgress: (p) => stack?.progress(p),
+      });
+      this.gen = { inputs, res, ms: Math.round(performance.now() - t0), ai: !!ai, answers: answers ?? {} };
+      window.__planbyggerLastGenerate = { ms: this.gen.ms, ai: this.gen.ai, questions: res.questions.map((q) => ({ id: q.id, kind: q.kind, input: q.input })), notes: res.report.notes, aiCalls: res.report.ai };
+      stack?.progress(null);
+      if (answers) return res;
+      if (res.questions.length) this._openGuide(res);
+      else await this._finishGenerate({ answers: {}, skipped: false });
+      return res;
+    } catch (err) {
+      console.error(err);
+      window.__planbyggerLastGenerate = { error: String(err?.message ?? err) };
+      stack?.progress(null);
+      this.toast(`«Generer» feilet: ${err.message}`, 8);
+      return null;
+    }
+  }
+
+  /**
+   * The image a guide card's crop is cut from: the level's image, else the drawing generate got (its px are the crop
+   * box's), else the stack card's picture stretched to the drawing's size.
+   */
+  _cropImage(crop) {
+    const res = this.gen?.res;
+    this._cropCache ??= new Map();
+    const key = crop.level ? `level:${crop.level}` : `file:${crop.file}`;
+    if (this._cropCache.has(key)) return this._cropCache.get(key);
+    let out = null;
+    const im = (crop.level ? res?.images?.[crop.level]?.img : null) ?? this.gen?.inputs?.find((x) => x.name === crop.file)?.img;
+    if (im) {
+      const c = document.createElement('canvas');
+      c.width = im.width;
+      c.height = im.height;
+      c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(im.data), im.width, im.height), 0, 0);
+      out = { source: c, width: im.width, height: im.height };
+    } else {
+      const it = this.stack?.items.find((x) => x.name === crop.file);
+      if (it?.bitmap) out = { source: it.bitmap, width: it.size?.width ?? it.bitmap.width, height: it.size?.height ?? it.bitmap.height };
+    }
+    this._cropCache.set(key, out);
+    return out;
+  }
+
+  _openGuide(res) {
+    const s = this.startEl;
+    this._cropCache = new Map();
+    s.innerHTML = '';
+    s.hidden = false;
+    s.classList.add('is-wide');
+    const el = h('div', { class: 'pb-start-guide' });
+    s.append(el);
+    this.guide = new Guide(el, {
+      questions: res.questions,
+      imageFor: (crop) => this._cropImage(crop),
+      onDone: (out) => this._finishGenerate(out),
+      onNewFile: (q) => this._replaceDrawing(q),
+    });
+  }
+
+  /** A photo the guide asked for again: the stack's file is replaced, and «Generer» runs anew. */
+  _replaceDrawing(q) {
+    this._pickDrawings(async (files) => {
+      if (!files.length || !this.stack) return;
+      for (const it of this.stack.items.filter((x) => x.name === q.file)) this.stack.remove(it);
+      this._openStackView();
+      await this.stack.addFiles(files.slice(0, 1));
+      await this.stack.generate();
+    });
+  }
+
+  /**
+   * The guide is done: an answer that needs another run (the other alternative drawing) runs generate again with the
+   * answers; the answers go onto the document (applyAnswers); the document becomes the page's, and 3D opens.
+   */
+  async _finishGenerate({ answers = {}, skipped = false } = {}) {
+    const g = this.gen;
+    if (!g) return;
+    this.guide?.dispose();
+    this.guide = null;
+    let { doc, questions, images } = g.res;
+    const rerun = questions.some((q) => q.rerun && q.kind === 'alternative' && answers[q.id] != null && answers[q.id] !== q.default);
+    if (rerun) {
+      this._openStackView();
+      const res2 = await this.generateHouse(g.inputs, { answers });
+      if (res2) ({ doc, questions, images } = res2);
+    }
+    doc = applyAnswers(doc, questions, answers);
+    doc.generated = { ...(doc.generated || {}), guide: { answered: Object.keys(answers).length, asked: questions.length, skipped } };
+    this.gen.answers = answers;
+    await this._loadGenerated(doc, images);
+    // the drawings generate got (a PDF's full pages among them), its level images (the editor has its own copies now)
+    // and the guide's crops are not needed any more: «Generer» again starts from the stack
+    this.gen.inputs = null;
+    if (this.gen.res) this.gen.res.images = null;
+    this._cropCache = null;
+    await this.open3d();
+  }
+
+  /** A generated document as the page's: the level images for the editor (and IndexedDB), then the editor state. */
+  async _loadGenerated(doc, images) {
+    this.doc = doc;
+    this.li = 0;
+    this.images.clear();
+    this.hist.clear();
+    this.sel = null;
+    this._lastCheck = null;
+    for (const lv of doc.levels) {
+      const im = images?.[lv.id]?.img;
+      if (!im) continue;
+      const imageData = new ImageData(new Uint8ClampedArray(im.data), im.width, im.height);
+      const bitmap = await createImageBitmap(imageData);
+      lv.image = { ...(lv.image || {}), width: im.width, height: im.height, rotation: 0 };
+      this.images.set(lv.id, { bitmap, imageData, grey: luma(imageData), rotation: 0, original: { bitmap, imageData } });
+      // for «Fortsett med …» after a reload (a PNG: the level's image may be a crop or a straightened photo)
+      const c = document.createElement('canvas');
+      c.width = im.width;
+      c.height = im.height;
+      c.getContext('2d').putImageData(imageData, 0, 0);
+      c.toBlob((blob) => blob && idbPut(lv.id + ':' + (lv.image.name ?? ''), blob), 'image/png');
+    }
+    this.startEl.hidden = true;
+    this.startEl.classList.remove('is-wide');
+    this.statusInfo.textContent = this.gen?.ai ? 'KI-en fikk nedskalerte kopier av tegningene for å lese tekst og symboler. Målene er regnet ut i nettleseren.' : 'Huset er laget i nettleseren – tegningene er ikke sendt noen steder.';
+    this._afterLevelChange();
+    this._saveSoon();
+    this._checkSoon();
   }
 
   // ---- start / restore
@@ -318,6 +584,7 @@ class App {
     try {
       let blob = file;
       if (file.type === 'application/pdf' || /\.pdf$/i.test(file.name)) blob = await pdfToPng(file);
+      this.startEl.classList.remove('is-wide');
       if (!this.doc || levelTarget === undefined) {
         this.doc = createDoc(file.name.replace(/\.[a-z]+$/i, '').replace(/[_-]+/g, ' ') || 'Mitt hus');
         this.li = 0;
@@ -343,7 +610,7 @@ class App {
   }
 
   async _loadImageBlob(lv, blob, { name, store = true } = {}) {
-    const bitmap = await createImageBitmap(blob);
+    const bitmap = await createImageBitmap(blob, { imageOrientation: 'from-image' });
     const c = document.createElement('canvas');
     c.width = bitmap.width;
     c.height = bitmap.height;
@@ -698,6 +965,8 @@ class App {
   _key(e) {
     const tag = e.target?.tagName;
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+    // the start page, the drawing stack and the guide have their own keys
+    if (!this.startEl.hidden) return;
     if (!this.view3d.hidden) {
       if (e.key === 'Escape' && this.viewer?.mode === 'orbit') this.close3d();
       return;
@@ -795,19 +1064,11 @@ class App {
         fn();
         this.changed(label);
       };
-      const typeSel = h('select', { onchange: (e) => set(() => {
-        o.type = e.target.value;
-        if (o.type === 'door') {
-          o.hinge ??= 'start';
-          o.side ??= 1;
-        }
-        if (o.type === 'window') {
-          o.sill ??= this.doc.settings.windowSill;
-          o.height ??= this.doc.settings.windowHeight;
-        }
-      }, 'Type') },
-      ['door', 'window', 'opening'].map((t) => h('option', { value: t, selected: o.type === t }, { door: 'Dør', window: 'Vindu', opening: 'Åpning uten dør' }[t])));
-      box.append(h('h3', {}, { door: 'Dør', window: 'Vindu', opening: 'Åpning' }[o.type] ?? 'Åpning'),
+      // the kind: type and door variant together (model.js setOpeningKind)
+      const kind = openingKind(o);
+      const typeSel = h('select', { onchange: (e) => set(() => setOpeningKind(o, e.target.value, this.doc.settings), 'Type') },
+        OPENING_KINDS.map(([k, label]) => h('option', { value: k, selected: kind === k }, label)));
+      box.append(h('h3', {}, OPENING_KINDS.find((x) => x[0] === kind)?.[1] ?? 'Åpning'),
         h('div', { class: 'pb-field' }, h('label', {}, 'Type'), typeSel),
         field('Bredde', round(o.width, 3), (v) => {
           const m = num(v);
@@ -839,15 +1100,18 @@ class App {
           set(() => (o.height = m), 'Høyde');
         }));
       }
-      if (o.type === 'door') {
+      if (o.type === 'door' && kind !== 'sliding') {
         box.append(field('Åpningsvinkel', o.openAngle ?? 90, (v) => {
           const m = num(v);
           if (!m || m < 30 || m > 180) return;
           set(() => (o.openAngle = m), 'Åpningsvinkel');
         }, '°'));
         box.append(h('div', { class: 'pb-row' },
-          h('button', { class: 'pb-btn is-small', onclick: () => set(() => (o.hinge = o.hinge === 'end' ? 'start' : 'end'), 'Snudde hengsel') }, 'Snu hengselen (H)'),
+          h('button', { class: 'pb-btn is-small', title: kind === 'double' ? 'Bytt hvilket blad som er hvilket' : null, onclick: () => set(() => (o.hinge = o.hinge === 'end' ? 'start' : 'end'), 'Snudde hengsel') }, 'Snu hengselen (H)'),
           h('button', { class: 'pb-btn is-small', onclick: () => set(() => (o.side = -(o.side || 1)), 'Snudde slagretning') }, 'Snu slagretningen (G)')));
+      } else if (kind === 'sliding') {
+        box.append(h('p', { class: 'pb-note' }, 'Skyvedøra har ingen slagradius. I 3D blir den foreløpig en åpning uten dørblad.'),
+          h('div', { class: 'pb-row' }, h('button', { class: 'pb-btn is-small', onclick: () => set(() => (o.side = -(o.side || 1)), 'Byttet side') }, 'Bytt side (G)')));
       }
       box.append(h('div', { class: 'pb-row' }, h('button', { class: 'pb-btn is-small is-danger', onclick: () => this.editor.deleteSelection() }, 'Slett')));
       return box;
@@ -1250,8 +1514,10 @@ class App {
         const info = h('span', { class: 'pb-note' });
         this.modeBtn = h('button', { class: 'pb-btn is-primary', onclick: () => this._toggleWalk() }, 'Gå inn i huset');
         this.levelSel = h('select', { class: 'pb-btn', onchange: (e) => this.viewer.showLevel(e.target.value || null) });
-        const bar = h('div', { class: 'pb-view3d-bar' },
-          h('button', { class: 'pb-btn', onclick: () => this.close3d() }, '← Tilbake til planen'), this.modeBtn, this.levelSel, info);
+        // a generated house: «Finjuster» opens the editor on it; «Tegningene» goes back to the drawing stack
+        this.backBtn = h('button', { class: 'pb-btn pb-finetune', onclick: () => this.close3d() }, '← Tilbake til planen');
+        this.stackBtn = h('button', { class: 'pb-btn', title: 'Tilbake til tegningene: endre dem og generer på nytt', onclick: () => this._backToStack() }, 'Tegningene');
+        const bar = h('div', { class: 'pb-view3d-bar' }, this.backBtn, this.stackBtn, this.modeBtn, this.levelSel, info);
         this.helpEl = h('div', { class: 'pb-view3d-help' });
         this.crosshair = h('div', { class: 'pb-crosshair', hidden: true });
         this.view3d.append(bar, this.helpEl, this.crosshair);
@@ -1259,6 +1525,10 @@ class App {
         this.viewer = createViewer(this.view3d, { onInfo: (t) => (info.textContent = t) });
       }
       this.view3d.hidden = false;
+      const generated = !!this.doc.generated;
+      this.backBtn.textContent = generated ? 'Finjuster' : '← Tilbake til planen';
+      this.backBtn.title = generated ? 'Rett vegger, dører, vinduer og rom i 2D-editoren' : '';
+      this.stackBtn.hidden = !(generated && this.stack && this.gen);
       await this.viewer.load(out.ex.house);
       this.levelSel.innerHTML = '';
       this.levelSel.append(h('option', { value: '' }, 'Alle etasjer'), ...out.ex.house.levels.map((l) => h('option', { value: l.id }, l.name)));
@@ -1291,6 +1561,11 @@ class App {
     this.view3d.hidden = true;
     this._stepState();
   }
+  /** From 3D back to the drawing stack (the same files; «Generer» again). */
+  _backToStack() {
+    this.close3d();
+    this._openStackView();
+  }
 }
 
 function download(name, text) {
@@ -1307,25 +1582,19 @@ function download(name, text) {
 }
 
 /**
- * The first page of a PDF as a PNG blob (pdf.js from a CDN, loaded only when a PDF is opened – no build dependency).
- * Rendered at 150 dpi-ish (the page's long side ≈ 2400 px).
+ * The first page of a PDF as a PNG blob (stack.js renderPdf: at the embedded scan's resolution, or 200 dpi) – only that
+ * page is rendered; the toast says when the PDF has more.
  */
 async function pdfToPng(file) {
-  const V = '4.10.38';
-  const pdfjs = await import(/* @vite-ignore */ `https://cdn.jsdelivr.net/npm/pdfjs-dist@${V}/build/pdf.min.mjs`);
-  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${V}/build/pdf.worker.min.mjs`;
-  const pdf = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
-  const page = await pdf.getPage(1);
-  const v1 = page.getViewport({ scale: 1 });
-  const scale = 2400 / Math.max(v1.width, v1.height);
-  const vp = page.getViewport({ scale });
+  const pages = await renderPdf(file, { pages: [1] });
+  const [first] = pages;
+  if (!first) throw new Error('PDF-en har ingen sider');
+  first.bitmap?.close?.();
+  if (pages.numPages > 1) window.__planbygger?.toast(`PDF-en har ${pages.numPages} sider – bare den første er brukt. «Slipp alle tegningene her» tar alle sidene.`, 6);
   const c = document.createElement('canvas');
-  c.width = Math.round(vp.width);
-  c.height = Math.round(vp.height);
-  const g = c.getContext('2d');
-  g.fillStyle = '#fff';
-  g.fillRect(0, 0, c.width, c.height);
-  await page.render({ canvasContext: g, viewport: vp }).promise;
+  c.width = first.img.width;
+  c.height = first.img.height;
+  c.getContext('2d').putImageData(first.img, 0, 0);
   return await new Promise((res) => c.toBlob(res, 'image/png'));
 }
 

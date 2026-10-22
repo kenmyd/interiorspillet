@@ -5,13 +5,17 @@
  *
  *   aiStatus() → { available, model, remaining }                       never throws
  *   aiRead(task, { image, marks, unmarked, hints, model }) → response | null     never throws
- *     task:     'classify' (the whole sheet) | 'readPlan' (one marked plan) | 'readFacade'
+ *     task:     'classify' (the whole sheet) | 'readPlan' (one marked plan) | 'readFacade' (not sent while no part of
+ *               its answer is in use: AI_FACADE_USE below – aiRead gives null at once, aiLastError().error 'off')
  *     image:    RGBA { width, height, data } (ImageData shape), any size: scaled down here to ≤ 1600 px
  *     marks:    drawMarks(...).marks (marks.js), drawn into image by the caller
  *     unmarked: drawMarks(...).unmarked – the rooms and openings marks.js could not mark (never sent to the server)
  *     hints:    { fileName?, levelName?, sheet?, note? }                short context for the prompt
  *     model:  'haiku' | 'sonnet' | a full id – normally left out (the server picks per task)
  *   setAiTransport(fn) / resetAiTransport()   fn(request) → reply; the tests replay recorded replies with it
+ *   AI_FACADE_USE { roof, kinds }             the parts of a readFacade answer facade.js gets (both off, measured)
+ *   setAiFacadeUse({ roof?, kinds? } | null) / aiFacadeUse() / aiTaskInUse(task)   turn parts on for a measurement
+ *   tidyResponse(task, response, marks, unmarked, { facadeUse }) → the tidied answer (below)
  *   downscaleImage(img, maxSide = 1600) → img       area-averaged, alpha flattened on white
  *   roomKindOf(kind) → a ROOM_KINDS key (model.js) or null
  *   aiLastError() → { error, message } | null       why the last call gave null (message in Norwegian)
@@ -25,6 +29,8 @@
  *     added to rooms as { mark: null, ref, at (its interior point), aiAt (the label), …, fromLabel, unmarked: true }
  *   - an opening reported without a mark, within 2.5 % of the image from an unmarked opening, gets that one's ref
  *   - every point and box clamped to 0–1, boxes ordered (x0 < x1, y0 < y1), missing lists as []
+ *   - readFacade: roof null and windows [] for the parts AI_FACADE_USE leaves off; seen = { roof, windows } is what
+ *     the model said either way
  *   - meta: { model, promptVersion, cached }
  *
  * request = { op: 'status' } | { op: 'read', task, image (RGBA, already scaled), marks, hints, model }
@@ -35,6 +41,32 @@ import { pointInPolygon, dist } from './geom.js';
 
 export const AI_TASKS = Object.freeze(['classify', 'readPlan', 'readFacade']);
 export const AI_MAX_SIDE = 1600;
+
+/**
+ * The parts of a readFacade answer that facade.js gets: the roof (a vote in houseRoof, and the tie-breaker) and the
+ * door/window kinds (applyAiKinds). Both are off, from «Generer» on the 24 facades of hus1–hus5 and hus7 against the
+ * fasit (tools/planbygger-measure-all.mjs; notes/planbygger.md, «KI-laget»), house roof right / facade window counts
+ * exact (total error) / door counts exact (total error):
+ *   - without the facade AI      5 of 6 / 19 of 24 (5) / 19 of 24 (5)
+ *   - Haiku, both parts          3 of 6 / 17 (8) / 18 (8): the roof of one view counts as a full vote (hus1's half-hip
+ *                                with a dormer read as hip and gable, hus2's 200 × 80 px crops as mono-pitch); the kinds
+ *                                that swap a door and a window fix 1 facade (hus1 fasade 1) and spoil 5 (hus2 1 and 3,
+ *                                hus3 1 and 2, hus4 3)
+ *   - Haiku, roof only           3 of 6 / 19 (5) / 19 (5);  kinds only: 5 of 6 / 17 (8) / 18 (8)
+ *   - Sonnet (7 facades)         4 of 6 / 18 (8) / 18 (10)
+ * The storeys are not used (generate passes the plans' count). With nothing in use aiRead does not send readFacade at
+ * all (no cost, no wait: 4 calls of 5–7 s per house). setAiFacadeUse turns parts on again, for measuring them.
+ */
+export const AI_FACADE_USE = Object.freeze({ roof: false, kinds: false });
+let facadeUse = { ...AI_FACADE_USE };
+/** Overrides AI_FACADE_USE ({ roof?, kinds? }; null: back to it). */
+export function setAiFacadeUse(use = null) {
+  facadeUse = use ? { ...AI_FACADE_USE, ...use } : { ...AI_FACADE_USE };
+}
+export const aiFacadeUse = () => ({ ...facadeUse });
+/** Whether aiRead sends this task (readFacade only while a part of its answer is in use). */
+export const aiTaskInUse = (task, use = null) => AI_TASKS.includes(task) && (task !== 'readFacade' || !!((use ?? facadeUse).roof || (use ?? facadeUse).kinds));
+
 const ENDPOINT = '/api/planbygger/ai';
 const TIMEOUT_MS = 100_000; // the server's own deadline is 60 s, plus the queue
 
@@ -239,8 +271,11 @@ function labelIn(labels, polygon, at) {
   return best;
 }
 
-/** Tidies one task's answer (see the top of the file). unmarked: drawMarks(...).unmarked. */
-export function tidyResponse(task, response, marks = [], unmarked = []) {
+/**
+ * Tidies one task's answer (see the top of the file). unmarked: drawMarks(...).unmarked; facadeUse: the readFacade
+ * parts kept (default: AI_FACADE_USE, or what setAiFacadeUse set).
+ */
+export function tidyResponse(task, response, marks = [], unmarked = [], { facadeUse: use = facadeUse } = {}) {
   const r = response && typeof response === 'object' ? response : {};
   if (task === 'classify') {
     return {
@@ -257,11 +292,14 @@ export function tidyResponse(task, response, marks = [], unmarked = []) {
     };
   }
   if (task === 'readFacade') {
+    const roof = r.roof ?? null;
+    const windows = arr(r.windows).map((w) => ({ bbox: bx(w.bbox), kind: w.kind === 'door' ? 'door' : 'window' })).filter((w) => w.bbox);
     return {
       title: strOrNull(r.title),
-      roof: r.roof ?? null,
+      roof: use?.roof ? roof : null,
       storeys: Number.isInteger(r.storeys) ? r.storeys : null,
-      windows: arr(r.windows).map((w) => ({ bbox: bx(w.bbox), kind: w.kind === 'door' ? 'door' : 'window' })).filter((w) => w.bbox),
+      windows: use?.kinds ? windows : [],
+      seen: { roof, windows },
       notes: typeof r.notes === 'string' ? r.notes : '',
     };
   }
@@ -359,6 +397,10 @@ export async function aiRead(task, { image, marks = [], unmarked = [], hints = {
   lastError = null;
   try {
     if (!AI_TASKS.includes(task)) throw Object.assign(new Error('task'), { code: 'bad_request' });
+    if (!aiTaskInUse(task)) {
+      lastError = { error: 'off', message: 'KI-en leser ikke fasadene: tegningen alene ga et bedre resultat.' };
+      return null;
+    }
     if (!image?.width || !image?.height || !image?.data) throw Object.assign(new Error('image'), { code: 'bad_image' });
     const small = downscaleImage(image, AI_MAX_SIDE);
     const cleanMarks = arr(marks).map((m) => ({ id: m.id, kind: m.kind, at: m.at, drawnAt: m.drawnAt ?? m.at }));

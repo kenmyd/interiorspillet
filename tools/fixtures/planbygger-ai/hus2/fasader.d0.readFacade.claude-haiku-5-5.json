@@ -1,0 +1,89 @@
+{
+ "house": "hus2",
+ "file": "fasader.png",
+ "part": 0,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 202,
+  "height": 81,
+  "sha256": "c6bfd9a58f83e06bd54ac167f9fe027e06a7e6d5db48b59b4b8b2ef3c2764833"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasader.png"
+ },
+ "source": {
+  "file": "fasader.png",
+  "part": 0,
+  "width": 980,
+  "height": 160,
+  "bbox": [
+   24,
+   31,
+   226,
+   112
+  ],
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "mono-pitch",
+  "storeys": 1,
+  "windows": [
+   {
+    "bbox": [
+     0.19,
+     0.56,
+     0.23,
+     0.68
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.35,
+     0.56,
+     0.44,
+     0.86
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.64,
+     0.59,
+     0.79,
+     0.74
+    ],
+    "kind": "window"
+   }
+  ],
+  "notes": "Lite og usikker tegning; fasaden alene avgjør ikke om taket er pulttak eller saltak med møne sett fra langsiden. Enetasje med tydelig skråtak, ingen synlig loft med vinduer."
+ },
+ "usage": {
+  "input_tokens": 1852,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 751,
+  "output_tokens_details": {
+   "thinking_tokens": 542
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000561,
+ "ms": 4959,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:15:41.778Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

@@ -1,0 +1,68 @@
+{
+ "house": "hus4",
+ "file": "fasade4.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "0eb8f1b791024b55e6928a7ddc20cf54b371c432aa449208e2ed0801102f86f3"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade4.avif"
+ },
+ "source": {
+  "file": "fasade4.avif",
+  "part": null,
+  "width": 1920,
+  "height": 1280,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "facade",
+    "bbox": [
+     0.32,
+     0.22,
+     0.8,
+     0.79
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Fasade uten tittel og uten målestokk. Tegningen viser et hus med pulttak, balkongrekkverk i glass og en tremet ved siden av."
+ },
+ "usage": {
+  "input_tokens": 4395,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 132,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000506,
+ "ms": 1799,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:21:08.686Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

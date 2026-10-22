@@ -14,7 +14,9 @@
  *                it follow (Shift: free); drag a wall end: snaps to ends, centre lines and 45° steps; drag an opening:
  *                slides along its wall, its ends change the width; Delete removes; arrow keys nudge 1 cm (Shift 10 cm)
  *   Vegg (W)     click – click – click …: a chain of walls (Esc / double click / right click ends it), snapping as above
- *   Dør (D), Vindu (F), Åpning (O)   click on a wall
+ *   Dør (D), Vindu (F), Åpning (O)   click on a wall. A door is drawn by its variant (model.js openingKind): one arc for
+ *                a hinged door, two arcs from opposite jambs for a double door (leaf and leaf2), two offset leaves and no
+ *                arc for a sliding door
  *   Rom (R)      click in a room: name, type, ceiling height
  *   Trapp (T)    drag a rectangle from the top of a stair toward its foot (the hole in this floor; the stair goes down
  *                to the level under it); the corners snap to the room's wall faces
@@ -24,7 +26,7 @@
 import { sub, add, mul, dot, dist, unit, perp, projectToSegment, round } from './geom.js';
 import { wallBand, endExtensions } from './regions.js';
 import { labelRooms } from './export.js';
-import { wallLength, wallDir, wallPoint, openingsOf, moveWall, moveWallEnd, addWall, deleteWall, addOpening, deleteOpening, addStair, deleteStair, stairGeometry } from './model.js';
+import { wallLength, wallDir, wallPoint, openingsOf, moveWall, moveWallEnd, addWall, deleteWall, addOpening, deleteOpening, addStair, deleteStair, stairGeometry, openingKind } from './model.js';
 
 const KIND_FILL = {
   living: 'rgba(255, 196, 96, 0.22)',
@@ -634,7 +636,7 @@ export class Editor {
     }
     if (this.sel?.kind === 'opening') {
       const o = L.openings.find((x) => x.id === this.sel.id);
-      if (o?.type === 'door' && (e.key === 'h' || e.key === 'H')) {
+      if (o?.type === 'door' && openingKind(o) !== 'sliding' && (e.key === 'h' || e.key === 'H')) {
         this.app.snapshot();
         o.hinge = o.hinge === 'end' ? 'start' : 'end';
         this.app.changed('Snudde hengsel');
@@ -739,6 +741,43 @@ export class Editor {
       this._polyPath(g, band, false);
       g.fillStyle = sel ? 'rgba(243, 156, 18, 0.92)' : hov ? 'rgba(70, 70, 76, 0.92)' : w.exterior ? 'rgba(25, 27, 31, 0.9)' : 'rgba(45, 47, 53, 0.86)';
       g.fill();
+    }
+    // ---- room separators (no wall, but two rooms: a dash-dot line) and skylights (dashed, in the ceiling)
+    if (L.separators?.length) {
+      g.save();
+      g.setLineDash([10, 4, 2, 4]);
+      g.strokeStyle = 'rgba(120, 60, 160, 0.85)';
+      g.lineWidth = 1.6;
+      g.beginPath();
+      for (const sp of L.separators) {
+        g.moveTo(...this.toScreen(sp.a));
+        g.lineTo(...this.toScreen(sp.b));
+      }
+      g.stroke();
+      g.restore();
+    }
+    if (L.skylights?.length) {
+      g.save();
+      g.setLineDash([5, 4]);
+      g.strokeStyle = 'rgba(21, 97, 199, 0.9)';
+      g.fillStyle = 'rgba(99, 189, 255, 0.16)';
+      g.lineWidth = 1.5;
+      for (const sk of L.skylights) {
+        const [[x0, y0], [x1, y1]] = sk.rect;
+        const [ax, ay] = this.toScreen([x0, y0]);
+        const [bx, by] = this.toScreen([x1, y1]);
+        g.beginPath();
+        g.rect(ax, ay, bx - ax, by - ay);
+        g.fill();
+        g.stroke();
+        g.beginPath();
+        g.moveTo(ax, ay);
+        g.lineTo(bx, by);
+        g.moveTo(bx, ay);
+        g.lineTo(ax, by);
+        g.stroke();
+      }
+      g.restore();
     }
     // ---- openings
     for (const o of L.openings) this._drawOpening(g, o);
@@ -876,31 +915,69 @@ export class Editor {
       g.lineWidth = 1.2;
       g.strokeStyle = col;
       g.stroke();
+    } else if (o.type === 'door' && openingKind(o) === 'sliding') {
+      // two leaves inside the hole, offset across the wall and overlapping in the middle, and an arrow outside the
+      // wall on the door's side (along the wall: the way the first leaf slides)
+      const side = o.side || 1;
+      const off = h * 0.32;
+      const mid = (s0 + s1) / 2;
+      const ov = Math.min(0.08, o.width * 0.06);
+      g.lineWidth = Math.max(2, Math.min(4, h * 0.45 * k));
+      g.lineCap = 'butt';
+      g.strokeStyle = col;
+      g.beginPath();
+      g.moveTo(...P(s0, -off * side));
+      g.lineTo(...P(mid + ov, -off * side));
+      g.moveTo(...P(mid - ov, off * side));
+      g.lineTo(...P(s1, off * side));
+      g.stroke();
+      const out = side * (h + 7 / k);
+      const a0 = P(s0 + o.width * 0.15, out);
+      const a1 = P(s1 - o.width * 0.15, out);
+      const u = unit(sub(a1, a0));
+      g.lineWidth = 1.4;
+      g.beginPath();
+      g.moveTo(...a0);
+      g.lineTo(...a1);
+      for (const [tip, d] of [[a1, 1], [a0, -1]]) {
+        g.moveTo(...tip);
+        g.lineTo(tip[0] - d * u[0] * 7 - u[1] * 4, tip[1] - d * u[1] * 7 + u[0] * 4);
+        g.moveTo(...tip);
+        g.lineTo(tip[0] - d * u[0] * 7 + u[1] * 4, tip[1] - d * u[1] * 7 - u[0] * 4);
+      }
+      g.stroke();
     } else if (o.type === 'door') {
-      const hingeAt = o.hinge === 'end' ? s1 : s0;
-      const dir = o.hinge === 'end' ? -1 : 1;
-      const r = Math.min(o.leaf ?? o.width - 0.12, o.width);
       const side = o.side || 1;
       const face = side * h;
       const open = ((o.openAngle ?? 90) * Math.PI) / 180;
-      g.beginPath();
-      const steps = 24;
-      for (let i = 0; i <= steps; i++) {
-        const phi = (i / steps) * open;
-        const pt = P(hingeAt + dir * r * Math.cos(phi), face + side * r * Math.sin(phi));
-        if (i) g.lineTo(...pt);
-        else g.moveTo(...pt);
-      }
-      g.setLineDash([4, 3]);
-      g.lineWidth = 1.3;
-      g.strokeStyle = col;
-      g.stroke();
-      g.setLineDash([]);
-      g.beginPath();
-      g.moveTo(...P(hingeAt, face));
-      g.lineTo(...P(hingeAt + dir * r * Math.cos(open), face + side * r * Math.sin(open)));
-      g.lineWidth = 2.2;
-      g.stroke();
+      const leafAt = (hingeAt, dir, r) => {
+        g.beginPath();
+        const steps = 24;
+        for (let i = 0; i <= steps; i++) {
+          const phi = (i / steps) * open;
+          const pt = P(hingeAt + dir * r * Math.cos(phi), face + side * r * Math.sin(phi));
+          if (i) g.lineTo(...pt);
+          else g.moveTo(...pt);
+        }
+        g.setLineDash([4, 3]);
+        g.lineWidth = 1.3;
+        g.strokeStyle = col;
+        g.stroke();
+        g.setLineDash([]);
+        g.beginPath();
+        g.moveTo(...P(hingeAt, face));
+        g.lineTo(...P(hingeAt + dir * r * Math.cos(open), face + side * r * Math.sin(open)));
+        g.lineWidth = 2.2;
+        g.stroke();
+      };
+      const atEnd = o.hinge === 'end';
+      if (openingKind(o) === 'double') {
+        // the two leaves from opposite jambs: leaf at the hinge side, leaf2 at the other (each about half the hole)
+        const r1 = Math.min(o.leaf ?? o.width / 2, o.width);
+        const r2 = Math.min(o.leaf2 ?? o.width - r1, o.width);
+        leafAt(atEnd ? s1 : s0, atEnd ? -1 : 1, r1);
+        leafAt(atEnd ? s0 : s1, atEnd ? 1 : -1, r2);
+      } else leafAt(atEnd ? s1 : s0, atEnd ? -1 : 1, Math.min(o.leaf ?? o.width - 0.12, o.width));
     } else {
       g.save();
       g.setLineDash([5, 4]);
@@ -914,7 +991,6 @@ export class Editor {
       g.stroke();
       g.restore();
     }
-    void k;
   }
 
   /** A stair: the hole, a line per tread, an arrow down; dashed for the stair of the level above (ghost). */

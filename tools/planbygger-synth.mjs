@@ -7,8 +7,10 @@
  *   renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0, paper = 240, furniture = true, dims = true,
  *                      seed = 1, wallGrey = 8 }) → { img: { width, height, data }, plan, origin: [px, px] }
  *   plan = { walls: [{ a: [x, y], b: [x, y], t }], openings: [{ wall: index, at, width, type, hinge, side, variant? }],
- *            skylights?: [{ x0, y0, x1, y1 }], stairs?: [{ rect, run, treads, kind }], extras?: { roofEdge, tiles,
- *            boards } }  (metres; variant 'double' | 'sliding' for doors; see variantPlans)
+ *            skylights?: [{ x0, y0, x1, y1 }], stairs?: [{ rect, run, treads, kind }], separators?: [{ a, b, t }],
+ *            extras?: { roofEdge, tiles, boards, beams } }  (metres; variant 'double' | 'sliding' for doors;
+ *            separators: a beam between open zones, two dash-dot lines t apart – the answer; beams: one dash-dot line
+ *            [{ a, b }] that is no separator; see variantPlans)
  *   samplePlans() → named test plans (a flat, an L-shaped house, a house with a long glass wall)
  *   variantPlans() → plans with double and sliding doors, skylights, stairs and things that are not walls
  */
@@ -148,7 +150,24 @@ export function renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0,
     const c = [[s.x0, s.y0], [s.x1, s.y0], [s.x1, s.y1], [s.x0, s.y1]];
     for (let i = 0; i < 4; i++) line(c[i], c[(i + 1) % 4], lwThin * 1.3, 90, dashPx);
   }
-  for (const st of plan.stairs || []) drawStair(st, line, lwThin);
+  for (const st of plan.stairs || []) drawStair(st, line, lwThin, pxPerM);
+  // ---- dash-dot lines: a beam's two edges between open zones (separators), one line over a room (extras.beams)
+  const dashDot = (a, b, v) => {
+    const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
+    const P = (t) => [a[0] + u[0] * t, a[1] + u[1] * t];
+    for (let t = 0; t < L; ) {
+      line(P(t), P(Math.min(L, t + 0.22)), lwThin * 1.5, v);
+      t += 0.22 + 0.06;
+      if (t < L) line(P(t), P(Math.min(L, t + 0.04)), lwThin * 1.5, v);
+      t += 0.04 + 0.06;
+    }
+  };
+  for (const sp of plan.separators || []) {
+    const L = Math.hypot(sp.b[0] - sp.a[0], sp.b[1] - sp.a[1]);
+    const n = [-(sp.b[1] - sp.a[1]) / L, (sp.b[0] - sp.a[0]) / L];
+    for (const k of [-sp.t / 2, sp.t / 2]) dashDot([sp.a[0] + n[0] * k, sp.a[1] + n[1] * k], [sp.b[0] + n[0] * k, sp.b[1] + n[1] * k], 40);
+  }
   // ---- things that are not walls: a dashed roof edge around the house, a tile grid on a terrace outside, floor boards
   const ex = plan.extras || {};
   if (ex.roofEdge) {
@@ -163,6 +182,7 @@ export function renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0,
   for (const b of ex.boards || []) {
     for (let y = b.y0 + b.step / 2; y < b.y1; y += b.step) line([b.x0, y], [b.x1, y], lwThin, 170);
   }
+  for (const b of ex.beams || []) dashDot(b.a, b.b, 40);
   // ---- dimension lines with ticks and «text» outside the house and across the first room
   if (dims) {
     const lw = Math.max(1, pxPerM / 60);
@@ -200,9 +220,14 @@ export function renderPlan(plan, { pxPerM = 50, margin = 1.5, ss = 3, noise = 0,
 /**
  * A stair symbol: the outline, evenly spaced treads and the walking line with its arrow. kind 'straight': one flight
  * over the rect, running along `run` ('x' | 'y'); kind 'quarter': an L – a flight down the left side (along y), a square
- * of winders in the top-left corner radiating from the inner corner, a flight along the top (along x).
+ * of winders in the top-left corner radiating from the inner corner, a flight along the top (along x); kind 'u': a
+ * half-turn – two flights of `treads` side by side along y (width each), an eye between them, a landing at the top;
+ * kind 'newel': a half-turn winding round a narrow newel (hus4) – the newel (eye wide) from `turn` below the top edge
+ * down to the bottom, `winders` lines radiating from the newel's top round the turn and `treads` lines per side from its
+ * faces to the outer sides, tilted less towards the bottom; dashed: 'left' draws the left half dashed (the flight above
+ * the cut plane).
  */
-function drawStair(st, line, lw) {
+function drawStair(st, line, lw, ppm = 50) {
   const [[x0, y0], [x1, y1]] = st.rect;
   const v = 100;
   const box = (a, b) => {
@@ -211,6 +236,50 @@ function drawStair(st, line, lw) {
     line([b[0], b[1]], [a[0], b[1]], lw, v);
     line([a[0], b[1]], [a[0], a[1]], lw, v);
   };
+  if (st.kind === 'newel') {
+    box([x0, y0], [x1, y1]);
+    const xc = (x0 + x1) / 2;
+    const e = st.eye;
+    const yN = y0 + st.turn;
+    box([xc - e / 2, yN], [xc + e / 2, y1]);
+    const dash = Math.max(2, 0.06 * ppm);
+    const draw = (a, b, left) => line(a, b, lw, v, left && st.dashed === 'left' ? dash : 0);
+    // round the turn: from the newel's top to the outline, from the left side through the top edge to the right side
+    const P = [xc, yN];
+    for (let k = 1; k <= st.winders; k++) {
+      const a = Math.PI + (Math.PI * k) / (st.winders + 1);
+      const d = [Math.cos(a), Math.sin(a)];
+      const tx = d[0] < 0 ? (x0 - P[0]) / d[0] : (x1 - P[0]) / d[0];
+      const ty = (y0 - P[1]) / d[1];
+      const t = Math.min(tx, ty);
+      draw(P, [P[0] + d[0] * t, P[1] + d[1] * t], d[0] < 0);
+    }
+    // along the flights: from the newel's faces out to the sides, tilted up towards the turn
+    const w = xc - e / 2 - x0;
+    for (let j = 1; j <= st.treads; j++) {
+      const yi = yN + ((y1 - yN) * j) / (st.treads + 1);
+      const yo = yi - w * Math.tan(((30 * (1 - j / (st.treads + 1))) * Math.PI) / 180);
+      draw([xc - e / 2, yi], [x0, yo], true);
+      draw([xc + e / 2, yi], [x1, yo], false);
+    }
+    return;
+  }
+  if (st.kind === 'u') {
+    // a half-turn stair: two flights side by side along y with an eye between them, joined by a landing at the top
+    const w = st.width;
+    box([x0, y0], [x1, y1]);
+    const xe0 = x0 + w;
+    const xe1 = xe0 + st.eye;
+    line([xe0, y0 + w], [xe0, y1], lw, v);
+    line([xe1, y0 + w], [xe1, y1], lw, v);
+    line([xe0, y0 + w], [xe1, y0 + w], lw, v);
+    for (let k = 0; k <= st.treads; k++) {
+      const y = y0 + w + ((y1 - y0 - w) * k) / st.treads;
+      line([x0, y], [xe0, y], lw, v);
+      line([xe1, y], [x1, y], lw, v);
+    }
+    return;
+  }
   if (st.kind === 'quarter') {
     const w = st.width;
     box([x0, y0], [x1, y1]);
@@ -271,6 +340,23 @@ function drawStair(st, line, lw) {
 export function variantPlans() {
   const ext = 0.25;
   const int = 0.1;
+  const newelPlan = (dashed) => ({
+    walls: [
+      { a: [0, 0], b: [8, 0], t: ext },
+      { a: [8, 0], b: [8, 6], t: ext },
+      { a: [8, 6], b: [0, 6], t: ext },
+      { a: [0, 6], b: [0, 0], t: ext },
+      { a: [5, 0], b: [5, 6], t: int },
+      { a: [2.4, 0], b: [2.4, 2.9], t: int },
+    ],
+    openings: [
+      { wall: 4, at: 4.5, width: 0.9, type: 'door', hinge: 'start', side: 1 },
+      { wall: 0, at: 6.5, width: 1.4, type: 'window' },
+      { wall: 2, at: 2.5, width: 1.4, type: 'window' },
+    ],
+    skylights: [],
+    stairs: [{ rect: [[0.125, 0.125], [2.35, 2.9]], kind: 'newel', eye: 0.15, turn: 1.05, winders: 7, treads: 4, dashed }],
+  });
   return {
     // 12 × 8 m: a living room (west), a hall with a straight stair (middle), a bedroom (north-east) and a bathroom
     // (south-east); double doors hall → living room and to the terrace, a sliding door living room → bedroom
@@ -306,6 +392,37 @@ export function variantPlans() {
         boards: [{ x0: 8.1, y0: 0.15, x1: 11.85, y1: 4.4, step: 0.12 }],
       },
     },
+    // 12 × 8 m, open zones (hus4): a hall (north-west, with a corridor south along the east), a TV room (south-west) open
+    // to the hall, the beam between them drawn as two dash-dot lines from the end of a wall stub to the top of the TV
+    // room's east wall (a separator: it splits the rooms, it is no wall); a bedroom (east) with a beam over it from wall
+    // face to wall face (not a separator), a U stair with an eye in the hall
+    apen: {
+      walls: [
+        { a: [0, 0], b: [12, 0], t: ext },
+        { a: [12, 0], b: [12, 8], t: ext },
+        { a: [12, 8], b: [0, 8], t: ext },
+        { a: [0, 8], b: [0, 0], t: ext },
+        { a: [7, 0], b: [7, 8], t: int },
+        { a: [0, 4.5], b: [2.5, 4.5], t: int },
+        { a: [5, 4.5], b: [5, 8], t: int },
+      ],
+      openings: [
+        { wall: 4, at: 6.4, width: 0.9, type: 'door', hinge: 'start', side: 1 },
+        { wall: 0, at: 2.0, width: 1.4, type: 'window' },
+        { wall: 0, at: 9.5, width: 1.4, type: 'window' },
+        { wall: 2, at: 9.5, width: 1.2, type: 'window' },
+        { wall: 2, at: 4.0, width: 1.6, type: 'window' },
+        { wall: 3, at: 2.0, width: 1.2, type: 'window' },
+      ],
+      skylights: [],
+      stairs: [{ rect: [[4.3, 0.3], [6.5, 2.9]], kind: 'u', width: 1.0, eye: 0.2, treads: 7 }],
+      separators: [{ a: [2.5, 4.5], b: [5, 4.5], t: 0.1 }],
+      extras: { beams: [{ a: [7.05, 2.2], b: [11.875, 2.2] }] },
+    },
+    // 8 × 6 m: a half-turn stair winding round a narrow newel (hus4) in a stairwell in the north-west corner, walled on
+    // three sides and open to the hall at the bottom; utrappStiplet: the same with its left half dashed (hus4 1. etasje)
+    utrapp: newelPlan(null),
+    utrappStiplet: newelPlan('left'),
     // 9 × 7 m: a quarter-turn stair with winders in the north-west corner of a hall, a single door
     kvarttrapp: {
       walls: [
