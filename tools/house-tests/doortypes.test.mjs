@@ -3,7 +3,7 @@
  * Dørtypene (notes/dortyper.md): dobbeltdør, skyvedør (på skinne, inn i veggen, patio av glass), glassfelt og sidefelt.
  *   node tools/house-tests/doortypes.test.mjs        (from the project root; exit code 1 on failure)
  *
- * On the test house (tools/dortyper/testhus.mjs), in Node (no renderer): the validator (no error but the owner-only
+ * Also foldedør (variant 'folding', world/FoldingDoor.js). On the test house (tools/dortyper/testhus.mjs), in Node (no renderer): the validator (no error but the owner-only
  * «stue-kjokken», and the errors it must give for broken door types); the builder (home/doors.js → home/doortypes.js:
  * the right class and number of leaves per door, the bay of a door with sidelights); the figure (PlayerController,
  * radius 0.3, the real CollisionWorld) walks through every open door both ways and is stopped by every closed one; a
@@ -20,6 +20,7 @@ const { createHouseRoots, addColliders } = await imp('src/home/index.js');
 const { isDoorType } = await imp('src/home/doortypes.js');
 const { Door } = await imp('src/world/Door.js');
 const { SlidingDoor } = await imp('src/world/SlidingDoor.js');
+const { FoldingDoor } = await imp('src/world/FoldingDoor.js');
 const { CollisionWorld } = await imp('src/core/Collision.js');
 const { PlayerController } = await imp('src/player/PlayerController.js');
 const { PLAYER } = await imp('src/config.js');
@@ -50,7 +51,7 @@ function broken(id, change) {
   return { errors: rep.errors.filter((e) => e.includes(id)), warnings: rep.warnings.filter((e) => e.includes(id)) };
 }
 const BROKEN = [
-  ['ukjent variant', 'door-glass', (o) => (o.door.variant = 'folding'), /variant må være/],
+  ['ukjent variant', 'door-glass', (o) => (o.door.variant = 'revolving'), /variant må være/],
   ['patio med slide «both»', 'door-patio', (o) => (o.door.slide = 'both'), /patio/],
   ['ukjent mount', 'door-skyve', (o) => (o.door.mount = 'ceiling'), /mount må være/],
   ['lomme over en annen åpning', 'door-lomme', (o) => (o.door.slide = 'from'), /lommen i veggen.*går over door-skyve/],
@@ -60,6 +61,8 @@ const BROKEN = [
   ['to sidefelt på samme side', 'door-inngang', (o) => (o.door.sidelights = [{ side: 'from' }, { side: 'from' }]), /to sidefelt/],
   ['glass.rows ikke heltall', 'door-glass', (o) => (o.door.glass = { rows: 2.5 }), /glass\.rows/],
   ['active 3', 'door-dobbel-ulik', (o) => (o.door.active = 3), /active må være/],
+  ['foldedør med 1 ledd', 'door-folde', (o) => (o.door.panels = 1), /panels må være/],
+  ['for smal foldedør', 'door-folde', (o) => (o.width = 0.7), /figuren/],
 ];
 for (const [name, id, change, re] of BROKEN) {
   const r = broken(id, change);
@@ -83,6 +86,7 @@ const byId = new Map(R.doors.map((d) => [d.id, d]));
 const EXPECT = {
   'door-inngang': [Door, 1], 'door-glass': [Door, 1], 'door-dobbel-glass': [Door, 2], 'door-skyve': [SlidingDoor, 1], 'door-lomme': [SlidingDoor, 1],
   'door-skyve-dobbel': [SlidingDoor, 2], 'door-dobbel-ulik': [Door, 2], 'door-patio': [SlidingDoor, 1], 'door-terrasse': [Door, 1], 'door-terrasse-dobbel': [Door, 2],
+  'door-folde': [FoldingDoor, 8], 'door-folde-glass': [FoldingDoor, 8],
 };
 check('alle dørene i testhuset er bygd', DOORS.every((id) => byId.has(id)), DOORS.filter((id) => !byId.has(id)).join(', '));
 for (const [id, [cls, n]] of Object.entries(EXPECT)) {
@@ -167,7 +171,7 @@ function closeOnFigure(id) {
   for (let i = 0; i < 120; i++) door.update(1 / 60, { playerPosition: away });
   return { held, inside, closed: door.t === 0 };
 }
-for (const id of ['door-skyve', 'door-lomme', 'door-skyve-dobbel', 'door-patio', 'door-dobbel-glass', 'door-dobbel-ulik']) {
+for (const id of ['door-skyve', 'door-lomme', 'door-skyve-dobbel', 'door-patio', 'door-dobbel-glass', 'door-dobbel-ulik', 'door-folde', 'door-folde-glass']) {
   const r = closeOnFigure(id);
   check(`${id}: holdes igjen av figuren`, r.held > 0.05 && !r.inside, `t ${f2(r.held)}${r.inside ? ', et blad står inni figuren' : ''}`);
   check(`${id}: lukkes når figuren har gått`, r.closed);

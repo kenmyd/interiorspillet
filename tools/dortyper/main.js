@@ -62,6 +62,9 @@ const interaction = new InteractionSystem({ camera, collision, events });
 const roots = createHouseRoots(layout, [new THREE.Group()]);
 const ctx = { scene, camera, renderer, collision, interaction, events, settings, quality, roots, audio: null, lighting: null };
 const R = buildRooms(ctx, layout, null);
+const HB = layout.house.bounds;
+const CX = (HB.minX + HB.maxX) / 2;
+const CZ = (HB.minZ + HB.maxZ) / 2;
 scene.add(...Object.values(roots.levels));
 if (R.group && !R.group.parent) scene.add(R.group);
 for (const c of R.colliders || []) {
@@ -72,34 +75,34 @@ for (const c of R.colliders || []) {
 // ground (one threshold step below the floor, as the planbygger viewer), sky light, sun, a lamp per room
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: '#7f8f66', roughness: 0.95 }));
 ground.rotation.x = -Math.PI / 2;
-ground.position.set(7, -0.15, 3.5);
+ground.position.set(CX, -0.15, CZ);
 ground.receiveShadow = true;
 scene.add(ground);
 ground.updateMatrixWorld(true);
 collision.addStatic(ground);
 scene.add(new THREE.HemisphereLight('#e8f0ff', '#8a7f6a', 1.1));
 const sun = new THREE.DirectionalLight('#fff3df', 2.4);
-sun.position.set(-6, 18, 20);
-sun.target.position.set(7, 0, 3.5);
+sun.position.set(CX - 13, 18, CZ + 16);
+sun.target.position.set(CX, 0, CZ);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 60 });
+Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 70 });
 sun.shadow.bias = -0.0005;
 sun.shadow.normalBias = 0.03;
 scene.add(sun, sun.target);
-for (const [x, z] of [[3.5, 1.5], [10.5, 1.5], [3.5, 5], [10.5, 5]]) {
+for (const [x, z] of [0.2, 0.5, 0.8].flatMap((k) => [[HB.minX + k * (HB.maxX - HB.minX), 1.5], [HB.minX + k * (HB.maxX - HB.minX), 5]])) {
   const pl = new THREE.PointLight('#ffe2bf', 9, 0, 2);
   pl.position.set(x, 2.15, z);
   scene.add(pl);
 }
 collision.build();
-const b = layout.house.bounds;
+const b = HB;
 collision.setBounds?.(b.minX - 10, b.maxX + 10, b.minZ - 10, b.maxZ + 10);
 if (collision.setFloorField && layout.house.floorYAt) collision.setFloorField((x, z, y) => layout.house.floorYAt(x, z, y));
 
 const input = new Input(renderer.domElement, settings);
 const player = new PlayerController({ camera, collision, input, settings, events });
-player.teleport(new THREE.Vector3(7, 0, 1.5), 0, 0);
+player.teleport(new THREE.Vector3(CX, 0, 1.5), 0, 0);
 
 const doors = new Map(R.doors.map((d) => [d.id, d]));
 let mode = params.get('mode') === 'orbit' ? 'orbit' : 'walk';
@@ -123,8 +126,8 @@ function setMode(m) {
   orbit = new OrbitControls(camera, renderer.domElement);
   orbit.enableDamping = true;
   orbit.maxPolarAngle = Math.PI * 0.49;
-  orbit.target.set(7, 0.5, 3.5);
-  camera.position.set(7 - 9, 13, 3.5 + 12);
+  orbit.target.set(CX, 0.5, CZ);
+  camera.position.set(CX - 10, 14, CZ + 13);
   orbit.update();
 }
 

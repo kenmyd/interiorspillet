@@ -606,7 +606,10 @@ export function stairWalk(stair, opts = {}) {
 // Doors
 
 /** Door variants of `door.variant` (notes/dortyper.md); none = 'single'. */
-export const DOOR_VARIANTS = ['single', 'double', 'sliding'];
+export const DOOR_VARIANTS = ['single', 'double', 'sliding', 'folding'];
+/** A folding door: its panels fold to this angle (world/FoldingDoor.js), and are this thick (home/doortypes.js). */
+const FOLD_DEG = 84;
+const FOLD_T = 0.03;
 /** Mounts of a sliding door (`door.mount`) and which way it opens (`door.slide`). */
 export const SLIDING_MOUNTS = ['surface', 'pocket', 'patio'];
 export const SLIDE_DIRECTIONS = ['from', 'to', 'both'];
@@ -657,8 +660,8 @@ function doorGeometry(w, o) {
   const atOther = (leafW) => (hingeFrom ? hinged(ub, neg(d), leafW) : hinged(ua, d, leafW));
   let leaves;
   let leafW;
-  if (variant === 'sliding') {
-    leaves = [];
+  if (variant === 'sliding' || variant === 'folding') {
+    leaves = []; // no swing: the folds of a folding door stand out one panel width at most
     leafW = 0;
   } else if (variant === 'double') {
     // `leaf` on the hinge jamb, `leaf2` on the other; their widths split the bay (the builder fills it)
@@ -776,6 +779,16 @@ function doorTypeChecks({ w, wi, o, g, where, error, warn }) {
       const h = num(w.height) ? w.height : null;
       if (h != null && top > h + TOL) warn(`${where}: skinna over døra (til ${fmt(top)}) går over veggen (${fmt(h)})`);
     }
+  } else if (variant === 'folding') {
+    const slide = door.slide ?? 'from';
+    if (!SLIDE_DIRECTIONS.includes(slide)) error(`${where}: slide må være ${SLIDE_DIRECTIONS.map((v) => `«${v}»`).join(', ')}`);
+    if (door.swing != null && !['in', 'out'].includes(door.swing)) error(`${where}: swing må være «in» eller «out» (siden leddene foldes ut mot)`);
+    if (door.panels != null && !(Number.isInteger(door.panels) && door.panels >= 2 && door.panels <= 24)) error(`${where}: panels må være et heltall 2–24`);
+    // the folded stacks (world/FoldingDoor.js: the zigzag of each stack spans span · cos FOLD_DEG, plus a panel's
+    // thickness), and 2 cm to spare
+    const clear = o.width - 2 * g.fw;
+    const stacks = slide === 'both' ? 2 : 1;
+    passage = clear - stacks * ((clear / stacks) * Math.cos((FOLD_DEG * Math.PI) / 180) + FOLD_T) - 0.02;
   } else {
     const narrow = g.bay < 0.71 && !(g.lights.from || g.lights.to);
     passage = (narrow ? g.bay + 2 * Math.max(0, g.fw - 0.02) : g.bay) - 0.05 * g.leaves.length;
@@ -1310,8 +1323,8 @@ export function validateHouse(spec, opts = {}) {
       if (!other && behind) other = behind.id;
       if (!isObj(o.door)) continue;
       const door = o.door;
-      // a sliding door has no hinge, and its swing (optional) only says which face the leaf hangs on
-      if (door.variant !== 'sliding' && (!door.hinge || !door.swing)) error(`${where}: door må ha hinge («from»/«to») og swing («in»/«out»)`);
+      // a sliding / folding door has no hinge, and its swing (optional) only says which face the leaf hangs on / folds to
+      if (door.variant !== 'sliding' && door.variant !== 'folding' && (!door.hinge || !door.swing)) error(`${where}: door må ha hinge («from»/«to») og swing («in»/«out»)`);
       if (door.openAngleDeg != null && !(door.openAngleDeg > 0 && door.openAngleDeg <= 180)) error(`${where}: openAngleDeg må være mellom 0 og 180`);
       if (door.opensInto != null) {
         if (Array.isArray(o.connects) && !o.connects.includes(door.opensInto)) error(`${where}: opensInto «${door.opensInto}» står ikke i connects`);

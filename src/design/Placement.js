@@ -223,6 +223,13 @@ export function buildRoom(editor, levelId = MAIN_LEVEL) {
 export function swingBox(d, t) {
   const door = d.door;
   if (!door || d.type !== 'door' || door.variant === 'sliding') return null; // a sliding door has no swing
+  if (door.variant === 'folding') {
+    // the folds stand out one panel width (~0.3 m) over the whole hole on the side they fold to
+    const side = door.swing === 'out' ? -1 : 1;
+    const dc = (side > 0 ? 0 : t) + 0.15;
+    const b = d.bottomCenter, n = d.normal, r = d.right;
+    return { cx: b.x + n.x * side * dc, cz: b.z + n.z * side * dc, ax: [r.x, r.z], az: [n.x, n.z], hw: d.width / 2, hd: 0.15 };
+  }
   const double = door.variant === 'double';
   // a double door: both leaves, the wider one's depth over the whole hole
   const leaf = double ? Math.max(door.leaf?.w ?? d.width / 2, door.leaf2?.w ?? door.leaf?.w ?? d.width / 2) : door.leaf?.w ?? d.width;

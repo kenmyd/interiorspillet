@@ -20,6 +20,7 @@ import { mat } from './materials.js';
 import { ring, glassMaterial, frostedGlassMaterial } from './wallkit.js';
 import { Door } from '../world/Door.js';
 import { SlidingDoor } from '../world/SlidingDoor.js';
+import { FoldingDoor } from '../world/FoldingDoor.js';
 import { HALL_DOOR, roomLabel, hardwareMaterial, thresholdOf, thresholdMaterial, replaceLeaf } from './doors.js';
 
 /** The frame stays this far inside the hole on every side (2.5 mm: none of its faces in the reveal's plane). */
@@ -40,7 +41,19 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 export function isDoorType(d) {
   const s = d?.door;
   if (!s) return false;
-  return s.variant === 'double' || s.variant === 'sliding' || !!s.glass || (Array.isArray(s.sidelights) && s.sidelights.length > 0);
+  return VARIANTS.includes(s.variant) || !!s.glass || (Array.isArray(s.sidelights) && s.sidelights.length > 0);
+}
+
+/** The variants built here (a plain hinged single door is doors.js's, unless it has glass or sidelights). */
+const VARIANTS = ['double', 'sliding', 'folding'];
+/** A folding door's default panel width (the count is rounded to an even number per stack). */
+const FOLD_PANEL = 0.3;
+
+/** Panels per stack of a folding door: `door.panels` in all (default clear / FOLD_PANEL), even, at least 2. */
+export function foldingPanels(ds, clear) {
+  const stacks = ds.slide === 'both' ? 2 : 1;
+  const total = pos(ds.panels) ?? clear / FOLD_PANEL;
+  return Math.max(2, 2 * Math.round(total / stacks / 2));
 }
 
 /**
@@ -152,7 +165,7 @@ export function buildDoorType(ctx, d, { layout, M, batch, batchers }) {
     colliders: [],
     disposables: [],
   };
-  const built = ds.variant === 'sliding' ? buildSliding(c) : buildHinged(c);
+  const built = ds.variant === 'sliding' ? buildSliding(c) : ds.variant === 'folding' ? buildFolding(c) : buildHinged(c);
   const door = built.door;
   if (built.threshold !== false) buildThreshold(c, built.threshold ?? {});
   if (ds.closed === false) door.setOpen(true, { instant: true });
@@ -181,7 +194,7 @@ export function buildDoorType(ctx, d, { layout, M, batch, batchers }) {
     width: d.width,
     height: d.height,
     type: d.type,
-    variant: ds.variant === 'double' || ds.variant === 'sliding' ? ds.variant : 'single',
+    variant: VARIANTS.includes(ds.variant) ? ds.variant : 'single',
     door,
   };
   return { door, info, colliders: c.colliders };
@@ -396,27 +409,14 @@ function buildSliding(c) {
   const slide = ['from', 'to', 'both'].includes(ds.slide) && !(mount === 'patio' && ds.slide === 'both') ? ds.slide : 'from';
   const cL = -W / 2 + fw;
   const cR = W / 2 - fw;
-  const kd = z1 - z0;
-  const zc = (z0 + z1) / 2;
-  const jw = fw - INSET;
   const leaves = [];
   let clear = [cL, cR];
   let threshold = {};
 
-  // karm (no stops): jambs + head INSET inside the hole; a pocket door's jamb on its pocket side is split around the slot
+  // a pocket door's jamb on its pocket side is split around the slot
   const pocketSides = mount === 'pocket' ? (slide === 'both' ? [-1, 1] : [slide === 'to' ? 1 : -1]) : [];
   const T = 0.04;
-  const slot = [-depth / 2 - T / 2 - 0.005, -depth / 2 + T / 2 + 0.005];
-  for (const s of [-1, 1]) {
-    const x = s * (W / 2 - INSET - jw / 2);
-    if (!pocketSides.includes(s)) {
-      f.box(jw, Hh - INSET, kd, x, (Hh - INSET) / 2, zc, c.kMat);
-      continue;
-    }
-    f.box(jw, Hh - INSET, slot[0] - z0, x, (Hh - INSET) / 2, (z0 + slot[0]) / 2, c.kMat);
-    f.box(jw, Hh - INSET, z1 - slot[1], x, (Hh - INSET) / 2, (slot[1] + z1) / 2, c.kMat);
-  }
-  f.box(W - 2 * fw, fw - INSET, kd, 0, Hh - fw + (fw - INSET) / 2, zc, c.kMat);
+  slidingKarm(c, pocketSides, [-depth / 2 - T / 2 - 0.005, -depth / 2 + T / 2 + 0.005]);
 
   if (mount === 'surface') {
     // on a rail in front of the wall face `swing` points to ('in' = the owner room, the front): the leaf covers the
@@ -477,6 +477,84 @@ function buildSliding(c) {
     replaceLeaf(door, g, i);
   });
   return { door, threshold };
+}
+
+/**
+ * Karm without door stops (sliding and folding doors): jambs + head INSET inside the hole; the jambs on `splitSides`
+ * (−1 / +1) in two pieces around the slot z range `slot` (a pocket door's leaf runs through it).
+ */
+function slidingKarm(c, splitSides = [], slot = null) {
+  const { f, fw, W, Hh, z0, z1 } = c;
+  const kd = z1 - z0;
+  const zc = (z0 + z1) / 2;
+  const jw = fw - INSET;
+  for (const s of [-1, 1]) {
+    const x = s * (W / 2 - INSET - jw / 2);
+    if (!splitSides.includes(s)) {
+      f.box(jw, Hh - INSET, kd, x, (Hh - INSET) / 2, zc, c.kMat);
+      continue;
+    }
+    f.box(jw, Hh - INSET, slot[0] - z0, x, (Hh - INSET) / 2, (z0 + slot[0]) / 2, c.kMat);
+    f.box(jw, Hh - INSET, z1 - slot[1], x, (Hh - INSET) / 2, (slot[1] + z1) / 2, c.kMat);
+  }
+  f.box(W - 2 * fw, fw - INSET, kd, 0, Hh - fw + (fw - INSET) / 2, zc, c.kMat);
+}
+
+/* ------------------------------------------------------------------ folding */
+
+/**
+ * A folding door (foldedør / harmonikadør): one stack of narrow panels (two with slide 'both') hanging from a track
+ * under the head, closed in a plane just inside the face `swing` points to; opening folds them in a zigzag toward
+ * their jamb, the folds standing out toward that face (world/FoldingDoor.js). Panels plain or glazed (door.glass), a
+ * pull on the free end.
+ */
+function buildFolding(c) {
+  const { ctx, d, ds, f, matrix, fw, W, Hh, depth, dm } = c;
+  const slide = ['from', 'to', 'both'].includes(ds.slide) ? ds.slide : 'from';
+  const side = d.swing === 'out' ? -1 : 1;
+  const cL = -W / 2 + fw;
+  const cR = W / 2 - fw;
+  const T = 0.03;
+  slidingKarm(c);
+  const zc = side > 0 ? -T / 2 - 0.012 : -depth + T / 2 + 0.012;
+  // the track under the head (1 mm short of the jambs)
+  f.box(cR - cL - 0.002, 0.02, 0.05, (cL + cR) / 2, Hh - fw - 0.01, zc, dm.hardware, { collide: false });
+  const y0 = 0.012;
+  const y1 = Hh - fw - 0.026;
+  const n = foldingPanels(ds, cR - cL);
+  const defs = slide === 'both' ? [[cL, 1, (cR - cL) / 2 - 0.002], [cR, -1, (cR - cL) / 2 - 0.002]] : slide === 'to' ? [[cR, -1, cR - cL]] : [[cL, 1, cR - cL]];
+  const stacks = defs.map(([anchor, e, span]) => ({ anchor, e, span, panels: n, z0: zc, side, T, y0, y1 }));
+  const door = new FoldingDoor(ctx, {
+    id: d.id,
+    matrix,
+    width: W,
+    height: Hh,
+    depth,
+    stacks,
+    clear: [cL, cR],
+    ...c.labels,
+    locked: !!d.locked,
+    interactive: d.interactive !== false,
+    duration: 1.0,
+  });
+  const glass = glassOf(ds.glass, y0, y1, { margin: 0.06, from: 0.3, top: 0.15 });
+  for (const leaf of door.leaves) {
+    const st = leaf.stack;
+    const w = st.p - 0.003; // a seam between the panels
+    const kit = new MeshBatcher(`leaf:${d.id}:${leaf.index}`);
+    const rect = glass ? glazedBody(kit, { cx: w / 2, y0, w, h: y1 - y0, z0: -T / 2, T, mat: dm.leaf, glass }) : null;
+    if (!glass) kit.box(w, y1 - y0, T, w / 2, (y0 + y1) / 2, 0, dm.leaf, { collide: false });
+    if (leaf.k === st.panels - 1) {
+      // the pull on the free end, both faces
+      const hy = ds.handleHeight ?? 1.05;
+      for (const s of [1, -1]) kit.box(0.018, 0.22, 0.016, w - 0.04, hy, s * (T / 2 + 0.009), dm.hardware, { collide: false });
+    }
+    const g = kit.build();
+    c.batchers.push({ geometries: kit.geometries });
+    if (rect) c.disposables.push(addGlass(g, rect, c.glassMat(glass), d.id));
+    replaceLeaf(door, g, leaf.index);
+  }
+  return { door };
 }
 
 /** Leaf body (plain or glazed) of a sliding leaf in door-local space; returns its glass rect (with .glass) or null. */

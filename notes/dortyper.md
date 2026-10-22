@@ -7,8 +7,9 @@ Uten de nye feltene bygges døra nøyaktig som før, i den gamle koden.
 **Kode**
 - `src/world/Door.js`: slagdør. Ny dobbeltdør med ulike blad (`splitX`) og valgfritt aktivt blad (`activeLeaf`).
 - `src/world/SlidingDoor.js` (ny): skyvedør med samme API som `Door` (E, lyd, kollisjon, stopper mot figuren).
+- `src/world/FoldingDoor.js` (ny): foldedør. Den arver fra `SlidingDoor`, og hvert ledd dreies og flyttes.
 - `src/home/doortypes.js` (ny): bygger de nye typene. `doors.js` `buildDoor` sender en dør hit bare når den har
-  `variant: 'double' | 'sliding'`, `glass` eller `sidelights`.
+  `variant: 'double' | 'sliding' | 'folding'`, `glass` eller `sidelights`.
 - `src/data/scripts/house.mjs` `validateHouse`: sjekker feltene, plassen en skyvedør trenger, og at figuren kommer gjennom.
 - `src/home/visibility.js`, `src/design/Placement.js`, `src/design/ViewModes.js`: skyvedører har ingen slagbue,
   dobbeltdører får to.
@@ -69,15 +70,17 @@ Blad som skyves langs veggen, uten slagområde. Åpnes med E som de andre. `hing
 | `mount` | `'surface'` i innervegg, `'patio'` i yttervegg | `'surface'`: utenpåliggende på skinne. `'pocket'`: inn i veggen. `'patio'`: glass-skyvedør i ramme. |
 | `slide` | `'from'` | retningen bladet går når det åpnes: mot veggens `from`- eller `to`-ende, eller `'both'` (to blad som går fra hverandre; ikke for patio) |
 | `swing` | `'in'` | `'surface'`: veggflaten bladet henger på |
-| `glass` | ingen (patio: `true`) | glassfelt i bladet/bladene, se 4 |
+| `glass` | ingen (patio: `true`) | glassfelt i bladet/bladene, se 5 |
 
 - **`surface`**: Bladet dekker karmen og 2 cm til. Det henger 3 cm ut fra veggen, i en skinne over hullet (til
   hullets topp + 0,1). Åpent står det på veggen ved siden av hullet. Veggen trenger hullets bredde + 0,08 fri på den
   siden. Hvis det går over en annen åpning eller forbi veggens ende, gir validatoren en advarsel, og den advarer også
   hvis skinna går over veggen.
-- **`pocket`**: Bladet går midt i veggen og forsvinner inn i den gjennom en spalte i karmen. 2,5 cm blir stående igjen
-  som grep. Validatoren gir **feil** når lommen (hullets bredde + 0,04) går over en annen åpning eller forbi veggens
-  ende, og når veggen er tynnere enn 0,08.
+- **`pocket`** (lommedør): Bladet går midt i veggen og forsvinner inn i den gjennom en spalte i karmen. 2,5 cm blir
+  stående igjen som grep. **Hullet er bare passasjen. Lomma er vanlig, tett vegg i dataene**: ingen åpning der, bare
+  veggstykket ved siden av hullet på `slide`-siden. Motoren legger bladet inn i det veggstykket. På en tegning der
+  lomma ser ut som et hull nummer to (F65), skal det hullet bli vegg. Validatoren gir **feil** når lomma (hullets
+  bredde + 0,04) går over en annen åpning eller forbi veggens ende, og når veggen er tynnere enn 0,08.
 - **`patio`**: Aluminiumsramme ved ytterflaten med lav terskel. Et fast glassfelt står på det ytre sporet, og et
   skyvbart felt på det indre sporet (romsiden) går foran det faste. `slide: 'from'` betyr at feltet i `to`-enden går
   mot `from`. Åpningen blir halve rammen − 3,5 cm.
@@ -99,7 +102,31 @@ Blad som skyves langs veggen, uten slagområde. Åpnes med E som de andre. `hing
   "connects": ["stue", "ute"], "door": { "variant": "sliding", "mount": "patio", "slide": "from" } }
 ```
 
-## 3. Terrasse- og balkongdør (ytterdør med glass og sidefelt)
+## 3. Foldedør – `variant: 'folding'`
+
+Mange smale ledd (foldedør eller harmonikadør) som henger i en skinne under overkarmen. Når døra åpnes, foldes leddene
+i sikksakk inn mot karmen. Ingen slagområde, og døra åpnes med E. `hinge` trengs ikke.
+
+| felt | standard | betydning |
+|---|---|---|
+| `panels` | bredden mellom karmene / 0,3 | antall ledd i alt (heltall 2–24). Motoren runder av til et partall per pakke, så den frie enden går i skinna. |
+| `slide` | `'from'` | karmen leddene foldes mot: `'from'`, `'to'` eller `'both'` (to pakker, én mot hver karm) |
+| `swing` | `'in'` | siden foldene står ut mot: `'in'` = eierveggens rom |
+| `glass` | ingen | glass i hvert ledd, se 5 |
+
+Lukket står leddene rett innenfor veggflaten på `swing`-siden. Helt åpen står pakken ved karmen. Den tar
+(bredden per pakke · cos 84° + 3 cm) av åpningen og stikker ut én leddbredde (~0,3 m) fra veggen. Hvis for lite blir
+igjen til figuren, gir validatoren feil.
+
+```json
+{ "id": "door-gang-folde", "type": "door", "offset": 14.2, "width": 2.4, "height": 2.1, "sill": 0,
+  "frame": { "color": "#1d1e21", "width": 0.06, "depth": 0.02 }, "connects": ["gang", "stue"],
+  "door": { "variant": "folding", "slide": "to", "panels": 8, "swing": "in", "opensInto": "gang" } }
+```
+Glass-foldedør mot terrassen: `"door": { "variant": "folding", "slide": "both", "swing": "out", "glass": true }` i en
+yttervegg (med `"interactive": true`).
+
+## 4. Terrasse- og balkongdør (ytterdør med glass og sidefelt)
 
 En vanlig slagdør eller dobbeltdør i en yttervegg, med `glass` og eventuelt `sidelights`:
 
@@ -121,7 +148,7 @@ mellom karmen og en midtpost (`frame.width` bred). Bladet fyller resten, og `lea
 
 Dobbel terrassedør med sprosser (F38): `"variant": "double"` og `"glass": { "cols": 2, "rows": 4 }` i en yttervegg.
 
-## 4. Glassfelt – `glass` (alle typer)
+## 5. Glassfelt – `glass` (alle typer)
 
 `glass: true`, eller et objekt der alle felt er valgfrie:
 
@@ -145,6 +172,10 @@ Innerdør med ett glassfelt: `"glass": true`. Med tre ruter over hverandre: `"gl
 - Skyvedør: `variant: 'sliding'`, og `slide` er siden bladet ligger på når det er åpent (der bladlinjene på tegningen
   ligger utenfor hullet). `symbol.pocket` gir `mount: 'pocket'`. En glass-skyvedør i yttervegg gir `mount: 'patio'`
   (det er standard i yttervegg). Den gamle omveien (`source` «bygget som slagdør», to dører side om side) kan fjernes.
+- Lommedør (F65): hullet er bare passasjen, og veggstykket der bladet går inn skal være vegg uten åpning, med
+  `mount: 'pocket'` og `slide` mot den siden.
+- Foldedør (F70): `variant: 'folding'`, `slide` mot karmen pakken står ved, `panels` hvis tegningen viser leddene.
+- Ytterdører må ha `interactive: true` for å kunne åpnes med E (som før).
 - Terrassedør eller glassdør: `glass` med `cols` og `rows` fra fasaden, og `sidelights` for glassfelt helt ned ved siden
   av døra (F48).
 - Hullet for en dobbeltdør eller en dør med sidefelt er **hele** åpningen. Karmen kommer fra `frame`.

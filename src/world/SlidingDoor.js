@@ -88,25 +88,12 @@ export class SlidingDoor {
 
     this.position = new THREE.Vector3((this.clear[0] + this.clear[1]) / 2, Math.min(1.2, this.height / 2), -this.depth / 2).applyMatrix4(this.matrix);
 
-    this.leaves = o.leaves.map((l, index) => {
-      const pivot = new THREE.Group();
-      pivot.name = `door:${this.id}:leaf${index}`;
-      this.root.add(pivot);
-      return {
-        index,
-        pivot,
-        dir: l.dir < 0 ? -1 : 1,
-        travel: Math.max(0, l.travel),
-        bodyMin: new THREE.Vector3(Math.min(l.x0, l.x1), l.y0 ?? 0, Math.min(l.z0, l.z1)),
-        bodyMax: new THREE.Vector3(Math.max(l.x0, l.x1), l.y1, Math.max(l.z0, l.z1)),
-        segments: [],
-      };
-    });
+    this.leaves = this._makeLeaves(o);
     this.root.updateMatrixWorld(true);
     const col = ctx.collision;
     if (col) {
       for (const leaf of this.leaves) {
-        for (let k = 0; k < SEGMENTS; k++) leaf.segments.push(col.addDynamicBox(new THREE.Box3(), { id: `${this.id}:${leaf.index}:${k}` }));
+        for (let k = 0; k < (leaf.segmentCount ?? SEGMENTS); k++) leaf.segments.push(col.addDynamicBox(new THREE.Box3(), { id: `${this.id}:${leaf.index}:${k}` }));
       }
     }
     this._applyOffset();
@@ -225,6 +212,24 @@ export class SlidingDoor {
 
   /* ------------------------------------------------------------------ internals */
 
+  /** The leaves (pivot groups under root) from o.leaves; a subclass makes its own (FoldingDoor: one per panel). */
+  _makeLeaves(o) {
+    return o.leaves.map((l, index) => {
+      const pivot = new THREE.Group();
+      pivot.name = `door:${this.id}:leaf${index}`;
+      this.root.add(pivot);
+      return {
+        index,
+        pivot,
+        dir: l.dir < 0 ? -1 : 1,
+        travel: Math.max(0, l.travel),
+        bodyMin: new THREE.Vector3(Math.min(l.x0, l.x1), l.y0 ?? 0, Math.min(l.z0, l.z1)),
+        bodyMax: new THREE.Vector3(Math.max(l.x0, l.x1), l.y1, Math.max(l.z0, l.z1)),
+        segments: [],
+      };
+    });
+  }
+
   /** Leaf offset along x for the animation parameter t. */
   _offset(leaf, t) {
     return leaf.dir * leaf.travel * easeInOut(t);
@@ -244,8 +249,9 @@ export class SlidingDoor {
     leaf.pivot.updateMatrix();
     _m.multiplyMatrices(this.matrix, leaf.pivot.matrix);
     const { bodyMin: a, bodyMax: b } = leaf;
-    const dx = (b.x - a.x) / SEGMENTS;
-    for (let k = 0; k < SEGMENTS; k++) {
+    const n = leaf.segments.length;
+    const dx = (b.x - a.x) / n;
+    for (let k = 0; k < n; k++) {
       const box = leaf.segments[k].box.makeEmpty();
       const x0 = a.x + k * dx;
       for (let i = 0; i < 8; i++) {
