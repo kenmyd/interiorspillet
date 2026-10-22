@@ -330,34 +330,90 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F43.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F43.json`
-- **Status:** ny
+- **Status:** venter på motoren – skrå himling og knevegg (forespørsel 10); takvinduene vises som glass i taket, men følger ikke skråtaket før motoren kan det.
 
 ### F44 – Her er det en åpning i veggen
 - **Tekst:** Her er det en åpning i veggen
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F44.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F44.json`
-- **Status:** ny
+- **Status:** rettet (D5, sett i 3D på samme sted) – 0,6 m av soverommets yttervegg ble regnet som enden av gangveggen ved siden av og aldri bygd. Nå blir et stykke over 35 cm med friluft bak en yttervegg. Ytterveggstykker med nesten lik tykkelse slås også sammen, så det blir ingen skjøt i veggen.
 
 ### F45 – det ser ut på fasadetegning at vinduet til venstre skal være smalere o
 - **Tekst:** det ser ut på fasadetegning at vinduet til venstre skal være smalere og helt ned til bakken. Og de to vinduene på høyre side skal være smalere i høyden
 - **Hvor:** 3D (dukkehus) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F45.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F45.json`
-- **Status:** ny
+- **Status:** satt av til fasade-runden (som F23) – bredde og høyde per vindu fra fasadene.
 
 ### F46 – her skulle også vinduer vært smalere iht fasadetegning. og det store v
 - **Tekst:** her skulle også vinduer vært smalere iht fasadetegning. og det store vinduet til venstre skulle vært todelt
 - **Hvor:** 3D (dukkehus) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F46.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F46.json`
-- **Status:** ny
+- **Status:** satt av til fasade-runden (som F23).
 
 ### F47 – Ja det er mye som går igjen, men her er også vinduene feil, spesielt v
 - **Tekst:** Ja det er mye som går igjen, men her er også vinduene feil, spesielt vindu 3 og 4 fra venstre. se fasadetegning
 - **Hvor:** 3D (dukkehus) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F47.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F47.json`
+- **Status:** satt av til fasade-runden (som F23).
+
+### F48 – Vindu til hlyre skulle vørt todelt. den ene døra skulle vært terrassed
+- **Tekst:** Vindu til hlyre skulle vørt todelt. den ene døra skulle vært terrassedør med glassfelt. den andre døre skulle også vært glassdør med integrert vindusfelt på siden av døra som også går helt ned til bakken. Vinduet til venstre skulle vært mindre
+- **Hvor:** 3D (dukkehus) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F48.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F48.json`
+- **Status:** satt av til fasade-runden (som F23) og motoren – inndeling og størrelse fra fasaden; terrassedør og glassdør med sidefelt helt ned trenger dører med glassfelt i dørbyggeren (som F38).
+
+### F49 – i rom stue på 10,7 m2 er begge vanlige dører, mens de er tegnet som sk
+- **Tekst:** i rom stue på 10,7 m2 er begge vanlige dører, mens de er tegnet som skyvedører
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F49.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F49.json`
+- **Status:** venter på motoren (som F27) – skyvedørene er funnet, men bygges som vanlige dører til spillet har skyvedører.
+
+### F50 – skulle vært skyvedør
+- **Tekst:** skulle vært skyvedør
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F50.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F50.json`
+- **Status:** venter på motoren (som F27).
+
+### F51 – Her er det noe rart i overgangen mellom veggene tror jeg, se i midten 
+- **Tekst:** Her er det noe rart i overgangen mellom veggene tror jeg, se i midten av bildet
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F51.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F51.json`
+- **Status:** ny
+
+### F52 – noe har skjedd i dette hjørnet. se strekene
+- **Tekst:** noe har skjedd i dette hjørnet. se strekene
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F52.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F52.json`
+- **Status:** ny
+
+### F53 – det er åpning i vegg som egentlig skulle vært tett
+- **Tekst:** det er åpning i vegg som egentlig skulle vært tett
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F53.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F53.json`
+- **Status:** ny
+
+### F54 – mangler del på yttervegg, jeg kan se rett ut
+- **Tekst:** mangler del på yttervegg, jeg kan se rett ut
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F54.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F54.json`
+- **Status:** ny
+
+### F55 – her er det også to streker på veggen midt i bildet
+- **Tekst:** her er det også to streker på veggen midt i bildet
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F55.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F55.json`
 - **Status:** ny
 
 ---

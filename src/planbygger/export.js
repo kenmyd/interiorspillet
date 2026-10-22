@@ -397,6 +397,28 @@ export function exportHouse(doc, opts = {}) {
       }
       return best?.q ?? null;
     };
+    // distance from a wall's middle straight out to the nearest other room (Infinity: open air)
+    const rayToRooms = (g) => {
+      const mid = mul(add(g.from, g.to), 0.5);
+      const dir = mul(g.e.n, -1);
+      let best = Infinity;
+      R2.forEach((r, ri) => {
+        if (ri === g.ri) return;
+        const P = r.polygon;
+        for (let i = 0; i < P.length; i++) {
+          const a = P[i];
+          const b = P[(i + 1) % P.length];
+          const ab = sub(b, a);
+          const den = cross(dir, ab);
+          if (Math.abs(den) < 1e-12) continue;
+          const am = sub(a, mid);
+          const t = cross(am, ab) / den;
+          const s2 = cross(am, dir) / den;
+          if (t > 1e-6 && s2 >= -1e-9 && s2 <= 1 + 1e-9) best = Math.min(best, t);
+        }
+      });
+      return best;
+    };
     // roles: 'slab' = owns a shared slab (the room with the lower index), 'face' = the backOf side, 'free' = no room
     // behind (exterior, or a wall end / a shaft). A wall with the same room on both sides: the format has no backOf
     // within one room (validateHouse), so one side owns the whole slab (the distance between the faces, an inner wall)
@@ -417,6 +439,9 @@ export function exportHouse(doc, opts = {}) {
       const list = pieces.filter((p) => p.e === e);
       list.forEach((p, k) => {
         if (p.role !== 'free' || dist(p.from, p.to) >= SHORT) return;
+        // longer than a wall is thick and open air behind it: a piece of the facade, not the end of a wall (hus1's loft,
+        // F44: 0.6 m of the bedroom's outer wall went with the hall's wall beside it and was never built)
+        if (dist(p.from, p.to) > 0.35 && rayToRooms(p) > 1.2) return;
         const nb = [list[k - 1], list[k + 1]].filter((q) => q && q.role !== 'free' && !q.absorbed);
         if (!nb.length) return;
         const q = nb.sort((x, y) => dist(y.from, y.to) - dist(x.from, x.to))[0];
@@ -454,27 +479,6 @@ export function exportHouse(doc, opts = {}) {
     }
 
     // the distance behind a group to the nearest other room (a ray from the middle, outward)
-    const rayToRooms = (g) => {
-      const mid = mul(add(g.from, g.to), 0.5);
-      const dir = mul(g.e.n, -1);
-      let best = Infinity;
-      R2.forEach((r, ri) => {
-        if (ri === g.ri) return;
-        const P = r.polygon;
-        for (let i = 0; i < P.length; i++) {
-          const a = P[i];
-          const b = P[(i + 1) % P.length];
-          const ab = sub(b, a);
-          const den = cross(dir, ab);
-          if (Math.abs(den) < 1e-12) continue;
-          const am = sub(a, mid);
-          const t = cross(am, ab) / den;
-          const s2 = cross(am, dir) / den;
-          if (t > 1e-6 && s2 >= -1e-9 && s2 <= 1 + 1e-9) best = Math.min(best, t);
-        }
-      });
-      return best;
-    };
 
     // ---- thicknesses: the shared slabs first (the distance between the faces), then the free walls: the plan's
     //      thickness, at least exteriorMin, except where the slab would overlap another room or another room's slab
@@ -570,8 +574,12 @@ export function exportHouse(doc, opts = {}) {
         }
         t = Math.max(0.005, Math.floor(t * 1000) / 1000);
         const prev = parts[parts.length - 1];
-        if (prev && Math.abs(prev.t - t) < 1e-6 && prev.own === own) prev.u1 = u1;
-        else parts.push({ u0, u1, t, own });
+        // pieces a few centimetres apart in thickness are one wall at the thinner of them: a joint in the room face
+        // showed as a line (F29, F44)
+        if (prev && Math.abs(prev.t - t) < 0.035 && prev.own === own) {
+          prev.u1 = u1;
+          prev.t = Math.min(prev.t, t);
+        } else parts.push({ u0, u1, t, own });
       }
       for (const p of parts) {
         const sg = { ...g, from: add(g.from, mul(g.e.d, p.u0)), to: add(g.from, mul(g.e.d, p.u1)), t: p.t };
