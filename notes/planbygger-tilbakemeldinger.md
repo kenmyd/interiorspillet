@@ -130,6 +130,208 @@ eller faller, eller huset står på feil sted.
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F14.json`
 - **Status:** rettet (fase D, som F8).
 
+### F15 – Vinduet er ikke fikset, det flimrer fortsatt og har den innvendige skr
+- **Tekst:** Vinduet er ikke fikset, det flimrer fortsatt og har den innvendige skråen, det gjelder nok mange vinduer
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F15.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F15.json`
+- **Status:** rettet (fase D2, sett i 3D) – vinduet sto helt inntil et hjørne: hullet fikk ingen rett side mot hjørnet (den skrå gjæringen synes) og to flater i samme plan. Nå 5 cm karm mot hjørnet.
+
+### F16 – Flimring på venstre side av dør fortsatt
+- **Tekst:** Flimring på venstre side av dør fortsatt
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F16.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F16.json`
+- **Status:** rettet (fase D2) – samme årsak som F15 (dør inntil hjørnet), og 10 cm post mellom døra og sidefeltet.
+
+### F17 – Kan fortsatt se ut ytterdør
+- **Tekst:** Kan fortsatt se ut ytterdør
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F17.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F17.json`
+- **Status:** rettet (fase D2, sett i 3D) – dørenheten var 2,4 cm smalere enn hullet, så dagslyset synes langs karmen. Nå fyller den hullet.
+
+### F18 – er mangler det fortsatt dører
+- **Tekst:** er mangler det fortsatt dører
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F18.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F18.json`
+- **Status:** rettet (fase D2) – skyvedørene på tegningen ble tomme hull; nå bygges de som dører med blad til spillet får skyvedører.
+
+### F19 – Kan fortsatt ikke gå igjennom denne døra
+- **Tekst:** Kan fortsatt ikke gå igjennom denne døra
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F19.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F19.json`
+- **Status:** rettet (fase D2) – døra var 0,69 m, figuren (radius 0,3) trenger mer; dører under 0,82 m gjøres bredere der veggen har plass.
+
+### F20 – se innvendige feilem med vinduene
+- **Tekst:** se innvendige feilem med vinduene
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F20.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F20.json`
+- **Status:** rettet (fase D2, sett i 3D) – som F15.
+
+### F21 – Stolpe på rekkverk går unaturlig langt ned på vegg. bør stoppe slik so
+- **Tekst:** Stolpe på rekkverk går unaturlig langt ned på vegg. bør stoppe slik som de andre
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F21.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F21.json`
+- **Status:** forespørsel til motoren (som F12) – stairs.js lar stolpene over trappehullet henge 0,45 m ned.
+
+### F22 – Her skal det være vegg det du ser bakken(grønt)
+- **Tekst:** Her skal det være vegg det du ser bakken(grønt)
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F22.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F22.json`
+- **Status:** trolig rettet (fase D2) – en dør inntil et hjørne ga en sprekk ut mot bakken (som F15/F16). Meld igjen om den er der; «Meld feil» lagrer nå også hvor kameraet står.
+
+### F23 – Her har genereringen bommet på vinduet til høyre, og vinduet i midten 
+- **Tekst:** Her har genereringen bommet på vinduet til høyre, og vinduet i midten som egentlig er todelt vindu
+- **Hvor:** 3D (dukkehus) – 1etg.avif, fasade1.avif, fasade4.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F23.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F23.json`
+- **Status:** satt av til fasade-runden – vinduene får bredde og plass fra plantegningen og høyde fra fasadene, men ikke inndeling (todelt, sprosser) eller form (lite firkantet). Fasadene må leses per vindu og kobles til vinduet på planen (som F24–F26).
+
+### F24 – Her er også vinduene feil, det til venstre skal være smalt todelt vind
+- **Tekst:** Her er også vinduene feil, det til venstre skal være smalt todelt vindu og det til høyre skal være et lite firkantet
+- **Hvor:** 3D (dukkehus) – 1etg.avif, fasade1.avif, fasade4.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F24.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F24.json`
+- **Status:** satt av til fasade-runden (som F23).
+
+### F25 – Feil med alle disse vinduer.
+- **Tekst:** Feil med alle disse vinduer.
+- **Hvor:** 3D (dukkehus) – 1etg.avif, fasade1.avif, fasade4.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F25.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F25.json`
+- **Status:** satt av til fasade-runden (som F23).
+
+### F26 – feil med vinduer, det skal være smalt vindu veldig oppdelt.
+- **Tekst:** feil med vinduer, det skal være smalt vindu veldig oppdelt.
+- **Hvor:** 3D (dukkehus) – 1etg.avif, fasade1.avif, fasade4.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F26.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F26.json`
+- **Status:** satt av til fasade-runden (som F23) – «smalt og veldig oppdelt» trenger sprosser fra fasaden.
+
+### F27 – Skyvedører skal det være her på disse to plassene
+- **Tekst:** Skyvedører skal det være her på disse to plassene
+- **Hvor:** 3D (går rundt) – 1etg.avif, fasade1.avif, fasade4.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F27.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F27.json`
+- **Status:** venter på motoren – skyvedørene er funnet på tegningen, men spillet har ingen skyvedør ennå; de bygges som vanlige dører med blad (fase D2, forespørsel 7).
+
+### F28 – Er faktisk usikker på hva dette åpne rommet er i virkeligheten. det er
+- **Tekst:** Er faktisk usikker på hva dette åpne rommet er i virkeligheten. det er på vask/tek rommet
+- **Hvor:** 3D (går rundt) – 1etg.avif, fasade1.avif, fasade4.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F28.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F28.json`
+- **Status:** rettet (D3, sett i 3D) – åpningen uten dør (0,62 m mellom vask/tek og soverommet) hadde ikke gulv gjennom veggen, så gresset synes. Nå går gulvet gjennom. Hva rommet er i virkeligheten må du svare på selv; i editoren kan åpningen gjøres om til dør eller vegg.
+
+### F29 – svart stripe på vegger, usikker på hvorfor
+- **Tekst:** svart stripe på vegger, usikker på hvorfor
+- **Hvor:** 3D (går rundt) – 1etg.avif, fasade1.avif, fasade4.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F29.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F29.json`
+- **Status:** trenger ny melding – fant ikke stedet uten kameraposisjon. Meld den igjen på samme sted: nå lagres posisjonen i meldingen. (Mistanke: skjøten mellom to veggstykker på samme linje med ulik tykkelse, f.eks. ved badet og «Sov + Gang».)
+
+### F30 – her skulle det ihenhold til tegning vært skråtak, den funksjonen er ik
+- **Tekst:** her skulle det ihenhold til tegning vært skråtak, den funksjonen er ikke laget enda tror jeg
+- **Hvor:** 3D (går rundt) – 1etg.avif, fasade1.avif, fasade4.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F30.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F30.json`
+- **Status:** venter på motoren – skrå himling (forespørsel 10); planbyggeren leser heller ikke takvinkelen inn i rommene ennå.
+
+### F31 – Her skulle det vært skyvedør
+- **Tekst:** Her skulle det vært skyvedør
+- **Hvor:** 3D (går rundt) – 1etg.avif, fasade1.avif, fasade4.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F31.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F31.json`
+- **Status:** venter på motoren (som F27).
+
+### F32 – Når jeg drar filer inn i feltet så blir den gul outlina slik den skal 
+- **Tekst:** Når jeg drar filer inn i feltet så blir den gul outlina slik den skal men det går bort når jeg fører musepekeren inn i firkanten, muligens noe med teksten og gjøre
+- **Hvor:** startside
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F32.json`
+- **Status:** rettet (D3) – rammen gikk bort når pekeren kom over teksten inni feltet (nettleseren melder «forlatt» når man går inn i en tekst); nå bare når pekeren forlater feltet.
+
+### F33 – Det bør ikke være mulig og gå under bakken slik jeg har gjort her. Kam
+- **Tekst:** Det bør ikke være mulig og gå under bakken slik jeg har gjort her. Kamera bør stoppe ved bakken
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F33.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F33.json`
+- **Status:** rettet (D3, prøvd i 3D) – kameraet stopper 30 cm over bakken, og høyre knapp flytter langs bakken i stedet for opp og ned.
+
+### F34 – Kan vi implementere slik at jeg også kan bruke WASD for og styre kamer
+- **Tekst:** Kan vi implementere slik at jeg også kan bruke WASD for og styre kameraet i denne visningen. er litt vanselig og bruke kun mus
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F34.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F34.json`
+- **Status:** rettet (D3, prøvd i 3D) – WASD og piltastene flytter dukkehuset fram, tilbake og til sidene (fortere jo lenger ute kameraet er).
+
+### F35 – Vindueene skulle egentlig hatt veldig mangen sprosser/spiler, også dør
+- **Tekst:** Vindueene skulle egentlig hatt veldig mangen sprosser/spiler, også dørene skulle hatt det. Dette er også balkongdør begge to tror jeg er det.
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F35.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F35.json`
+- **Status:** satt av til fasade-runden (som F23) – sprosser i vinduer og dører, og balkongdører, må leses fra fasadene.
+
+### F36 – vinduet i midten skulle vært smalt slik ikke trappevange syntes. Og så
+- **Tekst:** vinduet i midten skulle vært smalt slik ikke trappevange syntes. Og så skulle vinduene hatt sprosser
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F36.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F36.json`
+- **Status:** satt av til fasade-runden (som F23) – bredden på vinduet foran trappa og sprossene.
+
+### F37 – Exteriør skulle egentlig ha bygget skråtak med takstein istedet for sl
+- **Tekst:** Exteriør skulle egentlig ha bygget skråtak med takstein istedet for slik det er nå, se fasade3 tegning 3
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F37.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F37.json`
+- **Status:** satt av til eksteriør-runden – taket fra fasadene (saltak med takstein); motoren mangler takform og skrå himling (forespørsel 10).
+
+### F38 – Terrassedør bygges som to enkle dører istedet for en dobbeldør med gla
+- **Tekst:** Terrassedør bygges som to enkle dører istedet for en dobbeldør med glassfelt med sprosser slik det egentlig skulle vært
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F38.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F38.json`
+- **Status:** ny
+
+### F39 – Skulle vært dobbeldør uten midtstolpe. Er også naturlig at disse døren
+- **Tekst:** Skulle vært dobbeldør uten midtstolpe. Er også naturlig at disse dørene er med vindusfelt så det må også være mulig på innerdører
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F39.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F39.json`
+- **Status:** ny
+
+### F40 – Det er noe feil ved høyre side av denne døra
+- **Tekst:** Det er noe feil ved høyre side av denne døra
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F40.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F40.json`
+- **Status:** ny
+
+### F41 – Trappa er ikke slik som på plantegning
+- **Tekst:** Trappa er ikke slik som på plantegning
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F41.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F41.json`
+- **Status:** ny
+
+### F42 – rekkverkstolpe går helt ned i etasjen under istedet for å stoppe der d
+- **Tekst:** rekkverkstolpe går helt ned i etasjen under istedet for å stoppe der de andre stopper
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F42.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F42.json`
+- **Status:** ny
+
+### F43 – Rom i 2.etg skal ha skråtak med takvindu og knevegg slik som på plante
+- **Tekst:** Rom i 2.etg skal ha skråtak med takvindu og knevegg slik som på plantegning. Det gjelder de fleste rommene her.
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F43.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F43.json`
+- **Status:** ny
+
 ---
 
 ## Kjent fra sluttkontrollen (Claude)

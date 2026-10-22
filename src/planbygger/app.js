@@ -329,7 +329,8 @@ class App {
       h('span', {}, 'eller klikk for å velge filer'),
       h('small', {}, 'Plantegninger og fasader, gjerne alle på en gang: PNG, JPG, WebP, AVIF eller PDF. Et mobilfoto av en utskrift går også.'));
     drop.addEventListener('dragenter', () => drop.classList.add('is-over'));
-    drop.addEventListener('dragleave', () => drop.classList.remove('is-over'));
+    // leaving for one of its own texts is no leave: the outline went out when the pointer came over the text (F32)
+    drop.addEventListener('dragleave', (e) => !drop.contains(e.relatedTarget) && drop.classList.remove('is-over'));
     drop.addEventListener('drop', () => drop.classList.remove('is-over'));
     const card = h('div', { class: 'pb-start-card' },
       h('h1', {}, 'Fra tegninger til 3D-hus'),
@@ -1426,7 +1427,9 @@ class App {
     if (!res?.text?.trim()) return;
     const stack = this.stack?.items?.map((it) => ({ name: it.name, kind: it.kind, kindFrom: it.kindFrom, note: it.note, level: it.level ?? null }));
     const files = this.gen?.inputs?.map((f) => f.name) ?? stack?.map((it) => it.name) ?? this.doc?.levels.map((l) => l.image?.name).filter(Boolean) ?? [];
-    let state = { files, stack, doc: this.doc, questions: this.gen?.res?.questions, answers: this.gen?.answers, report: this.gen?.res?.report, check: this._lastCheck ? { errors: this._lastCheck.errors, warnings: this._lastCheck.warnings } : null };
+    // where the camera stood in 3D (game metres), so a report can be found again without asking
+    const cam = !this.view3d.hidden && this.viewer?.camera ? { position: this.viewer.camera.position.toArray().map((v) => Math.round(v * 100) / 100), direction: this.viewer.camera.getWorldDirection(this.viewer.camera.position.clone()).toArray().map((v) => Math.round(v * 100) / 100), mode: this.viewer.mode } : null;
+    let state = { files, stack, camera: cam, doc: this.doc, questions: this.gen?.res?.questions, answers: this.gen?.answers, report: this.gen?.res?.report, check: this._lastCheck ? { errors: this._lastCheck.errors, warnings: this._lastCheck.warnings } : null };
     if (JSON.stringify(state).length > 8e6) state = { ...state, report: null };
     const report = { kind: res.kind, text: res.text.trim(), where: `${where}${files.length ? ` – ${files.join(', ')}` : ''}`, image, state };
     const sent = await this._sendReports([report]);
@@ -1619,7 +1622,7 @@ class App {
     this.modeBtn.textContent = walk ? 'Se huset ovenfra' : 'Gå inn i huset';
     this.helpEl.innerHTML = walk
       ? '<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> gå · hold høyre museknapp og dra for å se rundt · <kbd>Shift</kbd> løp · <kbd>E</kbd> eller klikk åpner dører'
-      : 'Dra for å snu huset · hjulet zoomer · høyre knapp flytter · «Gå inn i huset» for å gå rundt';
+      : 'Dra for å snu huset · hjulet zoomer · høyre knapp eller WASD flytter · «Gå inn i huset» for å gå rundt';
     this.levelSel.disabled = walk;
   }
   close3d() {

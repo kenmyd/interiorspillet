@@ -6,6 +6,7 @@
  *   const v = createViewer(container, { onInfo })
  *   await v.load(house)           house = exportHouse(doc).house
  *   v.setMode('walk' | 'orbit')   walk: first person (WASD, the mouse as in the game); orbit: dollhouse without ceilings
+ *                                 (the mouse, or WASD / the arrows to move along the ground)
  *   v.showLevel(levelId | null)   orbit: only that level (and the ones under it)
  *   v.dispose()
  *
@@ -111,9 +112,11 @@ function separateCoplanar(root) {
 /**
  * A window that stands on the floor (sill 0) leaves the bottom of its reveal open: the room's floor stops at the wall
  * face, and the ground shows between it and the frame (F5). The floor is carried out to the frame: a thin box in the
- * room's own floor material, from the room face back to the frame, walkable. Returns the meshes (colliders).
+ * room's own floor material, from the room face back to the frame, walkable. A passage (an opening without a door) has
+ * the same gap over the whole thickness of its wall – doors have a threshold – and gets the same floor (F28). Returns
+ * the meshes (colliders).
  */
-function revealFloors(parts, roots) {
+function revealFloors(parts, roots, layout) {
   const floorMat = new Map();
   for (const g of [...Object.values(roots.levels), ...parts.map((p) => p.group)]) {
     g?.traverse((m) => {
@@ -138,6 +141,23 @@ function revealFloors(parts, roots) {
       box.receiveShadow = true;
       out.push(box);
     }
+  }
+  for (const o of layout.house?.openings || []) {
+    const wall = layout.house.wallsById?.[o.wallId];
+    const mat = floorMat.get(`floor:${o.roomId}`);
+    if (o.type !== 'opening' || o.sill > 0.03 || !wall || !(wall.thickness > 0.02) || !mat || !o.bottomCenter) continue;
+    // steps between two floors (rooms.js buildSteps) fill their own reveal
+    const ys = (o.connects || []).map((id) => layout.house.roomsById?.[id]?.floorY).filter((y) => y != null);
+    if (ys.length === 2 && Math.abs(ys[0] - ys[1]) > 0.02) continue;
+    const t = 0.03;
+    const box = new THREE.Mesh(new THREE.BoxGeometry(o.width, t, wall.thickness), mat.clone());
+    const pos = o.bottomCenter.clone().addScaledVector(o.normal, -wall.thickness / 2).add(new THREE.Vector3(0, -t / 2, 0));
+    box.matrixAutoUpdate = false;
+    box.matrix.makeBasis(o.right, new THREE.Vector3(0, 1, 0), o.normal).setPosition(pos);
+    box.matrixWorldNeedsUpdate = true;
+    box.name = `reveal-floor:${o.id}`;
+    box.receiveShadow = true;
+    out.push(box);
   }
   return out;
 }
@@ -202,6 +222,22 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
   let raf = 0;
   let last = 0;
   let disposed = false;
+  // the dollhouse view moves with WASD / the arrow keys as well as the mouse (F34)
+  const held = new Set();
+  const ORBIT_KEYS = { w: [1, 0], arrowup: [1, 0], s: [-1, 0], arrowdown: [-1, 0], a: [0, -1], arrowleft: [0, -1], d: [0, 1], arrowright: [0, 1] };
+  const onKeyDown = (e) => {
+    const tag = e.target?.tagName;
+    if (mode !== 'orbit' || e.ctrlKey || e.metaKey || e.altKey || tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+    const k = e.key.toLowerCase();
+    if (!ORBIT_KEYS[k]) return;
+    held.add(k);
+    e.preventDefault();
+  };
+  const onKeyUp = (e) => held.delete(e.key.toLowerCase());
+  const onBlur = () => held.clear();
+  window.addEventListener('keydown', onKeyDown);
+  window.addEventListener('keyup', onKeyUp);
+  window.addEventListener('blur', onBlur);
 
   const resize = () => {
     const w = container.clientWidth || 800;
@@ -266,8 +302,8 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       }
     }
     const extra = [];
-    // the floor out to the frame in windows that stand on the floor (F5)
-    for (const box of revealFloors(parts, roots)) {
+    // the floor out to the frame in windows that stand on the floor (F5), and through passages (F28)
+    for (const box of revealFloors(parts, roots, layout)) {
       scene.add(box);
       box.updateMatrixWorld(true);
       extra.push(box);
@@ -371,7 +407,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     const player = new PlayerController({ camera, collision, input, settings, events });
     const start = spawnPoint(layout);
     player.teleport(start.position, start.yaw, 0);
-    state = { layout, collision, interaction, roots, parts, extra, skylights, player, start, bounds: b, center: new THREE.Vector3(cx, mainY, cz), size };
+    state = { layout, collision, interaction, roots, parts, extra, skylights, player, start, bounds: b, center: new THREE.Vector3(cx, mainY, cz), size, groundY: mainY - GROUND_STEP };
     setMode(mode);
     const realRooms = layout.house.rooms.filter((r) => !r.hud && r.area > 0.01 && r.id !== 'stue-kjokken');
     onInfo(`${realRooms.length} rom, ${layout.house.doors.length} dører, ${layout.house.windows.length} vinduer`);
@@ -423,6 +459,8 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
         orbit = new OrbitControls(camera, renderer.domElement);
         orbit.enableDamping = true;
         orbit.maxPolarAngle = Math.PI * 0.49;
+        // panning slides along the ground, not up and down the screen: the camera went under the ground (F33)
+        orbit.screenSpacePanning = false;
       }
       const c = state.center;
       orbit.target.set(c.x, c.y + 0.5, c.z);
@@ -457,7 +495,14 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       if (input.consumeAction?.('interact') || click) state.interaction.interact({});
       input.consumeAction?.('pause');
       input.consumeAction?.('help');
-    } else orbit?.update();
+    } else if (orbit) {
+      orbitKeys(dt);
+      orbit.update();
+      // never under the ground (F33): zooming toward a low target or panning could take it there
+      const g = state.groundY;
+      if (orbit.target.y < g) orbit.target.y = g;
+      if (camera.position.y < g + 0.3) camera.position.y = g + 0.3;
+    }
     const pstate = { camera, playerPosition: state.player.position };
     for (const p of state.parts) {
       if (p.update) p.update(dt, pstate);
@@ -466,8 +511,31 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     renderer.render(scene, camera);
   }
 
+  /** WASD / arrows in the dollhouse view: forward, back and sideways along the ground, faster the further out. */
+  function orbitKeys(dt) {
+    if (!held.size) return;
+    let f = 0;
+    let r = 0;
+    for (const k of held) {
+      f += ORBIT_KEYS[k][0];
+      r += ORBIT_KEYS[k][1];
+    }
+    if (!f && !r) return;
+    const fwd = camera.getWorldDirection(new THREE.Vector3()).setY(0);
+    if (fwd.lengthSq() < 1e-6) fwd.set(0, 0, -1);
+    fwd.normalize();
+    const right = new THREE.Vector3().crossVectors(fwd, camera.up).normalize();
+    const speed = Math.max(2, camera.position.distanceTo(orbit.target) * 0.8);
+    const move = fwd.multiplyScalar(f).add(right.multiplyScalar(r)).normalize().multiplyScalar(speed * dt);
+    orbit.target.add(move);
+    camera.position.add(move);
+  }
+
   function dispose() {
     disposed = true;
+    window.removeEventListener('keydown', onKeyDown);
+    window.removeEventListener('keyup', onKeyUp);
+    window.removeEventListener('blur', onBlur);
     cancelAnimationFrame(raf);
     raf = 0;
     clear();

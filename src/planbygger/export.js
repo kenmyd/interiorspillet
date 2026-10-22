@@ -41,6 +41,14 @@ import { WALKABLE_NORMAL_Y } from '../config.js';
 const RESERVED_IDS = new Set(['stue-kjokken', 'trapp', 'ute', 'forplass']);
 const MAIN = 'hoved';
 const EPS = 1e-6;
+/** metres of wall between a room's corner and an opening drawn against it (export: the hole gets its own side) */
+const JAMB = 0.05;
+/** the narrowest door hole the player passes (radius 0.3, a 0.06 frame each side and the open leaf) */
+const MIN_DOOR = 0.82;
+/** metres of wall between two openings side by side (a door and its sidelight): a post, not a sliver */
+const MIN_POST = 0.1;
+/** the game's door unit is this much wider than its leaf (src/world/Door.js: 2 × (0.05 jamb − 0.012 overlap)) */
+const DOOR_UNIT = 0.076;
 
 /** Look of the generated house (white interior, oak floors – the customer repaints in the game). */
 export const LOOK = Object.freeze({
@@ -644,7 +652,9 @@ export function exportHouse(doc, opts = {}) {
           { ...o, at: o.at + half / 2, width: half, hinge: 'end', leaf: o.leaf2 ?? o.leaf, built: 'double', part: 2 },
         ];
       }
-      if (o.type === 'door' && o.variant === 'sliding') return [{ ...o, type: 'opening', built: 'sliding' }];
+      // a sliding door: a hinged door with its leaf until the engine has sliding doors (an empty hole read as a missing
+      // door – F18); it opens into the room on its drawn side
+      if (o.type === 'door' && o.variant === 'sliding') return [{ ...o, variant: 'single', side: o.side || 1, leaf: null, built: 'sliding' }];
       return [o];
     });
     for (const o of asBuilt) {
@@ -691,8 +701,39 @@ export function exportHouse(doc, opts = {}) {
           off = a;
           width = b - a;
         }
+        // an opening against a corner of its room: a jamb of JAMB between the corner and the hole, so the hole's side is
+        // a face of its own wall – not the plane of the wall across (it flickered) nor the corner's mitre (it slanted
+        // the reveal and left a slot to the outside by a door) – F15, F16, F17, F20, F22. A passage along the pieces of
+        // several rooms runs on from one piece to the next and keeps its full width
+        const width0 = width;
+        const jambs = targets.length === 1;
+        if (jambs && dist(p.from, p.e.a) < 0.02 && off < JAMB) {
+          width -= JAMB - off;
+          off = JAMB;
+        }
+        if (jambs && dist(p.to, p.e.b) < 0.02 && off + width > L - JAMB) width = L - JAMB - off;
+        if (width < 0.3 || width < 0.6 * width0) {
+          off = best.a < 0 ? 0 : best.a;
+          width = width0;
+        }
         const wall = wallObjs.get(p);
         const owner = roomIdOf(p.ri);
+        // a door the player cannot pass (its radius is 0.3: a 0.69 m hole leaves 0.5 m between frame and leaf – F19)
+        // is widened to MIN_DOOR where the wall has room: evenly, within the jambs, clear of the openings already on it
+        let widened = false;
+        if (o.type === 'door' && width < MIN_DOOR) {
+          const lo = dist(p.from, p.e.a) < 0.02 ? JAMB : 0;
+          const hi = dist(p.to, p.e.b) < 0.02 ? L - JAMB : L;
+          let a = Math.max(lo, off - (MIN_DOOR - width) / 2);
+          let b = Math.min(hi, a + MIN_DOOR);
+          a = Math.max(lo, b - MIN_DOOR);
+          const clear = (wall.openings || []).every((x) => x.offset + x.width <= a + 0.01 || x.offset >= b - 0.01);
+          if (b - a > width + 0.01 && clear) {
+            off = a;
+            width = b - a;
+            widened = true;
+          }
+        }
         // the room behind the opening (the partner of the piece under its middle), else outside
         const midU = (Math.max(0, off) + Math.min(L, off + width)) / 2;
         const under = p.pieces.find((q) => dot(sub(q.to, p.from), p.e.d) >= midU - 1e-6) ?? p.pieces[p.pieces.length - 1];
@@ -724,10 +765,16 @@ export function exportHouse(doc, opts = {}) {
             const hinge = hingeStart === sameDir ? 'from' : 'to';
             const swingVec = frame.vecToGame(mul(perp(u), o.side || 1));
             const swing = dot(swingVec, p.e.n) > 0 ? 'in' : 'out';
-            const frameW = 0.06;
-            const leafW = Math.min(o.leaf ?? width - 2 * frameW, width - 2 * frameW);
             const exterior = other === 'ute' && !selfWall;
-            entry.frame = { color: LOOK.frame, width: frameW, depth: 0.02 };
+            // an outer door as the owner's (30-kjeller.json door-ute): a deeper frame and a dark-lined reveal in the thick
+            // wall – with an inner door's 2 cm frame the leaf's clearance showed the outside as a slit (F17)
+            const frameW = exterior ? 0.05 : 0.06;
+            // the game's door unit is its leaf + 0.076 (src/world/Door.js: steel jambs 0.05 that the leaf overlaps 0.012):
+            // a leaf of the hole − 0.076 makes the unit fill the hole – narrower, it left 1.2 cm of open reveal along both
+            // jambs, a slit of daylight beside an outer door (F17)
+            const leafW = width - DOOR_UNIT;
+            entry.frame = exterior ? { color: '#25272b', width: frameW, depth: 0.06 } : { color: LOOK.frame, width: frameW, depth: 0.02 };
+            if (exterior) entry.reveal = { depth: R(Math.max(0.1, Math.min(0.21, (wall.thickness ?? 0.3) - 0.05))), color: '#1d1e21' };
             entry.door = {
               hinge,
               swing,
@@ -750,15 +797,34 @@ export function exportHouse(doc, opts = {}) {
           entry.source = `planbyggeren: dobbeltdør, blad ${o.part} av 2 (bygget som to dører)`;
           if (o.part === 1) counts.doubleDoors++;
         } else if (o.built === 'sliding') {
-          entry.source = 'planbyggeren: skyvedør (bygget som åpning)';
+          entry.source = 'planbyggeren: skyvedør (bygget som slagdør til motoren har skyvedører)';
           if (k === 0) counts.slidingDoors++;
         }
+        if (widened) entry.source = `${entry.source ? `${entry.source}; ` : 'planbyggeren: '}gjort bredere enn tegningen (${MIN_DOOR} m) så figuren kommer gjennom`;
         if (targets.length > 1) entry.source = `${entry.source ? `${entry.source}; ` : 'planbyggeren: '}del ${k + 1} av ${targets.length} (åpningen går langs flere rom)`;
         if (selfWall && entry.type !== 'window') entry.source = `${entry.source ? `${entry.source}; ` : 'planbyggeren: '}samme rom på begge sider av veggen (rommet går rundt den), koblet til «ute» fordi formatet vil ha to rom`;
         (wall.openings ||= []).push(entry);
       });
     }
     for (const w of house.walls) if (w.openings) w.openings.sort((a, b) => a.offset - b.offset);
+    // two openings side by side (a door and its sidelight) need a post between them: a few millimetres of wall gave
+    // overlapping linings and trims that flickered, and a slit to the outside (F16, F17). A window gives way to a door;
+    // nothing changes when the window would get narrower than 0.2 m
+    for (const w of house.walls) {
+      const os = w.openings || [];
+      for (let i = 1; i < os.length; i++) {
+        const A = os[i - 1];
+        const B = os[i];
+        const gap = B.offset - (A.offset + A.width);
+        if (gap >= MIN_POST || gap < -0.01) continue;
+        const cut = MIN_POST - gap;
+        const win = B.type === 'window' ? B : A.type === 'window' ? A : B.type !== 'door' ? B : A.type !== 'door' ? A : null;
+        if (!win || win.width - cut < 0.2) continue;
+        if (win === B) B.offset = R(B.offset + cut);
+        win.width = R(win.width - cut);
+        win.source = `${win.source ? `${win.source}; ` : 'planbyggeren: '}${round(cut * 100, 0)} cm smalere for en post mot åpningen ved siden av`;
+      }
+    }
 
     // ---- skylights: on the ceiling of the room they lie in. The house format has flat ceilings without roof windows,
     //      so they are kept as data on the ceiling entry (nothing builds them yet – a request in notes/planbygger.md)
