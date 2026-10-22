@@ -1,5 +1,6 @@
 import { h, svg, fmtNumber, fmtPercent } from './dom.js';
 import { ICONS } from './icons.js';
+import { DESKTOP_SCHEMES, TOUCH_LAYOUTS } from './controlsHelp.js';
 
 /**
  * Settings form bound to core/Settings.js – shared by the main menu dialog and the pause menu.
@@ -30,9 +31,36 @@ import { ICONS } from './icons.js';
 export const SETTING_GROUPS = [
   {
     id: 'mouse',
-    label: 'Mus og bevegelse',
+    label: 'Styring',
     icon: 'mouse',
     rows: [
+      {
+        key: 'controlScheme',
+        type: 'cards',
+        label: 'Styring',
+        help: 'Det samme valget som i «Slik styrer du» ved start.',
+        options: [
+          { value: 'auto', label: 'Automatisk', desc: 'Mus på PC, touch på mobil og nettbrett. Bytter selv på PC med berøringsskjerm.' },
+          ...DESKTOP_SCHEMES,
+          { value: 'touch', label: 'Alltid touch', desc: 'Touch-kontrollene vises hele tiden, også når du bruker mus eller tastatur.' },
+        ],
+      },
+      {
+        key: 'touchLayout',
+        type: 'cards',
+        label: 'Touch-kontroller',
+        help: 'Brukes når du styrer med fingeren.',
+        options: TOUCH_LAYOUTS,
+      },
+      {
+        key: 'touchSensitivity',
+        type: 'slider',
+        label: 'Følsomhet for touch og touchpad',
+        min: 0.3,
+        max: 3,
+        step: 0.05,
+        format: (v) => `${fmtNumber(v, 2)}×`,
+      },
       {
         key: 'mouseMode',
         type: 'cards',
@@ -54,6 +82,7 @@ export const SETTING_GROUPS = [
       { key: 'invertY', type: 'toggle', label: 'Inverter vertikal mus', help: 'Dra musen opp for å se ned.' },
       { key: 'turnWithKeys', type: 'toggle', label: 'A/D svinger', help: 'A og D snur karakteren i stedet for å gå sidelengs.' },
       { key: 'runToggle', type: 'toggle', label: 'Shift veksler gå/løp', help: 'Av: hold Shift inne for å løpe.' },
+      { key: 'showHelpOnStart', type: 'toggle', label: 'Vis «Slik styrer du» ved start', help: 'Forklarer styringen og lar deg velge når spillet starter.' },
       { key: 'physicalBody', type: 'toggle', label: 'Fysisk person', help: 'Av: du er en skikkelse som glir gjennom møblene, uten skrittlyd. På: møblene stopper deg, du hører skrittene og kameraet gynger litt.' },
     ],
   },
@@ -78,7 +107,6 @@ export const SETTING_GROUPS = [
       { key: 'fov', type: 'slider', label: 'Synsfelt (FOV)', min: 60, max: 95, step: 1, format: (v) => `${Math.round(v)}°` },
       { key: 'headBob', type: 'toggle', label: 'Hodebevegelse', help: 'Kameraet gynger litt når du går.' },
       { key: 'showFps', type: 'toggle', label: 'Vis bildefrekvens (FPS)' },
-      { key: 'showHelpOnStart', type: 'toggle', label: 'Vis kontroller ved start' },
     ],
   },
   {

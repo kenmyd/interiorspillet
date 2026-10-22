@@ -1,24 +1,53 @@
 import * as THREE from 'three';
+import { device, inputMode } from './Device.js';
 
 /**
- * Input – keyboard + mouse, World-of-Warcraft style mouse handling.
+ * Input – keyboard + mouse (World-of-Warcraft style mouse handling), touch, and the keyboard / touchpad profiles.
  *
  * CONTRACT (used by Game.js, PlayerController.js, Interaction.js):
  *   new Input(domElement, settings)
- *   setEnabled(bool)        false: release pointer lock, clear all held keys/buttons, ignore events
+ *   setEnabled(bool)        false: release pointer lock, clear all held keys/buttons/fingers, ignore events
  *   update(dt)              call once per frame BEFORE reading state; computes this frame's values
- *   move: { forward, right }   each -1..1 (forward = W/S, right = strafe)
- *   turn: number            -1..1 keyboard turning (A/D when settings.turnWithKeys && !isMouseLook), + = right
+ *   move: { forward, right }   each -1..1 (forward = W/S, right = strafe; the joystick gives values in between)
+ *   turn: number            -1..1 keyboard turning (A/D when settings.turnWithKeys && !isMouseLook, always in the
+ *                           keyboard profile), + = right
  *   lookDelta: { x, y }     radians to add to yaw (x, + = turn right) and pitch (y, + = look up) this frame
  *   running: boolean        run modifier active
  *   jumpPressed: boolean    true for the one frame Space went down
  *   isMouseLook: boolean    mouse currently controls the camera (RMB/LMB drag in WoW mode, always in FPS mode)
- *   isCaptured: boolean     pointer is locked (centre-screen targeting, crosshair visible)
+ *   isCaptured: boolean     centre-screen targeting, crosshair visible: the pointer is locked, or the touch controls /
+ *                           the keyboard profile aim with the crosshair (except in the frame of a tap / click, which
+ *                           targets the point that was tapped)
  *   getPointerNDC(target: Vector2) → Vector2|null   cursor position in NDC when the cursor is free and over the canvas
- *   consumeClick() → {x,y}|null   a left click that was NOT a drag, since last consume (NDC)
+ *   consumeClick() → {x,y}|null   a left click (or a finger tap) that was NOT a drag, since last consume (NDC)
  *   consumeAction(name) → bool    edge-triggered actions: 'interact' (E/F), 'pause' (Esc or lost pointer lock),
- *                                 'help' (H/F1)
+ *                                 'help' (H/F1), 'menu' (the touch menu button: pause without Esc's «cancel first»)
  *   dispose()
+ *
+ * Touch (TouchControls.js draws the joystick and the buttons and feeds them in here):
+ *   touchActive: boolean    the touch controls are in use (Device.js inputMode.touch, kept current here)
+ *   setVirtual({ forward, right, run, lookX, lookY })   joystick axes: forward / right -1..1, run boolean, lookX /
+ *                           lookY in rad/s (right joystick; + = right / down like the mouse). Ignored while disabled.
+ *   trigger(name)           a touch button: 'interact' | 'help' | 'jump' | 'select' (a click at the crosshair, e.g.
+ *                           «Plasser») | 'menu' | 'pause' (= Esc). 'pause' and 'menu' also work while input is blocked
+ *                           (a panel is open), the others only when enabled.
+ *   toggleRun() → bool      the touch «Løp» button: latches running (like runToggle), returns the new state
+ *   runLatched: boolean
+ *   A finger on the canvas: a drag looks around (any touch layout), a short touch without movement is a click at that
+ *   point (select furniture, open a door). The first finger may be claimed by setPointerClaim (drag the selected
+ *   piece of furniture), exactly like a left mouse press. Pointer lock is never requested for touch; the canvas has
+ *   touch-action: none (no browser zoom / scrolling on it).
+ *   Hybrid devices: a touch turns the touch controls on, using the mouse or a key turns them off again
+ *   (controlScheme 'touch' keeps them on, 'auto' on a phone / tablet starts with them on).
+ *
+ * Control schemes (settings.controlScheme, see Settings.js; 'auto' and 'touch' behave like 'mouse' on the PC side):
+ *   'mouse'     as described under «Mouse modes» below
+ *   'keyboard'  W/S (↑/↓) walk, A/D always turn (also while mouse-looking), ←/→ step sideways, Q/Z (Page Up/Down) look
+ *               up/down, Enter clicks at the crosshair (select what it points at). The crosshair is the target.
+ *   'touchpad'  two-finger scrolling over the canvas (wheel events) looks around, a tap / click selects as with the
+ *               mouse. Pinch (Ctrl + wheel) is swallowed so the page does not zoom. The editor's wheel uses (wall
+ *               height while placing – Placement, window capture phase; zoom in the overview / plan – ViewModes,
+ *               input blocked there) come first, so they keep working.
  *
  * Extras (optional, read by PlayerController):
  *   crouch: boolean         C held (not Ctrl: Ctrl + W/S/D/F/E would trigger browser shortcuts – Ctrl+W
@@ -64,6 +93,18 @@ const SPIKE_RATIO = 6;
 const SPIKE_AVG_TAU = 150;
 /** Two pause requests closer than this (ms) are merged (Esc keydown + pointer lock loss of the same press). */
 const PAUSE_DEDUPE_MS = 400;
+/** Finger drag on the canvas: radians per CSS pixel at touchSensitivity 1 (a drag across a phone ≈ 180°). */
+const RAD_PER_TOUCH_PX = 0.0045;
+/** Touchpad two-finger scrolling: radians per wheel pixel at touchSensitivity 1. */
+const RAD_PER_WHEEL_PX = 0.0045;
+/**
+ * A finger that moves less than this (px) and lifts within TAP_MS is a tap (= a click). Generous on purpose: nothing
+ * else uses a long press, and a slow, careful press should still select.
+ */
+const TAP_SLOP = 10;
+const TAP_MS = 800;
+/** Keyboard profile: look up / down speed (rad/s) of Q / Z and Page Up / Page Down. */
+const KEY_PITCH_SPEED = 1.3;
 
 /**
  * Key bindings by KeyboardEvent.code. Ctrl is deliberately NOT a game key: Ctrl+S/D/F/E/A would open browser
@@ -82,8 +123,25 @@ const BINDINGS = Object.freeze({
   pause: ['Escape'],
 });
 
+/**
+ * The keyboard profile (controlScheme 'keyboard', a laptop without a mouse) on top of BINDINGS: A/D turn, the side
+ * arrows step sideways (they nudge the selected piece of furniture instead while one is selected – Selection's key
+ * claim), Q/Z look up and down (Q above A, Z below it), Enter selects what the crosshair points at.
+ */
+const KEYBOARD_PROFILE = Object.freeze({
+  turnLeft: ['KeyA'],
+  turnRight: ['KeyD'],
+  strafeLeft: ['ArrowLeft'],
+  strafeRight: ['ArrowRight'],
+  lookUp: ['KeyQ', 'PageUp'],
+  lookDown: ['KeyZ', 'PageDown'],
+  select: ['Enter', 'NumpadEnter'],
+});
+
 /** Keys whose browser default (scrolling, help page) must be suppressed while playing. */
 const PREVENT_DEFAULT = new Set(['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'F1', 'Tab']);
+/** …and in the keyboard profile also these. */
+const PREVENT_DEFAULT_KEYBOARD = new Set(['PageUp', 'PageDown']);
 
 /** Events on which browsers act on the mouse side buttons (Chrome navigates on mouseup, others on mousedown). */
 const SIDE_BUTTON_EVENTS = ['mousedown', 'mouseup', 'auxclick'];
@@ -96,6 +154,13 @@ function anyHeld(keys, codes) {
   for (let i = 0; i < codes.length; i++) if (keys.has(codes[i])) return true;
   return false;
 }
+
+/** +1 when a key of `pos` is held, -1 for `neg`, 0 for both or none. */
+function axis(keys, neg, pos) {
+  return (anyHeld(keys, pos) ? 1 : 0) - (anyHeld(keys, neg) ? 1 : 0);
+}
+
+const clamp1 = (v) => (v > 1 ? 1 : v < -1 ? -1 : v);
 
 export class Input {
   /**
@@ -149,6 +214,15 @@ export class Input {
     this._moveAvg = 0; // recent per-event mouse movement (px) for the glitch filter
     this._lastMoveT = 0;
 
+    // touch, touchpad, touch buttons
+    this._touches = new Map(); // pointerId → finger on the canvas { x, y, t0, travel, moved }
+    this._accTouch = { x: 0, y: 0 }; // finger drags + touchpad scrolling (radians at touchSensitivity 1)
+    this._virtual = { forward: 0, right: 0, run: false, lookX: 0, lookY: 0 };
+    this.runLatched = false; // the touch «Løp» button
+    this._lastKind = device.primaryTouch ? 'touch' : 'mouse'; // the last input family used (hybrid switching)
+    this.touchActive = false;
+    this._syncInputMode();
+
     this._bind();
   }
 
@@ -165,18 +239,23 @@ export class Input {
     this._click = null;
     if (!v) {
       this._releaseLock();
-    } else if (this._mode() === 'fps' && navigator.userActivation?.isActive) {
+    } else if (this._mode() === 'fps' && !inputMode.touch && navigator.userActivation?.isActive) {
       // Resuming from a menu click in FPS mode: grab the pointer again within the same user gesture.
       this._requestLock();
     }
   }
 
   /** Compute this frame's movement/look values. Call once per frame before anything reads the state. */
-  update(/* dt */) {
+  update(dt = 0) {
     const k = this.keys;
     const B = BINDINGS;
+    const keyboard = this._profile() === 'keyboard';
+    const touch = inputMode.touch;
+    this.touchActive = touch;
 
-    this.isCaptured = this._lockedToUs();
+    // a pending tap / click (not one made at the crosshair) targets its own point for the frame it is handled in
+    const pointClick = !!this._click && !this._click.centre;
+    this.isCaptured = this._lockedToUs() || ((touch || keyboard) && !pointClick);
     this.isMouseLook = this._computeMouseLook();
 
     let forward = (anyHeld(k, B.forward) ? 1 : 0) - (anyHeld(k, B.back) ? 1 : 0);
@@ -184,7 +263,12 @@ export class Input {
     if (this._mode() === 'wow' && this._lmb && this._rmb) forward = 1;
     const side = (anyHeld(k, B.right) ? 1 : 0) - (anyHeld(k, B.left) ? 1 : 0);
 
-    if (this.settings.get('turnWithKeys') && !this.isMouseLook) {
+    if (keyboard) {
+      // A/D always turn (also while mouse-looking), the side arrows step sideways
+      const KP = KEYBOARD_PROFILE;
+      this.turn = axis(k, KP.turnLeft, KP.turnRight);
+      this.move.right = axis(k, KP.strafeLeft, KP.strafeRight);
+    } else if (this.settings.get('turnWithKeys') && !this.isMouseLook) {
       this.move.right = 0;
       this.turn = side;
     } else {
@@ -193,17 +277,76 @@ export class Input {
     }
     this.move.forward = forward;
 
-    this.running = this.settings.get('runToggle') ? this._runLatched : anyHeld(k, B.run);
+    // the touch joystick adds to the keys (analog: a short push walks slowly)
+    const v = this._virtual;
+    const virtual = this.enabled && touch;
+    if (virtual && (v.forward || v.right)) {
+      this.move.forward = clamp1(this.move.forward + v.forward);
+      this.move.right = clamp1(this.move.right + v.right);
+    }
+
+    this.running = (this.settings.get('runToggle') ? this._runLatched : anyHeld(k, B.run)) || (virtual && (v.run || this.runLatched));
     this.crouch = anyHeld(k, B.crouch);
     this.jumpPressed = this._jump;
     this._jump = false;
 
     const sens = this.settings.get('mouseSensitivity') ?? 1; // _acc is already in radians at 1×
+    const tsens = this.settings.get('touchSensitivity') ?? 1;
     const inv = this.settings.get('invertY') ? -1 : 1;
-    this.lookDelta.x = this._acc.x * sens;
-    this.lookDelta.y = -this._acc.y * sens * inv;
-    this._acc.x = 0;
-    this._acc.y = 0;
+    let lx = this._acc.x * sens + this._accTouch.x * tsens;
+    let ly = this._acc.y * sens + this._accTouch.y * tsens;
+    if (virtual) {
+      lx += v.lookX * tsens * dt;
+      ly += v.lookY * tsens * dt;
+    }
+    this.lookDelta.x = lx;
+    this.lookDelta.y = -ly * inv;
+    if (keyboard && this.enabled) this.lookDelta.y += axis(k, KEYBOARD_PROFILE.lookDown, KEYBOARD_PROFILE.lookUp) * KEY_PITCH_SPEED * dt;
+    this._acc.x = this._acc.y = 0;
+    this._accTouch.x = this._accTouch.y = 0;
+  }
+
+  /* ------------------------------------------------------------------ touch API (TouchControls) */
+
+  /**
+   * Joystick axes from the touch controls (see CONTRACT). Missing fields keep their value.
+   * @param {{ forward?: number, right?: number, run?: boolean, lookX?: number, lookY?: number }} v
+   */
+  setVirtual(v) {
+    const t = this._virtual;
+    if (v.forward !== undefined) t.forward = clamp1(Number(v.forward) || 0);
+    if (v.right !== undefined) t.right = clamp1(Number(v.right) || 0);
+    if (v.run !== undefined) t.run = !!v.run;
+    if (v.lookX !== undefined) t.lookX = Number(v.lookX) || 0;
+    if (v.lookY !== undefined) t.lookY = Number(v.lookY) || 0;
+  }
+
+  /** A touch button was pressed: 'interact' | 'help' | 'jump' | 'select' | 'menu' | 'pause'. */
+  trigger(name) {
+    this._noteInput('touch');
+    if (name === 'pause') {
+      this._addPause();
+      return;
+    }
+    if (name === 'menu') {
+      this._actions.add('menu');
+      return;
+    }
+    if (!this.enabled) return;
+    if (name === 'jump') this._jump = true;
+    else if (name === 'select') this._click = { x: 0, y: 0, centre: true };
+    else if (name === 'interact' || name === 'help') this._actions.add(name);
+  }
+
+  /** The touch «Løp» button: latches running on / off. @returns {boolean} the new state */
+  toggleRun() {
+    this.runLatched = !this.runLatched;
+    return this.runLatched;
+  }
+
+  /** The PC-side profile: 'mouse' | 'keyboard' | 'touchpad' ('auto' and 'touch' play like the mouse there). */
+  get profile() {
+    return this._profile();
   }
 
   /**
@@ -268,6 +411,33 @@ export class Input {
     return this.settings.get('mouseMode') === 'fps' ? 'fps' : 'wow';
   }
 
+  _profile() {
+    const s = this.settings.get('controlScheme');
+    return s === 'keyboard' || s === 'touchpad' ? s : 'mouse';
+  }
+
+  /**
+   * Hybrid devices: the family of the last input decides whether the touch controls are shown (inputMode.touch).
+   * @param {'touch'|'mouse'|'keyboard'} kind
+   */
+  _noteInput(kind) {
+    if (kind === this._lastKind) return;
+    this._lastKind = kind;
+    this._syncInputMode();
+  }
+
+  _syncInputMode() {
+    const scheme = this.settings.get('controlScheme');
+    const touch = scheme === 'touch' || this._lastKind === 'touch';
+    if (touch !== inputMode.touch) {
+      // switching family: nothing held by the other one stays held
+      this._touches?.clear();
+      if (!touch) this.setVirtual({ forward: 0, right: 0, run: false, lookX: 0, lookY: 0 });
+    }
+    inputMode.set(touch);
+    this.touchActive = touch;
+  }
+
   _lockedToUs() {
     return document.pointerLockElement === this.el;
   }
@@ -292,6 +462,8 @@ export class Input {
     this._fpsLook = false;
     this._jump = false;
     this._acc.x = this._acc.y = 0;
+    this._accTouch.x = this._accTouch.y = 0;
+    this._touches.clear();
     this.move.forward = this.move.right = 0;
     this.turn = 0;
     this.crouch = false;
@@ -393,13 +565,23 @@ export class Input {
 
   _bind() {
     this._onKeyDown = (e) => {
-      if (!this.enabled || isTypingTarget(e.target)) return;
+      if (isTypingTarget(e.target)) return;
+      if (e.isTrusted) this._noteInput('keyboard'); // not the touch «Roter» button's synthetic R
+      if (!this.enabled) return;
       // A key press that started before we were (re-)enabled belongs to the menu that resumed the game
       // (e.g. Esc closing the pause menu) – don't let it pause again.
       if (e.timeStamp && e.timeStamp <= this._enabledAt) return;
       const action = CODE_TO_ACTION.get(e.code);
+      const keyboard = this._profile() === 'keyboard';
       // Ctrl/Cmd + a game key (habit, or Ctrl held for something else) must not open Save/Find/Bookmark.
-      if (PREVENT_DEFAULT.has(e.code) || (action && (e.ctrlKey || e.metaKey))) e.preventDefault();
+      if (PREVENT_DEFAULT.has(e.code) || (keyboard && PREVENT_DEFAULT_KEYBOARD.has(e.code)) || (action && (e.ctrlKey || e.metaKey))) e.preventDefault();
+      // keyboard profile: Enter clicks at the crosshair (not while a button has focus – Enter presses that button)
+      if (keyboard && !e.repeat && KEYBOARD_PROFILE.select.includes(e.code) && !e.ctrlKey && !e.metaKey && !e.altKey && !isButtonTarget(e.target)) {
+        this._click = { x: 0, y: 0, centre: true };
+        return;
+      }
+      // Ctrl+Z (undo) must not look down, Ctrl+Q not up
+      if (keyboard && (e.ctrlKey || e.metaKey) && (e.code === 'KeyZ' || e.code === 'KeyQ')) return;
       // a tool may own this key right now (arrow keys nudging the selected item …): not held, no action
       if (this._keyClaim && action !== 'pause') {
         let claimed = false;
@@ -580,7 +762,81 @@ export class Input {
         if (this._mode() === 'wow') this._releaseLock();
       } else if (key === 'runToggle') {
         this._runLatched = false;
+      } else if (key === 'controlScheme') {
+        this._syncInputMode();
       }
+    };
+
+    // ---- touch: hybrid switching, fingers on the canvas, touchpad scrolling
+
+    // any pointer anywhere (capture: panels too) tells which family is in use
+    this._onAnyPointerDown = (e) => {
+      if (e.pointerType === 'touch') this._noteInput('touch');
+      else if (e.pointerType === 'mouse') this._noteInput('mouse');
+    };
+    this._onAnyPointerMove = (e) => {
+      if (e.pointerType === 'mouse' && (e.movementX || e.movementY)) this._noteInput('mouse');
+    };
+
+    this._onTouchDown = (e) => {
+      if (e.pointerType !== 'touch') return;
+      this._noteInput('touch');
+      // no compatibility mouse events, no double-tap zoom, never pointer lock
+      e.preventDefault();
+      if (!this.enabled) return;
+      this.el.focus?.({ preventScroll: true });
+      // the first finger may be claimed by a tool (drag the selected piece of furniture), like a left mouse press
+      if (this._touches.size === 0 && this._pointerClaim) {
+        let claimed = false;
+        try {
+          claimed = !!this._pointerClaim(e);
+        } catch (err) {
+          console.error('[input] pointer claim failed', err);
+        }
+        if (claimed) return;
+      }
+      // event time, not handling time: on a slow phone the pointerup can be handled a frame later than it happened
+      this._touches.set(e.pointerId, { x: e.clientX, y: e.clientY, t0: e.timeStamp, travel: 0, moved: false });
+    };
+
+    this._onTouchMove = (e) => {
+      const t = this._touches.get(e.pointerId);
+      if (!t) return;
+      const dx = e.clientX - t.x;
+      const dy = e.clientY - t.y;
+      t.x = e.clientX;
+      t.y = e.clientY;
+      t.travel += Math.hypot(dx, dy);
+      if (!t.moved) {
+        if (t.travel <= TAP_SLOP) return;
+        t.moved = true; // from now on a look drag (the slop itself is not turned)
+        return;
+      }
+      // only the first finger looks (a second one would double the speed)
+      if (!this.enabled || this._touches.keys().next().value !== e.pointerId) return;
+      this._accTouch.x += dx * RAD_PER_TOUCH_PX;
+      this._accTouch.y += dy * RAD_PER_TOUCH_PX;
+    };
+
+    this._onTouchUp = (e) => {
+      const t = this._touches.get(e.pointerId);
+      if (!t) return;
+      this._touches.delete(e.pointerId);
+      if (e.type !== 'pointerup' || !this.enabled || t.moved || e.timeStamp - t.t0 > TAP_MS) return;
+      // a tap: a click at that point (the frame that handles it targets the point, not the crosshair)
+      this._updatePointer(e);
+      this._pointer.inside = true;
+      this._click = { x: this._pointer.ndcX, y: this._pointer.ndcY };
+    };
+
+    this._onWheel = (e) => {
+      if (!this.enabled || this._profile() !== 'touchpad') return;
+      e.preventDefault(); // pinch (Ctrl + wheel) must not zoom the page either
+      if (e.ctrlKey) return;
+      this._noteInput('mouse');
+      const px = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
+      this._accTouch.x += e.deltaX * px * RAD_PER_WHEEL_PX;
+      this._accTouch.y += e.deltaY * px * RAD_PER_WHEEL_PX;
     };
 
     this._onResize = () => (this._rectDirty = true);
@@ -606,6 +862,13 @@ export class Input {
     document.addEventListener('pointerlockchange', this._onLockChange);
     document.addEventListener('pointerlockerror', this._onLockErrorEvent);
     this.settings.on?.('change', this._onSettings);
+    window.addEventListener('pointerdown', this._onAnyPointerDown, true);
+    window.addEventListener('pointermove', this._onAnyPointerMove, true);
+    this.el.addEventListener('pointerdown', this._onTouchDown);
+    window.addEventListener('pointermove', this._onTouchMove);
+    window.addEventListener('pointerup', this._onTouchUp);
+    window.addEventListener('pointercancel', this._onTouchUp);
+    this.el.addEventListener('wheel', this._onWheel, { passive: false });
   }
 
   _unbind() {
@@ -625,6 +888,13 @@ export class Input {
     document.removeEventListener('pointerlockchange', this._onLockChange);
     document.removeEventListener('pointerlockerror', this._onLockErrorEvent);
     this.settings.off?.('change', this._onSettings);
+    window.removeEventListener('pointerdown', this._onAnyPointerDown, true);
+    window.removeEventListener('pointermove', this._onAnyPointerMove, true);
+    this.el.removeEventListener('pointerdown', this._onTouchDown);
+    window.removeEventListener('pointermove', this._onTouchMove);
+    window.removeEventListener('pointerup', this._onTouchUp);
+    window.removeEventListener('pointercancel', this._onTouchUp);
+    this.el.removeEventListener('wheel', this._onWheel);
   }
 
   /**
@@ -671,4 +941,9 @@ function isTypingTarget(t) {
   if (!t || !t.tagName) return false;
   const tag = t.tagName;
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t.isContentEditable;
+}
+
+/** True when Enter on this element presses it (a focused button or link). */
+function isButtonTarget(t) {
+  return !!t && typeof t.closest === 'function' && !!t.closest('button, a[href], [role="button"]');
 }

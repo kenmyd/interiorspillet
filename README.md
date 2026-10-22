@@ -46,6 +46,7 @@ huskes i nettleseren, så neste start går raskere.
 | Kommando | Hva den gjør |
 | --- | --- |
 | `npm run dev` | utviklingsserver på http://127.0.0.1:5180 (oppdaterer seg selv når filer endres) |
+| `npm run dev:mobil` | samme server, men åpen i hjemmenettet: åpne adressen ved «Network:» (f.eks. http://192.168.1.20:5180) på mobilen eller nettbrettet (samme wifi) |
 | `npm run build` | lager nettversjonen i `dist/` (virker fra hvilken som helst mappe på en webserver) |
 | `npm run preview` | viser `dist/` på http://127.0.0.1:4180 |
 | `npm run pack` | bygger og pakker `dist/` + `.htaccess` i `deploy/interiorspillet-web.zip` for opplasting |
@@ -55,6 +56,30 @@ Nettversjonen for kenmyd.no: se **[deploy/LES_MEG_OPPLASTING.md](deploy/LES_MEG_
 ---------------------------------------------------------------------------------------------------------------
 
 ## Kontroller
+
+Spillet finner selv ut om det kjører på **mobil**, **nettbrett**, **PC med berøringsskjerm** eller **PC**, og viser
+popupen **«Slik styrer du»** når du går inn fra startsiden. Der velger du styring (valget lagres, og «Ikke vis igjen»
+slår popupen av). Du finner den igjen under **Esc → Styring** (på touch: **Meny → Styring**), med **«Bytt styring»** i
+hjelpen (H) og under **Innstillinger → Styring**.
+
+| Styring | For | Slik virker den |
+| --- | --- | --- |
+| **Mus** | PC med mus | som før (tabellene under) |
+| **Tastatur (A/D snur)** | bærbar uten mus | **W/S** gå · **A/D** snu (alltid) · **← →** gå sidelengs · **Q / Z** (eller Page Up / Page Down) se opp / ned · **Enter** velger det krysset midt i bildet peker på · **E** dører og stoler |
+| **Touchpad** | bærbar uten mus | sveip med **to fingre** for å se deg rundt · **trykk** for å velge · WASD går som vanlig |
+| **Joystick + dra for å se** | mobil, nettbrett | joysticken nede til venstre går (helt ut = løp) · **dra** en finger for å se deg rundt · **trykk** på et møbel for å velge det, **dra** det valgte for å flytte det |
+| **To joysticker** | mobil, nettbrett | venstre joystick går, høyre ser deg rundt |
+| **Trykk for å gå dit** | mobil, nettbrett | **trykk på gulvet**, så går du dit · dra for å se deg rundt |
+
+Touch-knappene: **Bruk** (åpne døra / sett deg – det som er midt i bildet; du kan også trykke på teksten under krysset),
+**Hopp**, **Løp** (av/på), **Hjelp** og **Meny** øverst til høyre. Mens du plasserer et nytt møbel: **Plasser**,
+**Roter** og **Avbryt**. På en PC med berøringsskjerm kommer touch-kontrollene fram når du tar på skjermen og går bort
+når du bruker musa eller tastaturet. En telefon på høykant får et hint om å snu den. Telefoner starter med
+grafikkvalitet «Lav».
+
+Teste touch på PC: legg til `?device=phone` (eller `tablet`, `touch-pc`) i adressen og slå på enhetsverktøylinja i
+utviklerverktøyene (F12 → Ctrl+Shift+M). `node tools/test-touch.mjs` kjører en automatisk test med emulert iPhone, iPad
+og PC (skjermbilder i `.shots/touch/`).
 
 ### Bevegelse
 
@@ -199,7 +224,8 @@ Viser stua slik den er i dag. Trykk O (eller Esc) igjen for å komme tilbake til
 Lagrer det du ser (uten markeringer og menyer) som en PNG-fil, f.eks. `stua-2026-10-18-1709.png`.
 
 ### Innstillinger (Esc → Innstillinger, eller på startskjermen)
-Musefølsomhet, invertert mus, museoppførsel (WoW-stil eller FPS), synsfelt, **grafikkvalitet** (Lav / Middels /
+Styring (Automatisk / Mus / Tastatur / Touchpad / Alltid touch), touch-kontroller (Joystick / To joysticker / Trykk for
+å gå dit), følsomhet for touch og touchpad, «Vis «Slik styrer du» ved start», musefølsomhet, invertert mus, museoppførsel (WoW-stil eller FPS), synsfelt, **grafikkvalitet** (Lav / Middels /
 Høy – Høy gir myke skygger i krokene, AO og glans i stoffene), **Automatisk oppløsning** (senker oppløsningen hvis
 bildet hakker, og øker den igjen når det er luft – «Middels» starter på inntil 1,25 × skjermoppløsningen), vis
 bildefrekvens, lyd.

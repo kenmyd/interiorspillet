@@ -19,6 +19,26 @@ export const DEFAULT_SETTINGS = Object.freeze({
   turnWithKeys: false,
   /** Hold shift to run (false) or shift toggles walk/run (true). */
   runToggle: false,
+  /**
+   * How the game is played (Input.js «Control schemes», the popup «Slik styrer du»):
+   *   'auto'      touch controls on phones and tablets, the mouse elsewhere; on a PC with a touch screen the touch
+   *               controls come up when the screen is touched and go away when the mouse or the keyboard is used
+   *   'mouse'     the mouse as before (mouseMode decides WoW or FPS)
+   *   'keyboard'  laptop without a mouse: W/S walk, A/D always turn, Q/Z look up/down, ←/→ step sideways, Enter
+   *               selects what the crosshair points at
+   *   'touchpad'  laptop without a mouse: two-finger scrolling on the touchpad looks around, a tap selects
+   *   'touch'     the touch controls always (also before the screen is touched, and they stay when a mouse is used)
+   */
+  controlScheme: 'auto',
+  /**
+   * The touch controls (when they are shown):
+   *   'joystick'  joystick bottom left to walk, drag anywhere else to look around (default)
+   *   'dual'      two joysticks: the left one walks, the right one looks around
+   *   'tapwalk'   tap the floor to walk there, drag to look around
+   */
+  touchLayout: 'joystick',
+  /** Look speed of finger drags, the right joystick and touchpad scrolling (1 = default). */
+  touchSensitivity: 1.0,
   headBob: true,
   /**
    * false (default): you are a figure that glides through the furniture, without footstep sounds or head bob.
@@ -34,6 +54,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   showFps: false,
   /** Dynamic resolution: lower the render resolution while the frame rate is below ~50 fps (Game). */
   autoResolution: true,
+  /** The popup «Slik styrer du» when the game starts from the start screen («Ikke vis igjen» turns it off). */
   showHelpOnStart: true,
   /** Latitude for the sun (degrees north) – «Sol» → «Breddegrad». */
   sunLatitude: 58.1,
@@ -84,18 +105,20 @@ export const QUALITY = Object.freeze({
  * Persistent user settings (localStorage, guarded – the game must work without storage).
  *
  * CONTRACT:
- *   new Settings()
+ *   new Settings({ defaults }?)     defaults: values that replace DEFAULT_SETTINGS for this device (Device.js
+ *                                   deviceDefaults – a phone starts with quality 'low'); saved values still win
  *   get(key) / set(key, value)      set() persists and emits 'change' { key, value } (only when the value changed)
- *   reset()                         back to DEFAULT_SETTINGS, 'change' for every key that changed
+ *   reset()                         back to the defaults (DEFAULT_SETTINGS + the device's), 'change' for every key that changed
  *   quality                         the QUALITY preset for the current 'quality' value
  *   on('change', fn) / off(...)     (Emitter)
  * Unknown keys from older saves are kept but ignored; missing keys get their default.
  */
 export class Settings extends Emitter {
-  constructor() {
+  constructor({ defaults = {} } = {}) {
     super();
-    this.values = { ...DEFAULT_SETTINGS, ...this._load() };
-    if (!QUALITY[this.values.quality]) this.values.quality = DEFAULT_SETTINGS.quality;
+    this.defaults = Object.freeze({ ...DEFAULT_SETTINGS, ...defaults });
+    this.values = { ...this.defaults, ...this._load() };
+    if (!QUALITY[this.values.quality]) this.values.quality = this.defaults.quality;
   }
 
   get(key) {
@@ -111,7 +134,7 @@ export class Settings extends Emitter {
 
   reset() {
     const prev = this.values;
-    this.values = { ...DEFAULT_SETTINGS };
+    this.values = { ...this.defaults };
     this._save();
     for (const key of Object.keys(this.values)) {
       if (prev[key] !== this.values[key]) this.emit('change', { key, value: this.values[key] });

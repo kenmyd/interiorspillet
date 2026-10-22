@@ -6,6 +6,10 @@ import { Input } from './Input.js';
 import { PlayerController } from '../player/PlayerController.js';
 import { Hud } from '../ui/Hud.js';
 import { PauseMenu } from '../ui/PauseMenu.js';
+import { TouchControls } from '../ui/TouchControls.js';
+import { ControlsIntro } from '../ui/ControlsIntro.js';
+import { AutoWalk } from '../player/AutoWalk.js';
+import { inputMode } from './Device.js';
 import { setMaxAnisotropy } from '../world/proctex.js';
 import { LastPosition } from './LastPosition.js';
 
@@ -29,7 +33,12 @@ const LIVING_ROOM_ID = 'stue-kjokken';
  *   new Game({ gameRoot, uiRoot, settings, audio, onQuit, dev })
  *   await load(onProgress(fraction, text))   builds the home (src/home/index.js createHome(ctx)), collision, player,
  *                                             then the Editor (src/design/Editor.js)
- *   start()                                   starts the frame loop (sets window.__ready after 600 ms)
+ *   start({ intro }?)                         starts the frame loop (sets window.__ready after 600 ms); with
+ *                                             settings.showHelpOnStart: intro = true (started from the start
+ *                                             screen) opens the popup «Slik styrer du», else the HUD help for 12 s
+ *   openControls() → ControlsIntro            the popup «Slik styrer du» (input blocked while it is open); also
+ *                                             «Bytt styring» in the help panel
+ *   touch (TouchControls), autoWalk (AutoWalk, touch layout «Trykk for å gå dit»)
  *   pause() / resume() / quit() / dispose()
  *   blockInput(reason) → release()            hand the mouse/keyboard to a UI panel: while any block is active the
  *                                             player stands still, nothing is targeted and Esc does not pause (the
@@ -38,9 +47,10 @@ const LIVING_ROOM_ID = 'stue-kjokken';
  *   scene, camera, renderer, collision, interaction, input, player, hud, events, settings, audio, home, roomId, time,
  *   design (= home.design), editor
  *
- * Frame order: input → Esc (editor.handleEscape, else pause) → (help, player [only when the editor's view is 'walk'
- * and editor.blocksGameInput() is false], interaction, click → editor.handleClick → else interaction, E: stand up
- * when seated, sit on Selection.hoverSeat() when nothing else is targeted, else interaction) →
+ * Frame order: input → Esc (editor.handleEscape, else pause) / the touch menu button (pause) → (help, auto-walk +
+ * player [only when the editor's view is 'walk' and editor.blocksGameInput() is false], interaction, click →
+ * editor.handleClick → else (touch layout 'tapwalk': a tap on the floor walks there) interaction, E: stand up
+ * when seated, sit on Selection.hoverSeat() when nothing else is targeted, else interaction) → touch controls →
  * editor.update → room → home.update → audio → hud → render (home.lighting.render(renderer, scene, camera) when the
  * LightManager provides it – post-processing hook – else renderer.render).
  *
@@ -115,6 +125,11 @@ export class Game {
     this.interaction = new InteractionSystem({ camera: this.camera, collision: this.collision, events: this.events });
     this.input = new Input(renderer.domElement, settings);
     this.hud = new Hud(uiRoot, settings, { placeName: 'Hjemme' });
+    this.touch = new TouchControls(uiRoot, { input: this.input, settings, game: this });
+    this.hud.onPromptTap = () => this.input.trigger('interact');
+    this.hud.onOpenControls = () => this.openControls();
+    this.autoWalk = null;
+    this._intro = null;
     this.pauseMenu = new PauseMenu(uiRoot, settings, {
       onResume: () => this.resume(),
       onQuit: () => this.quit(),
@@ -209,6 +224,7 @@ export class Game {
       events: this.events,
     });
     this._placeAtStart();
+    this.autoWalk = new AutoWalk({ scene: this.scene, camera: this.camera, collision: this.collision, player: this.player, events: this.events });
     this.design = this.home.design ?? null;
 
     // the editor first: its highlight, footprint and gizmo materials are part of the scene that gets compiled
@@ -399,15 +415,40 @@ export class Game {
     }
   }
 
-  start() {
+  /** @param {{ intro?: boolean }} [o]  intro: started from the start screen – «Slik styrer du» instead of the HUD help */
+  start({ intro = false } = {}) {
     this.running = true;
     this.timer.connect(document);
     this.timer.reset();
     this.input.setEnabled(this._blocks.size === 0);
     this.renderer.domElement.focus();
-    if (this.settings.get('showHelpOnStart')) this.hud.showHelp(true, 12);
+    if (this.settings.get('showHelpOnStart')) {
+      if (intro) this.openControls({ atStart: true });
+      else this.hud.showHelp(true, 12);
+    }
     this._raf = requestAnimationFrame(this._frame);
     setTimeout(() => (window.__ready = true), 600);
+  }
+
+  /**
+   * The popup «Slik styrer du» (ControlsIntro): how to play on this device and the choice of controls. The input is
+   * blocked while it is open. At the start, closing it shows the key overview (H) for a while on a PC.
+   * @param {{ atStart?: boolean }} [o]
+   * @returns {ControlsIntro}
+   */
+  openControls({ atStart = false } = {}) {
+    if (this._intro && !this._intro.closed) return this._intro;
+    this.hud.showHelp(false);
+    const release = this.blockInput('controls');
+    this._intro = new ControlsIntro(this.uiRoot, {
+      settings: this.settings,
+      onClose: () => {
+        this._intro = null;
+        release();
+        if (atStart && this.running && !inputMode.touch) this.hud.showHelp(true, 10);
+      },
+    });
+    return this._intro;
   }
 
   pause() {
@@ -486,6 +527,7 @@ export class Game {
       if (this.paused) this.resume();
       else if (!this.editor?.handleEscape?.()) this.pause();
     }
+    if (this.input.consumeAction('menu') && !this.paused) this.pause();
 
     if (!this.paused) {
       const editor = this.editor;
@@ -494,7 +536,10 @@ export class Game {
 
         // the player stands still outside walk mode and while a panel field / modal owns the keyboard
         const walking = !editor || ((editor.views?.isWalking ?? true) && !editor.blocksGameInput());
-        if (walking) this.player.update(dt);
+        if (walking) {
+          this.autoWalk?.apply(this.input, dt);
+          this.player.update(dt);
+        } else this.autoWalk?.cancel();
 
         const captured = this.input.isCaptured;
         // sitting: E on the chair / sofa under the cursor (Selection's hover) sits down, E again stands up; while
@@ -516,7 +561,10 @@ export class Game {
         const interactKey = this.input.consumeAction('interact');
         if (interactKey && seated) this.player.standUp();
         else if (interactKey && seat) this.player.sit(seat);
-        else if (interactKey || (clicked && !used)) this.interaction.interact({ game: this });
+        else if (interactKey) this.interaction.interact({ game: this });
+        else if (clicked && !used && !(walking && !this.interaction.target && this._tapWalkTo(clicked))) this.interaction.interact({ game: this });
+      } else {
+        this.autoWalk?.cancel();
       }
       editor?.update(dt);
       this._updateRoom();
@@ -532,9 +580,20 @@ export class Game {
       this.audio?.update?.(dt, this.camera);
     }
 
+    this.touch?.update(dt);
     this.hud.update(dt);
     this._countFps(timestamp);
     this._render();
+  }
+
+  /**
+   * Touch layout «Trykk for å gå dit»: a tap that selected nothing and has nothing to use walks to the floor there.
+   * @param {{ x: number, y: number, centre?: boolean }} ndc
+   * @returns {boolean} walking there
+   */
+  _tapWalkTo(ndc) {
+    if (!this.autoWalk || ndc.centre || !this.input.touchActive || this.settings.get('touchLayout') !== 'tapwalk') return false;
+    return this.autoWalk.walkTo(ndc);
   }
 
   _render() {
@@ -813,6 +872,10 @@ export class Game {
     this.timer.disconnect();
     for (const d of this._disposers) d?.();
     this._disposers = [];
+    this._intro?.close();
+    this._intro = null;
+    this.touch?.dispose();
+    this.autoWalk?.dispose();
     this.input.dispose();
     this.hud.dispose();
     this.pauseMenu.dispose();

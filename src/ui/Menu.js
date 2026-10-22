@@ -2,6 +2,8 @@ import { h, svg, bindUiSounds, isTyping } from './dom.js';
 import { ICONS, logoSvg } from './icons.js';
 import { SettingsPanel } from './SettingsPanel.js';
 import { Dialog } from './Dialog.js';
+import { TOUCH_ICONS } from './TouchControls.js';
+import { device } from '../core/Device.js';
 
 /**
  * Start screen: logo, title «Interiørspillet», subtitle, «Gå inn i stua» and «Innstillinger» over a photo of the
@@ -65,6 +67,7 @@ export class Menu {
     this.visible = true;
     this.el.hidden = false;
     this._resetStart();
+    this._renderHint();
     requestAnimationFrame(() => {
       this.el.classList.add('is-visible');
       if (!this.dialog) this.playBtn.focus({ preventScroll: true });
@@ -88,6 +91,25 @@ export class Menu {
     this.hide();
     this._unsounds?.();
     this.el.remove();
+  }
+
+  /** The line at the bottom: how to look around with the controls of this device / the chosen control scheme. */
+  _renderHint() {
+    const scheme = this.settings.get('controlScheme');
+    const touch = scheme === 'touch' || (device.primaryTouch && scheme !== 'mouse' && scheme !== 'keyboard' && scheme !== 'touchpad');
+    let icon = ICONS.mouse;
+    let text = 'Hold høyre museknapp for å se deg rundt · H viser kontrollene';
+    if (touch) {
+      icon = TOUCH_ICONS.finger;
+      text = 'Styr med fingeren – «Slik styrer du» viser hvordan når du går inn';
+    } else if (scheme === 'keyboard') {
+      icon = ICONS.keyboard;
+      text = 'W/S går, A/D snur, Q/Z ser opp og ned · H viser kontrollene';
+    } else if (scheme === 'touchpad') {
+      text = 'Sveip med to fingre på touchpaden for å se deg rundt · H viser kontrollene';
+    }
+    this.hint.replaceChildren(svg(icon), h('span', { text }));
+    this.el.classList.toggle('kv-menu--touch', touch);
   }
 
   /* ------------------------------------------------------------------ build */
@@ -122,7 +144,7 @@ export class Menu {
     );
 
     const foot = h('footer.kv-menu__foot', {},
-      h('span.kv-menu__hint', {}, svg(ICONS.mouse), h('span', { text: 'Hold høyre museknapp for å se deg rundt · H viser kontrollene' })),
+      (this.hint = h('span.kv-menu__hint')),
       h('span.kv-menu__version', { text: 'Tidlig utviklingsversjon · v0.1' }),
     );
 
