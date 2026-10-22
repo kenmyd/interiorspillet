@@ -38,10 +38,15 @@
  *
  * Pure Node (no three.js); stairWalk() is the same walk line the validator measures the going on: for a half-turn
  * stair the line of avstemming V13 (the middle of the free width, quarter arcs around the well's two far corners).
+ * The other stair types (notes/trapper.md: straight, steep, quarter-turn-winder, quarter-turn-landing) share their
+ * plan with the builder (src/home/stairtypes.js): risers are optional (2R + G ≈ 0.62 over the walk line), a landing is
+ * left out of the going, a steep stair is judged by its own norms (STEEP), and every stair whose ramp is steeper than
+ * the player walks (WALK_MAX_DEG) is judged too steep.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { STAIR_TYPES, STEEP, WALK_MAX_DEG, isPlanType, isQuarterTurn, isStraightType, stairPlan, stairRisers, planGoing, landingSplit, rampKnots, rampDeg, FOOT_CUT_EXTRA } from '../../home/stairtypes.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../..');
@@ -638,7 +643,8 @@ export function stairWalk(stair, opts = {}) {
   const d1 = unitv(top.down || [0, 0]);
   const d2 = unitv(foot.down || [0, 0]);
   if (!len(d1) || !len(d2)) throw new Error('top.down og foot.down må være retninger');
-  if (stair.type === 'straight') {
+  if (isQuarterTurn(stair.type)) return planStairWalk(stair);
+  if (isStraightType(stair.type)) {
     const L = dist(P0, P3);
     if (dot(sub(P3, P0), d1) < L - 0.01) throw new Error('en rett trapp må gå fra top.edge til foot.edge langs top.down');
     const at = (u) => ({ p: add(P0, mul(d1, u)), dir: d1, halfWidth: lerp(w1, w2, Math.max(0, Math.min(1, u / L))) / 2 });
@@ -681,6 +687,26 @@ export function stairWalk(stair, opts = {}) {
     return { p: add(P2, mul(d2, u - l1 - La)), dir: d2, halfWidth: w2 / 2 };
   };
   return { length: l1 + La + l3, at, P0, P1, P2, P3, C, r1, r2, sweep, d1, d2 };
+}
+
+/**
+ * Walk line of a quarter-turn stair (stairtypes.js stairPlan, the builder's line): the flights' centre lines and the
+ * quarter arc round the inner corner; in the arc the cross-section is radial from the corner to the shaft walls (the
+ * stair's footprint, else the L of its edges).
+ */
+function planStairWalk(stair) {
+  const plan = stairPlan(stair);
+  const raw = Array.isArray(stair.footprint) && stair.footprint.length >= 3 && stair.footprint.every(isPoint) ? stair.footprint : plan.footprint;
+  const at = (u) => {
+    const a = plan.at(u);
+    if (a.seg.kind === 'line') return { p: a.p, dir: a.dir, halfWidth: a.seg.hw };
+    const C = a.seg.C;
+    const r = dist(a.p, C);
+    const perp = [-a.dir[1], a.dir[0]];
+    const outer = rayHit(C, a.radial, raw) || add(C, mul(a.radial, 2 * r));
+    return { p: a.p, dir: a.dir, halfWidth: r, section: dot(perp, a.radial) > 0 ? [outer, C] : [C, outer] };
+  };
+  return { length: plan.length, at, P0: plan.P0, P3: plan.P3, d1: plan.d1, d2: plan.d2, C: plan.corners[0], plan, segments: plan.segs.map((g) => ({ kind: g.kind, start: g.s0, length: g.len })) };
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -1504,8 +1530,12 @@ export function validateHouse(spec, opts = {}) {
     }
     if (lower && lo && lower.levelId !== lo.id) error(`${where}: ${lower.id} er ikke på ${lo.id}`);
     if (upper && hi && upper.levelId !== hi.id) error(`${where}: ${upper.id} er ikke på ${hi.id}`);
-    if (!Number.isInteger(s.risers) || s.risers < 2) error(`${where}: risers må være et heltall ≥ 2`);
-    if (!lo || !hi || !Number.isInteger(s.risers) || s.risers < 2) continue;
+    // the stair types (notes/trapper.md): a plan type may leave risers out (2R + G ≈ 0.62 over its walk line)
+    const planType = isPlanType(s.type);
+    if (s.type != null && !STAIR_TYPES.includes(s.type)) error(`${where}: ukjent trappetype «${s.type}» (${STAIR_TYPES.join(', ')})`);
+    const risersOk = Number.isInteger(s.risers) && s.risers >= 2;
+    if (!risersOk && (s.risers != null || !planType)) error(`${where}: risers må være et heltall ≥ 2`);
+    if (!lo || !hi || (!risersOk && (s.risers != null || !planType))) continue;
     if (!num(lo.floorY) || !num(hi.floorY) || hi.floorY <= lo.floorY) {
       error(`${where}: toLevel må ligge over fromLevel`);
       continue;
@@ -1521,18 +1551,49 @@ export function validateHouse(spec, opts = {}) {
       continue;
     }
     const rise = hi.floorY - lo.floorY;
-    const riser = rise / s.risers;
-    const going = num(s.going) ? s.going : walk.length / (s.risers - 1);
+    const plan = planType ? (walk.plan ?? stairPlan(s)) : null;
+    const risers = risersOk ? s.risers : stairRisers(rise, plan);
+    const riser = rise / risers;
+    const going = num(s.going) ? s.going : plan ? planGoing(plan, risers) : walk.length / (risers - 1);
     const estRiser = isEst(s, 'risers') || isEst(lo, 'floorY') || isEst(hi, 'floorY');
     const estGeom = estRiser || isEst(s, 'top', 'foot', 'well', 'going', 'type');
     const twoRG = 2 * riser + going;
     const slopeDeg = (Math.atan2(riser, going) * 180) / Math.PI;
-    if (riser < RISER_RANGE[0] || riser > RISER_RANGE[1]) judge(estRiser, `${where}: opptrinnet ${fmt(riser, 3)} er utenfor ${fmt(RISER_RANGE[0])}–${fmt(RISER_RANGE[1])}`);
-    if (twoRG < STEP_RANGE[0] || twoRG > STEP_RANGE[1]) judge(estGeom, `${where}: 2·opptrinn + inntrinn = ${fmt(twoRG, 3)} er utenfor ${fmt(STEP_RANGE[0])}–${fmt(STEP_RANGE[1])}`);
-    if (going < MIN_GOING) judge(estGeom, `${where}: inntrinnet på ganglinja er ${fmt(going, 3)}, under ${fmt(MIN_GOING)}`);
-    // heights along the walk line (u from the top nosing): the top nosing is the upper floor, the lowest one riser up
-    const yAt = (u) => (u > walk.length + 1e-9 ? lo.floorY : Math.max(lo.floorY, hi.floorY - (u / going) * riser));
-    const surfaceAt = (u) => (u <= 0 ? hi.floorY : hi.floorY - Math.min(s.risers - 1, Math.ceil(u / going - 1e-9)) * riser);
+    const steep = s.type === 'steep';
+    // the ramp the player walks (the wedge, stairs.js): one line, or level over a landing
+    const knots = plan ? rampKnots(plan, risers, hi.floorY, lo.floorY, s) : [[0, hi.floorY], [walk.length, lo.floorY]];
+    const walkDeg = rampDeg(knots);
+    if (steep) {
+      // a steep stair (a ship's ladder): climbed, so no 2R + G; its own riser, going and slope limits
+      if (riser > STEEP.riserMax) judge(estRiser, `${where}: opptrinnet ${fmt(riser, 3)} er over ${fmt(STEEP.riserMax)} (bratt trapp)`);
+      if (going < STEEP.goingMin) judge(estGeom, `${where}: inntrinnet ${fmt(going, 3)} er under ${fmt(STEEP.goingMin)} (bratt trapp)`);
+      if (walkDeg > STEEP.maxRampDeg) judge(estGeom, `${where}: den bratte trappa er for bratt å klatre i spillet (${fmt(walkDeg, 1)}° langs ganglinja, høyst ${STEEP.maxRampDeg}°) – gjør den lengre`);
+      if (slopeDeg < STEEP.minDeg) warn(`${where}: den bratte trappa har bare ${fmt(slopeDeg, 1)}° – en vanlig trapp (straight) passer`);
+    } else {
+      if (riser < RISER_RANGE[0] || riser > RISER_RANGE[1]) judge(estRiser, `${where}: opptrinnet ${fmt(riser, 3)} er utenfor ${fmt(RISER_RANGE[0])}–${fmt(RISER_RANGE[1])}`);
+      if (twoRG < STEP_RANGE[0] || twoRG > STEP_RANGE[1]) judge(estGeom, `${where}: 2·opptrinn + inntrinn = ${fmt(twoRG, 3)} er utenfor ${fmt(STEP_RANGE[0])}–${fmt(STEP_RANGE[1])}`);
+      if (going < MIN_GOING) judge(estGeom, `${where}: inntrinnet på ganglinja er ${fmt(going, 3)}, under ${fmt(MIN_GOING)}`);
+      // the wedge: steeper than the player walks up (WALKABLE_NORMAL_Y; the snap holds 49°)
+      if (walkDeg > WALK_MAX_DEG) judge(estGeom, `${where}: trappa er for bratt å gå i (${fmt(walkDeg, 1)}° langs ganglinja, figuren går høyst ${WALK_MAX_DEG}°) – gjør den lengre, eller bruk type «steep»`);
+    }
+    if (plan?.landing) {
+      const { nt, nf } = landingSplit(plan, risers, s);
+      if (Math.min(plan.L1 > 0.05 ? nt : 1, plan.L3 > 0.05 ? nf : 1) < 1) judge(estGeom, `${where}: et løp har ingen trinn (${nt} øverst, ${nf} nederst)`);
+    }
+    // heights along the walk line (u from the top nosing): the top nosing is the upper floor, the lowest one riser up;
+    // a landing stair: each flight on its own, level over the landing
+    let yAt = (u) => (u > walk.length + 1e-9 ? lo.floorY : Math.max(lo.floorY, hi.floorY - (u / going) * riser));
+    let surfaceAt = (u) => (u <= 0 ? hi.floorY : hi.floorY - Math.min(risers - 1, Math.ceil(u / going - 1e-9)) * riser);
+    if (plan?.landing) {
+      const { nt, nf } = landingSplit(plan, risers, s);
+      const g1 = nt ? plan.L1 / nt : Infinity;
+      const g3 = nf ? plan.L3 / nf : Infinity;
+      const yL = lo.floorY + (nf + 1) * riser;
+      const a = plan.L1;
+      const b = plan.L1 + plan.La;
+      yAt = (u) => (u > walk.length + 1e-9 ? lo.floorY : u <= a ? hi.floorY - (u / g1) * riser : u <= b ? yL : Math.max(lo.floorY, yL - ((u - b) / g3) * riser));
+      surfaceAt = (u) => (u <= 0 ? hi.floorY : u <= a + 1e-9 ? hi.floorY - Math.min(nt, Math.ceil(u / g1 - 1e-9)) * riser : u <= b + 1e-9 ? yL : yL - Math.min(nf, Math.ceil((u - b) / g3 - 1e-9)) * riser);
+    }
     const step = 0.02;
     const samples = [];
     for (let u = 0; u <= walk.length + FOOT_FIELD + 1e-9; u += step) samples.push(u);
@@ -1573,7 +1634,8 @@ export function validateHouse(spec, opts = {}) {
       prev = sec;
     }
     const corners = quads.flatMap((q) => q.poly);
-    if (holePoly) {
+    // (an L may run on under the floor: the headroom above covers it)
+    if (holePoly && !isQuarterTurn(s.type)) {
       const outside = corners.find((p) => !inOrOn(p, holePoly, 0.02));
       if (outside) judge(estGeom || estHole, `${where}: trinnene går utenfor hullet ${hole.id} ved (${fmt(outside[0])}; ${fmt(outside[1])})`);
     }
@@ -1632,8 +1694,8 @@ export function validateHouse(spec, opts = {}) {
     // door frames (V17, avstemming §2.4): the tread edges with their nosing – the lowest one on the lower level, the
     // floor edge at the top on the upper one – and the foot of the stringers (cut vertically `stringers.footCut` past
     // the lowest nosing line) stay at least DOOR_FRAME_CLEARANCE from every door frame (jambs with their depth)
-    const nosing = num(s.tread?.nosing) ? s.tread.nosing : 0.02;
-    const footCut = num(s.stringers?.footCut) ? s.stringers.footCut : nosing;
+    const nosing = num(s.tread?.nosing) ? s.tread.nosing : planType ? 0.03 : 0.02;
+    const footCut = num(s.stringers?.footCut) ? s.stringers.footCut : planType ? nosing + FOOT_CUT_EXTRA : nosing;
     const te = s.top.edge;
     const d1 = unitv(s.top.down);
     const features = [
@@ -1664,7 +1726,7 @@ export function validateHouse(spec, opts = {}) {
       }
     }
     const capsule = 1.2 + 0.6 / Math.cos(Math.atan2(riser, going));
-    report.stairs.push({ id: s.id, risers: s.risers, riser, going, walkLength: walk.length, twoRG, slopeDeg, minHeadroom: minHead, capsuleHeadroom: capsule, doorClearance: clearances, estimated: estGeom });
+    report.stairs.push({ id: s.id, risers, riser, going, walkLength: walk.length, twoRG, slopeDeg, minHeadroom: minHead, capsuleHeadroom: capsule, doorClearance: clearances, estimated: estGeom, ...(planType ? { type: s.type, walkDeg, risersComputed: !risersOk } : {}) });
   }
 
   // ---- light groups

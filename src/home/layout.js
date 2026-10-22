@@ -1,6 +1,7 @@
 import { Box3, Vector2, Vector3 } from 'three';
 import roomSpec from '../data/room-spec.json';
 import paletteData from '../data/palette.json';
+import { isPlanType, isQuarterTurn, stairPlan, stairRisers, rampKnots, rampAt } from './stairtypes.js';
 
 /**
  * Room layout: reads data/room-spec.json and derives typed, world-space values for every module (shell, lighting,
@@ -369,6 +370,15 @@ function stairWalk(st, footprint, well) {
   const length = Math.max(EPS, T.distanceTo(F));
   const d = F.clone().sub(T).normalize();
   return { walkLine: [T, F], length, param: (x, z) => clamp(along(new Vector2(x, z), T, d), 0, length) };
+}
+
+/** The walk of a plan stair (stairtypes.js stairPlan) in stairWalk's form. */
+function planWalk(plan) {
+  const L = plan.length;
+  const us = [];
+  for (let u = 0; u < L; u += 0.1) us.push(u);
+  us.push(L);
+  return { walkLine: us.map((u) => v2(plan.at(u).p)), length: L, param: (x, z) => clamp(plan.param([x, z]), 0, L) };
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -1108,16 +1118,28 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     const upper = levelsById[st.toLevel] ?? mainLevel;
     const opening = floorOpeningsById[st.openingId] ?? null;
     if (st.openingId && !opening) console.warn(`[layout] stair ${st.id}: floor opening ${st.openingId} does not exist`);
-    const footprint = st.footprint?.length ? toPoly(st.footprint) : opening ? opening.polygon.map((p) => p.clone()) : [];
+    // the stair types (notes/trapper.md, stairtypes.js): an L without its own footprint gets the L, not the hole (its
+    // lower flight may run on under the floor)
+    let plan = null;
+    if (isPlanType(st.type) && st.top?.edge && st.foot?.edge) {
+      try {
+        plan = stairPlan(st);
+      } catch (err) {
+        console.warn(`[layout] stair ${st.id}: ${err.message}`);
+      }
+    }
+    const footprint = st.footprint?.length ? toPoly(st.footprint) : plan && isQuarterTurn(st.type) ? toPoly(plan.footprint) : opening ? opening.polygon.map((p) => p.clone()) : [];
     const wellPolygon = toPoly(st.well?.polygon);
     const topY = upper.floorY;
     const bottomY = lower.floorY;
     const rise = topY - bottomY;
-    const risers = st.risers ?? Math.max(1, Math.round(rise / 0.18));
-    const walk = st.top?.edge && st.foot?.edge ? stairWalk(st, footprint, wellPolygon) : null;
+    const risers = st.risers ?? (plan ? stairRisers(rise, plan) : Math.max(1, Math.round(rise / 0.18)));
+    const walk = plan ? planWalk(plan) : st.top?.edge && st.foot?.edge && !isPlanType(st.type) ? stairWalk(st, footprint, wellPolygon) : null;
+    const knots = plan ? rampKnots(plan, risers, topY, bottomY, st) : null;
     const contains = (x, z) => footprint.length >= 3 && pointInPolygon(x, z, footprint) && !(wellPolygon.length >= 3 && pointStrictlyInPolygon(x, z, wellPolygon));
     return {
       ...deepClone(st),
+      ...(plan ? { holePolygon: opening ? opening.polygon.map((p) => [p.x, p.y]) : null } : {}),
       fromLevel: lower.id,
       toLevel: upper.id,
       roomIds: [...(st.roomIds || [])],
@@ -1136,6 +1158,7 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       /** World y of the walking surface (ramp along the walk line) at a plan point; null outside the footprint. */
       surfaceY: (x, z) => {
         if (!walk || !contains(x, z)) return null;
+        if (knots) return rampAt(knots, walk.param(x, z));
         return topY - (rise * walk.param(x, z)) / walk.length;
       },
     };

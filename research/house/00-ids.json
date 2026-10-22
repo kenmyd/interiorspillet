@@ -116,8 +116,8 @@
       "lightGroups": { "required": ["id", "label"], "numbers": ["defaultDimmer"] },
       "floorOpenings": { "required": ["id", "levelId", "roomId", "polygon"], "polygons": ["polygon"] },
       "stairs": {
-        "required": ["id", "type", "fromLevel", "toLevel", "openingId", "risers", "top", "foot"],
-        "enums": { "type": ["straight", "quarter-turn-winder", "half-turn-winder"] },
+        "required": ["id", "type", "fromLevel", "toLevel", "openingId", "top", "foot"],
+        "enums": { "type": ["straight", "steep", "quarter-turn-winder", "quarter-turn-landing", "half-turn-winder"] },
         "numbers": ["risers"],
         "idPattern": "^trapp"
       },
