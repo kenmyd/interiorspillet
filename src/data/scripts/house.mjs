@@ -304,6 +304,87 @@ export function overlapArea(a, b) {
 const polygonInside = (inner, outer) => polygonArea(inner) - overlapArea(inner, outer) <= 1e-3;
 
 // ---------------------------------------------------------------------------------------------------------------
+// Window models (notes/vindusmodeller.md)
+
+/** Hinge sides of an opening sash, seen from the room (src/home/wallkit.js). */
+export const SASH_HINGES = ['top', 'bottom', 'left', 'right'];
+/** Most panes along one side of a sash (wallkit MAX_PANES). */
+const MAX_PANES = 12;
+
+/**
+ * The window model of a window or a roof window of w × h m (the hole): sashes (fields that tile the window), panes,
+ * bars, frame.mullion, revealFloor. Pure – the planbygger can call it on its own entries.
+ * @returns {{ errors: string[], warnings: string[] }} messages without the entry's name
+ */
+export function windowModelIssues(o, w = o?.width, h = o?.height) {
+  const errors = [];
+  const warnings = [];
+  if (!isObj(o) || !num(w) || !num(h) || w <= 0 || h <= 0) return { errors, warnings };
+  const fw = num(o.frame?.width) ? o.frame.width : 0.07;
+  const panesOk = (p) => Array.isArray(p) && p.length === 2 && p.every((n) => Number.isInteger(n) && n >= 1 && n <= MAX_PANES);
+  if (o.panes != null && !panesOk(o.panes)) errors.push(`panes må være [kolonner, rader], hele tall 1–${MAX_PANES}`);
+  if (o.bars != null) {
+    if (!isObj(o.bars)) errors.push('bars må være et objekt { width, color }');
+    else if (o.bars.width != null && !(num(o.bars.width) && o.bars.width >= 0.005 && o.bars.width <= 0.08)) errors.push('bars.width må være 0,005–0,08 m');
+  }
+  if (o.frame?.mullion != null && !(num(o.frame.mullion) && o.frame.mullion >= 0.01 && o.frame.mullion <= 0.2)) errors.push('frame.mullion må være 0,01–0,2 m');
+  if (o.revealFloor != null && typeof o.revealFloor !== 'boolean') errors.push('revealFloor må være true eller false');
+  if (o.revealFloor === true && num(o.sill) && o.sill > 0.005) warnings.push('revealFloor gjelder bare vinduer som står på gulvet (sill 0) – det blir ikke noe gulv her');
+  if (o.sashes != null && !Array.isArray(o.sashes)) {
+    errors.push('sashes må være en liste med felt');
+    return { errors, warnings };
+  }
+  const list = arr(o.sashes);
+  const fields = [];
+  list.forEach((s, i) => {
+    const at = `sashes[${i}]`;
+    if (!isObj(s)) return errors.push(`${at} må være et objekt`);
+    const f = {};
+    for (const [k, d] of [['from', 0], ['to', 1], ['bottom', 0], ['top', 1]]) {
+      if (s[k] != null && !(num(s[k]) && s[k] >= -1e-9 && s[k] <= 1 + 1e-9)) errors.push(`${at}.${k} må være en brøk 0–1`);
+      f[k] = num(s[k]) ? s[k] : d;
+    }
+    if (f.from >= f.to - 1e-9) errors.push(`${at}: from (${fmt(f.from)}) må være mindre enn to (${fmt(f.to)})`);
+    if (f.bottom >= f.top - 1e-9) errors.push(`${at}: bottom (${fmt(f.bottom)}) må være mindre enn top (${fmt(f.top)})`);
+    if (s.opening != null && typeof s.opening !== 'boolean') errors.push(`${at}.opening må være true eller false`);
+    if (s.hinge != null && !SASH_HINGES.includes(s.hinge)) errors.push(`${at}.hinge må være en av ${SASH_HINGES.join(', ')}`);
+    if (s.panes != null && !panesOk(s.panes)) errors.push(`${at}.panes må være [kolonner, rader], hele tall 1–${MAX_PANES}`);
+    fields.push({ ...f, at, panes: panesOk(s.panes) ? s.panes : panesOk(o.panes) ? o.panes : [1, 1] });
+  });
+  if (!fields.length) fields.push({ from: 0, to: 1, bottom: 0, top: 1, at: 'vinduet', panes: panesOk(o.panes) ? o.panes : [1, 1] });
+  // the fields tile the window: no overlaps, no holes (a part without a field would be an open hole in the wall)
+  let area = 0;
+  for (let i = 0; i < fields.length; i++) {
+    const a = fields[i];
+    area += Math.max(0, a.to - a.from) * Math.max(0, a.top - a.bottom);
+    for (let j = i + 1; j < fields.length; j++) {
+      const b = fields[j];
+      const ov = Math.max(0, Math.min(a.to, b.to) - Math.max(a.from, b.from)) * Math.max(0, Math.min(a.top, b.top) - Math.max(a.bottom, b.bottom));
+      if (ov > 1e-4) errors.push(`${a.at} og ${b.at} overlapper`);
+    }
+  }
+  if (list.length && area < 1 - 1e-3) errors.push(`feltene i sashes dekker bare ${fmt(area * 100, 1)} % av vinduet – resten blir et åpent hull`);
+  // sizes: the glass that is left inside the frame, and per pane between the bars
+  for (const f of fields) {
+    const fwid = (f.to - f.from) * w;
+    const fhei = (f.top - f.bottom) * h;
+    const gw = fwid - 2 * fw;
+    const gh = fhei - 2 * fw;
+    if (gw < 0.05 || gh < 0.05) warnings.push(`${f.at}: ${fmt(fwid)} × ${fmt(fhei)} m er så lite at rammen (${fmt(fw)}) tar nesten alt glasset`);
+    else if (gw / f.panes[0] < 0.06 || gh / f.panes[1] < 0.06) warnings.push(`${f.at}: rutene blir under 6 cm (${f.panes[0]} × ${f.panes[1]} ruter i ${fmt(gw)} × ${fmt(gh)} m glass)`);
+  }
+  return { errors, warnings };
+}
+
+/** Is the polygon a rectangle (4 corners, right angles within ~1°)? */
+const isRectangle = (p) => p.length === 4 && p.every((a, i) => {
+  const b = p[(i + 1) % 4], c = p[(i + 2) % 4];
+  const u = [b[0] - a[0], b[1] - a[1]], v = [c[0] - b[0], c[1] - b[1]];
+  const lu = Math.hypot(...u), lv = Math.hypot(...v);
+  return lu > 1e-6 && lv > 1e-6 && Math.abs((u[0] * v[0] + u[1] * v[1]) / (lu * lv)) < 0.02;
+});
+
+// ---------------------------------------------------------------------------------------------------------------
 // Merge
 
 export function deepMerge(target, patch) {
@@ -1069,6 +1150,42 @@ export function validateHouse(spec, opts = {}) {
     if (out > 0.01) warn(`ceilings/${c.id}: ${fmt(out, 2)} m² av taket ligger utenfor rommet ${r.id}`);
   }
 
+  // ---- roof windows (ceilings[].skylights, notes/vindusmodeller.md): rectangles inside their ceiling, nothing above
+  const skylightIds = new Set();
+  for (const c of ceilings) {
+    if (c.skylights == null) continue;
+    if (!Array.isArray(c.skylights)) {
+      error(`ceilings/${c.id}: skylights må være en liste`);
+      continue;
+    }
+    const lv = levelsById.get(levelOf(roomOf(c)));
+    const above = lv && num(lv.floorY) ? levels.filter((l) => num(l.floorY) && l.floorY > lv.floorY + 0.5).sort((a, b) => a.floorY - b.floorY)[0] : null;
+    c.skylights.forEach((s, i) => {
+      const where = `ceilings/${c.id}/skylights/${s?.id ?? i}`;
+      if (!isObj(s)) return error(`${where}: må være et objekt { id, polygon }`);
+      if (typeof s.id !== 'string' || !s.id) error(`${where}: mangler id`);
+      else if (skylightIds.has(s.id)) error(`${where}: id-en er brukt av et annet takvindu`);
+      else skylightIds.add(s.id);
+      if (!Array.isArray(s.polygon) || !s.polygon.every(isPoint) || !isRectangle(s.polygon)) return error(`${where}: polygon må være et rektangel med 4 hjørner [[x, z], …]`);
+      const est = isEst(s, 'polygon');
+      const [p0, p1, p2] = s.polygon;
+      const w = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]);
+      const h = Math.hypot(p2[0] - p1[0], p2[1] - p1[1]);
+      if (Math.min(w, h) < 0.2) warn(`${where}: ${fmt(w)} × ${fmt(h)} m er veldig lite for et takvindu`);
+      if (Array.isArray(c.polygon) && c.polygon.length >= 3 && c.polygon.every(isPoint) && !polygonInside(s.polygon, c.polygon)) judge(est, `${where}: takvinduet ligger ikke inne i taket ${c.id}`);
+      if (s.depth != null && !(num(s.depth) && s.depth >= 0.05 && s.depth <= 2)) error(`${where}: depth må være 0,05–2 m`);
+      if (s.opening != null && typeof s.opening !== 'boolean') error(`${where}: opening må være true eller false`);
+      const wm = windowModelIssues({ ...s, revealFloor: undefined }, w, h);
+      for (const m of wm.errors) judge(isEst(s, 'sashes', 'panes', 'bars', 'frame'), `${where}: ${m}`);
+      for (const m of wm.warnings) warn(`${where}: ${m}`);
+      if (above) {
+        const mid = [(p0[0] + p2[0]) / 2, (p0[1] + p2[1]) / 2];
+        const over = rooms.find((r) => r.levelId === above.id && physical(r) && inOrOn(mid, r.polygon, 0));
+        if (over) judge(est, `${where}: rommet ${over.id} i etasjen over ligger over takvinduet`);
+      }
+    });
+  }
+
   // ---- floor openings
   const holesOfLevel = (lid) => floorOpenings.filter((h) => h.levelId === lid && Array.isArray(h.polygon) && h.polygon.length >= 3 && h.polygon.every(isPoint));
   for (const h of floorOpenings) {
@@ -1129,6 +1246,12 @@ export function validateHouse(spec, opts = {}) {
         if (top > hmin + TOL) error(`${where}: toppen ${fmt(top)} er over veggen (${fmt(hmin)})`);
       }
       if (o.type === 'door' && !isObj(o.door)) error(`${where}: en dør må ha door:{ hinge, swing, leaf, … } (formatet til door-gang) – uten o.door blir det et hull uten dør`);
+      if (o.type === 'window') {
+        const wm = windowModelIssues(o);
+        const est = isEst(o, 'sashes', 'panes', 'bars', 'frame', 'revealFloor');
+        for (const m of wm.errors) judge(est, `${where}: ${m}`);
+        for (const m of wm.warnings) warn(`${where}: ${m}`);
+      }
       // the hole through a backOf face of this wall
       const backs = walls.filter((b) => b.backOf != null && (Array.isArray(b.backOf) ? b.backOf : [b.backOf]).includes(w.id) && wallInfo.has(b.id));
       if (backs.length) {

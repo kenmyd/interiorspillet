@@ -58,7 +58,10 @@ import paletteData from '../data/palette.json';
  * @property {Object|null} frame
  * @property {Object|null} reveal
  * @property {Object|null} sillBoard
- * @property {Object[]} sashes
+ * @property {Object[]} sashes   the window's fields [{ from, to, bottom, top, opening, hinge, panes }] (vindusmodeller.md)
+ * @property {Array|null} panes  window: [cols, rows] of every sash without its own
+ * @property {Object|null} bars  window: the glazing bars { width, color }
+ * @property {boolean|null} revealFloor  window: the room's floor out to the frame (null = on the floor without a board)
  * @property {Object|null} door
  * @property {Object|null} handle
  * @property {string|null} outsideView
@@ -111,7 +114,8 @@ import paletteData from '../data/palette.json';
  * @property {(x: number, y: number, z: number, opts?: { physical?: boolean, levelId?: string, previousLevelId?: string }) => Object|null} roomAt
  * @property {WallLayout[]} walls         + wallsById, wall(id), backFacesOf(id)
  * @property {OpeningLayout[]} openings   + openingsById, opening(id), windows, doors (+ openAngleDeg, opensInto, casing), thresholds
- * @property {Object[]} ceilings          + heightAt (above the room floor), topAt (world), holes (stairwell cut-outs)
+ * @property {Object[]} ceilings          + heightAt (above the room floor), topAt (world), holes (stairwell cut-outs),
+ *                                          skylights (roof windows: { id, polygon, depth, frame, sashes, panes, bars })
  * @property {Object[]} lightGroups       the six living-room groups + the data groups { id, label, roomId (null: several rooms or none, e.g. boder, ute), dimmer (start level), dimmable, auto }
  * @property {Object[]} floorOpenings     { id, levelId, roomId, stairId, polygon, area, contains(x, z) (strict) }
  * @property {Object[]} stairs            { …data, fromLevel, toLevel, risers, rise, riser, topY, bottomY, footprint, wellPolygon, walkLine,
@@ -539,6 +543,11 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
         reveal: deepClone(o.reveal) ?? null,
         sillBoard: deepClone(o.sillBoard) ?? null,
         sashes: deepClone(o.sashes) ?? [],
+        // window models (notes/vindusmodeller.md): panes per sash by default, the glazing bars' look, the floor out to
+        // the frame (null = a window on the floor without a sill board gets it)
+        panes: deepClone(o.panes) ?? null,
+        bars: deepClone(o.bars) ?? null,
+        revealFloor: typeof o.revealFloor === 'boolean' ? o.revealFloor : null,
         door: deepClone(o.door) ?? null,
         handle: deepClone(o.handle) ?? null,
         outsideView: o.outsideView ?? null,
@@ -745,6 +754,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       topAt: (x, z) => floorY + heightAt(x, z),
       /** floor openings of the level above that cut this ceiling (Vector2 polygons; filled in below) */
       holes: [],
+      /** roof windows in this ceiling (notes/vindusmodeller.md): the hole (Vector2 polygon) and the window's look */
+      skylights: (c.skylights || []).filter((s) => s?.polygon?.length >= 3).map((s) => ({ ...deepClone(s), polygon: toPoly(s.polygon) })),
       estimated: deepClone(c.estimated) ?? [],
       source: c.source ?? '',
       // A plane ceiling's mean height is its height at the area centroid, so this is exact for flat + sloped.
