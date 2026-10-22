@@ -5,6 +5,8 @@
  *   createAiHandler({ apiKey = process.env.ANTHROPIC_API_KEY, models, limits, client, log }) → (req, res, next)
  *     GET  /api/planbygger/ai/status → { available, model, models, remaining, promptVersion }
  *     POST /api/planbygger/ai        { task, image: { mediaType, data (base64) }, marks, hints }
+ *                                    readHouse: images: [{ mediaType, data, kind: 'plan'|'facade', label }] (1–8) in
+ *                                    place of image, marks with their image number (1-based)
  *                                    → { ok: true, task, model, promptVersion, response, usage, cached, remaining }
  *                                    | { ok: false, error, message }   (message in Norwegian, for the page)
  *   createAiService(same options) → { status(ctx), run(input, ctx), peek(input, ctx) }   the same without HTTP (record

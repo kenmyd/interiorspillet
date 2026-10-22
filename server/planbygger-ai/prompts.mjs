@@ -2,7 +2,8 @@
  * Planbygger AI layer: the prompts and the JSON schemas of the three tasks (notes/planbygger-runde1-design.md, «KI-laget»).
  *
  *   PROMPT_VERSION                          part of the cache key and of every recorded fixture: bump it on ANY change
- *   TASKS = { classify, readPlan, readFacade }   { schema, instructions, maxItems }
+ *   TASKS = { classify, readPlan, readFacade, readHouse }   { schema, instructions, maxItems, version? }
+ *   promptVersionOf(task)                  the task's version (readHouse has its own, so the others stay fresh)
  *   SYSTEM                                  the system prompt (shared by the tasks)
  *   buildUserText(task, { marks, hints, width, height }) → the text block that follows the image
  *   ROOM_KINDS_AI, OPENING_KINDS, ROOF_KINDS, STAIR_TYPES, FURNITURE_KINDS

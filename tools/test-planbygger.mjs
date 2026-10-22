@@ -557,13 +557,24 @@ section('12. Fasadetegningene på riktig side, og himlingene');
   const L1 = { ceilingMarks: [{ kind: 'sloped', points: [[2, 3]], from: 'ki' }] };
   check('«skrå himling» i stua: stua skrå, soverommet flatt (tegningen merket de skrå)', HR.ceilingSlope(L1, inA).slope && !HR.ceilingSlope(L1, inB).slope);
   const L2 = { ceilingMarks: [], ceilingRule: 'roof' };
+  // a room the ridge line runs through is sloped (the open hall of hus2) – unless a flat text names it alone (PLANTAK)
+  const L3 = { ceilingMarks: [{ kind: 'sloped', points: [[2, 3]], ridge: [[0.3, 3], [7.7, 3]], from: 'ki' }, { kind: 'flat', points: [[6, 3], [-20, 3], [-21, 3]], from: 'ki' }] };
+  const L4 = { ceilingMarks: [L3.ceilingMarks[0], { kind: 'flat', points: [[6, 3]], from: 'ki' }] };
+  check('mønelinja gjennom soverommet gjør det skrått mot en bred «PLAN HIMLING», men ikke mot «PLANTAK» over bare det', HR.ceilingSlope(L3, inB).slope && !HR.ceilingSlope(L4, inB).slope);
   check('uten tekst og med regelen «roof» (pulttak): alle rom skrå; brukerens valg vinner', HR.ceilingSlope(L2, inB).slope && !HR.ceilingSlope({ ...L2, ceilingMarks: [{ kind: 'flat', points: [[6, 3]], from: 'bruker' }] }, inB).slope);
 
+  // the ridge line the AI read on hus2, along the dash-dot line drawn: it gives x 0.50–0.93, the line runs from the WC
+  // core's west face (x 0.39) to the east wall
+  {
+    const img = readPng(path.join(ROOT, 'plantegninger/hus2/1etg.png'));
+    const r = HR.refineRidge(img, [0.5, 0.646, 0.93, 0.646], 55.7);
+    check('hus2: mønelinja forlenget langs strek-prikk-linja, fra WC-kjernen (x 0,39) til østveggen (x 0,93)', Math.abs(r[0] - 0.393) < 0.01 && Math.abs(r[2] - 0.932) < 0.01 && Math.abs(r[1] - 0.646) < 0.005, r.map((v) => v.toFixed(3)).join(', '));
+  }
   // the export: «SKRÅ HIMLING 24°» in the living room with its ridge along the middle → a gable roof, ridge along the
   // house, 24°, and the living room's ceiling up to the ridge; the bedroom flat
   {
     const { doc: d2, lv: l2 } = make();
-    l2.ceilingMarks = [{ kind: 'sloped', degrees: 24, text: 'SKRÅ HIMLING 24°', points: [[2, 3]], ridge: [[0.3, 3], [7.7, 3]], from: 'ki' }];
+    l2.ceilingMarks = [{ kind: 'sloped', degrees: 24, text: 'SKRÅ HIMLING 24°', points: [[2, 3]], ridge: [[0.3, 3], [4.7, 3]], from: 'ki' }];
     const ex = E.exportHouse(d2);
     const v = await validateGenerated(ex);
     const roof = ex.house.roofs?.[0];
@@ -575,7 +586,7 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     check('mønelinja midt i huset: saltak med mønet langs huset, 24°, stua skrå opp til mønet og soverommet flatt, uten feil', ex.house.roofs.length === 1 && roof.type === 'gable' && Math.abs(Math.abs(roof.ridge?.[1] ?? 0) - 1) < 1e-6 && roof.pitch === 24 && stue?.type === 'roof' && stue.height == null && (sov?.type ?? 'flat') !== 'roof' && v.errors.length === 0, `${roof?.type} ${JSON.stringify(roof?.ridge)} ${roof?.pitch}°, stue ${stue?.type}/${stue?.height}, sov ${sov?.type ?? 'flat'}; ${v.errors.slice(0, 2).join(' | ')}`);
     void along;
     // the ridge line along the north wall: a mono-pitch roof high there, falling south (the game's +x)
-    l2.ceilingMarks[0].ridge = [[0.3, 0.4], [7.7, 0.4]];
+    l2.ceilingMarks[0].ridge = [[0.3, 0.4], [4.7, 0.4]];
     const ex2 = E.exportHouse(d2);
     const r2 = ex2.house.roofs?.[0];
     check('mønelinja langs nordveggen: pulttak, høyt i nord og med fall mot sør', r2?.type === 'mono-pitch' && (r2.fall?.[0] ?? 0) > 0.9, `${r2?.type} fall ${JSON.stringify(r2?.fall)}`);

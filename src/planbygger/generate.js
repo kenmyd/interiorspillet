@@ -72,7 +72,7 @@ import { detectPlan } from './detect.js';
 import { autoScale, estimateScale, similarSource, innerArea, wallModes } from './autoscale.js';
 import { readFacade, houseRoof } from './facade.js';
 import { matchFacades, applyFacadeMatch, roofFromFacades } from './facadematch.js';
-import { applyHouseReading } from './houseread.js';
+import { applyHouseReading, refineRidge } from './houseread.js';
 import { findStairs, alignLevelTo } from './align.js';
 import { drawMarks, targetsFromLevel } from './marks.js';
 import { levelRooms } from './regions.js';
@@ -1417,6 +1417,11 @@ export async function generate(inputs, opts = {}) {
   if (aiHouse) {
     const images = houseImages.map(({ d, kind }) => ({ kind, level: kind === 'plan' ? d.level : null, width: (kind === 'plan' ? d.houseMarks.img : d.img).width, height: (kind === 'plan' ? d.houseMarks.img : d.img).height }));
     const sides = houseImages.map(({ d, kind }) => (kind === 'facade' ? d.match?.side ?? null : null));
+    // the ridge lines the AI read, along the dash-dot lines drawn (it gives hus2's x 0.50–0.93, the line runs 0.31–0.94)
+    for (const c of aiHouse.ceilings ?? []) {
+      const im = houseImages[(c.image ?? 0) - 1];
+      if (c.ridge && im?.kind === 'plan') c.ridge = refineRidge(im.d.img, c.ridge, im.d.level.image?.pxPerM);
+    }
     const got = applyHouseReading(doc, aiHouse, images, { sides });
     step({ step: 'house', method: 'ai', confidence: 'medium', detail: `KI-en leste huset:${got.wings} takdel${got.wings === 1 ? '' : 'er'}${doc.roof?.pitch ? ` (${doc.roof.pitch}°)` : ''}, ${got.ceilings} himlingstekst${got.ceilings === 1 ? '' : 'er'}, kledning på ${got.cladding} fasade${got.cladding === 1 ? '' : 'r'}${doc.cladding?.main ? ` (mest ${doc.cladding.main.type}${doc.cladding.main.direction ? `, ${doc.cladding.main.direction}` : ''})` : ''}, ${got.decks} terrasse${got.decks === 1 ? '' : 'r'} og balkong${got.decks === 1 ? '' : 'er'}` });
   }

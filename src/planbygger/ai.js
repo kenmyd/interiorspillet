@@ -5,6 +5,9 @@
  *
  *   aiStatus() → { available, model, remaining }                       never throws
  *   aiRead(task, { image, marks, unmarked, hints, model }) → response | null     never throws
+ *   aiRead('readHouse', { images: [{ image, kind: 'plan'|'facade', label, marks }], hints }) → the whole house read
+ *               together (plans ≤ AI_MAX_SIDE, facades ≤ AI_FACADE_SIDE); tidied: room marks named in the answer carry
+ *               their mark's own position (houseread.js turns them into plan metres)
  *     task:     'classify' (the whole sheet) | 'readPlan' (one marked plan) | 'readFacade' (not sent while no part of
  *               its answer is in use: AI_FACADE_USE below – aiRead gives null at once, aiLastError().error 'off')
  *     image:    RGBA { width, height, data } (ImageData shape), any size: scaled down here to ≤ 1600 px

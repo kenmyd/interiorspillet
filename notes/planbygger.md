@@ -930,6 +930,116 @@ Det trengs også `ANTHROPIC_API_KEY` som variabel i Railway, `npm ci --prefix se
 (ellers sier statusen `available: false`), en plass for hurtigbufferen (`limits.cacheDir`) eller å godta at den
 forsvinner ved hver utrulling, og en lokal test med `node server.mjs` før noe rulles ut.
 
+## Fasadene mot planen, hele huset med KI, og himlingene (natt til 23.10.2026)
+
+### Fasadene på riktig side (`facadematch.js`, klassisk)
+
+`matchFacades(doc, drawings, { levelsByNo })` legger hver fasadetegning på den siden av huset den viser.
+`buildFacades` gir ytterveggene per side, sett utenfra. Tegningens åpninger måles i meter langs huset fra
+`span` til `readFacade`, og prøves mot sidens åpninger med `s = a + k·u`:
+- `k` starter på forholdet mellom bredden på tegningen og bredden på siden.
+- `a` prøves fra hvert par åpninger av samme slag i samme etasje.
+- Til slutt tilpasses `a` og `k` til parene med minste kvadraters metode.
+
+Poengsummen er antall par, pluss hvor godt breddene stemmer, minus åpningene som er til overs og forskjellen i
+bredde. Tegningene får én side hver, med beste sum totalt. En tittel med himmelretning («FASADE SØR», også fra
+KI-en) låser siden, og den nordretningen som flest titler er enige om, settes på planen.
+
+- **Målt:** riktig side på alle 20 fasadene til hus1–hus5, fasitnotatene sammenlignet side for side. Det er sjekket
+  i `test-planbygger-generate.mjs` (`sides`).
+- **`applyFacadeMatch`:** hvert vindu som får en partner, tar brystningen og høyden fra tegningen. Høyden
+  rettes med `k`, fordi planens mål er sikrere. En dør tar høyden bare når den avviker med over 15 cm.
+  Hus1–hus5 får 10–17 åpninger per hus med egen høyde, mot medianen per etasje før.
+  - `o.facadeTop` er toppen slik den er tegnet, før den holdes under en flat himling. Den brukes i himlingsregelen.
+- **`roofFromFacades`:**
+  - takvinkelen er medianen av helningene på gavlene (`readFacade` gir nå `roofPitch`): hus3 får 30°, som fasiten
+    måler;
+  - et pulttak får sin høye side (`roofHigh` på endene, sett utenfra) som retning i planen;
+  - motstridende ender (hus5: to fløyer høyest mot midten) opphever hverandre.
+
+  På hus4 faller pulttaket mot planens øvre kant, som i fasiten.
+
+### Hele huset med KI (`readHouse`)
+
+Ett kall per hus sender de merkede planene (hovedetasjen først) og alle fasadene i samme forespørsel. Serveren tar
+`images` (1–8) og har `promptVersionOf`, slik at `readHouse` har sin egen versjon og de andre opptakene ikke
+foreldes. Modellen er Sonnet. Det koster $0,02–0,04 per hus, og opptakene for sju hus kostet $0,23 i alt.
+
+- **Svaret:**
+  - fasadene: tittel, himmelretning, side i planen, kledning per del, terreng og kjeller;
+  - taket: tekking, farge, skrevet vinkel, fløyer med rommerker, mønetretning og pulttakets høye side, og om det er
+    pipe;
+  - himlingstekstene med rommerker og mønelinje;
+  - terrasser og balkonger.
+- **I dokumentet:** `houseread.js` gjør rommerkene om til punkter i planmeter. Det gir `doc.roof.wings`,
+  `level.ceilingMarks`, `doc.cladding`, `doc.decks` og `doc.exterior`.
+- **Testet:** `test-planbygger-ai.mjs` («readHouse») sjekker forespørselen og opptakene mot fasiten.
+  - hus2: «SKRÅ HIMLING 24°» med 24° og mønelinja på strek-prikk-linja (y 0,646 mot 0,65); «PLANTAK» over
+    WC-kjernen; stående kledning.
+  - hus5: to «Skråhiml.» og pulttak i flere deler.
+  - hus1: ingen himlingstekst.
+- **Svakt:**
+  - **Fasadesiden** er riktig på bare 1 av 5 hus: venstre/høyre eller topp/bunn byttes. Den brukes derfor ikke.
+    Posisjonene avgjør.
+  - **Fløyene** varierer mellom kjøringer: hus2 fikk to fløyer i én kjøring og én fløy i den neste. Derfor brukes
+    KI-ens fløyer og taktype bare når de deler huset tydelig i flere fløyer (se under).
+  - **Taktypen:** hus1s halvvalm med ark blir «hip» hos KI-en. Ett tak over hele huset får typen fra fasadene.
+
+### Himlingene
+
+Reglene, i denne rekkefølgen (`houseread.js` `ceilingSlope`, brukt både av eksporten og av «Himling»):
+1. Brukerens valg i «Himling» i rommet.
+2. Himlingstekstene med punkter i rommet: skrå eller åpent mot flatt, flest punkter vinner.
+3. Står det himlingstekst på planene, er alle andre rom flate. Tegningen merket de skrå.
+4. Står det ingen tekst, gjelder etasjens regel `ceilingRule`. `generate.js` setter `'roof'` når et pulttak
+   ligger rett over øverste etasje, eller når et vindu eller en dør er tegnet høyere enn en flat himling. Da
+   stilles også et spørsmål: «Følger himlingen taket i …?» med valgene ja, nei eller bare i noen rom (det siste
+   åpner «Himling»).
+5. Ellers flat. Et loft følger taket som før (knevegg, hanebjelke).
+
+En skrå himling blir `type: 'roof'` uten høyde, altså helt opp til mønet.
+
+**«Himling»** i 3D-visningen (`ceilingplace.js`) viser øverste etasje:
+- de skrå rommene er farget og mønelinjene tegnet strek-prikk;
+- klikk velger et rom, og et nytt klikk bytter mellom flat og skrå;
+- «Alle skrå» og «Alle flate» gjelder hele etasjen;
+- mønelinja kan dras, forlenges, tegnes eller slettes;
+- takvinkelen kan skrives inn (`doc.roof.pitchSet`, gjelder hele taket).
+
+### Takfløyene (`export.js` `exportRoofs`)
+
+- **Delene:**
+  1. KI-ens fløyer, når det er minst to og de ikke overlapper mye. Hvert rom går til fløyen med flest av
+     merkene sine, ellers til fløyen til nærmeste rom, og fløyen blir rektangelet rundt rommene og veggene.
+  2. Ellers én eller to kutt tvers over fotavtrykket, der halvdelene fyller rektanglene sine best. Dette
+     brukes når fyllingen blir minst 88 % og 10 prosentpoeng bedre enn ett rektangel. hus2s L har
+     inngangsnisje og et vaskerom som stikker ut, og der ga histogrammetoden fire biter og fall tilbake til ett tak.
+     hus5s U blir tre deler.
+  3. Ellers som før.
+- **Per del:**
+  - **Mønelinja fra planen:** midt i delen gir saltak med mønet langs linja. Langs en kant gir den pulttak, høyt
+    der.
+  - **Ellers KI-fløyen:** typen, mønet og fallet der KI-en delte huset.
+  - **Ellers fasadenes type.**
+  - **Fallet for et pulttak:** KI-en per fløy der huset er delt, ellers den høye siden fra gavlene.
+  - **Vinkelen:** brukerens, så himlingsteksten, så den skrevne, så gavlenes, ellers motorens standard.
+  - **Tekkingen** fra KI-en: takstein, skifer, papp eller stål.
+- **Sett i nettleseren (5277):**
+  - hus2: to saltak i L, og stua med gavlene opp til mønet (4,0 m). Gangen ble skrå etter ett klikk i «Himling».
+  - hus5: tre pulttak.
+  - hus4: pulttak på 6°.
+  - 0 feil i validatoren på hus1–hus5 og hus7.
+
+### Åpent etter natta
+
+- **hus2:** KI-en legger GANG (merke 6) under «PLAN HIMLING», så gang og entré blir flate. De er åpne mot den skrå
+  stua og burde vært skrå. Mønelinja den leser (x 0,50–0,93) er kortere enn streken (x 0,31–0,94). Rettes i «Himling»
+  med ett klikk. En klassisk forlengelse av strek-prikk-linja er en mulig forbedring.
+- **Lave deler under øverste etasje** får ikke tak, for eksempel sportsboden og carporten på hus4. Taket legges bare
+  over øverste etasje.
+- **Kledning og terrasser** leses og lagres (`doc.cladding`, `doc.decks`), men eksporteres ikke før motoren kan bygge
+  dem. Det gjøres i økta «Kledning, terrasser og balkonger i motoren», som skal flettes inn etter at eieren har sagt ja.
+
 ## Rommene og eksporten
 
 **Rom** (`regions.js`). Veggene i editormodellen (senterlinjer med tykkelse) tegnes i et raster på 2 cm. Hver ende

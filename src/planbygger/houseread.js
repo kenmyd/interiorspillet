@@ -22,6 +22,14 @@
 
 const SIDE_DIR = { top: [0, -1], bottom: [0, 1], left: [-1, 0], right: [1, 0] };
 
+/** Points along a line every 0.25 m, 0.15 m in from its ends (plan metres). */
+function alongLine([a, b]) {
+  const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+  const out = [];
+  for (let t = 0.15; t <= len - 0.15; t += 0.25) out.push([a[0] + ((b[0] - a[0]) * t) / len, a[1] + ((b[1] - a[1]) * t) / len]);
+  return out;
+}
+
 /**
  * Whether one room's ceiling follows the roof (notes/tak.md type 'roof'), the same for export.js and the Himling step:
  * the Himling step's choice in the room, else the ceiling texts with points in it (sloped / open against flat, the most
@@ -37,15 +45,19 @@ export function ceilingSlope(L, inside) {
   let flat = 0;
   let upText = null;
   let flatText = null;
+  // the votes: a sloped text's room 1 each, a room its ridge line runs through 2 (the rooms open to it, hus2's hall);
+  // a flat text's room 1, or 3 when it names one or two rooms (PLANTAK over a WC core inside the sloped room)
   for (const m of marks) {
-    if (m.from === 'bruker') continue;
-    const n = (m.points ?? []).filter(inside).length;
-    if (!n) continue;
+    if (m.from === 'bruker' && !m.ridge) continue;
+    const pts = m.points ?? [];
+    const n = pts.filter(inside).length;
     if (m.kind === 'sloped' || m.kind === 'open') {
-      up += n;
+      const crossed = m.ridge && alongLine(m.ridge).some(inside);
+      if (!n && !crossed) continue;
+      up += n + (crossed ? 2 : 0);
       upText ??= m.text;
-    } else if (m.kind === 'flat') {
-      flat += n;
+    } else if (m.kind === 'flat' && n) {
+      flat += n * (pts.length <= 2 ? 3 : 1);
       flatText ??= m.text;
     }
   }
@@ -53,6 +65,77 @@ export function ceilingSlope(L, inside) {
   if (marks.some((m) => m.from !== 'bruker' && m.kind !== 'height')) return { slope: false, why: 'tegning', text: null };
   if (L?.ceilingRule === 'roof') return { slope: true, why: 'regel', text: null };
   return { slope: false, why: null, text: null };
+}
+
+/**
+ * The ridge line the AI read, along the dash-dot line actually drawn (classical): for a line along the image's x or y
+ * the row (column) within ±2.5 % of the image with the most dashes inside the AI's segment, then followed both ways
+ * while dashes go on – across thin lines and text, over gaps up to `maxGap` m, never into a thick wall (a dark run over
+ * 0.25 m) or past the image. seg: [x0, y0, x1, y1] normalised; img RGBA; ppm the plan's px per metre.
+ * → the segment, normalised (the AI's when no dashes are found or the line is slanted)
+ */
+export function refineRidge(img, seg, ppm, { maxGap = 0.9 } = {}) {
+  if (!img?.data || !Array.isArray(seg) || !(ppm > 0)) return seg;
+  const { width: W, height: H, data } = img;
+  const horiz = Math.abs(seg[3] - seg[1]) * H < Math.abs(seg[2] - seg[0]) * W * 0.05;
+  const vert = Math.abs(seg[2] - seg[0]) * W < Math.abs(seg[3] - seg[1]) * H * 0.05;
+  if (!horiz && !vert) return seg;
+  // along: the pixel index along the line; across: the row (column) of it
+  const n = horiz ? W : H;
+  const m = horiz ? H : W;
+  const dark = (a, c) => {
+    if (a < 0 || a >= n || c < 0 || c >= m) return false;
+    const i = (horiz ? c * W + a : a * W + c) * 4;
+    return 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2] < 150;
+  };
+  const a0 = Math.round(Math.min(horiz ? seg[0] : seg[1], horiz ? seg[2] : seg[3]) * n);
+  const a1 = Math.round(Math.max(horiz ? seg[0] : seg[1], horiz ? seg[2] : seg[3]) * n);
+  const c0 = Math.round(((horiz ? seg[1] + seg[3] : seg[0] + seg[2]) / 2) * m);
+  // the runs of dark pixels along one row: dashes are 2 … 0.4 m long
+  const dashes = (c, lo, hi) => {
+    let count = 0;
+    let run = 0;
+    for (let a = lo; a <= hi + 1; a++) {
+      if (a <= hi && dark(a, c)) run++;
+      else {
+        if (run >= 2 && run <= 0.4 * ppm) count++;
+        run = 0;
+      }
+    }
+    return count;
+  };
+  const band = Math.max(3, Math.round(0.025 * m));
+  let best = { c: c0, n: 0 };
+  for (let c = c0 - band; c <= c0 + band; c++) {
+    const k = dashes(c, a0, a1);
+    if (k > best.n) best = { c, n: k };
+  }
+  if (best.n < 5) return seg;
+  const c = best.c;
+  const on = (a) => dark(a, c) || dark(a, c - 1) || dark(a, c + 1);
+  const gapPx = maxGap * ppm;
+  const wallPx = 0.25 * ppm;
+  const follow = (start, step) => {
+    let last = start; // the last dark pixel of a dash (or of a thin line the ridge crosses)
+    let run = 0;
+    let runStart = start;
+    for (let a = start; a >= 0 && a < n; a += step) {
+      if (on(a)) {
+        if (!run) runStart = a;
+        run++;
+        if (run > wallPx) return runStart - step; // a thick wall: the line ends at its face
+        last = a;
+      } else {
+        run = 0;
+        if (Math.abs(a - last) > gapPx) break;
+      }
+    }
+    return last;
+  };
+  const lo = follow(a0, -1);
+  const hi = follow(a1, 1);
+  if (hi - lo < (a1 - a0) * 0.9) return seg;
+  return horiz ? [lo / W, c / H, hi / W, c / H] : [c / W, lo / H, c / W, hi / H];
 }
 
 /** A normalised point of image `im` in its level's plan metres. */
