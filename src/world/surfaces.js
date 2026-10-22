@@ -600,6 +600,117 @@ export function wetroom({ clouds = 1, tile = 1.6, seed = 71, res = 1 } = {}) {
   });
 }
 
+/**
+ * Roof coverings (notes/tak.md), colour-neutral grey sets like the panels above (DataTextures, also in Node). UVs in
+ * metres: u across the slope (along the eave), v DOWN the slope (home/roof.js). Kinds:
+ *   'tile'   takstein: concrete double-S tiles 0.30 wide in courses of 0.34, the lip of each course in shadow
+ *   'slate'  skifer: slates 0.30 wide, 0.20 courses, every other course shifted half a slate, dark gaps
+ *   'felt'   papp: a matt sheet with laps every 1 m across the slope
+ *   'steel'  stålplater: trapezoid ribs every 0.2 m down the slope
+ * @param {{ kind: 'tile'|'slate'|'felt'|'steel', seed?: number, res?: number }} o
+ */
+export function roofCovering({ kind = 'tile', seed = 81, res = 1 } = {}) {
+  const key = `surf:roof:${kind}:${seed}:${res}`;
+  return cached(key, () => {
+    const noise = new TileableNoise(seed);
+    if (kind === 'tile') {
+      const tw = 0.3, course = 0.34;
+      const tileU = tw * 4, tileV = course * 4;
+      const w = dsz(512, res), h = dsz(512 * (tileV / tileU), res);
+      return greySet({ w, h, tile: [tileU, tileV], normal: 2.2, pixel(x, y, u, v, o) {
+        const fu = (u * 4) % 1; // across one tile
+        const fv = (v * 4) % 1; // down one course: 0 under the lap of the course above, 1 at this course's lip
+        const iu = Math.floor(u * 4), iv = Math.floor(v * 4);
+        // the double-S: a roll and a pan per tile
+        const wave = 0.5 - 0.5 * Math.cos(fu * Math.PI * 2);
+        const lip = smoothstep(0.86, 1, fv);
+        const lap = 1 - smoothstep(0, 0.08, fv);
+        const tone = 1 + 0.06 * (hash2(iu, iv, seed) - 0.5) + 0.05 * noise.noise(u * 8, v * 8, 8, 8);
+        o.l = 0.62 * tone * (0.82 + 0.18 * wave) * (1 - 0.45 * lap) * (1 - 0.12 * lip);
+        o.h = 0.55 * wave + 0.5 * fv - 0.6 * lip + 0.03 * noise.noise(u * 40, v * 40, 40, 40);
+        o.rough = 0.72 + 0.06 * noise.noise(u * 6 + 3, v * 6, 6, 6);
+      } });
+    }
+    if (kind === 'slate') {
+      const sw = 0.3, course = 0.2;
+      const tileU = sw * 4, tileV = course * 4;
+      const w = dsz(512, res), h = dsz(512 * (tileV / tileU), res);
+      const px = tileU / w;
+      return greySet({ w, h, tile: [tileU, tileV], normal: 1.6, pixel(x, y, u, v, o) {
+        const iv = Math.floor(v * 4);
+        const fv = (v * 4) % 1;
+        const su = u * 4 + (iv % 2 ? 0.5 : 0);
+        const iu = Math.floor(su);
+        const fu = su - iu;
+        const du = Math.min(fu, 1 - fu) * sw; // m to the slate's side
+        const gap = 1 - smoothstep(0.002, 0.002 + 2 * px, du);
+        const lip = smoothstep(0.9, 1, fv);
+        const lap = 1 - smoothstep(0, 0.06, fv);
+        const tone = 1 + 0.12 * (hash2(iu & 3, iv, seed) - 0.5) + 0.06 * noise.noise(u * 12, v * 12, 12, 12) + 0.03 * noise.noise(u * 60, v * 60, 60, 60);
+        o.l = 0.55 * tone * (1 - 0.55 * gap) * (1 - 0.35 * lap) * (1 - 0.1 * lip);
+        o.h = 0.4 * fv - 0.5 * gap - 0.4 * lip + 0.04 * noise.noise(u * 50, v * 50, 50, 50);
+        o.rough = 0.6 + 0.08 * noise.noise(u * 9, v * 9 + 2, 9, 9);
+      } });
+    }
+    if (kind === 'steel') {
+      const pitch = 0.2;
+      const tileU = pitch * 6, tileV = 2.4;
+      const w = dsz(512, res), h = dsz(256, res);
+      return greySet({ w, h, tile: [tileU, tileV], normal: 3, pixel(x, y, u, v, o) {
+        const fu = (u * 6) % 1;
+        // trapezoid rib: flat pan, a 3 cm wide crown, sloped flanks
+        const d = Math.abs(fu - 0.5) * pitch; // m from the rib's middle
+        const rib = 1 - smoothstep(0.015, 0.035, d);
+        o.l = 0.7 * (1 + 0.025 * noise.noise(u * 3, v * 2, 3, 2)) * (0.92 + 0.08 * rib);
+        o.h = rib + 0.02 * noise.noise(u * 30, v * 8, 30, 8);
+        o.rough = 0.42 + 0.05 * noise.noise(u * 4, v * 3, 4, 3);
+      } });
+    }
+    // felt
+    const tileU = 2, tileV = 2;
+    const w = dsz(256, res), h = w;
+    return greySet({ w, h, tile: [tileU, tileV], normal: 1.2, pixel(x, y, u, v, o) {
+      const fv = (v * 2) % 1;
+      const lap = 1 - smoothstep(0, 0.012, Math.min(fv, 1 - fv));
+      const grit = noise.noise(u * 120, v * 120, 120, 120);
+      o.l = 0.55 * (1 + 0.04 * noise.noise(u * 4, v * 4, 4, 4) + 0.03 * grit) * (1 - 0.18 * lap);
+      o.h = 0.25 * grit - 0.6 * lap;
+      o.rough = 0.88;
+    } });
+  });
+}
+
+/**
+ * The cached material of a roof covering in a colour (read-only, userData.cached): hex is the mean colour.
+ * @param {'tile'|'slate'|'felt'|'steel'} kind @param {string} hex @param {{ res?: number }} [opts]
+ * @returns {THREE.MeshStandardMaterial}
+ */
+export function roofFinish(kind, hex, { res = 1 } = {}) {
+  const set = roofCovering({ kind, res });
+  const key = `roof|${kind}|${hex}|${set.map.uuid}`;
+  let m = _finishes.get(key);
+  if (!m) {
+    const color = new THREE.Color(hex).multiplyScalar(1 / set.ref);
+    const mx = Math.max(color.r, color.g, color.b);
+    if (mx > 1.05) color.multiplyScalar(1.05 / mx);
+    const rough = { tile: 0.72, slate: 0.6, felt: 0.9, steel: 0.42 }[kind] ?? 0.7;
+    const ns = { tile: 1, slate: 0.8, felt: 0.5, steel: 1 }[kind] ?? 1;
+    m = new THREE.MeshStandardMaterial({
+      color,
+      map: set.map,
+      normalMap: set.normalMap,
+      normalScale: new THREE.Vector2(ns, ns),
+      roughnessMap: set.roughnessMap,
+      roughness: rough / set.roughRef,
+      metalness: kind === 'steel' ? 0.25 : 0,
+    });
+    m.name = `roof-${kind} ${hex}`;
+    m.userData = { cached: true, kind: `roof-${kind}`, hex, finish: true };
+    _finishes.set(key, m);
+  }
+  return m;
+}
+
 /** Linear luminance of a '#hex' (sRGB). */
 function hexLum(hex) {
   const c = new THREE.Color(hex);
