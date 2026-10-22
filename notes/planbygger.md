@@ -1045,6 +1045,18 @@ En skrå himling blir `type: 'roof'` uten høyde, altså helt opp til mønet.
   Den skrives bare når `schema.topLevel` kjenner `cladding`, altså etter at kledningsgrenen er flettet inn. Dekkene
   eksporteres ikke ennå: KI-en gir bare et punkt, ikke omrisset.
 
+### Gjenkjenningen: nisjer og bratte trapper
+
+- **Nisjer (K3):** `detect.js` gir nå strek-prikk-linjene foran grunne nisjer som `niches`. Det er linjene
+  `findSeparators` forkaster som «fronten av et skap». I `semantics` legges en slik linje inn som skillelinje når
+  regionen den ligger i har flere romtekster, og nisjen etterpå har én tekst alene på høyst 4 m², uten at de andre
+  tekstene flytter. hus2 får BOD som eget rom (0,65 m²) og 13 rom med eget navn, så generate-testen er grønn. Ingen
+  andre testhus endres.
+- **Bratte trapper:** en rett trapp som er for bratt å gå i (over ca. 52°), men ikke å klatre i (høyst 65°), legges
+  inn som `kind: 'steep'` (trappestige) når begge endene har gulv, og det spørres om den. Trappespørsmålet har nå
+  valget «Bratt trapp eller loftstige». På hus8 har sjakten ikke gulv bak foten i kjelleren (det nedre løpet er ikke
+  tegnet), så den blir et spørsmål som før.
+
 ### Åpent etter natta
 
 - **hus2:** KI-en legger GANG (merke 6) under «PLAN HIMLING», så gang og entré blir flate. De er åpne mot den skrå

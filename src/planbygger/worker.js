@@ -29,7 +29,7 @@ import { findStairs } from './align.js';
 /** A detection as plain data: what the page and generate.js use, without the debug rasters. */
 export function detectionData(r) {
   if (!r) return r;
-  return { walls: r.walls ?? [], openings: r.openings ?? [], skylights: r.skylights ?? [], stairs: r.stairs ?? [], separators: r.separators ?? [], stats: r.stats ?? {} };
+  return { walls: r.walls ?? [], openings: r.openings ?? [], skylights: r.skylights ?? [], stairs: r.stairs ?? [], separators: r.separators ?? [], niches: r.niches ?? [], stats: r.stats ?? {} };
 }
 
 /** An image as plain data, with the marks a module put on it (cleanForWalls: cleanStats). */

@@ -591,6 +591,15 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     const r2 = ex2.house.roofs?.[0];
     check('mønelinja langs nordveggen: pulttak, høyt i nord og med fall mot sør', r2?.type === 'mono-pitch' && (r2.fall?.[0] ?? 0) > 0.9, `${r2?.type} fall ${JSON.stringify(r2?.fall)}`);
   }
+  // the stair question offers a steep stair (trappestige), and the answer makes the found stair one
+  {
+    const Qm = await imp('src/planbygger/questions.js');
+    const { doc: d4, lv: l4 } = make();
+    l4.stairs = [{ id: 't1', rect: [[1, 1], [2.3, 2]], axis: 'x', down: 1 }];
+    const q = Qm.stairQuestion({ level: 'hoved', levelName: '1. etasje', file: 'x.png', crop: null, value: 'none', why: '', stairId: 't1' });
+    const out = Qm.applyAnswers(d4, [q], { [q.id]: 'steep' });
+    check('trappespørsmålet har «Bratt trapp eller loftstige», og svaret gjør trappa bratt', q.options.some((o) => o.value === 'steep') && out.levels[0].stairs[0].kind === 'steep');
+  }
   // the cladding the AI read → the house format's (notes/kledning.md; exported once the engine knows the key)
   {
     const cl = E.claddingOf({ levels: [], cladding: { main: { type: 'wood', direction: 'vertical', color: 'mørk grå' }, facades: [{ side: 'S', parts: [{ part: 'all', type: 'wood', direction: 'vertical', color: null }, { part: 'gable', type: 'panels', direction: null, color: 'hvit' }] }] } });

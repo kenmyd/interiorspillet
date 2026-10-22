@@ -267,6 +267,7 @@ export function stairQuestion({ level, levelName, file, crop, value, why, stairI
       { value: 'straight', label: 'Rett trapp' },
       { value: 'u', label: 'U-trapp (svinger 180°)' },
       { value: 'l', label: 'Kvartsvingt trapp (svinger 90°)' },
+      { value: 'steep', label: 'Bratt trapp eller loftstige' },
       { value: 'none', label: 'Ingen trapp her' },
     ],
     text: `Hvilken trapp går ned fra ${levelName.toLowerCase()}?`,
@@ -461,7 +462,7 @@ export function applyAnswers(doc, questions, answers = {}) {
         const st = (L.stairs || []).find((s) => s.id === Q.data?.stairId) ?? null;
         if (value === 'none') {
           if (st) L.stairs = L.stairs.filter((s) => s !== st);
-        } else if (value === 'straight' || value === 'u' || value === 'l') {
+        } else if (value === 'straight' || value === 'u' || value === 'l' || value === 'steep') {
           if (st) {
             if (value === 'straight') delete st.kind;
             else st.kind = value;

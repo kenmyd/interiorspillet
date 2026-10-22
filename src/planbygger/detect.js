@@ -15,6 +15,8 @@
  *                   'unknown', flights, winders, lines, pivot? }]                     axis = the run of the main flight
  *     separators: [{ a: [x, y], b: [x, y] }]       the dash-dot lines between open zones (a hall and a TV room): they
  *                   split rooms (regions.js findRooms(walls, { separators })) and are never walls
+ *     niches:    [{ a, b }]                        dash-dot lines across the front of a shallow niche, left out (the front of
+ *                   a wardrobe); generate.js uses one when the niche holds a room label of its own
  *     stats:     { darkThreshold, paper, ink, coreRadius, minRun, timings, cleaned?, clean?, autoWallTone?, upsampled?,
  *                  rotated? },
  *     debug:     { dark, core, pieces, outside, separatorLines, thin, stairInk }       rasters, raw pieces, the dashed
@@ -718,7 +720,7 @@ export function detectPlan(img, options = {}) {
   const winders = new Set(ops.filter((op) => op.type === 'door' && op.part && inStair(op.part.at)).map((op) => op.part));
   if (winders.size) ops = ops.flatMap((op) => (!op.part || !winders.has(op.part) ? [op] : op.type === 'door' ? op.part.alt().map((x) => ({ ...x, seg: op.seg })) : []));
   // the dash-dot lines that close an open zone between two wall ends: room separators, never walls
-  const { separators, tried: separatorLines } = findSeparators(sym.thin, sym.box, walls, outside, ppm, { tolC, tolJ, maxWallPx, gaps: ctx.dashGaps });
+  const { separators, tried: separatorLines, niches } = findSeparators(sym.thin, sym.box, walls, outside, ppm, { tolC, tolJ, maxWallPx, gaps: ctx.dashGaps });
   timings.symbols = now();
 
   // classify the line symbols now that we know which walls are exterior
@@ -784,6 +786,7 @@ export function detectPlan(img, options = {}) {
     skylights,
     stairs,
     separators,
+    niches,
     stats: { darkThreshold: darkT, wallTone: tone, paper, ink, coreRadius: r, minRun, pieces: pieces.length, timings },
     debug: {
       dark,
@@ -2277,6 +2280,9 @@ function findSeparators(thin, box, walls, outside, ppm, { tolC, tolJ, maxWallPx,
   };
   const out = [];
   const tried = [];
+  // the lines left out as the front of a niche, snapped to their wall ends: generate.js splits a niche off with one when
+  // the niche has a room label of its own (hus2's BOD, K3)
+  const niches = [];
   for (const L of lines) {
     const why = (() => {
       const e0 = endAt(L, L.s0, -1);
@@ -2303,7 +2309,10 @@ function findSeparators(thin, box, walls, outside, ppm, { tolC, tolJ, maxWallPx,
         }
         return true;
       };
-      if ([0.25, 0.5, 0.75].filter((f) => { const q = s0 + f * len; return deep(q, 1) && deep(q, -1); }).length < 2) return 'niche';
+      if ([0.25, 0.5, 0.75].filter((f) => { const q = s0 + f * len; return deep(q, 1) && deep(q, -1); }).length < 2) {
+        niches.push({ a: L.axis === H ? [s0, c] : [c, s0], b: L.axis === H ? [s1, c] : [c, s1] });
+        return 'niche';
+      }
       const a = L.axis === H ? [s0, c] : [c, s0];
       const b = L.axis === H ? [s1, c] : [c, s1];
       if (out.some((q) => Math.hypot(q.a[0] - a[0], q.a[1] - a[1]) < 0.2 * ppm && Math.hypot(q.b[0] - b[0], q.b[1] - b[1]) < 0.2 * ppm)) return 'ok';
@@ -2314,7 +2323,7 @@ function findSeparators(thin, box, walls, outside, ppm, { tolC, tolJ, maxWallPx,
     })();
     tried.push({ axis: L.axis, c: L.c, s0: L.s0, s1: L.s1, why });
   }
-  return { separators: out, tried };
+  return { separators: out, tried, niches };
 }
 
 /**

@@ -320,8 +320,11 @@ section('5. Husfila: dobbeltdør, skyvedør og takvindu i formatet');
   const slide = all.filter((o) => /skyvedør/.test(o.source ?? ''));
   const sky = ex.house.ceilings.flatMap((c) => c.skylights || []);
   check('eksport: 0 feil i validateHouse', v.errors.length === 0, v.errors.slice(0, 3).join(' | '));
-  check('eksport: hver dobbeltdør er to dører side om side, hengslet i hver sin karm, samme slagretning', ex.report.counts.doubleDoors === 2 && leaves.length === 4 && leaves.every((o) => o.type === 'door') && [0, 2].every((k) => leaves[k].door.swing === leaves[k + 1].door.swing && leaves[k].door.hinge !== leaves[k + 1].door.hinge), `${ex.report.counts.doubleDoors} doble, ${leaves.length} blad`);
-  check('eksport: skyvedøra er en åpning (formatet har ingen skyvedør)', ex.report.counts.slidingDoors === 1 && slide.length === 1 && slide[0].type === 'opening', `${slide.map((o) => o.type).join(', ')}`);
+  // (since the door types, notes/dortyper.md: a double door is one door with two leaves, a sliding door a door of its own)
+  const doubles = all.filter((o) => o.type === 'door' && o.door?.variant === 'double');
+  const slides = all.filter((o) => o.type === 'door' && o.door?.variant === 'sliding');
+  check('eksport: hver dobbeltdør er én dør med to blad (variant double)', ex.report.counts.doubleDoors === 2 && doubles.length === 2, `${ex.report.counts.doubleDoors} doble, ${doubles.length} med variant double (${leaves.length} med «dobbeltdør» i kilden)`);
+  check('eksport: skyvedøra er en skyvedør (variant sliding)', ex.report.counts.slidingDoors === 1 && slides.length === 1, `${slides.length} skyvedører (${slide.map((o) => o.type).join(', ')})`);
   check('eksport: takvinduene ligger på himlingen i rommet sitt', ex.report.counts.skylights === 2 && sky.length === 2 && sky.every((s) => s.polygon.length === 4), `${sky.length}`);
   const { buildLayout } = await imp('src/home/layout.js');
   let err = null;

@@ -80,7 +80,7 @@ import { roomKindOf } from './ai.js';
 import { luma } from './image.js';
 import { guessKind, exportHouse, baseSpec, ownerOnly } from './export.js';
 import { createDoc, applyDetection, addStair, addWall, setOpeningKind, wallById, wallPoint, stairGeometry, DEFAULT_SETTINGS } from './model.js';
-import { clipPolygon, signedArea, dist, round, pointInPolygon } from './geom.js';
+import { clipPolygon, signedArea, dist, round, roundPt, pointInPolygon } from './geom.js';
 import { WALKABLE_NORMAL_Y } from '../config.js';
 import {
   applyAnswers,
@@ -908,14 +908,42 @@ export async function generate(inputs, opts = {}) {
       const c = o0 ? openingCentre(refs.level0, o0) : null;
       return c ? [c[0] * k0, c[1] * k0] : null;
     };
-    const found = levelRooms(L);
-    d.found = found;
+    let found = levelRooms(L);
     // ---- rooms
     const items = [];
     if (ai) {
       for (const r of ai.rooms) if (r.name && r.at) items.push({ name: r.name, area: r.area, kind: r.kind, roomKind: r.roomKind, at: r.at, ref: r.ref, p: refRoom(r), how: r.mark ? 'merke' : 'etikett' });
       for (const l of ai.labels) if (l.text && l.at && !NOT_A_ROOM.test(l.text)) items.push({ name: l.text, area: l.area, kind: l.kind, roomKind: l.roomKind, at: l.at, how: 'etikett' });
     }
+    // a niche with a room label of its own (K3: hus2's BOD, open to the hall along a dash-dot line): the line across its
+    // front, which the detection left out as the front of a wardrobe (detect.js niches), splits it off – kept when the
+    // label then stands alone in a small room and the region's other labels stay together
+    for (const n of d.det?.niches ?? []) {
+      const a = roundPt([n.a[0] / ppm, n.a[1] / ppm], 4);
+      const b = roundPt([n.b[0] / ppm, n.b[1] / ppm], 4);
+      const len = dist(a, b);
+      if (len < 0.6 || len > 3) continue;
+      const where = (f, it) => roomAt(f, it.p ?? toPlan(it.at));
+      const v = [(b[1] - a[1]) / len, -(b[0] - a[0]) / len];
+      const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      const sides = [1, -1].map((s) => roomAt(found, [mid[0] + v[0] * s * 0.2, mid[1] + v[1] * s * 0.2]));
+      if (sides[0] < 0 || sides[0] !== sides[1]) continue;
+      const here = items.filter((it) => where(found, it) === sides[0]);
+      if (here.length < 2) continue;
+      (L.separators ||= []).push({ id: `s-nisje-${L.separators.length + 1}`, a, b, auto: true, niche: true });
+      const after = levelRooms(L);
+      const groups = new Map();
+      for (const it of here) {
+        const k = where(after, it);
+        groups.set(k, [...(groups.get(k) ?? []), it]);
+      }
+      const alone = [...groups.entries()].find(([k, g]) => k >= 0 && g.length === 1 && (after.rooms.find((r) => r.index === k)?.area ?? 99) <= 4);
+      if (groups.size >= 2 && !groups.has(-1) && alone) {
+        found = after;
+        step({ step: 'rooms', file: d.file, method: 'niche', confidence: 'medium', detail: `«${alone[1][0].name}» skilt ut som eget rom langs strek-prikk-linja foran nisjen (${fmt(len, 2)} m)` });
+      } else L.separators.pop();
+    }
+    d.found = found;
     const per = new Map();
     let unplaced = 0;
     for (const it of items) {
@@ -1237,12 +1265,31 @@ export async function generate(inputs, opts = {}) {
     const rise = U.floorY - lower.level.floorY > 0.5 ? U.floorY - lower.level.floorY : o.floorHeight;
     const walkLen = stairWalkLength(st);
     const slope = (Math.atan2(rise, walkLen) * 180) / Math.PI;
+    // too steep to walk, but not to climb: a steep stair (trappestige, notes/trapper.md «steep»: the figure climbs up to
+    // about 66°) straight along the box's long side – asked about, with it as the default
+    const steepSlope = (Math.atan2(rise, longSide) * 180) / Math.PI;
+    // (only with floor at both ends, as orientStair found it: hus8's shaft has none beyond the foot – the L's lower flight
+    // under the floor is not drawn – and a stair that cannot be stepped off is worse than the question)
+    if (slope > STAIR_MAX_SLOPE_DEG && steepSlope <= STEEP_MAX_SLOPE_DEG && turn && !st.kind) {
+      st.kind = 'steep';
+      delete st.side;
+      st.auto = true;
+      st.from = { type, typeFrom, why, steep: true };
+      upper.stairPlaced = st;
+      if (edge) {
+        upper.found = levelRooms(U);
+        report.notes.push(`${U.name}: en strek langs enden av trappa var lest som en vegg og stengte toppen; den er tatt bort, så trappa kan gås.`);
+      }
+      questions.push(stairQuestion({ level: U.id, levelName: U.name, file: upper.file, crop: { file: upper.file, level: U.id, bbox: cropBox(rect, upper.ppm, upper.img) }, value: 'steep', why: `${why[0].toUpperCase()}${why.slice(1)}, men den er for bratt til å gå i: ${fmt(longSide, 2)} × ${fmt(shortSide, 2)} m for ${fmt(rise, 2)} m etasjehøyde. Den er lagt inn som en bratt trapp (trappestige, ${Math.round(steepSlope)}°), som figuren klatrer i. Velg en annen type hvis tegningen viser noe annet, eller dra den på plass i «Trapp».`, stairId: st.id, rect: st.rect, axis }));
+      step({ step: 'stairs', file: upper.file, level: U.id, method: 'steep', confidence: 'low', detail: `${why}; ${type ?? 'ukjent type'} ${fmt(w, 2)} × ${fmt(h, 2)} m, ${Math.round(slope)}° som vanlig trapp → bratt trapp ${Math.round(steepSlope)}° (høyst ${STEEP_MAX_SLOPE_DEG}°), spurt om` });
+      return;
+    }
     if (slope > STAIR_MAX_SLOPE_DEG) {
       U.stairs = U.stairs.filter((s) => s !== st);
       // (the line at its end stays: it was taken out for this stair only)
       if (edge) U.walls = edge.walls;
       const need = rise / Math.tan((STAIR_MAX_SLOPE_DEG * Math.PI) / 180);
-      const drawn = type === 'quarter-turn' ? ' Tegningen viser en kvartsvingt trapp, og husformatet har bare rette trapper og U-trapper.' : type === 'spiral' ? ' Tegningen viser en spiraltrapp, og husformatet har bare rette trapper og U-trapper.' : '';
+      const drawn = type === 'quarter-turn' ? ' Tegningen viser en kvartsvingt trapp: tegn den i «Trapp» i 3D-visningen, der du også kan velge kvartsvingt eller bratt.' : type === 'spiral' ? ' Tegningen viser en spiraltrapp, og husformatet har ingen spiraltrapper: velg en kvartsvingt eller bratt trapp i «Trapp» i 3D-visningen.' : '';
       questions.push(
         stairQuestion({
           level: U.id,
@@ -1724,6 +1771,8 @@ const rectPoly = (r) => [[r[0][0], r[0][1]], [r[1][0], r[0][1]], [r[1][0], r[1][
 
 /** The steepest stair the player walks up (src/config.js: ground steeper than this is a wall to PlayerController). */
 export const STAIR_MAX_SLOPE_DEG = (Math.acos(WALKABLE_NORMAL_Y) * 180) / Math.PI;
+/** The steepest steep stair (type «steep») generate places: the engine climbs up to about 66° (notes/trapper.md) */
+export const STEEP_MAX_SLOPE_DEG = 65;
 /** A line thinner than this across a stair's flight is one of its treads, not a wall (dropTreadLines). */
 const TREAD_LINE_T = 0.08;
 

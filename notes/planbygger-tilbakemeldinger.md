@@ -995,7 +995,7 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 
 ### K3 – hus2: boden i nisjen slås sammen med gangen og entreen
 - **Hvorfor:** strek-prikk-linja mot entreen blir ikke funnet.
-- **Status:** neste runde – den eneste røde sjekken i generate-testen (305 av 306).
+- **Status:** rettet (natt til 23.10) – detect.js gir strek-prikk-linjene foran grunne nisjer (`niches`), og «Generer» skiller nisjen ut med en når den har en romtekst alene (BOD, 0,65 m²). hus2 har 13 rom med eget navn, og generate-testen er grønn.
 
 ### K4 – takhøyden spørres om i hver etasje
 - **Hvorfor:** 15 av 29 spørsmål er takhøyden. Den bør spørres én gang for huset, med valg per etasje.
@@ -1016,7 +1016,7 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 
 ### K8 – trappene: kvartsvingte bygges som U eller rett, og hus8 får ingen trapp (for bratt)
 - **Hvorfor:** spillet har ikke kvartsvingte trapper. hus1-trappa har også dårlige trinnmål (2R+G 0,68).
-- **Status:** motoren (nattarbeidet, `stairs.js`) – forespørsel; trinnmålene i fase D
+- **Status:** motoren har nå kvartsvingte og bratte trapper (notes/trapper.md). Kvartsvingte trapper fra tegningen bygges fortsatt som U eller rett (retningen leses feil, F125); «Trapp» i 3D-visningen lager dem. hus8: den bratte trappa i sjakten har ikke gulv bak foten i kjelleren (det nedre løpet er ikke tegnet), så den legges ikke inn av seg selv, men spørsmålet har nå «Bratt trapp eller loftstige» (natt til 23.10).
 
 ### K9 – hus7 uten KI blir et tomt hus
 - **Hvorfor:** veggene er tegnet med to tynne streker, og målestokken bommer med 60 %.
@@ -1024,7 +1024,7 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 
 ### K10 – loftet (hus1 2. etasje): rommene tar med gulvet utenfor knevegg
 - **Hvorfor:** skrå himling finnes ikke i motoren ennå.
-- **Status:** eksteriør- eller tak-runden
+- **Status:** eksteriør- eller tak-runden. Himlingene følger nå taket på loftet (type `roof`, knevegg 1,2 m), men rommene tar fortsatt med gulvet utenfor kneveggen.
 
 ### K11 – KI-en virker bare lokalt
 - **Hvorfor:** KI-ruta er ikke montert i `server.mjs` (bak innloggingen). Det besluttes ved deploy.
@@ -1041,7 +1041,7 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 
 ### K14 – hus4 2. etasje: drager, trapp og kjøkkenøy blir egne rom (F56, F57)
 - **Hvorfor:** strek-prikk-linja med søyler (⊠) i hver ende er en drager i taket, og trappa og kjøkkenøya er møbler/trapp; de skal ikke lukke rom. Nå blir to stykker av stue/kjøkken egne rom som veiviseren spør om (og gjetter bad).
-- **Status:** til neste runde med gjenkjenning. Tanke: et rom uten etikett som bare skilles fra et navngitt rom av slike linjer, slås sammen med det, og spørsmålet får valget «del av rommet ved siden av».
+- **Status:** til neste runde med gjenkjenning. Tanke: et rom uten etikett som bare skilles fra et navngitt rom av slike linjer, slås sammen med det, og spørsmålet får valget «del av rommet ved siden av». Natt til 23.10: på hus4 2. etasje er drageren lest som to vegger (w12 0,17 m og w13 0,29 m), ikke som skillelinjer, så en slik sammenslåing treffer ikke. Gjenkjenningen må først skille en drager (strek-prikk med ⊠ i endene) fra en vegg.
 
 ### K15 – små hakk i romkanten blir stolper og trinn i veggen (F96, F97, hus7)
 - **Hvorfor:** romkanten har et hakk på noen centimeter nær et hjørne (veggtykkelsen målt litt ulikt på to stykker), og byggeren lager et kort veggstykke som stikker ut.
@@ -1049,7 +1049,7 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 
 ### K16 – tak over hus med flere fløyer og innhakk (F135, F136)
 - **Hvorfor:** taket deles i rektangler langs husets akse. Et rent L- eller T-hus får én takdel per fløy, men en form med innhakk (hus2) gir deler som ikke dekker alle veggene; da blir det ett tak over hele rektangelet, også over hjørnet der det ikke er hus.
-- **Status:** til tak-runden: bedre oppdeling (flere deler, kilrenner) og takformen per fløy fra fasadene.
+- **Status:** rettet (natt til 23.10): en L eller U deles der halvdelene fyller rektanglene sine best (hus2: to saltak, hus5: tre pulttak), KI-ens fløyer brukes når de er tydelige, mønelinja på planen gir retningen, og lave deler uten etasje over får flatt tak (hus4). Se notes/planbygger.md «Takfløyene».
 ---
 
 ## Ideer: forbedringer og nye funksjoner
