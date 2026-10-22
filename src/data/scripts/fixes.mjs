@@ -296,7 +296,21 @@ export const PRODUCTS = {
   'bohus-ramor-canvas-bilde-90x120': { set: { subcategory: 'lerret' }, params: { w: null, h: null, motif: 'brush-abstract', motifOpts: { variant: 'diagonal' }, seed: 4, palette: ['#3a2c24', '#786354', '#a8774f', '#1e1713', '#c99a6b'] } },
   // Mara: horizontal beige, taupe and brown streaks like the Bohus photo (INTEGRATOR-B)
   'bohus-holmen-mara-canvas-bilde-120x60': { set: { subcategory: 'lerret' }, params: { w: null, h: null, orientation: null, motif: 'brush-abstract', motifOpts: { variant: 'horizon' }, seed: 7, texture: 'painted', palette: ['#ebe5dc', '#a89a8a', '#c8bcae', '#7a6d60', '#d9d0c4'] }, variants: [['Beige/natur', { colors: { print: '#a89a8a', frame: '#c3b7aa' } }]] },
-  'bohus-holmen-gustin-strukturbilde-80x100': { set: { subcategory: 'lerret' }, noteAppend: 'Utgående serie hos Bohus (sjekket 2026-10-21).', params: { w: null, h: null, motif: 'texture-plaster', motifOpts: { variant: 'waves' }, seed: 3, palette: ['#a3a3a4', '#8a8a8b', '#6d6d6e', '#2a2a2b', '#c4c4c4'] } },
+  // Gustin: the Bohus photo is a dense black grid with white raised lines on a white canvas (as its description says);
+  // no painter draws that grid, so the black maze with white lines is the closest – texture 'painted' keeps the white
+  // (a 'relief' build paints in tones of the print colour) and still raises the lines; white canvas sides (runde-3
+  // review: the grey waves of art.md B5 matched neither the photo nor the description)
+  'bohus-holmen-gustin-strukturbilde-80x100': {
+    set: {
+      subcategory: 'lerret',
+      priceNote: 'pris sjekket 2026-10-18 (SPAR 60 %). Mål 80x100x4.5 cm.',
+      shapeNote: 'Produktbildet viser et tett, svart rutemønster med hvite relieffstreker og en bred hvit kant på lerretet. Spillet viser det som et svart labyrintmønster med hvite streker over hele lerretet, med hvite lerretskanter og tynn hvit ramme.',
+      verifiedNote: 'Bekreftet på bohus.no: Holmen, 800 kr (før 1 999), 80x100x4.5, canvas/tre. Utgående – kun lager i noen butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: bildet finnes bare i denne fargen («canvas svart med ramme», 298260). Produktbildet viser et svart rutemønster på hvit canvas i hvit ramme, ikke svart ramme – rammefargen og beskrivelsen er rettet, og motivet er svart med hvite streker som på bildet.',
+    },
+    noteAppend: 'Utgående serie hos Bohus (sjekket 2026-10-21).',
+    params: { w: null, h: null, motif: 'texture-plaster', motifOpts: { variant: 'maze' }, seed: 16, texture: 'painted', edge: 'white', palette: ['#2b2b2b', '#151515', '#3a3a3a', '#000000', '#f4f3f0'] },
+    variants: [['Canvas svart med ramme', { colors: { print: '#151515', frame: '#e0dfdd' } }]],
+  },
   'bohus-labyrint-strukturbilde-80x120': { set: { subcategory: 'lerret' }, noteAppend: 'Utgående serie hos Bohus (sjekket 2026-10-21).', params: { w: null, h: null, orientation: null, motif: 'texture-plaster', motifOpts: { variant: 'maze' }, seed: 11, palette: ['#f2f0ec', '#e9e7e4', '#d8d2c9', '#9c9488', '#cfbead'] } },
 };
 

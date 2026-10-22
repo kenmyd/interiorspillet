@@ -462,7 +462,7 @@ export class SavePanel extends BasePanel {
         let text = `Importerte «${name}» (Ctrl+Z angrer)`;
         if (added) text += ` · ${added} ${added === 1 ? 'eget bilde' : 'egne bilder'} lagt til`;
         if (rejected) text += ` · ${rejected} ${rejected === 1 ? 'bilde kunne ikke leses og vises som tom ramme' : 'bilder kunne ikke leses og vises som tomme rammer'}`;
-        if (unsaved) text += ` · ${IMAGE_MSG.importUnsaved}`;
+        if (unsaved) text += ` · ${li.unsavedReason === 'memory' ? IMAGE_MSG.importMemory : IMAGE_MSG.importUnsaved}`;
         this.editor.events.emit('toast', { text, seconds: rejected || unsaved ? 6 : 3 });
       }
     } catch (err) {

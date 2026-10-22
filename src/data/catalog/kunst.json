@@ -3726,7 +3726,7 @@
     "url": "https://www.bohus.no/interior/bilder/gustin-strukturbilde-80x100",
     "priceNok": 1999,
     "salePriceNok": 800,
-    "priceNote": "pris sjekket 2026-10-18 (SPAR 60 %). Mål 80x100x4.5 cm. Motivet er ikke beskrevet på siden – fargene er anslått fra produktnavnet «canvas svart». Utgående serie hos Bohus (sjekket 2026-10-21).",
+    "priceNote": "pris sjekket 2026-10-18 (SPAR 60 %). Mål 80x100x4.5 cm. Utgående serie hos Bohus (sjekket 2026-10-21).",
     "dims": {
       "w": 0.8,
       "d": 0.045,
@@ -3739,24 +3739,25 @@
       "frame": "white",
       "depth": 0.045,
       "frameW": 0.02,
-      "texture": "relief",
+      "texture": "painted",
       "motifOpts": {
-        "variant": "waves"
+        "variant": "maze"
       },
-      "seed": 3,
+      "seed": 16,
+      "edge": "white",
       "palette": [
-        "#a3a3a4",
-        "#8a8a8b",
-        "#6d6d6e",
-        "#2a2a2b",
-        "#c4c4c4"
+        "#2b2b2b",
+        "#151515",
+        "#3a3a3a",
+        "#000000",
+        "#f4f3f0"
       ]
     },
     "variants": [
       {
         "name": "Canvas svart med ramme",
         "colors": {
-          "print": "#8a8a8b",
+          "print": "#151515",
           "frame": "#e0dfdd"
         },
         "materials": {
@@ -3774,7 +3775,8 @@
     "why": "Det grafiske svart-hvite motivet henter opp de svarte kjøkkendetaljene og det mørke spisebordet, og to–tre stykker side om side kan fylle den høye veggen.",
     "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Consilimo%20AS/Produkter/GUSTIN/312325/image-thumb__312325__PDP-Product/298260%20-%20Gustin%20strukturbilde%2080x100%20canvas%20svart%20med%20ramme%20-%201.5fe62bfe.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på bohus.no: Holmen, 800 kr (før 1 999), 80x100x4.5, canvas/tre. Utgående – kun lager i noen butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: bildet finnes bare i denne fargen («canvas svart med ramme», 298260). Produktbildet viser et svart rutemønster på hvit canvas i hvit ramme, ikke svart ramme – rammefargen, params.frame og beskrivelsen er rettet, og canvasfargen er gjennomsnittet av motivet.",
+    "verifiedNote": "Bekreftet på bohus.no: Holmen, 800 kr (før 1 999), 80x100x4.5, canvas/tre. Utgående – kun lager i noen butikker. Farger og stoff kontrollert 2026-10-21 mot bohus.no: bildet finnes bare i denne fargen («canvas svart med ramme», 298260). Produktbildet viser et svart rutemønster på hvit canvas i hvit ramme, ikke svart ramme – rammefargen og beskrivelsen er rettet, og motivet er svart med hvite streker som på bildet.",
+    "shapeNote": "Produktbildet viser et tett, svart rutemønster med hvite relieffstreker og en bred hvit kant på lerretet. Spillet viser det som et svart labyrintmønster med hvite streker over hele lerretet, med hvite lerretskanter og tynn hvit ramme.",
     "priceConfidence": "checked"
   },
   {

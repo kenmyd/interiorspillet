@@ -559,7 +559,11 @@ try {
   const summary = { rows: rows.length, flagged, readyMs, totalMs: Date.now() - t0, medianMs: ms[Math.floor(ms.length / 2)] ?? 0, consoleErrorsAtLoad: loadErrors, consoleErrors: watch.errors, perCat, stale, allowProblems, sheets: sheetFiles.map((f) => path.relative(ROOT, f).replace(/\\/g, '/')) };
   const report = { tool: 'thumbcheck', when: new Date().toISOString(), port, filter: { ...filter, old: filter.old ? `${filter.old.length} ids` : null, research: research ? research.length : null, baseIds: undefined }, summary, rows };
   fs.writeFileSync(path.join(OUT, 'report.json'), `${JSON.stringify(report, null, 1)}\n`);
-  if (opt.json) fs.writeFileSync(path.resolve(ROOT, opt.json), `${JSON.stringify(report, null, 1)}\n`);
+  if (opt.json) {
+    const jsonFile = path.resolve(ROOT, opt.json);
+    fs.mkdirSync(path.dirname(jsonFile), { recursive: true });
+    fs.writeFileSync(jsonFile, `${JSON.stringify(report, null, 1)}\n`);
+  }
   console.log(`\n${rows.length} miniatyrer, ${flagged} flagget, side klar ${readyMs} ms, median ${summary.medianMs} ms, totalt ${summary.totalMs} ms, konsollfeil ${watch.errors} (${loadErrors} under lasting) → ${path.relative(ROOT, OUT) || OUT}`);
   if (flagged || watch.errors || allowProblems.length) code = 1;
 } catch (e) {

@@ -298,7 +298,14 @@ check('error-hendelse med norsk tekst', errs.length === 1 && typeof errs[0].mess
 const savesG = new Saves(new DesignState(), { storage: memStorage(), images: new IS.ImageStore({ backend: { ...IS.memBackend(new Map(), { persistent: true }), put: quota } }), autosave: false });
 await savesG.importFile(new Blob([text]));
 check('importFile: unsaved = [id] når lagringen feiler', JSON.stringify(savesG.lastImport.unsaved) === JSON.stringify([id]), JSON.stringify(savesG.lastImport));
+check('… med grunnen «quota» (lagringsplassen er full)', savesG.lastImport.unsavedReason === 'quota' && /full/.test(IS.MSG.importUnsaved));
 console.warn = warn0;
+// a browser that keeps no pictures at all (IndexedDB blocked, private window): the reason is not «full»
+const savesMem = new Saves(new DesignState(), { storage: memStorage(), images: new IS.ImageStore({ backend: 'memory' }), autosave: false });
+await savesMem.importFile(new Blob([text]));
+check('importFile uten IndexedDB: unsaved = [id], grunn «memory», teksten sier ikke «full»', JSON.stringify(savesMem.lastImport.unsaved) === JSON.stringify([id])
+  && savesMem.lastImport.unsavedReason === 'memory' && !/full/.test(IS.MSG.importMemory) && /privat vindu/.test(IS.MSG.importMemory), JSON.stringify(savesMem.lastImport));
+check('vellykket import har ingen grunn', savesC.lastImport.unsavedReason === undefined);
 
 // ---------------------------------------------------------------------------------------------------------------
 section('13. Opprydding (GC)');
@@ -313,6 +320,91 @@ await storeA.putBytes(OTHER, { mime: 'image/png' });
 const ro = new IS.ImageStore({ backend: IS.memBackend(dbA, { persistent: true }), readOnly: true });
 check('readOnly sletter ingenting', (await ro.gc(new Set(), 14, { now: Date.now() + 90 * 864e5 })).length === 0 && dbA.has(idO));
 check('gc(null) = []', (await storeA.gc(null)).length === 0 && dbA.has(idO));
+
+section('13b. Samme bilde lastet opp igjen');
+const DAY = 864e5;
+const T_OLD = Date.now() - 30 * DAY;
+const dbU = new Map();
+const oldStore = new IS.ImageStore({ backend: IS.memBackend(dbU, { persistent: true }), now: () => T_OLD });
+const idU = await oldStore.putBytes(OTHER, { mime: 'image/png', name: 'gammel.png' });
+await oldStore.putBytes(PNG, { mime: 'image/png', name: 'nyere.png' });
+dbU.get(id).createdAt = dbU.get(id).lastUsedAt = T_OLD + DAY; // newer than idU, still old
+// next session: the old picture is only in the backend
+const storeU = new IS.ImageStore({ backend: IS.memBackend(dbU, { persistent: true }) });
+const tU = Date.now();
+check('samme bytes (kun i bakenden) → samme id', (await storeU.putBytes(OTHER, { mime: 'image/png', name: 'ny.png' })) === idU);
+const infoU = storeU.info(idU);
+check('… teller som lastet opp nå: createdAt, lastUsedAt og det nye navnet, også i bakenden', infoU?.createdAt >= tU && infoU?.lastUsedAt >= tU && infoU?.name === 'ny.png'
+  && dbU.get(idU).lastUsedAt >= tU && dbU.get(idU).createdAt >= tU && dbU.get(idU).name === 'ny.png' && infoU.persisted === true, JSON.stringify(infoU));
+check('… og står øverst i «Nylig lastet opp»', (await storeU.list())[0]?.id === idU);
+const delU = await storeU.gc(new Set());
+check('… og ryddes ikke bort (det andre gamle bildet gjør det)', JSON.stringify(delU) === JSON.stringify([id]) && dbU.has(idU), JSON.stringify(delU));
+// the same in memory (listed under «Nylig lastet opp», never used): a re-upload is a new upload too
+const storeU2 = new IS.ImageStore({ backend: IS.memBackend(dbU, { persistent: true }) });
+dbU.get(idU).createdAt = dbU.get(idU).lastUsedAt = T_OLD;
+await storeU2.list();
+check('i minnet fra listen med gammel dato', storeU2.has(idU) && storeU2.info(idU).lastUsedAt === T_OLD);
+await storeU2.putBytes(OTHER, { mime: 'image/png' });
+check('samme bytes (i minnet) → oppdatert, navnet beholdes uten nytt navn', storeU2.info(idU).lastUsedAt >= tU && dbU.get(idU).lastUsedAt >= tU && storeU2.info(idU).name === 'ny.png');
+check('… og ryddes ikke bort', !(await storeU2.gc(new Set())).includes(idU) && dbU.has(idU));
+
+section('13c. Opprydding mens bildet brukes igjen');
+/** A backend whose writes take a few ms (gc's root bumps keep it inside its loop) on a fresh map. */
+const slowDb = () => {
+  const m = new Map();
+  const be = IS.memBackend(m, { persistent: true });
+  return { m, be: { ...be, put: (rec) => new Promise((r) => setTimeout(() => be.put(rec).then(r), 4)) } };
+};
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+/** Five roots unused for more than a day, then one picture unused for 30 days (in the backend only). */
+async function staleSetup(m) {
+  const seed = new IS.ImageStore({ backend: IS.memBackend(m, { persistent: true }), now: () => T_OLD });
+  const rootIds = [];
+  for (let i = 0; i < 5; i++) rootIds.push(await seed.putBytes(makePng(2, 2, [i * 40, 90, 200]), { mime: 'image/png' }));
+  const stale = await seed.putBytes(makePng(5, 3, [250, 200, 10]), { mime: 'image/png', name: 'gammel.png' });
+  return { roots: new Set(rootIds), stale, bytes: makePng(5, 3, [250, 200, 10]) };
+}
+{
+  const { m, be } = slowDb();
+  const { roots: rs, stale, bytes } = await staleSetup(m);
+  const st = new IS.ImageStore({ backend: be });
+  const run = st.gc(rs);
+  await wait(6); // gc has its snapshot and bumps the roots
+  const res = st.import({ [stale]: IS.bytesToDataUrl(bytes, 'image/png') });
+  const delG = await run;
+  await st.flush();
+  check('import mens gc går: bildet slettes ikke (minne og bakende)', res.added.includes(stale) && !delG.includes(stale) && st.has(stale) && m.has(stale), JSON.stringify({ added: res.added, delG }));
+}
+{
+  const { m, be } = slowDb();
+  const { roots: rs, stale, bytes } = await staleSetup(m);
+  const st = new IS.ImageStore({ backend: be });
+  await st.list(); // «Nylig lastet opp»: the old record is in memory with its old date
+  const run = st.gc(rs);
+  await wait(6);
+  const res = st.import({ [stale]: IS.bytesToDataUrl(bytes, 'image/png') });
+  const delG = await run;
+  await st.flush();
+  check('import av et bilde som alt er i minnet: brukt igjen, ikke slettet', res.existing.includes(stale) && !delG.includes(stale) && st.has(stale) && m.has(stale)
+    && Date.now() - m.get(stale).lastUsedAt < DAY, JSON.stringify({ existing: res.existing, delG }));
+}
+{
+  const { m, be } = slowDb();
+  const { roots: rs, stale } = await staleSetup(m);
+  const st = new IS.ImageStore({ backend: be });
+  const run = st.gc(rs);
+  await wait(6);
+  m.get(stale).lastUsedAt = Date.now(); // another tab used it after the snapshot
+  const delG = await run;
+  check('brukt i en annen fane etter øyeblikksbildet: ikke slettet', !delG.includes(stale) && m.has(stale), JSON.stringify(delG));
+}
+{
+  const { m, be } = slowDb();
+  const { roots: rs, stale } = await staleSetup(m);
+  const st = new IS.ImageStore({ backend: be });
+  const delG = await st.gc(rs);
+  check('uten ny bruk: det gamle bildet slettes fortsatt, røttene blir', JSON.stringify(delG) === JSON.stringify([stale]) && !m.has(stale) && [...rs].every((x) => m.has(x)));
+}
 
 // ---------------------------------------------------------------------------------------------------------------
 section('14. Saves.imageRoots');
@@ -382,6 +474,37 @@ const uq = dsQ.add(SPEC(id));
 const gq = dsQ.get(uq);
 check('kilde, refId, navn, kategori, arketype, montering og params', gq.source === 'custom' && gq.refId === 'custom-image' && gq.name === 'Eget bilde – Ferie i Lofoten'
   && gq.category === 'kunst' && gq.archetype === 'art-frame' && gq.mount === 'wall' && JSON.stringify(gq.params) === JSON.stringify(SPEC(id).params));
+
+section('16. Autosave fra forrige versjon (maleriet var «smatt»)');
+/** FNV-1a as DesignState's meta.specRevision. */
+const fnv = (s) => {
+  let hh = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    hh ^= s.charCodeAt(i);
+    hh = Math.imul(hh, 0x01000193);
+  }
+  return (hh >>> 0).toString(16).padStart(8, '0');
+};
+/** Today's untouched room (only light / time changed) as the previous version saved it: the painting in 'smatt'. */
+const oldAutosave = (change) => {
+  const j = new DesignState().toJSON();
+  const p = j.items.find((it) => it.uid === 'ex-f-maleri');
+  p.category = 'smatt';
+  j.meta.specRevision['ex-f-maleri'] = fnv(JSON.stringify(p));
+  change?.(p);
+  j.env = { ...j.env, hour: 20 };
+  return j;
+};
+const lsW = memStorage();
+const savesW = new Saves(new DesignState(), { storage: lsW, autosave: false });
+check('maleriet finnes og er «kunst» i dag', new DesignState().get('ex-f-maleri')?.category === 'kunst');
+check('urørt rom fra forrige versjon er ikke «arbeid»', !savesW.isWork(oldAutosave()));
+check('… men et flyttet maleri er det', savesW.isWork(oldAutosave((p) => { p.position = [p.position[0] + 0.3, p.position[1], p.position[2]]; })));
+lsW.setItem(STORAGE_KEY, JSON.stringify({ version: 1, active: null, designs: {}, autosave: oldAutosave() }));
+const probeW = new Saves({ on: () => () => {}, meta: { name: 'Original' } }, { storage: lsW, autosave: false });
+check('main.js-proben: ingen «Fortsett siste design»', !probeW.isWork(probeW._read().autosave));
+check('«Start med stua» lager ingen «Forrige økt»', savesW.archiveSession() === null && savesW.list().length === 1, JSON.stringify(savesW.list().map((r) => r.name)));
+check('et ekte endret design er fortsatt arbeid', savesW.isWork({ ...new DesignState().toJSON(), paints: { 'w-hoy': '#7d8a80' } }) && !savesW.isWork(new DesignState().toJSON()));
 
 const ms = Date.now() - t0;
 console.log(`\n(${ms} ms)`);

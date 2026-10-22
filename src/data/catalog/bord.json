@@ -1871,8 +1871,9 @@
     "brand": "IKEA",
     "store": "IKEA",
     "url": "https://www.ikea.com/no/no/p/alex-skrivebord-hvit-10473555/",
-    "priceNok": 1495,
-    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 104.735.55, hvit): 1 495 kr, ingen førpris eller kampanje.",
+    "priceNok": 1695,
+    "salePriceNok": 1495,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 104.735.55, hvit): 1 495 kr («Ny lavere pris», førpris 1 695 kr, gyldig til 29.11.2026).",
     "dims": {
       "w": 1,
       "d": 0.48,
@@ -1915,7 +1916,7 @@
     "why": "Tar lite plass og ser lett ut – passer under vinduet i kjellersoverommet eller som sminke- og skrivebord på soverommet.",
     "imageUrl": "https://www.ikea.com/no/no/images/products/alex-skrivebord-hvit__0977658_pe813725_s5.jpg",
     "verified": true,
-    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»-fanen): 1 495 kr, bredde 100, dybde 48, høyde 76, fri høyde under 62 cm, bilde, art.nr. 104.735.55. Anslått: bentykkelse fra bildet.",
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»-fanen): 1 495 kr (førpris 1 695 kr), bredde 100, dybde 48, høyde 76, fri høyde under 62 cm, bilde, art.nr. 104.735.55. Anslått: bentykkelse fra bildet.",
     "priceConfidence": "checked",
     "shapeNote": "Kasse med to skuffer med innfreste grep og en ledningsåpning, på fire tynne firkantrør med stag nede. Stagene er ikke med i modellen."
   },

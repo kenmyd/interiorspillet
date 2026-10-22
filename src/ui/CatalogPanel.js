@@ -903,7 +903,10 @@ const CSS = `
 .ipc-facts { display: grid; grid-template-columns: auto 1fr; gap: 0.35em 0.9em; font-size: 0.9em; margin: 0; }
 .ipc-facts dt { color: var(--kv-ink-3); }
 .ipc-facts dd { margin: 0; color: var(--kv-ink); font-variant-numeric: tabular-nums; }
-.ipc-panel .ip-panel__foot { justify-content: space-between; }
+.ipc-panel .ip-panel__foot { justify-content: space-between; flex-wrap: wrap; row-gap: 0.45em; }
+.ipc-panel .ip-panel__foot > .ip-btn--primary { margin-left: auto; }
+.ipc-foot-extra { flex: 1 0 100%; display: flex; flex-wrap: wrap; gap: 0.4em; min-width: 0; }
+.ipc-foot-extra > * { max-width: 100%; }
 .ipc-storelink { text-decoration: none; }
 .ipc-storelink .kv-icon { width: 0.95em; height: 0.95em; }
 .ipc-empty { grid-column: 1 / -1; }
@@ -1647,7 +1650,10 @@ export class CatalogPanel extends BasePanel {
     const isShading = isShadingProduct(p);
     const place = button({ label: isShading ? 'Velg vindu' : 'Plasser i stua', icon: isShading ? 'blinds' : null, variant: 'primary', title: isShading ? 'Klikk deretter på et vindu i stua (eller velg i lista)' : undefined, onClick: () => this.place(p, this.detail?.vi ?? vi) });
     if (!isShading) place.prepend(svg(PLUS_ICON));
-    this.foot.replaceChildren(storeLink(p, { variant: vi }) || h('span'), ...this._extra(this._detailActions, { panel: this, product: p, vi }), place);
+    // feature buttons («Legg inn flere …», «Med eget bilde …») get a row of their own above «Se hos …» and the
+    // primary button, so the footer never runs out of the panel
+    const extra = this._extra(this._detailActions, { panel: this, product: p, vi });
+    this.foot.replaceChildren(...(extra.length ? [h('div.ipc-foot-extra', {}, extra)] : []), storeLink(p, { variant: vi }) || h('span'), place);
     this.foot.hidden = false;
   }
 

@@ -455,7 +455,11 @@ etterklangstid («Etterklang ≈ 0,72 s», grønn ≤ 0,6, gul ≤ 0,7, rød ove
 **Utvidelseskrokene (runde 3)** – nye funksjoner kobles på uten å endre panelene:
 - `Inspector.addExtension({ head?, sections?: { afterHead?, afterLight?, size? }, hide?, candidates?, carry? }) → off`
   (unntak fanges og logges). Et skjema-param med `defaultFrom: '<annen param>'` viser verdien til den andre når det
-  ikke er satt (rammens `matH` → `matW`).
+  ikke er satt (rammens `matH` → `matW`); `defaultFor(dims, params)` viser verdien byggeren faktisk bruker (rammens
+  `matW`: 9 % av korteste side). En arketype med `paramPatch(item, key, value) → { dims?, params? }` får det med i
+  samme endring (benk/krakk/barkrakk: rygg på → setet blir, høyden øker), og størrelsen tilpasses rommet.
+- Roter 15° (knappene, `R` / `Shift+R`) avvises med «Får ikke plass rotert her» når `Placement.constrain` sier
+  `blocked` etter vendingen men ikke før – som rotasjonshåndtaket.
 - `CatalogPanel.addPinned(fn) → off` (kort først i en kategori), `addDetailAction(fn) → off` (knapp på produktkortet),
   `CATEGORY_HINTS` som dempet lenke under brikkene, «Fakta» fra `catalog/facts.js`.
 - `ShoppingPanel.addSection({ list, render, text, csv, print }) → off` (seksjoner legges aldri til totalen); grupper
@@ -560,8 +564,10 @@ med antall («Navn (9 stk)»).
 - Node-tester: `node tools/test-design.mjs` (data, `EXPECT`), `node tools/test-house.mjs` (alle filene i
   `tools/house-tests/`; `QA_PARTIAL=1` gjør rundens mål myke) og `node tools/smoke-import.mjs` (importerer
   hovedmodulene på under 3 s). Runde 3 la til `models.test` (alle arketyper, alle valg, alle produkter, mål og budsjett),
-  `catalog-round.test`, `downlights.test`, `spots-models.test`, `lightbudget.test`, `art.test`, `images.test` og
-  `image-art.test`.
+  `catalog-round.test`, `downlights.test`, `spots-models.test`, `lightbudget.test`, `art.test`, `images.test`,
+  `image-art.test`, `ui-image-shop.test` (bildestørrelse på smale vegger, feiltekster, pakkepriser og CSV),
+  `inspector-hooks.test` (Inspektørens kroker: `defaultFor`, `paramPatch`, avvist rotering, `setRef`) og
+  `stop-browser.test` (`tools/lib/browser-pid.mjs`: hvilke prosesser stop-browser får stoppe).
 
 **Verktøy fra runde 3** (nettleserverktøyene bruker Edge uten vindu; `--port=<testserver> --lock --step=<navn>` deler en
 GPU-lås og en pidfil):
@@ -579,4 +585,4 @@ GPU-lås og en pidfil):
 | `tools/check-build.mjs [--out=]` | `npm run build`: bare de 2 kjente advarslene, ingen chunk over 2000 kB |
 | `tools/check-ui-text.mjs [--all]` | Finner engelske UI-tekster lagt til siden c28070d |
 | `tools/smoke-import.mjs` | Importerer hovedmodulene i Node |
-| `tools/stop-browser.mjs --step=<navn>` | Stopper et hengende Edge-vindu fra et verktøy – bare prosessen i pidfila (aldri etter navn) |
+| `tools/stop-browser.mjs --step=<navn>` | Stopper en hengende hodeløs Edge/Chrome fra et verktøy (`--browser` trengs ikke) – bare prosessen i pidfila (aldri etter navn); en levende prosess som ikke er en hodeløs nettleser blir ikke drept, og pidfila beholdes (exit 1) |

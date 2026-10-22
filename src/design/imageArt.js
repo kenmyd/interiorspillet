@@ -7,8 +7,9 @@ import { isImageId } from '../models/artImages.js';
  * No DOM, no three.js – Node-testable. Geometry comes from models/artlayout.js (the builder's own numbers).
  *
  * An uploaded picture is an art-frame item with source 'custom', refId CUSTOM_REF, category 'kunst' and
- *   params { motif: 'custom', imageId, imageAspect, fit, frameStyle, frame, frameW, mat, matW, matColor, texture,
- *            depth (= dims.d), edge: 'white' }   (dims = the OUTER size incl. frame and mat).
+ *   params { motif: 'custom', imageId, imageAspect, fit, sizeMode, frameStyle, frame, frameW, mat, matW, matColor,
+ *            texture, depth (= dims.d), edge: 'white' }   (dims = the OUTER size incl. frame and mat; sizeMode = the
+ *            dialog's mode 'image'|'frame', so a later edit keeps the frame size the user chose).
  * A catalogue frame that accepts a picture (params.acceptsImage, or an «eget motiv» product with motif 'custom') keeps
  * source 'catalog', its size and price, and only gains motif 'custom', imageId, imageAspect and fit.
  *
@@ -148,7 +149,8 @@ export function choiceToSpec(choice, image, { category = ART_CATEGORY } = {}) {
   let dims;
   let fit = st.canvas || (!mat && st.frame === 'none') ? 'cover' : choice?.fit === 'contain' ? 'contain' : 'cover';
   let matW = 0;
-  if (choice?.mode === 'frame' && choice.frameSize) {
+  const sizeMode = choice?.mode === 'frame' && choice.frameSize ? 'frame' : 'image';
+  if (sizeMode === 'frame') {
     // the nominal size is the frame's opening (the glass); a mat lies inside it
     const { w: iw, h: ih } = choice.frameSize;
     const fw = st.frame === 'none' ? 0 : st.frameW;
@@ -172,7 +174,7 @@ export function choiceToSpec(choice, image, { category = ART_CATEGORY } = {}) {
     rotationDeg: 0,
     dims,
     params: {
-      motif: 'custom', imageId: image?.id, imageAspect: r4(a), fit, frameStyle: key, frame: st.frame,
+      motif: 'custom', imageId: image?.id, imageAspect: r4(a), fit, sizeMode, frameStyle: key, frame: st.frame,
       frameW: st.frameW, mat, matW, matColor: MAT_COLOR, texture, depth: st.depth, edge: 'white',
     },
     colors: { print: '#e6e2da', frame: st.color || '#151515' },
@@ -205,6 +207,9 @@ export function guessStyle(item) {
 
 /**
  * The dialog choice that reproduces an item (edit mode) – the inverse of choiceToSpec.
+ * The mode is the stored params.sizeMode: «Etter bildet» only while the opening still has the picture's shape (else
+ * the frame keeps its size). An item without one (placed before it was stored, a converted painting): a glass of a
+ * standard frame size is a frame, else «Etter bildet» when the opening has the picture's shape.
  * @param {object} item
  */
 export function specToChoice(item) {
@@ -214,12 +219,12 @@ export function specToChoice(item) {
   const ia = num(P.imageAspect, L.openW / L.openH);
   const fit = P.fit === 'contain' ? 'contain' : 'cover';
   const base = { fit, style, mat: !!P.mat, texture: P.texture };
-  if (fit !== 'contain' && Math.abs(Math.log(ia / (L.openW / L.openH))) < 0.01) {
-    return { mode: 'image', long: r4(Math.max(L.openW, L.openH)), frameSize: defaultFrameSize(ia), ...base };
-  }
   const iw = r4(L.innerW);
   const ih = r4(L.innerH);
   const std = [...frameSizesFor(ia), ...frameSizesFor(ia, { flip: true })].find((s) => Math.abs(s.w - iw) < 0.0015 && Math.abs(s.h - ih) < 0.0015);
+  const shaped = fit !== 'contain' && Math.abs(Math.log(ia / (L.openW / L.openH))) < 0.01;
+  const image = P.sizeMode === 'image' ? shaped : P.sizeMode === 'frame' ? false : shaped && !std;
+  if (image) return { mode: 'image', long: r4(Math.max(L.openW, L.openH)), frameSize: defaultFrameSize(ia), ...base };
   return { mode: 'frame', frameSize: std || { key: 'egen', label: sizeText(iw, ih), w: iw, h: ih }, ...base };
 }
 
@@ -251,7 +256,7 @@ export function imagePatch(item, image, { accepts = acceptsImage(item) } = {}) {
     // an acoustic panel stays an acoustic panel; pictures go to «Kunst og bilder»
     category: item?.archetype === 'acoustic-art' ? item.category ?? ART_CATEGORY : ART_CATEGORY,
     params: {
-      motif: 'custom', imageId: image.id, imageAspect, fit: 'cover', frameStyle: guessStyle(item),
+      motif: 'custom', imageId: image.id, imageAspect, fit: 'cover', sizeMode: 'frame', frameStyle: guessStyle(item),
       ...(P.mat ? { matW: num(P.matW, Math.min(w, h) * 0.09) } : {}),
     },
   };

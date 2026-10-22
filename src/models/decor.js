@@ -7,7 +7,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { ART_MOTIFS, ART_MOTIF_OPTIONS, LEGACY_MOTIFS, paintArt, motifOptsKey } from './artmotifs.js';
 import {
   artLayout, quantAspect, artResFor, canvasSize, PAPER_WHITE, HANGER_Z, FRAME_OPTIONS, LAYOUT_OPTIONS, DEFAULT_SET_MOTIFS,
-  galleryLayout, fitSet, spanRects, packAtlas, atlasUvRect, PPM, ATLAS_MAX,
+  galleryLayout, fitSet, spanRects, packAtlas, atlasUvRect, PPM, ATLAS_MAX, ART_DEPTH_MIN,
 } from './artlayout.js';
 import { ArtCache, ART_BUDGET_PX } from './artcache.js';
 import { isImageId } from './artImages.js';
@@ -2795,9 +2795,10 @@ function buildArtSet(spec) {
   const q = spec.quality === 'low' || spec.quality === 'high' ? spec.quality : 'medium';
   artBudget(spec);
   const lay = galleryLayout(typeof P.layout === 'string' ? P.layout : 'salon-5', { gap: P.gap, rise: P.rise, overlap: P.overlap, mirror: P.mirror === true, frames: P.frames });
-  const { frames, ledge } = fitSet(lay.frames, lay.ledge, spec.dims);
+  const { frames, ledge, kz } = fitSet(lay.frames, lay.ledge, spec.dims);
   const D = num(P.depth, spec.dims.d);
-  const pieceD = clamp(ledge ? Math.min(0.025, D) : D, 0.005, 0.06);
+  // on a ledge the pieces are 2.5 cm deep – squeezed with the ledge (kz < 1) when the set is shallower than it
+  const pieceD = ledge ? clamp(Math.min(0.025 * kz, D), ART_DEPTH_MIN, 0.06) : clamp(D, 0.005, 0.06);
   const hex = hexOf(C.print, DEFAULT_PRINT);
   const setPal = validPalette(P.palette) ? P.palette : null;
   const look = { texture: setTexture(P.texture), fabric: M.print === 'cotton' || M.print === 'linen' ? M.print : null, glass: P.glass === true };
@@ -2863,10 +2864,12 @@ function buildArtSet(spec) {
     g.add(K.partMesh(geo, pm, 'print', { noMerge: true }));
   }
   if (ledge) {
-    // the picture ledge (layout 'ledge'): a board under the frames with a front lip, in the frame material
+    // the picture ledge (layout 'ledge'): a board under the frames with a front lip, in the frame material (board and
+    // lip ledge.d deep / 8 mm thick in the natural layout, squeezed by kz in a shallower set – the set ends at dims.d)
     const lm = frameMaterial(M.frame || 'oak', C.frame);
+    const lipD = 0.008 * kz;
     g.add(K.partMesh(K.box(ledge.w, ledge.t, ledge.d, { grain: 'x' }), lm, 'frame', { position: [ledge.x, ledge.y - ledge.t / 2, ledge.d / 2] }));
-    g.add(K.partMesh(K.box(ledge.w, ledge.lip + ledge.t, 0.008, { grain: 'x' }), lm, 'frame', { position: [ledge.x, ledge.y + ledge.lip / 2 - ledge.t / 2, ledge.d - 0.004] }));
+    g.add(K.partMesh(K.box(ledge.w, ledge.lip + ledge.t, lipD, { grain: 'x' }), lm, 'frame', { position: [ledge.x, ledge.y + ledge.lip / 2 - ledge.t / 2, ledge.d - lipD / 2] }));
   }
   return finish(g, FRAME_FINISH);
 }
@@ -3477,7 +3480,10 @@ function buildAcousticArt(spec) {
   if (custom) {
     const entry = customPrintTexture(P.imageId, { aspect: pw / ph, res: Math.min(artResFor(spec.quality, pw, ph), CUSTOM_MAX_RES), fit: P.fit === 'contain' ? 'contain' : 'cover', bg: PAPER_WHITE, focus: P.focus });
     pm = customPrintMaterial(entry, { texture, fabric });
-    edgeHex = entry.state === 'ready' ? entry.edgeHex : CUSTOM_EDGE_HEX;
+    // fixed fabric sides (the white absorbent, as art-frame's 'white' edge for own pictures): the picture's border
+    // colour is known only once it is decoded, and these sides are not rebuilt when it arrives – they would change
+    // with what the session did (decoded at page load or not)
+    edgeHex = CUSTOM_EDGE_HEX;
   } else {
     pm = printMaterial({ motif, seed: P.seed ?? 1, hex: C.panel, palette: P.palette, aspect: pw / ph, res: motifRes(spec, motif, pw, ph), texture, fabric, opts: P.motifOpts });
     edgeHex = pm.userData.edgeHex;
@@ -3621,10 +3627,19 @@ function def(id, { parts, partLabels = {}, defaults, params = {}, dimsRange, bui
 
 const seedParam = { type: 'number', label: 'Variant', min: 1, max: 20, step: 1, default: 1 };
 const POT_OPTIONS = [['auto', 'Som planten'], ['cylinder', 'Sylinder'], ['ribbed', 'Riflet krukke'], ['belly', 'Buet krukke'], ['taper', 'Konisk'], ['bowl', 'Skål']];
-/** The six legacy motifs (labels only renamed), the motifs of models/artmotifs.js grouped, and an uploaded picture. */
+/**
+ * «Motiv»: the six legacy motifs (labels only renamed) and the motifs of models/artmotifs.js grouped. No 'custom' for
+ * a picture: an own picture comes in through «Bilde» → «Bytt til eget bilde …» (ui/imageInspector.js hides this list
+ * once the item holds one) – picked here without a picture, 'custom' only painted the fjord photo of «Fjordfoto».
+ */
 const LEGACY_OPTIONS = [['misty-trees', 'Tåkete trær'], ['abstract', 'Abstrakt'], ['landscape', 'Landskap'],
   ['botanical', 'Botanisk (enkel)'], ['line-art', 'Strektegning (enkel)'], ['photo', 'Fjordfoto (klassisk)']];
-const MOTIF_OPTIONS = [...LEGACY_OPTIONS, ...ART_MOTIF_OPTIONS, ['custom', 'Eget bilde']];
+const MOTIF_OPTIONS = [...LEGACY_OPTIONS, ...ART_MOTIF_OPTIONS];
+/**
+ * Acoustic pictures keep 'custom' (last): the catalogue's «eget motiv» panels carry it and show the fjord photo as an
+ * example until a picture is put in (buildAcousticArt) – the label says so, also when it is picked by hand.
+ */
+const ACOUSTIC_MOTIF_OPTIONS = [...MOTIF_OPTIONS, ['custom', 'Eget motiv (eksempelbilde)']];
 const plantParams = (species) => ({
   species: { type: 'enum', label: 'Plante', options: species },
   potStyle: { type: 'enum', label: 'Potte', options: POT_OPTIONS, default: 'auto' },
@@ -3694,7 +3709,10 @@ export const archetypes = {
       frameW: { type: 'number', label: 'Rammebredde', min: 0.005, max: 0.08, step: 0.001, unit: 'm', default: 0.02 },
       texture: { type: 'enum', label: 'Overflate', options: [['canvas', 'Lerret'], ['painted', 'Malt (penselstrøk)'], ['relief', 'Struktur / relieff'], ['paper', 'Papirtrykk'], ['photo', 'Fotopapir']] },
       mat: { type: 'bool', label: 'Passepartout', default: false },
-      matW: { type: 'number', label: 'Passepartoutbredde', min: 0.015, max: 0.15, step: 0.005, unit: 'm', default: 0.06, requires: 'mat' },
+      // defaultFor(dims, params): the width the builder draws while matW is unset (9 % of the short outer side,
+      // models/artlayout.js) – what the Inspector shows instead of `default` (null: no mat drawn, e.g. no frame)
+      matW: { type: 'number', label: 'Passepartoutbredde', min: 0.015, max: 0.15, step: 0.005, unit: 'm', default: 0.06, requires: 'mat',
+        defaultFor: (dims, P) => artLayout(dims, P).matW || null },
       // over and under the opening (models/artlayout.js); unset = matW all round (defaultFrom: a hint for the Inspector)
       matH: { type: 'number', label: 'Passepartout over og under', min: 0.015, max: 0.15, step: 0.005, unit: 'm', default: 0.06, requires: 'mat', defaultFrom: 'matW' },
       glass: { type: 'bool', label: 'Glass (refleks)', default: false },
@@ -3834,7 +3852,7 @@ export const archetypes = {
       ...acoustic('#8c8579', '#8c8579', '#545049', '#1c1c1c', 'woven', 'woven', 'black-metal'),
     },
     params: {
-      motif: { type: 'enum', label: 'Motiv', options: MOTIF_OPTIONS },
+      motif: { type: 'enum', label: 'Motiv', options: ACOUSTIC_MOTIF_OPTIONS },
       frame: { type: 'enum', label: 'Ramme', options: [['none', 'Uten ramme'], ['alu', 'Smal ramme']] },
       seed: seedParam,
     },

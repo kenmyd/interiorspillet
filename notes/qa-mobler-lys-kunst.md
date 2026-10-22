@@ -331,3 +331,31 @@ parametre (standardverdiene gir samme modell som før), og forskerne justerte da
 - Ikke modellert: U-sofa, hjul på hvilestoler, leselamper med flere spothoder, vegglampe med egen lesearm.
 - Ikke verifisert (butikken mangler et mål, anslått fra bildet): Stave vegglampe, ÅRSTID, BÄVE, Namron Pluto og Namron
   Rock. Anslått: Plejd 2700 K, Hue Centura 350 lm.
+
+## 10. Gjennomgangen og rettingene (port-agenten, 2026-10-22)
+
+Motgjennomgangen fant 35 funn; alle er rettet av områdeeierne (lys, spotter/rutenett, bilder, UI, kunst, møbler, data,
+verktøy). Port-agenten koblet inn det som gikk på tvers:
+- **Inspektøren:** «Rygg» og «Armlener» på benk, krakk og barkrakk holder setet der det var og gjør møbelet høyere
+  (modellenes `paramPatch`, i samme angresteg). «Passepartoutbredde» viser bredden som faktisk tegnes (9 % av korteste
+  side når den ikke er satt; `defaultFor`), og «over og under» følger den.
+- **Roter 15° og R / Shift+R:** en vending som ikke får plass (et langt rutenett gjennom veggen) avvises med «Får ikke
+  plass rotert her», slik rotasjonshåndtaket alltid har gjort. En ting som allerede står fast kan fortsatt vendes.
+- **Sofabordsett** (Dråpe, Josh): nye får `setRef` = produktets mål, så settbordene følger med når hovedbordet endres.
+- Nye tester: `inspector-hooks.test`, ALEX- og Gustin-sjekker i `catalog-round.test`.
+
+**Porten etter rettingene:** test-design 144/0, test-house 31/31 filer (strengt), smoke-import OK, check-build OK
+(34 chunker, største 868 kB, bare de 2 kjente advarslene), check-ui-text ren, check-research over research/catalog-new
+0 FAIL / 25 WARN, normaliseringen på nytt gir ingen forskjell (24 filer). Nettleser på 5190: thumbcheck 597/0 flagget,
+spotcheck 32/0, artcheck legacy+catalog+custom OK, imagecheck 19/0, refcheck 12/12 innenfor støy og `state.json` lik.
+
+**Kjent etter gjennomgangen:**
+- Underkategorien «Takspotter» har både enkeltspotter og spotplater (som MASTER §2.1 sier); ◀ ▶ på et rutenett viser
+  bare produkter som kan bli rutenett.
+- Tak over trappehullet i 1. etasje er fortsatt sperret for takting («Over trappehullet»), selv om gangens tak er der.
+- Gustin er en labyrint, ikke butikkens rutenett av små firkanter, og mangler den hvite kanten.
+- LISABO stol har førpris i notatet, men ikke «Tilbud»-merket (gammelt produkt, ikke endret).
+- Skap: rammede fronter, grepsspor i korpusfarge, knotter på skyvedører og rotting på dype skuffer er bevisste endringer
+  fra tuningen – eieren bør se på dem.
+- Et bilde lagret på denne grenen med motiv «Eget bilde» uten bilde viser «Tåkete trær» i motivlisten.
+- «Passepartoutbredde» vises også på lerret uten ramme, der det ikke tegnes noe passepartout (som før).

@@ -1,10 +1,10 @@
 import { h, svg } from './dom.js';
 import { section, button, badge, slider, select, toggle } from './panelKit.js';
 import { ICONS } from './icons.js';
-import { throttle, seg } from './inspectorKit.js';
+import { throttle, blurSoon, seg } from './inspectorKit.js';
 import { itemImageId } from '../design/ImageStore.js';
 import {
-  FRAME_STYLES, LONG_EDGE_RANGE, hasImage, isUploadedImage, acceptsImage, canHoldImage, specToChoice, choicePatch, describe, cm,
+  FRAME_STYLES, LONG_EDGE_RANGE, hasImage, isUploadedImage, acceptsImage, canHoldImage, specToChoice, choiceToSpec, choicePatch, describe, cm,
 } from '../design/imageArt.js';
 
 /**
@@ -22,9 +22,49 @@ import {
  *               painting that became an own picture brings the painting back with its own source and name
  *
  *   imageInspectorExtension(editor, upload) → ext (ext.dispose() drops the store listeners)
+ *   fitEvenly(fit, item, patch) → fit result   a picture too big for its wall is shrunk evenly (keeps its shape)
  */
 
 const FIT_OPTIONS = [['cover', 'Beskjær'], ['contain', 'Hele bildet']];
+const r4 = (v) => Math.round(v * 1e4) / 1e4;
+
+/**
+ * Fits a picture patch to its wall (fit = Inspector._fit: the wall's length and top, Placement.constrain). When the
+ * wall caps it, the picture is shrunk evenly instead of only on the capped side, so it keeps its shape: a picture sized
+ * «etter bildet» gets a shorter long edge (the frame follows the picture – nothing is cropped), anything else is scaled.
+ * Shared by the Inspector's «Bilde» controls and ImageUpload.apply (the dialog, «Bytt bilde»).
+ * @param {(patch: object) => { patch: object, capped: string[], status: string }} fit
+ * @param {object} item   the item as it is now
+ * @param {object} patch  a design.update patch
+ * @returns {{ patch: object, capped: string[], status: string, shrunk?: boolean }}
+ */
+export function fitEvenly(fit, item, patch) {
+  let res = fit(patch);
+  if (!res?.capped?.length || !patch?.dims || res.status === 'blocked') return res;
+  const P = { ...(item?.params || {}), ...(patch.params || {}) };
+  const next = { ...(item || {}), ...patch, params: P, dims: { ...(item?.dims || {}), ...patch.dims } };
+  const choice = isUploadedImage(next) && next.archetype === 'art-frame' ? specToChoice(next) : null;
+  const image = { id: P.imageId, aspect: P.imageAspect };
+  let cur = patch;
+  let long = choice?.long;
+  for (let i = 0; i < 6 && res.capped?.length && res.status !== 'blocked'; i++) {
+    const want = cur.dims;
+    const got = res.patch?.dims || want;
+    const s = Math.min(got.w / want.w, got.h / want.h) * 0.98;
+    if (!(s > 0 && s < 1)) break;
+    if (choice?.mode === 'image') {
+      const nl = Math.max(LONG_EDGE_RANGE[0], r4(long * s));
+      if (nl >= long - 1e-4) break;
+      long = nl;
+      const sp = choiceToSpec({ ...choice, long }, image, { category: next.category });
+      cur = { ...cur, dims: sp.dims, params: { ...(cur.params || {}), ...sp.params } };
+    } else {
+      cur = { ...cur, dims: { ...want, w: r4(want.w * s), h: r4(want.h * s) } };
+    }
+    res = fit(cur);
+  }
+  return cur === patch ? res : { ...res, shrunk: true };
+}
 
 /** «Eget bilde – …» items made from an upload or a converted painting: the art-frame look is edited in «Bilde». */
 const ownFrame = (item) => isUploadedImage(item) && item.archetype === 'art-frame';
@@ -64,14 +104,19 @@ export function imageInspectorExtension(editor, upload) {
     images.load([id], { decode: false }).then(() => refresh({ id }), () => {});
   };
 
-  /** A design.update patch made to fit the wall, applied as one (coalescing) undo step of the Inspector. */
+  /**
+   * A design.update patch made to fit the wall (shrunk evenly when the wall caps it), applied as one (coalescing) undo
+   * step of the Inspector. @returns {object|null} the fit result (null: blocked)
+   */
   const applyFit = (ins, item, patch, opts) => {
-    const res = ins._fit ? ins._fit(item.uid, patch) : { patch, capped: [], status: 'ok' };
+    const fit = (p) => (ins._fit ? ins._fit(item.uid, p) : { patch: p, capped: [], status: 'ok' });
+    const res = fitEvenly(fit, item, patch);
     if (res.status === 'blocked') {
       editor.events?.emit?.('toast', { text: 'Bildet får ikke plass på veggen her i den størrelsen – prøv en mindre størrelse.', seconds: 3 });
       return null;
     }
-    return ins._apply(res.patch, opts);
+    ins._apply(res.patch, opts);
+    return res;
   };
 
   const pictureInfo = (id) => {
@@ -82,17 +127,24 @@ export function imageInspectorExtension(editor, upload) {
     return { info, text: `${info.name || 'Bilde'} · ${px}${orig}` };
   };
 
-  /** The controls of an uploaded picture (size, frame, mat, fit) – each change is a «Tilpass» patch. */
+  /**
+   * The controls of an uploaded picture (size, frame, mat, fit) – each change is a «Tilpass» patch. A change starts
+   * from the item as it is now, not as it was when the section was drawn: the slider and the select keep focus (the
+   * Inspector does not redraw a control in use), and a second change must not undo the first.
+   */
   function ownControls(ins, item) {
-    const id = item.params.imageId;
-    const info = images?.info?.(id);
-    const image = { id, aspect: item.params.imageAspect || info?.aspect || 1, name: info?.name || '' };
+    const uid = item.uid;
     const choice = specToChoice(item);
     const kids = [];
     const change = (next, label, opts = {}) => {
-      const patch = choicePatch(item, image, { ...choice, ...next });
+      const cur = editor.design.get(uid);
+      if (!cur || !isUploadedImage(cur)) return null;
+      const id = cur.params.imageId;
+      const info = images?.info?.(id);
+      const image = { id, aspect: cur.params.imageAspect || info?.aspect || 1, name: info?.name || '' };
+      const patch = choicePatch(cur, image, { ...specToChoice(cur), ...next });
       // the name stays (choicePatch keeps it) – only size and look change
-      return applyFit(ins, item, patch, { label, ...opts });
+      return applyFit(ins, cur, patch, { label, ...opts });
     };
     if (choice.mode === 'image') {
       const live = throttle((v) => change({ long: v }, 'Endre bildestørrelse', { coalesce: 'imgsize' }), 90);
@@ -106,39 +158,53 @@ export function imageInspectorExtension(editor, upload) {
         onInput: (v) => live(v),
         onChange: (v) => {
           live.cancel();
-          change({ long: v }, 'Endre bildestørrelse', { coalesce: 'imgsize' });
+          const res = change({ long: v }, 'Endre bildestørrelse', { coalesce: 'imgsize' });
+          const now = editor.design.get(uid);
+          if (res?.shrunk && now) {
+            const long = specToChoice(now).long;
+            if (long) {
+              s.set(long);
+              editor.events?.emit?.('toast', { text: `Bildet er gjort mindre (lengste side ${cm(long)} cm), så det får plass på veggen.`, seconds: 3 });
+            }
+          }
+          // let go of the slider, so the section is drawn again from the item
+          blurSoon(s.input);
           ins._dirty = true;
         },
       });
       kids.push(s.el);
     }
     const styles = Object.entries(FRAME_STYLES).map(([k, st]) => [k, st.label]);
-    kids.push(select({
+    const frameSel = select({
       label: 'Ramme',
       options: styles,
       value: choice.style,
       onChange: (v) => {
+        blurSoon(frameSel.select);
         const st = FRAME_STYLES[v];
         change({ style: v, mat: st?.mat === true, texture: st?.texture }, 'Endre ramme');
-        ins._dirty = true;
+        ins._render?.();
       },
-    }).el);
+    });
+    kids.push(frameSel.el);
     const st = FRAME_STYLES[choice.style];
     if (st && st.mat !== null) {
-      kids.push(toggle({
+      const matTg = toggle({
         label: 'Passepartout',
         value: !!choice.mat,
         onChange: (v) => {
+          blurSoon(matTg.input);
           change({ mat: v }, v ? 'Legg til passepartout' : 'Fjern passepartout');
-          ins._dirty = true;
+          ins._render?.();
         },
-      }).el);
+      });
+      kids.push(matTg.el);
     }
     // crop or show the whole picture: only when the frame's opening has another shape than the picture
     if (choice.mode === 'frame' && st && !st.canvas && !(st.frame === 'none' && !choice.mat)) {
       kids.push(h('div.ipu-field-label', { text: 'Tilpasning' }), seg(FIT_OPTIONS, choice.fit, (v) => {
         change({ fit: v }, v === 'contain' ? 'Vis hele bildet' : 'Beskjær bildet');
-        ins._dirty = true;
+        ins._render?.();
       }));
     }
     return kids;

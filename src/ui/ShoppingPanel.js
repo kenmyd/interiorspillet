@@ -497,8 +497,15 @@ function shadingQty(est) {
   return `${est.qty} ${est.pair ? 'par' : 'stk'}`;
 }
 
+const packsWord = (n) => (n === 1 ? 'pakke' : 'pakker');
+/** «4 stk = 2 pakker à 3» – a row of a product sold in packs only (whole packs are bought). */
+const packText = (r) => `${r.qty} stk = ${r.packs} ${packsWord(r.packs)} à ${r.packSize}`;
+
+/** A number for the Norwegian CSV: rounded to øre, decimal comma (no float noise like 2399.3999999999996). */
+const csvNum = (v) => String(Math.round(v * 100) / 100).replace('.', ',');
+const csvRange = (min, max) => (min === max ? max : `${csvNum(min)}–${csvNum(max)}`);
 const csvCell = (v) => {
-  const s = v == null ? '' : String(v);
+  const s = v == null ? '' : typeof v === 'number' && Number.isFinite(v) ? csvNum(v) : String(v);
   return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 };
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -597,9 +604,11 @@ export class ShoppingPanel extends BasePanel {
         qty: g.qty,
         unit: info.price,
         listUnit: info.onSale ? info.listPrice : null,
+        listSum: info.onSale && info.listPrice ? pur?.totalList ?? info.listPrice * g.qty : null,
         sum: pur?.total ?? (info.price != null ? info.price * g.qty : null),
         packs: pur?.packs ?? null,
         packSize: pur?.packSize ?? 1,
+        packPrice: pur?.packPrice ?? null,
         onSale: info.onSale,
         from: info.from,
         url: v?.url || p.url,
@@ -771,17 +780,21 @@ export class ShoppingPanel extends BasePanel {
     }
     const sub = [r.variant, r.custom ? 'egen farge' : null, r.customDims ? 'egne mål' : null].filter(Boolean).join(' · ');
     const price = r.sum != null
-      ? h(`span.iph-row__price${r.onSale ? '.is-sale' : ''}`, {}, `${r.from ? 'fra ' : ''}${fmtNok(r.sum)}`, r.listUnit ? h('s', { text: fmtNok(r.listUnit * r.qty) }) : null)
+      ? h(`span.iph-row__price${r.onSale ? '.is-sale' : ''}`, {}, `${r.from ? 'fra ' : ''}${fmtNok(r.sum)}`, r.listSum > r.sum + 0.5 ? h('s', { text: fmtNok(r.listSum) }) : null)
       : h('span.iph-row__price', { text: 'Pris ukjent' });
+    // a pack product is bought in whole packs: «2 × 899 kr» (the per-piece price would not add up to the sum)
+    const qty = r.packs
+      ? (r.packs > 1 && r.packPrice != null ? `${r.packs} × ${fmtNok(r.packPrice)}` : `${r.packs} ${packsWord(r.packs)}`)
+      : r.qty > 1 ? `${r.qty} × ${fmtNok(r.unit)}` : '1 stk';
     return h('div.iph-row', {},
       imgBox,
       h('div.iph-row__main', {},
         h('div.iph-row__name', { text: p.name, title: r.categoryLabel ? `${p.name} (${r.categoryLabel})` : p.name }),
         h(`div.iph-row__sub${r.custom || r.customDims ? '.is-warn' : ''}`, { text: sub || p.brand || '', title: r.custom || r.customDims ? 'Du har endret farge/mål – sjekk at butikken har det' : sub }),
-        r.packs ? h('div.iph-row__sub', { text: `${r.qty} stk = ${r.packs} ${r.packs === 1 ? 'pakke' : 'pakker'} à ${r.packSize}` }) : null),
+        r.packs ? h('div.iph-row__sub', { text: packText(r) }) : null),
       h('div.iph-row__right', {},
         price,
-        h('span.iph-row__qty', { text: r.qty > 1 ? `${r.qty} × ${fmtNok(r.unit)}` : '1 stk' }),
+        h('span.iph-row__qty', { text: qty }),
         r.url ? h('a.iph-link', { href: r.url, target: '_blank', rel: 'noopener noreferrer', title: `Åpne hos ${p.store}` }, 'Åpne', svg(EXTRA_ICONS.link)) : null));
   }
 
@@ -829,7 +842,7 @@ export class ShoppingPanel extends BasePanel {
     for (const st of data.stores) {
       lines.push(st.store.toUpperCase());
       for (const r of st.rows) {
-        lines.push(`- ${r.product.name}${r.variant ? ` (${r.variant})` : ''} – ${r.qty} stk – ${r.sum != null ? fmtNok(r.sum) : 'pris ukjent'}${r.onSale ? ' (tilbud)' : ''}`);
+        lines.push(`- ${r.product.name}${r.variant ? ` (${r.variant})` : ''} – ${r.packs ? packText(r) : `${r.qty} stk`} – ${r.sum != null ? fmtNok(r.sum) : 'pris ukjent'}${r.onSale ? ' (tilbud)' : ''}`);
         if (r.url) lines.push(`  ${r.url}`);
       }
       lines.push('');
@@ -906,15 +919,21 @@ export class ShoppingPanel extends BasePanel {
     const data = this.list();
     const rows = [['Butikk', 'Produkt', 'Variant', 'Antall', 'Stykkpris', 'Sum', 'Merknad', 'Lenke']];
     for (const st of data.stores) {
-      for (const r of st.rows) rows.push([st.store, r.product.name, r.variant, r.qty, r.unit ?? '', r.sum ?? '', [r.onSale ? 'tilbud' : '', r.custom ? 'egen farge' : '', r.customDims ? 'egne mål' : ''].filter(Boolean).join(', '), r.url || '']);
+      for (const r of st.rows) {
+        // a pack product: the packs and the pack price (they add up to the sum), the pieces in «Merknad»
+        const n = r.packs ? r.packs : r.qty;
+        const unit = r.packs ? r.packPrice : r.unit;
+        const note = [r.packs ? packText(r) : '', r.onSale ? 'tilbud' : '', r.custom ? 'egen farge' : '', r.customDims ? 'egne mål' : ''].filter(Boolean).join(', ');
+        rows.push([st.store, r.product.name, r.variant, n, unit ?? '', r.sum ?? '', note, r.url || '']);
+      }
     }
     if (data.wall) {
       const w = data.wall;
-      rows.push(['Den høye veggen', `${w.name}${w.sub ? ` (${w.sub})` : ''}`, '', 1, w.known ? w.min : '', w.known ? (w.min === w.max ? w.max : `${w.min}–${w.max}`) : '', [w.text, w.note].filter(Boolean).join(' – '), '']);
+      rows.push(['Den høye veggen', `${w.name}${w.sub ? ` (${w.sub})` : ''}`, '', 1, w.known ? w.min : '', w.known ? csvRange(w.min, w.max) : '', [w.text, w.note].filter(Boolean).join(' – '), '']);
       for (const t of w.products) rows.push(['', `• ${t}`, '', '', '', '', '', '']);
     }
     for (const f of data.finishes) {
-      rows.push(['Spiler', f.name, f.sub, 1, '', f.known ? (f.min === f.max ? f.max : `${f.min}–${f.max}`) : '', f.known ? 'ca., akupanel på filt' : 'pris ukjent', '']);
+      rows.push(['Spiler', f.name, f.sub, 1, '', f.known ? csvRange(f.min, f.max) : '', f.known ? 'ca., akupanel på filt' : 'pris ukjent', '']);
     }
     for (const s of data.shading) {
       if (!s.product) continue;
@@ -928,7 +947,7 @@ export class ShoppingPanel extends BasePanel {
         console.warn('[shopping] section csv failed', err);
       }
     }
-    rows.push(['', 'Totalt', '', '', '', data.total.min === data.total.max ? data.total.min : `${data.total.min}–${data.total.max}`, '', '']);
+    rows.push(['', 'Totalt', '', '', '', csvRange(data.total.min, data.total.max), '', '']);
     return `﻿${rows.map((r) => r.map(csvCell).join(';')).join('\r\n')}`;
   }
 
@@ -961,7 +980,7 @@ export class ShoppingPanel extends BasePanel {
       body += `<h2>${esc(st.store)}</h2><table>${st.rows.map((r) => row([
         `<b>${esc(r.product.name)}</b>${r.variant ? `<br><small>${esc(r.variant)}</small>` : ''}${r.url ? `<br><small class="u">${esc(r.url)}</small>` : ''}`,
         r.custom || r.customDims ? '<small>egen farge/mål</small>' : '',
-        `${r.qty} stk`,
+        r.packs ? `${r.qty} stk<br><small>${r.packs} ${packsWord(r.packs)} à ${r.packSize}</small>` : `${r.qty} stk`,
         r.sum != null ? esc(fmtNok(r.sum)) + (r.onSale ? ' <small>(tilbud)</small>' : '') : 'pris ukjent',
       ])).join('')}</table>`;
     }

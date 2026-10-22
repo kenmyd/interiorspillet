@@ -468,6 +468,83 @@ if (want(13)) {
     check('lik poengsum: id-rekkefølgen avgjør (stabilt)', p.has(a) && !p.has(b) && p.has(x));
   }
 
+  section('13 Plassplan: de nye lampene beholder plassene sine (ingen hopp, ingen ny innfading)');
+  {
+    // the spot pool's assignment as _budget runs it (planSpotSeats → _assignPlanned, else _returnSeats + _assignSpots),
+    // on bare slots and hand-made candidates with fixed scores; every seated lamp has faded in fully before each pass
+    const Mx = Object.assign(Object.create(LightManager.prototype), { _S: 1, _clock: 10, _configureSlot() {}, _requestSunShadow() {} });
+    const pool = (n, shadowed) => Array.from({ length: n }, (_, i) => ({ shadowed: i < shadowed, cand: null }));
+    const lamp = (id, score, roomId = 'A', o = {}) => ({ id, score, roomId, slot: null, fade: 0, ...o });
+    const pass = (slots, list) => {
+      for (const s of slots) if (s.cand) s.cand.fade = 1;
+      const plan = planSpotSeats(list, { slots: slots.length, shadowSlots: slots.filter((s) => s.shadowed).length, cap: 2 });
+      if (plan) Mx._assignPlanned(slots, [...list], plan);
+      else {
+        Mx._returnSeats(slots, list);
+        Mx._assignSpots(slots, [...list]);
+      }
+      for (const c of list) if (c.slot && c.slot.cand !== c) c.slot = null;
+      return slots.map((s) => s.cand?.id ?? null).join();
+    };
+    const kept = (F, seats) => F.every((c, i) => c.slot && c.slot === seats[i] && c.fade === 1);
+    {
+      // 7 slots (1 with shadows): the high-wall spot, five lamps and two new fittings – one takes the free slot, the
+      // other a5's; then a4 and a5 trade places as the weakest (the view turning), and back
+      const slots = pool(7, 1);
+      const h1 = lamp('h1', 10, 'A', { wantsShadow: true }), a = [9, 8, 3, 2.5, 2.2].map((s, i) => lamp(`a${i + 1}`, s));
+      const F = [lamp('F1', 5, 'A', { capped: true }), lamp('F2', 4, 'A', { capped: true })];
+      const base = [h1, ...a];
+      const W = pass(slots, base);
+      pass(slots, [...base, ...F]);
+      const seats = F.map((c) => c.slot);
+      a[3].score = 2.0;
+      pass(slots, [...base, ...F]);
+      const once = kept(F, seats);
+      a[3].score = 2.5;
+      pass(slots, [...base, ...F]);
+      const twice = kept(F, seats);
+      a[3].score = 2.0;
+      pass(slots, [...base, ...F]);
+      check('en annen lampe viker (og tilbake): de nye lampene beholder plassene og innfadingen', seats.every(Boolean) && once && twice && kept(F, seats),
+        F.map((c) => `${c.id} ${seats[F.indexOf(c)] ? slots.indexOf(seats[F.indexOf(c)]) : '-'} → ${slots.indexOf(c.slot)} (${c.fade})`).join(', '));
+      const off = pass(slots, base);
+      check('… slått av → nøyaktig samme plassliste og rekkefølge som uten dem', off === W, `${W} → ${off}`);
+    }
+    {
+      // a lamp of another room arrives (the terrace's outdoor lamps) while the two new fittings hold the free slots
+      const scene = () => ({ slots: pool(5, 1), h1: lamp('h1', 10, 'A', { wantsShadow: true }), a1: lamp('a1', 9), a2: lamp('a2', 8), n: lamp('n', 1, 'B') });
+      const w = scene();
+      pass(w.slots, [w.h1, w.a1, w.a2]);
+      const W = pass(w.slots, [w.h1, w.a1, w.a2, w.n]);
+      const { slots, h1, a1, a2, n } = scene();
+      const F = [lamp('F1', 5, 'A', { capped: true }), lamp('F2', 4, 'A', { capped: true })];
+      pass(slots, [h1, a1, a2]);
+      pass(slots, [h1, a1, a2, ...F]);
+      const seats = F.map((c) => c.slot);
+      pass(slots, [h1, a1, a2, n, ...F]);
+      check('en ny lampe kommer til: de nye lampene beholder plassene og innfadingen, den nye får en ledig plass', seats.every(Boolean) && kept(F, seats) && !!n.slot,
+        `${slots.map((s) => s.cand?.id ?? '-').join()}`);
+      const off = pass(slots, [h1, a1, a2, n]);
+      check('… slått av → nøyaktig samme plassliste og rekkefølge som uten dem', off === W, `${W} → ${off}`);
+    }
+    {
+      // only shadow slots left for a lamp that casts none: nobody of the plan loses a slot, and it never casts shadows
+      const slots = pool(4, 2);
+      const b = lamp('b', 9), c = lamp('c', 8, 'B', { noShadow: true }), d = lamp('d', 7), F = lamp('F', 5, 'A', { capped: true });
+      const put = (x, s) => {
+        s.cand = x;
+        x.slot = s;
+      };
+      put(F, slots[0]);
+      put(b, slots[2]);
+      b._seatSlot = slots[0]; // F took b's slot earlier
+      put(d, slots[3]);
+      pass(slots, [b, c, d, F]);
+      check('bare skyggeplasser ledige for en lampe uten skygge: alle i planen har plass, og den står ikke i en skyggeplass',
+        [b, c, d, F].every((x) => x.slot && x.slot.cand === x) && !c.slot.shadowed, slots.map((s) => s.cand?.id ?? '-').join());
+    }
+  }
+
   section('13 Plassplan: invariantene I1–I4 (MASTER §2.5)');
   const door = { t: 1 };
   /** The new fittings S: a 3 × 3 grid in the stue zone, 6 singles in the spisestue, a 4-head rail in the kitchen, a

@@ -38,7 +38,7 @@
 // on the item's own (item.level). The level's plan (buildRoom) has the faces of all its rooms (backOf faces too, with
 // the holes of the slab behind them), the room polygons with the stairwell as a hole (a footprint must lie in ONE room:
 // «Utenfor rommet» / «Over trappehullet»), the kitchen, the built-ins and the stair's footprint on the lower level
-// («I trappa», blocked), and per door a clearance on both sides (a warning, as before) and the swing of a door the
+// («I trappa», blocked; a ceiling item hangs over it, but not under the stairwell: «Ingen tak over trappa»), and per door a clearance on both sides (a warning, as before) and the swing of a door the
 // player opens («I slaget til døra», blocked). Floors, ceilings, window boards and wall heights are the level's
 // (the entrance's floor lies 0.30 lower). Positions are world space, as the design holds them in memory; a new item
 // gets the item's `level` (DesignState v2 keeps it and saves y over the level's floor itself).
@@ -134,6 +134,10 @@ export function buildRoom(editor, levelId = MAIN_LEVEL) {
   // the rooms of the level (physical ones), with the stairwell as a hole in the hall's floor
   const xz = (p) => ({ x: p.x, z: p.y });
   const holes = (H?.floorOpenings || []).filter((fo) => fo.levelId === levelId).map((fo) => fo.polygon.map(xz));
+  // the holes in the level's ceiling: the openings in the floor of the level above (the stairwell is open up to the
+  // hall – no basement ceiling for a ceiling item to hang on there)
+  const aboveId = H?.levelsById?.[levelId]?.aboveId ?? null;
+  const ceilingHoles = aboveId ? (H?.floorOpenings || []).filter((fo) => fo.levelId === aboveId).map((fo) => fo.polygon.map(xz)) : [];
   const roomList = (H?.rooms || []).filter((r) => r.levelId === levelId && !r.hud && r.polygon?.length >= 3);
   const rooms = roomList.length
     ? roomList.map((r) => ({ id: r.id, name: r.name, floorY: r.floorY ?? floorY, poly: r.polygon.map(xz), holes }))
@@ -213,7 +217,7 @@ export function buildRoom(editor, levelId = MAIN_LEVEL) {
     });
   }
   return {
-    level: levelId, floorY, walls, rooms, poly, holes, fixed, doors, sills,
+    level: levelId, floorY, walls, rooms, poly, holes, ceilingHoles, fixed, doors, sills,
     gap: layout.baseboard?.thickness ?? 0.012, skirting: layout.baseboard?.height ?? 0.07,
   };
 }
@@ -406,9 +410,14 @@ function roomAtXZ(room, x, z) {
 
 /**
  * Why a footprint cannot stand where it is: null when it lies on the floor of ONE room (corners inside, no reflex
- * corner of the room or of the stairwell poking in), else 'Utenfor rommet' / 'Over trappehullet'.
+ * corner of the room or of the stairwell poking in), else 'Utenfor rommet' / 'Over trappehullet'. A ceiling item
+ * (ceiling: true) must also lie under the level's ceiling: not under a hole in the floor above (the stairwell seen
+ * from the basement) – 'Ingen tak over trappa'.
+ * @param {object} room  buildRoom
+ * @param {object} fp  footprint { cx, cz, ax, az, hw, hd }
+ * @param {{ ceiling?: boolean }} [o]
  */
-export function footprintIssue(room, fp) {
+export function footprintIssue(room, fp, { ceiling = false } = {}) {
   const r = roomAtXZ(room, fp.cx, fp.cz);
   const overHole = (x, z) => room.holes.some((hp) => pointInPoly(hp, x, z));
   if (!r) return overHole(fp.cx, fp.cz) ? 'Over trappehullet' : 'Utenfor rommet';
@@ -418,6 +427,12 @@ export function footprintIssue(room, fp) {
   }
   for (const p of r.poly) if (insideFootprint(fp, p.x, p.z)) return 'Utenfor rommet';
   for (const hp of room.holes) for (const p of hp) if (insideFootprint(fp, p.x, p.z)) return 'Over trappehullet';
+  const above = ceiling ? room.ceilingHoles || [] : [];
+  if (above.length) {
+    const open = (x, z) => above.some((hp) => pointInPoly(hp, x, z));
+    if (open(fp.cx, fp.cz) || corners(fp, 0.006).some((c) => open(c.x, c.z))) return 'Ingen tak over trappa';
+    for (const hp of above) for (const p of hp) if (insideFootprint(fp, p.x, p.z)) return 'Ingen tak over trappa';
+  }
   return null;
 }
 
@@ -1193,7 +1208,7 @@ export class Placement {
     resolveWalls(room, fp, mount === 'rug' ? 0 : room.gap * 0.5);
     let status = 'ok';
     let message = '';
-    const issue = footprintIssue(room, fp);
+    const issue = footprintIssue(room, fp, { ceiling: mount === 'ceiling' });
     if (issue) {
       status = 'blocked';
       message = issue;

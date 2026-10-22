@@ -17,6 +17,9 @@
  *                                 declared numbers in range, the family contracts (seatY/surfaces), triangle budgets
  *   6 «Samme resultat to ganger»  5 specs per new archetype built twice (no Math.random)
  *   7 «Omfarging»                 model.recolor(part, hex, kind) of the new archetypes
+ *   8 «Rettinger»                 the round-3 review fixes: bar stool keeps its back, bench at min height, cane/glass
+ *                                 shelf on a tiny outline, coffee-table sets (setRef), grip gap / nightstand shelf,
+ *                                 def.paramPatch for backs
  *
  * Builds that need a canvas or the DOM (art, rugs, plants … in Node) are skipped and counted, never failed.
  * QA_PARTIAL=1 softens only what the round has not delivered yet: a NEW archetype without a builder (and its
@@ -626,6 +629,138 @@ section('7 Omfarging (nye arketyper)');
     dispose(r.g);
   }
   check(`recolor(del, farge, materiale) gir true/false og kaster ikke (${n} kall)`, !bad.length, show(bad));
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+section('8 Rettinger etter gjennomgangen av runde 3');
+{
+  const top = (g) => measure(g).box.max.y;
+  // bar stool: a back is kept whatever the seat slider says (the seat is capped 15 cm under dims.h, as before round 3)
+  const bar = [];
+  for (const [h, seatH] of [[0.97, 0.65], [0.97, 0.82], [0.9, 0.8], [0.85, 0.75], [0.8, 0.7]]) {
+    const r = build('bar-stool', { dims: { w: 0.45, d: 0.48, h }, params: { seatH, back: 'shell', legStyle: 'slim-metal', footrest: true } });
+    if (!r.g) {
+      bar.push(`${h}/${seatH}: ${r.err || 'bygger ikke'}`);
+      continue;
+    }
+    const want = Math.min(seatH, h - 0.15);
+    const y = r.g.userData.model.seatY, t = top(r.g);
+    if (Math.abs(y - want) > 1e-6 || Math.abs(t - h) > 0.01) bar.push(`${h}/${seatH}: seatY ${fmt(y)} (ønsket ${fmt(want)}), topp ${fmt(t)}`);
+    dispose(r.g);
+  }
+  check('barkrakk med skallrygg beholder ryggen når setet står nær høyden (lagrede design)', !bar.length, show(bar));
+
+  // bench: every back (and arms) at the bottom of dimsRange.h builds finite geometry
+  const bench = [];
+  for (const back of ['rail', 'spindles', 'panel', 'upholstered']) for (const arms of [false, true]) for (const h of [0.3, 0.31, 0.35]) {
+    const r = build('bench', { dims: { w: 1.2, d: 0.45, h }, params: { back, arms, seatH: 0.46 } });
+    if (!r.g || r.g.userData.model?.fallback) bench.push(`${back}${arms ? '+armer' : ''} h ${h}: ${r.err || 'grå boks'}`);
+    else {
+      const m = measure(r.g);
+      if (m.nan || m.empty || ![m.box.min.x, m.box.max.y].every(Number.isFinite)) bench.push(`${back}${arms ? '+armer' : ''} h ${h}: NaN`);
+      dispose(r.g);
+    }
+  }
+  check('benk med rygg i laveste høyde gir ingen NaN', !bench.length, show(bench));
+
+  // coffee table: a cane or glass shelf on an outline squeezed by the legs is a plain board, not an earcut throw
+  const ct = [];
+  const tolk = cat.productToItemSpec('ikea-tolkning-nattbord-o52');
+  if (tolk) {
+    for (const shelf of ['cane', 'glass']) for (const [w, extra] of [[0.3, { legInset: 0.1 }], [0.3, { legInset: 0.4 }], [0.3, { legD: 0.12 }], [0.35, { legInset: 0.15 }], [0.4, { legInset: 0.4, legD: 0.12 }]]) {
+      const r = build('coffee-table', { ...tolk, quality: 'low', dims: { w, d: w, h: 0.25 }, params: { ...tolk.params, shelf, ...extra } });
+      if (!r.g || r.g.userData.model?.fallback) ct.push(`${shelf} ${w} ${JSON.stringify(extra)}: ${r.err || 'grå boks'}`);
+      dispose(r.g);
+    }
+  } else ct.push('fant ikke ikea-tolkning-nattbord-o52');
+  check('sofabord: flettet/glasshylle på liten flate bygger (ingen grå boks)', !ct.length, show(ct));
+
+  // coffee-table set: a nested set table stays under the main top; with params.setRef it scales with the main table
+  const set = [];
+  const drape = cat.productToItemSpec('bohus-drape-sofabordsett-95x67');
+  if (drape) {
+    const small = { w: 0.5, d: 0.4, h: 0.3 };
+    for (const ref of [null, drape.dims]) {
+      const r = build('coffee-table', { ...drape, dims: small, params: { ...drape.params, ...(ref ? { setRef: ref } : {}) } });
+      const cols = r.g?.userData.model?.colliders || [];
+      if (cols.length !== 2) {
+        set.push(`${ref ? 'setRef' : 'uten setRef'}: ${r.err || `${cols.length} kollidere`}`);
+        continue;
+      }
+      const s = cols[1];
+      if (s.max[1] > small.h - 0.03 - 0.01 + 1e-6) set.push(`${ref ? 'setRef' : 'uten setRef'}: setthøyde ${fmt(s.max[1])} over hovedplatens underside`);
+      const k = small.w / drape.dims.w;
+      if (ref && Math.abs(s.max[0] - (0.34 + 0.79 / 2) * k) > 0.005) set.push(`setRef: settbordet når x ${fmt(s.max[0])}, ventet ${fmt((0.34 + 0.79 / 2) * k)}`);
+      dispose(r.g);
+    }
+    const r0 = build('coffee-table', { ...drape, params: { ...drape.params, setRef: drape.dims } });
+    const r1 = build('coffee-table', drape);
+    if (r0.g && r1.g && !measure(r0.g).box.equals(measure(r1.g).box)) set.push('setRef = produktets mål endrer standardmodellen');
+    dispose(r0.g);
+    dispose(r1.g);
+  } else set.push('fant ikke bohus-drape-sofabordsett-95x67');
+  check('sofabordsett: settbordet blir under hovedplaten og følger størrelsen (setRef)', !set.length, show(set));
+
+  // cabinets: a grip channel without a profile colour of its own (handle = front: Jysk Bakhuse) is the dark gap again;
+  // the band shelf beside an open niche is left out on a near-black carcass (the house's own black nightstand)
+  const cab = [];
+  // (finishModel merges meshes per material, so geometry is counted in vertices)
+  const darkVerts = (g) => {
+    let n = 0;
+    g.traverse((o) => {
+      if (o.isMesh && o.material?.color?.getHexString?.() === '15120f') n += o.geometry.attributes.position?.count ?? 0;
+    });
+    return n;
+  };
+  const bak = cat.productToItemSpec('jysk-bakhuse-skoskap-65x25-h124');
+  if (bak) {
+    const a = build(bak.archetype, bak);
+    const b = build(bak.archetype, { ...bak, colors: { ...bak.colors, handle: '#9a9a98' } });
+    if (!a.g || !b.g || !(darkVerts(a.g) > darkVerts(b.g))) cab.push(`Bakhuse: mørke hjørner ${a.g ? darkVerts(a.g) : '–'} (grep = front) vs ${b.g ? darkVerts(b.g) : '–'} (egen grepfarge)`);
+    dispose(a.g);
+    dispose(b.g);
+  } else cab.push('fant ikke jysk-bakhuse-skoskap-65x25-h124');
+  const nightstand = (hex) => ({
+    dims: { w: 0.35, d: 0.38, h: 0.55 },
+    params: { fronts: ['open'], drawerRow: 1, drawerRowPos: 'top', drawerH: 0.2, base: 'none', legH: 0, frontStyle: 'flat', handle: 'none', top: 'same', corners: 'square' },
+    colors: { body: hex, front: hex, top: hex, legs: hex, handle: hex },
+    materials: { body: 'painted', front: 'painted', top: 'painted', legs: 'painted', handle: 'painted' },
+  });
+  const black = build('bedside-table', nightstand('#1e1e1f')), light = build('bedside-table', nightstand('#e8e4dc'));
+  // the shelf is one box (12 triangles): only the light carcass has it
+  if (!black.g || !light.g || measure(light.g).tris !== measure(black.g).tris + 12) cab.push(`nattbord (sort kube): ${black.g ? measure(black.g).tris : '–'} trekanter i sort, ${light.g ? measure(light.g).tris : '–'} i lyst (ventet én hylle = 12 mer)`);
+  dispose(black.g);
+  dispose(light.g);
+  check('skap: mørk grepspalte uten egen grepfarge, ingen ekstra hylle i sort nattbord', !cab.length, show(cab));
+
+  // def.paramPatch: choosing a back keeps the seat where it was and grows the item; removing it shrinks it back
+  const pp = [];
+  const flip = (item, key, value) => {
+    const x = reg.getArchetype(item.archetype)?.paramPatch?.(item, key, value) || {};
+    return { ...item, dims: { ...item.dims, ...(x.dims || {}) }, params: { ...item.params, ...(x.params || {}), [key]: value } };
+  };
+  const seatOf = (item) => {
+    const r = build(item.archetype, item);
+    const y = r.g?.userData.model?.seatY;
+    dispose(r.g);
+    return y;
+  };
+  for (const [id, key, on, off] of [['bohus-sando-sengebenk-150x51', 'back', 'rail', 'none'], ['bohus-sando-sengebenk-150x51', 'arms', true, false], ['bohus-sm-840-krakk', 'back', 'spindles', 'none'], ['bohus-henry-barstol', 'back', 'none', 'shell']]) {
+    const s0 = cat.productToItemSpec(id);
+    if (!s0) {
+      pp.push(`fant ikke ${id}`);
+      continue;
+    }
+    const y0 = seatOf(s0);
+    const s1 = flip(s0, key, on);
+    const y1 = seatOf(s1);
+    const s2 = flip(s1, key, off);
+    const y2 = seatOf(s2);
+    if (!reg.getArchetype(s0.archetype)?.paramPatch) pp.push(`${s0.archetype}: mangler paramPatch`);
+    else if (![y1, y2].every((y) => Math.abs(y - y0) < 0.002)) pp.push(`${id} ${key}=${on}: sete ${fmt(y0)} → ${fmt(y1)} → ${fmt(y2)}`);
+    else if (Math.abs(s2.dims.h - (key === 'back' && on === 'none' ? s1.dims.h + 0.32 : s0.dims.h)) > 0.04) pp.push(`${id} ${key}: høyde ${s0.dims.h} → ${s1.dims.h} → ${s2.dims.h}`);
+  }
+  check('rygg av/på (paramPatch): setet blir der det var, høyden følger', !pp.length, show(pp));
 }
 
 // ---------------------------------------------------------------------------------------------------------------

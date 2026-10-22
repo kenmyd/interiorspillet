@@ -4,29 +4,35 @@
  * started for one step, and nothing else. Use it for a hung run instead of taskkill (never kill by image name: the
  * owner's own Edge must survive).
  *
- *   node tools/stop-browser.mjs --step=<id> [--browser=chrome] [--pidfile=<file>]
+ *   node tools/stop-browser.mjs --step=<id> [--pidfile=<file>]
  *
  * Reads <ROOT>/.shots/hus/<id>/browser.pid – the file tools/lib/hus.mjs launchBrowser writes for --step=<id>
  * (--pidfile=<file> reads another one) – and asks Windows about that PID (PowerShell
- * `Get-CimInstance Win32_Process -Filter "ProcessId=<pid>"`). Only when
+ * `Get-CimInstance Win32_Process -Filter "ProcessId=<pid>"`). The rule is tools/lib/browser-pid.mjs judgeBrowserPid.
+ * Only when
  *   - the process exists,
- *   - its Name is msedge.exe (chrome.exe with --browser=chrome),
- *   - its CommandLine contains --headless and --remote-debugging-pipe (a Playwright browser server, never a normal
- *     Edge window), and
  *   - it was started just before the pidfile was written (CreationDate within 120 s before the pidfile's mtime, 2 s
  *     clock slack after it) – so a newer process that reuses the PID is never hit,
- * it runs `taskkill /PID <pid> /T /F` (the browser and its child processes) and removes the pidfile. Otherwise it
- * deletes the stale pidfile and kills nothing.
+ *   - its Name is a Chromium browser Playwright launches (msedge.exe, chrome.exe for a --browser=chrome run, or
+ *     Playwright's own chrome-headless-shell) – whichever browser the run used, no --browser needed, and
+ *   - its CommandLine contains --headless and --remote-debugging-pipe (a Playwright browser server, never the owner's
+ *     own Edge or Chrome window),
+ * it runs `taskkill /PID <pid> /T /F` (the browser and its child processes) and removes the pidfile. A PID that is not
+ * running or was reused: the stale pidfile is deleted, nothing is killed. A live process that started with the
+ * pidfile but is no headless browser (or has no start time): nothing is killed and the pidfile is KEPT – it is the
+ * only safe handle on that process.
  *
- * Exit code: 0 = stopped, or nothing to stop; 1 = taskkill failed; 2 = usage.
+ * --browser=… (msedge|chrome) is still accepted and ignored: every browser image above is checked the same way.
+ *
+ * Exit code: 0 = stopped, or nothing to stop; 1 = taskkill failed, or the process could not be judged safe to stop
+ * (pidfile kept); 2 = usage.
  */
 import { existsSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { join, resolve } from 'node:path';
+import { judgeBrowserPid } from './lib/browser-pid.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
-const BEFORE_MS = 120 * 1000; // launchServer → pidfile written: a few seconds in practice
-const AFTER_MS = 2000; // file-system / clock granularity
 
 const opt = Object.fromEntries(
   process.argv
@@ -40,11 +46,10 @@ const opt = Object.fromEntries(
 const say = (m) => console.log(`[stop-browser] ${m}`);
 
 if (!opt.pidfile && !/^[\w.-]+$/.test(opt.step || '')) {
-  console.error('usage: node tools/stop-browser.mjs --step=<id> [--browser=chrome] [--pidfile=<file>]');
+  console.error('usage: node tools/stop-browser.mjs --step=<id> [--pidfile=<file>]');
   process.exit(2);
 }
 const pidfile = opt.pidfile ? resolve(opt.pidfile) : join(ROOT, '.shots', 'hus', opt.step, 'browser.pid');
-const image = opt.browser === 'chrome' ? 'chrome.exe' : 'msedge.exe';
 
 const stale = (why) => {
   rmSync(pidfile, { force: true });
@@ -83,13 +88,12 @@ try {
 }
 const name = String(info.Name || '');
 const cmd = String(info.CommandLine || '');
-const created = Number(info.Created);
-if (name.toLowerCase() !== image) stale(`PID ${pid} is ${name || '?'}, not ${image}`);
-if (!cmd.includes('--headless') || !cmd.includes('--remote-debugging-pipe')) {
-  stale(`PID ${pid} (${name}) is not a headless Playwright browser (no --headless / --remote-debugging-pipe)`);
-}
-if (!(created >= written - BEFORE_MS && created <= written + AFTER_MS)) {
-  stale(`PID ${pid} (${name}) started ${new Date(created).toISOString()}, not just before the pidfile (${new Date(written).toISOString()}) – the PID was reused`);
+const created = info.Created == null || info.Created === '' ? NaN : Number(info.Created);
+const judged = judgeBrowserPid({ name, cmd, created, written });
+if (judged.verdict === 'stale') stale(`PID ${pid}: ${judged.why}`);
+if (judged.verdict === 'keep') {
+  say(`PID ${pid} is running, but ${judged.why} – nothing was killed; kept the pidfile ${pidfile}. Look at it with: Get-CimInstance Win32_Process -Filter "ProcessId=${pid}" | Format-List Name,CommandLine,CreationDate`);
+  process.exit(1);
 }
 
 const k = spawnSync('taskkill', ['/PID', String(pid), '/T', '/F'], { encoding: 'utf8', windowsHide: true });

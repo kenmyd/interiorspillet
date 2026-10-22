@@ -450,5 +450,178 @@ section('8. Finjustering (runde 3): reflektorer, firkantede, skinner, veggspot, 
   check('sammenslått mesh står under hver del i model.parts', ['shade', 'base', 'metal', 'inner'].every((p) => mp[p]?.length === 1) && mp.shade[0] === mp.base[0] && mp.metal[0] !== mp.base[0]);
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+section('9. Rutenett i rommet: «Fordel jevnt», trappehullet, «Roter 90°», «Bytt modell»');
+{
+  // Placement → Selection → panelKit (and gridSection) import a stylesheet: nothing to load in Node
+  const { registerHooks } = await import('node:module');
+  registerHooks({
+    load(url, context, nextLoad) {
+      if (url.startsWith('file:') && url.endsWith('.css')) return { format: 'module', source: '', shortCircuit: true };
+      return nextLoad(url, context);
+    },
+  });
+  const P = await imp('src/design/Placement.js');
+  const OPS = await imp('src/design/gridOps.js');
+  const GS = await imp('src/ui/inspector/gridSection.js');
+  const H = layout.house;
+  const plan = { hoved: P.buildRoom({ layout, home: { walls: H.walls } }, 'hoved'), kjeller: P.buildRoom({ layout, home: { walls: H.walls } }, 'kjeller') };
+  const fy = (lv) => H.levelsById[lv].floorY;
+  const ceilOf = (lv, x, z) => H.ceilingHeightAt(x, z, fy(lv) + 1);
+  const axesOf = (t) => ({ ax: [Math.cos(t * DEG), -Math.sin(t * DEG)], az: [Math.sin(t * DEG), Math.cos(t * DEG)] });
+  const foot = (x, z, w = 0.1, d = 0.1, t = 0) => ({ cx: x, cz: z, hw: w / 2, hd: d / 2, ...axesOf(t) });
+  /** Placement.constrain of a ceiling item as Inspector._fit sees it (resolveWalls, footprintIssue for the ceiling). */
+  const constrain = (it) => {
+    const room = plan[it.level];
+    const fp = foot(it.position[0], it.position[2], it.dims.w, it.dims.d, it.rotationDeg || 0);
+    P.resolveWalls(room, fp, room.gap * 0.5);
+    const issue = P.footprintIssue(room, fp, { ceiling: it.mount === 'ceiling' });
+    return { status: issue ? 'blocked' : 'ok', message: issue || '', position: [fp.cx, it.position[1], fp.cz] };
+  };
+  /** A stub Inspector over one item: design.get, _fit (merge + constrain, like Inspector._fit), _apply. */
+  const stub = (item) => {
+    const ins = {
+      item: { uid: 'g1', ...item },
+      editor: { layout },
+      design: { get: (uid) => (uid === ins.item.uid ? ins.item : null) },
+      _fit: (uid, patch) => {
+        const cur = ins.item;
+        const next = { ...cur, ...patch, dims: { ...cur.dims, ...(patch.dims || {}) }, params: { ...(cur.params || {}), ...(patch.params || {}) } };
+        const r = constrain(next);
+        const out = { ...patch, position: r.position.map((v) => Math.round(v * 1000) / 1000) };
+        if (patch.dims) out.dims = next.dims;
+        return { patch: out, status: r.status, message: r.message };
+      },
+      _apply: (patch) => {
+        const cur = ins.item;
+        ins.item = { ...cur, ...patch, dims: { ...cur.dims, ...(patch.dims || {}) }, params: { ...(cur.params || {}), ...(patch.params || {}) } };
+      },
+    };
+    return ins;
+  };
+  const DL = { archetype: 'downlight', mount: 'ceiling', category: 'spotter', dims: { w: 0.09, d: 0.09, h: 0.006 }, params: {}, rotationDeg: 0 };
+  const one = (lv, x, z) => ({ ...DL, level: lv, position: [x, ceilOf(lv, x, z), z] });
+  const heads = (it) => G.gridCells(G.gridOf(it)).map((c) => G.cellWorld(it, c));
+  const inPoly = (poly, x, z) => {
+    let ins = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const a = poly[i], b = poly[j];
+      if (a.y > z !== b.y > z && x < ((b.x - a.x) * (z - a.y)) / (b.y - a.y) + a.x) ins = !ins;
+    }
+    return ins;
+  };
+  const edgeDist = (poly, x, z) => Math.min(...poly.map((a, i) => {
+    const b = poly[(i + 1) % poly.length];
+    const ex = b.x - a.x, ez = b.y - a.y;
+    const t = Math.max(0, Math.min(1, ((x - a.x) * ex + (z - a.y) * ez) / (ex * ex + ez * ez || 1)));
+    return Math.hypot(x - a.x - t * ex, z - a.y - t * ez);
+  }));
+  const stairwell = H.floorOpenings.find((fo) => fo.id === 'trappehull')?.polygon;
+  /** «Fordel jevnt» through gridSection.spreadGrid on a stub Inspector; the applied item or { error }. */
+  const spread = (lv, x, z) => {
+    const ins = stub(one(lv, x, z));
+    const r = GS.spreadGrid(ins, 'g1');
+    if (r.error) return r;
+    ins._apply(r.res.patch);
+    return { item: ins.item, area: r.d.area, status: r.res.status };
+  };
+
+  // the stairwell seen from the basement: no ceiling there for a ceiling item
+  check('kjellertaket under trappehullet: et taklys kan ikke henge der («Ingen tak over trappa»)', P.footprintIssue(plan.kjeller, foot(0.73, 2.97), { ceiling: true }) === 'Ingen tak over trappa');
+  check('… et gulvmøble der er som før (ingen takkontroll)', P.footprintIssue(plan.kjeller, foot(0.73, 2.97)) === null);
+  check('… og et taklys som stikker inn under hullet nektes også', P.footprintIssue(plan.kjeller, foot(2.0, 3.6, 0.5, 0.5), { ceiling: true }) === 'Ingen tak over trappa');
+  check('kjellergangen ellers, og 1. etasje (ingen etasje over): taklys som før', P.footprintIssue(plan.kjeller, foot(4.5, 3.8), { ceiling: true }) === null && P.footprintIssue(plan.hoved, foot(2.5, 3.4), { ceiling: true }) === null && plan.hoved.ceilingHoles.length === 0 && plan.kjeller.ceilingHoles.length === 1);
+
+  const kg = spread('kjeller', 4.5, 3.8);
+  if (kg.error) check('«Fordel jevnt» i kjellergangen', false, kg.error);
+  else {
+    const hs = heads(kg.item);
+    const gaps = hs.map(([x, z]) => ceilOf('kjeller', x, z) - kg.item.position[1]);
+    check(`«Fordel jevnt» i kjellergangen: ingen spot under trappehullet, alle henger under sitt eget tak (${G.gridOf(kg.item).rows} × ${G.gridOf(kg.item).cols})`,
+      hs.every(([x, z]) => !inPoly(stairwell, x, z)) && gaps.every((g) => Math.abs(g) < 0.03) && constrain(kg.item).status === 'ok', `tak − y ${gaps.map((g) => g.toFixed(3)).join(', ')}`);
+  }
+
+  // L-shaped zones / rooms: every head at least half the spacing from the zone's edges (the row 5 cm from the wall)
+  for (const [name, lv, x, z, poly] of [
+    ['spisestua', 'hoved', 4.96, 5.94, layout.zones.find((zz) => zz.id === 'spisestue')?.polygon],
+    ['kjøkkenet', 'hoved', 4.56, 1.6, layout.zones.find((zz) => zz.id === 'kjokken')?.polygon],
+    ['entreen i kjelleren', 'kjeller', 7.6, 4.5, H.room('entre-kjeller')?.polygon],
+    ['kjellergangen', 'kjeller', 4.5, 3.8, H.room('kjeller-gang')?.polygon],
+  ]) {
+    const r = spread(lv, x, z);
+    if (r.error || !poly) {
+      check(`«Fordel jevnt» i ${name}`, false, r.error ?? 'fant ikke sonen');
+      continue;
+    }
+    const g = G.gridOf(r.item);
+    const need = Math.min(g.cols > 1 ? g.dx : Infinity, g.rows > 1 ? g.dz : Infinity) / 2;
+    const dists = heads(r.item).map(([hx, hz]) => (inPoly(poly, hx, hz) ? edgeDist(poly, hx, hz) : -1));
+    const min = Math.min(...dists);
+    check(`«Fordel jevnt» i ${name}: hvert hode ≥ avstand/2 fra veggene (${min.toFixed(3)} ≥ ${need.toFixed(3)} m, ${g.rows} × ${g.cols})`, g.count >= 2 && min >= need - 0.02 && r.status !== 'blocked' && OPS.gridClearance(r.item, layout).ok);
+  }
+  // rectangular zones: the bounding box as before (the middle of the zone)
+  const st = spread('hoved', 5.07, 10.1);
+  check('«Fordel jevnt» i stua (rektangel): midt i sonen som før', !st.error && near(st.item.position[0], (st.area.minX + st.area.maxX) / 2, 0.002) && near(st.item.position[2], (st.area.minZ + st.area.maxZ) / 2, 0.002), st.error ?? JSON.stringify(st.item?.position));
+  // a head 5 cm from the wall is what gridClearance refuses
+  {
+    const g = G.gridSpec(DL.dims, { rows: 4, cols: 3, dx: 1.2, dz: 1.23 });
+    const lop = { ...DL, level: 'hoved', params: g.params, dims: g.dims, position: [5.067, ceilOf('hoved', 5.067, 5.83), 5.83] };
+    const c = OPS.gridClearance(lop, layout);
+    check(`gridClearance: rutenettet 5 cm fra spisestuas vegg er ikke ok (${c.min} m, trenger ${c.need})`, !c.ok && c.min > 0 && c.min < 0.1);
+  }
+
+  // «Roter 90°»: never through the walls – closer together when that fits, else refused
+  {
+    const g = G.gridSpec(DL.dims, { rows: 8, cols: 1, dx: 1.2, dz: 1.2 });
+    const ins = stub({ ...DL, level: 'hoved', params: g.params, dims: g.dims, position: [5.0, ceilOf('hoved', 5.0, 6.5), 6.5] });
+    check('8 spotter på rekke langs z i spisestua: rotert 1,2 m-rekke får ikke plass (constrain blokkerer)', ins._fit('g1', { rotationDeg: 90 }).status === 'blocked');
+    const r = GS.turnGrid(ins, 'g1');
+    if (r.error) check('«Roter 90°» av en lang rekke', false, r.error);
+    else {
+      ins._apply(r.res.patch);
+      const rooms = heads(ins.item).map(([x, z]) => H.roomAt(x, 1, z, { levelId: 'hoved' })?.id ?? 'ute');
+      const gg = G.gridOf(ins.item);
+      const cl = OPS.gridClearance(ins.item, layout);
+      check(`«Roter 90°»: rotert, tettere (${gg.dz} m) og alle 8 i stua – ingen gjennom veggen (${[...new Set(rooms)].join(',')}), halv avstand inn til veggene (${cl.min} m)`, ins.item.rotationDeg === 90 && gg.count === 8 && gg.dz < 1.2 && rooms.every((id) => id === 'stue-kjokken') && /satt ned/.test(r.note) && constrain(ins.item).status !== 'blocked' && cl.ok);
+    }
+    const g2 = G.gridSpec(DL.dims, { rows: 1, cols: 10, dx: 0.4, dz: 0.4 });
+    const ins2 = stub({ ...DL, level: 'kjeller', params: g2.params, dims: g2.dims, position: [3.8, ceilOf('kjeller', 3.8, 3.5), 3.5] });
+    const before = JSON.stringify(ins2.item);
+    const r2 = GS.turnGrid(ins2, 'g1');
+    check('«Roter 90°» av 10 spotter på tvers av kjellergangen: nektes med norsk melding, ingenting endres', constrain(ins2.item).status === 'ok' && !!r2.error && /rotert/.test(r2.error) && JSON.stringify(ins2.item) === before, r2.error ?? JSON.stringify(r2.res?.patch));
+    const ins3 = stub({ ...DL, level: 'hoved', ...G.gridSpec(DL.dims, { rows: 2, cols: 3, dx: 1, dz: 1 }), position: [5.07, ceilOf('hoved', 5.07, 10.1), 10.1] });
+    const r3 = GS.turnGrid(ins3, 'g1');
+    check('«Roter 90°» av 2 × 3 midt i stua: bare rotert, ingen melding', !r3.error && r3.note === '' && r3.res.patch.rotationDeg === 90 && !r3.res.patch.params);
+  }
+
+  // «Bytt modell»: a grid only flips through gridable products (takspot mixes spot plates with ceiling spots)
+  {
+    const spots = cat.products('spotter');
+    const start = spots.find((p) => p.archetype === 'spot-ceiling' && p.mount === 'ceiling' && p.subcategory);
+    const list = start ? spots.filter((p) => p.subcategory === start.subcategory && cat.mountsCompatible(start.archetype, start.mount, p.archetype, p.mount)) : [];
+    const s0 = start ? cat.productToItemSpec(start, 0) : null;
+    if (!start || list.length < 2) check('«Bytt modell» for et rutenett av takspotter', false, 'fant ingen takspotter i katalogen');
+    else {
+      const gs = G.gridSpec(s0.dims, { rows: 2, cols: 3, dx: 1, dz: 1 });
+      let item = { ...s0, params: { ...s0.params, ...gs.params }, dims: gs.dims };
+      const ext = GS.gridExtension();
+      const cand = ext.candidates(null, item, start, list);
+      const single = ext.candidates(null, { ...s0 }, start, list);
+      check(`kandidatene for et 2 × 3-rutenett er bare de som kan være rutenett (${cand.length} av ${list.length})`, cand.length >= 2 && cand.every((p) => G.GRIDABLE.has(p.archetype)) && cand.some((p) => p.id === start.id) && single.length === list.length);
+      let prod = start;
+      const qs = [];
+      for (const step of [1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1]) {
+        const lst = ext.candidates(null, item, prod, list);
+        const i = lst.findIndex((p) => p.id === prod.id);
+        const next = lst[((i + step) % lst.length + lst.length) % lst.length];
+        item = { ...ext.carry(null, item, cat.productToItemSpec(next, 0)) };
+        prod = next;
+        qs.push(G.itemQuantity(item));
+      }
+      check(`◀ ▶ gjennom takspotlisten beholder rutenettet (antall ${[...new Set(qs)].join(',')})`, qs.every((q) => q === 6));
+    }
+  }
+}
+
 console.log(`\n(${Date.now() - t0} ms)`);
 done();

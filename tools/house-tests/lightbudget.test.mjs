@@ -20,6 +20,10 @@
  *   F «Rutenett og rekke»      one grid item = 9 fittings, one undo step, heads follow the slope, quantity 9,
  *                              gridOps.distributeGrid («Fordel jevnt») and splitGrid («Del opp») incl. the 300 limit
  *   G «Lagring»                toJSON → load into a fresh DesignState + SceneSync: params, light and the world lights
+ *   H «Ingen blink»            turning on the spot (G1 + G2), orbiting the overview (G1–G3) and walking a loop through
+ *                              the living room (S, all levels): no lamp changes slot or restarts its fade-in (the seat
+ *                              plan's fittings keep their slots); afterwards S off → the same seats as the same walk
+ *                              without S (I4)
  *
  * MASTER §2.5 seat invariant (W = seats without the new fittings S, V = with S, same pose/hour/level):
  *   I1: per room, capped candidates seated in V ≤ itemSpots[level].
@@ -28,7 +32,7 @@
  *   I3: on medium/high the wantsShadow candidates seated in W hold shadowed slots in V.
  *   I4: with S switched off or removed, the slot list (ids in slot-index order) equals W exactly.
  *
- *   node tools/house-tests/lightbudget.test.mjs [--section=B,C,D,E,F,G]
+ *   node tools/house-tests/lightbudget.test.mjs [--section=B,C,D,E,F,G,H]
  * QA_PARTIAL=1: only what is not delivered yet is soft (spots.js still a stub, gridOps missing).
  */
 const L = await import(new URL(import.meta.dirname.endsWith('wip') ? '../_lib.mjs' : './_lib.mjs', import.meta.url));
@@ -590,6 +594,84 @@ if (want('G')) {
     }
   }
   check(`G1 S og G4 gjennom toJSON → load: parametre, lys og lysposisjoner/-retninger (1e-9) er like`, !bad.length, show(bad));
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+if (want('H')) {
+  section('H Ingen blink når du går, snur deg og ser over etasjen (kl. 21)');
+  /** Frames of 0,05 s along `poses` ([pos, look, frames]); → slot hops (a lamp seated before and after in another
+   *  slot) and fade restarts (its fade drops), between consecutive poses. */
+  const drive = (H, poses) => {
+    const M = H.M, cam = new THREE.PerspectiveCamera();
+    M.setTime({ hour: 21, month: 10, day: 18 });
+    M._selectAt = -1e9;
+    const hops = [], restarts = [];
+    let prev = null;
+    poses.forEach(([pos, look, frames], step) => {
+      cam.position.set(...pos);
+      cam.lookAt(...look);
+      cam.updateMatrixWorld(true);
+      for (let f = 0; f < frames; f++) M.update(0.05, cam);
+      const cur = M._pool.spot.map((s) => (s.cand ? { id: s.cand.id, fade: s.cand.fade } : null));
+      if (prev) {
+        const at = new Map(cur.filter(Boolean).map((c) => [c.id, cur.indexOf(c)]));
+        prev.forEach((p, i) => {
+          const j = p ? at.get(p.id) : null;
+          if (j == null) return;
+          if (j !== i) hops.push(`${p.id} ${i}→${j} (${step})`);
+          if (cur[j].fade < p.fade - 0.3) restarts.push(`${p.id} ${p.fade.toFixed(2)}→${cur[j].fade.toFixed(2)} (${step})`);
+        });
+      }
+      prev = cur;
+    });
+    return { hops, restarts };
+  };
+  // a loop through the living room (0,6 m steps, facing the way), turning on the spot under G2, an orbit of the overview
+  const pts = [[5, 6], [4.5, 8], [3, 9.5], [2, 10.5], [3.5, 11], [5, 10], [6, 8.5], [5.5, 5], [4.5, 2.5], [5.5, 1.5], [5, 4], [4, 7], [2.5, 9], [5, 6]];
+  const WALK = [];
+  for (let i = 0; i + 1 < pts.length; i++) {
+    const [ax, az] = pts[i], [bx, bz] = pts[i + 1];
+    const n = Math.max(1, Math.ceil(Math.hypot(bx - ax, bz - az) / 0.6));
+    for (let k = 0; k < n; k++) {
+      const x = ax + ((bx - ax) * k) / n, z = az + ((bz - az) * k) / n, yaw = Math.atan2(bx - ax, bz - az);
+      WALK.push([[x, 1.6, z], [x + Math.sin(yaw), 1.4, z + Math.cos(yaw)], 1]);
+    }
+  }
+  const TURN = Array.from({ length: 49 }, (_, i) => [[5, 1.6, 6], [5 + Math.sin(i * 15 * DEG), 1.4, 6 + Math.cos(i * 15 * DEG)], 6]);
+  const ORBIT = Array.from({ length: 73 }, (_, i) => [[5 + 12 * Math.sin(i * 10 * DEG), 9, 6 + 12 * Math.cos(i * 10 * DEG)], [5, 0, 6], 3]);
+  const kinds = (H) => JSON.stringify(H.M._pool.spot.filter((s) => s.cand).map((s) => `${s.shadowed ? 'skygge ' : ''}${s.cand.id}`).sort());
+  {
+    const H = await home('medium');
+    const { S } = stressSet(H);
+    addAll(H, { G1: S.G1, G2: S.G2 });
+    const r = drive(H, TURN);
+    check(`H1 snur seg rundt to ganger under spisestuas downlights (G1 + G2, middels): ingen lys bytter plass`, !r.hops.length, show(r.hops));
+    check('H1 … og ingen starter innfadingen på nytt', !r.restarts.length, show(r.restarts));
+  }
+  {
+    const H = await home('medium');
+    const { S } = stressSet(H);
+    addAll(H, { G1: S.G1, G2: S.G2, G3: S.G3 });
+    H.M.setOverviewLevel('hoved');
+    const r = drive(H, ORBIT);
+    check(`H2 to runder rundt etasjeoversikten (G1–G3, middels): ingen lys bytter plass eller starter innfadingen på nytt`, !r.hops.length && !r.restarts.length, show([...r.hops, ...r.restarts]));
+  }
+  for (const level of ['low', 'medium', 'high']) {
+    const H0 = await home(level);
+    drive(H0, WALK);
+    H0.view('LIV', 21);
+    const W = { kinds: kinds(H0), ids: slotIds(H0) };
+    const H = await home(level);
+    const uids = Object.values(addAll(H, stressSet(H).S));
+    const r = drive(H, WALK);
+    check(`H3 ${level}: en runde gjennom stua med S (${WALK.length} steg): ingen lys bytter plass eller starter innfadingen på nytt`, !r.hops.length && !r.restarts.length, show([...r.hops, ...r.restarts]));
+    setLight(H, uids, { on: false });
+    H.view('LIV', 21);
+    check(`I4 ${level} etter runden: S slått av → de samme lysene, med og uten skygge, som etter samme runde uten S`, kinds(H) === W.kinds, `${W.kinds} → ${kinds(H)}`);
+    // the slot order too where the walk itself keeps it (on low the original assignment seats a newcomer before a
+    // returning lamp somewhere on this walk – with or without the seat plan's moves)
+    if (level !== 'low') check(`I4 ${level} … og i samme plassrekkefølge`, JSON.stringify(slotIds(H)) === JSON.stringify(W.ids), `${W.ids.join()} → ${slotIds(H).join()}`);
+  }
 }
 
 console.log(`\n  (${((performance.now() - T0) / 1000).toFixed(1)} s)`);

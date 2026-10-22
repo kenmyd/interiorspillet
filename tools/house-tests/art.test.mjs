@@ -388,12 +388,24 @@ section('fitSet: settet holder målene (art.md §4.2)');
     if (!near(fb.cx, 0, 1e-12) || !near(fb.cy, 0, 1e-12)) probs.push('ikke sentrert');
     if (!(near(fb.w, dims.w, 1e-9) || near(fb.h, dims.h, 1e-9))) probs.push(`fyller ikke ${fb.w}×${fb.h}`);
     if (fb.w > dims.w + 1e-9 || fb.h > dims.h + 1e-9) probs.push('bbox utenfor');
-    if (F.ledge && !(near(F.ledge.t, SET_LEDGE.t * want, 1e-12) && F.ledge.d === SET_LEDGE.d)) probs.push('hylle');
-    if (F.ledge && !F.frames.every((f) => near(f.z - f.h * Math.sin(f.tilt), SET_LEDGE.top, 1e-12))) probs.push('lener ikke mot veggen');
-    if (!F.frames.every((f, i) => f.z === G.frames[i].z)) probs.push('z skalert');
+    // z is not scaled with s; a ledge deeper than the set (10 cm > d 3 cm) is squeezed into dims.d (kz)
+    const kz = G.ledge ? dims.d / SET_LEDGE.d : 1;
+    if (!near(F.kz, kz, 1e-12)) probs.push(`kz ${F.kz}`);
+    if (F.ledge && !(near(F.ledge.t, SET_LEDGE.t * want, 1e-12) && near(F.ledge.d, dims.d, 1e-12))) probs.push('hylle');
+    if (F.ledge && !F.frames.every((f) => near(f.z - f.h * Math.sin(f.tilt), SET_LEDGE.top * kz, 1e-12))) probs.push('lener ikke mot veggen');
+    if (!F.frames.every((f, i) => (G.ledge ? near(f.z, G.frames[i].z * kz, 1e-15) : f.z === G.frames[i].z))) probs.push('z skalert');
     if (probs.length && !firstBad) firstBad = `${key} ×(${fx}, ${fy}): ${probs.join(', ')}`;
   }
   check('alle oppsett ×(0,7, 1,3), ×(1,3, 0,7), ×1, ×2: inni målene, samme format, sentrert, fyller den bindende siden', !firstBad, firstBad || '');
+  {
+    // a set at least as deep as the ledge (Frikk d 0.10, d 0.12, no d) keeps the natural ledge exactly
+    const G = galleryLayout('ledge');
+    const same = [0.1, 0.12, undefined].every((d) => {
+      const F = fitSet(G.frames, G.ledge, { w: 1.2, h: 0.5, d });
+      return F.kz === 1 && F.ledge.d === SET_LEDGE.d && F.frames.every((f, i) => f.z === G.frames[i].z && near(f.z - f.h * Math.sin(f.tilt), SET_LEDGE.top, 1e-12));
+    });
+    check('bildehylle i et sett med d ≥ 10 cm (eller uten d): hylla er 10 cm dyp, rammene står som før', same);
+  }
   const G = galleryLayout('pair-h');
   const keep = JSON.stringify(G);
   fitSet(G.frames, G.ledge, { w: 0.5, h: 0.5 });
@@ -658,6 +670,62 @@ section('Motivregister: artmotifs.js (art.md §2.1, §8.2 punkt 1)');
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
+section('Motivene følger trykkfargen: palette[1] = colors.print (artmotifs.js-kontrakten)');
+{
+  // every motif and variant painted twice through a recording fake canvas (all 2D calls and assignments, on every
+  // canvas a painter makes): with its palette and with palette[1] swapped – a motif that paints the same both times
+  // ignores the «Trykk» colour (recolouring would repaint an identical texture). bw-photo is black and white by design.
+  const { createHash } = await import('node:crypto');
+  const K = await imp('src/models/kit.js');
+  let hash = null;
+  const put = (s) => hash.update(`${s}\n`);
+  const PROPS = new Set(['fillStyle', 'strokeStyle', 'globalAlpha', 'globalCompositeOperation', 'lineWidth', 'filter', 'font', 'textAlign', 'textBaseline', 'lineCap', 'lineJoin', 'imageSmoothingEnabled', 'imageSmoothingQuality', 'shadowBlur', 'shadowColor', 'shadowOffsetX', 'shadowOffsetY', 'miterLimit', 'lineDashOffset']);
+  const grad = (kind) => (...a) => (put(`${kind}(${a.join(',')})`), { addColorStop: (o, col) => put(`stop ${o} ${col}`) });
+  const arg = (x) => (x && typeof x === 'object' ? (x.width != null ? `cv${x.width}x${x.height}` : 'o') : String(x));
+  const ctx2d = (cv) => new Proxy({
+    canvas: cv,
+    getImageData: (x, y, w, h) => ({ data: new Uint8ClampedArray(Math.max(4, w * h * 4)), width: w, height: h }),
+    createImageData: (w, h) => ({ data: new Uint8ClampedArray(Math.max(4, w * h * 4)), width: w, height: h }),
+    createLinearGradient: grad('lin'), createRadialGradient: grad('rad'), createConicGradient: grad('con'),
+    createPattern: () => ({ setTransform: () => {} }),
+    measureText: (t) => ({ width: String(t).length * 6, actualBoundingBoxAscent: 8, actualBoundingBoxDescent: 2 }),
+  }, {
+    get: (t, k) => (k in t || typeof k !== 'string' || PROPS.has(k) ? t[k] : (...a) => put(`${k}(${a.map(arg).join(',')})`)),
+    set: (t, k, v) => ((t[k] = v), put(`${String(k)}=${arg(v)}`), true),
+  });
+  const had = 'document' in globalThis;
+  const prevDoc = globalThis.document;
+  globalThis.document = { createElement: () => ({ width: 300, height: 150, style: {}, getContext() { return (this._c ||= ctx2d(this)); }, addEventListener: () => {} }) };
+  const paintHash = (key, variant, p) => {
+    hash = createHash('sha1');
+    const cv = globalThis.document.createElement('canvas');
+    cv.width = 120;
+    cv.height = 90;
+    paintArt(cv.getContext('2d'), 120, 90, key, K.rng(`motif:${key}:1`), p, { opts: variant ? { variant } : null });
+    return hash.digest('hex');
+  };
+  const deaf = [];
+  let n = 0;
+  try {
+    for (const key of motifKeys) {
+      if (key === 'bw-photo') continue;
+      const m = ART_MOTIFS[key];
+      for (const variant of m.variants?.length ? m.variants.map(([v]) => v) : [null]) {
+        const p0 = [...m.palette];
+        const p1 = [...m.palette];
+        p1[1] = p0[1].toLowerCase() === '#d0103a' ? '#1a7f3c' : '#d0103a';
+        n++;
+        if (paintHash(key, variant, p0) === paintHash(key, variant, p1)) deaf.push(variant ? `${key}/${variant}` : key);
+      }
+    }
+  } finally {
+    if (had) globalThis.document = prevDoc;
+    else delete globalThis.document;
+  }
+  check(`alle ${n} motiv/varianter (utenom svart-hvitt foto) maler annerledes når trykkfargen endres`, n > 0 && !deaf.length, deaf.join(', '));
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
 section('decor.js: art-frame og art-set (art.md §3.1, §4.1, MASTER §2.3)');
 const decor = await imp('src/models/decor.js');
 const artImages = await imp('src/models/artImages.js');
@@ -665,9 +733,9 @@ const { archetypes } = decor;
 {
   const af = archetypes['art-frame'], as = archetypes['art-set'];
   const keys = af.params.motif.options.map(([k]) => k);
-  check('Motiv: de 6 gamle først, så alle nye, «Eget bilde» sist', JSON.stringify(keys.slice(0, 6)) === JSON.stringify(LEGACY_MOTIFS) &&
-    keys[keys.length - 1] === 'custom' && af.params.motif.options[keys.length - 1][1] === 'Eget bilde' &&
-    keys.length === 6 + motifKeys.length + 1 && motifKeys.every((k) => keys.includes(k)));
+  // no «Eget bilde» to pick for a picture: without a picture it painted the fjord photo («Bilde» → «Bytt til eget bilde …»)
+  check('Motiv: de 6 gamle først, så alle nye – ikke «custom» (eget bilde kommer via «Bilde»)', JSON.stringify(keys.slice(0, 6)) === JSON.stringify(LEGACY_MOTIFS) &&
+    !keys.includes('custom') && keys.length === 6 + motifKeys.length && motifKeys.every((k) => keys.includes(k)));
   check('Ramme = FRAME_OPTIONS (10 profiler)', JSON.stringify(af.params.frame.options) === JSON.stringify(FRAME_OPTIONS));
   check('art-frame har ingen standard-«depth» (dybden er dims.d)', !('depth' in af.defaults.params));
   check('art-frame: Passepartoutbredde krever passepartout, Glass er av/på', af.params.matW?.requires === 'mat' && af.params.matW.min === 0.015 && af.params.matW.max === 0.15 &&
@@ -680,7 +748,19 @@ const { archetypes } = decor;
   const lay = galleryLayout(as.defaults.params.layout, { gap: as.defaults.params.gap });
   const b = setBounds(lay.frames, lay.ledge);
   check('art-set standardmål = salongvegg 5 i naturlig størrelse', near(b.w, as.defaults.dims.w, 1e-9) && near(b.h, as.defaults.dims.h, 1e-9));
-  check('akustikkbilde: samme motivliste (med «Eget bilde»)', JSON.stringify(archetypes['acoustic-art'].params.motif.options) === JSON.stringify(af.params.motif.options));
+  check('akustikkbilde: samme motivliste + «Eget motiv (eksempelbilde)» sist (katalogens «eget motiv»-plater viser riktig valg)',
+    JSON.stringify(archetypes['acoustic-art'].params.motif.options) === JSON.stringify([...af.params.motif.options, ['custom', 'Eget motiv (eksempelbilde)']]));
+  {
+    // «Passepartoutbredde» shows what the builder draws while matW is unset (9 % of the short side), not the 0.06 default
+    const s = af.params.matW;
+    const shown = (dims, params) => s.defaultFor?.(dims, { ...af.defaults.params, ...params }) ?? s.default;
+    const a3 = { w: 0.297, d: 0.02, h: 0.42 }, big = { w: 0.9, d: 0.03, h: 1.2 };
+    const drawn = (dims, params) => artLayout(dims, { ...af.defaults.params, ...params }).matW;
+    check('Passepartoutbredde uten matW: viser bredden byggeren tegner (9 % av korteste side), ikke 6 cm',
+      typeof s.defaultFor === 'function' && near(shown(a3, { mat: true, frame: 'thin' }), 0.297 * 0.09, 1e-12) && near(shown(big, { mat: true }), 0.081, 1e-12) &&
+      shown(a3, { mat: true, frame: 'thin' }) === drawn(a3, { mat: true, frame: 'thin' }) && shown(big, { mat: true, frame: 'none' }) === s.default,
+      `${shown(a3, { mat: true, frame: 'thin' })} / ${shown(big, { mat: true })} / ${shown(big, { mat: true, frame: 'none' })}`);
+  }
   check('decor.js eksporterer setArtImageSource (samme som artImages.js), buildMirror og _artDebug', decor.setArtImageSource === artImages.setArtImageSource &&
     typeof decor.buildMirror === 'function' && typeof decor._artDebug?.stats === 'function');
   const R = await imp('src/models/registry.js');
@@ -855,6 +935,48 @@ section('Geometri gjennom et falskt lerret: de gamle bildene er uendret, nye pro
       }
     }
     check('alle 15 oppsett (også speilvendt): ett sammenslått trykk med uv1, ≤ 6 masker, én flate per bilde, innenfor målene', !sp.length, sp.join('; '));
+    {
+      // «Oppsett: Bildehylle» picked on a gallery wall 2,5 cm deep (the Def and the catalogue sets): the ledge, its lip
+      // and the leaning frames stay inside dims.d – placement, collisions and the selection box know only dims
+      const lay = galleryLayout('ledge');
+      const bb = setBounds(lay.frames, lay.ledge);
+      const lp = [];
+      for (const d of [0.025, 0.05]) {
+        const dd = { w: bb.w, d, h: bb.h };
+        const g = R.buildModel({ archetype: 'art-set', dims: dd, params: { layout: 'ledge' } });
+        g.updateMatrixWorld(true);
+        const box = new THREE.Box3().setFromObject(g);
+        if (g.userData.model.fallback) lp.push(`d ${d}: reserve`);
+        else if (!inDims(g, dd, 0.001)) lp.push(`d ${d}: z ${box.min.z.toFixed(4)} … ${box.max.z.toFixed(4)}`);
+        else if (!(box.max.z > d * 0.9)) lp.push(`d ${d}: hylla bare ${box.max.z.toFixed(4)} dyp`);
+      }
+      check('bildehylle i et grunt sett (d 2,5 / 5 cm): hylla og rammene holder seg innenfor dybden', !lp.length, lp.join('; '));
+    }
+    {
+      // an acoustic picture holding an own picture: the fabric sides are the same off-white whether the picture was
+      // decoded when the panel was built (page load) or still pending (a rebuild after images.releaseDecoded())
+      const AI = await imp('src/models/artImages.js');
+      const prevSrc = AI.getArtImageSource();
+      const id = `img-${'c'.repeat(28)}`;
+      const spec = { archetype: 'acoustic-art', dims: { w: 1.8, d: 0.04, h: 1.2 }, params: { thickness: 0.04, motif: 'custom', imageId: id, imageAspect: 1.5 } };
+      const sides = (g) => {
+        const out = new Set();
+        g.traverse((o) => o.isMesh && !o.userData.part && o.material?.userData?.kind === 'woven' && out.add(o.material.userData.hex));
+        return [...out];
+      };
+      let pending, ready;
+      try {
+        AI.setArtImageSource(null);
+        pending = sides(R.buildModel(spec));
+        // a decoded picture (the fake canvas reads back black, so its «border colour» would be #000000)
+        AI.setArtImageSource({ getSync: () => ({ width: 300, height: 200 }), request: async () => null, onReady: () => () => {}, onMissing: () => () => {}, status: () => 'ready', info: () => null });
+        ready = sides(R.buildModel(spec));
+      } finally {
+        AI.setArtImageSource(prevSrc);
+      }
+      check('akustikkbilde med eget bilde: sidene er alltid #ece9e2 (lastet eller ikke)', JSON.stringify(pending) === '["#ece9e2"]' && JSON.stringify(ready) === '["#ece9e2"]',
+        `${pending} / ${ready}`);
+    }
     {
       const g = R.buildModel({ archetype: 'art-set', dims: { w: 1.47, d: 0.025, h: 0.9 }, params: { layout: 'triptych' } });
       const uv = parts(g).print[0].geometry.attributes.uv;

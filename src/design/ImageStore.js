@@ -74,6 +74,7 @@ export const MSG = {
   memory: 'Nettleseren lar ikke spillet lagre bilder (privat vindu?). Bildet vises til du lukker fanen – eksporter designet til fil for å ta vare på det.',
   stored: 'Et lagret bilde kunne ikke leses og vises som en tom ramme.',
   importUnsaved: 'Bildene i filen kunne ikke lagres i nettleseren (lagringsplassen er full). De vises til du lukker fanen.',
+  importMemory: 'Nettleseren lar ikke spillet lagre bildene i filen (privat vindu?). De vises til du lukker fanen – eksporter designet til fil for å ta vare på dem.',
 };
 
 /** A refused upload: code ('empty' | 'size' | 'heic' | 'type' | 'pixels' | 'small' | 'decode'), Norwegian message. */
@@ -748,7 +749,8 @@ export class ImageStore extends Emitter {
   /**
    * Stores bytes (hash → id; the same bytes again → the same id, no second record). Awaits the backend write unless
    * readOnly; a write that fails (QuotaExceededError …) does not throw: the record stays in memory with
-   * info(id).persisted === false. Emits 'added' either way.
+   * info(id).persisted === false. Emits 'added' either way. Bytes that are stored already count as uploaded now
+   * (_reupload: createdAt, lastUsedAt and the new name – «Nylig lastet opp» and the 14-day clean-up start again).
    * @param {Uint8Array} u8
    * @param {{ mime?: string, w?: number, h?: number, name?: string, origW?: number, origH?: number }} [meta]
    * @returns {Promise<string>} id
@@ -757,18 +759,25 @@ export class ImageStore extends Emitter {
     const bytes = asU8(u8);
     if (!bytes || !bytes.length) throw new ImageError('empty', MSG.empty);
     const id = hashBytes(bytes);
-    if (this._recs.has(id)) return id;
     const be = await this._backend();
+    if (this._recs.has(id)) {
+      await this._reupload(this._recs.get(id), name, be);
+      return id;
+    }
     let stored;
     try {
       stored = usableRecord(await be.get(id), id);
     } catch {
       stored = null;
     }
-    if (this._recs.has(id)) return id;
+    if (this._recs.has(id)) {
+      await this._reupload(this._recs.get(id), name, be);
+      return id;
+    }
     if (stored) {
       this._recs.set(id, stored);
       this._status.delete(id);
+      await this._reupload(stored, name, be);
       this.emit('added', { id });
       return id;
     }
@@ -794,6 +803,27 @@ export class ImageStore extends Emitter {
     return id;
   }
 
+  /**
+   * The same picture uploaded again: it counts as new (createdAt, lastUsedAt, the new file name) and is written again
+   * (awaited; not in readOnly). A failed write keeps the stored record as it was – only a record that never reached the
+   * backend stays unsaved.
+   */
+  async _reupload(rec, name, be) {
+    const now = this._now();
+    rec.createdAt = now;
+    rec.lastUsedAt = now;
+    const nm = cleanName(name);
+    if (nm) rec.name = nm;
+    this._status.delete(rec.id);
+    if (this.readOnly) return;
+    try {
+      await be.put(plain(rec));
+      delete rec._unsaved;
+    } catch (err) {
+      console.warn('[images] could not store the picture', err);
+    }
+  }
+
   /** Queues a background write; a failure marks the id in _failed (flush reports it). */
   _queue(promise, id, { report = false } = {}) {
     const p = promise.then(() => {
@@ -811,12 +841,18 @@ export class ImageStore extends Emitter {
     return p;
   }
 
-  /** lastUsedAt older than a day → bumped (queued write, not in readOnly). */
+  /** lastUsedAt older than a day → bumped (queued write, not in readOnly). be: the backend or its promise. */
   _touch(rec, be) {
     const now = this._now();
     if (this.readOnly || rec._unsaved || now - (rec.lastUsedAt ?? 0) < DAY) return;
     rec.lastUsedAt = now;
-    this._queue(be.put(plain(rec)), rec.id);
+    this._queue(Promise.resolve(be).then((b) => b.put(plain(rec))), rec.id);
+  }
+
+  /** True while the picture in memory was used within `graceDays` (gc: its snapshot may be older). */
+  _fresh(id, now, graceDays) {
+    const m = this._recs.get(id);
+    return !!m && now - (m.lastUsedAt ?? m.createdAt ?? 0) <= graceDays * DAY;
   }
 
   _markMissing(id) {
@@ -979,8 +1015,12 @@ export class ImageStore extends Emitter {
         rejected.push({ id, reason: 'hash' });
         continue;
       }
-      if (this._recs.has(id)) {
+      const known = this._recs.get(id);
+      if (known) {
         existing.push(id);
+        // used again: the clean-up must not take it (a record listed under «Nylig lastet opp» can be weeks old)
+        be ??= this._backend();
+        this._touch(known, be);
         continue;
       }
       const wasMissing = this._status.get(id) === 'missing';
@@ -1017,7 +1057,9 @@ export class ImageStore extends Emitter {
 
   /**
    * Deletes stored pictures that no root uses and that were not used for `graceDays` (protects undo, «Før/etter»,
-   * other tabs). Roots get their lastUsedAt bumped (at most once a day). A no-op in readOnly or without a root set.
+   * other tabs). Roots get their lastUsedAt bumped (at most once a day). A picture used again while it runs (an import,
+   * an upload or a load since its snapshot – in memory or in the backend) is kept. A no-op in readOnly or without a
+   * root set.
    * @param {Set<string>} roots
    * @param {number} [graceDays]
    * @param {{ now?: number }} [o]
@@ -1052,9 +1094,21 @@ export class ImageStore extends Emitter {
       }
       const used = r.lastUsedAt ?? r.createdAt ?? 0;
       if (now - used <= graceDays * DAY) continue;
+      // the snapshot is from before the loop's awaits: an import, an upload or a load since then (in memory) or another
+      // tab (in the backend) may have used the picture again
+      if (this._fresh(r.id, now, graceDays)) continue;
       try {
         // eslint-disable-next-line no-await-in-loop
+        const cur = await be.get(r.id);
+        if (cur && now - (cur.lastUsedAt ?? cur.createdAt ?? 0) <= graceDays * DAY) continue;
+        if (this._fresh(r.id, now, graceDays)) continue;
+        // eslint-disable-next-line no-await-in-loop
         await be.delete(r.id);
+        if (this._fresh(r.id, now, graceDays)) {
+          // used again while the delete ran: it stays (written back)
+          this._queue(be.put(plain(this._recs.get(r.id))), r.id);
+          continue;
+        }
         deleted.push(r.id);
         this._forget(r.id);
       } catch (err) {

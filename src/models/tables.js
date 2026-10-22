@@ -61,6 +61,11 @@ function add(g, geo, material, part, x = 0, y = 0, z = 0, rot) {
 
 /** Interior shadow material (behind door gaps, through cane) – not a part, never recoloured. */
 const darkInside = () => mat('painted', '#15120f', { flat: true, roughness: 0.95 });
+/** A '#rrggbb' no lighter than #222222 in any channel: a board in it cannot be told from darkInside() behind it. */
+const nearBlack = (hex) => {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(typeof hex === 'string' ? hex.trim() : '');
+  return !!m && Math.max(...m.slice(1).map((x) => parseInt(x, 16))) <= 0x22;
+};
 
 /**
  * userData.model.recolor for SceneSync: swaps cached materials per part like the default path, but asks for a
@@ -1192,7 +1197,9 @@ function shelfInto(g, spec, kind, outline, y, body) {
       const bl = 2 * chordHalfZ(pts, bx) - 0.03;
       if (bl > 0.04) add(g, K.box(0.03, 0.02, bl, { grain: 'z' }), body, 'body', bx, y - 0.026, (z0 + z1) / 2);
     }
-  } else if (kind === 'cane' || kind === 'glass') {
+  } else if ((kind === 'cane' || kind === 'glass') && Math.min(sw, sd) >= 2 * 0.03 + 0.02) {
+    // (a frame of ft all round and a hole of at least 2 cm: on a smaller outline – legs pulled in to the centre – the
+    // hole would be a point and earcut throws, so it is a plain board)
     const ft = 0.03;
     const inner = pts.map((p) => new THREE.Vector2(p.x * (1 - (2 * ft) / sw), p.y * (1 - (2 * ft) / sd)));
     const ring = new THREE.Shape(pts);
@@ -1230,6 +1237,13 @@ function chordHalfZ(outline, x) {
   return best;
 }
 
+/** A coffee table's top thickness and tray rim (0 without one) at height h: the top's underside is h − trayH − topT. */
+function ctTopStack(P, h) {
+  const topT = clamp(num(P.topT, 0.03), 0.008, Math.min(0.06, h * 0.3));
+  const trayH = P.tray === true ? clamp(num(P.trayH, 0.022), 0.015, Math.min(0.1, h * 0.3)) : 0;
+  return { topT, trayH };
+}
+
 /**
  * One coffee table (the main one or one of a `set`) into group tg, local to its own centre. Pushes its surfaces.
  * @returns {{ complex: boolean }}
@@ -1239,7 +1253,7 @@ function coffeeTableInto(tg, spec, t, out) {
   const { w, d, h, shape } = t;
   const n = qSeg(spec, 48);
   const seg = qSeg(spec, 12);
-  const topT = clamp(num(P.topT, 0.03), 0.008, Math.min(0.06, h * 0.3));
+  const { topT, trayH } = ctTopStack(P, h);
   const edge = ['straight', 'bevel', 'rounded'].includes(P.edge) ? P.edge : 'straight';
   const cornerR = clamp(num(P.cornerR, 0.03), 0.005, 0.3);
   const softness = clamp(num(P.softness, 4), 3, 6);
@@ -1258,7 +1272,6 @@ function coffeeTableInto(tg, spec, t, out) {
   const hm = pm(spec, 'handle', 'black-metal');
   const io = { cornerR, softness, seed, n, dent, dentAt };
   // a tray rim (brett) stands on the top: the top sinks by the rim height so the rim's upper edge is dims.h
-  const trayH = P.tray === true ? clamp(num(P.trayH, 0.022), 0.015, Math.min(0.1, h * 0.3)) : 0;
   const hTop = h - trayH;
   const outline = tableTop(tg, spec, { shape, w, d, h: hTop, topT, edge, ...io });
   if (trayH > 0) {
@@ -1589,15 +1602,25 @@ function buildCoffeeTable(spec) {
   const shape = CT_SHAPES.includes(P.shape) ? P.shape : 'rect';
   const out = { surfaces: [] };
   const tables = [{ w, d, h, dx: 0, dz: 0, shape }];
-  // a set (settbord, Dråpe): extra tables in the same style, dims and offsets in metres from the main table's centre
+  // a set (settbord, Dråpe): extra tables in the same style, dims and offsets in metres from the main table's centre,
+  // measured on a main table of params.setRef { w, d, h } (the product's dims): a resized set scales with its main
+  // table. Without setRef they stay as given.
   if (Array.isArray(P.set)) {
+    const ref = P.setRef && typeof P.setRef === 'object' ? P.setRef : {};
+    const k = (r, v) => (num(r, 0) > 0 ? v / r : 1);
+    const kx = k(ref.w, w), kz = k(ref.d, d), ky = k(ref.h, h);
+    const sc = (v, f, fb) => (typeof v === 'number' && Number.isFinite(v) ? v * f : fb);
+    const { topT, trayH } = ctTopStack(P, h);
     for (const s of P.set.slice(0, 4)) {
       if (!s || typeof s !== 'object') continue;
-      tables.push({
-        w: clamp(num(s.w, w * 0.8), 0.2, 2), d: clamp(num(s.d, d * 0.8), 0.2, 1.3), h: clamp(num(s.h, h * 0.85), 0.2, 0.85),
-        dx: clamp(num(s.dx, 0), -2, 2), dz: clamp(num(s.dz, 0), -2, 2), shape: CT_SHAPES.includes(s.shape) ? s.shape : shape,
+      const t = {
+        w: clamp(sc(s.w, kx, w * 0.8), 0.2, 2), d: clamp(sc(s.d, kz, d * 0.8), 0.2, 1.3), h: clamp(sc(s.h, ky, h * 0.85), 0.2, 0.85),
+        dx: clamp(sc(s.dx, kx, 0), -2, 2), dz: clamp(sc(s.dz, kz, 0), -2, 2), shape: CT_SHAPES.includes(s.shape) ? s.shape : shape,
         seed: s.seed, dent: s.dent, dentAt: s.dentAt,
-      });
+      };
+      // a set table that stands partly under the main one (nested) stays a cm under the main top's underside
+      if (Math.abs(t.dx) < (w + t.w) / 2 && Math.abs(t.dz) < (d + t.d) / 2) t.h = Math.min(t.h, Math.max(0.12, h - trayH - topT - 0.01));
+      tables.push(t);
     }
   }
   let complex = false;
@@ -1963,12 +1986,14 @@ export function buildCabinet(spec, arch) {
       }
     } else if (P.gripRecess === 'top' && drawer) {
       // a recessed grip channel above the front: the front is lower, a dark channel shows behind its top edge
-      // the channel is a shaded tone of the grip profile's (handle) colour: light grey on Next, body-toned on MALM types
+      // the channel is a shaded tone of the grip profile's (handle) colour: light grey on Next, body-toned on MALM types.
+      // A handle colour that is just the front's (Bakhuse: no profile, an open grip gap) keeps the dark gap
       const gh = Math.min(0.022, dh * 0.25);
-      const channel = C.handle ? mat(handleKind, tone(C.handle, 0.75)) : darkInside();
+      const profile = typeof C.handle === 'string' && C.handle.toLowerCase() !== String(C.front || '').toLowerCase();
+      const channel = profile ? mat(handleKind, tone(C.handle, 0.75)) : darkInside();
       add(g, K.roundedBox(dw, dh - gh, fT, 0.0012, 1, { grain }), fm, fp, cx, cy - gh / 2, zBack + fT / 2);
-      // a coloured profile sits close behind the face (it reads as a light strip, Next); the dark fallback stays deep
-      add(g, K.box(dw, gh, 0.004), channel, null, cx, y1 - gh / 2, C.handle ? zBack + 0.004 : zBack - 0.012);
+      // a coloured profile sits close behind the face (it reads as a light strip, Next); the dark gap stays deep
+      add(g, K.box(dw, gh, 0.004), channel, null, cx, y1 - gh / 2, profile ? zBack + 0.004 : zBack - 0.012);
       add(g, K.box(dw, 0.003, fT * 0.7), fm, fp, cx, y1 - gh + 0.0015, zBack + fT * 0.35);
     } else if (handle === 'cutout' && !drawer && dh > 0.7) {
       // a vertical finger slot near the opening edge of a tall door (PAX/TONSTAD style)
@@ -2043,12 +2068,15 @@ export function buildCabinet(spec, arch) {
     }
   });
   // drawer row on top
+  let bandShelf = false;
   if (drawerRow) {
     const ry0 = rowBottom ? yo0 : yCols1, ry1 = rowBottom ? yCols0 : yo1;
     interior(xo0, xo1, ry0, ry1, false, 0);
     // open or glass columns next to the band: a body-coloured shelf is their floor (bottom row) or ceiling (top row)
-    // instead of the dark drawer box behind the fronts (IDANÄS, BESTÅ, Madrid)
-    if (fit === 'inset' && (style === 'glass' || cells.some((c) => c.kind === 'open' || c.kind === 'glass'))) {
+    // instead of the dark drawer box behind the fronts (IDANÄS, BESTÅ, Madrid). A near-black carcass cannot be told
+    // from that dark box, so it gets none (the house's own black nightstand stays as it was)
+    bandShelf = fit === 'inset' && (style === 'glass' || cells.some((c) => c.kind === 'open' || c.kind === 'glass'));
+    if (bandShelf && !nearBlack(C.body)) {
       const zb = -d / 2 + 0.012, ze = zf - fT - 0.0015;
       add(g, K.box(openW, gT, ze - zb, { grain: 'x' }), body, 'body', 0, rowBottom ? yCols0 - gT / 2 : yCols1 + gT / 2, (zb + ze) / 2);
     }
@@ -2171,12 +2199,13 @@ export function buildCabinet(spec, arch) {
   const colliders = wall ? [{ min: [-w / 2, lift, -d / 2], max: [w / 2, yt, d / 2] }] : undefined;
   const builtStyle = style;
   const rc = recolorer(g, (part, kind) => {
-    if (part === 'front') return complexFront || (kind && kind !== frontKind) || builtStyle === 'cane' || builtStyle === 'grooved';
-    // the grip channel is a tone of the handle colour
+    // the grip channel is a tone of the handle colour, or the dark gap while the handle colour is the front's
+    if (part === 'front') return complexFront || (kind && kind !== frontKind) || builtStyle === 'cane' || builtStyle === 'grooved' || P.gripRecess === 'top';
     if (part === 'handle') return P.gripRecess === 'top' || (kind && kindGroup(kind) !== kindGroup(handleKind));
     if (part === 'legs') return kind && kindGroup(kind) !== kindGroup(legKind);
     if (part === 'top') return kind && STONE.has(kind) !== STONE.has(M.top);
-    if (part === 'body') return builtStyle === 'glass';
+    // the band's shelf comes and goes with a near-black body
+    if (part === 'body') return builtStyle === 'glass' || bandShelf;
     return false;
   });
   g.name = arch;
@@ -3310,7 +3339,8 @@ export const archetypes = {
       ...finish('#b08a62', 'oak', '#b08a62', 'oak', '#b08a62', 'oak'),
     },
     // hidden (products): seed, softness, waterfall, tubeW, frameFloor, ribPitch, ribDepth, plinthH, drumTaper,
-    // drumDrawers, apronH, drawersBack, hubH (spider), set [{ w, d, h, dx, dz, shape?, seed?, dent?, dentAt? }], fronts,
+    // drumDrawers, apronH, drawersBack, hubH (spider), set [{ w, d, h, dx, dz, shape?, seed?, dent?, dentAt? }] with
+    // setRef { w, d, h } (the main dims the set was measured on: the set scales when the main table is resized), fronts,
     // frontStyle, slidingDoors, cabinetLegH, cabinetLegStyle, dent / dentAt (organic: a concave notch, plan angle),
     // vDepth (stone V), crossL (cross: slab length), trayH (tray rim height)
     params: {

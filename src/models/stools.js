@@ -38,7 +38,7 @@ const QF = { low: 0.6, medium: 1, high: 1.5 };
 const seg = (spec, n, min = 4) => Math.max(min, Math.round(n * (QF[spec.quality] ?? 1)));
 const _UP = new THREE.Vector3(0, 1, 0);
 
-function def(id, { defaults, params = {}, dimsRange, build }) {
+function def(id, { defaults, params = {}, dimsRange, build, paramPatch }) {
   const a = schema.archetypes[id];
   const fam = schema.families[a.family];
   const parts = a.parts || fam.parts;
@@ -46,6 +46,8 @@ function def(id, { defaults, params = {}, dimsRange, build }) {
     label: a.label, mount: a.mount, parts: [...parts],
     partLabels: Object.fromEntries(parts.map((p) => [p, a.partLabels?.[p] || fam.partLabels[p] || p])),
     defaults: { params: {}, ...defaults }, params, dimsRange, build,
+    // paramPatch(item, key, value) → { dims?, params? } | null: what else changes when the user sets a param
+    ...(paramPatch ? { paramPatch } : {}),
   };
 }
 
@@ -360,6 +362,39 @@ const STOOL_SEATS = ['wood', 'upholstered', 'cushion', 'cord', 'cane'];
 const STOOL_LEGS = ['wood-splayed', 'wood-straight', 'metal-thin', 'hairpin', 'pedestal'];
 const FOOTRESTS = ['none', 'ring', 'rungs', 'bar'];
 const STOOL_BACKS = ['none', 'low', 'spindles', 'shell'];
+/** dimsRange.h of the stool, and how far a newly chosen back rises over the seat (stoolParamPatch). */
+const STOOL_H = [0.35, 1.1];
+const STOOL_BACK_RISE = { low: 0.2, spindles: 0.32, shell: 0.2 };
+
+/** A stool has a back when params.back asks for one and it is at least 0.45 tall. */
+const stoolHasBack = (P, h) => pick(P.back, STOOL_BACKS, 'none') !== 'none' && h >= 0.45;
+
+/**
+ * Seat top of a stool of height h: without a back h is the seat top; with one h is the back top and seatH the seat
+ * (a low back may rise only a few cm over the seat: IKEA JANINGE 76 / 84 cm).
+ */
+function stoolSeat(P, h) {
+  return stoolHasBack(P, h) ? clamp(num(P.seatH, Math.min(0.66, h - 0.2)), 0.3, h - 0.06) : h;
+}
+
+/**
+ * Inspector hook (def.paramPatch): the extra { dims, params } patch when params[key] becomes value, or null. A
+ * backless stool that gets a back keeps its seat (params.seatH) and grows by the back; one that loses its back
+ * shrinks to its seat – instead of dims.h suddenly meaning the other thing.
+ */
+function stoolParamPatch(item, key, value) {
+  if (key !== 'back') return null;
+  const P = item?.params || {};
+  const h = num(item?.dims?.h, 0.65);
+  const next = { ...P, back: value };
+  const had = pick(P.back, STOOL_BACKS, 'none') !== 'none', will = pick(value, STOOL_BACKS, 'none') !== 'none';
+  if (had === will) return null;
+  const seat = stoolSeat(P, h);
+  const r3 = (v) => Math.round(v * 1000) / 1000;
+  if (!will) return { dims: { h: r3(clamp(seat, STOOL_H[0], STOOL_H[1])) } };
+  const top = clamp(seat + STOOL_BACK_RISE[next.back], Math.max(0.45, STOOL_H[0]), STOOL_H[1]);
+  return { params: { seatH: r3(clamp(seat, 0.3, top - 0.06)) }, dims: { h: r3(top) } };
+}
 
 /** Round wooden seat: a disc with a chamfered underside and an eased top edge (crisp corners via twin points). */
 function discSeat(r, t, n) {
@@ -397,10 +432,9 @@ function buildStool(spec) {
   const legsMat = mat(legKind, C.legs, woodish(legKind) ? { grain: 'y' } : undefined);
   const frameMat = mat(frameKind, C.frame || C.legs, woodish(frameKind) ? { grain: 'y' } : undefined);
   const n = seg(spec, 12, 6);
-  // heights: without a back h is the seat top; with one h is the back top and seatH the seat
-  // (a low back may rise only a few cm over the seat: IKEA JANINGE 76 / 84 cm)
-  const hasBack = back !== 'none' && h >= 0.45;
-  const seatTop = hasBack ? clamp(num(P.seatH, Math.min(0.66, h - 0.2)), 0.3, h - 0.06) : h;
+  // heights: without a back h is the seat top; with one h is the back top and seatH the seat (stoolSeat)
+  const hasBack = stoolHasBack(P, h);
+  const seatTop = stoolSeat(P, h);
   const soft = seat === 'upholstered';
   const seatT = clamp(num(P.seatT, soft ? 0.07 : seat === 'cushion' ? 0.065 : 0.03), 0.015, 0.12);
   const seatBot = seatTop - seatT;
@@ -1018,8 +1052,9 @@ export const archetypes = {
       back: { type: 'enum', label: 'Rygg', options: [['none', 'Uten'], ['low', 'Lav ryggbøyle'], ['spindles', 'Pinnerygg'], ['shell', 'Skallrygg i ett med setet']] },
       swivel: { type: 'bool', label: 'Dreibar (søylefot)' },
     },
-    dimsRange: { w: [0.28, 0.6], d: [0.28, 0.6], h: [0.35, 1.1] },
+    dimsRange: { w: [0.28, 0.6], d: [0.28, 0.6], h: [...STOOL_H] },
     build: buildStool,
+    paramPatch: stoolParamPatch,
   }),
   'office-chair': def('office-chair', {
     defaults: {

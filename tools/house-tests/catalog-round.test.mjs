@@ -212,6 +212,15 @@ section('C Katalogen');
   check(`«Ryddig hus»: originaldesignet har nøyaktig de ${Q.BASE.originalItems.length} tingene fra før`, JSON.stringify(uids) === JSON.stringify(Q.BASE.originalItems),
     `${uids.length} ting; nye: ${uids.filter((u) => !Q.BASE.originalItems.includes(u)).join(', ') || '–'}; borte: ${Q.BASE.originalItems.filter((u) => !uids.includes(u)).join(', ') || '–'}`);
   check('ex-f-maleri beholder motivet «misty-trees»', ds.get('ex-f-maleri')?.params?.motif === 'misty-trees', ds.get('ex-f-maleri')?.params?.motif);
+  // review fixes: ALEX is on sale (førpris 1 695 kr), Gustin stays black/white like the shop's photo
+  const alex = cat.getProduct('ikea-alex-skrivebord-100x48');
+  const ap = alex ? cat.priceOf(alex, 0) : null;
+  check('ALEX skrivebord: 1 495 kr på tilbud (førpris 1 695 kr)', ap?.price === 1495 && ap?.listPrice === 1695 && ap?.onSale === true, JSON.stringify(ap));
+  const gus = cat.getProduct('bohus-holmen-gustin-strukturbilde-80x100');
+  const gp = gus?.params || {};
+  check('Gustin: svart/hvitt som bildet hos Bohus (trykkfarge = palett[1], malt overflate, hvit kant)',
+    gus?.variants?.[0]?.colors?.print === '#151515' && gp.palette?.[1] === '#151515' && gp.texture === 'painted' && gp.edge === 'white',
+    JSON.stringify({ print: gus?.variants?.[0]?.colors?.print, palette1: gp.palette?.[1], texture: gp.texture, edge: gp.edge }));
   check('bytte: art-frame (vegg) ↔ art-set (vegg) er lov', cat.mountsCompatible('art-frame', 'wall', 'art-set', 'wall') === true);
   const both = (a) => (cat.archetypeInfo(a)?.mounts || []).length > 1;
   check('bytte: downlight (tak) ↔ veggspot (vegg) er ikke lov', cat.mountsCompatible('downlight', 'ceiling', 'spot-wall', 'wall') === (both('downlight') && both('spot-wall') && false));

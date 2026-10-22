@@ -90,13 +90,45 @@ const same = (x, y) => JSON.stringify([x.dims, x.params]) === JSON.stringify([y.
 for (const c of choices) {
   const spec = IA.choiceToSpec(c, img(ID1, 4 / 3));
   const back = IA.specToChoice(spec);
-  // a standard frame whose opening has the picture's own shape reads back as «etter bildet» – the same item
-  const ambiguous = c.mode === 'frame' && near(c.frameSize.w / c.frameSize.h, 4 / 3, 1e-3);
   const ok = same(IA.choiceToSpec(back, img(ID1, 4 / 3)), spec) && back.style === c.style && back.mat === c.mat && back.fit === c.fit
-    && (ambiguous || back.mode === c.mode) && (c.mode === 'image' ? near(back.long, c.long) : ambiguous || back.frameSize?.key === c.frameSize.key);
+    && back.mode === c.mode && spec.params.sizeMode === c.mode && (c.mode === 'image' ? near(back.long, c.long) : back.frameSize?.key === c.frameSize.key);
   if (!ok) bad.push(`${JSON.stringify(c)} → ${JSON.stringify(back)}`);
 }
 check('specToChoice(choiceToSpec(c)) gir samme valg (og samme ting)', !bad.length, bad.join(' | '));
+// a standard frame whose opening (inside the mat) has the picture's own shape stays a frame: a 3:4 photo in 40 × 50 with
+// mat, square photos in 40 × 40 / 70 × 70 with mat, a 3:2 photo in 40 × 30 with mat, 30 × 40 and 61 × 91 without –
+// also for an item placed before params.sizeMode was stored
+bad = [];
+const fsz = (w, h) => ({ key: `${Math.round(w * 100)}x${Math.round(h * 100)}`, label: '', w, h });
+for (const legacyItem of [false, true]) {
+  for (const [w, h, a, mat] of [[0.4, 0.5, 0.75, true], [0.4, 0.4, 1, true], [0.7, 0.7, 1, true], [0.4, 0.3, 1.5, true], [0.3, 0.4, 0.75, false], [0.61, 0.91, 2 / 3, false]]) {
+    const spec = IA.choiceToSpec({ mode: 'frame', frameSize: fsz(w, h), style: 'svart', mat, fit: 'cover' }, img(ID1, a));
+    const item = { ...spec, params: { ...spec.params } };
+    if (legacyItem) delete item.params.sizeMode;
+    const back = IA.specToChoice(item);
+    const dims = (s) => [s.dims.w, s.dims.h];
+    const want = JSON.stringify([w + 0.03, h + 0.03].map((v) => Math.round(v * 1e4) / 1e4));
+    const tag = `${legacyItem ? 'uten sizeMode ' : ''}${w}×${h} a=${a.toFixed(2)} mat=${mat}`;
+    if (back.mode !== 'frame' || back.frameSize?.key !== fsz(w, h).key) bad.push(`${tag}: ${back.mode} ${back.frameSize?.key}`);
+    for (const [what, s] of [
+      ['Tilpass → Bruk', IA.choiceToSpec(back, img(ID1, a))],
+      ['Passepartout av', IA.choiceToSpec({ ...back, mat: false }, img(ID1, a))],
+      ['Passepartout på', IA.choiceToSpec({ ...back, mat: true }, img(ID1, a))],
+      ['Bytt bilde 9:16', IA.imagePatch(item, img(ID2, 9 / 16))],
+      ['Bytt bilde 3:2', IA.imagePatch(item, img(ID2, 1.5))],
+    ]) if (JSON.stringify(dims(s)) !== want) bad.push(`${tag} ${what}: ${JSON.stringify(dims(s))} ≠ ${want}`);
+    const eik = IA.choiceToSpec({ ...back, style: 'eik' }, img(ID1, a));
+    if (!near(eik.dims.w, w + 0.044) || !near(eik.dims.h, h + 0.044)) bad.push(`${tag} Ramme eik: ${JSON.stringify(dims(eik))}`);
+  }
+}
+check('standard rammemål beholdes ved Tilpass, Passepartout, Ramme og Bytt bilde (også uten lagret sizeMode)', !bad.length, bad.slice(0, 4).join(' | '));
+const sqImg = IA.choiceToSpec({ mode: 'image', long: 0.5, style: 'svart', mat: false, fit: 'cover' }, img(ID1, 1));
+const sqBack = IA.specToChoice(sqImg);
+const sqSwap = A.artLayout(IA.imagePatch(sqImg, img(ID2, 4 / 3)).dims, IA.imagePatch(sqImg, img(ID2, 4 / 3)).params);
+check('«Etter bildet» 50 cm kvadrat (glass = 50 × 50) forblir etter bildet: nytt 4:3-bilde gir 50 × 37,5', sqBack.mode === 'image' && near(sqBack.long, 0.5)
+  && near(sqSwap.openW, 0.5) && near(sqSwap.openH, 0.375), `${sqBack.mode} ${sqSwap.openW}×${sqSwap.openH}`);
+const conv0 = IA.imagePatch({ archetype: 'art-frame', source: 'existing', dims: { w: 0.5, d: 0.03, h: 0.7 }, params: { frame: 'none', motif: 'abstract' } }, img(ID2, 1.5));
+check('et maleri som blir eget bilde beholder rammen (sizeMode frame)', conv0.params.sizeMode === 'frame');
 const ds = new DesignState();
 const uid = ds.add({ ...s43, position: [4.3, 1.5, 11.93], attach: { wallId: 'w-vest-stue', normal: [0, 0, -1] } });
 check('spec-en går uendret gjennom DesignState', JSON.stringify(ds.get(uid).params) === JSON.stringify(s43.params) && JSON.stringify(ds.get(uid).dims) === JSON.stringify(s43.dims));

@@ -243,6 +243,30 @@ function mainPart(colors) {
   return keys[0] || null;
 }
 
+/**
+ * The values «Form og detaljer» shows: the archetype's defaults under the item's params, then for an unset param
+ * `defaultFor(dims, values)` – the value the builder actually uses (a frame's matW: 9 % of the short side) – and
+ * after that `defaultFrom` – the value of the param it follows (a frame's matH: unset = matW all round).
+ * @param {object} schema  def.params (the shown subset)
+ * @param {object} item
+ * @param {object} [def]
+ */
+export function paramDisplayValues(schema, item, def) {
+  const values = { ...(def?.defaults?.params || {}), ...(item?.params || {}) };
+  for (const [k, s] of Object.entries(schema || {})) {
+    if (typeof s?.defaultFor !== 'function' || item?.params?.[k] != null) continue;
+    let v = null;
+    try {
+      v = s.defaultFor(item?.dims || {}, values);
+    } catch {
+      v = null;
+    }
+    if (Number.isFinite(v)) values[k] = v;
+  }
+  for (const [k, s] of Object.entries(schema || {})) if (s?.defaultFrom && item?.params?.[k] == null && values[s.defaultFrom] != null) values[k] = values[s.defaultFrom];
+  return values;
+}
+
 export class Inspector extends BasePanel {
   /** @param {import('../design/Editor.js').Editor} editor */
   constructor(editor) {
@@ -913,8 +937,15 @@ export class Inspector extends BasePanel {
     const cur = item.rotationDeg || 0;
     let r = deg > 0 ? Math.floor(cur / 15 + 1e-6) * 15 + 15 : Math.ceil(cur / 15 - 1e-6) * 15 - 15;
     r = ((r + 180) % 360 + 360) % 360 - 180;
-    // turning a long item in a corner must not push it into the wall (same as R / Shift+R)
-    this._apply(this._fit(item.uid, { rotationDeg: r }).patch, { label: `Roter ${item.name}` });
+    // turning a long item in a corner must not push it into the wall (same as R / Shift+R); a turn that does not fit
+    // at all (a long grid of downlights through a wall) is refused like the rotate handle refuses it – unless the
+    // item was already stuck before the turn
+    const res = this._fit(item.uid, { rotationDeg: r });
+    if (res.status === 'blocked' && this._fit(item.uid, {}).status !== 'blocked') {
+      this.editor.events.emit('toast', { text: 'Får ikke plass rotert her', seconds: 2 });
+      return;
+    }
+    this._apply(res.patch, { label: `Roter ${item.name}` });
     this._render();
   }
 
@@ -1536,9 +1567,7 @@ export class Inspector extends BasePanel {
     if (item.mount === 'ceiling' && (family === 'lamp' || item.light)) delete schema.drop;
     // a lamp's shade angle sits in the light section too
     if (family === 'lamp' || item.light) delete schema.tilt;
-    const values = { ...(def?.defaults?.params || {}), ...(item.params || {}) };
-    // `defaultFrom`: an unset param shows the value of the param it follows (a frame's matH: unset = matW all round)
-    for (const [k, s] of Object.entries(schema)) if (s?.defaultFrom && item.params?.[k] == null && values[s.defaultFrom] != null) values[k] = values[s.defaultFrom];
+    const values = paramDisplayValues(schema, item, def);
     // floorOnly params (a cabinet's legs / plinth) mean nothing on a wall-hung item – and «Sokkel» there would make the
     // builder draw it with the floor origin (notes/add-storage.md); moving between floor and wall is the swap's job.
     // `requires`: only for products whose params set that flag (the tilt of a tiltable shade); `section` params have a
@@ -1547,7 +1576,7 @@ export class Inspector extends BasePanel {
     if (!Object.keys(schema).length) return null;
     const lives = {};
     const ed = paramEditor(schema, values, (key, v, { final }) => {
-      const apply = () => this._apply({ params: { [key]: v } }, { coalesce: `param:${key}`, label: `${schema[key]?.label || key}` });
+      const apply = () => this._apply(this._paramPatch(item.uid, def, key, v), { coalesce: `param:${key}`, label: `${schema[key]?.label || key}` });
       if (final) {
         lives[key]?.cancel();
         apply();
@@ -1555,12 +1584,32 @@ export class Inspector extends BasePanel {
         if (a && ed.el.contains(a) && a.tagName !== 'INPUT') blurSoon(a);
         if (a && a.type === 'range') blurSoon(a);
       } else {
-        (lives[key] ||= throttle((x) => this._apply({ params: { [key]: x } }, { coalesce: `param:${key}`, label: `${schema[key]?.label || key}` }), 90))(v);
+        (lives[key] ||= throttle((x) => this._apply(this._paramPatch(item.uid, def, key, x), { coalesce: `param:${key}`, label: `${schema[key]?.label || key}` }), 90))(v);
       }
     });
     const det = h('details.ipi-details', { open: this._ui.params }, h('summary', { text: `Form og detaljer (${Object.keys(schema).length})` }), ed.el);
     det.addEventListener('toggle', () => (this._ui.params = det.open));
     return det;
+  }
+
+  /**
+   * The patch for setting params[key] = v. An archetype's `paramPatch(item, key, v)` hook adds what else changes
+   * with it (a bench or stool that gets a back keeps its seat height and grows by the back); a size change from the
+   * hook is fitted to the room like any size change.
+   */
+  _paramPatch(uid, def, key, v) {
+    const cur = this.design.get(uid);
+    let extra = null;
+    try {
+      extra = cur && typeof def?.paramPatch === 'function' ? def.paramPatch(cur, key, v) : null;
+    } catch (err) {
+      console.warn('[inspector] paramPatch failed', err);
+    }
+    if (!extra) return { params: { [key]: v } };
+    const patch = { params: { ...(extra.params || {}), [key]: v } };
+    if (!extra.dims) return patch;
+    patch.dims = { ...extra.dims };
+    return this._fit(uid, patch).patch;
   }
 
   _placeSection(item) {

@@ -38,7 +38,7 @@ function tone(hex, f) {
   return `#${c.getHexString()}`;
 }
 
-function def(id, { defaults, params = {}, dimsRange, build }) {
+function def(id, { defaults, params = {}, dimsRange, build, paramPatch }) {
   const a = schema.archetypes[id];
   const fam = schema.families[a.family];
   const parts = a.parts || fam.parts;
@@ -51,6 +51,8 @@ function def(id, { defaults, params = {}, dimsRange, build }) {
     params,
     dimsRange,
     build,
+    // paramPatch(item, key, value) → { dims?, params? } | null: what else changes when the user sets a param
+    ...(paramPatch ? { paramPatch } : {}),
   };
 }
 
@@ -463,6 +465,8 @@ function buildHeadboardProduct(spec) {
 
 const BENCH_LEGS = ['wood-taper', 'wood-straight', 'block', 'metal-thin', 'metal-frame', 'plinth', 'wood-frame', 'trestle', 'x', 'sled', 'hairpin', 'none'];
 const BENCH_BACKS = ['none', 'rail', 'spindles', 'panel', 'upholstered'];
+/** dimsRange.h of the bench. */
+const BENCH_H = [0.3, 1.0];
 /** Lean of a bench back (top toward −z). */
 const BACK_LEAN = 6 * DEG;
 
@@ -472,6 +476,35 @@ function hairpin(yTop, x, z, dx, dz) {
   const pts = [[-s, yTop], [-0.012, 0.05], [-0.005, 0.012], [0, 0.006], [0.005, 0.012], [0.012, 0.05], [s, yTop]];
   const l = Math.hypot(dx, dz) || 1;
   return K.tube(pts.map(([u, y]) => [x + (u * dx) / l, y, z + (u * dz) / l]), 0.0045, { curve: 'catmull', radial: 6 });
+}
+
+/** A bench with a back or arms: dims.h is the top of the back (arms). */
+const benchRaised = (P) => (BENCH_BACKS.includes(P.back) && P.back !== 'none') || P.arms === true;
+
+/**
+ * Seat height of a bench of height h: without a back or arms dims.h is the seat (params.seatH when set); with them
+ * dims.h is the top of the back (arms) and the seat comes from params.seatH.
+ */
+function benchSeat(P, h) {
+  if (!benchRaised(P)) return clamp(num(P.seatH, h), 0.25, 0.9);
+  const back = BENCH_BACKS.includes(P.back) && P.back !== 'none';
+  return clamp(num(P.seatH, 0.46), 0.3, Math.max(0.3, h - (back ? 0.15 : 0.1)));
+}
+
+/**
+ * Inspector hook (def.paramPatch): the extra { dims, params } patch when params[key] becomes value, or null. A bench
+ * that gets a back or arms keeps its seat where it was (params.seatH) and grows by the back (0.38) or the arms (0.2);
+ * one that loses them shrinks to its seat – instead of dims.h suddenly meaning the other thing.
+ */
+function benchParamPatch(item, key, value) {
+  if (key !== 'back' && key !== 'arms') return null;
+  const P = item?.params || {};
+  const next = { ...P, [key]: value };
+  if (benchRaised(P) === benchRaised(next)) return null;
+  const seat = benchSeat(P, num(item?.dims?.h, 0.46));
+  const rise = !benchRaised(next) ? 0 : BENCH_BACKS.includes(next.back) && next.back !== 'none' ? 0.38 : 0.2;
+  const r3 = (v) => Math.round(v * 1000) / 1000;
+  return { params: { seatH: r3(seat) }, dims: { h: r3(clamp(seat + rise, BENCH_H[0], BENCH_H[1])) } };
 }
 
 function buildBench(spec) {
@@ -487,10 +520,12 @@ function buildBench(spec) {
   const frameV = mat(frameKind, C.frame || C.legs, kindGroup(frameKind) === 'wood' ? { grain: 'y' } : undefined);
   const legsKind = M.legs || 'oak';
   const legs = mat(legsKind, C.legs, kindGroup(legsKind) === 'wood' ? { grain: 'y' } : undefined);
-  const back = BENCH_BACKS.includes(P.back) ? P.back : 'none';
+  const wantBack = BENCH_BACKS.includes(P.back) ? P.back : 'none';
   const arms = P.arms === true;
-  // with a back (or arms), dims.h is the top of the back (arms) and the seat height comes from params.seatH
-  const seatH = back !== 'none' || arms ? clamp(num(P.seatH, 0.46), 0.3, Math.max(0.3, h - (back !== 'none' ? 0.15 : 0.1))) : clamp(num(P.seatH, h), 0.25, 0.9);
+  const seatH = benchSeat(P, h);
+  // the seat goes no lower than 0.3, so at the bottom of the height range there is no room left for a back over it
+  // (a 0-high upholstered back would be NaN geometry): the bench is drawn without one
+  const back = h - seatH >= 0.03 ? wantBack : 'none';
   const seatT = clamp(num(P.seatT, seat === 'upholstered' ? 0.1 : seat === 'cushion' ? 0.08 : 0.035), 0.015, 0.25);
   const style = BENCH_LEGS.includes(P.legStyle) ? P.legStyle : 'wood-taper';
   const storage = P.storage === true;
@@ -740,7 +775,8 @@ export const archetypes = {
       arms: { type: 'bool', label: 'Armlener' },
       cubbies: { type: 'number', min: 0, max: 4, step: 1, label: 'Rom under setet' },
     },
-    dimsRange: { w: [0.5, 2.2], d: [0.28, 0.6], h: [0.3, 1.0] },
+    dimsRange: { w: [0.5, 2.2], d: [0.28, 0.6], h: [...BENCH_H] },
     build: buildBench,
+    paramPatch: benchParamPatch,
   }),
 };

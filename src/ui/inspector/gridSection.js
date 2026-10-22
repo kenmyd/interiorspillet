@@ -7,10 +7,14 @@
  *                          spacing (rows apart on request), a summary («9 stk · 3 × 3 · 1,20 m mellom · …»),
  *                          «Fordel jevnt i rommet», «Roter 90°», «Del opp i enkeltspotter»
  *     sections.size        the head-size sliders (dims hold the whole grid; the sliders edit ONE fitting)
+ *     candidates           a row / grid swaps only between gridable products (gridCandidates)
  *     carry                a swap / reset between gridable products keeps the grid
  *   gridCatalogAction(editor) → (({ panel, product, vi }) → HTMLElement|null)
  *     a catalogue detail button «Legg inn flere (rekke/rutenett) …» on gridable products: places a 2 × 3 grid
  *   carryGrid(item, spec) → { params, dims } | null
+ *   gridCandidates(item, list) → list   the «Bytt modell» products a row / grid may flip through
+ *   spreadGrid(ins, uid) → { res, d } | { error }    «Fordel jevnt i rommet» (the 0.85 / 0.7 retries, the wall clearance)
+ *   turnGrid(ins, uid) → { res, note } | { error }   «Roter 90°» kept inside the room (closer together, or refused)
  *
  * Every change is one undo step per gesture (sliders coalesce) and goes through insp._fit (Placement.constrain keeps
  * the extent inside the room); «Fordel jevnt» and «Del opp» are the pure design/gridOps.js functions.
@@ -19,13 +23,15 @@ import { section, button, slider, toggle, row, fmtNok } from '../panelKit.js';
 import { h, fmtNumber } from '../dom.js';
 import { cm, throttle, blurSoon, seg } from '../inspectorKit.js';
 import { GRIDABLE, GRID_LIMITS, GRID_HEAD_RANGE, GRID_DEFAULT_SPACING, gridOf, gridSpec } from '../../design/grid.js';
-import { distributeGrid, splitGrid } from '../../design/gridOps.js';
+import { distributeGrid, gridClearance, splitGrid } from '../../design/gridOps.js';
 import { priceInfo, dimsText } from '../CatalogPanel.js';
 import { normDeg } from '../../design/Selection.js';
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const r3 = (v) => Math.round(v * 1000) / 1000;
 const meters = (v) => `${fmtNumber(v, 2)} m`;
+/** «Fordel jevnt» without a spread that keeps half the spacing: the best one still needs this much to the walls (m). */
+const MIN_GAP = 0.15;
 /** The last «får ikke plass» message per Inspector (survives the re-render after a slider is released). */
 const lastFit = new WeakMap();
 /** The item whose «Ulik avstand mellom radene» is switched on before its rows were moved apart (per Inspector). */
@@ -56,6 +62,75 @@ function modeOf(g) {
 /** A toast in the game HUD. */
 function toast(ins, text, seconds = 2.5) {
   ins.editor?.events?.emit?.('toast', { text, seconds });
+}
+
+/**
+ * The largest spacing (≤ the asked one, ≥ the minimum) at which a grid fits (insp._fit not 'blocked'):
+ * { res (the _fit result), grid } – null when not even the minimum does. `extra`: more of the patch tried with it
+ * (the rotation of «Roter 90°»); `accept(res)`: a stricter test than «not blocked».
+ */
+function shrinkSpacing(ins, uid, head, grid, extra = {}, accept = (r) => r.status !== 'blocked') {
+  const at = (f) => ({ ...grid, dx: Math.max(GRID_LIMITS.spacing[0], r3(grid.dx * f)), dz: Math.max(GRID_LIMITS.spacing[0], r3(grid.dz * f)) });
+  const r0 = ins._fit(uid, { ...gridSpec(head, at(0)), ...extra });
+  if (!accept(r0)) return null;
+  let a = 0, b = 1, good = { res: r0, grid: at(0) };
+  for (let i = 0; i < 9; i++) {
+    const m = (a + b) / 2;
+    const r = ins._fit(uid, { ...gridSpec(head, at(m)), ...extra });
+    if (!accept(r)) b = m;
+    else {
+      a = m;
+      good = { res: r, grid: at(m) };
+    }
+  }
+  return good;
+}
+
+/**
+ * «Fordel jevnt i rommet» for a grid item (nothing applied): the first spread (scale 1, 0.85, 0.7) that fits AND keeps
+ * every head half the spacing from the walls – an extent box that just fits an L-shaped zone may leave a row 5 cm
+ * from a wall, so smaller then; without one the spread with the most room round it, while that is a real gap (a grid
+ * turned off the walls' axes never keeps half the spacing in every corner).
+ * @param {object} ins  the Inspector (design.get, _fit, editor.layout)
+ * @param {string} uid
+ * @returns {{ res: { patch: object, status: string }, d: object } | { error: string }}
+ */
+export function spreadGrid(ins, uid) {
+  const it = ins.design.get(uid);
+  if (!it) return { error: 'Fant ikke lampen.' };
+  const layout = ins.editor?.layout;
+  let best = null;
+  for (const scale of [1, 0.85, 0.7]) {
+    const d = distributeGrid(it, layout, { scale });
+    if (d.error) return { error: d.error };
+    const res = ins._fit(uid, d.patch);
+    if (res.status === 'blocked') continue;
+    const clear = gridClearance({ ...it, ...res.patch, params: { ...(it.params || {}), ...(res.patch.params || {}) } }, layout);
+    if (clear.ok) return { res, d };
+    if (!best || clear.min > best.clear.min) best = { res, d, clear };
+  }
+  if (best && best.clear.min >= MIN_GAP) return { res: best.res, d: best.d };
+  return { error: 'Rommet har en form rutenettet ikke passer i – juster antall eller avstand selv.' };
+}
+
+/**
+ * «Roter 90°» for a grid item (nothing applied): a quarter turn kept inside the room. A long row turned across a
+ * narrow room would poke through the walls (constrain only says 'blocked'): closer together when that fits (note) –
+ * half the spacing from the walls when it can, else just inside – or an error, like the other controls of the section.
+ * @returns {{ res: { patch: object, status: string }, note: string } | { error: string }}
+ */
+export function turnGrid(ins, uid) {
+  const it = ins.design.get(uid);
+  if (!it) return { error: 'Fant ikke lampen.' };
+  const turn = { rotationDeg: normDeg((it.rotationDeg || 0) + 90) };
+  const res = ins._fit(uid, turn);
+  if (res.status !== 'blocked') return { res, note: '' };
+  const g = gridOf(it);
+  const grid = { rows: g.rows, cols: g.cols, dx: g.dx, dz: g.dz };
+  const clear = (r) => r.status !== 'blocked' && gridClearance({ ...it, ...r.patch, params: { ...(it.params || {}), ...(r.patch.params || {}) } }, ins.editor?.layout).ok;
+  const s = shrinkSpacing(ins, uid, g.head, grid, turn, clear) ?? shrinkSpacing(ins, uid, g.head, grid, turn);
+  if (!s) return { error: 'Rutenettet får ikke plass rotert her – gjør det mindre eller flytt det først.' };
+  return { res: s.res, note: `Rutenettet er satt ned til ${meters(Math.max(s.grid.dx, s.grid.dz))} avstand – større får ikke plass rotert her.` };
 }
 
 /** «Antall og rutenett». */
@@ -94,24 +169,6 @@ function gridSection(ins, item, product) {
   };
   summary(g0);
 
-  /** The largest spacing (≤ the asked one, ≥ the minimum) at which the grid fits; null when not even that does. */
-  const shrinkSpacing = (head, grid) => {
-    const at = (f) => ({ ...grid, dx: Math.max(GRID_LIMITS.spacing[0], r3(grid.dx * f)), dz: Math.max(GRID_LIMITS.spacing[0], r3(grid.dz * f)) });
-    const r0 = ins._fit(uid, gridSpec(head, at(0)));
-    if (r0.status === 'blocked') return null;
-    let a = 0, b = 1, good = { res: r0, grid: at(0) };
-    for (let i = 0; i < 9; i++) {
-      const m = (a + b) / 2;
-      const r = ins._fit(uid, gridSpec(head, at(m)));
-      if (r.status === 'blocked') b = m;
-      else {
-        a = m;
-        good = { res: r, grid: at(m) };
-      }
-    }
-    return good;
-  };
-
   /** Applies a grid (one undo step per gesture: sliders coalesce); final re-renders the panel. */
   const apply = (grid, { final = false, label = 'Endre rutenett' } = {}) => {
     const it = cur();
@@ -120,7 +177,7 @@ function gridSection(ins, item, product) {
     let res = ins._fit(uid, want);
     let note = '';
     if (res.status === 'blocked') {
-      const s = shrinkSpacing(head, grid);
+      const s = shrinkSpacing(ins, uid, head, grid);
       if (!s) {
         fitMsg('Så mange spotter får ikke plass her.');
         return false;
@@ -238,23 +295,16 @@ function gridSection(ins, item, product) {
     label: 'Fordel jevnt i rommet', variant: 'primary', size: 'sm',
     title: 'Sprer spottene jevnt over rommet (eller sonen i stua) – halv avstand inn til veggene',
     onClick: () => {
-      const it = cur();
-      for (const scale of [1, 0.85, 0.7]) {
-        const d = distributeGrid(it, ins.editor.layout, { scale });
-        if (d.error) {
-          fitMsg(d.error);
-          return;
-        }
-        const res = ins._fit(uid, d.patch);
-        if (res.status === 'blocked') continue;
-        ins._apply(res.patch, { label: 'Fordel spotter jevnt' });
-        fitMsg('');
-        const g = gridOf(cur());
-        toast(ins, `${g.count} ${g.count === 1 ? 'spot' : 'spotter'} fordelt jevnt i ${String(d.area.name || 'rommet').toLowerCase()}`);
-        ins._render();
+      const r = spreadGrid(ins, uid);
+      if (r.error) {
+        fitMsg(r.error);
         return;
       }
-      fitMsg('Rommet har en form rutenettet ikke passer i – juster antall eller avstand selv.');
+      ins._apply(r.res.patch, { label: 'Fordel spotter jevnt' });
+      fitMsg('');
+      const g = gridOf(cur());
+      toast(ins, `${g.count} ${g.count === 1 ? 'spot' : 'spotter'} fordelt jevnt i ${String(r.d.area.name || 'rommet').toLowerCase()}`);
+      ins._render();
     },
   });
   const buttons = [spread];
@@ -262,8 +312,13 @@ function gridSection(ins, item, product) {
     buttons.push(button({
       label: 'Roter 90°', size: 'sm', title: 'Snur rutenettet en kvart runde',
       onClick: () => {
-        const it = cur();
-        ins._apply(ins._fit(uid, { rotationDeg: normDeg((it.rotationDeg || 0) + 90) }).patch, { label: 'Roter rutenettet' });
+        const r = turnGrid(ins, uid);
+        if (r.error) {
+          fitMsg(r.error);
+          return;
+        }
+        ins._apply(r.res.patch, { label: 'Roter rutenettet' });
+        fitMsg(r.note);
         ins._render();
       },
     }));
@@ -378,11 +433,26 @@ export function gridExtension() {
       afterLight: (ins, item, product) => gridSection(ins, item, product),
       size: (ins, item, product, def) => gridSizeSection(ins, item, product, def),
     },
+    // a row / grid flips only through products that can be one (the «takspot» list mixes ceiling spots with spot
+    // plates – a plate would turn the grid into one fitting, and the grid would not come back)
+    candidates: (ins, item, product, list) => gridCandidates(item, list),
     carry: (ins, item, spec) => {
       const c = carryGrid(item, spec);
       return c ? { ...spec, params: { ...(spec.params || {}), ...c.params }, dims: c.dims } : spec;
     },
   };
+}
+
+/**
+ * «Bytt modell» candidates of an item: a row / grid (more than one fitting) keeps to gridable ceiling products, so a
+ * swap never drops the grid; anything else keeps the list.
+ * @param {object} item
+ * @param {object[]} list  catalogue products
+ * @returns {object[]}
+ */
+export function gridCandidates(item, list) {
+  if (!gridable(item) || gridOf(item).count <= 1 || !Array.isArray(list)) return list;
+  return list.filter((p) => GRIDABLE.has(p.archetype) && (p.mount ?? 'ceiling') === 'ceiling');
 }
 
 /**

@@ -358,9 +358,10 @@ export function extrasOf(product) {
 /**
  * Shopping-list line for `qty` units of a variant: whole packs for pack-only products (2-pakning: 3 panels = 2 packs),
  * the required extras, and the store's fixed freight (once per order – the shopping list adds it per store).
- * @returns {{ qty: number, packs: number|null, packSize: number, unitPrice: number|null, total: number|null,
- *   totalList: number|null, onSale: boolean, confidence: string, extras: Array<{ name, store, qty, priceNok, total }>,
- *   extrasTotal: number, shippingNok: number|null, store: string }}
+ * @returns {{ qty: number, packs: number|null, packSize: number, packPrice: number|null, unitPrice: number|null,
+ *   total: number|null, totalList: number|null, onSale: boolean, confidence: string,
+ *   extras: Array<{ name, store, qty, priceNok, total }>, extrasTotal: number, shippingNok: number|null, store: string }}
+ *   (packPrice: one pack of a pack-only product, else null)
  */
 export function purchaseOf(product, variantIndex = product?.defaultVariant ?? 0, qty = 1) {
   const pr = priceOf(product, variantIndex);
@@ -369,9 +370,10 @@ export function purchaseOf(product, variantIndex = product?.defaultVariant ?? 0,
   let total = pr.price != null ? pr.price * n : null;
   let totalList = pr.listPrice != null ? pr.listPrice * n : null;
   let packs = null;
+  let packPrice = null;
   if (packSize > 1) {
     packs = Math.ceil(n / packSize);
-    const packPrice = Number.isFinite(product.packPriceNok) ? product.packPriceNok : pr.price != null ? pr.price * packSize : null;
+    packPrice = Number.isFinite(product.packPriceNok) ? product.packPriceNok : pr.price != null ? pr.price * packSize : null;
     total = packPrice != null ? packPrice * packs : null;
     totalList = pr.onSale && pr.listPrice != null ? pr.listPrice * packSize * packs : total;
   }
@@ -383,6 +385,7 @@ export function purchaseOf(product, variantIndex = product?.defaultVariant ?? 0,
     qty: n,
     packs,
     packSize,
+    packPrice,
     unitPrice: pr.price,
     total,
     totalList,
@@ -425,6 +428,9 @@ export function productToItemSpec(product, variantIndex) {
     variantIndex: vi,
     acoustic: { m2: p.absorption || 0, ref: { w: p.dims.w, d: p.dims.d, h: p.dims.h } },
   };
+  // a coffee-table set (Dråpe, Josh): the set tables are measured on the product's own size, so a resized main table
+  // takes its set tables along (models/tables.js)
+  if (Array.isArray(spec.params.set) && spec.params.setRef == null) spec.params.setRef = { w: p.dims.w, d: p.dims.d, h: p.dims.h };
   // pendants: start at the shop's default cable length, so the Inspector's «Avstand fra tak» shows the real drop
   if (p.mount === 'ceiling' && spec.params.drop == null && typeof spec.params.dropDefault === 'number') {
     spec.params.drop = typeof spec.params.maxDrop === 'number' ? Math.min(spec.params.dropDefault, spec.params.maxDrop) : spec.params.dropDefault;

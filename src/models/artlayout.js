@@ -310,7 +310,8 @@ export const SET_LIMITS = Object.freeze({
 /**
  * The picture ledge of layout 'ledge' (m): board depth d, thickness t under the ledge top, a front lip `lip` high,
  * `overhang` past the outer frames on each side; leaning frames stand with their bottom edge at z = leanZ[i % 2] and
- * their top at z = top (tilt = asin((z − top) / h), so the top touches the wall exactly).
+ * their top at z = top (tilt = asin((z − top) / h), so the top touches the wall exactly). This is the natural depth of
+ * the layout; a set with dims.d < d is squeezed to it (fitSet kz).
  */
 export const SET_LEDGE = Object.freeze({ d: 0.10, t: 0.02, lip: 0.015, overhang: 0.03, leanZ: Object.freeze([0.035, 0.06]), top: 0.005 });
 
@@ -433,8 +434,8 @@ function packLedge(list, overlap) {
   return { frames, ledge };
 }
 
-/** Tilt (rad) of a frame of height h whose bottom edge stands z from the wall and whose top touches SET_LEDGE.top. */
-const leanTilt = (z, h) => Math.asin(clamp((z - SET_LEDGE.top) / h, 0, 1));
+/** Tilt (rad) of a frame of height h whose bottom edge stands z from the wall and whose top touches `top` from it. */
+const leanTilt = (z, h, top = SET_LEDGE.top) => Math.asin(clamp((z - top) / h, 0, 1));
 
 /** params.frames of layout 'custom' → clamped frames (invalid entries skipped, at most SET_LIMITS.frames). */
 function customFrames(list) {
@@ -479,22 +480,27 @@ export function setBounds(frames, ledge = null) {
 /**
  * Scales a layout uniformly into dims.w × dims.h and centres it at the origin (the set keeps its proportions, so a
  * changed gap re-fits the set to the same dims). x, y, w, h and the ledge's x, y, w, t and lip scale; z, ledge.d,
- * frameW and matW stay physical (artLayout clamps them per piece). Leaning frames on a ledge get their tilt recomputed
- * so their tops still touch the wall.
- * @returns {{ frames: object[], ledge: object|null, s: number }}
+ * frameW and matW stay physical (artLayout clamps them per piece) – except that a set shallower than its ledge
+ * (dims.d < SET_LEDGE.d) squeezes the ledge depth and the frames' z by kz = dims.d / SET_LEDGE.d (never deeper than
+ * SET_LEDGE.d): placement, collisions and the selection box know only dims.d, so the set never sticks out past it
+ * (buildArtSet squeezes the pieces' depth and the lip by kz too). Leaning frames on a ledge get their tilt recomputed
+ * so their tops still touch the wall (at SET_LEDGE.top · kz).
+ * @returns {{ frames: object[], ledge: object|null, s: number, kz: number }}
  */
 export function fitSet(frames, ledge, dims) {
   const list = frames || [];
   const b = setBounds(list, ledge);
-  const dw = num(dims?.w, NaN), dh = num(dims?.h, NaN);
+  const dw = num(dims?.w, NaN), dh = num(dims?.h, NaN), dd = num(dims?.d, NaN);
   const s = b.w > 0 && b.h > 0 && dw > 0 && dh > 0 ? Math.min(dw / b.w, dh / b.h) : 1;
+  const kz = ledge && dd > 0 ? Math.min(1, dd / SET_LEDGE.d) : 1;
   const out = list.map((f) => {
     const h = f.h * s;
     const lean = ledge && f.z > SET_LEDGE.top;
-    return { ...f, x: (f.x - b.cx) * s, y: (f.y - b.cy) * s, w: f.w * s, h, tilt: lean ? leanTilt(f.z, h) : f.tilt ?? 0 };
+    const z = ledge ? f.z * kz : f.z;
+    return { ...f, x: (f.x - b.cx) * s, y: (f.y - b.cy) * s, w: f.w * s, h, z, tilt: lean ? leanTilt(z, h, SET_LEDGE.top * kz) : f.tilt ?? 0 };
   });
-  const lg = ledge ? { ...ledge, x: (ledge.x - b.cx) * s, y: (ledge.y - b.cy) * s, w: ledge.w * s, t: ledge.t * s, lip: ledge.lip * s } : null;
-  return { frames: out, ledge: lg, s };
+  const lg = ledge ? { ...ledge, x: (ledge.x - b.cx) * s, y: (ledge.y - b.cy) * s, w: ledge.w * s, d: ledge.d * kz, t: ledge.t * s, lip: ledge.lip * s } : null;
+  return { frames: out, ledge: lg, s, kz };
 }
 
 /**

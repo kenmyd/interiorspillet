@@ -3,15 +3,15 @@ import { button, slider, toggle } from './panelKit.js';
 import { ICONS } from './icons.js';
 import { Dialog } from './Dialog.js';
 import { seg } from './inspectorKit.js';
-import { getImageStore, MSG } from '../design/ImageStore.js';
+import { getImageStore, MSG, ImageError } from '../design/ImageStore.js';
 import {
   ART_CATEGORY, CUSTOM_REF, IMAGE_SIZES, LONG_EDGE_RANGE, FRAME_STYLES, MAT_COLOR, defaultChoice, frameSizesFor, choiceToSpec,
   specToChoice, imagePatch, choicePatch, uploadedName, describe, sharpness, hasImage, isUploadedImage, acceptsImage, canHoldImage,
   orientationOf, cm,
 } from '../design/imageArt.js';
 import { artLayout, PAPER_WHITE } from '../models/artlayout.js';
-import { ndcFromClient } from '../design/Selection.js';
-import { imageInspectorExtension } from './imageInspector.js';
+import { ndcFromClient, pickAt } from '../design/Selection.js';
+import { imageInspectorExtension, fitEvenly } from './imageInspector.js';
 import { customArtShoppingSection } from './customArtShopping.js';
 
 /**
@@ -144,6 +144,19 @@ const r4 = (v) => Math.round(v * 1e4) / 1e4;
 const fold = (s) => String(s || '').toLowerCase().replace(/\s+/g, ' ').trim();
 const SEARCH_WORDS = /(eget|egne) bild|last(e)? opp|opplast/;
 const isFileDrag = (e) => !!e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files');
+/** A control's kind and text – finds «the same» control again after the dialog content is drawn anew. */
+const controlKey = (el) => `${el.tagName}|${el.getAttribute?.('aria-label') || ''}|${(el.textContent || '').trim()}`;
+/** The Toolbar's message while «Før» (today's house) is shown. */
+const BEFORE_MSG = 'Du ser på huset slik det er i dag. Trykk O for å gå tilbake til designet ditt og endre.';
+const READ_FAILED = 'Klarte ikke å lese filen – velg den på nytt.';
+
+/** What to tell the user about a failed upload: the store's own messages, never a browser's (English) error text. */
+export function uploadErrorText(err) {
+  if (err instanceof ImageError || err?.name === 'ImageError') return err.message || MSG.decode;
+  // the file was moved or deleted after it was chosen, or an online-only file could not be fetched
+  if (err?.name === 'NotReadableError' || err?.name === 'NotFoundError') return READ_FAILED;
+  return MSG.decode;
+}
 
 /** The first file of a drop that is (or claims to be) a picture. */
 function pictureFileOf(dt) {
@@ -250,7 +263,7 @@ export class ImageUpload {
     try {
       return await this.images.addFile(file);
     } catch (err) {
-      this._toast(err?.message || MSG.decode, 6);
+      this._toast(uploadErrorText(err), 6);
       return null;
     }
   }
@@ -274,21 +287,24 @@ export class ImageUpload {
     return spec;
   }
 
+  /** True while «Før» (today's house) is shown: the design on screen is the original, not the user's (a toast says so). */
+  _inCompare() {
+    if (!this.editor.ui?.toolbar?.compareActive) return false;
+    this._toast(BEFORE_MSG, 3.5);
+    return true;
+  }
+
   /**
    * Changes an item through the Inspector's fitting (wall caps, Placement.constrain): a picture too big for the wall
-   * is shrunk evenly (the aspect stays). One undo step.
+   * is shrunk evenly (imageInspector.fitEvenly – the shape stays). One undo step. Refused while «Før» is shown (the
+   * item would be the original's, and the change would be thrown away with it).
    * @returns {boolean}
    */
   apply(uid, patch, label, { coalesce } = {}) {
+    if (this._inCompare()) return false;
     const insp = this.editor.ui?.inspector;
     const fit = (p) => (insp?._fit ? insp._fit(uid, p) : { patch: p, capped: [], status: 'ok' });
-    let res = fit(patch);
-    if (res.capped?.length && patch.dims) {
-      const want = patch.dims;
-      const got = res.patch.dims || want;
-      const s = Math.min(got.w / want.w, got.h / want.h) * 0.98;
-      res = fit({ ...patch, dims: { ...want, w: r4(want.w * s), h: r4(want.h * s) } });
-    }
+    const res = fitEvenly(fit, this.editor.design.get(uid), patch);
     if (res.status === 'blocked') {
       this._toast('Bildet får ikke plass på veggen her i den størrelsen – prøv en mindre størrelse.', 4);
       return false;
@@ -302,7 +318,7 @@ export class ImageUpload {
    * @returns {Promise<boolean>}
    */
   async swapImage(uid, file = null) {
-    if (!this.editor.design.get(uid)) return false;
+    if (!this.editor.design.get(uid) || this._inCompare()) return false;
     const f = file || (await this.pickFile());
     if (!f) return false;
     const image = await this.upload(f);
@@ -327,6 +343,8 @@ export class ImageUpload {
    */
   open({ file = null, imageId = null, uid = null, productSpec = null } = {}) {
     if (typeof document === 'undefined') return Promise.resolve('cancelled');
+    // «Før»: an item on screen is the original's – editing it would be lost (a new picture is fine: place() leaves «Før»)
+    if (uid && this._inCompare()) return Promise.resolve('cancelled');
     this._dialog?.close();
     const e = this.editor;
     const item0 = uid ? e.design.get(uid) : null;
@@ -546,8 +564,33 @@ export class ImageUpload {
         return h('div.ipu-foot', {}, kids);
       };
 
+      /** The focused control of the content (its kind and text survive a full render), and whether a key put it there. */
+      const focusOf = () => {
+        const a = document.activeElement;
+        if (!a || !body.contains(a)) return null;
+        let kb = false;
+        try {
+          kb = a.matches(':focus-visible');
+        } catch {
+          kb = false;
+        }
+        return { kb, key: controlKey(a) };
+      };
+      /** After a full render: the same control again after a keyboard choice, else the dialog (Enter and Esc work). */
+      const restoreFocus = (f) => {
+        if (!f || dialog.closed || body.contains(document.activeElement)) return;
+        const el = f.kb ? [...body.querySelectorAll('button, input, select, a[href]')].find((x) => controlKey(x) === f.key) : null;
+        (el || dialog.panel).focus({ preventScroll: true });
+      };
+
       const render = () => {
         if (dialog?.closed) return;
+        const f = focusOf();
+        draw();
+        restoreFocus(f);
+      };
+
+      const draw = () => {
         preview = null;
         infoBox = null;
         sizeChips = [];
@@ -575,7 +618,7 @@ export class ImageUpload {
         try {
           res = await images.addFile(f);
         } catch (err) {
-          st.error = err?.message || MSG.decode;
+          st.error = uploadErrorText(err);
         }
         st.loading = false;
         if (res) {
@@ -666,20 +709,11 @@ export class ImageUpload {
         if (!isFileDrag(ev)) return;
         ev.preventDefault();
         ev.stopPropagation();
+        // the window's drop handler does not see this drop: take the overlay away here (a drop sends no dragleave)
+        this._hideDrop();
         const f = pictureFileOf(ev.dataTransfer);
         if (f) setFile(f);
         else this._toast(MSG.type, 4);
-      });
-      // Enter = the primary button (not in a text field, select or on another button)
-      body.addEventListener('keydown', (ev) => {
-        if (ev.key !== 'Enter' || ev.repeat) return;
-        const t = ev.target;
-        if (t?.tagName === 'BUTTON' || t?.tagName === 'SELECT' || t?.tagName === 'TEXTAREA' || (t?.tagName === 'INPUT' && t.type !== 'range')) return;
-        const p = body.querySelector('[data-primary]');
-        if (p) {
-          ev.preventDefault();
-          p.click();
-        }
       });
 
       const release = e.game?.blockInput?.('dialog') ?? null;
@@ -694,6 +728,7 @@ export class ImageUpload {
         content: body,
         onClose: () => {
           release?.();
+          this._hideDrop();
           setTimeout(() => wrap.remove(), 250);
           if (this._dialog === dialog) {
             this._dialog = null;
@@ -701,6 +736,18 @@ export class ImageUpload {
           }
           resolve(st.result);
         },
+      });
+      // Enter = the primary button (not in a text field, select or on another button). On the panel, not the content:
+      // the dialog focuses its panel when it opens (and after a full render that replaced the focused control)
+      dialog.panel.addEventListener('keydown', (ev) => {
+        if (ev.key !== 'Enter' || ev.repeat) return;
+        const t = ev.target;
+        if (t?.tagName === 'BUTTON' || t?.tagName === 'SELECT' || t?.tagName === 'TEXTAREA' || t?.tagName === 'A' || (t?.tagName === 'INPUT' && t.type !== 'range')) return;
+        const p = body.querySelector('[data-primary]');
+        if (p) {
+          ev.preventDefault();
+          p.click();
+        }
       });
       this._dialog = dialog;
       this._dialogApi = { setFile };
@@ -787,7 +834,7 @@ export class ImageUpload {
         return;
       }
       ev.dataTransfer.dropEffect = 'copy';
-      this._showDrop(ev.clientX, ev.clientY);
+      this._showDrop(ev.clientX, ev.clientY, ev.target);
     };
     this._onDragLeave = (ev) => {
       if (ev.relatedTarget == null || ev.clientX <= 0 || ev.clientY <= 0 || ev.clientX >= window.innerWidth || ev.clientY >= window.innerHeight) this._hideDrop();
@@ -806,7 +853,7 @@ export class ImageUpload {
         this._toast(MSG.type, 4);
         return;
       }
-      const item = this._itemAt(ev.clientX, ev.clientY, { force: true });
+      const item = this._itemAt(ev.clientX, ev.clientY, { force: true, target: ev.target });
       if (item) this.open({ file: f, uid: item.uid });
       else this.open({ file: f });
     };
@@ -820,19 +867,28 @@ export class ImageUpload {
     return !!g && g.running !== false && !g.paused;
   }
 
-  /** The picture-holding item under a screen point (raycast at most 10 times a second). */
-  _itemAt(x, y, { force = false } = {}) {
+  /**
+   * The picture-holding item under a screen point that a dropped file swaps the picture of (picked at most 10 times a
+   * second). Only what the player sees: walls and other items hide what is behind them (Selection.pickAt), a point
+   * over a panel (target not the 3D view) is no item, and while «Før» is shown nothing is (those are the original's).
+   * @param {number} x
+   * @param {number} y
+   * @param {{ force?: boolean, target?: EventTarget|null }} [o]
+   */
+  _itemAt(x, y, { force = false, target = null } = {}) {
+    const canvas = this.editor.renderer?.domElement;
+    if (!canvas || this.editor.ui?.toolbar?.compareActive || (target && target !== canvas)) {
+      this._dropItem = null;
+      return null;
+    }
     const now = performance.now();
     if (!force && now - this._dropAt < 100) return this._dropItem;
     this._dropAt = now;
     let item = null;
     try {
-      const canvas = this.editor.renderer?.domElement;
-      if (canvas) {
-        const hit = this.editor.raycast(ndcFromClient(canvas, x, y), { items: true });
-        const it = hit?.uid ? this.editor.design.get(hit.uid) : null;
-        item = it && canHoldImage(it) ? it : null;
-      }
+      const hit = pickAt(this.editor, ndcFromClient(canvas, x, y));
+      const it = hit?.kind === 'item' && hit.uid ? this.editor.design.get(hit.uid) : null;
+      item = it && canHoldImage(it) ? it : null;
     } catch {
       item = null;
     }
@@ -840,12 +896,12 @@ export class ImageUpload {
     return item;
   }
 
-  _showDrop(x, y) {
+  _showDrop(x, y, target = null) {
     if (!this._overlay) {
       this._overlay = h('div.ipu-drop', {}, h('span'));
       (this.editor.uiRoot || document.body).append(this._overlay);
     }
-    const item = this._dialog ? null : this._itemAt(x, y);
+    const item = this._dialog ? null : this._itemAt(x, y, { target });
     const text = this._dialog ? 'Slipp bildet for å bruke det' : item ? `Slipp for å bytte bildet i «${item.name}»` : 'Slipp bildet for å henge det opp';
     const span = this._overlay.firstChild;
     if (span.textContent !== text) span.textContent = text;

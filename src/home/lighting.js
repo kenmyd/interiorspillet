@@ -79,8 +79,10 @@
 //   rails         the heads of one rail / wall spot (cluster 'fixture') merge into ≤ 2 candidates by aim (_mergeFixture).
 //   seat plan     the spot category's fittings (candidates with `capped`) may take LIGHT_BUDGET.itemSpots slots per room:
 //                 free slots first, then the weakest seat of a non-shadow, non-capped lamp of their OWN room – never
-//                 another room's, never a high-wall spot's (lightclusters.js planSpotSeats). Without them the budget
-//                 runs exactly as before (lighting fixture, downlights.test section 0).
+//                 another room's, never a high-wall spot's (lightclusters.js planSpotSeats). A seated fitting keeps its
+//                 slot while the view changes (no hop, no fade restart: a lamp the base pass puts there moves on and is
+//                 back in its own slot when the fittings go off, _assignPlanned). Without them the budget runs exactly
+//                 as before (lighting fixture, downlights.test section 0).
 //   glow          a glow material drawn for n identical heads (material.userData.emitters) is levelled as one fitting.
 //   itemLightState(uid) → 'off' | 'slot' | 'ambient' | null   (LightPanel: «Lyser via omgivelseslys nå …»)
 import * as THREE from 'three';
@@ -2926,6 +2928,7 @@ export class LightManager {
     // keep the slots of bounce lights that still exist (same id), free the rest
     for (const c of out) {
       const old = this._bounces?.find((x) => x.id === c.id);
+      if (old?._seatSlot) c._seatSlot = old._seatSlot; // its own spot slot while a fitting has it (_assignPlanned)
       if (old?.slot && old.slot.cand === old) {
         old.slot.cand = c;
         c.slot = old.slot;
@@ -3574,7 +3577,10 @@ export class LightManager {
         });
         this._seatPlan = plan;
         if (plan) this._assignPlanned(slots, list, plan);
-        else this._assignSpots(slots, list);
+        else {
+          this._returnSeats(slots, list);
+          this._assignSpots(slots, list);
+        }
       } else this._assign(slots, list);
     }
     // candidates that lost their slot
@@ -3696,16 +3702,22 @@ export class LightManager {
   /**
    * The spot pool with the seat plan (MASTER D5, §2.5 I1–I4; lightclusters.js planSpotSeats):
    *   1. exactly today's assignment without the spot category's fittings – the same lamps in the same slots, in the same
-   *      order, however the view got here;
+   *      order, however the view got here (a lamp step 3 moved on sits in its own slot again for it, _seatLent);
    *   2. the plan's victims (same-room, non-shadow lamps) make room: each remembers its slot (_seatSlot) and gets it back
    *      when the fittings are switched off or removed (I4);
-   *   3. the seated fittings take those slots and the free ones – each its own previous slot when that is free (no hop
-   *      between lights, no fade restart), else a plain slot before a shadow slot.
+   *   3. every seated fitting and every lamp moved on before keeps the slot it had (no hop between lights, no fade
+   *      restart): a lamp step 1 put into one of those (a former victim back in its old slot, a lamp in the first free
+   *      one) moves on to a free slot and remembers its own (_seatSlot) – it is back in it when the fittings are switched
+   *      off or removed (_returnSeats, I4);
+   *   4. the seated fittings take those slots and the free ones – each its own previous slot, else a plain slot before a
+   *      shadow slot.
    */
   _assignPlanned(slots, list, plan) {
     const base = [], capped = [];
     for (const c of list) (c.capped ? capped : base).push(c);
     const prev = new Map(capped.map((c) => [c, c.slot && c.slot.cand === c && slots.includes(c.slot) ? c.slot : null]));
+    const start = new Map(slots.map((s) => [s, s.cand]));
+    const lent = this._seatLent(slots, list);
     const out = new Set(base.filter((c) => !plan.has(c)));
     this._assignSpots(slots, base, out);
     for (const c of out) {
@@ -3714,10 +3726,59 @@ export class LightManager {
       c.slot.cand = null;
       c.slot = null;
     }
+    // 3. the slots to keep: the fittings' and those of the lamps moved on (a high-wall spot keeps the shadow slot step 1
+    //    gave it, I3: then its holder moves)
+    const mine = new Map(); // base lamp → its own slot (where steps 1–2 seat it)
+    for (const s of slots) if (s.cand) mine.set(s.cand, s);
+    const claim = new Map();
+    for (const c of capped) if (plan.has(c) && prev.get(c)) claim.set(prev.get(c), c);
+    for (const [c, f] of lent) if (mine.has(c)) claim.set(f, c);
+    for (const [s, k] of claim) if (s.cand && s.cand !== k && s.cand.wantsShadow && s.shadowed) claim.delete(s);
+    const back = new Map(), away = [];
+    for (const [s, k] of claim) if (!k.capped) back.set(k, s);
+    for (const [s, k] of claim) if (s.cand && s.cand !== k && !back.has(s.cand)) away.push(s.cand);
+    for (const c of [...back.keys(), ...away]) {
+      if (c.slot?.cand === c) c.slot.cand = null;
+      c.slot = null;
+    }
+    for (const [c, s] of back) {
+      s.cand = c;
+      c.slot = s;
+    }
+    for (const c of away) {
+      const fits = (s) => !s.cand && (!s.shadowed || !c.noShadow);
+      const free = (s) => fits(s) && !claim.has(s);
+      // a free slot no one keeps, of its own slot's kind first; else a fitting's (that fitting moves on, step 4)
+      const f = slots.find((s) => free(s) && s.shadowed === mine.get(c).shadowed) ?? slots.find(free) ?? slots.find(fits);
+      if (f) {
+        f.cand = c;
+        c.slot = f;
+        continue;
+      }
+      // only shadow slots left for a lamp that casts none: back into its own slot, and the lamp that went back there
+      // into its own (step 1's) again
+      const s = mine.get(c), b = s.cand, h = b && mine.get(b);
+      if (b && (!h || h.cand || (h.shadowed && b.noShadow))) continue;
+      if (b) {
+        h.cand = b;
+        b.slot = h;
+      }
+      s.cand = c;
+      c.slot = s;
+    }
+    for (const [c, s] of mine) c._seatSlot = c.slot === s ? null : s;
+    for (const c of [...lent.keys(), ...away]) {
+      if (!c.slot) continue;
+      this._configureSlot(c.slot, c);
+      if (c.slot.shadowed && start.get(c.slot) !== c) this._requestSunShadow(c.slot);
+    }
     const rank = (a, b) => b.score - a.score || (String(a.id) < String(b.id) ? -1 : String(a.id) > String(b.id) ? 1 : 0);
+    // 4. (a fitting new in the plan takes none of the slots the others keep)
+    const kept = new Set([...claim].filter(([, k]) => k.capped).map(([s]) => s));
+    const open = (x) => !x.cand && !kept.has(x);
     for (const c of capped.filter((x) => plan.has(x)).sort(rank)) {
       const own = prev.get(c);
-      const s = own && !own.cand ? own : slots.find((x) => !x.cand && !x.shadowed) ?? slots.find((x) => !x.cand);
+      const s = own && !own.cand ? own : slots.find((x) => open(x) && !x.shadowed) ?? slots.find(open) ?? slots.find((x) => !x.cand && !x.shadowed) ?? slots.find((x) => !x.cand);
       if (!s) break;
       s.cand = c;
       c.slot = s;
@@ -3741,6 +3802,59 @@ export class LightManager {
       this._configureSlot(s, b);
       this._configureSlot(p, a);
       this._requestSunShadow(s);
+    }
+  }
+
+  /**
+   * Seats every lamp _assignPlanned moved on for a fitting (_seatSlot: its own slot while it sits in another) in its own
+   * slot again, all at once (its own slot may be where another such lamp sits). A fitting of the spot category or a
+   * lamp that is off there loses that slot (the base pass drops it anyway); a lamp whose own slot a staying lamp holds
+   * stays where it is and forgets it. No pool light is touched. → Map lamp → the slot it sat in (empty without such
+   * lamps: never without the spot category's fittings).
+   */
+  _seatLent(slots, list) {
+    const lent = new Map(), wanted = new Set();
+    for (const c of list) {
+      const w = c._seatSlot;
+      if (!w || c.capped || !c.slot || c.slot.cand !== c || !slots.includes(c.slot)) continue;
+      if (w === c.slot || !slots.includes(w) || (w.shadowed && c.noShadow) || wanted.has(w)) c._seatSlot = null;
+      else {
+        lent.set(c, c.slot);
+        wanted.add(w);
+      }
+    }
+    if (!lent.size) return lent;
+    const inList = new Set(list);
+    for (let changed = true; changed; ) {
+      changed = false;
+      for (const c of lent.keys()) {
+        const o = c._seatSlot.cand;
+        if (!o || o === c || lent.has(o) || o.capped || !inList.has(o)) continue;
+        lent.delete(c);
+        c._seatSlot = null;
+        changed = true;
+      }
+    }
+    for (const f of lent.values()) f.cand = null;
+    for (const c of lent.keys()) {
+      const w = c._seatSlot;
+      if (w.cand) w.cand.slot = null;
+      w.cand = c;
+      c.slot = w;
+    }
+    return lent;
+  }
+
+  /**
+   * The spot pool without a seat plan (no fittings of the spot category on): the lamps _assignPlanned moved on for the
+   * fittings are back in their own slots – the slots they have without them (I4). Each keeps its fade (the same light
+   * in another pool light, like the §4.9 swap). Without such lamps (no fittings ever) nothing happens.
+   */
+  _returnSeats(slots, list) {
+    for (const c of this._seatLent(slots, list).keys()) {
+      c._seatSlot = null;
+      this._configureSlot(c.slot, c);
+      if (c.slot.shadowed) this._requestSunShadow(c.slot);
     }
   }
 

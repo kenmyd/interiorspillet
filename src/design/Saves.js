@@ -108,7 +108,10 @@ export class Saves {
     this._backupChecked = false;
     /** Uploaded pictures (design/ImageStore.js) or null: exports then carry no pictures, imports ignore them. */
     this.images = images;
-    /** Result of the last importText: { added, existing, rejected, unsaved } (picture ids). */
+    /**
+     * Result of the last importText: { added, existing, rejected, unsaved } (picture ids); importFile adds
+     * unsavedReason 'memory' (this browser keeps no pictures) | 'quota' (a write failed) when `unsaved` is not empty.
+     */
     this.lastImport = null;
     /** Picture ids the last export could not include (not in this browser). */
     this.lastExportMissing = [];
@@ -213,16 +216,15 @@ export class Saves {
         _originalKey = '';
       }
     }
-    // an older design (version 1: no level, world y) is compared in today's form
+    // compared in today's form, as it would load: a version 1 design (no level, world y), and today's pieces the user
+    // never changed follow the current room data (meta.specRevision – e.g. the painting's category 'smatt' → 'kunst')
     let cur = json;
-    if (!(Number(json.version) >= DESIGN_VERSION)) {
-      try {
-        const d = new DesignState({ layout: this.design?.layout, original: false });
-        d.load(json);
-        cur = d.toJSON();
-      } catch {
-        cur = json;
-      }
+    try {
+      const d = new DesignState({ layout: this.design?.layout, original: false });
+      d.load(json);
+      cur = d.toJSON();
+    } catch {
+      cur = json;
     }
     return workKey(cur) !== _originalKey;
   }
@@ -663,6 +665,8 @@ export class Saves {
       const res = await this.images.flush();
       const failed = new Set(res?.failed || []);
       this.lastImport.unsaved = this.lastImport.added.filter((id) => failed.has(id) || this.images.info(id)?.persisted === false);
+      // why: the browser keeps no pictures at all (private window, blocked storage) or a write failed (storage full)
+      if (this.lastImport.unsaved.length) this.lastImport.unsavedReason = this.images.persistent === false ? 'memory' : 'quota';
     }
     return name;
   }

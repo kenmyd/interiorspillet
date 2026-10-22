@@ -1942,6 +1942,36 @@ function trumpetBase(g, ms, { w, d, z, seatBot, q, footY }) {
   }
 }
 
+/** dimsRange.h of the bar stool (from 0.6: a backless stool's dims.h is its seat height). */
+const BAR_STOOL_H = [0.6, 1.15];
+
+/**
+ * Seat height of a bar stool of height h. Only a backless stool (back 'none') may have its seat right at dims.h
+ * (design/furniture.md §4.2). With a back the seat is capped 15 cm under dims.h and the back is kept, as before round
+ * 3: a saved stool whose seat slider sits close to its height keeps its shell instead of losing it.
+ */
+function barSeat(P, h) {
+  const backless = P.back === 'none';
+  return clamp(num(P.seatH, backless ? h : 0.65), 0.45, backless ? h : h - 0.15);
+}
+
+/**
+ * Inspector hook (def.paramPatch): the extra { dims, params } patch when params[key] becomes value, or null. A
+ * backless bar stool that gets a back keeps its seat and grows by the back (0.32); one that loses its back shrinks to
+ * its seat.
+ */
+function barStoolParamPatch(item, key, value) {
+  if (key !== 'back') return null;
+  const P = item?.params || {};
+  if ((P.back === 'none') === (value === 'none')) return null;
+  const seat = barSeat({ seatH: 0.65, ...P }, num(item?.dims?.h, 0.97));
+  const r3 = (v) => Math.round(v * 1000) / 1000;
+  const [lo, hi] = BAR_STOOL_H;
+  if (value === 'none') return { params: { seatH: r3(seat) }, dims: { h: r3(clamp(seat, lo, hi)) } };
+  const top = clamp(seat + 0.32, lo, hi);
+  return { params: { seatH: r3(clamp(seat, 0.45, top - 0.15)) }, dims: { h: r3(top) } };
+}
+
 function buildBarStool(spec) {
   const { w, d, h } = spec.dims;
   const P = spec.params;
@@ -1949,9 +1979,8 @@ function buildBarStool(spec) {
   const style = ['slim-metal', 'wood', 'pedestal', 'sled'].includes(P.legStyle) ? P.legStyle : 'slim-metal';
   const ms = materials(spec, style);
   const g = new THREE.Group();
-  // a backless stool (or one too low for its shell) may have its seat right at dims.h (design/furniture.md §4.2)
-  const hasBack = P.back !== 'none' && h > num(P.seatH, 0.65) + 0.12;
-  const seatH = clamp(num(P.seatH, hasBack ? 0.65 : h), 0.45, hasBack ? h - 0.12 : h);
+  const seatH = barSeat(P, h);
+  const hasBack = P.back !== 'none' && h > seatH + 0.12;
   const arms = hasBack && P.arms === true;
   // back: shell (a quilted bucket), pad (a loose pad on two tube posts, Zed) or upholstered (a straight parsons back,
   // Ella)
@@ -6821,7 +6850,7 @@ const FOOT = { type: 'bool', label: 'Fotskammel' };
 const PIPE = { type: 'bool', label: 'Kantbånd' };
 
 /** Def from the shared schema (label, mount, parts, partLabels) + defaults, params schema and builder. */
-function def(id, defaults, build, { params = {}, dimsRange, parts } = {}) {
+function def(id, defaults, build, { params = {}, dimsRange, parts, paramPatch } = {}) {
   const a = schema.archetypes[id];
   const fam = schema.families[a.family];
   const list = parts || a.parts || fam.parts;
@@ -6839,6 +6868,8 @@ function def(id, defaults, build, { params = {}, dimsRange, parts } = {}) {
       h: [+(d.h * 0.75).toFixed(2), +(d.h * 1.3).toFixed(2)],
     },
     build,
+    // paramPatch(item, key, value) → { dims?, params? } | null: what else changes when the user sets a param
+    ...(paramPatch ? { paramPatch } : {}),
   };
 }
 
@@ -6934,8 +6965,8 @@ export const archetypes = {
       footrest: { type: 'bool', label: 'Fotstøtte' },
       quilt: { type: 'bool', label: 'Stikninger i ryggen' },
     },
-    // h from 0.6: a backless stool's dims.h is its seat height
-    dimsRange: { w: [0.38, 0.55], d: [0.4, 0.56], h: [0.6, 1.15] },
+    dimsRange: { w: [0.38, 0.55], d: [0.4, 0.56], h: [...BAR_STOOL_H] },
+    paramPatch: barStoolParamPatch,
   }),
   'sofa-modular-l': def('sofa-modular-l', { dims: { w: 2.95, d: 2.06, h: 0.85 }, params: { seatH: 0.45, backT: 0.25, depth: 0.92, armW: 0.27, armH: 0.63, armSide: '+x', shortLegSide: '-x', shortLegBackTo: 1.48, base: 'plinth', piping: true }, colors: { upholstery: '#707173', legs: '#707173', piping: '#55514c' }, materials: { upholstery: 'woven', legs: 'woven', piping: 'woven' } }, buildSofaL, {
     parts: ['upholstery', 'piping', 'legs'],

@@ -2305,7 +2305,8 @@ function forest(c, W, H, R, p, o) {
     layers.forEach((L, i) => {
       const x = i < 2 ? far.x : c;
       if (i === 2) blurOnto(c, far, 0.004 * s);
-      const col = L.t < 0.5 ? mix(p[4], p[2], L.t * 2) : mix(p[2], p[3], (L.t - 0.5) * 2);
+      // far to near: mist p[4] → p[2] → the main tone p[1] (the print colour) → dark p[3]
+      const col = L.t < 1 / 3 ? mix(p[4], p[2], L.t * 3) : L.t < 2 / 3 ? mix(p[2], p[1], L.t * 3 - 1) : mix(p[1], p[3], L.t * 3 - 2);
       x.fillStyle = col;
       x.beginPath();
       for (const [tx, th, tiers, tw] of L.trees) sprucePath(x, tx, L.base, th, th * tw, tiers);
