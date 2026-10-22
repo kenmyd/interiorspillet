@@ -924,6 +924,52 @@ section('serveren: stoppgrunner, SDK-feil, tidsgrense, kø, Sonnet');
   check('readPlan: merkene står i teksten (rom og åpninger), ugyldige merker ut', /Red room marks \(1\).*1 \[0\.200, 0\.300\]/.test(text) && /Blue opening marks \(1\).*A \[0\.520, 0\.120\]/.test(text) && !/tull/.test(text));
 }
 
+section('readHouse: alle tegningene i én forespørsel, og opptakene mot fasiten');
+{
+  const HOUSE = { facades: [{ image: 2, title: 'FASADE SØR', facing: 'S', planSide: 'bottom', cladding: [{ part: 'all', type: 'wood', direction: 'vertical', color: null }], terrain: 'flat', basement: 'none' }], roof: { covering: 'tiles', color: null, pitch: 24, wings: [{ image: 1, rooms: ['1', '9'], type: 'gable', ridge: 'horizontal', high: 'none' }], chimney: false }, ceilings: [{ image: 1, text: 'SKRÅ HIMLING 24°', kind: 'sloped', degrees: 24, rooms: ['1'], ridge: [0.1, 0.5, 0.9, 0.5] }], decks: [], notes: '' };
+  const api = stub((p) => message(p, HOUSE));
+  const h = SERVER.createAiHandler({ apiKey: 'test-key', client: api, sdk: SDK, log: quiet, limits: { cacheDir: cacheDir('house') } });
+  const marks = [{ id: '1', kind: 'room', at: [0.3, 0.4], image: 1 }];
+  const body = { task: 'readHouse', images: [{ mediaType: 'image/png', data: png(64, 48, 7), kind: 'plan', label: '1. etasje, 1etg.png' }, { mediaType: 'image/png', data: png(40, 20, 8), kind: 'facade', label: 'fasader.png #1' }], marks, hints: {} };
+  const r = await call(h, { method: 'POST', url: '/api/planbygger/ai', body });
+  const p = api.calls[0]?.params;
+  const c = p?.messages?.[0]?.content ?? [];
+  check('readHouse: 200, Sonnet, og hvert bilde etter en linje som sier hva det er', r.status === 200 && r.json.response.roof.pitch === 24 && p.model === 'claude-sonnet-5-5' && c.length === 5 && /^Image 1: floor plan \(1\. etasje, 1etg\.png, 64 × 48 px\)/.test(c[0].text) && c[1].type === 'image' && /^Image 2: facade/.test(c[2].text) && c[3].type === 'image' && /Red room marks on image 1, disc centres: 1 \[0\.300, 0\.400\]/.test(c[4].text), JSON.stringify(c.map((x) => x.type === 'text' ? x.text.slice(0, 60) : x.type)));
+  check('readHouse har sin egen promptversjon (de andre opptakene blir ikke foreldet)', r.json.promptVersion === PROMPTS.promptVersionOf('readHouse') && PROMPTS.promptVersionOf('readHouse') !== PROMPTS.PROMPT_VERSION && PROMPTS.promptVersionOf('readPlan') === PROMPTS.PROMPT_VERSION);
+  const nine = await call(h, { method: 'POST', url: '/api/planbygger/ai', body: { ...body, images: Array.from({ length: 9 }, (_, i) => ({ mediaType: 'image/png', data: png(8, 8, i), kind: 'facade', label: '' })) } });
+  const single = await call(h, { method: 'POST', url: '/api/planbygger/ai', body: { task: 'readHouse', image: body.images[0] } });
+  check('readHouse: over 8 bilder, eller ett bilde i «image», er en ugyldig forespørsel', nine.status === 400 && single.status === 400 && api.calls.length === 1);
+  const t = AI.tidyResponse('readHouse', HOUSE, [{ id: '1', kind: 'room', at: [0.3, 0.4], ref: 3, image: 1 }]);
+  check('tidyResponse: rommerkene i svaret får merkets egen plass, et nummer som ikke er et merke faller bort', t.roof.wings[0].rooms.length === 1 && t.roof.wings[0].rooms[0].at.join() === '0.3,0.4' && t.ceilings[0].rooms[0].ref === 3 && t.ceilings[0].ridge.join() === '0.1,0.5,0.9,0.5' && t.facades[0].planSide === 'bottom');
+  // the recordings against what the fasit says
+  const rec = (house) => {
+    const f = path.join(FX.FIXTURES, house, 'house.readHouse.claude-sonnet-5-5.json');
+    if (!fs.existsSync(f)) return null;
+    const fx = JSON.parse(fs.readFileSync(f, 'utf8'));
+    return { fx, t: AI.tidyResponse('readHouse', fx.response, fx.marks) };
+  };
+  const h2 = rec('hus2');
+  const slope2 = h2?.t.ceilings.find((x) => /SKRÅ HIMLING 24/.test(x.text));
+  check('hus2: «SKRÅ HIMLING 24°» skrå med 24°, mønelinja vannrett på strek-prikk-linja (y 617 av 950 px)', !!slope2 && slope2.kind === 'sloped' && slope2.degrees === 24 && slope2.ridge && Math.abs(slope2.ridge[1] - slope2.ridge[3]) < 0.02 && Math.abs(slope2.ridge[1] - 617 / 950) < 0.04, JSON.stringify(slope2));
+  const plantak = h2?.t.ceilings.find((x) => x.text === 'PLANTAK');
+  const wc = h2?.fx.marks.find((m) => plantak?.rooms.some((q) => q.mark === m.id));
+  check('hus2: «PLANTAK» flatt over WC-kjernen, og «PLAN HIMLING» flatt', plantak?.kind === 'flat' && !!wc && h2.t.ceilings.some((x) => x.text === 'PLAN HIMLING' && x.kind === 'flat'), JSON.stringify(plantak?.rooms));
+  check('hus2: stående trekledning på alle fire fasadene (fasiten: «stående kledning»)', h2?.t.facades.length === 4 && h2.t.facades.every((f) => f.cladding.some((c) => c.type === 'wood' && c.direction === 'vertical')));
+  const h5 = rec('hus5');
+  check('hus5: to «Skråhiml.» skrå, uten gradtall', h5?.t.ceilings.filter((x) => x.text === 'Skråhiml.' && x.kind === 'sloped' && x.degrees == null).length === 2);
+  check('hus5: pulttak i flere deler (fasiten: tre volumer med hvert sitt pulttak)', (h5?.t.roof.wings ?? []).length >= 2 && h5.t.roof.wings.every((w) => w.type === 'mono-pitch'), JSON.stringify(h5?.t.roof.wings.map((w) => w.type)));
+  const h1 = rec('hus1');
+  check('hus1: ingen himlingstekst (fasiten har ingen)', h1 && h1.t.ceilings.filter((x) => x.kind !== 'height').length === 0);
+  // what the model reads well and badly, measured (a deviation here is a fact about the model, not a failure):
+  // top and bottom right on hus1–hus5, left and right swapped on hus2 and hus5 (facadematch.js decides by the
+  // positions; the AI's side is only a tie-breaker)
+  const SIDES = { hus1: ['bottom', 'right', 'top', 'left'], hus2: ['bottom', 'top', 'left', 'right'], hus3: ['left', 'top', 'right', 'bottom'], hus4: ['top', 'left', 'bottom', 'right'], hus5: ['top', 'bottom', 'left', 'right'] };
+  for (const [house, want] of Object.entries(SIDES)) {
+    const got = rec(house)?.t.facades.map((f) => f.planSide) ?? [];
+    console.log(`  MÅLT ${house}: KI-ens fasadesider ${got.join(',')} (fasit ${want.join(',')}): ${got.filter((s, i) => s === want[i]).length} av ${want.length} riktig`);
+  }
+}
+
 section('serveren: bildehoder');
 {
   const pngInfo = SERVER.imageInfo(Buffer.from(png(123, 45), 'base64'));

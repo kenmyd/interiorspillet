@@ -322,6 +322,7 @@ export function fixtureAi({ house, dir = FIXTURES, model = null, fallbackModel =
   let cost = 0;
 
   async function read(task, payload = {}) {
+    if (task === 'readHouse') return readHouse(payload);
     const file = payload.source?.file ?? payload.hints?.fileName ?? null;
     const part = payload.source?.bbox ? payload.source?.part ?? null : null;
     const entry = { task, file, part, model: null, fixture: null, fresh: null, why: null, marksMatch: null, kept: 0, dropped: 0, recorded: false, cached: false, cost: 0 };
@@ -355,6 +356,81 @@ export function fixtureAi({ house, dir = FIXTURES, model = null, fallbackModel =
       entry.note = 'skrevet om til den nye formen (samme bilde og merker)';
     }
     return replay(task, payload, found, entry, entry.fresh === true, facadeUse);
+  }
+
+  /**
+   * readHouse: one recording per house, <dir>/<house>/house.readHouse.<model>.json, with every image's sha256 and
+   * marks. It always answers with its own marks (their positions are what generate uses); it is fresh when the prompt
+   * version, the images and the marks are the same.
+   */
+  async function readHouse(payload) {
+    const task = 'readHouse';
+    const entry = { task, file: 'house', part: null, model: null, fixture: null, fresh: null, why: null, marksMatch: null, kept: 0, dropped: 0, recorded: false, cached: false, cost: 0 };
+    calls.push(entry);
+    if (tasks && !tasks.includes(task)) return null;
+    const want = modelId(DEFAULT_MODELS[task] ?? DEFAULT_MODELS.default);
+    const wantModel = typeof model === 'string' ? modelId(model) : model && typeof model === 'object' && model[task] ? modelId(model[task]) : want;
+    const list = (payload.images ?? []).map((im, i) => {
+      const small = AI.downscaleImage(im.image, im.kind === 'facade' ? AI.AI_FACADE_SIDE : AI.AI_MAX_SIDE);
+      return { small, kind: im.kind, label: im.label ?? '', sha256: crypto.createHash('sha256').update(small.data).digest('hex'), marks: (im.marks ?? []).filter((m) => m.kind === 'room').map((m) => ({ id: m.id, kind: m.kind, at: m.at, drawnAt: m.drawnAt ?? m.at, image: i + 1 })), source: im.source ?? null };
+    });
+    const houseFile = (m) => path.join(dir, house, `house.${task}.${m}.json`);
+    const order = [wantModel, ...(fallbackModel === null ? [] : others.filter((m) => m !== wantModel))];
+    const foundModel = order.find((m) => fs.existsSync(houseFile(m)));
+    const fx = foundModel ? JSON.parse(fs.readFileSync(houseFile(foundModel), 'utf8')) : null;
+    const pv = SERVER.promptVersionOf?.(task) ?? PROMPT_VERSION;
+    if (fx) {
+      const why = [];
+      if (fx.promptVersion !== pv) why.push(`promptversjon ${fx.promptVersion}`);
+      if (fx.images?.length !== list.length || fx.images.some((im, i) => im.sha256 !== list[i].sha256)) why.push('andre bilder');
+      if (fx.images?.some((im, i) => im.marksHash !== marksHash(list[i]?.marks))) why.push('andre merker');
+      Object.assign(entry, { fresh: !why.length, why });
+    }
+    const needs = record && (!recordOnly || recordOnly(task, 'house', null)) && (!fx || foundModel !== wantModel || (refresh && !entry.fresh));
+    if (needs) {
+      const sent = { task, images: list.map((im) => ({ mediaType: 'image/png', data: encodePng(im.small).toString('base64'), kind: im.kind, label: im.label })), marks: list.flatMap((im) => im.marks), hints: payload.hints ?? {}, model: wantModel };
+      if (record === 'dry') {
+        const hit = service(null).peek(sent, { allowModel: true });
+        entry.wouldCall = !hit;
+        entry.note = hit ? `i hurtigbufferen (${shortModel(wantModel)})` : `ville kalt ${shortModel(wantModel)}`;
+      } else {
+        const key = apiKey ?? process.env.ANTHROPIC_API_KEY ?? null;
+        const s = service(key);
+        const hit = s.peek(sent, { allowModel: true });
+        if (!hit && (!key || !(budget > 0) || realCalls >= budget)) entry.note = !key ? 'ingen nøkkel: ikke tatt opp' : `budsjettet (${budget} kall) er brukt: ikke tatt opp`;
+        else {
+          const reply = key ? await s.run(sent, { noQuota: true, allowModel: true }) : { ok: true, ...hit, cached: true, cost: 0 };
+          if (reply && !reply.cached) {
+            realCalls++;
+            cost += reply.cost ?? 0;
+            fs.mkdirSync(path.dirname(LOG), { recursive: true });
+            fs.appendFileSync(LOG, `${JSON.stringify({ at: new Date().toISOString(), house, file: 'house', part: null, task, model: wantModel, servedModel: reply.servedModel ?? null, effort: s.limits.effort[task], promptVersion: pv, via: 'generate', ok: reply.ok, error: reply.error ?? null, usage: reply.usage ?? null, cost: reply.cost ?? null, ms: reply.ms ?? null })}\n`);
+          }
+          entry.cached = !!reply?.cached;
+          entry.cost = reply?.cached ? 0 : reply?.cost ?? 0;
+          if (reply?.ok && reply.response) {
+            const rec = { house, file: 'house', part: null, task, promptVersion: pv, model: wantModel, servedModel: reply.servedModel ?? wantModel, effort: s.limits.effort[task], images: list.map((im) => ({ kind: im.kind, label: im.label, width: im.small.width, height: im.small.height, sha256: im.sha256, marksHash: marksHash(im.marks), source: im.source })), marks: list.flatMap((im) => im.marks), hints: payload.hints ?? {}, response: reply.response, usage: reply.usage ?? null, cost: reply.cached ? reply.first?.cost ?? null : reply.cost ?? null, ms: reply.ms ?? null, stopReason: reply.stopReason ?? null, recorded: new Date().toISOString(), via: VIA };
+            fs.mkdirSync(path.dirname(houseFile(wantModel)), { recursive: true });
+            fs.writeFileSync(houseFile(wantModel), `${JSON.stringify(rec, null, 1)}\n`);
+            entry.recorded = true;
+            Object.assign(entry, { fresh: true, why: [] });
+            entry.fixture = path.relative(ROOT, houseFile(wantModel)).replace(/\\/g, '/');
+            entry.model = wantModel;
+            const out = AI.tidyResponse(task, reply.response, rec.marks);
+            out.meta = { model: wantModel, promptVersion: pv, cached: true, fixture: entry.fixture, fresh: true };
+            return out;
+          }
+          entry.note = `KI-feil: ${reply?.error ?? 'ukjent'}`;
+        }
+      }
+    }
+    if (!fx) return null;
+    entry.fixture = path.relative(ROOT, houseFile(foundModel)).replace(/\\/g, '/');
+    entry.model = fx.model ?? foundModel;
+    const out = AI.tidyResponse(task, fx.response, fx.marks ?? []);
+    out.meta = { model: entry.model, promptVersion: fx.promptVersion ?? null, cached: true, fixture: entry.fixture, fresh: entry.fresh };
+    entry.kept = out.roof.wings.length + out.ceilings.length + out.facades.length;
+    return out;
   }
 
   async function recordOne(task, payload, entry, want, sig, part) {

@@ -203,7 +203,103 @@ title: the facade's title, null if none.
 notes: e.g. a roof terrace, a carport, a balcony, cladding; empty string if nothing.`,
 };
 
-export const TASKS = Object.freeze({ classify, readPlan, readFacade });
+// ---------------------------------------------------------------------------------------------------------------
+// readHouse – all the plans (with their room marks) and all the facades of one house, in one request: what no single
+// drawing settles (the roof of each wing, which facade is which side, the ceilings with their ridge lines) and what
+// classical detection cannot read (cladding, covering, terrain). Positions and sizes still come from the drawings.
+
+export const CLADDING_TYPES = Object.freeze(['wood', 'panels', 'render', 'brick', 'stone', 'unknown']);
+export const DECK_KINDS = Object.freeze(['terrace', 'balcony', 'porch', 'roof-terrace']);
+export const RAILINGS = Object.freeze(['glass', 'wood-slats', 'wood-vertical', 'steel-bars', 'none', 'unknown']);
+
+const readHouse = {
+  /** its own version (the cache and the recordings key on it), so the other tasks' recordings stay fresh */
+  version: 'pb-house-2',
+  schema: obj({
+    facades: list(
+      obj({
+        image: int('the number of the image that shows this facade'),
+        title: nullable(str('the title written on this facade, exactly as written')),
+        facing: oneOf(['N', 'E', 'S', 'W', 'NE', 'NW', 'SE', 'SW', 'unknown'], 'the compass direction the facade faces, from its title or a north arrow only; unknown otherwise'),
+        planSide: oneOf(['top', 'bottom', 'left', 'right', 'unknown'], 'the outer wall of the first plan image this facade shows, named by the EDGE of the plan image it runs along: left = the wall along the left edge of the plan image'),
+        cladding: list(
+          obj({
+            part: oneOf(['all', 'lower', 'upper', 'gable', 'basement', 'other'], 'where on this facade: all of it, a lower or upper band, the gable triangle, the basement wall, or another part'),
+            type: oneOf(CLADDING_TYPES),
+            direction: oneOf(['vertical', 'horizontal', 'none'], 'the boards or the joints: vertical (stående), horizontal (liggende); none for render, brick, stone'),
+            color: nullable(str('the colour as written («hvit», «NCS S 7502-B»), or as drawn when the drawing is in colour; null in a black-and-white drawing without a colour text')),
+          }),
+          'one entry per kind of cladding on this facade',
+        ),
+        terrain: oneOf(['flat', 'falls-left', 'falls-right', 'stepped', 'unknown'], 'the ground line along the facade: flat, lower to the left, lower to the right, stepped'),
+        basement: oneOf(['none', 'partly', 'full', 'unknown'], 'how much of a basement storey stands above the ground on this facade'),
+      }),
+      'one entry per facade image, in image order',
+    ),
+    roof: obj({
+      covering: oneOf(['tiles', 'slate', 'felt', 'metal', 'unknown'], 'takstein / skifer / papp or a flat roof membrane / stålplater'),
+      color: nullable(str('the roof colour as written, or as drawn when the drawing is in colour; null otherwise')),
+      pitch: nullable(num('the roof pitch in degrees, only when it is written on a drawing («30°», «takvinkel 27»); null otherwise')),
+      wings: list(
+        obj({
+          image: int('the plan image this part of the roof covers (the top floor under it)'),
+          rooms: list(str(), 'the numbers of the red room marks under this part of the roof'),
+          type: oneOf(['gable', 'hip', 'mono-pitch', 'flat']),
+          ridge: oneOf(['horizontal', 'vertical', 'none'], 'the direction of the ridge in that plan image (horizontal: left–right); for a mono-pitch roof the direction of its high edge; none for a flat roof'),
+          high: oneOf(['top', 'bottom', 'left', 'right', 'none'], 'mono-pitch only: the side of the plan image where the roof is highest; none for every other type'),
+        }),
+        'one entry per part of the house with a roof of its own (a wing, a lower annex); one entry when one roof covers it all',
+      ),
+      chimney: bool('a chimney shows on a facade'),
+    }),
+    ceilings: list(
+      obj({
+        image: int('the plan image the text is written on'),
+        text: str('the text exactly as written'),
+        kind: oneOf(['sloped', 'flat', 'open', 'height'], 'sloped: SKRÅ HIMLING, Skråhiml.; flat: PLAN HIMLING, PLANTAK, flatt tak; open: ÅPENT OPP, åpent til mønet; height: only a room height («Himlingshøyde 2,4 m»)'),
+        degrees: nullable(num('the angle written in the text, degrees')),
+        rooms: list(str(), 'the numbers of the red room marks this ceiling covers'),
+        ridge: nullable(box('the ridge line drawn with a sloped ceiling: a long dash-dot (or dashed) line through the room along its length, often with the text written on it, [x0, y0, x1, y1] as its two end points, normalised in that plan image; null when no such line is drawn')),
+      }),
+      'every text about the ceiling on the plans',
+    ),
+    decks: list(
+      obj({
+        kind: oneOf(DECK_KINDS),
+        image: nullable(int('the plan image it is drawn on, or null when only a facade shows it')),
+        at: nullable(point('its middle in that plan image, [x, y] normalised')),
+        railing: oneOf(RAILINGS),
+        stairs: bool('steps from it down to the ground'),
+      }),
+      'terraces, balconies, porches and roof terraces',
+    ),
+    notes: str(),
+  }),
+  instructions: `Task: read all the drawings of ONE house together – its floor plans and its facades (elevations). The images are numbered in the order they are given; the text before each image says what it is. The plans carry the software's red room marks (numbered discs; blue lettered discs mark openings and do not matter here).
+
+facades – one entry per facade image:
+- title as written; facing only from the title («FASADE SØR», «Fasade mot nord», «ØST») or a north arrow, else unknown.
+- planSide: which outer wall of the FIRST plan image the facade shows, named by the edge of the plan IMAGE that wall runs along: top, bottom, left or right. Match the windows and doors, their widths and spacing, the entrance door and the gable ends (a gable end shows a triangle, the long side a band of roof) against the plan's outer walls. A facade is drawn as seen by someone standing outside that wall and looking at it: for the wall along the bottom edge the facade's left end is the plan's left end; for the wall along the top edge the facade's left end is the plan's RIGHT end; for the wall along the right edge the facade's left end is the plan's bottom end; for the wall along the left edge the facade's left end is the plan's top end.
+- cladding: the cladding of each part of the facade. Thin parallel vertical lines are vertical boards (stående kledning); horizontal lines are horizontal boards (liggende kledning); a grid of large rectangles is panels (fasadeplater); a plain or dotted surface is render (puss); a brick pattern is brick; irregular stones are stone. Parts: all, lower / upper (a band, e.g. render below and boards above), gable (the triangle), basement (the wall below the main floor), other. color only when written or the drawing is in colour.
+- terrain: the ground line; basement: how much of a basement storey stands free.
+
+roof:
+- covering from the hatching or the text: tiles (takstein: rows of small arcs or a scale pattern), slate (skifer: small rectangles), felt (papp, or a flat roof), metal (stålplater: long vertical lines on the roof surface); unknown.
+- pitch only when written (on a facade, a section or the plan: «SKRÅ HIMLING 24°» gives 24).
+- wings: look at all the facades together to understand the roof: a gable end is a triangle, a hip end slopes back, a mono-pitch roof shows one slope from a low to a high edge on its ends and a band of roof with a straight top on its long sides, a flat roof only a thin edge. Different heights or different roof forms on parts of the house are separate wings: give each the room marks under it on the top floor's plan, its type, its ridge direction in that plan image and, for a mono-pitch roof, the side of the plan where it is high. A garage, carport or annex with its own lower roof is a wing too.
+
+ceilings – every text about the ceiling on the plans («SKRÅ HIMLING 24°», «Skråhiml.», «PLAN HIMLING», «PLANTAK», «ÅPENT OPP»):
+- rooms: the room the text stands in, plus the rooms open to it (no wall between) that the same ceiling covers. A text written along a long thin diagonal line across several rooms applies to all the rooms that line crosses. A flat ceiling text («PLANTAK») inside a sloped area applies to the closed rooms or the core it is written on (a WC, a storage core, tall cupboards).
+- ridge: for a sloped ceiling, the dash-dot line that marks the ridge, usually along the middle of the room and through its whole length, often with the text written on it. The diagonal dashed line that only says «this room has a sloped ceiling» is not a ridge: then null.
+
+decks: terraces, balconies, porches (an outdoor area under a roof at an entrance), roof terraces, with the railing type (glass, wood-slats: horizontal boards, wood-vertical: vertical boards or balusters, steel-bars) and whether steps go down from it.
+
+notes: what else matters for building the outside in 3D (a carport, columns, a pergola, a garage door); empty string if nothing.`,
+};
+
+export const TASKS = Object.freeze({ classify, readPlan, readFacade, readHouse });
+/** The prompt version of a task (readHouse has its own). */
+export const promptVersionOf = (task) => TASKS[task]?.version ?? PROMPT_VERSION;
 
 // ---------------------------------------------------------------------------------------------------------------
 // The text block after the image
@@ -212,16 +308,29 @@ const HINT_KEYS = { fileName: 'File name', levelName: 'Floor (from the user or t
 const clip = (s, n = 200) => String(s).replace(/[\u0000-\u001f]+/g, ' ').slice(0, n);
 const f3 = (v) => (Math.round(v * 1000) / 1000).toFixed(3);
 
+/** What one image of a readHouse request is, for the text before it: «plan, 1. etasje (1etg.png), 1200 × 900 px». */
+export function imageLabel(im = {}) {
+  const kind = im.kind === 'plan' ? 'floor plan' : im.kind === 'facade' ? 'facade' : 'drawing';
+  const bits = [clip(im.label ?? '', 120), im.width && im.height ? `${im.width} × ${im.height} px` : ''].filter(Boolean);
+  return `${kind}${bits.length ? ` (${bits.join(', ')})` : ''}`;
+}
+
 /**
  * The user text for a task: the instructions, the marks the software drew, and the hints.
  * @param {'classify'|'readPlan'|'readFacade'} task
  * @param {{ marks?: Array<{ id, kind, at, drawnAt? }>, hints?: object, width?: number, height?: number }} o
  */
-export function buildUserText(task, { marks = [], hints = {}, width, height } = {}) {
+export function buildUserText(task, { marks = [], hints = {}, width, height, images = null } = {}) {
   const def = TASKS[task];
   if (!def) throw new Error(`unknown task ${task}`);
   const parts = [def.instructions];
-  if (width && height) parts.push(`The image is ${width} × ${height} pixels.`);
+  if (task === 'readHouse' && Array.isArray(images)) {
+    parts.push(`The images: ${images.map((im, i) => `${i + 1}: ${imageLabel(im)}`).join('; ')}.`);
+    images.forEach((im, i) => {
+      const rooms = marks.filter((m) => m.kind === 'room' && m.image === i + 1);
+      if (rooms.length) parts.push(`Red room marks on image ${i + 1}, disc centres: ${rooms.map((m) => `${m.id} [${f3((m.drawnAt ?? m.at)[0])}, ${f3((m.drawnAt ?? m.at)[1])}]`).join('; ')}.`);
+    });
+  } else if (width && height) parts.push(`The image is ${width} × ${height} pixels.`);
   if (task === 'readPlan') {
     const rooms = marks.filter((m) => m.kind === 'room');
     const openings = marks.filter((m) => m.kind === 'opening');

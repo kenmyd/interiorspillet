@@ -36,6 +36,7 @@ import idsRegistry from '../../research/house/00-ids.json';
 import { levelRooms as roomsOfLevel, wallBand } from './regions.js';
 import { sub, add, mul, dot, cross, dist, unit, perp, signedArea, centroid, slug, round, clipPolygon, pointInPolygon } from './geom.js';
 import { DEFAULT_SETTINGS, wallLength, wallDir, stairGeometry } from './model.js';
+import { ceilingSlope } from './houseread.js';
 import { WALKABLE_NORMAL_Y } from '../config.js';
 
 const RESERVED_IDS = new Set(['stue-kjokken', 'trapp', 'ute', 'forplass']);
@@ -973,7 +974,7 @@ export function exportHouse(doc, opts = {}) {
     }
   });
   exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, warnings, counts, RP, R });
-  exportRoofs({ doc, house, warnings, RP, R });
+  exportRoofs({ doc, house, warnings, RP, R, frame });
   if (floorOpenings.length) house.floorOpenings = floorOpenings;
   if (stairs.length) house.stairs = stairs;
 
@@ -1249,7 +1250,7 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
  * rooms) gets sloped ceilings (type 'roof', flat at the room's height as a collar beam) and knee walls of 1.2 m; any
  * other top level keeps its flat ceilings with the roof resting on its walls.
  */
-function exportRoofs({ doc, house, warnings, RP, R }) {
+function exportRoofs({ doc, house, warnings, RP, R, frame }) {
   const levels = [...house.levels].sort((a, b) => b.floorY - a.floorY);
   const top = levels[0];
   if (!top) return;
@@ -1287,13 +1288,132 @@ function exportRoofs({ doc, house, warnings, RP, R }) {
       if (polys.some((P) => pointInPolygon(c, P))) on[j * nu + i] = 1;
     }
   const total = on.reduce((s, x) => s + x, 0);
+  // what the plans and the AI say about this level (houseread.js, the Himling step): the ceiling texts with their room
+  // points and ridge lines, the AI's roof wings – all in plan metres of the level
+  const docL = doc.levels.find((l) => l.id === top.id);
+  const marks = docL?.ceilingMarks ?? [];
+  const G = (q) => frame.toGame(q, top.id);
+  const wingsHere = (doc.roof?.wings ?? []).filter((w) => w.level === top.id);
+  // the AI's wings: each room to the wing whose rooms it holds (else the wing of the nearest room), each wing the
+  // rectangle around its rooms and their walls – an L whose wings are no clean rectangles (hus2: the entrance niche, the
+  // laundry's jut) is split where the drawings split it
+  const wingParts = (() => {
+    if (wingsHere.length < 2) return null;
+    const owner = new Map();
+    for (const r of roomsHere) {
+      let best = -1;
+      let most = 0;
+      wingsHere.forEach((w, k) => {
+        const n = w.points.filter((q) => pointInPolygon(G(q), r.polygon)).length;
+        if (n > most) [best, most] = [k, n];
+      });
+      if (best >= 0) owner.set(r.id, best);
+    }
+    if (!owner.size) return null;
+    for (const r of roomsHere) {
+      if (owner.has(r.id)) continue;
+      let best = null;
+      let bd = Infinity;
+      for (const s of roomsHere) {
+        if (!owner.has(s.id)) continue;
+        const d = dist(centroid(r.polygon), centroid(s.polygon));
+        if (d < bd) [best, bd] = [owner.get(s.id), d];
+      }
+      owner.set(r.id, best);
+    }
+    const boxes = wingsHere.map(() => null);
+    const grow = (k, q) => {
+      const l = toL(q);
+      const b = (boxes[k] ??= [Infinity, Infinity, -Infinity, -Infinity]);
+      [b[0], b[1], b[2], b[3]] = [Math.min(b[0], l[0]), Math.min(b[1], l[1]), Math.max(b[2], l[0]), Math.max(b[3], l[1])];
+    };
+    for (const r of roomsHere) for (const q of r.polygon) grow(owner.get(r.id), q);
+    for (const w of slabs) {
+      const k = owner.get(w.roomId);
+      if (k == null) continue;
+      const n = w.normal ?? perp(unit(sub(w.to, w.from)));
+      for (const q of [w.from, w.to, sub(w.from, mul(n, w.thickness)), sub(w.to, mul(n, w.thickness))]) grow(k, q);
+    }
+    const out = boxes.filter(Boolean).map((b) => {
+      const i0 = Math.max(0, Math.floor((b[0] - u0) / CELL + 0.25));
+      const i1 = Math.min(nu, Math.ceil((b[2] - u0) / CELL - 0.25));
+      const j0 = Math.max(0, Math.floor((b[1] - v0) / CELL + 0.25));
+      const j1 = Math.min(nv, Math.ceil((b[3] - v0) / CELL - 0.25));
+      let area = 0;
+      for (let j = j0; j < j1; j++) for (let i = i0; i < i1; i++) area += on[j * nu + i];
+      return { area, i0, i1, j0, j1 };
+    });
+    // one box, or boxes that overlap so much that they are one roof: not wings
+    if (out.length < 2 || out.reduce((s, p) => s + p.area, 0) > 1.3 * total) return null;
+    return out.sort((a, b) => b.area - a.area);
+  })();
+  // without the AI's wings: an L (or a T, a jut) cut in two where its two halves fill their rectangles best – one cut
+  // across the whole footprint, along either axis; kept when it fills clearly better than the one rectangle (hus2's L
+  // has an entrance niche and a jut, which the largest-rectangle method below broke into four pieces)
+  const splitParts = (() => {
+    if (wingParts || total >= 0.85 * nu * nv) return null;
+    // per column (and per row) its count of footprint cells and their first and last row: the box of a band of columns
+    // in one pass over the band
+    const lines = (n, m, at) => {
+      const cnt = new Int32Array(n);
+      const lo = new Int32Array(n).fill(m);
+      const hi = new Int32Array(n).fill(-1);
+      for (let a = 0; a < n; a++)
+        for (let b = 0; b < m; b++)
+          if (at(a, b)) {
+            cnt[a]++;
+            lo[a] = Math.min(lo[a], b);
+            hi[a] = Math.max(hi[a], b);
+          }
+      return { cnt, lo, hi };
+    };
+    const C = lines(nu, nv, (i, j) => on[j * nu + i]);
+    const Rw = lines(nv, nu, (j, i) => on[j * nu + i]);
+    // the box of the band [a, b) of columns (cols) or rows: { area, i0, i1, j0, j1 } | null
+    const band = (L, a, b, cols) => {
+      let area = 0;
+      let first = -1;
+      let last = -1;
+      let lo = Infinity;
+      let hi = -Infinity;
+      for (let k = a; k < b; k++) {
+        if (!L.cnt[k]) continue;
+        area += L.cnt[k];
+        if (first < 0) first = k;
+        last = k;
+        lo = Math.min(lo, L.lo[k]);
+        hi = Math.max(hi, L.hi[k]);
+      }
+      if (!area) return null;
+      return cols ? { area, i0: first, i1: last + 1, j0: lo, j1: hi + 1 } : { area, i0: lo, i1: hi + 1, j0: first, j1: last + 1 };
+    };
+    const fillOf = (ps) => ps.reduce((s, p) => s + p.area, 0) / ps.reduce((s, p) => s + (p.i1 - p.i0) * (p.j1 - p.j0), 0);
+    let best2 = null;
+    let best3 = null;
+    const MIN = 10; // a wing at least 1 m
+    for (const [L, n, cols] of [[C, nu, true], [Rw, nv, false]]) {
+      for (let c = MIN; c <= n - MIN; c++) {
+        const ps = [band(L, 0, c, cols), band(L, c, n, cols)];
+        if (ps.every(Boolean) && (!best2 || fillOf(ps) > best2.fill)) best2 = { ps, fill: fillOf(ps) };
+        // a U or an H: two cuts along the same axis
+        for (let d = c + MIN; d <= n - MIN; d += 2) {
+          const qs = [band(L, 0, c, cols), band(L, c, d, cols), band(L, d, n, cols)];
+          if (qs.every(Boolean) && (!best3 || fillOf(qs) > best3.fill)) best3 = { ps: qs, fill: fillOf(qs) };
+        }
+      }
+    }
+    const one = total / (nu * nv);
+    // three parts only when they fill clearly better than two
+    const best = best3 && (!best2 || best3.fill >= best2.fill + 0.05) ? best3 : best2;
+    return best && best.fill >= 0.88 && best.fill >= one + 0.1 ? best.ps.sort((a, b) => b.area - a.area) : null;
+  })();
   // a level that nearly fills its rectangle gets one roof over all of it (wings only for an L or a T)
-  const whole = total >= 0.85 * nu * nv;
+  const whole = !wingParts && !splitParts && total >= 0.85 * nu * nv;
   // the largest rectangle of cells still to cover (histogram method), up to three while it pays off
-  const parts = [];
+  const parts = wingParts ? [...wingParts] : splitParts ? [...splitParts] : [];
   const left = Uint8Array.from(on);
   if (whole) parts.push({ area: total, i0: 0, i1: nu, j0: 0, j1: nv });
-  for (let n = 0; n < 4 && !whole; n++) {
+  for (let n = 0; n < 4 && !whole && !wingParts && !splitParts; n++) {
     const hgt = new Int32Array(nu);
     let best = null;
     for (let j = 0; j < nv; j++) {
@@ -1333,7 +1453,8 @@ function exportRoofs({ doc, house, warnings, RP, R }) {
   // default), and a dormer (ark) over each window or door in them that reaches above the knee wall – the way the drawings
   // show it (hus1 «gable-dormer», F126, F127, F129). Its front is on the wall's outer face, 0.3 m wider than the openings
   const KNEE = 1.2;
-  const sloped = type === 'gable' || type === 'hip';
+  // tekking: the AI's reading of the roof (houseread.js) in the house format's words
+  const COVERING = { tiles: 'tile', slate: 'slate', felt: 'felt', metal: 'steel' };
   const dormersOf = (p) => {
     const along = p.i1 - p.i0 >= p.j1 - p.j0 ? ax : ay;
     const out = [];
@@ -1358,28 +1479,102 @@ function exportRoofs({ doc, house, warnings, RP, R }) {
     }
     return out;
   };
+  const inPartOf =(p, q, slack = 0.05) => {
+    const l = toL(q);
+    return l[0] >= u0 + p.i0 * CELL - slack && l[0] <= u0 + p.i1 * CELL + slack && l[1] >= v0 + p.j0 * CELL - slack && l[1] <= v0 + p.j1 * CELL + slack;
+  };
+  /** The part's roof: the ridge line drawn with a sloped ceiling (its direction, and at an edge: a mono-pitch roof high
+   *  there), else the AI's wing with most of its rooms in the part, else the house's type from the facades. */
+  const roofOf = (p) => {
+    const line = marks.find((m) => m.kind === 'sloped' && m.ridge && inPartOf(p, G([(m.ridge[0][0] + m.ridge[1][0]) / 2, (m.ridge[0][1] + m.ridge[1][1]) / 2])));
+    let wing = null;
+    let most = 0;
+    for (const w of wingsHere) {
+      const n = w.points.filter((q) => inPartOf(p, G(q))).length;
+      if (n > most) [wing, most] = [w, n];
+    }
+    const degrees = doc.roof?.pitchSet ?? marks.find((m) => m.kind === 'sloped' && m.degrees && m.points.some((q) => inPartOf(p, G(q))))?.degrees ?? doc.roof?.pitch ?? doc.roof?.pitchFacades ?? null;
+    // the AI's type only where it split the house into wings: one roof over it all keeps the facades' type (they read
+    // hus1's half-hip with dormers right, the AI called it hip – notes/planbygger.md, «KI-laget»)
+    const wingType = wingsHere.length >= 2 && ['gable', 'hip', 'mono-pitch', 'flat'].includes(wing?.type) ? wing.type : null;
+    const out = { type: wingType ?? type, from: wingType ? 'KI' : kind ? 'fasadene' : null, ...(degrees ? { pitch: degrees } : {}) };
+    if (line) {
+      const a = G(line.ridge[0]);
+      const b = G(line.ridge[1]);
+      const dir = unit(sub(b, a));
+      // across the ridge: where the line lies between the part's two long edges
+      const across = Math.abs(dot(dir, ax)) >= Math.abs(dot(dir, ay)) ? 1 : 0;
+      const mid = toL(mul(add(a, b), 0.5));
+      const lo = across ? v0 + p.j0 * CELL : u0 + p.i0 * CELL;
+      const hi = across ? v0 + p.j1 * CELL : u0 + p.i1 * CELL;
+      const t = (mid[across] - lo) / Math.max(0.1, hi - lo);
+      if (t < 0.2 || t > 0.8) {
+        // the ridge along one edge: a mono-pitch roof, high there, falling to the other side
+        const n = across ? ay : ax;
+        out.type = 'mono-pitch';
+        out.fall = (t < 0.5 ? n : mul(n, -1)).map((v) => R(v) || 0);
+      } else {
+        out.type = out.type === 'flat' || out.type === 'mono-pitch' ? 'gable' : out.type;
+        out.ridge = dir.map((v) => R(v) || 0);
+      }
+      out.from = 'planen (mønelinja)';
+    } else {
+      // (one AI wing over the whole house says nothing about a part of it: its ridge only for one roof)
+      if (wing?.ridge && (wingsHere.length >= 2 || parts.length === 1) && (out.type === 'gable' || out.type === 'hip')) out.ridge = unit(frame.vecToGame(wing.ridge)).map((v) => R(v) || 0);
+      // a mono-pitch roof's fall: the AI's per wing where it split the house, else the end views' high side (classical,
+      // facadematch.js roofFromFacades), else the AI's
+      if (out.type === 'mono-pitch') {
+        const f = wingsHere.length >= 2 && wing?.fall ? wing.fall : doc.roof?.monoHigh ? doc.roof.monoHigh.map((v) => -v) : wing?.fall;
+        if (f) out.fall = unit(frame.vecToGame(f)).map((v) => R(v) || 0);
+      }
+    }
+    return out;
+  };
+  const NAMES = { gable: 'saltak', hip: 'valmtak', 'mono-pitch': 'pulttak', flat: 'flatt tak' };
   house.roofs = parts.map((p, i) => {
     const a = toG(u0 + p.i0 * CELL, v0 + p.j0 * CELL);
     const b = toG(u0 + p.i1 * CELL, v0 + p.j0 * CELL);
     const c = toG(u0 + p.i1 * CELL, v0 + p.j1 * CELL);
     const d = toG(u0 + p.i0 * CELL, v0 + p.j1 * CELL);
-    const dormers = loft && sloped && parts.length === 1 ? dormersOf(p) : [];
+    const rf = roofOf(p);
+    const pitched = rf.type === 'gable' || rf.type === 'hip';
+    const dormers = loft && pitched && parts.length === 1 ? dormersOf(p) : [];
     return {
       id: `roof-${i + 1}`,
-      type,
+      type: rf.type,
       levelId: top.id,
       outline: [a, b, c, d].map(RP),
-      ...(loft && sloped ? { kneeHeight: KNEE } : {}),
+      ...(rf.ridge ? { ridge: rf.ridge } : {}),
+      ...(rf.fall ? { fall: rf.fall } : {}),
+      ...(rf.pitch ? { pitch: rf.pitch } : {}),
+      ...(loft && pitched ? { kneeHeight: KNEE } : {}),
+      ...(COVERING[doc.roof?.covering] ? { covering: COVERING[doc.roof.covering] } : {}),
       // small overhangs, as the facade drawings show them (F137)
-      overhang: type === 'flat' ? 0.15 : 0.25,
+      overhang: rf.type === 'flat' ? 0.15 : 0.25,
       vergeOverhang: 0.1,
       ...(dormers.length ? { dormers } : {}),
       estimated: ['*'],
-      source: `planbyggeren: ${kind ? `takformen fra fasadene (${kind})` : 'saltak (ingen fasader)'}${parts.length > 1 ? `, fløy ${i + 1} av ${parts.length}` : ''}${loft && sloped ? `, loft med knevegg ${KNEE} m${dormers.length ? ` og ${dormers.length} ark${dormers.length > 1 ? 'er' : ''}` : ''}` : ''}`,
+      source: `planbyggeren: ${NAMES[rf.type]} fra ${rf.from ?? 'ingenting (ingen fasader)'}${rf.pitch ? `, ${rf.pitch}°` : ''}${parts.length > 1 ? `, fløy ${i + 1} av ${parts.length}` : ''}${loft && pitched ? `, loft med knevegg ${KNEE} m${dormers.length ? ` og ${dormers.length} ark${dormers.length > 1 ? 'er' : ''}` : ''}` : ''}`,
     };
   });
-  // sloped ceilings in a loft (flat at the room's height where the roof is higher, a collar beam)
-  if (loft) for (const c of house.ceilings) if (ids.has(c.roomId)) Object.assign(c, { type: 'roof' });
+  // the ceilings: a loft follows the roof everywhere (flat at the room's height where the roof is higher, a collar
+  // beam). Else per room: the Himling step's choice, else the ceiling texts in it («SKRÅ HIMLING» / «PLAN HIMLING»: the
+  // most points of the texts in the room), else flat when the plans have ceiling texts (they marked the sloped rooms),
+  // else the level's rule (generate.js, the question). A sloped ceiling goes up to the ridge (no height).
+  if (loft) {
+    for (const c of house.ceilings) if (ids.has(c.roomId)) Object.assign(c, { type: 'roof' });
+  } else {
+    for (const r of roomsHere) {
+      const s = ceilingSlope(docL, (q) => pointInPolygon(G(q), r.polygon));
+      if (!s.slope) continue;
+      const c = house.ceilings.find((x) => x.roomId === r.id);
+      if (!c) continue;
+      c.type = 'roof';
+      delete c.height;
+      c.estimated = (c.estimated ?? []).filter((k) => k !== 'height');
+      c.source = `planbyggeren: ${s.why === 'bruker' ? 'valgt i «Himling»' : s.why === 'tegning' ? `${s.text ? `«${s.text}»` : 'skrå himling'} på planen` : 'himlingen følger taket (gjettet, spurt om)'}`;
+    }
+  }
   const covered = parts.reduce((s, p) => s + p.area, 0) / total;
   if (covered < 0.9) warnings.push(`${top.name}: taket dekker bare ${Math.round(covered * 100)} % av etasjen (huset har en form med mer enn tre fløyer)`);
 }

@@ -1623,6 +1623,40 @@ select {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* ---- Himling (ceilingplace.js): the top level's rooms, sloped ones tinted, the ridge lines dash-dot */
+.cp-room {
+  fill: #f6f4ef;
+  stroke: none;
+  cursor: pointer;
+}
+.cp-room:hover {
+  fill: #ece8df;
+}
+.cp-room.is-sloped {
+  fill: #f3d9a4;
+}
+.cp-room.is-sloped:hover {
+  fill: #eccf92;
+}
+.cp-room.is-selected {
+  stroke: #d48a00;
+  stroke-width: 3;
+}
+.cp-ridge {
+  stroke: #8a4b00;
+  stroke-width: 2.5;
+  stroke-dasharray: 14 4 2 4;
+  stroke-linecap: round;
+  cursor: move;
+}
+.cp-ridge.is-selected {
+  stroke: #d48a00;
+  stroke-width: 3.5;
+}
+.fc-sheet.is-drawing .sp-svg {
+  cursor: crosshair;
+}
 .sp-soon {
   display: grid;
   place-items: center;

@@ -71,6 +71,8 @@ import { cleanForWalls } from './clean.js';
 import { detectPlan } from './detect.js';
 import { autoScale, estimateScale, similarSource, innerArea, wallModes } from './autoscale.js';
 import { readFacade, houseRoof } from './facade.js';
+import { matchFacades, applyFacadeMatch, roofFromFacades } from './facadematch.js';
+import { applyHouseReading } from './houseread.js';
 import { findStairs, alignLevelTo } from './align.js';
 import { drawMarks, targetsFromLevel } from './marks.js';
 import { levelRooms } from './regions.js';
@@ -87,6 +89,7 @@ import {
   scaleQuestion,
   braQuestion,
   ceilingQuestion,
+  roofCeilingQuestion,
   windowsQuestion,
   roomQuestion,
   stairQuestion,
@@ -730,6 +733,8 @@ export async function generate(inputs, opts = {}) {
       d.aiPlan = tidyPlan(await askAi('readPlan', { image: marked.img, marks: marked.marks, unmarked: marked.unmarked, hints, source }));
       // what the marks were drawn on: the answer's mark ids point into these
       d.refs = { ppm0, level0, rooms0 };
+      // the same marked plan goes to readHouse with the facades (step 5)
+      d.houseMarks = { img: marked.img, marks: marked.marks, source };
     }
     const ai = d.aiPlan;
     Object.assign(d, { ppm0, det0, level0, rooms0 });
@@ -1039,6 +1044,26 @@ export async function generate(inputs, opts = {}) {
   }
   // the main level first in the list (export.js origin), then the others bottom up
   doc.levels.sort((a, b) => (a.id === 'hoved' ? -1 : b.id === 'hoved' ? 1 : a.floorY - b.floorY));
+  // the AI reads the whole house in one request (readHouse: the marked plans, the main floor first, and the facades):
+  // the roof of each wing, which facade is which side, the ceilings and the cladding. Asked now, waited for in step 7;
+  // not asked for a house with neither facades nor a ceiling text on its plans
+  const houseImages = [
+    ...[...ordered.list].filter((d) => d.houseMarks).sort((a, b) => (a.levelNo === 0 ? -1 : b.levelNo === 0 ? 1 : b.levelNo - a.levelNo)).map((d) => ({ d, kind: 'plan' })),
+    ...drawings.filter((x) => x.kind === 'facade').map((d) => ({ d, kind: 'facade' })),
+  ].slice(0, 8);
+  const askHouse = houseImages.some((x) => x.kind === 'plan') && (houseImages.some((x) => x.kind === 'facade') || ordered.list.some((d) => d.aiPlan?.ceiling?.length));
+  const aiHouseP = askHouse
+    ? askAi('readHouse', {
+        images: houseImages.map(({ d, kind }) => ({
+          image: kind === 'plan' ? d.houseMarks.img : d.img,
+          kind,
+          label: kind === 'plan' ? `${d.level.name}, ${d.file}` : `${d.title ? `«${d.title}», ` : ''}${d.file}${d.part != null ? ` #${d.part + 1}` : ''}`,
+          marks: kind === 'plan' ? d.houseMarks.marks : [],
+          source: kind === 'plan' ? d.houseMarks.source : { file: d.file, part: d.part, width: d.sheet.width, height: d.sheet.height, bbox: d.bbox, photo: d.sheet.photo ? { quad: d.sheet.photo.quad, width: d.sheet.photo.width, height: d.sheet.photo.height } : null },
+        })),
+        hints: {},
+      })
+    : Promise.resolve(null);
 
   // ---- 6. levels on top of each other, the stair
   progress('align', 'Legger etasjene oppå hverandre …', totalSteps);
@@ -1356,6 +1381,67 @@ export async function generate(inputs, opts = {}) {
     }
     if (byNo.length) questions.push(windowsQuestion({ sill: DEFAULT_SETTINGS.windowSill, height: DEFAULT_SETTINGS.windowHeight }));
     step({ step: 'windows', method: 'room-kind', confidence: 'low', detail: 'ingen fasader: brystning 0,9 / høyde 1,2 m, bad og vaskerom høyere' });
+  }
+  // each facade drawing on its side of the house, and its windows on the plan's: their own sill and height (over the
+  // medians above), and the plan's north from the titles
+  const aiHouse = await aiHouseP;
+  // the AI's titles and plan sides of the facades (readHouse), by drawing
+  const aiFacadeOf = (d) => {
+    const k = houseImages.findIndex((x) => x.d === d);
+    return k >= 0 ? (aiHouse?.facades ?? []).find((f) => f.image === k + 1) ?? null : null;
+  };
+  const usable = readings.filter((d) => d.reading && !(d.reading.method === 'eave' && d.reading.confidence === 'low'));
+  if (usable.length && byNo.length) {
+    const t = now();
+    const levelsByNo = Object.fromEntries(byNo.map((d) => [d.levelNo, d.level.id]));
+    // (the AI's own plan side is not passed: it had 2 of 4 sides right on four of the five houses with facades –
+    // left and right, or top and bottom, swapped – tools/test-planbygger-ai.mjs «MÅLT»; its titles are used)
+    const match = matchFacades(doc, usable.map((d) => ({ reading: d.reading, title: d.title ?? aiFacadeOf(d)?.title ?? null })), { levelsByNo });
+    if (match.north != null && match.north !== (doc.settings.north ?? 0)) {
+      doc.settings.north = match.north;
+      report.notes.push(`Nordretningen er satt fra fasadetitlene: nord er ${['opp', 'til høyre', 'ned', 'til venstre'][match.north / 90]} i planen.`);
+    }
+    const n = applyFacadeMatch(doc, usable.map((d) => ({ reading: d.reading })), match, { ceiling: doc.settings.ceiling });
+    // the roof's pitch and a mono-pitch roof's high side as the end views show them on their sides
+    const rf = roofFromFacades(usable.map((d) => ({ reading: d.reading })), match);
+    if (rf.pitch || rf.high) doc.roof = { ...(doc.roof || {}), ...(rf.pitch ? { pitchFacades: rf.pitch } : {}), ...(rf.high ? { monoHigh: rf.high } : {}) };
+    usable.forEach((d, i) => {
+      d.match = match.drawings[i];
+      const f = doc.facades?.find((x) => x.file === d.file && x.part === d.part);
+      if (f) Object.assign(f, { side: d.match.side, matched: d.match.pairs.length, unmatched: d.match.unmatched.length, missing: d.match.missing });
+    });
+    const NAME = { N: 'nord', E: 'øst', S: 'sør', W: 'vest' };
+    step({ step: 'facade-match', method: match.north != null ? 'titles+positions' : 'positions', confidence: n ? 'medium' : 'low', detail: `${usable.map((d) => `${d.title ? `«${d.title}»` : d.file}${d.part != null ? ` #${d.part + 1}` : ''} → ${d.match.side ? `${NAME[d.match.side]} (${d.match.pairs.length} av ${d.reading.windows.length} åpninger, ${d.match.missing} i planen uten partner)` : 'ingen side'}`).join('; ')}; ${n} vinduer og dører fikk høyden sin fra fasaden`, ms: Math.round(now() - t) });
+  }
+  // the rest of the AI's reading of the house: the roof per wing, the ceilings, the cladding, terraces
+  if (aiHouse) {
+    const images = houseImages.map(({ d, kind }) => ({ kind, level: kind === 'plan' ? d.level : null, width: (kind === 'plan' ? d.houseMarks.img : d.img).width, height: (kind === 'plan' ? d.houseMarks.img : d.img).height }));
+    const sides = houseImages.map(({ d, kind }) => (kind === 'facade' ? d.match?.side ?? null : null));
+    const got = applyHouseReading(doc, aiHouse, images, { sides });
+    step({ step: 'house', method: 'ai', confidence: 'medium', detail: `KI-en leste huset:${got.wings} takdel${got.wings === 1 ? '' : 'er'}${doc.roof?.pitch ? ` (${doc.roof.pitch}°)` : ''}, ${got.ceilings} himlingstekst${got.ceilings === 1 ? '' : 'er'}, kledning på ${got.cladding} fasade${got.cladding === 1 ? '' : 'r'}${doc.cladding?.main ? ` (mest ${doc.cladding.main.type}${doc.cladding.main.direction ? `, ${doc.cladding.main.direction}` : ''})` : ''}, ${got.decks} terrasse${got.decks === 1 ? '' : 'r'} og balkong${got.decks === 1 ? '' : 'er'}` });
+  }
+  // the ceilings of the top level when no drawing says anything about them: a loft follows the roof by itself
+  // (export.js); a mono-pitch roof right over the level, or a window or door drawn higher than a flat ceiling, makes the
+  // level follow the roof – a guess, asked once; anything else stays flat. With a ceiling text anywhere on the plans,
+  // the rooms without one are flat (the drawing marked the sloped ones)
+  const topD = byNo[byNo.length - 1];
+  const TL = topD?.level;
+  const ceilingTexts = doc.levels.some((l) => (l.ceilingMarks ?? []).some((m) => m.kind !== 'height'));
+  const loftish = TL && TL.floorY > 0.5 && (/loft/i.test(TL.name) || TL.rooms.some((r) => /loft/i.test(r.name ?? '')) || TL.skylights?.length > 0);
+  if (TL && !ceilingTexts && !loftish) {
+    const ceil = TL.ceiling ?? doc.settings.ceiling ?? 2.4;
+    const tall = TL.openings.filter((o) => (o.facadeTop ?? 0) > ceil + 0.1);
+    const wingsTop = (doc.roof?.wings ?? []).filter((w) => w.level === TL.id);
+    const mono = doc.roof?.type === 'mono-pitch' || (wingsTop.length > 0 && wingsTop.every((w) => w.type === 'mono-pitch'));
+    if (mono || tall.length) {
+      TL.ceilingRule = 'roof';
+      const why = mono ? 'Taket er et pulttak rett over etasjen, og da følger himlingen som regel taket' : `${tall.length === 1 ? 'Et vindu eller en dør' : `${tall.length} vinduer og dører`} på fasadene går høyere enn en flat himling på ${fmt(ceil, 2)} m`;
+      questions.push(roofCeilingQuestion({ level: TL.id, levelName: TL.name, value: 'roof', why: `${why}. Tegningene sier ikke noe om himlingen, så vi har gjettet skråtak inne. Velg «Bare i noen rom» for å bestemme rom for rom.` }));
+      step({ step: 'ceilings', level: TL.id, method: 'rule', confidence: 'low', detail: `ingen himlingstekst: ${mono ? 'pulttak rett over etasjen' : `${tall.length} åpninger over himlingen`} → himlingen følger taket (spurt om)` });
+    }
+  } else if (ceilingTexts) {
+    const n = doc.levels.reduce((s, l) => s + (l.ceilingMarks ?? []).filter((m) => m.kind !== 'height').length, 0);
+    step({ step: 'ceilings', method: 'ai', confidence: 'medium', detail: `${n} himlingstekst${n === 1 ? '' : 'er'} på planene: rommene de gjelder får skrå eller flat himling, de andre flat` });
   }
 
   // ---- the 3D house must be valid (validateHouse): repairs that only change what the detection could not know, each

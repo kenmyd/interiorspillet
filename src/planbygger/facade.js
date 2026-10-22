@@ -17,6 +17,8 @@
  *                                       for houseRoof() over all the facades of a house
  *     storeys, floorYs: [px per storey]  never fewer storeys than the openings stand in (a given count included)
  *     roofFrom: 'ai'|'outline'|null, notes: [Norwegian text]
+ *     roofPitch: degrees (an end view: a gable's or a mono-pitch's slope, as drawn) | undefined
+ *     roofHigh: 'left'|'right' (a mono-pitch end: the end the roof is high at, as seen in the drawing) | undefined
  *     skew: degrees (0 = straight), workScale: working px per image px (prepareFacade)
  *   }
  *   img is RGBA ({ width, height, data }), one facade per image (a sheet with several is split by sheet.js first).
@@ -951,7 +953,8 @@ function roofFromOutline(p, { bandH, H, eaveH, dormer }) {
   };
   const all = fit(Math.round(n * 0.03), Math.round(n * 0.97));
   const rise = Math.abs(all.k) * n;
-  if (rise >= 0.08 && all.worst <= 0.05 && top < 0.35) return { roof: 'mono-pitch', options: ['mono-pitch'], why: `rett skrå linje (${Math.round(rise * 100)} %)` };
+  // (the slope in px per px: the drawing is to scale both ways, so it is the roof's own pitch; the high end is where q grows)
+  if (rise >= 0.08 && all.worst <= 0.05 && top < 0.35) return { roof: 'mono-pitch', options: ['mono-pitch'], why: `rett skrå linje (${Math.round(rise * 100)} %)`, pitch: (Math.atan(Math.abs(all.k) * H) * 180) / Math.PI, high: all.k > 0 ? 'right' : 'left' };
   // levels: share of the outline at clearly different heights (a lower wing beside the main volume)
   const low = q.filter((v) => v < 0.9).length / n;
   const flatLow = (() => {
@@ -1007,7 +1010,7 @@ function roofFromOutline(p, { bandH, H, eaveH, dormer }) {
     const r = fit(i1, Math.max(hi, Math.min(n - 1, i1 + 2)));
     const bump = Math.max(l.worst, r.worst);
     if (bump > 0.06 || dormer) return { roof: 'gable-dormer', options: ['gable-dormer'], why: `gavl med ark (avvik ${Math.round(bump * 100)} %)` };
-    return { roof: 'gable', options: ['gable', 'gable-dormer'], why: 'gavl' };
+    return { roof: 'gable', options: ['gable', 'gable-dormer'], why: 'gavl', pitch: (Math.atan(((Math.abs(l.k) + Math.abs(r.k)) / 2) * H) * 180) / Math.PI };
   }
   if (low > 0.2) return { roof: 'mixed', options: ['mixed'], why: 'sammensatt omriss' };
   return { roof: 'mixed', options: ['mixed'], why: 'uklart omriss' };
@@ -1698,6 +1701,9 @@ function readCore(img, options) {
       result.roofFrom = fromOutline.roof ? 'outline' : null;
     }
     result.roofOptions = fromOutline.options;
+    // an end view: the pitch of its slopes, and which end a mono-pitch roof is high at (facadematch.js roofFromFacades)
+    if (fromOutline.pitch > 2 && fromOutline.pitch < 70) result.roofPitch = Math.round(fromOutline.pitch * 10) / 10;
+    if (fromOutline.high) result.roofHigh = fromOutline.high;
     notes.push(`Takfot fra ${eaveFrom}; takform fra omrisset: ${fromOutline.roof ?? 'ukjent'} (${fromOutline.why}).`);
   };
   if (!pxPerM) {

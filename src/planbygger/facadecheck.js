@@ -97,6 +97,9 @@ export function buildFacades(doc) {
     const ext = L.walls.filter((w) => w.exterior && len(sub(w.b, w.a)) > 0.05);
     const y0 = L.floorY ?? 0;
     const y1 = y0 + (L.ceiling ?? settings.ceiling ?? 2.4);
+    // the level's place over the main floor (align.js / export.js: plan point + offset)
+    const off = L.offset ?? [0, 0];
+    const at = (p) => [p[0] + off[0], p[1] + off[1]];
     for (const w of ext) {
       const lw = len(sub(w.b, w.a));
       const u = [(w.b[0] - w.a[0]) / lw, (w.b[1] - w.a[1]) / lw];
@@ -109,10 +112,10 @@ export function buildFacades(doc) {
       const key = Math.abs(dn) >= Math.abs(de) ? (dn > 0 ? 'N' : 'S') : de > 0 ? 'E' : 'W';
       const d = dirs[key];
       const right = [d[1], -d[0]]; // the right hand of someone outside looking at the wall
-      const s = (p) => p[0] * right[0] + p[1] * right[1];
-      const depth = mid[0] * d[0] + mid[1] * d[1];
+      const s = (p) => at(p)[0] * right[0] + at(p)[1] * right[1];
+      const depth = at(mid)[0] * d[0] + at(mid)[1] * d[1];
       const F = out[key];
-      F.walls.push({ level: L.id, levelName: L.name, id: w.id, a: w.a, b: w.b, s0: Math.min(s(w.a), s(w.b)), s1: Math.max(s(w.a), s(w.b)), y0, y1, depth });
+      F.walls.push({ level: L.id, levelName: L.name, id: w.id, a: at(w.a), b: at(w.b), s0: Math.min(s(w.a), s(w.b)), s1: Math.max(s(w.a), s(w.b)), y0, y1, depth });
       for (const o of L.openings) {
         if (o.wall !== w.id || (o.type !== 'window' && o.type !== 'door')) continue;
         const pa = [w.a[0] + u[0] * (o.at - o.width / 2), w.a[1] + u[1] * (o.at - o.width / 2)];

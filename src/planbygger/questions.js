@@ -143,7 +143,7 @@ export function ceilingQuestion({ level, levelName, file, crop, value, texts = [
     input: 'number',
     unit: 'm',
     text: `Hvor høyt er det under taket i ${levelName.toLowerCase()}?`,
-    help: `${loft ? 'Etasjen ligger under taket og har skråtak; taket i planbyggeren er flatt, så skriv høyden der det er fullt opp.' : 'Vanlig takhøyde er 2,4 m.'}${said}`,
+    help: `${loft ? 'Etasjen ligger under taket: himlingen følger taket ned mot kneveggene, så skriv høyden der det er fullt opp (der himlingen er flat).' : 'Vanlig takhøyde er 2,4 m.'}${said}`,
     default: value,
     confidence: texts.length ? 'medium' : 'low',
     data: { special: loft || texts.length > 0 },
@@ -232,6 +232,29 @@ export function roomQuestion({ level, levelName, file, crop, roomId, seed, area,
  * stairId: the stair placed in the plan that the answer changes ('none' takes it out); without one, a straight or U
  * answer adds `stair` ({ rect, axis, down, side? }: one taken out again, as it was found) or a stair in `rect`.
  */
+/**
+ * Whether the ceilings of the top level follow the roof, when no drawing says (no «SKRÅ HIMLING» / «PLAN HIMLING»):
+ * asked only when generate.js guessed 'roof' (a mono-pitch roof right over the level, or windows higher than a flat
+ * ceiling). 'some': the rule is left off, and «Himling» in the 3D view sets it room by room.
+ */
+export function roofCeilingQuestion({ level, levelName, value = 'roof', why }) {
+  return q({
+    id: `roofceiling:${level}`,
+    kind: 'roofCeiling',
+    level,
+    input: 'choice',
+    options: [
+      { value: 'roof', label: 'Ja, himlingen følger taket (skråtak inne)' },
+      { value: 'flat', label: 'Nei, flat himling' },
+      { value: 'some', label: 'Bare i noen rom – jeg velger i «Himling» i 3D-visningen' },
+    ],
+    text: `Følger himlingen taket i ${levelName.toLowerCase()}?`,
+    help: why,
+    default: value,
+    confidence: 'low',
+  });
+}
+
 export function stairQuestion({ level, levelName, file, crop, value, why, stairId = null, rect = null, axis = null, stair = null }) {
   return q({
     id: `stair:${level}`,
@@ -403,6 +426,13 @@ export function applyAnswers(doc, questions, answers = {}) {
           for (const r of lv.rooms || []) if (r.auto) delete r.ceiling;
         }
         restack = true;
+        done.push(id);
+        break;
+      }
+      case 'roofCeiling': {
+        if (!L || !['roof', 'flat', 'some'].includes(value)) break;
+        if (value === 'some') delete L.ceilingRule;
+        else L.ceilingRule = value;
         done.push(id);
         break;
       }

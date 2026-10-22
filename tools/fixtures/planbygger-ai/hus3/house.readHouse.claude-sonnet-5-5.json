@@ -1,0 +1,387 @@
+{
+ "house": "hus3",
+ "file": "house",
+ "part": null,
+ "task": "readHouse",
+ "promptVersion": "pb-house-2",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "images": [
+  {
+   "kind": "plan",
+   "label": "1. etasje, 1etg.png",
+   "width": 701,
+   "height": 1001,
+   "sha256": "7258e5e29364b920056b189cda615769770a309ace74f54f14ff7f55082cc6ce",
+   "marksHash": "fad275be1b24300a65936a2d297aa37bf6121fcf2bbe8acb5a293f5fd01f78b8",
+   "source": {
+    "file": "1etg.png",
+    "part": null,
+    "width": 701,
+    "height": 1001,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "plan",
+   "label": "2. etasje, 2etg.png",
+   "width": 440,
+   "height": 925,
+   "sha256": "754bd721b5ad52c7de7ca31eb1f8323705903399b61cd86ce7a39e90c09931aa",
+   "marksHash": "45d939e4e596460ec33c45b1bec4d12dce706d8eb2bf7c7d016a0761ca69fd56",
+   "source": {
+    "file": "2etg.png",
+    "part": null,
+    "width": 440,
+    "height": 925,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasader.png #1",
+   "width": 388,
+   "height": 198,
+   "sha256": "7145ebbbe2e538519865f0215230ce041cabb2fc86844ebabaf0c0927746e4ce",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasader.png",
+    "part": 0,
+    "width": 1677,
+    "height": 275,
+    "bbox": [
+     7,
+     45,
+     395,
+     243
+    ],
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasader.png #2",
+   "width": 196,
+   "height": 196,
+   "sha256": "0fd43f243932fa50d53f7579bca777011adf40a96e47813ece2eb71ca2db3b85",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasader.png",
+    "part": 1,
+    "width": 1677,
+    "height": 275,
+    "bbox": [
+     559,
+     45,
+     755,
+     241
+    ],
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasader.png #3",
+   "width": 386,
+   "height": 196,
+   "sha256": "cbff77707a4c1c52e589e3f3f562125ae6edf273ded9b0a89427176ec768cf48",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasader.png",
+    "part": 2,
+    "width": 1677,
+    "height": 275,
+    "bbox": [
+     921,
+     45,
+     1307,
+     241
+    ],
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasader.png #4",
+   "width": 198,
+   "height": 198,
+   "sha256": "9049f11cb4a777159ea060ae4326dc55946b37e9968ffd9ce6e03eca314a058b",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasader.png",
+    "part": 3,
+    "width": 1677,
+    "height": 275,
+    "bbox": [
+     1473,
+     45,
+     1671,
+     243
+    ],
+    "photo": null
+   }
+  }
+ ],
+ "marks": [
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.6516,
+    0.2824
+   ],
+   "drawnAt": [
+    0.6516,
+    0.2824
+   ],
+   "image": 1
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.6507,
+    0.6901
+   ],
+   "drawnAt": [
+    0.6507,
+    0.6901
+   ],
+   "image": 1
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.7862,
+    0.7891
+   ],
+   "drawnAt": [
+    0.7862,
+    0.7891
+   ],
+   "image": 1
+  },
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.3593,
+    0.2006
+   ],
+   "drawnAt": [
+    0.3593,
+    0.2006
+   ],
+   "image": 2
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.6478,
+    0.2217
+   ],
+   "drawnAt": [
+    0.6478,
+    0.2217
+   ],
+   "image": 2
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.315,
+    0.4955
+   ],
+   "drawnAt": [
+    0.315,
+    0.4955
+   ],
+   "image": 2
+  },
+  {
+   "id": "4",
+   "kind": "room",
+   "at": [
+    0.3168,
+    0.5726
+   ],
+   "drawnAt": [
+    0.3168,
+    0.5726
+   ],
+   "image": 2
+  },
+  {
+   "id": "5",
+   "kind": "room",
+   "at": [
+    0.4462,
+    0.7723
+   ],
+   "drawnAt": [
+    0.4462,
+    0.7723
+   ],
+   "image": 2
+  },
+  {
+   "id": "6",
+   "kind": "room",
+   "at": [
+    0.2873,
+    0.845
+   ],
+   "drawnAt": [
+    0.2873,
+    0.845
+   ],
+   "image": 2
+  }
+ ],
+ "hints": {},
+ "response": {
+  "facades": [
+   {
+    "image": 3,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "left",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 4,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "bottom",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 5,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "right",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 6,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "top",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   }
+  ],
+  "roof": {
+   "covering": "tiles",
+   "color": null,
+   "pitch": null,
+   "wings": [
+    {
+     "image": 2,
+     "rooms": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+     ],
+     "type": "gable",
+     "ridge": "vertical",
+     "high": "none"
+    }
+   ],
+   "chimney": false
+  },
+  "ceilings": [],
+  "decks": [
+   {
+    "kind": "terrace",
+    "image": 1,
+    "at": [
+     0.27,
+     0.5
+    ],
+    "railing": "none",
+    "stairs": false
+   }
+  ],
+  "notes": "Toetasjes hus med saltak, mønet går langs husets lengderetning. Stående kledning på alle fasader. Takstein på taket. Terrasse med parasoll på vestsiden av plan 1."
+ },
+ "usage": {
+  "input_tokens": 7614,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 7614,
+    "output_tokens": 521,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 521,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.020438,
+ "ms": 780,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-22T20:21:31.562Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

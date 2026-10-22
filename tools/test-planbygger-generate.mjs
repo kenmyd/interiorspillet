@@ -292,12 +292,12 @@ section('4b. Når noe går galt: rare svar, tomme etasjer, like tegninger, en ar
  */
 const D0 = { single: 0, double: 0, sliding: 0 };
 const THRESHOLDS = {
-  hus1: { errors: 0, questions: 2, stair: true, roof: true, levels: { '1etg.png': { scale: 0.005, named: 6, windows: 0, doors: D0 }, '2etg.png': { scale: 0.005, named: 5, windows: 0, doors: D0 } } },
-  hus2: { errors: 0, questions: 1, roof: true, levels: { '1etg.png': { scale: 0.005, named: 13, windows: 0, doors: D0 } } },
-  hus3: { errors: 0, questions: 2, stair: true, roof: true, levels: { '1etg.png': { scale: 0.005, named: 2, windows: 1, doors: { single: 1, double: 0, sliding: 0 } }, '2etg.png': { scale: 0.005, named: 6, matched: 8, windows: 0, doors: { single: 2, double: 0, sliding: 0 } } } },
+  hus1: { errors: 0, sides: { 'fasade1.avif': 'S', 'fasade2.avif': 'E', 'fasade3.avif': 'N', 'fasade4.avif': 'W' }, questions: 2, stair: true, roof: true, levels: { '1etg.png': { scale: 0.005, named: 6, windows: 0, doors: D0 }, '2etg.png': { scale: 0.005, named: 5, windows: 0, doors: D0 } } },
+  hus2: { errors: 0, sides: { 'fasader.png#1': 'S', 'fasader.png#2': 'N', 'fasader.png#3': 'W', 'fasader.png#4': 'E' }, questions: 1, roof: true, levels: { '1etg.png': { scale: 0.005, named: 13, windows: 0, doors: D0 } } },
+  hus3: { errors: 0, sides: { 'fasader.png#1': 'W', 'fasader.png#2': 'N', 'fasader.png#3': 'E', 'fasader.png#4': 'S' }, questions: 2, stair: true, roof: true, levels: { '1etg.png': { scale: 0.005, named: 2, windows: 1, doors: { single: 1, double: 0, sliding: 0 } }, '2etg.png': { scale: 0.005, named: 6, matched: 8, windows: 0, doors: { single: 2, double: 0, sliding: 0 } } } },
   'hus3-foto': { errors: 0, questions: 2, levels: { '1etg-foto.jpg': { outline: { m: [6.15, 14.95], tol: 0.03 }, named: 1, windows: 3, doors: { single: 2, double: 0, sliding: 1 } } } },
-  hus4: { errors: 0, questions: 5, stair: true, roof: true, levels: { '1etg.avif': { scale: 0.01, named: 8, windows: 2, doors: { single: 1, double: 0, sliding: 1 } }, '2etg.avif': { scale: 0.01, named: 4, windows: 0, doors: { single: 1, double: 0, sliding: 0 } } } },
-  hus5: { errors: 0, questions: 1, levels: { '1etg.avif': { scale: 0.005, named: 9, windows: 0, doors: D0 } } },
+  hus4: { errors: 0, sides: { 'fasade1.avif': 'N', 'fasade2.avif': 'W', 'fasade3.avif': 'S', 'fasade4.avif': 'E' }, questions: 5, stair: true, roof: true, levels: { '1etg.avif': { scale: 0.01, named: 8, windows: 2, doors: { single: 1, double: 0, sliding: 1 } }, '2etg.avif': { scale: 0.01, named: 4, windows: 0, doors: { single: 1, double: 0, sliding: 0 } } } },
+  hus5: { errors: 0, sides: { 'fasade1.avif': 'N', 'fasade2.avif': 'S', 'fasade3.avif': 'W', 'fasade4.avif': 'E' }, questions: 1, levels: { '1etg.avif': { scale: 0.005, named: 9, windows: 0, doors: D0 } } },
   // fase D (K12): measured 9 windows for 8 (the entrance's sidelight), doors 2/0/6 exact, 4 rooms named on their own
   hus6: { errors: 0, questions: 2, levels: { 'plan-1etg-tilbygg.pdf': { scale: 0.005, named: 4, windows: 2, doors: { single: 1, double: 0, sliding: 1 } } } },
   hus7: { errors: 0, questions: 2, roof: true, levels: { 'garasje-plan-snitt-fasade.pdf': { scale: 0.005, named: 1, windows: 0, doors: D0 } } },
@@ -412,5 +412,7 @@ function houseChecks(r) {
     check(`${r.house}: trappa som ble funnet, er for bratt å gå i – ikke bygd, men spurt om med «ingen trapp» som standard og grunnen i teksten (eksportert ${r.exportedStairs})`, r.exportedStairs === 0 && q?.default === 'none' && /for bratt/.test(q?.help ?? ''), q?.help ?? 'ingen trappespørsmål');
   }
   if (T.roof) check(`${r.house}: taket ${r.roof} (fasit ${r.roofTruth})`, r.roof === r.roofTruth);
+  // each facade drawing on the side the fasit's notes give it (facadematch.js, from the positions of its openings)
+  if (T.sides) for (const [file, side] of Object.entries(T.sides)) check(`${r.house}: ${file} er fasaden mot ${side} (${r.facadeSides?.[file] ?? 'ingen side'})`, r.facadeSides?.[file] === side, JSON.stringify(r.facadeSides));
 }
 

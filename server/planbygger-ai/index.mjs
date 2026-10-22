@@ -37,12 +37,12 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PROMPT_VERSION, TASKS, SYSTEM, buildUserText } from './prompts.mjs';
+import { PROMPT_VERSION, TASKS, SYSTEM, buildUserText, promptVersionOf, imageLabel } from './prompts.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..', '..');
 
-export { PROMPT_VERSION };
+export { PROMPT_VERSION, promptVersionOf };
 export const MODELS = Object.freeze({ haiku: 'claude-haiku-5-5', sonnet: 'claude-sonnet-5-5' });
 /** USD per million tokens (input, output) – prompts here stay far below Haiku's 100K-token price step. */
 export const PRICES = Object.freeze({
@@ -73,6 +73,9 @@ export const DEFAULT_MODELS = Object.freeze({
   classify: MODELS.haiku,
   readPlan: MODELS.haiku,
   readFacade: MODELS.haiku,
+  // one call per house that reads all its drawings together (the roof of each wing, the ceilings, the cladding): the
+  // reasoning across views is what Haiku did not manage on single facades
+  readHouse: MODELS.sonnet,
 });
 export const DEFAULT_LIMITS = Object.freeze({
   /** calls that reach the API (cache misses) per session cookie / per IP / for the whole server in the window */
@@ -94,7 +97,9 @@ export const DEFAULT_LIMITS = Object.freeze({
   maxBodyBytes: 9 * 1024 * 1024,
   maxMarks: 300,
   maxTokens: 16000,
-  effort: { classify: 'medium', readPlan: 'medium', readFacade: 'medium' },
+  effort: { classify: 'medium', readPlan: 'medium', readFacade: 'medium', readHouse: 'medium' },
+  /** readHouse: at most this many images in one request */
+  maxImages: 8,
   /** server-side refusal fallback on the models that have one */
   fallback: true,
   cacheDir: path.join(ROOT, '.shots', 'planbygger', 'ai-cache'),
@@ -252,7 +257,7 @@ function semaphore(max, maxQueue) {
 /** The cache key: task, prompt version, model and image – plus the effort, marks and hints, which change the request too. */
 export function cacheKey({ task, model, data, marks, hints, effort = 'medium' }) {
   const h = crypto.createHash('sha256');
-  h.update(`${task}\n${PROMPT_VERSION}\n${model}\n${effort}\n`);
+  h.update(`${task}\n${promptVersionOf(task)}\n${model}\n${effort}\n`);
   h.update(data);
   h.update(`\n${JSON.stringify(marks ?? [])}\n${JSON.stringify(hints ?? {})}`);
   return h.digest('hex');
@@ -297,8 +302,36 @@ function cleanMarks(marks, max) {
     if (!m || typeof m.id !== 'string' || !['room', 'opening', 'symbol'].includes(m.kind) || !Array.isArray(m.at)) return [];
     const at = [finite01(m.at[0]), finite01(m.at[1])];
     const drawnAt = Array.isArray(m.drawnAt) ? [finite01(m.drawnAt[0]), finite01(m.drawnAt[1])] : at;
-    return [{ id: m.id.slice(0, 6), kind: m.kind, at, drawnAt }];
+    // readHouse: the image the mark is on (1-based)
+    const image = Number.isInteger(m.image) && m.image >= 1 && m.image <= 16 ? { image: m.image } : {};
+    return [{ id: m.id.slice(0, 6), kind: m.kind, at, drawnAt, ...image }];
   });
+}
+
+/**
+ * The images of a request, checked: { ok: true, list: [{ data, info, kind, label }], many, key } (key: what the cache
+ * keys on) or a fail(). A readHouse request has input.images (1 … limits.maxImages, each { data, mediaType?, kind:
+ * 'plan'|'facade', label }); every other task one input.image.
+ */
+function imagesOf(input, L) {
+  const many = input?.task === 'readHouse';
+  const raw = many ? (Array.isArray(input.images) ? input.images : []) : input?.image ? [input.image] : [];
+  if (!raw.length || raw.length > (many ? L.maxImages : 1)) return fail(400, 'bad_image');
+  const list = [];
+  let bytes = 0;
+  for (const im of raw) {
+    const data = typeof im?.data === 'string' ? im.data.replace(/^data:[^,]*,/, '') : null;
+    if (!data) return fail(400, 'bad_image');
+    if (data.length > (L.maxImageBytes * 4) / 3 + 4) return fail(413, 'too_large');
+    bytes += data.length;
+    const info = imageInfo(Buffer.from(data, 'base64'));
+    if (!info) return fail(400, 'bad_image');
+    if (Math.max(info.width, info.height) > L.maxSide) return fail(413, 'too_large', { width: info.width, height: info.height });
+    list.push({ data, info, kind: im.kind === 'plan' || im.kind === 'facade' ? im.kind : null, label: clipStr(im.label, 120) ?? '' });
+  }
+  if (bytes > (L.maxBodyBytes * 4) / 3) return fail(413, 'too_large');
+  const key = many ? list.map((im) => `${im.kind}|${im.label}|${im.data}`).join('\n') : list[0].data;
+  return { ok: true, list, many, key };
 }
 
 function cleanHints(hints) {
@@ -396,7 +429,7 @@ export function createAiService({ apiKey = process.env.ANTHROPIC_API_KEY, models
       return {
         available: !reason,
         model: M.readPlan ?? M.default,
-        models: { classify: M.classify ?? M.default, readPlan: M.readPlan ?? M.default, readFacade: M.readFacade ?? M.default },
+        models: { classify: M.classify ?? M.default, readPlan: M.readPlan ?? M.default, readFacade: M.readFacade ?? M.default, readHouse: M.readHouse ?? M.default },
         remaining: reason ? 0 : quota.remaining(ctx),
         promptVersion: PROMPT_VERSION,
         ...(reason ? { reason } : {}),
@@ -411,8 +444,9 @@ export function createAiService({ apiKey = process.env.ANTHROPIC_API_KEY, models
     peek(input, ctx = {}) {
       const task = input?.task;
       if (!TASK_NAMES.includes(task)) return null;
-      const data = typeof input.image?.data === 'string' ? input.image.data.replace(/^data:[^,]*,/, '') : null;
-      if (!data) return null;
+      const imgs = imagesOf(input, L);
+      if (!imgs.ok) return null;
+      const data = imgs.key;
       const model = modelFor(task, input.model, ctx.allowModel === true || L.allowModelOverride === true);
       const effort = L.effort[task] ?? 'medium';
       const key = cacheKey({ task, model, data, marks: cleanMarks(input.marks, L.maxMarks), hints: cleanHints(input.hints), effort });
@@ -431,13 +465,9 @@ export function createAiService({ apiKey = process.env.ANTHROPIC_API_KEY, models
       if (!TASK_NAMES.includes(task)) return fail(400, 'bad_request', { detail: 'task' });
       const reason = await why();
       if (reason) return fail(503, reason);
-      const data = typeof input.image?.data === 'string' ? input.image.data.replace(/^data:[^,]*,/, '') : null;
-      if (!data) return fail(400, 'bad_image');
-      if (data.length > (L.maxImageBytes * 4) / 3 + 4) return fail(413, 'too_large');
-      const buf = Buffer.from(data, 'base64');
-      const info = imageInfo(buf);
-      if (!info) return fail(400, 'bad_image');
-      if (Math.max(info.width, info.height) > L.maxSide) return fail(413, 'too_large', { width: info.width, height: info.height });
+      const imgs = imagesOf(input, L);
+      if (!imgs.ok) return imgs;
+      const data = imgs.key;
       const marks = cleanMarks(input.marks, L.maxMarks);
       const hints = cleanHints(input.hints);
       const model = modelFor(task, input.model, ctx.allowModel === true || L.allowModelOverride === true);
@@ -448,7 +478,7 @@ export function createAiService({ apiKey = process.env.ANTHROPIC_API_KEY, models
         const hit = cache.get(key);
         if (hit?.response) {
           // cost 0 (nothing is billed now); first: what the call that filled the cache cost
-          return { ok: true, status: 200, task, model, servedModel: hit.servedModel ?? model, promptVersion: PROMPT_VERSION, response: hit.response, usage: hit.usage ?? null, cost: 0, cached: true, remaining: quota.remaining(ctx), ms: Date.now() - t0, stopReason: hit.stopReason ?? 'end_turn', first: { cost: hit.cost ?? null, ms: hit.ms ?? null } };
+          return { ok: true, status: 200, task, model, servedModel: hit.servedModel ?? model, promptVersion: promptVersionOf(task), response: hit.response, usage: hit.usage ?? null, cost: 0, cached: true, remaining: quota.remaining(ctx), ms: Date.now() - t0, stopReason: hit.stopReason ?? 'end_turn', first: { cost: hit.cost ?? null, ms: hit.ms ?? null } };
         }
       }
       const api = await getClient();
@@ -478,10 +508,19 @@ export function createAiService({ apiKey = process.env.ANTHROPIC_API_KEY, models
         messages: [
           {
             role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: info.mediaType, data } },
-              { type: 'text', text: buildUserText(task, { marks, hints, width: info.width, height: info.height }) },
-            ],
+            content: imgs.many
+              ? [
+                  // readHouse: each image after a line that says what it is, then the instructions
+                  ...imgs.list.flatMap((im, i) => [
+                    { type: 'text', text: `Image ${i + 1}: ${imageLabel({ ...im, width: im.info.width, height: im.info.height })}` },
+                    { type: 'image', source: { type: 'base64', media_type: im.info.mediaType, data: im.data } },
+                  ]),
+                  { type: 'text', text: buildUserText(task, { marks, hints, images: imgs.list.map((im) => ({ kind: im.kind, label: im.label, width: im.info.width, height: im.info.height })) }) },
+                ]
+              : [
+                  { type: 'image', source: { type: 'base64', media_type: imgs.list[0].info.mediaType, data: imgs.list[0].data } },
+                  { type: 'text', text: buildUserText(task, { marks, hints, width: imgs.list[0].info.width, height: imgs.list[0].info.height }) },
+                ],
           },
         ],
         output_config: { effort, format: { type: 'json_schema', schema: TASKS[task].schema } },
@@ -520,8 +559,8 @@ export function createAiService({ apiKey = process.env.ANTHROPIC_API_KEY, models
         return fail(502, 'bad_json', { usage, cost, remaining: quota.remaining(ctx) });
       }
       if (!response || typeof response !== 'object') return fail(502, 'bad_json', { usage, cost });
-      cache.set(key, { task, model, servedModel, promptVersion: PROMPT_VERSION, response, usage, cost, ms, stopReason: msg.stop_reason, created: new Date().toISOString() });
-      return { ok: true, status: 200, task, model, servedModel, promptVersion: PROMPT_VERSION, response, usage, cost, cached: false, remaining: quota.remaining(ctx), ms, stopReason: msg.stop_reason };
+      cache.set(key, { task, model, servedModel, promptVersion: promptVersionOf(task), response, usage, cost, ms, stopReason: msg.stop_reason, created: new Date().toISOString() });
+      return { ok: true, status: 200, task, model, servedModel, promptVersion: promptVersionOf(task), response, usage, cost, cached: false, remaining: quota.remaining(ctx), ms, stopReason: msg.stop_reason };
     },
   };
 }

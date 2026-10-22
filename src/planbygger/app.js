@@ -523,7 +523,10 @@ class App {
     // no facade drawings: the windows all got one sill and height – the facade check lets the customer set each one;
     // several levels and no stair between them: the stair placer (one after the other)
     const noStair = this.doc.levels.length > 1 && !this.doc.levels.some((l) => (l.stairs || []).length);
-    const stairs = () => noStair && this.openStairs('Vi fant ingen trapp mellom etasjene. Dra trappa på plass på planen – fra toppen og nedover.');
+    // «Bare i noen rom» to the question whether the ceilings follow the roof: the Himling step after the rest
+    const someCeilings = questions.some((q) => q.kind === 'roofCeiling' && answers[q.id] === 'some');
+    const ceilings = () => someCeilings && this.openCeilings('Klikk på rommene som har skrå himling (den følger taket opp til mønet). De andre er flate.');
+    const stairs = () => (noStair ? this.openStairs('Vi fant ingen trapp mellom etasjene. Dra trappa på plass på planen – fra toppen og nedover.', ceilings) : ceilings());
     if (!this.doc.facades?.length) this.openFacades('Vi fant ingen fasadetegninger, så alle vinduene har fått samme høyde. Klikk på vinduer og dører for å rette høyde, bredde og type – «Ferdig» bygger 3D-huset på nytt.', stairs);
     else stairs();
   }
@@ -537,6 +540,31 @@ class App {
     const { openStairPlacer } = await import('./stairplace.js');
     this._facades?.close();
     this._facades = openStairPlacer({
+      getDoc: () => this.doc,
+      h,
+      intro,
+      onChange: (label, fn) => {
+        this.snapshot();
+        fn();
+        this.changed(label);
+      },
+      onDone: async (changed) => {
+        this._facades = null;
+        if (changed && !this.view3d.hidden) await this.open3d();
+        then?.();
+      },
+    });
+  }
+
+  /** The ceilings (ceilingplace.js): flat or following the roof per room, the ridge line and the pitch; undo; «Ferdig» rebuilds 3D. */
+  async openCeilings(intro = null, then = null) {
+    if (!this.doc?.levels.some((l) => l.walls.length)) {
+      this.toast('Huset har ingen vegger ennå.');
+      return;
+    }
+    const { openCeilings } = await import('./ceilingplace.js');
+    this._facades?.close();
+    this._facades = openCeilings({
       getDoc: () => this.doc,
       h,
       intro,
@@ -1650,12 +1678,14 @@ class App {
         this.facadeBtn = h('button', { class: 'pb-btn', title: 'Se huset utenfra side for side og rett vinduer og dører', onclick: () => this.openFacades() }, 'Fasader');
         // the stair placer: drag the stair into place on the plan (stairplace.js)
         this.stairBtn = h('button', { class: 'pb-btn', title: 'Plasser trappa mellom etasjene på planen', onclick: () => this.openStairs() }, 'Trapp');
+        // the ceilings: flat or sloped per room, the ridge and the pitch (ceilingplace.js)
+        this.ceilingBtn = h('button', { class: 'pb-btn', title: 'Velg flat eller skrå himling rom for rom, og takvinkelen', onclick: () => this.openCeilings() }, 'Himling');
         // the dollhouse with the roof on: the house seen from outside
         this.roofBtn = h('button', { class: 'pb-btn', title: 'Se huset utenfra med tak (dukkehuset uten tak viser rommene)', onclick: () => {
           this.viewer.setRoof(!this.viewer.roofShown);
           this.roofBtn.textContent = this.viewer.roofShown ? 'Skjul taket' : 'Vis taket';
         } }, 'Vis taket');
-        const bar = h('div', { class: 'pb-view3d-bar' }, this.backBtn, this.stackBtn, this.facadeBtn, this.stairBtn, this.modeBtn, this.roofBtn, this.levelSel, info);
+        const bar = h('div', { class: 'pb-view3d-bar' }, this.backBtn, this.stackBtn, this.facadeBtn, this.stairBtn, this.ceilingBtn, this.modeBtn, this.roofBtn, this.levelSel, info);
         this.helpEl = h('div', { class: 'pb-view3d-help' });
         this.crosshair = h('div', { class: 'pb-crosshair', hidden: true });
         this.view3d.append(bar, this.helpEl, this.crosshair);

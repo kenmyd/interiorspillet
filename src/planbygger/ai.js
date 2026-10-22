@@ -39,8 +39,10 @@
 import { ROOM_KINDS } from './model.js';
 import { pointInPolygon, dist } from './geom.js';
 
-export const AI_TASKS = Object.freeze(['classify', 'readPlan', 'readFacade']);
+export const AI_TASKS = Object.freeze(['classify', 'readPlan', 'readFacade', 'readHouse']);
 export const AI_MAX_SIDE = 1600;
+/** readHouse: a facade is scaled to at most this (a plan keeps AI_MAX_SIDE: its texts and dash-dot lines are small) */
+export const AI_FACADE_SIDE = 1200;
 
 /**
  * The parts of a readFacade answer that facade.js gets: the roof (a vote in houseRoof, and the tie-breaker) and the
@@ -188,13 +190,15 @@ async function httpTransport(req) {
       if (!r.ok) return { ok: false, available: false, error: `http_${r.status}` };
       return await r.json();
     }
-    const data = await encodePngBrowser(req.image);
+    const pics = req.images
+      ? { images: await Promise.all(req.images.map(async (im) => ({ mediaType: 'image/png', data: await encodePngBrowser(im.image), kind: im.kind, label: im.label }))) }
+      : { image: { mediaType: 'image/png', data: await encodePngBrowser(req.image) } };
     const r = await fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',
       signal: ac?.signal,
-      body: JSON.stringify({ task: req.task, image: { mediaType: 'image/png', data }, marks: req.marks, hints: req.hints, model: req.model }),
+      body: JSON.stringify({ task: req.task, ...pics, marks: req.marks, hints: req.hints, model: req.model }),
     });
     const body = await r.json().catch(() => null);
     return body ?? { ok: false, error: `http_${r.status}`, message: 'KI-tjenesten svarte ikke.' };
@@ -291,6 +295,7 @@ export function tidyResponse(task, response, marks = [], unmarked = [], { facade
       notes: typeof r.notes === 'string' ? r.notes : '',
     };
   }
+  if (task === 'readHouse') return tidyHouse(r, marks);
   if (task === 'readFacade') {
     const roof = r.roof ?? null;
     const windows = arr(r.windows).map((w) => ({ bbox: bx(w.bbox), kind: w.kind === 'door' ? 'door' : 'window' })).filter((w) => w.bbox);
@@ -356,6 +361,73 @@ export function tidyResponse(task, response, marks = [], unmarked = [], { facade
   };
 }
 
+const oneOfOr = (v, list, dflt) => (list.includes(v) ? v : dflt);
+/** Two end points [x0, y0, x1, y1] clamped to 0–1, in the order given (a line, not a box), or null. */
+const seg = (b) => (Array.isArray(b) && b.length >= 4 && b.slice(0, 4).every(Number.isFinite) ? b.slice(0, 4).map((v) => Math.max(0, Math.min(1, v))) : null);
+
+/**
+ * A readHouse answer (server/planbygger-ai/prompts.mjs): every list a list, enums checked, points clamped, and each
+ * room mark the model names tied to the mark drawn on that image ({ mark, at, ref, image }; a number that is no mark
+ * on that image is dropped). marks: [{ id, kind, at, ref, image (1-based) }].
+ */
+function tidyHouse(r, marks = []) {
+  const markOf = (image, id) => arr(marks).find((m) => m.kind === 'room' && m.image === image && String(m.id) === String(id).trim()) ?? null;
+  const roomsOf = (image, list) =>
+    arr(list)
+      .map((id) => markOf(image, id))
+      .filter(Boolean)
+      .filter((m, i, all) => all.indexOf(m) === i)
+      .map((m) => ({ mark: m.id, at: [...m.at], ref: m.ref ?? null, image }));
+  const roof = r.roof && typeof r.roof === 'object' ? r.roof : {};
+  return {
+    facades: arr(r.facades).map((f) => ({
+      image: Number.isInteger(f.image) ? f.image : null,
+      title: strOrNull(f.title),
+      facing: oneOfOr(f.facing, ['N', 'E', 'S', 'W', 'NE', 'NW', 'SE', 'SW'], null),
+      planSide: oneOfOr(f.planSide, ['top', 'bottom', 'left', 'right'], null),
+      cladding: arr(f.cladding).map((c) => ({
+        part: oneOfOr(c.part, ['all', 'lower', 'upper', 'gable', 'basement', 'other'], 'all'),
+        type: oneOfOr(c.type, ['wood', 'panels', 'render', 'brick', 'stone'], null),
+        direction: oneOfOr(c.direction, ['vertical', 'horizontal'], null),
+        color: strOrNull(c.color),
+      })),
+      terrain: oneOfOr(f.terrain, ['flat', 'falls-left', 'falls-right', 'stepped'], null),
+      basement: oneOfOr(f.basement, ['none', 'partly', 'full'], null),
+    })),
+    roof: {
+      covering: oneOfOr(roof.covering, ['tiles', 'slate', 'felt', 'metal'], null),
+      color: strOrNull(roof.color),
+      pitch: Number.isFinite(roof.pitch) && roof.pitch > 0 && roof.pitch < 75 ? roof.pitch : null,
+      wings: arr(roof.wings).map((w) => ({
+        image: Number.isInteger(w.image) ? w.image : null,
+        rooms: roomsOf(w.image, w.rooms),
+        type: oneOfOr(w.type, ['gable', 'hip', 'mono-pitch', 'flat'], 'gable'),
+        ridge: oneOfOr(w.ridge, ['horizontal', 'vertical'], null),
+        high: w.type === 'mono-pitch' ? oneOfOr(w.high, ['top', 'bottom', 'left', 'right'], null) : null,
+      })),
+      chimney: !!roof.chimney,
+    },
+    ceilings: arr(r.ceilings)
+      .map((c) => ({
+        image: Number.isInteger(c.image) ? c.image : null,
+        text: typeof c.text === 'string' ? c.text : '',
+        kind: oneOfOr(c.kind, ['sloped', 'flat', 'open', 'height'], 'height'),
+        degrees: Number.isFinite(c.degrees) && c.degrees > 0 && c.degrees < 75 ? c.degrees : null,
+        rooms: roomsOf(c.image, c.rooms),
+        ridge: c.kind === 'sloped' ? seg(c.ridge) : null,
+      }))
+      .filter((c) => c.text.trim()),
+    decks: arr(r.decks).map((d) => ({
+      kind: oneOfOr(d.kind, ['terrace', 'balcony', 'porch', 'roof-terrace'], 'terrace'),
+      image: Number.isInteger(d.image) ? d.image : null,
+      at: pt(d.at),
+      railing: oneOfOr(d.railing, ['glass', 'wood-slats', 'wood-vertical', 'steel-bars', 'none'], null),
+      stairs: !!d.stairs,
+    })),
+    notes: typeof r.notes === 'string' ? r.notes : '',
+  };
+}
+
 /** Openings the model reported without a mark get the ref of the nearest unmarked opening within 2.5 % (each once). */
 function linkUnmarkedOpenings(openings, unmarked) {
   const free = [...unmarked];
@@ -393,13 +465,28 @@ export async function aiStatus() {
  * @param {'classify'|'readPlan'|'readFacade'} task
  * @param {{ image: { width: number, height: number, data: Uint8ClampedArray }, marks?: Array, unmarked?: Array, hints?: object, model?: string }} input
  */
-export async function aiRead(task, { image, marks = [], unmarked = [], hints = {}, model } = {}) {
+export async function aiRead(task, { image, images, marks = [], unmarked = [], hints = {}, model } = {}) {
   lastError = null;
   try {
     if (!AI_TASKS.includes(task)) throw Object.assign(new Error('task'), { code: 'bad_request' });
     if (!aiTaskInUse(task)) {
       lastError = { error: 'off', message: 'KI-en leser ikke fasadene: tegningen alene ga et bedre resultat.' };
       return null;
+    }
+    if (task === 'readHouse') {
+      // images: [{ image, kind: 'plan'|'facade', label, marks }] – each image's marks get its number (1-based)
+      const list = arr(images).filter((im) => im?.image?.width && im.image.height && im.image.data);
+      if (!list.length) throw Object.assign(new Error('image'), { code: 'bad_image' });
+      const all = list.flatMap((im, i) => arr(im.marks).filter((m) => m.kind === 'room').map((m) => ({ ...m, image: i + 1 })));
+      const sent = list.map((im) => ({ image: downscaleImage(im.image, im.kind === 'facade' ? AI_FACADE_SIDE : AI_MAX_SIDE), kind: im.kind, label: im.label ?? '' }));
+      const reply = await transport({ op: 'read', task, images: sent, marks: all.map((m) => ({ id: m.id, kind: m.kind, at: m.at, drawnAt: m.drawnAt ?? m.at, image: m.image })), hints, model });
+      if (!reply || reply.ok !== true || !reply.response) {
+        lastError = { error: reply?.error ?? 'unknown', message: reply?.message ?? 'KI-en ga ikke noe svar.' };
+        return null;
+      }
+      const out = tidyResponse(task, reply.response, all);
+      out.meta = { model: reply.model ?? null, promptVersion: reply.promptVersion ?? null, cached: !!reply.cached };
+      return out;
     }
     if (!image?.width || !image?.height || !image?.data) throw Object.assign(new Error('image'), { code: 'bad_image' });
     const small = downscaleImage(image, AI_MAX_SIDE);

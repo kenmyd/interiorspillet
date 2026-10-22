@@ -1,0 +1,450 @@
+{
+ "house": "hus2",
+ "file": "house",
+ "part": null,
+ "task": "readHouse",
+ "promptVersion": "pb-house-2",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "images": [
+  {
+   "kind": "plan",
+   "label": "1. etasje, 1etg.png",
+   "width": 927,
+   "height": 980,
+   "sha256": "14227eaee70cb5747121186c14d7fa4b25d0809c8269dbbb641049719f52ad4e",
+   "marksHash": "16d073a924417b3f6e4d9e5ed85b2eed33c4c4450f647f173c83b2f8d1b5ed0c",
+   "source": {
+    "file": "1etg.png",
+    "part": null,
+    "width": 927,
+    "height": 980,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasader.png #1",
+   "width": 202,
+   "height": 81,
+   "sha256": "c6bfd9a58f83e06bd54ac167f9fe027e06a7e6d5db48b59b4b8b2ef3c2764833",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasader.png",
+    "part": 0,
+    "width": 980,
+    "height": 160,
+    "bbox": [
+     24,
+     31,
+     226,
+     112
+    ],
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasader.png #2",
+   "width": 215,
+   "height": 82,
+   "sha256": "394ca97e6139fe8d184b6b5d1d5b0ca914d9cf6768c0ab2851d9175c3028d609",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasader.png",
+    "part": 1,
+    "width": 980,
+    "height": 160,
+    "bbox": [
+     261,
+     32,
+     476,
+     114
+    ],
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasader.png #3",
+   "width": 217,
+   "height": 81,
+   "sha256": "0b75b7917b261fd14910d793b493d8a808a7d94ec30cf0dc9ff7f27a2dfdbd44",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasader.png",
+    "part": 2,
+    "width": 980,
+    "height": 160,
+    "bbox": [
+     504,
+     29,
+     721,
+     110
+    ],
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasader.png #4",
+   "width": 207,
+   "height": 82,
+   "sha256": "a73bd385cf82883b44056a7645e5e9309bf6f456546cbc65765d53d38993b894",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasader.png",
+    "part": 3,
+    "width": 980,
+    "height": 160,
+    "bbox": [
+     754,
+     28,
+     961,
+     110
+    ],
+    "photo": null
+   }
+  }
+ ],
+ "marks": [
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.1576,
+    0.0941
+   ],
+   "drawnAt": [
+    0.1576,
+    0.0941
+   ],
+   "image": 1
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.3913,
+    0.0809
+   ],
+   "drawnAt": [
+    0.3913,
+    0.0809
+   ],
+   "image": 1
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.3983,
+    0.2818
+   ],
+   "drawnAt": [
+    0.3983,
+    0.2818
+   ],
+   "image": 1
+  },
+  {
+   "id": "4",
+   "kind": "room",
+   "at": [
+    0.1716,
+    0.3874
+   ],
+   "drawnAt": [
+    0.1716,
+    0.3874
+   ],
+   "image": 1
+  },
+  {
+   "id": "5",
+   "kind": "room",
+   "at": [
+    0.1646,
+    0.5292
+   ],
+   "drawnAt": [
+    0.1646,
+    0.5292
+   ],
+   "image": 1
+  },
+  {
+   "id": "6",
+   "kind": "room",
+   "at": [
+    0.3842,
+    0.4858
+   ],
+   "drawnAt": [
+    0.3842,
+    0.4858
+   ],
+   "image": 1
+  },
+  {
+   "id": "7",
+   "kind": "room",
+   "at": [
+    0.7165,
+    0.6573
+   ],
+   "drawnAt": [
+    0.7165,
+    0.6573
+   ],
+   "image": 1
+  },
+  {
+   "id": "8",
+   "kind": "room",
+   "at": [
+    0.4561,
+    0.5783
+   ],
+   "drawnAt": [
+    0.4561,
+    0.5783
+   ],
+   "image": 1
+  },
+  {
+   "id": "9",
+   "kind": "room",
+   "at": [
+    0.1015,
+    0.7049
+   ],
+   "drawnAt": [
+    0.1015,
+    0.7049
+   ],
+   "image": 1
+  },
+  {
+   "id": "10",
+   "kind": "room",
+   "at": [
+    0.2172,
+    0.6728
+   ],
+   "drawnAt": [
+    0.2172,
+    0.6728
+   ],
+   "image": 1
+  },
+  {
+   "id": "11",
+   "kind": "room",
+   "at": [
+    0.2158,
+    0.8096
+   ],
+   "drawnAt": [
+    0.2158,
+    0.8096
+   ],
+   "image": 1
+  }
+ ],
+ "hints": {},
+ "response": {
+  "facades": [
+   {
+    "image": 2,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "bottom",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 3,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "top",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 4,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "right",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 5,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "left",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   }
+  ],
+  "roof": {
+   "covering": "tiles",
+   "color": null,
+   "pitch": 24,
+   "wings": [
+    {
+     "image": 1,
+     "rooms": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+     ],
+     "type": "gable",
+     "ridge": "horizontal",
+     "high": "none"
+    }
+   ],
+   "chimney": false
+  },
+  "ceilings": [
+   {
+    "image": 1,
+    "text": "PLAN HIMLING",
+    "kind": "flat",
+    "degrees": null,
+    "rooms": [
+     "2",
+     "3",
+     "6"
+    ],
+    "ridge": null
+   },
+   {
+    "image": 1,
+    "text": "SKRÅ HIMLING 24°",
+    "kind": "sloped",
+    "degrees": 24,
+    "rooms": [
+     "7"
+    ],
+    "ridge": [
+     0.5,
+     0.646,
+     0.93,
+     0.646
+    ]
+   },
+   {
+    "image": 1,
+    "text": "PLANTAK",
+    "kind": "flat",
+    "degrees": null,
+    "rooms": [
+     "8"
+    ],
+    "ridge": null
+   }
+  ],
+  "decks": [
+   {
+    "kind": "terrace",
+    "image": 1,
+    "at": [
+     0.7,
+     0.25
+    ],
+    "railing": "none",
+    "stairs": false
+   },
+   {
+    "kind": "terrace",
+    "image": 1,
+    "at": [
+     0.5,
+     0.94
+    ],
+    "railing": "none",
+    "stairs": false
+   }
+  ],
+  "notes": "Hus i én etasje med vinkelforma plan og uteplass i hjørnet mot nordøst. Stående kledning på alle fasader."
+ },
+ "usage": {
+  "input_tokens": 7042,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 7042,
+    "output_tokens": 719,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 719,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.021274,
+ "ms": 6223,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-22T20:21:16.142Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

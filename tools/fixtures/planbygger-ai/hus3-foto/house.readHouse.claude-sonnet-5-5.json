@@ -1,0 +1,184 @@
+{
+ "house": "hus3-foto",
+ "file": "house",
+ "part": null,
+ "task": "readHouse",
+ "promptVersion": "pb-house-2",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "images": [
+  {
+   "kind": "plan",
+   "label": "1. etasje, 1etg-foto.jpg",
+   "width": 1131,
+   "height": 1600,
+   "sha256": "b07fb8064cd8b4f81c2b5efdbbddc1d29b5a30b5da6a9037b3d4654a9ee5318e",
+   "marksHash": "f79c60e9423b0219c07d82ca85cdf479bdbf1e21a38a09521c9ef56a7f138fc2",
+   "source": {
+    "file": "1etg-foto.jpg",
+    "part": null,
+    "width": 1500,
+    "height": 2000,
+    "bbox": null,
+    "photo": {
+     "quad": [
+      [
+       336.3,
+       379.7
+      ],
+      [
+       1147.8,
+       401.1
+      ],
+      [
+       1024.9,
+       1797.5
+      ],
+      [
+       -102.1,
+       1537.3
+      ]
+     ],
+     "width": 1697,
+     "height": 2400
+    }
+   }
+  }
+ ],
+ "marks": [
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.5866,
+    0.257
+   ],
+   "drawnAt": [
+    0.5866,
+    0.257
+   ],
+   "image": 1
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.5725,
+    0.6224
+   ],
+   "drawnAt": [
+    0.5725,
+    0.6224
+   ],
+   "image": 1
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.6208,
+    0.729
+   ],
+   "drawnAt": [
+    0.6208,
+    0.729
+   ],
+   "image": 1
+  },
+  {
+   "id": "4",
+   "kind": "room",
+   "at": [
+    0.7222,
+    0.7123
+   ],
+   "drawnAt": [
+    0.7222,
+    0.7123
+   ],
+   "image": 1
+  }
+ ],
+ "hints": {},
+ "response": {
+  "facades": [],
+  "roof": {
+   "covering": "unknown",
+   "color": null,
+   "pitch": null,
+   "wings": [],
+   "chimney": false
+  },
+  "ceilings": [
+   {
+    "image": 1,
+    "text": "ÅPENT OPP",
+    "kind": "open",
+    "degrees": null,
+    "rooms": [
+     "1"
+    ],
+    "ridge": null
+   }
+  ],
+  "decks": [
+   {
+    "kind": "terrace",
+    "image": 1,
+    "at": [
+     0.27,
+     0.62
+    ],
+    "railing": "none",
+    "stairs": false
+   },
+   {
+    "kind": "porch",
+    "image": 1,
+    "at": [
+     0.47,
+     0.8
+    ],
+    "railing": "none",
+    "stairs": false
+   }
+  ],
+  "notes": "Bare plan 1. etasje er gitt, ingen fasadetegninger. Terrasse langs vestveggen med parasoll og utemøbler. Inngang nederst til venstre."
+ },
+ "usage": {
+  "input_tokens": 7842,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 7842,
+    "output_tokens": 255,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 255,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.018234,
+ "ms": 370,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-22T20:21:48.425Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

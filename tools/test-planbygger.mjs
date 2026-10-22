@@ -493,4 +493,93 @@ section('11. Fasadesjekken: fasadene fra planen');
   check('vindustype og sprosser, og foldedør, bygges og godtas av validatoren', v.errors.length === 0 && vn?.sashes.length === 3 && vn?.panes?.join('x') === '2x3' && all.some((o) => o.door?.variant === 'folding'), v.errors.slice(0, 2).join(' | '));
 }
 
+section('12. Fasadetegningene på riktig side, og himlingene');
+{
+  const F = await imp('src/planbygger/facadecheck.js');
+  const FM = await imp('src/planbygger/facadematch.js');
+  const HR = await imp('src/planbygger/houseread.js');
+  // the 8 × 6 m house of section 11, an inner wall at x 5 (two rooms)
+  const make = () => {
+    const doc = M.createDoc('Fasader');
+    const lv = M.createLevel(doc, { id: 'hoved', image: { name: 'syntetisk', width: 1, height: 1, pxPerM: 100 } });
+    lv.walls = [
+      { id: 'n', a: [0, 0], b: [8, 0], t: 0.3, exterior: true },
+      { id: 'e', a: [8, 6], b: [8, 0], t: 0.3, exterior: true },
+      { id: 's', a: [8, 6], b: [0, 6], t: 0.3, exterior: true },
+      { id: 'w', a: [0, 0], b: [0, 6], t: 0.3, exterior: true },
+      { id: 'i', a: [5, 0], b: [5, 6], t: 0.1 },
+    ];
+    lv.openings = [
+      { id: 'vn', wall: 'n', type: 'window', at: 2, width: 1, sill: 0.9, height: 1.2 },
+      { id: 'vn2', wall: 'n', type: 'window', at: 6.5, width: 0.8, sill: 0.9, height: 1.2 },
+      { id: 've', wall: 'e', type: 'window', at: 3, width: 0.6, sill: 0.9, height: 1.2 },
+      { id: 'vs', wall: 's', type: 'window', at: 6, width: 2, sill: 0.9, height: 1.2 },
+      { id: 'vw', wall: 'w', type: 'window', at: 3, width: 1.2, sill: 0.9, height: 1.2 },
+      { id: 'ds', wall: 's', type: 'door', at: 2, width: 0.9 },
+    ];
+    lv.rooms = [{ id: 'a', seed: [2, 3], name: 'Stue', kind: 'living' }, { id: 'b', seed: [6.5, 3], name: 'Soverom', kind: 'bedroom' }];
+    return { doc, lv };
+  };
+  check('fasadetitlene gir himmelretningen', FM.titleCompass('FASADE SØR') === 'S' && FM.titleCompass('Fasade mot nord') === 'N' && FM.titleCompass('ØST') === 'E' && FM.titleCompass('Vest') === 'W' && FM.titleCompass('Snitt A-A') === null && FM.titleCompass('FASADE NORDØST') === null);
+  // a drawing of one side as facade.js reads it: 50 px/m, the wall foot at 400 px, the openings as the side shows them
+  // (drawn sill and height: `over` replaces them for some openings)
+  const drawingOf = (doc, key, over = {}) => {
+    const S = F.buildFacades(doc).find((x) => x.key === key);
+    const ppm = 50;
+    const x = (s) => 100 + (s - S.sMin) * ppm;
+    return {
+      pxPerM: ppm,
+      span: [x(S.sMin), x(S.sMax)],
+      floorYs: [400],
+      windows: S.openings.map((o) => {
+        const sill = over[o.id]?.sill ?? o.sill;
+        const height = over[o.id]?.height ?? o.height;
+        return { x0: x(o.s0), x1: x(o.s1) - 1, y0: 400 - (sill + height) * ppm, y1: 400 - sill * ppm - 1, kind: o.win ? 'window' : 'door', storey: 0 };
+      }),
+    };
+  };
+  const { doc, lv } = make();
+  const south = drawingOf(doc, 'S', { vs: { sill: 0.4, height: 1.7 } });
+  const north = drawingOf(doc, 'N');
+  const east = drawingOf(doc, 'E');
+  const m1 = FM.matchFacades(doc, [{ reading: east, title: null }, { reading: south, title: null }, { reading: north, title: null }], { levelsByNo: { 0: 'hoved' } });
+  check('uten titler: hver tegning på sin side (øst, sør, nord) etter vinduene og bredden', m1.drawings.map((d) => d.side).join('') === 'ESN' && m1.north === null, m1.drawings.map((d) => `${d.side}:${d.score}`).join(' '));
+  const n = FM.applyFacadeMatch(doc, [{ reading: east }, { reading: south }, { reading: north }], m1);
+  const vs = lv.openings.find((o) => o.id === 'vs');
+  check('de fire vinduene på de tre fasadene får høyden fra tegningen, sørvinduet 0,4 og 1,7 m (og topp-høyden som tegnet)', n === 4 && Math.abs(vs.sill - 0.4) < 0.03 && Math.abs(vs.height - 1.7) < 0.03 && Math.abs(vs.facadeTop - 2.1) < 0.03, `${n} satt, ${vs.sill}/${vs.height}/${vs.facadeTop}`);
+  // the drawing of the plan's bottom side titled «FASADE NORD»: north is down in the image
+  const m2 = FM.matchFacades(make().doc, [{ reading: south, title: 'FASADE NORD' }, { reading: east, title: null }], { levelsByNo: { 0: 'hoved' } });
+  check('«FASADE NORD» på planens nedre side: nord er ned i planen (180°), og den andre blir vest', m2.north === 180 && m2.drawings[0].side === 'N' && m2.drawings[1].side === 'W', `nord ${m2.north}, ${m2.drawings.map((d) => d.side).join(',')}`);
+
+  // the ceilings: a text's points decide its rooms, without texts the level's rule
+  const inA = (q) => q[0] < 5;
+  const inB = (q) => q[0] > 5;
+  const L1 = { ceilingMarks: [{ kind: 'sloped', points: [[2, 3]], from: 'ki' }] };
+  check('«skrå himling» i stua: stua skrå, soverommet flatt (tegningen merket de skrå)', HR.ceilingSlope(L1, inA).slope && !HR.ceilingSlope(L1, inB).slope);
+  const L2 = { ceilingMarks: [], ceilingRule: 'roof' };
+  check('uten tekst og med regelen «roof» (pulttak): alle rom skrå; brukerens valg vinner', HR.ceilingSlope(L2, inB).slope && !HR.ceilingSlope({ ...L2, ceilingMarks: [{ kind: 'flat', points: [[6, 3]], from: 'bruker' }] }, inB).slope);
+
+  // the export: «SKRÅ HIMLING 24°» in the living room with its ridge along the middle → a gable roof, ridge along the
+  // house, 24°, and the living room's ceiling up to the ridge; the bedroom flat
+  {
+    const { doc: d2, lv: l2 } = make();
+    l2.ceilingMarks = [{ kind: 'sloped', degrees: 24, text: 'SKRÅ HIMLING 24°', points: [[2, 3]], ridge: [[0.3, 3], [7.7, 3]], from: 'ki' }];
+    const ex = E.exportHouse(d2);
+    const v = await validateGenerated(ex);
+    const roof = ex.house.roofs?.[0];
+    const along = ex.frame ? null : null;
+    const byName = (nm) => ex.house.ceilings.find((c) => ex.house.rooms.find((r) => r.id === c.roomId)?.name === nm);
+    const stue = byName('Stue');
+    const sov = byName('Soverom');
+    // the plan's x (east) is the game's −z with north up: the ridge runs along z
+    check('mønelinja midt i huset: saltak med mønet langs huset, 24°, stua skrå opp til mønet og soverommet flatt, uten feil', ex.house.roofs.length === 1 && roof.type === 'gable' && Math.abs(Math.abs(roof.ridge?.[1] ?? 0) - 1) < 1e-6 && roof.pitch === 24 && stue?.type === 'roof' && stue.height == null && (sov?.type ?? 'flat') !== 'roof' && v.errors.length === 0, `${roof?.type} ${JSON.stringify(roof?.ridge)} ${roof?.pitch}°, stue ${stue?.type}/${stue?.height}, sov ${sov?.type ?? 'flat'}; ${v.errors.slice(0, 2).join(' | ')}`);
+    void along;
+    // the ridge line along the north wall: a mono-pitch roof high there, falling south (the game's +x)
+    l2.ceilingMarks[0].ridge = [[0.3, 0.4], [7.7, 0.4]];
+    const ex2 = E.exportHouse(d2);
+    const r2 = ex2.house.roofs?.[0];
+    check('mønelinja langs nordveggen: pulttak, høyt i nord og med fall mot sør', r2?.type === 'mono-pitch' && (r2.fall?.[0] ?? 0) > 0.9, `${r2?.type} fall ${JSON.stringify(r2?.fall)}`);
+  }
+}
+
 done();
