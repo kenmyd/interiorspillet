@@ -146,7 +146,56 @@ export function ceilingQuestion({ level, levelName, file, crop, value, texts = [
     help: `${loft ? 'Etasjen ligger under taket og har skråtak; taket i planbyggeren er flatt, så skriv høyden der det er fullt opp.' : 'Vanlig takhøyde er 2,4 m.'}${said}`,
     default: value,
     confidence: texts.length ? 'medium' : 'low',
+    data: { special: loft || texts.length > 0 },
   });
+}
+
+/**
+ * One ceiling question for the whole house instead of one per level: the levels whose question has nothing special
+ * (no loft, no ceiling text on the drawing) are asked together; the special ones keep their own question.
+ */
+export function mergeCeilingQuestions(questions, levelNames = {}) {
+  const plain = questions.filter((x) => x.kind === 'ceiling' && x.level && !x.data?.special);
+  if (plain.length < 2) return questions;
+  const first = plain[0];
+  const names = plain.map((x) => levelNames[x.level] ?? x.level);
+  const house = q({
+    id: 'ceiling:hus',
+    kind: 'ceiling',
+    file: first.file,
+    crop: first.crop,
+    input: 'number',
+    unit: 'm',
+    text: 'Hvor høyt er det under taket?',
+    help: `Gjelder ${names.join(' og ').toLowerCase()}. Vanlig takhøyde er 2,4 m. Har en etasje en annen høyde, kan den endres i «Finjuster».`,
+    default: first.default,
+    confidence: 'low',
+    data: { levels: plain.map((x) => x.level) },
+  });
+  const at = questions.indexOf(first);
+  const rest = questions.filter((x) => !plain.includes(x));
+  rest.splice(Math.min(at, rest.length), 0, house);
+  return rest;
+}
+
+/** Floor-to-floor = the level below's ceiling + the floor structure between them (a timber floor: 0.3 m). */
+export const SLAB = 0.3;
+
+/**
+ * Puts every level on top of the one below: the main level stays; above it floorY = below.floorY + below's ceiling +
+ * SLAB, below it the same downwards. Run after a ceiling height or the order changes, so a higher ceiling never runs
+ * into the floor above (the recessed lights of the level below then show through it).
+ */
+export function restackLevels(doc, slab = SLAB) {
+  const ls = [...doc.levels].sort((a, b) => a.floorY - b.floorY);
+  if (ls.length < 2) return doc;
+  let m = ls.findIndex((l) => l.id === 'hoved');
+  if (m < 0) m = ls.reduce((bi, l, i) => (Math.abs(l.floorY) < Math.abs(ls[bi].floorY) ? i : bi), 0);
+  const ceil = (l) => l.ceiling ?? doc.settings?.ceiling ?? 2.4;
+  const r3 = (v) => Math.round(v * 1000) / 1000;
+  for (let i = m + 1; i < ls.length; i++) ls[i].floorY = r3(ls[i - 1].floorY + ceil(ls[i - 1]) + slab);
+  for (let i = m - 1; i >= 0; i--) ls[i].floorY = r3(ls[i + 1].floorY - ceil(ls[i]) - slab);
+  return doc;
 }
 
 export function windowsQuestion({ sill, height }) {
@@ -315,6 +364,7 @@ export function wallsQuestion({ level, levelName, file, crop, walls = 0 }) {
 export function applyAnswers(doc, questions, answers = {}) {
   const out = clone(doc);
   const done = [];
+  let restack = false;
   const byId = new Map((questions || []).map((x) => [x.id, x]));
   for (const [id, value] of Object.entries(answers || {})) {
     const Q = byId.get(id);
@@ -345,9 +395,13 @@ export function applyAnswers(doc, questions, answers = {}) {
       }
       case 'ceiling': {
         const m = num(value);
-        if (!L || !(m >= 1.8 && m <= 6)) break;
-        L.ceiling = Math.round(m * 100) / 100;
-        for (const r of L.rooms || []) if (r.auto) delete r.ceiling;
+        const levels = L ? [L] : (Q.data?.levels ?? []).map((lid) => levelOf(out, lid)).filter(Boolean);
+        if (!levels.length || !(m >= 1.8 && m <= 6)) break;
+        for (const lv of levels) {
+          lv.ceiling = Math.round(m * 100) / 100;
+          for (const r of lv.rooms || []) if (r.auto) delete r.ceiling;
+        }
+        restack = true;
         done.push(id);
         break;
       }
@@ -408,6 +462,7 @@ export function applyAnswers(doc, questions, answers = {}) {
           lv.floorY = Math.round((i - mainIdx) * h * 1000) / 1000;
         });
         out.levels.sort((a, b) => a.floorY - b.floorY);
+        restack = true;
         done.push(id);
         break;
       }
@@ -428,6 +483,10 @@ export function applyAnswers(doc, questions, answers = {}) {
       default:
         break;
     }
+  }
+  if (restack) {
+    restackLevels(out);
+    out.levels.sort((a, b) => (a.id === 'hoved' ? -1 : b.id === 'hoved' ? 1 : a.floorY - b.floorY));
   }
   out.generated = { ...(out.generated || {}), answered: [...(out.generated?.answered || []), ...done] };
   return out;

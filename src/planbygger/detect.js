@@ -1516,7 +1516,7 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
     return best;
   };
   // one part of a gap (between pillars): a door (+ the sidelights next to it), a window / glass, or a passage
-  const analysePart = (seg, p, q) => {
+  const analysePart = (seg, p, q, depth = 0) => {
     const len = q - p;
     const sym = bandSymbol(ctx, seg.axis, seg.c, seg.t, p, q);
     const rows = Math.round(seg.t) + 2;
@@ -1593,6 +1593,15 @@ function joinGaps(segs, openings, ctx, tolC, tolT, tolJ) {
     const ops = [door];
     for (const [x, y] of [[p, d0], [d1, q]]) {
       if (y - x >= minO * 0.8) {
+        // a long rest may hold a second door at its far end: a glass wall with a door at each end (hus3's terrace side,
+        // F11) – the same tests as any part, once
+        if (!weakHere && depth < 1 && y - x >= (o.doorMin * 0.9 + o.minSidelight) * ppm) {
+          const sub = analysePart(seg, x, y, depth + 1);
+          if (sub.some((op) => op.type === 'door')) {
+            ops.push(...(part ? sub.map((op) => ({ ...op, part: op.part ?? part })) : sub));
+            continue;
+          }
+        }
         const s2 = bandSymbol(ctx, seg.axis, seg.c, seg.t, x, y);
         ops.push({ s0: x, s1: y, type: s2.lines ? 'symbol' : 'opening', side: 0, score: s2.lines, symbol: { lines: s2.lines }, ...(part ? { part } : {}) });
       }

@@ -298,7 +298,8 @@ const THRESHOLDS = {
   'hus3-foto': { errors: 0, questions: 2, levels: { '1etg-foto.jpg': { outline: { m: [6.15, 14.95], tol: 0.03 }, named: 1, windows: 3, doors: { single: 2, double: 0, sliding: 1 } } } },
   hus4: { errors: 0, questions: 5, stair: true, roof: true, levels: { '1etg.avif': { scale: 0.01, named: 8, windows: 2, doors: { single: 1, double: 0, sliding: 1 } }, '2etg.avif': { scale: 0.01, named: 4, windows: 0, doors: { single: 1, double: 0, sliding: 0 } } } },
   hus5: { errors: 0, questions: 1, levels: { '1etg.avif': { scale: 0.005, named: 9, windows: 0, doors: D0 } } },
-  hus6: { errors: 0, questions: 2, levels: { 'plan-1etg-tilbygg.pdf': { scale: 0.005, named: 3, windows: 8, doors: { single: 4, double: 0, sliding: 3 } } } },
+  // fase D (K12): measured 9 windows for 8 (the entrance's sidelight), doors 2/0/6 exact, 4 rooms named on their own
+  hus6: { errors: 0, questions: 2, levels: { 'plan-1etg-tilbygg.pdf': { scale: 0.005, named: 4, windows: 2, doors: { single: 1, double: 0, sliding: 1 } } } },
   hus7: { errors: 0, questions: 2, roof: true, levels: { 'garasje-plan-snitt-fasade.pdf': { scale: 0.005, named: 1, windows: 0, doors: D0 } } },
   hus8: { errors: 0, questions: 6, stair: 'steep', levels: { 'plantegning-2.jpg': { estimate: { ppm: 34, tol: 0.1 }, named: 5, windows: 0, doors: D0 }, 'plantegning-3.jpg': { estimate: { ppm: 34, tol: 0.1 }, named: 7, windows: 0, doors: { single: 1, double: 0, sliding: 2 } } } },
   hus9: { errors: 0, questions: 5, stair: true, levels: { 'ovre-etasje.jpg': { scale: 0.02, named: 3, windows: 1, doors: { single: 1, double: 0, sliding: 0 } }, 'underetasje.jpg': { scale: 0.02, named: 7, windows: 1, doors: { single: 2, double: 0, sliding: 2 } } } },

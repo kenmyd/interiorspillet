@@ -31,6 +31,8 @@ import { setMaxAnisotropy } from '../world/proctex.js';
 import { baseSpec, mergeOnto } from './export.js';
 import { footprint } from './regions.js';
 
+/** metres from the ground up to the main floor: one threshold step the player walks up (its stepHeight is 0.3) */
+const GROUND_STEP = 0.15;
 const KINDS = ['white-oak', 'oak', 'painted', 'black-metal', 'glass-clear', 'steel', 'plastic'];
 
 /** Scene roots like home/index.js createHouseRoots: one group per level, one per room (surfaces + contents). */
@@ -77,6 +79,67 @@ function straightStairFix(layout) {
     return { ...st, footprint: [[a[0], a[1]], [b[0], b[1]]] };
   });
   return { ...layout, house: { ...H, stairs: fixed } };
+}
+
+/**
+ * The game's builders put some faces of different materials in one plane: a window frame's sides lie on the reveal
+ * (the frame is exactly as wide as the hole), the dark lining of an outer door on its trim, the cladding on the
+ * reveal's edge. In the planbygger's houses that flickers (F3, F4, F6, F8, F14). A depth offset per role settles who
+ * wins: the large surfaces (room paint, facades, ceilings) step back, the dark linings step forward, frames, leaves and
+ * trims stay. Only depth is changed, no geometry; the fix in the builders (a frame 2–3 mm narrower than its hole) is a
+ * request to the house work.
+ */
+function separateCoplanar(root) {
+  root.traverse((m) => {
+    if (!m.isMesh) return;
+    const name = m.name || '';
+    for (const mat of [].concat(m.material)) {
+      if (!mat || mat.userData?.pbDepth != null) continue;
+      const mn = mat.name || '';
+      const back = /^(room-outside|ceiling|cover):/.test(name) || (/^room-walls:/.test(name) && /^paint #/.test(mn));
+      const front = /^room-walls:/.test(name) && /#1d1e21/.test(mn);
+      if (!back && !front) continue;
+      mat.polygonOffset = true;
+      mat.polygonOffsetFactor = back ? 1 : -1;
+      mat.polygonOffsetUnits = back ? 2 : -2;
+      mat.userData.pbDepth = back ? 'back' : 'front';
+      mat.needsUpdate = true;
+    }
+  });
+}
+
+/**
+ * A window that stands on the floor (sill 0) leaves the bottom of its reveal open: the room's floor stops at the wall
+ * face, and the ground shows between it and the frame (F5). The floor is carried out to the frame: a thin box in the
+ * room's own floor material, from the room face back to the frame, walkable. Returns the meshes (colliders).
+ */
+function revealFloors(parts, roots) {
+  const floorMat = new Map();
+  for (const g of [...Object.values(roots.levels), ...parts.map((p) => p.group)]) {
+    g?.traverse((m) => {
+      if (m.isMesh && /^floor:/.test(m.name) && !floorMat.has(m.name)) floorMat.set(m.name, [].concat(m.material)[0]);
+    });
+  }
+  const out = [];
+  for (const p of parts) {
+    for (const w of p.windows || []) {
+      if (!(w.sill < 0.03) || !(w.revealDepth > 0.02) || !w.center || !w.normal || !w.right) continue;
+      const mat = floorMat.get(`floor:${w.roomId}`);
+      if (!mat) continue;
+      const t = 0.03;
+      // a clone: clear() disposes the extras' materials, the room's floor keeps its own (textures are shared)
+      const box = new THREE.Mesh(new THREE.BoxGeometry(w.width, t, w.revealDepth), mat.clone());
+      const bottom = w.center.clone().addScaledVector(new THREE.Vector3(0, 1, 0), -w.height / 2);
+      const pos = bottom.addScaledVector(w.normal, -w.revealDepth / 2).add(new THREE.Vector3(0, -t / 2, 0));
+      box.matrixAutoUpdate = false;
+      box.matrix.makeBasis(w.right, new THREE.Vector3(0, 1, 0), w.normal).setPosition(pos);
+      box.matrixWorldNeedsUpdate = true;
+      box.name = `reveal-floor:${w.id}`;
+      box.receiveShadow = true;
+      out.push(box);
+    }
+  }
+  return out;
 }
 
 /** A minimal HUD for the interaction prompt («E Åpne døra»). */
@@ -179,7 +242,12 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     // and falls back to its slope 0,16216 from x 3,22: a customer's house would get cladding 3,35 m high on one side.
     // A flat «roof line» for the 3D view only (not in the house file): a living-room ceiling of type slope with zero
     // slope at the highest ceiling of the main floor, far away from the house (request to the house work: a data field)
-    const mainCeil = Math.max(2.4, ...(house.ceilings || []).filter((c) => (house.rooms || []).find((r) => r.id === c.roomId)?.levelId === 'hoved').map((c) => c.height ?? 2.4));
+    let mainCeil = Math.max(2.4, ...(house.ceilings || []).filter((c) => (house.rooms || []).find((r) => r.id === c.roomId)?.levelId === 'hoved').map((c) => c.height ?? 2.4));
+    // never above the floor of the level over the main floor: rooms.js lets the cladding reach 0.35 m over the roof line,
+    // which ran into the windows of the floor above (F1)
+    const mainFloor = (house.levels || []).find((l) => l.id === 'hoved')?.floorY ?? 0;
+    const above = (house.levels || []).map((l) => l.floorY).filter((y) => y > mainFloor + 0.5);
+    if (above.length) mainCeil = Math.max(1.8, Math.min(mainCeil, Math.min(...above) - mainFloor - 0.35));
     spec.ceilings.push({ id: 'c-planbygger-taklinje', type: 'slope', polygon: [[-900, -900], [-899, -900], [-899, -899]], highLine: [[-900, -900], [-899, -900]], lowLine: [[-900, -899], [-899, -899]], highHeight: mainCeil, lowHeight: mainCeil, color: '#ffffff' });
     const layout = buildLayout(spec, undefined, { devWarnings: false });
     const collision = new CollisionWorld();
@@ -190,6 +258,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     if (layout.house.stairs.length) parts.push(buildStairs(ctx, straightStairFix(layout)));
     scene.add(...Object.values(roots.levels));
     for (const p of parts) if (p.group && !p.group.parent) scene.add(p.group);
+    for (const g of [...Object.values(roots.levels), ...parts.map((p) => p.group)]) if (g) separateCoplanar(g);
     for (const p of parts) {
       for (const c of p.colliders || []) {
         if (c?.isBox3) collision.addStaticBox(c);
@@ -197,15 +266,24 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       }
     }
     const extra = [];
+    // the floor out to the frame in windows that stand on the floor (F5)
+    for (const box of revealFloors(parts, roots)) {
+      scene.add(box);
+      box.updateMatrixWorld(true);
+      extra.push(box);
+      collision.addStatic(box);
+    }
     // ---- ground, sky light, sun, one lamp per room
     const b = layout.house.bounds;
     const cx = (b.minX + b.maxX) / 2;
     const cz = (b.minZ + b.maxZ) / 2;
     const size = Math.max(b.maxX - b.minX, b.maxZ - b.minZ, 6);
     const mainY = layout.house.levelsById.hoved?.floorY ?? 0;
-    // the ground at the main floor's slab underside, with a hole over the basement (it must not see the ground): the
-    // exact outline of the levels below (their rooms + wall slabs, regions.js footprint). The ground is a mesh with its
-    // normal up, also the walkable surface outside (Octree, one-sided).
+    // the ground one threshold step (GROUND_STEP) below the main floor, so the player walks in without jumping (the
+    // controller steps up 0.3 m at most; the slab underside at −0.31 was just too high – F13), with a hole over the
+    // basement (it must not see the ground): the exact outline of the levels below (their rooms + wall slabs,
+    // regions.js footprint). The ground is a mesh with its normal up, also the walkable surface outside (Octree,
+    // one-sided).
     const lowerIds = new Set(layout.house.levels.filter((l) => l.floorY < mainY - 0.5).map((l) => l.id));
     const polys = [];
     for (const r of layout.house.rooms) if (lowerIds.has(r.levelId) && !r.hud && r.polygon.length >= 3) polys.push(r.polygon.map((p) => [p.x, p.y]));
@@ -222,7 +300,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     if (hole.length >= 3) shape.holes.push(new THREE.Path(hole.map((p) => V(p[0], p[1]))));
     const ground = new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshStandardMaterial({ color: '#7f8f66', roughness: 0.95 }));
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = mainY - 0.31;
+    ground.position.y = mainY - GROUND_STEP;
     ground.receiveShadow = true;
     ground.name = 'ground';
     scene.add(ground);

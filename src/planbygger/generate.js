@@ -96,6 +96,7 @@ import {
   shapeQuestion,
   facadeQuestion,
   wallsQuestion,
+  mergeCeilingQuestions,
 } from './questions.js';
 
 export { applyAnswers };
@@ -878,6 +879,25 @@ export async function generate(inputs, opts = {}) {
       const r0 = byRef && it.ref != null ? refs.rooms0?.rooms?.[it.ref] : null;
       return r0 ? [r0.inside[0] * k0, r0.inside[1] * k0] : null;
     };
+    const refPoly = (it) => {
+      const r0 = byRef && it.ref != null ? refs.rooms0?.rooms?.[it.ref] : null;
+      return r0?.polygon?.length >= 3 ? r0.polygon.map((p) => [p[0] * k0, p[1] * k0]) : null;
+    };
+    const logRatio = (a, b) => Math.abs(Math.log(a / b));
+    /**
+     * A mark drawn in a provisional room the final detection split in two (K1: hus6's ENTRE + VASKEROM were one region
+     * at the provisional scale; the mark's inside point lands in the laundry): the label's area picks the part.
+     */
+    const splitPart = (it, idx) => {
+      if (!(it.area > 0)) return idx;
+      const poly = refPoly(it);
+      if (!poly) return idx;
+      const parts = found.rooms.filter((r) => r.area > 0.5 && pointInPolygon(r.inside, poly));
+      if (parts.length < 2) return idx;
+      const best = parts.reduce((b, r) => (logRatio(r.area, it.area) < logRatio(b.area, it.area) ? r : b));
+      const cur = found.rooms.find((r) => r.index === idx);
+      return !cur || logRatio(best.area, it.area) + 0.2 < logRatio(cur.area, it.area) ? best.index : idx;
+    };
     const refOpening = (it) => {
       const o0 = byRef && it.ref != null ? refs.level0?.openings?.find((x) => x.id === it.ref) : null;
       const c = o0 ? openingCentre(refs.level0, o0) : null;
@@ -888,19 +908,38 @@ export async function generate(inputs, opts = {}) {
     // ---- rooms
     const items = [];
     if (ai) {
-      for (const r of ai.rooms) if (r.name && r.at) items.push({ name: r.name, area: r.area, kind: r.kind, roomKind: r.roomKind, at: r.at, p: refRoom(r), how: r.mark ? 'merke' : 'etikett' });
+      for (const r of ai.rooms) if (r.name && r.at) items.push({ name: r.name, area: r.area, kind: r.kind, roomKind: r.roomKind, at: r.at, ref: r.ref, p: refRoom(r), how: r.mark ? 'merke' : 'etikett' });
       for (const l of ai.labels) if (l.text && l.at && !NOT_A_ROOM.test(l.text)) items.push({ name: l.text, area: l.area, kind: l.kind, roomKind: l.roomKind, at: l.at, how: 'etikett' });
     }
     const per = new Map();
     let unplaced = 0;
     for (const it of items) {
-      const idx = (it.p ? roomAt(found, it.p) : -1) >= 0 ? roomAt(found, it.p) : roomAt(found, toPlan(it.at));
+      let idx = (it.p ? roomAt(found, it.p) : -1) >= 0 ? roomAt(found, it.p) : roomAt(found, toPlan(it.at));
+      if (it.p) idx = splitPart(it, idx);
       if (idx < 0) {
         unplaced++;
         continue;
       }
       if (!per.has(idx)) per.set(idx, []);
       per.get(idx).push(it);
+    }
+    // labels that cannot all be in their room: their areas add up to far more than the room (K1: hus6's answer put
+    // ENTRE 18 on the laundry's mark, beside VASKEROM 6, while the hall itself had no label) – a label moves to the
+    // nearest room without one whose area fits it (within 30 %), the best-fitting label stays
+    for (const [idx, its] of [...per]) {
+      const room = found.rooms.find((r) => r.index === idx);
+      const withArea = its.filter((x) => x.area > 0);
+      if (!room || withArea.length < 2 || withArea.reduce((a, x) => a + x.area, 0) < room.area * 1.3) continue;
+      const keep = withArea.reduce((b, x) => (logRatio(x.area, room.area) < logRatio(b.area, room.area) ? x : b));
+      for (const it of withArea) {
+        if (it === keep) continue;
+        const free = found.rooms.filter((r) => !per.has(r.index) && r.area > 0.5 && logRatio(r.area, it.area) < 0.3);
+        if (!free.length) continue;
+        const to = free.reduce((b, r) => (dist(r.inside, room.inside) < dist(b.inside, room.inside) ? r : b));
+        if (dist(to.inside, room.inside) > 12) continue;
+        per.set(idx, per.get(idx).filter((x) => x !== it));
+        per.set(to.index, [it]);
+      }
     }
     L.rooms = [];
     const unnamed = [];
@@ -920,7 +959,8 @@ export async function generate(inputs, opts = {}) {
         let kind = main.roomKind ?? null;
         if (!kind && OUTDOOR.has(main.kind)) kind = 'storage';
         if (!kind) kind = guessKind({ area: room.area, ...(feats.get(room.index) ?? { doors: 0, windows: 0, exteriorDoors: 0 }) }, room === largest);
-        const name = its.map((x) => displayName(x.name)).join(' + ');
+        // the same name twice (one room cut in two by the detection, both halves labelled: «WC/D + WC/D», K7) once
+        const name = [...new Set(its.map((x) => displayName(x.name)))].join(' + ');
         if (its.length > 1) merged++;
         L.rooms.push({ id: `r${L.rooms.length + 1}`, name, kind, seed: [round(room.inside[0], 3), round(room.inside[1], 3)], auto: true, from: 'ai', labels: its.map((x) => ({ text: x.name, area: x.area ?? null })), ...(OUTDOOR.has(main.kind) ? { outdoor: main.kind } : {}) });
       } else if (room.area >= 0.5) {
@@ -1202,8 +1242,12 @@ export async function generate(inputs, opts = {}) {
     st.from = { type, typeFrom, why, ...(turn ? {} : { landings: false }) };
     upper.stairPlaced = st;
     step({ step: 'stairs', file: upper.file, level: U.id, method: kind, confidence: pair && turn ? 'high' : 'medium', detail: `${why}; ${type ?? 'ukjent type'}${typeFrom ? ` (fra ${typeFrom})` : ''} → ${kind === 'u' ? 'U-trapp' : 'rett trapp'} ${fmt(w, 2)} × ${fmt(h, 2)} m${turn ? `, ned mot ${axis}${st.down > 0 ? '+' : '−'}` : ', ingen retning med gulv ved begge endene'}` });
-    const unclear = !pair || !type || !turn || (aiType && classical && aiType !== classical && aiType !== 'unknown');
-    if (unclear) questions.push(stairQuestion({ level: U.id, levelName: U.name, file: upper.file, crop: { file: upper.file, level: U.id, bbox: cropBox(rect, upper.ppm, upper.img) }, value: kind, why: `${why[0].toUpperCase()}${why.slice(1)}. ${type ? `Tegningen ser ut som ${TYPE_NO[type] ?? 'en trapp'}${aiType && classical && aiType !== classical && aiType !== 'unknown' ? `, men KI-en mener ${TYPE_NO[aiType] ?? aiType}` : ''}.` : 'Typen er usikker.'}${turn ? '' : ' Vi fant ingen vei for trappa med gulv å gå ut på både oppe og nede; sjekk den i «Finjuster».'}`, stairId: st.id, rect: st.rect, axis }));
+    // the AI and the drawing disagree: worth a question, except when the drawing shows a turn (winders, two flights:
+    // they do not come from nothing) and the AI calls it straight (Haiku misreads turns as straight – K2, hus1)
+    const turnSeen = classical === 'quarter-turn' || classical === 'half-turn';
+    const disagree = aiType && classical && aiType !== classical && aiType !== 'unknown' && !(turnSeen && aiType === 'straight');
+    const unclear = !pair || !type || !turn || disagree;
+    if (unclear) questions.push(stairQuestion({ level: U.id, levelName: U.name, file: upper.file, crop: { file: upper.file, level: U.id, bbox: cropBox(rect, upper.ppm, upper.img) }, value: kind, why: `${why[0].toUpperCase()}${why.slice(1)}. ${type ? `Tegningen ser ut som ${TYPE_NO[type] ?? 'en trapp'}${disagree ? `, men KI-en mener ${TYPE_NO[aiType] ?? aiType}` : ''}.` : 'Typen er usikker.'}${turn ? '' : ' Vi fant ingen vei for trappa med gulv å gå ut på både oppe og nede; sjekk den i «Finjuster».'}`, stairId: st.id, rect: st.rect, axis }));
   }
 
   // ---- 7. facades
@@ -1466,6 +1510,10 @@ export async function generate(inputs, opts = {}) {
       }
     }
   }
+
+  // one ceiling question for the levels that have nothing special (K4: it was asked on every level)
+  const merged = mergeCeilingQuestions(questions, Object.fromEntries(doc.levels.map((l) => [l.id, l.name])));
+  questions.splice(0, questions.length, ...merged);
 
   // answers from an earlier run that are not inputs to the flow
   let outDoc = doc;

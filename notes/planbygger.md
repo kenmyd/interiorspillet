@@ -1471,6 +1471,17 @@ omveier. Dette ville gjort omveiene unødvendige:
 13. **En dør eller åpning i en vegg med samme rom på begge sider** (`connects: [rom, rom]`) i husformatet og
     `validateHouse`: et rom som går rundt en vegg, som bodfronten under trappa i hus3. Omveien er
     `connects: [rom, 'ute']`, og kildeteksten sier hvorfor.
+14. **Vinduer og dører i samme plan som veggen** (`rooms.js`, `wallkit.js`). Rammen er like bred som hullet, så
+    sidene ligger i planet til lysningen. Det samme gjelder den mørke foringen i ytterdører, som ligger på listen. Det
+    flimrer (F3, F4, F6, F8 og F14 fra testingen). Omveien er at `viewer.js` (`separateCoplanar`) gir rammer og foringer
+    forrang i dybden. Rettingen i byggeren er en ramme 2–3 mm smalere enn hullet.
+15. **Gulv ut til glasset i vinduer som står på gulvet** (brystning 0). I dag stopper gulvet ved veggflaten, og bakken
+    synes i bunnen av lysningen (F5). Omveien er en tynn gulvstripe i rommets gulvmateriale (`viewer.js`,
+    `revealFloors`).
+16. **Tette opptrinn som valg** i `stairs.js`. I dag er opptrinnene alltid åpne (F7).
+17. **Stolpene over trappehullet:** de henger 0,45 m ned under gulvet. Det er en detalj fra eierens hus, og i
+    planbyggerens hus ser det ut som stolpen står langt ned på veggen (F12). Det trengs et valg i husformatet,
+    for eksempel `guardStyle.hang`.
 
 ## Åpne oppgaver i planbyggeren
 

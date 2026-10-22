@@ -630,7 +630,8 @@ try {
    * tools/test-planbygger-generate.mjs (round 1's measured numbers – hus1: face snapping in the loft, hus2: rooms as
    * islands in the open living room); without AI: what tools/planbygger-measure-all.mjs --mode noai measures in Node.
    */
-  const MAX_ERRORS = { opptak: { hus1: 2, hus2: 11 }, off: { hus1: 2, hus2: 10 } };
+  // every house is valid since fase C (hus1 had 2 and hus2 11 errors in fase B): 0 everywhere (K12)
+  const MAX_ERRORS = { opptak: {}, off: {} };
 
   /** The mean grey of a 64 × 48 grid over an RGBA image (self-contained: it also runs in the page, from its source). */
   function greyGrid(img) {
