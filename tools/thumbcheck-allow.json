@@ -1,0 +1,12 @@
+{
+  "$comment": "tools/thumbcheck.mjs allow-list (design/qa.md §4.1): ONLY products from before the round (fixtures/catalog-baseline.json). New defects are fixed, never listed here. A stale entry prints «fjern fra allow-listen».",
+  "bohus-halvor-bakke-gabel-rundt-teppe-o240": {
+    "flags": [
+      "BLANK"
+    ],
+    "variants": [
+      3
+    ],
+    "reason": "Lyst teppe (v3 «Hvit berber», #e6e0d4) på lys bakgrunn – kjent fra før runden; teppet er lesbart i bildet"
+  }
+}

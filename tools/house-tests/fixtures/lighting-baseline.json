@@ -1,0 +1,2825 @@
+{
+ "note": "LightManager snapshot of the ORIGINAL design (built-ins + original item lamps via SceneSync), Node, no renderer",
+ "levels": {
+  "low": {
+   "lightCount": {
+    "DirectionalLight": 1,
+    "AmbientLight": 1,
+    "PointLight": 2,
+    "SpotLight": 8,
+    "RectAreaLight": 3
+   },
+   "pool": {
+    "point": 2,
+    "spot": 8,
+    "rect": 3
+   },
+   "snaps": {
+    "0_for@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.292519923359,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|windowspot:door-terrasse,item:ex-f-pendel-stue:0,windowspot:win-k1,windowspot:win-k2,windowspot:win-tv,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2|window:win-s2,window:win-s1,builtin:led-sor"
+    },
+    "0_for@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.271782427081,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|bounce:w-sor,item:ex-f-pendel-stue:0,windowspot:win-k1,windowspot:win-k2,windowspot:win-tv,bounce:w-kjokken-sor,,|window:win-s2,window:win-s1,window:door-terrasse"
+    },
+    "0_for@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.275740231028,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken"
+    },
+    "0_for@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.275740231028,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken"
+    },
+    "20261018_082806@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.294496386733,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,windowspot:win-s1,windowspot:door-terrasse,builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,windowspot:win-k1,windowspot:win-k2|window:win-tv,builtin:led-tvstue,window:win-s2"
+    },
+    "20261018_082806@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.254665001984,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|bounce:w-sor,item:ex-f-pendel-stue:0,bounce:w-kjokken-sor,windowspot:door-terrasse,,,windowspot:win-k1,windowspot:win-k2|window:win-tv,window:win-s1,window:win-s2"
+    },
+    "20261018_082806@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.257538228188,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:ring-kjokken-2,builtin:ring-kjokken-1,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-tvstue,builtin:led-sor,builtin:led-kjokken"
+    },
+    "20261018_082806@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.257538228188,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:ring-kjokken-2,builtin:ring-kjokken-1,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-tvstue,builtin:led-sor,builtin:led-kjokken"
+    },
+    "20261018_082827@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.285705290491,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:spot-hoyvegg-1,windowspot:door-terrasse,windowspot:win-k1,builtin:ring-kjokken-1,windowspot:win-k2,windowspot:win-tv|window:win-s2,builtin:led-sor,window:win-s1"
+    },
+    "20261018_082827@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.261543429892,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|bounce:w-sor,item:ex-f-pendel-stue:0,bounce:w-kjokken-sor,,windowspot:win-k1,,windowspot:win-k2,windowspot:win-tv|window:win-s2,window:door-terrasse,window:win-s1"
+    },
+    "20261018_082827@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.264645565475,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:spot-hoyvegg-1,builtin:ring-kjokken-2,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken"
+    },
+    "20261018_082827@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.264645565475,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:spot-hoyvegg-1,builtin:ring-kjokken-2,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken"
+    },
+    "20261018_082829@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.290197817875,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,windowspot:door-terrasse,builtin:ring-kjokken-2,windowspot:win-k1,windowspot:win-k2,windowspot:win-tv|builtin:led-sor,window:win-s2,window:win-s1"
+    },
+    "20261018_082829@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.268024830798,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|bounce:w-sor,item:ex-f-pendel-stue:0,bounce:w-kjokken-sor,,,windowspot:win-k1,windowspot:win-k2,windowspot:win-tv|window:door-terrasse,window:win-s2,window:win-s1"
+    },
+    "20261018_082829@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.271994439,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken"
+    },
+    "20261018_082829@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.271994439,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken"
+    },
+    "20261018_082909@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.443047266017,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|windowspot:door-terrasse,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,windowspot:win-s2,windowspot:win-tv,builtin:pendel-oy-2,builtin:spot-hoyvegg-4|window:win-k1,window:win-k2,window:win-s1"
+    },
+    "20261018_082909@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.256875216086,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|windowspot:door-terrasse,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,windowspot:win-s2,windowspot:win-tv,,|window:win-k1,window:win-k2,window:win-s1"
+    },
+    "20261018_082909@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.283041491719,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:ring-kjokken-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:spot-hoyvegg-4,builtin:pendel-oy-3,builtin:spot-hoyvegg-3|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue"
+    },
+    "20261018_082909@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.283041491719,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:ring-kjokken-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:spot-hoyvegg-4,builtin:pendel-oy-3,builtin:spot-hoyvegg-3|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue"
+    },
+    "20261018_082924@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.452640628731,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:ring-kjokken-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-2,windowspot:win-s2,windowspot:win-k1,builtin:spot-hoyvegg-4,windowspot:win-tv,builtin:spot-hoyvegg-3|window:win-s1,window:door-terrasse,window:win-k2"
+    },
+    "20261018_082924@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.258851873199,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|bounce:w-sor,item:ex-f-pendel-stue:0,bounce:w-kjokken-sor,windowspot:win-s2,windowspot:win-k1,,windowspot:win-tv,|window:win-s1,window:door-terrasse,window:win-k2"
+    },
+    "20261018_082924@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.28320914521,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:ring-kjokken-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-2,builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:tak-tvstue,builtin:spot-hoyvegg-2,builtin:pendel-oy-2|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue"
+    },
+    "20261018_082924@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.28320914521,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:ring-kjokken-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-2,builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:tak-tvstue,builtin:spot-hoyvegg-2,builtin:pendel-oy-2|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue"
+    },
+    "20261018_083012@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.276558015778,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:ring-kjokken-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-2,windowspot:door-terrasse,windowspot:win-k1,builtin:tak-tvstue,windowspot:win-k2,windowspot:win-tv|builtin:led-sor,window:win-s2,window:win-s1"
+    },
+    "20261018_083012@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.259866733736,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|bounce:w-sor,item:ex-f-pendel-stue:0,bounce:w-kjokken-sor,,windowspot:win-k1,,windowspot:win-k2,windowspot:win-tv|window:door-terrasse,window:win-s2,window:win-s1"
+    },
+    "20261018_083012@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.262611235301,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken"
+    },
+    "20261018_083012@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.262611235301,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken"
+    },
+    "20261018_083019@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.285645538745,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,windowspot:door-terrasse,builtin:spot-hoyvegg-1,windowspot:win-k1,windowspot:win-k2,windowspot:win-tv|builtin:led-sor,window:win-s2,window:win-s1"
+    },
+    "20261018_083019@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.260055628873,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|bounce:w-sor,item:ex-f-pendel-stue:0,bounce:w-kjokken-sor,,,windowspot:win-k1,windowspot:win-k2,windowspot:win-tv|window:door-terrasse,window:win-s2,window:win-s1"
+    },
+    "20261018_083019@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.262969466912,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:spot-hoyvegg-1,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken"
+    },
+    "20261018_083019@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.262969466912,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:tak-tvstue,item:ex-f-pendel-stue:0,builtin:spot-hoyvegg-1,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken"
+    },
+    "soverom@8.5": {
+     "room": "soverom",
+     "Lkey": 1.68209034589,
+     "S": 0.056817155677,
+     "wb": [
+      0.855027700315,
+      1.01710436769,
+      1.39701462609
+     ],
+     "wbK": [
+      5825,
+      7714
+     ],
+     "amb": 9.68015743263,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",|builtin:l-sov-tak,,,,,,,|window:win-sov,builtin:l-sov-garderobe,"
+    },
+    "soverom@12": {
+     "room": "soverom",
+     "Lkey": 4.17388735891,
+     "S": 0.0295325995237,
+     "wb": [
+      0.975699985429,
+      0.993372911163,
+      1.17396742665
+     ],
+     "wbK": [
+      6433,
+      7040
+     ],
+     "amb": 18.0800217278,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",|builtin:l-sov-tak,,,,,,,|window:win-sov,builtin:l-sov-garderobe,"
+    },
+    "soverom@20": {
+     "room": "soverom",
+     "Lkey": 0.89473379759,
+     "S": 0.0760834779307,
+     "wb": [
+      0.670578916557,
+      1.1274824455,
+      1.94617657142
+     ],
+     "wbK": [
+      3626,
+      6041
+     ],
+     "amb": 5.11032619329,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",|builtin:l-sov-tak,,,,,,,|,builtin:l-sov-garderobe,"
+    },
+    "soverom@23": {
+     "room": "soverom",
+     "Lkey": 0.894733597737,
+     "S": 0.0760834901667,
+     "wb": [
+      0.670783961676,
+      1.12722523314,
+      1.94885804318
+     ],
+     "wbK": [
+      3618,
+      6020
+     ],
+     "amb": 4.45251066439,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",|builtin:l-sov-tak,,,,,,,|,builtin:l-sov-garderobe,"
+    },
+    "gang@8.5": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.0227410047788,
+     "wb": [
+      0.696924650998,
+      1.12962032003,
+      1.89638108462
+     ],
+     "wbK": [
+      3628,
+      5810
+     ],
+     "amb": 2.46656026417,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",|builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,|,,"
+    },
+    "gang@12": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.0227410047788,
+     "wb": [
+      0.696924650998,
+      1.12962032003,
+      1.89638108462
+     ],
+     "wbK": [
+      3628,
+      5810
+     ],
+     "amb": 2.18279173227,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",|builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,|,,"
+    },
+    "gang@20": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.019329854062,
+     "wb": [
+      0.678626199294,
+      1.13712803408,
+      1.95683823701
+     ],
+     "wbK": [
+      3628,
+      6023
+     ],
+     "amb": 1.92886449306,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",|builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,|,,"
+    },
+    "gang@23": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.019329854062,
+     "wb": [
+      0.678626199294,
+      1.13712803408,
+      1.95683823701
+     ],
+     "wbK": [
+      3628,
+      6023
+     ],
+     "amb": 1.7016404158,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",|builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,|,,"
+    },
+    "kjellerstue@8.5": {
+     "room": "kjellerstue",
+     "Lkey": 8.44830478474,
+     "S": 0.0177752986045,
+     "wb": [
+      0.802397408432,
+      1.04982850329,
+      1.55716712587
+     ],
+     "wbK": [
+      5269,
+      7718
+     ],
+     "amb": 3.0231921918,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1400
+     },
+     "slots": ",|builtin:l-ks-10,builtin:l-ks-3,,,,,,|window:win-ks-1,window:win-ks-2,"
+    },
+    "kjellerstue@12": {
+     "room": "kjellerstue",
+     "Lkey": 238.535661442,
+     "S": 0.00160417820079,
+     "wb": [
+      0.860546179989,
+      1.03956216408,
+      1.23342423902
+     ],
+     "wbK": [
+      4603,
+      5580
+     ],
+     "amb": 5.5113436819,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 0
+     },
+     "slots": ",|,,,,,,,|window:win-ks-1,window:win-ks-2,"
+    },
+    "kjellerstue@20": {
+     "room": "kjellerstue",
+     "Lkey": 3.88607385907,
+     "S": 0.026427858154,
+     "wb": [
+      0.566618025351,
+      1.27253165461,
+      4.22844556929
+     ],
+     "wbK": [
+      2748,
+      5734
+     ],
+     "amb": 2.17065056726,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1400
+     },
+     "slots": ",|builtin:l-ks-10,builtin:l-ks-3,,,,,,|,,"
+    },
+    "kjellerstue@23": {
+     "room": "kjellerstue",
+     "Lkey": 3.88607285351,
+     "S": 0.0264278630778,
+     "wb": [
+      0.566793765609,
+      1.27203565974,
+      4.24218898326
+     ],
+     "wbK": [
+      2744,
+      5717
+     ],
+     "amb": 1.92476499376,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1400
+     },
+     "slots": ",|builtin:l-ks-10,builtin:l-ks-3,,,,,,|,,"
+    }
+   }
+  },
+  "medium": {
+   "lightCount": {
+    "DirectionalLight": 1,
+    "AmbientLight": 1,
+    "PointLight": 2,
+    "SpotLight": 12,
+    "RectAreaLight": 4
+   },
+   "pool": {
+    "point": 2,
+    "spot": 12,
+    "rect": 4
+   },
+   "snaps": {
+    "0_for@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.284300552555,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,windowspot:win-k1,windowspot:win-k2,windowspot:win-tv,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3|window:win-s2,window:win-s1,builtin:led-sor,window:door-terrasse"
+    },
+    "0_for@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.271782427081,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,windowspot:win-k2,windowspot:win-tv,bounce:w-kjokken-sor,,,|window:win-s2,window:win-s1,window:win-k1,window:door-terrasse"
+    },
+    "0_for@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.271782427081,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "0_for@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.271782427081,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "20261018_082806@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.272360181096,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,windowspot:door-terrasse,windowspot:win-k1,builtin:pendel-oy-1,windowspot:win-k2|window:win-tv,builtin:led-tvstue,window:win-s2,window:win-s1"
+    },
+    "20261018_082806@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.254665001984,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,windowspot:win-k1,,windowspot:win-k2|window:win-tv,window:door-terrasse,window:win-s2,window:win-s1"
+    },
+    "20261018_082806@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.254665001984,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-2,builtin:ring-kjokken-1,builtin:pendel-oy-1,builtin:pendel-oy-2,builtin:pendel-oy-3,|builtin:led-tvstue,builtin:led-sor,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "20261018_082806@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.254665001984,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-2,builtin:ring-kjokken-1,builtin:pendel-oy-1,builtin:pendel-oy-2,builtin:pendel-oy-3,|builtin:led-tvstue,builtin:led-sor,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "20261018_082827@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.273448068039,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-2,builtin:ring-kjokken-1,windowspot:win-k1,windowspot:win-k2,builtin:pendel-oy-3,windowspot:win-tv|window:win-s2,builtin:led-sor,window:win-s1,window:door-terrasse"
+    },
+    "20261018_082827@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.261543429892,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,windowspot:win-k2,,windowspot:win-tv|window:win-s2,window:win-k1,window:win-s1,window:door-terrasse"
+    },
+    "20261018_082827@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.261543429892,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "20261018_082827@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.261543429892,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "20261018_082829@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.280760355832,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,windowspot:win-k1,windowspot:win-k2,windowspot:win-tv|builtin:led-sor,window:win-s2,window:win-s1,window:door-terrasse"
+    },
+    "20261018_082829@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.268024830798,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,windowspot:win-k2,windowspot:win-tv|window:win-k1,window:win-s2,window:win-s1,window:door-terrasse"
+    },
+    "20261018_082829@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.268024830798,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "20261018_082829@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.268024830798,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "20261018_082909@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.398401403759,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,windowspot:win-s2,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,windowspot:win-tv|window:win-k1,window:win-k2,window:win-s1,window:door-terrasse"
+    },
+    "20261018_082909@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.256875216086,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|,,,,item:ex-f-pendel-stue:0,windowspot:win-s2,bounce:w-sor,bounce:w-kjokken-sor,,,,windowspot:win-tv|window:win-k1,window:win-k2,window:win-s1,window:door-terrasse"
+    },
+    "20261018_082909@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.256875216086,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:pendel-oy-3,builtin:tak-tvstue,|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue,builtin:led-overskap"
+    },
+    "20261018_082909@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.256875216086,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:pendel-oy-3,builtin:tak-tvstue,|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue,builtin:led-overskap"
+    },
+    "20261018_082924@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.415872483645,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-2,windowspot:win-s2,builtin:pendel-oy-3,builtin:tak-tvstue,windowspot:win-tv|window:win-s1,window:door-terrasse,window:win-k2,window:win-k1"
+    },
+    "20261018_082924@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.258851873199,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,windowspot:win-s2,,,windowspot:win-tv|window:win-s1,window:door-terrasse,window:win-k2,window:win-k1"
+    },
+    "20261018_082924@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.258851873199,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:tak-tvstue,builtin:pendel-oy-2,builtin:pendel-oy-3,builtin:pendel-oy-1,|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue,builtin:led-overskap"
+    },
+    "20261018_082924@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.258851873199,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-lykt-v1:0|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:tak-tvstue,builtin:pendel-oy-2,builtin:pendel-oy-3,builtin:pendel-oy-1,|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue,builtin:led-overskap"
+    },
+    "20261018_083012@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.270726696395,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:tak-tvstue,windowspot:win-k1,builtin:pendel-oy-3,windowspot:win-k2,windowspot:win-tv|builtin:led-sor,window:win-s2,window:win-s1,window:door-terrasse"
+    },
+    "20261018_083012@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.259866733736,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,windowspot:win-k2,windowspot:win-tv|window:win-k1,window:win-s2,window:win-s1,window:door-terrasse"
+    },
+    "20261018_083012@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.259866733736,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "20261018_083012@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.259866733736,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "20261018_083019@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.273138286284,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,windowspot:win-k1,builtin:pendel-oy-2,windowspot:win-k2,windowspot:win-tv|builtin:led-sor,window:win-s2,window:win-s1,window:door-terrasse"
+    },
+    "20261018_083019@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.260055628873,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,windowspot:win-k2,windowspot:win-tv|window:win-k1,window:win-s2,window:win-s1,window:door-terrasse"
+    },
+    "20261018_083019@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.260055628873,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:pendel-oy-3,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "20261018_083019@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.260055628873,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:pendel-oy-3,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap"
+    },
+    "soverom@8.5": {
+     "room": "soverom",
+     "Lkey": 1.68209034589,
+     "S": 0.056817155677,
+     "wb": [
+      0.855027700315,
+      1.01710436769,
+      1.39701462609
+     ],
+     "wbK": [
+      5825,
+      7714
+     ],
+     "amb": 9.68015743263,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",|,,,,builtin:l-sov-tak,,,,,,,|window:win-sov,builtin:l-sov-garderobe,,"
+    },
+    "soverom@12": {
+     "room": "soverom",
+     "Lkey": 4.17388735891,
+     "S": 0.0295325995237,
+     "wb": [
+      0.975699985429,
+      0.993372911163,
+      1.17396742665
+     ],
+     "wbK": [
+      6433,
+      7040
+     ],
+     "amb": 18.0800217278,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",|,,,,builtin:l-sov-tak,,,,,,,|window:win-sov,builtin:l-sov-garderobe,,"
+    },
+    "soverom@20": {
+     "room": "soverom",
+     "Lkey": 0.89473379759,
+     "S": 0.0760834779307,
+     "wb": [
+      0.670578916557,
+      1.1274824455,
+      1.94617657142
+     ],
+     "wbK": [
+      3626,
+      6041
+     ],
+     "amb": 5.11032619329,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",|,,,,builtin:l-sov-tak,,,,,,,|,builtin:l-sov-garderobe,,"
+    },
+    "soverom@23": {
+     "room": "soverom",
+     "Lkey": 0.894733597737,
+     "S": 0.0760834901667,
+     "wb": [
+      0.670783961676,
+      1.12722523314,
+      1.94885804318
+     ],
+     "wbK": [
+      3618,
+      6020
+     ],
+     "amb": 4.45251066439,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",|,,,,builtin:l-sov-tak,,,,,,,|,builtin:l-sov-garderobe,,"
+    },
+    "gang@8.5": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.0227410047788,
+     "wb": [
+      0.696924650998,
+      1.12962032003,
+      1.89638108462
+     ],
+     "wbK": [
+      3628,
+      5810
+     ],
+     "amb": 2.46656026417,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",|,,,,builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,|,,,"
+    },
+    "gang@12": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.0227410047788,
+     "wb": [
+      0.696924650998,
+      1.12962032003,
+      1.89638108462
+     ],
+     "wbK": [
+      3628,
+      5810
+     ],
+     "amb": 2.18279173227,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",|,,,,builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,|,,,"
+    },
+    "gang@20": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.019329854062,
+     "wb": [
+      0.678626199294,
+      1.13712803408,
+      1.95683823701
+     ],
+     "wbK": [
+      3628,
+      6023
+     ],
+     "amb": 1.92886449306,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",|,,,,builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,|,,,"
+    },
+    "gang@23": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.019329854062,
+     "wb": [
+      0.678626199294,
+      1.13712803408,
+      1.95683823701
+     ],
+     "wbK": [
+      3628,
+      6023
+     ],
+     "amb": 1.7016404158,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",|,,,,builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,|,,,"
+    },
+    "kjellerstue@8.5": {
+     "room": "kjellerstue",
+     "Lkey": 8.44830478474,
+     "S": 0.0177752986045,
+     "wb": [
+      0.802397408432,
+      1.04982850329,
+      1.55716712587
+     ],
+     "wbK": [
+      5269,
+      7718
+     ],
+     "amb": 3.0231921918,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1400
+     },
+     "slots": ",|,,,,builtin:l-ks-10,builtin:l-ks-3,,,,,,|window:win-ks-1,window:win-ks-2,,"
+    },
+    "kjellerstue@12": {
+     "room": "kjellerstue",
+     "Lkey": 238.535661442,
+     "S": 0.00160417820079,
+     "wb": [
+      0.860546179989,
+      1.03956216408,
+      1.23342423902
+     ],
+     "wbK": [
+      4603,
+      5580
+     ],
+     "amb": 5.5113436819,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 0
+     },
+     "slots": ",|,,,,,,,,,,,|window:win-ks-1,window:win-ks-2,,"
+    },
+    "kjellerstue@20": {
+     "room": "kjellerstue",
+     "Lkey": 3.88607385907,
+     "S": 0.026427858154,
+     "wb": [
+      0.566618025351,
+      1.27253165461,
+      4.22844556929
+     ],
+     "wbK": [
+      2748,
+      5734
+     ],
+     "amb": 2.17065056726,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1400
+     },
+     "slots": ",|,,,,builtin:l-ks-10,builtin:l-ks-3,,,,,,|,,,"
+    },
+    "kjellerstue@23": {
+     "room": "kjellerstue",
+     "Lkey": 3.88607285351,
+     "S": 0.0264278630778,
+     "wb": [
+      0.566793765609,
+      1.27203565974,
+      4.24218898326
+     ],
+     "wbK": [
+      2744,
+      5717
+     ],
+     "amb": 1.92476499376,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1400
+     },
+     "slots": ",|,,,,builtin:l-ks-10,builtin:l-ks-3,,,,,,|,,,"
+    }
+   }
+  },
+  "high": {
+   "lightCount": {
+    "DirectionalLight": 1,
+    "AmbientLight": 1,
+    "PointLight": 4,
+    "SpotLight": 14,
+    "RectAreaLight": 8
+   },
+   "pool": {
+    "point": 4,
+    "spot": 14,
+    "rect": 8
+   },
+   "snaps": {
+    "0_for@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.256294255422,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|window:win-s2,window:win-s1,builtin:led-sor,window:door-terrasse,window:win-k1,window:win-k2,builtin:led-tvstue,window:win-tv"
+    },
+    "0_for@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,,,,|window:win-s2,window:win-s1,,window:door-terrasse,window:win-k1,window:win-k2,,window:win-tv"
+    },
+    "0_for@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "0_for@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "20261018_082806@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.255920491994,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-tvstue,window:win-tv,window:win-s2,window:win-s1,window:door-terrasse,window:win-k1,window:win-k2"
+    },
+    "20261018_082806@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,,,,|,,window:win-tv,window:win-s2,window:win-s1,window:door-terrasse,window:win-k1,window:win-k2"
+    },
+    "20261018_082806@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-2,builtin:ring-kjokken-1,builtin:pendel-oy-1,builtin:pendel-oy-2,builtin:pendel-oy-3,,,|builtin:led-tvstue,builtin:led-sor,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "20261018_082806@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-2,builtin:ring-kjokken-1,builtin:pendel-oy-1,builtin:pendel-oy-2,builtin:pendel-oy-3,,,|builtin:led-tvstue,builtin:led-sor,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "20261018_082827@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.255158070195,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-2,builtin:ring-kjokken-1,builtin:pendel-oy-1,builtin:pendel-oy-2,builtin:pendel-oy-3,,,|builtin:led-tvstue,builtin:led-sor,window:win-s2,window:win-s1,window:door-terrasse,window:win-k1,window:win-k2,window:win-tv"
+    },
+    "20261018_082827@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,,,,|,,window:win-s2,window:win-s1,window:door-terrasse,window:win-k1,window:win-k2,window:win-tv"
+    },
+    "20261018_082827@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "20261018_082827@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "20261018_082829@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.251206534738,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,windowspot:win-tv,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,window:win-s2,window:win-s1,window:door-terrasse,window:win-k1,window:win-k2"
+    },
+    "20261018_082829@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,,,,|window:win-tv,,,window:win-s2,window:win-s1,window:door-terrasse,window:win-k1,window:win-k2"
+    },
+    "20261018_082829@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "20261018_082829@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "20261018_082909@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.258958429273,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,windowspot:win-tv,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,window:win-k1,window:win-k2,window:win-s1,window:door-terrasse,window:win-s2"
+    },
+    "20261018_082909@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,,,,|window:win-tv,,,window:win-k1,window:win-k2,window:win-s1,window:door-terrasse,window:win-s2"
+    },
+    "20261018_082909@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:pendel-oy-3,builtin:tak-tvstue,,,|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue,builtin:led-overskap,,,,"
+    },
+    "20261018_082909@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:pendel-oy-3,builtin:tak-tvstue,,,|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue,builtin:led-overskap,,,,"
+    },
+    "20261018_082924@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.255826811976,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:pendel-oy-3,builtin:tak-tvstue,windowspot:win-tv,,|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue,window:win-s1,window:door-terrasse,window:win-k2,window:win-k1,window:win-s2"
+    },
+    "20261018_082924@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,,,,|window:win-tv,,,window:win-s1,window:door-terrasse,window:win-k2,window:win-k1,window:win-s2"
+    },
+    "20261018_082924@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:tak-tvstue,builtin:pendel-oy-2,builtin:pendel-oy-3,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue,builtin:led-overskap,,,,"
+    },
+    "20261018_082924@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:tak-tvstue,builtin:pendel-oy-2,builtin:pendel-oy-3,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-kjokken,builtin:led-tvstue,builtin:led-overskap,,,,"
+    },
+    "20261018_083012@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.254376057049,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-4,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-1,item:ex-f-pendel-stue:0,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:tak-tvstue,builtin:pendel-oy-2,builtin:pendel-oy-3,builtin:pendel-oy-1,,,|builtin:led-sor,window:win-s2,builtin:led-tvstue,window:win-s1,window:door-terrasse,window:win-k1,window:win-k2,window:win-tv"
+    },
+    "20261018_083012@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,,,,|,window:win-s2,,window:win-s1,window:door-terrasse,window:win-k1,window:win-k2,window:win-tv"
+    },
+    "20261018_083012@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "20261018_083012@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "20261018_083019@8.5": {
+     "room": "stue-kjokken",
+     "Lkey": 12.0139690274,
+     "S": 0.013794841412,
+     "wb": [
+      1.06381912247,
+      0.994165467347,
+      0.909487938903
+     ],
+     "wbK": [
+      8444,
+      7451
+     ],
+     "amb": 0.254989955835,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-3,builtin:pendel-oy-2,builtin:pendel-oy-1,,,|builtin:led-sor,builtin:led-tvstue,window:win-s2,window:win-s1,window:door-terrasse,window:win-k1,window:win-k2,window:win-tv"
+    },
+    "20261018_083019@12": {
+     "room": "stue-kjokken",
+     "Lkey": 448.367034547,
+     "S": 0.00101839146844,
+     "wb": [
+      0.888275818049,
+      1.02966374037,
+      1.16608485633
+     ],
+     "wbK": [
+      4955,
+      5780
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 265
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|,,,,item:ex-f-pendel-stue:0,bounce:w-sor,bounce:w-kjokken-sor,,,,,,,|,,window:win-s2,window:win-s1,window:door-terrasse,window:win-k1,window:win-k2,window:win-tv"
+    },
+    "20261018_083019@20": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379341412042,
+     "S": 0.141126359604,
+     "wb": [
+      0.559118262813,
+      1.27312067369,
+      4.28861730869
+     ],
+     "wbK": [
+      2745,
+      5810
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:pendel-oy-3,,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "20261018_083019@23": {
+     "room": "stue-kjokken",
+     "Lkey": 0.379338856436,
+     "S": 0.141127044157,
+     "wb": [
+      0.559994419116,
+      1.27050200721,
+      4.36097632756
+     ],
+     "wbK": [
+      2723,
+      5723
+     ],
+     "amb": 0.25,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1097
+     },
+     "slots": "item:ex-f-pendel-stue:0:up,item:ex-f-telys-v2:0,item:ex-f-lykt-v1:0,|builtin:spot-hoyvegg-1,builtin:spot-hoyvegg-2,builtin:spot-hoyvegg-3,builtin:spot-hoyvegg-4,item:ex-f-pendel-stue:0,builtin:tak-tvstue,builtin:ring-kjokken-1,builtin:ring-kjokken-2,builtin:pendel-oy-2,builtin:pendel-oy-1,builtin:pendel-oy-3,,,|builtin:led-sor,builtin:led-tvstue,builtin:led-kjokken,builtin:led-overskap,,,,"
+    },
+    "soverom@8.5": {
+     "room": "soverom",
+     "Lkey": 1.68209034589,
+     "S": 0.056817155677,
+     "wb": [
+      0.855027700315,
+      1.01710436769,
+      1.39701462609
+     ],
+     "wbK": [
+      5825,
+      7714
+     ],
+     "amb": 9.68015743263,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",,,|,,,,builtin:l-sov-tak,,,,,,,,,|window:win-sov,builtin:l-sov-garderobe,,,,,,"
+    },
+    "soverom@12": {
+     "room": "soverom",
+     "Lkey": 4.17388735891,
+     "S": 0.0295325995237,
+     "wb": [
+      0.975699985429,
+      0.993372911163,
+      1.17396742665
+     ],
+     "wbK": [
+      6433,
+      7040
+     ],
+     "amb": 18.0800217278,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",,,|,,,,builtin:l-sov-tak,,,,,,,,,|window:win-sov,builtin:l-sov-garderobe,,,,,,"
+    },
+    "soverom@20": {
+     "room": "soverom",
+     "Lkey": 0.89473379759,
+     "S": 0.0760834779307,
+     "wb": [
+      0.670578916557,
+      1.1274824455,
+      1.94617657142
+     ],
+     "wbK": [
+      3626,
+      6041
+     ],
+     "amb": 5.11032619329,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",,,|,,,,builtin:l-sov-tak,,,,,,,,,|,builtin:l-sov-garderobe,,,,,,"
+    },
+    "soverom@23": {
+     "room": "soverom",
+     "Lkey": 0.894733597737,
+     "S": 0.0760834901667,
+     "wb": [
+      0.670783961676,
+      1.12722523314,
+      1.94885804318
+     ],
+     "wbK": [
+      3618,
+      6020
+     ],
+     "amb": 4.45251066439,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1023
+     },
+     "slots": ",,,|,,,,builtin:l-sov-tak,,,,,,,,,|,builtin:l-sov-garderobe,,,,,,"
+    },
+    "gang@8.5": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.0227410047788,
+     "wb": [
+      0.696924650998,
+      1.12962032003,
+      1.89638108462
+     ],
+     "wbK": [
+      3628,
+      5810
+     ],
+     "amb": 2.46656026417,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",,,|,,,,builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,,,|,,,,,,,"
+    },
+    "gang@12": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.0227410047788,
+     "wb": [
+      0.696924650998,
+      1.12962032003,
+      1.89638108462
+     ],
+     "wbK": [
+      3628,
+      5810
+     ],
+     "amb": 2.18279173227,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",,,|,,,,builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,,,|,,,,,,,"
+    },
+    "gang@20": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.019329854062,
+     "wb": [
+      0.678626199294,
+      1.13712803408,
+      1.95683823701
+     ],
+     "wbK": [
+      3628,
+      6023
+     ],
+     "amb": 1.92886449306,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",,,|,,,,builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,,,|,,,,,,,"
+    },
+    "gang@23": {
+     "room": "gang",
+     "Lkey": 6.0002388621,
+     "S": 0.019329854062,
+     "wb": [
+      0.678626199294,
+      1.13712803408,
+      1.95683823701
+     ],
+     "wbK": [
+      3628,
+      6023
+     ],
+     "amb": 1.7016404158,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 700
+     },
+     "slots": ",,,|,,,,builtin:l-gang-tak,builtin:l-kg-1,builtin:l-kg-4,,,,,,,|,,,,,,,"
+    },
+    "kjellerstue@8.5": {
+     "room": "kjellerstue",
+     "Lkey": 8.44830478474,
+     "S": 0.0177752986045,
+     "wb": [
+      0.802397408432,
+      1.04982850329,
+      1.55716712587
+     ],
+     "wbK": [
+      5269,
+      7718
+     ],
+     "amb": 3.0231921918,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": true,
+      "lampLumens": 1400
+     },
+     "slots": ",,,|,,,,builtin:l-ks-10,builtin:l-ks-3,,,,,,,,|window:win-ks-1,window:win-ks-2,,,,,,"
+    },
+    "kjellerstue@12": {
+     "room": "kjellerstue",
+     "Lkey": 238.535661442,
+     "S": 0.00160417820079,
+     "wb": [
+      0.860546179989,
+      1.03956216408,
+      1.23342423902
+     ],
+     "wbK": [
+      4603,
+      5580
+     ],
+     "amb": 5.5113436819,
+     "info": {
+      "effective": "day",
+      "lampsOnByDefault": false,
+      "lampLumens": 0
+     },
+     "slots": ",,,|,,,,,,,,,,,,,|window:win-ks-1,window:win-ks-2,,,,,,"
+    },
+    "kjellerstue@20": {
+     "room": "kjellerstue",
+     "Lkey": 3.88607385907,
+     "S": 0.026427858154,
+     "wb": [
+      0.566618025351,
+      1.27253165461,
+      4.22844556929
+     ],
+     "wbK": [
+      2748,
+      5734
+     ],
+     "amb": 2.17065056726,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1400
+     },
+     "slots": ",,,|,,,,builtin:l-ks-10,builtin:l-ks-3,,,,,,,,|,,,,,,,"
+    },
+    "kjellerstue@23": {
+     "room": "kjellerstue",
+     "Lkey": 3.88607285351,
+     "S": 0.0264278630778,
+     "wb": [
+      0.566793765609,
+      1.27203565974,
+      4.24218898326
+     ],
+     "wbK": [
+      2744,
+      5717
+     ],
+     "amb": 1.92476499376,
+     "info": {
+      "effective": "night",
+      "lampsOnByDefault": true,
+      "lampLumens": 1400
+     },
+     "slots": ",,,|,,,,builtin:l-ks-10,builtin:l-ks-3,,,,,,,,|,,,,,,,"
+    }
+   }
+  }
+ }
+}

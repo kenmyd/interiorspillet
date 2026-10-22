@@ -281,12 +281,23 @@ export const PRODUCTS = {
   'bohus-linus-sapedispenser-8x8': { params: { squareBody: true } },
   'bohus-frikk-vegghylle-60x20': { params: { brackets: 'straps' } },
   'bohus-tamara-vegghylle-60x49': { params: { brackets: 'battens' } },
+  // OXBERG: one tall door pair over the three lower rows, like the photo (bookcase doorsSpanRows, runde 3 P06)
+  'ikea-billy-oxberg-bokhylle-med-dorer-80x30x202': { params: { doorsSpanRows: true } },
   'jysk-cirkelhuse-stumtjener-h174': { params: { coats: 0 } },
   'jysk-hejsager-vegghylle-3-hyller-65x20': { params: { brackets: 'battens' } },
   // ---- speil (moved from Smått, CATEGORY_MOVES)
   'bohus-applewood-speil-o90': { set: { subcategory: 'veggspeil' } },
   'bohus-othilie-speil-90x93': { set: { subcategory: 'veggspeil' } },
   'bohus-holmen-cape-speil-med-sprosser-h200': { set: { subcategory: 'veggspeil' } },
+  // ---- kunst (moved from Smått, CATEGORY_MOVES; runde 3): canvas pictures with their own motif, seed and palette
+  // (design/art.md §7.2 rows B1/B4/B5/B6; palette[1] = the variant's print colour); the old w/h/orientation params were
+  // never read by the model (dims are the size)
+  // Ramor: the Bohus photo is dark rust and black (a light ground made it beige; INTEGRATOR-B)
+  'bohus-ramor-canvas-bilde-90x120': { set: { subcategory: 'lerret' }, params: { w: null, h: null, motif: 'brush-abstract', motifOpts: { variant: 'diagonal' }, seed: 4, palette: ['#3a2c24', '#786354', '#a8774f', '#1e1713', '#c99a6b'] } },
+  // Mara: horizontal beige, taupe and brown streaks like the Bohus photo (INTEGRATOR-B)
+  'bohus-holmen-mara-canvas-bilde-120x60': { set: { subcategory: 'lerret' }, params: { w: null, h: null, orientation: null, motif: 'brush-abstract', motifOpts: { variant: 'horizon' }, seed: 7, texture: 'painted', palette: ['#ebe5dc', '#a89a8a', '#c8bcae', '#7a6d60', '#d9d0c4'] }, variants: [['Beige/natur', { colors: { print: '#a89a8a', frame: '#c3b7aa' } }]] },
+  'bohus-holmen-gustin-strukturbilde-80x100': { set: { subcategory: 'lerret' }, noteAppend: 'Utgående serie hos Bohus (sjekket 2026-10-21).', params: { w: null, h: null, motif: 'texture-plaster', motifOpts: { variant: 'waves' }, seed: 3, palette: ['#a3a3a4', '#8a8a8b', '#6d6d6e', '#2a2a2b', '#c4c4c4'] } },
+  'bohus-labyrint-strukturbilde-80x120': { set: { subcategory: 'lerret' }, noteAppend: 'Utgående serie hos Bohus (sjekket 2026-10-21).', params: { w: null, h: null, orientation: null, motif: 'texture-plaster', motifOpts: { variant: 'maze' }, seed: 11, palette: ['#f2f0ec', '#e9e7e4', '#d8d2c9', '#9c9488', '#cfbead'] } },
 };
 
 // Lenestol model tuning (2026-10-21): the dims / params each armchair needs to look like the store photos from the
@@ -300,12 +311,21 @@ for (const [id, t] of Object.entries(ARMCHAIR_TUNING)) {
 
 /**
  * Products that moved to another category (normalize-data.mjs moves them before normalising): the three mirrors of the
- * first round lived in Smått until the Speil category came with the rest of the house.
+ * first round lived in Smått until the Speil category came with the rest of the house; the round-1 art and side tables
+ * left Smått in runde 3 (Kunst og bilder, Bord → Sidebord – they keep their subcategory `sidebord`).
  */
 export const CATEGORY_MOVES = {
   'bohus-applewood-speil-o90': 'speil',
   'bohus-othilie-speil-90x93': 'speil',
   'bohus-holmen-cape-speil-med-sprosser-h200': 'speil',
+  'bohus-ramor-canvas-bilde-90x120': 'kunst',
+  'bohus-holmen-mara-canvas-bilde-120x60': 'kunst',
+  'bohus-holmen-gustin-strukturbilde-80x100': 'kunst',
+  'bohus-labyrint-strukturbilde-80x120': 'kunst',
+  'bohus-duett-sidebord-sett-o49': 'bord',
+  'bohus-basoon-sidebord-o45': 'bord',
+  'bohus-sindig-berg-sidebord-o40': 'bord',
+  'bohus-seaford-sidebord-35x43': 'bord',
 };
 
 /** English / one-colour variant names → Norwegian (WoodUpp, Fibrotech). */

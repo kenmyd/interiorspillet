@@ -6,6 +6,7 @@ import * as shadingModule from '../models/shading.js';
 import { describeElement, elementBounds, ELEMENT_TYPES } from '../models/walldesigns.js';
 import { finishArea, hasFelt, lookOf, sizeOf, SLAT_SIZES, surfaceKind } from '../design/Finishes.js';
 import wallData from '../data/wall-proposals.json';
+import { itemQuantity, gridOf } from '../design/grid.js';
 
 /**
  * Shopping list (I) – ARCHITECTURE §12: every new catalogue item in the current design grouped by store, with
@@ -14,7 +15,11 @@ import wallData from '../data/wall-proposals.json';
  * leaves the room; the total; «Kopier liste», «Last ned CSV» and «Skriv ut».
  *
  *   new ShoppingPanel(editor) – open() / close() / toggle() / isOpen / update() / dispose()
- *   list() → { stores, wall, shading, finishes, removed, total: { min, max }, count }   (the data behind the panel)
+ *   list() → { stores, wall, shading, finishes, removed, extras, total: { min, max }, count }   (the data behind the panel)
+ *   addSection({ list, render, text, csv, print }) → off   a feature module's own section («Egne bilder» …)
+ *
+ * A grid item (design/grid.js: a row or grid of downlights) counts as rows × cols fittings, grouped by the size of ONE
+ * fitting; products sold in packs (packSize) are rounded up to whole packs («9 stk = 3 pakker à 3»).
  *
  * Module exports (also for other panels):
  *   wallEstimate(design, { customProposal }) → the high wall's price and materials (see below), null = bare wall
@@ -506,6 +511,8 @@ export class ShoppingPanel extends BasePanel {
     // the same bag as the toolbar button (ui/icons.js has no bag icon)
     this.el.querySelector('.ip-panel__head')?.prepend(h('span.ip-panel__icon', {}, svg(IC.bag)));
     this._dirty = false;
+    /** Extra sections of feature modules (addSection). */
+    this._sections = [];
     this._off = editor.design.on('change', (e) => {
       if (e?.type !== 'meta') this._dirty = true;
     });
@@ -516,6 +523,22 @@ export class ShoppingPanel extends BasePanel {
     const print = button({ label: 'Skriv ut', size: 'sm', title: 'Skriv ut handlelisten', onClick: () => this.print() });
     print.prepend(svg(IC.print));
     this.foot.append(copy, csv, print);
+  }
+
+  /**
+   * Adds a section (ui/customArtShopping.js «Egne bilder» …). It never adds to the total.
+   *   list(editor) → data|null   ·   render(data, panel) → HTMLElement   ·   text(data) → string[] (heading first)
+   *   csv(data) → Array<Array>  (8 columns like the others)   ·   print(data, esc) → HTML string
+   * @returns {() => void} removes it
+   */
+  addSection(sec) {
+    this._sections.push(sec);
+    this._dirty = true;
+    return () => {
+      const i = this._sections.indexOf(sec);
+      if (i >= 0) this._sections.splice(i, 1);
+      this._dirty = true;
+    };
   }
 
   onOpen() {
@@ -532,22 +555,25 @@ export class ShoppingPanel extends BasePanel {
 
   /**
    * The shopping list as data.
-   * @returns {{ stores: Array<{ store: string, rows: object[], total: number }>, wall: object|null, shading: object[], removed: object[], total: { min: number, max: number }, count: number, unknown: number }}
+   * @returns {{ stores: Array<{ store: string, rows: object[], total: number }>, wall: object|null, shading: object[], removed: object[], extras: Array<{ s: object, data: * }>, total: { min: number, max: number }, count: number, unknown: number }}
    */
   list() {
     const e = this.editor;
     const cat = e.catalog;
     const d = e.design;
-    // catalogue items, merged per product + variant + colours/materials/size
+    // catalogue items, merged per product + variant + colours/materials/size (of ONE fitting: a grid item of
+    // downlights is rows × cols of them)
     const groups = new Map();
     for (const it of d.list()) {
       if (it.source !== 'catalog' || it.hidden) continue;
       const p = cat.getProduct(it.refId);
       if (!p) continue;
-      const key = JSON.stringify([p.id, it.variantIndex, it.colors, it.materials, it.dims]);
+      const n = itemQuantity(it);
+      const head = gridOf(it).head;
+      const key = JSON.stringify([p.id, it.variantIndex, it.colors, it.materials, head]);
       const g = groups.get(key);
-      if (g) g.qty++;
-      else groups.set(key, { product: p, item: it, qty: 1 });
+      if (g) g.qty += n;
+      else groups.set(key, { product: p, item: it, qty: n, head });
     }
     const byStore = new Map();
     let total = 0;
@@ -560,7 +586,10 @@ export class ShoppingPanel extends BasePanel {
       const v = p.variants?.[vi];
       const custom = v && (Object.entries(g.item.colors || {}).some(([k, c]) => v.colors?.[k] && String(v.colors[k]).toLowerCase() !== String(c).toLowerCase())
         || Object.entries(g.item.materials || {}).some(([k, m]) => v.materials?.[k] && v.materials[k] !== m));
-      const customDims = ['w', 'd', 'h'].some((k) => Math.abs((g.item.dims?.[k] ?? 0) - (p.dims?.[k] ?? 0)) > 0.005);
+      const customDims = ['w', 'd', 'h'].some((k) => Math.abs((g.head?.[k] ?? 0) - (p.dims?.[k] ?? 0)) > 0.005);
+      // packs (a 3-pack of downlights): whole packs – the row shows «9 stk = 3 pakker à 3»
+      const pvi = Math.max(0, Math.min((p.variants?.length || 1) - 1, vi));
+      const pur = Number(p.packSize) > 1 ? cat.purchaseOf?.(p, pvi, g.qty) : null;
       const row = {
         product: p,
         variantIndex: vi,
@@ -568,7 +597,9 @@ export class ShoppingPanel extends BasePanel {
         qty: g.qty,
         unit: info.price,
         listUnit: info.onSale ? info.listPrice : null,
-        sum: info.price != null ? info.price * g.qty : null,
+        sum: pur?.total ?? (info.price != null ? info.price * g.qty : null),
+        packs: pur?.packs ?? null,
+        packSize: pur?.packSize ?? 1,
         onSale: info.onSale,
         from: info.from,
         url: v?.url || p.url,
@@ -626,7 +657,7 @@ export class ShoppingPanel extends BasePanel {
       for (const o of d.originalJSON().items) {
         const cur = d.get(o.uid);
         if (!cur) removed.push({ name: o.name, how: 'fjernet' });
-        else if (cur.source === 'catalog') removed.push({ name: o.name, how: `byttet ut med ${cur.name}` });
+        else if (cur.source === 'catalog' || (cur.source === 'custom' && cur.params?.imageId)) removed.push({ name: o.name, how: `byttet ut med ${cur.name}` });
       }
     } catch {
       /* optional */
@@ -642,16 +673,27 @@ export class ShoppingPanel extends BasePanel {
     const fMin = finishes.reduce((s, f) => s + f.min, 0);
     const fMax = finishes.reduce((s, f) => s + f.max, 0);
 
+    // feature sections (own pictures …): listed, never added to the total
+    const extras = [];
+    for (const sec of this._sections) {
+      try {
+        const data = sec.list(e);
+        if (data) extras.push({ s: sec, data });
+      } catch (err) {
+        console.warn('[shopping] section failed', err);
+      }
+    }
+
     const min = total + shadingTotal + (wall?.min || 0) + fMin;
     const max = total + shadingTotal + (wall?.max || 0) + fMax;
-    return { stores, wall, shading, shadingTotal, finishes, removed, total: { min, max }, count, unknown };
+    return { stores, wall, shading, shadingTotal, finishes, removed, extras, total: { min, max }, count, unknown };
   }
 
   _render() {
     const data = this.list();
     const scroll = this.body.scrollTop;
     const kids = [];
-    const nothing = !data.stores.length && !data.wall && !data.shading.length && !data.finishes.length;
+    const nothing = !data.stores.length && !data.wall && !data.shading.length && !data.finishes.length && !data.extras.length;
     if (nothing) {
       kids.push(emptyState('Ingenting nytt i designet ennå. Legg til møbler, lamper og tekstiler fra katalogen (K), velg et veggforslag (V) eller solskjerming (B) – så havner de her med pris og lenke.', 'info'));
       const b = button({ label: 'Åpne katalogen', variant: 'primary', size: 'sm', onClick: () => this.editor.ui.catalog?.open?.() });
@@ -697,6 +739,15 @@ export class ShoppingPanel extends BasePanel {
       kids.push(section('Solskjerming', h('div.iph-rows', {}, data.shading.map((s) => this._shadingRow(s)))));
     }
 
+    for (const x of data.extras) {
+      try {
+        const el = x.s.render(x.data, this);
+        if (el) kids.push(el);
+      } catch (err) {
+        console.warn('[shopping] section failed', err);
+      }
+    }
+
     if (data.removed.length) {
       kids.push(section('Ut av stua', h('ul.iph-removed', {}, data.removed.slice(0, 12).map((r) => h('li', { text: `${r.name} – ${r.how}` }))),
         data.removed.length > 12 ? h('p.iph-foot-note', { text: `… og ${data.removed.length - 12} til` }) : null));
@@ -726,7 +777,8 @@ export class ShoppingPanel extends BasePanel {
       imgBox,
       h('div.iph-row__main', {},
         h('div.iph-row__name', { text: p.name, title: r.categoryLabel ? `${p.name} (${r.categoryLabel})` : p.name }),
-        h(`div.iph-row__sub${r.custom || r.customDims ? '.is-warn' : ''}`, { text: sub || p.brand || '', title: r.custom || r.customDims ? 'Du har endret farge/mål – sjekk at butikken har det' : sub })),
+        h(`div.iph-row__sub${r.custom || r.customDims ? '.is-warn' : ''}`, { text: sub || p.brand || '', title: r.custom || r.customDims ? 'Du har endret farge/mål – sjekk at butikken har det' : sub }),
+        r.packs ? h('div.iph-row__sub', { text: `${r.qty} stk = ${r.packs} ${r.packs === 1 ? 'pakke' : 'pakker'} à ${r.packSize}` }) : null),
       h('div.iph-row__right', {},
         price,
         h('span.iph-row__qty', { text: r.qty > 1 ? `${r.qty} × ${fmtNok(r.unit)}` : '1 stk' }),
@@ -809,6 +861,13 @@ export class ShoppingPanel extends BasePanel {
       }
       lines.push('');
     }
+    for (const x of data.extras) {
+      try {
+        lines.push(...x.s.text(x.data), '');
+      } catch (err) {
+        console.warn('[shopping] section text failed', err);
+      }
+    }
     lines.push(`TOTALT: ca. ${rangeText(data.total.min, data.total.max)}`);
     lines.push('Prisene er hentet i oktober 2026 – sjekk hos butikken før du bestiller.');
     return lines.join('\n');
@@ -861,6 +920,13 @@ export class ShoppingPanel extends BasePanel {
       if (!s.product) continue;
       const e = s.est;
       rows.push([s.product.store, `${s.window?.name || s.windowId}: ${s.product.name}`, s.variant, shadingQty(e), e.madeToMeasure ? '' : e.unit ?? '', e.total ?? '', [e.approx ? 'ca.' : '', ...e.lines, ...e.warns.map((x) => `OBS: ${x}`)].filter(Boolean).join(' '), s.url || '']);
+    }
+    for (const x of data.extras) {
+      try {
+        rows.push(...x.s.csv(x.data));
+      } catch (err) {
+        console.warn('[shopping] section csv failed', err);
+      }
     }
     rows.push(['', 'Totalt', '', '', '', data.total.min === data.total.max ? data.total.min : `${data.total.min}–${data.total.max}`, '', '']);
     return `﻿${rows.map((r) => r.map(csvCell).join(';')).join('\r\n')}`;
@@ -915,6 +981,13 @@ export class ShoppingPanel extends BasePanel {
         shadingQty(s.est),
         s.est.total != null ? `${s.est.approx ? 'ca. ' : ''}${esc(fmtNok(s.est.total))}` : 'pris ukjent',
       ])).join('')}</table>`;
+    }
+    for (const x of data.extras) {
+      try {
+        body += x.s.print(x.data, esc);
+      } catch (err) {
+        console.warn('[shopping] section print failed', err);
+      }
     }
     const html = `<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>Handleliste</title><style>
       body { font: 11pt/1.4 'Segoe UI', system-ui, sans-serif; color: #111; margin: 18mm; }

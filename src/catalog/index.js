@@ -15,11 +15,13 @@ import speil from '../data/catalog/speil.json';
 import bad from '../data/catalog/bad.json';
 import gang from '../data/catalog/gang.json';
 import taklampe from '../data/catalog/taklampe.json';
+import spotter from '../data/catalog/spotter.json';
 import smalamper from '../data/catalog/smalamper.json';
 import tekstil from '../data/catalog/tekstil.json';
 import teppe from '../data/catalog/teppe.json';
 import solskjerming from '../data/catalog/solskjerming.json';
 import akustikk from '../data/catalog/akustikk.json';
+import kunst from '../data/catalog/kunst.json';
 import smatt from '../data/catalog/smatt.json';
 
 /**
@@ -32,6 +34,9 @@ import smatt from '../data/catalog/smatt.json';
  *             defaultVariant, absorption, absorptionNote?, light?, description, why, imageUrl, verified,
  *             requiredExtras?: [{ name, priceNok|null, store, perUnit }] (e.g. the inner cushion of a cover),
  *             packSize?, packPriceNok? (sold in packs only), shippingNok? (fixed freight per order) }
+ *
+ * light = { lumens (ONE fitting / whole rail – the store's figure), colorK, dimmable, kind, bulb? }. A grid item of a
+ * spotter product stands for several fittings (design/grid.js itemQuantity): the shopping list and the lumens count them.
  *
  * Prices (data/scripts/fixes.mjs explains the campaign rule): a variant with its own priceNok has its own list price
  * and is only on sale with its own salePriceNok; other variants use the product's priceNok / salePriceNok.
@@ -66,6 +71,9 @@ const CATEGORY_SVG = {
   teppe: S('<rect x="4.5" y="5" width="15" height="14" rx="1"/><rect x="8" y="8.5" width="8" height="7" rx=".6"/><path d="M6.5 5V3M10 5V3M14 5V3M17.5 5V3M6.5 21v-2M10 21v-2M14 21v-2M17.5 21v-2"/>'),
   solskjerming: S('<rect x="4" y="3.5" width="16" height="2.5" rx="1"/><path d="M5 8.5h14M5 11.5h14M5 14.5h14M5 17.5h14M12 6v14"/>'),
   akustikk: S('<path d="M5 4v16M9 4v16M13 4v16M17 4v16"/><path d="M3 4h17v16H3"/>'),
+  // runde 3: a recessed can with a beam and a floor pool; a hung frame with a mountain and the sun
+  spotter: S('<path d="M3 4h18"/><path d="M9 4v2.2a1.3 1.3 0 0 0 1.3 1.3h3.4A1.3 1.3 0 0 0 15 6.2V4"/><path d="M10.2 9.8l-3.2 8.7M13.8 9.8l3.2 8.7M12 10.5v2.8"/><path d="M5.5 20.5h13"/>'),
+  kunst: S('<rect x="3.5" y="6" width="17" height="14" rx="1"/><path d="M8.5 6L12 2.8 15.5 6"/><path d="M3.5 17l5-5 4 4 2.5-2.5 5.5 5"/><circle cx="16" cy="10" r="1.5"/>'),
   smatt: S('<path d="M9.5 3.5h5M10.5 3.5v3C8 8 6.5 10.5 6.5 13.5c0 3.6 2.5 6 5.5 6s5.5-2.4 5.5-6c0-3-1.5-5.5-4-7v-3"/>'),
 };
 
@@ -77,8 +85,8 @@ const CATEGORY_SVG = {
 export const CATEGORIES = Object.freeze([
   { key: 'sofa', label: 'Sofaer', icon: 'sofa', rooms: ['stue', 'kjellerstue'] },
   { key: 'lenestol', label: 'Lenestoler', icon: 'sofa', rooms: ['stue', 'kjellerstue', 'soverom'] },
-  { key: 'bord', label: 'Bord', icon: 'home', rooms: ['stue', 'kjellerstue'] },
-  { key: 'stoler', label: 'Spisestoler', icon: 'sofa', rooms: ['stue', 'kjellerstue'] },
+  { key: 'bord', label: 'Bord', icon: 'home', rooms: ['stue', 'kjellerstue', 'soverom'] },
+  { key: 'stoler', label: 'Stoler og krakker', icon: 'sofa', rooms: ['stue', 'kjellerstue', 'soverom'] },
   { key: 'skjenk', label: 'Skjenker', icon: 'home', rooms: ['stue', 'kjellerstue', 'gang'] },
   { key: 'tvbenk', label: 'TV-benker', icon: 'monitor', rooms: ['stue', 'kjellerstue'] },
   { key: 'vitrineskap', label: 'Vitrineskap', icon: 'cabinet', rooms: ['stue', 'kjellerstue'] },
@@ -91,11 +99,13 @@ export const CATEGORIES = Object.freeze([
   { key: 'bad', label: 'Bad', icon: 'palette', rooms: ['bad'] },
   { key: 'gang', label: 'Gang', icon: 'exit', rooms: ['gang'] },
   { key: 'taklampe', label: 'Taklamper', icon: 'bulb', rooms: ['alle'] },
+  { key: 'spotter', label: 'Spotter og downlights', icon: 'bulb', rooms: ['alle'] },
   { key: 'smalamper', label: 'Små lamper', icon: 'lamp', rooms: ['alle'] },
-  { key: 'tekstil', label: 'Puter og pledd', icon: 'palette', rooms: ['stue', 'kjellerstue', 'soverom'] },
+  { key: 'tekstil', label: 'Puter, pledd og puffer', icon: 'palette', rooms: ['stue', 'kjellerstue', 'soverom'] },
   { key: 'teppe', label: 'Tepper', icon: 'sliders', rooms: ['alle'] },
   { key: 'solskjerming', label: 'Solskjerming', icon: 'blinds', rooms: ['alle'] },
   { key: 'akustikk', label: 'Akustikk', icon: 'volume', rooms: ['stue', 'kjellerstue'] },
+  { key: 'kunst', label: 'Kunst og bilder', icon: 'palette', rooms: ['alle'] },
   { key: 'smatt', label: 'Smått', icon: 'pin', rooms: ['alle'] },
 ].map((c) => Object.freeze({ rooms: ['stue'], ...c, iconSvg: CATEGORY_SVG[c.key] })));
 
@@ -139,7 +149,7 @@ export const SUBCATEGORY_LABELS = Object.freeze({
   sjeselong: 'Sofaer med sjeselong',
   sovesofa: 'Sovesofaer',
   spisebord: 'Spisebord',
-  sofabord: 'Sofabord',
+  sofabord: 'Sofabord og salongbord',
   spisebenk: 'Spisebenker',
   kontinentalseng: 'Kontinentalsenger',
   rammeseng: 'Rammesenger',
@@ -167,11 +177,40 @@ export const SUBCATEGORY_LABELS = Object.freeze({
   stumtjener: 'Stumtjenere',
   lopere: 'Løpere',
   morklegging: 'Mørkleggingsgardiner',
+  // runde 3
+  spisestol: 'Spisestoler',
+  barkrakk: 'Barstoler og barkrakker',
+  krakk: 'Krakker',
+  kontorstol: 'Kontorstoler',
+  skrivebord: 'Skrivebord',
+  konsollbord: 'Konsollbord',
+  arbeidslampe: 'Arbeidslamper',
+  '4-seter': '4-seter',
+  innfelt: 'Innfelte downlights',
+  utenpaliggende: 'Utenpåliggende downlights',
+  takspot: 'Takspotter',
+  skinne: 'Spotskinner',
+  veggspot: 'Veggspotter',
+  bildebelysning: 'Bildebelysning',
+  lerret: 'Lerret, malerier og glassbilder',
+  innrammet: 'Innrammede bilder',
+  plakat: 'Plakater',
+  bildevegg: 'Bildevegger og sett',
+  ramme: 'Rammer',
+});
+
+/**
+ * One muted line under a category's subcategory chips (CatalogPanel); a click opens `goto` (and its `sub`). Wall lamps
+ * stay in Små lamper, and the art left Smått for its own category (runde 3).
+ */
+export const CATEGORY_HINTS = Object.freeze({
+  spotter: Object.freeze({ text: 'Vegglamper med skjerm finner du under Små lamper → Vegglamper.', goto: 'smalamper', sub: 'vegglampe' }),
+  smatt: Object.freeze({ text: 'Bilder og kunst har fått egen kategori: Kunst og bilder.', goto: 'kunst' }),
 });
 
 const DATA = {
   sofa, lenestol, bord, stoler, skjenk, tvbenk, vitrineskap, hylle, seng, nattbord, kommode, garderobe, speil, bad, gang,
-  taklampe, smalamper, tekstil, teppe, solskjerming, akustikk, smatt,
+  taklampe, spotter, smalamper, tekstil, teppe, solskjerming, akustikk, kunst, smatt,
 };
 const ALL = Object.freeze(CATEGORIES.flatMap((c) => DATA[c.key] || []));
 const BY_ID = new Map(ALL.map((p) => [p.id, p]));

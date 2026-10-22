@@ -676,6 +676,1365 @@
     "priceConfidence": "checked"
   },
   {
+    "id": "bohus-drape-sofabordsett-95x67",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "Dråpe sofabordsett 95x67xH45/79x51xH35",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sofabord/drape-sofabordsett-67x95",
+    "priceNok": 6999,
+    "salePriceNok": 5249,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 294524, lakkert askefiner mørk brun): 5 249 kr (før 6 999 kr, kampanje «serie DRÅPE» til 2026-11-30). Prisen gjelder settet med to bord. Hvitpigmentert (varenr. 316836) 5 249 kr (før 6 999 kr) og Svart (varenr. 294525) 5 249 kr (før 6 999 kr) – samme pris. Flatpakket.",
+    "dims": {
+      "w": 0.95,
+      "d": 0.67,
+      "h": 0.45
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "organic",
+      "seed": 3,
+      "topT": 0.03,
+      "edge": "straight",
+      "base": "legs",
+      "legStyle": "round-taper",
+      "legCount": 3,
+      "legD": 0.11,
+      "legInset": 0.07,
+      "set": [
+        {
+          "w": 0.79,
+          "d": 0.51,
+          "h": 0.35,
+          "dx": 0.34,
+          "dz": 0.2,
+          "dent": 0.25,
+          "dentAt": 1.5707963267948966
+        }
+      ],
+      "dent": 0.25,
+      "dentAt": -1.5707963267948966
+    },
+    "variants": [
+      {
+        "name": "Mørk brun",
+        "colors": {
+          "body": "#4b3b31",
+          "front": "#4b3b31",
+          "top": "#4b3b31",
+          "legs": "#4b3b31",
+          "handle": "#4b3b31"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      },
+      {
+        "name": "Hvitpigmentert",
+        "colors": {
+          "body": "#ddd0bd",
+          "front": "#ddd0bd",
+          "top": "#ddd0bd",
+          "legs": "#ddd0bd",
+          "handle": "#ddd0bd"
+        },
+        "materials": {
+          "body": "ash",
+          "front": "ash",
+          "top": "ash",
+          "legs": "ash",
+          "handle": "ash"
+        },
+        "url": "https://www.bohus.no/bord/sofabord/drape-sofabordsett-67x95-3",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Consilimo%20AS/Produkter/DR%C3%85PE/594147/image-thumb__594147__PDP-Product/316836%20-%20Dr%C3%A5pe%20sofabordsett%2067x95%20H45%20og%2051x79%20H35%20lakkert%20askefiner%20hvitpigmentert%20-%201.84d7f955.jpg"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "body": "#201d1b",
+          "front": "#201d1b",
+          "top": "#201d1b",
+          "legs": "#201d1b",
+          "handle": "#201d1b"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "url": "https://www.bohus.no/bord/sofabord/drape-sofabordsett-67x95-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Martinsen%20AS/Produkter/DR%C3%85PE/295024/image-thumb__295024__PDP-Product/294525%20-%20Dr%C3%A5pe%20sofabordsett%2067x95%20H45%20og%2051x79%20H35%20lakkert%20askefiner%20svart%20-%201.ecafc245.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Sett med to organiske, dråpeformede sofabord i lakkert askefiner (95 × 67 og 79 × 51 cm) på kraftige, avrundede ben; det lave skyves inn under det høye.",
+    "why": "De myke formene passer foran en buet eller lang sofa i stua, og to bord i ulik høyde kan trekkes fra hverandre når det er gjester og skyves sammen for et ryddig uttrykk.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Martinsen%20AS/Produkter/DR%C3%85PE/295023/image-thumb__295023__PDP-Product/294524%20-%20Dr%C3%A5pe%20sofabordsett%2067x95%20H45%20og%2051x79%20H35%20lakkert%20askefiner%20m%C3%B8rk%20brun%20-%203.8b4e06b2.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål 95 × 67 H45 og 79 × 51 H35 cm, platetykkelse 3 cm, 8 cm mellom platene, bilde, varenr. 294524, 316836 og 294525. Anslått: benplassering og hvor det lave bordet står.",
+    "priceConfidence": "checked",
+    "shapeNote": "To dråpe-/nyreformede bord: det store (95 × 67, H45) på tre kraftige ben – et rundt og to buede plateben – og det lave (79 × 51, H35) som skyves delvis inn under. Plasseringen av det lave bordet og benformen er forenklet fra bildet."
+  },
+  {
+    "id": "bohus-nardo-sidebord-med-hylle-60x40",
+    "category": "bord",
+    "subcategory": "sidebord",
+    "name": "Nardo sidebord med hylle 60x40",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sidebord/nardo-sidebord-med-hylle-60x40-1",
+    "priceNok": 3999,
+    "salePriceNok": 2999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 318681, brunbeiset lakkert eikefiner): 2 999 kr (før 3 999 kr, kampanje «serie NARDO» til 2026-11-30). Hvitpigmentert (varenr. 318680) 2 999 kr (før 3 999 kr) – samme pris.",
+    "dims": {
+      "w": 0.6,
+      "d": 0.4,
+      "h": 0.54
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "rounded",
+      "cornerR": 0.02,
+      "topT": 0.025,
+      "edge": "bevel",
+      "base": "legs",
+      "legStyle": "round-taper",
+      "legD": 0.04,
+      "legInset": 0.03,
+      "apron": true,
+      "apronH": 0.06,
+      "shelf": "slats",
+      "shelfH": 0.17
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "body": "#46392f",
+          "front": "#46392f",
+          "top": "#46392f",
+          "legs": "#46392f",
+          "handle": "#46392f"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        }
+      },
+      {
+        "name": "Hvitpigmentert",
+        "colors": {
+          "body": "#d8cab4",
+          "front": "#d8cab4",
+          "top": "#d8cab4",
+          "legs": "#d8cab4",
+          "handle": "#d8cab4"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/bord/sidebord/nardo-sidebord-med-hylle-60x40",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/NARDO/624116/image-thumb__624116__PDP-Product/318680%20-%20NARDO%20Sidebord%20Hvitpigmentert%20-%201.f9036f07.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Sidebord i eik med plate i finer, ben og spilehylle i heltre eik – to etasjer med plass til bøker under.",
+    "why": "Passer ved enden av sofaen eller lenestolen i stua, og hylla nede gir et fast sted til lesestoff så bordplaten holdes ryddig.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/NARDO/350614/image-thumb__350614__PDP-Product/318681%20-%20Nardo%20sidebord%20med%20hylle%2060x40%20H54%20cm%20lakkert%20eikefiner%20brun%20-%202.1b367f88.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål 60 × 40 H54 cm, eikefiner og heltre eik, bilde, varenr. 318681 og 318680 (eget bilde sjekket). Anslått: hyllehøyde og sarg fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rektangulær plate med avrundede hjørner og skråfas, sarg, fire runde, svakt koniske ben og en spilehylle nede. Hyllehøyden er anslått fra bildet."
+  },
+  {
+    "id": "bohus-madrid-skrivebord-120x48",
+    "category": "bord",
+    "subcategory": "skrivebord",
+    "name": "Madrid skrivebord 120x48",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/skrivebord/madrid-skrivebord-120x48-1",
+    "priceNok": 4699,
+    "salePriceNok": 2349,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 289726, foliert spon matt svart): 2 349 kr (før 4 699 kr, kampanje «MADRID-serien i svart og hvit» til 2026-11-30). Hvit (varenr. 289719) 2 349 kr (før 4 699 kr); Eik (varenr. 308473) 4 699 kr. Flatpakket.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.48,
+      "h": 0.77
+    },
+    "archetype": "desk",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "topT": 0.025,
+      "edge": "straight",
+      "frame": "panel",
+      "legStyle": "square",
+      "legD": 0.04,
+      "unit": "right",
+      "unitFronts": "drawers:3",
+      "unitW": 0.4,
+      "unitH": 0,
+      "modesty": true,
+      "handle": "knob",
+      "unitLegH": 0.08,
+      "gableStyle": "framed"
+    },
+    "variants": [
+      {
+        "name": "Matt svart",
+        "colors": {
+          "body": "#1f1f1f",
+          "front": "#1f1f1f",
+          "top": "#1f1f1f",
+          "legs": "#1f1f1f",
+          "handle": "#8a5a3a"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#eeece8",
+          "front": "#eeece8",
+          "top": "#eeece8",
+          "legs": "#eeece8",
+          "handle": "#8a5a3a"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/bord/skrivebord/madrid-skrivebord-120x48",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/285598/image-thumb__285598__PDP-Product/289719%20-%20Madrid%20skrivebord%20120x48%20H77%203%20skuffer%20foliert%20sponplate%20hvit%20-%205.e381884e.jpg"
+      },
+      {
+        "name": "Eik",
+        "colors": {
+          "body": "#c9a87e",
+          "front": "#c9a87e",
+          "top": "#c9a87e",
+          "legs": "#c9a87e",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/bord/skrivebord/madrid-skrivebord-120x48-2",
+        "priceNok": 4699,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/321423/image-thumb__321423__PDP-Product/308473%20-%20Madrid%20skrivebord%20120x48%20H76%203%20skuffer%20foliert%20spon%20eik%20-%205.9c4c9b80.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Kompakt skrivebord (120 × 48) med tre skuffer i en seksjon til høyre, bakplate og små skinnhåndtak – i svart, hvitt eller eik.",
+    "why": "Bare 48 cm dypt, så det får plass i det lille kjellersoverommet på 7,4 m² som hjemmekontor, og skuffene holder papirer og ledninger unna.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/285605/image-thumb__285605__PDP-Product/289726%20-%20Madrid%20skrivebord%20120x48%20H77%203%20skuffer%20foliert%20sponplate%20svart%20-%204.7b760577.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål 120 × 48 H77 cm (eik H76), 3 skuffer, bilde, varenr. 289726, 289719 og 308473 (eget bilde sjekket). Anslått: seksjonens bredde fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Gavl på venstre side og en skuffeseksjon med tre skuffer på korte ben til høyre, bakplate mellom dem; skinnstropper som håndtak. Seksjonens bredde er anslått fra bildet."
+  },
+  {
+    "id": "bohus-nola-skrivebord-120x60",
+    "category": "bord",
+    "subcategory": "skrivebord",
+    "name": "Nola skrivebord 120x60",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/skrivebord/nola-skrivebord-60x120",
+    "priceNok": 9165,
+    "salePriceNok": 4582,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 280470, hvitoljet eikefiner, 2 sjalusidører, svart metallunderstell): 4 582 kr (før 9 165 kr, kampanje «NOLA-serien i hvitoljet» til 2026-11-30). Røykfarget (varenr. 299523) 9 165 kr. Flatpakket.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.6,
+      "h": 0.75
+    },
+    "archetype": "desk",
+    "mount": "floor",
+    "params": {
+      "shape": "rounded",
+      "cornerR": 0.06,
+      "topT": 0.02,
+      "edge": "straight",
+      "frame": "legs",
+      "legStyle": "metal-thin",
+      "legD": 0.016,
+      "drawers": 2,
+      "frontStyle": "ribbed",
+      "handle": "bar"
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eik / svart understell",
+        "colors": {
+          "body": "#cfb48f",
+          "front": "#cfb48f",
+          "top": "#d1b892",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        }
+      },
+      {
+        "name": "Røykfarget eik / svart understell",
+        "colors": {
+          "body": "#6b5444",
+          "front": "#6b5444",
+          "top": "#6e5747",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "url": "https://www.bohus.no/bord/skrivebord/nola-skrivebord-120x120",
+        "priceNok": 9165,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOLA/316776/image-thumb__316776__PDP-Product/299523%20-%20Nola%20skrivebord%20120x60%20H75%20lakkert%20eikefiner%20r%C3%B8ykfarget%20-%205.f94b19f0.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Skrivebord i eikefiner med riflet front og to sjalusidører som skjuler oppbevaring, på et slankt svart metallunderstell.",
+    "why": "Den riflede fronten matcher resten av Nola-serien (skjenk, TV-benk og bord), og de svarte bena gjentar husets svarte detaljer – et pent hjemmekontor i kjelleren eller en arbeidsplass i stua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOLA/256053/image-thumb__256053__PDP-Product/280470%20-%20Nola%20skrivebord%20med%20sjalusid%C3%B8rer%2060x120%20H75%20lakkert%20eikefiner%20hvitoljet%20-%205.1282a27b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål 120 × 60 H75 cm, 2 sjalusidører, svart metallunderstell, bilde, varenr. 280470 og 299523 (eget bilde sjekket). Anslått: kassens høyde og hjørneradius fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Plate med avrundede hjørner over en riflet kasse med to sjalusidører (lagt inn som to riflede skuffer), på tynne svarte metallben med stag og kryss bak. Kassens høyde anslått fra bildet."
+  },
+  {
+    "id": "bohus-porto-rundt-sidebord-med-hylle-o55",
+    "category": "bord",
+    "subcategory": "sidebord",
+    "name": "Porto rundt sidebord med hylle Ø55",
+    "brand": "Kleppe",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sidebord/porto-sofabord-o55-1",
+    "priceNok": 4999,
+    "salePriceNok": 4499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 236337, espresso svart lakkert askefiner, ben i heltre eik): 4 499 kr (før 4 999 kr, kampanje «alt fra Kleppe» til 2026-11-30). Norskprodusert bestillingsvare (sortiment GT).",
+    "dims": {
+      "w": 0.55,
+      "d": 0.55,
+      "h": 0.45
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "round",
+      "topT": 0.022,
+      "edge": "straight",
+      "base": "legs",
+      "legStyle": "splayed",
+      "legCount": 3,
+      "legD": 0.045,
+      "legInset": 0.04,
+      "shelf": "board",
+      "shelfH": 0.17
+    },
+    "variants": [
+      {
+        "name": "Espresso svart",
+        "colors": {
+          "body": "#201e1d",
+          "front": "#201e1d",
+          "top": "#201e1d",
+          "legs": "#201e1d",
+          "handle": "#201e1d"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rundt, norskprodusert sidebord Ø55 i svartlakkert ask med tre skrå eikeben og en rund hylle under platen.",
+    "why": "Den runde formen og tre ben gjør det lett å plassere inntil sofaen eller ved lenestolen, og det svarte treverket passer de svarte detaljene i huset.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/KLEPPE%20M%C3%98BELFABRIKK%20AS/Produkter/PORTO/263463/image-thumb__263463__PDP-Product/236337%20-%20Porto%20sofabord%20%C3%9855%20H45%20espresso%20-%202.e8bee70f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål Ø55 H45 cm, askefiner og heltre eik, bilde, varenr. 236337. Anslått: hyllehøyde og bentykkelse fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rund plate på tre skrå, kraftige ben med en rund hylleplate nede. Hyllehøyden er anslått fra bildet."
+  },
+  {
+    "id": "bohus-nola-ovalt-sofabord-60x120",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "Nola ovalt sofabord 60x120",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sofabord/nola-ovalt-sofabord-60x120",
+    "priceNok": 6169,
+    "salePriceNok": 3084,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 317655, hvitoljet eikefiner, spilesokkel): 3 084 kr (før 6 169 kr, kampanje «NOLA-serien i hvitoljet» til 2026-11-30). Flatpakket.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.6,
+      "h": 0.4
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "stadium",
+      "topT": 0.02,
+      "edge": "straight",
+      "base": "ribbed",
+      "baseInset": 0.16,
+      "ribPitch": 0.03,
+      "ribDepth": 0.01,
+      "plinthH": 0.015
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eik",
+        "colors": {
+          "body": "#d3bd9c",
+          "front": "#d3bd9c",
+          "top": "#d3bd9c",
+          "legs": "#d3bd9c",
+          "handle": "#d3bd9c"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Ovalt sofabord i hvitoljet eikefiner på en riflet spilesokkel – lavt (40 cm) og uten ben å snuble i.",
+    "why": "Den avrundede platen gir god flyt mellom sofa og TV i stua, og spilesokkelen gjentar spilene ellers i huset; den lyse eiken passer mot veggfargen Sand.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOLA/592682/image-thumb__592682__PDP-Product/317655%20-%20Nola%20ovalt%20sofabord%2060x120%20H40%20cm%20hvitoljet%20eikefiner%20med%20spile%20sokkel%20-%202.bed2ece9.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål L120 B60 H40 cm, platetykkelse 2 cm, sokkelhøyde 37,4 cm, bilde, varenr. 317655. Anslått: sokkelens lengde og bredde fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Plate med rette langsider og runde ender på en smalere, riflet spilesokkel med en tynn sokkelplate; sokkelen er ca. halvparten så lang som platen. Sokkelens størrelse er anslått fra bildet."
+  },
+  {
+    "id": "bohus-evans-sidebord-o35",
+    "category": "bord",
+    "subcategory": "sidebord",
+    "name": "Evans sidebord Ø35",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sidebord/evans-sidebord-o35-2",
+    "priceNok": 1599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 327329, brun marmor/krom): 1 599 kr, ingen kampanje. Sand/krom (varenr. 326516) 1 599 kr – samme pris.",
+    "dims": {
+      "w": 0.35,
+      "d": 0.35,
+      "h": 0.56
+    },
+    "archetype": "side-table-round",
+    "mount": "floor",
+    "params": {
+      "topT": 0.02,
+      "waistD": 0.035,
+      "baseD": 0.25
+    },
+    "variants": [
+      {
+        "name": "Brun marmor / krom",
+        "colors": {
+          "body": "#c4c6c8",
+          "front": "#c4c6c8",
+          "top": "#4e3f34",
+          "legs": "#c4c6c8",
+          "handle": "#c4c6c8"
+        },
+        "materials": {
+          "body": "chrome",
+          "front": "chrome",
+          "top": "marble-dark",
+          "legs": "chrome",
+          "handle": "chrome"
+        }
+      },
+      {
+        "name": "Sand marmor / krom",
+        "colors": {
+          "body": "#c4c6c8",
+          "front": "#c4c6c8",
+          "top": "#c9b9a1",
+          "legs": "#c4c6c8",
+          "handle": "#c4c6c8"
+        },
+        "materials": {
+          "body": "chrome",
+          "front": "chrome",
+          "top": "marble-white",
+          "legs": "chrome",
+          "handle": "chrome"
+        },
+        "url": "https://www.bohus.no/bord/sidebord/evans-sidebord-o35",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/EVANS/611371/image-thumb__611371__PDP-Product/326516%20-%20Evans%20sidebord%20%C3%9835%20H56%20marmor%20sand-krom%20-%202.384bbf5a.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Lite sidebord med plate i ekte marmor (brun eller sand) på en slank søyle og rund fot i blank krom.",
+    "why": "Et lite, elegant avlastningsbord ved lenestolen eller sofaenden i stua – marmoren tåler et glass, og den smale foten tar nesten ingen plass.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/EVANS/611999/image-thumb__611999__PDP-Product/327329%20-%20Evans%20sidebord%20%C3%9835%20H56%20marmor%20brun-krom%20-%201.21ca6a8c.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål Ø35 H56 cm, marmor og krom, bilde, varenr. 327329 og 326516 (eget bilde sjekket). Anslått: søyle- og fotdiameter fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rund marmorplate på en tynn, blank kromsøyle med rund fotplate. Søylens og fotplatens diameter er anslått fra bildet."
+  },
+  {
+    "id": "bohus-oland-skrivebord-60x120",
+    "category": "bord",
+    "subcategory": "skrivebord",
+    "name": "Øland skrivebord 60x120",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/skrivebord/oland-skrivebord-b-120",
+    "priceNok": 7899,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 249909, svartbeiset lakkert eikefiner i fiskebensmønster): 7 899 kr, ingen kampanje. Flatpakket.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.6,
+      "h": 0.76
+    },
+    "archetype": "desk",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "topT": 0.02,
+      "edge": "straight",
+      "frame": "legs",
+      "legStyle": "splayed",
+      "legD": 0.045,
+      "drawers": 2,
+      "handle": "cutout",
+      "topPattern": "herringbone",
+      "legInset": 0.1
+    },
+    "variants": [
+      {
+        "name": "Svartbeiset eik",
+        "colors": {
+          "body": "#26221f",
+          "front": "#26221f",
+          "top": "#26221f",
+          "legs": "#26221f",
+          "handle": "#26221f"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Skrivebord i svartbeiset eik med plate i fiskebensmønster, to skuffer, en åpen hylle i midten og skrå, koniske ben.",
+    "why": "Et elegant, mørkt skrivebord som gjentar de svarte detaljene i huset; passer som hjemmekontor i kjellersoverommet eller som sekretær i stua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/%C3%98LAND/155229/image-thumb__155229__PDP-Product/249909%20-%20%C3%98land%20skrivebord%20B-120%20H76.5%20svartbeiset%20eik-beiset%20-%204.5f45f72a.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål 120 × 60 H76 cm (H76,5 i beskrivelsen), 2 skuffer og 1 hylle, fiskebensmønster, bilde, varenr. 249909. Anslått: kassens høyde og bentykkelse fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Kasse under platen med to skuffer og en åpen hylle i midten, på fire skrå, koniske ben; platen er i fiskebensmønster. Den åpne hylla i midten er ikke med i modellen."
+  },
+  {
+    "id": "bohus-dice-pidestall-35x35",
+    "category": "bord",
+    "subcategory": "sidebord",
+    "name": "Dice pidestall 35x35",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sidebord/dice-pidestall-35x35",
+    "priceNok": 3299,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 284723, foliert MDF travertin grå): 3 299 kr, ingen kampanje. Leveres montert.",
+    "dims": {
+      "w": 0.35,
+      "d": 0.35,
+      "h": 0.7
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "topT": 0.012,
+      "edge": "straight",
+      "base": "drum",
+      "baseInset": 0,
+      "plinthH": 0
+    },
+    "variants": [
+      {
+        "name": "Travertin grå",
+        "colors": {
+          "body": "#88827a",
+          "front": "#88827a",
+          "top": "#88827a",
+          "legs": "#88827a",
+          "handle": "#88827a"
+        },
+        "materials": {
+          "body": "travertine",
+          "front": "travertine",
+          "top": "travertine",
+          "legs": "travertine",
+          "handle": "travertine"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Høy, kvadratisk pidestall (35 × 35, H70) i grå travertinimitasjon – brukes som sidebord, plantebord eller sokkel for en lampe.",
+    "why": "Den rene blokkformen gir et stille steinpreg ved sofaen eller i gangen og tar lite plass; høyden passer som lampebord ved siden av en lenestol.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/DICE/279488/image-thumb__279488__PDP-Product/284723%20-%20Dice%20pidestall%2035x35%20H70%20og%2025x25%20H50%20foliert%20travertin%20gr%C3%A5%20marmor%20-%205.d103cde9.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål 35 × 35 H70 cm, foliert MDF med travertinmønster, bilde, varenr. 284723.",
+    "priceConfidence": "checked",
+    "shapeNote": "Massiv, kvadratisk søyle (pidestall) uten ben, i folie med grå travertinmønster. Bildet viser også en lavere søyle (25 × 25, H50) som selges separat."
+  },
+  {
+    "id": "bohus-vega-sofabord-90x90",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "Vega sofabord 90x90",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sofabord/vega-sofabord-90x90-3",
+    "priceNok": 10599,
+    "salePriceNok": 8399,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 323664, lakkert marmor latte, V-formet understell): 8 399 kr (før 10 599 kr, kampanje «serie VEGA» til 2026-11-30). Ekte marmor – hvert bord er unikt.",
+    "dims": {
+      "w": 0.9,
+      "d": 0.9,
+      "h": 0.42
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "topT": 0.02,
+      "edge": "straight",
+      "base": "v",
+      "legInset": 0.04,
+      "vDepth": 0.25
+    },
+    "variants": [
+      {
+        "name": "Latte",
+        "colors": {
+          "body": "#c7b6a0",
+          "front": "#c7b6a0",
+          "top": "#c7b6a0",
+          "legs": "#c7b6a0",
+          "handle": "#c7b6a0"
+        },
+        "materials": {
+          "body": "marble-white",
+          "front": "marble-white",
+          "top": "marble-white",
+          "legs": "marble-white",
+          "handle": "marble-white"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Kvadratisk sofabord i ekte, lakkert marmor i varm lattefarge med et skulpturelt V-formet understell i samme stein.",
+    "why": "Et tungt, rolig steinbord som passer foran hjørnesofaen i kjellerstua; den beige marmoren går fint sammen med veggfargene Sand og Marrakesh.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S/Produkter/VEGA/269533/image-thumb__269533__PDP-Product/286613%20-%20Vega%20sofabord%2090x90%20H42%20marmor%20lakkert%20matt%20latte%20med%20v-formet%20understell%20-%201.30c5b00b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål 90 × 90 H42 cm, platetykkelse 2 cm, V-formet understell 40 cm, bilde, varenr. 323664. Anslått: understellets form fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Kvadratisk marmorplate på et V-understell av marmorplater som møtes under midten. Platenes plassering under bordet er anslått fra bildet."
+  },
+  {
+    "id": "bohus-celma-sidebord-o27-5",
+    "category": "bord",
+    "subcategory": "sidebord",
+    "name": "Celma sidebord Ø27,5",
+    "brand": "Holmen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sidebord/leni-sidebord-o27-5",
+    "priceNok": 1599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 328001, metall matt svart): 1 599 kr, ingen kampanje. Leveres montert.",
+    "dims": {
+      "w": 0.275,
+      "d": 0.275,
+      "h": 0.6
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "round",
+      "tray": true,
+      "topT": 0.008,
+      "edge": "straight",
+      "base": "spider",
+      "legStyle": "metal-thin",
+      "legD": 0.015,
+      "legInset": 0,
+      "hubH": 0.12
+    },
+    "variants": [
+      {
+        "name": "Matt svart",
+        "colors": {
+          "body": "#1c1c1c",
+          "front": "#1c1c1c",
+          "top": "#1c1c1c",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "black-metal",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Lite brettbord i matt svart metall: rund plate med kant på en slank stang og fire buede føtter.",
+    "why": "Tar nesten ingen plass – fint ved lenestolen, som nattbord i det lille kjellersoverommet eller i gangen, og den svarte metallen passer husets svarte detaljer.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Consilimo%20AS/Produkter/CELMA/616676/image-thumb__616676__PDP-Product/328001%20-%20Celma%20sidebord%20%C3%9827.5%20H60%20cm%20metall%20matt%20svart%20-%201.90addf20.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål Ø27,5 H60 cm, metall matt svart, bilde, varenr. 328001. Anslått: kantens høyde og føttenes spenn fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Liten rund brettplate med opphøyd kant på en tynn stang med fire buede føtter som spriker ut. Butikkens Ø27,5 ligger under arketypens minste bredde (0,3)."
+  },
+  {
+    "id": "bohus-josh-sidebord-sett-35x35",
+    "category": "bord",
+    "subcategory": "sidebord",
+    "name": "Josh sidebord sett 35x35",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sidebord/josh-sidebord-35x35-1",
+    "priceNok": 1999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 260016, svart galvanisert stål): 1 999 kr, ingen kampanje. Prisen gjelder settet med to bord (35 × 35, H55 og 30 × 30, H48). Leveres montert.",
+    "dims": {
+      "w": 0.35,
+      "d": 0.35,
+      "h": 0.55
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "topT": 0.01,
+      "edge": "straight",
+      "base": "frame",
+      "tubeW": 0.014,
+      "frameFloor": true,
+      "legInset": 0,
+      "set": [
+        {
+          "w": 0.3,
+          "d": 0.3,
+          "h": 0.48,
+          "dx": 0.2,
+          "dz": 0
+        }
+      ]
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "body": "#1c1c1c",
+          "front": "#1c1c1c",
+          "top": "#2d2e2f",
+          "legs": "#1c1c1c",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "black-metal",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Sett med to kvadratiske sidebord i svart galvanisert stål (35 × 35, H55 og 30 × 30, H48) med tynn rørramme og strukturert plate; det lave skyves inn under det høye.",
+    "why": "Den lette, svarte rammen gjentar husets svarte detaljer og tar lite plass ved sofaen i kjellerstua; to bord når det er gjester, skjøvet sammen når det skal være ryddig.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Season%20ASIA%20Co.%20Ltd/Produkter/JOSH/141986/image-thumb__141986__PDP-Product/260016%20-%20Josh%20sidebord%2035x35%20H55%20galvanisert%20jern%20svart%20-%201.496e62ba.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål 35 × 35 H55 og 30 × 30 H48 cm (sett av 2), galvanisert stål svart, bilde, varenr. 260016. Anslått: rørdimensjon, platetykkelse og hvor det lave bordet står.",
+    "priceConfidence": "checked",
+    "shapeNote": "To kvadratiske bord med tynn, firkantet rørramme (fire stolper, ramme under platen og et rektangel på gulvet) og tynn stålplate med struktur. Det lave bordet står forskjøvet til høyre og delvis inn under det høye, som på bildet. Rørdimensjon og platetykkelse er anslått fra bildet."
+  },
+  {
+    "id": "bohus-esbjerg-sofabord-65x130",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "Esbjerg sofabord 65x130",
+    "brand": "Kleppe",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sofabord/esbjerg-sofabord-65x130",
+    "priceNok": 8799,
+    "salePriceNok": 7919,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 236331, hvitfarget lakkert eikefiner, ben i hvitoljet heltre eik): 7 919 kr (før 8 799 kr, kampanje «alt fra Kleppe» til 2026-11-30). Norskprodusert bestillingsvare (sortiment GT).",
+    "dims": {
+      "w": 1.3,
+      "d": 0.65,
+      "h": 0.49
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "rounded",
+      "cornerR": 0.03,
+      "topT": 0.022,
+      "edge": "bevel",
+      "base": "legs",
+      "legStyle": "splayed",
+      "legD": 0.045,
+      "legInset": 0.09,
+      "shelf": "slats",
+      "shelfH": 0.2
+    },
+    "variants": [
+      {
+        "name": "Hvitfarget eik / hvitoljet eik",
+        "colors": {
+          "body": "#d6c2a2",
+          "front": "#d6c2a2",
+          "top": "#dccab0",
+          "legs": "#d6c2a2",
+          "handle": "#1c1c1c"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Norskprodusert sofabord i lys, hvitfarget eik med skrå ben og en spilehylle under platen til aviser og fjernkontroller.",
+    "why": "Hylla under gjør det lett å holde bordplaten i stua ryddig, og de skrå bena og den lyse eiken gir et lett, skandinavisk uttrykk mot veggfargen Sand.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/KLEPPE%20M%C3%98BELFABRIKK%20AS/Produkter/ESBJERG/593532/image-thumb__593532__PDP-Product/236331%20-%20Esbjerg%20sofabord%2065x130%20H49%20cm%20med%20underhylle%20lakkert%20eikefiner%20hvitfarget%20med%20ben%20hvitoljet%20heltre%20eik%20-%201.2c9d855f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål 130 × 65 H49 cm, underhylle, ben i hvitoljet heltre eik, binding i svart jern, bilde, varenr. 236331. Anslått: hyllehøyde og bentykkelse fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rektangulær plate med avrundede hjørner og skråfas, fire skrå, koniske ben og en spilehylle nede holdt av svarte jernbeslag. Hyllehøyden og bentykkelsen er anslått fra bildet."
+  },
+  {
+    "id": "bohus-ritz-rundt-sofabord-o100",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "Ritz rundt sofabord Ø100",
+    "brand": "Bohus Exclusive by Storm Storm",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sofabord/ritz-rundt-sofabord-o100",
+    "priceNok": 10999,
+    "salePriceNok": 7699,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 306035, beige travertin, understell hvitoljet eikefiner): 7 699 kr (før 10 999 kr, kampanjepris til 2026-11-30). Platen må fraktes stående.",
+    "dims": {
+      "w": 1,
+      "d": 1,
+      "h": 0.45
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "round",
+      "topT": 0.022,
+      "edge": "straight",
+      "base": "cross",
+      "legD": 0.04,
+      "crossL": 0.57
+    },
+    "variants": [
+      {
+        "name": "Travertin / hvitoljet eik",
+        "colors": {
+          "body": "#c6a983",
+          "front": "#c6a983",
+          "top": "#bfb39e",
+          "legs": "#c6a983",
+          "handle": "#c6a983"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "travertine",
+          "legs": "oak",
+          "handle": "oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rundt sofabord Ø100 med plate i beige travertin og et kryssformet understell av hvitoljede eikeplater.",
+    "why": "Naturstein og lys eik gir en rolig, varm kontrast i stua, og den runde platen er lett å gå rundt mellom sofa og lenestol under skråtaket.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/RITZ/310927/image-thumb__310927__PDP-Product/306035%20-%20Ritz%20rundt%20sofabord%20%C3%98100%20H45%20travertin%20marmor%20med%20understell%20eikefiner%20hvitoljet%20-%201.643b7757.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål Ø100 H45 cm, platetykkelse 1,8 cm, travertin og hvitoljet eikefiner, bilde, varenr. 306035. Anslått: understellets mål fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rund travertinplate med eikekant på et kryss av to rette eikeplater (ca. 57 cm over kryss). Kryssets størrelse og platenes tykkelse er anslått fra bildet."
+  },
+  {
+    "id": "ikea-ugglerum-bord-130x65",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "UGGLERUM bord 130x65",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/ugglerum-bord-valnottfiner-60627980/",
+    "priceNok": 1795,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 606.279.80, valnøttfiner): 1 795 kr, merket «Nyhet», ingen førpris.",
+    "dims": {
+      "w": 1.3,
+      "d": 0.65,
+      "h": 0.43
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "topT": 0.02,
+      "edge": "straight",
+      "base": "legs",
+      "legStyle": "round-taper",
+      "legD": 0.045,
+      "legInset": 0.1,
+      "apron": true,
+      "apronH": 0.06
+    },
+    "variants": [
+      {
+        "name": "Valnøttfiner",
+        "colors": {
+          "body": "#6f5037",
+          "front": "#6f5037",
+          "top": "#6f5037",
+          "legs": "#6f5037",
+          "handle": "#6f5037"
+        },
+        "materials": {
+          "body": "walnut",
+          "front": "walnut",
+          "top": "walnut",
+          "legs": "walnut",
+          "handle": "walnut"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Enkelt, lavt sofabord i valnøttfiner med tynn plate, smal sarg og runde ben – et rimelig bord i 1950-tallsånd.",
+    "why": "Den mørke valnøtten gir varme i kjellerstua og passer mot svarte detaljer; det smale bordet (65 cm) tar lite gulvplass foran sofaen.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/ugglerum-bord-valnottfiner__1489735_pe1003955_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»-fanen): 1 795 kr, lengde 130, bredde 65, høyde 43 cm, bilde, art.nr. 606.279.80. Anslått: platetykkelse, sarg og benplassering fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Tynn rektangulær plate som stikker godt ut over fire runde ben, med en smal sarg under. Benplassering og bentykkelse anslått fra bildet."
+  },
+  {
+    "id": "ikea-valnas-bord-118x72",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "VALNÄS bord 118x72",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/valnaes-bord-eikefiner-20628038/",
+    "priceNok": 2995,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 206.280.38, eikefiner): 2 995 kr, merket «Nyhet», ingen førpris.",
+    "dims": {
+      "w": 1.18,
+      "d": 0.72,
+      "h": 0.5
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "oval",
+      "tray": true,
+      "topT": 0.02,
+      "edge": "straight",
+      "base": "legs",
+      "legStyle": "square",
+      "legCount": 4,
+      "legD": 0.04,
+      "legInset": 0.06
+    },
+    "variants": [
+      {
+        "name": "Eikefiner",
+        "colors": {
+          "body": "#cfa877",
+          "front": "#cfa877",
+          "top": "#d1aa76",
+          "legs": "#cfa877",
+          "handle": "#b8955a"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "brass"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Ovalt sofabord i eikefiner med opphøyd kant som et brett, rette ben med krysstag og små sko i messing.",
+    "why": "Brettkanten hindrer at ting triller ned, og den ovale formen i lys eik gir en myk overgang mellom sofaen og spisedelen i stua.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/valnaes-bord-eikefiner__1474541_pe998121_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»-fanen): 2 995 kr, lengde 118, bredde 72, høyde 50 cm, bilde, art.nr. 206.280.38. Anslått: bentykkelse og kantens høyde fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Oval plate med opphøyd kant (brett) på fire rette ben med kryssende stag nede og messingsko. Stagene og messingskoene er ikke med i modellen."
+  },
+  {
+    "id": "ikea-micke-skrivebord-105x50",
+    "category": "bord",
+    "subcategory": "skrivebord",
+    "name": "MICKE skrivebord 105x50",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/micke-skrivebord-hvit-80213074/",
+    "priceNok": 1495,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 802.130.74, hvit): 1 495 kr, ingen førpris eller kampanje.",
+    "dims": {
+      "w": 1.05,
+      "d": 0.5,
+      "h": 0.75
+    },
+    "archetype": "desk",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "topT": 0.025,
+      "edge": "straight",
+      "frame": "u-frame",
+      "legStyle": "metal-square",
+      "legD": 0.025,
+      "drawers": 1,
+      "unit": "left",
+      "unitFronts": "door",
+      "unitW": 0.35,
+      "unitH": 0,
+      "handle": "cutout"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f1f0ec",
+          "front": "#f1f0ec",
+          "top": "#f1f0ec",
+          "legs": "#f1f0ec",
+          "handle": "#f1f0ec"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Lite hvitt skrivebord med en seksjon med dør og skuff, en bred skuff under platen og hull for ledninger.",
+    "why": "Rimelig og kompakt (105 × 50) – passer langs veggen i det lille kjellersoverommet som hjemmekontor uten å ta over rommet.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/micke-skrivebord-hvit__0736018_pe740345_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»-fanen): 1 495 kr, bredde 105, dybde 50, høyde 75 cm, bilde, art.nr. 802.130.74. Anslått: seksjonens bredde og skuffenes mål fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Seksjon til venstre med en liten skuff og en dør, en bred skuff under platen og en lukket metallramme som ben til høyre. Seksjonens bredde er anslått fra bildet."
+  },
+  {
+    "id": "ikea-trotten-skrivebord-hev-senk-120x70",
+    "category": "bord",
+    "subcategory": "skrivebord",
+    "name": "TROTTEN skrivebord hev/senk 120x70",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/trotten-skrivebord-hev-senk-elektrisk-askemonstret-hvit-s39621881/",
+    "priceNok": 2595,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 396.218.81, elektrisk, askemønstret/hvit): 2 595 kr, ingen førpris eller kampanje. Høyden kan stilles fra 71 til 118 cm.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.7,
+      "h": 0.72
+    },
+    "archetype": "desk",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "topT": 0.02,
+      "edge": "straight",
+      "frame": "sit-stand",
+      "legStyle": "metal-square",
+      "heightMin": 0.71,
+      "heightMax": 1.18,
+      "handle": "none"
+    },
+    "variants": [
+      {
+        "name": "Askemønstret / hvit",
+        "colors": {
+          "body": "#eeece8",
+          "front": "#eeece8",
+          "top": "#dccbae",
+          "legs": "#eeece8",
+          "handle": "#eeece8"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "ash",
+          "legs": "painted",
+          "handle": "painted"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Elektrisk hev/senk-skrivebord med lys plate i askemønster og hvitt understell – kan stilles fra 71 til 118 cm.",
+    "why": "Gir et skikkelig hjemmekontor i kjellersoverommet der man kan veksle mellom å sitte og stå; den lyse platen holder det lille rommet lyst.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/trotten-skrivebord-hev-senk-elektrisk-askemonstret-hvit__1517353_pe1012257_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»-fanen): 2 595 kr, bredde 120, dybde 70, min. høyde 71, maks høyde 118 cm, bilde, art.nr. 396.218.81. Anslått: sittehøyden 72 cm som vist høyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Hev/senk-bord med lys plate og hvitt understell: søyler som smalner ned mot skrå føtter. Vist i sittehøyde (72 cm)."
+  },
+  {
+    "id": "ikea-alex-skrivebord-100x48",
+    "category": "bord",
+    "subcategory": "skrivebord",
+    "name": "ALEX skrivebord 100x48",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/alex-skrivebord-hvit-10473555/",
+    "priceNok": 1495,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 104.735.55, hvit): 1 495 kr, ingen førpris eller kampanje.",
+    "dims": {
+      "w": 1,
+      "d": 0.48,
+      "h": 0.76
+    },
+    "archetype": "desk",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "topT": 0.025,
+      "edge": "straight",
+      "frame": "legs",
+      "legStyle": "metal-square",
+      "legD": 0.025,
+      "drawers": 2,
+      "handle": "cutout"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f1f0ec",
+          "front": "#f1f0ec",
+          "top": "#f1f0ec",
+          "legs": "#f1f0ec",
+          "handle": "#f1f0ec"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Lett hvitt skrivebord (100 × 48) med to skuffer med innfrest grep og slanke ben i firkantrør.",
+    "why": "Tar lite plass og ser lett ut – passer under vinduet i kjellersoverommet eller som sminke- og skrivebord på soverommet.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/alex-skrivebord-hvit__0977658_pe813725_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»-fanen): 1 495 kr, bredde 100, dybde 48, høyde 76, fri høyde under 62 cm, bilde, art.nr. 104.735.55. Anslått: bentykkelse fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Kasse med to skuffer med innfreste grep og en ledningsåpning, på fire tynne firkantrør med stag nede. Stagene er ikke med i modellen."
+  },
+  {
+    "id": "skeidar-line-sofabord-o80",
+    "category": "bord",
+    "subcategory": "sofabord",
+    "name": "Line sofabord Ø80",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-bord/sofabord/line-sofabord?VariationId=V_5637413117",
+    "priceNok": 9999,
+    "salePriceNok": 6999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 1351040, sortbeiset eik): kampanje 6 999 kr til 15.11, før 9 999 kr. Bestillingsvare på nett, leveringstid ca. 5–6 uker.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.8,
+      "h": 0.4
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "round",
+      "topT": 0.02,
+      "edge": "straight",
+      "base": "ribbed",
+      "baseInset": 0.035,
+      "ribPitch": 0.05,
+      "ribDepth": 0.018,
+      "plinthH": 0.03
+    },
+    "variants": [
+      {
+        "name": "Sortbeiset eik",
+        "colors": {
+          "body": "#3c3a38",
+          "front": "#3c3a38",
+          "top": "#3c3a38",
+          "legs": "#3c3a38",
+          "handle": "#3c3a38"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rundt sofabord Ø80 i sortbeiset eik med en krans av heltre spiler rundt et skjult oppbevaringsrom under platen.",
+    "why": "Den svarte eiken gjentar husets svarte detaljer, og plassen bak spilene gir et ryddig sted for fjernkontroller og tidsskrifter i kjellerstua.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1351040/1351040_V10235454-LineSofabord1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21 (produktdata): kampanje 6 999 kr (før 9 999 kr), Ø80 H40 cm, sortbeiset eikefinér og heltre eik, bilde, art.nr. 1351040. Anslått: platetykkelse, spileavstand og benhøyde fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rund plate over en ring av glisne, runde spiler med en bunnplate innenfor (oppbevaring), som står på korte runde ben. Spilene er lagt inn som riflet sokkel og de korte bena som en lav sokkel; spileavstand anslått fra bildet."
+  },
+  {
+    "id": "skeidar-nitra-skrive-konsollbord-120x35",
+    "category": "bord",
+    "subcategory": "konsollbord",
+    "name": "Nitra skrive-/konsollbord 120x35",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-bord/skrivebord/nitra-skrive-konsollbord?VariationId=V_5637160743",
+    "priceNok": 8999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 3122702, lakkert hvitpigmentert eikefiner): 8 999 kr, ingen kampanje. Norskprodusert bestillingsvare, leveringstid ca. 2–3 uker.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.35,
+      "h": 0.75
+    },
+    "archetype": "coffee-table",
+    "mount": "floor",
+    "params": {
+      "shape": "rect",
+      "topT": 0.02,
+      "edge": "rounded",
+      "base": "cabinet",
+      "baseInset": 0,
+      "fronts": [
+        "open"
+      ],
+      "cabinetLegH": 0.6,
+      "cabinetLegStyle": "wood-taper"
+    },
+    "variants": [
+      {
+        "name": "Hvitpigmentert eik",
+        "colors": {
+          "body": "#d8bb95",
+          "front": "#d8bb95",
+          "top": "#d8bb95",
+          "legs": "#d8bb95",
+          "handle": "#d8bb95"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Smalt konsollbord i hvitpigmentert eik med en åpen hylle rett under platen og skrå, koniske ben – kan også brukes som lite skrivebord.",
+    "why": "Bare 35 cm dypt, så det får plass i gangen (3,11 × 2,07) til nøkler og post, eller bak sofaen i stua; hylla holder småtingene samlet og ryddige.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/3122702/3122702_V10195852-NitraKonsollbord1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21 (produktdata): 8 999 kr, bredde 35, dybde 120, høyde 75 cm (lengde 120 lagt som bredde), hvitpigmentert eikefiner og heltre ben, bilde, art.nr. 3122702. Anslått: kassens høyde og benvinkel fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Smal, åpen kasse med avrundede ender (en hylle rett under platen) på fire skrå, koniske ben i heltre eik. Kassens høyde (ca. 14 cm) er anslått fra bildet."
+  },
+  {
     "id": "skeidar-visby-rundt-spisebord-o120",
     "category": "bord",
     "subcategory": "spisebord",
@@ -771,6 +2130,300 @@
     "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1391215/1391215_V10235454-VisbySpisebord1.webp",
     "verified": true,
     "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, 14 999 kr (før 29 499, tilbudet varer til 15.11), Ø120 H75, hvitpigmentert eik finér i både bordplate og understell, uttrekksfunksjon, «ileggsplater selges separat»; sortbeiset og røykfarget uten kampanje (lest fra sidens innebygde produktdata og variant-API). Søylens diameter (ca. 52 cm) og platetykkelsen (ca. 5 cm) anslått fra bildet; ingen produsent oppgitt. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: alle variantene finnes i Ø120 (moccabeiset finnes bare i Ø150 og er ikke tatt med).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-duett-sidebord-sett-o49",
+    "category": "bord",
+    "subcategory": "sidebord",
+    "name": "Duett sidebord sett Ø49",
+    "brand": "Duett (Interstil)",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sidebord/duett-sidebord-sett-o49-3",
+    "priceNok": 2299,
+    "priceNote": "pris sjekket 2026-10-18 på produktsiden (sett med 2 bord, varenr. 317226, brun). Svart variant (varenr. 317225) koster det samme: https://www.bohus.no/bord/sidebord/duett-sidebord-sett-o49-2. Serien finnes også i Ø60, 30x60 og 55x55. Leveres flatpakket.",
+    "dims": {
+      "w": 0.49,
+      "d": 0.49,
+      "h": 0.52
+    },
+    "archetype": "side-table-nesting",
+    "mount": "floor",
+    "params": {
+      "count": 2,
+      "topShape": "round",
+      "tables": [
+        {
+          "d": 0.49,
+          "h": 0.52
+        },
+        {
+          "d": 0.47,
+          "h": 0.31
+        }
+      ],
+      "topThickness": 0.018,
+      "legStyle": "slim-metal",
+      "legCount": 3
+    },
+    "variants": [
+      {
+        "name": "Lakkert eikefiner brun / svarte metallben",
+        "colors": {
+          "body": "#212120",
+          "front": "#212120",
+          "top": "#625647",
+          "legs": "#212120",
+          "handle": "#212120"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "smoked-oak",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        }
+      },
+      {
+        "name": "Lakkert askefiner svart / svarte metallben",
+        "colors": {
+          "body": "#1c1c1f",
+          "front": "#1c1c1f",
+          "top": "#4b4b4f",
+          "legs": "#1c1c1f",
+          "handle": "#1c1c1f"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "ash",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        },
+        "url": "https://www.bohus.no/bord/sidebord/duett-sidebord-sett-o49-2"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "To runde sidebord (Ø49 H52 og Ø47 H31) med lakkert finérplate på tynne svarte metallben, som kan skyves inn under hverandre. Brun eikefiner eller svart askefiner.",
+    "why": "Brun eik og svarte ben gjentar de runde sofabordene og det mørke spisebordet, og settet kan stå ved lenestolen mellom TV-stua og sittegruppen uten å ta mye plass.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/DUETT/327244/image-thumb__327244__PDP-Product/317226%20-%20Duett%20sidebord%20sett%20%C3%9849%20H52%20-%C3%9847%20H31%20lakkert%20eikefiner%20brun%20med%20metall%20svart%20ben%20-%204.0892f7e9.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no: 2 299 kr, Ø49 H52, brun eikefiner (317226). Natur-varianten var feil – lenken går til svart askefiner (317225). Farger og stoff kontrollert 2026-10-21 mot bohus.no: Ø49-settet finnes i lakkert eikefiner brun (317226) og lakkert askefiner svart (317225), begge med svarte metallben og 2 299 kr – alle variantene finnes; fargene er justert etter produktbildene. Eldre varenr. av samme sett (298558 brun, 298557 svart) var samme dag på kampanje til 1 200 kr (før 2 799).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-basoon-sidebord-o45",
+    "category": "bord",
+    "subcategory": "sidebord",
+    "name": "Basoon sidebord Ø45",
+    "brand": "Basoon (Interstil)",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sidebord/basoon-sidebord-o45-2",
+    "priceNok": 799,
+    "priceNote": "pris sjekket 2026-10-18 på produktsiden (varenr. 328176, mørk brun). Natur-varianten (varenr. 298590) koster det samme: https://www.bohus.no/bord/sidebord/basoon-sidebord-o45. Finnes også i Ø38.5.",
+    "dims": {
+      "w": 0.45,
+      "d": 0.45,
+      "h": 0.5
+    },
+    "archetype": "side-table-round",
+    "mount": "floor",
+    "params": {
+      "topD": 0.45,
+      "topThickness": 0.025,
+      "base": "sculptural-pedestal",
+      "waistD": 0.18,
+      "baseD": 0.32
+    },
+    "variants": [
+      {
+        "name": "Lakkert askefiner mørk brun",
+        "colors": {
+          "body": "#484845",
+          "front": "#484845",
+          "top": "#454441",
+          "legs": "#484845",
+          "handle": "#484845"
+        },
+        "materials": {
+          "body": "ash",
+          "front": "ash",
+          "top": "ash",
+          "legs": "ash",
+          "handle": "ash"
+        }
+      },
+      {
+        "name": "Lakkert askefiner natur",
+        "colors": {
+          "body": "#dccdbd",
+          "front": "#dccdbd",
+          "top": "#ddd3c3",
+          "legs": "#dccdbd",
+          "handle": "#dccdbd"
+        },
+        "materials": {
+          "body": "ash",
+          "front": "ash",
+          "top": "ash",
+          "legs": "ash",
+          "handle": "ash"
+        },
+        "url": "https://www.bohus.no/bord/sidebord/basoon-sidebord-o45"
+      },
+      {
+        "name": "Lakkert askefiner brun",
+        "colors": {
+          "body": "#6e593c",
+          "front": "#6e593c",
+          "top": "#6f5a3f",
+          "legs": "#6e593c",
+          "handle": "#6e593c"
+        },
+        "materials": {
+          "body": "ash",
+          "front": "ash",
+          "top": "ash",
+          "legs": "ash",
+          "handle": "ash"
+        },
+        "url": "https://www.bohus.no/bord/sidebord/basoon-sidebord-o45-1",
+        "salePriceNok": 399,
+        "priceConfidence": "checked"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rundt sidebord i lakkert askefiner med skulpturell, myk sokkel i ett stykke.",
+    "why": "Den runde, myke formen passer de runde boucle-stolene, og mørk brun ask matcher det røykfargede spisebordet – et rimelig bord å ha ved siden av en ny lenestol.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/BASOON/612046/image-thumb__612046__PDP-Product/328176%20-%20Basoon%20sidebord%20%C3%9845%20H50%20cm%20lakkert%20askefiner%20m%C3%B8rk%20brun%20-%201.48bb90cc.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no: 799 kr, Ø45 H50, lakkert askefiner mørk brun og natur. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Ø45 finnes i lakkert askefiner mørk brun (328176, 799 kr), natur (298590, 799 kr) og brun (317438, 399 kr, før 799) – brun er lagt til. Mørk brun er på produktbildet en nesten koksgrå brun og natur en svært lys ask; fargene er justert etter bildene.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sindig-berg-sidebord-o40",
+    "category": "bord",
+    "subcategory": "sidebord",
+    "name": "Berg sidebord Ø40",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sidebord/berg-sidebord-o40",
+    "priceNok": 1999,
+    "priceNote": "pris sjekket 2026-10-18 på produktsiden (varenr. 328678, grå). Beige variant (varenr. 328679, samme pris): https://www.bohus.no/bord/sidebord/berg-sidebord-o40-1. Leveres ferdig montert.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.4,
+      "h": 0.45
+    },
+    "archetype": "side-table-round",
+    "mount": "floor",
+    "params": {
+      "topD": 0.4,
+      "topThickness": 0.04,
+      "base": "hourglass",
+      "waistD": 0.2,
+      "baseD": 0.36
+    },
+    "variants": [
+      {
+        "name": "MgO grå (travertinlook)",
+        "colors": {
+          "body": "#a09b95",
+          "front": "#a09b95",
+          "top": "#a09b95",
+          "legs": "#a09b95",
+          "handle": "#a09b95"
+        },
+        "materials": {
+          "body": "travertine",
+          "front": "travertine",
+          "top": "travertine",
+          "legs": "travertine",
+          "handle": "travertine"
+        }
+      },
+      {
+        "name": "MgO beige (travertinlook)",
+        "colors": {
+          "body": "#b5aa98",
+          "front": "#b5aa98",
+          "top": "#b5aa98",
+          "legs": "#b5aa98",
+          "handle": "#b5aa98"
+        },
+        "materials": {
+          "body": "travertine",
+          "front": "travertine",
+          "top": "travertine",
+          "legs": "travertine",
+          "handle": "travertine"
+        },
+        "url": "https://www.bohus.no/bord/sidebord/berg-sidebord-o40-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Rundt sidebord med timeglassform i MgO-kompositt med overflate som imiterer travertin og marmor; leveres ferdig montert.",
+    "why": "Den grå steinfølelsen ligger mellom den grå sofaen og de lyse SAND-veggene, og den solide formen kan også brukes som pidestall for en plante eller lampe.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/BERG/612836/image-thumb__612836__PDP-Product/328678%20-%20Berg%20sidebord%20%C3%9840%20H45%20mgo%20gr%C3%A5%20-%201.49d283b4.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no: Sindig, 1 999 kr, Ø40 H45, grå og beige MgO. Farger og stoff kontrollert 2026-10-21 mot bohus.no: alle variantene finnes (grå 328678 og beige 328679, begge 1 999 kr); fargene er justert etter produktbildene (beige var for lys).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-seaford-sidebord-35x43",
+    "category": "bord",
+    "subcategory": "sidebord",
+    "name": "Seaford sidebord 35x43",
+    "brand": "Actona (AC Design)",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bord/sidebord/seaford-sidebord-35x43",
+    "priceNok": 899,
+    "priceNote": "pris sjekket 2026-10-18 (varenr. 236864). Bohus kaller det et firkantet sidebord som også kan brukes som nattbord eller laptopbord; produsenten (Actona) selger det som «laptop table». Selve C-formen på understellet er ikke bekreftet. Leveres flatpakket.",
+    "dims": {
+      "w": 0.43,
+      "d": 0.35,
+      "h": 0.63
+    },
+    "archetype": "side-table-c",
+    "mount": "floor",
+    "params": {
+      "topW": 0.43,
+      "topD": 0.35,
+      "topThickness": 0.018,
+      "frame": "c-metal",
+      "tubeW": 0.02,
+      "baseW": 0.43,
+      "baseD": 0.35
+    },
+    "variants": [
+      {
+        "name": "Svart ask melamin / svart metall",
+        "colors": {
+          "body": "#333436",
+          "front": "#333436",
+          "top": "#474649",
+          "legs": "#333436",
+          "handle": "#333436"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "ash",
+          "legs": "black-metal",
+          "handle": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Lite C-formet sidebord med svart askeplate og svart metallramme som kan skyves inn over sofasetet eller lenestolen.",
+    "why": "Svart metall og svart ask passer kjøkkenet og de svarte detaljene, og et C-bord gir avlastningsflate i hjørnesofaen i TV-stua der et vanlig sidebord ikke får plass.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S/Produkter/SEAFORD/103873/image-thumb__103873__PDP-Product/236864%20-%20Seaford%20sidebord%2035x43%20H63%20metall%20svart%20ask%20-%203.f94a7c6c.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no: 899 kr, 43x35 H63, svart ask melamin med metallunderstell. C-formen er antatt. Farger og stoff kontrollert 2026-10-21 mot bohus.no: Seaford 35x43 finnes bare i svart ask med svart metallunderstell (236864) – alle variantene finnes. Produktbildet bekrefter C-formen; fargene er justert etter bildet.",
     "priceConfidence": "checked"
   }
 ]

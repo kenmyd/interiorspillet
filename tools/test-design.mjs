@@ -3,6 +3,8 @@
  * Node test for the data layer and the design model (no browser):
  *   node tools/test-design.mjs            (from the project root; exit code 1 on failure)
  *
+ *   QA_PRINT_EXPECT=1 node tools/test-design.mjs   also prints the catalogue numbers as one `EXPECT {…}` line
+ *
  * Checks: data files load (counts), catalogue normalisation (archetype, mount, part colours, materials, numbers),
  * the newest research round (research/catalog-new: prices, variant prices, notes, image URLs, the vitrineskap
  * category, the pendant-slatted / display-cabinet archetypes, re-running the normaliser reproduces the files),
@@ -54,6 +56,15 @@ const HEX = /^#[0-9a-f]{6}$/;
 // ---------------------------------------------------------------------------------------------------------------
 section('Data files');
 const readJson = (rel) => JSON.parse(fs.readFileSync(path.join(ROOT, rel), 'utf8'));
+// the catalogue before the møbler/lys/kunst round (c28070d; tools/house-tests/fixtures/make-catalog-baseline.mjs)
+const BASE = readJson('tools/house-tests/fixtures/catalog-baseline.json');
+// every catalogue number in one place: after a catalogue change paste the line `QA_PRINT_EXPECT=1 node tools/test-design.mjs`
+// prints (runde 3 foundation: the 4 round-1 art frames Smått → Kunst og bilder, the 4 side tables Smått → Bord;
+// runde 3 integration: + 225 research products from research/catalog-new/*-runde3*.json, 372 → 597)
+const EXPECT = {
+  counts: { sofa: 23, lenestol: 55, bord: 35, stoler: 30, skjenk: 14, tvbenk: 14, vitrineskap: 10, hylle: 22, seng: 20, nattbord: 22, kommode: 21, garderobe: 9, speil: 13, bad: 19, gang: 17, taklampe: 19, spotter: 37, smalamper: 61, tekstil: 31, teppe: 19, solskjerming: 22, akustikk: 16, kunst: 54, smatt: 14 },
+  total: 597, floorLamps: 27, pendel: 18,
+};
 const spec = readJson('src/data/room-spec.json');
 const palette = readJson('src/data/palette.json');
 const walls = readJson('src/data/wall-proposals.json');
@@ -92,8 +103,8 @@ const VALID_MATERIALS = new Set(Object.values(schema.materials).flat());
 const MOUNTS = ['floor', 'wall', 'ceiling', 'surface', 'soft', 'rug', 'window'];
 const counts = Object.fromEntries(catalog.CATEGORIES.map((c) => [c.key, catalog.products(c.key).length]));
 console.log('  counts', JSON.stringify(counts), 'total', catalog.allProducts().length);
-const CAT_LABELS = 'Sofaer|Lenestoler|Bord|Spisestoler|Skjenker|TV-benker|Vitrineskap|Hyller|Senger|Nattbord|Kommoder|Garderobeskap|Speil|Bad|Gang|Taklamper|Små lamper|Puter og pledd|Tepper|Solskjerming|Akustikk|Smått';
-check('22 categories with Norwegian labels (the living room first, then bedroom, bath, hall, lamps, textiles …)', catalog.CATEGORIES.length === 22 && catalog.CATEGORIES.map((c) => c.label).join('|') === CAT_LABELS,
+const CAT_LABELS = 'Sofaer|Lenestoler|Bord|Stoler og krakker|Skjenker|TV-benker|Vitrineskap|Hyller|Senger|Nattbord|Kommoder|Garderobeskap|Speil|Bad|Gang|Taklamper|Spotter og downlights|Små lamper|Puter, pledd og puffer|Tepper|Solskjerming|Akustikk|Kunst og bilder|Smått';
+check('24 categories with Norwegian labels (the living room first, then bedroom, bath, hall, lamps, spots, textiles … art)', catalog.CATEGORIES.length === 24 && catalog.CATEGORIES.map((c) => c.label).join('|') === CAT_LABELS,
   catalog.CATEGORIES.map((c) => c.label).join('|'));
 const { ICONS } = await imp('src/ui/icons.js');
 check('every category has an icon in ui/icons.js and a drawn category icon', catalog.CATEGORIES.every((c) => ICONS[c.icon] && /^<svg/.test(c.iconSvg || '')),
@@ -146,11 +157,15 @@ check('archetype display-cabinet: storage family, floor (or wall), «Vitrineskap
 check('mountsCompatible: vitrineskap floor ↔ wall, nothing else across mounts', catalog.mountsCompatible('display-cabinet', 'floor', 'display-cabinet', 'wall')
   && !catalog.mountsCompatible('sideboard', 'floor', 'wall-shelf', 'wall') && !catalog.mountsCompatible('art-frame', 'wall', 'art-frame', 'floor'));
 // round 1 + catalog-new (lenestoler, Secto, gulvlamper, vitrineskap) + hele huset (152 new products incl. Skeidar and Jysk,
-// the 3 mirrors moved to Speil) + 34 lenestoler (24 hvilestoler) from Bohus, Skeidar, Fagmøbler, Møbelringen, Jysk, IKEA and Mio
-const COUNTS = { sofa: 11, lenestol: 55, bord: 10, stoler: 8, skjenk: 14, tvbenk: 7, vitrineskap: 5, hylle: 11, seng: 20, nattbord: 10, kommode: 10, garderobe: 9, speil: 13, bad: 19, gang: 14, taklampe: 19, smalamper: 34, tekstil: 24, teppe: 19, solskjerming: 22, akustikk: 16, smatt: 22 };
-check('counts per category – 372 products', Object.entries(COUNTS).every(([k, n]) => counts[k] === n) && catalog.allProducts().length === 372, JSON.stringify(counts));
+// the 3 mirrors moved to Speil) + 34 lenestoler (24 hvilestoler) from Bohus, Skeidar, Fagmøbler, Møbelringen, Jysk, IKEA and
+// Mio; the numbers live in EXPECT (top of the file)
+check(`counts per category – ${EXPECT.total} products`, catalog.CATEGORIES.length === Object.keys(EXPECT.counts).length
+  && catalog.CATEGORIES.every((c) => counts[c.key] === EXPECT.counts[c.key]) && catalog.allProducts().length === EXPECT.total, JSON.stringify(counts));
 const NEW_DIR = path.join(ROOT, 'research', 'catalog-new');
+// KEEP (below) covers every research/catalog-new file – a new research file is protected the moment it lands …
 const fresh = fs.readdirSync(NEW_DIR).filter((f) => f.endsWith('.json')).flatMap((f) => readJson(`research/catalog-new/${f}`));
+// … while the count is pinned on the files that existed before this round (the fixture's list)
+const freshBase = BASE.researchNewFiles.flatMap((f) => readJson(`research/catalog-new/${f}`));
 const KEEP = ['category', 'subcategory', 'name', 'brand', 'store', 'url', 'priceNok', 'salePriceNok', 'priceNote', 'priceConfidence', 'archetype', 'defaultVariant', 'description', 'why', 'imageUrl', 'verified', 'verifiedNote', 'light'];
 const freshProblems = [];
 // measured dims / model params set in src/data/scripts/fixes.mjs win over the research values
@@ -174,7 +189,7 @@ for (const src of fresh) {
     for (const [part, hex] of Object.entries(v.colors)) if (pv?.colors?.[part] !== hex || pv?.materials?.[part] !== v.materials[part]) freshProblems.push(`${src.id}#${i}: ${part}`);
   });
 }
-check(`all ${fresh.length} new products kept: prices, sale prices, variant prices/urls, notes, image URLs, params (shape notes, profilePoints)`, fresh.length === 212 && !freshProblems.length,
+check(`all ${fresh.length} new products kept: prices, sale prices, variant prices/urls, notes, image URLs, params (shape notes, profilePoints)`, freshBase.length === 212 && !freshProblems.length,
   freshProblems.slice(0, 8).join(' | '));
 const pr = (id, vi) => {
   const x = catalog.priceOf(catalog.getProduct(id), vi);
@@ -200,25 +215,29 @@ check('Sagene brown variant: its own price, confirmed on the product data (2026-
 const besta = catalog.productToItemSpec('ikea-besta-veggmontert-60x42x64-glassvik-rokfarget', 1);
 check('BESTÅ vitrine: wall-hung item, variant «klart glass» overrides doorStyle', besta.mount === 'wall' && besta.params.doorStyle === 'glass-framed' && besta.params.base === 'wall'
   && catalog.productToItemSpec('ikea-besta-veggmontert-60x42x64-glassvik-rokfarget', 0).params.doorStyle === 'glass-smoked');
-check('the four other vitrines stand on the floor', catalog.products('vitrineskap').filter((p) => p.mount === 'floor').length === 4);
+const FLOOR_VITRINES = ['bohus-sagene-vitrineskap-med-lys-90x40', 'bohus-scandi-vitrineskap-med-lys-60x40', 'bohus-belfort-vitrineskap-med-lys-120x40', 'bohus-signature-1860-vitrineskap-90x40'];
+check('the four other vitrines stand on the floor; every vitrine stands on the floor or hangs on the wall', FLOOR_VITRINES.every((id) => catalog.getProduct(id)?.mount === 'floor')
+  && catalog.products('vitrineskap').every((p) => p.mount === 'floor' || p.mount === 'wall'));
 const secto = catalog.productToItemSpec('christiania-belysning-secto-design-octo-4240-taklampe-o54');
 // a placed lamp starts at NEW_LAMP (2700 K, 40 %); the shop's 3000 K stays in the product facts
 check('Secto/Octo pendants: ceiling, drop = the shop cable default, 806 lm (shop 3000 K, placed at NEW_LAMP), profilePoints kept', secto.mount === 'ceiling' && secto.params.drop === 1.2 && secto.light.lumens === 806
   && catalog.getProduct('christiania-belysning-secto-design-octo-4240-taklampe-o54').light.colorK === 3000
   && secto.light.colorK === catalog.NEW_LAMP.colorK && secto.light.dimmer === catalog.NEW_LAMP.dimmer
   && secto.params.profilePoints.length === 21 && secto.params.profilePoints[13][1] === 0.54);
-check('subcategories: every recliner «hvilestol» (32), every pendant «pendel» (18)', catalog.products('lenestol').filter((p) => p.subcategory === 'hvilestol').length === 32
+const pendel = catalog.products('taklampe').filter((p) => p.subcategory === 'pendel').length;
+check(`subcategories: every recliner «hvilestol» (32), every pendant «pendel» (${EXPECT.pendel})`, catalog.products('lenestol').filter((p) => p.subcategory === 'hvilestol').length === 32
   && catalog.products('lenestol').filter((p) => p.archetype === 'recliner').every((p) => p.subcategory === 'hvilestol')
-  && catalog.products('taklampe').filter((p) => p.subcategory === 'pendel').length === 18 && catalog.SUBCATEGORY_LABELS.hvilestol === 'Hvilestoler');
+  && pendel === EXPECT.pendel && catalog.SUBCATEGORY_LABELS.hvilestol === 'Hvilestoler');
 check('search finds the new products', catalog.products('vitrineskap').every((p) => catalog.search('vitrineskap').includes(p)) && catalog.search('secto').length === 4 && catalog.search('hvilestol fotskammel').length >= 4
   && catalog.search('octo').length === 2, `vitrine ${catalog.search('vitrineskap').length}, secto ${catalog.search('secto').length}, octo ${catalog.search('octo').length}`);
 const floorLamps = catalog.products('smalamper').filter((p) => p.subcategory === 'gulvlampe');
 const oslo = catalog.productToItemSpec('nordicnest-northern-oslo-wood-gulvlampe');
-check('22 gulvlamper on the floor (12 new: globe, reading, pleated, lantern, slats, cage, tripods); Oslo Wood = tiltable cone', floorLamps.length === 22
+check(`${EXPECT.floorLamps} gulvlamper on the floor (12 new: globe, reading, pleated, lantern, slats, cage, tripods); Oslo Wood = tiltable cone`, floorLamps.length === EXPECT.floorLamps
   && floorLamps.every((p) => p.mount === 'floor' && p.archetype.startsWith('floor-'))
   && new Set(floorLamps.map((p) => p.params?.shadeShape || p.params?.armShape || p.archetype)).size >= 12
   && oslo.params.shadeShape === 'cone' && oslo.params.tilt === 15 && oslo.params.tiltable === true && oslo.params.shadeBottomD === 0.13,
   `${floorLamps.length} floor lamps`);
+if (process.env.QA_PRINT_EXPECT === '1') console.log(`EXPECT ${JSON.stringify({ counts, total: catalog.allProducts().length, floorLamps: floorLamps.length, pendel })}`);
 const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ip-norm-'));
 const run = spawnSync(process.execPath, [path.join(ROOT, 'src/data/scripts/normalize-data.mjs'), '--only=catalog', `--out=${outDir}`], { cwd: ROOT, encoding: 'utf8' });
 const same = (key) => fs.readFileSync(path.join(outDir, 'catalog', `${key}.json`), 'utf8') === fs.readFileSync(path.join(ROOT, 'src/data/catalog', `${key}.json`), 'utf8');
@@ -235,7 +254,7 @@ check('12 new categories with a drawn icon, an ui/icons.js icon and rooms', NEW_
   return c && /^<svg/.test(c.iconSvg || '') && ICONS[c.icon] && Array.isArray(c.rooms) && c.rooms.length;
 }) && catalog.CATEGORIES.every((c) => Array.isArray(c.rooms) && c.rooms.length));
 check('sofa, bord, stoler and hylle are catalogue categories now (existing furniture swaps with products); EXTRA keeps elektronikk', Object.keys(catalog.EXTRA_CATEGORIES).join() === 'elektronikk'
-  && catalog.categoryLabel('sofa') === 'Sofaer' && catalog.categoryLabel('stoler') === 'Spisestoler' && catalog.categoryLabel('elektronikk') === 'TV og lyd');
+  && catalog.categoryLabel('sofa') === 'Sofaer' && catalog.categoryLabel('stoler') === 'Stoler og krakker' && catalog.categoryLabel('elektronikk') === 'TV og lyd');
 const NEW_ARCH = ['bed', 'headboard', 'bench', 'chair', 'wardrobe', 'dresser', 'bedside-table', 'bookcase', 'shoe-cabinet', 'wall-cabinet', 'mirror-cabinet', 'mirror-floor', 'towel', 'towel-ladder', 'towel-rail', 'bath-accessory', 'coat-rack', 'coat-stand'];
 check('18 new archetypes in archetypes.json (families bed and fixture), each used by a product', NEW_ARCH.every((a) => schema.archetypes[a]) && schema.families.bed?.parts.join() === 'frame,headboard,legs,bedding'
   && schema.families.fixture?.parts.join() === 'body,accent' && NEW_ARCH.every((a) => catalog.allProducts().some((p) => p.archetype === a)),
@@ -269,6 +288,24 @@ const badHuset = HUSET_PRICES.filter(([id, vi, want]) => pr(id, vi) !== want).ma
 check('priceOf: campaign / ordinary / variant prices of hele-huset products', !badHuset.length, badHuset.join(' | '));
 check('the three round-1 mirrors moved from Smått to Speil (subcategory veggspeil)', ['bohus-applewood-speil-o90', 'bohus-othilie-speil-90x93', 'bohus-holmen-cape-speil-med-sprosser-h200']
   .every((id) => catalog.getProduct(id)?.category === 'speil' && catalog.getProduct(id).subcategory === 'veggspeil') && !catalog.products('smatt').some((p) => p.archetype === 'mirror'));
+// runde 3 (foundation): the round-1 art and side tables left Smått; the 8 existing chairs are «spisestol»
+// Mara: brush-abstract 'horizon' since the runde-3 review (its Bohus photo shows horizontal streaks, not a plaster relief)
+const ART_MOVED = { 'bohus-ramor-canvas-bilde-90x120': 'brush-abstract', 'bohus-holmen-mara-canvas-bilde-120x60': 'brush-abstract',
+  'bohus-holmen-gustin-strukturbilde-80x100': 'texture-plaster', 'bohus-labyrint-strukturbilde-80x120': 'texture-plaster' };
+check('the four round-1 pictures moved from Smått to Kunst og bilder → Lerret (own motif, seed, palette with the print colour second)', Object.entries(ART_MOVED).every(([id, motif]) => {
+  const p = catalog.getProduct(id);
+  return p?.category === 'kunst' && p.subcategory === 'lerret' && p.archetype === 'art-frame' && p.params.motif === motif && Number.isInteger(p.params.seed)
+    && p.params.palette?.[1] === p.variants[0].colors.print && !('w' in p.params) && !('h' in p.params) && !('orientation' in p.params);
+}), Object.keys(ART_MOVED).map((id) => `${id}: ${catalog.getProduct(id)?.category}/${catalog.getProduct(id)?.subcategory}`).join(' | '));
+const SIDE_MOVED = ['bohus-duett-sidebord-sett-o49', 'bohus-basoon-sidebord-o45', 'bohus-sindig-berg-sidebord-o40', 'bohus-seaford-sidebord-35x43'];
+check('the four round-1 side tables moved from Smått to Bord → Sidebord', SIDE_MOVED.every((id) => catalog.getProduct(id)?.category === 'bord' && catalog.getProduct(id).subcategory === 'sidebord'));
+check('nothing of art-frame / side-table-* left in Smått', !catalog.products('smatt').some((p) => p.archetype === 'art-frame' || p.archetype.startsWith('side-table-')),
+  catalog.products('smatt').filter((p) => p.archetype === 'art-frame' || p.archetype.startsWith('side-table-')).map((p) => p.id).join(','));
+check('the 8 existing chairs are in Stoler og krakker → Spisestoler', ['bohus-alice-spisestol'].every((id) => catalog.getProduct(id)?.subcategory === 'spisestol')
+  && freshBase.filter((p) => p.category === 'stoler').every((p) => catalog.getProduct(p.id)?.subcategory === 'spisestol')
+  && freshBase.filter((p) => p.category === 'stoler').length === 8 && catalog.SUBCATEGORY_LABELS.spisestol === 'Spisestoler');
+const noLabel = [...new Set(catalog.allProducts().map((p) => p.subcategory).filter((sub) => sub && !catalog.SUBCATEGORY_LABELS[sub]))];
+check('every product subcategory has a label (SUBCATEGORY_LABELS)', !noLabel.length, noLabel.join(','));
 const fax = catalog.productToItemSpec('ikea-faxalven-speilskap-med-integrert-belysning-60x95');
 check('mirror cabinet with LED: wall item with a lamp (Inspector light controls), mountHeight for Placement', fax.mount === 'wall' && fax.light?.lumens === 1370 && fax.params.mountHeight > 1);
 const madridMirror = catalog.productToItemSpec('bohus-madrid-garderobeskap-103x60', catalog.getProduct('bohus-madrid-garderobeskap-103x60').variants.findIndex((v) => /speil/i.test(v.name)));

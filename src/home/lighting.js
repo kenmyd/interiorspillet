@@ -68,10 +68,26 @@
 //   sun           the shadow box follows the camera's level (hoved exactly as before, kjeller y −2.9…0), the sun's map
 //                 renders only when flagged (sun.shadow.autoUpdate off: a shadow slot changing hands no longer redraws
 //                 it; an outside request – shading.js blinds – still does).
+//
+// Spots and downlights (models/spots.js; design/lighting.md §4, MASTER §2.5, D4/D5):
+//   room          SceneSync passes each item light's room (from the item's level – a basement ceiling lamp is never
+//                 the living room's); without one the emission point decides, as before.
+//   clusters      item downlights (cluster 'downlight', aimed within acos(itemCluster.minDown) of straight down) pool per
+//                 room and living-room zone into ≤ maxDownlightSpots spot candidates (_rebuildClusters, lightclusters.js),
+//                 however they were placed (a 3 × 3 grid item, nine singles, «Del opp»): the members deposit their
+//                 bounce, the cluster takes the slot or the ambient term. Same id → same slot.
+//   rails         the heads of one rail / wall spot (cluster 'fixture') merge into ≤ 2 candidates by aim (_mergeFixture).
+//   seat plan     the spot category's fittings (candidates with `capped`) may take LIGHT_BUDGET.itemSpots slots per room:
+//                 free slots first, then the weakest seat of a non-shadow, non-capped lamp of their OWN room – never
+//                 another room's, never a high-wall spot's (lightclusters.js planSpotSeats). Without them the budget
+//                 runs exactly as before (lighting fixture, downlights.test section 0).
+//   glow          a glow material drawn for n identical heads (material.userData.emitters) is levelled as one fitting.
+//   itemLightState(uid) → 'off' | 'slot' | 'ambient' | null   (LightPanel: «Lyser via omgivelseslys nå …»)
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { installLightMask, lightMask, buildRoomTable, portalRects, OUTSIDE_ID } from '../world/lightmask.js';
+import { splitClusters, pooledSpot, aimGroups, planSpotSeats } from './lightclusters.js';
 
 // before the first compile of any lit material (the patch is inert until LightManager.render enables it)
 installLightMask();
@@ -187,11 +203,26 @@ const STRIP_SIGNATURE = 8;
  *               slotDepth: light slots only for rooms this many portals away (the visibility keeps depth 2) – the
  *               basement hall's downlights two portals away (door + stairwell) took the living room's pendants' slots
  *   portalStep  a swinging door recomputes the rooms only per this step of its opening (and when it stops)
+ *   itemCluster item downlights (models/spots.js, cluster 'downlight'): pooled per room and living-room zone like the
+ *               house's own (≤ maxDownlightSpots each). A row splits where neighbours are > gap m apart, a run longer
+ *               than span is halved; a fitting tilted more than acos(minDown) ≈ 21.6° is a spot of its own; maxAngle /
+ *               penumbra: the pooled cone of several members
+ *   itemSpots   light slots the spot category's fittings (clusters, rails, wall spots, picture lights – candidates with
+ *               `capped`) may take per room (LIGHT_BUDGET; planSpotSeats); fixtureMergeDeg: heads of one fitting within
+ *               this angle of their mean aim share one candidate
  */
+/**
+ * The light budget of the spot category's fittings (MASTER D5, §2.5): per quality level the spot slots their candidates
+ * may hold per room, the pooled downlight candidates per room / zone, and the aim angle within which a rail's heads
+ * share one candidate. «Høy» gives 3 per room.
+ */
+export const LIGHT_BUDGET = Object.freeze({ itemSpots: Object.freeze({ low: 2, medium: 2, high: 3 }), maxDownlightSpots: 2, fixtureMergeDeg: 25 });
 const HOUSE = {
-  stripSignature: 1, maxDownlightSpots: 2, reachLkeyCap: 2, roomEase: 1.5, portalOpen: 0.5, frostedT: 0.5,
+  stripSignature: 1, maxDownlightSpots: LIGHT_BUDGET.maxDownlightSpots, reachLkeyCap: 2, roomEase: 1.5, portalOpen: 0.5, frostedT: 0.5,
   downlight: { angle: 50 * DEG, penumbra: 0.7 }, plafond: { angle: 82 * DEG },
   wbLocal: 0.9, wbRelMax: 4, hop: { door: 0.45, opening: 0.6, hole: 0.35 }, slotDepth: 1, portalStep: 0.2,
+  itemCluster: { gap: 2.0, span: 2.4, minDown: 0.93, maxAngle: 80 * DEG, penumbra: 0.7 },
+  itemSpots: LIGHT_BUDGET.itemSpots, fixtureMergeDeg: LIGHT_BUDGET.fixtureMergeDeg,
 };
 /** LAMP_BOUNCE of a house room: ≈ 1 for a small closed room (its lamps light all of it), less for a big one. */
 const roomLampBounce = (area) => clamp(1.2 - area / 40, 0.6, 1);
@@ -1034,6 +1065,7 @@ function spotSolidAngle(angle, penumbra = 0) {
  *   builtInGroups: [{ id, label, lumens }]   requestShadowUpdate()   update(dt, camera)   render(renderer, scene, camera)
  *   info() → sun / daylight / lamp numbers for the UI   groupState(id) → { on, dimmer, auto }   itemLightUids()
  *   cameraRoomId   roomsInfo()   setOverviewLevel('hoved'|'kjeller'|null) (orbit / plan: one value per level, §4.3)
+ *   itemLightState(uid) → 'off' | 'slot' | 'ambient' | null   itemLightHere(uid) (its room competes for this view's slots)
  *   slotColor(candidate) → the colour its light slot gets (white balance incl. its room's relative balance)
  *   events: on('change', fn) → off   (after every recompute; LightPanel listens)
  *
@@ -1064,6 +1096,8 @@ export class LightManager {
     this._transmission = {};
     this._builtInState = new Map(); // groupId → { on, dimmer }
     this._items = new Map(); // uid → candidates[]
+    this._clusters = []; // pooled item downlights (_rebuildClusters)
+    this._seatPlan = null; // the last seat plan of the spot pool (planSpotSeats; null = today's path)
     this._listeners = new Set();
     this._dirty = true;
     this._envDirty = true;
@@ -1186,10 +1220,14 @@ export class LightManager {
   }
 
   /**
-   * Item lights in world coordinates (SceneSync converts the model's local lights).
+   * Item lights in world coordinates (SceneSync converts the model's local lights). The spot category's fittings
+   * (models/spots.js) also pass `cluster` ('downlight': pooled per room / zone; 'fixture': a rail's heads merged),
+   * `fitting` (any value marks the light as the spot category's: it counts against LIGHT_BUDGET.itemSpots), `noShadow`,
+   * and SceneSync the `roomId` the light shines in (from the item's level).
    * @param {string} uid
    * @param {Array<{ type: 'point'|'spot', position: THREE.Vector3, direction?: THREE.Vector3, angle?: number, penumbra?: number,
-   *   colorK: number, lumens: number, on: boolean, dimmer: number, emissiveMeshes?: THREE.Mesh[] }>|null} lights
+   *   colorK: number, lumens: number, on: boolean, dimmer: number, emissiveMeshes?: THREE.Mesh[],
+   *   cluster?: 'downlight'|'fixture', fitting?: string, noShadow?: boolean, roomId?: string }>|null} lights
    */
   setItemLights(uid, lights) {
     const old = this._items.get(uid);
@@ -1197,9 +1235,72 @@ export class LightManager {
     this._items.delete(uid);
     if (lights?.length) {
       const list = lights.flatMap((l, i) => this._itemCandidate(uid, i, l));
-      this._items.set(uid, list);
+      this._items.set(uid, this._mergeFixture(uid, list));
     }
     this._markDirty();
+  }
+
+  /**
+   * A rail's / multi-spot's heads (cluster 'fixture') → at most two candidates, one per aim group (static per item: all
+   * heads share the item's on/dimmer). Bounce from the merged spot (approximate, like the house's grouped downlights).
+   * Two heads stay two.
+   */
+  _mergeFixture(uid, list) {
+    const heads = list.filter((c) => c.fixtureMerge);
+    if (heads.length <= 2) return list;
+    const groups = aimGroups(heads, HOUSE.fixtureMergeDeg * DEG);
+    const merged = groups.map((g, k) => {
+      const lm = g.reduce((s, c) => s + c.lumens, 0);
+      const w = (c) => (lm > 0 ? c.lumens / lm : 1 / g.length);
+      const position = g.reduce((v, c) => v.addScaledVector(c.position, w(c)), new THREE.Vector3());
+      const direction = g.reduce((v, c) => v.addScaledVector(c.direction, w(c)), new THREE.Vector3());
+      if (direction.lengthSq() < 1e-12) direction.copy(g[0].direction);
+      direction.normalize();
+      let spread = 0, reach = 0;
+      for (const c of g) {
+        spread = Math.max(spread, Math.acos(clamp(c.direction.dot(direction), -1, 1)));
+        reach = Math.max(reach, Math.hypot(c.position.x - position.x, c.position.z - position.z));
+      }
+      const angle = clamp(Math.max(...g.map((c) => c.angle)) + spread + Math.atan(reach / 2.5), 0.15, 1.3);
+      const c = {
+        ...g[0], id: `item:${uid}:m${k}`, position, direction, angle, penumbra: Math.max(0.6, ...g.map((x) => x.penumbra)),
+        lumens: lm, emissive: k === 0 ? heads.flatMap((x) => x.emissive) : [], fixtureMerge: false, merged: g.length, slot: null, fade: 0,
+      };
+      this._initCandidate(c, this._modelOf(c.roomId));
+      return c;
+    });
+    return [...list.filter((c) => !c.fixtureMerge), ...merged];
+  }
+
+  /**
+   * Whether a design item's light reaches the room by a light slot right now (MASTER D49; LightPanel):
+   * 'off' (switched off or dimmed out), 'slot' (one of its candidates, or a pooled cluster holding one of its heads, has
+   * a slot), 'ambient' (on, but the room's budget is used: its light near the camera is the ambient term), null (no
+   * lights for that uid).
+   * @param {string} uid
+   * @returns {'off'|'slot'|'ambient'|null}
+   */
+  itemLightState(uid) {
+    const list = this._items.get(uid);
+    if (!list?.length) return null;
+    const lit = (c) => c.on ?? (c.itemOn && c.itemDimmer > 0.001 && c.lumens > 0);
+    if (!list.some(lit)) return 'off';
+    const held = (c) => !!c.slot && c.slot.cand === c;
+    if (list.some(held)) return 'slot';
+    const ids = new Set(list.map((c) => c.id));
+    for (const k of this._clusters || []) if (held(k) && k.members.some((id) => ids.has(id))) return 'slot';
+    return 'ambient';
+  }
+
+  /**
+   * Whether a design item's lights compete for the light slots of the current view (their room is the camera's, or
+   * one the camera reaches through an open door, or on the overview's level). false for an unknown uid.
+   * @param {string} uid
+   */
+  itemLightHere(uid) {
+    const c = this._items.get(uid)?.[0];
+    if (!c) return false;
+    return !this._reach || this._reach.has(c.roomId ?? LIVING_ID);
   }
 
   /**
@@ -2169,8 +2270,14 @@ export class LightManager {
       colorK: l.colorK ?? 2700, lumens: Math.max(0, l.lumens ?? 800), itemOn: l.on !== false, itemDimmer: clamp(l.dimmer ?? 1),
       emissive, fade: 0, slot: null, halfSpace: split,
     };
-    // the room the lamp stands in (its bounce goes into that room's model; outside the house: the living room's)
-    c.roomId = this._worlds.size ? this._roomIdAt(c.position) : LIVING_ID;
+    // the room the lamp shines in: SceneSync's (from the item's level), else the emission point's as before (its bounce
+    // goes into that room's model; outside the house: the living room's)
+    c.roomId = l.roomId && this._worlds.has(l.roomId) ? l.roomId : this._worlds.size ? this._roomIdAt(c.position) : LIVING_ID;
+    // the spot category's fittings (models/spots.js): pooled downlights, merged rail heads, the per-room seat plan
+    c.cluster = !split && type === 'spot' && l.cluster === 'downlight' && direction.y <= -HOUSE.itemCluster.minDown ? 'downlight' : null;
+    c.fixtureMerge = !split && type === 'spot' && l.cluster === 'fixture';
+    c.capped = !!(l.fitting || l.cluster);
+    if (l.noShadow) c.noShadow = true;
     const model = this._modelOf(c.roomId);
     if (!split) {
       this._initCandidate(c, model);
@@ -2474,6 +2581,8 @@ export class LightManager {
         if (model && c.weights) this._deposit(c.weights, c.flux * LAMP_BOUNCE, c.color, false);
       }
     }
+    // item downlights → pooled spot candidates (their members have deposited their bounce above)
+    this._rebuildClusters();
 
     // ---- full bounce, key luminance, white balance
     let Lkey = 0.05;
@@ -2660,12 +2769,76 @@ export class LightManager {
     return list;
   }
 
-  /** Spot stand-ins: the sun-patch bounce lights and the windows' far-field spots. */
+  /** Spot stand-ins: the sun-patch bounce lights, the windows' far-field spots and the pooled item downlights. */
   _extraSpots() {
     const list = this._windows.map((w) => w.spotCand);
     for (const w of this._roomWindows) list.push(w.spotCand);
     if (this._bounces?.length) list.push(...this._bounces);
+    if (this._clusters?.length) list.push(...this._clusters);
     return list;
+  }
+
+  /**
+   * Item downlights (cluster 'downlight') → pooled spot candidates per room (+ living-room zone); members never get a
+   * slot or add ambient – their cluster does both. Same id → same slot (and fade), vanished ids free theirs.
+   * The clusters deposit no bounce (their members did, in the lamp loop) and are not lamp candidates
+   * (_allLampCandidates: flux, glow and info count every lamp once).
+   */
+  _rebuildClusters() {
+    const old = new Map((this._clusters || []).map((c) => [c.id, c]));
+    const byKey = new Map();
+    for (const list of this._items.values()) {
+      for (const c of list) {
+        if (c.cluster !== 'downlight' || !c.on || !(c.flux > 0)) continue;
+        // the open-plan living room is one lighting room: its downlights pool per zone (kjøkken, spisestue, stue, tv-stue)
+        const zone = c.roomId === LIVING_ID ? this.layout?.zoneAt?.(c.position.x, c.position.z)?.id ?? '-' : '-';
+        const key = `${c.roomId}|${zone}`;
+        if (!byKey.has(key)) byKey.set(key, []);
+        byKey.get(key).push(c);
+      }
+    }
+    const out = [];
+    for (const [key, members] of byKey) {
+      const roomId = members[0].roomId;
+      const floorY = this._worlds.get(roomId)?.room?.floorY ?? 0;
+      const parts = splitClusters(members, { maxParts: HOUSE.maxDownlightSpots, gap: HOUSE.itemCluster.gap, span: HOUSE.itemCluster.span });
+      parts.forEach((part, k) => {
+        const p = pooledSpot(part, { floorY, maxAngle: HOUSE.itemCluster.maxAngle, penumbra: HOUSE.itemCluster.penumbra });
+        const color = new THREE.Color(p.color.r, p.color.g, p.color.b);
+        color.multiplyScalar(1 / Math.max(1e-6, lum(color)));
+        const c = {
+          id: `cluster:${key}:${k}`, kind: 'spot', source: 'cluster', roomId, capped: true,
+          members: part.map((m) => m.id), position: new THREE.Vector3(p.position.x, p.position.y - 0.02, p.position.z),
+          direction: new THREE.Vector3(p.direction.x, p.direction.y, p.direction.z), angle: p.angle, penumbra: p.penumbra,
+          color, flux: p.flux, lumens: p.flux, dimmer: 1, on: p.flux > 0, emissive: [], weights: null,
+          noShadow: part.length > 1 || p.angle > 50 * DEG + 1e-6, fade: 0, slot: null,
+        };
+        c.cdPerLm = 1 / spotSolidAngle(c.angle, c.penumbra);
+        c.phys = c.flux * c.cdPerLm;
+        out.push(c);
+      });
+    }
+    // keep the slots of clusters that still exist (the _sunBounces pattern)
+    for (const c of out) {
+      const o = old.get(c.id);
+      old.delete(c.id);
+      if (o?.slot && o.slot.cand === o) {
+        o.slot.cand = c;
+        c.slot = o.slot;
+        c.fade = o.fade;
+        o.slot = null;
+        this._configureSlot(c.slot, c);
+      }
+    }
+    for (const o of old.values()) {
+      if (o.slot && o.slot.cand === o) {
+        o.slot.cand = null;
+        o.slot.light.intensity = 0;
+      }
+      o.slot = null;
+    }
+    this._clusters = out;
+    this.stats.clusters = out.length;
   }
 
   /** Frees the slots of the previous bounce lights. @returns {[]} */
@@ -3371,7 +3544,9 @@ export class LightManager {
       return c.roomId === OUTSIDE_ID && !this._overview && cp && Math.abs(c.position.y - cp.y) > 2 ? w * HOUSE.hop.hole : w;
     };
     this._reach = reach;
-    for (const c of this._allLampCandidates()) if (c.on && c.flux > 0 && ok(c)) groups[c.kind]?.push(c);
+    // pooled item downlights compete as their clusters, never as members
+    for (const c of this._allLampCandidates()) if (c.on && c.flux > 0 && ok(c) && c.cluster !== 'downlight') groups[c.kind]?.push(c);
+    for (const c of this._clusters || []) if (c.on && ok(c)) groups.spot.push(c);
     for (const c of this._extraRects()) if (c.on && ok(c)) groups.rect.push(c);
     // rect slots first: windows without one compete for a plain spot slot with their far-field stand-in
     for (const kind of ['rect', 'point', 'spot']) {
@@ -3390,8 +3565,17 @@ export class LightManager {
         const w = weight(c);
         if (w !== 1) c.score *= w;
       }
-      if (kind === 'spot') this._assignSpots(slots, list);
-      else this._assign(slots, list);
+      if (kind === 'spot') {
+        // the spot category's fittings take at most itemSpots seats per room: free seats first, then the weakest seat
+        // of a non-shadow lamp of their own room (MASTER D5); without them (null) exactly today's assignment
+        const plan = planSpotSeats(list, {
+          slots: slots.length, shadowSlots: slots.filter((s) => s.shadowed).length, cap: HOUSE.itemSpots[this.level] ?? 2,
+          room: (c) => c.roomId ?? LIVING_ID,
+        });
+        this._seatPlan = plan;
+        if (plan) this._assignPlanned(slots, list, plan);
+        else this._assignSpots(slots, list);
+      } else this._assign(slots, list);
     }
     // candidates that lost their slot
     for (const c of this._allLampCandidates()) if (c.slot && (!c.on || c.slot.cand !== c)) c.slot = null;
@@ -3436,7 +3620,8 @@ export class LightManager {
     return (c.flux * view * signature * (c.slot ? 1.3 : 1)) / (1 + d2);
   }
 
-  _assign(slots, list) {
+  /** transient: lamps seated only for this assignment (the seat plan's victims, _assignPlanned) – no shadow redraw. */
+  _assign(slots, list, transient = null) {
     list.sort((a, b) => b.score - a.score);
     const keep = new Set(list.slice(0, slots.length));
     for (const s of slots) if (s.cand && !keep.has(s.cand)) {
@@ -3445,13 +3630,16 @@ export class LightManager {
     }
     for (const c of keep) {
       if (c.slot && c.slot.cand === c && slots.includes(c.slot)) continue;
-      const free = slots.find((s) => !s.cand);
+      // a lamp the seat plan unseated goes back into its own slot when that is free (_budget)
+      const home = c._seatSlot && !c._seatSlot.cand && slots.includes(c._seatSlot) ? c._seatSlot : null;
+      if (c._seatSlot) c._seatSlot = null;
+      const free = home ?? slots.find((s) => !s.cand);
       if (!free) break;
       free.cand = c;
       c.slot = free;
       c.fade = this._S == null || this._clock < 0.5 ? 1 : 0;
       this._configureSlot(free, c);
-      if (free.shadowed) this._requestSunShadow(free); // a spare shadow slot of the high-wall spots
+      if (free.shadowed && !transient?.has(c)) this._requestSunShadow(free); // a spare shadow slot of the high-wall spots
     }
   }
 
@@ -3459,7 +3647,7 @@ export class LightManager {
    * Spots: shadow-casting slots go to the high-wall spots first; the ones they leave (spots off) light other lamps,
    * with shadows, like the plain slots.
    */
-  _assignSpots(slots, list) {
+  _assignSpots(slots, list, transient = null) {
     const shadowSlots = slots.filter((s) => s.shadowed);
     const plain = slots.filter((s) => !s.shadowed);
     const wants = list.filter((c) => c.wantsShadow).sort((a, b) => b.score - a.score);
@@ -3487,12 +3675,63 @@ export class LightManager {
     }
     const spare = shadowSlots.filter((s) => !s.cand || !shadowed.includes(s.cand));
     for (const c of rest) if (c.slot?.shadowed && !spare.includes(c.slot)) c.slot = null;
-    this._assign([...plain, ...spare], rest);
+    this._assign([...plain, ...spare], rest, transient);
     // shadow slots only for cones ≤ 50° (§4.9): a wide house lamp (plafond, grouped downlights) that landed in a spare
     // shadow slot swaps with a lamp in a plain slot that may cast shadows (the living room's lamps never have noShadow)
     for (const s of spare) {
       if (!s.cand?.noShadow) continue;
       const p = plain.find((q) => q.cand && !q.cand.noShadow);
+      if (!p) break;
+      const a = s.cand, b = p.cand;
+      s.cand = b;
+      b.slot = s;
+      p.cand = a;
+      a.slot = p;
+      this._configureSlot(s, b);
+      this._configureSlot(p, a);
+      this._requestSunShadow(s);
+    }
+  }
+
+  /**
+   * The spot pool with the seat plan (MASTER D5, §2.5 I1–I4; lightclusters.js planSpotSeats):
+   *   1. exactly today's assignment without the spot category's fittings – the same lamps in the same slots, in the same
+   *      order, however the view got here;
+   *   2. the plan's victims (same-room, non-shadow lamps) make room: each remembers its slot (_seatSlot) and gets it back
+   *      when the fittings are switched off or removed (I4);
+   *   3. the seated fittings take those slots and the free ones – each its own previous slot when that is free (no hop
+   *      between lights, no fade restart), else a plain slot before a shadow slot.
+   */
+  _assignPlanned(slots, list, plan) {
+    const base = [], capped = [];
+    for (const c of list) (c.capped ? capped : base).push(c);
+    const prev = new Map(capped.map((c) => [c, c.slot && c.slot.cand === c && slots.includes(c.slot) ? c.slot : null]));
+    const out = new Set(base.filter((c) => !plan.has(c)));
+    this._assignSpots(slots, base, out);
+    for (const c of out) {
+      if (!c.slot || c.slot.cand !== c) continue;
+      c._seatSlot = c.slot;
+      c.slot.cand = null;
+      c.slot = null;
+    }
+    const rank = (a, b) => b.score - a.score || (String(a.id) < String(b.id) ? -1 : String(a.id) > String(b.id) ? 1 : 0);
+    for (const c of capped.filter((x) => plan.has(x)).sort(rank)) {
+      const own = prev.get(c);
+      const s = own && !own.cand ? own : slots.find((x) => !x.cand && !x.shadowed) ?? slots.find((x) => !x.cand);
+      if (!s) break;
+      s.cand = c;
+      c.slot = s;
+      if (s !== own) {
+        c.fade = this._S == null || this._clock < 0.5 ? 1 : 0;
+        if (s.shadowed) this._requestSunShadow(s);
+      }
+      this._configureSlot(s, c);
+    }
+    // shadow slots only for cones ≤ 50° (§4.9): a wide pooled downlight in a spare shadow slot swaps with a fitting of
+    // the category in a plain slot that may cast shadows (never with another lamp: those stay where they are, I4)
+    for (const s of slots) {
+      if (!s.shadowed || !s.cand?.capped || !s.cand.noShadow) continue;
+      const p = slots.find((q) => !q.shadowed && q.cand?.capped && !q.cand.noShadow);
       if (!p) break;
       const a = s.cand, b = p.cand;
       s.cand = b;
@@ -3592,7 +3831,9 @@ export class LightManager {
     // only the camera room's sources without a slot: the ambient term is the light round the camera (other rooms get
     // theirs through their flat irradiance, lightmask)
     const here = (c) => !masks || (c.roomId ?? LIVING_ID) === this._camRoomId;
-    for (const c of this._allLampCandidates()) if (c.on && !c.slot && here(c)) addAmbient(c);
+    for (const c of this._allLampCandidates()) if (c.on && !c.slot && here(c) && c.cluster !== 'downlight') addAmbient(c);
+    // pooled item downlights: their cluster stands for the members
+    for (const c of this._clusters || []) if (c.on && !c.slot && here(c)) addAmbient(c);
     // a window without a rect slot is lit by its far-field spot when that has a slot (its fade-in is ambient above)
     for (const c of this._extraRects()) if (c.on && !c.slot && !c.spotCand?.slot && here(c)) addAmbient(c);
     for (const c of this._bounces || []) if (c.on && !c.slot && here(c)) addAmbient(c);
@@ -3653,6 +3894,14 @@ export class LightManager {
       return;
     }
     col.multiplyScalar(1 / lm);
+    // one glow material drawn for n identical heads (a downlight grid, a rail – models/spots.js): its level is one
+    // fitting's (without it a 20-head grid's lenses glowed ≈ 3.5 × brighter than a single downlight's, √(lm/800));
+    // the colour above is the heads' flux-weighted mean either way
+    const heads = mat.userData?.emitters > 1 ? mat.userData.emitters : 1;
+    if (heads > 1) {
+      lm /= heads;
+      lmFull /= heads;
+    }
     let L;
     const base = mat.userData?.baseIntensity;
     const blended = mat.blending === THREE.CustomBlending;

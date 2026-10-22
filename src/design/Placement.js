@@ -48,6 +48,7 @@ import { getArchetype } from '../models/registry.js';
 import { pickAt, cursorNDC, ndcFromClient, Footprint, hintUI, itemName, normDeg, underlayY, intersectFast, houseRoots, floorYAt, ROTATE_CURSOR } from './Selection.js';
 import { MAIN_LEVEL, itemLevel, levelFloorY, levelAtY } from './SceneSync.js';
 import { builtInFrame } from '../home/builtins.js';
+import { wallSnap } from './placementHooks.js';
 
 const DEG = Math.PI / 180;
 const GRID = 0.1;
@@ -61,7 +62,7 @@ const DOOR_CLEARANCE = 0.6;
  * arc lamps: beside a sofa against the wall their arm reaches sideways, along the wall, over the seat.) Floor vitrines
  * too – dropped by a wall with the default rotation they stood side-on to it (notes/add-storage.md).
  */
-const AUTO_FACE = /^(sideboard|tv-bench|display-cabinet|sofa-modular-l|sofa-curved|sofa-straight)$/;
+const AUTO_FACE = /^(sideboard|tv-bench|display-cabinet|sofa-modular-l|sofa-curved|sofa-straight|desk)$/;
 const AUTO_FACE_DIST = 0.4;
 /** Pendants over a table: the shade's underside this far above the top (60–70 cm is usual over a dining table). */
 const OVER_TABLE = 0.65;
@@ -71,10 +72,11 @@ const CUT_TO_LENGTH = new Set(['slat-panel']);
 
 const autoFaces = (archetype) => AUTO_FACE.test(archetype || '');
 
-/** Default height of the middle of wall items (m above the floor). */
+/** Default height of the middle of wall items (m above the floor); a product's params.mountHeight wins (start). */
 const WALL_V = {
   'art-frame': 1.5, mirror: 1.5, 'acoustic-art': 1.5, 'fabric-panel': 1.5, 'felt-shape': 1.5, 'slat-panel': 1.3,
   'wall-sconce': 1.7, 'wall-arm': 1.55, tv: 1.15, speaker: 1.2, 'wall-shelf': 1.45,
+  'spot-wall': 1.9, 'picture-light': 1.95, 'art-set': 1.45,
 };
 
 const _ray = new THREE.Raycaster();
@@ -654,10 +656,10 @@ export class Placement {
     _box.setFromObject(this.ghost);
     this._yRel = Number.isFinite(_box.min.y) ? [_box.min.y, _box.max.y] : [0, this.spec.dims?.h ?? 0.5];
     const h = this.spec.dims?.h ?? 0.5;
-    // a wall cabinet with the shop's suggested bottom height (BESTÅ: params.mountHeight 1.2) starts there – the same
-    // height the Inspector's floor → wall swap uses
+    // a wall item with the shop's suggested bottom height (BESTÅ: params.mountHeight 1.2, a wall shelf, a swing-arm
+    // lamp) starts there – the same height the Inspector's floor → wall swap uses; else the archetype's usual height
     const mh = Number(this.spec.params?.mountHeight);
-    const wallV = WALL_V[this.spec.archetype] ?? (this.mount === 'wall' && mh > 0 ? mh + h / 2 : Math.max(1.45, h / 2 + 0.1));
+    const wallV = this.mount === 'wall' && mh > 0 ? mh + h / 2 : WALL_V[this.spec.archetype] ?? Math.max(1.45, h / 2 + 0.1);
     this.wallHeight = Array.isArray(itemSpec.position) && itemSpec.position[1] > 0 && this.mount === 'wall' ? itemSpec.position[1] : wallV;
     this.target = null;
     this._obstacles = null;
@@ -1268,8 +1270,19 @@ export class Placement {
       v = snap(v, GRID / 2);
     }
     let note = '';
+    // feature snaps (placementHooks.js: a picture light over a picture): position, note, the item it rests over, and
+    // while placing a params patch for the new item
+    let supportUid = null, snapPatch = null;
+    const sn = o.snap ? wallSnap(this, { wall: w, u, v, dims, archetype: o.archetype, uid: o.uid, placing: !d }) : null;
+    if (sn) {
+      u = sn.u;
+      v = sn.v;
+      note = sn.note || note;
+      supportUid = sn.supportUid ?? null;
+      if (!d && sn.patch) snapPatch = sn.patch;
+    }
     // centre on the wall when close
-    if (o.snap && Math.abs(u - w.L / 2) < CENTER_SNAP && w.L > dims.w + 0.1) {
+    if (!sn && o.snap && Math.abs(u - w.L / 2) < CENTER_SNAP && w.L > dims.w + 0.1) {
       u = w.L / 2;
       note = 'midt på veggen';
     }
@@ -1319,7 +1332,7 @@ export class Placement {
     const theta = normDeg(Math.atan2(w.nx, w.nz) / DEG);
     if (status === 'ok') {
       const fp = { cx: x + w.nx * dims.d / 2, cz: z + w.nz * dims.d / 2, ax: [w.dx, w.dz], az: [w.nx, w.nz], hw, hd: dims.d / 2 };
-      const hit2 = this._overlap({ ...fp, y0: w.fy + v - hh, y1: w.fy + v + hh }, 'wall', o.uid);
+      const hit2 = this._overlap({ ...fp, y0: w.fy + v - hh, y1: w.fy + v + hh }, 'wall', o.uid, supportUid);
       if (hit2) {
         status = 'overlap';
         message = `Overlapper med ${hit2.name}`;
@@ -1328,6 +1341,12 @@ export class Placement {
     if (!note) note = `midt ${cm(v)} cm · underkant ${cm(v - hh)} cm`;
     if (cutNote) note = `${cutNote} · ${note}`;
     const res = { mount: 'wall', position: [x, w.fy + v, z], rotationDeg: theta, attach: { wallId: w.id, normal: [r3(w.nx), 0, r3(w.nz)] }, status, message, note };
+    // the snap's patch (a picture light's wash sized to the picture) merged with the cut length
+    if (snapPatch) {
+      const cutDims = patch?.dims;
+      patch = { ...snapPatch, params: { ...(patch?.params || {}), ...(snapPatch.params || {}) } };
+      if (cutDims || snapPatch.dims) patch.dims = { ...(snapPatch.dims || {}), ...(cutDims || {}) };
+    }
     if (patch) res.patch = patch;
     return res;
   }

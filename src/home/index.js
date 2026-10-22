@@ -12,6 +12,8 @@ import { createVisibility } from './visibility.js';
 import { LightManager } from './lighting.js';
 import { DesignState, setDesignLimits } from '../design/DesignState.js';
 import { Saves } from '../design/Saves.js';
+import { getImageStore, imageRefs } from '../design/ImageStore.js';
+import { setArtImageSource } from '../models/artImages.js';
 import { SceneSync } from '../design/SceneSync.js';
 import { setModelQuality, ARCHETYPES } from '../models/registry.js';
 import { setWallQuality, ELEMENT_TYPES } from '../models/walldesigns.js';
@@ -64,6 +66,8 @@ const DEG = Math.PI / 180;
  *                                                                      still the living room's only (§4.2)
  *     house: { walls, windows, doors, pickables, builtInLights, colliders },   the whole house, every builder
  *     lighting: LightManager, design: DesignState, saves: Saves, sync: SceneSync, visibility (visibility.js),
+ *     images: ImageStore (design/ImageStore.js) – uploaded pictures (also window.__game.home.images); the model
+ *       builders read it through models/artImages.js (set before the first build)
  *     shell, kitchen, exterior,                                        the builder results
  *     parts: { rooms, stairs, builtIns },                              the house builders' results (rooms.js,
  *                                                                      stairs.js, builtins.js)
@@ -152,8 +156,12 @@ export async function createHome(ctx) {
   registerDesignLimits();
   const design = new DesignState({ layout });
   const dev = ctx.dev || {};
+  // uploaded pictures (IndexedDB): the builders read them through models/artImages.js; dev pages read, never write
+  const images = getImageStore({ readOnly: !!dev.readOnlySaves });
+  setArtImageSource(images);
   // dev pages read saved designs but never write them (dev.readOnlySaves)
-  const saves = new Saves(design, dev.readOnlySaves ? { autosave: false, storage: readOnlyStorage() } : { autosave: false });
+  const saveOpts = { autosave: false, images };
+  const saves = new Saves(design, dev.readOnlySaves ? { ...saveOpts, storage: readOnlyStorage() } : saveOpts);
   let lastWriteToast = 0;
   saves.onWriteError = () => {
     const now = performance.now();
@@ -161,9 +169,19 @@ export async function createHome(ctx) {
     lastWriteToast = now;
     ctx.events?.emit?.('toast', { text: 'Klarte ikke å lagre designet – lagringsplassen i nettleseren er full eller blokkert. Eksporter det til fil, eller slett gamle design under Design (M).', seconds: 7 });
   };
+  let lastImageToast = 0;
+  let gcTimer = 0;
+  const offImageErrors = images.on('error', (e) => {
+    const now = performance.now();
+    if (!e?.message || now - lastImageToast < 30000) return;
+    lastImageToast = now;
+    ctx.events?.emit?.('toast', { text: e.message, seconds: 6 });
+  });
   chooseStartDesign(design, saves, dev);
   if (!dev.readOnlySaves) saves.enableAutosave();
   ctx.design = design;
+  // decode the design's pictures while the materials and the house are built – the first build then has them
+  const imagesReady = images.load(imageRefs({ items: design.list() })).catch(() => null);
 
   progress(0.12, 'Lager materialer');
   const kinds = new Set(BASE_KINDS);
@@ -252,6 +270,7 @@ export async function createHome(ctx) {
     parts,
     design,
     saves,
+    images,
     lighting: null,
     sync: null,
     visibility: null,
@@ -272,6 +291,8 @@ export async function createHome(ctx) {
       home.lighting.update(dt, state?.camera ?? ctx.camera);
     },
     dispose() {
+      clearTimeout(gcTimer);
+      offImageErrors();
       home.visibility?.dispose?.();
       home.sync.dispose();
       saves.dispose?.();
@@ -290,14 +311,32 @@ export async function createHome(ctx) {
 
   progress(0.72, 'Møblerer');
   await tick();
+  // never block loading on a hung IndexedDB: models without their picture yet show a placeholder and fill in later
+  await Promise.race([imagesReady, new Promise((r) => setTimeout(r, 3000))]);
   home.sync = new SceneSync({ home, design, lighting: home.lighting, collision: ctx.collision, renderer: ctx.renderer, scene, camera: ctx.camera });
   // the first build is compiled as one scene by Game.load (no per-model placeholders); later models are gated
   home.sync.gating = false;
   await home.sync.syncAllAsync((f) => progress(0.72 + 0.14 * f, 'Møblerer'));
   home.sync.gating = true;
+  // the art canvases hold the pixels now; later builds decode on request
+  images.releaseDecoded();
   await exterior.ready?.catch?.(() => {});
   // last: it hides levels / room contents only once the game loop runs (after Game._precompile, §4.12)
   home.visibility = createVisibility(home, layout);
+
+  // clean up pictures no stored design uses (14 days grace) – once, idle, well after loading; never on dev pages
+  if (!dev.readOnlySaves) {
+    gcTimer = setTimeout(() => {
+      const run = () => {
+        const roots = saves.imageRoots();
+        if (!roots) return; // the stored designs cannot be read: keep everything
+        for (const id of imageRefs({ items: design.list() })) roots.add(id);
+        images.gc(roots).catch((err) => console.warn('[images] clean-up failed', err));
+      };
+      if (typeof requestIdleCallback === 'function') requestIdleCallback(run, { timeout: 10000 });
+      else run();
+    }, 20000);
+  }
   progress(0.88, 'Nesten klar');
   return home;
 }

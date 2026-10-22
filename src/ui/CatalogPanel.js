@@ -8,6 +8,7 @@ import { disposeModel } from '../models/kit.js';
 import { resolveColor, prepareMaterials } from '../home/materials.js';
 import { rt60For, acousticsFor, LIVING_ROOM_ID } from '../design/Acoustics.js';
 import * as catalogModule from '../catalog/index.js';
+import { extraFacts } from '../catalog/facts.js';
 
 /**
  * Product catalogue (ARCHITECTURE §12): categories (Solskjerming opens the WindowPanel), free-text search over
@@ -37,6 +38,12 @@ import * as catalogModule from '../catalog/index.js';
  * Shading products: «Velg vindu» shows the product's window list in the detail view and keeps the product + variant
  * pending – a click on a window in the room (or a button in the list) puts it on that window (chooseWindow /
  * applyToWindow), and the window panel opens on it for colour, mount and how far it is lowered.
+ *
+ * Feature modules add cards shown first in the grid (addPinned – «Last opp eget bilde») and buttons in a product's
+ * detail footer (addDetailAction – «Legg inn flere (rekke/rutenett) …»). A category with a CATEGORY_HINTS entry shows
+ * one muted line under the sub filters that opens the category it names. Ceiling fittings with
+ * userData.model.thumbView 'below' (downlights) are shot from below against a ceiling plate; light decals (a picture
+ * light's wash, ceiling pools) are left out of every thumbnail.
  */
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -224,6 +231,11 @@ class ThumbRenderer {
     this.shadow.renderOrder = -1;
     scene.add(this.shadow);
 
+    // a ceiling behind flush ceiling fittings (downlights): seen from below, so the trim and the lit lens read
+    this.ceilingPlate = new THREE.Mesh(new THREE.PlaneGeometry(1, 1).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#eeebe5', roughness: 0.95 }));
+    this.ceilingPlate.visible = false;
+    scene.add(this.ceilingPlate);
+
     this.scene = scene;
     this.camera = new THREE.PerspectiveCamera(30, THUMB_W / THUMB_H, 0.01, 100);
   }
@@ -258,10 +270,17 @@ class ThumbRenderer {
       }
     } else model = buildModel({ ...spec, quality: 'medium' });
     const mount = shading ? 'window' : product.mount || spec.mount || 'floor';
+    // models/spots.js: 'below' (a downlight seen from under the ceiling) | 'under' (a spot seen from below the front)
+    const view = model.userData?.model?.thumbView || null;
+    // light decals (a picture light's wash, ceiling pools) are light on a surface the studio does not have
+    model.traverse((o) => {
+      if (o.userData?.lightDecal || o.name === 'ceiling-pool') o.visible = false;
+    });
     const holder = new THREE.Group();
     if (win) holder.add(win.root);
     else holder.add(model);
     this.scene.add(holder);
+    const studio = this._studioMaterials(model);
     try {
       holder.updateMatrixWorld(true);
       const box = new THREE.Box3().setFromObject(model);
@@ -275,8 +294,8 @@ class ThumbRenderer {
       if (mount === 'rug') dir = new THREE.Vector3(0.32, 1.35, 1);
       else if (mount === 'soft') dir = new THREE.Vector3(0.5, 0.7, 1);
       else if (mount === 'window') dir = new THREE.Vector3(0.42, 0.08, 1);
-      else if (mount === 'wall') dir = new THREE.Vector3(0.38, 0.14, 1);
-      else if (mount === 'ceiling') dir = new THREE.Vector3(0.55, 0.12, 1);
+      else if (mount === 'wall') dir = view === 'under' ? new THREE.Vector3(0.38, -0.3, 1) : new THREE.Vector3(0.38, 0.14, 1);
+      else if (mount === 'ceiling') dir = view === 'below' ? new THREE.Vector3(0.42, -0.95, 0.8) : view === 'under' ? new THREE.Vector3(0.55, -0.32, 1) : new THREE.Vector3(0.55, 0.12, 1);
       else dir = new THREE.Vector3(0.62, 0.4, 1);
       dir.normalize();
 
@@ -330,6 +349,14 @@ class ThumbRenderer {
         sh.position.set(center.x, box.min.y + 0.001, center.z);
         sh.material.opacity = mount === 'rug' ? 0.45 : 0.85;
       }
+      // the ceiling plate fills the frame behind a downlight (not part of `model`: the framing is the fitting's own)
+      const plate = this.ceilingPlate;
+      plate.visible = mount === 'ceiling' && view === 'below';
+      if (plate.visible) {
+        const ps = Math.max(size.x, size.z) * 8 + 0.4;
+        plate.scale.set(ps, 1, ps);
+        plate.position.set(center.x, box.max.y + 0.0015, center.z);
+      }
 
       const r = this.renderer;
       // compile new shader programs without blocking the main thread (KHR_parallel_shader_compile when available)
@@ -359,12 +386,69 @@ class ThumbRenderer {
         fr.readAsDataURL(blob);
       });
     } finally {
+      // the model gets its own materials back before it is disposed (the stand-ins are the studio's)
+      for (const [o, m] of studio.swaps) o.material = m;
+      for (const m of studio.temp) m.dispose();
       holder.removeFromParent();
+      if (this.ceilingPlate) this.ceilingPlate.visible = false;
       if (win) {
         applyShading(win.info, null); // disposes the shading rig's own geometry/materials
         win.root.removeFromParent();
       } else disposeModel(model);
     }
+  }
+
+  /**
+   * Thumbnail-only stand-ins for metal and mirror. The studio has no environment map (see _setup), so a metalness-1
+   * material (chrome, steel, brass, bronze, mirror glass) has nothing to reflect and reads near-black – a «krom» or
+   * «messing» variant looked like «svart». For the shot each such mesh gets a mostly diffuse copy with the same colour
+   * and maps (metalness 0.3, roughness ≥ 0.35), so the variant's hex shows; mirror glass becomes a pale grey-blue. The
+   * room keeps the real materials (its PMREM environment covers them). Copies of the shared, cached materials are kept
+   * (no new shader program per thumbnail); copies of a model's own materials are disposed after the shot.
+   * @returns {{ swaps: Array<[THREE.Mesh, THREE.Material|THREE.Material[]]>, temp: THREE.Material[] }}
+   */
+  _studioMaterials(root) {
+    const swaps = [];
+    const temp = [];
+    if (!root) return { swaps, temp };
+    const cache = (this._metalStandIns ||= new Map());
+    const standIn = (m) => {
+      if (!m || !m.isMeshStandardMaterial || !(m.metalness >= 0.5)) return m;
+      const shared = !!(m.userData?.cached || m.userData?.shared);
+      let s = shared ? cache.get(m.uuid) : null;
+      if (s) return s;
+      s = m.clone();
+      if (m.userData?.kind === 'mirror') {
+        s.color.set('#cdd6dc');
+        s.metalness = 0.12;
+        s.roughness = 0.2;
+      } else {
+        s.metalness = 0.3;
+        s.roughness = Math.max(Number.isFinite(m.roughness) ? m.roughness : 0.5, 0.35);
+      }
+      s.userData = { ...(m.userData || {}), cached: false, shared: false, thumbStandIn: true };
+      if (shared) cache.set(m.uuid, s);
+      else temp.push(s);
+      return s;
+    };
+    root.traverse((o) => {
+      if (!o.isMesh || !o.material) return;
+      const orig = o.material;
+      if (Array.isArray(orig)) {
+        const next = orig.map(standIn);
+        if (next.some((m, i) => m !== orig[i])) {
+          swaps.push([o, orig]);
+          o.material = next;
+        }
+      } else {
+        const next = standIn(orig);
+        if (next !== orig) {
+          swaps.push([o, orig]);
+          o.material = next;
+        }
+      }
+    });
+    return { swaps, temp };
   }
 
   /**
@@ -446,6 +530,8 @@ class ThumbRenderer {
       this._win.glass.dispose();
       this._win = null;
     }
+    for (const m of this._metalStandIns?.values() || []) m.dispose();
+    this._metalStandIns = null;
     if (this.renderer) {
       this.scene?.environment?.dispose?.();
       this.scene?.background?.dispose?.();
@@ -600,7 +686,8 @@ export function variantSwatch(product, v, i, { active = false, onPick, size } = 
 
 /**
  * Extra «Fakta» rows for product types whose build matters when buying: vitrineskap (doors, shelves, light, how it
- * stands or hangs) and hvilestoler (footstool / built-in footrest, swivel, headrest).
+ * stands or hangs), hvilestoler (footstool / built-in footrest, swivel, headrest), and the rows of catalog/facts.js
+ * (spots and downlights, art).
  * @returns {Array<[string, string]>}
  */
 export function typeFacts(p, catalog, vi = p?.defaultVariant ?? 0) {
@@ -627,6 +714,8 @@ export function typeFacts(p, catalog, vi = p?.defaultVariant ?? 0) {
     if (P.legStyle === 'swivel-star') out.push(['Fot', 'Stjernefot']);
     if (P.headrest) out.push(['Nakkepute', 'Ja']);
   }
+  // spots and downlights, art (catalog/facts.js)
+  out.push(...extraFacts(p, P, { catalog, vi }));
   return out;
 }
 
@@ -712,6 +801,11 @@ const CSS = `
 .ipc-subs { grid-area: subs; display: flex; gap: 0.3em; overflow-x: auto; scrollbar-width: none; margin: -0.2em -0.2em; padding: 0.2em; }
 .ipc-subs::-webkit-scrollbar { display: none; }
 .ipc-subs:empty { display: none; }
+/* the category's hint line (CATEGORY_HINTS): muted, a link on hover (.ipc-filters wins over .kv-scale button) */
+.ipc-filters .ipc-hint { grid-column: 1 / -1; justify-self: start; max-width: 100%; margin: -0.1em 0 0; padding: 0; border: 0; background: none;
+  color: var(--kv-ink-3); font-size: 0.78em; font-weight: 500; line-height: 1.4; text-align: left; cursor: pointer; }
+.ipc-filters .ipc-hint:hover { color: var(--kv-accent-2); text-decoration: underline; text-underline-offset: 0.15em; }
+.ipc-filters .ipc-hint[hidden] { display: none; }
 .ipc-subs.is-more-right { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.2em), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 2.2em), transparent); }
 .ipc-subs.is-more-left { -webkit-mask-image: linear-gradient(90deg, transparent, #000 2.2em); mask-image: linear-gradient(90deg, transparent, #000 2.2em); }
 .ipc-subs.is-more-left.is-more-right { -webkit-mask-image: linear-gradient(90deg, transparent, #000 2.2em, #000 calc(100% - 2.2em), transparent); mask-image: linear-gradient(90deg, transparent, #000 2.2em, #000 calc(100% - 2.2em), transparent); }
@@ -884,6 +978,9 @@ export class CatalogPanel extends BasePanel {
     this.query = '';
     this.detail = null; // { product, vi }
     this.cardVariant = new Map(); // productId → variant index shown on the card
+    /** Cards and detail buttons of feature modules (addPinned / addDetailAction). */
+    this._pinned = [];
+    this._detailActions = [];
     this._listScroll = 0;
     this._pending = null; // { productId, vi, until } – shading waiting for a window click («Velg vindu»)
     this._offSel = editor.events.on?.('select', ({ selected }) => {
@@ -951,7 +1048,9 @@ export class CatalogPanel extends BasePanel {
       this._renderList();
     } });
     this.sortCtl.select.setAttribute('aria-label', 'Sorter');
-    this.filtersEl = h('div.ipc-filters', {}, this.titleEl, this.searchEl, this.pickBtn, h('div.ipc-sort', {}, this.sortCtl.select), this.subsEl, this.catsEl);
+    // CATEGORY_HINTS: where something the category does not have lives instead (a click goes there)
+    this.hintEl = h('button.ipc-hint', { type: 'button', hidden: true, on: { click: () => this._followHint() } });
+    this.filtersEl = h('div.ipc-filters', {}, this.titleEl, this.searchEl, this.pickBtn, h('div.ipc-sort', {}, this.sortCtl.select), this.subsEl, this.hintEl, this.catsEl);
     this.filtersEl.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape' || !this._catsOpen) return;
       // Esc closes the drop-down first (not the panel)
@@ -985,6 +1084,63 @@ export class CatalogPanel extends BasePanel {
 
     this.large = readLargePref();
     this._applyLayout();
+  }
+
+  /**
+   * Adds a card shown first in the product grid (also when the list is empty).
+   * fn({ panel, category, query, sub }) → HTMLElement|null (null = not in this view).
+   * @returns {() => void} removes it
+   */
+  addPinned(fn) {
+    this._pinned.push(fn);
+    if (this.isOpen && !this.detail) this._renderList();
+    return () => {
+      const i = this._pinned.indexOf(fn);
+      if (i >= 0) this._pinned.splice(i, 1);
+    };
+  }
+
+  /**
+   * Adds a button to a product's detail footer: fn({ panel, product, vi }) → HTMLElement|null.
+   * @returns {() => void} removes it
+   */
+  addDetailAction(fn) {
+    this._detailActions.push(fn);
+    return () => {
+      const i = this._detailActions.indexOf(fn);
+      if (i >= 0) this._detailActions.splice(i, 1);
+    };
+  }
+
+  /** Runs the feature hooks of a list (a failing one is left out and logged). */
+  _extra(list, ctx) {
+    return list.map((fn) => {
+      try {
+        return fn(ctx);
+      } catch (err) {
+        console.warn('[catalog] extension failed', err);
+        return null;
+      }
+    }).filter(Boolean);
+  }
+
+  /** The category's hint line (CATEGORY_HINTS), hidden while searching. */
+  _renderHint() {
+    const hint = !this.query.trim() ? this.cat.CATEGORY_HINTS?.[this.category] : null;
+    this.hintEl.hidden = !hint;
+    this.hintEl.textContent = hint?.text || '';
+    this.hintEl.title = hint ? `Gå til ${this.cat.categoryLabel?.(hint.goto) || hint.goto}` : '';
+  }
+
+  /** Opens the category (and sub filter) the hint line names. */
+  _followHint() {
+    const hint = this.cat.CATEGORY_HINTS?.[this.category];
+    if (!hint?.goto) return;
+    this.setCategory(hint.goto);
+    if (hint.sub && this.cat.products(hint.goto).some((p) => p.subcategory === hint.sub)) {
+      this.sub = hint.sub;
+      this._renderList();
+    }
   }
 
   /** The element that scrolls the product list and the detail view (the body; the main column when large). */
@@ -1247,16 +1403,19 @@ export class CatalogPanel extends BasePanel {
   _renderList() {
     this._paintCats();
     this._renderSubs();
+    this._renderHint();
     const list = this._products();
     const searching = !!this.query.trim();
     this._renderHeading(list);
     requestAnimationFrame(() => this._subsFade());
     this.observer?.disconnect();
+    // feature cards first («Last opp eget bilde» …)
+    const pinned = this._extra(this._pinned, { panel: this, category: this.category, query: this.query.trim(), sub: this.sub });
     if (!list.length) {
-      this.grid.replaceChildren(h('div.ipc-empty', {}, emptyState(searching ? 'Ingen produkter passer søket. Prøv et annet ord, for eksempel «bouclé», «eik» eller «IKEA».' : 'Ingen produkter her ennå.', 'info')));
+      this.grid.replaceChildren(...pinned, h('div.ipc-empty', {}, emptyState(searching ? 'Ingen produkter passer søket. Prøv et annet ord, for eksempel «bouclé», «eik» eller «IKEA».' : 'Ingen produkter her ennå.', 'info')));
       return;
     }
-    this.grid.replaceChildren(...list.map((p) => this._card(p)));
+    this.grid.replaceChildren(...pinned, ...list.map((p) => this._card(p)));
   }
 
   _card(p) {
@@ -1488,7 +1647,7 @@ export class CatalogPanel extends BasePanel {
     const isShading = isShadingProduct(p);
     const place = button({ label: isShading ? 'Velg vindu' : 'Plasser i stua', icon: isShading ? 'blinds' : null, variant: 'primary', title: isShading ? 'Klikk deretter på et vindu i stua (eller velg i lista)' : undefined, onClick: () => this.place(p, this.detail?.vi ?? vi) });
     if (!isShading) place.prepend(svg(PLUS_ICON));
-    this.foot.replaceChildren(storeLink(p, { variant: vi }) || h('span'), place);
+    this.foot.replaceChildren(storeLink(p, { variant: vi }) || h('span'), ...this._extra(this._detailActions, { panel: this, product: p, vi }), place);
     this.foot.hidden = false;
   }
 

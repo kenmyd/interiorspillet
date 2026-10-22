@@ -7,6 +7,10 @@ import { archetypes as storage } from './storage.js';
 import { archetypes as beds } from './beds.js';
 import { archetypes as chairs } from './chairs.js';
 import { archetypes as fixtures } from './fixtures.js';
+import { archetypes as desks } from './desks.js';
+import { archetypes as stools } from './stools.js';
+import { archetypes as tasklamps } from './tasklamps.js';
+import { archetypes as spots } from './spots.js';
 import { blockout, finishModel, roundedBox, partMesh } from './kit.js';
 import { mat } from '../home/materials.js';
 import { products } from '../catalog/index.js';
@@ -14,8 +18,8 @@ import schema from '../data/archetypes.json';
 import * as THREE from 'three';
 
 /**
- * Model registry (ARCHITECTURE §5): every archetype of seating/tables/lamps/textiles/decor/storage/beds/chairs/fixtures
- * in one table, and
+ * Model registry (ARCHITECTURE §5): every archetype of seating/tables/lamps/textiles/decor/storage/beds/chairs/fixtures/
+ * desks/stools/tasklamps/spots in one table, and
  * buildModel() which merges an item spec with the archetype defaults and calls its builder.
  *
  *   ARCHETYPES                       { id: Def } (frozen)
@@ -30,7 +34,7 @@ import * as THREE from 'three';
  * ({ parts, lights, surfaces, seatY? } – see kit.finishModel).
  */
 
-const SOURCES = { seating, tables, lamps, textiles, decor, storage, beds, chairs, fixtures };
+const SOURCES = { seating, tables, lamps, textiles, decor, storage, beds, chairs, fixtures, desks, stools, tasklamps, spots };
 
 /** All archetypes (later files win on a duplicate id, with a warning). */
 export const ARCHETYPES = (() => {

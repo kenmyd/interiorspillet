@@ -11,6 +11,9 @@ import palette from '../data/palette.json';
 import {
   thumbnail, cachedThumbnail, priceInfo, priceEl, variantSwatch, variantColors, colorDist, dimsText, storeLink,
 } from './CatalogPanel.js';
+import { clone, cm, throttle, blurSoon, seg } from './inspectorKit.js';
+import { gridExtension } from './inspector/gridSection.js';
+import { itemQuantity } from '../design/grid.js';
 
 /**
  * Inspector (ARCHITECTURE §12, §14) – the right-hand panel that opens when something is selected.
@@ -34,6 +37,11 @@ import {
  * changes go through Placement.constrain(), so the item never ends up in a wall, a window or the ceiling (the position
  * correction is part of the same undo step). Changes from elsewhere (undo, drag-move, R) refresh the panel – but
  * never while a control inside it is being used.
+ *
+ * Feature modules extend the item view through addExtension(ext) (MASTER §2.7): a head for non-catalogue items, extra
+ * sections (after the head, after «Lys», or in place of «Størrelse»), hidden parts/params/controls, «Bytt modell»
+ * candidates and what a swap/reset carries over. The grid of ceiling fittings (ui/inspector/gridSection.js) is one;
+ * the helpers extensions use are in ui/inspectorKit.js. Lamp params with `section: 'light'` show in «Lys».
  */
 
 const DIM_LABELS = { w: 'Bredde', d: 'Dybde', h: 'Høyde' };
@@ -211,62 +219,13 @@ const IC = {
   trash: S('<path d="M4.5 7h15M10 11v6M14 11v6M6.5 7l.8 11.2a2 2 0 0 0 2 1.8h5.4a2 2 0 0 0 2-1.8L17.5 7M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>'),
 };
 
-const clone = (v) => (v == null ? v : JSON.parse(JSON.stringify(v)));
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-const cm = (v) => `${fmtNumber(Math.round(v * 100), 0)} cm`;
-
-/** Calls fn at most every `ms` while dragging; flush() runs the last pending call now. */
-function throttle(fn, ms = 70) {
-  let last = 0;
-  let timer = 0;
-  let args = null;
-  const run = () => {
-    clearTimeout(timer);
-    timer = 0;
-    last = performance.now();
-    const a = args;
-    args = null;
-    if (a) fn(...a);
-  };
-  const t = (...a) => {
-    args = a;
-    const wait = ms - (performance.now() - last);
-    if (wait <= 0) run();
-    else if (!timer) timer = setTimeout(run, wait);
-  };
-  t.flush = () => args && run();
-  t.cancel = () => {
-    clearTimeout(timer);
-    timer = 0;
-    args = null;
-  };
-  return t;
-}
-
-const blurSoon = (el) => setTimeout(() => {
-  if (el && document.activeElement === el) el.blur();
-}, 0);
 
 /** Down chevron for the colour/material accordion. */
 function chevron() {
   const el = svg(IC.chev);
   el.classList.add('ipi-part__chev');
   return el;
-}
-
-/**
- * Segmented control: options [[value, label]], the active value, onPick(value).
- * @returns {HTMLElement}
- */
-function seg(options, value, onPick) {
-  return h('div.ipi-seg', { role: 'radiogroup' }, options.map(([v, label]) => h(`button${v === value ? '.is-active' : ''}`, {
-    type: 'button',
-    role: 'radio',
-    'aria-checked': v === value ? 'true' : 'false',
-    title: label,
-    text: label,
-    on: { click: () => v !== value && onPick(v) },
-  })));
 }
 
 /** Compass names of a ceiling's long and short side in plan (+x = sør, +z = vest): ['nord–sør', 'øst–vest']. */
@@ -295,6 +254,11 @@ export class Inspector extends BasePanel {
     this._pointer = false;
     this._ui = { part: null, params: false };
     this._originals = null;
+    /** Feature extensions of the item view (addExtension). */
+    this._ext = [];
+    // «Antall og rutenett» for rows / grids of ceiling fittings (null while the grid UI is not there)
+    const grid = gridExtension();
+    if (grid) this.addExtension(grid);
     this.el.addEventListener('pointerdown', () => (this._pointer = true));
     this._onUp = () => (this._pointer = false);
     window.addEventListener('pointerup', this._onUp);
@@ -320,6 +284,64 @@ export class Inspector extends BasePanel {
       this.swap(e.code === 'Period' ? 1 : -1);
     };
     window.addEventListener('keydown', this._onKey);
+  }
+
+  /**
+   * Adds an extension of the item view (ui/imageInspector.js, ui/inspector/gridSection.js …). Every hook is optional;
+   * an exception in one is caught and logged:
+   *   head(insp, item, product) → HTMLElement|null              replaces the head of a non-catalogue item (first wins)
+   *   sections: { afterHead?, afterLight?, size? }(insp, item, product, def) → HTMLElement|null   extra sections;
+   *                                                              size replaces «Størrelse» (first non-null wins)
+   *   hide(insp, item, product) → { swap?, size?, reset?, parts?: string[], params?: string[]|true }|null
+   *   candidates(insp, item, product, list) → list               «Bytt modell» candidates (filter / replace)
+   *   carry(insp, item, spec) → spec                             before a swap/reset replaces the item's look
+   * Extensions may call insp._fit(uid, patch), insp._apply(patch, { coalesce, label }), insp._render(), set
+   * insp._dirty = true, and read insp.design, insp.editor and insp.catalog.
+   * @returns {() => void} removes it
+   */
+  addExtension(ext) {
+    this._ext.push(ext);
+    this._dirty = true;
+    return () => {
+      const i = this._ext.indexOf(ext);
+      if (i >= 0) this._ext.splice(i, 1);
+      this._dirty = true;
+    };
+  }
+
+  /** What the extensions hide for an item: { swap, size, reset, parts: Set, params: Set, allParams }. */
+  _hideFor(item, product) {
+    const out = { swap: false, size: false, reset: false, parts: new Set(), params: new Set(), allParams: false };
+    for (const e of this._ext) {
+      let r = null;
+      try {
+        r = e.hide?.(this, item, product);
+      } catch (err) {
+        console.warn('[inspector] extension failed', err);
+      }
+      if (!r) continue;
+      out.swap ||= !!r.swap;
+      out.size ||= !!r.size;
+      out.reset ||= !!r.reset;
+      for (const p of r.parts || []) out.parts.add(p);
+      if (r.params === true) out.allParams = true;
+      else for (const p of r.params || []) out.params.add(p);
+    }
+    return out;
+  }
+
+  /** The extensions' sections at `where` ('afterHead' | 'afterLight' | 'size'). */
+  _extSections(where, item, product, def) {
+    const out = [];
+    for (const e of this._ext) {
+      try {
+        const el = e.sections?.[where]?.(this, item, product, def);
+        if (el) out.push(el);
+      } catch (err) {
+        console.warn('[inspector] extension failed', err);
+      }
+    }
+    return out;
   }
 
   /** Blocked while «Før» (the original room) is shown – the Toolbar explains why. */
@@ -403,10 +425,16 @@ export class Inspector extends BasePanel {
 
   /**
    * The item's category: the product's own when it is a catalogue product (a design saved before a product moved category,
-   * e.g. the round-1 mirrors Smått → Speil, still has the old one in item.category), else the item's.
+   * e.g. the round-1 mirrors Smått → Speil, still has the old one in item.category), else the item's – where an item
+   * saved in «Smått» is a picture or a side table, which have their own categories since runde 3 (Kunst og bilder, Bord).
    */
   _category(item, product) {
-    return product?.category || item.category;
+    if (product?.category) return product.category;
+    if (item.category === 'smatt') {
+      if (item.archetype === 'art-frame') return 'kunst';
+      if (/^side-table-/.test(item.archetype || '')) return 'bord';
+    }
+    return item.category;
   }
 
   /**
@@ -421,16 +449,24 @@ export class Inspector extends BasePanel {
     if (product?.subcategory) {
       const sub = list.filter((p) => p.subcategory === product.subcategory);
       if (sub.length >= 2) list = sub;
-    } else if (!product && (cat === 'tekstil' || cat === 'smatt' || cat === 'akustikk')) {
+    } else if (!product && (cat === 'tekstil' || cat === 'smatt' || cat === 'akustikk' || cat === 'kunst' || cat === 'spotter')) {
       const arch = list.filter((p) => p.archetype === item.archetype);
       if (arch.length >= 1) list = arch;
-    } else if (!product && (cat === 'bord' || cat === 'sofa')) {
-      // today's tables and sofas have no product: keep to the sub-type the catalogue gives their archetype, so a coffee
-      // table is offered coffee tables (sofabord), not a 1.8 m dining table
+    } else if (!product && (cat === 'bord' || cat === 'sofa' || cat === 'stoler')) {
+      // today's tables, sofas and chairs have no product: keep to the sub-type the catalogue gives their archetype, so a
+      // coffee table is offered coffee tables (sofabord), not a 1.8 m dining table, and a dining chair dining chairs
       const subs = new Set(list.filter((p) => p.archetype === item.archetype).map((p) => p.subcategory));
       if (subs.size && !subs.has(undefined)) {
         const sub = list.filter((p) => subs.has(p.subcategory));
         if (sub.length >= 2) list = sub;
+      }
+    }
+    for (const e of this._ext) {
+      if (!e.candidates) continue;
+      try {
+        list = e.candidates(this, item, product, list) || list;
+      } catch (err) {
+        console.warn('[inspector] extension failed', err);
       }
     }
     return list;
@@ -749,6 +785,15 @@ export class Inspector extends BasePanel {
     const uid = this.target?.uid;
     const item = this.design.get(uid);
     if (!uid || !item) return;
+    // what the extensions carry over to the new look (a grid of downlights stays a grid)
+    for (const e of this._ext) {
+      if (!e.carry) continue;
+      try {
+        spec = e.carry(this, item, spec) || spec;
+      } catch (err) {
+        console.warn('[inspector] extension failed', err);
+      }
+    }
     const before = clone(item);
     // a swap to another mount (vitrineskap floor ↔ wall): onto / off the wall, then fitted like any swap
     const moved = keepPlace ? this._remount(item, spec) : null;
@@ -900,15 +945,19 @@ export class Inspector extends BasePanel {
     const family = this.catalog.archetypeInfo?.(item.archetype)?.family || null;
     this.panel.setTitle(item.name);
     this._modelObj = this.editor.sync?.getObject?.(item.uid) || null;
+    const hide = this._hideFor(item, product);
     const kids = [
       // «Bytt modell» first and sticky: nothing above it changes when a model is swapped, so ◀ ▶ never move
-      ...(this._swapSection(item, product) || []),
+      ...(hide.swap ? [] : this._swapSection(item, product) || []),
       this._headSection(item, product),
+      ...this._extSections('afterHead', item, product, def),
       this._variantSection(item, product),
-      this._partsSection(item, product, def, family),
+      this._partsSection(item, product, def, family, hide.parts),
       this._lightSection(item, product, def, family),
-      this._sizeSection(item, product, def),
-      this._paramsSection(item, def),
+      ...this._extSections('afterLight', item, product, def),
+      // an extension may replace «Størrelse» (a grid's sliders edit ONE fitting)
+      hide.size ? null : this._extSections('size', item, product, def)[0] ?? this._sizeSection(item, product, def),
+      hide.allParams ? null : this._paramsSection(item, def, hide.params),
       this._placeSection(item),
       this._soundSection(item),
     ].filter(Boolean);
@@ -919,7 +968,7 @@ export class Inspector extends BasePanel {
     const reset = button({ label: 'Tilbakestill', icon: 'reset', size: 'sm', variant: 'ghost', title: product ? 'Tilbake til butikkens farger og mål' : 'Tilbake til slik møbelet er i dag', onClick: () => this.reset() });
     const del = button({ label: 'Slett', size: 'sm', variant: 'danger', title: 'Fjern fra rommet (Delete)', disabled: !!item.locked, onClick: () => this.remove() });
     del.prepend(svg(IC.trash));
-    this.foot.append(dup, reset, del);
+    this.foot.append(...[dup, hide.reset ? null : reset, del].filter(Boolean));
   }
 
   _headSection(item, product) {
@@ -940,6 +989,15 @@ export class Inspector extends BasePanel {
       // purchase accuracy («egen farge», «egne mål») is shown inline in «Farger og materialer» and «Størrelse» –
       // a banner here would push the controls down right under the cursor after a colour click
     } else {
+      for (const e of this._ext) {
+        if (!e.head) continue;
+        try {
+          const el = e.head(this, item, product);
+          if (el) return el;
+        } catch (err) {
+          console.warn('[inspector] extension failed', err);
+        }
+      }
       const label = item.source === 'existing' ? 'Eksisterende møbel' : 'Kopi av eksisterende møbel';
       badges.unshift(badge(label, 'info'));
       kids.push(h('div.ipi-badges', {}, badges), h('div.ipi-store', { text: item.source === 'existing' ? 'Står i huset i dag – målt fra bilder og plantegning' : 'En kopi du har lagt til' }));
@@ -1092,7 +1150,7 @@ export class Inspector extends BasePanel {
     this._render();
   }
 
-  _partsSection(item, product, def, family) {
+  _partsSection(item, product, def, family, hidden = new Set()) {
     const info = this.catalog.archetypeInfo?.(item.archetype);
     // the archetype's own part names («Spiler», «Takkopp» on a slat pendant) win over the family names a builder uses
     const labels = { ...PART_FALLBACK_LABELS, ...(info?.partLabels || {}), ...(def?.partLabels || {}), ...(info?.ownPartLabels || {}) };
@@ -1104,6 +1162,7 @@ export class Inspector extends BasePanel {
     const have = this._modelParts(item);
     this._partKeys = (have || []).join(',');
     if (have) parts = [...parts.filter((p) => have.includes(p)), ...have.filter((p) => !parts.includes(p) && (labels[p] || PART_ORDER.includes(p)))];
+    parts = parts.filter((p) => !hidden.has(p));
     if (!parts.length) return null;
     const defaults = def?.defaults || {};
     const custom = this._customLook(item, product);
@@ -1267,7 +1326,12 @@ export class Inspector extends BasePanel {
     });
     kelvin.el.classList.add('ipi-kelvin');
     const kids = [on.el, dim.el, kelvin.el];
-    const lmText = lumens ? `${fmtNumber(lumens, 0)} lumen${product?.light?.lumens ? ' (fra butikken)' : ''}. ` : '';
+    // a grid item is n fittings: n × the store's lumens
+    const n = itemQuantity(item);
+    const from = product?.light?.lumens ? ' (fra butikken)' : '';
+    const lmText = !lumens ? '' : n > 1
+      ? `${n} × ${fmtNumber(lumens, 0)} = ${fmtNumber(n * lumens, 0)} lumen${from}. `
+      : `${fmtNumber(lumens, 0)} lumen${from}. `;
     kids.push(h('p.ipi-hint', { text: `${lmText}2700 K er varmt hvitt – som de fleste stuelamper. 3000 K er nøytralt, 4000 K kaldt.` }));
 
     // pendants: distance from the ceiling
@@ -1329,9 +1393,70 @@ export class Inspector extends BasePanel {
           blurSoon(tiltCtl.input);
         },
       });
-      kids.push(tiltCtl.el, h('p.ipi-hint', { text: '0° = rett opp. Skjermen vippes mot lampens forside – roter lampen for å rette den mot en annen kant.' }));
+      kids.push(tiltCtl.el, h('p.ipi-hint', { text: tiltSchema.hint ?? '0° = rett opp. Skjermen vippes mot lampens forside – roter lampen for å rette den mot en annen kant.' }));
     }
+    kids.push(...this._lightParams(item, def));
     return section('Lys', ...kids);
+  }
+
+  /**
+   * The archetype's other light params (`section: 'light'` – a spot's aim, a rail's spread …) as controls in «Lys»:
+   * number → slider, enum → select, bool → toggle (honouring `requires`). One undo step per drag.
+   * @returns {HTMLElement[]}
+   */
+  _lightParams(item, def) {
+    const values = { ...(def?.defaults?.params || {}), ...(item.params || {}) };
+    const out = [];
+    for (const [k, s] of Object.entries(def?.params || {})) {
+      if (k === 'tilt' || !s || s.section !== 'light' || !s.type || (s.requires && !values[s.requires])) continue;
+      const label = s.label || k;
+      const apply = (v) => this._apply({ params: { [k]: v } }, { coalesce: `param:${k}`, label });
+      if (s.type === 'number') {
+        const live = throttle((v) => apply(v), 90);
+        const fmt = s.unit === '°' ? (v) => `${Math.round(v)}°` : s.unit === 'm' ? (v) => cm(v) : undefined;
+        const ctl = slider({
+          label,
+          min: s.min ?? 0,
+          max: s.max ?? 1,
+          step: s.step ?? 0.01,
+          unit: s.unit && s.unit !== '°' && s.unit !== 'm' ? s.unit : '',
+          value: typeof values[k] === 'number' ? values[k] : s.default ?? s.min ?? 0,
+          format: fmt,
+          onInput: (v) => live(v),
+          onChange: (v) => {
+            live.cancel();
+            apply(v);
+            blurSoon(ctl.input);
+          },
+        });
+        out.push(ctl.el);
+      } else if (s.type === 'enum') {
+        const ctl = select({
+          label,
+          options: s.options,
+          value: values[k] ?? s.default,
+          onChange: (v) => {
+            blurSoon(ctl.select);
+            apply(v);
+            this._render();
+          },
+        });
+        out.push(ctl.el);
+      } else if (s.type === 'bool') {
+        const ctl = toggle({
+          label,
+          value: !!(values[k] ?? s.default),
+          onChange: (v) => {
+            blurSoon(ctl.input);
+            apply(v);
+            this._render();
+          },
+        });
+        out.push(ctl.el);
+      } else continue;
+      if (s.hint) out.push(h('p.ipi-hint', { text: s.hint }));
+    }
+    return out;
   }
 
   _sizeSection(item, product, def) {
@@ -1403,18 +1528,22 @@ export class Inspector extends BasePanel {
     return section('Størrelse', ...kids);
   }
 
-  _paramsSection(item, def) {
+  _paramsSection(item, def, hidden = new Set()) {
     const schema = { ...(def?.params || {}) };
+    for (const k of hidden) delete schema[k];
     // lamps show «Avstand fra tak» in the light section; other ceiling items (absorbers) keep it here
     const family = this.catalog.archetypeInfo?.(item.archetype)?.family || null;
     if (item.mount === 'ceiling' && (family === 'lamp' || item.light)) delete schema.drop;
     // a lamp's shade angle sits in the light section too
     if (family === 'lamp' || item.light) delete schema.tilt;
     const values = { ...(def?.defaults?.params || {}), ...(item.params || {}) };
+    // `defaultFrom`: an unset param shows the value of the param it follows (a frame's matH: unset = matW all round)
+    for (const [k, s] of Object.entries(schema)) if (s?.defaultFrom && item.params?.[k] == null && values[s.defaultFrom] != null) values[k] = values[s.defaultFrom];
     // floorOnly params (a cabinet's legs / plinth) mean nothing on a wall-hung item – and «Sokkel» there would make the
     // builder draw it with the floor origin (notes/add-storage.md); moving between floor and wall is the swap's job.
-    // `requires`: only for products whose params set that flag (the tilt of a tiltable shade)
-    for (const [k, s] of Object.entries(schema)) if (!s || !s.type || (s.floorOnly && item.mount === 'wall') || (s.requires && !values[s.requires])) delete schema[k];
+    // `requires`: only for products whose params set that flag (the tilt of a tiltable shade); `section` params have a
+    // section of their own («Lys», «Antall og rutenett»)
+    for (const [k, s] of Object.entries(schema)) if (!s || !s.type || s.section || (s.floorOnly && item.mount === 'wall') || (s.requires && !values[s.requires])) delete schema[k];
     if (!Object.keys(schema).length) return null;
     const lives = {};
     const ed = paramEditor(schema, values, (key, v, { final }) => {
@@ -1480,15 +1609,17 @@ export class Inspector extends BasePanel {
         ? `Underkant ca. ${cm(Math.max(0, y - half))} over gulvet – over en skjenk er 40–60 cm luft vanlig.`
         : 'Bilder henges ofte med midten ca. 145–155 cm over gulvet.';
       kids.push(hCtl.el, h('p.ipi-hint', { text: `${wallName ? `På ${wallName.toLowerCase()}. ` : ''}Dra møbelet med musa for å flytte det sidelengs. ${tip}` }));
-    } else if (item.mount !== 'ceiling') {
+    } else {
+      // floor items and ceiling fittings (a rail, a grid of spots, an aimed spot) turn in 15° steps
+      const ceiling = item.mount === 'ceiling';
       const rl = button({ label: '15°', size: 'sm', title: 'Roter 15° mot klokka (R)', onClick: () => this.rotate(15) });
       rl.prepend(svg(IC.rotL));
       const rr = button({ label: '15°', size: 'sm', title: 'Roter 15° med klokka (Shift+R)', onClick: () => this.rotate(-15) });
       rr.prepend(svg(IC.rotR));
-      kids.push(h('div.ipi-rot', {}, rl, h('div.ipi-rot__val', {}, h('b', { text: `${fmtNumber(Math.round(r), 0)}°` }), `fronten mot ${dir}`), rr));
-      kids.push(h('p.ipi-hint', { text: 'Dra møbelet med musa for å flytte det. R / Shift+R roterer, piltastene flytter litt.' }));
-    } else {
-      kids.push(h('p.ipi-hint', { text: 'Dra lampen med musa for å flytte den langs taket.' }));
+      kids.push(h('div.ipi-rot', {}, rl, h('div.ipi-rot__val', {}, h('b', { text: `${fmtNumber(Math.round(r), 0)}°` }), ceiling ? `retning ${dir}` : `fronten mot ${dir}`), rr));
+      kids.push(h('p.ipi-hint', { text: ceiling
+        ? 'Dra lampen med musa for å flytte den langs taket. R / Shift+R roterer.'
+        : 'Dra møbelet med musa for å flytte det. R / Shift+R roterer, piltastene flytter litt.' }));
     }
     return section('Plassering', ...kids);
   }

@@ -14,7 +14,8 @@ import { mat, kindGroup } from '../home/materials.js';
  *   shell-legs      upholstered shell on legs or a swivel star
  *   rocking         rocking chair on bentwood runners
  *   dining-chair    upholstered shell dining chair on slim splayed legs
- *   bar-stool       counter stool with a quilted shell back and a foot rest frame
+ *   bar-stool       counter stool with a quilted shell back (or a pad on tube posts, or a straight parsons back) and a
+ *                   foot rest frame
  *   sofa-modular-l  boxy modular corner sofa with a chaise, piped seams, loose seat/back cushions
  *   sofa-curved     organic sofa: pebble seat (convex front) + one back bolster: round arm → back → high curl
  *   sofa-straight   classic sofa with arms, seat and back cushions
@@ -1916,21 +1917,63 @@ function buildDiningChair(spec) {
   return K.finishModel(g, { seatY: seatH });
 }
 
+/** Trumpet pedestal under a seat at z (bar stools): lathe foot, column, gas-lift sleeve and swivel disc; foot ring. */
+function trumpetBase(g, ms, { w, d, z, seatBot, q, footY }) {
+  const m = ms.legs();
+  const sub = new THREE.Group();
+  sub.position.z = z;
+  g.add(sub);
+  const R = clamp(Math.min(w, d) * 0.5, 0.18, 0.24);
+  const seg = Math.max(16, Math.round(36 * q));
+  sub.add(K.partMesh(K.lathe([[0.001, 0], [R, 0], [R, 0.005], [0.96 * R, 0.012], [0.5 * R, 0.03], [0.06, 0.06], [0.035, 0.1], [0.03, 0.14]], { seg }), m, 'legs'));
+  const sleeve0 = Math.max(0.2, seatBot - 0.12);
+  sub.add(K.partMesh(K.cylinder(0.025, 0.025, Math.max(0.01, sleeve0 - 0.135), { seg: Math.max(10, Math.round(18 * q)) }), m, 'legs', { position: [0, 0.135, 0] }));
+  sub.add(K.partMesh(K.cylinder(0.032, 0.032, Math.max(0.01, seatBot - 0.02 - sleeve0), { seg: Math.max(10, Math.round(18 * q)) }), m, 'legs', { position: [0, sleeve0, 0] }));
+  sub.add(K.partMesh(K.cylinder(0.09, 0.09, 0.012, { seg: Math.max(14, Math.round(28 * q)) }), m, 'legs', { position: [0, seatBot - 0.02, 0] }));
+  if (footY != null && footY < sleeve0 - 0.02) {
+    // a foot ring on three spokes
+    const Rr = clamp(0.95 * R, 0.15, 0.21);
+    sub.add(K.partMesh(K.torus(Rr, 0.008, { radial: 6, tubular: Math.max(24, Math.round(48 * q)) }), m, 'legs', { position: [0, footY, 0], rotation: [Math.PI / 2, 0, 0] }));
+    for (let k = 0; k < 3; k++) {
+      const a = Math.PI / 2 + (k * 2 * Math.PI) / 3;
+      const u = [Math.cos(a), Math.sin(a)];
+      sub.add(K.partMesh(K.tube([[u[0] * 0.024, footY, u[1] * 0.024], [u[0] * Rr, footY, u[1] * Rr]], 0.006, { curve: 'line', radial: 6, seg: 1 }), m, 'legs'));
+    }
+  }
+}
+
 function buildBarStool(spec) {
   const { w, d, h } = spec.dims;
   const P = spec.params;
   const q = qf(spec);
-  const style = P.legStyle || 'slim-metal';
+  const style = ['slim-metal', 'wood', 'pedestal', 'sled'].includes(P.legStyle) ? P.legStyle : 'slim-metal';
   const ms = materials(spec, style);
   const g = new THREE.Group();
-  const seatH = clamp(num(P.seatH, 0.65), 0.45, h - 0.15);
+  // a backless stool (or one too low for its shell) may have its seat right at dims.h (design/furniture.md §4.2)
+  const hasBack = P.back !== 'none' && h > num(P.seatH, 0.65) + 0.12;
+  const seatH = clamp(num(P.seatH, hasBack ? 0.65 : h), 0.45, hasBack ? h - 0.12 : h);
+  const arms = hasBack && P.arms === true;
+  // back: shell (a quilted bucket), pad (a loose pad on two tube posts, Zed) or upholstered (a straight parsons back,
+  // Ella)
+  const backKind = !hasBack ? 'none' : P.back === 'pad' || P.back === 'upholstered' ? P.back : 'shell';
   const cushT = 0.075;
   const seatBot = seatH - cushT;
   const T = 0.045;
-  const hasBack = P.back !== 'none' && h > seatH + 0.12;
   const halfW0 = w * 0.43, halfW1 = w / 2 - T / 2 - 0.003;
   let sz0 = -d / 2 + 0.05;
-  if (hasBack) {
+  if (backKind === 'upholstered') {
+    // a straight upholstered back from below the seat to dims.h, leaning 5°, its top kept inside dims.d
+    const bt = 0.07, lean = 5 * DEG;
+    const y0 = seatBot - 0.03, bh = h - y0;
+    const grp = new THREE.Group();
+    grp.position.set(0, y0, -d / 2 + bt / 2 + bh * Math.sin(lean));
+    grp.rotation.x = -lean;
+    g.add(grp);
+    grp.add(K.partMesh(softBox(w * 0.92, bh, bt, 'z', { puff: 0.12, round: 0.7, sides: 0.08, bottom: 0.15, q }), ms.up, 'upholstery', { position: [0, bh / 2, 0] }));
+    sz0 = -d / 2 + bt + (bh - (seatH - y0)) * Math.sin(lean) - 0.008;
+  } else if (backKind === 'pad') {
+    sz0 = -d / 2 + 0.03;
+  } else if (hasBack) {
     const yb = seatBot + 0.01, yt = h - T / 2;
     const zTop = -d / 2 + T / 2 + 0.004;
     // quilted padding on the inner face: 3 columns × 2 rows of puffy squares
@@ -1943,8 +1986,9 @@ function buildBarStool(spec) {
       const edge = sstep(0, 0.04, s - s0) * sstep(0, 0.04, s1 - s) * sstep(0, 0.02, y - qy0) * sstep(0, 0.03, qy1 - y);
       return pd * Math.max(0, bs) ** 0.4 * Math.max(0, by) ** 0.4 * edge;
     };
+    // arms: the shell wraps further forward round the seat and forms the armrests (Zed, Henry)
     const shell = chairShell({
-      yb, yt, T, halfW0, halfW1, depth0: 0.18, depth1: 0.09, theta0: 95, theta1: 66, zTop, recline: 8 * DEG,
+      yb, yt, T, halfW0, halfW1, depth0: arms ? 0.27 : 0.18, depth1: 0.09, theta0: arms ? 115 : 95, theta1: 66, zTop, recline: 8 * DEG,
       rc: Math.min(0.12, (yt - yb) * 0.4), nLev: Math.max(10, Math.round(22 * q)), nCurve: Math.max(14, Math.round(30 * q)), quilt,
     });
     g.add(K.partMesh(shellGeometry(shell.levels, { center: [0, 0.1], nEnd: q < 1 ? 3 : 4, nCap: 4, topPts: shell.topPts }), ms.up, 'upholstery'));
@@ -1953,35 +1997,85 @@ function buildBarStool(spec) {
   }
   const sz1 = d / 2 - 0.02;
   const sw0 = halfW0 - T / 2 - 0.004, sw1 = w * 0.46;
-  const seatOut = rrOutline(-sw1, sw1, sz0, sz1, 0.06, 0.075, 6, 4, (x) => 0.012 * (1 - (x / sw1) ** 2));
+  // a parsons seat is a square block; the others round off toward the front
+  const seatOut = backKind === 'upholstered' ? rrOutline(-sw1, sw1, sz0, sz1, 0.02, 0.035, 6, 4) : rrOutline(-sw1, sw1, sz0, sz1, 0.06, 0.075, 6, 4, (x) => 0.012 * (1 - (x / sw1) ** 2));
   const zm = (sz0 + sz1) / 2;
-  if (hasBack) for (const p of seatOut) p[0] *= lerp(sw0 / sw1, 1, sstep(0, 1, clamp((p[1] - sz0) / (zm - sz0), 0, 1)));
+  if (backKind === 'shell') for (const p of seatOut) p[0] *= lerp(sw0 / sw1, 1, sstep(0, 1, clamp((p[1] - sz0) / (zm - sz0), 0, 1)));
   g.add(K.partMesh(slabGeometry(seatOut, { y0: seatBot, y1: seatH, rTop: 0.03, rBot: 0.012, dome: 0.008, belly: 0.004 }), ms.up, 'upholstery'));
-  // frame: four slim legs, under-seat plate and a foot rest ring
+  // frame: under-seat plate and the base (four slim legs or wood legs with a foot rest, a trumpet pedestal or sleds)
   const m = ms.legs({ grain: 'v' });
   const sd = sz1 - sz0;
   const legTop = seatBot - 0.006;
   g.add(K.partMesh(K.roundedBox(w * 0.6, 0.012, sd * 0.62, 0.003, 1), ms.legs(), 'legs', { position: [0, seatBot - 0.004, zm] }));
+  const fy = clamp(num(P.footrestH, seatH * 0.4), 0.15, seatH - 0.15);
+  // pad back (Zed): two tube posts just outside the seat's rear corners, raked 8° back up behind a slightly curved
+  // loose pad; arms are tube loops from the posts forward and down into the seat sides
+  const post = { x: sw1 + 0.006, z: sz0 + 0.04, r: clamp(num(P.legD, 0.022) / 2, 0.007, 0.02) * 0.85 };
+  if (backKind === 'pad') {
+    const steel = ms.legs();
+    const rake = Math.tan(8 * DEG);
+    const yTop = h - 0.04;
+    const zAt = (y) => post.z - rake * (y - legTop);
+    for (const sx of [-1, 1]) g.add(K.partMesh(K.tube([[sx * post.x, legTop, post.z], [sx * post.x, yTop, zAt(yTop)]], post.r, { curve: 'line', radial: Math.max(6, Math.round(10 * q)), seg: 1 }), steel, 'legs'));
+    const pw = Math.min(w, 2 * post.x + 0.03), ph = Math.min(0.2, h - seatH - 0.08), pt = 0.05, R = 0.9;
+    const geo = softBox(pw, ph, pt, 'z', { puff: 0.14, round: 0.8, sides: 0.15, bottom: 0.4, q: Math.max(q, 1.2) });
+    // bend the pad round the sitter (sides forward); its back rests on the posts' front where they cross it
+    const pos = geo.attributes.position;
+    for (let i = 0; i < pos.count; i++) pos.setZ(i, pos.getZ(i) + (pos.getX(i) ** 2) / (2 * R));
+    pos.needsUpdate = true;
+    geo.computeVertexNormals();
+    const yc = h - ph / 2 - 0.005;
+    g.add(K.partMesh(geo, ms.up, 'upholstery', { position: [0, yc, zAt(yc) + post.r + pt / 2 + 0.001 - (post.x ** 2) / (2 * R)], rotation: [-8 * DEG, 0, 0] }));
+    if (arms) {
+      const ay = Math.min(seatH + 0.1, yc - ph / 2 - 0.01);
+      const zF = sz1 - 0.05;
+      for (const sx of [-1, 1]) {
+        const { pts } = filletPolyline([[zAt(ay), ay], [zF, ay], [zF, seatBot + 0.02]], [0, 0.05, 0], Math.max(4, Math.round(8 * q)));
+        g.add(K.partMesh(K.tube(pts.map(([z, y]) => [sx * post.x, y, z]), post.r, { curve: 'line', radial: Math.max(6, Math.round(10 * q)) }), steel, 'legs'));
+      }
+    }
+  }
+  if (style === 'pedestal') {
+    trumpetBase(g, ms, { w, d, z: zm, seatBot, q, footY: P.footrest !== false ? fy : null });
+    return K.finishModel(g, { seatY: seatH });
+  }
+  if (style === 'sled') {
+    // one bent tube per side: under the seat at the back, down to a floor runner, forward and up to the seat front
+    const tr = clamp(num(P.legD, 0.022) / 2, 0.008, 0.014);
+    const ax = w * 0.36;
+    const zb = zm - sd * 0.34, zf = zm + sd * 0.34;
+    const fb = Math.max(-d / 2 + tr, zb - 0.07), ff = Math.min(d / 2 - tr, zf + 0.07);
+    const { pts } = filletPolyline([[zb, legTop], [fb, tr], [ff, tr], [zf, legTop]], [0, 0.06, 0.06, 0], Math.max(4, Math.round(8 * q)));
+    const steel = ms.legs();
+    for (const sx of [-1, 1]) g.add(K.partMesh(K.tube(pts.map(([z, y]) => [sx * ax, y, z]), tr, { curve: 'line', radial: Math.max(6, Math.round(10 * q)) }), steel, 'legs'));
+    if (P.footrest !== false) {
+      const zr = ff + ((zf - ff) * (fy - tr)) / Math.max(0.01, legTop - tr);
+      g.add(K.partMesh(K.tube([[-ax, fy, zr], [ax, fy, zr]], tr * 0.8, { curve: 'line', radial: 6, seg: 1 }), steel, 'legs'));
+    }
+    return K.finishModel(g, { seatY: seatH });
+  }
+  const wood = style === 'wood';
   const ax = w * 0.33, az = sd * 0.34;
-  const r = clamp(num(P.legD, 0.022) / 2, 0.007, 0.02);
+  const r = wood ? 0.016 : clamp(num(P.legD, 0.022) / 2, 0.007, 0.02);
   const feet = [];
   for (const sx of [-1, 1]) {
     for (const sz of [-1, 1]) {
-      const top = [sx * ax, legTop, zm + sz * az];
+      // a pad back's rear legs carry on up as its posts
+      const top = backKind === 'pad' && sz < 0 ? [sx * post.x, legTop, post.z] : [sx * ax, legTop, zm + sz * az];
       const bot = [sx * (w / 2 - 0.025), 0, clamp(zm + sz * (az + 0.07), -d / 2 + 0.02, d / 2 - 0.02)];
-      addLeg(g, m, 'legs', top, bot, r, r * 0.85, { seg: Math.max(6, Math.round(10 * q)) });
+      addLeg(g, m, 'legs', top, bot, r, wood ? 0.012 : r * 0.85, { seg: Math.max(6, Math.round((wood ? 12 : 10) * q)), square: wood && P.square === true });
       feet.push({ top, bot });
     }
   }
   if (P.footrest !== false) {
-    const fy = clamp(num(P.footrestH, seatH * 0.4), 0.15, seatH - 0.15);
     const at = (f) => {
       const t = fy / f.top[1];
       return new THREE.Vector3(lerp(f.bot[0], f.top[0], t), fy, lerp(f.bot[2], f.top[2], t));
     };
-    // order: (−x,−z) (−x,+z) (+x,−z) (+x,+z)
+    // order: (−x,−z) (−x,+z) (+x,−z) (+x,+z); wood: front and side rungs, no back rung
     const [a, b, c, e] = feet.map(at);
-    for (const [p0, p1] of [[b, e], [a, b], [c, e], [a, c]]) g.add(K.partMesh(K.tube([p0, p1], r * 0.7, { curve: 'line', radial: 6, seg: 2 }), m, 'legs'));
+    const rungs = wood ? [[b, e], [a, b], [c, e]] : [[b, e], [a, b], [c, e], [a, c]];
+    for (const [p0, p1] of rungs) g.add(K.partMesh(K.tube([p0, p1], wood ? 0.009 : r * 0.7, { curve: 'line', radial: wood ? 8 : 6, seg: 2 }), m, 'legs'));
   }
   return K.finishModel(g, { seatY: seatH });
 }
@@ -2105,17 +2199,27 @@ function buildSofaL(spec) {
   const chaiseLayout = P.layout === 'chaise' && hasChaise;
   const armNeg = (side === '-x' || side === 'both') && (!hasChaise || chaiseLayout);
   const armW = clamp(num(P.armW, 0.27), 0.08, w * 0.2);
+  // open end («endeavslutning»): a backless, armless seat module instead of the arm at that end. On the short-leg
+  // side of a corner/chaise sofa the corner or chaise already ends the sofa, so it changes nothing there.
+  const openSide = P.openEnd === '-x' || P.openEnd === '+x' ? (flip ? swap(P.openEnd) : P.openEnd) : 'none';
+  const openPos = openSide === '+x';
+  const openNeg = openSide === '-x' && !hasChaise;
+  const fixedW = (openNeg ? 0 : armNeg ? armW : 0) + (hasChaise ? depth : 0) + (openPos ? 0 : armPos ? armW : 0);
+  // at least 0.6 m of seats stay between the ends
+  const openW = Math.max(0.2, Math.min(clamp(num(P.openEndW, 0.8), 0.5, 1.2), w - fixedW - 0.6));
   // modules from the short-leg end (canonical −x) toward the arm end
   let mods = Array.isArray(P.modules) ? P.modules.filter((m) => m && m.kind !== 'chaise' && num(m.w, 0) > 0).map((m) => ({ kind: m.kind, w: m.w })) : null;
   if (flip && mods) mods = mods.slice(); // order is already from the short-leg side
   if (!mods || !mods.length) {
     mods = [];
-    if (armNeg) mods.push({ kind: 'arm', w: armW });
+    if (openNeg) mods.push({ kind: 'open', w: openW });
+    else if (armNeg) mods.push({ kind: 'arm', w: armW });
     if (hasChaise) mods.push({ kind: 'corner', w: depth });
-    const rest = w - (armNeg ? armW : 0) - (hasChaise ? depth : 0) - (armPos ? armW : 0);
+    const rest = w - (openNeg ? openW : armNeg ? armW : 0) - (hasChaise ? depth : 0) - (openPos ? openW : armPos ? armW : 0);
     const n = Math.max(1, Math.round(rest / 0.86));
     for (let i = 0; i < n; i++) mods.push({ kind: 'seat', w: rest / n });
-    if (armPos) mods.push({ kind: 'arm', w: armW });
+    if (openPos) mods.push({ kind: 'open', w: openW });
+    else if (armPos) mods.push({ kind: 'arm', w: armW });
   }
   const sum = mods.reduce((s, m) => s + m.w, 0) || 1;
   const k = w / sum;
@@ -2123,11 +2227,20 @@ function buildSofaL(spec) {
   const zr = -d / 2, zf = -d / 2 + depth;
   let x = -w / 2;
   let cornerX1 = -w / 2 + depth;
+  const openSpans = [];
   for (const m of mods) {
     const x0 = x, x1 = x + m.w * k;
     x = x1;
+    if (m.kind === 'open') {
+      // base and a full-depth seat, no back and no arm
+      kit.base(x0, x1, zr, zf);
+      kit.seat(x0, x1, zr, zf);
+      openSpans.push([x0, x1]);
+      continue;
+    }
     if (m.kind === 'arm') {
-      kit.arm(x0, x1, zr, chaiseLayout && x0 <= -w / 2 + 1e-6 ? d / 2 : zf, armH, plinthH, P.armStyle);
+      // the arm beside an open chaise runs along it, or (hidden chaiseArm 'short') only beside the back seat (Tampa)
+      kit.arm(x0, x1, zr, chaiseLayout && x0 <= -w / 2 + 1e-6 && P.chaiseArm !== 'short' ? d / 2 : zf, armH, plinthH, P.armStyle);
       continue;
     }
     kit.base(x0, x1, zr, zf);
@@ -2147,8 +2260,14 @@ function buildSofaL(spec) {
     }
   }
   const colliders = [{ min: [-w / 2, 0, zr], max: [w / 2, backH, zf] }];
+  for (const [x0, x1] of openSpans) {
+    // the open end is only seat-high
+    if (x0 <= -w / 2 + 1e-6) colliders[0].min[0] = x1;
+    if (x1 >= w / 2 - 1e-6) colliders[0].max[0] = x0;
+    colliders.push({ min: [x0, 0, zr], max: [x1, seatH, zf] });
+  }
   if (hasChaise && chaiseLayout) {
-    const x0 = -w / 2 + (armNeg ? armW : 0), x1 = cornerX1;
+    const x0 = -w / 2 + (armNeg && P.chaiseArm !== 'short' ? armW : 0), x1 = cornerX1;
     kit.base(x0, x1, zf, d / 2);
     kit.seat(x0, x1, zf, d / 2);
     colliders.push({ min: [-w / 2, 0, zf], max: [x1, seatH, d / 2] });
@@ -2166,9 +2285,12 @@ function buildSofaL(spec) {
     colliders.push({ min: [x0, 0, zf], max: [x1, seatH, d / 2] });
   }
   if (style === 'plinth') {
+    // recessed under the base modules: 2.5 cm by default (the house's own corner sofa, as before runde 3); hidden
+    // plinthInset 0.06 makes it a shadow gap under rounded modules instead of a tray (Tampa)
     const pm = ms.legs();
-    inner.add(K.partMesh(K.roundedBox(w - 0.05, plinthH + 0.004, depth - 0.05, 0.004, 1, { bottom: true }), pm, 'legs', { position: [0, 0, (zr + zf) / 2] }));
-    if (hasChaise) inner.add(K.partMesh(K.roundedBox(cornerX1 + w / 2 - 0.05, plinthH + 0.004, chaiseL, 0.004, 1, { bottom: true }), pm, 'legs', { position: [(-w / 2 + cornerX1) / 2, 0, zf + chaiseL / 2 - 0.025] }));
+    const ip = clamp(num(P.plinthInset, 0.025), 0.01, 0.12);
+    inner.add(K.partMesh(K.roundedBox(w - 2 * ip, plinthH + 0.004, depth - 2 * ip, 0.004, 1, { bottom: true }), pm, 'legs', { position: [0, 0, (zr + zf) / 2] }));
+    if (hasChaise) inner.add(K.partMesh(K.roundedBox(cornerX1 + w / 2 - 2 * ip, plinthH + 0.004, chaiseL, 0.004, 1, { bottom: true }), pm, 'legs', { position: [(-w / 2 + cornerX1) / 2, 0, zf + chaiseL / 2 - ip] }));
   } else {
     addBase(inner, ms, style, { hx: w / 2, hz: depth / 2, topY: plinthH, q, z: (zr + zf) / 2, inset: 0.06 });
     // feet under the front of the chaise too
@@ -2209,19 +2331,43 @@ function buildSofaStraight(spec) {
   kit.base(ix0, ix1, zr, zf);
   const n = clamp(Math.round(num(P.seats, Math.round((ix1 - ix0) / 0.75))), 1, 5);
   const sw = (ix1 - ix0) / n;
-  if (benchSeat) kit.seat(ix0, ix1, zr + (tightBack ? frameT + 0.03 : backT), zf);
+  // a tight back leans 5° from its foot; its foot sits that far forward so the top's rear face stays at z = −d/2, and
+  // the seat starts in front of the back's face at seat height
+  const tightLean = 5 * DEG;
+  const tightBt = frameT + 0.03, tightBh = backH - legH;
+  const tightShift = tightBh * Math.sin(tightLean) + (tightBt / 2) * (1 - Math.cos(tightLean));
+  const seatZ0 = tightBack ? zr + tightBt + Math.max(0, (backH - seatH) * Math.sin(tightLean) - 0.012) : zr + backT;
+  if (benchSeat) kit.seat(ix0, ix1, seatZ0, zf);
   for (let i = 0; i < n; i++) {
-    if (!benchSeat) kit.seat(ix0 + i * sw, ix0 + (i + 1) * sw, zr + (tightBack ? frameT + 0.03 : backT), zf);
+    if (!benchSeat) kit.seat(ix0 + i * sw, ix0 + (i + 1) * sw, seatZ0, zf);
     if (!tightBack) kit.backX(ix0 + i * sw, ix0 + (i + 1) * sw, zr, { frame: i === 0 });
   }
   if (tightBack) {
-    // a fixed upholstered back, slightly reclined, in one piece across the sofa
-    const bt = frameT + 0.03, bh = backH - legH;
-    const grp = new THREE.Group();
-    grp.position.set((ix0 + ix1) / 2, legH, zr + bt / 2);
-    grp.rotation.x = -5 * DEG;
-    g.add(grp);
-    grp.add(K.partMesh(softBox(ix1 - ix0 - 0.004, bh, bt, 'z', { puff: 0.12, round: 0.8, sides: 0.08, bottom: 0.2, q }), ms.up, 'upholstery', { position: [0, bh / 2, 0] }));
+    // a fixed upholstered back, slightly reclined: in one piece across the sofa, or (hidden backSplit) one panel per
+    // seat with a crowned top – the outer corners highest, dipping toward the middle of the sofa (Fia)
+    const bt = tightBt, bh = tightBh;
+    const panels = P.backSplit === true ? Array.from({ length: n }, (_, i) => [ix0 + i * sw + (i > 0 ? 0.005 : 0), ix0 + (i + 1) * sw - (i < n - 1 ? 0.005 : 0)]) : [[ix0, ix1]];
+    const hw = (ix1 - ix0) / 2, cx0 = (ix0 + ix1) / 2;
+    const rise = P.backSplit === true ? Math.min(0.05, bh * 0.08) : 0;
+    for (const [xa, xb] of panels) {
+      const grp = new THREE.Group();
+      grp.position.set((xa + xb) / 2, legH, zr + bt / 2 + tightShift);
+      grp.rotation.x = -tightLean;
+      g.add(grp);
+      const geo = softBox(xb - xa - 0.004, bh, bt, 'z', { puff: 0.12, round: rise ? 1 : 0.8, sides: 0.08, bottom: 0.2, q: rise ? Math.max(q, 1.3) : q });
+      if (rise) {
+        // lower the top toward the sofa's middle: full height at the outer ends, `rise` lower where the panels meet
+        const pos = geo.attributes.position;
+        for (let i = 0; i < pos.count; i++) {
+          const t = clamp((pos.getY(i) + bh / 2) / bh, 0, 1);
+          const u = clamp(Math.abs((xa + xb) / 2 + pos.getX(i) - cx0) / hw, 0, 1);
+          pos.setY(i, pos.getY(i) - rise * (1 - sstep(0.15, 1, u)) * t ** 3);
+        }
+        pos.needsUpdate = true;
+        geo.computeVertexNormals();
+      }
+      grp.add(K.partMesh(geo, ms.up, 'upholstery', { position: [0, bh / 2, 0] }));
+    }
   } else if (n > 1) {
     const fh = Math.min(backH - 0.12, seatH + 0.2) - legH;
     g.add(K.partMesh(softBox(ix1 - ix0 - 0.004, fh, frameT, 'z', { puff: 0.04, round: 0.5, sides: 0.05, q }), ms.up, 'upholstery', { position: [(ix0 + ix1) / 2, legH + fh / 2, zr + frameT / 2] }));
@@ -2328,7 +2474,9 @@ function buildSofaCurved(spec) {
   const seatOut = rrOutline(sx0, sx1, sz0, sz1, [rBL, rBR], [rBL, rFR], Math.max(8, Math.round(16 * q)), 6, bow);
   const rT = 0.095, rB = Math.min(0.1, (seatH - plH) * 0.3);
   inner.add(K.partMesh(slabGeometry(seatOut, { y0: plH, y1: seatH, rTop: rT, rBot: rB, dome: 0.02, belly, nEdge: q < 1 ? 3 : 5, nCap: q < 1 ? 4 : 6 }), ms.up, 'upholstery'));
-  inner.add(K.partMesh(slabSeam(seatOut, seatH, rT, 0.0035, q), ms.pipe, ms.pipePart));
+  // params.piping false: no welt round the seat or the bolster's end disc (Andrup: plain bouclé)
+  const welts = P.piping !== false;
+  if (welts) inner.add(K.partMesh(slabSeam(seatOut, seatH, rT, 0.0035, q), ms.pipe, ms.pipePart));
   // recessed plinth in the shadow under the seat
   if (style === 'plinth') {
     const ip = rB + 0.03;
@@ -2390,7 +2538,7 @@ function buildSofaCurved(spec) {
   });
   inner.add(K.partMesh(band, ms.up, 'upholstery'));
   // welt round the bolster's end disc
-  {
+  if (welts) {
     const [px, pz] = pp.fn(((bD / 2) * capLen) / pp.L);
     const R = bD / 2 + 0.0015, cy = bH - bD / 2;
     const ring = [];
@@ -6659,6 +6807,9 @@ const LEG_LABELS = {
   block: 'Lave klosser',
   none: 'Skjørt (ingen synlige ben)',
   plinth: 'Sokkel',
+  wood: 'Treben',
+  pedestal: 'Trompetfot (dreibar)',
+  sled: 'Medeben',
 };
 const legParam = (keys) => ({ type: 'enum', label: 'Understell', options: keys.map((k) => [k, LEG_LABELS[k]]) });
 const SEAT = { type: 'number', min: 0.3, max: 0.8, step: 0.01, label: 'Setehøyde (m)' };
@@ -6771,12 +6922,20 @@ export const archetypes = {
     dimsRange: { w: [0.55, 0.9], d: [0.7, 1.1], h: [0.8, 1.15] },
   }),
   'dining-chair': def('dining-chair', { dims: { w: 0.52, d: 0.58, h: 0.88 }, params: { seatH: 0.47, shell: 'shell', legStyle: 'slim-metal', legD: 0.02 }, ...fabric('#d2cbc2', 'boucle', '#1a1a1a', 'black-metal') }, buildDiningChair, {
-    params: { seatH: { ...SEAT, min: 0.4, max: 0.55 }, legStyle: legParam(['slim-metal', 'wood-taper']) },
+    params: { seatH: { ...SEAT, min: 0.4, max: 0.55 }, legStyle: legParam(['slim-metal', 'wood-taper', 'block', 'swivel-disc', 'swivel-star']) },
     dimsRange: { w: [0.42, 0.65], d: [0.48, 0.68], h: [0.75, 1.0] },
   }),
   'bar-stool': def('bar-stool', { dims: { w: 0.45, d: 0.48, h: 0.97 }, params: { seatH: 0.65, back: 'shell', legStyle: 'slim-metal', footrest: true, quilt: true }, ...fabric('#4a5646', 'velvet', '#1a1a1a', 'black-metal') }, buildBarStool, {
-    params: { seatH: { ...SEAT, min: 0.55, max: 0.82, label: 'Setehøyde (m) – 0,65 benk / 0,75 bar' }, footrest: { type: 'bool', label: 'Fotstøtte' }, quilt: { type: 'bool', label: 'Stikninger i ryggen' } },
-    dimsRange: { w: [0.38, 0.55], d: [0.4, 0.56], h: [0.8, 1.15] },
+    params: {
+      seatH: { ...SEAT, min: 0.55, max: 0.82, label: 'Setehøyde (m) – 0,65 benk / 0,75 bar' },
+      back: { type: 'enum', label: 'Rygg', options: [['shell', 'Skallrygg'], ['pad', 'Ryggpute på rør'], ['upholstered', 'Rett polstret rygg'], ['none', 'Uten rygg']] },
+      legStyle: legParam(['slim-metal', 'wood', 'pedestal', 'sled']),
+      arms: { type: 'bool', label: 'Armlener' },
+      footrest: { type: 'bool', label: 'Fotstøtte' },
+      quilt: { type: 'bool', label: 'Stikninger i ryggen' },
+    },
+    // h from 0.6: a backless stool's dims.h is its seat height
+    dimsRange: { w: [0.38, 0.55], d: [0.4, 0.56], h: [0.6, 1.15] },
   }),
   'sofa-modular-l': def('sofa-modular-l', { dims: { w: 2.95, d: 2.06, h: 0.85 }, params: { seatH: 0.45, backT: 0.25, depth: 0.92, armW: 0.27, armH: 0.63, armSide: '+x', shortLegSide: '-x', shortLegBackTo: 1.48, base: 'plinth', piping: true }, colors: { upholstery: '#707173', legs: '#707173', piping: '#55514c' }, materials: { upholstery: 'woven', legs: 'woven', piping: 'woven' } }, buildSofaL, {
     parts: ['upholstery', 'piping', 'legs'],
@@ -6788,6 +6947,8 @@ export const archetypes = {
       layout: { type: 'enum', label: 'Utforming', options: [['corner', 'Hjørnesofa (rygg rundt)'], ['chaise', 'Åpen sjeselong']], default: 'corner' },
       armStyle: { type: 'enum', label: 'Armlener', options: [['box', 'Kantete'], ['slim', 'Smale'], ['round', 'Runde'], ['sloped', 'Skrå']], default: 'box' },
       armSide: { type: 'enum', label: 'Armlene', options: [['+x', 'Høyre (sett forfra)'], ['-x', 'Venstre (sett forfra)'], ['both', 'Begge sider'], ['none', 'Ingen']] },
+      openEnd: { type: 'enum', label: 'Endeavslutning', options: [['none', 'Ingen'], ['-x', 'Venstre (sett forfra)'], ['+x', 'Høyre (sett forfra)']], default: 'none' },
+      openEndW: { type: 'number', min: 0.5, max: 1.2, step: 0.01, label: 'Bredde endeavslutning (m)', default: 0.8 },
       piping: PIPE,
     },
     dimsRange: { w: [2.0, 3.6], d: [1.4, 2.6], h: [0.7, 0.95] },
@@ -6799,6 +6960,7 @@ export const archetypes = {
       wingRise: { type: 'number', min: 0, max: 0.15, step: 0.01, label: 'Vingeenden høyere enn ryggen (m)' },
       wingEnd: { type: 'enum', label: 'Høy vingeende', options: [['-x', 'Venstre (sett forfra)'], ['+x', 'Høyre (sett forfra)']] },
       bolsterH: { type: 'number', min: 0.5, max: 0.75, step: 0.01, label: 'Armlenehøyde (m)' },
+      piping: { ...PIPE, default: true },
     },
     dimsRange: { w: [1.5, 2.8], d: [0.8, 1.15], h: [0.65, 0.9] },
   }),
@@ -6815,6 +6977,6 @@ export const archetypes = {
       legH: LEGH,
       piping: PIPE,
     },
-    dimsRange: { w: [1.4, 3.2], d: [0.8, 1.15], h: [0.7, 0.95] },
+    dimsRange: { w: [1.4, 3.2], d: [0.8, 1.15], h: [0.6, 1.0] },
   }),
 };
