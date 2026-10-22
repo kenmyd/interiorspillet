@@ -4,7 +4,7 @@ import { paint, mat, emissive } from './materials.js';
 import { basis, MeshBatcher, prismX } from '../world/buildKit.js';
 import {
   UP, wallMatrix, openingMatrix, groupGeometry, wallLayer, mergeNotches, profileAt, profileSlice, floorGeometry,
-  ceilingGeometry, glassMaterial, frostedGlassMaterial, buildWindow, rectCells,
+  ceilingGeometry, glassMaterial, frostedGlassMaterial, buildWindow, rectCells, FRAME_INSET,
 } from './wallkit.js';
 import { buildDoor } from './doors.js';
 import { claddingMaterial, ledStrip } from './shell.js';
@@ -15,7 +15,8 @@ import { wallFinish, floorFinish } from '../world/surfaces.js';
  * §2.3–2.8; hele-huset-avstemming.md V1–V70 overrides it), steps 8 + 21 + 24 (A2, A2′, C2):
  *   • the walls of each room loop at their floor (level floorY + room floorOffset), mitred per loop like the shell, with
  *     paint, the room's own skirting (rooms[].baseboard: a board, the bathroom's dark upstand, the laundry's upturn)
- *     and windows (frame, glass – frosted on the bathroom –, board, a lining when the reveal has its own colour);
+ *     and windows (frame, glass – frosted on the bathroom –, board, a lining when the reveal has its own colour; the
+ *     fields, glazing bars and the floor out to the frame of a window on the floor – notes/vindusmodeller.md);
  *   • D13: a wall's back that is another room's face (`backOf`) is that face: the slab is cut at the faces' ends and
  *     each piece's back becomes a mesh with the face's id, paint and pick – nothing is built twice. A slab whose face
  *     has a lower floor (the entrance, bod-3: floorOffset −0.30) reaches down to it;
@@ -23,7 +24,8 @@ import { wallFinish, floorFinish } from '../world/surfaces.js';
  *     on the basement), up under the roof on the ground floor (as the shell) and up to the slab underside under a
  *     ground-floor facade on the basement (no two layers in one plane);
  *   • a floor per room (oak shared with the living room / tinted for the basement, vinyl, concrete, parquet) with the
- *     stairwell cut out, the ceilings (the basement's with the hole), black ceiling trims, the white edge face on the
+ *     stairwell cut out, the ceilings (the basement's with the hole; roof windows in ceilings[].skylights: hole, shaft
+ *     and window), black ceiling trims, the white edge face on the
  *     free edges of the hole (V16), the stairwell walls (topProfile in the data), the ledge (V21) and its two corner
  *     fillers (the soffits under the overhangs and in the entrance niche are exterior.js's, steg 25);
  *   • the doors (doors.js: openAngleDeg, the storage doors closed but openable, the outer door opening outwards) with
@@ -279,6 +281,8 @@ export function buildRooms(ctx, layout, M = null) {
     colliders.push(solid);
   }
   const roomOf = (id) => R[id] ?? null;
+  /** roomId → the floor strips in the reveals of its windows on the floor ([4 Vector3] each, filled by buildRoomWindow) */
+  const revealFloors = new Map();
 
   // ---- the ground floor's roof line (the shell's formula: the outer cladding of a ground-floor wall reaches under it)
   const ceilingSlope = (layout.ceilings || []).find((c) => c.type === 'slope');
@@ -619,20 +623,34 @@ export function buildRooms(ctx, layout, M = null) {
   /** A window of a room wall: frame / sash / glass / board (wallkit), a lining in its reveal colour, the anchor. */
   function buildRoomWindow(w, o, rr) {
     // a reveal deeper than the wall leaves room for the frame (win-sk: reveal 0.38 (V63) in a 0.30 wall (V4) would put
-    // the frame, the board and the lining 8–14 cm out of the facade). Door elements (the sidelights) keep the door's depth.
+    // the frame, the board and the lining 8–14 cm out of the facade; a window on the floor without reveal.depth got the
+    // wall's thickness, the frame outside the facade – planbygger F6). Door elements (the sidelights) keep the door's depth.
+    const element = !!rawOpening.get(o.id)?.element;
     const fdepth = o.frame?.depth ?? 0.07;
     const maxRd = w.thickness - fdepth - 0.005;
-    if (o.sill > EPS && !rawOpening.get(o.id)?.element && o.revealDepth > maxRd && maxRd > 0.02) {
+    if (!element && o.revealDepth > maxRd && maxRd > 0.02) {
       o = { ...o, revealDepth: maxRd, sillBoard: o.sillBoard ? { ...o.sillBoard, depth: Math.min(o.sillBoard.depth ?? maxRd, maxRd) } : o.sillBoard };
     }
     const sillHex = o.sillBoard?.color;
     const frameHex = o.frame?.color;
+    const barsHex = o.bars?.color;
+    const frameM = frameHex && !sameHex(frameHex, LOOK.frame) ? mat('black-metal', frameHex, { roughness: 0.42 }) : K.frame;
     const WM = {
       ...pickMats(),
       sill: sillHex ? paint(sillHex, { roughness: 0.42 }) : K.sill,
-      frame: frameHex && !sameHex(frameHex, LOOK.frame) ? mat('black-metal', frameHex, { roughness: 0.42 }) : K.frame,
+      frame: frameM,
+      bars: barsHex && !sameHex(barsHex, frameHex || LOOK.frame) ? mat('black-metal', barsHex, { roughness: 0.42 }) : frameM,
       glass: o.frosted ? frostedGlassMaterial() : K.glass,
     };
+    // a window on the floor: the room's floor runs out to the frame (planbygger F5, request 15) – a strip merged into
+    // the room's floor mesh (its material and boards) where the floors are built
+    const revealFloor = !element && (o.revealFloor ?? !o.sillBoard) && o.sill <= 0.005 && o.revealDepth > 0.005;
+    if (revealFloor) {
+      const m = openingMatrix(o, w.floorY);
+      const hw = o.width / 2;
+      const pts = [[-hw, 0], [hw, 0], [hw, -o.revealDepth], [-hw, -o.revealDepth]].map(([x, z]) => new THREE.Vector3(x, 0, z).applyMatrix4(m));
+      (revealFloors.get(o.roomId) ?? revealFloors.set(o.roomId, []).get(o.roomId)).push(pts);
+    }
     const win = buildWindow(o, false, { M: WM, exteriorBatch: rr.outside, batchers, keep });
     win.group.userData.pick = { kind: 'window', windowId: o.id };
     rr.deco.add(win.group);
@@ -652,7 +670,7 @@ export function buildRooms(ctx, layout, M = null) {
       f.box(s, Hh - y0, d, -W / 2 + s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
       f.box(s, Hh - y0, d, W / 2 - s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
       f.box(W - 2 * s, s, d, 0, Hh - s / 2, -d / 2, lm, { collide: false });
-      if (!o.sillBoard) f.box(W - 2 * s, s, d, 0, y0 + s / 2, -d / 2, lm, { collide: false });
+      if (!o.sillBoard && !revealFloor) f.box(W - 2 * s, s, d, 0, y0 + s / 2, -d / 2, lm, { collide: false });
     }
     const anchor = new THREE.Group();
     anchor.name = `window-anchor:${o.id}`;
@@ -759,15 +777,18 @@ export function buildRooms(ctx, layout, M = null) {
     rr.solid.add(wedge);
   }
 
-  // ---- floors (+ footstep zones), ceilings (+ trims), skirting
+  // ---- floors (+ footstep zones), ceilings (+ trims, roof windows), skirting
   const ceilingMeshes = new Map();
+  const skylightLinings = []; // { ceilingId, mesh }: the shafts follow their ceiling's paint (setPaint)
   for (const r of rooms) {
     const rr = R[r.id];
     const holes = H.floorOpenings.filter((fo) => fo.levelId === r.levelId && fo.roomId === r.id).map((fo) => fo.polygon);
     const raw = rawRoom.get(r.id) || {};
     const floor = raw.floor ?? r.floor ?? {};
     const boards = floor.boards === 'x' ? 'x' : 'z';
-    const fg = keep(floorGeometry(r.polygon, r.floorY, { holes, boards }));
+    let fg = floorGeometry(r.polygon, r.floorY, { holes, boards });
+    if (revealFloors.has(r.id)) fg = withRevealFloors(fg, revealFloors.get(r.id), boards);
+    keep(fg);
     const fl = new THREE.Mesh(fg, floorMaterial(floor));
     fl.name = `floor:${r.id}`;
     fl.receiveShadow = true;
@@ -784,7 +805,8 @@ export function buildRooms(ctx, layout, M = null) {
   for (const c of H.ceilings) {
     if (!roomIds.has(c.roomId)) continue;
     const rr = R[c.roomId];
-    const g = keep(ceilingGeometry(c.polygon, (x, z) => c.topAt(x, z), c.holes || []));
+    const sky = c.skylights || [];
+    const g = keep(ceilingGeometry(c.polygon, (x, z) => c.topAt(x, z), sky.length ? [...(c.holes || []), ...sky.map((s) => s.polygon)] : c.holes || []));
     const mesh = new THREE.Mesh(g, paint(c.paint));
     mesh.name = `ceiling:${c.id}`;
     mesh.castShadow = true;
@@ -796,6 +818,106 @@ export function buildRooms(ctx, layout, M = null) {
     ceilingMeshes.set(c.id, mesh);
     const raw = (spec.ceilings || []).find((x) => x.id === c.id);
     if (c.trim) buildCeilingTrim(c, raw?.trimHeight ?? 0.035);
+    for (const s of sky) buildSkylight(c, s, rr, mesh);
+  }
+
+  /** The floor geometry with the strips out to the frame of its windows on the floor (floorGeometry's UVs and normal). */
+  function withRevealFloors(g, strips, boards) {
+    const pos = [];
+    for (const [a, b, c, d] of strips) {
+      // facing up: (b − a) × (c − a) along +y, else the other winding
+      const up = (b.z - a.z) * (c.x - a.x) - (b.x - a.x) * (c.z - a.z) > 0;
+      for (const p of up ? [a, b, c, a, c, d] : [a, c, b, a, d, c]) pos.push(p.x, p.y, p.z);
+    }
+    const n = pos.length / 3;
+    const uv = [];
+    for (let i = 0; i < n; i++) {
+      const x = pos[3 * i], z = pos[3 * i + 2];
+      if (boards === 'x') uv.push(x, z);
+      else uv.push(z, x);
+    }
+    const sg = new THREE.BufferGeometry();
+    sg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    sg.setAttribute('normal', new THREE.Float32BufferAttribute(Array.from({ length: n }, () => [0, 1, 0]).flat(), 3));
+    sg.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    const base = g.index ? g.toNonIndexed() : g;
+    const merged = mergeGeometries([base, sg], false);
+    if (base !== g) base.dispose();
+    g.dispose();
+    sg.dispose();
+    return merged ?? g;
+  }
+
+  /**
+   * A roof window in a ceiling (ceilings[].skylights, notes/vindusmodeller.md): the hole (cut from the ceiling above), a
+   * shaft lined in the ceiling's paint from a 12 mm lip under the ceiling up past the window, and the window itself –
+   * wallkit's, lying flat `depth` (0.3) above the ceiling with its glass facing down: frame, fixed glazing or a sash,
+   * panes. Its edge 0 (polygon[0] → polygon[1]) is the window's width. A flat ceiling (a sloped one: its highest
+   * corner). Hidden with the ceilings (pickables.ceilings), no collision.
+   */
+  function buildSkylight(c, s, rr, ceilingMesh) {
+    const P = s.polygon;
+    const u = new THREE.Vector3(P[1].x - P[0].x, 0, P[1].y - P[0].y);
+    if (u.lengthSq() < 1e-8) return;
+    u.normalize();
+    // v: across, with u × v = −y (the window's z points down into the room)
+    const v = new THREE.Vector3(-u.z, 0, u.x);
+    let u0 = Infinity, u1 = -Infinity, v0 = Infinity, v1 = -Infinity;
+    for (const p of P) {
+      const du = (p.x - P[0].x) * u.x + (p.y - P[0].y) * u.z;
+      const dv = (p.x - P[0].x) * v.x + (p.y - P[0].y) * v.z;
+      u0 = Math.min(u0, du), u1 = Math.max(u1, du), v0 = Math.min(v0, dv), v1 = Math.max(v1, dv);
+    }
+    const W = u1 - u0;
+    const L = v1 - v0;
+    if (W < 0.1 || L < 0.1) return;
+    const centre = new THREE.Vector3(P[0].x, 0, P[0].y).addScaledVector(u, (u0 + u1) / 2).addScaledVector(v, (v0 + v1) / 2);
+    const yC = Math.max(...P.map((p) => c.topAt(p.x, p.y)));
+    const depth = Math.max(0.05, s.depth ?? 0.3);
+    const fd = s.frame?.depth ?? 0.06;
+    const pick = { kind: 'ceiling', ceilingId: c.id };
+    const kit = new MeshBatcher(`skylight:${s.id}`);
+    // shaft: four boards 2 cm thick outside the hole, the long ones over the corners
+    const t = 0.02;
+    const y0 = yC - 0.012;
+    const y1 = yC + depth + fd + 0.03;
+    const lm = ceilingMesh.material;
+    const sf = kit.frame(basis(u, UP, v, centre.clone().setY(0)));
+    sf.box(W + 2 * t, y1 - y0, t, 0, (y0 + y1) / 2, -L / 2 - t / 2, lm, { collide: false });
+    sf.box(W + 2 * t, y1 - y0, t, 0, (y0 + y1) / 2, L / 2 + t / 2, lm, { collide: false });
+    sf.box(t, y1 - y0, L, -W / 2 - t / 2, (y0 + y1) / 2, 0, lm, { collide: false });
+    sf.box(t, y1 - y0, L, W / 2 + t / 2, (y0 + y1) / 2, 0, lm, { collide: false });
+    const shaft = kit.build();
+    batchers.push({ geometries: kit.geometries });
+    shaft.name = `skylight-shaft:${s.id}`;
+    // the window: an opening of W × L in the window frame (x = u, y = v, z = down), its bottom edge FRAME_INSET in from
+    // the shaft so the frame stands free of it on every side
+    const o = {
+      id: s.id,
+      width: W,
+      height: L - FRAME_INSET,
+      revealDepth: depth,
+      frame: { width: 0.06, depth: fd, ...(s.frame || {}) },
+      sashes: s.sashes ?? [{ opening: !!s.opening }],
+      panes: s.panes ?? null,
+      bars: s.bars ?? null,
+      sillBoard: null,
+    };
+    const origin = centre.clone().setY(yC).addScaledVector(v, -L / 2 + FRAME_INSET);
+    const frameHex = s.frame?.color;
+    const frameM = frameHex && !sameHex(frameHex, LOOK.frame) ? mat('black-metal', frameHex, { roughness: 0.42 }) : K.frame;
+    const WM = { ...pickMats(), frame: frameM, bars: s.bars?.color ? mat('black-metal', s.bars.color, { roughness: 0.42 }) : frameM };
+    const win = buildWindow(o, false, { M: WM, exteriorBatch: rr.outside, batchers, keep, matrix: basis(u, v, new THREE.Vector3(0, -1, 0), origin) });
+    win.group.name = `skylight:${s.id}`;
+    const meshes = [...shaft.children, ...win.group.children, ...(win.glass ? [win.glass] : [])];
+    for (const m of meshes) {
+      m.userData.pick = pick;
+      m.userData.noCollide = true;
+      pickables.ceilings.push(m);
+    }
+    for (const m of shaft.children) skylightLinings.push({ ceilingId: c.id, mesh: m });
+    rr.deco.add(shaft, win.group);
+    if (win.glass) rr.deco.add(win.glass);
   }
 
   /** Skirting of a room: along each wall of its loop, gaps at door holes and over the stairwell. */
@@ -1060,7 +1182,10 @@ export function buildRooms(ctx, layout, M = null) {
       return;
     }
     const cm = ceilingMeshes.get(id);
-    if (cm) cm.material = paint(color || H.ceilings.find((c) => c.id === id)?.paint || 'sand');
+    if (cm) {
+      cm.material = paint(color || H.ceilings.find((c) => c.id === id)?.paint || 'sand');
+      for (const l of skylightLinings) if (l.ceilingId === id) l.mesh.material = cm.material;
+    }
   }
 
   return contract({ setPaint });

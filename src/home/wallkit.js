@@ -7,6 +7,7 @@
 // the wall, +y up, +z = room normal (into the room); the wall occupies z ∈ [−thickness, 0]. Opening-local frame: origin
 // at the bottom centre of the hole on the room face (y = sill), +x = right seen from the room, +z = into the room.
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { extrudeWall, basis, MeshBatcher, place } from '../world/buildKit.js';
 
 export const UP = new THREE.Vector3(0, 1, 0);
@@ -353,22 +354,91 @@ export function frostedGlassMaterial() {
 }
 
 /**
+ * The frame stands this far in from the sides and the top of its hole (2.5 mm narrower than the hole): with the frame
+ * exactly as wide as the hole its sides lay in the planes of the reveal (planbygger F3/F4/F6, request 14). It still
+ * stands on the sill.
+ */
+export const FRAME_INSET = 0.00125;
+/** Hinge sides of an opening sash, seen from the room. */
+const HINGES = new Set(['top', 'bottom', 'left', 'right']);
+/** Most panes along one side of a sash. */
+const MAX_PANES = 12;
+
+/** [cols, rows] of a panes entry ([c, r] or { cols, rows }), whole numbers 1 … MAX_PANES; [1, 1] without one. */
+export function panesOf(p) {
+  const n = (v) => Math.max(1, Math.min(MAX_PANES, Math.round(Number.isFinite(v) ? v : 1)));
+  if (Array.isArray(p)) return [n(p[0]), n(p[1])];
+  if (p && typeof p === 'object') return [n(p.cols), n(p.rows)];
+  return [1, 1];
+}
+
+/**
+ * The fields of a window in its local frame (x centred on the hole, y from the sill): one per entry of o.sashes –
+ * `from` … `to` of the width (left → right seen from the room) and `bottom` … `top` of the height, as fractions – or
+ * one fixed field without sashes. `outer` says which sides lie on the window's own edge (the rest meet a post or a
+ * transom); `panes` is the sash's own, else the window's (o.panes), else [1, 1].
+ * @returns {Array<{ x0, x1, y0, y1, outer: { l, r, b, t }, opening: boolean, hinge: string, panes: [number, number] }>}
+ */
+export function windowSashes(o) {
+  const list = (o.sashes || []).filter((s) => s && typeof s === 'object');
+  const W = o.width;
+  const H = o.height;
+  const fr = (v, d) => Math.min(1, Math.max(0, Number.isFinite(v) ? v : d));
+  return (list.length ? list : [{}])
+    .map((s) => {
+      const a = fr(s.from, 0), b = fr(s.to, 1), c = fr(s.bottom, 0), d = fr(s.top, 1);
+      return {
+        x0: -W / 2 + a * W,
+        x1: -W / 2 + b * W,
+        y0: c * H,
+        y1: d * H,
+        outer: { l: a < 1e-3, r: b > 1 - 1e-3, b: c < 1e-3, t: d > 1 - 1e-3 },
+        opening: !!s.opening,
+        hinge: HINGES.has(s.hinge) ? s.hinge : 'top',
+        panes: panesOf(s.panes ?? o.panes),
+      };
+    })
+    .filter((c) => c.x1 - c.x0 > 0.02 && c.y1 - c.y0 > 0.02);
+}
+
+/** Four boxes between an outer and an inner rectangle [x0, y0, x1, y1] (inner inside outer): a ring whose sides may differ. */
+function rectRing(f, outer, inner, z0, z1, material, o) {
+  const [ox0, oy0, ox1, oy1] = outer;
+  const [ix0, iy0, ix1, iy1] = inner;
+  const d = z1 - z0;
+  const zc = (z0 + z1) / 2;
+  const w = ox1 - ox0;
+  const cx = (ox0 + ox1) / 2;
+  if (oy1 - iy1 > 1e-6) f.box(w, oy1 - iy1, d, cx, (iy1 + oy1) / 2, zc, material, o);
+  if (iy0 - oy0 > 1e-6) f.box(w, iy0 - oy0, d, cx, (oy0 + iy0) / 2, zc, material, o);
+  const hh = iy1 - iy0;
+  if (hh <= 1e-6) return;
+  if (ix0 - ox0 > 1e-6) f.box(ix0 - ox0, hh, d, (ox0 + ix0) / 2, (iy0 + iy1) / 2, zc, material, o);
+  if (ox1 - ix1 > 1e-6) f.box(ox1 - ix1, hh, d, (ix1 + ox1) / 2, (iy0 + iy1) / 2, zc, material, o);
+}
+const inset = (r, l, b = l, rt = l, t = l) => [r[0] + l, r[1] + b, r[2] - rt, r[3] - t];
+
+/**
  * Builds the frame / sash / glass / board of one opening in its local frame (origin bottom centre of the hole on the
- * room face at y = sill): a glazed terrace door's karm and threshold, a top-hung window (karm + sash with a shadow gap
- * and a handle) or fixed glazing (karm + glazing bead). The exterior window sill (vannbrett) goes into
- * `exteriorBatch`.
+ * room face at y = sill): a glazed terrace door's karm and threshold, or a window of one or more fields (o.sashes):
+ * a top-, bottom- or side-hung sash (karm + sash with a shadow gap and a handle) or fixed glazing (karm + glazing
+ * bead), posts and transoms where fields meet, glazing bars (sprosser) where a field has more than one pane. The
+ * exterior window sill (vannbrett) goes into `exteriorBatch`. A window of one field is built as before.
  * @param {object} o        a layout window (or terrace door) opening
  * @param {boolean} isDoor  terrace door
  * @param {object} k
- * @param {object} k.M      materials: frame, gasket, hardware, threshold, sill, trim, glass
+ * @param {object} k.M      materials: frame, gasket, hardware, threshold, sill, trim, glass (+ bars: the glazing bars,
+ *                          default frame)
  * @param {MeshBatcher} k.exteriorBatch
  * @param {Array} k.batchers  { geometries } of the window kit is pushed here (disposed with the builder)
  * @param {(x: any) => any} k.keep  registers a geometry / material to dispose
+ * @param {THREE.Matrix4} [k.matrix]  the opening's frame (default openingMatrix(o)) – a skylight lies in its ceiling
  * @returns {{ group: THREE.Group, glass: THREE.Mesh|null, pickMeshes: THREE.Mesh[], sillY: number|null }}
  */
-export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep }) {
+export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep, matrix = null }) {
   const kit = new MeshBatcher(`window:${o.id}`);
   const f = kit.frame(new THREE.Matrix4());
+  const om = matrix ?? openingMatrix(o);
   const W = o.width;
   const H = o.height;
   const rd = o.revealDepth;
@@ -376,7 +446,6 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep }) {
   const fw = o.frame?.width ?? 0.07;
   const zF = -rd; // room-side face of the frame
   const zB = -rd - fd; // outside face
-  const opening = !isDoor && o.sashes?.some((s) => s.opening);
   let glass = null;
   let glassRect = null;
   const nf = { collide: false };
@@ -390,32 +459,70 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep }) {
     // aluminium threshold sill under the leaf and the light oak threshold across the reveal floor
     f.box(W, 0.018, fd + 0.03, 0, 0.009, zB + (fd + 0.03) / 2, M.frame, nf);
     f.box(W, 0.012, rd, 0, 0.006, -rd / 2, M.threshold, nf);
-  } else if (opening) {
-    // top-hung window: outer frame (karm) + sash with a shadow gap and a heavier bottom rail, handle on the rail
-    const fk = Math.max(0.025, fw * 0.42);
-    const gap = 0.004;
-    const fs = Math.max(0.03, fw - fk - gap);
-    const fsB = fs + 0.012;
-    ring(f, 0, 0, W, H, fk, fk, fk, zB, zF, M.frame, nf);
-    ring(f, 0, fk, W - 2 * fk, H - 2 * fk, gap, gap, gap, zB + 0.03, zF - 0.012, M.gasket, gk);
-    const sw = W - 2 * fk - 2 * gap;
-    const sh = H - 2 * fk - 2 * gap;
-    const sy = fk + gap;
-    ring(f, 0, sy, sw, sh, fs, fs, fsB, zB + 0.012, zF + 0.002, M.frame, nf);
-    ring(f, 0, sy + fsB, sw - 2 * fs, sh - fs - fsB, 0.004, 0.004, 0.004, zB + 0.03, zF - 0.008, M.gasket, gk);
-    glassRect = { w: sw - 2 * fs + 0.01, h: sh - fs - fsB + 0.01, y: sy + fsB + (sh - fs - fsB) / 2, z: zF - 0.035 };
-    // handle: rose + horizontal lever in the middle of the bottom rail
-    const hy = sy + fsB / 2;
-    f.box(0.034, 0.07, 0.012, 0, hy + 0.005, zF + 0.008, M.hardware, nf);
-    f.box(0.12, 0.018, 0.02, 0.045, hy + 0.012, zF + 0.026, M.hardware, nf);
   } else {
-    // fixed glazing: karm + glazing bead, glass set ~4 cm into the frame
-    const fk = Math.max(0.03, fw * 0.62);
-    const fb = Math.max(0.015, fw - fk);
-    ring(f, 0, 0, W, H, fk, fk, fk, zB, zF, M.frame, nf);
-    ring(f, 0, fk, W - 2 * fk, H - 2 * fk, fb, fb, fb, zF - 0.034, zF - 0.007, M.frame, nf);
-    ring(f, 0, fw, W - 2 * fw, H - 2 * fw, 0.004, 0.004, 0.004, zF - 0.04, zF - 0.032, M.gasket, gk);
-    glassRect = { w: W - 2 * fw + 0.01, h: H - 2 * fw + 0.01, y: H / 2, z: zF - 0.04 };
+    const fields = windowSashes(o);
+    // one karm for the whole window: a window of one field keeps its own (narrow for a sash, wide for fixed glazing);
+    // fields side by side share the sash's, the fixed ones make up for it with a wider bead. Where two fields meet,
+    // each has half a post (o.frame.mullion).
+    const fkOf = (open) => (open || fields.length > 1 ? Math.max(0.025, fw * 0.42) : Math.max(0.03, fw * 0.62));
+    const half = (o.frame?.mullion ?? Math.max(0.03, fw * 0.6)) / 2;
+    const bars = M.bars ?? M.frame;
+    const rects = [];
+    for (const c of fields) {
+      const fk = fkOf(c.opening);
+      const k = { l: c.outer.l ? fk : half, r: c.outer.r ? fk : half, b: c.outer.b ? fk : half, t: c.outer.t ? fk : half };
+      // the karm's outer rectangle: in from the hole on its sides and top (FRAME_INSET)
+      const outerRect = [c.x0 + (c.outer.l ? FRAME_INSET : 0), c.y0, c.x1 - (c.outer.r ? FRAME_INSET : 0), c.y1 - (c.outer.t ? FRAME_INSET : 0)];
+      const K = [c.x0 + k.l, c.y0 + k.b, c.x1 - k.r, c.y1 - k.t];
+      rectRing(f, outerRect, K, zB, zF, M.frame, nf);
+      let G; // the glass opening (what the sash or the bead leaves free)
+      let zG;
+      if (c.opening) {
+        // sash with a shadow gap to the karm and a heavier bottom rail, the handle on the rail opposite the hinge
+        const gap = 0.004;
+        const fs = Math.max(0.03, fw - fk - gap);
+        const fsB = fs + 0.012;
+        rectRing(f, K, inset(K, gap), zB + 0.03, zF - 0.012, M.gasket, gk);
+        const S = inset(K, gap);
+        G = [S[0] + fs, S[1] + fsB, S[2] - fs, S[3] - fs];
+        rectRing(f, S, G, zB + 0.012, zF + 0.002, M.frame, nf);
+        rectRing(f, G, inset(G, 0.004), zB + 0.03, zF - 0.008, M.gasket, gk);
+        zG = zF - 0.035;
+        const sx = (S[0] + S[2]) / 2;
+        const sy = (S[1] + S[3]) / 2;
+        if (c.hinge === 'left' || c.hinge === 'right') {
+          // side-hung: rose + lever pointing down in the middle of the stile opposite the hinge
+          const hx = c.hinge === 'left' ? S[2] - fs / 2 : S[0] + fs / 2;
+          f.box(0.034, 0.07, 0.012, hx, sy, zF + 0.008, M.hardware, nf);
+          f.box(0.018, 0.12, 0.02, hx, sy - 0.045, zF + 0.026, M.hardware, nf);
+        } else {
+          // top-hung: on the bottom rail; bottom-hung: on the top rail
+          const hy = c.hinge === 'bottom' ? S[3] - fs / 2 : S[1] + fsB / 2;
+          f.box(0.034, 0.07, 0.012, sx, hy + 0.005, zF + 0.008, M.hardware, nf);
+          f.box(0.12, 0.018, 0.02, sx + 0.045, hy + 0.012, zF + 0.026, M.hardware, nf);
+        }
+      } else {
+        // fixed glazing: karm + glazing bead, glass set ~4 cm into the frame (the rubber 1 mm deeper than the glass)
+        const fb = Math.max(0.015, fw - fk);
+        G = inset(K, fb);
+        rectRing(f, K, G, zF - 0.034, zF - 0.007, M.frame, nf);
+        rectRing(f, G, inset(G, 0.004), zF - 0.041, zF - 0.032, M.gasket, gk);
+        zG = zF - 0.04;
+      }
+      // glazing bars (sprosser): through the glass, the cross bars 2 mm shallower (no faces in one plane where they cross)
+      const [cols, rows] = c.panes;
+      const gw = G[2] - G[0];
+      const gh = G[3] - G[1];
+      if ((cols > 1 || rows > 1) && gw > 0.02 && gh > 0.02) {
+        const bw = Math.min(o.bars?.width ?? 0.024, gw / (3 * cols), gh / (3 * rows));
+        for (let i = 1; i < cols; i++) f.box(bw, gh + 0.01, 0.024, G[0] + (i * gw) / cols, (G[1] + G[3]) / 2, zG, bars, nf);
+        for (let j = 1; j < rows; j++) f.box(gw + 0.01, bw, 0.02, (G[0] + G[2]) / 2, G[1] + (j * gh) / rows, zG, bars, nf);
+      }
+      // the glass reaches 5 mm into the sash / bead
+      rects.push({ w: gw + 0.01, h: gh + 0.01, x: (G[0] + G[2]) / 2, y: (G[1] + G[3]) / 2, z: zG });
+    }
+    if (rects.length === 1) glassRect = rects[0];
+    else if (rects.length) glassRect = { parts: rects, z: rects[0].z };
   }
   let sillY = null;
   if (o.sillBoard && !isDoor) {
@@ -427,13 +534,13 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep }) {
     g.dispose();
     sillY = o.sill;
     // exterior window sill (vannbrett), sloping outward
-    exteriorBatch.frame(openingMatrix(o)).box(W, 0.012, 0.075, 0, -0.012, zB - 0.025, M.trim, { rot: [0.14, 0, 0], collide: false, castShadow: false });
+    exteriorBatch.frame(om).box(W, 0.012, 0.075, 0, -0.012, zB - 0.025, M.trim, { rot: [0.14, 0, 0], collide: false, castShadow: false });
   }
   const built = kit.build();
   batchers.push({ geometries: kit.geometries });
   built.name = `window:${o.id}`;
   built.matrixAutoUpdate = false;
-  built.matrix.copy(openingMatrix(o));
+  built.matrix.copy(om);
   const pickMeshes = [];
   built.traverse((m) => {
     if (!m.isMesh) return;
@@ -441,11 +548,19 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep }) {
     if (m.material !== M.sill) pickMeshes.push(m);
   });
   if (glassRect) {
-    glass = new THREE.Mesh(keep(new THREE.PlaneGeometry(glassRect.w, glassRect.h)), M.glass);
+    // one mesh per window: the panes of several fields merged, the mesh at the first pane's depth (shading.js reads the
+    // depth of the glass in the reveal from the mesh's position)
+    let geo;
+    if (glassRect.parts) {
+      const parts = glassRect.parts.map((r) => new THREE.PlaneGeometry(r.w, r.h).translate(r.x, r.y, r.z - glassRect.z));
+      geo = mergeGeometries(parts, false);
+      for (const g of parts) g.dispose();
+    } else geo = new THREE.PlaneGeometry(glassRect.w, glassRect.h);
+    glass = new THREE.Mesh(keep(geo), M.glass);
     glass.name = `glass:${o.id}`;
-    glass.position.set(0, glassRect.y, glassRect.z);
+    glass.position.set(glassRect.x ?? 0, glassRect.y ?? 0, glassRect.z);
     glass.updateMatrix();
-    glass.applyMatrix4(openingMatrix(o));
+    glass.applyMatrix4(om);
     glass.castShadow = false;
     glass.receiveShadow = false;
     glass.renderOrder = 2;
