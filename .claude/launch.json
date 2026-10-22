@@ -64,6 +64,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5275", "--strictPort"],
       "port": 5275
+    },
+    {
+      "name": "kledning-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5278", "--strictPort"],
+      "port": 5278
     }
   ]
 }

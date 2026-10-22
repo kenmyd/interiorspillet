@@ -48,6 +48,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { STAIR_TYPES, STEEP, WALK_MAX_DEG, isPlanType, isQuarterTurn, isStraightType, stairPlan, stairRisers, planGoing, landingSplit, rampKnots, rampDeg, FOOT_CUT_EXTRA } from '../../home/stairtypes.js';
 import { resolveRoofs, roofField, ceilingSurface, surfaceProfile, insideHalfPlanes as insideHalfPlanesOf } from '../../home/roofgeom.js';
+import { resolveCladding, groundLevel } from '../../home/claddinggeom.js';
+import { resolveDecks } from '../../home/deckgeom.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../..');
@@ -1407,10 +1409,12 @@ export function validateHouse(spec, opts = {}) {
   for (const [lid, field] of Object.entries(roofFieldOf)) {
     const fy = levelsById.get(lid)?.floorY ?? 0;
     const upper = rooms.filter((r) => physical(r) && (levelsById.get(r.levelId)?.floorY ?? -Infinity) > fy + 0.5);
+    // (and the slabs of the walls up there, with their mitred corners: a corner under the level above's wall is not outside – notes/kledning.md)
+    const upperSlabs = [...wallInfo.values()].filter((u) => u.t > 0 && (levelsById.get(u.level)?.floorY ?? -Infinity) > fy + 0.5).map((u) => [u.w.from, u.w.to, add(u.w.to, mul(u.n, -u.t)), add(u.w.from, mul(u.n, -u.t))]);
     for (const [id, wi] of wallInfo) {
       if (wi.level !== lid || !wi.w.exterior || !(wi.t > 0)) continue;
       const outer = [add(wi.w.from, mul(wi.n, -wi.t)), add(wi.w.to, mul(wi.n, -wi.t))];
-      if (outer.every((q) => upper.some((r) => inOrOn(q, r.polygon, wi.t + 0.05)))) continue;
+      if (outer.every((q) => upper.some((r) => inOrOn(q, r.polygon, wi.t + 0.05)) || upperSlabs.some((P) => inOrOn(q, P, wi.t + 0.05)))) continue;
       const free = outer.filter((q) => !field.parts.some((part) => insideHalfPlanesOf(part.outline).every((hp) => hp.a * q[0] + hp.b * q[1] + hp.c <= 0.05)));
       if (free.length) warn(`walls/${id}: står utenfor taket over ${lid} (${free.map((q) => `[${fmt(q[0])}, ${fmt(q[1])}]`).join(', ')}) – utvid roofs[].outline eller legg til en takdel`);
     }
@@ -1467,6 +1471,38 @@ export function validateHouse(spec, opts = {}) {
         const k = Math.abs(dot(e, unitv(g)));
         if (k > 0.03 && k < 0.97) warn(`${where}: sidene følger ikke takfallet (kant 0 står ${fmt((Math.acos(Math.min(1, k)) * 180) / Math.PI, 0)}° på det) – vinduet blir skjevt i takflaten`);
       }
+    }
+  }
+
+  // ---- the cladding and the decks (notes/kledning.md, home/claddinggeom.js, home/deckgeom.js): the same model as
+  //      layout.js, its issues as errors / warnings
+  if (spec.cladding != null || spec.decks != null) {
+    const lvList = levels.filter((l) => typeof l.id === 'string' && num(l.floorY)).map((l) => ({ id: l.id, floorY: l.floorY }));
+    if (spec.cladding != null) {
+      const cl = resolveCladding(spec.cladding, { levels: lvList, walls: walls.map((w) => ({ id: w.id, levelId: levelOf(roomOf(w)), exterior: !!w.exterior })), mainLevelId: 'hoved' });
+      for (const i of cl.issues) (i.level === 'error' ? error : warn)(`${i.where}: ${i.msg}`);
+      if (arr(spec.facadeSegments).length) warn('cladding: huset har også facadeSegments – materialet og fargen der brukes ikke (cladding gjelder for alle yttervegger)');
+      // a gable zone needs a roof with gables (saltak or pulttak) over its level
+      for (const z of cl.cladding?.zones ?? []) {
+        if (!z.gable) continue;
+        const gabled = roofRes.parts.some((p) => (z.levelId === null || p.levelId === z.levelId) && (p.type === 'gable' || p.type === 'mono-pitch'));
+        if (!gabled) warn(`cladding.zones/${z.id}: gable, men intet saltak eller pulttak over ${z.levelId ? `nivået «${z.levelId}»` : 'huset'} – sonen brukes ikke`);
+      }
+    }
+    if (spec.decks != null) {
+      const topOf = (wi) => {
+        const prof = derivedTop.get(wi.w.id) ?? (Array.isArray(wi.w.topProfile) && wi.w.topProfile.length ? wi.w.topProfile : null);
+        return prof ? Math.max(...prof.map((q) => q[1])) : num(wi.w.height) ? wi.w.height : 2.4;
+      };
+      const dk = resolveDecks(spec.decks, {
+        levels: lvList,
+        walls: [...wallInfo.values()].filter((wi) => wi.w.backOf == null && wi.t > 0).map((wi) => ({
+          id: wi.w.id, levelId: wi.level, exterior: !!wi.w.exterior, start: wi.w.from, end: wi.w.to, normal: wi.n, thickness: wi.t, floorY: roomFloorY(wi.room), height: topOf(wi),
+        })),
+        rooms: rooms.filter(physical).map((r) => ({ id: r.id, levelId: r.levelId, floorY: roomFloorY(r.id), polygon: r.polygon })),
+        groundY: groundLevel(lvList, 'hoved'),
+      });
+      for (const i of dk.issues) (i.level === 'error' ? error : warn)(`${i.where}: ${i.msg}`);
     }
   }
 

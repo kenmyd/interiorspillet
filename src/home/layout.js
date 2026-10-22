@@ -3,6 +3,8 @@ import roomSpec from '../data/room-spec.json';
 import paletteData from '../data/palette.json';
 import { isPlanType, isQuarterTurn, stairPlan, stairRisers, rampKnots, rampAt } from './stairtypes.js';
 import { resolveRoofs, roofField, ceilingSurface, splitTriangles, liftTriangles, volumeUnder, surfaceProfile } from './roofgeom.js';
+import { resolveCladding, groundLevel } from './claddinggeom.js';
+import { resolveDecks, deckWalkRect } from './deckgeom.js';
 
 /**
  * Room layout: reads data/room-spec.json and derives typed, world-space values for every module (shell, lighting,
@@ -121,15 +123,20 @@ import { resolveRoofs, roofField, ceilingSurface, splitTriangles, liftTriangles,
  *                                        maxHeight, else null
  * @property {Object[]} roofs             the roofs (home/roofgeom.js resolveRoofs; [] without spec.roofs) + roofFieldOf(levelId),
  *                                          skylights (roof windows: { id, polygon, depth, frame, sashes, panes, bars })
- * @property {Object[]} lightGroups       the six living-room groups + the data groups { id, label, roomId (null: several rooms or none, e.g. boder, ute), dimmer (start level), dimmable, auto }
+ * @property {Object|null} cladding       the outer finish (notes/kledning.md, home/claddinggeom.js resolveCladding; null without
+ *                                          spec.cladding): { default, basement, zones, plinth, trim, groundY }
+ * @property {Object[]} decks             terraces, balconies, porches, roof terraces (home/deckgeom.js resolveDecks; [] without
+ *                                          spec.decks): { …data, top, bottom, groundY, edges, railings, stairs, posts, surfaceY(x, z) }
+ * @property {Object[]} lightGroups      the six living-room groups + the data groups { id, label, roomId (null: several rooms or none, e.g. boder, ute), dimmer (start level), dimmable, auto }
  * @property {Object[]} floorOpenings     { id, levelId, roomId, stairId, polygon, area, contains(x, z) (strict) }
  * @property {Object[]} stairs            { …data, fromLevel, toLevel, risers, rise, riser, topY, bottomY, footprint, wellPolygon, walkLine,
  *                                          walkLength, going, contains(x, z), surfaceY(x, z) }
- * @property {(x: number, z: number, y?: number) => number|null} floorYAt      floor (world y) under a point, stair surfaces included
+ * @property {(x: number, z: number, y?: number) => number|null} floorYAt      floor (world y) under a point, stair and deck surfaces included
  * @property {(x: number, z: number, y?: number, previousLevelId?: string) => boolean} isInside
  * @property {(x: number, z: number, y?: number) => number} ceilingHeightAt    world y; in a hole the ceiling of the level above
  * @property {Object} bounds              { minX, maxX, minZ, maxZ, minY, maxY } of every level; levelBounds(id) per level
- * @property {Object[]} walkRects         one per level, inset 5 cm, { levelId, minX, maxX, minZ, maxZ, minY, maxY } (y = feet band)
+ * @property {Object[]} walkRects         one per level, inset 5 cm, { levelId, minX, maxX, minZ, maxZ, minY, maxY } (y = feet band),
+ *                                          then one per deck with its stairs ({ …, deckId })
  */
 
 const DEG = Math.PI / 180;
@@ -1356,6 +1363,32 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
   const roomsByLevel = groupByLevel(physicalRooms);
   for (const lv of levels) lv.roomIds = rooms.filter((rm) => rm.levelId === lv.id).map((rm) => rm.id);
 
+  // ---- the cladding and the decks (notes/kledning.md, home/claddinggeom.js, home/deckgeom.js). Without spec.cladding
+  //      and spec.decks nothing here runs (the owner's house).
+  let houseCladding = null;
+  let decks = [];
+  if (spec.cladding != null || spec.decks != null) {
+    const lvList = levels.map((l) => ({ id: l.id, floorY: l.floorY }));
+    if (spec.cladding != null) {
+      const r = resolveCladding(spec.cladding, { levels: lvList, walls: allWalls.map((w) => ({ id: w.id, levelId: w.levelId, exterior: w.exterior })), mainLevelId: MAIN_LEVEL_ID });
+      for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
+      houseCladding = r.cladding;
+    }
+    if (spec.decks != null) {
+      const r = resolveDecks(spec.decks, {
+        levels: lvList,
+        walls: allWalls.filter((w) => w.thickness > 0).map((w) => ({
+          id: w.id, levelId: w.levelId, exterior: w.exterior, start: [w.start.x, w.start.y], end: [w.end.x, w.end.y], normal: [w.normal.x, w.normal.y],
+          thickness: w.thickness, floorY: w.floorY, height: w.height,
+        })),
+        rooms: physicalRooms.map((rm) => ({ id: rm.id, levelId: rm.levelId, floorY: rm.floorY, polygon: rm.polygon.map((p) => [p.x, p.y]) })),
+        groundY: groundLevel(lvList, MAIN_LEVEL_ID),
+      });
+      for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
+      decks = r.decks;
+    }
+  }
+
   /**
    * Room at a point. physical (default): the room of the level at y whose plan contains (x, z) – lighting and
    * acoustics never see hud rooms. physical:false (the HUD banner): hud rooms (the stair) are tested first, by their
@@ -1394,6 +1427,10 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       if (h !== null) take(h);
     }
     for (const t of thresholds) if (t.contains(x, z)) take(t.floorY);
+    for (const dk of decks) {
+      const h = dk.surfaceY(x, z);
+      if (h !== null) take(h);
+    }
     return best;
   }
 
@@ -1461,6 +1498,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       maxY: i > 0 ? levels[i - 1].bottomY : Infinity,
     };
   });
+  // the decks and their stairs are walkable too (notes/kledning.md)
+  for (const dk of decks) walkRects.push(deckWalkRect(dk));
 
   /**
    * The whole house (§1.8). Lists hold every entry (the living room's included, same objects as the old fields);
@@ -1502,6 +1541,10 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     roofs: roofParts,
     /** one level's roof as a height field (roofgeom.js roofField: innerAt, planeAt, lines, steps), null without one */
     roofFieldOf: (levelId) => roofFields[levelId] ?? null,
+    /** the outer finish (notes/kledning.md, home/claddinggeom.js resolveCladding); null without spec.cladding */
+    cladding: houseCladding,
+    /** terraces, balconies, porches, roof terraces (home/deckgeom.js resolveDecks); [] without spec.decks */
+    decks,
     outsideHouse: deepClone(spec.outsideHouse) ?? null,
     floorYAt,
     isInside: isInsideHouse,

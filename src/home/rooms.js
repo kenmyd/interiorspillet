@@ -9,8 +9,11 @@ import {
 import { buildDoor } from './doors.js';
 import { claddingMaterial, ledStrip } from './shell.js';
 import { buildRoofs } from './roof.js';
+import { buildDecks } from './decks.js';
+import { claddingPiece, gableLine } from './cladding.js';
+import { finishAt, finishKey } from './claddinggeom.js';
 import { surfaceProfile, planeY, CLADDING_INTO_ROOF } from './roofgeom.js';
-import { wallFinish, floorFinish } from '../world/surfaces.js';
+import { wallFinish, floorFinish, facadeFinish } from '../world/surfaces.js';
 
 /**
  * ROOMS – every room of the house except the living room / kitchen / TV-stue (notes/hele-huset-design.md §2.1,
@@ -27,9 +30,13 @@ import { wallFinish, floorFinish } from '../world/surfaces.js';
  *     notes/tak.md – up into the house's own roof, else 0.3 over the wall), up to the cladding of the floor above where
  *     its facade stands on this one, and up to the slab underside under a ground-floor facade on the basement (no two
  *     layers in one plane);
+ *   • with the house's `cladding` (notes/kledning.md, layout.house.cladding) the outer layer is cladding.js's: bands
+ *     per zone, gable and plinth, flashings, corner boards and surrounds – facadeSegments then give no material;
  *   • the roofs (roof.js, layout.house.roofs): over their level, hidden with the ceilings; a ceiling under a roof is
  *     its surface (cut along the folds, with the vertical faces at a dormer's sides); a roof window under a roof lies in
  *     the roof plane;
+ *   • the decks (decks.js, layout.house.decks): terraces, balconies, porches and roof terraces in their level's root,
+ *     with railings, stairs and their colliders (in `colliders`);
  *   • a floor per room (oak shared with the living room / tinted for the basement, vinyl, concrete, parquet) with the
  *     stairwell cut out, the ceilings (the basement's with the hole; roof windows in ceilings[].skylights: hole, shaft
  *     and window), black ceiling trims, the white edge face on the
@@ -215,6 +222,29 @@ export function buildRooms(ctx, layout, M = null) {
     return claddings.get(hex);
   }
   const plaster = (hex) => mat('painted', hex || LOOK.plaster, { roughness: 0.95 });
+  // the house's cladding (notes/kledning.md): one material per finish – board-and-batten is the shell's woodCladding
+  // (claddingMaterial), the other kinds surfaces.js facadeFinish (cached, colour-neutral textures tinted per use)
+  const CL = H?.cladding ?? null;
+  const facadeRes = quality.level === 'high' ? 1 : 0.5;
+  const finishMats = new Map();
+  function finishMaterial(f) {
+    const key = finishKey(f);
+    if (!finishMats.has(key)) {
+      let m;
+      if (!f.plinth && f.type === 'wood' && f.profile === 'board-batten') m = cladding(f.color);
+      else {
+        const kind = f.plinth ? (f.material === 'concrete' ? 'concrete' : f.material) : f.type;
+        try {
+          m = facadeFinish(kind, f.color, { profile: f.profile ?? 'plain', module: f.module ?? undefined, res: facadeRes });
+        } catch {
+          m = mat('painted', f.color, { roughness: 0.9 }); // no texture support
+        }
+      }
+      finishMats.set(key, m);
+    }
+    return finishMats.get(key);
+  }
+  const trimMaterial = (hex) => mat('painted', hex, { roughness: 0.6 });
   const tintedFloors = new Map();
   /** Floor material of a room's floor entry. */
   function floorMaterial(floor) {
@@ -340,6 +370,7 @@ export function buildRooms(ctx, layout, M = null) {
   for (const f of spec.facadeSegments || []) for (const id of f.wallIds || []) facadeOf.set(id, f);
   /** Material of a wall's outer layer: cladding on the main floor and the floors above it, plaster on the basement. */
   function facadeMaterial(w) {
+    if (CL) return finishMaterial(finishAt(CL, { levelId: w.levelId, wallId: w.id, y: 1.2 }));
     const f = facadeOf.get(w.id);
     const kind = f?.material ?? (w.levelId === mainId || w.floorY > mainFloorY + 0.5 ? 'cladding' : 'plaster');
     if (kind === 'cladding') return cladding(f?.color ?? LOOK.cladding);
@@ -415,6 +446,22 @@ export function buildRooms(ctx, layout, M = null) {
     }
     return out;
   }
+  /** u-ranges of a wall's outer plane that stand on an exterior wall of the level below (underFacade seen from above). */
+  const overFacades = new Map();
+  function overFacade(w) {
+    if (overFacades.has(w.id)) return overFacades.get(w.id);
+    const lv = H.levelsById[w.levelId];
+    const out = [];
+    for (const o of lv?.belowId ? H.walls : []) {
+      if (o.levelId !== lv.belowId || !o.exterior || o.thickness < 0.2 || o.normal.dot(w.normal) < 0.99) continue;
+      if (Math.abs(offOn(w, o.start) - o.thickness + w.thickness) > 0.02) continue;
+      const ua = uOn(w, o.start), ub = uOn(w, o.end);
+      out.push([Math.min(ua, ub) - o.thickness, Math.max(ua, ub) + o.thickness]);
+    }
+    overFacades.set(w.id, out);
+    return out;
+  }
+  const inRanges = (ranges, u) => ranges.some(([p, q]) => u >= p - 1e-3 && u <= q + 1e-3);
   /** A top profile capped at yMax inside the ranges (steps at their ends). */
   function capProfile(profile, ranges, yMax, x0, x1) {
     if (!ranges.length) return profile;
@@ -483,7 +530,7 @@ export function buildRooms(ctx, layout, M = null) {
       const y0 = o.sill - (o.sillBoard ? o.sillBoard.thickness ?? 0.025 : 0);
       if (o.sill <= EPS) notchesAll.push({ x0: o.u0, x1: o.u1, y1: o.top });
       else holesAll.push({ x0: o.u0, x1: o.u1, y0, y1: o.top });
-      outerAll.push({ x0: o.u0, x1: o.u1, y0: Math.max(o.sill <= EPS ? bottom : 0, y0), y1: o.top, door: o.sill <= EPS });
+      outerAll.push({ x0: o.u0, x1: o.u1, y0: Math.max(o.sill <= EPS ? bottom : 0, y0), y1: o.top, door: o.sill <= EPS, frameColor: String(o.frame?.color ?? LOOK.frame).toLowerCase() });
     }
     const notches = mergeNotches(notchesAll);
     // pieces: cut at the ends of the faces on the back (never inside an opening)
@@ -508,6 +555,29 @@ export function buildRooms(ctx, layout, M = null) {
     const capRanges = exterior ? underFacade(w) : [];
     const capY = lv?.aboveId ? H.levelsById[lv.aboveId].bottomY - w.floorY : Infinity;
     const roofTop = exterior ? roofCladdingTop(w) : null;
+    // with the house's cladding: the gable line and the corners to the neighbouring exterior walls (cladding.js)
+    const gableY = CL && roofTop ? gableLine(roofTop, -kStart * t, L + kEnd * t) : null;
+    const isExt = (x) => !!x && x.exterior && x.thickness >= 0.2;
+    let corner = null;
+    if (CL && exterior) {
+      const prev = H.wallsById[w.prevId], next = H.wallsById[w.nextId];
+      // a corner standing on a corner of the level below starts at the floor (the board below reaches up to it, over
+      // the slab edge); a corner under one of the level above reaches up to that floor
+      const slabAbove = lv?.aboveId ? H.levelsById[lv.aboveId].floorY - H.levelsById[lv.aboveId].bottomY : 0;
+      const onBelow = (u, o, uo) => inRanges(overFacade(w), u) || (!!o && isExt(o) && inRanges(overFacade(o), uo));
+      const underAbove = (u, o, uo) => inRanges(capRanges, u) || (!!o && isExt(o) && inRanges(underFacade(o), uo));
+      corner = {
+        prev, next,
+        startConvex: kStart > 1e-6 && isExt(prev),
+        startConcave: kStart < -1e-6 && isExt(prev),
+        endConvex: kEnd > 1e-6 && isExt(next),
+        endConcave: kEnd < -1e-6 && isExt(next),
+        startFrom: onBelow(0, prev, prev?.length) ? 0 : -Infinity,
+        endFrom: onBelow(L, next, 0) ? 0 : -Infinity,
+        startUp: underAbove(0, prev, prev?.length) ? slabAbove : 0,
+        endUp: underAbove(L, next, 0) ? slabAbove : 0,
+      };
+    }
     for (let i = 0; i < us.length - 1; i++) {
       const a = us[i], b = us[i + 1];
       if (b - a < 1e-3) continue;
@@ -571,6 +641,15 @@ export function buildRooms(ctx, layout, M = null) {
         const oHoles = mergeHoles(outerAll.filter((h) => asHole(h) && h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ ...h, y0: h.door ? 0 : h.y0 })));
         const oNotches = mergeNotches(outerAll.filter((h) => !asHole(h) && inPiece(h)).map((h) => ({ x0: h.x0, x1: h.x1, y1: h.y1 }))).map(clip);
         const gOut = wallLayer({ L: b - a, bottom: oBottom, top: oTop, notches: oNotches, holes: oHoles, z0: -t, z1: -rd, kStart: kS, kEnd: kE });
+        if (CL && !face) {
+          // the house's cladding: bands per zone / gable / plinth, flashings, corner boards, surrounds (cladding.js)
+          const openings = outerAll.filter((h) => h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ ...h, y0: h.door ? Math.max(0, oBottom) : h.y0 }));
+          claddingPiece({
+            CL, w, lv, gOut, T, a, b, oTop, oBottom, openings, kS, kE, gableY, corner, batch: rr.outside,
+            finishMat: finishMaterial, trimMat: trimMaterial, sideMat: K.trim,
+          });
+          continue;
+        }
         gOut.applyMatrix4(T);
         const clad = groupGeometry(gOut, 0);
         const trim = groupGeometry(gOut, 2);
@@ -890,6 +969,8 @@ export function buildRooms(ctx, layout, M = null) {
       quality,
       skylights,
       cladding: (levelId) => {
+        // the dormers' cheeks and fronts are clad like a gable (a gable zone of the level, else its default)
+        if (CL) return finishMaterial(finishAt(CL, { levelId, wallId: '', y: 99, gableY: 0 }));
         const w = H.walls.find((x) => x.levelId === levelId && x.exterior && x.thickness >= 0.2 && roomIds.has(x.roomId));
         return w ? facadeMaterial(w) : cladding(LOOK.cladding);
       },
@@ -907,6 +988,12 @@ export function buildRooms(ctx, layout, M = null) {
       pickables.ceilings.push(m);
     }
     for (const l of built.linings) skylightLinings.push(l);
+  }
+  // ---- the decks (notes/kledning.md, decks.js): terraces, balconies, porches, roof terraces with railings and stairs
+  if (H.decks?.length) {
+    const built = buildDecks(H, { roots: ctx?.roots?.levels, fallback: group, keep, batchers, quality, mainLevelId: mainId });
+    for (const g of built.groups) roots[g.name] = g;
+    colliders.push(...built.colliders);
   }
 
   /** The floor geometry with the strips out to the frame of its windows on the floor (floorGeometry's UVs and normal). */
