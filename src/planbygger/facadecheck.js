@@ -1,9 +1,10 @@
 /**
- * Fasadesjekk – the house's facades drawn from the plan like a facade drawing, one side at a time (nord, øst, sør, vest
- * as tabs, a small plan that marks the side): every exterior wall seen from outside, the levels stacked with their lines,
- * the ground, the windows and doors where they are. Pick one (or step through all with ‹ › and the arrow keys) to set its
- * width, height and sill in centimetres and its type as pictures (a window: export.js WINDOW_STYLES and bars; a door:
- * DOOR_TYPES). The changes go straight into the document (with undo); «Ferdig» rebuilds the 3D house.
+ * Fasadesjekk – the house's facades drawn from the plan like a facade drawing, facade after facade (nord, øst, sør,
+ * vest as tabs and «Neste fasade», a small plan that marks the side): every exterior wall seen from outside, the levels
+ * stacked with their lines, the ground, the windows and doors where they are, numbered. Beside it every window and door
+ * on that facade, level by level, with width, height and sill in centimetres to change right in the list, the chosen
+ * one's type as pictures (a window: export.js WINDOW_STYLES and bars; a door: DOOR_TYPES), and the ticked ones changed
+ * together. The changes go straight into the document (with undo); «Ferdig» rebuilds the 3D house.
  *
  * For a house without facade drawings, where one sill and height for every window was wrong for half of them (the
  * owner's own house, F110, F112: «generer huset først og vis fasadene side etter side der jeg kan klikke på vinduene»).
@@ -270,14 +271,17 @@ function drawCompass(F, all, size = 92) {
 }
 
 /**
- * The facade check as an overlay over the page. getDoc() is the current document (undo replaces it), onChange(label,
- * fn) runs fn on it with an undo step, onDone(changed) when it is closed.
+ * The facade check as an overlay over the page, facade after facade: the drawing in the middle with «Neste fasade», and
+ * beside it every window and door on that facade, level by level, with their measures to change right there (and the
+ * ones ticked together). getDoc() is the current document (undo replaces it), onChange(label, fn) runs fn on it with an
+ * undo step, onDone(changed) when it is closed.
  */
 export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
-  let selected = null; // { level, id }
   let side = null; // the facade on screen
+  let selected = null; // the one shown with its measures and type pictures: { level, id }
   let changed = false;
-  const seen = new Set();
+  const checked = new Set(); // ticked for a change together: 'level:id'
+  const visited = new Set(); // facade keys seen
   const key = (o) => `${o.level}:${o.id}`;
   const settings = () => ({ ...DEFAULT_SETTINGS, ...(getDoc().settings || {}) });
   const tabs = h('div', { class: 'fc-tabs', role: 'tablist' });
@@ -289,23 +293,12 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     el.remove();
     onDone?.(changed);
   };
-  const step = (dir) => {
-    const list = order();
-    if (!list.length) return;
-    const i = selected ? list.findIndex((x) => x.level === selected.level && x.id === selected.id) : -1;
-    select(list[(i + dir + list.length) % list.length]);
-  };
   const onKey = (e) => {
     const tag = e.target?.tagName;
     if (e.key === 'Escape') close();
     else if (tag === 'INPUT' || tag === 'SELECT') return;
-    else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-      step(1);
-      e.preventDefault();
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-      step(-1);
-      e.preventDefault();
-    }
+    else if (e.key === 'ArrowRight') go(1);
+    else if (e.key === 'ArrowLeft') go(-1);
   };
   let resizeT = 0;
   const onResize = () => {
@@ -314,29 +307,32 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
   };
   const el = h('div', { class: 'fc' },
     h('header', { class: 'fc-head' },
-      h('div', { class: 'fc-title' }, h('h2', {}, 'Fasadesjekk'), h('p', {}, intro ?? 'Huset sett utenfra, side for side. Velg et vindu eller en dør for å rette mål og type.')),
+      h('div', { class: 'fc-title' }, h('h2', {}, 'Fasadesjekk'), h('p', {}, intro ?? 'Huset sett utenfra, fasade for fasade. Rett målene og typen på vinduene og dørene.')),
       tabs,
-      h('div', { class: 'fc-head-actions' }, h('button', { class: 'pb-btn is-primary', onclick: () => close() }, 'Ferdig – bygg 3D-huset'))),
+      h('div', { class: 'fc-head-actions' }, h('button', { class: 'pb-btn', onclick: () => close() }, 'Ferdig – bygg 3D-huset'))),
     h('div', { class: 'fc-body' }, stage, panel));
   window.addEventListener('keydown', onKey);
   window.addEventListener('resize', onResize);
   document.body.append(el);
 
-  /** Every window and door in reading order: side by side, top level first, left to right. */
-  function order() {
-    return buildFacades(getDoc()).flatMap((F) =>
-      [...F.openings].sort((a, b) => (Math.abs(a.y0 - b.y0) > 1 ? b.y0 - a.y0 : a.s0 - b.s0)).map((o) => ({ ...o, side: F.key })));
-  }
-  function select(o) {
-    selected = { level: o.level, id: o.id };
-    seen.add(key(o));
-    side = o.side ?? side;
+  /** To the next (+1) or previous (−1) facade; past the last one closes. */
+  function go(dir) {
+    const keys = buildFacades(getDoc()).map((F) => F.key);
+    const i = keys.indexOf(side);
+    if (dir > 0 && i === keys.length - 1) return close();
+    side = keys[Math.max(0, Math.min(keys.length - 1, i + dir))];
+    selected = null;
+    checked.clear();
     render();
   }
-  const apply = (label, fn) => {
+  /** Runs fn on each of the given openings (by key) in one undo step. */
+  const applyTo = (keys, label, fn) => {
     onChange(label, () => {
-      const f = selected && find(getDoc(), selected.level, selected.id);
-      if (f) fn(f);
+      for (const k of keys) {
+        const [level, id] = k.split(':');
+        const f = find(getDoc(), level, id);
+        if (f) fn(f);
+      }
     });
     changed = true;
     render();
@@ -346,35 +342,40 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     const doc = getDoc();
     const facades = buildFacades(doc);
     if (!side || !facades.some((F) => F.key === side)) side = facades[0]?.key ?? null;
+    if (side) visited.add(side);
     tabs.innerHTML = '';
     for (const F of facades) {
       const n = F.openings.length;
-      const done = F.openings.filter((o) => seen.has(key(o))).length;
-      tabs.append(h('button', { class: `fc-tab${F.key === side ? ' is-on' : ''}`, role: 'tab', onclick: () => ((side = F.key), render()) },
-        F.name, h('span', { class: `fc-badge${n && done === n ? ' is-done' : ''}` }, n ? `${done}/${n}` : '–')));
+      tabs.append(h('button', { class: `fc-tab${F.key === side ? ' is-on' : ''}`, role: 'tab', onclick: () => ((side = F.key), (selected = null), checked.clear(), render()) },
+        F.name, h('span', { class: `fc-badge${visited.has(F.key) && F.key !== side ? ' is-done' : ''}` }, visited.has(F.key) && F.key !== side ? '✓' : String(n))));
     }
     stage.innerHTML = '';
     const F = facades.find((x) => x.key === side);
     if (!F) {
       stage.append(h('p', { class: 'fc-empty' }, 'Fant ingen yttervegger å vise. Merk ytterveggene i «Finjuster».'));
-      renderPanel(doc, facades);
+      panel.innerHTML = '';
       return;
     }
+    const i = facades.indexOf(F);
+    const last = i === facades.length - 1;
     const wins = F.openings.filter((o) => o.win).length;
     stage.append(h('div', { class: 'fc-sheet-head' }, drawCompass(F, facades),
-      h('div', {}, h('h3', {}, `${F.name}fasaden`), h('p', {}, `Sett utenfra fra ${F.name.toLowerCase()} · ${wins} vindu${wins === 1 ? '' : 'er'}, ${F.openings.length - wins} dør${F.openings.length - wins === 1 ? '' : 'er'}`))));
+      h('div', { class: 'fc-sheet-title' }, h('h3', {}, `${F.name}fasaden`), h('p', {}, `Fasade ${i + 1} av ${facades.length} · sett utenfra fra ${F.name.toLowerCase()} · ${wins} vindu${wins === 1 ? '' : 'er'}, ${F.openings.length - wins} dør${F.openings.length - wins === 1 ? '' : 'er'}`)),
+      h('div', { class: 'fc-sheet-nav' },
+        i > 0 ? h('button', { class: 'pb-btn', onclick: () => go(-1) }, '‹ Forrige') : null,
+        h('button', { class: 'pb-btn is-primary fc-next', onclick: () => go(1) }, last ? 'Ferdig – bygg 3D-huset' : `Neste fasade: ${facades[i + 1].name} ›`))));
     const sheet = h('div', { class: 'fc-sheet' });
     stage.append(sheet);
     // the drawing, fitted to the stage
     const box = stage.getBoundingClientRect();
     const padL = 96;
-    const padR = 40;
+    const padR = 44;
     const padT = 40;
     const padB = 26;
     const ground = -0.15;
     const yBottom = Math.min(F.yMin, ground) - 0.4;
-    const availW = Math.max(380, box.width - 56) - padL - padR;
-    const availH = Math.max(240, box.height - 170) - padT - padB;
+    const availW = Math.max(380, box.width - 64) - padL - padR;
+    const availH = Math.max(240, box.height - 160) - padT - padB;
     const k = Math.min(availW / Math.max(1, F.sMax - F.sMin), availH / Math.max(1, F.yMax - yBottom));
     const X = (s) => padL + (s - F.sMin) * k;
     const Y = (y) => padT + (F.yMax - y) * k;
@@ -387,6 +388,7 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
       g.append(svg('line', { x1: padL - 10, x2: W - padR + 10, y1: Y(l.y0), y2: Y(l.y0), class: 'fc-level' }));
       g.append(svg('text', { x: 10, y: Y(l.y0) - 6, class: 'fc-level-name' }, l.name), svg('text', { x: 10, y: Y(l.y0) + 13, class: 'fc-level-h' }, mFmt(l.y0)));
     }
+    const numberOf = numbering(F);
     for (const op of F.openings) {
       const f = find(doc, op.level, op.id);
       if (!f) continue;
@@ -395,12 +397,17 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
       const yT = Y(op.y1);
       const yB = Y(op.y0);
       const isSel = selected && selected.level === op.level && selected.id === op.id;
-      const grp = svg('g', { class: `fc-op${isSel ? ' is-selected' : ''}${seen.has(key(op)) ? ' is-seen' : ''}` });
+      const grp = svg('g', { class: `fc-op${isSel ? ' is-selected' : ''}${checked.has(key(op)) ? ' is-checked' : ''}` });
       if (op.win) drawWindow(grp, x0, yT, x1, yB, windowSashes(f.o.style, f.o.width, op.height, op.sill), f.o.panes);
       else drawDoor(grp, x0, yT, x1, yB, doorType(f.o));
       grp.append(svg('rect', { x: x0 - 5, y: yT - 5, width: x1 - x0 + 10, height: yB - yT + 10, rx: 4, class: 'fc-hit' }));
-      if (seen.has(key(op)) && !isSel) grp.append(svg('circle', { cx: x1 + 1, cy: yT - 1, r: 5, class: 'fc-check' }));
-      grp.addEventListener('click', () => select({ ...op, side: F.key }));
+      // its number, as in the list beside
+      grp.append(svg('circle', { cx: x0, cy: yT, r: 8, class: 'fc-num' }), svg('text', { x: x0, y: yT + 3.5, class: 'fc-num-text' }, numberOf.get(key(op))));
+      grp.addEventListener('click', () => {
+        selected = { level: op.level, id: op.id };
+        render();
+        panel.querySelector('.fc-row.is-selected')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      });
       g.append(grp);
     }
     g.append(svg('rect', { x: 0, y: Y(ground), width: W, height: Hh - Y(ground), class: 'fc-earth' }), svg('line', { x1: 0, x2: W, y1: Y(ground), y2: Y(ground), class: 'fc-ground' }));
@@ -416,107 +423,131 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
         for (const [x, y] of [[xa, ya], [xb, yb]]) g.append(svg('line', { x1: x - 3, y1: y + 3, x2: x + 3, y2: y - 3, class: 'fc-dim' }));
         g.append(svg('text', { x: lx, y: ly, class: 'fc-dim-text', ...(vertical ? { transform: `rotate(-90 ${lx} ${ly})` } : {}) }, label));
       };
-      dim(x0, yT - 14, x1, yT - 14, `${cm(sel.s1 - sel.s0)}`, (x0 + x1) / 2, yT - 19);
+      dim(x0, yT - 16, x1, yT - 16, `${cm(sel.s1 - sel.s0)}`, (x0 + x1) / 2, yT - 21);
       dim(x1 + 14, yT, x1 + 14, yB, `${cm(sel.height)}`, x1 + 26, (yT + yB) / 2, true);
       if (sel.win && sel.sill > 0.02) dim(x0 - 14, yB, x0 - 14, Y(sel.y0 - sel.sill), `${cm(sel.sill)}`, x0 - 19, (yB + Y(sel.y0 - sel.sill)) / 2, true);
     }
     sheet.append(g);
-    renderPanel(doc, facades);
+    renderPanel(doc, F, numberOf);
   }
 
-  function renderPanel(doc, facades) {
+  /** The numbers of a facade's openings, as on the drawing and in the list: top level first, left to right. */
+  function numbering(F) {
+    const m = new Map();
+    let n = 0;
+    for (const l of F.levels) for (const o of F.openings.filter((x) => x.level === l.id).sort((a, b) => a.s0 - b.s0)) m.set(key(o), String(++n));
+    return m;
+  }
+
+  function renderPanel(doc, F, numberOf) {
+    const scroll = panel.scrollTop;
     panel.innerHTML = '';
-    const list = order();
-    const total = list.length;
-    const done = list.filter((o) => seen.has(key(o))).length;
-    const progress = h('div', { class: 'fc-progress' }, h('div', { class: 'fc-progress-bar' }, h('span', { style: `width:${total ? (100 * done) / total : 0}%` })), h('span', {}, `${done} av ${total} sett over`));
-    const f = selected && find(doc, selected.level, selected.id);
-    if (!f) {
-      panel.append(h('div', { class: 'fc-panel-empty' },
-        h('h3', {}, 'Gå gjennom vinduer og dører'),
-        h('p', {}, 'Klikk på et vindu eller en dør på tegningen, eller gå gjennom alle én etter én. Piltastene går til forrige og neste.'),
-        h('button', { class: 'pb-btn is-primary', onclick: () => list[0] && select(list[0]) }, 'Begynn med den første')), progress);
-      return;
-    }
-    const { L, o, w } = f;
     const S = settings();
-    const win = o.type === 'window';
-    const idx = list.findIndex((x) => x.level === selected.level && x.id === selected.id);
-    const sideName = facades.find((F) => F.openings.some((x) => x.level === selected.level && x.id === selected.id))?.name ?? '';
-    panel.append(h('div', { class: 'fc-nav' },
-      h('button', { class: 'fc-navbtn', title: 'Forrige (←)', onclick: () => step(-1) }, '‹'),
-      h('div', { class: 'fc-nav-title' }, h('strong', {}, `${win ? 'Vindu' : 'Dør'} ${idx + 1} av ${total}`), h('span', {}, `${sideName} · ${L.name}`)),
-      h('button', { class: 'fc-navbtn', title: 'Neste (→)', onclick: () => step(1) }, '›')));
-    const wallLen = w ? Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) : Infinity;
-    const measure = (label, value, min, max, onSet) => {
-      const input = h('input', { type: 'number', min, max, step: 1, value: cm(value) });
+    const cmInput = (value, min, max, onSet, title) => {
+      const input = h('input', { type: 'number', min, max, step: 1, value: cm(value), title });
       input.addEventListener('change', () => {
         const v = Number(input.value);
         if (Number.isFinite(v) && v >= min && v <= max) onSet(v / 100);
         else input.value = cm(value);
       });
-      return h('label', { class: 'fc-measure' }, h('span', {}, label), h('span', { class: 'fc-input' }, input, h('em', {}, 'cm')));
+      return h('span', { class: 'fc-input' }, input, h('em', {}, 'cm'));
     };
-    const setWidth = (v) =>
-      v <= wallLen &&
-      apply('Bredde', ({ o: x }) => {
-        x.width = round(v, 3);
-        x.at = round(Math.max(v / 2, Math.min(wallLen - v / 2, x.at)), 4);
-        if (x.variant === 'double') x.leaf = x.leaf2 = round(v / 2, 3);
-      });
-    const sill = o.sill ?? S.windowSill;
-    const height = o.height ?? (win ? S.windowHeight : S.doorHeight);
-    panel.append(h('section', { class: 'fc-section' }, h('h4', {}, 'Mål'),
-      h('div', { class: 'fc-measures' },
-        measure('Bredde', o.width, 30, Math.round(Math.min(wallLen, 8) * 100), setWidth),
-        measure('Høyde', height, win ? 20 : 160, win ? 350 : 340, (v) => apply(win ? 'Vindushøyde' : 'Dørhøyde', ({ o: x }) => (x.height = round(v, 3)))),
-        win ? measure('Brystning', sill, 0, 250, (v) => apply('Brystning', ({ o: x }) => (x.sill = round(v, 3)))) : null)));
-    const pick = (title, options, current, onPick) =>
-      h('section', { class: 'fc-section' }, h('h4', {}, title),
-        h('div', { class: 'fc-picks' }, options.map(([value, label, drawFn]) => {
-          const t = svg('svg', { viewBox: '0 0 56 52', width: 56, height: 52 });
-          drawFn(t);
-          return h('button', { class: `fc-pick${value === current ? ' is-on' : ''}`, title: label, onclick: () => onPick(value) }, t, h('span', {}, label));
-        })));
-    if (win) {
-      const ratio = Math.min(1.6, Math.max(0.45, o.width / height));
-      const tw = 20 * Math.sqrt(ratio);
-      const th = 20 / Math.sqrt(ratio);
-      const thumb = (fn) => (t) => fn(t, 28 - tw, 26 - th, 28 + tw, 26 + th);
-      panel.append(pick('Type', WINDOW_STYLES.map(([v, label]) => [v, label.replace(' (etter bredden)', ''), thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, windowSashes(v, o.width, height, sill), null))]), o.style ?? 'auto', (v) =>
-        apply('Vindustype', ({ o: x }) => (v === 'auto' ? delete x.style : (x.style = v)))));
-      panel.append(pick('Sprosser', PANES.map(([v, label, p]) => [v, label, thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, [{ from: 0, to: 1, bottom: 0, top: 1 }], p))]), Array.isArray(o.panes) ? `${o.panes[0]}x${o.panes[1]}` : '0', (v) =>
-        apply('Sprosser', ({ o: x }) => {
-          const p = PANES.find((q) => q[0] === v)?.[2];
-          if (p) x.panes = p;
-          else delete x.panes;
-        })));
-      const like = doc.levels.flatMap((l) => l.openings.filter((x) => x !== o && x.type === 'window' && Math.abs(x.width - o.width) < 0.06));
-      if (like.length)
-        panel.append(h('button', { class: 'pb-btn fc-wide', onclick: () => {
-          onChange('Like vinduer', () => {
-            const cur = find(getDoc(), selected.level, selected.id)?.o;
-            if (!cur) return;
-            for (const l of getDoc().levels)
-              for (const x of l.openings) {
-                if (x === cur || x.type !== 'window' || Math.abs(x.width - cur.width) >= 0.06) continue;
-                x.sill = cur.sill ?? S.windowSill;
-                x.height = cur.height ?? S.windowHeight;
-                if (cur.style) x.style = cur.style;
-                else delete x.style;
-                if (cur.panes) x.panes = [...cur.panes];
-                else delete x.panes;
-                seen.add(`${l.id}:${x.id}`);
-              }
-          });
-          changed = true;
-          render();
-        } }, `Gjør de ${like.length} andre like brede vinduene slik`));
-    } else {
-      panel.append(pick('Type', DOOR_TYPES.map(([v, label]) => [v, label, (t) => drawDoor(t, 16, 6, 40, 48, v)]), doorType(o), (v) => apply('Dørtype', ({ o: x }) => setDoorType(x, v, S))));
-      if (doorType(o) === 'patio' && o.width < 1.35) panel.append(h('p', { class: 'fc-note' }, 'En glass-skyvedør trenger minst 135 cm. Smalere blir den en skyvedør på skinne.'));
+    const setWidth = (v) => ({ o: x, w }) => {
+      const wallLen = w ? Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) : Infinity;
+      if (v > wallLen) return;
+      x.width = round(v, 3);
+      x.at = round(Math.max(v / 2, Math.min(wallLen - v / 2, x.at)), 4);
+      if (x.variant === 'double') x.leaf = x.leaf2 = round(v / 2, 3);
+    };
+    const setStyle = (v) => ({ o: x }) => (v === 'auto' ? delete x.style : (x.style = v));
+    const setPanes = (v) => ({ o: x }) => {
+      const p = PANES.find((q) => q[0] === v)?.[2];
+      if (p) x.panes = [...p];
+      else delete x.panes;
+    };
+
+    panel.append(h('div', { class: 'fc-panel-head' }, h('h3', {}, `${F.name}fasaden`), h('p', {}, 'Rett målene rett i lista. Kryss av flere for å endre dem samtidig.')));
+
+    // the ticked ones together
+    const ticked = [...checked].filter((k) => F.openings.some((o) => key(o) === k));
+    if (ticked.length >= 2) {
+      const tw = ticked.map((k) => F.openings.find((o) => key(o) === k));
+      const allWin = tw.every((o) => o.win);
+      const allDoor = tw.every((o) => !o.win);
+      const bulk = h('div', { class: 'fc-bulk' },
+        h('div', { class: 'fc-bulk-head' }, h('strong', {}, `${ticked.length} valgt`), h('button', { class: 'fc-link', onclick: () => (checked.clear(), render()) }, 'Fjern valget')),
+        h('div', { class: 'fc-row-fields' },
+          h('label', {}, h('span', {}, 'Bredde'), cmInput(tw[0].s1 - tw[0].s0, 30, 800, (v) => applyTo(ticked, 'Bredde', setWidth(v)))),
+          h('label', {}, h('span', {}, 'Høyde'), cmInput(tw[0].height, 20, 350, (v) => applyTo(ticked, 'Høyde', ({ o: x }) => (x.height = round(v, 3))))),
+          allWin ? h('label', {}, h('span', {}, 'Brystning'), cmInput(tw[0].sill, 0, 250, (v) => applyTo(ticked, 'Brystning', ({ o: x }) => (x.sill = round(v, 3))))) : null),
+        allWin ? h('div', { class: 'fc-row-fields' },
+          h('label', {}, h('span', {}, 'Type'), h('select', { onchange: (e) => applyTo(ticked, 'Vindustype', setStyle(e.target.value)) }, h('option', { value: '' }, '–'), WINDOW_STYLES.map(([v, t]) => h('option', { value: v }, t)))),
+          h('label', {}, h('span', {}, 'Sprosser'), h('select', { onchange: (e) => applyTo(ticked, 'Sprosser', setPanes(e.target.value)) }, h('option', { value: '' }, '–'), PANES.map(([v, t]) => h('option', { value: v }, t))))) : null,
+        allDoor ? h('div', { class: 'fc-row-fields' },
+          h('label', {}, h('span', {}, 'Type'), h('select', { onchange: (e) => applyTo(ticked, 'Dørtype', ({ o: x }) => setDoorType(x, e.target.value, S)) }, h('option', { value: '' }, '–'), DOOR_TYPES.map(([v, t]) => h('option', { value: v }, t))))) : null);
+      panel.append(bulk);
     }
-    panel.append(progress);
+
+    // level by level, as on the drawing
+    for (const l of F.levels) {
+      const ops = F.openings.filter((o) => o.level === l.id).sort((a, b) => a.s0 - b.s0);
+      if (!ops.length) continue;
+      const allKeys = ops.map(key);
+      const allTicked = allKeys.every((k) => checked.has(k));
+      panel.append(h('div', { class: 'fc-level-head' }, h('h4', {}, l.name),
+        h('button', { class: 'fc-link', onclick: () => (allKeys.forEach((k) => (allTicked ? checked.delete(k) : checked.add(k))), render()) }, allTicked ? 'Fjern alle' : 'Velg alle')));
+      for (const op of ops) {
+        const f = find(doc, op.level, op.id);
+        if (!f) continue;
+        const { o } = f;
+        const k = key(op);
+        const isSel = selected && selected.level === op.level && selected.id === op.id;
+        const glyph = svg('svg', { viewBox: '0 0 40 40', width: 36, height: 36, class: 'fc-glyph' });
+        const ratio = Math.min(1.8, Math.max(0.4, (op.s1 - op.s0) / op.height));
+        const gw = 15 * Math.sqrt(ratio);
+        const gh = 15 / Math.sqrt(ratio);
+        if (op.win) drawWindow(glyph, 20 - gw, 20 - gh, 20 + gw, 20 + gh, windowSashes(o.style, o.width, op.height, op.sill), o.panes);
+        else drawDoor(glyph, 12, 3, 28, 37, doorType(o));
+        const tick = h('input', { type: 'checkbox', checked: checked.has(k), title: 'Endre sammen med andre', onchange: (e) => (e.target.checked ? checked.add(k) : checked.delete(k), render()) });
+        const row = h('div', { class: `fc-row${isSel ? ' is-selected' : ''}`, onclick: (e) => {
+          if (e.target.closest('input, select, button')) return;
+          selected = isSel ? null : { level: op.level, id: op.id };
+          render();
+        } },
+          h('div', { class: 'fc-row-top' }, tick, h('span', { class: 'fc-row-num' }, numberOf.get(k)), glyph,
+            h('div', { class: 'fc-row-name' }, h('strong', {}, op.win ? 'Vindu' : 'Dør'), h('span', {}, op.win ? WINDOW_STYLES.find((x) => x[0] === (o.style ?? 'auto'))[1].replace(' (etter bredden)', '') : DOOR_TYPES.find((x) => x[0] === doorType(o))[1]))),
+          h('div', { class: 'fc-row-fields' },
+            h('label', {}, h('span', {}, 'Bredde'), cmInput(o.width, 30, 800, (v) => applyTo([k], 'Bredde', setWidth(v)))),
+            h('label', {}, h('span', {}, 'Høyde'), cmInput(op.height, op.win ? 20 : 160, op.win ? 350 : 340, (v) => applyTo([k], op.win ? 'Vindushøyde' : 'Dørhøyde', ({ o: x }) => (x.height = round(v, 3))))),
+            op.win ? h('label', {}, h('span', {}, 'Brystning'), cmInput(op.sill, 0, 250, (v) => applyTo([k], 'Brystning', ({ o: x }) => (x.sill = round(v, 3))))) : h('span')));
+        // the chosen one: its type as pictures
+        if (isSel) {
+          const pick = (options, current, onPick) =>
+            h('div', { class: 'fc-picks' }, options.map(([value, label, drawFn]) => {
+              const t = svg('svg', { viewBox: '0 0 56 52', width: 48, height: 44 });
+              drawFn(t);
+              return h('button', { class: `fc-pick${value === current ? ' is-on' : ''}`, title: label, onclick: () => onPick(value) }, t, h('span', {}, label));
+            }));
+          const ratio2 = Math.min(1.6, Math.max(0.45, o.width / op.height));
+          const tw2 = 20 * Math.sqrt(ratio2);
+          const th2 = 20 / Math.sqrt(ratio2);
+          const thumb = (fn) => (t) => fn(t, 28 - tw2, 26 - th2, 28 + tw2, 26 + th2);
+          if (op.win) {
+            row.append(h('div', { class: 'fc-row-more' }, h('h5', {}, 'Type'),
+              pick(WINDOW_STYLES.map(([v, label]) => [v, label.replace(' (etter bredden)', ''), thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, windowSashes(v, o.width, op.height, op.sill), null))]), o.style ?? 'auto', (v) => applyTo([k], 'Vindustype', setStyle(v))),
+              h('h5', {}, 'Sprosser'),
+              pick(PANES.map(([v, label, p]) => [v, label, thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, [{ from: 0, to: 1, bottom: 0, top: 1 }], p))]), Array.isArray(o.panes) ? `${o.panes[0]}x${o.panes[1]}` : '0', (v) => applyTo([k], 'Sprosser', setPanes(v)))));
+          } else {
+            row.append(h('div', { class: 'fc-row-more' }, h('h5', {}, 'Type'),
+              pick(DOOR_TYPES.map(([v, label]) => [v, label, (t) => drawDoor(t, 16, 6, 40, 48, v)]), doorType(o), (v) => applyTo([k], 'Dørtype', ({ o: x }) => setDoorType(x, v, S))),
+              doorType(o) === 'patio' && o.width < 1.35 ? h('p', { class: 'fc-note' }, 'En glass-skyvedør trenger minst 135 cm. Smalere blir den en skyvedør på skinne.') : null));
+          }
+        }
+        panel.append(row);
+      }
+    }
+    if (!F.openings.length) panel.append(h('p', { class: 'fc-note' }, 'Ingen vinduer eller dører på denne fasaden.'));
+    panel.scrollTop = scroll;
   }
 
   render();

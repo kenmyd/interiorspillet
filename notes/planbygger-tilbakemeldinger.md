@@ -831,6 +831,18 @@ eller faller, eller huset står på feil sted.
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F115.json`
 - **Status:** ny
 
+### F116 – får ikke trykket på vinduene i kjeller.
+- **Tekst:** får ikke trykket på vinduene i kjeller.
+- **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F116.json`
+- **Status:** ny
+
+### F117 – Her har jeg endret bredde på disse to vinduene ved siden av døre- da v
+- **Tekst:** Her har jeg endret bredde på disse to vinduene ved siden av døre- da vil jeg ha mulighet og dra dem nærmere døre
+- **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F117.json`
+- **Status:** ny
+
 ---
 
 ## Kjent fra sluttkontrollen (Claude)
