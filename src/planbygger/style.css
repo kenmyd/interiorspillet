@@ -622,7 +622,7 @@ select {
   display: grid;
   place-items: center;
   background: rgba(5, 9, 13, 0.6);
-  z-index: 10;
+  z-index: 40; /* above the start page and the stack (30) */
 }
 .pb-dialog-card {
   width: min(420px, 92vw);
@@ -648,7 +648,7 @@ select {
   padding: 10px 14px;
   border-radius: var(--pb-r);
   max-width: 420px;
-  z-index: 20;
+  z-index: 41;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 @media (max-width: 900px) {
@@ -1181,4 +1181,25 @@ select {
   .pb-guide-actions {
     flex-wrap: wrap;
   }
+}
+
+/* «Meld feil»: always on top of the start page, the stack, the guide and 3D (30), below dialogs (40) and toasts */
+.pb-report-fab {
+  position: fixed;
+  left: 12px;
+  bottom: 44px;
+  z-index: 35;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--pb-line-2);
+  background: var(--pb-panel-2);
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  opacity: 0.85;
+  cursor: pointer;
+}
+.pb-report-fab:hover {
+  opacity: 1;
+  border-color: var(--pb-accent, #f6b93b);
 }

@@ -9,6 +9,16 @@ krysser av.
 
 **Status:** ny · rettes nå · fase D · runde 2 · senere · rettet (commit) · trenger mer info
 
+**Kjent og satt av til eksteriør-runden** (trenger ikke meldes):
+- **Tak:** flatt eller feil taktype og takvinkel, ingen takutstikk, ark, takvinduer i taket eller pipe.
+- **Kledning:** type, retning (vannrett eller loddrett), farge og hvor høyt den går, per fasade og per etasje (F1).
+- **Vinduer og dører utvendig:** rammer, sprosser, farger og høyden over bakken fra fasadetegningene.
+- **Utvendig:** terrasser, balkonger, rekkverk, takterrasse, carport og garasjeport, trapper og terreng.
+- **Grunnmur:** sokkel og husets høyde over bakken.
+
+Meld det likevel hvis noe gjør det vanskelig å teste innvendig: du kommer ikke inn døra, går gjennom en vegg, svever
+eller faller, eller huset står på feil sted.
+
 ---
 
 ## Feil

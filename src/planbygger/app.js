@@ -250,9 +250,9 @@ class App {
     const top = h('header', { class: 'pb-top' },
       h('div', { class: 'pb-brand' }, 'Planbygger', h('small', {}, 'Interiørspillet')),
       this.nameInput, steps,
-      h('div', { class: 'pb-actions' }, this.checkPill, this.undoBtn, this.redoBtn, this.menuBtn,
-        h('button', { class: 'pb-btn', title: 'Meld en feil eller en idé: skjermbilde og én setning, lagret lokalt', onclick: () => this._report() }, 'Meld feil'),
-        this.walkBtn));
+      h('div', { class: 'pb-actions' }, this.checkPill, this.undoBtn, this.redoBtn, this.menuBtn, this.walkBtn));
+    // «Meld feil» floats above the start page, the stack, the guide and 3D (they cover the top bar)
+    document.body.append(h('button', { class: 'pb-report-fab', title: 'Meld en feil eller en idé: skjermbilde og én setning, lagret lokalt', onclick: () => this._report() }, 'Meld feil'));
 
     this.toolEls = {};
     const tools = h('aside', { class: 'pb-tools' },
@@ -1402,6 +1402,10 @@ class App {
         v.renderer.render(v.scene, v.camera);
         return v.renderer.domElement.toDataURL('image/jpeg', 0.85);
       }
+      const crop = this.guide ? document.querySelector('.pb-guide-canvas') : null;
+      if (crop?.getBoundingClientRect().width > 0) return crop.toDataURL('image/jpeg', 0.85);
+      // the start page and the stack cover the editor: its canvas behind them is not what the owner sees
+      if (this.guide || (this.startEl && !this.startEl.hidden)) return null;
       if (this.canvas?.getBoundingClientRect().width > 0) return this.canvas.toDataURL('image/jpeg', 0.85);
     } catch (err) {
       console.warn('[planbygger] skjermbildet feilet', err);
@@ -1411,14 +1415,15 @@ class App {
   /** «Meld feil»: a screenshot, one sentence and the state go to the dev server (server/planbygger-feedback.mjs). */
   async _report() {
     const image = this._screenshot();
-    const where = !this.view3d.hidden ? `3D (${this.viewer?.mode === 'walk' ? 'går rundt' : 'dukkehus'})` : this.guide ? 'veiviser' : this.stack?.el?.isConnected ? 'stabel' : this.doc ? '2D-editor' : 'startside';
+    const where = !this.view3d.hidden ? `3D (${this.viewer?.mode === 'walk' ? 'går rundt' : 'dukkehus'})` : this.guide ? 'veiviser' : this.stack?.el?.isConnected ? 'stabel' : this.startEl && !this.startEl.hidden ? 'startside' : this.doc ? '2D-editor' : 'startside';
     const res = await this._dialog('Meld feil eller idé', [
       { key: 'kind', label: 'Hva', value: 'feil', options: [['feil', 'Feil'], ['ide', 'Idé / forbedring']] },
       { key: 'text', label: 'Hva skjedde (én setning holder)', value: '', placeholder: 'f.eks. svarte rundinger i gulvet i 2. etasje' },
     ], 'Lagre');
     if (!res?.text?.trim()) return;
-    const files = this.gen?.inputs?.map((f) => f.name) ?? this.doc?.levels.map((l) => l.image?.name).filter(Boolean) ?? [];
-    let state = { files, doc: this.doc, questions: this.gen?.res?.questions, answers: this.gen?.answers, report: this.gen?.res?.report, check: this._lastCheck ? { errors: this._lastCheck.errors, warnings: this._lastCheck.warnings } : null };
+    const stack = this.stack?.items?.map((it) => ({ name: it.name, kind: it.kind, kindFrom: it.kindFrom, note: it.note, level: it.level ?? null }));
+    const files = this.gen?.inputs?.map((f) => f.name) ?? stack?.map((it) => it.name) ?? this.doc?.levels.map((l) => l.image?.name).filter(Boolean) ?? [];
+    let state = { files, stack, doc: this.doc, questions: this.gen?.res?.questions, answers: this.gen?.answers, report: this.gen?.res?.report, check: this._lastCheck ? { errors: this._lastCheck.errors, warnings: this._lastCheck.warnings } : null };
     if (JSON.stringify(state).length > 8e6) state = { ...state, report: null };
     try {
       const r = await fetch('/api/planbygger/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: res.kind, text: res.text.trim(), where: `${where}${files.length ? ` – ${files.join(', ')}` : ''}`, image, state }) });
