@@ -823,24 +823,43 @@ eller faller, eller huset står på feil sted.
 - **Tekst:** når jeg blar ned og tyrkker poå en vindu skroller den helt opp samme når jeg sklikker for å skrive inn tall så scroller den helt opp. Og så er jeg ikke helt fornøyd med visningen. vi bør ha alle fasadene i midten. og at en popup kommer frem når jeg trykker på et vindu eller dør
 - **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F114.json`
-- **Status:** ny
+- **Status:** rettet – tegningen står midt på, visningen hopper ikke til toppen, og et klikk på et vindu eller en dør åpner kortet ved siden av det.
 
 ### F115 – må være mulig og sette feks at alle vinduer har samme hlyde fra tak on
 - **Tekst:** må være mulig og sette feks at alle vinduer har samme hlyde fra tak on ned til vindu. for eksempel med vinduet jeg holde på å redigere. det er et smart vindu på 40cm, men jeg må regne ut hvor mye brysningshøyde er for og få plassert det høyere. Det burde skjedd automatisk siden normalt er vinduene med samme avstand fra tak til vindu
 - **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F115.json`
-- **Status:** ny
+- **Status:** rettet – «Hold overkanten fast» (på som standard): ny høyde flytter brystningen, så overkanten blir stående. Knappen «Samme overkant på de andre vinduene i etasjen» retter inn resten.
 
 ### F116 – får ikke trykket på vinduene i kjeller.
 - **Tekst:** får ikke trykket på vinduene i kjeller.
 - **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F116.json`
-- **Status:** ny
+- **Status:** rettet – bakken med skravur lå over kjellervinduene og tok klikkene; nå ligger den under vinduene og dørene.
 
 ### F117 – Her har jeg endret bredde på disse to vinduene ved siden av døre- da v
 - **Tekst:** Her har jeg endret bredde på disse to vinduene ved siden av døre- da vil jeg ha mulighet og dra dem nærmere døre
 - **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F117.json`
+- **Status:** rettet – dra vinduet eller døra på tegningen for å flytte den langs veggen (stopper 10 cm fra naboen og ved veggens ende).
+
+### F118 – vi må fikse terreng ute når det er kjeller slik det genereres etter hv
+- **Tekst:** vi må fikse terreng ute når det er kjeller slik det genereres etter hvor det er vinduer. Når jeg går ut kjellerdøra nå detter jeg bare ned i ingenting
+- **Hvor:** 3D (går rundt) – plantegning.png, plantegning_kjeller.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F118.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F118.json`
+- **Status:** ny
+
+### F119 – Når jeg veler vindu i 1etg og så er jeg ferdig og trykker på vinduet p
+- **Tekst:** Når jeg veler vindu i 1etg og så er jeg ferdig og trykker på vinduet på fasaden i kjeller for og velge det. det går ikke an må trykke på vinduet i høyre meny først. slik kan vi ikke ha det
+- **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F119.json`
+- **Status:** ny
+
+### F120 – Når jeg velger to vindu og trykker på fast glass feks så bør begge end
+- **Tekst:** Når jeg velger to vindu og trykker på fast glass feks så bør begge endres og samme når jeg justerer målene så bør begges endres. det skjer ikke
+- **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F120.json`
 - **Status:** ny
 
 ---

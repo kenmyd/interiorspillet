@@ -120,7 +120,8 @@ export function buildFacades(doc) {
         const win = o.type === 'window';
         const sill = win ? (o.sill ?? settings.windowSill) : 0;
         const height = o.height ?? (win ? settings.windowHeight : settings.doorHeight);
-        F.openings.push({ level: L.id, levelName: L.name, id: o.id, win, s0: Math.min(s(pa), s(pb)), s1: Math.max(s(pa), s(pb)), y0: y0 + sill, y1: y0 + sill + height, sill, height, depth });
+        // flip: the facade's s runs against the wall's a → b (moving it right on the drawing lowers its at)
+        F.openings.push({ level: L.id, levelName: L.name, id: o.id, win, s0: Math.min(s(pa), s(pb)), s1: Math.max(s(pa), s(pb)), y0: y0 + sill, y1: y0 + sill + height, sill, height, depth, flip: s(pa) > s(pb) });
       }
     }
   }
@@ -273,13 +274,18 @@ function drawCompass(F, all, size = 92) {
 /**
  * The facade check as an overlay over the page, facade after facade: the drawing in the middle with «Neste fasade», and
  * beside it every window and door on that facade, level by level, with their measures to change right there (and the
- * ones ticked together). getDoc() is the current document (undo replaces it), onChange(label, fn) runs fn on it with an
- * undo step, onDone(changed) when it is closed.
+ * ones ticked together). A click on a window or a door opens its card beside it on the drawing (measures, type, bars);
+ * a drag moves it along its wall. getDoc() is the current document (undo replaces it), onChange(label, fn) runs fn on
+ * it with an undo step, onDone(changed) when it is closed.
  */
 export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
   let side = null; // the facade on screen
-  let selected = null; // the one shown with its measures and type pictures: { level, id }
+  let selected = null; // the one with its measures on the drawing: 'level:id'
+  let popKey = null; // the one with its card open: 'level:id'
+  let keepTop = true; // a new height keeps the top of a window where it is (the sill follows) – F115
   let changed = false;
+  let drag = null; // moving a window or door along its wall
+  let view = null; // the drawing on screen: { g, k, W }
   const checked = new Set(); // ticked for a change together: 'level:id'
   const visited = new Set(); // facade keys seen
   const key = (o) => `${o.level}:${o.id}`;
@@ -287,6 +293,7 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
   const tabs = h('div', { class: 'fc-tabs', role: 'tablist' });
   const stage = h('div', { class: 'fc-stage' });
   const panel = h('aside', { class: 'fc-panel' });
+  const pop = h('div', { class: 'fc-pop', hidden: true });
   const close = () => {
     window.removeEventListener('keydown', onKey);
     window.removeEventListener('resize', onResize);
@@ -295,8 +302,12 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
   };
   const onKey = (e) => {
     const tag = e.target?.tagName;
-    if (e.key === 'Escape') close();
-    else if (tag === 'INPUT' || tag === 'SELECT') return;
+    if (e.key === 'Escape') {
+      if (popKey) {
+        popKey = null;
+        render();
+      } else close();
+    } else if (tag === 'INPUT' || tag === 'SELECT') return;
     else if (e.key === 'ArrowRight') go(1);
     else if (e.key === 'ArrowLeft') go(-1);
   };
@@ -307,10 +318,11 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
   };
   const el = h('div', { class: 'fc' },
     h('header', { class: 'fc-head' },
-      h('div', { class: 'fc-title' }, h('h2', {}, 'Fasadesjekk'), h('p', {}, intro ?? 'Huset sett utenfra, fasade for fasade. Rett målene og typen på vinduene og dørene.')),
+      h('div', { class: 'fc-title' }, h('h2', {}, 'Fasadesjekk'), h('p', {}, intro ?? 'Huset sett utenfra, fasade for fasade. Klikk på et vindu eller en dør for å rette det, eller dra det langs veggen.')),
       tabs,
       h('div', { class: 'fc-head-actions' }, h('button', { class: 'pb-btn', onclick: () => close() }, 'Ferdig – bygg 3D-huset'))),
-    h('div', { class: 'fc-body' }, stage, panel));
+    h('div', { class: 'fc-body' }, stage, panel),
+    pop);
   window.addEventListener('keydown', onKey);
   window.addEventListener('resize', onResize);
   document.body.append(el);
@@ -321,8 +333,9 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     const i = keys.indexOf(side);
     if (dir > 0 && i === keys.length - 1) return close();
     side = keys[Math.max(0, Math.min(keys.length - 1, i + dir))];
-    selected = null;
+    selected = popKey = null;
     checked.clear();
+    stage.scrollTop = 0;
     render();
   }
   /** Runs fn on each of the given openings (by key) in one undo step. */
@@ -337,6 +350,71 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     changed = true;
     render();
   };
+  const open = (k) => {
+    selected = popKey = k;
+    render();
+  };
+
+  // ---- dragging a window or a door along its wall (on the stage, which stays while render() replaces the drawing)
+  stage.addEventListener('pointerdown', (e) => {
+    const grp = e.target.closest?.('.fc-op');
+    if (!grp || !view) {
+      if (popKey && view?.g.contains(e.target)) {
+        popKey = null;
+        render();
+      }
+      return;
+    }
+    const k = grp.getAttribute('data-key');
+    const [level, id] = k.split(':');
+    const f = find(getDoc(), level, id);
+    if (!f?.w) return;
+    const op = buildFacades(getDoc()).find((F) => F.key === side)?.openings.find((o) => key(o) === k);
+    // how far it may go: the wall's ends and its neighbours on the wall, with a post of 10 cm between
+    const len = Math.hypot(f.w.b[0] - f.w.a[0], f.w.b[1] - f.w.a[1]);
+    const half = f.o.width / 2;
+    let lo = half;
+    let hi = len - half;
+    for (const q of f.L.openings) {
+      if (q === f.o || q.wall !== f.o.wall) continue;
+      if (q.at < f.o.at) lo = Math.max(lo, q.at + q.width / 2 + 0.1 + half);
+      else hi = Math.min(hi, q.at - q.width / 2 - 0.1 - half);
+    }
+    const scale = view.g.getBoundingClientRect().width / view.W; // screen px per drawing unit
+    drag = { k, grp, x0: e.clientX, at0: f.o.at, lo, hi, flip: !!op?.flip, perM: view.k * scale, ds: 0, moved: false };
+    try {
+      stage.setPointerCapture(e.pointerId);
+    } catch {
+      // (a synthetic event has no pointer to capture)
+    }
+    e.preventDefault();
+  });
+  stage.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x0;
+    if (Math.abs(dx) > 3) drag.moved = true;
+    if (!drag.moved) return;
+    // the facade's s runs one way or the other along the wall
+    let ds = Math.round((dx / drag.perM) * 100) / 100;
+    const at = drag.at0 + (drag.flip ? -ds : ds);
+    const clamped = Math.max(drag.lo, Math.min(drag.hi, at));
+    ds = (clamped - drag.at0) * (drag.flip ? -1 : 1);
+    drag.ds = ds;
+    drag.at = clamped;
+    drag.grp.setAttribute('transform', `translate(${ds * view.k} 0)`);
+    pop.hidden = true;
+  });
+  const endDrag = () => {
+    const d = drag;
+    drag = null;
+    if (!d) return;
+    if (!d.moved) return open(d.k);
+    if (Math.abs(d.at - d.at0) < 0.005) return render();
+    selected = d.k;
+    applyTo([d.k], 'Flyttet langs veggen', ({ o }) => (o.at = round(d.at, 4)));
+  };
+  stage.addEventListener('pointerup', endDrag);
+  stage.addEventListener('pointercancel', endDrag);
 
   function render() {
     const doc = getDoc();
@@ -346,14 +424,17 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     tabs.innerHTML = '';
     for (const F of facades) {
       const n = F.openings.length;
-      tabs.append(h('button', { class: `fc-tab${F.key === side ? ' is-on' : ''}`, role: 'tab', onclick: () => ((side = F.key), (selected = null), checked.clear(), render()) },
-        F.name, h('span', { class: `fc-badge${visited.has(F.key) && F.key !== side ? ' is-done' : ''}` }, visited.has(F.key) && F.key !== side ? '✓' : String(n))));
+      const seen = visited.has(F.key) && F.key !== side;
+      tabs.append(h('button', { class: `fc-tab${F.key === side ? ' is-on' : ''}`, role: 'tab', onclick: () => ((side = F.key), (selected = popKey = null), checked.clear(), render()) },
+        F.name, h('span', { class: `fc-badge${seen ? ' is-done' : ''}` }, seen ? '✓' : String(n))));
     }
+    const scroll = [stage.scrollTop, stage.scrollLeft];
     stage.innerHTML = '';
     const F = facades.find((x) => x.key === side);
     if (!F) {
       stage.append(h('p', { class: 'fc-empty' }, 'Fant ingen yttervegger å vise. Merk ytterveggene i «Finjuster».'));
       panel.innerHTML = '';
+      pop.hidden = true;
       return;
     }
     const i = facades.indexOf(F);
@@ -384,6 +465,8 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     const g = svg('svg', { viewBox: `0 0 ${W} ${Hh}`, width: W, height: Hh, class: 'fc-svg' },
       svg('defs', {}, svg('pattern', { id: 'fc-earth', width: 7, height: 7, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, svg('line', { x1: 0, y1: 0, x2: 0, y2: 7, class: 'fc-earth-line' }))));
     for (const w of F.walls) g.append(svg('rect', { x: X(w.s0), y: Y(w.y1), width: Math.max(1, (w.s1 - w.s0) * k), height: (w.y1 - w.y0) * k, class: 'fc-wall' }));
+    // the earth under the ground line over the walls, under the windows and doors (they stay clickable – F116)
+    g.append(svg('rect', { x: 0, y: Y(ground), width: W, height: Hh - Y(ground), class: 'fc-earth' }), svg('line', { x1: 0, x2: W, y1: Y(ground), y2: Y(ground), class: 'fc-ground' }));
     for (const l of F.levels) {
       g.append(svg('line', { x1: padL - 10, x2: W - padR + 10, y1: Y(l.y0), y2: Y(l.y0), class: 'fc-level' }));
       g.append(svg('text', { x: 10, y: Y(l.y0) - 6, class: 'fc-level-name' }, l.name), svg('text', { x: 10, y: Y(l.y0) + 13, class: 'fc-level-h' }, mFmt(l.y0)));
@@ -396,23 +479,16 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
       const x1 = X(op.s1);
       const yT = Y(op.y1);
       const yB = Y(op.y0);
-      const isSel = selected && selected.level === op.level && selected.id === op.id;
-      const grp = svg('g', { class: `fc-op${isSel ? ' is-selected' : ''}${checked.has(key(op)) ? ' is-checked' : ''}` });
+      const k2 = key(op);
+      const grp = svg('g', { class: `fc-op${selected === k2 ? ' is-selected' : ''}${checked.has(k2) ? ' is-checked' : ''}`, 'data-key': k2 });
       if (op.win) drawWindow(grp, x0, yT, x1, yB, windowSashes(f.o.style, f.o.width, op.height, op.sill), f.o.panes);
       else drawDoor(grp, x0, yT, x1, yB, doorType(f.o));
       grp.append(svg('rect', { x: x0 - 5, y: yT - 5, width: x1 - x0 + 10, height: yB - yT + 10, rx: 4, class: 'fc-hit' }));
-      // its number, as in the list beside
-      grp.append(svg('circle', { cx: x0, cy: yT, r: 8, class: 'fc-num' }), svg('text', { x: x0, y: yT + 3.5, class: 'fc-num-text' }, numberOf.get(key(op))));
-      grp.addEventListener('click', () => {
-        selected = { level: op.level, id: op.id };
-        render();
-        panel.querySelector('.fc-row.is-selected')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      });
+      grp.append(svg('circle', { cx: x0, cy: yT, r: 8, class: 'fc-num' }), svg('text', { x: x0, y: yT + 3.5, class: 'fc-num-text' }, numberOf.get(k2)));
       g.append(grp);
     }
-    g.append(svg('rect', { x: 0, y: Y(ground), width: W, height: Hh - Y(ground), class: 'fc-earth' }), svg('line', { x1: 0, x2: W, y1: Y(ground), y2: Y(ground), class: 'fc-ground' }));
     // the chosen one's measures: its width over it, its height to the right, the sill under it
-    const sel = selected && F.openings.find((o) => o.level === selected.level && o.id === selected.id);
+    const sel = selected && F.openings.find((o) => key(o) === selected);
     if (sel) {
       const x0 = X(sel.s0);
       const x1 = X(sel.s1);
@@ -428,7 +504,10 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
       if (sel.win && sel.sill > 0.02) dim(x0 - 14, yB, x0 - 14, Y(sel.y0 - sel.sill), `${cm(sel.sill)}`, x0 - 19, (yB + Y(sel.y0 - sel.sill)) / 2, true);
     }
     sheet.append(g);
+    view = { g, k, W };
+    [stage.scrollTop, stage.scrollLeft] = scroll;
     renderPanel(doc, F, numberOf);
+    renderPop(doc, F, numberOf);
   }
 
   /** The numbers of a facade's openings, as on the drawing and in the list: top level first, left to right. */
@@ -439,56 +518,62 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     return m;
   }
 
+  // ---- the changes, for one or several
+  const cmInput = (value, min, max, onSet, title) => {
+    const input = h('input', { type: 'number', min, max, step: 1, value: cm(value), title });
+    input.addEventListener('change', () => {
+      const v = Number(input.value);
+      if (Number.isFinite(v) && v >= min && v <= max) onSet(v / 100);
+      else input.value = cm(value);
+    });
+    return h('span', { class: 'fc-input' }, input, h('em', {}, 'cm'));
+  };
+  const setWidth = (v) => ({ o: x, w }) => {
+    const wallLen = w ? Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) : Infinity;
+    if (v > wallLen) return;
+    x.width = round(v, 3);
+    x.at = round(Math.max(v / 2, Math.min(wallLen - v / 2, x.at)), 4);
+    if (x.variant === 'double') x.leaf = x.leaf2 = round(v / 2, 3);
+  };
+  // a window's new height keeps its top (the sill moves) while «Hold overkanten» is on
+  const setHeight = (v) => ({ o: x }) => {
+    const S = settings();
+    if (x.type === 'window' && keepTop) {
+      const top = (x.sill ?? S.windowSill) + (x.height ?? S.windowHeight);
+      x.sill = round(Math.max(0, top - v), 3);
+    }
+    x.height = round(v, 3);
+  };
+  const setStyle = (v) => ({ o: x }) => (v === 'auto' ? delete x.style : (x.style = v));
+  const setPanes = (v) => ({ o: x }) => {
+    const p = PANES.find((q) => q[0] === v)?.[2];
+    if (p) x.panes = [...p];
+    else delete x.panes;
+  };
+
   function renderPanel(doc, F, numberOf) {
     const scroll = panel.scrollTop;
     panel.innerHTML = '';
     const S = settings();
-    const cmInput = (value, min, max, onSet, title) => {
-      const input = h('input', { type: 'number', min, max, step: 1, value: cm(value), title });
-      input.addEventListener('change', () => {
-        const v = Number(input.value);
-        if (Number.isFinite(v) && v >= min && v <= max) onSet(v / 100);
-        else input.value = cm(value);
-      });
-      return h('span', { class: 'fc-input' }, input, h('em', {}, 'cm'));
-    };
-    const setWidth = (v) => ({ o: x, w }) => {
-      const wallLen = w ? Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) : Infinity;
-      if (v > wallLen) return;
-      x.width = round(v, 3);
-      x.at = round(Math.max(v / 2, Math.min(wallLen - v / 2, x.at)), 4);
-      if (x.variant === 'double') x.leaf = x.leaf2 = round(v / 2, 3);
-    };
-    const setStyle = (v) => ({ o: x }) => (v === 'auto' ? delete x.style : (x.style = v));
-    const setPanes = (v) => ({ o: x }) => {
-      const p = PANES.find((q) => q[0] === v)?.[2];
-      if (p) x.panes = [...p];
-      else delete x.panes;
-    };
-
-    panel.append(h('div', { class: 'fc-panel-head' }, h('h3', {}, `${F.name}fasaden`), h('p', {}, 'Rett målene rett i lista. Kryss av flere for å endre dem samtidig.')));
-
+    panel.append(h('div', { class: 'fc-panel-head' }, h('h3', {}, `${F.name}fasaden`), h('p', {}, 'Rett målene rett i lista, eller klikk på et vindu på tegningen. Kryss av flere for å endre dem samtidig.')));
     // the ticked ones together
     const ticked = [...checked].filter((k) => F.openings.some((o) => key(o) === k));
     if (ticked.length >= 2) {
       const tw = ticked.map((k) => F.openings.find((o) => key(o) === k));
       const allWin = tw.every((o) => o.win);
       const allDoor = tw.every((o) => !o.win);
-      const bulk = h('div', { class: 'fc-bulk' },
+      panel.append(h('div', { class: 'fc-bulk' },
         h('div', { class: 'fc-bulk-head' }, h('strong', {}, `${ticked.length} valgt`), h('button', { class: 'fc-link', onclick: () => (checked.clear(), render()) }, 'Fjern valget')),
         h('div', { class: 'fc-row-fields' },
           h('label', {}, h('span', {}, 'Bredde'), cmInput(tw[0].s1 - tw[0].s0, 30, 800, (v) => applyTo(ticked, 'Bredde', setWidth(v)))),
-          h('label', {}, h('span', {}, 'Høyde'), cmInput(tw[0].height, 20, 350, (v) => applyTo(ticked, 'Høyde', ({ o: x }) => (x.height = round(v, 3))))),
+          h('label', {}, h('span', {}, 'Høyde'), cmInput(tw[0].height, 20, 350, (v) => applyTo(ticked, 'Høyde', setHeight(v)))),
           allWin ? h('label', {}, h('span', {}, 'Brystning'), cmInput(tw[0].sill, 0, 250, (v) => applyTo(ticked, 'Brystning', ({ o: x }) => (x.sill = round(v, 3))))) : null),
         allWin ? h('div', { class: 'fc-row-fields' },
           h('label', {}, h('span', {}, 'Type'), h('select', { onchange: (e) => applyTo(ticked, 'Vindustype', setStyle(e.target.value)) }, h('option', { value: '' }, '–'), WINDOW_STYLES.map(([v, t]) => h('option', { value: v }, t)))),
           h('label', {}, h('span', {}, 'Sprosser'), h('select', { onchange: (e) => applyTo(ticked, 'Sprosser', setPanes(e.target.value)) }, h('option', { value: '' }, '–'), PANES.map(([v, t]) => h('option', { value: v }, t))))) : null,
         allDoor ? h('div', { class: 'fc-row-fields' },
-          h('label', {}, h('span', {}, 'Type'), h('select', { onchange: (e) => applyTo(ticked, 'Dørtype', ({ o: x }) => setDoorType(x, e.target.value, S)) }, h('option', { value: '' }, '–'), DOOR_TYPES.map(([v, t]) => h('option', { value: v }, t))))) : null);
-      panel.append(bulk);
+          h('label', {}, h('span', {}, 'Type'), h('select', { onchange: (e) => applyTo(ticked, 'Dørtype', ({ o: x }) => setDoorType(x, e.target.value, S)) }, h('option', { value: '' }, '–'), DOOR_TYPES.map(([v, t]) => h('option', { value: v }, t))))) : null));
     }
-
-    // level by level, as on the drawing
     for (const l of F.levels) {
       const ops = F.openings.filter((o) => o.level === l.id).sort((a, b) => a.s0 - b.s0);
       if (!ops.length) continue;
@@ -501,7 +586,6 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
         if (!f) continue;
         const { o } = f;
         const k = key(op);
-        const isSel = selected && selected.level === op.level && selected.id === op.id;
         const glyph = svg('svg', { viewBox: '0 0 40 40', width: 36, height: 36, class: 'fc-glyph' });
         const ratio = Math.min(1.8, Math.max(0.4, (op.s1 - op.s0) / op.height));
         const gw = 15 * Math.sqrt(ratio);
@@ -509,45 +593,77 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
         if (op.win) drawWindow(glyph, 20 - gw, 20 - gh, 20 + gw, 20 + gh, windowSashes(o.style, o.width, op.height, op.sill), o.panes);
         else drawDoor(glyph, 12, 3, 28, 37, doorType(o));
         const tick = h('input', { type: 'checkbox', checked: checked.has(k), title: 'Endre sammen med andre', onchange: (e) => (e.target.checked ? checked.add(k) : checked.delete(k), render()) });
-        const row = h('div', { class: `fc-row${isSel ? ' is-selected' : ''}`, onclick: (e) => {
-          if (e.target.closest('input, select, button')) return;
-          selected = isSel ? null : { level: op.level, id: op.id };
-          render();
-        } },
+        panel.append(h('div', { class: `fc-row${selected === k ? ' is-selected' : ''}`, onclick: (e) => !e.target.closest('input, select, button') && open(k) },
           h('div', { class: 'fc-row-top' }, tick, h('span', { class: 'fc-row-num' }, numberOf.get(k)), glyph,
             h('div', { class: 'fc-row-name' }, h('strong', {}, op.win ? 'Vindu' : 'Dør'), h('span', {}, op.win ? WINDOW_STYLES.find((x) => x[0] === (o.style ?? 'auto'))[1].replace(' (etter bredden)', '') : DOOR_TYPES.find((x) => x[0] === doorType(o))[1]))),
           h('div', { class: 'fc-row-fields' },
             h('label', {}, h('span', {}, 'Bredde'), cmInput(o.width, 30, 800, (v) => applyTo([k], 'Bredde', setWidth(v)))),
-            h('label', {}, h('span', {}, 'Høyde'), cmInput(op.height, op.win ? 20 : 160, op.win ? 350 : 340, (v) => applyTo([k], op.win ? 'Vindushøyde' : 'Dørhøyde', ({ o: x }) => (x.height = round(v, 3))))),
-            op.win ? h('label', {}, h('span', {}, 'Brystning'), cmInput(op.sill, 0, 250, (v) => applyTo([k], 'Brystning', ({ o: x }) => (x.sill = round(v, 3))))) : h('span')));
-        // the chosen one: its type as pictures
-        if (isSel) {
-          const pick = (options, current, onPick) =>
-            h('div', { class: 'fc-picks' }, options.map(([value, label, drawFn]) => {
-              const t = svg('svg', { viewBox: '0 0 56 52', width: 48, height: 44 });
-              drawFn(t);
-              return h('button', { class: `fc-pick${value === current ? ' is-on' : ''}`, title: label, onclick: () => onPick(value) }, t, h('span', {}, label));
-            }));
-          const ratio2 = Math.min(1.6, Math.max(0.45, o.width / op.height));
-          const tw2 = 20 * Math.sqrt(ratio2);
-          const th2 = 20 / Math.sqrt(ratio2);
-          const thumb = (fn) => (t) => fn(t, 28 - tw2, 26 - th2, 28 + tw2, 26 + th2);
-          if (op.win) {
-            row.append(h('div', { class: 'fc-row-more' }, h('h5', {}, 'Type'),
-              pick(WINDOW_STYLES.map(([v, label]) => [v, label.replace(' (etter bredden)', ''), thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, windowSashes(v, o.width, op.height, op.sill), null))]), o.style ?? 'auto', (v) => applyTo([k], 'Vindustype', setStyle(v))),
-              h('h5', {}, 'Sprosser'),
-              pick(PANES.map(([v, label, p]) => [v, label, thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, [{ from: 0, to: 1, bottom: 0, top: 1 }], p))]), Array.isArray(o.panes) ? `${o.panes[0]}x${o.panes[1]}` : '0', (v) => applyTo([k], 'Sprosser', setPanes(v)))));
-          } else {
-            row.append(h('div', { class: 'fc-row-more' }, h('h5', {}, 'Type'),
-              pick(DOOR_TYPES.map(([v, label]) => [v, label, (t) => drawDoor(t, 16, 6, 40, 48, v)]), doorType(o), (v) => applyTo([k], 'Dørtype', ({ o: x }) => setDoorType(x, v, S))),
-              doorType(o) === 'patio' && o.width < 1.35 ? h('p', { class: 'fc-note' }, 'En glass-skyvedør trenger minst 135 cm. Smalere blir den en skyvedør på skinne.') : null));
-          }
-        }
-        panel.append(row);
+            h('label', {}, h('span', {}, 'Høyde'), cmInput(op.height, op.win ? 20 : 160, op.win ? 350 : 340, (v) => applyTo([k], op.win ? 'Vindushøyde' : 'Dørhøyde', setHeight(v)))),
+            op.win ? h('label', {}, h('span', {}, 'Brystning'), cmInput(op.sill, 0, 250, (v) => applyTo([k], 'Brystning', ({ o: x }) => (x.sill = round(v, 3))))) : h('span'))));
       }
     }
     if (!F.openings.length) panel.append(h('p', { class: 'fc-note' }, 'Ingen vinduer eller dører på denne fasaden.'));
     panel.scrollTop = scroll;
+  }
+
+  /** The card of the clicked window or door, beside it on the drawing. */
+  function renderPop(doc, F, numberOf) {
+    const op = popKey && F.openings.find((o) => key(o) === popKey);
+    const f = op && find(doc, op.level, op.id);
+    const grp = op && view?.g.querySelector(`[data-key="${CSS.escape(popKey)}"]`);
+    if (!f || !grp) {
+      pop.hidden = true;
+      return;
+    }
+    const { o } = f;
+    const S = settings();
+    const k = popKey;
+    pop.innerHTML = '';
+    const pick = (options, current, onPick) =>
+      h('div', { class: 'fc-picks' }, options.map(([value, label, drawFn]) => {
+        const t = svg('svg', { viewBox: '0 0 56 52', width: 46, height: 42 });
+        drawFn(t);
+        return h('button', { class: `fc-pick${value === current ? ' is-on' : ''}`, title: label, onclick: () => onPick(value) }, t, h('span', {}, label));
+      }));
+    const ratio = Math.min(1.6, Math.max(0.45, o.width / op.height));
+    const tw = 20 * Math.sqrt(ratio);
+    const th = 20 / Math.sqrt(ratio);
+    const thumb = (fn) => (t) => fn(t, 28 - tw, 26 - th, 28 + tw, 26 + th);
+    pop.append(h('div', { class: 'fc-pop-head' }, h('span', { class: 'fc-row-num' }, numberOf.get(k)),
+      h('div', {}, h('strong', {}, op.win ? 'Vindu' : 'Dør'), h('span', {}, op.levelName)),
+      h('button', { class: 'fc-pop-close', title: 'Lukk (Esc)', onclick: () => ((popKey = null), render()) }, '×')));
+    pop.append(h('div', { class: 'fc-row-fields' },
+      h('label', {}, h('span', {}, 'Bredde'), cmInput(o.width, 30, 800, (v) => applyTo([k], 'Bredde', setWidth(v)))),
+      h('label', {}, h('span', {}, 'Høyde'), cmInput(op.height, op.win ? 20 : 160, op.win ? 350 : 340, (v) => applyTo([k], op.win ? 'Vindushøyde' : 'Dørhøyde', setHeight(v)))),
+      op.win ? h('label', {}, h('span', {}, 'Brystning'), cmInput(op.sill, 0, 250, (v) => applyTo([k], 'Brystning', ({ o: x }) => (x.sill = round(v, 3))))) : h('span')));
+    if (op.win) {
+      const top = op.sill + op.height;
+      const same = doc.levels.find((l) => l.id === op.level)?.openings.filter((x) => x !== o && x.type === 'window') ?? [];
+      pop.append(
+        h('label', { class: 'fc-check-line' }, h('input', { type: 'checkbox', checked: keepTop, onchange: (e) => ((keepTop = e.target.checked), render()) }), `Hold overkanten fast (${cm(top)} cm over gulvet) når høyden endres`),
+        same.length ? h('button', { class: 'pb-btn is-small fc-align', onclick: () =>
+          applyTo(same.map((x) => `${op.level}:${x.id}`), 'Lik overkant', ({ o: x }) => {
+            x.sill = round(Math.max(0, top - (x.height ?? S.windowHeight)), 3);
+          }) }, `Samme overkant på de ${same.length} andre vinduene i ${op.levelName.toLowerCase()}`) : null,
+        h('h5', {}, 'Type'),
+        pick(WINDOW_STYLES.map(([v, label]) => [v, label.replace(' (etter bredden)', ''), thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, windowSashes(v, o.width, op.height, op.sill), null))]), o.style ?? 'auto', (v) => applyTo([k], 'Vindustype', setStyle(v))),
+        h('h5', {}, 'Sprosser'),
+        pick(PANES.map(([v, label, p]) => [v, label, thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, [{ from: 0, to: 1, bottom: 0, top: 1 }], p))]), Array.isArray(o.panes) ? `${o.panes[0]}x${o.panes[1]}` : '0', (v) => applyTo([k], 'Sprosser', setPanes(v))));
+    } else {
+      pop.append(h('h5', {}, 'Type'),
+        pick(DOOR_TYPES.map(([v, label]) => [v, label, (t) => drawDoor(t, 16, 6, 40, 48, v)]), doorType(o), (v) => applyTo([k], 'Dørtype', ({ o: x }) => setDoorType(x, v, S))),
+        doorType(o) === 'patio' && o.width < 1.35 ? h('p', { class: 'fc-note' }, 'En glass-skyvedør trenger minst 135 cm. Smalere blir den en skyvedør på skinne.') : null);
+    }
+    pop.append(h('p', { class: 'fc-note' }, 'Dra vinduet eller døra på tegningen for å flytte den langs veggen.'));
+    // beside it: to the right, or to the left when there is no room, within the window
+    pop.hidden = false;
+    const r = grp.getBoundingClientRect();
+    const pw = pop.offsetWidth;
+    const ph = pop.offsetHeight;
+    const left = r.right + 14 + pw < window.innerWidth - 8 ? r.right + 14 : Math.max(8, r.left - 14 - pw);
+    const top = Math.max(70, Math.min(window.innerHeight - ph - 10, r.top + r.height / 2 - ph / 2));
+    pop.style.left = `${left}px`;
+    pop.style.top = `${top}px`;
   }
 
   render();

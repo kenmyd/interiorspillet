@@ -1876,3 +1876,92 @@ select {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+/* the card of the clicked window or door, beside it on the drawing (facadecheck.js) */
+.fc-pop {
+  position: fixed;
+  z-index: 2;
+  width: 312px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--pb-line-2);
+  background: var(--pb-panel);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+.fc-pop[hidden] {
+  display: none;
+}
+.fc-pop-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.fc-pop-head div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 13.5px;
+}
+.fc-pop-head div span {
+  color: var(--pb-ink-3);
+  font-size: 12px;
+}
+.fc-pop-close {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--pb-ink-2);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.fc-pop-close:hover {
+  background: var(--pb-panel-2);
+  color: var(--pb-ink);
+}
+.fc-pop h5 {
+  margin: 4px 0 0;
+  color: var(--pb-ink-3);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.fc-pop .fc-pick {
+  padding: 5px 3px 4px;
+  font-size: 10.5px;
+}
+.fc-check-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  color: var(--pb-ink-2);
+  font-size: 12.5px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+.fc-check-line input {
+  margin-top: 2px;
+  accent-color: var(--pb-accent);
+}
+.fc-align {
+  align-self: flex-start;
+}
+/* the earth, the ground and the level lines take no clicks: the windows and doors under them do (F116) */
+.fc-earth,
+.fc-ground,
+.fc-level,
+.fc-svg text {
+  pointer-events: none;
+}
+.fc-op {
+  cursor: grab;
+}
+.fc-op:active {
+  cursor: grabbing;
+}
