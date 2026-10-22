@@ -386,34 +386,131 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F51.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F51.json`
-- **Status:** ny
+- **Status:** kjent (K13) – hårfin strek der to veggstykker møtes i samme plan.
 
 ### F52 – noe har skjedd i dette hjørnet. se strekene
 - **Tekst:** noe har skjedd i dette hjørnet. se strekene
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F52.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F52.json`
-- **Status:** ny
+- **Status:** kjent (K13) – som F51.
 
 ### F53 – det er åpning i vegg som egentlig skulle vært tett
 - **Tekst:** det er åpning i vegg som egentlig skulle vært tett
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F53.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F53.json`
-- **Status:** ny
+- **Status:** til gjenkjenningen (K3-familien) – hus2-øya med WC/D, bod og kjøkkenskap: veggen over skapsøylen mangler, og stykket blir en åpning. Ikke rettet.
 
 ### F54 – mangler del på yttervegg, jeg kan se rett ut
 - **Tekst:** mangler del på yttervegg, jeg kan se rett ut
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F54.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F54.json`
-- **Status:** ny
+- **Status:** trolig rettet (D5, som F44) – meldt før D5; med stråler fra samme kamera ses ikke lenger ut.
 
 ### F55 – her er det også to streker på veggen midt i bildet
 - **Tekst:** her er det også to streker på veggen midt i bildet
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F55.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F55.json`
+- **Status:** kjent (K13) – som F51, ved enden av hus2-øya.
+
+### F56 – den spør hva dette rommet er og så er det bare trappa som kommer opp i
+- **Tekst:** den spør hva dette rommet er og så er det bare trappa som kommer opp i stue/kjøkken. Det er ikke et eget rom
+- **Hvor:** veiviser – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F56.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F56.json`
+- **Status:** til gjenkjenningen (K14) – trappa som kommer opp i stue/kjøkken ble et eget «rom» (3,8 m², gjettet bad).
+
+### F57 – Dette er jo en del av rommet stue/kjøkken. Men jeg er usikker på hva d
+- **Tekst:** Dette er jo en del av rommet stue/kjøkken. Men jeg er usikker på hva de stipla linjene betyr. Det vet nok du. Kanskje en drager i taket?
+- **Hvor:** veiviser – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F57.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F57.json`
+- **Status:** til gjenkjenningen (K14) – strek-prikk-linja med søyler (⊠) er en drager i taket, ikke en vegg; stykket ble et eget «rom» (6,6 m², gjettet bad).
+
+### F58 – se fasadetegnigne til dette huse mot det som er generert. Her trenger 
+- **Tekst:** se fasadetegnigne til dette huse mot det som er generert. Her trenger vi virkelig smarte metoder for og generere skråvinduer og slikt
+- **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F58.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F58.json`
+- **Status:** satt av til fasade-runden (som F23) – skråvinduer og vindusformer fra fasadene.
+
+### F59 – Det blinker og flimrer i midten på huset mellom etasjene
+- **Tekst:** Det blinker og flimrer i midten på huset mellom etasjene
+- **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F59.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F59.json`
+- **Status:** rettet (D6) – kledningen fra 1. etasje og ytterflaten fra 2. etasje lå i samme plan fra 2,55 til 3,05 m (funnet med stråler). Nå ligger ytterflaten til etasjene over lenger bak, så 1. etasjes kledning vinner. Flimring er bevegelse, så den er ikke sett i stillbilder.
+
+### F60 – Kan ikke gå inn i huset uten og måtte hoppe med space
+- **Tekst:** Kan ikke gå inn i huset uten og måtte hoppe med space
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F60.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F60.json`
+- **Status:** rettet (D6, prøvd ved å gå) – figuren (en kapsel med rund fot) klarer ikke den skarpe kanten på 15 cm fra bakken opp til terskelen. Nå ligger en usynlig rampe foran hver ytterdør i hovedetasjen, som trinnene i spillet. Figuren går inn gjennom terrassedøra og inngangsdøra i hus4 uten å hoppe.
+
+### F61 – jeg ser at den stipla linje her i 1.etg nok er en synlig drager. Det k
+- **Tekst:** jeg ser at den stipla linje her i 1.etg nok er en synlig drager. Det kan stemme siden veggene er slikt som de er
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F61.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F61.json`
+- **Status:** ny
+
+### F62 – Dette er egentlig en dør, men er generert som vindu
+- **Tekst:** Dette er egentlig en dør, men er generert som vindu
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F62.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F62.json`
+- **Status:** ny
+
+### F63 – etasjeskillet er synlig i trapperom, det stikker lengre ut i rommet en
+- **Tekst:** etasjeskillet er synlig i trapperom, det stikker lengre ut i rommet enn veggen
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F63.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F63.json`
+- **Status:** ny
+
+### F64 – det er noe rart med avslutningen av den drageren som går inn i veggen
+- **Tekst:** det er noe rart med avslutningen av den drageren som går inn i veggen
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F64.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F64.json`
+- **Status:** ny
+
+### F65 – de to hullene her er sikkert egentlig en skyvedør inn til W.I.C tror j
+- **Tekst:** de to hullene her er sikkert egentlig en skyvedør inn til W.I.C tror jeg. Åpningen til venstre skulle nok vært lukket(at det er der skyvedøre er i veggen når den er åpen.
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F65.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F65.json`
+- **Status:** ny
+
+### F66 – syntes også generelt at husene virker litt små, men det er nok mest sa
+- **Tekst:** syntes også generelt at husene virker litt små, men det er nok mest sannsynlig på grunn av at det ikke er møbler i rommene. Vi kan endre skaleringen senere dersom min antakelse skulle stemme
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F66.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F66.json`
+- **Status:** ny
+
+### F67 – gulvet her burde vært likt overalt. og så mangler det rekkverk poå tra
+- **Tekst:** gulvet her burde vært likt overalt. og så mangler det rekkverk poå trappa oppe
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F67.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F67.json`
+- **Status:** ny
+
+### F68 – har meldt denne feilen før, men her ser du det bedre, med det feltet i
+- **Tekst:** har meldt denne feilen før, men her ser du det bedre, med det feltet i midten mellom etasjene som flimrer og blinker
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F68.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F68.json`
+- **Status:** ny
+
+### F69 – det er litt liten tekstskrift på der det står"vi fant ingen fasadetegn
+- **Tekst:** det er litt liten tekstskrift på der det står"vi fant ingen fasadetegninger blablabla"
+- **Hvor:** veiviser – plan-1etg-tilbygg.pdf
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F69.json`
 - **Status:** ny
 
 ---
@@ -471,6 +568,14 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 - **Hvorfor:** for eksempel tillatte valideringsfeil i nettlesertesten og toleransene for hus6.
 - **Status:** rettet (fase D) – nettlesertesten krever 0 feil i validatoren for alle hus, og hus6 sine grenser er strammet til det som måles.
 
+
+### K13 – hårfine streker der to veggstykker møtes (F51, F52, F55)
+- **Hvorfor:** en lys strek i full høyde der to stykker av samme veggflate møtes, ofte der rommet på baksiden skifter. Ikke en sprekk (forlenger flatene 1,5 mm: streken står), ikke skygge (solen uten skygge: streken står), ikke teksturen (uten tekstur: streken står).
+- **Status:** ikke funnet ennå; neste mistanke er normalene eller lysberegningen i kanten av flatene.
+
+### K14 – hus4 2. etasje: drager, trapp og kjøkkenøy blir egne rom (F56, F57)
+- **Hvorfor:** strek-prikk-linja med søyler (⊠) i hver ende er en drager i taket, og trappa og kjøkkenøya er møbler/trapp; de skal ikke lukke rom. Nå blir to stykker av stue/kjøkken egne rom som veiviseren spør om (og gjetter bad).
+- **Status:** til neste runde med gjenkjenning. Tanke: et rom uten etikett som bare skilles fra et navngitt rom av slike linjer, slås sammen med det, og spørsmålet får valget «del av rommet ved siden av».
 ---
 
 ## Ideer: forbedringer og nye funksjoner
@@ -483,3 +588,10 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 - **Når:** nå / runde 2 / senere
 - **Status:** ny
 -->
+
+### I1 – jeg fikk spørsmål om hvor høye vinduene var og brystningshøyde. Vi bør
+- **Tekst:** jeg fikk spørsmål om hvor høye vinduene var og brystningshøyde. Vi bør ha samme plass vi sette vindushøyde bør vi ha dørhøyde også. Den kan jo også variere og så må vi ha et bilde av en dør og vindu på siden av hverande slik vi kan se at toppen på vindu og dør flykter slik det ikke blir seende ut slik som dette
+- **Hvor:** 3D (dukkehus) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/I1.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/I1.json`
+- **Status:** ny

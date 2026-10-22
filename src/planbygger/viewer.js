@@ -94,8 +94,12 @@ function straightStairFix(layout) {
  * The builders share one material per colour (paint('#ece9e3') on the room faces and on the reveals alike), so each
  * role gets its own copy: set on the shared material, the offset moved every face of that colour and the room faces
  * tied with what they should hide (fase D). `made` (material → role → copy) is kept for clear().
+ *
+ * The outside of a level over the main floor reaches down past its floor and lies in the plane of the main floor's
+ * cladding, which goes up to just under that floor: two facades in one band, dark and light, flickered (F59). The
+ * upper levels' outside (`far` = 'farUp') steps back further, so the main floor's cladding wins there.
  */
-const DEPTH = { far: [2, 4], back: [1, 2], front: [-1, -2] };
+const DEPTH = { farUp: [3, 6], far: [2, 4], back: [1, 2], front: [-1, -2] };
 
 function depthRole(name, mn) {
   if (/^(room-outside|cover):/.test(name)) return 'far';
@@ -104,13 +108,15 @@ function depthRole(name, mn) {
   return null;
 }
 
-function separateCoplanar(root, made) {
+function separateCoplanar(root, made, far = 'far') {
   root.traverse((m) => {
     if (!m.isMesh) return;
     const name = m.name || '';
     let changed = false;
     const mats = [].concat(m.material).map((mat) => {
-      const role = mat ? depthRole(name, mat.name || '') : null;
+      // a copy made on an earlier pass (a mesh reached from two roots) keeps its role
+      let role = mat && mat.userData?.pbDepth == null ? depthRole(name, mat.name || '') : null;
+      if (role === 'far') role = far;
       if (!role) return mat;
       const key = `${mat.uuid}:${role}`;
       let c = made.get(key);
@@ -180,6 +186,49 @@ function revealFloors(parts, roots, layout) {
     box.name = `reveal-floor:${o.id}`;
     box.receiveShadow = true;
     out.push(box);
+  }
+  return out;
+}
+
+/**
+ * An invisible ramp from the ground up to the threshold in front of each outer door of the main level, for the
+ * collision only. The player is a capsule with a round foot: at the sharp edge of the step from the ground up to the
+ * floor (GROUND_STEP) its foot meets the corner with a slanted normal, the step-up fails, and it had to jump to get in
+ * (F60). The game's own steps have such a wedge (rooms.js buildSteps); it starts on the threshold, not below it.
+ */
+function doorRamps(layout, groundY) {
+  const H = layout.house;
+  const mainY = H.levelsById.hoved?.floorY ?? 0;
+  const out = [];
+  const RUN = 0.45;
+  for (const o of H.openings || []) {
+    if (o.type !== 'door' || !(o.connects || []).includes('ute') || Math.abs((o.floorY ?? 0) - mainY) > 0.01) continue;
+    const wall = H.wallsById?.[o.wallId];
+    if (!wall || !(wall.thickness > 0.02) || !o.bottomCenter || !o.normal) continue;
+    const rise = mainY + 0.012 - groundY;
+    if (rise < 0.03) continue;
+    // profile in (s: out from the outer face, y: up from the ground): flat on the threshold, down to the ground
+    const shape = new THREE.Shape([
+      new THREE.Vector2(-0.12, rise),
+      new THREE.Vector2(0, rise),
+      new THREE.Vector2(RUN, 0),
+      new THREE.Vector2(RUN, -0.03),
+      new THREE.Vector2(-0.12, -0.03),
+    ]);
+    const g = new THREE.ExtrudeGeometry(shape, { depth: Math.max(0.3, o.width - 0.02), bevelEnabled: false });
+    g.translate(0, 0, -Math.max(0.3, o.width - 0.02) / 2);
+    const outward = o.normal.clone().setY(0).normalize().negate();
+    const up = new THREE.Vector3(0, 1, 0);
+    const across = new THREE.Vector3().crossVectors(outward, up);
+    const origin = o.bottomCenter.clone().addScaledVector(outward, wall.thickness);
+    origin.y = groundY;
+    const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial());
+    m.matrixAutoUpdate = false;
+    m.matrix.makeBasis(outward, up, across).setPosition(origin);
+    m.matrixWorldNeedsUpdate = true;
+    m.visible = false;
+    m.name = `door-ramp:${o.id}`;
+    out.push(m);
   }
   return out;
 }
@@ -318,7 +367,12 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     scene.add(...Object.values(roots.levels));
     for (const p of parts) if (p.group && !p.group.parent) scene.add(p.group);
     const depthMats = new Map();
-    for (const g of [...Object.values(roots.levels), ...parts.map((p) => p.group)]) if (g) separateCoplanar(g, depthMats);
+    const mainLevel = layout.house.levelsById.hoved;
+    for (const [id, g] of Object.entries(roots.levels)) {
+      const lv = layout.house.levelsById[id];
+      separateCoplanar(g, depthMats, mainLevel && lv && lv.floorY > mainLevel.floorY + 0.5 ? 'farUp' : 'far');
+    }
+    for (const g of parts.map((p) => p.group)) if (g) separateCoplanar(g, depthMats);
     for (const p of parts) {
       for (const c of p.colliders || []) {
         if (c?.isBox3) collision.addStaticBox(c);
@@ -367,6 +421,13 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     ground.updateMatrixWorld(true);
     extra.push(ground);
     collision.addStatic(ground);
+    // up the step at the outer doors without jumping (F60)
+    for (const ramp of doorRamps(layout, mainY - GROUND_STEP)) {
+      scene.add(ramp);
+      ramp.updateMatrixWorld(true);
+      extra.push(ramp);
+      collision.addStatic(ramp);
+    }
     const hemi = new THREE.HemisphereLight('#e8f0ff', '#8a7f6a', 1.1);
     scene.add(hemi);
     extra.push(hemi);
