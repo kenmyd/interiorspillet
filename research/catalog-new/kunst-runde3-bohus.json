@@ -1,0 +1,1262 @@
+[
+  {
+    "id": "bohus-hjort-canvas-bilde-100x100",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "Hjort canvas bilde 100x100",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/bilder/hjort-oljemaleri-100x100",
+    "priceNok": 2999,
+    "salePriceNok": 1799,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 241195, Jordfarger): 1 799 kr (før 2 999 kr, kampanje «alle bilder og speil» til 2026-11-30). Lager: 35 i butikk, 4 på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1,
+      "d": 0.035,
+      "h": 1
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "stag",
+      "motifOpts": {
+        "variant": "front"
+      },
+      "seed": 2,
+      "palette": [
+        "#1d1a18",
+        "#7b5a46",
+        "#b8916f",
+        "#0d0c0b",
+        "#ece0cf"
+      ],
+      "frame": "thin",
+      "frameW": 0.012,
+      "texture": "painted",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Jordfarger",
+        "colors": {
+          "print": "#7b5a46",
+          "frame": "#171717"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "painted"
+        },
+        "url": "https://www.bohus.no/interior/bilder/hjort-oljemaleri-100x100"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.08,
+    "description": "Hjorteportrett trykt på canvas og delvis håndmalt med olje: mørk bakgrunn, varme brunfarger og lyse gevir med gulldetaljer. 100 × 100 cm i smal sort ramme.",
+    "why": "Et mørkt og kraftig blikkfang over sofaen i kjellerstua eller i stua – den sorte rammen spiller på de sorte metalldetaljene, og brunfargene passer til Marrakesh-veggen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/HJORT/120396/image-thumb__120396__PDP-Product/241195%20-%20Hjort%20oljemaleri%20100x100%20jordfarger%20-%201.2d368ffd.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 799 kr (før 2 999), mål B100 × H100 × D3,5 cm, canvas, bilde, varenr. 241195, status Not Expired (sortiment G4). Anslått: smal sort ramme (ca. 1,2 cm) og farger lest av produktbildet; motiv «Hjort» med palett fra bildet."
+  },
+  {
+    "id": "bohus-lorraine-canvas-bilde-90x120",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "Lorraine canvas bilde 90x120",
+    "brand": "Holmen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/bilder/lorraine-canvas-bilde-90x120",
+    "priceNok": 3399,
+    "salePriceNok": 2039,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316522, Brun): 2 039 kr (før 3 399 kr, kampanje «alle bilder og speil» til 2026-11-30). Lager: 63 i butikk, 19 på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.2,
+      "d": 0.045,
+      "h": 0.9
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "expressionist",
+      "motifOpts": {
+        "variant": "abstract"
+      },
+      "seed": 9,
+      "palette": [
+        "#efe7de",
+        "#b27a52",
+        "#d3a985",
+        "#5b3a25",
+        "#f8f3ec"
+      ],
+      "frame": "floater",
+      "frameW": 0.012,
+      "texture": "painted",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "print": "#b27a52",
+          "frame": "#cdb48e"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "oak"
+        },
+        "url": "https://www.bohus.no/interior/bilder/lorraine-canvas-bilde-90x120"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.08,
+    "shapeNote": "Bohus oppgir B90 × H120, men produktbildet viser bildet liggende. Lagt inn liggende (120 × 90 cm) som på bildet – motivet er abstrakt og kan henges begge veier.",
+    "description": "Håndmalt abstrakt maleri på canvas i varme rust- og terrakottatoner med brede, hvite penselstrøk, i lys treramme med skyggefuge.",
+    "why": "De varme jordfargene står fint mot Sand- og Marrakesh-veggene i stua; stort nok til å bære veggen over sofaen eller ved spisebordet under skråtaket.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Consilimo%20AS/Produkter/LORRAINE/343070/image-thumb__343070__PDP-Product/316522%20-%20Lorraine%20canvas%20bilde%2090x120%20oljemalt%20canvas%20brun%20med%20ramme%20-%202.f1c8d57b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 2 039 kr (før 3 399), mål B90 × H120 × D4,5 cm, canvas og tre, bilde, varenr. 316522, status Not Expired (sortiment G4). Anslått: rammeprofil (skyggefuge i lys eik) og farger fra produktbildet. Bildet er fotografert liggende – se shapeNote."
+  },
+  {
+    "id": "bohus-blaze-canvas-bilde-100x100",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "Blaze canvas bilde 100x100",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/bilder/blaze-canvas-bilde-100x100",
+    "priceNok": 2699,
+    "salePriceNok": 1619,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 298488, Brun): 1 619 kr (før 2 699 kr, kampanje «alle bilder og speil» til 2026-11-30). Lager: 51 i butikk, 18 på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1,
+      "d": 0.04,
+      "h": 1
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "brush-abstract",
+      "motifOpts": {
+        "variant": "horizon"
+      },
+      "seed": 5,
+      "palette": [
+        "#ece6e1",
+        "#8b7668",
+        "#c47c46",
+        "#3b312c",
+        "#d9cec7"
+      ],
+      "frame": "none",
+      "texture": "painted",
+      "edge": "wrap",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "print": "#8b7668",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-metal"
+        },
+        "url": "https://www.bohus.no/interior/bilder/blaze-canvas-bilde-100x100"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.08,
+    "description": "Drømmende, abstrakt landskap i grått, rust og hvitt, trykt på canvas og delvis oljemalt for hånd. Uten ramme – lerretet er trukket rundt blindrammen.",
+    "why": "De dempede høstfargene og den tåkete horisonten gir ro over sofaen i kjellerstua eller på soverommet, og passer til de varme veggfargene i huset.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/BLAZE/321083/image-thumb__321083__PDP-Product/298488%20-%20Blaze%20canvas%20bilde%20100x100%20oljemalt%20canvas%20brun%20-%202.a27c4c6e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 619 kr (før 2 699), mål B100 × H100 × D4 cm, canvas og tre, bilde, varenr. 298488, status Not Expired (sortiment G4). Anslått: uten ramme (produktbildet viser ingen ramme); farger fra produktbildet."
+  },
+  {
+    "id": "bohus-arian-canvas-bilde-60x90",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "Arian canvas bilde 60x90",
+    "brand": "Holmen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/bilder/arian-canvas-bilde-60x4",
+    "priceNok": 1499,
+    "salePriceNok": 899,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 327970, Grønn): 899 kr (før 1 499 kr, kampanje «alle bilder og speil» til 2026-11-30). Lager: 35 i butikk, 16 på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.6,
+      "d": 0.04,
+      "h": 0.9
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "impression",
+      "motifOpts": {
+        "variant": "river"
+      },
+      "seed": 6,
+      "palette": [
+        "#e4e4e0",
+        "#5d6342",
+        "#8a8d6c",
+        "#2d3029",
+        "#b6c0c4"
+      ],
+      "frame": "floater",
+      "frameW": 0.012,
+      "texture": "painted",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Grønn",
+        "colors": {
+          "print": "#5d6342",
+          "frame": "#cbb592"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "oak"
+        },
+        "url": "https://www.bohus.no/interior/bilder/arian-canvas-bilde-60x4"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.04,
+    "description": "Håndmalt landskap på canvas med trær, en bekk og lys himmel i dempede grønne og jordnære toner, i lys treramme med skyggefuge.",
+    "why": "Et rolig naturmotiv i et format som passer i gangen, ved trappen eller på soverommet; de grønne tonene gir en frisk kontrast til de varme veggfargene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Consilimo%20AS/Produkter/ARIAN/618193/image-thumb__618193__PDP-Product/327970%20-%20Arian%20canvas%20bilde%2060x90%20gr%C3%B8nn%20-%201.bb9e5b23.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 899 kr (før 1 499), mål B60 × H90 × D4 cm, canvas, bilde, varenr. 327970, status Not Expired (sortiment G4). Anslått: lys treramme med skyggefuge sees på produktbildet (Bohus nevner bare canvas); farger fra bildet."
+  },
+  {
+    "id": "bohus-tirreno-bilde-100x100",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "Tirreno bilde 100x100",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/bilder/tirreno-bilde-100x100",
+    "priceNok": 2499,
+    "salePriceNok": 1499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 331313, Brun): 1 499 kr (før 2 499 kr, kampanje «alle bilder og speil» til 2026-11-30). Lager: 16 i butikk, 12 på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1,
+      "d": 0.05,
+      "h": 1
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "texture-plaster",
+      "motifOpts": {
+        "variant": "scrape"
+      },
+      "seed": 2,
+      "palette": [
+        "#857660",
+        "#5c554c",
+        "#8f8371",
+        "#2f2a25",
+        "#a8977a"
+      ],
+      "frame": "floater",
+      "frameW": 0.012,
+      "texture": "relief",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "print": "#5c554c",
+          "frame": "#2b2421"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-oak"
+        },
+        "url": "https://www.bohus.no/interior/bilder/tirreno-bilde-100x100"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.08,
+    "description": "Håndmalt canvasbilde med rå, betonglignende struktur i bruntoner, mørk grå og beige, i mørk treramme med skyggefuge.",
+    "why": "Den mørke, rolige flaten gir tyngde på en stor vegg i stua og spiller på de sorte detaljene; fint i kjellerstua sammen med lyse tekstiler.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/TIRRENO/612519/image-thumb__612519__PDP-Product/331313%20-%20Tirreno%20bilde%20100x100%20brun%20med%20ramme%20-%202.2d505d9f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 499 kr (før 2 499), mål B100 × H100 × D5 cm, furutre, canvas og PE-plast, bilde, varenr. 331313, status Not Expired (sortiment G4). Anslått: mørk rammefarge og strukturmotiv fra produktbildet."
+  },
+  {
+    "id": "bohus-reflex-canvas-bilde-83x123",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "Reflex canvas bilde 83x123",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/bilder/reflex-canvas-bilde-83x123",
+    "priceNok": 1999,
+    "salePriceNok": 1199,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 298470, Natur): 1 199 kr (før 1 999 kr, kampanje «alle bilder og speil» til 2026-11-30). Lager: 44 i butikk, 7 på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.83,
+      "d": 0.04,
+      "h": 1.23
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "line-face",
+      "motifOpts": {
+        "variant": "single"
+      },
+      "seed": 3,
+      "palette": [
+        "#ddd3c9",
+        "#ebe6de",
+        "#b37a4e",
+        "#2b2b2d",
+        "#8e8a88"
+      ],
+      "frame": "floater",
+      "frameW": 0.012,
+      "texture": "painted",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Natur",
+        "colors": {
+          "print": "#ebe6de",
+          "frame": "#c8a97e"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "oak"
+        },
+        "url": "https://www.bohus.no/interior/bilder/reflex-canvas-bilde-83x123"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.08,
+    "shapeNote": "Motivet er en malt kvinne sett bakfra; spillet viser det som en profil i én strek med samme farger.",
+    "description": "Malt figur – en kvinne sett bakfra – i hvitt, sort og rust på lys beige bunn. Trykk på canvas, håndmalt over, i beige treramme.",
+    "why": "Et mykt, høyt format som passer på soverommet (3,11 × 3,69 m) over kommoden eller sengen; de lyse beigetonene går i hop med Sand-veggen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/REFLEX/312227/image-thumb__312227__PDP-Product/298470%20-%20Reflex%20canvas%20bilde%2083x123%20oljemalt%20canvas%20natur%20med%20ramme%20-%202.c8fd5c14.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 199 kr (før 1 999), mål B83 × H123 × D4 cm, canvas, MDF og PE-plast, bilde, varenr. 298470, status Not Expired (sortiment G4). Anslått: rammeprofil og farger fra produktbildet; figurmotivet er tilnærmet med «Ansikt i én strek»."
+  },
+  {
+    "id": "bohus-ligure-bilde-60x60",
+    "category": "kunst",
+    "subcategory": "innrammet",
+    "name": "Ligure bilde 60x60",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/bilder/ligure-bilde-60x60-1",
+    "priceNok": 799,
+    "salePriceNok": 479,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 331311, Natur): 479 kr (før 799 kr, kampanje «alle bilder og speil» til 2026-11-30). Lager: 35 i butikk, 5 på nett. To motiver med hvert sitt varenummer (331311 og 331310), samme pris.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.6,
+      "d": 0.033,
+      "h": 0.6
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "color-field",
+      "seed": 8,
+      "palette": [
+        "#ece2d2",
+        "#8b6b52",
+        "#c9aa85",
+        "#4a3a31",
+        "#e3d3bc"
+      ],
+      "frame": "thin",
+      "frameW": 0.022,
+      "texture": "paper",
+      "mat": true,
+      "matW": 0.05,
+      "glass": true
+    },
+    "variants": [
+      {
+        "name": "Natur, motiv 1",
+        "colors": {
+          "print": "#8b6b52",
+          "frame": "#c4a47b"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "oak"
+        },
+        "url": "https://www.bohus.no/interior/bilder/ligure-bilde-60x60-1"
+      },
+      {
+        "name": "Natur, motiv 2",
+        "colors": {
+          "print": "#8b6b52",
+          "frame": "#c4a47b"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "oak"
+        },
+        "url": "https://www.bohus.no/interior/bilder/ligure-bilde-60x60",
+        "paramsOverride": {
+          "seed": 14
+        },
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/LIGURE/612194/image-thumb__612194__PDP-Product/331310%20-%20Ligure%20bilde%2060x60%20natur%20med%20ramme%20-%202.b8e66320.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Abstrakt kunsttrykk med akvarellaktige blokker i brunt, sand og beige, med hvitt passepartout og glass i lett ramme med eikelook. Finnes i to motiver.",
+    "why": "To side om side blir et rolig par over skjenken i stua eller i gangen; de varme jordtonene passer til Sand- og Marrakesh-veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/LIGURE/612188/image-thumb__612188__PDP-Product/331311%20-%20Ligure%20bilde%2060x60%20natur%20med%20ramme%20-%201.6a940eec.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 479 kr (før 799), mål B60 × H60 × D3,3 cm, papir, glass og PE-plast, bilde, varenr. 331311, status Not Expired (sortiment G4). Anslått: rammebredde ca. 2,2 cm og passepartout ca. 5 cm målt på produktbildet. Motiv 2 har eget varenr. 331310 (samme pris, egen side)."
+  },
+  {
+    "id": "bohus-shiel-canvas-bilde-80x120",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "Shiel canvas bilde 80x120",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/bilder/shiel-canvas-bilde-80x120",
+    "priceNok": 2999,
+    "salePriceNok": 1799,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316527, Brun): 1 799 kr (før 2 999 kr, kampanje «alle bilder og speil» til 2026-11-30). Lager: 61 i butikk, 16 på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.8,
+      "d": 0.05,
+      "h": 1.2
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "brush-abstract",
+      "motifOpts": {
+        "variant": "horizon"
+      },
+      "seed": 13,
+      "palette": [
+        "#9a9083",
+        "#5e5348",
+        "#c9bfb1",
+        "#2f2822",
+        "#dcd4c8"
+      ],
+      "frame": "floater",
+      "frameW": 0.012,
+      "texture": "painted",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "print": "#5e5348",
+          "frame": "#4a3628"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/interior/bilder/shiel-canvas-bilde-80x120"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.07,
+    "description": "Håndmalt maleri i grått, taupe og brent brunt med horisontale bånd og en tåkete trerekke, i mørk brun fururamme med skyggefuge.",
+    "why": "Det høye formatet passer på smale veggflater i stua under skråtaket eller ved trappen; de dempede gråbrune tonene er rolige mot Sand-veggen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/SHIEL/345648/image-thumb__345648__PDP-Product/316527%20-%20Shiel%20canvas%20bilde%2080x120%20oljemalt%20canvas%20brun%20med%20ramme%20-%201.e7c5a21e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 799 kr (før 2 999), mål B80 × H120 × D5 cm, furutre og canvas, bilde, varenr. 316527, status Not Expired (sortiment G4). Anslått: rammeprofil og farger fra produktbildet."
+  },
+  {
+    "id": "bohus-menor-bilde-83x123",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "Menor bilde 83x123",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/bilder/menor-bilde-83x123",
+    "priceNok": 1999,
+    "salePriceNok": 1199,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 331312, Hvit beige): 1 199 kr (før 1 999 kr, kampanje «alle bilder og speil» til 2026-11-30). Lager: 33 i butikk, 8 på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.83,
+      "d": 0.043,
+      "h": 1.23
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "texture-plaster",
+      "motifOpts": {
+        "variant": "swirls"
+      },
+      "seed": 15,
+      "palette": [
+        "#f3efe7",
+        "#e7dfd1",
+        "#d4bf9e",
+        "#a8916f",
+        "#fbf9f5"
+      ],
+      "frame": "floater",
+      "frameW": 0.012,
+      "texture": "relief",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Hvit beige",
+        "colors": {
+          "print": "#e7dfd1",
+          "frame": "#c9aa82"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "oak"
+        },
+        "url": "https://www.bohus.no/interior/bilder/menor-bilde-83x123"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.08,
+    "description": "Håndmalt strukturbilde i hvitt og beige med virvler i lag på lag av struktur, i lys treramme med skyggefuge.",
+    "why": "Lyst og taktilt – passer på soverommet eller i gangen med lite dagslys, og spiller fint mot bouclé og lyse tekstiler.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/MENOR/612041/image-thumb__612041__PDP-Product/331312%20-%20Menor%20bilde%2083x123%20hvit%20beige%20med%20ramme%20-%204.10f573d3.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 199 kr (før 1 999), mål B83 × H123 × D4,3 cm, furutre, canvas og PE-plast, bilde, varenr. 331312, status Not Expired (sortiment G4). Anslått: rammeprofil og farger fra produktbildet."
+  },
+  {
+    "id": "bohus-tay-canvas-bilde-100x100",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "Tay canvas bilde 100x100",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/bilder/tay-canvas-bilde-100x100",
+    "priceNok": 2699,
+    "salePriceNok": 1619,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316525, Svart og hvit): 1 619 kr (før 2 699 kr, kampanje «alle bilder og speil» til 2026-11-30). Lager: 61 i butikk, 28 på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1,
+      "d": 0.05,
+      "h": 1
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "geometric-lines",
+      "seed": 5,
+      "palette": [
+        "#232426",
+        "#efeee9",
+        "#2e2f31",
+        "#f4f3ee",
+        "#7d7c78"
+      ],
+      "frame": "floater",
+      "frameW": 0.012,
+      "texture": "relief",
+      "mat": false,
+      "glass": false,
+      "motifOpts": {
+        "variant": "free"
+      }
+    },
+    "variants": [
+      {
+        "name": "Svart og hvit",
+        "colors": {
+          "print": "#efeee9",
+          "frame": "#bfae95"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "white-oak"
+        },
+        "url": "https://www.bohus.no/interior/bilder/tay-canvas-bilde-100x100"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.08,
+    "description": "Sort lerret med frie, hvite linjer i 3D-struktur, maskinlaget og håndmalt med olje, i lys treramme med skyggefuge.",
+    "why": "Grafisk og kontrastfullt – henter opp de sorte metalldetaljene i stua og kjøkkenet; fint over sofaen eller i kjellerstua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/TAY/345551/image-thumb__345551__PDP-Product/316525%20-%20Tay%20canvas%20bilde%20100x100%20oljemalt%20canvas%20svart%20og%20hvit%20med%20ramme%20-%203.6e665ff0.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 619 kr (før 2 699), mål B100 × H100 × D5 cm, furutre og canvas, bilde, varenr. 316525, status Not Expired (sortiment G4). Anslått: lys rammefarge og linjemotiv fra produktbildet."
+  },
+  {
+    "id": "bohus-helsinki-bilderamme-30x40",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "Helsinki bilderamme 30x40",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-30x40-2",
+    "priceNok": 299,
+    "salePriceNok": 150,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 259755, Natur): 150 kr (før 299 kr, kampanje «alle bilderammer» til 2026-11-30). Samme pris for 259758 (Svart), 259757 (Mørk brun).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.3,
+      "d": 0.03,
+      "h": 0.4
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "botanical-print",
+      "motifOpts": {
+        "variant": "fern"
+      },
+      "seed": 6,
+      "palette": [
+        "#f2eee4",
+        "#5f7350",
+        "#9aa585",
+        "#2c3326",
+        "#c8b48c"
+      ],
+      "frame": "thin",
+      "frameW": 0.017,
+      "texture": "paper",
+      "mat": true,
+      "matW": 0.03,
+      "glass": true,
+      "acceptsImage": true
+    },
+    "variants": [
+      {
+        "name": "Natur",
+        "colors": {
+          "print": "#5f7350",
+          "frame": "#d3c1a0"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "ash"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-30x40-2",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/207700/image-thumb__207700__PDP-Product/259755%20-%20Helsinki%20bilderamme%2030x40%20-%201.2a922fa4.jpg"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#5f7350",
+          "frame": "#1f1c1a"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-30x40-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/217578/image-thumb__217578__PDP-Product/259758%20-%20Helsinki%20bilderamme%2030x40%20-%201.39fa6c41.jpg"
+      },
+      {
+        "name": "Mørk brun",
+        "colors": {
+          "print": "#5f7350",
+          "frame": "#43352b"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-30x40",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/272941/image-thumb__272941__PDP-Product/259757%20-%20Helsinki%20bilderamme%2030x40%20-%201.3830204d.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Ramme i MDF med eikelook og passepartout med åpning for 21 × 29,7 cm, plexiglass foran; format 30 × 40 cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Et lite format for gangen, soverommet eller hjemmekontoret i kjelleren; tre finisher gjør det lett å matche eik, sort metall eller mørkt tre.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/207700/image-thumb__207700__PDP-Product/259755%20-%20Helsinki%20bilderamme%2030x40%20-%201.2a922fa4.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 150 kr (før 299), mål B30 × H40 × D3 cm, MDF og glass, med passepartout, bilde, varenr. 259755 (Natur), 259758 (Svart), 259757 (Mørk brun), status Not Expired (sortiment G4). Anslått: rammebredde ca. 1,7 cm og passepartout-bredde lest av produktbildet (åpning 21 × 29,7 cm); Bohus oppgir formatet, utvendig mål kan være litt større."
+  },
+  {
+    "id": "bohus-helsinki-bilderamme-50x70",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "Helsinki bilderamme 50x70",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-50x70-1",
+    "priceNok": 799,
+    "salePriceNok": 400,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 259771, Natur): 400 kr (før 799 kr, kampanje «alle bilderammer» til 2026-11-30). Samme pris for 259774 (Svart), 259773 (Mørk brun).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.03,
+      "h": 0.7
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "fjord",
+      "seed": 5,
+      "palette": [
+        "#e9eef0",
+        "#6f8796",
+        "#9fb2bd",
+        "#2d3a40",
+        "#f2d7a7"
+      ],
+      "frame": "thin",
+      "frameW": 0.017,
+      "texture": "photo",
+      "mat": true,
+      "matW": 0.033,
+      "glass": true,
+      "acceptsImage": true,
+      "matH": 0.083
+    },
+    "variants": [
+      {
+        "name": "Natur",
+        "colors": {
+          "print": "#6f8796",
+          "frame": "#d3c1a0"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "ash"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-50x70-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/220562/image-thumb__220562__PDP-Product/259771%20-%20Helsinki%20bilderamme%2050x70%20-%201.6e4c19bd.jpg"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#6f8796",
+          "frame": "#1f1c1a"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-50x70",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/272937/image-thumb__272937__PDP-Product/259774%20-%20Helsinki%20bilderamme%2050x70%20-%202.ebf58475.jpg"
+      },
+      {
+        "name": "Mørk brun",
+        "colors": {
+          "print": "#6f8796",
+          "frame": "#43352b"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-50x70-2",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/217676/image-thumb__217676__PDP-Product/259773%20-%20Helsinki%20bilderamme%2050x70%20-%201.334ef9b0.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Ramme i MDF med eikelook og passepartout med åpning for 40 × 50 cm, plexiglass foran; format 50 × 70 cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Standardformatet for plakater over sofaen eller skjenken i stua; den naturfargede finishen passer til eikemøbler og Sand-veggen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/220562/image-thumb__220562__PDP-Product/259771%20-%20Helsinki%20bilderamme%2050x70%20-%201.6e4c19bd.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 400 kr (før 799), mål B50 × H70 × D3 cm, MDF og plexiglass, med passepartout, bilde, varenr. 259771 (Natur), 259774 (Svart), 259773 (Mørk brun), status Not Expired (sortiment G4). Anslått: rammebredde ca. 1,7 cm og passepartout-bredde lest av produktbildet (åpning 40 × 50 cm); Bohus oppgir formatet, utvendig mål kan være litt større."
+  },
+  {
+    "id": "bohus-helsinki-bilderamme-40x50",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "Helsinki bilderamme 40x50",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-40x50",
+    "priceNok": 449,
+    "salePriceNok": 225,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 259761, Natur): 225 kr (før 449 kr, kampanje «alle bilderammer» til 2026-11-30). Samme pris for 259764 (Svart), 259763 (Mørk brun).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.4,
+      "d": 0.03,
+      "h": 0.5
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "dots",
+      "motifOpts": {
+        "variant": "grid"
+      },
+      "seed": 4,
+      "palette": [
+        "#f4f0e8",
+        "#c9824f",
+        "#7f9a8c",
+        "#2b2b2b",
+        "#e3c27a"
+      ],
+      "frame": "thin",
+      "frameW": 0.017,
+      "texture": "paper",
+      "mat": true,
+      "matW": 0.035,
+      "glass": true,
+      "acceptsImage": true
+    },
+    "variants": [
+      {
+        "name": "Natur",
+        "colors": {
+          "print": "#c9824f",
+          "frame": "#d3c1a0"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "ash"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-40x50",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/203644/image-thumb__203644__PDP-Product/259761%20-%20Helsinki%20bilderamme%2040x50%20-%201.0362d0a6.jpg"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#c9824f",
+          "frame": "#1f1c1a"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-40x50-1"
+      },
+      {
+        "name": "Mørk brun",
+        "colors": {
+          "print": "#c9824f",
+          "frame": "#43352b"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-40x50-3"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Ramme i MDF med eikelook og passepartout med åpning for 30 × 40 cm, plexiglass foran; format 40 × 50 cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Et mellomstort format som passer over nattbordet på soverommet eller i gangen; flere like rammer gir en ryddig bildevegg.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/203644/image-thumb__203644__PDP-Product/259761%20-%20Helsinki%20bilderamme%2040x50%20-%201.0362d0a6.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 225 kr (før 449), mål B40 × H50 × D3 cm, MDF og glass, med passepartout, bilde, varenr. 259761 (Natur), 259764 (Svart), 259763 (Mørk brun), status Not Expired (sortiment G4). Anslått: rammebredde ca. 1,7 cm og passepartout-bredde lest av produktbildet (åpning 30 × 40 cm); Bohus oppgir formatet, utvendig mål kan være litt større."
+  },
+  {
+    "id": "bohus-helsinki-bilderamme-21x29",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "Helsinki bilderamme 21x29",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-21x29",
+    "priceNok": 189,
+    "salePriceNok": 95,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 259749, Natur): 95 kr (før 189 kr, kampanje «alle bilderammer» til 2026-11-30). Samme pris for 259752 (Svart), 259751 (Mørk brun).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.21,
+      "d": 0.03,
+      "h": 0.29
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "moon-phases",
+      "seed": 1,
+      "palette": [
+        "#1f2430",
+        "#e9e2cf",
+        "#b9b2a0",
+        "#11141b",
+        "#8b8fa0"
+      ],
+      "frame": "thin",
+      "frameW": 0.017,
+      "texture": "paper",
+      "mat": true,
+      "matW": 0.02,
+      "glass": true,
+      "acceptsImage": true
+    },
+    "variants": [
+      {
+        "name": "Natur",
+        "colors": {
+          "print": "#e9e2cf",
+          "frame": "#d3c1a0"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "ash"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-21x29",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/272943/image-thumb__272943__PDP-Product/259749%20-%20Helsinki%20bilderamme%2021x29%20-%201.62b192ef.jpg"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#e9e2cf",
+          "frame": "#1f1c1a"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-21x29-2"
+      },
+      {
+        "name": "Mørk brun",
+        "colors": {
+          "print": "#e9e2cf",
+          "frame": "#43352b"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-21x29-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/211474/image-thumb__211474__PDP-Product/259751%20-%20Helsinki%20bilderamme%2021x29%20-%201.436bd739.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Ramme i MDF med eikelook og passepartout med åpning for 15 × 21 cm, plexiglass foran; format A4 (21 × 29,7) cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "A4-formatet passer til egne bilder og små trykk i gangen, på badet eller over skrivebordet i det lille kjellersoverommet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/272943/image-thumb__272943__PDP-Product/259749%20-%20Helsinki%20bilderamme%2021x29%20-%201.62b192ef.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 95 kr (før 189), mål B21 × H29 × D3 cm, MDF og glass, med passepartout, bilde, varenr. 259749 (Natur), 259752 (Svart), 259751 (Mørk brun), status Not Expired (sortiment G4). Anslått: rammebredde ca. 1,7 cm og passepartout-bredde lest av produktbildet (åpning 15 × 21 cm); Bohus oppgir formatet, utvendig mål kan være litt større."
+  },
+  {
+    "id": "bohus-helsinki-bilderamme-50x50",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "Helsinki bilderamme 50x50",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-50x50",
+    "priceNok": 579,
+    "salePriceNok": 290,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 259765, Natur): 290 kr (før 579 kr, kampanje «alle bilderammer» til 2026-11-30). Samme pris for 259768 (Svart), 259767 (Mørk brun).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.03,
+      "h": 0.5
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "wave",
+      "motifOpts": {
+        "variant": "great"
+      },
+      "seed": 2,
+      "palette": [
+        "#efe6d5",
+        "#2f4f6f",
+        "#6f8fa8",
+        "#1b2a38",
+        "#f0ebe0"
+      ],
+      "frame": "thin",
+      "frameW": 0.017,
+      "texture": "paper",
+      "mat": true,
+      "matW": 0.035,
+      "glass": true,
+      "acceptsImage": true
+    },
+    "variants": [
+      {
+        "name": "Natur",
+        "colors": {
+          "print": "#2f4f6f",
+          "frame": "#d3c1a0"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "ash"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-50x50",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/272944/image-thumb__272944__PDP-Product/259765%20-%20Helsinki%20bilderamme%2050x50%20-%202.88c3200f.jpg"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#2f4f6f",
+          "frame": "#1f1c1a"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-50x50-2"
+      },
+      {
+        "name": "Mørk brun",
+        "colors": {
+          "print": "#2f4f6f",
+          "frame": "#43352b"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-50x50-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/205417/image-thumb__205417__PDP-Product/259767%20-%20Helsinki%20bilderamme%2050x50%20-%201.2e274bca.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Ramme i MDF med eikelook og passepartout med åpning for 40 × 40 cm, plexiglass foran; format 50 × 50 cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Kvadratisk format for kvadratiske bilder og grafiske trykk; to side om side over sofaen eller sengen gir et rolig, symmetrisk uttrykk.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/272944/image-thumb__272944__PDP-Product/259765%20-%20Helsinki%20bilderamme%2050x50%20-%202.88c3200f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 290 kr (før 579), mål B50 × H50 × D3 cm, MDF og glass, med passepartout, bilde, varenr. 259765 (Natur), 259768 (Svart), 259767 (Mørk brun), status Not Expired (sortiment G4). Anslått: rammebredde ca. 1,7 cm og passepartout-bredde lest av produktbildet (åpning 40 × 40 cm); Bohus oppgir formatet, utvendig mål kan være litt større. Produktbildet er Natur; bildet av Svart-varianten mangler i Bohus-dataene (der vises Mørk brun)."
+  },
+  {
+    "id": "bohus-milano-bilderamme-50x70",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "Milano bilderamme 50x70",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/rammer/milano-bilderamme-50x70",
+    "priceNok": 649,
+    "salePriceNok": 325,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 259770, Svart): 325 kr (før 649 kr, kampanje «alle bilderammer» til 2026-11-30).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.02,
+      "h": 0.7
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "city-map",
+      "seed": 3,
+      "palette": [
+        "#f4f1ea",
+        "#c9d3c0",
+        "#b9cfd9",
+        "#2b2b2b",
+        "#8a8a8a"
+      ],
+      "frame": "alu",
+      "frameW": 0.008,
+      "texture": "paper",
+      "mat": false,
+      "glass": true,
+      "acceptsImage": true
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#c9d3c0",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        },
+        "url": "https://www.bohus.no/interior/rammer/milano-bilderamme-50x70",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/MILANO/199682/image-thumb__199682__PDP-Product/259770%20-%20Milano%20bilderamme%2050x70%20-%201.0b3901ba.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Smal, sort aluminiumsramme uten passepartout med plexiglass foran, for plakater 50 × 70 cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Den tynne sorte profilen passer de sorte metalldetaljene på kjøkkenet og i stua, og lar plakaten få all oppmerksomheten.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/MILANO/199682/image-thumb__199682__PDP-Product/259770%20-%20Milano%20bilderamme%2050x70%20-%201.0b3901ba.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 325 kr (før 649), mål B50 × H70 × D2 cm, aluminium og plexiglass, uten passepartout, bilde, varenr. 259770 (Svart), status Not Expired (sortiment G4). Anslått: profilbredde ca. 0,8 cm lest av produktbildet."
+  },
+  {
+    "id": "bohus-helsinki-bilderamme-70x100",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "Helsinki bilderamme 70x100",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-70x100-2",
+    "priceNok": 1499,
+    "salePriceNok": 750,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 259781, Natur): 750 kr (før 1 499 kr, kampanje «alle bilderammer» til 2026-11-30). Samme pris for 259784 (Svart), 259783 (Mørk brun).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.7,
+      "d": 0.03,
+      "h": 1
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "bw-photo",
+      "motifOpts": {
+        "variant": "pier"
+      },
+      "seed": 2,
+      "palette": [
+        "#f0f0ee",
+        "#8c8c8a",
+        "#bdbdbb",
+        "#1e1e1e",
+        "#d6d6d4"
+      ],
+      "frame": "thin",
+      "frameW": 0.017,
+      "texture": "photo",
+      "mat": true,
+      "matW": 0.033,
+      "glass": true,
+      "acceptsImage": true,
+      "matH": 0.083
+    },
+    "variants": [
+      {
+        "name": "Natur",
+        "colors": {
+          "print": "#8c8c8a",
+          "frame": "#d3c1a0"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "ash"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-70x100-2",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/208235/image-thumb__208235__PDP-Product/259781%20-%20Helsinki%20bilderamme%2070x100%20-%201.45aac00b.jpg"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#8c8c8a",
+          "frame": "#1f1c1a"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-70x100",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/210963/image-thumb__210963__PDP-Product/259784%20-%20Helsinki%20bilderamme%2070x100%20-%201.55fdabd2.jpg"
+      },
+      {
+        "name": "Mørk brun",
+        "colors": {
+          "print": "#8c8c8a",
+          "frame": "#43352b"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/interior/rammer/helsinki-bilderamme-70x100-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/217604/image-thumb__217604__PDP-Product/259783%20-%20Helsinki%20bilderamme%2070x100%20-%201.4f03dc75.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Ramme i MDF med eikelook og passepartout med åpning for 60 × 80 cm, plexiglass foran; format 70 × 100 cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Stort nok til å fylle veggen over sofaen i stua eller kjellerstua med én plakat; ryddigere enn mange små bilder.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/HELSINKI/208235/image-thumb__208235__PDP-Product/259781%20-%20Helsinki%20bilderamme%2070x100%20-%201.45aac00b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 750 kr (før 1 499), mål B70 × H100 × D3 cm, MDF og plexiglass, med passepartout, bilde, varenr. 259781 (Natur), 259784 (Svart), 259783 (Mørk brun), status Not Expired (sortiment G4). Anslått: rammebredde ca. 1,7 cm og passepartout-bredde lest av produktbildet (åpning 60 × 80 cm); Bohus oppgir formatet, utvendig mål kan være litt større."
+  },
+  {
+    "id": "bohus-milano-bilderamme-30x40",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "Milano bilderamme 30x40",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/interior/rammer/milano-bilderamme-30x40",
+    "priceNok": 279,
+    "salePriceNok": 140,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 259754, Svart): 140 kr (før 279 kr, kampanje «alle bilderammer» til 2026-11-30).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.3,
+      "d": 0.02,
+      "h": 0.4
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "topo-map",
+      "seed": 3,
+      "palette": [
+        "#f1ece2",
+        "#b9a27f",
+        "#d8c9ad",
+        "#3d3a33",
+        "#8c9a7f"
+      ],
+      "frame": "alu",
+      "frameW": 0.008,
+      "texture": "paper",
+      "mat": false,
+      "glass": true,
+      "acceptsImage": true
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#b9a27f",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        },
+        "url": "https://www.bohus.no/interior/rammer/milano-bilderamme-30x40",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/MILANO/204012/image-thumb__204012__PDP-Product/259754%20-%20Milano%20bilderamme%2030x40%20-%201.a7f6e537.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Smal, sort aluminiumsramme uten passepartout med plexiglass foran, for plakater 30 × 40 cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Liten og stram – fin i gangen eller på hjemmekontoret i kjelleren, og passer de sorte detaljene i huset.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Incado%20AS%20%20%20USD/Produkter/MILANO/204012/image-thumb__204012__PDP-Product/259754%20-%20Milano%20bilderamme%2030x40%20-%201.a7f6e537.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 140 kr (før 279), mål B30 × H40 × D2 cm, aluminium og plexiglass, uten passepartout, bilde, varenr. 259754 (Svart), status Not Expired (sortiment G4). Anslått: profilbredde ca. 0,8 cm lest av produktbildet."
+  }
+]

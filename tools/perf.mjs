@@ -6,7 +6,7 @@
  *
  *   node tools/perf.mjs --port=525N [--label=hus] [--out=<file.json>] [--compare=<master.json>] [--lock] [--step=y1]
  *       [--only=load,frames,walk,check] [--loads=2] [--frames=40] [--poses=spawn,gang,…] [--vis=0]
- *       [--shots=<dir>] [--w=1280 --h=960] [--params=vistrim=0] [--vis0=<json>]
+ *       [--shots=<dir>] [--w=1280 --h=960] [--params=vistrim=0] [--vis0=<json>] [--scene=stress|grid|ref]
  *
  *   load    --loads fresh browsers (a new GPU process each: no program cache) load /?play=1&nohelp=1 – with the
  *           catalogue warm-up, like a real first visit – and the time to window.__ready is taken (median).
@@ -29,6 +29,16 @@
  *           the culled/culled noise) is a visibility error. Then (doors open) walks out of and into door-ute and the
  *           terrace door with real physics, every frame compared the same way. Failing poses are saved to --shots
  *           (default .shots/hus/<step>/check/) as <pose>-on.png / -off.png, failing walk frames as walk-<name>-f<N>-*.
+ *
+ *   --scene=<name>  (frames only; design/qa.md §5.2) after the page is ready and before the frames, adds a named set of
+ *           this round's fittings in ONE design transaction, sets the hour and waits until every model is built (the
+ *           SceneSync gates): `stress` = qa §3.1's set S (3 × 3 innfelt i TV-stua, 2 × 4 under skråtaket, 3 × 3
+ *           utenpåliggende på kjøkkenet, 4 vippbare, en skinne med 4 hoder, 2 bildelamper, en takspot, en veggspot = 38
+ *           hoder) + 2 × 3 på soverommet + 2 × 3 i kjellerstua, kl. 21; `grid` = only the 3 × 3 in the TV-stue, kl. 22;
+ *           `ref` = no fittings, kl. 21 (the reference run for --compare).
+ *           With --compare=<json of the same poses WITHOUT the scene> the stress budgets are checked (qa §5.2: draw
+ *           calls ≤ ref + 3 per fitting and ≤ 1.5 × ref, triangles ≤ ref + 200 k, frame ms ≤ 12 and ≤ 1.35 × ref,
+ *           cpu ms ≤ ref + 1.5, no shadow pass and no environment build across the measured frames).
  *
  * Budgets (§4.13), checked with --compare=<json of a master run>: at most +20 % draw calls at the spawn in the living
  * room and in the hall (pos 2.6,0,3.2, yaw 90 – a reference whose pose is not in the same room, as master's outside
@@ -75,6 +85,56 @@ const ROUTES = {
   trapp: { house: true, levelChange: true, start: [2.6, 0, 3.4], route: [[2.0, 2.71], [1.0, 2.71], [0.6, 3.3], [0.9, 3.95], [2.2, 3.95], [3.5, 3.8]] },
 };
 const poseList = opt.poses ? opt.poses.split(',').map((s) => s.trim()) : Object.keys(POSES);
+
+/**
+ * --scene: item specs of a named scene, built in Node from the round's contract (synthetic spot fittings of
+ * tools/house-tests/_qa.mjs, grid items through src/design/grid.js, ceiling heights from src/home/layout.js).
+ * @returns {Promise<{ hour: number, specs: object[], fittings: number }|null>}
+ */
+async function sceneSpecs(name) {
+  if (!name) return null;
+  const Q = await import(new URL('./house-tests/_qa.mjs', import.meta.url).href);
+  const { imp } = await import(new URL('./house-tests/_lib.mjs', import.meta.url).href);
+  Q.cssHook();
+  const { layout } = await imp('src/home/layout.js');
+  const GRID = await imp('src/design/grid.js');
+  const ceil = (x, z, fy = 0) => Q.ceilAt(layout, x, z, fy + 1);
+  const one = (role, x, z, o = {}) => Q.spotSpec(role, { ...o, position: [x, ceil(x, z, o.level === 'kjeller' ? -2.55 : 0), z] });
+  const grid = (role, x, z, rows, cols, dx, dz, o = {}) => {
+    const g = GRID.gridSpec(Q.SPOT_ROLES[role].dims, { rows, cols, dx, dz });
+    return one(role, x, z, { ...o, dims: g.dims, params: { ...Q.SPOT_ROLES[role].params, ...g.params } });
+  };
+  const wall = (role, wallId, x, y, z) => Q.spotSpec(role, { position: [x, y, z], rotationDeg: 180, attach: { wallId, normal: [0, 0, -1] } });
+  if (name === 'ref') return { hour: 21, specs: [], fittings: 0 };
+  if (name === 'grid') return { hour: 22, specs: [grid('recessedRound', 1.6, 10.1, 3, 3, 1, 1)], fittings: 1 };
+  if (name !== 'stress') throw new Error(`ukjent --scene=${name} (stress | grid | ref)`);
+  const specs = [
+    grid('recessedRound', 1.6, 10.1, 3, 3, 1.0, 1.0),
+    grid('recessedSquare', 5.1, 5.8, 2, 4, 0.8, 1.2),
+    grid('surface', 4.5, 1.7, 3, 3, 1.1, 0.9),
+    ...[3.8, 4.6, 5.4, 6.2].map((x) => one('recessedTilt', x, 10.9, { params: { tilt: 30 } })),
+    one('rail', 5.1, 11.2, { params: { heads: 4, tilt: 25 } }),
+    wall('pictureLight', 'w-vest-stue', 5.35, 2.05, 11.93),
+    wall('pictureLight', 'w-vest-stue', 4.0, 1.95, 11.93),
+    one('spotSingle', 6.0, 9.5),
+    wall('wallSpot', 'w-vest-tv', 2.9, 2.0, 11.93),
+    grid('recessedRound', 1.56, 6.37, 2, 3, 0.9, 0.9),
+    grid('recessedRound', 4.75, 8.35, 2, 3, 1.0, 1.0, { level: 'kjeller' }),
+  ];
+  return { hour: 21, specs, fittings: specs.length };
+}
+
+/** Page side of --scene: one transaction, the hour, then wait for the SceneSync gates (≤ 20 s). */
+const SCENE = `(async ({ specs, hour }) => {
+  const g = window.__game, d = g.design, H = g.home;
+  const t0 = performance.now();
+  d.transaction('perf --scene', () => { for (const s of specs) d.add(s); });
+  if (d.setEnv) d.setEnv({ hour });
+  H.sync && H.sync.flush && H.sync.flush();
+  for (let i = 0; i < 800 && H.sync && H.sync._gates && H.sync._gates.size; i++) await new Promise((r) => setTimeout(r, 25));
+  window.__hus.step(30);
+  return { items: d.list().length, gatesLeft: H.sync && H.sync._gates ? H.sync._gates.size : 0, ms: Math.round(performance.now() - t0) };
+})`;
 
 const out = { label, port, when: new Date().toISOString(), w: width, h: height };
 let failed = false;
@@ -137,6 +197,8 @@ const FRAMES = `(async ({ poses, nFrames }) => {
     g._render();
     const info = { calls: r.info.render.calls, triangles: r.info.render.triangles };
     const cpu = [], gpu = [];
+    // shadow passes / environment builds during the measured (static) frames only (--scene budgets)
+    const s0 = { env: L && L.stats ? L.stats.envBuilds || 0 : 0, shadow: window.__perf.shadowPasses };
     for (let i = 0; i < nFrames; i++) {
       const t0 = performance.now();
       window.__hus.step(1);
@@ -151,6 +213,7 @@ const FRAMES = `(async ({ poses, nFrames }) => {
     const med = (a) => { const s = [...a].sort((x, y) => x - y); return +s[Math.floor(s.length / 2)].toFixed(2); };
     res[name] = {
       ...info, cpuMs: med(cpu), frameMs: med(gpu), room: g.roomId ?? null,
+      static: { envBuilds: (L && L.stats ? L.stats.envBuilds || 0 : 0) - s0.env, shadowPasses: window.__perf.shadowPasses - s0.shadow },
       feet: g.player.position.toArray().map((v) => +v.toFixed(2)),
       scale: g._dyn ? g._dyn.scale : 1, pixelRatio: r.getPixelRatio(),
       vis: vis && vis.stats ? { active: vis.stats.active, seen: vis.stats.seen, surfaces: vis.stats.surfaces, outside: vis.stats.outside, hidden: vis.stats.hidden, items: vis.stats.items, ms: +(vis.stats.ms || 0).toFixed(3) } : null,
@@ -370,8 +433,19 @@ try {
       const env = await page.evaluate(SETUP);
       out.house = env.house;
       out.visibility = env.hasVis;
+      if (opt.scene) {
+        const sc = await sceneSpecs(opt.scene);
+        const r = await page.evaluate(`${SCENE}(${JSON.stringify({ specs: sc.specs, hour: sc.hour })})`);
+        out.scene = { name: opt.scene, hour: sc.hour, fittings: sc.fittings, ...r };
+        console.log(`[scene] ${opt.scene}: ${sc.fittings} armaturer lagt til (${r.items} ting), kl. ${sc.hour}, ${r.ms} ms${r.gatesLeft ? `, ${r.gatesLeft} modeller ikke ferdige` : ''}`);
+      }
+      const statsBefore = await page.evaluate(() => {
+        const L = window.__game.home.lighting;
+        return { envBuilds: L && L.stats ? L.stats.envBuilds ?? null : null, shadowPasses: window.__perf.shadowPasses };
+      });
       const poses = poseList.filter((k) => k in POSES && (env.house || !POSES[k] || POSES[k][1] === 0)).map((k) => [k, POSES[k]]);
       const res = await page.evaluate(`${FRAMES}(${JSON.stringify({ poses, nFrames })})`);
+      out.statsBefore = statsBefore;
       out.stats = res.__stats;
       delete res.__stats;
       out.frames = res;
@@ -482,7 +556,20 @@ try {
     };
     const pct = (a, b) => `${a} vs ${b} (${(((a - b) / b) * 100).toFixed(0)} %)`;
     const spawnRef = ref.frames?.spawn;
-    for (const k of ['spawn', 'gang']) {
+    // --scene: the stress budgets of design/qa.md §5.2 per pose against the same poses without the scene
+    if (out.scene && out.frames && ref.frames) {
+      const n = out.scene.fittings;
+      for (const [k, a] of Object.entries(out.frames)) {
+        const b = ref.frames[k];
+        if (!b) continue;
+        budget(`${k}: draw calls ≤ ref + 3 × ${n} og ≤ 1,5 × ref`, a.calls <= b.calls + 3 * n && a.calls <= b.calls * 1.5 + 1e-9, pct(a.calls, b.calls));
+        budget(`${k}: trekanter ≤ ref + 200 k`, a.triangles <= b.triangles + 200000, `${a.triangles} vs ${b.triangles}`);
+        budget(`${k}: frame ms ≤ 12 og ≤ 1,35 × ref`, a.frameMs <= 12 && a.frameMs <= b.frameMs * 1.35 + 1e-9, `${a.frameMs} vs ${b.frameMs}`);
+        budget(`${k}: cpu ms ≤ ref + 1,5`, a.cpuMs <= b.cpuMs + 1.5, `${a.cpuMs} vs ${b.cpuMs}`);
+        if (a.static) budget(`${k}: ingen skyggepass eller miljøbygg i de stille bildene`, !a.static.envBuilds && !a.static.shadowPasses, `env ${a.static.envBuilds}, skygge ${a.static.shadowPasses}`);
+      }
+    }
+    for (const k of out.scene ? [] : ['spawn', 'gang']) {
       const a = out.frames?.[k], b = ref.frames?.[k];
       if (!a || !b) continue;
       // the hall pose (2.6, 0, 3.2) lies outside a reference without the hall (master: it looks at the garden from

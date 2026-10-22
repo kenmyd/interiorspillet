@@ -1717,6 +1717,11 @@ export class Selection {
       const next = e.shiftKey ? Math.ceil(cur / 15 - 1e-6) * 15 - 15 : Math.floor(cur / 15 + 1e-6) * 15 + 15;
       const patch = { rotationDeg: normDeg(next) };
       const fixed = ed.placement?.constrain?.({ ...item, rotationDeg: patch.rotationDeg });
+      // a turn that does not fit at all is refused like the rotate handle refuses it (unless already stuck before)
+      if (fixed?.status === 'blocked' && ed.placement?.constrain?.(item)?.status !== 'blocked') {
+        ed.events.emit('toast', { text: 'Får ikke plass rotert her', seconds: 2 });
+        return;
+      }
       if (fixed?.position) patch.position = fixed.position;
       ed.design.update(sel.uid, patch, { label: `Roter ${itemName(item)}`, coalesce: 'rotate' });
     }

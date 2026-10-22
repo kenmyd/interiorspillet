@@ -22,6 +22,8 @@ const BODY_CENTRE = 0.9;
 const ROOM_SETTLE = 0.4;
 /** A jump of the feet this far (m) between two room updates is a teleport: the new place counts at once. */
 const TELEPORT_JUMP = 1.0;
+/** The living room's id (layout.js LIVING_ROOM_ID; the home module is loaded only when the game starts). */
+const LIVING_ROOM_ID = 'stue-kjokken';
 
 /**
  * One play session: renderer, scene, player, home, editor. Created by main.js when the player presses «Gå inn i
@@ -659,6 +661,12 @@ export class Game {
     const position = new THREE.Vector3(...saved.pos);
     if (!this._standable(position)) {
       console.info('[game] the saved position ' + saved.pos.join(',') + ' is not on a floor – starting at the start point');
+      return null;
+    }
+    // the house without the basement (layout.js withoutBasement): the rest of it is behind the locked hall door, so a
+    // saved position counts only in the living room
+    if (this.home.layout?.spec?.removed && this.home.roomAt?.(position.x, position.y + BODY_CENTRE, position.z)?.id !== LIVING_ROOM_ID) {
+      console.info('[game] the saved position ' + saved.pos.join(',') + ' is outside the living room – starting at the start point');
       return null;
     }
     return { position, yaw: saved.yawDeg * DEG, pitch: saved.pitchDeg * DEG };

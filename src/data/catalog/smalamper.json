@@ -2820,5 +2820,1934 @@
     "verifiedNote": "Bekreftet på lampegiganten.no 2026-10-20: navn, pris 1 199 kr (veil. 2 399 kr), H139, skjerm Ø32, Ø45, E27 maks 40 W, rotting, trebent stativ, på lager. Bohus har ingen rottinggulvlampe i dag. Form sjekket mot miljøbildet (skjermhøyde anslått). Farger og stoff kontrollert 2026-10-21 mot lampegiganten.no: finnes bare i én farge, som butikken kaller «krem / svart» (naturfarget rotting, svart stativ); variantnavnet rettet fra «Natur/svart».",
     "shapeNote": "Tripod med rottinglykt (floor-tripod + NY shadeShape 'woven' på tripod): tre tynne, svarte, runde metallben (Ø ca. 2 cm) som står på en sirkel Ø45 og møtes rett under skjermen ca. 87 cm over gulvet i en liten svart skive som skjermen står på. Ca. 22 cm over gulvet holdes bena sammen av et tynt, trekantet stag (tre tynne stenger mellom bena). Skjermen er en tønneformet «bur»-lykt i naturfarget rotting: Ø32 på det bredeste (midten), ca. 52 cm høy, avrundede skuldre som smalner til ca. Ø26 i topp og bunn, med ca. 40 loddrette rottingstaver med smale mellomrom og ca. 4 vannrette ringer (topp, ca. 1/4, midt, bunn); en tynn lukket ring/plate øverst. Pæren sitter fritt inne i buret og kaster stripete skygger. Skjermhøyde, staver og ringer er anslått fra miljøbildet.",
     "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sindig-baresi-oppladbar-bordlampe-o15",
+    "category": "smalamper",
+    "subcategory": "bordlampe",
+    "name": "Baresi oppladbar bordlampe Ø15",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/oppladbare-lamper/baresi-oppladbar-bordlampe-h21",
+    "priceNok": 1499,
+    "salePriceNok": 749,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 325943, Beige): 749 kr (før 1 499 kr, kampanje til 2026-11-30). Oppladbar via USB (kabel følger med), ca. 5 t lading og 6–8 t brukstid på full styrke, 3 lysstyrker med touch, IP20.",
+    "dims": {
+      "w": 0.15,
+      "d": 0.15,
+      "h": 0.21
+    },
+    "archetype": "table-shade",
+    "mount": "surface",
+    "params": {
+      "shadeShape": "drum",
+      "baseShape": "cylinder",
+      "shadeD": 0.15,
+      "shadeH": 0.085,
+      "baseD": 0.075,
+      "baseH": 0.13,
+      "portable": true,
+      "translucent": 0.55
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "shade": "#e3d8c5",
+          "inner": "#e8dfcf",
+          "base": "#d6c8af",
+          "metal": "#d6c8af",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "travertine",
+          "metal": "travertine",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 150,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "table",
+      "bulb": "Integrert LED, oppladbar, 3 lysstyrker (lumen og fargetemperatur anslått)"
+    },
+    "description": "Oppladbar bordlampe med linskjerm og fot i sement med travertinmønster. Touch-dimmer med tre lysstyrker, lades med USB.",
+    "why": "Kan flyttes fra spisebordet til nattbordet eller ut på terrassen; uten ledning passer den på kjøkkenøya eller i stua der det ikke er stikkontakt.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/BARESI/616288/image-thumb__616288__PDP-Product/325943%20-%20Baresi%20oppladbar%20bordlampe%20%C3%9815%20lin%20beige%20med%20usb%20lading%20IP20%20-%208.c35a1309.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 499 kr (kampanje 749 kr til 2026-11-30), Ø15 × H21 cm, lin/sement, bilde, varenr. 325943, status Not Expired (G2). Anslått: lumen (150 lm) og 3000 K som Tiller fra samme serie, skjerm- og fotmål.",
+    "priceConfidence": "checked",
+    "shapeNote": "Lav linskjerm (ca. Ø15 × H8,5) over en sylinderfot ca. Ø7,5 × H13 i sement med travertinmønster, med en liten steinknott på toppen. Fotens og skjermens mål anslått fra produktbildet."
+  },
+  {
+    "id": "bohus-sindig-ishida-bordlampe-h55",
+    "category": "smalamper",
+    "subcategory": "bordlampe",
+    "name": "Ishida bordlampe H55",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/bordlampe/ishida-bordlampe-h55",
+    "priceNok": 2599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 326561, Natur/valnøtt): 2 599 kr. 1 × E27 maks 25 W, pære følger ikke med; svart tekstilledning (1,8 m) med bryter.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.4,
+      "h": 0.55
+    },
+    "archetype": "table-shade",
+    "mount": "surface",
+    "params": {
+      "shadeShape": "lantern",
+      "baseShape": "disc",
+      "shadeD": 0.4,
+      "shadeH": 0.52,
+      "baseD": 0.18,
+      "baseH": 0.04,
+      "translucent": 0.4,
+      "openingTopD": 0.24,
+      "openingBottomD": 0.2
+    },
+    "variants": [
+      {
+        "name": "Natur/valnøtt",
+        "colors": {
+          "shade": "#e2d6c0",
+          "inner": "#e6dcc8",
+          "base": "#5e4636",
+          "metal": "#5e4636",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "walnut",
+          "metal": "walnut",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "table",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Oval lykt i gjennomskinnelig lin med ribber og detaljer i valnøttfarget tre, på små kulebein. Kan stå både på bord og på gulvet.",
+    "why": "En lun lykt i et hjørne av kjellerstua eller på skjenken i stua; linet gir et mykt, varmt lys som passer til de jordnære MARRAKESH-veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/ISHIDA/612845/image-thumb__612845__PDP-Product/326561%20-%20Ishida%20bordlampe%20%C3%9840%201x25W%20E27%20lin%20natur-valn%C3%B8tt%20-%204.ed859201.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 2 599 kr, Ø40 × H55 cm, lin/tre, bilde, varenr. 326561, status Not Expired (G2). Anslått: lyktens høyde og kulebeina (vist som lav fot).",
+    "priceConfidence": "checked",
+    "shapeNote": "Tønneformet lykt (Ø40) i lin over et ribbet stativ, med vid åpning øverst (ca. Ø24, ring i valnøttfarget tre) og flat bunn; står på tre små trekuler (ca. Ø4,5) som her er vist som en lav, mørk fot. Åpningene og lyktens høyde er anslått fra produktbildet (total H55)."
+  },
+  {
+    "id": "bohus-sindig-noor-bordlampe-h24",
+    "category": "smalamper",
+    "subcategory": "bordlampe",
+    "name": "Noor bordlampe H24",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/bordlampe/noor-bordlampe-h24",
+    "priceNok": 1499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 326429, Blank kremgul): 1 499 kr; blank oransje (varenr. 326450) 1 499 kr. 1 × E14 maks 25 W, pære følger ikke med; tekstilledning i glassets farge (1,8 m) med bryter.",
+    "dims": {
+      "w": 0.25,
+      "d": 0.25,
+      "h": 0.24
+    },
+    "archetype": "table-mushroom",
+    "mount": "surface",
+    "params": {
+      "shadeD": 0.25,
+      "shadeH": 0.12,
+      "baseD": 0.12,
+      "baseShape": "cylinder",
+      "translucent": 0.7
+    },
+    "variants": [
+      {
+        "name": "Blank kremgul",
+        "colors": {
+          "shade": "#efdfae",
+          "inner": "#f5e9c4",
+          "base": "#e9d7a2",
+          "metal": "#b8955a",
+          "cord": "#d8c38c"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "glass-opal",
+          "metal": "brass",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Blank oransje",
+        "colors": {
+          "shade": "#d98f5c",
+          "inner": "#e9a87a",
+          "base": "#cf875a",
+          "metal": "#c4c6c8",
+          "cord": "#a4512f"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "glass-opal",
+          "metal": "chrome",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/bordlampe/noor-bordlampe-h24-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/NOOR/607589/image-thumb__607589__PDP-Product/326450%20-%20Noor%20bordlampe%20H24%20E14%20glass%20blank%20oransje%20-%201.582a29a4.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "table",
+      "bulb": "E14 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Sopplampe i blankt, farget glass der både kuppelen og foten lyser opp. Tekstilledningen har samme farge som glasset.",
+    "why": "Den kremgule passer på nattbordet i soverommet eller i vinduskarmen; glasset gir et varmt, glødende lys og pynter uten å virke rotete.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/NOOR/607590/image-thumb__607590__PDP-Product/326429%20-%20Noor%20bordlampe%20H24%20E14%20glass%20blank%20kremgul%20-%203.650fa6ea.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 499 kr for begge farger, Ø25 × H24 cm, glass, bilde, varenr. 326429 og 326450, status Not Expired (G2). Anslått: kuppelens høyde og fotens mål.",
+    "priceConfidence": "checked",
+    "shapeNote": "Avlang soppform i blankt, farget glass: kuppel Ø25 og ca. 12 cm høy på en glassylinder ca. Ø12 × H11 som også lyser. Mål på kuppel og fot anslått fra produktbildet (Ø25 × H24 oppgitt)."
+  },
+  {
+    "id": "bohus-sindig-ceta-bordlampe-h43",
+    "category": "smalamper",
+    "subcategory": "bordlampe",
+    "name": "Ceta bordlampe H43",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/bordlampe/ceta-bordlampe-h43",
+    "priceNok": 1799,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 292990, Beige): 1 799 kr. 1 × E27 maks 25 W, pære følger ikke med; travertinfot Ø10 × H10, metallskjerm Ø25 × H12; svart tekstilledning (1,8 m) med bryter.",
+    "dims": {
+      "w": 0.25,
+      "d": 0.25,
+      "h": 0.43
+    },
+    "archetype": "table-shade",
+    "mount": "surface",
+    "params": {
+      "shadeShape": "dome",
+      "baseShape": "cylinder",
+      "shadeD": 0.25,
+      "shadeH": 0.12,
+      "baseD": 0.1,
+      "baseH": 0.1,
+      "translucent": 0
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "shade": "#c4bdb0",
+          "inner": "#e3ded5",
+          "base": "#cdbfa6",
+          "metal": "#bdb6a8",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "travertine",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "table",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Soppformet bordlampe med fot i ekte travertin og kuppelskjerm i sandfarget metall. Lyset faller ned mot bordflaten.",
+    "why": "Sandtonen i skjermen og travertinfoten treffer SAND-veggene i stua; fin på skjenken eller i en vinduskarm mot sør uten å ta mye plass.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/CETA/301945/image-thumb__301945__PDP-Product/292990%20-%20Ceta%20bordlampe%20H43%20E27%20travertin%20beige%20inkl.%20skjerm%20-%201.0a28d520.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 799 kr, Ø25 × H43 cm, travertin/metall, bilde, varenr. 292990, status Not Expired (G2). Anslått: stangens tykkelse.",
+    "priceConfidence": "checked",
+    "shapeNote": "Halvkuleformet metallskjerm Ø25 × H12 på en tynn, sandlakkert stang; foten er en sylinder i travertin Ø10 × H10 (oppgitt av Bohus). Stangens tykkelse anslått fra produktbildet."
+  },
+  {
+    "id": "bohus-aneta-juno-leselampe-bord-h45",
+    "category": "smalamper",
+    "subcategory": "arbeidslampe",
+    "name": "Juno leselampe bord H45",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/juno-bordlampe-h45",
+    "priceNok": 999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 167088, Svart/krom): 999 kr. Integrert LED (utskiftbar reservedel), ikke dimbar, bryter på lampen, 1,7 m ledning med støpsel.",
+    "dims": {
+      "w": 0.12,
+      "d": 0.29,
+      "h": 0.45
+    },
+    "archetype": "table-task",
+    "mount": "surface",
+    "params": {
+      "armShape": "gooseneck",
+      "headShape": "dome",
+      "baseShape": "disc",
+      "tilt": 30,
+      "springs": false,
+      "shadeD": 0.09,
+      "shadeH": 0.05,
+      "baseD": 0.12
+    },
+    "variants": [
+      {
+        "name": "Svart/krom",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#e9e7e1",
+          "base": "#1c1c1c",
+          "metal": "#c4c6c8",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "painted",
+          "base": "black-metal",
+          "metal": "chrome",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 400,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "table",
+      "bulb": "Integrert LED ca. 400 lm (fargetemperatur ikke oppgitt)"
+    },
+    "description": "Leselampe for bord med fleksibel svanehals i krom, lite svart lampehode og integrert LED. Bryter på foten.",
+    "why": "Gir rettet arbeidslys på skrivebordet i det lille kjellersoverommet (hjemmekontoret), eller fungerer som leselampe på nattbordet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/JUNO/57332/image-thumb__57332__PDP-Product/167088%20-%20Juno%20bordlampe%20H45%20integrert%205x%20400lm%20metall%20svart-krom%20-%201.63051bd8.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 999 kr, B12 × D29 × H45 cm, metall svart/krom, bilde, varenr. 167088, status Not Expired (G2). Anslått: lumen (ca. 400 lm fra Bohus' bildetekst), 2700 K (ikke oppgitt), hodets mål.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rund svart fot Ø12, rett kromstang som går over i en fleksibel svanehals, og et lite svart kuppelhode (ca. Ø9) med LED. Hodets mål anslått fra produktbildet."
+  },
+  {
+    "id": "bohus-sindig-myers-gulvlampe-h137",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Myers gulvlampe H137",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/gulvlampe/myers-gulvlampe-h137",
+    "priceNok": 2999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316900, Svart/natur): 2 999 kr. 1 × E27 maks 25 W, pære følger ikke med; fot H59 × Ø24, linskjerm H75 × Ø35; svart tekstilledning (2 m) med bryter.",
+    "dims": {
+      "w": 0.35,
+      "d": 0.35,
+      "h": 1.37
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeShape": "cylinder",
+      "shadeD": 0.35,
+      "shadeH": 0.75,
+      "shadeBottomAt": 0.62,
+      "baseShape": "wavy-column",
+      "baseD": 0.24,
+      "baseH": 0.59,
+      "poleCount": 0,
+      "translucent": 0.55
+    },
+    "variants": [
+      {
+        "name": "Svart/natur",
+        "colors": {
+          "shade": "#ddd3c1",
+          "inner": "#e3dacb",
+          "base": "#1f1f1f",
+          "metal": "#1f1f1f",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "ceramic",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Høy gulvlampe med matt svart, vridd keramikkfot og en høy sylinderskjerm i naturfarget lin.",
+    "why": "Som en lysende søyle i hjørnet av stua eller kjellerstua; den svarte foten og linskjermen passer til de svarte detaljene og de varme veggfargene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/MYERS/349677/image-thumb__349677__PDP-Product/316900%20-%20Myers%20gulvlampe%20H137%20E27%20keramikk%20svart-natur%20inkl.%20skjerm%20-%201.df0196de.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 2 999 kr, Ø35 × H137 cm (fot H59 Ø24, skjerm H75 Ø35), keramikk/lin, bilde, varenr. 316900, status Not Expired (G2).",
+    "priceConfidence": "checked",
+    "shapeNote": "Søylelampe uten stang: matt svart keramikkfot med skrå, vridde ribber (H59 × Ø24) og en høy sylinderskjerm i naturfarget lin (H75 × Ø35) rett over. Mål oppgitt av Bohus; skjermens underkant ca. 62 cm over gulvet."
+  },
+  {
+    "id": "bohus-aneta-cannes-uplight-h180",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Cannes uplight H180",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/gulvlampe/cannes-uplight-h180-1",
+    "priceNok": 2999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 208115, Stål): 2 999 kr; svart krom (varenr. 208116) 2 999 kr. Integrert LED 28 W / 2 500 lm i uplighten og 5 W / 400 lm i lesearmen, 3000 K, to dimmere, støpsel.",
+    "dims": {
+      "w": 0.46,
+      "d": 0.32,
+      "h": 1.8
+    },
+    "archetype": "floor-uplight",
+    "mount": "floor",
+    "params": {
+      "shadeD": 0.32,
+      "shadeH": 0.07,
+      "baseD": 0.25,
+      "armReach": 0.3,
+      "readingArm": true,
+      "translucent": 0.5
+    },
+    "variants": [
+      {
+        "name": "Stål",
+        "colors": {
+          "shade": "#eceae4",
+          "inner": "#f3f0ea",
+          "base": "#b9bcbf",
+          "metal": "#b9bcbf",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "steel",
+          "metal": "steel",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Svart krom",
+        "colors": {
+          "shade": "#eceae4",
+          "inner": "#f3f0ea",
+          "base": "#4a4a4e",
+          "metal": "#4a4a4e",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "chrome",
+          "metal": "chrome",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/gulvlampe/cannes-uplight-h180",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/CANNES/64884/image-thumb__64884__PDP-Product/208116%20-%20Cannes%20uplight%205x28W%20metall%20sort%20krom%20-%201.fbbf7a06.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 2900,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "floor",
+      "bulb": "Integrert LED: uplight 28 W 2 500 lm + lesearm 5 W 400 lm, 3000 K, to dimmere"
+    },
+    "description": "Uplight med frostet glasskål som lyser opp mot taket, og en egen lesearm med LED. Begge lysene har hver sin dimmer.",
+    "why": "Gir både indirekte lys mot det skrå taket i stua og leselys ved sofaen eller lenestolen – to lys i én lampe.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/CANNES/64880/image-thumb__64880__PDP-Product/208115%20-%20Cannes%20uplight%202x28W%20dimbar%20metall%20st%C3%A5l%20-%201.c3fd779b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 2 999 kr for begge farger, Ø32 × D46 × H180 cm, 2 500 lm + 400 lm, 3000 K, dimbar, bilde, varenr. 208115 og 208116, status Not Expired. Anslått: lesearmens rekkevidde og fotens Ø.",
+    "priceConfidence": "checked",
+    "shapeNote": "Frostet glasskål Ø32 som lyser opp mot taket, båret av to tynne stenger, og en egen fleksibel lesearm med et lite LED-hode; rund fot. w = fot + lesearm (46 cm, Bohus «dybde»), d = skålens Ø32."
+  },
+  {
+    "id": "bohus-sindig-stave-vegglampe-h30",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Stave vegglampe H30",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/vegglamper/stave-vegglampe-h30",
+    "priceNok": 999,
+    "salePriceNok": 599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 325078, Beige): 599 kr (før 999 kr, kampanje «alle vegglamper*» til 2026-11-30). 1 × E27 maks 40 W, pære følger ikke med, skjerm inkludert; 3 m ledning med bryter.",
+    "dims": {
+      "w": 0.12,
+      "d": 0.13,
+      "h": 0.3
+    },
+    "archetype": "wall-sconce",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "updown",
+      "shadeD": 0.12,
+      "shadeH": 0.3,
+      "translucent": 0.6,
+      "mountHeight": 1.45
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "shade": "#e0d5c2",
+          "inner": "#e6dccb",
+          "base": "#2b2b2b",
+          "metal": "#2b2b2b",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Smal vegglampe formet som et rør av beige lin som lyser både opp og ned. Ledning med av/på-bryter.",
+    "why": "Passer på en smal veggflate i gangen eller ved siden av senga; linet gir et mykt lys som får SAND-fargen til å gløde.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Season%20ASIA%20Co.%20Ltd/Produkter/STAVE/609268/image-thumb__609268__PDP-Product/325078%20-%20Stave%20vegglampe%20H30%20E27%20lin%20beige%20inkl.%20skjerm%20-%203.ac169fd3.jpg",
+    "verified": false,
+    "verifiedNote": "IKKE verifisert: mangler bredde/diameter i Bohus-dataene. Sjekket på bohus.no 2026-10-21 (produktdata): pris 999 kr (kampanje 599 kr til 2026-11-30), H30 × D13 cm, lin/metall, bilde, varenr. 325078, status Not Expired (G4). Anslått: Ø12 cm fra produktbildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Et stående rør av beige lin (H30) med åpen topp og bunn, festet på et skjult beslag; svart ledning med bryter henger ned. Rørets diameter ca. 12 cm anslått fra produktbildet (Bohus oppgir bare høyde og dybde 13 cm)."
+  },
+  {
+    "id": "bohus-aneta-sofia-vegglampe-h25",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Sofia vegglampe H25",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/vegglamper/sofia-vegglampe-h24-5",
+    "priceNok": 1799,
+    "salePriceNok": 1079,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316854, Messing/hvit): 1 079 kr (før 1 799 kr, kampanje «alle vegglamper*» til 2026-11-30); svart/hvit (varenr. 316853, bestillingsvare) samme pris. 1 × E27 maks 30 W, pære følger ikke med; 2,5 m snodd tekstilledning med støpsel og bryter.",
+    "dims": {
+      "w": 0.25,
+      "d": 0.31,
+      "h": 0.24
+    },
+    "archetype": "wall-arm",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "bell",
+      "armShape": "curved",
+      "plug": true,
+      "shadeD": 0.25,
+      "shadeH": 0.11,
+      "armReach": 0.19,
+      "plateShape": "disc",
+      "translucent": 0.8,
+      "mountHeight": 1.1
+    },
+    "variants": [
+      {
+        "name": "Messing/hvit",
+        "colors": {
+          "shade": "#f4f1ea",
+          "inner": "#f7f4ee",
+          "base": "#9e8b5e",
+          "metal": "#9e8b5e",
+          "cord": "#a8884f"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "brass",
+          "metal": "brass",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Svart/hvit",
+        "colors": {
+          "shade": "#f4f1ea",
+          "inner": "#f7f4ee",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/vegglamper/sofia-vegglampe-h24-5-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/SOFIA/339975/image-thumb__339975__PDP-Product/316853%20-%20Sofia%20vegglampe%20H24.5%20E27%20glass%20svart-hvit%20-%201.296696cd.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Vintage vegglampe med svanehalsarm og bølget skjerm i opalhvitt glass. Snodd tekstilledning med støpsel og bryter.",
+    "why": "Gir et lunt, nostalgisk lys i gangen eller over en lesestol; ledningen kan henge synlig, så ingen elektriker trengs.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/SOFIA/339974/image-thumb__339974__PDP-Product/316854%20-%20Sofia%20vegglampe%20H24.5%20E27%20glass%20messing-hvit%20-%201.1234ee3b.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 799 kr (kampanje 1 079 kr til 2026-11-30) for begge farger, B25 × D31 × H24 cm, skjerm Ø25 glass, bilde, varenr. 316854 og 316853, status Not Expired (svart/hvit er bestillingsvare, GT). Anslått: armlengde og klokkens høyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rund veggplate med en S-formet svanehalsarm som ender i en sokkel; skjermen er en bred, bølget klokke i opalhvitt glass med takkete kant (Ø25). Synlig snodd ledning ned fra platen. Klokkens høyde anslått fra produktbildet."
+  },
+  {
+    "id": "bohus-aneta-valencia-vegglampe-h19",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Valencia vegglampe H19",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/vegglamper/valencia-vegglampe-h19",
+    "priceNok": 999,
+    "salePriceNok": 599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316846, Svart): 599 kr (før 999 kr, kampanje «alle vegglamper*» til 2026-11-30); sand (varenr. 316845) samme pris. 1 × E14 maks 25 W, pære følger ikke med; 2,5 m ledning med støpsel og bryter; detaljer i matt messing og krom følger med.",
+    "dims": {
+      "w": 0.2,
+      "d": 0.24,
+      "h": 0.19
+    },
+    "archetype": "wall-arm",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "dome",
+      "armShape": "straight",
+      "plug": true,
+      "shadeD": 0.2,
+      "shadeH": 0.065,
+      "armReach": 0.14,
+      "plateShape": "disc",
+      "translucent": 0,
+      "mountHeight": 1.1
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#262626",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#d4d4d2"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "plastic"
+        }
+      },
+      {
+        "name": "Sand",
+        "colors": {
+          "shade": "#dcd7cb",
+          "inner": "#ebe6db",
+          "base": "#dcd7cb",
+          "metal": "#dcd7cb",
+          "cord": "#d4d4d2"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "plastic"
+        },
+        "url": "https://www.bohus.no/lamper/vegglamper/valencia-vegglampe-h19-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/VALENCIA/339996/image-thumb__339996__PDP-Product/316845%20-%20Valencia%20vegglampe%20H19%20E14%20metall%20sand%20inkl.%20skjerm%20-%201.5c957554.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall",
+      "bulb": "E14 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Vegglampe med rett arm og trelags kuppelskjerm i metall; detaljer i messing eller krom følger med. Synlig ledning med støpsel.",
+    "why": "En klassisk lesevegglampe ved senga eller ved sofaen i kjellerstua; den svarte varianten passer til husets svarte metalldetaljer.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/VALENCIA/339997/image-thumb__339997__PDP-Product/316846%20-%20Valencia%20vegglampe%20H19%20E14%20metall%20svart%20inkl.%20skjerm%20-%201.e8d044ce.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 999 kr (kampanje 599 kr til 2026-11-30) for begge farger, B20 × D24 × H19 cm, skjerm Ø20, bilde, varenr. 316846 og 316845, status Not Expired. Anslått: armlengde og monteringshøyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rund veggplate, rett vannrett arm og en flat trelags metallkuppel (Ø20) som henger ned fra armen; plate, arm og sokkel i samme farge som skjermen, bare en liten ring er i messing eller krom (begge følger med). Synlig, gjennomsiktig ledning fra platen. Lagenes høyde anslått fra produktbildet; spillet viser kuppelen som én flat kuppel uten ringen."
+  },
+  {
+    "id": "bohus-aneta-abelone-vegglampe-h20",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Abelone vegglampe H20",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/vegglamper/abelone-vegglampe-h20",
+    "priceNok": 1599,
+    "salePriceNok": 959,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316847, Klar/krom): 959 kr (før 1 599 kr, kampanje «alle vegglamper*» til 2026-11-30). 1 × E27 maks 40 W, pære følger ikke med; 2,2 m ledning med støpsel og bryter.",
+    "dims": {
+      "w": 0.25,
+      "d": 0.15,
+      "h": 0.2
+    },
+    "archetype": "wall-sconce",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "half-drum",
+      "shadeD": 0.25,
+      "shadeH": 0.2,
+      "translucent": 0.4,
+      "mountHeight": 1.6
+    },
+    "variants": [
+      {
+        "name": "Klar/krom",
+        "colors": {
+          "shade": "#dfe5e3",
+          "inner": "#edf1f0",
+          "base": "#c4c6c8",
+          "metal": "#c4c6c8",
+          "cord": "#d4d4d2"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "chrome",
+          "metal": "chrome",
+          "cord": "plastic"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Vegglampe med paneler i klart glass med isaktig struktur rundt pæra; lyset slipper ut både opp og ned og filtreres til sidene.",
+    "why": "Et dekorativt blikkfang i entreen eller ved trappa, der lys opp og ned langs veggen får rommet til å virke større.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/ABELONE/339999/image-thumb__339999__PDP-Product/316847%20-%20Abelone%20vegglampe%20H20%20E27%20glass%20klar-krom%20-%201.df7d9e9e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 599 kr (kampanje 959 kr til 2026-11-30), B25 × D15 × H20 cm, glass/metall, bilde, varenr. 316847, status Not Expired (G2). Anslått: monteringshøyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Halvsirkel av fire paneler i klart glass med isaktig, rennende struktur, hengt fra en smal kromlist; åpen opp og ned. Synlig gjennomsiktig ledning. Isstrukturen gjør glasset matt, så spillet viser en halvsylinder i frostet glass mot veggen."
+  },
+  {
+    "id": "bohus-sindig-limotti-vegglampe-h35",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Limotti vegglampe H35",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/vegglamper/limotti-vegglampe-h35",
+    "priceNok": 1599,
+    "salePriceNok": 959,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 325951, Hvit/grå): 959 kr (før 1 599 kr, kampanje «alle vegglamper*» til 2026-11-30). Integrert LED maks 5 W, 3000 K; hvit tekstilledning (2 m) med støpsel og bryter; kan dimmes med en plug-in-dimmer.",
+    "dims": {
+      "w": 0.11,
+      "d": 0.037,
+      "h": 0.35
+    },
+    "archetype": "wall-sconce",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "flush",
+      "frontPlate": true,
+      "shadeD": 0.11,
+      "shadeH": 0.35,
+      "translucent": 0.5,
+      "mountHeight": 1.4
+    },
+    "variants": [
+      {
+        "name": "Hvit/grå",
+        "colors": {
+          "shade": "#ece8e0",
+          "inner": "#f2eee6",
+          "base": "#ece8e0",
+          "metal": "#b39a62",
+          "cord": "#ededeb"
+        },
+        "materials": {
+          "shade": "marble-white",
+          "inner": "marble-white",
+          "base": "marble-white",
+          "metal": "brass",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 400,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "wall",
+      "bulb": "Integrert LED 5 W, 3000 K (lumen anslått)"
+    },
+    "description": "Flat vegglampe i polyresin med alabastmønster og en front i børstet messing; indirekte LED-lys rundt messingplaten.",
+    "why": "Elegant stemningslys på veggen i stua eller ved spisebordet; nesten helt flat, så den passer også i den smale gangen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/LIMOTTI/612121/image-thumb__612121__PDP-Product/325951%20-%20Limotti%20vegglampe%20H35%20integrert%205W%20imitert%20alabaster%20hvit-gr%C3%A5%20-%202.ee1a1bf5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 599 kr (kampanje 959 kr til 2026-11-30), B11 × D3,7 × H35 cm, 5 W LED 3000 K, bilde, varenr. 325951, status Not Expired (G2). Anslått: lumen (ca. 400 lm for 5 W LED), monteringshøyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Flat, avlang plate med runde ender (B11 × H35, bare 3,7 cm dyp) i polyresin med alabastmønster; foran sitter en smalere plate i børstet messing som LED-lyset strømmer ut rundt."
+  },
+  {
+    "id": "ikea-blidvaeder-bordlampe",
+    "category": "smalamper",
+    "subcategory": "bordlampe",
+    "name": "BLIDVÄDER Bordlampe, 50 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/blidvaeder-bordlampe-offwhite-keramikk-beige-80501258/",
+    "priceNok": 995,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 805.012.58, offwhite keramikk/beige): 995 kr. Lyspære selges separat (IKEA anbefaler E27 globe opalhvit); ledning 2,3 m.",
+    "dims": {
+      "w": 0.3,
+      "d": 0.3,
+      "h": 0.5
+    },
+    "archetype": "table-shade",
+    "mount": "surface",
+    "params": {
+      "shadeShape": "cone",
+      "baseShape": "vase",
+      "shadeD": 0.3,
+      "shadeTopD": 0.22,
+      "shadeH": 0.25,
+      "baseD": 0.17,
+      "baseH": 0.24,
+      "translucent": 0.5
+    },
+    "variants": [
+      {
+        "name": "Offwhite keramikk/beige",
+        "colors": {
+          "shade": "#e7ded0",
+          "inner": "#efe8dc",
+          "base": "#e3dcd1",
+          "metal": "#b8955a",
+          "cord": "#2b2b2b"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "ceramic",
+          "metal": "brass",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "table",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Klassisk bordlampe med lys, håndlaget keramikkfot med prikket glasur og kjegleformet skjerm i beige tekstil.",
+    "why": "Rolig og tidløs på skjenken i stua eller som et par på nattbordene i soverommet; offwhite keramikk og beige skjerm passer til SAND-veggene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/blidvaeder-bordlampe-offwhite-keramikk-beige__1059594_pe849715_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata): pris 995 kr, H50 cm, skjermbredde 30 cm, fot Ø17 × H24, keramikk/tekstil, bilde, art.nr. 805.012.58, på lager. Anslått: skjermens toppdiameter og høyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Krukkeformet keramikkfot (H24 × Ø17) med prikket, offwhite glasur og kort messinghals; kjegleformet tekstilskjerm Ø30 nederst. Skjermens toppdiameter (ca. 22) og høyde (ca. 25) anslått fra produktbildet."
+  },
+  {
+    "id": "ikea-kuddlava-bordlampe-plissert",
+    "category": "smalamper",
+    "subcategory": "bordlampe",
+    "name": "KUDDLAVA Bordlampe, plissert, 28 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/kuddlava-bordlampe-plissert-hvit-20492488/",
+    "priceNok": 199,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 204.924.88, hvit): 199 kr. Lyspære selges separat (IKEA anbefaler E14 globe opalhvit, maks Ø45 mm, maks 4,5 W); ledning 1,7 m.",
+    "dims": {
+      "w": 0.32,
+      "d": 0.32,
+      "h": 0.28
+    },
+    "archetype": "table-shade",
+    "mount": "surface",
+    "params": {
+      "shadeShape": "pleated",
+      "baseShape": "cone",
+      "shadeD": 0.32,
+      "shadeTopD": 0.05,
+      "shadeH": 0.11,
+      "pleats": 44,
+      "baseD": 0.13,
+      "baseH": 0.19,
+      "translucent": 0.6
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f3f2ee",
+          "inner": "#f6f5f1",
+          "base": "#f0efea",
+          "metal": "#c9aa82",
+          "cord": "#dddcd8"
+        },
+        "materials": {
+          "shade": "plastic",
+          "inner": "plastic",
+          "base": "plastic",
+          "metal": "oak",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "table",
+      "bulb": "E14 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Liten bordlampe der både den kjegleformede foten og den vide skjermen er plissert i hvitt, med en treknott på toppen.",
+    "why": "Lett og luftig på nattbordet eller i vinduskarmen; plissene sprer lyset mykt og passer i et lyst, ryddig soverom.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/kuddlava-bordlampe-plissert-hvit__1416209_pe975491_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata): pris 199 kr, totalhøyde 28 cm, Ø32, fot Ø13 × H19, plast/heltre, bilde, art.nr. 204.924.88, på lager. Anslått: skjermens høyde og antall plisser.",
+    "priceConfidence": "checked",
+    "shapeNote": "Både foten (kjegle Ø13 × H19) og den vide, flate skjermen (Ø32, nesten som en parasoll) er plissert; liten treknott på toppen. Skjermens høyde og antall plisser (ca. 44) anslått fra produktbildet."
+  },
+  {
+    "id": "ikea-forsa-arbeidslampe",
+    "category": "smalamper",
+    "subcategory": "arbeidslampe",
+    "name": "FORSÅ Arbeidslampe",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/forsa-arbeidslampe-svart-00146776/",
+    "priceNok": 349,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 001.467.76, svart): 349 kr; forniklet (art.nr. 801.467.63) 349 kr. Lyspære selges separat (IKEA anbefaler E14 opalhvit); ledning 1,8 m.",
+    "dims": {
+      "w": 0.15,
+      "d": 0.4,
+      "h": 0.35
+    },
+    "archetype": "table-task",
+    "mount": "surface",
+    "params": {
+      "armShape": "articulated",
+      "headShape": "dome",
+      "baseShape": "disc",
+      "tilt": 20,
+      "springs": true,
+      "shadeD": 0.12,
+      "shadeH": 0.07,
+      "baseD": 0.15
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#161616",
+          "inner": "#f0eee9",
+          "base": "#161616",
+          "metal": "#161616",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "painted",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Forniklet",
+        "colors": {
+          "shade": "#c9cbcd",
+          "inner": "#f0eee9",
+          "base": "#c9cbcd",
+          "metal": "#c9cbcd",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "chrome",
+          "inner": "painted",
+          "base": "chrome",
+          "metal": "chrome",
+          "cord": "cotton"
+        },
+        "url": "https://www.ikea.com/no/no/p/forsa-arbeidslampe-forniklet-80146763/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/forsa-arbeidslampe-forniklet__0121576_pe278160_s5.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "table",
+      "bulb": "E14 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Klassisk arbeidslampe med leddarm og fjærer, lite kuppelhode og rund fot. Både hodet og armen kan vinkles.",
+    "why": "Rimelig og praktisk på skrivebordet i hjemmekontoret i kjellersoverommet; den svarte varianten matcher de svarte metalldetaljene i huset.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/forsa-arbeidslampe-svart__0609293_pe684430_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata): pris 349 kr for begge farger, H35 cm, fot Ø15, skjerm Ø12, metall, bilde, art.nr. 001.467.76 og 801.467.63, på lager. Anslått: rekkevidde (d) og kuppelens høyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Klassisk arkitektlampe: rund fot Ø15, to leddarmer med doble stenger og synlige fjærer, og et lite kuppelhode Ø12 som kan vinkles. IKEA oppgir H35; på produktbildet står armen høyere. Rekkevidde ca. 40 cm anslått fra bildet."
+  },
+  {
+    "id": "ikea-vidja-gulvlampe",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "VIDJA Gulvlampe, 138 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/vidja-gulvlampe-hvit-00309198/",
+    "priceNok": 599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 003.091.98, hvit): 599 kr. Lyspærer selges separat (IKEA anbefaler 6 stk. E14 globe opalhvit, maks 7 W); ledning 1,98 m.",
+    "dims": {
+      "w": 0.19,
+      "d": 0.19,
+      "h": 1.38
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeShape": "cylinder",
+      "shadeD": 0.19,
+      "shadeH": 1.32,
+      "shadeBottomAt": 0.03,
+      "baseShape": "disc",
+      "baseD": 0.19,
+      "baseH": 0.03,
+      "poleCount": 0,
+      "closedTop": true,
+      "translucent": 0.65
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f2f1ed",
+          "inner": "#f5f4f0",
+          "base": "#c3c5c7",
+          "metal": "#c3c5c7",
+          "cord": "#f0f0ee"
+        },
+        "materials": {
+          "shade": "cotton",
+          "inner": "cotton",
+          "base": "steel",
+          "metal": "steel",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 2820,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "6 × E14 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Slank søylelampe der hele kroppen er en hvit tekstilsylinder med aluminiumsringer; lyset fordeles jevnt i hele høyden.",
+    "why": "Tar nesten ingen gulvplass og gir mykt, jevnt lys i et trangt hjørne i gangen, i soverommet eller i kjellerstua.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/vidja-gulvlampe-hvit__0606512_pe682388_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata): pris 599 kr, H138 cm, skjerm Ø19, tekstil, bilde, art.nr. 003.091.98, på lager. Anslått: lumen 6 × 470 lm (pærer følger ikke med).",
+    "priceConfidence": "checked",
+    "shapeNote": "Smal søyle (Ø19 × H138) av hvit tekstil i tre like seksjoner, delt av tynne aluminiumsringer, med aluminiumslokk øverst og lav aluminiumsfot; seks E14-pærer inni gir jevnt lys i hele høyden."
+  },
+  {
+    "id": "ikea-arstid-vegglampe",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "ÅRSTID Vegglampe",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/arstid-vegglampe-forniklet-hvit-60163876/",
+    "priceNok": 499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 601.638.76, forniklet/hvit): 499 kr. Lyspære selges separat (IKEA anbefaler E14 globe opalhvit, f.eks. SOLHETTA 470 lm); ledning 2,5 m, trekksnor på veggplaten.",
+    "dims": {
+      "w": 0.16,
+      "d": 0.38,
+      "h": 0.3
+    },
+    "archetype": "wall-arm",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "cone",
+      "armShape": "curved",
+      "plug": true,
+      "shadeD": 0.16,
+      "shadeTopD": 0.11,
+      "shadeH": 0.17,
+      "armReach": 0.3,
+      "plateShape": "disc",
+      "translucent": 0.6,
+      "mountHeight": 1,
+      "pleats": 40
+    },
+    "variants": [
+      {
+        "name": "Forniklet/hvit",
+        "colors": {
+          "shade": "#f5f4f0",
+          "inner": "#f7f6f2",
+          "base": "#c4c6c8",
+          "metal": "#c4c6c8",
+          "cord": "#eeeeec"
+        },
+        "materials": {
+          "shade": "cotton",
+          "inner": "cotton",
+          "base": "chrome",
+          "metal": "chrome",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall",
+      "bulb": "E14 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Klassisk vegglampe med buet arm i nikkel og plissert skjerm i hvit tekstil. Ledning og trekksnor – ingen fastmontering nødvendig.",
+    "why": "Klassisk sengelampe: én på hver side av senga i soverommet gir godt leselys og frigjør plass på nattbordene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/arstid-vegglampe-forniklet-hvit__0606627_pe682427_s5.jpg",
+    "verified": false,
+    "verifiedNote": "IKKE verifisert: mangler høyde i IKEAs måldata. Sjekket på ikea.com/no 2026-10-21 (produktdata): pris 499 kr, dybde 38 cm, skjerm Ø16, metall/tekstil, bilde, art.nr. 601.638.76, på lager. Anslått: høyde ca. 30 cm fra produktbildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rund, profilert veggplate i nikkel med trekksnor, en buet arm som svinger ut og ned, og en plissert, kjegleformet tekstilskjerm (Ø16 nederst) som henger litt på skrå. Høyde ca. 30 cm og skjermens høyde anslått fra produktbildet."
+  },
+  {
+    "id": "nordicnest-artemide-tolomeo-micro-bordlampe",
+    "category": "smalamper",
+    "subcategory": "arbeidslampe",
+    "name": "Tolomeo micro bordlampe",
+    "brand": "Artemide",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/artemide/tolomeo-micro-bordlampe/?variantId=532245-01",
+    "priceNok": 3775,
+    "salePriceNok": 3020,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 532245-01, aluminium): 3 020 kr (før 3 775 kr); black 3 020 kr (før 3 775 kr), white 2 972 kr (før 3 715 kr), red 3 068 kr (før 3 835 kr). E14, pære følger ikke med; dimbar med dimbar pære og ekstern dimmer; støpsel.",
+    "dims": {
+      "w": 0.17,
+      "d": 0.4,
+      "h": 0.73
+    },
+    "archetype": "table-task",
+    "mount": "surface",
+    "params": {
+      "armShape": "articulated",
+      "headShape": "cone",
+      "baseShape": "disc",
+      "tilt": 35,
+      "springs": true,
+      "shadeD": 0.11,
+      "shadeH": 0.1,
+      "baseD": 0.17,
+      "elbowAt": 0,
+      "elbowY": 0.55,
+      "headAt": 0.97
+    },
+    "variants": [
+      {
+        "name": "Aluminium",
+        "colors": {
+          "shade": "#c8cbce",
+          "inner": "#d4d6d8",
+          "base": "#c8cbce",
+          "metal": "#b9bcbf",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "steel",
+          "inner": "steel",
+          "base": "steel",
+          "metal": "steel",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Black",
+        "colors": {
+          "shade": "#1d1d1d",
+          "inner": "#2a2a2a",
+          "base": "#1d1d1d",
+          "metal": "#1d1d1d",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "painted",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/artemide/tolomeo-micro-bordlampe/?variantId=532250-01",
+        "imageUrl": "https://www.nordicnest.no/assets/blobs/artemide-tolomeo-micro-bordlampe-black/07515010002-c17cd30e4c.jpeg"
+      },
+      {
+        "name": "White",
+        "colors": {
+          "shade": "#eeedea",
+          "inner": "#f3f2ef",
+          "base": "#eeedea",
+          "metal": "#eeedea",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/artemide/tolomeo-micro-bordlampe/?variantId=564089-01",
+        "priceNok": 3715,
+        "salePriceNok": 2972,
+        "imageUrl": "https://www.nordicnest.no/assets/blobs/artemide-tolomeo-micro-bordlampe-white/tolomeo-micro-white-d6121cb1cd.jpeg"
+      },
+      {
+        "name": "Red",
+        "colors": {
+          "shade": "#b8262c",
+          "inner": "#c43a3e",
+          "base": "#b8262c",
+          "metal": "#b8262c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/artemide/tolomeo-micro-bordlampe/?variantId=532263-01",
+        "priceNok": 3835,
+        "salePriceNok": 3068,
+        "imageUrl": "https://www.nordicnest.no/assets/blobs/artemide-tolomeo-micro-bordlampe-red/07515010010-c2501a60dc.jpeg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "table",
+      "bulb": "E14 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Designklassiker fra Artemide: arkitektlampe i aluminium med balansert leddarm, kjegleformet hode og rund fot.",
+    "why": "En varig arbeidslampe for hjemmekontoret i kjellersoverommet; armen når langt ut over skrivebordet uten å ta bordplass.",
+    "imageUrl": "https://www.nordicnest.no/assets/blobs/artemide-tolomeo-micro-bordlampe-aluminium/07515010001-9279620d3e.jpeg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris (veil. 3 775 kr, nå 3 020 kr), H73 cm, fot Ø17, aluminium, bilde, varenr. 532245-01 (på lager; black begrenset lager, white restordre, red på lager). Anslått: rekkevidde (d) og hodets mål.",
+    "priceConfidence": "checked",
+    "shapeNote": "Leddarm i aluminium med balansewire og fjærer i leddene, kjegleformet hode (ca. Ø11) og rund fot Ø17. H73 er Nordic Nests høyde med armen løftet; rekkevidde ca. 40 cm og hodets mål anslått fra produktbildet."
+  },
+  {
+    "id": "nordicnest-ferm-living-arum-arched-gulvlampe",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Arum arched gulvlampe",
+    "brand": "Ferm Living",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/ferm-living/arum-arched-gulvlampe/?variantId=696143-01",
+    "priceNok": 17185,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 696143-01, Black): 17 185 kr; cashmere (varenr. 696144-01) 17 185 kr. Begge leveres som restordre (BackOrder). E27 maks 12 W LED, pære følger ikke med; 3 m tekstilledning med støpsel.",
+    "dims": {
+      "w": 1.55,
+      "d": 0.4,
+      "h": 2.05
+    },
+    "archetype": "floor-arc",
+    "mount": "floor",
+    "params": {
+      "armShape": "arc",
+      "shadeShape": "dome",
+      "baseShape": "bullet",
+      "shadeD": 0.4,
+      "shadeH": 0.08,
+      "baseD": 0.17,
+      "armReach": 1.3,
+      "translucent": 0,
+      "baseH": 0.26
+    },
+    "variants": [
+      {
+        "name": "Black",
+        "colors": {
+          "shade": "#1f1f1f",
+          "inner": "#e4e2dc",
+          "base": "#1e1e21",
+          "metal": "#1f1f1f",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "marble-dark",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Cashmere",
+        "colors": {
+          "shade": "#d2cbbd",
+          "inner": "#e2ddd2",
+          "base": "#cdbb9c",
+          "metal": "#d2cbbd",
+          "cord": "#eeeeec"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "travertine",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/ferm-living/arum-arched-gulvlampe/?variantId=696144-01",
+        "imageUrl": "https://www.nordicnest.no/assets/blobs/ferm-living-arum-arched-gulvlampe-cashmere/696144-01_01_ProductImageMain-5ab2cf4be7.png"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Stor buelampe med en tung steinblokk som fot, en tynn bue og en flat, asymmetrisk skjerm i pulverlakkert aluminium.",
+    "why": "Henger lyset over sofaen eller lenestolen i stua uten takuttak; buen på 2,05 m passer under den høye siden av skråtaket.",
+    "imageUrl": "https://www.nordicnest.no/assets/blobs/ferm-living-arum-arched-gulvlampe-black/696143-01_01_ProductImageMain-34ebbcac76.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 17 185 kr for begge farger, B155 × D40 × H205 cm, marmor/aluminium, bilde, varenr. 696143-01 og 696144-01 (restordre). Anslått: steinblokkens og skjermens mål.",
+    "priceConfidence": "checked",
+    "shapeNote": "Tung, stående steinblokk med avrundet topp (svart marmor eller travertin, ca. Ø17 × H26) med stangen festet på siden; stangen går rett opp og bøyer i en stor bue (B155 × H205) til en flat, asymmetrisk kjegleskjerm (ca. Ø40) i pulverlakkert aluminium. Blokk- og skjermmål anslått fra produktbildet."
+  },
+  {
+    "id": "nordicnest-ferm-living-arum-swivel-vegglampe",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Arum swivel vegglampe",
+    "brand": "Ferm Living",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/ferm-living/arum-vegglampe/?variantId=573057-01",
+    "priceNok": 3515,
+    "salePriceNok": 2120,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 573057-01, Cashmere): 2 120 kr (før 3 515 kr); svart (574037-01) 1 999 kr (restordre), bronze (579958-01) 2 123 kr (begrenset lager), begge før 3 515 kr. E14 maks 12 W, pære følger ikke med; 2,6 m tekstilledning med støpsel og bryter.",
+    "dims": {
+      "w": 0.255,
+      "d": 0.44,
+      "h": 0.47
+    },
+    "archetype": "wall-arm",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "cone",
+      "armShape": "curved",
+      "plug": true,
+      "shadeD": 0.255,
+      "shadeTopD": 0.02,
+      "shadeH": 0.07,
+      "armReach": 0.32,
+      "plateShape": "rect",
+      "translucent": 0,
+      "mountHeight": 0.95
+    },
+    "variants": [
+      {
+        "name": "Cashmere",
+        "colors": {
+          "shade": "#d4cab3",
+          "inner": "#e8e2d4",
+          "base": "#d4cab3",
+          "metal": "#d4cab3",
+          "cord": "#f0f0ee"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#1d1d1d",
+          "inner": "#d9d6d0",
+          "base": "#1d1d1d",
+          "metal": "#1d1d1d",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/ferm-living/arum-vegglampe/?variantId=574037-01",
+        "salePriceNok": 1999,
+        "imageUrl": "https://www.nordicnest.no/assets/blobs/ferm-living-arum-swivel-vegglampe-svart/574037-01_20_ProductImageExtra-44ca0911cd.jpeg"
+      },
+      {
+        "name": "Bronze",
+        "colors": {
+          "shade": "#8c7b5a",
+          "inner": "#cfcac0",
+          "base": "#8c7b5a",
+          "metal": "#8c7b5a",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "bronze",
+          "inner": "painted",
+          "base": "bronze",
+          "metal": "bronze",
+          "cord": "cotton"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/ferm-living/arum-vegglampe/?variantId=579958-01",
+        "salePriceNok": 2123,
+        "imageUrl": "https://www.nordicnest.no/assets/blobs/ferm-living-arum-swivel-vegglampe-bronze/579958-01_1_ProductImageMain-11ba20b482.jpeg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall",
+      "bulb": "E14 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Vegglampe fra Ferm Living med svingbar, buet arm og flat, skrå metallskjerm. Tekstilkledd ledning med støpsel og bryter.",
+    "why": "Kan svinges inn over senga eller lenestolen; cashmere-fargen glir inn i SAND-veggene, og den passer som sengelampe i soverommet.",
+    "imageUrl": "https://www.nordicnest.no/assets/blobs/ferm-living-arum-swivel-vegglampe-cashmere/573057-01_1_ProductImageMain-591d78c9ce.jpeg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris (veil. 3 515 kr, nå 2 120 kr), B25,5 × D44 × H47 cm, jern/aluminium, bilde, varenr. 573057-01 (på lager). Anslått: skjermens høyde, armens rekkevidde og monteringshøyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Smal, rektangulær veggbrakett der en stang går rett opp og bøyer over i en tett bue; i enden henger en flat, skrå kjegleskjerm (ca. Ø25) i pulverlakkert aluminium. Armen kan svinges sidelengs. Skjermens høyde og armens rekkevidde anslått fra produktbildet."
+  },
+  {
+    "id": "lampehuset-milo-vegg-baderomslampe-ip44",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Milo vegg baderomslampe IP44 20cm",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/baderomslamper/vegglamper-og-speilbelysning/milo-vegg-baderomslampe-ip44-20cm-sort/",
+    "priceNok": 2399,
+    "salePriceNok": 1199,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, art.nr. 8121000171, sort): 1 199 kr (før 2 399 kr, kampanje «50 % på nesten alle baderomslamper»). Integrert LED 8 W, 975 lm, 3000 K, CRI 90, IP44, dimbar med ekstern dimmer; fastmontert – monteres av elektriker.",
+    "dims": {
+      "w": 0.135,
+      "d": 0.135,
+      "h": 0.2
+    },
+    "archetype": "wall-sconce",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "globe",
+      "shadeD": 0.135,
+      "baseD": 0.05,
+      "translucent": 0.85,
+      "mountHeight": 1.6,
+      "plateShape": "rect"
+    },
+    "variants": [
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#f4f2ee",
+          "inner": "#f7f5f1",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 975,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "wall",
+      "bulb": "Integrert LED 8 W, 975 lm, 3000 K, CRI 90"
+    },
+    "description": "Baderomslampe med opalhvit glasskule på en smal, svart veggplate, IP44 og integrert LED. Monteres av elektriker.",
+    "why": "Gir godt og jevnt lys ved speilet på badet (2,53 × 2,22 m) eller på kjellerbadet; den svarte platen passer til husets svarte detaljer.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/8121000171/milo-vegg.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris (før 2 399 kr, nå 1 199 kr), H20 × B13,5 × D13,5 cm, 975 lm, 3000 K, IP44, bilde, art.nr. 8121000171, på lager. Anslått: veggplatens mål og monteringshøyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Opalhvit glasskule Ø13,5 festet foran en smal, stående svart veggplate (ca. 5 × 15 cm) i aluminium; kula stikker 13,5 cm ut fra veggen. Platens mål anslått fra produktbildet."
+  },
+  {
+    "id": "lampehuset-flora-vegglampe-25cm",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Flora vegglampe 25cm",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/vegglamper/interiorlamper-vegg/flora-vegglampe-25cm-beige/",
+    "priceNok": 1999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, art.nr. 11000000513, beige): 1 999 kr. 1 × E14 maks 10 W, pære følger ikke med; 2 m ledning med støpsel og bryter.",
+    "dims": {
+      "w": 0.25,
+      "d": 0.125,
+      "h": 0.27
+    },
+    "archetype": "wall-sconce",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "shell",
+      "shadeD": 0.25,
+      "shadeH": 0.27,
+      "translucent": 0.6,
+      "mountHeight": 1.45
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "shade": "#d8ccb6",
+          "inner": "#e0d6c3",
+          "base": "#ecebe7",
+          "metal": "#ecebe7",
+          "cord": "#efefec"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall",
+      "bulb": "E14 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Vegglampe med en halv kjegleskjerm i beige tekstil som lyser både opp og ned langs veggen. Støpsel og bryter på ledningen.",
+    "why": "Myk vegglampe over sofaen eller ved spisebordet i stua; den varme, beige tekstilen passer fint mot MARRAKESH-veggen.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/11000000513/flora-gressvik.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris 1 999 kr, B25 × D12,5 × H27 cm, tekstil/metall, bilde, art.nr. 11000000513, på lager. Anslått: monteringshøyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Halv, nedoverspisset kjegle av beige tekstil med myke folder (B25 øverst, H27), åpen opp og ned, rett på veggen; hvit ledning henger ned."
+  },
+  {
+    "id": "lampehuset-trysil-vegglampe-20cm",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Trysil vegglampe 20cm",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/vegglamper/interiorlamper-vegg/trysil-vegglampe-20cm-beige/",
+    "priceNok": 1399,
+    "salePriceNok": 699,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, art.nr. 4283902542, beige): 699 kr (før 1 399 kr). 1 × E27 maks 40 W, pære følger ikke med; 2 m ledning med støpsel.",
+    "dims": {
+      "w": 0.25,
+      "d": 0.13,
+      "h": 0.2
+    },
+    "archetype": "wall-sconce",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "half-drum",
+      "shadeD": 0.25,
+      "shadeH": 0.2,
+      "translucent": 0.6,
+      "mountHeight": 1.45,
+      "tiers": 2
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "shade": "#ece6da",
+          "inner": "#f0ebe1",
+          "base": "#efeeea",
+          "metal": "#efeeea",
+          "cord": "#f0f0ee"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Vegglampe med to halvsylindriske tekstilskjermer i to høyder som gir lys både opp og ned. Ledning med støpsel.",
+    "why": "Rolig og lun vegglampe i soverommet eller gangen; ingen fastmontering trengs, og den lyse tekstilen sprer lyset mykt.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/4283902542/sites-default-files-product_image-thumbnail_Lampehuset%2017.6.25.046_m.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris (før 1 399 kr, nå 699 kr), H20 × B25 cm, tekstil, bilde, art.nr. 4283902542, på lager. Anslått: dybde (13 cm) og monteringshøyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "To halvsylindre i lys tekstil over hverandre: en bred øverst (B25) og en smalere, lavere under, som gir lys både opp og ned. Dybde ca. 13 cm og den nedre skjermens mål anslått fra produktbildet."
+  },
+  {
+    "id": "lampehuset-banker-skrivebordslampe-39cm",
+    "category": "smalamper",
+    "subcategory": "arbeidslampe",
+    "name": "Banker skrivebordslampe 39cm",
+    "brand": "Metall Service",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/bordlamper/leselamper-bord/banker-skrivebordslampe-39cm-gronn/",
+    "priceNok": 2499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, art.nr. 2042900049, grønn): 2 499 kr. Ikke på lager i nettbutikken 2026-10-21 (OutOfStock). 1 × E27 maks 60 W, pære følger ikke med (ikke oppgitt som inkludert); ledning med støpsel, trekksnor.",
+    "dims": {
+      "w": 0.27,
+      "d": 0.2,
+      "h": 0.39
+    },
+    "archetype": "table-task",
+    "mount": "surface",
+    "params": {
+      "armShape": "banker",
+      "headShape": "banker",
+      "baseShape": "disc",
+      "tilt": 0,
+      "springs": false,
+      "shadeD": 0.13,
+      "shadeH": 0.09,
+      "baseD": 0.2,
+      "translucent": 0.3
+    },
+    "variants": [
+      {
+        "name": "Grønn",
+        "colors": {
+          "shade": "#1f7a35",
+          "inner": "#f1ede0",
+          "base": "#c8a24a",
+          "metal": "#c8a24a",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "brass",
+          "metal": "brass",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "table",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Klassisk bankerlampe med grønn glasskjerm, dreid fot og arm i blank messing og trekksnor. Lyset faller ned mot bordplaten.",
+    "why": "Gir rolig, rettet arbeidslys på skrivebordet i kjellersoverommet (7,4 m²) som hjemmekontor; den grønne glasskjermen blender ikke og gir et lunt, tidløst preg.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/2042900049/sites-default-files-product_image-90967_ambient_0001.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris 2 499 kr, L27 × H39 cm, metall/glass, E27, bilde, art.nr. 2042900049 (ikke på lager på nett i dag). Anslått: fotens Ø (dybde 20 cm), skjermens mål, lumen 806 lm for en E27-pære.",
+    "priceConfidence": "checked",
+    "shapeNote": "Klassisk bankerlampe: rund, dreid messingfot med profilert kant (ca. Ø20), kort dreid søyle, buet messingarm og en vannrett, halvsylindrisk skjerm i grønt glass (L27) med trekksnor. Fotens Ø og skjermens dybde/høyde anslått fra produktbildet."
+  },
+  {
+    "id": "lampehuset-kalle-vegglampe-55cm",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Kalle vegglampe 55cm",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/vegglamper/interiorlamper-vegg/kalle-vegglampe-55cm-sort/",
+    "priceNok": 1799,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, art.nr. 4046204771, svart): 1 799 kr. 1 × E27 maks 40 W, pære følger ikke med; 2 m ledning med bryter og støpsel, ikke dimbar (ledningsdimmer kjøpes separat).",
+    "dims": {
+      "w": 0.14,
+      "d": 0.475,
+      "h": 0.55
+    },
+    "archetype": "wall-arm",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "dome",
+      "armShape": "swing",
+      "plug": true,
+      "shadeD": 0.14,
+      "shadeH": 0.12,
+      "armReach": 0.4,
+      "swingDeg": 0,
+      "plateShape": "disc",
+      "translucent": 0,
+      "mountHeight": 1.25
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#e6e4df",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "painted",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Vegglampe med leddet svingarm og kuppelskjerm i matt sort metall; armen kan justeres ut fra veggen. Ledning med bryter og støpsel.",
+    "why": "Svingarmen kan trekkes ut over lesestolen i kjellerstua eller som leselys ved senga; den matt sorte metallen passer til husets svarte detaljer, og ingen elektriker trengs.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/4046204771/sites-default-files-product_image-Kalle%20vegglamper%20@villa_aasborg%201080x1080.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris 1 799 kr, L47,5 × B14 × H55 cm, metall, E27, bilde, art.nr. 4046204771, på lager. Anslått: skjermens høyde, monteringshøyde, lumen 806 lm for en E27-pære.",
+    "priceConfidence": "checked",
+    "shapeNote": "Svingarm i matt sort metall: rund veggplate, to armledd med knotter i leddene og en kuppelskjerm (Ø14) som henger ned fra enden av armen. Lampehuset oppgir L47,5 (ut fra veggen) × B14 × H55; skjermens høyde anslått fra produktbildet."
+  },
+  {
+    "id": "lampehuset-torino-vegglampe-24cm",
+    "category": "smalamper",
+    "subcategory": "vegglampe",
+    "name": "Torino vegglampe 24cm",
+    "brand": "Metall Service",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/vegglamper/leselamper-vegg/torino-vegglampe-24cm-sort/",
+    "priceNok": 999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, art.nr. 4275900171, svart): 999 kr. 1 × E27 maks 10 W, pære følger ikke med; 1,5 m ledning med bryter og støpsel, IP20, ikke dimbar.",
+    "dims": {
+      "w": 0.15,
+      "d": 0.19,
+      "h": 0.24
+    },
+    "archetype": "wall-arm",
+    "mount": "wall",
+    "params": {
+      "shadeShape": "drum",
+      "armShape": "straight",
+      "plug": true,
+      "shadeD": 0.15,
+      "shadeH": 0.16,
+      "armReach": 0.12,
+      "plateShape": "rect",
+      "translucent": 0.35,
+      "mountHeight": 1,
+      "shadeUp": true
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#262422",
+          "inner": "#b08d57",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "cotton",
+          "inner": "painted",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Vegglampe med sylinderskjerm i sort tekstil med gyllent fôr på en rett brakett i sort metall. Ledning med bryter og støpsel.",
+    "why": "En rolig sengelampe med tekstilskjerm: én på hver side av senga i soverommet (3,11 × 3,69 m) frigjør plass på nattbordene, og ledningen gjør at ingen elektriker trengs.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/4275900171/sites-default-files-product_images7024080000593.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris 999 kr, B19 × L15 × H24 cm, metall/tekstil, E27, bilde, art.nr. 4275900171, på lager. Anslått: hvilket mål som er skjermens Ø og hvilket som er dybden (fra bildet), skjermens høyde, monteringshøyde, lumen 806 lm.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rektangulær sort veggplate med en rett, flat brakett som bærer en sylinderskjerm i sort tekstil med gyllent fôr. Lampehuset oppgir B19 × L15 × H24; ut fra bildet er 15 cm skjermens Ø (w) og 19 cm avstanden ut fra veggen (d). Skjermens høyde anslått."
+  },
+  {
+    "id": "lampehuset-fleur-gulvlampe-160cm",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Fleur gulvlampe 160cm",
+    "brand": "Nova Value",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/gulvlamper/interiorlamper-gulv/fleur-gulvlampe-160cm-sort/",
+    "priceNok": 899,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, art.nr. 3210416071, svart): 899 kr. 1 × E27 maks 40 W, pære følger ikke med; 2,5 m ledning med bryter, IP20, ikke dimbar.",
+    "dims": {
+      "w": 0.33,
+      "d": 0.33,
+      "h": 1.6
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeShape": "pleated",
+      "shadeD": 0.33,
+      "shadeTopD": 0.33,
+      "shadeH": 0.3,
+      "shadeBottomAt": 1.3,
+      "pleats": 48,
+      "baseShape": "disc",
+      "baseD": 0.25,
+      "baseH": 0.02,
+      "poleD": 0.016,
+      "translucent": 0.6
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#efe7d8",
+          "inner": "#f4eee3",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Slank gulvlampe med plissert sylinderskjerm i lys lin på en tynn stang og rund fot i sort metall.",
+    "why": "Smal leselampe ved sofaen i stua eller i hjørnet av soverommet; den plisserte linskjermen gir et mykt, varmt lys mot SAND-veggene, og den sorte stangen matcher husets svarte detaljer.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/3210416071/fleur-gulv.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris 899 kr, Ø33 × H160 cm, metall/tekstil (plissert lin), E27, bilde, art.nr. 3210416071, på lager. Anslått: skjermens høyde, fotens Ø, lumen 806 lm for en E27-pære.",
+    "priceConfidence": "checked",
+    "shapeNote": "Tynn, sort metallstang på en lav, rund fot med en rett, plissert sylinderskjerm i lys lin (Ø33) øverst. Skjermens høyde (ca. 30 cm), antall plisser og fotens Ø (ca. 25 cm) anslått fra produktbildet."
   }
 ]

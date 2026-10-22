@@ -6,6 +6,7 @@ import { mat, ghostMaterial, placeholderMaterial, warmupMaterials } from '../hom
 import { applyShading } from '../models/shading.js';
 import { applyWallDesign } from '../models/walldesigns.js';
 import { finishPlan, buildSurfaceFinish, disposeSurfaceFinish } from '../models/surfaceslats.js';
+import { itemQuantity } from './grid.js';
 
 /**
  * SceneSync – keeps the 3D scene equal to the DesignState (ARCHITECTURE §7).
@@ -761,7 +762,11 @@ export class SceneSync extends Emitter {
     entry.zone = null;
   }
 
-  /** Sends the model's lights (world space, with the item's on/dimmer/colorK/lumens) to the LightManager. */
+  /**
+   * Sends the model's lights (world space, with the item's on/dimmer/colorK/lumens) to the LightManager, with the room
+   * they shine in (`roomId`, from the item's level) and the spot fittings' `cluster` / `fitting` / `noShadow`
+   * (design/lighting.md §3; MASTER §2.5).
+   */
   _lights(entry) {
     const { item, object } = entry;
     const lights = object.userData.model?.lights || [];
@@ -771,15 +776,24 @@ export class SceneSync extends Emitter {
       entry.hadLights = false;
       return;
     }
-    object.updateMatrixWorld(true);
+    object.updateMatrixWorld(true); // runs the models' ceiling hooks (followCeiling, spots.js HeadSet) first
     const total = lights.reduce((s, l) => s + (l.lumens || 0), 0) || 1;
     const L = item.light || {};
+    // a grid item is n identical fittings; item.light.lumens is ONE fitting's (the store's figure)
+    const qty = itemQuantity(item);
+    const layout = this.home.layout;
+    const lv = itemLevel(item, layout);
+    const fy = levelFloorY(layout, lv);
+    // the room the light shines in, from the item's level (never from the emission height: a basement ceiling lamp at
+    // y ≥ −0.30 would otherwise count as the living room's, layout.levelAt)
+    const roomOf = (p) => layout?.house?.roomAt?.(p.x, fy + 1, p.z, { levelId: lv })?.id ?? null;
     const world = lights.map((l) => {
+      const position = new THREE.Vector3(...(l.position || [0, 0, 0])).applyMatrix4(object.matrixWorld);
       const out = {
         type: l.type || 'point',
-        position: new THREE.Vector3(...(l.position || [0, 0, 0])).applyMatrix4(object.matrixWorld),
+        position,
         colorK: L.colorK ?? l.colorK ?? 2700,
-        lumens: L.lumens != null ? (L.lumens * (l.lumens || 0)) / total : l.lumens ?? 800,
+        lumens: L.lumens != null ? (L.lumens * qty * (l.lumens || 0)) / total : l.lumens ?? 800,
         on: L.on !== false,
         dimmer: L.dimmer ?? 1,
         emissiveMeshes: l.emissiveMeshes || [],
@@ -787,6 +801,11 @@ export class SceneSync extends Emitter {
       if (l.direction) out.direction = new THREE.Vector3(...l.direction).transformDirection(object.matrixWorld);
       if (l.angle != null) out.angle = l.angle;
       if (l.penumbra != null) out.penumbra = l.penumbra;
+      if (l.cluster) out.cluster = l.cluster;
+      if (l.fitting) out.fitting = l.fitting;
+      if (l.noShadow) out.noShadow = true;
+      const roomId = roomOf(position);
+      if (roomId) out.roomId = roomId;
       return out;
     });
     this.lighting.setItemLights(item.uid, world);

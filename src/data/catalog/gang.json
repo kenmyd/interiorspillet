@@ -832,6 +832,194 @@
     "priceConfidence": "checked"
   },
   {
+    "id": "bohus-deauville-benk-med-oppbevaring-b120",
+    "category": "gang",
+    "subcategory": "benk",
+    "name": "Deauville benk med oppbevaring B120",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/benk/deauville-benk-med-oppbevaring-b120",
+    "priceNok": 3999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316740, Brun): 3 999 kr. Andre varianter: Offwhite (varenr. 316741) 3 999 kr.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.42,
+      "h": 0.48
+    },
+    "archetype": "bench",
+    "mount": "floor",
+    "params": {
+      "seat": "upholstered",
+      "seatT": 0.06,
+      "legStyle": "metal-thin",
+      "shelf": "none",
+      "tufted": false,
+      "storage": true,
+      "back": "none",
+      "arms": false,
+      "legH": 0.08
+    },
+    "variants": [
+      {
+        "name": "Brun",
+        "colors": {
+          "upholstery": "#6f6450",
+          "legs": "#1c1c1c",
+          "frame": "#6f6450"
+        },
+        "materials": {
+          "upholstery": "felt",
+          "legs": "black-metal",
+          "frame": "felt"
+        }
+      },
+      {
+        "name": "Offwhite",
+        "colors": {
+          "upholstery": "#a39a85",
+          "legs": "#1c1c1c",
+          "frame": "#a39a85"
+        },
+        "materials": {
+          "upholstery": "felt",
+          "legs": "black-metal",
+          "frame": "felt"
+        },
+        "url": "https://www.bohus.no/stoler/benk/deauville-benk-med-oppbevaring-b120-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/DEAUVILLE/349764/image-thumb__349764__PDP-Product/316741%20-%20Deauville%20benk%20med%20oppbevaring%20B120%20H48%20Natur%20-%202.cb19452b.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.2,
+    "description": "Polstret benk med oppbevaring under løftelokket, i filtaktig stoff på tynne, svarte metallben.",
+    "why": "I gangen eller ved fotenden av sengen (3,11 × 3,69 m): sitteplass når skoene tas på, og pledd eller luer forsvinner under lokket.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/DEAUVILLE/349766/image-thumb__349766__PDP-Product/316740%20-%20Deauville%20benk%20med%20oppbevaring%20B120%20H48%20Brun%20-%202.3aace35e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, B120 × D42 × H48 cm, maks 150 kg, bilde, varenr. 316740 / 316741. Anslått: benhøyde 8 cm og setetykkelse. Offwhite-fargen ser sandfarget ut på bildet; farger anslått fra produktbildene.",
+    "priceConfidence": "checked",
+    "shapeNote": "Lang, polstret kiste med løftelokk, trukket i filtaktig stoff, på fire tynne, svarte metallben satt inn fra endene. Klaring under anslått 8 cm fra bildet."
+  },
+  {
+    "id": "bohus-blonville-benk-med-skohylle-b100",
+    "category": "gang",
+    "subcategory": "benk",
+    "name": "Blonville benk med skohylle B100",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skohyller/blonville-benk-med-skohylle-b100-1",
+    "priceNok": 2999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316730, Varmgrå): 2 999 kr. Andre varianter: Beige (varenr. 316709) 2 999 kr.",
+    "dims": {
+      "w": 1,
+      "d": 0.35,
+      "h": 0.45
+    },
+    "archetype": "bench",
+    "mount": "floor",
+    "params": {
+      "seat": "upholstered",
+      "seatT": 0.06,
+      "legStyle": "sled",
+      "shelf": "slats",
+      "tufted": false,
+      "storage": false,
+      "back": "none",
+      "arms": false
+    },
+    "variants": [
+      {
+        "name": "Varmgrå",
+        "colors": {
+          "upholstery": "#8a8173",
+          "legs": "#1c1c1c",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "black-metal"
+        }
+      },
+      {
+        "name": "Beige",
+        "colors": {
+          "upholstery": "#b3a690",
+          "legs": "#1c1c1c",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal",
+          "frame": "black-metal"
+        },
+        "url": "https://www.bohus.no/oppbevaring/skooppbevaring/skohyller/blonville-benk-med-skohylle-b100",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/BLONVILLE/349756/image-thumb__349756__PDP-Product/316709%20-%20Blonville%20benk%20med%20skohylle%20B100%20H45%201%20hylle%20Beige%20-%204.98604b2e.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.2,
+    "description": "Gangbenk med polstret sete og skohylle av stålstag under, i svart stålrørsramme med meier.",
+    "why": "Én meter bred, så den får plass i gangen i 1. etasje ved siden av trappa – sitteplass til skoene og skohylle under, ryddig og praktisk.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/BLONVILLE/349759/image-thumb__349759__PDP-Product/316730%20-%20Blonville%20benk%20med%20skohylle%20B100%20H45%201%20hylle%20Gr%C3%A5%20-%204.072936cf.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, B100 × D35 × H45 cm, 1 hylle, bilde, varenr. 316730 / 316709. Setetykkelse og hyllehøyde anslått fra bildet; farger anslått fra produktbildene.",
+    "priceConfidence": "checked",
+    "shapeNote": "Smal benk med tynn polstret sitteplate i en svart stålrørsramme; endene er bøyde U-meier mot gulvet, og en skohylle av sju runde stålstag sitter ca. 15 cm over gulvet."
+  },
+  {
+    "id": "ikea-salno-benk",
+    "category": "gang",
+    "subcategory": "benk",
+    "name": "SALNÖ benk",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/salnoe-benk-rotting-30551203/",
+    "priceNok": 2495,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.no, art. 305.512.03, rotting): 2 495 kr, ingen kampanje.",
+    "dims": {
+      "w": 1.13,
+      "d": 0.58,
+      "h": 0.84
+    },
+    "archetype": "bench",
+    "mount": "floor",
+    "params": {
+      "seat": "cord",
+      "seatT": 0.03,
+      "legStyle": "wood-taper",
+      "shelf": "none",
+      "tufted": false,
+      "storage": false,
+      "back": "spindles",
+      "arms": true,
+      "seatH": 0.44
+    },
+    "variants": [
+      {
+        "name": "Rotting",
+        "colors": {
+          "upholstery": "#d4b07a",
+          "legs": "#d4b07a",
+          "frame": "#d4b07a"
+        },
+        "materials": {
+          "upholstery": "rattan",
+          "legs": "rattan",
+          "frame": "rattan"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.05,
+    "description": "Toseters benk i naturlig rotting med spilerygg og armlener.",
+    "why": "En benk med rygg som gir et lett, naturlig preg i gangen eller ved vinduet i stua; plass til to – legg gjerne en pute oppå.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/salnoe-benk-rotting__1224519_pe915004_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-21 (produktside): pris 2 495 kr, B113 × D58 × H84 cm, sittehøyde 44 cm, setedybde 41 cm, rotting, bilde, art. 305.512.03. Farge anslått fra produktbildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Benk i rotting med rygg av tette, loddrette rottingspiler mellom to tverrligger, armlener i bøyd rotting, sete av tette rottingstaver og rette ben med buede stag. Sittehøyde 44 cm, sittedybde 41 cm."
+  },
+  {
     "id": "jysk-bakhuse-skoskap-65x25-h124",
     "category": "gang",
     "subcategory": "skoskap",

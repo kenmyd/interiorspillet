@@ -1,11 +1,13 @@
 import { BasePanel, section, button, iconButton, badge, emptyState, confirmDialog } from './panelKit.js';
 import { h, svg, fmtNumber } from './dom.js';
 import { ICONS } from './icons.js';
+import { imageRefs, MSG as IMAGE_MSG } from '../design/ImageStore.js';
 
 /**
  * «Design» panel (M) – ARCHITECTURE §7 Saves, §12: save the current design under a name, the list of saved designs
  * (open, rename, delete with confirmation), «Original» (today's room, always available), export to a .json file,
- * import from a file and the autosave status.
+ * import from a file and the autosave status. Uploaded pictures travel inside exported files; the status warns when
+ * this browser cannot keep them (editor.home.images not persistent).
  *
  *   new SavePanel(editor) – open() / close() / toggle() / isOpen / update() / dispose()
  *
@@ -113,7 +115,7 @@ export class SavePanel extends BasePanel {
       section('Lagre dette designet', h('div.ips-save', {}, this.nameInput, saveBtn), this.statusEl),
       section('Lagrede design', this.listEl),
       section('Fil', h('div.ips-files', {}, exp, imp),
-        h('p.ips-hint', { text: 'Designene lagres i denne nettleseren. Eksporter til fil for å ta vare på et design, dele det eller åpne det på en annen maskin.' })),
+        h('p.ips-hint', { text: 'Designene lagres i denne nettleseren. Eksporter til fil for å ta vare på et design, dele det eller åpne det på en annen maskin – egne bilder blir med i filen.' })),
     );
 
     this._offs = [
@@ -147,6 +149,14 @@ export class SavePanel extends BasePanel {
     this.editor.ui?.toolbar?.exitCompare?.({ quiet: true });
     this.renaming = null;
     this._render();
+    // the picture store knows whether it can keep pictures once its backend is open
+    const images = this.editor.home?.images;
+    if (images?.ready && !this._imagesKnown) {
+      images.ready().then(() => {
+        this._imagesKnown = true;
+        if (this.isOpen) this._renderStatus();
+      }, () => {});
+    }
   }
 
   _render() {
@@ -177,6 +187,20 @@ export class SavePanel extends BasePanel {
       el.className = 'ips-status is-warn';
       el.replaceChildren(svg(ICONS.warning), h('span', { text: 'Klarte ikke å lagre sist (lagringsplassen kan være full). Eksporter til fil for sikkerhets skyld.' }));
       return;
+    }
+    const images = this.editor.home?.images;
+    if (images && this._imagesKnown && !images.persistent) {
+      let used = 0;
+      try {
+        used = imageRefs({ items: this.editor.design.list() }).size;
+      } catch {
+        used = 0;
+      }
+      if (used) {
+        el.className = 'ips-status is-warn';
+        el.replaceChildren(svg(ICONS.warning), h('span', { text: 'Egne bilder kan ikke lagres i denne nettleseren (privat vindu?). Eksporter til fil for å ta vare på dem.' }));
+        return;
+      }
     }
     const active = saves.activeName;
     let text;
@@ -283,6 +307,7 @@ export class SavePanel extends BasePanel {
       const meta = r.original
         ? 'Stua slik den er i dag – kan alltid åpnes'
         : [r.updatedAt ? `Endret ${fmtWhen(r.updatedAt)}` : null, r.itemCount != null ? `${fmtNumber(r.itemCount, 0)} ting` : null,
+          r.imageCount > 0 ? `${fmtNumber(r.imageCount, 0)} ${r.imageCount === 1 ? 'eget bilde' : 'egne bilder'}` : null,
           r.proposalId && r.proposalId !== '0' ? `vegg ${proposals.proposal?.(r.proposalId)?.code || (String(r.proposalId).startsWith('mitt-') ? 'eget forslag' : r.proposalId)}` : null].filter(Boolean).join(' · ');
       const acts = [];
       // the open design gets a badge, not a button; the others an «Åpne …» button
@@ -411,17 +436,35 @@ export class SavePanel extends BasePanel {
     this._render();
   }
 
-  exportFile() {
+  async exportFile() {
     this.editor.ui?.toolbar?.exitCompare?.({ quiet: true });
-    const ok = this.saves?.exportFile?.();
-    this.editor.events.emit('toast', { text: ok ? `Lastet ned ${this.saves.fileName()}` : 'Klarte ikke å eksportere.', seconds: 3 });
+    let ok = false;
+    try {
+      ok = await this.saves?.exportFile?.();
+    } catch (err) {
+      console.warn('[saves] export failed', err);
+    }
+    const missing = ok ? this.saves?.lastExportMissing?.length || 0 : 0;
+    const text = !ok ? 'Klarte ikke å eksportere.'
+      : `Lastet ned ${this.saves.fileName()}${missing ? ` – ${missing} ${missing === 1 ? 'bilde fantes' : 'bilder fantes'} ikke i denne nettleseren og er ikke med` : ''}`;
+    this.editor.events.emit('toast', { text, seconds: missing ? 6 : 3 });
   }
 
   async importFile() {
     this.editor.ui?.toolbar?.exitCompare?.({ quiet: true });
     try {
       const name = await this.saves?.pickAndImport?.();
-      if (name) this.editor.events.emit('toast', { text: `Importerte «${name}» (Ctrl+Z angrer)`, seconds: 3 });
+      if (name) {
+        const li = this.saves?.lastImport || {};
+        const added = li.added?.length || 0;
+        const rejected = li.rejected?.length || 0;
+        const unsaved = li.unsaved?.length || 0;
+        let text = `Importerte «${name}» (Ctrl+Z angrer)`;
+        if (added) text += ` · ${added} ${added === 1 ? 'eget bilde' : 'egne bilder'} lagt til`;
+        if (rejected) text += ` · ${rejected} ${rejected === 1 ? 'bilde kunne ikke leses og vises som tom ramme' : 'bilder kunne ikke leses og vises som tomme rammer'}`;
+        if (unsaved) text += ` · ${li.unsavedReason === 'memory' ? IMAGE_MSG.importMemory : IMAGE_MSG.importUnsaved}`;
+        this.editor.events.emit('toast', { text, seconds: rejected || unsaved ? 6 : 3 });
+      }
     } catch (err) {
       this.editor.events.emit('toast', { text: err?.message || 'Klarte ikke å importere filen.', seconds: 4 });
     }

@@ -16,6 +16,8 @@ import { PhotoCompare } from '../ui/PhotoCompare.js';
 import { WindowPanel } from '../ui/WindowPanel.js';
 import { LightPanel } from '../ui/LightPanel.js';
 import { SunPanel } from '../ui/SunPanel.js';
+import { ImageUpload } from '../ui/ImageUpload.js';
+import { gridCatalogAction } from '../ui/inspector/gridSection.js';
 import { setPanelHost, closeTopPanel, anyModalOpen, isFormFocused } from '../ui/panelKit.js';
 import { isTyping } from '../ui/dom.js';
 
@@ -30,7 +32,7 @@ import { isTyping } from '../ui/dom.js';
  *   level → levelId               the level the editor works on: the overview's / plan's (views.level), else the
  *                                 player's (playerLevel()); new items are placed on it (item.level, §5.3)
  *   ?view=plan&floor=kjeller      opens the plan (or the overview) of that level (§5.2)
- *   ui: { toolbar, catalog, inspector, wall, window, light, sun, saves, shopping, acoustics, photo }
+ *   ui: { toolbar, catalog, inspector, wall, window, light, sun, saves, shopping, acoustics, photo, imageUpload }
  *   selected: { kind: 'item'|'wall'|'ceiling'|'window'|null, uid?, wallId?, ceilingId?, windowId? }
  *   select(target|null)          sets selected, emits 'select' { selected, previous }, opens the matching panel
  *   startPlacing(itemSpec, opts) → placement.start
@@ -114,6 +116,15 @@ export class Editor {
       acoustics: make('acoustics', AcousticsWidget),
       photo: make('photo', PhotoCompare),
     };
+    // own pictures (ui/ImageUpload.js): «Last opp eget bilde» in the catalogue, «Bilde» in the inspector, drag and drop
+    this.ui.imageUpload = make('imageUpload', ImageUpload);
+    // rows / grids of ceiling fittings: «Legg inn flere (rekke/rutenett) …» in a gridable product's detail view
+    try {
+      const ga = gridCatalogAction(this);
+      if (ga) this.ui.catalog.addDetailAction?.(ga);
+    } catch (err) {
+      console.error('[editor] grid catalogue action failed to start', err);
+    }
 
     // Esc while Input is disabled (another view mode, a non-modal block): Game cannot see it, so handle it here.
     this._onKey = (e) => {
