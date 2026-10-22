@@ -470,10 +470,12 @@ export function fixtureAi({ house, dir = FIXTURES, model = null, fallbackModel =
  */
 const HUS1_1 = {
   rooms: [['SOV', null, [225, 265]], ['BOD', null, [868, 117]], ['HALL/TRAPP', null, [577, 332]], ['VASK', null, [1030, 243]], ['KJØKKEN', null, [982, 586]], ['STUE', null, [248, 635]]],
+  // the sliding door STUE–KJØKKEN at the middle of its opening (fasit: x 794–805, y ca. 538–615), not at the top of the
+  // pocket below it (617, where the detection used to put its mark)
   openings: [
     ['window', [955, 50]], ['window', [218, 50]], ['window', [512, 109]], ['door', [715, 109]], ['door', [962, 187]], ['double-door', [650, 469]],
     ['double-door', [600, 831]], ['window', [158, 890]], ['window', [277, 890]], ['window', [921, 890]], ['window', [1040, 890]], ['window', [33, 331]],
-    ['window', [33, 610]], ['door', [404, 410]], ['sliding-door', [800, 617]], ['door', [903, 272]], ['window', [1165, 332]], ['window', [1165, 625]],
+    ['window', [33, 610]], ['door', [404, 410]], ['sliding-door', [800, 576]], ['door', [903, 272]], ['window', [1165, 332]], ['window', [1165, 625]],
   ],
 };
 const HUS1_2 = {
@@ -629,7 +631,8 @@ export function placeItems(fx, out, at, pxPerM = null) {
  *   fx: the recording ({ house, file, part, task, source, … }); out: its tidied answer (ai.js tidyResponse);
  *   facadeIndex: for readFacade, which of the file's facades (in the fasit's order) this drawing is.
  * readPlan: every fasit room (label and area, among the marked rooms and the other labels, with its kind – hall and
- * entrance both count for the room with the front door), door counts per variant, windows, skylights, the stair type,
+ * entrance both count for the room with the front door), a name left over (a room the drawing does not have: the same
+ * label twice, a text that is no room), door counts per variant, windows, skylights, the stair type,
  * the title, the scale text, the dimensions, the ceiling texts; classify: the drawings per kind, their boxes (IoU ≥
  * 0.8), the level of each plan, titles; readFacade: roof, storeys, windows and doors.
  */
@@ -650,11 +653,23 @@ export function scoreAnswer(fx, out, { facadeIndex = 0 } = {}) {
       ...out.rooms.map((r) => ({ name: r.name, area: r.area, roomKind: r.roomKind, how: r.mark ? `rom ${r.mark}` : 'umerket rom' })),
       ...out.labels.map((l) => ({ name: l.text, area: l.area, roomKind: l.roomKind, how: 'etikett' })),
     ];
+    const missed = [];
     for (const t of L.rooms) {
       const k = pool.findIndex((x) => norm(x.name) === norm(t.label) && sameArea(x.area, t.area));
       const got = k >= 0 ? pool.splice(k, 1)[0] : null;
+      if (!got) missed.push(norm(t.label));
       const kindOk = got && (got.roomKind === t.kind || (ENTRY.has(t.kind) && ENTRY.has(got.roomKind)));
       add(`rom ${t.label}${t.area != null ? ` ${t.area}` : ''}`, got && kindOk && !/m²|m2/.test(got.name), got ? `${got.how}: ${got.name} ${got.area ?? '–'} ${got.roomKind} (fasit ${t.kind})` : 'mangler');
+    }
+    // a name left over once every fasit room took its own is a room the drawing does not have, and fails: a label on a
+    // second mark (generate then names a room «WC/D + WC/D»), or a text that is no room (a gross area; generate.js
+    // NOT_A_ROOM drops only some). A misreading of a fasit room that found no match (its name with another area, or with
+    // the area in the text) is that room's miss already.
+    for (const x of pool) {
+      const n = norm(x.name);
+      if (!n || missed.some((m) => n === m || n.startsWith(`${m} `))) continue;
+      const same = L.rooms.filter((t) => norm(t.label) === n).length;
+      add(`ekstra rom ${x.name}`, false, `${x.how}: ${x.name} ${x.area ?? '–'} ${x.roomKind ?? '–'} (${same ? `fasiten har ${same} med det navnet` : 'ikke et rom i fasiten'})`);
     }
     if (E.at) for (const item of placeItems(fx, out, E.at, L.scale?.pxPerM)) add(item.id, item.ok, item.detail);
     const count = (k) => out.openings.filter((o) => o.kind === k).length;

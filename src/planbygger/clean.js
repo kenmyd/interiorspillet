@@ -39,7 +39,7 @@
  *      paper.
  *   4. Hatched walls → solid ink (fillHatchedWalls): two outlines with dense parallel diagonal hatching between them
  *      (architect drawings, hus6). Every stroke of such a wall is thinner than the thinnest wall, so the detection
- *      cannot see it.
+ *      cannot see it. The fill is grown out to the outlines in the corners the closing leaves (growToOutlines).
  *   5. Hatching → paper (removeHatch), by default only on light grey walls, where it has the walls' tone: wood-floor
  *      lines, tile grids and terrace boards in regular parallel fields (hus4).
  *
@@ -96,6 +96,12 @@ export const CLEAN_DEFAULTS = Object.freeze({
    *  diagonal stroke pixels in a 7 × 7 window from which it is a hatched wall */
   hatchedWalls: true,
   hatchFill: 0.08,
+  /** a hatch stroke pixel is at least this much darker than the paper: the faint hatching of a scan (hus6) is drawn
+   *  140–160 on 255, and where a 1 px stroke falls between two pixels both are ≈ 185, which 70 broke into dots */
+  hatchInk: 60,
+  /** the strokes of a hatched field are closed into one wall over this radius (px): at 3 the fill of hus6's faint
+   *  walls came out patchy, and the patches made two walls side by side (false windows, rooms left open) */
+  hatchClose: 5,
   /** hatching (wood-floor lines, tile grids, terrace boards) → paper: 'grey' = only when the walls are light grey,
    *  true = always, false = never */
   hatch: 'grey',
@@ -842,7 +848,7 @@ function fillHatchedWalls(out, o) {
   const g = lumaOf(data, n);
   const paper = paperOf(g, null);
   const dark = raster(w, h);
-  for (let i = 0; i < n; i++) dark.data[i] = g[i] < paper - 70 ? 1 : 0;
+  for (let i = 0; i < n; i++) dark.data[i] = g[i] < paper - o.hatchInk ? 1 : 0;
   // one mask per direction: a hatch is parallel strokes, text and arcs mix both directions (the run rasters are let go
   // as soon as the masks are made: a large page holds a lot of them)
   const diag1 = new Uint8Array(n);
@@ -898,17 +904,87 @@ function fillHatchedWalls(out, o) {
     }
   }
   // close the gaps between the strokes (and reach the outlines); a hatched wall is at least a 25 × 25 cm patch
-  const region = minFilter(maxFilter(dense, w, h, 3), w, h, 3);
+  const region = minFilter(maxFilter(dense, w, h, o.hatchClose), w, h, o.hatchClose);
   const minArea = Math.round((0.25 * (o.pxPerM > 0 ? o.pxPerM : 50)) ** 2);
   const { labels, comps } = components({ w, h, data: region }, 8);
   const big = comps.map((cp) => cp.area >= minArea);
+  const fill = new Uint8Array(n);
+  for (let i = 0; i < n; i++) fill[i] = region[i] && big[labels[i]] ? 1 : 0;
+  // the closing never reaches a convex corner of a field (fewer strokes start near it): at the short blocks of a stepped
+  // wall (hus6's recessed living-room window) the cut corners left too little for a wall piece. Grown out to the outlines
+  for (let pass = 0; pass < 2; pass++) growToOutlines(fill, dark.data, w, h, 2 * o.hatchClose);
   let changed = 0;
   for (let i = 0; i < n; i++) {
-    if (!region[i] || g[i] === 0 || !big[labels[i]]) continue;
+    if (!fill[i] || g[i] === 0) continue;
     data[i * 4] = data[i * 4 + 1] = data[i * 4 + 2] = 0;
     changed++;
   }
   return { changed };
+}
+
+/**
+ * A hatched wall's fill grown out to its outlines: a pixel joins when, along its row and along its column alike, the
+ * fill lies within d on one side and the fill or ink (an outline, a stroke, the pixel itself) within d on the other.
+ * A window's glass between its frame lines has no fill above or below it, a room has no ink beside the wall's face,
+ * so neither joins. Mutates fill.
+ */
+function growToOutlines(fill, ink, w, h, d) {
+  const n = w * h;
+  const ok = new Uint8Array(n); // bit 1: the row test passed, bit 2: the column test
+  const FAR = 1 << 20;
+  const passes = (fl, dl, fr, dr) => (fl <= d && dr <= d) || (fr <= d && dl <= d);
+  // rows: left to right the last fill / fill-or-ink, then right to left
+  const lf = new Int32Array(w);
+  const ld = new Int32Array(w);
+  for (let y = 0; y < h; y++) {
+    const r = y * w;
+    let f = -FAR;
+    let k = -FAR;
+    for (let x = 0; x < w; x++) {
+      lf[x] = f;
+      ld[x] = k;
+      if (fill[r + x]) f = k = x;
+      else if (ink[r + x]) k = x;
+    }
+    f = k = FAR;
+    for (let x = w - 1; x >= 0; x--) {
+      const j = r + x;
+      if (!fill[j]) {
+        const own = ink[j] ? 0 : null;
+        if (passes(x - lf[x], own ?? x - ld[x], f - x, own ?? k - x)) ok[j] |= 1;
+      }
+      if (fill[j]) f = k = x;
+      else if (ink[j]) k = x;
+    }
+  }
+  // columns, a row at a time: top down the distances (clamped) per pixel, then bottom up
+  const up = new Uint8Array(2 * n);
+  const cf = new Int32Array(w).fill(-FAR);
+  const cd = new Int32Array(w).fill(-FAR);
+  for (let y = 0; y < h; y++) {
+    const r = y * w;
+    for (let x = 0; x < w; x++) {
+      up[2 * (r + x)] = Math.min(255, y - cf[x]);
+      up[2 * (r + x) + 1] = Math.min(255, y - cd[x]);
+      if (fill[r + x]) cf[x] = cd[x] = y;
+      else if (ink[r + x]) cd[x] = y;
+    }
+  }
+  cf.fill(FAR);
+  cd.fill(FAR);
+  for (let y = h - 1; y >= 0; y--) {
+    const r = y * w;
+    for (let x = 0; x < w; x++) {
+      const j = r + x;
+      if (!fill[j] && ok[j] & 1) {
+        const own = ink[j] ? 0 : null;
+        if (passes(up[2 * j], own ?? up[2 * j + 1], cf[x] - y, own ?? cd[x] - y)) ok[j] |= 2;
+      }
+      if (fill[j]) cf[x] = cd[x] = y;
+      else if (ink[j]) cd[x] = y;
+    }
+  }
+  for (let i = 0; i < n; i++) if (ok[i] === 3) fill[i] = 1;
 }
 
 /**

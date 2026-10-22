@@ -71,7 +71,7 @@ import { autoDarkThreshold, autoWallTone, detectPlan } from './detect.js';
 import { traceLine } from './scale.js';
 import { pointInPolygon, projectToSegment } from './geom.js';
 import { applyDetection } from './model.js';
-import { findRooms } from './regions.js';
+import { levelRooms } from './regions.js';
 
 /** The median door hole (frame included) of Norwegian plans, metres: 0.91–0.95 on the test plans at their truth. */
 export const DOOR_HOLE = 0.93;
@@ -1152,7 +1152,8 @@ export function autoScale(img, { ai = null, detect = detectPlan, ppm0 = null, pd
     let rooms;
     try {
       det = reuse ? reuse.det : detect(img, { pxPerM: p0 });
-      rooms = findRooms(applyDetection({}, det, p0).walls);
+      // the rooms with the detection's separators (an open plan's zones: hus4's TV room) and islands cut out
+      rooms = levelRooms(applyDetection({}, det, p0));
     } catch (e) {
       // a scale so far off that the detection or the room search gives up (findRooms: «planen er for stor»): the last
       // pass stands; on the first, the layers that need no rooms still speak

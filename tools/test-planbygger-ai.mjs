@@ -404,10 +404,15 @@ const KNOWN = {
   'hus1/fasade3.avif readFacade sonnet': ['tak', 'fasadevinduer'],
   'hus1/fasade4.avif readFacade haiku': ['tak'],
   // sliding doors are not seen as such on any marked plan (both models: «opening» or «door» on all five marks; the
-  // five in «Generer» come from detect.js); PLANTAK is written rotated; mark 9 (WIC 4.6) named «(G)» (the wardrobe
-  // letter inside it) and «WC»
-  'hus2/1etg.png readPlan haiku': ['skyvedører', 'vinduer', 'himling PLANTAK', 'plass rom WIC 4.6', 'åpning 96,199', 'åpning 166,275', 'åpning 323,198', 'åpning 322,428', 'åpning 276,678'],
-  'hus2/1etg.png readPlan sonnet': ['rom WIC 4.6', 'skyvedører', 'plass rom WIC 4.6', 'åpning 96,199', 'åpning 166,275', 'åpning 323,198', 'åpning 322,428', 'åpning 276,678'],
+  // five in «Generer» come from detect.js); PLANTAK is written rotated. Haiku (phase C recording, on the island-cut
+  // marks): four sliding doors and the glass side panel at the entrance (mark Q, a window in the fasit) as doors, so 15
+  // doors and 11 windows; and the free label BOD at (415, 706), in the niche under the room, about 40 px (0.7 m) below
+  // the text at (420, 665) – «Generer» then puts it in «Gang + Entré» (the 1 m² room has no mark: marks.js minArea)
+  'hus2/1etg.png readPlan haiku': ['enkeltdører', 'skyvedører', 'vinduer', 'himling PLANTAK', 'åpning 96,199', 'åpning 166,275', 'åpning 323,198', 'åpning 322,428', 'åpning 276,678'],
+  // Sonnet (phase C recording, the same marks): the five sliding doors as openings, and three glass doors with their arc
+  // outside (the entrance P, the kitchen doors G north and R south) as windows, so 7 doors and 15 windows; it puts the
+  // free label BOD on its text (426, 666), and «Generer» gets BOD a room of its own
+  'hus2/1etg.png readPlan sonnet': ['enkeltdører', 'skyvedører', 'vinduer', 'åpning 96,199', 'åpning 166,275', 'åpning 323,198', 'åpning 322,428', 'åpning 276,678'],
   // the facades on hus2's and hus3's sheets are crops of about 200 × 80 and 390 × 200 px: the long side of a gable roof
   // is read as mono-pitch, small windows and doors are missed or doubled
   'hus2/fasader.png del 1 readFacade haiku': ['tak', 'fasadevinduer', 'fasadedører'],
@@ -421,21 +426,27 @@ const KNOWN = {
   'hus3/fasader.png del 2 readFacade haiku': ['fasadevinduer', 'fasadedører'],
   'hus3/fasader.png del 3 readFacade haiku': ['tak', 'etasjer'],
   'hus3/fasader.png del 4 readFacade haiku': ['fasadevinduer'],
-  // door variants on a marked plan: the front door and its side panel read as double doors, the door under the stair
-  // and the east window by the stair foot as plain openings, a glass panel as a sliding door; Sonnet gets the doors
-  // nearly right (the door under the stair as a window) but adds a skylight
-  'hus3/1etg.png readPlan haiku': ['enkeltdører', 'dobbeltdører', 'skyvedører', 'vinduer', 'åpning 566,383', 'åpning 353,848', 'åpning 389,848', 'åpning 599,583'],
-  'hus3/1etg.png readPlan sonnet': ['enkeltdører', 'takvinduer', 'åpning 566,383'],
+  // door variants on a marked plan (phase C recordings: detect.js moved the discs, not the marks): the two fixed panels
+  // of the west glass wall have no marks of their own (one gap F over both panels and the post), so 4 windows for 6
+  // with any reading. Haiku: the door under the stair (B) as a plain opening, 6 doors. Sonnet: B right, but the side
+  // panel at the front door (D) as a door and the glass wall gap F as a window (7 doors by chance), and a skylight
+  'hus3/1etg.png readPlan haiku': ['enkeltdører', 'vinduer', 'åpning 566,383'],
+  'hus3/1etg.png readPlan sonnet': ['vinduer', 'takvinduer', 'åpning 389,848'],
   // the three sliding doors of the bedrooms read as doors (Haiku) and openings (Sonnet)
   'hus3/2etg.png readPlan haiku': ['enkeltdører', 'skyvedører', 'åpning 233,292', 'åpning 233,416', 'åpning 233,575'],
   // BOD/BADSTUE (a sauna) as a bathroom
   'hus3/2etg.png readPlan sonnet': ['rom BOD/BADSTUE 4.1', 'enkeltdører', 'dobbeltdører', 'skyvedører', 'åpning 233,292', 'åpning 233,416', 'åpning 233,575'],
-  // the phone photo: 2 of 6 windows
-  'hus3-foto/1etg-foto.jpg readPlan haiku': ['vinduer'],
-  // the U stair read as straight and as spiral; 2. etasje read as level 0 (it has the living room and the kitchen)
+  // the phone photo: 9 doors for 7 – the glass side panel at the front door (mark E, a window in the fasit) read as a
+  // door, and the south terrace door has two marks (G and L: the detection found two openings there), both «door»;
+  // and «WC/D» on two marks: the detection cut WC/D in two along the line P–Q (3 by its door, 4 by the WC), the label
+  // is written once, and «Generer» names the room «WC/D + WC/D»
+  'hus3-foto/1etg-foto.jpg readPlan haiku': ['enkeltdører', 'ekstra rom WC/D'],
+  // the U stair read as straight on 1. etasje; 2. etasje read as level 0 (it has the living room and the kitchen); on
+  // 2. etasje (phase C recording, on the new marks) the wall between W.I.C and Bad drawn as two thin lines without a
+  // leaf (mark M, maybe a pocket; the fasit counts no door) read as a door: 5 for 4
   'hus4/1etg.avif readPlan haiku': ['skyvedører', 'vinduer', 'trapp'],
   'hus4/2etg.avif classify haiku': ['etasje plan 0'],
-  'hus4/2etg.avif readPlan haiku': ['trapp'],
+  'hus4/2etg.avif readPlan haiku': ['enkeltdører'],
   'hus4/fasade1.avif readFacade sonnet': ['tak'],
   'hus4/fasade2.avif readFacade haiku': ['etasjer'],
   // the mono-pitch roof seen from its side shows only a thin fascia: flat; the glass panels that reach the balcony
@@ -443,31 +454,42 @@ const KNOWN = {
   'hus4/fasade3.avif readFacade haiku': ['tak', 'fasadevinduer', 'fasadedører'],
   'hus4/fasade3.avif readFacade sonnet': ['tak', 'fasadevinduer', 'fasadedører'],
   'hus4/fasade4.avif readFacade haiku': ['fasadevinduer'],
-  // the sliding door between GARD/BOD and VF read as a door (the other three right)
-  'hus5/1etg.avif readPlan haiku': ['skyvedører', 'åpning 313,246'],
+  // phase C recording (the same marks, the discs moved): the sliding door to the terrace (H, staggered leaves and an
+  // arrow) read as a window (3 sliding doors for 4); the side panel at the front door (D) and the west window of SOV 18.5
+  // (U) as doors, so 12 doors and 14 windows; and the two «Skråhiml.» texts left out (the phase B answer had them)
+  'hus5/1etg.avif readPlan haiku': ['enkeltdører', 'skyvedører', 'vinduer', 'åpning 380,493', 'himling SKRÅHIML.'],
   'hus5/fasade1.avif readFacade haiku': ['fasadevinduer'],
   'hus5/fasade3.avif readFacade haiku': ['tak', 'fasadevinduer'],
   'hus5/fasade4.avif readFacade haiku': ['tak'],
-  // the scan: WC without its area, sliding doors as doors, the U stair as straight, the module sizes M10 / M8 and
-  // some chain dimensions missed
-  'hus6/plan-1etg-tilbygg.pdf readPlan haiku': ['rom WC 3', 'enkeltdører', 'skyvedører', 'vinduer', 'trapp', 'mål 6314', 'mål 4400 #2', 'mål 1020', 'mål 1170', 'mål M10', 'mål M8'],
-  'hus6/plan-1etg-tilbygg.pdf readPlan sonnet': ['rom WC 3', 'enkeltdører', 'skyvedører', 'vinduer', 'trapp', 'mål 5500', 'mål 1170', 'mål M10', 'mål M8'],
+  // the scan (phase C recordings, on the new marks: 2 room marks, 12 opening marks, the two windows in the recessed
+  // STUE wall with two marks each, no marks on the west side): sliding doors as doors or windows (1 sliding door for 6
+  // in both answers), the U stair as straight, the module sizes M10 / M8 and some chain dimensions missed. Haiku: the ENTRE
+  // window (L) as a door and the STUE east window (M) as a sliding door, so 5 doors for 2 and 5 windows for 8. Sonnet:
+  // ENTRE read as 10 m² (the text says 18), and mark 1 (the wardrobe part of ENTRE) named «STUE 43»
+  'hus6/plan-1etg-tilbygg.pdf readPlan haiku': ['enkeltdører', 'skyvedører', 'vinduer', 'trapp', 'mål 1020', 'mål 1170', 'mål M10', 'mål M8'],
+  'hus6/plan-1etg-tilbygg.pdf readPlan sonnet': ['rom ENTRE 18', 'skyvedører', 'trapp', 'mål 5500', 'mål 1170', 'mål M10', 'mål M8'],
   // rough boxes on the 4771 × 3332 scan (IoU 0.66–0.80); two gable facades as flat; «GARASJE 30,25» with the area in
   // the text
   'hus7/garasje-plan-snitt-fasade.pdf classify haiku': ['plass section SNITT', 'plass facade VEST', 'plass facade SØR'],
   'hus7/garasje-plan-snitt-fasade.pdf del 1 readFacade haiku': ['tak'],
   'hus7/garasje-plan-snitt-fasade.pdf del 3 readFacade haiku': ['tak'],
   'hus7/garasje-plan-snitt-fasade.pdf del 5 readPlan haiku': ['rom GARASJE 30.25'],
-  'hus8/plantegning-2.jpg readPlan haiku': ['enkeltdører', 'trapp'],
+  // the basement: the label of the east BOD (634, 835), in the region the detection merged with the big BOD (no mark
+  // of its own), left out; the quarter-turn stair as unknown
+  'hus8/plantegning-2.jpg readPlan haiku': ['rom BOD #5', 'trapp'],
   'hus8/plantegning-3.jpg del 1 readPlan haiku': ['skyvedører'],
   'hus8/plantegning-3.jpg del 1 readPlan sonnet': ['enkeltdører', 'skyvedører'],
   // «Øvre etg» is the main floor of this split-level house (entrance and kitchen): both models follow the title
   'hus9/ovre-etasje.jpg classify haiku': ['etasje plan 0'],
   'hus9/ovre-etasje.jpg classify sonnet': ['etasje plan 0'],
-  'hus9/ovre-etasje.jpg readPlan haiku': ['enkeltdører', 'skyvedører', 'vinduer', 'trapp'],
-  'hus9/ovre-etasje.jpg readPlan sonnet': ['skyvedører', 'vinduer'],
-  // «10,56» read as 9.56
-  'hus9/underetasje.jpg readPlan haiku': ['rom Barnesov 10.56', 'enkeltdører', 'skyvedører', 'trapp'],
+  // the 3.3 m sliding door in the west wall (mark G) read as a window: 9 windows for 8; the quarter-turn stair as
+  // straight
+  'hus9/ovre-etasje.jpg readPlan haiku': ['skyvedører', 'vinduer', 'trapp'],
+  // Sonnet (phase C recording) also reads both outer doors in the east wall (B to Hall, D from Vask: single leaves
+  // with an arc) as double doors, and the opening without a leaf between Bad and Vask (L) as a door: 2 single, 2 double
+  'hus9/ovre-etasje.jpg readPlan sonnet': ['enkeltdører', 'dobbeltdører', 'skyvedører', 'vinduer'],
+  // the second Barnesov («10,56», mark 6) named without its area (phase B: read as 9.56)
+  'hus9/underetasje.jpg readPlan haiku': ['rom Barnesov 10.56', 'trapp'],
   'hus9/underetasje.jpg readPlan sonnet': ['skyvedører'],
 };
 
@@ -518,7 +540,7 @@ for (const { fx, tag, key, facadeIndex } of fixtures) {
     groups[g][0] += i.ok ? 1 : 0;
     groups[g][1]++;
   }
-  table.push({ key, tag, model: fx.model, in: fx.usage?.input_tokens, out: fx.usage?.output_tokens, cost: fx.cost, ms: fx.ms, ok: okN, n: items.length, score: Object.entries(groups).map(([g, [a, n]]) => (n > 1 ? `${g} ${a}/${n}` : `${g} ${a ? '✓' : '✗'}`)).join(', ') });
+  table.push({ key, tag, model: fx.model, seen: `${fx.image?.sha256} ${FX.marksHash(fx.marks)}`, in: fx.usage?.input_tokens, out: fx.usage?.output_tokens, cost: fx.cost, ms: fx.ms, ok: okN, n: items.length, score: Object.entries(groups).map(([g, [a, n]]) => (n > 1 ? `${g} ${a}/${n}` : `${g} ${a ? '✓' : '✗'}`)).join(', ') });
 }
 AI.setAiFacadeUse(null);
 {
@@ -542,6 +564,14 @@ AI.setAiFacadeUse(null);
   [sliding.kind, dbl.kind] = ['double-door', 'sliding-door'];
   const bad = FX.scoreAnswer(h1, out).filter((i) => !i.ok && !before.has(i.id)).map((i) => i.id);
   check('to rom som bytter lesning, og en skyvedør og en dobbeltdør som bytter type: bare plass-punktene feiler (navnelista og antallene ser det ikke)', bad.length === 4 && bad.includes('plass rom SOV') && bad.includes('plass rom BOD') && bad.filter((i) => i.startsWith('åpning ')).length === 2, bad.join(', '));
+  // a name the drawing does not have fails on its own (the same label once more, a text read as a room); a fasit room
+  // read with another area is that room's miss, not an extra room too
+  const more = AI.tidyResponse('readPlan', h1.response, h1.marks, h1.unmarked);
+  const bod2 = more.rooms.find((r) => r.name === 'BOD');
+  bod2.area = (bod2.area ?? 0) + 3;
+  more.labels.push({ text: 'SOV', area: null, roomKind: 'bedroom', at: [0.5, 0.5] }, { text: 'Bruttoareal', area: 140, roomKind: 'other', at: [0.1, 0.1] });
+  const extra = FX.scoreAnswer(h1, more).filter((i) => !i.ok && !before.has(i.id)).map((i) => i.id);
+  check('en etikett for mye (samme navn en gang til, en tekst som ikke er et rom) feiler som «ekstra rom»; et rom med feil areal feiler bare som det rommet', extra.length === 3 && extra.includes('ekstra rom SOV') && extra.includes('ekstra rom Bruttoareal') && extra.some((i) => /^rom BOD\b/.test(i)), extra.join(', '));
 }
 check('hver oppføring i KNOWN hører til et opptak', Object.keys(KNOWN).every((k) => table.some((t) => t.tag === k)), Object.keys(KNOWN).filter((k) => !table.some((t) => t.tag === k)).join(', '));
 console.log('\n  Opptakene (tokens inn / ut, pris, tid, punkter som fasiten):');
@@ -553,7 +583,9 @@ if (pairs.length) {
   for (const k of pairs) {
     const h = table.find((t) => t.key === k && /haiku/.test(t.model));
     const s = table.find((t) => t.key === k && /sonnet/.test(t.model));
-    console.log(`    ${k.padEnd(48)} haiku ${h ? `${h.ok}/${h.n} $${(h.cost ?? 0).toFixed(4)}` : '–'}   sonnet ${s.ok}/${s.n} $${(s.cost ?? 0).toFixed(4)}`);
+    // a pair recorded on different images or marks (one of them made before detect.js / generate.js changed them)
+    const apart = h && h.seen !== s.seen ? '   (ulike bilder eller merker)' : '';
+    console.log(`    ${k.padEnd(48)} haiku ${h ? `${h.ok}/${h.n} $${(h.cost ?? 0).toFixed(4)}` : '–'}   sonnet ${s.ok}/${s.n} $${(s.cost ?? 0).toFixed(4)}${apart}`);
   }
 }
 console.log(`\n  Kjente feil (${knownSeen.length}):`);

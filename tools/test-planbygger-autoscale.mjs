@@ -10,7 +10,7 @@
  * says for that case – rooms is empty and every room label is in labels; autoscale ties them to the detected rooms by
  * point in polygon. Where recorded AI answers exist (tools/fixtures/planbygger-ai/), they are run too.
  *
- * The flow per plan is the design's (generate step 5): standardScale → detectPlan + findRooms at that ppm0 →
+ * The flow per plan is the design's (generate step 5): standardScale → detectPlan + levelRooms at that ppm0 →
  * estimateScale. The truth per plan, and where it comes from (measured by hand on grey-value profiles across the
  * walls, independent of the detection; plantegninger/<hus>/fasit.json says the same):
  *   hus1 1etg  97.4   inner rectangles: SOV 348 × 403 px = 14.8 m² → 97.34; KJØKKEN 348 × 462 = 16.9 → 97.54;
@@ -105,7 +105,8 @@ function prepare(key, ppm0Factor = 1) {
   const ppm0 = std.pxPerM * ppm0Factor;
   const det0 = detectPlan(img, { pxPerM: ppm0 });
   const level = M.applyDetection({}, det0, ppm0);
-  const rooms0 = R.findRooms(level.walls);
+  // the rooms as generate.js measures them: with the detection's separators, islands cut out (regions.js levelRooms)
+  const rooms0 = R.levelRooms(level);
   const p = { img, std, tStd, ppm0, det0, rooms0 };
   prepared.set(id, p);
   return p;

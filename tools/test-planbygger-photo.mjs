@@ -523,6 +523,25 @@ section('4. Mobilfotoet (hus3-foto) mot hus3/1etg.png');
   for (const row of rows) console.log(`  rom: planen ${row.ref.toFixed(2)} m² → fotoet ${row.got == null ? 'ikke funnet' : `${row.got.toFixed(2)} m² (${row.got >= row.ref ? '+' : ''}${(((row.got - row.ref) / row.ref) * 100).toFixed(1)} %)`}`);
   const good = rows.filter((x) => x.got != null && Math.abs(x.got - x.ref) / x.ref <= 0.05).length;
   check('minst ett av planens rom igjen innen 5 % av arealet', good >= 1, `${good} av ${rows.length} (planen: ${rows.map((x) => x.ref.toFixed(1)).join(', ')} m²; fotoet: ${b.rooms.map((x) => x.area.toFixed(1)).join(', ') || 'ingen'} m²)`);
+  // as «Generer» detects (clean: true), at the photo's scale and 1.5 % on either side of it: the rooms the plan itself
+  // closes (KJØKKEN/STUE with ENTRÉ, which is open to it, VASK and WC/D) – before, only VASK: the camera breaks the thin
+  // frame lines of the north window into pieces that read as a dashed line, and the big room stayed open there
+  const ac = inMetres({ ...A, det: detectPlan(readPng(PLAN), { pxPerM: A.ppm, clean: true }) });
+  for (const k of [0.985, 1, 1.015]) {
+    const ppm = B.ppm * k;
+    const bc = inMetres({ ...B, ppm, det: detectPlan(r.img, { pxPerM: ppm, clean: true }) });
+    const rc = ac.rooms.map((ra) => {
+      const rb = bc.rooms.find((x) => pointInPolygon(ra.inside, x.polygon));
+      return { ref: ra.area, got: rb ? rb.area : null };
+    });
+    // the two large ones (KJØKKEN/STUE with ENTRÉ, VASK) within 10 % at all three scales; WC/D (4 m²) within 20 % at
+    // the photo's own scale – above it the fixtures cut it into slivers (104 px/m: 0.8 m² and three more)
+    const big = rc.map((x, i) => ({ ...x, i })).sort((p, q) => q.ref - p.ref);
+    const ok = big.slice(0, 2).every((x) => x.got != null && Math.abs(x.got - x.ref) / x.ref <= 0.1);
+    const wc = big[2];
+    const wcOk = k !== 1 || (wc && wc.got != null && Math.abs(wc.got - wc.ref) / wc.ref <= 0.2);
+    check(`med rydding ved ${f1(ppm)} px/m: de to store rommene planen lukker innen 10 %${k === 1 ? ', WC/D innen 20 %' : ''}`, rc.length >= 3 && ok && wcOk, `planen ${rc.map((x) => x.ref.toFixed(1)).join(', ')} m² → fotoet ${rc.map((x) => (x.got == null ? 'ikke funnet' : x.got.toFixed(1))).join(', ')} m² (${bc.rooms.length} rom)`);
+  }
 }
 
 // ---------------------------------------------------------------------------------------------------------------

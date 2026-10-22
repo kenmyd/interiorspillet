@@ -29,6 +29,13 @@
  *   9. stairs that wind round a narrow newel (every tread a winder, hus4): the synthetic U (tools/planbygger-synth.mjs
  *      'newel', solid and with its left half dashed) at 50–120 px/m, hus4 1. and 2. etasje; no such stair from a word,
  *      diagonal lines or a rotated armchair (hus2, hus5)
+ *  10. the final check of round 1 (phase C): two walls tied together by a thick block (synthetic, and hus3's bathroom
+ *      and storeroom), the faces of light grey walls with dark outlines (hus4: room areas against the labels), the
+ *      walk-in closet's opening on hus4's 2nd floor; hus6 at 78.6, 78.8 and 79.0 px/m and the colour original, window by
+ *      window and door by door against the fasit (the glass walls with offset sliding leaves, the pocket doors, the
+ *      slanted wall and its glass wall, no door from the stair's winders) and room by room (STUE closed with SPISESTUE
+ *      and KJØKKEN, STUE 2, ENTRE, VASKEROM, WC); no slanted wall on the plans that have none; synthetic: a stepped
+ *      outer wall with a window by the step, a corner cut off at a slant
  */
 import { ROOT, imp, readJson, check, section, done, planPipeline, validateGenerated } from './planbygger-lib.mjs';
 import path from 'node:path';
@@ -346,8 +353,10 @@ section('6. Flere stiler mot fasiten: hus8 (megler), hus4 (lysegrå vegger, treg
 /** The centre of a detected opening, pixels. */
 function centreOf(det, o) {
   const w = det.walls[o.wall];
-  const m = (o.from + o.to) / 2;
-  return w.axis === 'h' ? [w.a[0] + m, w.a[1]] : [w.a[0], w.a[1] + m];
+  // (along the wall from a: a slanted wall too)
+  const L = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) || 1;
+  const m = (o.from + o.to) / 2 / L;
+  return [w.a[0] + (w.b[0] - w.a[0]) * m, w.a[1] + (w.b[1] - w.a[1]) * m];
 }
 /** The opening of a detection nearest to a point (pixels): { kind, d (px), width (m) } or null. */
 function openingAt(det, p, ppm) {
@@ -666,6 +675,209 @@ section('9. Trapper som svinger rundt et smalt øye (hus4): den syntetiske U-tra
     const det = D.detectPlan(readPng(path.join(ROOT, file)), { pxPerM: ppm, clean: true });
     check(`${name} med rydding: ingen trapp (skrå tekst, skrå streker og en skråstilt lenestol er ingen svingtrinn)`, !det.stairs.length, det.stairs.map((x) => `${x.kind} [${x.bbox.map(Math.round)}]`).join(', ') || 'ingen');
   }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+section('10. Sluttkontrollen av runde 1: sammenslåtte rom, lysegrå vegger med konturer (hus4), hus6');
+{
+  // a plan drawn by hand in pixels: the outer walls (12 px = 0.24 m at 50 px/m), an interior wall across (6 px) that runs
+  // into a boxed-in shaft along the right outer wall (50 px = 1 m wide, thicker than any wall) down to the floor wall.
+  // The interior wall, the shaft and the floor wall are one block of long runs: a column through the interior wall and
+  // the floor wall is two runs – their extent together is no wall, each on its own is
+  const W = 700;
+  const Hh = 500;
+  const img = { width: W, height: Hh, data: new Uint8ClampedArray(W * Hh * 4).fill(255) };
+  const box = (x0, y0, x1, y1) => {
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) img.data.fill(0, (y * W + x) * 4, (y * W + x) * 4 + 3);
+  };
+  box(50, 50, 650, 62);
+  box(50, 438, 650, 450);
+  box(50, 50, 62, 450);
+  box(638, 50, 650, 450);
+  box(62, 247, 638, 253);
+  box(600, 247, 650, 450);
+  const ppm = 50;
+  const det = D.detectPlan(img, { pxPerM: ppm });
+  const R = roomsOf(det, ppm);
+  const top = R.at([300, 150]);
+  const bottom = R.at([300, 350]);
+  check('syntetisk: en innervegg som løper inn i en tykk sjakt langs ytterveggen skiller to rom (før ett)', top >= 0 && bottom >= 0 && top !== bottom && R.f.rooms.length === 2, `${R.f.rooms.length} rom: ${R.f.rooms.map((x) => f2(x.area)).join(' ')}`);
+  // inside the walls 11.52 × 3.70 m each: the shaft is no wall of its own (it is thicker than any wall) – the outer wall
+  // goes on through it at its own thickness, and the box inside it is the bottom room's floor
+  check('syntetisk: rommene har arealet innenfor veggene (42,6 m² ± 3 %, sjakten regnes til rommet)', Math.abs(R.area(top) / (11.52 * 3.7) - 1) <= 0.03 && Math.abs(R.area(bottom) / (11.52 * 3.7) - 1) <= 0.03, `${f2(R.area(top))} og ${f2(R.area(bottom))} m²`);
+  const right = det.walls.filter((w) => w.axis === 'v' && Math.abs(w.a[0] - 644) < 4);
+  check('syntetisk: ytterveggen til høyre går hel gjennom sjakten, ingen vegg av null lengde', right.length === 1 && right[0].a[1] <= 60 && right[0].b[1] >= 440 && det.walls.every((w) => Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) >= 1), right.map((w) => `(${w.a.map(Math.round)}) → (${w.b.map(Math.round)})`).join('; ') || 'ingen');
+}
+{
+  // hus3 2. etasje (clean: true, as «Generer» detects): BOD (1.7 m²) and BAD (12.0 m²) were one room. The wall between
+  // them, the floor wall below the bathroom and the outer wall's boxed-in shaft by the toilet are one block of ink
+  const ppm = 47.8;
+  const det = D.detectPlan(readPng(path.join(ROOT, 'plantegninger/hus3/2etg.png')), { pxPerM: ppm, clean: true });
+  const R = roomsOf(det, ppm);
+  const labels = [['BOD', [318, 690], 1.7], ['BAD', [230, 790], 12], ['BOD/BADSTUE', [190, 685], 4.1]];
+  const ids = labels.map(([, p]) => R.at(p));
+  const errs = labels.map(([, , a], i) => R.area(ids[i]) / a - 1);
+  check('hus3 2. etasje: BOD, BAD og BOD/BADSTUE er tre egne rom, arealene innen ±10 % av etikettene', new Set(ids).size === 3 && ids.every((i) => i >= 0) && errs.every((e) => Math.abs(e) <= 0.1), labels.map(([n], i) => `${n} ${f2(R.area(ids[i]))} m²`).join(', '));
+  check('hus3 2. etasje: 7 rom (8 etiketter; ARBEIDSROM og GANG er åpne mot hverandre på tegningen)', R.f.rooms.length === 7, `${R.f.rooms.length} rom`);
+}
+{
+  // hus4: light grey walls between black outlines (and the outer walls with a cladding line). The wall tone's band is
+  // the grey fill only; the walls reach out over their outlines, so the rooms inside them have the labels' areas (they
+  // were 7–12 % too large, and the scale from the areas 3.7 % off)
+  const ppm = 120.7;
+  const det = D.detectPlan(readPng(path.join(ROOT, 'plantegninger/_png/hus4/1etg.png')), { pxPerM: ppm, clean: true });
+  const R = roomsOf(det, ppm);
+  const labels = [['Sov', [225, 433], 7.5], ['Sov', [300, 792], 9.3], ['Sov', [1050, 925], 8.1], ['Vask.', [1142, 408], 6.4], ['Bad', [1192, 617], 4.3], ['Sportsbod', [1500, 1100], 5.7]];
+  const ids = labels.map(([, p]) => R.at(p));
+  const errs = labels.map(([, , a], i) => (R.area(ids[i]) / a - 1) * 100);
+  const mean = errs.reduce((a, b) => a + b, 0) / errs.length;
+  check('hus4 1. etasje: de lukkede rommene har etikettens areal ±4 % (før +7–12 %), i snitt innen ±2 %', new Set(ids).size === labels.length && errs.every((e) => Math.abs(e) <= 4) && Math.abs(mean) <= 2, `${labels.map(([n], i) => `${n} ${f2(R.area(ids[i]))} (${errs[i] >= 0 ? '+' : ''}${f1(errs[i])} %)`).join(', ')}; snitt ${f1(mean)} %`);
+  const inner = det.walls.filter((w) => !w.exterior).map((w) => w.t / ppm).sort((a, b) => a - b);
+  const outer = det.walls.filter((w) => w.exterior && Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) > 3 * ppm).map((w) => w.t / ppm).sort((a, b) => a - b);
+  const medIn = inner[inner.length >> 1];
+  const medOut = outer[outer.length >> 1];
+  // drawn: interior walls 17 px over their outlines (0.14 m), the outer walls 33–34 px (0.28 m)
+  check('hus4 1. etasje: veggene er så tykke som tegnet med konturene (innervegger 0,12–0,17 m, yttervegger 0,24–0,31 m)', medIn >= 0.12 && medIn <= 0.17 && medOut >= 0.24 && medOut <= 0.31, `innervegger ${f2(medIn)} m, yttervegger ${f2(medOut)} m`);
+}
+{
+  // hus4 2. etasje: the walk-in closet opens to the hall through a 0.9 m hole between the bathroom's wall and a short stub
+  // on the bedroom wall; the bathroom wall stops at the face of that wall line, 1 px short of the stub's centre line
+  const ppm = 121;
+  const det = D.detectPlan(readPng(path.join(ROOT, 'plantegninger/_png/hus4/2etg.png')), { pxPerM: ppm, clean: true });
+  const R = roomsOf(det, ppm);
+  const labels = [['W.I.C', [237, 410], 5.6], ['Sov', [327, 817], 10.3], ['Bad', [510, 330], 4.6]];
+  const ids = labels.map(([, p]) => R.at(p));
+  const hall = R.at([750, 700]);
+  const errs = labels.map(([, , a], i) => R.area(ids[i]) / a - 1);
+  check('hus4 2. etasje: W.I.C, Sov og Bad er egne rom (ikke en del av stua), arealene ±5 %', ids.every((i) => i >= 0 && i !== hall) && new Set(ids).size === 3 && errs.every((e) => Math.abs(e) <= 0.05), labels.map(([n], i) => `${n} ${f2(R.area(ids[i]))} m²`).join(', '));
+  const o = openingAt(det, [350, 516], ppm);
+  check('hus4 2. etasje: åpningen fra W.I.C til gangen (x 350, y 466–578 px)', o && o.d < 0.3 * ppm && o.kind === 'opening' && o.width >= 0.7 && o.width <= 1.1, o ? `${o.kind}, ${f2(o.width)} m, ${f1(o.d)} px unna` : 'ingen');
+}
+{
+  // hus6 (the PNG copy at the scales «Generer» measures, 78.8–79.0 px/m, and the colour original): the hatched walls
+  // filled solid (the faint hatching of the scan had made two walls side by side, with windows in both); the glass walls
+  // of the extension (g) and of the living room's south wall (h) have two leaves on offset tracks inside the frame:
+  // sliding doors, not windows
+  //
+  // The 8 windows of the fasit, one by one (centres read off the PNG copy), and the rooms they belong to: before, the
+  // test only counted the windows, and at 78.8 px/m the living room's recessed window (8) was lost and the room open
+  const win = [['1 STUE 2, østveggen (2,4 m)', [870, 918]], ['2 SPISESTUE, østveggen (0,5 m)', [870, 1337]], ['3 nisjen over kjellernedgangen (0,5 m)', [910, 1380]], ['4 KJØKKEN (1,3 m)', [946, 1552]], ['5 VASKEROM (0,8 m)', [949, 1852]], ['6 ENTRE, vestveggen (0,9 m)', [1700, 1810]], ['7 STUE, vestveggen (0,9 m)', [1780, 1578]], ['8 STUE, den tilbaketrukne sørveggen (0,9 m)', [1705, 1139]]];
+  // the front door's narrow side panel (x 1268–1301): the fasit of hus6 does not count it, the fasits of hus2, hus3 and
+  // hus5 count a sidelight as a window – the detection treats them alike
+  const sidelight = [1286, 1971];
+  for (const [file, ppm] of [['plantegninger/_png/hus6/plan-1etg-tilbygg.png', 78.6], ['plantegninger/_png/hus6/plan-1etg-tilbygg.png', 78.8], ['plantegninger/_png/hus6/plan-1etg-tilbygg.png', 79.0], ['tools/fixtures/clean/hus6-plan-farge.png', 78.8]]) {
+    const det = D.detectPlan(readPng(path.join(ROOT, file)), { pxPerM: ppm, clean: true });
+    const tag = `hus6 (${file.includes('farge') ? 'fargeoriginalen' : 'PNG'}, ${ppm} px/m)`;
+    const c = countBy(det);
+    // (c) the pocket door from the hall to the living room, drawn shut: its leaf runs from the living room's wall to the
+    // hall's corner (x 1290–1368, 1.0 m) and on into the pocket in the hall's wall, which is wall
+    const ms = missing(det, ppm, 'sliding', [[1095, 1065], [1468, 1118], [1280, 765], [1329, 1689]]);
+    check(`${tag}: skyvedørene (e) STUE 2–SPISESTUE, (h) stuas sørvegg, (g) tilbyggets glassvegg og (c) entré–stue`, !ms.length, ms.join('; ') || 'alle');
+    const cd = openingAt(det, [1329, 1689], ppm);
+    const pocket = openingAt(det, [1412, 1689], ppm);
+    check(`${tag}: (c) er en skyvedør i lomme på ca. 1,0 m (0,85–1,15), og lomma i entréveggen (x 1381–1443) er vegg`, cd && cd.kind === 'sliding' && cd.width >= 0.85 && cd.width <= 1.15 && !(pocket && pocket.d < 0.2 * ppm), `${cd ? `${cd.kind} ${f2(cd.width)} m` : 'ingen'}; lomma: ${pocket && pocket.d < 0.2 * ppm ? `${pocket.kind} ${f2(pocket.width)} m` : 'vegg'}`);
+    const mw = win.filter(([, p]) => { const o = openingAt(det, p, ppm); return !o || o.d > 0.3 * ppm || o.kind !== 'window'; });
+    check(`${tag}: alle 8 vinduene i fasiten er vinduer`, !mw.length, mw.map(([n]) => n).join('; ') || 'alle 8');
+    // no other window: each one is one of the 8 or the side panel (the false ones were the second wall beside the living
+    // room's east wall, the pane frames of the kitchen window, the sofa's back in STUE 2, the labels «vann» and «tavle»
+    // on the laundry wall, the pocket in the hall's wall)
+    const extra = det.openings.filter((o) => o.type === 'window').map((o) => centreOf(det, o)).filter((p) => ![...win.map(([, q]) => q), sidelight].some((q) => Math.hypot(p[0] - q[0], p[1] - q[1]) <= 0.3 * ppm));
+    check(`${tag}: ingen andre vinduer enn de 8 og sidefeltet ved ytterdøra (før 16)`, !extra.length && c.window <= 9, `${c.window} vinduer; ${extra.map((p) => p.map(Math.round).join(',')).join('; ') || 'ingen andre'}`);
+    const kw = openingAt(det, [948, 1552], ppm);
+    check(`${tag}: kjøkkenvinduet (to rammer, ca. 1,3 m) er ett vindu, ingen dør i det`, kw && kw.d < 0.3 * ppm && kw.kind === 'window' && kw.width >= 1.2 && kw.width <= 1.7, kw ? `${kw.kind}, ${f2(kw.width)} m` : 'ingen');
+    // the rooms by the walls: KJØKKEN, SPISESTUE and STUE are one open room (fasit: stubs, a free-standing wall and the
+    // fireplace between them, no doors) – closed now that the stepped south wall, the dining room's east wall with its
+    // window and the niche wall by the cellar stair are found; ENTRE (the pocket door), VASKEROM and WC rooms of their own
+    const R = roomsOf(det, ppm);
+    const at = { STUE: R.at([1530, 1400]), SPISESTUE: R.at([1100, 1250]), KJØKKEN: R.at([1150, 1600]), ENTRE: R.at([1450, 1800]), VASKEROM: R.at([1048, 1842]), WC: R.at([1198, 1801]) };
+    const open = at.STUE >= 0 && at.STUE === at.SPISESTUE && at.STUE === at.KJØKKEN;
+    const area = R.area(at.STUE);
+    check(`${tag}: STUE er et lukket rom, ett med SPISESTUE og KJØKKEN (åpen plan, 43 + 21,5 + 18,5 = 83 m² ± 8 %)`, open && Math.abs(area / 83 - 1) <= 0.08, `STUE ${at.STUE}, SPISESTUE ${at.SPISESTUE}, KJØKKEN ${at.KJØKKEN}: ${f2(area)} m²`);
+    const own = [['ENTRE', 18], ['VASKEROM', 6], ['WC', 3]].filter(([n, a]) => !(at[n] >= 0 && at[n] !== at.STUE && Object.entries(at).every(([m, i]) => m === n || i !== at[n]) && Math.abs(R.area(at[n]) / a - 1) <= 0.12));
+    check(`${tag}: ENTRE, VASKEROM og WC er egne rom, arealene ±12 % (18, 6 og 3 m²)`, !own.length, ['ENTRE', 'VASKEROM', 'WC'].map((n) => `${n} ${f2(R.area(at[n]))}`).join(', '));
+    // the extension's slanted wall (29°, 6.3 m outside) between the free ends of its walls, with the 4.4 m glass wall
+    // (f) in it: STUE 2 is a room of its own (it was open to the outside: the detection only had walls along the axes)
+    const s2 = R.at([1080, 870]);
+    const slant = det.walls.filter((w) => w.axis === 'd');
+    check(`${tag}: den skrå veggen i tilbygget finnes, og STUE 2 er et lukket rom (23,4 m² ± 8 %)`, slant.length === 1 && s2 >= 0 && s2 !== at.STUE && Math.abs(R.area(s2) / 23.4 - 1) <= 0.08, `${slant.length} skrå vegger, STUE 2 rom ${s2}: ${f2(R.area(s2))} m²`);
+    const fd = openingAt(det, [1094, 643], ppm);
+    check(`${tag}: (f) i den skrå veggen er en skyvedør på ca. 4,4 m (4,0–4,8)`, fd && fd.d < 0.3 * ppm && fd.kind === 'sliding' && fd.width >= 4 && fd.width <= 4.8, fd ? `${fd.kind}, ${f2(fd.width)} m, ${f1(fd.d)} px unna` : 'ingen');
+    // the doors as the fasit has them: (a) the front door and (b) the WC door hinged, the six sliding ones (c)–(h); the
+    // pocket door (d) from the WC to the laundry is its hole (0.8 m), not the hole and the pocket; the winders at the top
+    // of the hall's stair, by the end of its side wall, are no door
+    const dd = openingAt(det, [1144, 1821], ppm);
+    const sw = openingAt(det, [1629, 1874], ppm);
+    check(`${tag}: dørene 2/0/6 som fasiten, (d) WC–vaskerom 0,7–1,0 m, ingen dør i trappas sidevegg`, c.single === 2 && c.double === 0 && c.sliding === 6 && dd && dd.kind === 'sliding' && dd.width >= 0.7 && dd.width <= 1 && !(sw && sw.d < 0.3 * ppm && (sw.kind === 'single' || sw.kind === 'double')), `${c.single}/${c.double}/${c.sliding}; (d) ${dd ? `${dd.kind} ${f2(dd.width)} m` : 'ingen'}; trappa: ${sw && sw.d < 0.3 * ppm ? sw.kind : 'ingenting'}`);
+  }
+}
+{
+  // no slanted wall where none is drawn (the plans with walls along the axes only, clean: true as «Generer» detects):
+  // dimension lines, door arcs and furniture between the free ends of walls are no wall
+  const none = [];
+  for (const [file, ppm] of [['plantegninger/hus1/1etg.png', 97.4], ['plantegninger/hus2/1etg.png', 55.6], ['plantegninger/hus3/1etg.png', 47.9], ['plantegninger/_png/hus5/1etg.png', 46.9], ['plantegninger/_png/hus9/ovre-etasje.png', 45.4], ['plantegninger/_png/hus8/plantegning-3.png', 34]]) {
+    const det = D.detectPlan(readPng(path.join(ROOT, file)), { pxPerM: ppm, clean: true });
+    const n = det.walls.filter((w) => w.axis === 'd').length;
+    if (n) none.push(`${file.split('/').slice(-2).join('/')}: ${n}`);
+  }
+  check('ingen skrå vegger på planene der alle veggene går langs aksene (hus1, hus2, hus3, hus5, hus8, hus9)', !none.length, none.join('; ') || 'ingen');
+}
+{
+  // a house with one corner cut off at a slant, drawn in pixels (50 px/m, walls 12 px): the slanted wall as two outlines
+  // 12 px apart (an architect's wall, its hatching left out) from the end of the left wall to the end of the top wall
+  const W = 700;
+  const Hh = 500;
+  const img = { width: W, height: Hh, data: new Uint8ClampedArray(W * Hh * 4).fill(255) };
+  const box = (x0, y0, x1, y1) => {
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) img.data.fill(0, (y * W + x) * 4, (y * W + x) * 4 + 3);
+  };
+  box(50, 438, 650, 450);
+  box(50, 200, 62, 450);
+  box(638, 50, 650, 450);
+  box(350, 50, 650, 62);
+  const a = [56, 200];
+  const b = [350, 56];
+  const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+  const n = [-(b[1] - a[1]) / L, (b[0] - a[0]) / L];
+  for (const off of [-6, 6]) {
+    for (let k = 0; k <= L; k += 0.25) {
+      const x = Math.round(a[0] + ((b[0] - a[0]) * k) / L + n[0] * off);
+      const y = Math.round(a[1] + ((b[1] - a[1]) * k) / L + n[1] * off);
+      img.data.fill(0, (y * W + x) * 4, (y * W + x) * 4 + 3);
+    }
+  }
+  const ppm = 50;
+  const det = D.detectPlan(img, { pxPerM: ppm });
+  const R = roomsOf(det, ppm);
+  const slant = det.walls.filter((w) => w.axis === 'd');
+  // inside the walls: the 11.52 × 7.52 m box less the triangle the slanted wall's inner face cuts off (2.83 × 5.79 m /
+  // 2 = 8.20 m²) = 78.4 m²
+  const area = R.f.rooms[0]?.area ?? 0;
+  check('syntetisk: et skrått hjørne (to konturer mellom endene av to vegger) blir én skrå vegg, og huset er ett lukket rom på 78,4 m² ± 3 %', slant.length === 1 && R.f.rooms.length === 1 && Math.abs(area / 78.4 - 1) <= 0.03, `${slant.length} skrå vegger, ${R.f.rooms.length} rom: ${R.f.rooms.map((x) => f2(x.area)).join(' ')}`);
+}
+{
+  // a stepped outer wall drawn in pixels (50 px/m, walls 14 px = 0.28 m): the top wall moves back by its thickness, and
+  // the recessed part has a window right by the step. Where the two parts overlap, the runs make one block 28 px thick
+  // (thicker than any wall at this scale): the step is a short wall across, the window is found and the room is closed
+  const W = 700;
+  const Hh = 500;
+  const img = { width: W, height: Hh, data: new Uint8ClampedArray(W * Hh * 4).fill(255) };
+  const box = (x0, y0, x1, y1, v = 0) => {
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) img.data.fill(v, (y * W + x) * 4, (y * W + x) * 4 + 3);
+  };
+  box(50, 50, 400, 64); // the top wall, left part
+  box(386, 64, 650, 78); // the recessed part (overlapping 386–400)
+  box(412, 64, 462, 78, 255); // its window, 1 m …
+  box(412, 69, 462, 70, 90); // … with two glass lines
+  box(412, 73, 462, 74, 90);
+  box(50, 436, 650, 450);
+  box(50, 50, 64, 450);
+  box(636, 64, 650, 450);
+  const ppm = 50;
+  const det = D.detectPlan(img, { pxPerM: ppm });
+  const R = roomsOf(det, ppm);
+  const o = openingAt(det, [437, 71], ppm);
+  const step = det.walls.filter((w) => w.axis === 'v' && Math.abs(w.a[0] - 393) <= 4 && Math.min(w.a[1], w.b[1]) <= 60 && Math.max(w.a[1], w.b[1]) >= 68);
+  check('syntetisk: en yttervegg med trappetrinn – trinnet er en kort vegg på tvers, vinduet ved trinnet finnes, rommet er lukket', R.f.rooms.length === 1 && o && o.d < 0.15 * ppm && o.kind === 'window' && Math.abs(o.width - 1) <= 0.1 && step.length === 1, `${R.f.rooms.length} rom, ${o ? `${o.kind} ${f2(o.width)} m` : 'ingen'}, ${step.length} trinnvegg`);
 }
 
 done();

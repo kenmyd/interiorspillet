@@ -465,6 +465,27 @@ for (const { plan, same } of loaded) {
     }
     check('hus6: de blå forklaringene er borte (ingen mettet piksel igjen)', before > 10000 && after === 0, `${before} → ${after} mettede piksler`);
     check('hus6: … også i gråtone: der det ikke var annet blekk, er de papir', away > 10000 && dark <= 0.002 * away, `${dark} av ${away} forklaringspiksler er fortsatt mørkere enn 225`);
+    // the faint hatching of the scan (strokes 140–160 on 255, ≈ 185 where a stroke falls between two pixels): the hatched
+    // walls come out solid between their outlines – a patchy fill made two walls side by side (false windows in both)
+    const inkShare = (x0, y0, x1, y1) => {
+      let n = 0;
+      let k = 0;
+      for (let y = y0; y <= y1; y++) {
+        for (let x = x0; x <= x1; x++) {
+          n++;
+          if (lumaAt(h6.out.data, (y * w + x) * 4) < 60) k++;
+        }
+      }
+      return k / n;
+    };
+    const east = inkShare(1772, 1150, 1788, 1500);
+    const west = inkShare(942, 1650, 954, 1720);
+    check('hus6: de skraverte veggene blir hele (stuas østvegg og kjøkkenets yttervegg ≥ 95 % blekk mellom konturene; 82 % før)', east >= 0.95 && west >= 0.95, `østveggen ${(east * 100).toFixed(1)} %, kjøkkenveggen ${(west * 100).toFixed(1)} %`);
+    // the short blocks of the stepped south wall by the living room's recessed window: the closing of the hatch field
+    // left their corners (85 % and 72 % ink), and the lower block was no wall piece – the fill now reaches the outlines
+    const upper = inkShare(1606, 1109, 1646, 1128);
+    const lower = inkShare(1627, 1129, 1670, 1148);
+    check('hus6: trappetrinnet i stuas sørvegg er fylt helt ut til konturene (øvre blokk ≥ 95 %, nedre ≥ 92 %; 85 og 72 % før)', upper >= 0.95 && lower >= 0.92, `øvre ${(upper * 100).toFixed(1)} %, nedre ${(lower * 100).toFixed(1)} %`);
   }
   for (const { plan, img, out } of loaded.filter((l) => l.plan.photo)) {
     // a photo's bluish ink: no wall pixel turns into paper (the colour step would punch holes in the walls)

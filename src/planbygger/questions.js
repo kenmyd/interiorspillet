@@ -179,7 +179,11 @@ export function roomQuestion({ level, levelName, file, crop, roomId, seed, area,
   });
 }
 
-export function stairQuestion({ level, levelName, file, crop, value, why, stairId = null, rect = null, axis = null }) {
+/**
+ * stairId: the stair placed in the plan that the answer changes ('none' takes it out); without one, a straight or U
+ * answer adds `stair` ({ rect, axis, down, side? }: one taken out again, as it was found) or a stair in `rect`.
+ */
+export function stairQuestion({ level, levelName, file, crop, value, why, stairId = null, rect = null, axis = null, stair = null }) {
   return q({
     id: `stair:${level}`,
     kind: 'stair',
@@ -196,7 +200,7 @@ export function stairQuestion({ level, levelName, file, crop, value, why, stairI
     help: why,
     default: value,
     confidence: 'low',
-    data: { stairId, rect, axis },
+    data: { stairId, rect, axis, ...(stair ? { stair } : {}) },
   });
 }
 
@@ -376,9 +380,17 @@ export function applyAnswers(doc, questions, answers = {}) {
           if (st) {
             if (value === 'u') st.kind = 'u';
             else delete st.kind;
-          } else if (Q.data?.rect) {
-            const [[x0, y0], [x1, y1]] = Q.data.rect;
-            const s = { id: `t-svar-${(L.stairs || []).length + 1}`, rect: Q.data.rect, axis: Q.data.axis ?? (x1 - x0 >= y1 - y0 ? 'x' : 'y'), down: 1, ...(value === 'u' ? { kind: 'u' } : {}) };
+          } else if (Q.data?.stair?.rect || Q.data?.rect) {
+            const found = Q.data.stair ?? {};
+            const rect = found.rect ?? Q.data.rect;
+            const [[x0, y0], [x1, y1]] = rect;
+            const s = {
+              id: `t-svar-${(L.stairs || []).length + 1}`,
+              rect,
+              axis: found.axis ?? Q.data.axis ?? (x1 - x0 >= y1 - y0 ? 'x' : 'y'),
+              down: found.down ?? 1,
+              ...(value === 'u' ? { kind: 'u', ...(found.side != null ? { side: found.side } : {}) } : {}),
+            };
             (L.stairs ||= []).push(s);
           }
         } else break;

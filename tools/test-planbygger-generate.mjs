@@ -15,7 +15,7 @@
  *      inherited from another floor that leaves the level empty (measured again alone)
  *   5. every house of the test set with the recorded AI answers, against fasit.json (thresholds from what round 1
  *      reaches – a check that fails here is a regression; besides them every level has walls and a room, the
- *      skylights exact, and a scale more than 3 % off asked, except the known cases that say why)
+ *      skylights exact, and a scale more than 3 % off asked)
  *   6. every house without AI: it still works, in the right order, with more questions; a scale more than 15 % off or a
  *      level without a room is asked
  *   7. the round's «done means» targets on hus1, hus2, hus3 and hus5, as explicit goals: they may fail, and say so
@@ -26,7 +26,7 @@ import path from 'node:path';
 import { ROOT, imp, check, section, done } from './planbygger-lib.mjs';
 import { readPng } from './planbygger-png.mjs';
 import { fixtureAi, frameMap, marksHash } from './planbygger-ai-fixtures.mjs';
-import { HOUSES, houseInputs, measureHouse, doneMeans } from './planbygger-measure-all.mjs';
+import { HOUSES, houseInputs, measureHouse, doneMeans, OPEN_PLANS } from './planbygger-measure-all.mjs';
 import { renderPlan, samplePlans } from './planbygger-synth.mjs';
 
 const G = await imp('src/planbygger/generate.js');
@@ -51,6 +51,23 @@ section('1. Navn, titler og etasjer');
   check('«plantegning-1.jpg», «garasje-plan-snitt-fasade.pdf» → ingenting', [L('plantegning-1.jpg'), L('garasje-plan-snitt-fasade.pdf')].every((x) => x.level == null && x.tag == null));
   check('«loft.png» → øverst', L('loft.png').tag === 'loft');
   check('visningsnavn: «KJØKKEN/STUE» → «Kjøkken/stue», «WC/D» blir stående, «TV-Stue» blir stående', G.displayName('KJØKKEN/STUE') === 'Kjøkken/stue' && G.displayName('WC/D') === 'WC/D' && G.displayName('TV-Stue') === 'TV-Stue', `${G.displayName('KJØKKEN/STUE')} ${G.displayName('WC/D')} ${G.displayName('SOV')}`);
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+section('1b. Åpne planer (OPEN_PLANS i planbygger-measure-all.mjs) mot fasiten');
+{
+  // «rom med navn» counts a room with the labels of one open area as right only where the drawing shows that area open
+  // (nothing drawn between the labels). The evidence per case is the fasit's own sentence, quoted in OPEN_PLANS with
+  // what a crop showed: here the quote must still stand in that level's notes, and every room of the group must be a
+  // fasit room of the level – so the list cannot grow into a blanket rule or outlive a corrected fasit.
+  for (const [key, groups] of Object.entries(OPEN_PLANS)) {
+    const [house, file] = key.split(' ');
+    const lv = JSON.parse(fs.readFileSync(path.join(ROOT, 'plantegninger', house, 'fasit.json'), 'utf8')).levels.find((l) => l.file === file);
+    for (const g of groups) {
+      const all = g.rooms.every(([label, area]) => lv?.rooms.some((r) => r.label === label && (area == null ? r.area == null : Math.abs(r.area - area) < 0.05)));
+      check(`${key}: ${g.rooms.map(([l, a]) => `${l}${a != null ? ` ${a}` : ''}`).join(' + ')} er en åpen plan i fasiten («${g.fasit}»)`, !!lv && (lv.notes ?? '').includes(g.fasit) && all && g.rooms.length >= 2);
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -105,6 +122,30 @@ section('2. Svarene (questions.js applyAnswers)');
   check('vinduet i originalen har standardhøyden', doc.levels[0].openings.find((o) => o.id === win.id).sill === 0.9);
   const none = Q.applyAnswers(doc, questions, { 'stair:etasje-2': 'none' });
   check('«ingen trapp» fjerner trappa', none.levels.find((l) => l.id === 'etasje-2').stairs.length === 0);
+  // a stair taken out again (too steep for the player: generate.js) is asked with «no stair» as the default; a straight
+  // or U answer puts it back as it was found – its way down and the side of its top flight
+  const out2 = M.clone(doc);
+  out2.levels.find((l) => l.id === 'etasje-2').stairs = [];
+  const steepQ = Q.stairQuestion({ level: 'etasje-2', levelName: '2. etasje', file: 'y.png', crop: null, value: 'none', why: 'For bratt.', rect: [[1, 1], [3, 3]], axis: 'x', stair: { rect: [[1, 1], [3, 3]], axis: 'x', down: -1, side: 1 } });
+  const kept = Q.applyAnswers(out2, [steepQ], { 'stair:etasje-2': steepQ.default });
+  const back = Q.applyAnswers(out2, [steepQ], { 'stair:etasje-2': 'u' });
+  const bs = back.levels.find((l) => l.id === 'etasje-2').stairs[0];
+  // the lines of a stair symbol read as walls (generate.js dropTreadLines; hus9): thin, across the flight and inside the
+  // stair's box they go; the line at the box's end, a parallel one, a thick wall and one with a door stay
+  const TL = M.createLevel(M.createDoc('Trinn'), { id: 'hoved' });
+  TL.walls = [
+    { id: 'band-n', a: [0, 0], b: [4, 0], t: 0.2 },
+    { id: 'band-s', a: [0, 1], b: [4, 1], t: 0.06 },
+    { id: 'enden', a: [0.5, 0], b: [0.5, 1], t: 0.06 },
+    { id: 'trinn-1', a: [1.5, 0], b: [1.5, 1], t: 0.06 },
+    { id: 'trinn-2', a: [2.2, 0.05], b: [2.2, 0.95], t: 0.05 },
+    { id: 'tykk', a: [3, 0], b: [3, 1], t: 0.15 },
+    { id: 'med-dør', a: [3.4, 0], b: [3.4, 1], t: 0.06 },
+  ];
+  TL.openings = [{ id: 'd1', wall: 'med-dør', type: 'door', at: 0.5, width: 0.8 }];
+  const treads = G._internal.dropTreadLines(TL, [0.5, 0.05, 4, 0.95]).sort();
+  check('trappesymbolets streker på tvers inne i trappa tas bort, ikke enden, langsgående streker, tykke vegger eller en vegg med dør', treads.join() === 'trinn-1,trinn-2' && TL.walls.length === 5, treads.join(', '));
+  check('en trapp som er tatt ut (for bratt): standardsvaret «ingen» lar den være ute, «U-trapp» setter den inn igjen som funnet', steepQ.default === 'none' && kept.levels.find((l) => l.id === 'etasje-2').stairs.length === 0 && bs?.kind === 'u' && bs.axis === 'x' && bs.down === -1 && bs.side === 1, JSON.stringify(bs));
   const bad = Q.applyAnswers(doc, questions, { 'ceiling:hoved': 'tja', 'scale:x.png': -2, 'ukjent:id': 3 });
   check('tull og ukjente id-er hoppes over', bad.generated.answered.length === 0);
   // window heights from facade readings
@@ -236,32 +277,31 @@ section('4b. Når noe går galt: rare svar, tomme etasjer, like tegninger, en ar
 /**
  * Round 1's measured results with the recorded answers (notes/planbygger.md, «Runde 1: målinger per hus»), as the
  * limits a change must not fall below – what is achieved, not what is wanted (the goals are in section 7 and the notes).
- * errors: validator errors left (hus1: face snapping in the loft, hus2: rooms standing as islands inside the open living
- * room – both in regions/export, requests in the notes). named: labels named in a room of their own (not one shared with
- * another label). doors / windows: the largest difference from the fasit per variant. estimate: hus8 has no
+ * errors: validator errors left – none since phase C (hus1's loft faces and hus2's WC/D + BOD island in the open living
+ * room were export / regions defects). named: labels named in a room of their own (not one shared with another label;
+ * the open plans of OPEN_PLANS are goals of section 7, not counted here). questions: hus8's sixth is the stair. stair:
+ * true – a stair is exported; 'steep' (hus8) – the stair found is too steep for the player and the house format, so it
+ * is not built but asked about with «Ingen trapp» as the default and the reason in the text (generate.js placeStair):
+ * the fasit has a quarter-turn stair (an L) whose upper flight alone is drawn in the 1. etasje, in a shaft 0,94 × 1,8 m
+ * (x 360–392, y 543–604 px) between two bedrooms with the stair door at its south end; the found box is 0,91 × 1,32 m
+ * at 31,2 px/m, 64° for 2,7 m. No straight or U stair of the format fits there under 51,7° (a straight one needs
+ * 2,1 m of walk line), so the basement is not reached on foot until the engine gets quarter-turn stairs (a request) –
+ * tools/test-planbygger-build3d.mjs fails for it. doors / windows: the largest difference from the fasit per variant. estimate: hus8 has no
  * dimensions, areas or scale («ikke målbar»), only the fasit's estimate from standard sizes (34 px/m ± 6 %). outline:
  * hus3-foto's printed outer dimensions against the straightened photo's house.
  */
 const D0 = { single: 0, double: 0, sliding: 0 };
 const THRESHOLDS = {
-  hus1: { errors: 2, questions: 2, stair: true, roof: true, levels: { '1etg.png': { scale: 0.005, named: 6, windows: 0, doors: D0 }, '2etg.png': { scale: 0.005, named: 5, windows: 0, doors: D0 } } },
-  hus2: { errors: 11, questions: 1, roof: true, levels: { '1etg.png': { scale: 0.005, named: 12, windows: 0, doors: D0 } } },
-  hus3: { errors: 0, questions: 2, stair: true, roof: true, levels: { '1etg.png': { scale: 0.005, named: 2, windows: 1, doors: { single: 1, double: 0, sliding: 0 } }, '2etg.png': { scale: 0.005, named: 4, matched: 8, windows: 0, doors: { single: 2, double: 0, sliding: 0 } } } },
+  hus1: { errors: 0, questions: 2, stair: true, roof: true, levels: { '1etg.png': { scale: 0.005, named: 6, windows: 0, doors: D0 }, '2etg.png': { scale: 0.005, named: 5, windows: 0, doors: D0 } } },
+  hus2: { errors: 0, questions: 1, roof: true, levels: { '1etg.png': { scale: 0.005, named: 13, windows: 0, doors: D0 } } },
+  hus3: { errors: 0, questions: 2, stair: true, roof: true, levels: { '1etg.png': { scale: 0.005, named: 2, windows: 1, doors: { single: 1, double: 0, sliding: 0 } }, '2etg.png': { scale: 0.005, named: 6, matched: 8, windows: 0, doors: { single: 2, double: 0, sliding: 0 } } } },
   'hus3-foto': { errors: 0, questions: 2, levels: { '1etg-foto.jpg': { outline: { m: [6.15, 14.95], tol: 0.03 }, named: 1, windows: 3, doors: { single: 2, double: 0, sliding: 1 } } } },
-  hus4: { errors: 0, questions: 5, stair: true, roof: true, levels: { '1etg.avif': { scale: 0.04, named: 6, windows: 2, doors: { single: 1, double: 0, sliding: 1 } }, '2etg.avif': { scale: 0.035, named: 1, windows: 0, doors: { single: 1, double: 0, sliding: 0 } } } },
+  hus4: { errors: 0, questions: 5, stair: true, roof: true, levels: { '1etg.avif': { scale: 0.01, named: 8, windows: 2, doors: { single: 1, double: 0, sliding: 1 } }, '2etg.avif': { scale: 0.01, named: 4, windows: 0, doors: { single: 1, double: 0, sliding: 0 } } } },
   hus5: { errors: 0, questions: 1, levels: { '1etg.avif': { scale: 0.005, named: 9, windows: 0, doors: D0 } } },
   hus6: { errors: 0, questions: 2, levels: { 'plan-1etg-tilbygg.pdf': { scale: 0.005, named: 3, windows: 8, doors: { single: 4, double: 0, sliding: 3 } } } },
   hus7: { errors: 0, questions: 2, roof: true, levels: { 'garasje-plan-snitt-fasade.pdf': { scale: 0.005, named: 1, windows: 0, doors: D0 } } },
-  hus8: { errors: 0, questions: 5, stair: true, levels: { 'plantegning-2.jpg': { estimate: { ppm: 34, tol: 0.1 }, named: 5, windows: 0, doors: D0 }, 'plantegning-3.jpg': { estimate: { ppm: 34, tol: 0.1 }, named: 7, windows: 0, doors: { single: 1, double: 0, sliding: 2 } } } },
+  hus8: { errors: 0, questions: 6, stair: 'steep', levels: { 'plantegning-2.jpg': { estimate: { ppm: 34, tol: 0.1 }, named: 5, windows: 0, doors: D0 }, 'plantegning-3.jpg': { estimate: { ppm: 34, tol: 0.1 }, named: 7, windows: 0, doors: { single: 1, double: 0, sliding: 2 } } } },
   hus9: { errors: 0, questions: 5, stair: true, levels: { 'ovre-etasje.jpg': { scale: 0.02, named: 3, windows: 1, doors: { single: 1, double: 0, sliding: 0 } }, 'underetasje.jpg': { scale: 0.02, named: 7, windows: 1, doors: { single: 2, double: 0, sliding: 2 } } } },
-};
-
-/**
- * Levels whose scale is more than 3 % off with the recorded answers and still not asked – each with the reason. A
- * level here that is right (or asked) again fails its check, so the list stays true.
- */
-const SCALE_UNASKED_KNOWN = {
-  'hus4 1etg.avif': 'arealene gir 125,1 px/m mot fasitens 120,7: på de grå veggene legger gjenkjenningen veggflatene inne i veggbåndet, så rommene blir 7 % for store (detect.js); dørene sier 120,4, men det er innenfor deres toleranse på 5 %, så sikkerheten blir «high»',
 };
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -334,8 +374,7 @@ function askedScale(r, l) {
 /**
  * The per-house checks with the recorded answers: thresholds from what round 1 measures (see notes/planbygger.md), as
  * the limits a change must not fall below; besides them, for every built level: walls and a room to walk in, the
- * skylights exact (also where the fasit has none), and a scale more than 3 % off is asked – except the known cases in
- * SCALE_UNASKED_KNOWN, which say why (and fail when they no longer happen, so the list stays true).
+ * skylights exact (also where the fasit has none), and a scale more than 3 % off is asked.
  */
 function houseChecks(r) {
   const T = THRESHOLDS[r.house] ?? {};
@@ -356,18 +395,21 @@ function houseChecks(r) {
       const want = [...t.outline.m].sort((a, b) => a - b);
       check(`${r.house} ${l.file}: husets ytre mål ${got.join(' × ')} m mot tegningens ${want.join(' × ')} m (innen ${t.outline.tol * 100} %)`, got.every((v, i) => v > 0 && Math.abs(v / want[i] - 1) <= t.outline.tol));
     }
-    const known = SCALE_UNASKED_KNOWN[`${r.house} ${l.file}`];
+    // no exceptions: a scale more than 3 % off that is not asked is a defect (hus4's ground floor was +3.7 % at 'high'
+    // until the separators reached the scale step and the grey walls' faces were found)
     const off = err != null && Math.abs(err) > 0.03;
-    const still = off && !askedScale(r, l);
-    if (known) check(`${r.house} ${l.file}: KJENT – skalaen er ${pct(err)} feil uten at det spørres (${known})`, still, still ? '' : 'skjer ikke lenger: ta det ut av SCALE_UNASKED_KNOWN');
-    else check(`${r.house} ${l.file}: en skala mer enn 3 % feil blir spurt om (${pct(err)}, ${l.scaleMethod}/${l.scaleConf})`, !off || askedScale(r, l));
+    check(`${r.house} ${l.file}: en skala mer enn 3 % feil blir spurt om (${pct(err)}, ${l.scaleMethod}/${l.scaleConf})`, !off || askedScale(r, l));
     if (t.named != null) check(`${r.house} ${l.file}: minst ${t.named} rom med navnet fra tegningen i et eget rom (${l.rooms.named} av ${l.rooms.fasit}, ${l.rooms.shared ?? 0} delt)`, l.rooms.named >= t.named);
     if (t.matched != null) check(`${r.house} ${l.file}: minst ${t.matched} rom funnet (${l.rooms.matched} av ${l.rooms.fasit})`, l.rooms.matched >= t.matched);
     if (t.doors) check(`${r.house} ${l.file}: dørene ${l.doors.single}/${l.doors.double}/${l.doors.sliding} (fasit ${l.doorsTruth.single}/${l.doorsTruth.double}/${l.doorsTruth.sliding}, avvik høyst ${t.doors.single}/${t.doors.double}/${t.doors.sliding})`, ['single', 'double', 'sliding'].every((k) => Math.abs(l.doors[k] - l.doorsTruth[k]) <= t.doors[k]));
     if (t.windows != null && l.windowsTruth != null) check(`${r.house} ${l.file}: ${l.windows} vinduer (fasit ${l.windowsTruth}, avvik høyst ${t.windows})`, Math.abs(l.windows - l.windowsTruth) <= t.windows);
     if (l.skylightsTruth != null) check(`${r.house} ${l.file}: ${l.skylights} takvinduer (fasit ${l.skylightsTruth})`, Math.abs(l.skylights - l.skylightsTruth) <= (t.skylights ?? 0));
   }
-  if (T.stair) check(`${r.house}: trapp bygd (${r.stairs.map((s) => s.kind).join(', ') || 'ingen'}; eksportert ${r.exportedStairs})`, r.exportedStairs >= 1);
+  if (T.stair === true) check(`${r.house}: trapp bygd (${r.stairs.map((s) => s.kind).join(', ') || 'ingen'}; eksportert ${r.exportedStairs})`, r.exportedStairs >= 1);
+  if (T.stair === 'steep') {
+    const q = r.questionList.find((x) => x.kind === 'stair');
+    check(`${r.house}: trappa som ble funnet, er for bratt å gå i – ikke bygd, men spurt om med «ingen trapp» som standard og grunnen i teksten (eksportert ${r.exportedStairs})`, r.exportedStairs === 0 && q?.default === 'none' && /for bratt/.test(q?.help ?? ''), q?.help ?? 'ingen trappespørsmål');
+  }
   if (T.roof) check(`${r.house}: taket ${r.roof} (fasit ${r.roofTruth})`, r.roof === r.roofTruth);
 }
 

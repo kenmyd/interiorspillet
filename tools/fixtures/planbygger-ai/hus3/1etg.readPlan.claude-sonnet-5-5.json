@@ -10,7 +10,7 @@
  "image": {
   "width": 701,
   "height": 1001,
-  "sha256": "92fa235fd1a1e62b66efea28d75b106a75e90af91b5ab03065ea92f78ba1354f"
+  "sha256": "855620b238e8d3ae0759dda17770184f7c4f4290a83ce9278146615185df9f05"
  },
  "marks": [
   {
@@ -36,19 +36,19 @@
     ],
     [
      0.8424,
-     0.3794
+     0.3795
     ],
     [
      0.7201,
-     0.3794
+     0.3795
     ],
     [
      0.7201,
-     0.3861
+     0.386
     ],
     [
      0.7632,
-     0.3861
+     0.386
     ],
     [
      0.7632,
@@ -68,11 +68,11 @@
     ],
     [
      0.7734,
-     0.3861
+     0.386
     ],
     [
      0.8424,
-     0.3861
+     0.386
     ],
     [
      0.8424,
@@ -188,7 +188,7 @@
    "kind": "opening",
    "at": [
     0.8074,
-    0.3828
+    0.3827
    ],
    "drawnAt": [
     0.8074,
@@ -334,7 +334,7 @@
    {
     "mark": "1",
     "at": [
-     0.645,
+     0.627,
      0.337
     ],
     "name": "KJØKKEN/STUE",
@@ -344,8 +344,8 @@
    {
     "mark": "2",
     "at": [
-     0.69,
-     0.678
+     0.7,
+     0.675
     ],
     "name": "VASK",
     "area": 7.5,
@@ -354,8 +354,8 @@
    {
     "mark": "3",
     "at": [
-     0.755,
-     0.812
+     0.745,
+     0.806
     ],
     "name": "WC/D",
     "area": 4.1,
@@ -369,7 +369,7 @@
     "kind": "entrance",
     "at": [
      0.535,
-     0.827
+     0.822
     ]
    }
   ],
@@ -378,8 +378,8 @@
     "text": "6.15",
     "value": 6.15,
     "at": [
-     0.47,
-     0.129
+     0.467,
+     0.131
     ],
     "along": "h",
     "what": "outer"
@@ -388,8 +388,8 @@
     "text": "14.95",
     "value": 14.95,
     "at": [
-     0.435,
-     0.157
+     0.437,
+     0.16
     ],
     "along": "v",
     "what": "outer"
@@ -399,34 +399,34 @@
    {
     "mark": "A",
     "at": [
-     0.535,
-     0.147
+     0.524,
+     0.145
     ],
     "kind": "window"
    },
    {
     "mark": "B",
     "at": [
-     0.815,
-     0.381
+     0.807,
+     0.378
     ],
-    "kind": "window"
+    "kind": "door"
    },
    {
     "mark": "C",
     "at": [
      0.5,
-     0.853
+     0.852
     ],
     "kind": "door"
    },
    {
     "mark": "D",
     "at": [
-     0.553,
-     0.853
+     0.554,
+     0.852
     ],
-    "kind": "window"
+    "kind": "door"
    },
    {
     "mark": "E",
@@ -447,7 +447,7 @@
    {
     "mark": "G",
     "at": [
-     0.55,
+     0.57,
      0.681
     ],
     "kind": "door"
@@ -455,7 +455,7 @@
    {
     "mark": "H",
     "at": [
-     0.66,
+     0.655,
      0.818
     ],
     "kind": "door"
@@ -483,20 +483,12 @@
      0.678
     ],
     "kind": "door"
-   },
-   {
-    "mark": null,
-    "at": [
-     0.455,
-     0.6
-    ],
-    "kind": "door"
    }
   ],
   "skylights": [
    {
     "at": [
-     0.775,
+     0.77,
      0.725
     ]
    }
@@ -517,75 +509,89 @@
    {
     "kind": "sofa",
     "at": [
-     0.585,
+     0.6,
      0.235
     ]
    },
    {
     "kind": "sofa",
     "at": [
-     0.725,
+     0.58,
+     0.292
+    ]
+   },
+   {
+    "kind": "sofa",
+    "at": [
+     0.72,
      0.27
     ]
    },
    {
     "kind": "table",
     "at": [
-     0.66,
-     0.265
+     0.65,
+     0.253
     ]
    },
    {
     "kind": "table",
     "at": [
      0.58,
-     0.465
+     0.47
     ]
    },
    {
     "kind": "kitchen",
     "at": [
-     0.76,
-     0.46
+     0.74,
+     0.47
     ]
    },
    {
     "kind": "kitchen",
     "at": [
      0.7,
-     0.632
+     0.63
     ]
    },
    {
     "kind": "washer",
     "at": [
      0.62,
-     0.728
+     0.73
     ]
    },
    {
-    "kind": "washbasin",
+    "kind": "washer",
     "at": [
-     0.7,
-     0.765
+     0.64,
+     0.73
     ]
    },
    {
     "kind": "toilet",
     "at": [
      0.81,
-     0.833
+     0.82
+    ]
+   },
+   {
+    "kind": "washbasin",
+    "at": [
+     0.7,
+     0.766
     ]
    },
    {
     "kind": "table",
     "at": [
-     0.28,
-     0.465
+     0.3,
+     0.44
     ]
    }
   ],
-  "notes": "Terrasse med parasoll og spisegruppe utenfor på venstre side. Trapp opp i kjøkken/stue."
+  "notes": "Terrasse med parasoll og utemøbler på venstre side. Trapp opp i åpent rom mot kjøkken/stue."
  },
  "usage": {
   "input_tokens": 6601,
@@ -598,7 +604,7 @@
   "iterations": [
    {
     "input_tokens": 6601,
-    "output_tokens": 977,
+    "output_tokens": 995,
     "cache_read_input_tokens": 0,
     "cache_creation_input_tokens": 0,
     "cache_creation": {
@@ -609,7 +615,7 @@
     "model": null
    }
   ],
-  "output_tokens": 977,
+  "output_tokens": 995,
   "output_tokens_details": {
    "thinking_tokens": 0
   },
@@ -617,9 +623,9 @@
   "inference_geo": "global",
   "speed": "standard"
  },
- "cost": 0.022972,
- "ms": 7149,
+ "cost": 0.023152,
+ "ms": 10057,
  "stopReason": "end_turn",
- "recorded": "2026-10-21T22:27:16.822Z",
+ "recorded": "2026-10-22T06:03:56.139Z",
  "via": "tools/planbygger-ai-fixtures.mjs"
 }

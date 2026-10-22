@@ -25,7 +25,7 @@ import { ROOT, imp } from './planbygger-lib.mjs';
 import { readPng } from './planbygger-png.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
-import { listFixtures, scoreAnswer, loggedCalls, shortModel } from './planbygger-ai-fixtures.mjs';
+import { listFixtures, scoreAnswer, loggedCalls, shortModel, marksHash } from './planbygger-ai-fixtures.mjs';
 
 const args = process.argv.slice(2);
 const flag = (name) => args.includes(`--${name}`);
@@ -62,7 +62,7 @@ async function freeze(c) {
   const doc = M.createDoc('opptak');
   const level = M.createLevel(doc, { id: 'l', image: { name: 'x', width: img.width, height: img.height, pxPerM: c.pxPerM } });
   M.applyDetection(level, det, c.pxPerM, doc.settings);
-  const rooms = findRooms(level.walls).rooms;
+  const rooms = (await imp('src/planbygger/regions.js')).levelRooms(level).rooms; // with the separators, islands cut out
   const round1 = (p) => [Math.round(p[0] * 10) / 10, Math.round(p[1] * 10) / 10];
   const t = targetsFromLevel(level, rooms, c.pxPerM);
   const frozen = {
@@ -138,7 +138,10 @@ async function compare() {
   for (const key of keys) {
     const mates = all.filter((f) => f.key === key);
     if (mates.length < 2 && !flag('all')) continue;
-    console.log(`\n=== ${key}`);
+    // the models saw the same thing only when the image and the marks are the same (one recorded before detect.js or
+    // generate.js changed them read another image): such a pair is shown, but not summed
+    const same = mates.every((f) => f.fx.image?.sha256 === mates[0].fx.image?.sha256 && marksHash(f.fx.marks) === marksHash(mates[0].fx.marks));
+    console.log(`\n=== ${key}${mates.length >= 2 && !same ? ' (ulike bilder eller merker: ikke med i summen)' : ''}`);
     for (const f of mates) {
       const { fx } = f;
       const out = AI.tidyResponse(fx.task, fx.response, fx.marks, fx.unmarked);
@@ -146,7 +149,7 @@ async function compare() {
       const ok = items.filter((i) => i.ok).length;
       const m = shortModel(fx.model);
       sum[m] ??= { ok: 0, n: 0, cost: 0, calls: 0 };
-      if (mates.length >= 2) Object.assign(sum[m], { ok: sum[m].ok + ok, n: sum[m].n + items.length, cost: sum[m].cost + (fx.cost ?? 0), calls: sum[m].calls + 1 });
+      if (mates.length >= 2 && same) Object.assign(sum[m], { ok: sum[m].ok + ok, n: sum[m].n + items.length, cost: sum[m].cost + (fx.cost ?? 0), calls: sum[m].calls + 1 });
       const u = fx.usage ?? {};
       console.log(`--- ${m} (${u.input_tokens} inn / ${u.output_tokens} ut, $${(fx.cost ?? 0).toFixed(4)}, ${((fx.ms ?? 0) / 1000).toFixed(1)} s): ${ok}/${items.length} som fasiten`);
       console.log(summarize(fx.task, out));
@@ -154,7 +157,7 @@ async function compare() {
       if (wrong.length) console.log(`  avvik: ${wrong.map((i) => `${i.id} (${i.detail})`).join('; ')}`);
     }
   }
-  console.log('\nPå de samme tegningene:');
+  console.log('\nPå de samme tegningene (samme bilde og merker):');
   for (const [m, s] of Object.entries(sum)) console.log(`  ${m}: ${s.ok}/${s.n} punkter som fasiten, ${s.calls} opptak, $${s.cost.toFixed(4)}`);
 }
 

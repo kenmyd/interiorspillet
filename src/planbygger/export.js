@@ -18,7 +18,13 @@
  *     slab (thickness = the distance between the faces) and the other room's piece is `backOf` it (D13: no geometry of
  *     its own, exactly one thickness away);
  *   • an edge with nothing behind it is an exterior wall, thickness outward (at least settings.exteriorMin, never into
- *     another room);
+ *     another room, nor into the room itself: the end of a wall stub);
+ *   • a wall with the same room on both sides (the room goes round it) is one inner slab of the distance between its
+ *     faces, owned by one side; the other side is a wall of no thickness (the format has no backOf within one room);
+ *   • an open room boundary – a separator between two zones of an open plan, or a cut that takes an island of rooms out
+ *     of the room around it (regions.js levelRooms: the format's rooms are simple polygons) – has no wall: the format
+ *     has no room edge without one, so the owner side is a wall of thickness 0 (rooms.js builds nothing for it) with
+ *     one passage over its whole length and height, the portal between the two rooms, and the other side is backOf it;
  *   • each opening is defined once, on the owner piece (offset from `from`), doors with door:{ hinge, swing, opensInto,
  *     leaf … } and connects, passages as type 'opening'. What the format cannot hold is built as the nearest thing it
  *     can: a double door as two single doors side by side (one per leaf), a sliding door as a passage; their `source`
@@ -27,9 +33,10 @@
  * level's rooms start at x = 0, z = 0.
  */
 import idsRegistry from '../../research/house/00-ids.json';
-import { findRooms, wallBand } from './regions.js';
+import { levelRooms as roomsOfLevel, wallBand } from './regions.js';
 import { sub, add, mul, dot, cross, dist, unit, perp, signedArea, centroid, slug, round, clipPolygon, pointInPolygon } from './geom.js';
 import { DEFAULT_SETTINGS, wallLength, wallDir, stairGeometry } from './model.js';
+import { WALKABLE_NORMAL_Y } from '../config.js';
 
 const RESERVED_IDS = new Set(['stue-kjokken', 'trapp', 'ute', 'forplass']);
 const MAIN = 'hoved';
@@ -134,7 +141,8 @@ export function guessKind(f, isLargest) {
  * @returns {{ found, rooms: { region, label, id, name, kind, auto }[] }}
  */
 export function labelRooms(level, settings = DEFAULT_SETTINGS, takenIds = new Set()) {
-  const found = findRooms(level.walls);
+  // with the level's separators, and its islands cut out (regions.js levelRooms): every room one simple polygon
+  const found = roomsOfLevel(level);
   const used = new Map();
   for (const r of level.rooms || []) {
     const idx = found.at(r.seed[0], r.seed[1]);
@@ -224,7 +232,7 @@ export function exportHouse(doc, opts = {}) {
   };
   const floorOpenings = [];
   const stairs = [];
-  const counts = { rooms: 0, walls: 0, backOf: 0, exterior: 0, doors: 0, windows: 0, openings: 0, stairs: 0, doubleDoors: 0, slidingDoors: 0, skylights: 0 };
+  const counts = { rooms: 0, walls: 0, backOf: 0, exterior: 0, doors: 0, windows: 0, openings: 0, stairs: 0, doubleDoors: 0, slidingDoors: 0, skylights: 0, openBoundaries: 0 };
   const levelRooms = []; // per level the rooms in game coordinates (for the stairs)
 
   doc.levels.forEach((level, li) => {
@@ -252,6 +260,27 @@ export function exportHouse(doc, opts = {}) {
         polygon = [...poly].reverse();
         edges = [...edges].reverse();
       }
+      // an edge under 1 cm (a jog the region tracing left between a straight face and a slanted one, hus3-foto: 9 mm)
+      // would be a wall whose ends are one point to the validator: it goes into the longer of its neighbours (whose
+      // direction changes least) – the vertex between them goes
+      for (let i = 0; polygon.length > 3 && i < polygon.length; i++) {
+        const n = polygon.length;
+        if (dist(polygon[i], polygon[(i + 1) % n]) >= 0.01) continue;
+        // (the short edge last: turn the loop by one, so it is edge 0 → 1)
+        if (i === n - 1) {
+          polygon = [polygon[n - 1], ...polygon.slice(0, n - 1)];
+          edges = [edges[n - 1], ...edges.slice(0, n - 1)];
+          i = 0;
+        }
+        const prev = dist(polygon[(i + n - 1) % n], polygon[i]);
+        const next = dist(polygon[i + 1], polygon[(i + 2) % n]);
+        // vertex i goes (the edge before runs on to i + 1) or vertex i + 1 (the edge after starts at i); either way the
+        // short edge's entry goes and the others stay with their vertices
+        const drop = prev >= next ? i : i + 1;
+        polygon = polygon.filter((_, k) => k !== drop);
+        edges = edges.filter((_, k) => k !== i);
+        i = -1;
+      }
       return { ...r, polygon, edges, ceiling: r.label?.ceiling ?? ceilingDefault };
     });
     levelRooms[li] = R2;
@@ -267,7 +296,7 @@ export function exportHouse(doc, opts = {}) {
         const L = dist(a, b);
         if (L < 1e-4) continue;
         const d = unit(sub(b, a));
-        edgeList.push({ ri, i, a, b, L, d, n: perp(d), wall: r.edges[i]?.wall ?? null, side: r.edges[i]?.side ?? 0 });
+        edgeList.push({ ri, i, a, b, L, d, n: perp(d), wall: r.edges[i]?.wall ?? null, side: r.edges[i]?.side ?? 0, separator: r.edges[i]?.separator ?? null });
       }
     });
     // two plan walls of one wall line that changes thickness (flush on one face, meeting end to end, detect.js): the
@@ -280,14 +309,32 @@ export function exportHouse(doc, opts = {}) {
       if (Math.abs(cross(ua, wallDir(B))) > 0.01) return false;
       return Math.abs(dot(sub(B.a, A.a), perp(ua))) <= (A.t + B.t) / 2 + 0.01;
     };
-    // facing edges: antiparallel, behind (outward), within the wall's thickness (+ 1 cm), overlapping
+    // facing edges: antiparallel, behind (outward), within the wall's thickness (+ 1 cm), overlapping. An open room
+    // boundary (a separator, or a cut taking an island out: regions.js) faces the other room's edge on the same line.
+    // The room itself can be behind an edge: a room that goes round a wall (a wall stub standing into it, or a wall it
+    // reaches round on both sides – hus3: the closet front under the stair, the living room on one side and the stair's
+    // foot on the other, one open room)
     const facing = (e) => {
       const out = [];
+      if (e.separator != null) {
+        for (const f of edgeList) {
+          if (f.ri === e.ri || f.separator !== e.separator || dot(f.d, e.d) > -0.999) continue;
+          if (Math.abs(dot(sub(f.a, e.a), e.n)) > 0.01) continue;
+          const fa = dot(sub(f.a, e.a), e.d);
+          const fb = dot(sub(f.b, e.a), e.d);
+          const lo = Math.min(fa, fb);
+          const hi = Math.max(fa, fb);
+          if (overlap(0, e.L, lo, hi) >= 0.01) out.push({ f, lo, hi, t: 0 });
+        }
+        return out;
+      }
       const w = e.wall ? wallsById.get(e.wall) : null;
       const maxT = (w ? w.t : 0.6) + 0.01;
       for (const f of edgeList) {
-        if (f.ri === e.ri) continue;
+        if (f === e || f.separator != null) continue;
         if (dot(f.d, e.d) > -0.999) continue;
+        // the room's own edge behind it: only along the same plan wall (the two faces of one wall)
+        if (f.ri === e.ri && (!e.wall || f.wall !== e.wall)) continue;
         const off = dot(sub(f.a, e.a), e.n); // f's line relative to e's, + = into e's room
         let lim = maxT;
         let minOverlap = 0.01;
@@ -343,10 +390,17 @@ export function exportHouse(doc, opts = {}) {
       return best?.q ?? null;
     };
     // roles: 'slab' = owns a shared slab (the room with the lower index), 'face' = the backOf side, 'free' = no room
-    // behind (exterior, or a wall end / a shaft)
+    // behind (exterior, or a wall end / a shaft). A wall with the same room on both sides: the format has no backOf
+    // within one room (validateHouse), so one side owns the whole slab (the distance between the faces, an inner wall)
+    // and the other is a wall of no thickness ('void': rooms.js builds nothing for it, the slab's back is its face).
+    // Two exterior walls of exteriorMin each way overlapped there and stood out of the wall by 0.25 m on each side
+    // (hus3: into the stair's top, with the facade cladding above the floor of the level over it)
+    for (const p of pieces) p.partner = partnerOf(p);
     for (const p of pieces) {
-      p.partner = partnerOf(p);
-      p.role = p.partner ? (p.ri < p.partner.ri ? 'slab' : 'face') : 'free';
+      const q = p.partner;
+      if (!q) p.role = 'free';
+      else if (q.ri !== p.ri) p.role = p.ri < q.ri ? 'slab' : 'face';
+      else p.role = p.e.i < q.e.i ? 'slab' : 'void';
     }
     // a short free piece between / next to shared pieces of the same edge lies in front of the end of an abutting wall
     // (a T joint): it takes its neighbour's role (a face reaches over it, a slab covers the joint)
@@ -363,7 +417,11 @@ export function exportHouse(doc, opts = {}) {
       });
     }
     // groups: consecutive pieces of an edge with the same role → one wall; a slab is cut where the distance to the
-    // faces behind it changes (a wall line that changes thickness: each part gets its own thickness)
+    // faces behind it changes (a wall line that changes thickness: each part gets its own thickness). The depths of one
+    // slab stay within DEPTH_TOL (under the validator's 5 mm for a backOf pair), and the slab takes the smallest: never
+    // into the room behind (hus2: 0.158 over a 0.157 gap was 2.5 cm² inside WIC; hus1's loft: 0.106 over a face 0.100
+    // behind failed the pair)
+    const DEPTH_TOL = 0.004;
     const groups = [];
     const depthOf = (p) => (p.absorbed || !p.behind ? null : p.behind.t);
     for (const e of edgeList) {
@@ -371,13 +429,16 @@ export function exportHouse(doc, opts = {}) {
       let g = null;
       for (const p of list) {
         const t = depthOf(p);
-        const sameDepth = p.role !== 'slab' || t == null || g?.depth == null || Math.abs(t - g.depth) <= 0.01;
+        const sameDepth = p.role !== 'slab' || t == null || g?.dmin == null || Math.max(g.dmax, t) - Math.min(g.dmin, t) <= DEPTH_TOL;
         if (g && p.role === g.role && p.role !== 'free' && sameDepth) {
           g.pieces.push(p);
           g.to = p.to;
-          if (g.depth == null) g.depth = t;
+          if (t != null) {
+            g.dmin = Math.min(g.dmin ?? t, t);
+            g.dmax = Math.max(g.dmax ?? t, t);
+          }
         } else {
-          g = { ri: e.ri, e, role: p.role, pieces: [p], from: p.from, to: p.to, depth: t };
+          g = { ri: e.ri, e, role: p.role, pieces: [p], from: p.from, to: p.to, dmin: t, dmax: t };
           groups.push(g);
         }
         p.group = g;
@@ -414,23 +475,49 @@ export function exportHouse(doc, opts = {}) {
     const slabRect = (g, t) => [g.from, g.to, add(g.to, mul(g.e.n, -t)), add(g.from, mul(g.e.n, -t))];
     const solid = [];
     for (const g of groups) {
+      if (g.role === 'void') g.t = 0;
       if (g.role !== 'slab') continue;
-      g.t = Math.max(...g.pieces.filter((p) => !p.absorbed).map((p) => p.behind.t));
+      g.t = Math.min(...g.pieces.filter((p) => !p.absorbed).map((p) => p.behind.t));
+      // the slab of a wall with its own room on the other side (a stub's body)
+      g.self = g.pieces.some((p) => p.partner && p.partner.ri === p.ri);
       solid.push(g);
+    }
+    // an absorbed end piece (a slab reaching over a T joint) that runs into another room's slab – both walls of a joint
+    // reach into it when a separator continues one of them (hus4: TV room, hall, bedroom) – is a free wall again: the
+    // free walls are thinned where they meet a slab (below)
+    const overlapsSlab = (rect, g) => solid.some((o) => o !== g && o.ri !== g.ri && o.t > 0 && Math.abs(signedArea(clipPolygon(rect, slabRect(o, o.t)))) > 2e-4);
+    for (const g of [...solid]) {
+      if (!(g.t > 0) || g.pieces.length < 2) continue;
+      for (const end of [0, 1]) {
+        const p = end === 0 ? g.pieces[0] : g.pieces[g.pieces.length - 1];
+        if (!p.absorbed || g.pieces.length < 2 || !overlapsSlab(slabRect({ from: p.from, to: p.to, e: g.e }, g.t), g)) continue;
+        g.pieces = g.pieces.filter((q) => q !== p);
+        if (end === 0) g.from = g.pieces[0].from;
+        else g.to = g.pieces[g.pieces.length - 1].to;
+        p.absorbed = false;
+        p.role = 'free';
+        const fg = { ri: g.ri, e: g.e, role: 'free', pieces: [p], from: p.from, to: p.to };
+        p.group = fg;
+        groups.splice(groups.indexOf(g) + end, 0, fg);
+      }
     }
     const conflicts = (g, t) => {
       const rect = slabRect(g, t);
       const L = dist(g.from, g.to);
       const out = [];
-      const test = (poly) => {
+      const test = (poly, own = false) => {
         const c = clipPolygon(poly, rect);
         if (c.length < 3 || Math.abs(signedArea(c)) < 2e-4) return;
         const us = c.map((p) => dot(sub(p, g.from), g.e.d));
         const ds = c.map((p) => -dot(sub(p, g.from), g.e.n));
-        out.push({ u0: Math.max(0, Math.min(...us)), u1: Math.min(L, Math.max(...us)), depth: Math.max(0, Math.min(...ds)) });
+        out.push({ u0: Math.max(0, Math.min(...us)), u1: Math.min(L, Math.max(...us)), depth: Math.max(0, Math.min(...ds)), own });
       };
       for (let ri = 0; ri < R2.length; ri++) if (ri !== g.ri) test(R2[ri].polygon);
       for (const o of solid) if (o.ri !== g.ri) test(slabRect(o, o.t));
+      // the room itself behind the wall: the end of a wall stub standing into the room (the room goes round it) has the
+      // stub's own slab behind it – no slab of its own (and no facade), and none out into the room
+      for (const o of solid) if (o.ri === g.ri && o.self && o !== g) test(slabRect(o, o.t), true);
+      test(R2[g.ri].polygon, true);
       return out;
     };
     const split = [];
@@ -439,12 +526,27 @@ export function exportHouse(doc, opts = {}) {
         split.push(g);
         continue;
       }
+      // an open boundary with no room found behind it (the two sides' edges ended a little apart): no wall either
+      if (g.e.separator != null) {
+        g.t = 0;
+        split.push(g);
+        continue;
+      }
       const planWall = g.e.wall ? wallsById.get(g.e.wall) : null;
       const want = Math.max(planWall ? planWall.t : 0.2, settings.exteriorMin ?? 0);
       const L = dist(g.from, g.to);
       const cs = conflicts(g, want);
       const cuts = new Set([0, L]);
-      for (const c of cs) for (const u of [c.u0, c.u1]) if (u > 0.01 && u < L - 0.01) cuts.add(u);
+      // a conflict at the very end of the wall (another room's slab reaching a centimetre past the corner) thins only a
+      // piece of at least MIN_PIECE there, not the whole wall (hus1's loft: 1.92 m at 5 mm for a 1 cm overlap)
+      const MIN_PIECE = 0.012;
+      for (const c of cs) {
+        for (const u of [c.u0, c.u1]) {
+          if (L < 3 * MIN_PIECE) continue;
+          const v = u > 1e-4 && u < MIN_PIECE ? MIN_PIECE : u < L - 1e-4 && u > L - MIN_PIECE ? L - MIN_PIECE : u;
+          if (v >= MIN_PIECE - 1e-9 && v <= L - MIN_PIECE + 1e-9) cuts.add(v);
+        }
+      }
       const us = [...cuts].sort((p, q) => p - q);
       const parts = [];
       for (let k = 0; k < us.length - 1; k++) {
@@ -452,16 +554,22 @@ export function exportHouse(doc, opts = {}) {
         const u1 = us[k + 1];
         if (u1 - u0 < 0.005) continue;
         let t = want;
-        for (const c of cs) if (c.u1 > u0 + 1e-4 && c.u0 < u1 - 1e-4) t = Math.min(t, c.depth - 0.002);
+        let own = false;
+        for (const c of cs) {
+          if (!(c.u1 > u0 + 1e-4 && c.u0 < u1 - 1e-4)) continue;
+          t = Math.min(t, c.depth - 0.002);
+          own ||= c.own;
+        }
         t = Math.max(0.005, Math.floor(t * 1000) / 1000);
         const prev = parts[parts.length - 1];
-        if (prev && Math.abs(prev.t - t) < 1e-6) prev.u1 = u1;
-        else parts.push({ u0, u1, t });
+        if (prev && Math.abs(prev.t - t) < 1e-6 && prev.own === own) prev.u1 = u1;
+        else parts.push({ u0, u1, t, own });
       }
       for (const p of parts) {
         const sg = { ...g, from: add(g.from, mul(g.e.d, p.u0)), to: add(g.from, mul(g.e.d, p.u1)), t: p.t };
-        sg.exterior = rayToRooms(sg) > 1.2;
-        if (p.t < 0.6 * (planWall ? planWall.t : want) && p.u1 - p.u0 > 0.3) warnings.push(`${level.name}: en yttervegg i ${R2[g.ri].name} er tynnet til ${round(p.t, 3)} m på ${round(p.u1 - p.u0, 2)} m for ikke å gå inn i et annet rom`);
+        // the room itself behind it: an inner wall, not a facade
+        sg.exterior = !p.own && rayToRooms(sg) > 1.2;
+        if (p.t < 0.6 * (planWall ? planWall.t : want) && p.u1 - p.u0 > 0.3) warnings.push(`${level.name}: en yttervegg i ${R2[g.ri].name} er tynnet til ${round(p.t, 3)} m på ${round(p.u1 - p.u0, 2)} m for ikke å gå inn i ${p.own ? 'rommet selv' : 'et annet rom'}`);
         split.push(sg);
         solid.push(sg);
       }
@@ -481,7 +589,12 @@ export function exportHouse(doc, opts = {}) {
       const wet = r.kind === 'bathroom' || r.kind === 'laundry';
       for (const g of groupsOf[ri]) {
         const id = groupId.get(g);
-        const w = { id, roomId: r.id, from: RP(g.from), to: RP(g.to), normal: RP(g.e.n) };
+        // the normal from the written ends: a short slanted piece's mm-rounded ends turn it more than the validator's
+        // 0,001 (hus3-foto without AI)
+        const from = RP(g.from);
+        const to = RP(g.to);
+        const axisAligned = Math.abs(g.e.n[0]) < 1e-9 || Math.abs(g.e.n[1]) < 1e-9;
+        const w = { id, roomId: r.id, from, to, normal: axisAligned || dist(from, to) < 1e-6 ? RP(g.e.n) : RP(perp(unit(sub(to, from)))) };
         const own = g.pieces.filter((p) => !p.absorbed);
         if (g.role === 'face') {
           const ids = [...new Set(own.map((p) => groupId.get(p.partner.group)))];
@@ -503,6 +616,21 @@ export function exportHouse(doc, opts = {}) {
         counts.walls++;
       }
     });
+
+    // ---- open room boundaries (separators, island cuts): the house format has no room edge without a wall, so the
+    //      owner side is a wall of no thickness (rooms.js builds nothing for it) with one passage over its whole length
+    //      and height – the portal between the two rooms (visibility.js); the other side is its backOf face
+    //      (notes/planbygger.md, «Forespørsler» 12)
+    for (const g of groups) {
+      if (g.e.separator == null || g.role !== 'slab') continue;
+      const wall = wallObjs.get(g);
+      const owner = R2[g.ri].id;
+      const other = g.pieces.find((p) => p.partner && !p.absorbed)?.partner;
+      const L = Math.floor(dist(wall.from, wall.to) * 1000) / 1000;
+      if (!other || L < 0.02) continue;
+      wall.openings = [{ id: `open-${owner}-${++counts.openings}`, type: 'opening', offset: 0, width: L, height: wall.height, sill: 0, connects: [owner, R2[other.ri].id], estimated: ['*'], source: `planbyggeren: ${/^cut/.test(g.e.separator) ? 'åpen plan rundt et rom midt i rommet (delt med en tenkt linje)' : 'skillelinje mellom to soner'}, ingen vegg` }];
+      counts.openBoundaries++;
+    }
 
     // ---- openings on their owner pieces. The house format has hinged single leaves only: a double door becomes two
     //      doors side by side in its hole (one per leaf, hinged at the jambs, the same swing), a sliding door a passage
@@ -527,94 +655,108 @@ export function exportHouse(doc, opts = {}) {
       const P1 = frame.toGame(add(pw.a, mul(u, o.at + o.width / 2)), levelId);
       const uGame = frame.vecToGame(u);
       // candidate walls: on a face of this plan wall, solid (a slab or a free wall)
-      let best = null;
+      const cands = [];
       for (const p of groups) {
         // (a room edge along a wall line that changes thickness may carry the other plan wall's id)
         if (p.e.wall !== o.wall && !(p.e.wall && sameLine(p.e.wall, o.wall))) continue;
-        if (p.role === 'face') continue;
+        if (p.role === 'face' || p.role === 'void') continue;
         const L = dist(p.from, p.to);
         const a = dot(sub(P0, p.from), p.e.d);
         const b = dot(sub(P1, p.from), p.e.d);
         const ov = overlap(0, L, Math.min(a, b), Math.max(a, b));
-        if (ov > 0.02 && (!best || ov > best.ov)) best = { p, ov, a: Math.min(a, b), b: Math.max(a, b), L };
+        if (ov > 0.02) cands.push({ p, ov, a: Math.min(a, b), b: Math.max(a, b), L });
       }
-      if (!best) {
+      if (!cands.length) {
         warnings.push(`${level.name}: åpningen ${o.id} (${o.type}) står ikke på noen romvegg – hoppet over`);
         continue;
       }
-      const { p, L } = best;
-      let off = best.a;
-      let width = best.b - best.a;
-      if (off < 0 || off + width > L) {
-        const a = Math.max(0, off);
-        const b = Math.min(L, off + width);
-        if (b - a < 0.2) {
-          warnings.push(`${level.name}: åpningen ${o.id} får ikke plass i veggen ${groupId.get(p)} – hoppet over`);
-          continue;
+      cands.sort((x, y) => y.ov - x.ov);
+      // a passage along the wall pieces of several rooms opens each of them (hus4: 4,5 m along the stair well and the
+      // room beside it – on the well's piece it is where the stair comes up); a door or a window goes on the piece it
+      // overlaps most
+      const split = o.type === 'opening' ? cands.filter((c) => c.ov >= 0.2) : [];
+      const targets = split.length > 1 ? split : [cands[0]];
+      targets.forEach((best, k) => {
+        const { p, L } = best;
+        let off = best.a;
+        let width = best.b - best.a;
+        if (off < 0 || off + width > L) {
+          const a = Math.max(0, off);
+          const b = Math.min(L, off + width);
+          if (b - a < 0.2) {
+            warnings.push(`${level.name}: åpningen ${o.id} får ikke plass i veggen ${groupId.get(p)} – hoppet over`);
+            return;
+          }
+          if (targets.length === 1) warnings.push(`${level.name}: åpningen ${o.id} er kuttet til veggen ${groupId.get(p)} (${round(width, 2)} → ${round(b - a, 2)} m)`);
+          off = a;
+          width = b - a;
         }
-        warnings.push(`${level.name}: åpningen ${o.id} er kuttet til veggen ${groupId.get(p)} (${round(width, 2)} → ${round(b - a, 2)} m)`);
-        off = a;
-        width = b - a;
-      }
-      const wall = wallObjs.get(p);
-      const owner = roomIdOf(p.ri);
-      // the room behind the opening (the partner of the piece under its middle), else outside
-      const midU = (Math.max(0, off) + Math.min(L, off + width)) / 2;
-      const under = p.pieces.find((q) => dot(sub(q.to, p.from), p.e.d) >= midU - 1e-6) ?? p.pieces[p.pieces.length - 1];
-      const firstPartner = p.pieces.find((q) => q.partner && !q.absorbed)?.partner ?? null;
-      const other = under.partner && !under.absorbed ? roomIdOf(under.partner.ri) : firstPartner ? roomIdOf(firstPartner.ri) : 'ute';
-      const room = R2[p.ri];
-      const wallH = wall.height ?? room.ceiling;
-      const entry = { id: null, type: o.type === 'door' ? 'door' : o.type === 'window' ? 'window' : 'opening', offset: R(off), width: R(width) };
-      if (entry.type === 'window') {
-        const sill = o.sill ?? settings.windowSill;
-        const h = Math.min(o.height ?? settings.windowHeight, wallH - sill - 0.05);
-        entry.id = `win-${owner}-${++counts.windows}`;
-        entry.height = R(h);
-        entry.sill = R(sill);
-        entry.estimated = ['*'];
-      } else {
-        const h = Math.min(o.height ?? settings.doorHeight, wallH - 0.02);
-        entry.height = R(h);
-        entry.sill = 0;
-        entry.connects = [owner, other];
-        if (entry.type === 'door') {
-          entry.id = `door-${owner}-${++counts.doors}`;
-          const sameDir = dot(uGame, p.e.d) > 0;
-          const hingeStart = (o.hinge ?? 'start') === 'start';
-          const hinge = hingeStart === sameDir ? 'from' : 'to';
-          const swingVec = frame.vecToGame(mul(perp(u), o.side || 1));
-          const swing = dot(swingVec, p.e.n) > 0 ? 'in' : 'out';
-          const frameW = 0.06;
-          const leafW = Math.min(o.leaf ?? width - 2 * frameW, width - 2 * frameW);
-          const exterior = other === 'ute';
-          entry.frame = { color: LOOK.frame, width: frameW, depth: 0.02 };
-          entry.door = {
-            hinge,
-            swing,
-            opensInto: swing === 'in' ? owner : other,
-            leaf: { w: R(leafW), h: R(h - 0.04) },
-            ...(o.openAngle && o.openAngle !== 90 ? { openAngleDeg: o.openAngle } : {}),
-            handleSide: hinge === 'from' ? 'to' : 'from',
-            handleHeight: 1.05,
-            closed: true,
-            ...(exterior ? {} : { leafColor: LOOK.door }),
-          };
-          entry.interactive = true;
+        const wall = wallObjs.get(p);
+        const owner = roomIdOf(p.ri);
+        // the room behind the opening (the partner of the piece under its middle), else outside
+        const midU = (Math.max(0, off) + Math.min(L, off + width)) / 2;
+        const under = p.pieces.find((q) => dot(sub(q.to, p.from), p.e.d) >= midU - 1e-6) ?? p.pieces[p.pieces.length - 1];
+        const firstPartner = p.pieces.find((q) => q.partner && !q.absorbed)?.partner ?? null;
+        let other = under.partner && !under.absorbed ? roomIdOf(under.partner.ri) : firstPartner ? roomIdOf(firstPartner.ri) : 'ute';
+        // a door in a wall with the same room on both sides (the room goes round the wall): the format wants two rooms
+        // in connects, and the only other one there is is outside ('ute') – the door stays a door you can walk through
+        const selfWall = other === owner;
+        if (selfWall) other = 'ute';
+        const room = R2[p.ri];
+        const wallH = wall.height ?? room.ceiling;
+        const entry = { id: null, type: o.type === 'door' ? 'door' : o.type === 'window' ? 'window' : 'opening', offset: R(off), width: R(width) };
+        if (entry.type === 'window') {
+          const sill = o.sill ?? settings.windowSill;
+          const h = Math.min(o.height ?? settings.windowHeight, wallH - sill - 0.05);
+          entry.id = `win-${owner}-${++counts.windows}`;
+          entry.height = R(h);
+          entry.sill = R(sill);
           entry.estimated = ['*'];
         } else {
-          entry.id = `open-${owner}-${++counts.openings}`;
-          entry.estimated = ['*'];
+          const h = Math.min(o.height ?? settings.doorHeight, wallH - 0.02);
+          entry.height = R(h);
+          entry.sill = 0;
+          entry.connects = [owner, other];
+          if (entry.type === 'door') {
+            entry.id = `door-${owner}-${++counts.doors}`;
+            const sameDir = dot(uGame, p.e.d) > 0;
+            const hingeStart = (o.hinge ?? 'start') === 'start';
+            const hinge = hingeStart === sameDir ? 'from' : 'to';
+            const swingVec = frame.vecToGame(mul(perp(u), o.side || 1));
+            const swing = dot(swingVec, p.e.n) > 0 ? 'in' : 'out';
+            const frameW = 0.06;
+            const leafW = Math.min(o.leaf ?? width - 2 * frameW, width - 2 * frameW);
+            const exterior = other === 'ute' && !selfWall;
+            entry.frame = { color: LOOK.frame, width: frameW, depth: 0.02 };
+            entry.door = {
+              hinge,
+              swing,
+              opensInto: swing === 'in' ? owner : other,
+              leaf: { w: R(leafW), h: R(h - 0.04) },
+              ...(o.openAngle && o.openAngle !== 90 ? { openAngleDeg: o.openAngle } : {}),
+              handleSide: hinge === 'from' ? 'to' : 'from',
+              handleHeight: 1.05,
+              closed: true,
+              ...(exterior ? {} : { leafColor: LOOK.door }),
+            };
+            entry.interactive = true;
+            entry.estimated = ['*'];
+          } else {
+            entry.id = `open-${owner}-${++counts.openings}`;
+            entry.estimated = ['*'];
+          }
         }
-      }
-      if (o.built === 'double') {
-        entry.source = `planbyggeren: dobbeltdør, blad ${o.part} av 2 (bygget som to dører)`;
-        if (o.part === 1) counts.doubleDoors++;
-      } else if (o.built === 'sliding') {
-        entry.source = 'planbyggeren: skyvedør (bygget som åpning)';
-        counts.slidingDoors++;
-      }
-      (wall.openings ||= []).push(entry);
+        if (o.built === 'double') {
+          entry.source = `planbyggeren: dobbeltdør, blad ${o.part} av 2 (bygget som to dører)`;
+          if (o.part === 1) counts.doubleDoors++;
+        } else if (o.built === 'sliding') {
+          entry.source = 'planbyggeren: skyvedør (bygget som åpning)';
+          if (k === 0) counts.slidingDoors++;
+        }
+        if (targets.length > 1) entry.source = `${entry.source ? `${entry.source}; ` : 'planbyggeren: '}del ${k + 1} av ${targets.length} (åpningen går langs flere rom)`;
+        if (selfWall && entry.type !== 'window') entry.source = `${entry.source ? `${entry.source}; ` : 'planbyggeren: '}samme rom på begge sider av veggen (rommet går rundt den), koblet til «ute» fordi formatet vil ha to rom`;
+        (wall.openings ||= []).push(entry);
+      });
     }
     for (const w of house.walls) if (w.openings) w.openings.sort((a, b) => a.offset - b.offset);
 
@@ -719,6 +861,33 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
         warnings.push(`${level.name}: trappehullet går over en vegg – tegn det inne i ett rom`);
         continue;
       }
+      // the box of the clipped part can still reach out of a room that is not convex there (hus1 without AI: the loft's
+      // edge 4 mm in from the box on one half, the room going on beyond it on the other): each side that lies outside is
+      // moved in onto the room's parallel edge (at most 0,15 m), until the hole lies inside (the validator allows 10 cm²)
+      const outside = (b) => (b[2] - b[0]) * (b[3] - b[1]) - Math.abs(signedArea(clipPolygon(room.polygon, [[b[0], b[1]], [b[2], b[1]], [b[2], b[3]], [b[0], b[3]]])));
+      for (let round = 0; round < 4 && outside(box) > 5e-4; round++) {
+        const P = room.polygon;
+        for (const [k, axis, sign] of [[1, 1, 1], [3, 1, -1], [0, 0, 1], [2, 0, -1]]) {
+          let best = null;
+          for (let i = 0; i < P.length; i++) {
+            const a = P[i];
+            const b = P[(i + 1) % P.length];
+            if (Math.abs(a[axis] - b[axis]) > 1e-6) continue;
+            const v = a[axis];
+            const d = (v - box[k]) * sign;
+            const lo = Math.min(a[1 - axis], b[1 - axis]);
+            const hi = Math.max(a[1 - axis], b[1 - axis]);
+            const span = axis === 1 ? [box[0], box[2]] : [box[1], box[3]];
+            if (d <= 1e-6 || d > 0.15 || hi <= span[0] + 1e-6 || lo >= span[1] - 1e-6) continue;
+            if (best == null || d > (best - box[k]) * sign) best = v;
+          }
+          if (best != null) box[k] = best;
+        }
+      }
+      if (outside(box) > 5e-4) {
+        warnings.push(`${level.name}: trappehullet går over en vegg – tegn det inne i ett rom`);
+        continue;
+      }
       const hole = [[box[0], box[1]], [box[2], box[1]], [box[2], box[3]], [box[0], box[3]]].map(RP);
       // the way down in game coordinates, and the edges on the (clipped) hole
       const dG = unit(frame.vecToGame(g.down));
@@ -730,6 +899,12 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
       if (topPts.length !== 2 || footPts.length !== 2) {
         warnings.push(`${level.name}: trappa har ingen tydelig retning – hoppet over`);
         continue;
+      }
+      // a U stair's sides as the editor draws them (editor.js _drawUStair): its top flight starts at the plan's first top
+      // corner (stairGeometry top[0]) unless st.side is 1 – generate.js orientStair chooses the side by its landings
+      if (st.kind === 'u') {
+        const n0 = toG(g.top[0]);
+        if (dist(topPts[1], n0) < dist(topPts[0], n0)) topPts.reverse();
       }
       const lowerRooms = levelRooms[lowerIdx] || [];
       const footMid = st.kind === 'u' ? mul(add(add(topPts[0], topPts[1]), mul(add(footPts[0], footPts[1]), 1)), 0.25) : mul(add(footPts[0], footPts[1]), 0.5);
@@ -806,6 +981,14 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
         }
         guards.push({ id: `rekk-${counts.stairs}-oye`, on: 'well' });
       }
+      // the walk line (src/home/stairs.js; generate.js stairWalkLength) against the steepest the player walks up
+      const W0 = dist(topPts[0], topPts[1]);
+      const well0 = Math.min(0.2, Math.max(0.06, W0 * 0.06));
+      const half0 = (W0 - well0) / 2;
+      const walk = u ? 2 * Math.max(0, hi - lo - half0) + (Math.PI * half0) / 2 + well0 : hi - lo;
+      const slope = (Math.atan2(rise, walk) * 180) / Math.PI;
+      const maxSlope = (Math.acos(WALKABLE_NORMAL_Y) * 180) / Math.PI;
+      if (slope > maxSlope) warnings.push(`${level.name}: trappa er for bratt å gå i (${round(slope, 0)}° med ${round(walk, 2)} m ganglinje for ${round(rise, 2)} m; høyst ${round(maxSlope, 0)}°) – den trenger minst ${round(rise / Math.tan((maxSlope * Math.PI) / 180), 1)} m ganglinje`);
       floorOpenings.push({ id: holeId, levelId: upper.id, roomId: room.id, stairId: id, polygon: hole, edgeBand: { color: '#f2efe8', depth: 0.3 }, estimated: ['polygon'] });
       stairs.push({
         id,

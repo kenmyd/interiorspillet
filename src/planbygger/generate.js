@@ -54,7 +54,13 @@
  *   5. the floor order: file names, then titles (AI), then content (entrance and kitchen → main level, skylights →
  *      top, basement words → bottom)
  *   6. levels on top of each other (alignLevelTo with the plan images); a stair where both floors show it (addStair;
- *      half-turn → 'u', quarter-turn → the nearest kind the house format has, with a note and a request)
+ *      half-turn → 'u', quarter-turn → the nearest kind the house format has, with a note and a request), going down the
+ *      way that has floor at both its ends (orientStair; none → a question). Thin lines across a found stair read as
+ *      walls go (dropTreadLines), and one along its end on the upper floor when it closes the stair's only landing
+ *      (stairEndLines). A stair steeper than the player walks (STAIR_MAX_SLOPE_DEG) is not built: it is asked about with
+ *      «no stair» as the default
+ * Rooms are always the level's rooms with its separators and its islands cut out (regions.js levelRooms), as the
+ * house file and the editor see them.
  *   7. facades (readFacade; one sheet shares the scale of its surest door reading): the roof (houseRoof), sill and
  *      height per storey → the windows of that level; without facades, per room kind
  *   8. the questions (questions.js)
@@ -67,12 +73,13 @@ import { autoScale, estimateScale, similarSource, innerArea, wallModes } from '.
 import { readFacade, houseRoof } from './facade.js';
 import { findStairs, alignLevelTo } from './align.js';
 import { drawMarks, targetsFromLevel } from './marks.js';
-import { findRooms } from './regions.js';
+import { levelRooms } from './regions.js';
 import { roomKindOf } from './ai.js';
 import { luma } from './image.js';
 import { guessKind, exportHouse, baseSpec, ownerOnly } from './export.js';
-import { createDoc, applyDetection, addStair, addWall, setOpeningKind, wallById, wallPoint, DEFAULT_SETTINGS } from './model.js';
+import { createDoc, applyDetection, addStair, addWall, setOpeningKind, wallById, wallPoint, stairGeometry, DEFAULT_SETTINGS } from './model.js';
 import { clipPolygon, signedArea, dist, round, pointInPolygon } from './geom.js';
+import { WALKABLE_NORMAL_Y } from '../config.js';
 import {
   applyAnswers,
   windowsPerStorey,
@@ -126,6 +133,8 @@ const fmt = (v, d = 1) => (Number.isFinite(v) ? String(Math.round(v * 10 ** d) /
 const DRAWING_KINDS = new Set(['plan', 'facade', 'section']);
 const NOT_A_ROOM = /brutto|\bbta\b|\bbra\b|p-rom|s-rom|totalt|\bsum\b|tomt|bebygd|åpent opp|apent opp/i;
 const OUTDOOR = new Set(['terrace', 'balcony', 'carport', 'garage']);
+/** A mark in brackets of 1–3 letters («(G)» garderobe, «(L)»): a symbol in a room, not its name. */
+const MARK_ONLY = /^\(\s*[a-zæøå]{1,3}\.?\s*\)$/i;
 
 /** The functions the default executor calls. */
 const DIRECT = { rectifyPhoto, splitSheet, cleanForWalls, detectPlan, autoScale, readFacade, findStairs };
@@ -710,7 +719,7 @@ export async function generate(inputs, opts = {}) {
       /* the uncleaned detection stands */
     }
     const level0 = applyDetection({}, det0, ppm0);
-    const rooms0 = findRooms(level0.walls);
+    const rooms0 = levelRooms(level0);
     if (!again) {
       // marks for the AI: the rooms and openings the classical detection found
       const targets = targetsFromLevel(level0, rooms0.rooms, ppm0);
@@ -824,7 +833,7 @@ export async function generate(inputs, opts = {}) {
       const closed = close ? closeOpenSide(d.level) : null;
       // the fill and the provisional scale also make walls of text and dimension lines: those with no room beside them go
       if (label !== 'raw') dropLoose(d.level, o.roomQuestionMin);
-      d.found = findRooms(d.level.walls);
+      d.found = levelRooms(d.level);
       tries.push({ label, pass: keepPass(d), closed });
     };
     const found = () => tries.some((x) => roomsOf(x.pass) > 0);
@@ -874,7 +883,7 @@ export async function generate(inputs, opts = {}) {
       const c = o0 ? openingCentre(refs.level0, o0) : null;
       return c ? [c[0] * k0, c[1] * k0] : null;
     };
-    const found = findRooms(L.walls);
+    const found = levelRooms(L);
     d.found = found;
     // ---- rooms
     const items = [];
@@ -900,7 +909,10 @@ export async function generate(inputs, opts = {}) {
     const feats = roomFeatures(L, found);
     const largest = found.rooms.reduce((b, r) => (!b || r.area > b.area ? r : b), null);
     for (const room of found.rooms) {
-      const its = per.get(room.index) ?? [];
+      let its = per.get(room.index) ?? [];
+      // a symbol in brackets («(G)»: a wardrobe in the room, which Haiku gave hus2's WIC 4.6 mark as its name) is no
+      // room name beside a real one
+      if (its.some((x) => !MARK_ONLY.test(x.name))) its = its.filter((x) => !MARK_ONLY.test(x.name));
       if (its.length) {
         // several labels in one region (an open loft, a hall the detection merged with a store): the largest first
         its.sort((a, b) => (b.area ?? 0) - (a.area ?? 0));
@@ -1082,6 +1094,18 @@ export async function generate(inputs, opts = {}) {
     // the type: the classical kind (the treads), else the AI's
     let type = classical && classical !== 'unknown' ? classical : aiType && aiType !== 'unknown' && aiType !== 'none' ? aiType : null;
     const typeFrom = classical && classical !== 'unknown' ? 'tegningen' : type ? 'KI' : null;
+    // lines across the stair read as walls, on each floor that shows the stair itself (in its own frame: no alignment
+    // error), before the stair is fitted into a room – they split its band into slivers and block its flight
+    const ownU = pair ? pair.a.s : use === bu[0]?.main ? bu[0].s : null;
+    const ownL = pair ? pair.b.s : use === bl[0]?.main ? bl[0].s : null;
+    for (const [d, s] of [[upper, ownU], [lower, ownL]]) {
+      if (!s) continue;
+      const gone = dropTreadLines(d.level, s.bbox.map((v) => v / d.ppm));
+      if (!gone.length) continue;
+      d.found = levelRooms(d.level);
+      report.notes.push(`${d.level.name}: ${gone.length === 1 ? 'en strek' : `${gone.length} streker`} på tvers inne i trappa var lest som vegger (trinn eller snittlinje) og er tatt bort, så trappa kan gås.`);
+      step({ step: 'stairs', file: d.file, level: d.level.id, method: 'treads', confidence: 'medium', detail: `${gone.length} tynne vegger på tvers inne i trappa tatt bort (${gone.join(', ')})` });
+    }
     // into the upper level's frame, inside one of its rooms
     const off = U.offset || [0, 0];
     let rect = [[use[0] - off[0], use[1] - off[1]], [use[2] - off[0], use[3] - off[1]]];
@@ -1095,7 +1119,7 @@ export async function generate(inputs, opts = {}) {
     // the stair lands in a room of the floor below (export.js needs it; the validator wants the stair's rooms on both)
     const lo = lower.level.offset || [0, 0];
     const cm = [(rect[0][0] + rect[1][0]) / 2 + off[0] - lo[0], (rect[0][1] + rect[1][1]) / 2 + off[1] - lo[1]];
-    const lowerFound = lower.found ?? findRooms(lower.level.walls);
+    const lowerFound = lower.found ?? levelRooms(lower.level);
     if (roomAt(lowerFound, cm, 0.6) < 0) {
       questions.push(stairQuestion({ level: U.id, levelName: U.name, file: upper.file, crop: { file: upper.file, level: U.id, bbox: cropBox(rect, upper.ppm, upper.img) }, value: type === 'half-turn' ? 'u' : 'straight', why: `Vi fant ikke noe rom under trappa i ${lower.level.name.toLowerCase()}. Tegn den inn i «Finjuster» om den finnes.`, rect: null }));
       step({ step: 'stairs', file: upper.file, level: U.id, method: 'none', confidence: 'low', detail: `${why}, men det er ikke noe rom under den i ${lower.level.name}` });
@@ -1117,17 +1141,69 @@ export async function generate(inputs, opts = {}) {
         if (!report.requests.some((r) => /kvartsvingt/.test(r))) report.requests.push('Motoren (stairs.js og husformatet): kvartsvingte trapper (L-trapp med svingtrinn), så planbyggeren kan bygge dem som tegnet i stedet for som U-trapp eller rett trapp.');
       }
     }
-    const axis = w >= h ? 'x' : 'y';
     const a = rect[0];
     const b = rect[1];
     const st = addStair(U, a, b);
     if (kind === 'u') st.kind = 'u';
+    // the way down: the box says where the stair is, not where it starts – the orientation whose landings are floor
+    const toLowerPlan = (p) => [p[0] + off[0] - lo[0], p[1] + off[1] - lo[1]];
+    let turn = orientStair(st, { level: U, found: levelRooms(U) }, { level: lower.level, found: lowerFound }, toLowerPlan);
+    // no landing at either end: a thin line along one end on the upper floor may be the hole's edge read as a wall
+    // (stairEndLines) – out when that gives the stair its landing, back again when it does not
+    let edge = null;
+    if (!turn) {
+      for (const line of stairEndLines(U, st.rect)) {
+        const walls = U.walls;
+        U.walls = walls.filter((x) => x !== line);
+        turn = orientStair(st, { level: U, found: levelRooms(U) }, { level: lower.level, found: lowerFound }, toLowerPlan);
+        if (turn) {
+          edge = { line, walls };
+          break;
+        }
+        U.walls = walls;
+      }
+    }
+    if (turn) Object.assign(st, turn);
+    const axis = st.axis;
+    // a stair too steep for the player is not built silently (hus8: an L stair of which the floor above shows only its
+    // upper flight, 1,32 m for 2,7 m: 64°): it is taken out again and asked about with «no stair» as the default – the
+    // house would get a stair nobody can walk up. «Rett trapp» / «U-trapp» puts it back as found
+    const rise = U.floorY - lower.level.floorY > 0.5 ? U.floorY - lower.level.floorY : o.floorHeight;
+    const walkLen = stairWalkLength(st);
+    const slope = (Math.atan2(rise, walkLen) * 180) / Math.PI;
+    if (slope > STAIR_MAX_SLOPE_DEG) {
+      U.stairs = U.stairs.filter((s) => s !== st);
+      // (the line at its end stays: it was taken out for this stair only)
+      if (edge) U.walls = edge.walls;
+      const need = rise / Math.tan((STAIR_MAX_SLOPE_DEG * Math.PI) / 180);
+      const drawn = type === 'quarter-turn' ? ' Tegningen viser en kvartsvingt trapp, og husformatet har bare rette trapper og U-trapper.' : type === 'spiral' ? ' Tegningen viser en spiraltrapp, og husformatet har bare rette trapper og U-trapper.' : '';
+      questions.push(
+        stairQuestion({
+          level: U.id,
+          levelName: U.name,
+          file: upper.file,
+          crop: { file: upper.file, level: U.id, bbox: cropBox(rect, upper.ppm, upper.img) },
+          value: 'none',
+          why: `${why[0].toUpperCase()}${why.slice(1)}, men den er for bratt til å gå i: ${kind === 'u' ? 'U-trappa' : 'den rette trappa'} vi fant er ${fmt(longSide, 2)} × ${fmt(shortSide, 2)} m, og med ${fmt(walkLen, 2)} m ganglinje for ${fmt(rise, 2)} m etasjehøyde blir den ${Math.round(slope)}° bratt. I 3D-huset kan man gå i høyst ${Math.round(STAIR_MAX_SLOPE_DEG)}°, så den trenger minst ${fmt(need, 1)} m ganglinje.${drawn} Den er ikke lagt inn: tegn den inn i «Finjuster», eller velg en trapp her for å få den slik den ble funnet.`,
+          rect: st.rect,
+          axis,
+          stair: { rect: st.rect, axis, down: st.down, ...(st.side != null ? { side: st.side } : {}) },
+        }),
+      );
+      step({ step: 'stairs', file: upper.file, level: U.id, method: 'none', confidence: 'low', detail: `${why}; ${type ?? 'ukjent type'} → ${kind === 'u' ? 'U-trapp' : 'rett trapp'} ${fmt(w, 2)} × ${fmt(h, 2)} m, ganglinje ${fmt(walkLen, 2)} m for ${fmt(rise, 2)} m: ${Math.round(slope)}° (høyst ${Math.round(STAIR_MAX_SLOPE_DEG)}°) – for bratt, ikke lagt inn` });
+      return;
+    }
+    if (edge) {
+      upper.found = levelRooms(U);
+      report.notes.push(`${U.name}: en strek langs enden av trappa var lest som en vegg og stengte toppen; den er tatt bort, så trappa kan gås.`);
+      step({ step: 'stairs', file: upper.file, level: U.id, method: 'edge', confidence: 'medium', detail: `streken ${edge.line.id} langs enden av trappa tatt bort – den stengte toppen` });
+    }
     st.auto = true;
-    st.from = { type, typeFrom, why };
+    st.from = { type, typeFrom, why, ...(turn ? {} : { landings: false }) };
     upper.stairPlaced = st;
-    step({ step: 'stairs', file: upper.file, level: U.id, method: kind, confidence: pair ? 'high' : 'medium', detail: `${why}; ${type ?? 'ukjent type'}${typeFrom ? ` (fra ${typeFrom})` : ''} → ${kind === 'u' ? 'U-trapp' : 'rett trapp'} ${fmt(w, 2)} × ${fmt(h, 2)} m` });
-    const unclear = !pair || !type || (aiType && classical && aiType !== classical && aiType !== 'unknown');
-    if (unclear) questions.push(stairQuestion({ level: U.id, levelName: U.name, file: upper.file, crop: { file: upper.file, level: U.id, bbox: cropBox(rect, upper.ppm, upper.img) }, value: kind, why: `${why[0].toUpperCase()}${why.slice(1)}. ${type ? `Tegningen ser ut som ${TYPE_NO[type] ?? 'en trapp'}${aiType && classical && aiType !== classical && aiType !== 'unknown' ? `, men KI-en mener ${TYPE_NO[aiType] ?? aiType}` : ''}.` : 'Typen er usikker.'}`, stairId: st.id, rect: st.rect, axis }));
+    step({ step: 'stairs', file: upper.file, level: U.id, method: kind, confidence: pair && turn ? 'high' : 'medium', detail: `${why}; ${type ?? 'ukjent type'}${typeFrom ? ` (fra ${typeFrom})` : ''} → ${kind === 'u' ? 'U-trapp' : 'rett trapp'} ${fmt(w, 2)} × ${fmt(h, 2)} m${turn ? `, ned mot ${axis}${st.down > 0 ? '+' : '−'}` : ', ingen retning med gulv ved begge endene'}` });
+    const unclear = !pair || !type || !turn || (aiType && classical && aiType !== classical && aiType !== 'unknown');
+    if (unclear) questions.push(stairQuestion({ level: U.id, levelName: U.name, file: upper.file, crop: { file: upper.file, level: U.id, bbox: cropBox(rect, upper.ppm, upper.img) }, value: kind, why: `${why[0].toUpperCase()}${why.slice(1)}. ${type ? `Tegningen ser ut som ${TYPE_NO[type] ?? 'en trapp'}${aiType && classical && aiType !== classical && aiType !== 'unknown' ? `, men KI-en mener ${TYPE_NO[aiType] ?? aiType}` : ''}.` : 'Typen er usikker.'}${turn ? '' : ' Vi fant ingen vei for trappa med gulv å gå ut på både oppe og nede; sjekk den i «Finjuster».'}`, stairId: st.id, rect: st.rect, axis }));
   }
 
   // ---- 7. facades
@@ -1210,7 +1286,7 @@ export async function generate(inputs, opts = {}) {
     // no facades: per room kind
     for (const d of byNo) {
       const L = d.level;
-      const found = d.found ?? findRooms(L.walls);
+      const found = d.found ?? levelRooms(L);
       const kindAt = new Map();
       for (const r of L.rooms) {
         const idx = found.at(r.seed[0], r.seed[1]);
@@ -1453,7 +1529,7 @@ function roomFeatures(L, found) {
  * polygon until at least 95 % of it lies inside (export.js skips a hole that crosses a wall). → rect | null
  */
 function fitInRoom(L, rect) {
-  const found = findRooms(L.walls);
+  const found = levelRooms(L);
   const c = [(rect[0][0] + rect[1][0]) / 2, (rect[0][1] + rect[1][1]) / 2];
   let idx = roomAt(found, c, 0.5);
   if (idx < 0) {
@@ -1506,6 +1582,160 @@ function fitInRoom(L, rect) {
 }
 const rectPoly = (r) => [[r[0][0], r[0][1]], [r[1][0], r[0][1]], [r[1][0], r[1][1]], [r[0][0], r[1][1]]];
 
+/** The steepest stair the player walks up (src/config.js: ground steeper than this is a wall to PlayerController). */
+export const STAIR_MAX_SLOPE_DEG = (Math.acos(WALKABLE_NORMAL_Y) * 180) / Math.PI;
+/** A line thinner than this across a stair's flight is one of its treads, not a wall (dropTreadLines). */
+const TREAD_LINE_T = 0.08;
+
+/**
+ * The walk line of a planned stair as export.js builds it (and src/home/stairs.js walks it): a straight stair the length
+ * of its rectangle; a U stair two flights of (length − half) and the turn round the well (quarter arcs at half / 2 from
+ * the well, src/data/scripts/house.mjs halfTurnWalk). Metres.
+ */
+export function stairWalkLength(st) {
+  const g = stairGeometry(st);
+  if (st.kind !== 'u') return g.length;
+  const wellW = Math.min(0.2, Math.max(0.06, g.width * 0.06));
+  const half = (g.width - wellW) / 2;
+  return 2 * Math.max(0, g.length - half) + (Math.PI * half) / 2 + wellW;
+}
+
+/**
+ * Thin walls across a found stair inside its box, on one level: treads or the cut line of the stair symbol read as walls
+ * (hus9: four across the flight in the basement, two in the upper floor's stair band). A wall cannot stand in a flight
+ * – the 3D stair runs into it. Only thin ones (TREAD_LINE_T), without openings, at right angles to the run (the box's
+ * long side), within the box across it and not at its ends (a shaft's end wall stays). → the ids taken out
+ * @param {object} L  the level
+ * @param {number[]} box  [x0, y0, x1, y1], the level's own detection of the stair, in its frame (m)
+ */
+function dropTreadLines(L, box) {
+  const lo = [box[0], box[1]];
+  const hi = [box[2], box[3]];
+  const run = hi[0] - lo[0] >= hi[1] - lo[1] ? 0 : 1;
+  const acr = 1 - run;
+  const END = 0.15;
+  const gone = new Set();
+  for (const w of L.walls) {
+    if (!(w.t <= TREAD_LINE_T) || (L.openings || []).some((o) => o.wall === w.id)) continue;
+    const len = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]);
+    if (len < 0.05 || Math.abs(w.b[run] - w.a[run]) / len > 0.26) continue;
+    const at = (w.a[run] + w.b[run]) / 2;
+    if (at < lo[run] + END || at > hi[run] - END) continue;
+    // across: within the box, to the middle of the walls beside it (hus9: the band's wall is 0,22 m)
+    if (Math.min(w.a[acr], w.b[acr]) < lo[acr] - 0.2 || Math.max(w.a[acr], w.b[acr]) > hi[acr] + 0.2) continue;
+    gone.add(w.id);
+  }
+  if (gone.size) L.walls = L.walls.filter((w) => !gone.has(w.id));
+  return [...gone];
+}
+
+/**
+ * Thin walls along a short end of a placed stair (within 0,25 m of the end, across ≥ 70 % of its width and no more
+ * than 0,2 m beyond it), without openings: on the upper floor such a line can be the edge of the stair hole drawn
+ * there, read as a wall (hus9: the band's end at the passage from the hall) – placeStair takes one out only when that
+ * gives the stair a landing it had none of. → walls
+ */
+function stairEndLines(L, rect) {
+  const lo = rect[0];
+  const hi = rect[1];
+  const run = hi[0] - lo[0] >= hi[1] - lo[1] ? 0 : 1;
+  const acr = 1 - run;
+  const width = hi[acr] - lo[acr];
+  return L.walls.filter((w) => {
+    if (!(w.t <= TREAD_LINE_T) || (L.openings || []).some((o) => o.wall === w.id)) return false;
+    const len = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]);
+    if (len < 0.05 || Math.abs(w.b[run] - w.a[run]) / len > 0.26) return false;
+    const at = (w.a[run] + w.b[run]) / 2;
+    if (Math.min(Math.abs(at - lo[run]), Math.abs(at - hi[run])) > 0.25) return false;
+    const a0 = Math.min(w.a[acr], w.b[acr]);
+    const a1 = Math.max(w.a[acr], w.b[acr]);
+    return a0 >= lo[acr] - 0.2 && a1 <= hi[acr] + 0.2 && Math.min(a1, hi[acr]) - Math.max(a0, lo[acr]) >= 0.7 * width;
+  });
+}
+
+/**
+ * The way down of a placed stair (model.js addStair goes down along +x or +y: the drawing gives the box, not the top).
+ * Of the orientations the house format builds – down along the long side either way; a U stair also across, when it is
+ * wide enough both ways (export.js: two flights of at least 0,6 m and a turn), and with its top flight on either half
+ * of the near side (st.side, as editor.js and export.js lay it out) – the first whose landings are floor: a straight
+ * stair's top end on the upper level and its foot end on the lower; a U stair's top half on the upper level and its
+ * foot half on the lower (hus1: its foot ran into the hall's outer wall; hus4: a wall with a narrow door across one
+ * half). A landing is floor when a player's step (0,35 m) out of the box is in a room, through a door or a passage of
+ * the wall there (hus8: the stair door at its top), in the middle of the flight and 0,2 m to each side of it – the
+ * player is 0,6 m wide. The orientation addStair gave is tried first.
+ * → { axis, down, side? } | null (no orientation has floor at both ends)
+ * @param {object} st  the stair (rect, kind)
+ * @param {{ level, found }} upper  its level and that level's levelRooms
+ * @param {{ level, found }} lower  the level below, and its levelRooms
+ * @param {(p: number[]) => number[]} toLower  a point of the stair's level → the lower level's plan
+ */
+function orientStair(st, upper, lower, toLower) {
+  const [[x0, y0], [x1, y1]] = st.rect;
+  const dx = x1 - x0;
+  const dy = y1 - y0;
+  const long = dx >= dy ? 'x' : 'y';
+  const cands = [];
+  for (const axis of st.kind === 'u' ? [long, long === 'x' ? 'y' : 'x'] : [long]) {
+    const across = axis === 'x' ? dy : dx;
+    const along = axis === 'x' ? dx : dy;
+    const half = (across - Math.min(0.2, Math.max(0.06, across * 0.06))) / 2;
+    if (st.kind === 'u' && (half < 0.6 || along < half + 0.4)) continue;
+    for (const down of axis === st.axis ? [st.down, -st.down] : [1, -1]) {
+      if (st.kind === 'u') for (const side of st.side === 1 ? [1, 0] : [0, 1]) cands.push({ axis, down, side });
+      else cands.push({ axis, down });
+    }
+  }
+  const STEP = 0.35;
+  /** A door or passage of level L at plan point p (in its wall's band, within its width). */
+  const doorAt = (L, p) => (L.openings || []).some((op) => {
+    if (op.type === 'window') return false;
+    const w = wallById(L, op.wall);
+    if (!w) return false;
+    const len = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) || 1;
+    const u = [(w.b[0] - w.a[0]) / len, (w.b[1] - w.a[1]) / len];
+    const q = [p[0] - w.a[0], p[1] - w.a[1]];
+    return Math.abs(q[0] * u[0] + q[1] * u[1] - op.at) <= op.width / 2 && Math.abs(q[0] * u[1] - q[1] * u[0]) <= w.t / 2 + 0.05;
+  });
+  /** Out of the box from p along v: rooms (and the doors between them) for at least STEP, ending in a room. */
+  const landing = ({ level, found }, p, v, map = (x) => x) => {
+    for (let s = 0.05; s <= 1.2 + 1e-9; s += 0.05) {
+      const q = map([p[0] + v[0] * s, p[1] + v[1] * s]);
+      const i = found.at(q[0], q[1]);
+      if (i >= 0) {
+        if (s >= STEP - 1e-9) return true;
+      } else if (i !== -2 || !doorAt(level, q)) return false;
+    }
+    return false;
+  };
+  /** The point `acr` metres across from the edge's first corner. */
+  const across = (e, acr) => {
+    const len = Math.hypot(e[1][0] - e[0][0], e[1][1] - e[0][1]) || 1;
+    return [e[0][0] + ((e[1][0] - e[0][0]) * acr) / len, e[0][1] + ((e[1][1] - e[0][1]) * acr) / len];
+  };
+  /** A player's width out of the flight at p: its middle and 0,2 m to each side along the edge e. */
+  const wide = (side, e, p, v, map) => {
+    const len = Math.hypot(e[1][0] - e[0][0], e[1][1] - e[0][1]) || 1;
+    const u = [(e[1][0] - e[0][0]) / len, (e[1][1] - e[0][1]) / len];
+    return [-0.2, 0, 0.2].every((s) => landing(side, [p[0] + u[0] * s, p[1] + u[1] * s], v, map));
+  };
+  for (const c of cands) {
+    const g = stairGeometry({ ...st, ...c });
+    const back = [-g.down[0], -g.down[1]];
+    let ok;
+    if (st.kind === 'u') {
+      // the flights as export.js builds them: the top one on the half at the first corner (side 0) or the other
+      const W = g.width;
+      const wellW = Math.min(0.2, Math.max(0.06, W * 0.06));
+      const half = (W - wellW) / 2;
+      const topMid = across(g.top, c.side === 1 ? W - half / 2 : half / 2);
+      const footMid = across(g.top, c.side === 1 ? half / 2 : W - half / 2);
+      ok = wide(upper, g.top, topMid, back) && wide(lower, g.top, footMid, back, toLower);
+    } else ok = wide(upper, g.top, across(g.top, g.width / 2), back) && wide(lower, g.foot, across(g.foot, g.width / 2), g.down, toLower);
+    if (ok) return c;
+  }
+  return null;
+}
+
 /**
  * Walls with no room of minArea m² on either side – text, ticks and pointer lines a fallback reading made walls of,
  * outside the house – go, with their openings. → how many
@@ -1514,7 +1744,7 @@ function dropLoose(L, minArea) {
   let total = 0;
   // a wall between a room and a scrap under 1 m² (a dimension's ticks boxing in a corner) goes too, one at a time
   for (let round = 0; round < 4; round++) {
-    const found = findRooms(L.walls);
+    const found = levelRooms(L);
     const big = new Set(found.rooms.filter((r) => r.area >= minArea).map((r) => r.index));
     const scrap = new Set(found.rooms.filter((r) => r.area < 1).map((r) => r.index));
     if (!big.size) return total;
@@ -1980,4 +2210,4 @@ function orderLevels(plans) {
   return { list, confidence, why };
 }
 
-export const _internal = { aiOpeningKind, orderLevels, fitInRoom, thumbnail, thumbDiff, roomAt };
+export const _internal = { aiOpeningKind, orderLevels, fitInRoom, thumbnail, thumbDiff, roomAt, orientStair, dropTreadLines };
