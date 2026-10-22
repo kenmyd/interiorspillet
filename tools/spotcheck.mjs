@@ -15,7 +15,8 @@
  *   b        a ceiling spot at 30° and a wall spot: ΔL ≥ 8 where each one aims
  *   c        a surface downlight 2 × 2 grid: every lens glows
  *   d        one downlight in bad, gang, soverom and kjellerstue (a camera in each): floor ΔL ≥ 8, the item's level is
- *            right and the fitting hangs at its own ceiling
+ *            right and the fitting hangs at its own ceiling (a level the game leaves out, e.g. the basement while
+ *            config.js HOUSE.basement is false, is skipped)
  *   e        realistic start (D30): the grid again at dimmer 0.4 with the built-ins on «auto» at 22:00 (a real
  *            «innfelt» product when the catalogue has one): lens on − off ≥ 40, under on/off ≥ 1.08     → e-on.png
  *   thumbs   then tools/thumbcheck.mjs --cat=spotter (when that tool exists)
@@ -427,7 +428,13 @@ async function roomsStep(page) {
       { id: 'soverom', level: 'hoved', floorY: 0, at: [2.6, 5.6], feet: [2.7, 0, 7.4] },
       { id: 'kjellerstue', level: 'kjeller', floorY: -2.55, at: [4.7, 8.3], feet: [4.7, -2.55, 10.3] },
     ];
+    // a level the game leaves out (config.js HOUSE.basement false → layout.js withoutBasement) is skipped, not failed
+    const removedLevels = new Set(g.home.layout?.spec?.removed?.levels || []);
     for (const r of rooms) {
+      if (removedLevels.has(r.level)) {
+        out.push({ id: r.id, level: r.level, skipped: true });
+        continue;
+      }
       const [x, z] = r.at;
       const uid = sc.add(SPEC('downlight', { level: r.level, position: [x, sc.ceil(x, z, r.floorY) - 0.05, z], dims: { w: 0.09, d: 0.09, h: 0.008 } }));
       await sc.settle();
@@ -572,6 +579,10 @@ try {
     const list = await roomsStep(page);
     report.steps.d = list.map(({ on, ...x }) => x);
     for (const r of list) {
+      if (r.skipped) {
+        console.log(`  –    [d] ${r.id}: hoppet over – nivået «${r.level}» er ikke med i spillet nå (config.js HOUSE.basement)`);
+        continue;
+      }
       savePng(`d-${r.id}.png`, r.on);
       check('d', `${r.id}: gulvet ΔL ${(r.a - r.b).toFixed(1)} ≥ 8 (kamera i ${r.cam})${r.synthetic ? ' (syntetisk lys)' : ''}`, r.vis && r.a - r.b >= 8);
       check('d', `${r.id}: nivå ${r.lv}, lyset i rommet ${r.roomOfLight}`, r.lv === r.level && r.roomOfLight === r.id);
