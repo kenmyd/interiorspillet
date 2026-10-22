@@ -72,6 +72,7 @@ import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { installLightMask, lightMask, buildRoomTable, portalRects, OUTSIDE_ID } from '../world/lightmask.js';
+import { surfaceGeometry } from './wallkit.js';
 
 // before the first compile of any lit material (the patch is inert until LightManager.render enables it)
 installLightMask();
@@ -812,6 +813,11 @@ function buildHouseRoomModel(layout, room, portalDefs) {
       id: `ceiling:${c.id}`, kind: 'ceiling', normal: new THREE.Vector3(0, -1, 0), area: Math.max(0.2, c.area - cut),
       center: new THREE.Vector3(cx, top(cx, cz), cz), rho: hexLinear(c.paintHex), hit: () => null,
     });
+    // a ceiling under a roof (notes/tak.md) is cut along its folds, one plane per piece (wallkit surfaceGeometry)
+    if (c.surface) {
+      addMesh(surfaceGeometry(c.polygon, c.holes || [], c.surface), p);
+      continue;
+    }
     const shape = new THREE.Shape(c.polygon.map((q) => new THREE.Vector2(q.x, q.y)));
     for (const poly of c.holes || []) shape.holes.push(new THREE.Path(poly.map((q) => new THREE.Vector2(q.x, q.y))));
     const g = new THREE.ShapeGeometry(shape);

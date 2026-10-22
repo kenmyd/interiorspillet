@@ -47,6 +47,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { STAIR_TYPES, STEEP, WALK_MAX_DEG, isPlanType, isQuarterTurn, isStraightType, stairPlan, stairRisers, planGoing, landingSplit, rampKnots, rampDeg, FOOT_CUT_EXTRA } from '../../home/stairtypes.js';
+import { resolveRoofs, roofField, ceilingSurface, surfaceProfile, insideHalfPlanes as insideHalfPlanesOf } from '../../home/roofgeom.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../..');
@@ -1378,9 +1379,100 @@ export function validateHouse(spec, opts = {}) {
     }
   }
 
+  // ---- roofs (notes/tak.md, home/roofgeom.js): the format and the dormers, the walls they cover, the ceilings that
+  //      follow them, and the tops of the walls under them (a wall without topProfile reaches its room's ceiling – a
+  //      window in a knee wall must stay under it)
+  const roofLevels = levels.filter((l) => typeof l.id === 'string' && num(l.floorY)).map((l) => ({ id: l.id, floorY: l.floorY, ceilingDefault: num(l.ceilingDefault) ? l.ceilingDefault : 2.4 }));
+  const roomFloorY = (rid) => (levelsById.get(levelOf(rid))?.floorY ?? 0) + (num(roomsById.get(rid)?.floorOffset) ? roomsById.get(rid).floorOffset : 0);
+  const roofRes = spec.roofs != null
+    ? resolveRoofs(spec.roofs, {
+      levels: roofLevels,
+      walls: walls.filter((w) => wallInfo.has(w.id)).map((w) => ({
+        levelId: levelOf(roomOf(w)), exterior: !!w.exterior, thickness: wallInfo.get(w.id).t, from: w.from, to: w.to, backOf: w.backOf ?? null,
+        height: Array.isArray(w.topProfile) && w.topProfile.length ? Math.max(...w.topProfile.map((q) => q[1])) : num(w.height) ? w.height : undefined,
+      })),
+    })
+    : { parts: [], issues: [] };
+  for (const i of roofRes.issues) (i.level === 'error' ? error : warn)(`${i.where}: ${i.msg}`);
+  const roofIds = new Set();
+  for (const r of arr(spec.roofs)) {
+    if (!isObj(r) || r.id == null) continue;
+    if (roofIds.has(r.id)) error(`roofs/${r.id}: id-en er brukt av et annet tak`);
+    roofIds.add(r.id);
+  }
+  const roofFieldOf = {};
+  for (const part of roofRes.parts) (roofFieldOf[part.levelId] ||= []).push(part);
+  for (const [lid, list] of Object.entries(roofFieldOf)) roofFieldOf[lid] = roofField(list);
+  // the exterior walls of a roof's level stand under a roof (its outline, 5 cm slack) – unless a floor above covers them
+  for (const [lid, field] of Object.entries(roofFieldOf)) {
+    const fy = levelsById.get(lid)?.floorY ?? 0;
+    const upper = rooms.filter((r) => physical(r) && (levelsById.get(r.levelId)?.floorY ?? -Infinity) > fy + 0.5);
+    for (const [id, wi] of wallInfo) {
+      if (wi.level !== lid || !wi.w.exterior || !(wi.t > 0)) continue;
+      const outer = [add(wi.w.from, mul(wi.n, -wi.t)), add(wi.w.to, mul(wi.n, -wi.t))];
+      if (outer.every((q) => upper.some((r) => inOrOn(q, r.polygon, wi.t + 0.05)))) continue;
+      const free = outer.filter((q) => !field.parts.some((part) => insideHalfPlanesOf(part.outline).every((hp) => hp.a * q[0] + hp.b * q[1] + hp.c <= 0.05)));
+      if (free.length) warn(`walls/${id}: står utenfor taket over ${lid} (${free.map((q) => `[${fmt(q[0])}, ${fmt(q[1])}]`).join(', ')}) – utvid roofs[].outline eller legg til en takdel`);
+    }
+  }
+  // ceilings that follow a roof
+  for (const c of ceilings) {
+    const where = `ceilings/${c.id}`;
+    if (c.type != null && !['flat', 'slope', 'roof'].includes(c.type)) error(`${where}: type «${c.type}» er ikke en av flat, slope, roof`);
+    const field = roofFieldOf[levelOf(roomOf(c))];
+    if (c.type === 'roof' && !field) error(`${where}: type 'roof' uten tak over nivået «${levelOf(roomOf(c))}» (roofs[].levelId)`);
+    else if (c.type === 'roof' && Array.isArray(c.polygon) && c.polygon.length >= 3 && c.polygon.every(isPoint)) {
+      const mid = c.polygon.reduce((m, q) => [m[0] + q[0] / c.polygon.length, m[1] + q[1] / c.polygon.length], [0, 0]);
+      const bare = c.polygon.map((q) => add(q, mul(unitv(sub(mid, q)), 0.01))).filter((q) => !field.planeAt(q[0], q[1]));
+      if (bare.length) error(`${where}: type 'roof', men intet tak over ${bare.length === c.polygon.length ? 'himlingen' : 'deler av himlingen'} (roofs[].outline)`);
+    }
+    if (c.type === 'roof' && c.height != null && !(num(c.height) && c.height >= 1.5)) error(`${where}: height (hanebjelkehøyden) må være minst 1,5 m`);
+  }
+  /** a room's ceiling under its level's roof (roofgeom ceilingSurface), null without one */
+  const roomSurface = (rid) => {
+    const lid = levelOf(rid);
+    const field = roofFieldOf[lid];
+    if (!field) return null;
+    const c = ceilings.find((x) => roomOf(x) === rid);
+    if (c?.type === 'slope') return null;
+    const def = levelsById.get(lid)?.ceilingDefault;
+    const flat = c?.type === 'roof' ? (num(c.height) ? c.height : Infinity) : num(c?.height) ? c.height : num(def) ? def : 2.4;
+    return ceilingSurface(field, roomFloorY(rid) + flat);
+  };
+  const derivedTop = new Map();
+  for (const [id, wi] of wallInfo) {
+    if (wi.w.backOf != null || !roofFieldOf[wi.level] || (Array.isArray(wi.w.topProfile) && wi.w.topProfile.length)) continue;
+    const surf = roomSurface(wi.room);
+    if (!surf) continue;
+    derivedTop.set(id, surfaceProfile(wi.w.from, wi.w.to, [{ ...surf, shift: mul(wi.n, 0.01) }], roomFloorY(wi.room), num(wi.w.height) ? wi.w.height : 2.4));
+  }
+  // roof windows on a sloped ceiling lie in one plane of the roof, with their sides along and across the slope
+  for (const c of ceilings) {
+    const field = roofFieldOf[levelOf(roomOf(c))];
+    if (!field) continue;
+    for (const s of arr(c.skylights)) {
+      if (!isObj(s) || !Array.isArray(s.polygon) || s.polygon.length !== 4 || !s.polygon.every(isPoint)) continue;
+      const where = `ceilings/${c.id}/skylights/${s.id}`;
+      const mid = s.polygon.reduce((m, q) => [m[0] + q[0] / 4, m[1] + q[1] / 4], [0, 0]);
+      const inset = s.polygon.map((q) => add(q, mul(unitv(sub(mid, q)), 0.01)));
+      const planes = inset.map((q) => field.planeAt(q[0], q[1]));
+      if (planes.some((pl) => !pl)) {
+        warn(`${where}: takvinduet ligger delvis utenfor taket`);
+        continue;
+      }
+      if (planes.some((pl) => pl !== planes[0])) warn(`${where}: takvinduet ligger over en knekk i taket (møne, grat eller ark) – flytt det inn på én takflate`);
+      const g = [planes[0].a, planes[0].b];
+      if (len(g) > 1e-3) {
+        const e = unitv(sub(s.polygon[1], s.polygon[0]));
+        const k = Math.abs(dot(e, unitv(g)));
+        if (k > 0.03 && k < 0.97) warn(`${where}: sidene følger ikke takfallet (kant 0 står ${fmt((Math.acos(Math.min(1, k)) * 180) / Math.PI, 0)}° på det) – vinduet blir skjevt i takflaten`);
+      }
+    }
+  }
+
   // ---- openings
   const heightAt = (w, u) => {
-    const prof = Array.isArray(w.topProfile) && w.topProfile.length ? w.topProfile : null;
+    const prof = derivedTop.get(w.id) ?? (Array.isArray(w.topProfile) && w.topProfile.length ? w.topProfile : null);
     if (!prof) return num(w.height) ? w.height : 2.4;
     if (u <= prof[0][0]) return prof[0][1];
     for (let i = 1; i < prof.length; i++) {
@@ -1393,7 +1485,7 @@ export function validateHouse(spec, opts = {}) {
     return prof[prof.length - 1][1];
   };
   const minHeight = (w, a, b) => {
-    const us = [a, b, ...arr(w.topProfile).map((p) => p[0]).filter((u) => u > a && u < b)];
+    const us = [a, b, ...arr(derivedTop.get(w.id) ?? w.topProfile).map((p) => p[0]).filter((u) => u > a && u < b)];
     return Math.min(...us.map((u) => heightAt(w, u)));
   };
   const guardsOfLevel = (lid) => stairs.flatMap((s) => objs(s.guards).filter((g) => Array.isArray(g.line) && g.line.length >= 2 && g.line.every(isPoint) && (g.level ?? s.toLevel) === lid)

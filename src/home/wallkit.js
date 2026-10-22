@@ -9,6 +9,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { extrudeWall, basis, MeshBatcher, place } from '../world/buildKit.js';
+import { splitTriangles, liftTriangles, stepFaces } from './roofgeom.js';
 
 export const UP = new THREE.Vector3(0, 1, 0);
 const EPS = 1e-4;
@@ -273,11 +274,56 @@ export function floorGeometry(poly, y = 0, { holes = [], boards = 'z' } = {}) {
 }
 
 /**
- * Ceiling polygon → downward-facing geometry, y from heightAt(x, z) (world), UVs (x, z) metres; holes cut out (the
- * stairwell in the ceiling of the level below).
+ * 2D triangles ([[x, z] × 3]) of a polygon with holes (points as Vector2 or [x, z]).
+ * @returns {Array<Array<[number, number]>>}
  */
-export function ceilingGeometry(poly, heightAt, holes = []) {
+export function polygonTriangles(poly, holes = []) {
+  const pt = (p) => v2(p.x ?? p[0], p.y ?? p[1]);
+  let contour = poly.map(pt);
+  if (THREE.ShapeUtils.isClockWise(contour)) contour = contour.reverse();
+  const hs = holes.filter((h) => h?.length >= 3).map((h) => {
+    const c = h.map(pt);
+    return THREE.ShapeUtils.isClockWise(c) ? c : c.reverse();
+  });
+  const all = [...contour, ...hs.flat()];
+  return THREE.ShapeUtils.triangulateShape(contour, hs).map((f) => f.map((i) => [all[i].x, all[i].y]));
+}
+
+/**
+ * A ceiling under a roof (layout ceiling.surface, home/roofgeom.js): the polygon minus its holes cut along the
+ * surface's folds, each piece on its own plane, facing down, plus the vertical faces where the surface jumps inside the
+ * polygon (a dormer's sides, facing into the dormer). UVs (x, z) metres on the sloped faces, (along, y) on the steps.
+ */
+export function surfaceGeometry(poly, holes, surface) {
+  const tris = liftTriangles(splitTriangles(polygonTriangles(poly, holes), surface.lines), surface.planeAt);
+  const pos = [];
+  const uv = [];
+  for (const t of tris) {
+    // facing down: (b − a) × (c − a) has y < 0
+    const [a, b, c] = t;
+    const ny = (b[2] - a[2]) * (c[0] - a[0]) - (b[0] - a[0]) * (c[2] - a[2]);
+    for (const p of ny < 0 ? [a, b, c] : [a, c, b]) pos.push(p[0], p[1], p[2]), uv.push(p[0], p[2]);
+  }
+  const P = poly.map((p) => [p.x ?? p[0], p.y ?? p[1]]);
+  for (const q of stepFaces(surface.steps || [], P, surface)) {
+    const along = (p) => Math.hypot(p[0] - q[0][0], p[2] - q[0][2]);
+    for (const k of [0, 1, 2, 0, 2, 3]) pos.push(...q[k]), uv.push(along(q[k]), q[k][1]);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.computeVertexNormals();
+  return g;
+}
+
+/**
+ * Ceiling polygon → downward-facing geometry, y from heightAt(x, z) (world), UVs (x, z) metres; holes cut out (the
+ * stairwell in the ceiling of the level below). With `surface` (a ceiling under a roof, layout ceiling.surface) the
+ * piecewise planar surfaceGeometry.
+ */
+export function ceilingGeometry(poly, heightAt, holes = [], surface = null) {
   const hs = holes.filter((h) => h?.length >= 3);
+  if (surface) return surfaceGeometry(poly, hs, surface);
   let g;
   if (hs.length && rectilinear(poly) && hs.every(rectilinear)) g = cellsGeometry(rectCells(poly, hs), heightAt, false);
   else {
