@@ -18,6 +18,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5250", "--strictPort"],
       "port": 5250
+    },
+    {
+      "name": "trapper-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5275", "--strictPort"],
+      "port": 5275
     }
   ]
 }

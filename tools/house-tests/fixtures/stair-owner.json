@@ -1,0 +1,61 @@
+{
+ "layoutNumbers": "21a015e9b63d036b",
+ "nosings": "7f42a42d7daa2b51",
+ "treads": "8f60141e5db90e82",
+ "sections": "bf8081a5af0fc4e8",
+ "stringers": "3a4cfaa7145061b8",
+ "wellGuard": "1a00a7bf319a4a63",
+ "guards": "fae53fca0ae9c78b",
+ "handrails": "dfe4199d1c203704",
+ "nosingList": "4f6e82a2dca79b02",
+ "chains": "b886744cc78c52ef",
+ "walk": "aeb5bc91593c11d2",
+ "surface": "5235ce6a532cb9b5",
+ "stairColliders": "01ec13e59009bcd4",
+ "slabColliders": "4871a175653e44c9",
+ "layoutSurface": "ad870ab7006601cc",
+ "layoutStair": "2e368cc65f78634b",
+ "meshes": [
+  [
+   "stair-treads:trapp-kjeller",
+   "c3b8a9",
+   "a574fad0b84f73b0",
+   "db94a3d6165bd2f3",
+   "5ec2b811b2459b4b"
+  ],
+  [
+   "led:led-trapp-kjeller-nord",
+   "fff6ea",
+   "ebaf5fc2e25c87fd",
+   "81ce4dc010ea6f10",
+   "d40685453ecafa2c"
+  ],
+  [
+   "led:led-trapp-kjeller-øst",
+   "fff6ea",
+   "03d0ef5116c35c42",
+   "104af1d33323df2f",
+   "2c0f1c3ba9a7678a"
+  ],
+  [
+   "stair-steel:trapp-kjeller",
+   "1e1f22",
+   "9f25fc31b39d592f",
+   "f2831fbc71497c99",
+   "59b72c6ed828e4b0"
+  ],
+  [
+   "",
+   "32bb5691a84c76b5"
+  ],
+  [
+   "",
+   "79e3078e62661644"
+  ]
+ ],
+ "builtInLights": "710b6d6f737641db",
+ "buildColliders": "007fdbdb274277d8",
+ "validatorStairs": "c3ffa628a9b822fe",
+ "validatorMessages": "4f53cda18c2baa0c",
+ "validatorWalk": "cd3899d4539508ae"
+}
