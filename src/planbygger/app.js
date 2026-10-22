@@ -519,13 +519,42 @@ class App {
     if (this.gen.res) this.gen.res.images = null;
     this._cropCache = null;
     await this.open3d();
-    // no facade drawings: the windows all got one sill and height – the facade check lets the customer set each one
-    if (this.doc?.generated && !this.doc.facades?.length && !this.view3d.hidden)
-      this.openFacades('Vi fant ingen fasadetegninger, så alle vinduene har fått samme høyde. Klikk på vinduer og dører for å rette høyde, bredde og type – «Ferdig» bygger 3D-huset på nytt.');
+    if (!this.doc?.generated || this.view3d.hidden) return;
+    // no facade drawings: the windows all got one sill and height – the facade check lets the customer set each one;
+    // several levels and no stair between them: the stair placer (one after the other)
+    const noStair = this.doc.levels.length > 1 && !this.doc.levels.some((l) => (l.stairs || []).length);
+    const stairs = () => noStair && this.openStairs('Vi fant ingen trapp mellom etasjene. Dra trappa på plass på planen – fra toppen og nedover.');
+    if (!this.doc.facades?.length) this.openFacades('Vi fant ingen fasadetegninger, så alle vinduene har fått samme høyde. Klikk på vinduer og dører for å rette høyde, bredde og type – «Ferdig» bygger 3D-huset på nytt.', stairs);
+    else stairs();
+  }
+
+  /** The stair placer (stairplace.js) over the page; its changes go into the document with undo, «Ferdig» rebuilds 3D. */
+  async openStairs(intro = null, then = null) {
+    if (!this.doc || this.doc.levels.length < 2) {
+      this.toast('Huset har bare én etasje.');
+      return;
+    }
+    const { openStairPlacer } = await import('./stairplace.js');
+    this._facades?.close();
+    this._facades = openStairPlacer({
+      getDoc: () => this.doc,
+      h,
+      intro,
+      onChange: (label, fn) => {
+        this.snapshot();
+        fn();
+        this.changed(label);
+      },
+      onDone: async (changed) => {
+        this._facades = null;
+        if (changed && !this.view3d.hidden) await this.open3d();
+        then?.();
+      },
+    });
   }
 
   /** The facade check (facadecheck.js) over the page; its changes go into the document with undo, «Ferdig» rebuilds 3D. */
-  async openFacades(intro = null) {
+  async openFacades(intro = null, then = null) {
     if (!this.doc?.levels.some((l) => l.walls.some((w) => w.exterior))) {
       this.toast('Huset har ingen yttervegger å vise. Merk ytterveggene i «Finjuster».');
       return;
@@ -541,9 +570,10 @@ class App {
         fn();
         this.changed(label);
       },
-      onDone: (changed) => {
+      onDone: async (changed) => {
         this._facades = null;
-        if (changed && !this.view3d.hidden) this.open3d();
+        if (changed && !this.view3d.hidden) await this.open3d();
+        then?.();
       },
     });
   }
@@ -1618,7 +1648,9 @@ class App {
         this.stackBtn = h('button', { class: 'pb-btn', title: 'Tilbake til tegningene: endre dem og generer på nytt', onclick: () => this._backToStack() }, 'Tegningene');
         // the facade check: the house seen from outside, side by side, to set the windows and doors (facadecheck.js)
         this.facadeBtn = h('button', { class: 'pb-btn', title: 'Se huset utenfra side for side og rett vinduer og dører', onclick: () => this.openFacades() }, 'Fasader');
-        const bar = h('div', { class: 'pb-view3d-bar' }, this.backBtn, this.stackBtn, this.facadeBtn, this.modeBtn, this.levelSel, info);
+        // the stair placer: drag the stair into place on the plan (stairplace.js)
+        this.stairBtn = h('button', { class: 'pb-btn', title: 'Plasser trappa mellom etasjene på planen', onclick: () => this.openStairs() }, 'Trapp');
+        const bar = h('div', { class: 'pb-view3d-bar' }, this.backBtn, this.stackBtn, this.facadeBtn, this.stairBtn, this.modeBtn, this.levelSel, info);
         this.helpEl = h('div', { class: 'pb-view3d-help' });
         this.crosshair = h('div', { class: 'pb-crosshair', hidden: true });
         this.view3d.append(bar, this.helpEl, this.crosshair);
@@ -1630,6 +1662,7 @@ class App {
       this.backBtn.textContent = generated ? 'Finjuster' : '← Tilbake til planen';
       this.backBtn.title = generated ? 'Rett vegger, dører, vinduer og rom i 2D-editoren' : '';
       this.stackBtn.hidden = !(generated && this.stack && this.gen);
+      this.stairBtn.hidden = this.doc.levels.length < 2;
       await this.viewer.load(out.ex.house);
       this.levelSel.innerHTML = '';
       this.levelSel.append(h('option', { value: '' }, 'Alle etasjer'), ...out.ex.house.levels.map((l) => h('option', { value: l.id }, l.name)));

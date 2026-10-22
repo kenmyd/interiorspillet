@@ -790,13 +790,13 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** veiviser – plantegning.png, plantegning_kjeller.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F109.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F109.json`
-- **Status:** god idé, neste – i trappespørsmålet skal du kunne klikke eller dra på tegningen der trappa faktisk står, også når tegningen har den feil. Da blir det trapp også i huset ditt (F113).
+- **Status:** rettet – «Trapp» i 3D-visningen (og av seg selv etter genereringen når etasjene mangler trapp) viser planen med etasjen under svakt under: dra trappa på plass fra toppen og nedover, flytt den, dra i hjørnene, velg rett eller halvsvingt, snu den, og se trinnene og stigningen.
 
 ### F110 – det er jo flere forskjellige vinduer så er vanskelig og sette standar 
 - **Tekst:** det er jo flere forskjellige vinduer så er vanskelig og sette standar på alle
 - **Hvor:** veiviser – plantegning.png, plantegning_kjeller.png
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F110.json`
-- **Status:** notert – uten fasader får alle vinduene samme høyde. I «Finjuster» kan du klikke et vindu og endre brystning og høyde for det ene. Fasade-runden leser dem fra fasadene; uten fasader kan veiviseren spørre per rom.
+- **Status:** rettet – fasadesjekken: huset sett utenfra side for side, der hvert vindu og hver dør kan få egne mål og type.
 
 ### F111 – vet ikke hvordan det er best og gjøre det, men i virkeligheten så er j
 - **Tekst:** vet ikke hvordan det er best og gjøre det, men i virkeligheten så er jo hele fronten på kjeller synlig, det er jo vinduer der. og bare bakveggen har jord helt opp til 1.etg. Kanskje vi bør begynne og også ha kjellere synlige slik vinduene kan sees
@@ -810,19 +810,25 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – plantegning.png, plantegning_kjeller.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F112.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F112.json`
-- **Status:** som F110 – store vindusfelt trenger fasader eller endring per vindu i «Finjuster».
+- **Status:** rettet med F110 – sett store vindusfelt i fasadesjekken (bredde, høyde, type og sprosser).
 
 ### F113 – kommer ikke ned i trappa
 - **Tekst:** kommer ikke ned i trappa
 - **Hvor:** 3D (går rundt) – plantegning.png, plantegning_kjeller.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F113.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F113.json`
-- **Status:** følge av F109 – trappa på tegningen står utenfor huset, så det ble ingen trapp. Rettes med F109.
+- **Status:** rettet med F109 – plasser trappa selv, så bygges den med hull i gulvet over.
 
 ### F114 – når jeg blar ned og tyrkker poå en vindu skroller den helt opp samme n
 - **Tekst:** når jeg blar ned og tyrkker poå en vindu skroller den helt opp samme når jeg sklikker for å skrive inn tall så scroller den helt opp. Og så er jeg ikke helt fornøyd med visningen. vi bør ha alle fasadene i midten. og at en popup kommer frem når jeg trykker på et vindu eller dør
 - **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F114.json`
+- **Status:** ny
+
+### F115 – må være mulig og sette feks at alle vinduer har samme hlyde fra tak on
+- **Tekst:** må være mulig og sette feks at alle vinduer har samme hlyde fra tak on ned til vindu. for eksempel med vinduet jeg holde på å redigere. det er et smart vindu på 40cm, men jeg må regne ut hvor mye brysningshøyde er for og få plassert det høyere. Det burde skjedd automatisk siden normalt er vinduene med samme avstand fra tak til vindu
+- **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F115.json`
 - **Status:** ny
 
 ---
