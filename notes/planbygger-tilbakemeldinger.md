@@ -233,7 +233,7 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 1etg.avif, fasade1.avif, fasade4.avif, fasade2.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F29.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F29.json`
-- **Status:** trenger ny melding – fant ikke stedet uten kameraposisjon. Meld den igjen på samme sted: nå lagres posisjonen i meldingen. (Mistanke: skjøten mellom to veggstykker på samme linje med ulik tykkelse, f.eks. ved badet og «Sov + Gang».)
+- **Status:** trolig rettet (D4, som F40) – fant ikke stedet uten kameraposisjon; mistanken er en skjøt mellom to veggstykker der enden av en yttervegg ligger i rommets vegg. Meld den igjen hvis den fortsatt er der (nå lagres posisjonen).
 
 ### F30 – her skulle det ihenhold til tegning vært skråtak, den funksjonen er ik
 - **Tekst:** her skulle det ihenhold til tegning vært skråtak, den funksjonen er ikke laget enda tror jeg
@@ -295,41 +295,69 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F38.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F38.json`
-- **Status:** ny
+- **Status:** venter på motoren – spillet har ingen dobbeltdør ennå (forespørsel 7), så den bygges som to enkle dører; glassfelt og sprosser i dører finnes heller ikke ennå.
 
 ### F39 – Skulle vært dobbeldør uten midtstolpe. Er også naturlig at disse døren
 - **Tekst:** Skulle vært dobbeldør uten midtstolpe. Er også naturlig at disse dørene er med vindusfelt så det må også være mulig på innerdører
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F39.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F39.json`
-- **Status:** ny
+- **Status:** venter på motoren (som F38) – midtstolpen er de to karmene til de to enkle dørene; innerdører med glassfelt må også inn i dørbyggeren.
 
 ### F40 – Det er noe feil ved høyre side av denne døra
 - **Tekst:** Det er noe feil ved høyre side av denne døra
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F40.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F40.json`
-- **Status:** ny
+- **Status:** rettet (D4, sett i 3D på samme sted) – enden av ytterveggen til boden lå i samme plan som gangens vegg, og fase D-dybdejusteringen hadde flyttet malingen til begge like langt, så den mørke kanten vant. Nå får hver rolle sin egen kopi av materialet, og yttersiden ligger lengst bak.
 
 ### F41 – Trappa er ikke slik som på plantegning
 - **Tekst:** Trappa er ikke slik som på plantegning
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F41.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F41.json`
-- **Status:** ny
+- **Status:** kjent – hus1 har en kvartsvingt trapp; spillet har bare rette og U-trapper (forespørsel 9), så den bygges som U-trapp.
 
 ### F42 – rekkverkstolpe går helt ned i etasjen under istedet for å stoppe der d
 - **Tekst:** rekkverkstolpe går helt ned i etasjen under istedet for å stoppe der de andre stopper
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F42.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F42.json`
-- **Status:** ny
+- **Status:** venter på motoren (som F12 og F21) – stairs.js lar stolpene over trappehullet henge ned.
 
 ### F43 – Rom i 2.etg skal ha skråtak med takvindu og knevegg slik som på plante
 - **Tekst:** Rom i 2.etg skal ha skråtak med takvindu og knevegg slik som på plantegning. Det gjelder de fleste rommene her.
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F43.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F43.json`
+- **Status:** ny
+
+### F44 – Her er det en åpning i veggen
+- **Tekst:** Her er det en åpning i veggen
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F44.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F44.json`
+- **Status:** ny
+
+### F45 – det ser ut på fasadetegning at vinduet til venstre skal være smalere o
+- **Tekst:** det ser ut på fasadetegning at vinduet til venstre skal være smalere og helt ned til bakken. Og de to vinduene på høyre side skal være smalere i høyden
+- **Hvor:** 3D (dukkehus) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F45.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F45.json`
+- **Status:** ny
+
+### F46 – her skulle også vinduer vært smalere iht fasadetegning. og det store v
+- **Tekst:** her skulle også vinduer vært smalere iht fasadetegning. og det store vinduet til venstre skulle vært todelt
+- **Hvor:** 3D (dukkehus) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F46.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F46.json`
+- **Status:** ny
+
+### F47 – Ja det er mye som går igjen, men her er også vinduene feil, spesielt v
+- **Tekst:** Ja det er mye som går igjen, men her er også vinduene feil, spesielt vindu 3 og 4 fra venstre. se fasadetegning
+- **Hvor:** 3D (dukkehus) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F47.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F47.json`
 - **Status:** ny
 
 ---

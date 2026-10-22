@@ -85,27 +85,49 @@ function straightStairFix(layout) {
 /**
  * The game's builders put some faces of different materials in one plane: a window frame's sides lie on the reveal
  * (the frame is exactly as wide as the hole), the dark lining of an outer door on its trim, the cladding on the
- * reveal's edge. In the planbygger's houses that flickers (F3, F4, F6, F8, F14). A depth offset per role settles who
- * wins: the large surfaces (room paint, facades, ceilings) step back, the dark linings step forward, frames, leaves and
- * trims stay. Only depth is changed, no geometry; the fix in the builders (a frame 2–3 mm narrower than its hole) is a
- * request to the house work.
+ * reveal's edge, the end of a neighbour's outer wall in a room's face (F40). In the planbygger's houses that flickers
+ * (F3, F4, F6, F8, F14, F29, F40). A depth offset per role settles who wins: the outside of the walls and the dark
+ * deck step back the most, the room paint and the ceilings step back, the dark linings step forward, frames, leaves
+ * and trims stay. Only depth is changed, no geometry; the fix in the builders (a frame 2–3 mm narrower than its hole)
+ * is a request to the house work.
+ *
+ * The builders share one material per colour (paint('#ece9e3') on the room faces and on the reveals alike), so each
+ * role gets its own copy: set on the shared material, the offset moved every face of that colour and the room faces
+ * tied with what they should hide (fase D). `made` (material → role → copy) is kept for clear().
  */
-function separateCoplanar(root) {
+const DEPTH = { far: [2, 4], back: [1, 2], front: [-1, -2] };
+
+function depthRole(name, mn) {
+  if (/^(room-outside|cover):/.test(name)) return 'far';
+  if (/^ceiling:/.test(name) || (/^(room-walls|wall):/.test(name) && /^paint #/.test(mn))) return 'back';
+  if (/^room-walls:/.test(name) && /#1d1e21/.test(mn)) return 'front';
+  return null;
+}
+
+function separateCoplanar(root, made) {
   root.traverse((m) => {
     if (!m.isMesh) return;
     const name = m.name || '';
-    for (const mat of [].concat(m.material)) {
-      if (!mat || mat.userData?.pbDepth != null) continue;
-      const mn = mat.name || '';
-      const back = /^(room-outside|ceiling|cover):/.test(name) || (/^room-walls:/.test(name) && /^paint #/.test(mn));
-      const front = /^room-walls:/.test(name) && /#1d1e21/.test(mn);
-      if (!back && !front) continue;
-      mat.polygonOffset = true;
-      mat.polygonOffsetFactor = back ? 1 : -1;
-      mat.polygonOffsetUnits = back ? 2 : -2;
-      mat.userData.pbDepth = back ? 'back' : 'front';
-      mat.needsUpdate = true;
-    }
+    let changed = false;
+    const mats = [].concat(m.material).map((mat) => {
+      const role = mat ? depthRole(name, mat.name || '') : null;
+      if (!role) return mat;
+      const key = `${mat.uuid}:${role}`;
+      let c = made.get(key);
+      if (!c) {
+        c = mat.clone();
+        // clone() leaves out the shader hooks some of the game's materials use
+        c.onBeforeCompile = mat.onBeforeCompile;
+        c.customProgramCacheKey = mat.customProgramCacheKey;
+        c.polygonOffset = true;
+        [c.polygonOffsetFactor, c.polygonOffsetUnits] = DEPTH[role];
+        c.userData.pbDepth = role;
+        made.set(key, c);
+      }
+      changed = true;
+      return c;
+    });
+    if (changed) m.material = Array.isArray(m.material) ? mats : mats[0];
   });
 }
 
@@ -263,6 +285,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       });
     }
     for (const g of Object.values(state.roots.levels)) g.removeFromParent();
+    for (const m of state.depthMats?.values() ?? []) m.dispose();
     state.interaction?.dispose?.();
     hud.setPrompt(null);
     state = null;
@@ -294,7 +317,8 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     if (layout.house.stairs.length) parts.push(buildStairs(ctx, straightStairFix(layout)));
     scene.add(...Object.values(roots.levels));
     for (const p of parts) if (p.group && !p.group.parent) scene.add(p.group);
-    for (const g of [...Object.values(roots.levels), ...parts.map((p) => p.group)]) if (g) separateCoplanar(g);
+    const depthMats = new Map();
+    for (const g of [...Object.values(roots.levels), ...parts.map((p) => p.group)]) if (g) separateCoplanar(g, depthMats);
     for (const p of parts) {
       for (const c of p.colliders || []) {
         if (c?.isBox3) collision.addStaticBox(c);
@@ -407,7 +431,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     const player = new PlayerController({ camera, collision, input, settings, events });
     const start = spawnPoint(layout);
     player.teleport(start.position, start.yaw, 0);
-    state = { layout, collision, interaction, roots, parts, extra, skylights, player, start, bounds: b, center: new THREE.Vector3(cx, mainY, cz), size, groundY: mainY - GROUND_STEP };
+    state = { layout, collision, interaction, roots, parts, extra, skylights, player, start, bounds: b, center: new THREE.Vector3(cx, mainY, cz), size, groundY: mainY - GROUND_STEP, depthMats };
     setMode(mode);
     const realRooms = layout.house.rooms.filter((r) => !r.hud && r.area > 0.01 && r.id !== 'stue-kjokken');
     onInfo(`${realRooms.length} rom, ${layout.house.doors.length} dører, ${layout.house.windows.length} vinduer`);
