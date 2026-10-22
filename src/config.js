@@ -29,6 +29,16 @@ export const PLAYER = Object.freeze({
   substeps: 4,
 });
 
+/**
+ * How much of the house the game shows (layout.js gameLayout). basement false (2026-10-22, the owner: too many bugs
+ * down there for now): no basement, no stair down, no outside of the whole house (forecourt, entrance, the terrace
+ * stair down to it), and the hall door is locked – the player stays in the living room and on the terrace. true: the
+ * whole house (notes/hele-huset-design.md).
+ */
+export const HOUSE = Object.freeze({
+  basement: false,
+});
+
 export const INTERACT = Object.freeze({
   /** Default max distance from the eye to an interactable surface. */
   range: 2.6,

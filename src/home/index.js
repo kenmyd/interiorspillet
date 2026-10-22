@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { layout as roomLayout, LIVING_ROOM_ID, MAIN_LEVEL_ID } from './layout.js';
+import { gameLayout as roomLayout, LIVING_ROOM_ID, MAIN_LEVEL_ID } from './layout.js';
 import { originalItems } from './existing.js';
 import { configureMaterials, prepareMaterials, ALL_KINDS } from './materials.js';
 import { buildShell } from './shell.js';
