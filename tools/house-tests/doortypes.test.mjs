@@ -177,4 +177,24 @@ for (const id of ['door-skyve', 'door-lomme', 'door-skyve-dobbel', 'door-patio',
   check(`${id}: lukkes når figuren har gått`, r.closed);
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+section('Pekeren over glasset (F102)');
+{
+  // every target of a sliding / folding door (the leaves and the invisible doorway in front of a patio's sliding panel)
+  // makes the whole door glow, so aiming at the glass shows the door can be opened
+  const regs = [];
+  const fake = { ...ctx, interaction: { register: (object, opts) => (regs.push({ object, opts }), { unregister() {} }) } };
+  const s = new SlidingDoor(fake, { id: 't-skyve', matrix: new THREE.Matrix4(), width: 1, height: 2.1, depth: 0.1, leaves: [{ x0: -0.5, x1: 0.5, y1: 2, z0: 0.03, z1: 0.07, dir: 1, travel: 0.9 }] });
+  const f = new FoldingDoor(fake, { id: 't-folde', matrix: new THREE.Matrix4(), width: 1.2, height: 2.1, depth: 0.1, stacks: [{ anchor: -0.5, e: 1, span: 1, panels: 4, z0: -0.03, side: 1, T: 0.03, y0: 0.01, y1: 2 }] });
+  for (const door of [s, f]) {
+    const mine = regs.filter((r) => r.opts.id === door.id);
+    const pivots = door.leaves.map((l) => l.pivot);
+    const ok = mine.length === door.leaves.length + 1 && mine.every((r) => Array.isArray(r.opts.highlight) && pivots.every((p) => r.opts.highlight.includes(p)));
+    check(`${door.constructor.name}: døråpningen og hvert blad lyser opp hele døra`, ok, `${mine.length} mål`);
+  }
+  const panes = [];
+  for (const d of R.doors) d.door.root.traverse((o) => o.name.startsWith('glass:') && panes.push(o));
+  check('glassrutene i dørene lyser ikke opp (bare rammen)', panes.length > 0 && panes.every((o) => o.userData.noHighlight === true), `${panes.length} ruter`);
+}
+
 done();

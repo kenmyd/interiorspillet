@@ -125,6 +125,7 @@ function addGlass(group, rect, material, id) {
   glass.renderOrder = 2;
   glass.castShadow = false;
   glass.userData.noCollide = true;
+  glass.userData.noHighlight = true; // the hover glow on the frame only: a glowing pane tinted the view through it
   group.add(glass);
   return glass.geometry;
 }

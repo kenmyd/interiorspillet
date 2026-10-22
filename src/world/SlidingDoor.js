@@ -316,7 +316,10 @@ export class SlidingDoor {
 
   _registerInteraction(ctx) {
     if (!ctx.interaction) return;
-    const opts = { id: this.id, prompt: () => this.promptText(), onInteract: () => this.toggle() };
+    // the whole door glows, whatever part is aimed at: the doorway pane is invisible, and lies in front of a patio's
+    // sliding panel – aimed at its glass, the glow went to nothing and only the frame seemed to open the door (F102)
+    const highlight = this.leaves.map((l) => l.pivot);
+    const opts = { id: this.id, prompt: () => this.promptText(), onInteract: () => this.toggle(), highlight };
     for (const leaf of this.leaves) this._handles.push(ctx.interaction.register(leaf.pivot, opts));
     // the doorway always (unlike Door): aimed at the meeting gap of two leaves, the ray goes between them
     this._handles.push(ctx.interaction.register(this.doorway, opts));
