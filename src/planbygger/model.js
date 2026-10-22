@@ -12,10 +12,14 @@
  *       walls:    [{ id, a: [x, y], b: [x, y], t }]                          plan metres (pixels / pxPerM), a → b
  *       openings: [{ id, wall, type: 'door'|'window'|'opening', at, width, height?, sill?,
  *                    hinge: 'start'|'end', side: 1|-1, leaf?, openAngle?, auto?,
- *                    variant?: 'double'|'sliding', leaf2? }]              at = centre, metres from a;
+ *                    variant?: 'double'|'sliding'|'folding', leaf2?,
+ *                    style?, panes?, glass?, mount? }]                       at = centre, metres from a;
  *                                                                          openAngle: a door's degrees (default 90);
  *                   variant: a double door (two leaves hinged at both jambs, leaf + leaf2) or a sliding door (hinge =
- *                   the jamb its leaf parks at); no variant = a single hinged door
+ *                   the jamb its leaf parks at) or a folding door; no variant = a single hinged door. From the facade
+ *                   check (facadecheck.js): a window's style (export.js WINDOW_STYLES) and panes [columns, rows], a
+ *                   door's glass (true | false; none = by the room) and a sliding door's mount ('surface' | 'pocket' |
+ *                   'patio'; none = by the wall)
  *       skylights: [{ id, rect: [[x0, y0], [x1, y1]], auto? }]               roof windows in the ceiling (plan metres)
  *       stairHints: [{ rect, axis: 'x'|'y', treads, kind, auto }]            stair symbols the detection found on this
  *                 plan (not stairs yet: a stair is drawn on both levels it joins, generate / the editor decide)
@@ -274,6 +278,7 @@ export const OPENING_KINDS = Object.freeze([
   ['single', 'Dør'],
   ['double', 'Dobbeltdør'],
   ['sliding', 'Skyvedør'],
+  ['folding', 'Foldedør'],
   ['window', 'Vindu'],
   ['opening', 'Åpning uten dør'],
 ]);
@@ -288,7 +293,7 @@ export const openingKind = (o) => (o.type === 'door' ? o.variant ?? 'single' : o
  */
 export function setOpeningKind(o, kind, settings = DEFAULT_SETTINGS) {
   const was = openingKind(o);
-  const door = kind === 'single' || kind === 'double' || kind === 'sliding';
+  const door = kind === 'single' || kind === 'double' || kind === 'sliding' || kind === 'folding';
   o.type = door ? 'door' : kind;
   delete o.variant;
   delete o.leaf2;
@@ -299,11 +304,18 @@ export function setOpeningKind(o, kind, settings = DEFAULT_SETTINGS) {
     if (kind === 'double') {
       o.leaf = round(o.width / 2, 3);
       o.leaf2 = o.leaf;
-    } else if (kind === 'sliding' || was !== 'single') delete o.leaf; // (a hinged leaf as wide as the hole by default)
+    } else if (kind === 'sliding' || kind === 'folding' || was !== 'single') delete o.leaf; // (a hinged leaf as wide as the hole by default)
     else if (o.leaf) o.leaf = Math.min(o.leaf, o.width);
   } else {
     delete o.leaf;
     delete o.openAngle;
+  }
+  // the facade check's choices that belong to the old kind only
+  if (kind !== 'sliding') delete o.mount;
+  if (!door) delete o.glass;
+  if (kind !== 'window') {
+    delete o.style;
+    delete o.panes;
   }
   if (kind === 'window') {
     o.sill ??= settings.windowSill;

@@ -457,4 +457,42 @@ section('10. Skjeve planer: vinkelen finnes, planen rettes opp');
   check('syntetisk plan −4° skjev: vinkelen, alle vegger (≤ 3 cm) og åpninger med riktig type', near(est, -4, 0.1) && m.walls === plan.walls.length && m.typed === plan.openings.length, `${est}°, ${m.walls}/${plan.walls.length} vegger, ${m.typed}/${plan.openings.length} åpninger, verste ${(m.worst * 100).toFixed(1)} cm`);
 }
 
+
+section('11. Fasadesjekken: fasadene fra planen');
+{
+  // 8 × 6 m, north up: one window on each side, a door to the south, walls drawn clockwise and counter-clockwise
+  const F = await imp('src/planbygger/facadecheck.js');
+  const doc = M.createDoc('Fasader');
+  const lv = M.createLevel(doc, { id: 'hoved', image: { name: 'syntetisk', width: 1, height: 1, pxPerM: 100 } });
+  lv.walls = [
+    { id: 'n', a: [0, 0], b: [8, 0], t: 0.3, exterior: true },
+    { id: 'e', a: [8, 6], b: [8, 0], t: 0.3, exterior: true },
+    { id: 's', a: [8, 6], b: [0, 6], t: 0.3, exterior: true },
+    { id: 'w', a: [0, 0], b: [0, 6], t: 0.3, exterior: true },
+  ];
+  lv.openings = [
+    { id: 'vn', wall: 'n', type: 'window', at: 2, width: 1, sill: 0.9, height: 1.2 },
+    { id: 've', wall: 'e', type: 'window', at: 3, width: 0.6, sill: 0.9, height: 1.2 },
+    { id: 'vs', wall: 's', type: 'window', at: 6, width: 2, sill: 0, height: 2.1 },
+    { id: 'vw', wall: 'w', type: 'window', at: 3, width: 1.2, sill: 0.9, height: 1.2 },
+    { id: 'ds', wall: 's', type: 'door', at: 2, width: 0.9 },
+  ];
+  const fs = F.buildFacades(doc);
+  const side = (id) => fs.find((x) => x.openings.some((o) => o.id === id))?.key;
+  check('fire fasader, og hvert vindu på sin side (nord, øst, sør, vest)', fs.length === 4 && side('vn') === 'N' && side('ve') === 'E' && side('vs') === 'S' && side('vw') === 'W' && side('ds') === 'S', fs.map((x) => `${x.key}:${x.openings.map((o) => o.id).join('+')}`).join(' '));
+  // sett utenfra fra sør står døra (x 2) til høyre for det store vinduet (x 6)
+  const S = fs.find((x) => x.key === 'S');
+  const at = (id) => S.openings.find((o) => o.id === id).s0;
+  check('sett utenfra: på sørfasaden står døra (vest) til høyre for vinduet (øst)', at('ds') > at('vs'), `dør ${at('ds').toFixed(2)}, vindu ${at('vs').toFixed(2)}`);
+  // valgene fra fasadesjekken går gjennom eksporten og validatoren
+  lv.openings[0].style = 'transom';
+  lv.openings[0].panes = [2, 3];
+  F.setDoorType(lv.openings[4], 'folding');
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  const all = ex.house.walls.flatMap((w) => w.openings || []);
+  const vn = all.find((o) => o.type === 'window' && o.width === 1);
+  check('vindustype og sprosser, og foldedør, bygges og godtas av validatoren', v.errors.length === 0 && vn?.sashes.length === 3 && vn?.panes?.join('x') === '2x3' && all.some((o) => o.door?.variant === 'folding'), v.errors.slice(0, 2).join(' | '));
+}
+
 done();

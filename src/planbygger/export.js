@@ -48,21 +48,43 @@ const MIN_DOOR = 0.82;
 /** metres of wall between two openings side by side (a door and its sidelight): a post, not a sliver */
 const MIN_POST = 0.1;
 
+/** The window types the facade check offers (doc opening.style), [style, Norwegian label]; no style = 'auto'. */
+export const WINDOW_STYLES = Object.freeze([
+  ['auto', 'Automatisk (etter bredden)'],
+  ['one', 'Ett felt som kan åpnes'],
+  ['fixed', 'Fast glass'],
+  ['two', 'Todelt'],
+  ['three', 'Tredelt'],
+  ['transom', 'Med overlys'],
+]);
+
 /**
- * The sashes of a window the drawings say nothing more about, until the facade round reads them from the facades
- * (notes/vindusmodeller.md: fractions of the hole, from the left as seen from the room, and up from the sill): one
+ * The sashes of a window (notes/vindusmodeller.md: fractions of the hole, from the left as seen from the room, and up
+ * from the sill) for its style. 'auto' – what the drawings say nothing more about, until the facade round reads it: one
  * top-hung opening sash up to 0.8 m wide, a fixed and a side-hung one from 0.8 m, three from 1.4 m (fixed in the
  * middle), and a fixed panel under a transom 0.5 m up in a window that stands on the floor and is at least 1.8 m tall.
+ * 'transom' puts a fixed band over the sashes the width gives (the top quarter, at most 0.45 m).
  */
-function defaultSashes(width, height, sill) {
+export function windowSashes(style, width, height, sill) {
+  const byWidth = (bottom, top) => {
+    const row =
+      width < 0.8
+        ? [{ from: 0, to: 1, opening: true, hinge: 'top' }]
+        : width < 1.4
+          ? [{ from: 0, to: 0.5, opening: false }, { from: 0.5, to: 1, opening: true, hinge: 'right' }]
+          : [{ from: 0, to: 0.3, opening: true, hinge: 'left' }, { from: 0.3, to: 0.7, opening: false }, { from: 0.7, to: 1, opening: true, hinge: 'right' }];
+    return row.map((x) => ({ ...x, bottom, top }));
+  };
+  if (style === 'one') return [{ from: 0, to: 1, bottom: 0, top: 1, opening: true, hinge: 'top' }];
+  if (style === 'fixed') return [{ from: 0, to: 1, bottom: 0, top: 1, opening: false }];
+  if (style === 'two') return [{ from: 0, to: 0.5, bottom: 0, top: 1, opening: false }, { from: 0.5, to: 1, bottom: 0, top: 1, opening: true, hinge: 'right' }];
+  if (style === 'three') return [{ from: 0, to: 0.3, bottom: 0, top: 1, opening: true, hinge: 'left' }, { from: 0.3, to: 0.7, bottom: 0, top: 1, opening: false }, { from: 0.7, to: 1, bottom: 0, top: 1, opening: true, hinge: 'right' }];
+  if (style === 'transom') {
+    const t = round(1 - Math.min(0.45, height / 4) / height, 3);
+    return [...byWidth(0, t), { from: 0, to: 1, bottom: t, top: 1, opening: false }];
+  }
   const transom = sill < 0.03 && height >= 1.8 ? round(0.5 / height, 3) : 0;
-  const row =
-    width < 0.8
-      ? [{ from: 0, to: 1, opening: true, hinge: 'top' }]
-      : width < 1.4
-        ? [{ from: 0, to: 0.5, opening: false }, { from: 0.5, to: 1, opening: true, hinge: 'right' }]
-        : [{ from: 0, to: 0.3, opening: true, hinge: 'left' }, { from: 0.3, to: 0.7, opening: false }, { from: 0.7, to: 1, opening: true, hinge: 'right' }];
-  const sashes = row.map((x) => ({ ...x, bottom: transom, top: 1 }));
+  const sashes = byWidth(transom, 1);
   return transom ? [{ from: 0, to: 1, bottom: 0, top: transom, opening: false }, ...sashes] : sashes;
 }
 /** the game's door unit is this much wider than its leaf (src/world/Door.js: 2 × (0.05 jamb − 0.012 overlap)) */
@@ -670,7 +692,10 @@ export function exportHouse(doc, opts = {}) {
     const roomIdOf = (ri) => R2[ri]?.id ?? null;
     // double and sliding doors are the game's own door types (notes/dortyper.md); until they came, a double door was
     // two single doors side by side and a sliding door a hinged one
-    const asBuilt = level.openings.map((o) => (o.type === 'door' && (o.variant === 'double' || o.variant === 'sliding') ? { ...o, built: o.variant } : o));
+    const asBuilt = level.openings.map((o) => (o.type === 'door' && (o.variant === 'double' || o.variant === 'sliding' || o.variant === 'folding') ? { ...o, built: o.variant } : o));
+    // sliding doors that go into the wall where it has room (after all openings are placed, below): 'auto' when the
+    // drawing or the customer said nothing, 'must' when the customer chose a pocket door in the facade check
+    const pocketWish = new Map();
     for (const o of asBuilt) {
       const pw = wallsById.get(o.wall);
       if (!pw) continue;
@@ -769,7 +794,9 @@ export function exportHouse(doc, opts = {}) {
           entry.id = `win-${owner}-${++counts.windows}`;
           entry.height = R(h);
           entry.sill = R(sill);
-          entry.sashes = defaultSashes(width, h, sill);
+          entry.sashes = windowSashes(o.style, width, h, sill);
+          // bars (sprosser) the facade check set: [columns, rows] of panes in each sash
+          if (Array.isArray(o.panes) && o.panes.length === 2) entry.panes = o.panes;
           entry.estimated = ['*'];
         } else {
           const h = Math.min(o.height ?? settings.doorHeight, wallH - 0.02);
@@ -796,17 +823,25 @@ export function exportHouse(doc, opts = {}) {
             const opensInto = swing === 'in' ? owner : other;
             // an outer door from a living room, a kitchen or a bedroom is a terrace or balcony door: glass with bars in
             // the leaf (F99, F100, F108); the front door (entrance, hall) and the doors of storerooms stay closed
+            // (the customer's choice in the facade check, o.glass, wins)
             const terrace = exterior && !['entrance', 'hall', 'storage', 'laundry', 'bathroom'].includes(room.kind);
-            const look = { ...(exterior ? {} : { leafColor: LOOK.door }), ...(terrace ? { glass: { cols: width >= 1.2 ? 2 : 1, rows: 3 } } : {}) };
+            const glass = o.glass ?? terrace;
+            const look = { ...(exterior ? {} : { leafColor: LOOK.door }), ...(glass ? { glass: { cols: width >= 1.2 ? 2 : 1, rows: 3 } } : {}) };
             if (o.built === 'double') {
               // the leaves fill the hole between the jambs; the drawn arcs' radii give their ratio
               entry.door = { variant: 'double', hinge, swing, opensInto, leaf: { w: R(o.leaf ?? width / 2), h: R(h - 0.04) }, leaf2: { w: R(o.leaf2 ?? o.leaf ?? width / 2) }, ...(o.openAngle && o.openAngle !== 90 ? { openAngleDeg: o.openAngle } : {}), handleHeight: 1.05, closed: true, ...look };
             } else if (o.built === 'sliding') {
               // the leaf parks at the hinge jamb (model.js); two leaves part both ways. An outer one is a glass patio
               // door when it is wide enough for its half-width opening (the figure needs 0.62 m), else on a rail
-              const patio = exterior && width >= 1.35;
+              // a glass patio door needs 1.35 m (its opening is half the frame); the customer may have chosen the mount
+              const patio = (o.mount === 'patio' || (!o.mount && exterior)) && width >= 1.35;
               const slide = o.leaves === 2 && !patio ? 'both' : hinge;
               entry.door = { variant: 'sliding', mount: patio ? 'patio' : 'surface', slide, swing, opensInto, closed: true, ...look };
+              if (!patio && o.mount !== 'surface') pocketWish.set(entry, o.mount === 'pocket' ? 'must' : 'auto');
+              if (o.mount === 'patio' && !patio) warnings.push(`${level.name}: glass-skyvedøra ${entry.id} er under 1,35 m og står på skinne i stedet`);
+            } else if (o.built === 'folding') {
+              // a folding door: its leaves fold toward the hinge jamb
+              entry.door = { variant: 'folding', slide: hinge, swing, opensInto, closed: true, ...look };
             } else {
               entry.door = {
                 hinge,
@@ -861,7 +896,8 @@ export function exportHouse(doc, opts = {}) {
       const os = w.openings || [];
       const L = dist(w.from, w.to);
       for (const o of os) {
-        if (o.door?.variant !== 'sliding' || o.door.mount !== 'surface' || o.door.slide === 'both' || !(w.thickness >= 0.08)) continue;
+        const wish = pocketWish.get(o);
+        if (!wish || o.door.slide === 'both' || !(w.thickness >= 0.08)) continue;
         const need = o.width + 0.04;
         const free = (a, b) => a >= -1e-6 && b <= L + 1e-6 && !os.some((q) => q !== o && q.offset < b && q.offset + q.width > a);
         for (const side of o.door.slide === 'to' ? ['to', 'from'] : ['from', 'to']) {
@@ -871,6 +907,7 @@ export function exportHouse(doc, opts = {}) {
           o.door.slide = side;
           break;
         }
+        if (wish === 'must' && o.door.mount !== 'pocket') warnings.push(`${level.name}: skyvedøra ${o.id} får ikke plass inne i veggen og står på skinne`);
       }
     }
 

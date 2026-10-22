@@ -819,6 +819,12 @@ eller faller, eller huset står på feil sted.
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F113.json`
 - **Status:** følge av F109 – trappa på tegningen står utenfor huset, så det ble ingen trapp. Rettes med F109.
 
+### F114 – når jeg blar ned og tyrkker poå en vindu skroller den helt opp samme n
+- **Tekst:** når jeg blar ned og tyrkker poå en vindu skroller den helt opp samme når jeg sklikker for å skrive inn tall så scroller den helt opp. Og så er jeg ikke helt fornøyd med visningen. vi bør ha alle fasadene i midten. og at en popup kommer frem når jeg trykker på et vindu eller dør
+- **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F114.json`
+- **Status:** ny
+
 ---
 
 ## Kjent fra sluttkontrollen (Claude)

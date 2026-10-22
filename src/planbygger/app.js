@@ -519,6 +519,33 @@ class App {
     if (this.gen.res) this.gen.res.images = null;
     this._cropCache = null;
     await this.open3d();
+    // no facade drawings: the windows all got one sill and height – the facade check lets the customer set each one
+    if (this.doc?.generated && !this.doc.facades?.length && !this.view3d.hidden)
+      this.openFacades('Vi fant ingen fasadetegninger, så alle vinduene har fått samme høyde. Klikk på vinduer og dører for å rette høyde, bredde og type – «Ferdig» bygger 3D-huset på nytt.');
+  }
+
+  /** The facade check (facadecheck.js) over the page; its changes go into the document with undo, «Ferdig» rebuilds 3D. */
+  async openFacades(intro = null) {
+    if (!this.doc?.levels.some((l) => l.walls.some((w) => w.exterior))) {
+      this.toast('Huset har ingen yttervegger å vise. Merk ytterveggene i «Finjuster».');
+      return;
+    }
+    const { openFacadeCheck } = await import('./facadecheck.js');
+    this._facades?.close();
+    this._facades = openFacadeCheck({
+      getDoc: () => this.doc,
+      h,
+      intro,
+      onChange: (label, fn) => {
+        this.snapshot();
+        fn();
+        this.changed(label);
+      },
+      onDone: (changed) => {
+        this._facades = null;
+        if (changed && !this.view3d.hidden) this.open3d();
+      },
+    });
   }
 
   /** A generated document as the page's: the level images for the editor (and IndexedDB), then the editor state. */
@@ -971,7 +998,8 @@ class App {
   _key(e) {
     const tag = e.target?.tagName;
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
-    // the start page, the drawing stack and the guide have their own keys
+    // the start page, the drawing stack, the guide and the facade check have their own keys
+    if (this._facades) return;
     if (!this.startEl.hidden) return;
     if (!this.view3d.hidden) {
       if (e.key === 'Escape' && this.viewer?.mode === 'orbit') this.close3d();
@@ -1401,6 +1429,8 @@ class App {
   /** What is on screen now: the 3D view (rendered once more, so the buffer is filled), else the visible plan canvas. */
   _screenshot() {
     try {
+      // the facade check covers the page: its drawing is not a canvas (the text tells what is wrong)
+      if (this._facades) return null;
       const v = this.viewer;
       if (!this.view3d.hidden && v?.renderer) {
         v.renderer.render(v.scene, v.camera);
@@ -1419,7 +1449,7 @@ class App {
   /** «Meld feil»: a screenshot, one sentence and the state go to the dev server (server/planbygger-feedback.mjs). */
   async _report() {
     const image = this._screenshot();
-    const where = !this.view3d.hidden ? `3D (${this.viewer?.mode === 'walk' ? 'går rundt' : 'dukkehus'})` : this.guide ? 'veiviser' : this.stack?.el?.isConnected ? 'stabel' : this.startEl && !this.startEl.hidden ? 'startside' : this.doc ? '2D-editor' : 'startside';
+    const where = this._facades ? 'fasadesjekk' : !this.view3d.hidden ? `3D (${this.viewer?.mode === 'walk' ? 'går rundt' : 'dukkehus'})` : this.guide ? 'veiviser' : this.stack?.el?.isConnected ? 'stabel' : this.startEl && !this.startEl.hidden ? 'startside' : this.doc ? '2D-editor' : 'startside';
     const res = await this._dialog('Meld feil eller idé', [
       { key: 'kind', label: 'Hva', value: 'feil', options: [['feil', 'Feil'], ['ide', 'Idé / forbedring']] },
       { key: 'text', label: 'Hva skjedde (én setning holder)', value: '', placeholder: 'f.eks. svarte rundinger i gulvet i 2. etasje' },
@@ -1586,7 +1616,9 @@ class App {
         // a generated house: «Finjuster» opens the editor on it; «Tegningene» goes back to the drawing stack
         this.backBtn = h('button', { class: 'pb-btn pb-finetune', onclick: () => this.close3d() }, '← Tilbake til planen');
         this.stackBtn = h('button', { class: 'pb-btn', title: 'Tilbake til tegningene: endre dem og generer på nytt', onclick: () => this._backToStack() }, 'Tegningene');
-        const bar = h('div', { class: 'pb-view3d-bar' }, this.backBtn, this.stackBtn, this.modeBtn, this.levelSel, info);
+        // the facade check: the house seen from outside, side by side, to set the windows and doors (facadecheck.js)
+        this.facadeBtn = h('button', { class: 'pb-btn', title: 'Se huset utenfra side for side og rett vinduer og dører', onclick: () => this.openFacades() }, 'Fasader');
+        const bar = h('div', { class: 'pb-view3d-bar' }, this.backBtn, this.stackBtn, this.facadeBtn, this.modeBtn, this.levelSel, info);
         this.helpEl = h('div', { class: 'pb-view3d-help' });
         this.crosshair = h('div', { class: 'pb-crosshair', hidden: true });
         this.view3d.append(bar, this.helpEl, this.crosshair);
