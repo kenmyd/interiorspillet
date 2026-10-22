@@ -456,61 +456,151 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F61.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F61.json`
-- **Status:** ny
+- **Status:** notert – strek-prikk-linja i 1. etasje er en synlig drager; det støtter tanken i K14 (drager med søyler er ikke en romgrense).
 
 ### F62 – Dette er egentlig en dør, men er generert som vindu
 - **Tekst:** Dette er egentlig en dør, men er generert som vindu
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F62.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F62.json`
-- **Status:** ny
+- **Status:** til gjenkjenningen – døra er lest som vindu på tegningen. Ikke rettet.
 
 ### F63 – etasjeskillet er synlig i trapperom, det stikker lengre ut i rommet en
 - **Tekst:** etasjeskillet er synlig i trapperom, det stikker lengre ut i rommet enn veggen
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F63.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F63.json`
-- **Status:** ny
+- **Status:** rettet (D7) – trappehullet stoppet 3 cm før veggen, så gulvkanten stakk ut over trapperommet. Nå går hullets sider ut til veggen når den er innen 6 cm.
 
 ### F64 – det er noe rart med avslutningen av den drageren som går inn i veggen
 - **Tekst:** det er noe rart med avslutningen av den drageren som går inn i veggen
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F64.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F64.json`
-- **Status:** ny
+- **Status:** ikke sett på ennå – drageren er overkanten av en åpning over hele veggen mellom trapperommet og stua; enden mot veggen må sjekkes i 3D.
 
 ### F65 – de to hullene her er sikkert egentlig en skyvedør inn til W.I.C tror j
 - **Tekst:** de to hullene her er sikkert egentlig en skyvedør inn til W.I.C tror jeg. Åpningen til venstre skulle nok vært lukket(at det er der skyvedøre er i veggen når den er åpen.
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F65.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F65.json`
-- **Status:** ny
+- **Status:** venter på dørøkta og gjenkjenningen – en skyvedør som går inn i veggen (lommedør) er lest som to åpninger; den ene skal være vegg.
 
 ### F66 – syntes også generelt at husene virker litt små, men det er nok mest sa
 - **Tekst:** syntes også generelt at husene virker litt små, men det er nok mest sannsynlig på grunn av at det ikke er møbler i rommene. Vi kan endre skaleringen senere dersom min antakelse skulle stemme
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F66.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F66.json`
-- **Status:** ny
+- **Status:** notert som idé – målestokken er lest fra målene på tegningen (høy sikkerhet), så det er nok de tomme rommene; sjekkes igjen når møblene kommer.
 
 ### F67 – gulvet her burde vært likt overalt. og så mangler det rekkverk poå tra
 - **Tekst:** gulvet her burde vært likt overalt. og så mangler det rekkverk poå trappa oppe
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F67.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F67.json`
-- **Status:** ny
+- **Status:** delvis rettet (D7, sett i 3D) – rekkverket mangler ikke lenger: siden av trappehullet mot stua var en «vegg» med en åpning over hele lengden og fikk derfor ikke rekkverk. Gulvfargen kommer av K14 (trappestykket ble gjettet som bad).
 
 ### F68 – har meldt denne feilen før, men her ser du det bedre, med det feltet i
 - **Tekst:** har meldt denne feilen før, men her ser du det bedre, med det feltet i midten mellom etasjene som flimrer og blinker
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade4.avif, fasade1.avif, fasade2.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F68.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F68.json`
-- **Status:** ny
+- **Status:** rettet (D6, som F59) – meldt før rettingen.
 
 ### F69 – det er litt liten tekstskrift på der det står"vi fant ingen fasadetegn
 - **Tekst:** det er litt liten tekstskrift på der det står"vi fant ingen fasadetegninger blablabla"
 - **Hvor:** veiviser – plan-1etg-tilbygg.pdf
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F69.json`
+- **Status:** rettet (D7) – forklaringen under spørsmålet i veiviseren er nå 14,5 px (var 12).
+
+### F70 – dette rommet har en slik foldedør med mangen ledd som kan lukkes. her 
+- **Tekst:** dette rommet har en slik foldedør med mangen ledd som kan lukkes. her har det blitt generert gigantisk dør
+- **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F70.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F70.json`
+- **Status:** venter på dørøkta – en foldedør (mange ledd) er sendt videre som ønsket dørtype; i dag blir den én stor dør.
+
+### F71 – Disse to svarte har blitt generert som store dører istedet for vinduer
+- **Tekst:** Disse to svarte har blitt generert som store dører istedet for vinduer
+- **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F71.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F71.json`
+- **Status:** til gjenkjenningen (som F62) – vinduer lest som dører på den skannede hus6-tegningen. Ikke rettet.
+
+### F72 – Det som er inntegner på tegningen der det står 170 er antakelig en gla
+- **Tekst:** Det som er inntegner på tegningen der det står 170 er antakelig en glasspeis med 3 glassfelt som stikker ut i rommet her.
+- **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F72.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F72.json`
+- **Status:** notert – en glasspeis med tre glassfelt finnes ikke i spillet; tegnet av den blir i dag tolket som noe annet. Til en senere runde (møbler/innredning).
+
+### F73 – Det som er tegnet på tegning er nok skyvedør.
+- **Tekst:** Det som er tegnet på tegning er nok skyvedør.
+- **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F73.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F73.json`
+- **Status:** venter på dørøkta (som F27) og gjenkjenningen – skyvedøra på tegningen.
+
+### F74 – skulle vært skyvedør
+- **Tekst:** skulle vært skyvedør
+- **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F74.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F74.json`
+- **Status:** venter på dørøkta (som F27).
+
+### F75 – Her skulle det vært inntegnet en trapp selv om 2.etg tegningen ikke bl
+- **Tekst:** Her skulle det vært inntegnet en trapp selv om 2.etg tegningen ikke ble lagt til i generatoren
+- **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F75.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F75.json`
+- **Status:** ny
+
+### F76 – Her sorterte ikke tegningene seg i riktig rekkefølge, den bør iallfall
+- **Tekst:** Her sorterte ikke tegningene seg i riktig rekkefølge, den bør iallfall gjenkjenne 1, 2 og 3 tallet.
+- **Hvor:** stabel – plantegning-1.jpg, plantegning-2.jpg, plantegning-3.jpg
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F76.json`
+- **Status:** ny
+
+### F77 – Det er noe som blinker er midt i bildet
+- **Tekst:** Det er noe som blinker er midt i bildet
+- **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F77.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F77.json`
+- **Status:** ny
+
+### F78 – noe fra 2.etg vises i 1etg ser det ut som
+- **Tekst:** noe fra 2.etg vises i 1etg ser det ut som
+- **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F78.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F78.json`
+- **Status:** ny
+
+### F79 – noe feil med genereringen her
+- **Tekst:** noe feil med genereringen her
+- **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F79.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F79.json`
+- **Status:** ny
+
+### F80 – feil med genereringen
+- **Tekst:** feil med genereringen
+- **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F80.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F80.json`
+- **Status:** ny
+
+### F81 – noe merkelig på veggen
+- **Tekst:** noe merkelig på veggen
+- **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F81.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F81.json`
+- **Status:** ny
+
+### F82 – noe har skjedd med trappa, den skulle sikkert ikke vært vinkeltrapp, m
+- **Tekst:** noe har skjedd med trappa, den skulle sikkert ikke vært vinkeltrapp, men en bratt rett trapp/stige
+- **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F82.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F82.json`
 - **Status:** ny
 
 ---
@@ -594,4 +684,4 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 - **Hvor:** 3D (dukkehus) – plan-1etg-tilbygg.pdf
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/I1.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/I1.json`
-- **Status:** ny
+- **Status:** god idé, til fasade-runden – dørhøyde ved siden av vindushøyde i samme spørsmål, med en liten tegning der toppen av dør og vindu flukter. Inntil da: vinduets topp bør settes til dørhøyden når fasadene mangler.

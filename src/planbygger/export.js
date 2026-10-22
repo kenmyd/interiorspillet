@@ -905,6 +905,8 @@ export function exportHouse(doc, opts = {}) {
  * guards on the hole's free sides (not along a wall) on the upper floor.
  */
 function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, warnings, counts, RP, R }) {
+  const roomLevel = new Map(house.rooms.map((r) => [r.id, r.levelId]));
+  const wallById = new Map(house.walls.map((w) => [w.id, w]));
   const levels = house.levels;
   const inside = (p, poly) => pointInPolygon(p, poly);
   doc.levels.forEach((level, li) => {
@@ -962,6 +964,26 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
         warnings.push(`${level.name}: trappehullet går over en vegg – tegn det inne i ett rom`);
         continue;
       }
+      // a side a few centimetres short of the room's face along it left a ledge of floor sticking out over the stair
+      // well (F63, hus4: 3 cm): it goes out onto a parallel face within 6 cm that runs along most of it
+      for (const [k, axis, sign] of [[1, 1, 1], [3, 1, -1], [0, 0, 1], [2, 0, -1]]) {
+        const P = room.polygon;
+        const span = axis === 1 ? [box[0], box[2]] : [box[1], box[3]];
+        let best = null;
+        for (let i = 0; i < P.length; i++) {
+          const p = P[i];
+          const q = P[(i + 1) % P.length];
+          if (Math.abs(p[axis] - q[axis]) > 1e-6) continue;
+          const out = (box[k] - p[axis]) * sign;
+          const cover = Math.min(span[1], Math.max(p[1 - axis], q[1 - axis])) - Math.max(span[0], Math.min(p[1 - axis], q[1 - axis]));
+          if (out <= 1e-6 || out > 0.06 || cover < 0.8 * (span[1] - span[0])) continue;
+          if (best == null || out < (box[k] - best) * sign) best = p[axis];
+        }
+        if (best == null) continue;
+        const was = box[k];
+        box[k] = best;
+        if (outside(box) > 5e-4) box[k] = was;
+      }
       const hole = [[box[0], box[1]], [box[2], box[1]], [box[2], box[3]], [box[0], box[3]]].map(RP);
       // the way down in game coordinates, and the edges on the (clipped) hole
       const dG = unit(frame.vecToGame(g.down));
@@ -988,17 +1010,24 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
       const risers = Math.max(2, Math.round(rise / 0.18));
       const id = `trapp-${++counts.stairs}`;
       const holeId = `trappehull-${counts.stairs}`;
-      // guards: the hole's sides that are not on a wall face of the room, except the top edge
+      // guards: the hole's sides that do not run along a wall of the upper level, except the top edge. A room edge
+      // without a wall (an open boundary, a separator) needs one: the stair came up into the living room of hus4
+      // through a piece split off by a line, and its open side had no railing (F67)
+      const wallsHere = house.walls.filter((w) => roomLevel.get(w.roomId) === upper.id && (w.thickness > 0 || [].concat(w.backOf ?? []).some((id) => wallById.get(id)?.thickness > 0)));
       const onFace = (a, b) => {
-        const P = room.polygon;
-        for (let i = 0; i < P.length; i++) {
-          const c = P[i];
-          const d = P[(i + 1) % P.length];
-          const L = dist(c, d);
+        for (const w of wallsHere) {
+          const c = w.from;
+          const L = dist(c, w.to);
           if (L < 1e-6) continue;
-          const u = [(d[0] - c[0]) / L, (d[1] - c[1]) / L];
+          const u = [(w.to[0] - c[0]) / L, (w.to[1] - c[1]) / L];
           const off = (p) => Math.abs((p[0] - c[0]) * u[1] - (p[1] - c[1]) * u[0]);
-          if (off(a) < 0.03 && off(b) < 0.03) return true;
+          if (off(a) > 0.03 || off(b) > 0.03) continue;
+          const along = (p) => (p[0] - c[0]) * u[0] + (p[1] - c[1]) * u[1];
+          const lo = Math.max(0, Math.min(along(a), along(b)));
+          const hi = Math.min(L, Math.max(along(a), along(b)));
+          // a passage in the wall (the stair room open to the living room under a header) is no wall for a railing
+          const open = (w.openings || []).filter((o) => o.type === 'opening').reduce((sum, o) => sum + Math.max(0, Math.min(hi, o.offset + o.width) - Math.max(lo, o.offset)), 0);
+          if (hi - lo - open > 0.5 * dist(a, b)) return true;
         }
         return false;
       };

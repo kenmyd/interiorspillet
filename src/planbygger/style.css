@@ -1045,6 +1045,8 @@ select {
 }
 .pb-guide-main .pb-note {
   margin: 0;
+  /* the explanation under the question is read, not glanced at (F69: 12 px was too small) */
+  font-size: 14.5px;
   line-height: 1.5;
 }
 .pb-guide-count {
