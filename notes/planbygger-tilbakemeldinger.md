@@ -553,54 +553,187 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F75.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F75.json`
-- **Status:** ny
+- **Status:** til gjenkjenningen – en trapp på den eneste planen bør bli en trapp opp til en etasje vi ikke har tegning av. I dag blir den ingenting.
 
 ### F76 – Her sorterte ikke tegningene seg i riktig rekkefølge, den bør iallfall
 - **Tekst:** Her sorterte ikke tegningene seg i riktig rekkefølge, den bør iallfall gjenkjenne 1, 2 og 3 tallet.
 - **Hvor:** stabel – plantegning-1.jpg, plantegning-2.jpg, plantegning-3.jpg
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F76.json`
-- **Status:** ny
+- **Status:** rettet (D8) – kjelleren (gang, WC og fem boder, uten navn på arket) havnet oppå 1. etasje. Nå regnes en etasje der minst halvparten er boder, og der det ikke er stue, kjøkken eller soverom, som kjeller. Tallene i filnavnene brukes ikke: de betyr ikke alltid etasjer (plantegning-1 er alle tegningene på ett ark).
 
 ### F77 – Det er noe som blinker er midt i bildet
 - **Tekst:** Det er noe som blinker er midt i bildet
 - **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F77.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F77.json`
-- **Status:** ny
+- **Status:** trolig følge av F76 – kjelleren lå oppå 1. etasje. Meld igjen hvis det blinker etter ny generering.
 
 ### F78 – noe fra 2.etg vises i 1etg ser det ut som
 - **Tekst:** noe fra 2.etg vises i 1etg ser det ut som
 - **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F78.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F78.json`
-- **Status:** ny
+- **Status:** følge av F76 – det var kjelleren som lå over 1. etasje.
 
 ### F79 – noe feil med genereringen her
 - **Tekst:** noe feil med genereringen her
 - **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F79.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F79.json`
-- **Status:** ny
+- **Status:** trolig følge av F76 – meld igjen hvis det står etter ny generering.
 
 ### F80 – feil med genereringen
 - **Tekst:** feil med genereringen
 - **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F80.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F80.json`
-- **Status:** ny
+- **Status:** trolig følge av F76 – meld igjen hvis det står etter ny generering.
 
 ### F81 – noe merkelig på veggen
 - **Tekst:** noe merkelig på veggen
 - **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F81.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F81.json`
-- **Status:** ny
+- **Status:** trolig følge av F76 – meld igjen hvis det står etter ny generering.
 
 ### F82 – noe har skjedd med trappa, den skulle sikkert ikke vært vinkeltrapp, m
 - **Tekst:** noe har skjedd med trappa, den skulle sikkert ikke vært vinkeltrapp, men en bratt rett trapp/stige
 - **Hvor:** 3D (går rundt) – plantegning-3.jpg, plantegning-2.jpg, plantegning-1.jpg
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F82.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F82.json`
+- **Status:** kjent (K8) – ifølge fasiten er det en kvartsvingt trapp i hjørnet av kjellergangen. Med kjelleren øverst ble den en U-trapp ned fra «2. etasje». Etter F76 skal den gå fra kjelleren og opp, men spillet har ikke kvartsvingte trapper, og en rett trapp eller U-trapp får ikke plass i sjakten.
+
+### F83 – hvorfor har den ikke lest ordet kjøkken på denne delen
+- **Tekst:** hvorfor har den ikke lest ordet kjøkken på denne delen
+- **Hvor:** veiviser – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F83.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F83.json`
+- **Status:** til gjenkjenningen – navnet KJØKKEN står i en annen del av det sammenslåtte rommet (som K1).
+
+### F84 – Her er det åpning i veggen det burde vært vegg
+- **Tekst:** Her er det åpning i veggen det burde vært vegg
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F84.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F84.json`
+- **Status:** til gjenkjenningen – åpning der det skal være vegg.
+
+### F85 – skulle nok vært skyvedør her tipper jeg
+- **Tekst:** skulle nok vært skyvedør her tipper jeg
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F85.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F85.json`
+- **Status:** til gjenkjenningen – skyvedørsymbolet er ikke funnet.
+
+### F86 – vanlig dør har ikke blitt generert
+- **Tekst:** vanlig dør har ikke blitt generert
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F86.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F86.json`
+- **Status:** til gjenkjenningen – døra er ikke funnet.
+
+### F87 – stripe midt på veggen
+- **Tekst:** stripe midt på veggen
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F87.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F87.json`
+- **Status:** kjent (K13) – hårfin strek der to veggstykker møtes.
+
+### F88 – merkelig vinkler på vegg og så ser du opp og ut av huset
+- **Tekst:** merkelig vinkler på vegg og så ser du opp og ut av huset
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F88.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F88.json`
+- **Status:** ikke sett på ennå – skrå vegger og innsyn til himmelen; trolig en vegg fra et møbel eller et symbol.
+
+### F89 – ser ut som to søyler eller noe som ikke er på tegningen
+- **Tekst:** ser ut som to søyler eller noe som ikke er på tegningen
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F89.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F89.json`
+- **Status:** til gjenkjenningen – kjent fra hus9: strekene i trappesymbolet blir tynne vegger.
+
+### F90 – står i trappa. her er det hull i etasjeskillet
+- **Tekst:** står i trappa. her er det hull i etasjeskillet
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F90.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F90.json`
+- **Status:** ikke sett på ennå – hull i etasjeskillet ved trappa.
+
+### F91 – her har det ikke blitt generert dør
+- **Tekst:** her har det ikke blitt generert dør
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F91.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F91.json`
+- **Status:** til gjenkjenningen – døra er ikke funnet.
+
+### F92 – hva har skjedd på vokesnsov. Muligens på grunn av møblene som er tegne
+- **Tekst:** hva har skjedd på vokesnsov. Muligens på grunn av møblene som er tegnet inn at det blir tull?
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F92.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F92.json`
+- **Status:** til gjenkjenningen – møbler tegnet på planen blir vegger.
+
+### F93 – mangler dør
+- **Tekst:** mangler dør
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F93.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F93.json`
+- **Status:** til gjenkjenningen – døra er ikke funnet.
+
+### F94 – hva har skjedd her. muligens på grunn av tvbenken med tv som er tegnet
+- **Tekst:** hva har skjedd her. muligens på grunn av tvbenken med tv som er tegnet inn på planskisse
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F94.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F94.json`
+- **Status:** til gjenkjenningen – TV-benken på planen blir vegger (som F92).
+
+### F95 – denne veggen skal ikke være der. altså den som stikker litt ut i romme
+- **Tekst:** denne veggen skal ikke være der. altså den som stikker litt ut i rommet
+- **Hvor:** 3D (går rundt) – ovre-etasje.jpg, underetasje.jpg
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F95.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F95.json`
+- **Status:** til gjenkjenningen – en vegg som ikke finnes; trolig et møbel (som F92).
+
+### F96 – feil med genering i hjørnet
+- **Tekst:** feil med genering i hjørnet
+- **Hvor:** 3D (går rundt) – garasje-plan-snitt-fasade.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F96.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F96.json`
+- **Status:** til oppryddingen (K15) – et lite hakk i romkanten ved hjørnet.
+
+### F97 – feil med generering, en stolpe eller noe som stikke ut av vegg
+- **Tekst:** feil med generering, en stolpe eller noe som stikke ut av vegg
+- **Hvor:** 3D (går rundt) – garasje-plan-snitt-fasade.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F97.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F97.json`
+- **Status:** til oppryddingen (K15) – et hakk på noen centimeter i romkanten ved hjørnet blir en «stolpe» i veggen.
+
+### F98 – skyvedører skal være en del av veggen slik døre gå inn i veggen. når s
+- **Tekst:** skyvedører skal være en del av veggen slik døre gå inn i veggen. når skyvedøre er lukke skal bare en liten del av døra syntes.
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade4.avif, fasade3.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F98.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F98.json`
+- **Status:** ny
+
+### F99 – dør skulle vært med vindusfelt og sprosser
+- **Tekst:** dør skulle vært med vindusfelt og sprosser
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade4.avif, fasade3.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F99.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F99.json`
+- **Status:** ny
+
+### F100 – dør skulle vært med vindusfelt og sprosser
+- **Tekst:** dør skulle vært med vindusfelt og sprosser
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade4.avif, fasade3.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F100.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F100.json`
+- **Status:** ny
+
+### F101 – inegn vindu ble generert med sprosser. er samme vinduer som før
+- **Tekst:** inegn vindu ble generert med sprosser. er samme vinduer som før
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade4.avif, fasade3.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F101.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F101.json`
 - **Status:** ny
 
 ---
@@ -666,6 +799,10 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 ### K14 – hus4 2. etasje: drager, trapp og kjøkkenøy blir egne rom (F56, F57)
 - **Hvorfor:** strek-prikk-linja med søyler (⊠) i hver ende er en drager i taket, og trappa og kjøkkenøya er møbler/trapp; de skal ikke lukke rom. Nå blir to stykker av stue/kjøkken egne rom som veiviseren spør om (og gjetter bad).
 - **Status:** til neste runde med gjenkjenning. Tanke: et rom uten etikett som bare skilles fra et navngitt rom av slike linjer, slås sammen med det, og spørsmålet får valget «del av rommet ved siden av».
+
+### K15 – små hakk i romkanten blir stolper og trinn i veggen (F96, F97, hus7)
+- **Hvorfor:** romkanten har et hakk på noen centimeter nær et hjørne (veggtykkelsen målt litt ulikt på to stykker), og byggeren lager et kort veggstykke som stikker ut.
+- **Status:** til neste runde: rett ut hakk under ca. 10 cm i rompolygonene før eksporten.
 ---
 
 ## Ideer: forbedringer og nye funksjoner

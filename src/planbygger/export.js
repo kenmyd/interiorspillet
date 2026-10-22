@@ -26,9 +26,9 @@
  *     has no room edge without one, so the owner side is a wall of thickness 0 (rooms.js builds nothing for it) with
  *     one passage over its whole length and height, the portal between the two rooms, and the other side is backOf it;
  *   • each opening is defined once, on the owner piece (offset from `from`), doors with door:{ hinge, swing, opensInto,
- *     leaf … } and connects, passages as type 'opening'. What the format cannot hold is built as the nearest thing it
- *     can: a double door as two single doors side by side (one per leaf), a sliding door as a passage; their `source`
- *     says so. Skylights go on their room's ceiling entry as data (`skylights: [{ id, polygon }]`, nothing builds them).
+ *     leaf … } and connects, passages as type 'opening'; double and sliding doors as the game's door types
+ *     (door.variant 'double' | 'sliding', notes/dortyper.md). Skylights go on their room's ceiling entry
+ *     (`skylights: [{ id, polygon }]`).
  * Coordinates: the plan is rotated so that game +x = south and +z = west (settings.north), then moved so that the main
  * level's rooms start at x = 0, z = 0.
  */
@@ -648,23 +648,11 @@ export function exportHouse(doc, opts = {}) {
       counts.openBoundaries++;
     }
 
-    // ---- openings on their owner pieces. The house format has hinged single leaves only: a double door becomes two
-    //      doors side by side in its hole (one per leaf, hinged at the jambs, the same swing), a sliding door a passage
-    //      of its width (notes/planbygger.md, «Forespørsler»)
+    // ---- openings on their owner pieces
     const roomIdOf = (ri) => R2[ri]?.id ?? null;
-    const asBuilt = level.openings.flatMap((o) => {
-      if (o.type === 'door' && o.variant === 'double') {
-        const half = o.width / 2;
-        return [
-          { ...o, at: o.at - half / 2, width: half, hinge: 'start', leaf: o.leaf, built: 'double', part: 1 },
-          { ...o, at: o.at + half / 2, width: half, hinge: 'end', leaf: o.leaf2 ?? o.leaf, built: 'double', part: 2 },
-        ];
-      }
-      // a sliding door: a hinged door with its leaf until the engine has sliding doors (an empty hole read as a missing
-      // door – F18); it opens into the room on its drawn side
-      if (o.type === 'door' && o.variant === 'sliding') return [{ ...o, variant: 'single', side: o.side || 1, leaf: null, built: 'sliding' }];
-      return [o];
-    });
+    // double and sliding doors are the game's own door types (notes/dortyper.md); until they came, a double door was
+    // two single doors side by side and a sliding door a hinged one
+    const asBuilt = level.openings.map((o) => (o.type === 'door' && (o.variant === 'double' || o.variant === 'sliding') ? { ...o, built: o.variant } : o));
     for (const o of asBuilt) {
       const pw = wallsById.get(o.wall);
       if (!pw) continue;
@@ -755,7 +743,10 @@ export function exportHouse(doc, opts = {}) {
         const wallH = wall.height ?? room.ceiling;
         const entry = { id: null, type: o.type === 'door' ? 'door' : o.type === 'window' ? 'window' : 'opening', offset: R(off), width: R(width) };
         if (entry.type === 'window') {
-          const sill = o.sill ?? settings.windowSill;
+          // a window a few centimetres off the floor stands on it: the game then runs the floor out to the frame
+          // (rooms.js, revealFloor – it was the viewer's own strip until the window models came, F5)
+          const sill0 = o.sill ?? settings.windowSill;
+          const sill = sill0 < 0.03 ? 0 : sill0;
           const h = Math.min(o.height ?? settings.windowHeight, wallH - sill - 0.05);
           entry.id = `win-${owner}-${++counts.windows}`;
           entry.height = R(h);
@@ -783,17 +774,30 @@ export function exportHouse(doc, opts = {}) {
             const leafW = width - DOOR_UNIT;
             entry.frame = exterior ? { color: '#25272b', width: frameW, depth: 0.06 } : { color: LOOK.frame, width: frameW, depth: 0.02 };
             if (exterior) entry.reveal = { depth: R(Math.max(0.1, Math.min(0.21, (wall.thickness ?? 0.3) - 0.05))), color: '#1d1e21' };
-            entry.door = {
-              hinge,
-              swing,
-              opensInto: swing === 'in' ? owner : other,
-              leaf: { w: R(leafW), h: R(h - 0.04) },
-              ...(o.openAngle && o.openAngle !== 90 ? { openAngleDeg: o.openAngle } : {}),
-              handleSide: hinge === 'from' ? 'to' : 'from',
-              handleHeight: 1.05,
-              closed: true,
-              ...(exterior ? {} : { leafColor: LOOK.door }),
-            };
+            const opensInto = swing === 'in' ? owner : other;
+            const look = exterior ? {} : { leafColor: LOOK.door };
+            if (o.built === 'double') {
+              // the leaves fill the hole between the jambs; the drawn arcs' radii give their ratio
+              entry.door = { variant: 'double', hinge, swing, opensInto, leaf: { w: R(o.leaf ?? width / 2), h: R(h - 0.04) }, leaf2: { w: R(o.leaf2 ?? o.leaf ?? width / 2) }, ...(o.openAngle && o.openAngle !== 90 ? { openAngleDeg: o.openAngle } : {}), handleHeight: 1.05, closed: true, ...look };
+            } else if (o.built === 'sliding') {
+              // the leaf parks at the hinge jamb (model.js); two leaves part both ways. An outer one is a glass patio
+              // door when it is wide enough for its half-width opening (the figure needs 0.62 m), else on a rail
+              const patio = exterior && width >= 1.35;
+              const slide = o.leaves === 2 && !patio ? 'both' : hinge;
+              entry.door = { variant: 'sliding', mount: patio ? 'patio' : 'surface', slide, swing, opensInto, closed: true, ...look };
+            } else {
+              entry.door = {
+                hinge,
+                swing,
+                opensInto,
+                leaf: { w: R(leafW), h: R(h - 0.04) },
+                ...(o.openAngle && o.openAngle !== 90 ? { openAngleDeg: o.openAngle } : {}),
+                handleSide: hinge === 'from' ? 'to' : 'from',
+                handleHeight: 1.05,
+                closed: true,
+                ...look,
+              };
+            }
             entry.interactive = true;
             entry.estimated = ['*'];
           } else {
@@ -801,13 +805,8 @@ export function exportHouse(doc, opts = {}) {
             entry.estimated = ['*'];
           }
         }
-        if (o.built === 'double') {
-          entry.source = `planbyggeren: dobbeltdør, blad ${o.part} av 2 (bygget som to dører)`;
-          if (o.part === 1) counts.doubleDoors++;
-        } else if (o.built === 'sliding') {
-          entry.source = 'planbyggeren: skyvedør (bygget som slagdør til motoren har skyvedører)';
-          if (k === 0) counts.slidingDoors++;
-        }
+        if (o.built === 'double' && k === 0) counts.doubleDoors++;
+        else if (o.built === 'sliding' && k === 0) counts.slidingDoors++;
         if (widened) entry.source = `${entry.source ? `${entry.source}; ` : 'planbyggeren: '}gjort bredere enn tegningen (${MIN_DOOR} m) så figuren kommer gjennom`;
         if (targets.length > 1) entry.source = `${entry.source ? `${entry.source}; ` : 'planbyggeren: '}del ${k + 1} av ${targets.length} (åpningen går langs flere rom)`;
         if (selfWall && entry.type !== 'window') entry.source = `${entry.source ? `${entry.source}; ` : 'planbyggeren: '}samme rom på begge sider av veggen (rommet går rundt den), koblet til «ute» fordi formatet vil ha to rom`;

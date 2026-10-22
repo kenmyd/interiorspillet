@@ -13,8 +13,8 @@
  * The game's living room (shell.js, kitchen.js, lighting.js, the design) is not used: a customer's house has none. The
  * light is simple (sky, sun from the south of the plan, one lamp per room), shadows only from the sun.
  *
- * Skylights (house.ceilings[].skylights, data only in the house format) are shown as bright panels in the ceiling,
- * like the ceilings only when walking – a stand-in until rooms.js builds roof windows (request in notes/planbygger.md).
+ * Skylights (house.ceilings[].skylights) are built by the game with the ceilings, and hidden with them in the
+ * dollhouse view.
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -138,11 +138,10 @@ function separateCoplanar(root, made, far = 'far') {
 }
 
 /**
- * A window that stands on the floor (sill 0) leaves the bottom of its reveal open: the room's floor stops at the wall
- * face, and the ground shows between it and the frame (F5). The floor is carried out to the frame: a thin box in the
- * room's own floor material, from the room face back to the frame, walkable. A passage (an opening without a door) has
- * the same gap over the whole thickness of its wall – doors have a threshold – and gets the same floor (F28). Returns
- * the meshes (colliders).
+ * A passage (an opening without a door) leaves the bottom of its reveal open: the rooms' floors stop at the wall faces,
+ * and the ground shows through the wall's thickness (F28; doors have a threshold, and windows on the floor get the
+ * room's floor out to the frame from the game itself since the window models). The floor is carried through: a thin box
+ * in the owner room's own floor material, walkable. Returns the meshes (colliders).
  */
 function revealFloors(parts, roots, layout) {
   const floorMat = new Map();
@@ -152,24 +151,6 @@ function revealFloors(parts, roots, layout) {
     });
   }
   const out = [];
-  for (const p of parts) {
-    for (const w of p.windows || []) {
-      if (!(w.sill < 0.03) || !(w.revealDepth > 0.02) || !w.center || !w.normal || !w.right) continue;
-      const mat = floorMat.get(`floor:${w.roomId}`);
-      if (!mat) continue;
-      const t = 0.03;
-      // a clone: clear() disposes the extras' materials, the room's floor keeps its own (textures are shared)
-      const box = new THREE.Mesh(new THREE.BoxGeometry(w.width, t, w.revealDepth), mat.clone());
-      const bottom = w.center.clone().addScaledVector(new THREE.Vector3(0, 1, 0), -w.height / 2);
-      const pos = bottom.addScaledVector(w.normal, -w.revealDepth / 2).add(new THREE.Vector3(0, -t / 2, 0));
-      box.matrixAutoUpdate = false;
-      box.matrix.makeBasis(w.right, new THREE.Vector3(0, 1, 0), w.normal).setPosition(pos);
-      box.matrixWorldNeedsUpdate = true;
-      box.name = `reveal-floor:${w.id}`;
-      box.receiveShadow = true;
-      out.push(box);
-    }
-  }
   for (const o of layout.house?.openings || []) {
     const wall = layout.house.wallsById?.[o.wallId];
     const mat = floorMat.get(`floor:${o.roomId}`);
@@ -380,7 +361,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       }
     }
     const extra = [];
-    // the floor out to the frame in windows that stand on the floor (F5), and through passages (F28)
+    // the floor through passages (F28)
     for (const box of revealFloors(parts, roots, layout)) {
       scene.add(box);
       box.updateMatrixWorld(true);
@@ -457,31 +438,8 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       (roots.rooms[l.roomId]?.contents ?? scene).add(pl);
       extra.push(pl);
     }
-    // ---- skylights: a light panel just under the ceiling with a dark frame (no hole, no glass: the format has none)
+    // skylights are built by the game with the ceilings (rooms.js, since the window models)
     const skylights = [];
-    const skyMat = new THREE.MeshStandardMaterial({ color: '#d9efff', emissive: '#a9d8ff', emissiveIntensity: 0.85, roughness: 0.4, side: THREE.DoubleSide });
-    const frameMat = new THREE.LineBasicMaterial({ color: '#2b3440' });
-    for (const c of house.ceilings || []) {
-      const room = layout.house.roomsById[c.roomId];
-      if (!room || !c.skylights?.length) continue;
-      const y = (room.floorY ?? 0) + (c.height ?? 2.4) - 0.012;
-      for (const sk of c.skylights) {
-        if (!(sk.polygon?.length >= 3)) continue;
-        const shape = new THREE.Shape(sk.polygon.map((p) => V(p[0], p[1])));
-        const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), skyMat);
-        mesh.rotation.x = -Math.PI / 2;
-        mesh.position.y = y;
-        mesh.name = `skylight:${sk.id}`;
-        const pts = sk.polygon.map((p) => new THREE.Vector3(p[0], y - 0.002, p[1]));
-        const frame = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), frameMat);
-        const g = new THREE.Group();
-        g.name = `skylights:${sk.id}`;
-        g.add(mesh, frame);
-        (roots.rooms[c.roomId]?.surfaces ?? scene).add(g);
-        skylights.push(g);
-        extra.push(g);
-      }
-    }
     collision.build();
     if (collision.setBounds) collision.setBounds(b.minX - size, b.maxX + size, b.minZ - size, b.maxZ + size);
     if (collision.setFloorField && layout.house.floorYAt) {

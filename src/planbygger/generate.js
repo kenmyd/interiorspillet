@@ -2193,7 +2193,9 @@ function orderLevels(plans) {
     d.content = {
       main: kinds.includes('entrance') || /kjokken|entre|vindfang/.test(names),
       top: (d.level?.skylights?.length ?? 0) > 0 || /loft/.test(names),
-      bottom: /kjeller|sokkel|tekn/.test(names),
+      // a level of storerooms (boder) with no living room, kitchen or bedroom is the basement (hus8: GANG, WC and five
+      // BOD, put on top of the main floor – F76–F78)
+      bottom: /kjeller|sokkel|tekn/.test(names) || (kinds.length >= 3 && (d.level?.rooms ?? []).filter((r) => r.kind === 'storage' || /bod|lager|fyrrom|teknisk/.test(fold(r.name))).length >= kinds.length / 2 && !/kjokken|stue|sov/.test(names)),
       extDoors,
     };
   }

@@ -131,6 +131,8 @@ export function applyDetection(level, det, pxPerM, settings = DEFAULT_SETTINGS) 
       // (a sliding door's detected leaf is the length of its leaf line, not the radius of a hinged leaf)
       if (o.leaf && o.variant !== 'sliding') base.leaf = round(Math.min(width, o.leaf * k), 3);
       if (o.variant === 'double' && o.leaf2) base.leaf2 = round(Math.min(width, o.leaf2 * k), 3);
+      // a sliding door drawn with two leaves parts both ways
+      if (o.variant === 'sliding' && o.symbol?.leaves === 2) base.leaves = 2;
     }
     if (o.type === 'window') {
       base.sill = settings.windowSill;
