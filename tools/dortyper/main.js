@@ -3,7 +3,8 @@
  * buildLayout, home/rooms.js buildRooms – dørene fra home/doors.js og home/doortypes.js), gått med spillets figur
  * (PlayerController, CollisionWorld, InteractionSystem: E åpner og lukker).
  *
- * URL: ?view=<dør-id>&side=front|back&open=1 – kamera foran en dør (for skjermbilder), ?mode=orbit – dukkehus.
+ * URL: ?view=<dør-id>&side=front|back&open=1 – kamera foran en dør (for skjermbilder), ?mode=orbit – dukkehus,
+ * ?house=<url> – en annen husfil (f.eks. en eksport fra planbyggeren) i stedet for testhuset.
  * window.__dt: { layout, doors, open(id, on), all(on), look(id, side, dist), walkTo(x, z, yawDeg), mode(m) }.
  */
 import * as THREE from 'three';
@@ -56,7 +57,10 @@ const hud = {
 
 configureMaterials({ quality });
 await prepareMaterials(KINDS);
-const layout = buildLayout(testHouseSpec(), undefined, { devWarnings: false });
+// ?house=<url of a house file> (e.g. a planbygger export) instead of the test house
+const houseUrl = params.get('house');
+const house = houseUrl ? await fetch(houseUrl).then((r) => r.json()) : undefined;
+const layout = buildLayout(testHouseSpec(house), undefined, { devWarnings: false });
 const collision = new CollisionWorld();
 const interaction = new InteractionSystem({ camera, collision, events });
 const roots = createHouseRoots(layout, [new THREE.Group()]);
