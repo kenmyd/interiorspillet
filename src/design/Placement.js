@@ -222,8 +222,10 @@ export function buildRoom(editor, levelId = MAIN_LEVEL) {
  */
 export function swingBox(d, t) {
   const door = d.door;
-  if (!door || d.type !== 'door') return null;
-  const leaf = door.leaf?.w ?? d.width;
+  if (!door || d.type !== 'door' || door.variant === 'sliding') return null; // a sliding door has no swing
+  const double = door.variant === 'double';
+  // a double door: both leaves, the wider one's depth over the whole hole
+  const leaf = double ? Math.max(door.leaf?.w ?? d.width / 2, door.leaf2?.w ?? door.leaf?.w ?? d.width / 2) : door.leaf?.w ?? d.width;
   const angle = d.openAngleDeg ?? 90;
   const n = d.normal, r = d.right;
   // 'in' opens into the owner room (normal side), 'out' to the other side (behind the wall's thickness)
@@ -231,8 +233,8 @@ export function swingBox(d, t) {
   const z0 = side > 0 ? 0 : t;
   const hu = door.hinge === 'to' ? d.width / 2 : -d.width / 2; // hinge along r from the middle of the hole
   const towards = door.hinge === 'to' ? -1 : 1;
-  const u0 = angle > 95 ? hu - leaf : Math.min(hu, hu + towards * leaf);
-  const u1 = angle > 95 ? hu + leaf : Math.max(hu, hu + towards * leaf);
+  const u0 = double ? -d.width / 2 - (angle > 95 ? leaf : 0) : angle > 95 ? hu - leaf : Math.min(hu, hu + towards * leaf);
+  const u1 = double ? d.width / 2 + (angle > 95 ? leaf : 0) : angle > 95 ? hu + leaf : Math.max(hu, hu + towards * leaf);
   const uc = (u0 + u1) / 2, dc = z0 + leaf / 2;
   const b = d.bottomCenter;
   return {
