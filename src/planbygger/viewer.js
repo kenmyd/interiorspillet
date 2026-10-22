@@ -99,11 +99,14 @@ function straightStairFix(layout) {
  * cladding, which goes up to just under that floor: two facades in one band, dark and light, flickered (F59). The
  * upper levels' outside (`far` = 'farUp') steps back further, so the main floor's cladding wins there.
  */
-const DEPTH = { farUp: [3, 6], far: [2, 4], back: [1, 2], front: [-1, -2] };
+const DEPTH = { farUp: [3, 6], far: [2, 4], side: [1.5, 3], back: [1, 2], front: [-1, -2] };
 
 function depthRole(name, mn) {
   if (/^(room-outside|cover):/.test(name)) return 'far';
-  if (/^ceiling:/.test(name) || (/^(room-walls|wall):/.test(name) && /^paint #/.test(mn))) return 'back';
+  // the ends and reveal sides of the walls (room-walls) step back a little more than the room faces: the end of a wall
+  // piece lying in the plane of the face beside it flickered against it (F105, hus6)
+  if (/^room-walls:/.test(name) && /^paint #/.test(mn)) return 'side';
+  if (/^ceiling:/.test(name) || (/^wall:/.test(name) && /^paint #/.test(mn))) return 'back';
   if (/^room-walls:/.test(name) && /#1d1e21/.test(mn)) return 'front';
   return null;
 }

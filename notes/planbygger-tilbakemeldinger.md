@@ -713,28 +713,111 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade4.avif, fasade3.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F98.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F98.json`
-- **Status:** ny
+- **Status:** rettet (D9) – en innvendig skyvedør går nå inn i veggen (lommedør) der veggen har plass til bladet ved siden av hullet, først på siden den glir mot. Ellers står den på skinne som før.
 
 ### F99 – dør skulle vært med vindusfelt og sprosser
 - **Tekst:** dør skulle vært med vindusfelt og sprosser
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade4.avif, fasade3.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F99.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F99.json`
-- **Status:** ny
+- **Status:** rettet (D9) – ytterdører fra stue, kjøkken og soverom (terrasse- og balkongdører) får glassfelt med sprosser (2 × 3 ruter fra 1,2 m, ellers 1 × 3). Inngangsdøra og boddører er tette. Riktig inndeling fra fasaden kommer i fasade-runden.
 
 ### F100 – dør skulle vært med vindusfelt og sprosser
 - **Tekst:** dør skulle vært med vindusfelt og sprosser
 - **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade4.avif, fasade3.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F100.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F100.json`
-- **Status:** ny
+- **Status:** rettet (D9, som F99).
 
 ### F101 – inegn vindu ble generert med sprosser. er samme vinduer som før
 - **Tekst:** inegn vindu ble generert med sprosser. er samme vinduer som før
 - **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade4.avif, fasade3.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F101.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F101.json`
-- **Status:** ny
+- **Status:** meldt rett før vinduene fikk inndeling (D9: todelt fra 0,8 m, tredelt fra 1,4 m, fast felt nederst i høye vinduer ned til gulvet). Sprosser per vindu kommer i fasade-runden.
+
+### F102 – kan kun åpne dør når jeg hover over karmen, men må være nok og holde m
+- **Tekst:** kan kun åpne dør når jeg hover over karmen, men må være nok og holde musepekern over glasset også på den delen som kan åpnes
+- **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F102.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F102.json`
+- **Status:** sendt til dørøkta – glasset i døra er ikke med i det som kan pekes på for å åpne den.
+
+### F103 – Denne døra er egentlig en foldedør med flere ledd
+- **Tekst:** Denne døra er egentlig en foldedør med flere ledd
+- **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F103.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F103.json`
+- **Status:** til gjenkjenningen (som F70) – foldedøra finnes i spillet nå, men symbolet på tegningen blir ikke kjent igjen ennå.
+
+### F104 – skyvedør skal være inne i veggen
+- **Tekst:** skyvedør skal være inne i veggen
+- **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F104.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F104.json`
+- **Status:** rettet (D9, som F98).
+
+### F105 – er et blinkene felt her i midten
+- **Tekst:** er et blinkene felt her i midten
+- **Hvor:** 3D (går rundt) – plan-1etg-tilbygg.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F105.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F105.json`
+- **Status:** rettet (D9) – enden av et veggstykke lå i samme plan som veggflaten ved siden av (funnet med stråler fra kameraet), og begge hadde samme dybde. Nå ligger endene og smygene litt bak veggflatene.
+
+### F106 – skjødør er generert feil, det er egentlig sikkert bare en vanlig 90cm 
+- **Tekst:** skjødør er generert feil, det er egentlig sikkert bare en vanlig 90cm dør som skal gå inn i veggen, så den må leses bedre
+- **Hvor:** 3D (går rundt) – 1etg.avif, fasade1.avif, fasade2.avif, fasade3.avif, fasade4.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F106.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F106.json`
+- **Status:** delvis (D9) – den blir nå en lommedør, men gjenkjenningen tok med lomma i hullet, så hullet er for bredt. Til gjenkjenningen (som F65).
+
+### F107 – det er jo egentlig skåtak i virkeligheten og vinduene og dørene har en
+- **Tekst:** det er jo egentlig skåtak i virkeligheten og vinduene og dørene har enda et  vindusfelt over
+- **Hvor:** 3D (går rundt) – 1etg.avif, fasade1.avif, fasade2.avif, fasade3.avif, fasade4.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F107.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F107.json`
+- **Status:** til fasade-runden og tak-økta – overlys over vinduer og dører leses fra fasadene; skråtaket bygges av tak-økta.
+
+### F108 – flere dører skulle vært store glassfelt dører, men er istedet for vanl
+- **Tekst:** flere dører skulle vært store glassfelt dører, men er istedet for vanlige dører
+- **Hvor:** 3D (går rundt) – 1etg.avif, fasade1.avif, fasade2.avif, fasade3.avif, fasade4.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F108.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F108.json`
+- **Status:** rettet (D9, som F99) – brede glassdører fra fasaden kommer i fasade-runden.
+
+### F109 – her er trappa på tegningen tegnet inn på utsiden av bygget. kanskje je
+- **Tekst:** her er trappa på tegningen tegnet inn på utsiden av bygget. kanskje jeg skulle hatt mulighet for å trykke i plantegning hvor trappa faktisk er. Men usikker for her er jo faktisk plantegningen feil
+- **Hvor:** veiviser – plantegning.png, plantegning_kjeller.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F109.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F109.json`
+- **Status:** god idé, neste – i trappespørsmålet skal du kunne klikke eller dra på tegningen der trappa faktisk står, også når tegningen har den feil. Da blir det trapp også i huset ditt (F113).
+
+### F110 – det er jo flere forskjellige vinduer så er vanskelig og sette standar 
+- **Tekst:** det er jo flere forskjellige vinduer så er vanskelig og sette standar på alle
+- **Hvor:** veiviser – plantegning.png, plantegning_kjeller.png
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F110.json`
+- **Status:** notert – uten fasader får alle vinduene samme høyde. I «Finjuster» kan du klikke et vindu og endre brystning og høyde for det ene. Fasade-runden leser dem fra fasadene; uten fasader kan veiviseren spørre per rom.
+
+### F111 – vet ikke hvordan det er best og gjøre det, men i virkeligheten så er j
+- **Tekst:** vet ikke hvordan det er best og gjøre det, men i virkeligheten så er jo hele fronten på kjeller synlig, det er jo vinduer der. og bare bakveggen har jord helt opp til 1.etg. Kanskje vi bør begynne og også ha kjellere synlige slik vinduene kan sees
+- **Hvor:** 3D (dukkehus) – plantegning.png, plantegning_kjeller.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F111.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F111.json`
+- **Status:** god idé, neste – en kjeller med vinduer eller dør i en yttervegg skal stå fritt på den siden: bakken skrår ned dit, og bare veggene uten vinduer står i jord.
+
+### F112 – her har alle vinduer blitt feil. de skulle egentlig vært store vindusf
+- **Tekst:** her har alle vinduer blitt feil. de skulle egentlig vært store vindusfelt
+- **Hvor:** 3D (går rundt) – plantegning.png, plantegning_kjeller.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F112.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F112.json`
+- **Status:** som F110 – store vindusfelt trenger fasader eller endring per vindu i «Finjuster».
+
+### F113 – kommer ikke ned i trappa
+- **Tekst:** kommer ikke ned i trappa
+- **Hvor:** 3D (går rundt) – plantegning.png, plantegning_kjeller.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F113.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F113.json`
+- **Status:** følge av F109 – trappa på tegningen står utenfor huset, så det ble ingen trapp. Rettes med F109.
 
 ---
 

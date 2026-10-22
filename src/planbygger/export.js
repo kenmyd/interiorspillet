@@ -47,6 +47,24 @@ const JAMB = 0.05;
 const MIN_DOOR = 0.82;
 /** metres of wall between two openings side by side (a door and its sidelight): a post, not a sliver */
 const MIN_POST = 0.1;
+
+/**
+ * The sashes of a window the drawings say nothing more about, until the facade round reads them from the facades
+ * (notes/vindusmodeller.md: fractions of the hole, from the left as seen from the room, and up from the sill): one
+ * top-hung opening sash up to 0.8 m wide, a fixed and a side-hung one from 0.8 m, three from 1.4 m (fixed in the
+ * middle), and a fixed panel under a transom 0.5 m up in a window that stands on the floor and is at least 1.8 m tall.
+ */
+function defaultSashes(width, height, sill) {
+  const transom = sill < 0.03 && height >= 1.8 ? round(0.5 / height, 3) : 0;
+  const row =
+    width < 0.8
+      ? [{ from: 0, to: 1, opening: true, hinge: 'top' }]
+      : width < 1.4
+        ? [{ from: 0, to: 0.5, opening: false }, { from: 0.5, to: 1, opening: true, hinge: 'right' }]
+        : [{ from: 0, to: 0.3, opening: true, hinge: 'left' }, { from: 0.3, to: 0.7, opening: false }, { from: 0.7, to: 1, opening: true, hinge: 'right' }];
+  const sashes = row.map((x) => ({ ...x, bottom: transom, top: 1 }));
+  return transom ? [{ from: 0, to: 1, bottom: 0, top: transom, opening: false }, ...sashes] : sashes;
+}
 /** the game's door unit is this much wider than its leaf (src/world/Door.js: 2 × (0.05 jamb − 0.012 overlap)) */
 const DOOR_UNIT = 0.076;
 
@@ -751,6 +769,7 @@ export function exportHouse(doc, opts = {}) {
           entry.id = `win-${owner}-${++counts.windows}`;
           entry.height = R(h);
           entry.sill = R(sill);
+          entry.sashes = defaultSashes(width, h, sill);
           entry.estimated = ['*'];
         } else {
           const h = Math.min(o.height ?? settings.doorHeight, wallH - 0.02);
@@ -775,7 +794,10 @@ export function exportHouse(doc, opts = {}) {
             entry.frame = exterior ? { color: '#25272b', width: frameW, depth: 0.06 } : { color: LOOK.frame, width: frameW, depth: 0.02 };
             if (exterior) entry.reveal = { depth: R(Math.max(0.1, Math.min(0.21, (wall.thickness ?? 0.3) - 0.05))), color: '#1d1e21' };
             const opensInto = swing === 'in' ? owner : other;
-            const look = exterior ? {} : { leafColor: LOOK.door };
+            // an outer door from a living room, a kitchen or a bedroom is a terrace or balcony door: glass with bars in
+            // the leaf (F99, F100, F108); the front door (entrance, hall) and the doors of storerooms stay closed
+            const terrace = exterior && !['entrance', 'hall', 'storage', 'laundry', 'bathroom'].includes(room.kind);
+            const look = { ...(exterior ? {} : { leafColor: LOOK.door }), ...(terrace ? { glass: { cols: width >= 1.2 ? 2 : 1, rows: 3 } } : {}) };
             if (o.built === 'double') {
               // the leaves fill the hole between the jambs; the drawn arcs' radii give their ratio
               entry.door = { variant: 'double', hinge, swing, opensInto, leaf: { w: R(o.leaf ?? width / 2), h: R(h - 0.04) }, leaf2: { w: R(o.leaf2 ?? o.leaf ?? width / 2) }, ...(o.openAngle && o.openAngle !== 90 ? { openAngleDeg: o.openAngle } : {}), handleHeight: 1.05, closed: true, ...look };
@@ -830,6 +852,25 @@ export function exportHouse(doc, opts = {}) {
         if (win === B) B.offset = R(B.offset + cut);
         win.width = R(win.width - cut);
         win.source = `${win.source ? `${win.source}; ` : 'planbyggeren: '}${round(cut * 100, 0)} cm smalere for en post mot åpningen ved siden av`;
+      }
+    }
+    // an inner sliding door goes into the wall (a pocket door) where the wall has room for its leaf beside the hole –
+    // the hole's width + 0.04 of plain wall, notes/dortyper.md – first on the side it slides to: on a rail outside the
+    // wall it showed the whole leaf (F98, F104). Two leaves parting both ways stay on their rails
+    for (const w of house.walls) {
+      const os = w.openings || [];
+      const L = dist(w.from, w.to);
+      for (const o of os) {
+        if (o.door?.variant !== 'sliding' || o.door.mount !== 'surface' || o.door.slide === 'both' || !(w.thickness >= 0.08)) continue;
+        const need = o.width + 0.04;
+        const free = (a, b) => a >= -1e-6 && b <= L + 1e-6 && !os.some((q) => q !== o && q.offset < b && q.offset + q.width > a);
+        for (const side of o.door.slide === 'to' ? ['to', 'from'] : ['from', 'to']) {
+          const [a, b] = side === 'from' ? [o.offset - need, o.offset] : [o.offset + o.width, o.offset + o.width + need];
+          if (!free(a, b)) continue;
+          o.door.mount = 'pocket';
+          o.door.slide = side;
+          break;
+        }
       }
     }
 
