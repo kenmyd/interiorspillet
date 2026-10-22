@@ -975,6 +975,11 @@ export function exportHouse(doc, opts = {}) {
   });
   exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, warnings, counts, RP, R });
   exportRoofs({ doc, house, warnings, RP, R, frame });
+  // the cladding the AI read on the facades (houseread.js doc.cladding), once the engine knows the key (notes/kledning.md)
+  if (idsRegistry.schema?.topLevel?.includes('cladding')) {
+    const cladding = claddingOf(doc);
+    if (cladding) house.cladding = cladding;
+  }
   if (floorOpenings.length) house.floorOpenings = floorOpenings;
   if (stairs.length) house.stairs = stairs;
 
@@ -1554,7 +1559,7 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
       vergeOverhang: 0.1,
       ...(dormers.length ? { dormers } : {}),
       estimated: ['*'],
-      source: `planbyggeren: ${NAMES[rf.type]} fra ${rf.from ?? 'ingenting (ingen fasader)'}${rf.pitch ? `, ${rf.pitch}°` : ''}${parts.length > 1 ? `, fløy ${i + 1} av ${parts.length}` : ''}${loft && pitched ? `, loft med knevegg ${KNEE} m${dormers.length ? ` og ${dormers.length} ark${dormers.length > 1 ? 'er' : ''}` : ''}` : ''}`,
+      source: `planbyggeren: ${NAMES[rf.type]}${rf.from ? ` fra ${rf.from}` : ' (ingen fasader)'}${rf.pitch ? `, ${rf.pitch}°` : ''}${parts.length > 1 ? `, fløy ${i + 1} av ${parts.length}` : ''}${loft && pitched ? `, loft med knevegg ${KNEE} m${dormers.length ? ` og ${dormers.length} ark${dormers.length > 1 ? 'er' : ''}` : ''}` : ''}`,
     };
   });
   // the ceilings: a loft follows the roof everywhere (flat at the room's height where the roof is higher, a collar
@@ -1577,6 +1582,125 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
   }
   const covered = parts.reduce((s, p) => s + p.area, 0) / total;
   if (covered < 0.9) warnings.push(`${top.name}: taket dekker bare ${Math.round(covered * 100)} % av etasjen (huset har en form med mer enn tre fløyer)`);
+  // the parts of a lower level with no level over them (a garage, a storage room, a carport beside a two-storey house,
+  // hus4): a flat roof of their own, over the largest rectangles of what the levels above leave open
+  for (const L of levels.slice(1)) {
+    const rs = house.rooms.filter((r) => r.levelId === L.id);
+    const lids = new Set(rs.map((r) => r.id));
+    const own = house.walls.filter((w) => lids.has(w.roomId) && w.thickness > 0);
+    const aboveIds = new Set(house.rooms.filter((r) => levels.some((l) => l.floorY > L.floorY + 0.5 && l.id === r.levelId)).map((r) => r.id));
+    const above = house.walls.filter((w) => aboveIds.has(w.roomId) && w.thickness > 0);
+    const slab = (w) => {
+      const n = w.normal ?? perp(unit(sub(w.to, w.from)));
+      const o = (q, k) => toL([q[0] - n[0] * k, q[1] - n[1] * k]);
+      return [o(w.from, 0), o(w.to, 0), o(w.to, w.thickness), o(w.from, w.thickness)];
+    };
+    const mine = [...rs.map((r) => r.polygon.map(toL)), ...own.map(slab)];
+    const over = [...house.rooms.filter((r) => aboveIds.has(r.id)).map((r) => r.polygon.map(toL)), ...above.map(slab)];
+    if (!mine.length || !over.length) continue;
+    const q = mine.flat();
+    const a0 = Math.min(...q.map((p) => p[0]));
+    const b0 = Math.min(...q.map((p) => p[1]));
+    const mu = Math.ceil((Math.max(...q.map((p) => p[0])) - a0) / CELL);
+    const mv = Math.ceil((Math.max(...q.map((p) => p[1])) - b0) / CELL);
+    if (!(mu > 0 && mv > 0) || mu * mv > 4e6) continue;
+    // open: in this level's footprint, and more than a cell from everything above (no sliver along the upper walls)
+    const open = new Uint8Array(mu * mv);
+    let n = 0;
+    for (let j = 0; j < mv; j++)
+      for (let i = 0; i < mu; i++) {
+        const c = [a0 + (i + 0.5) * CELL, b0 + (j + 0.5) * CELL];
+        if (!mine.some((P) => pointInPolygon(c, P))) continue;
+        const near = [[0, 0], [CELL, 0], [-CELL, 0], [0, CELL], [0, -CELL]].some(([dx, dy]) => over.some((P) => pointInPolygon([c[0] + dx, c[1] + dy], P)));
+        if (!near) {
+          open[j * mu + i] = 1;
+          n++;
+        }
+      }
+    if (n * CELL * CELL < 3) continue;
+    for (let k = 0; k < 3; k++) {
+      const hgt = new Int32Array(mu);
+      let best = null;
+      for (let j = 0; j < mv; j++) {
+        for (let i = 0; i < mu; i++) hgt[i] = open[j * mu + i] ? hgt[i] + 1 : 0;
+        const stack = [];
+        for (let i = 0; i <= mu; i++) {
+          const hh = i < mu ? hgt[i] : 0;
+          let start = i;
+          while (stack.length && stack[stack.length - 1][1] >= hh) {
+            const [si, sh] = stack.pop();
+            if (!best || sh * (i - si) > best.area) best = { area: sh * (i - si), i0: si, i1: i, j0: j - sh + 1, j1: j + 1 };
+            start = si;
+          }
+          stack.push([start, hh]);
+        }
+      }
+      // at least 1.5 m across and 3 m² (not the strip of a jut)
+      if (!best || best.area * CELL * CELL < 3 || Math.min(best.i1 - best.i0, best.j1 - best.j0) * CELL < 1.5) break;
+      for (let j = best.j0; j < best.j1; j++) for (let i = best.i0; i < best.i1; i++) open[j * mu + i] = 0;
+      const corners = [[best.i0, best.j0], [best.i1, best.j0], [best.i1, best.j1], [best.i0, best.j1]].map(([i, j]) => toG(a0 + i * CELL, b0 + j * CELL));
+      house.roofs.push({
+        id: `roof-${L.id}-${k + 1}`,
+        type: 'flat',
+        levelId: L.id,
+        outline: corners.map(RP),
+        overhang: 0.15,
+        vergeOverhang: 0.1,
+        estimated: ['*'],
+        source: `planbyggeren: flatt tak over den delen av ${L.name.toLowerCase()} som ikke har noen etasje over seg`,
+      });
+    }
+  }
+}
+
+/** Colour words on Norwegian drawings → the house format's hex (an NCS code or anything else: none, the default's). */
+const COLOR_WORDS = [
+  [/antrasitt/i, '#3a3d40'],
+  [/m[øo]rke?\s*gr[åa]/i, '#4a4642'],
+  [/lyse?\s*gr[åa]/i, '#c9c8c3'],
+  [/gr[åa]/i, '#8b8b88'],
+  [/hvit|white/i, '#f2f0ea'],
+  [/sort|svart|black/i, '#2a2a2a'],
+  [/r[øo]d|red/i, '#8e2f25'],
+  [/brun|brown/i, '#6b4a33'],
+  [/beige|sand/i, '#d6cbb3'],
+  [/bl[åa]|blue/i, '#50677c'],
+  [/gr[øo]nn|green/i, '#5d6e55'],
+  [/gul|yellow|oker/i, '#d8b65e'],
+  [/natur|ubehandlet|beis/i, '#a07850'],
+];
+export const colorHex = (s) => (typeof s === 'string' ? (/^#[0-9a-f]{6}$/i.test(s.trim()) ? s.trim() : COLOR_WORDS.find(([re]) => re.test(s))?.[1] ?? null) : null);
+
+/**
+ * The house format's cladding (notes/kledning.md) from what the AI read on the facades (doc.cladding): the house's most
+ * common finish as `default`, the gable triangles and the basement as zones when they differ, a 30 cm concrete plinth,
+ * corner boards and surrounds (the windows' own frame colour). null without a reading.
+ */
+export function claddingOf(doc) {
+  const c = doc.cladding;
+  if (!c?.main?.type) return null;
+  const finish = (f) => {
+    const out = { type: f.type };
+    if ((f.type === 'wood' || f.type === 'panels') && f.direction) out.direction = f.direction;
+    if (f.type === 'wood') out.profile = (f.direction ?? 'vertical') === 'horizontal' ? 'shiplap' : 'board-batten';
+    const hex = colorHex(f.color);
+    if (hex) out.color = hex;
+    return out;
+  };
+  const main = finish(c.main);
+  const same = (f) => f.type === c.main.type && (f.direction ?? null) === (c.main.direction ?? null);
+  const parts = (c.facades ?? []).flatMap((f) => f.parts ?? []);
+  const zones = [];
+  const gable = parts.find((p) => p.part === 'gable' && p.type && !same(p));
+  if (gable) zones.push({ id: 'gavl', name: 'Gavlene', gable: true, ...finish(gable), source: 'planbyggeren: KI-en på fasadene' });
+  const basement = parts.find((p) => p.part === 'basement' && p.type && !same(p));
+  for (const L of doc.levels.filter((l) => (l.floorY ?? 0) < -0.5)) if (basement) zones.push({ id: `kjeller-${L.id}`, name: L.name, levelId: L.id, ...finish(basement), source: 'planbyggeren: KI-en på fasadene' });
+  return {
+    default: main,
+    ...(zones.length ? { zones } : {}),
+    plinth: { height: 0.3, material: 'concrete' },
+    trim: { corners: true, surrounds: true },
+  };
 }
 
 /** An 00-ids.json for a generated house: its levels, rooms and light groups, the game's schema. */

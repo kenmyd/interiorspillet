@@ -129,6 +129,14 @@ async function replayRead(body) {
   const entry = { house: aiRoute.house, task, file, outcome: 'none', fixture: null };
   aiHits.log.push(entry);
   const dir = path.join(FX.FIXTURES, aiRoute.house ?? '');
+  // readHouse: one recording per house (tools/planbygger-ai-fixtures.mjs), with its own marks
+  if (task === 'readHouse') {
+    const f = fs.existsSync(dir) ? fs.readdirSync(dir).find((x) => /^house\.readHouse\..+\.json$/.test(x)) : null;
+    if (!f) return null;
+    const fx = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+    Object.assign(entry, { file: 'house', outcome: 'house', fixture: f });
+    return { ok: true, status: 200, task, model: fx.model, servedModel: fx.servedModel ?? fx.model, promptVersion: fx.promptVersion, response: fx.response, usage: null, cost: 0, cached: true, remaining: 999, ms: 0, stopReason: 'end_turn' };
+  }
   if (!file || !fs.existsSync(dir)) return null;
   const img = decodePng(Buffer.from(body.image?.data ?? '', 'base64'));
   const sha = crypto.createHash('sha256').update(img.data).digest('hex');

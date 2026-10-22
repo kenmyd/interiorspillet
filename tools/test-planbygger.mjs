@@ -591,6 +591,31 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     const r2 = ex2.house.roofs?.[0];
     check('mønelinja langs nordveggen: pulttak, høyt i nord og med fall mot sør', r2?.type === 'mono-pitch' && (r2.fall?.[0] ?? 0) > 0.9, `${r2?.type} fall ${JSON.stringify(r2?.fall)}`);
   }
+  // the cladding the AI read → the house format's (notes/kledning.md; exported once the engine knows the key)
+  {
+    const cl = E.claddingOf({ levels: [], cladding: { main: { type: 'wood', direction: 'vertical', color: 'mørk grå' }, facades: [{ side: 'S', parts: [{ part: 'all', type: 'wood', direction: 'vertical', color: null }, { part: 'gable', type: 'panels', direction: null, color: 'hvit' }] }] } });
+    check('kledningen: stående tømmermannskledning i mørk grå, plater i gavlen som sone, sokkel og hjørnekasser', cl.default.type === 'wood' && cl.default.profile === 'board-batten' && cl.default.color === '#4a4642' && cl.zones?.[0]?.gable === true && cl.zones[0].type === 'panels' && cl.zones[0].color === '#f2f0ea' && cl.plinth.height === 0.3 && cl.trim.corners && E.colorHex('NCS S 7502-B') === null && E.claddingOf({ levels: [] }) === null, JSON.stringify(cl));
+  }
+  // a lower part with no level over it (hus4's storage room): a flat roof of its own on the lower level
+  {
+    const { doc: d3, lv: main } = make();
+    const up = M.createLevel(d3, { id: 'etasje-1', image: { name: 'syntetisk-2', width: 1, height: 1, pxPerM: 100 } });
+    up.floorY = 2.7;
+    up.walls = [
+      { id: 'un', a: [0, 0], b: [5, 0], t: 0.3, exterior: true },
+      { id: 'ue', a: [5, 6], b: [5, 0], t: 0.3, exterior: true },
+      { id: 'us', a: [5, 6], b: [0, 6], t: 0.3, exterior: true },
+      { id: 'uw', a: [0, 0], b: [0, 6], t: 0.3, exterior: true },
+    ];
+    up.openings = [];
+    up.rooms = [{ id: 'u', seed: [2.5, 3], name: 'Loftstue', kind: 'living' }];
+    void main;
+    const ex = E.exportHouse(d3);
+    const v = await validateGenerated(ex);
+    const annex = (ex.house.roofs ?? []).filter((r) => r.levelId === 'hoved');
+    const area = (o) => Math.abs(o.reduce((s, p, i) => s + p[0] * o[(i + 1) % o.length][1] - o[(i + 1) % o.length][0] * p[1], 0) / 2);
+    check('den lave delen uten etasje over (3 × 6 m) får et flatt tak på sin egen etasje, og huset er uten feil', annex.length === 1 && annex[0].type === 'flat' && area(annex[0].outline) > 12 && area(annex[0].outline) < 22 && v.errors.length === 0, `${annex.length} tak, ${annex[0] ? area(annex[0].outline).toFixed(1) : '–'} m²; ${v.errors.slice(0, 2).join(' | ')}`);
+  }
 }
 
 done();

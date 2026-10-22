@@ -1030,15 +1030,30 @@ En skrå himling blir `type: 'roof'` uten høyde, altså helt opp til mønet.
   - hus4: pulttak på 6°.
   - 0 feil i validatoren på hus1–hus5 og hus7.
 
+### Lave deler uten etasje over seg, og kledningen
+
+- **Lave deler:** en del av en lavere etasje som ingen etasje dekker, for eksempel sportsboden på hus4 eller en
+  garasje ved et toetasjes hus, får et flatt tak på sin egen etasje. Det legges over de største rektanglene av det
+  som er åpent, minst 1,5 m bredt og 3 m², én rute fra alt over. hus4 har ingen feil.
+- **Kledningen:** `export.js` `claddingOf(doc)` gjør det KI-en leste om til husformatets `cladding`
+  (notes/kledning.md):
+  - den vanligste finishen blir `default`, og tre får profil etter retningen;
+  - gavlen og kjelleren blir soner når de er annerledes;
+  - fargeord («mørk grå», «hvit») blir hex, mens NCS-koder ikke oversettes;
+  - sokkelen blir 0,3 m betong, med hjørnekasser og omramming.
+
+  Den skrives bare når `schema.topLevel` kjenner `cladding`, altså etter at kledningsgrenen er flettet inn. Dekkene
+  eksporteres ikke ennå: KI-en gir bare et punkt, ikke omrisset.
+
 ### Åpent etter natta
 
 - **hus2:** KI-en legger GANG (merke 6) under «PLAN HIMLING», så gang og entré blir flate. De er åpne mot den skrå
   stua og burde vært skrå. Mønelinja den leser (x 0,50–0,93) er kortere enn streken (x 0,31–0,94). Rettes i «Himling»
   med ett klikk. En klassisk forlengelse av strek-prikk-linja er en mulig forbedring.
-- **Lave deler under øverste etasje** får ikke tak, for eksempel sportsboden og carporten på hus4. Taket legges bare
-  over øverste etasje.
-- **Kledning og terrasser** leses og lagres (`doc.cladding`, `doc.decks`), men eksporteres ikke før motoren kan bygge
-  dem. Det gjøres i økta «Kledning, terrasser og balkonger i motoren», som skal flettes inn etter at eieren har sagt ja.
+- **Carporten på hus4** er ikke tegnet som rom og får derfor ikke tak. Takterrassen over den er heller ikke laget,
+  fordi dekkene trenger et omriss.
+- **Kledning og terrasser:** motoren har dem på grenen `claude/kledning-terrasser-c92360` (ca0894e). Den skal flettes
+  inn etter at eieren har sagt ja. Da slår kledningseksporten seg på av seg selv.
 
 ## Rommene og eksporten
 
