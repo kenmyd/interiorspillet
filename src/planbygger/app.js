@@ -32,6 +32,8 @@ import { Guide } from './guide.js';
 import { aiStatus, aiRead } from './ai.js';
 
 const STORE_KEY = 'planbygger.v1.doc';
+/** «Meld feil» reports the dev server did not take yet (IndexedDB key; sent on the next start or report). */
+const REPORT_QUEUE = 'planbygger.report-queue';
 const DB_NAME = 'planbygger';
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -211,6 +213,7 @@ class App {
     this.thickness = 0.1;
     this._build();
     this._restore();
+    this._sendReports();
   }
 
   get level() {
@@ -1425,14 +1428,34 @@ class App {
     const files = this.gen?.inputs?.map((f) => f.name) ?? stack?.map((it) => it.name) ?? this.doc?.levels.map((l) => l.image?.name).filter(Boolean) ?? [];
     let state = { files, stack, doc: this.doc, questions: this.gen?.res?.questions, answers: this.gen?.answers, report: this.gen?.res?.report, check: this._lastCheck ? { errors: this._lastCheck.errors, warnings: this._lastCheck.warnings } : null };
     if (JSON.stringify(state).length > 8e6) state = { ...state, report: null };
-    try {
-      const r = await fetch('/api/planbygger/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: res.kind, text: res.text.trim(), where: `${where}${files.length ? ` – ${files.join(', ')}` : ''}`, image, state }) });
-      const out = await r.json();
-      if (!out.ok) throw new Error(out.error);
-      this.toast(`Lagret som ${out.id}${image ? ' med skjermbilde' : ''}. Takk!`);
-    } catch (err) {
-      this.toast(`Kunne ikke lagre meldingen (${err.message}). Den lokale testserveren må kjøre.`, 8);
+    const report = { kind: res.kind, text: res.text.trim(), where: `${where}${files.length ? ` – ${files.join(', ')}` : ''}`, image, state };
+    const sent = await this._sendReports([report]);
+    if (sent.length) this.toast(`Lagret som ${sent[0]}${image ? ' med skjermbilde' : ''}. Takk!`);
+    else this.toast('Testserveren svarer ikke. Meldingen er lagret i nettleseren og sendes når serveren kjører igjen.', 8);
+  }
+  /**
+   * Sends reports to the dev server, queued ones first. A report that cannot be sent stays queued in IndexedDB, so a
+   * stopped server never loses one; the queue is flushed on start and before every new report. Returns the new ids.
+   */
+  async _sendReports(fresh = []) {
+    const queued = (await idbGet(REPORT_QUEUE)) ?? [];
+    const left = [];
+    const sentQueued = [];
+    const sentFresh = [];
+    for (const [i, rep] of [...queued, ...fresh].entries()) {
+      try {
+        if (left.length) throw new Error('kø'); // keep the order: nothing after a failure
+        const r = await fetch('/api/planbygger/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rep) });
+        const out = await r.json();
+        if (!out.ok) throw new Error(out.error);
+        (i < queued.length ? sentQueued : sentFresh).push(out.id);
+      } catch {
+        left.push(rep);
+      }
     }
+    if (queued.length || left.length) await idbPut(REPORT_QUEUE, left);
+    if (sentQueued.length) this.toast(`${sentQueued.length} meldinger som ventet i nettleseren, er sendt (${sentQueued.join(', ')}).`, 8);
+    return sentFresh;
   }
 
   _dialog(title, fields, okText = 'OK') {
