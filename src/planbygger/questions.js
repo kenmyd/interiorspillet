@@ -243,6 +243,7 @@ export function stairQuestion({ level, levelName, file, crop, value, why, stairI
     options: [
       { value: 'straight', label: 'Rett trapp' },
       { value: 'u', label: 'U-trapp (svinger 180°)' },
+      { value: 'l', label: 'Kvartsvingt trapp (svinger 90°)' },
       { value: 'none', label: 'Ingen trapp her' },
     ],
     text: `Hvilken trapp går ned fra ${levelName.toLowerCase()}?`,
@@ -430,10 +431,10 @@ export function applyAnswers(doc, questions, answers = {}) {
         const st = (L.stairs || []).find((s) => s.id === Q.data?.stairId) ?? null;
         if (value === 'none') {
           if (st) L.stairs = L.stairs.filter((s) => s !== st);
-        } else if (value === 'straight' || value === 'u') {
+        } else if (value === 'straight' || value === 'u' || value === 'l') {
           if (st) {
-            if (value === 'u') st.kind = 'u';
-            else delete st.kind;
+            if (value === 'straight') delete st.kind;
+            else st.kind = value;
           } else if (Q.data?.stair?.rect || Q.data?.rect) {
             const found = Q.data.stair ?? {};
             const rect = found.rect ?? Q.data.rect;
@@ -443,7 +444,7 @@ export function applyAnswers(doc, questions, answers = {}) {
               rect,
               axis: found.axis ?? Q.data.axis ?? (x1 - x0 >= y1 - y0 ? 'x' : 'y'),
               down: found.down ?? 1,
-              ...(value === 'u' ? { kind: 'u', ...(found.side != null ? { side: found.side } : {}) } : {}),
+              ...(value !== 'straight' ? { kind: value, ...(found.side != null ? { side: found.side } : {}) } : {}),
             };
             (L.stairs ||= []).push(s);
           }

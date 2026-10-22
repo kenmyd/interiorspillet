@@ -73,15 +73,12 @@ export const HOUSES = ['hus1', 'hus2', 'hus3', 'hus3-foto', 'hus4', 'hus5', 'hus
 /** The steepest ground the player walks on (degrees): normal.y under WALKABLE_NORMAL_Y is a wall to it. */
 export const MAX_SLOPE = (Math.acos(WALKABLE_NORMAL_Y) * 180) / Math.PI;
 
-/** viewer.js straightStairFix: a straight stair's footprint as one long side (stairs.js chains() takes the wrong side). */
+/**
+ * The stairs as viewer.js builds them: as they are. (Until the stair work fixed chains() in stairs.js, the viewer gave a
+ * straight stair a two-point footprint; the name stays so the tests read the same.)
+ */
 export function straightStairFix(st) {
-  if (st.type !== 'straight' || !st.top?.edge || !st.foot?.edge) return st;
-  const a = st.top.edge[0];
-  const d = st.top.down;
-  const L = Math.abs((st.foot.edge[0][0] - a[0]) * d[0] + (st.foot.edge[0][1] - a[1]) * d[1]);
-  const tip = [a[0] + d[0] * L, a[1] + d[1] * L];
-  const b = st.foot.edge.reduce((best, p) => (Math.hypot(p[0] - tip[0], p[1] - tip[1]) < Math.hypot(best[0] - tip[0], best[1] - tip[1]) ? p : best));
-  return { ...st, footprint: [[a[0], a[1]], [b[0], b[1]]] };
+  return st;
 }
 
 /** The house's collision as viewer.js sets it up: every builder's colliders, the bounds and the floor field. */

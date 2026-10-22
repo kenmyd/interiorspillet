@@ -1650,7 +1650,12 @@ class App {
         this.facadeBtn = h('button', { class: 'pb-btn', title: 'Se huset utenfra side for side og rett vinduer og dører', onclick: () => this.openFacades() }, 'Fasader');
         // the stair placer: drag the stair into place on the plan (stairplace.js)
         this.stairBtn = h('button', { class: 'pb-btn', title: 'Plasser trappa mellom etasjene på planen', onclick: () => this.openStairs() }, 'Trapp');
-        const bar = h('div', { class: 'pb-view3d-bar' }, this.backBtn, this.stackBtn, this.facadeBtn, this.stairBtn, this.modeBtn, this.levelSel, info);
+        // the dollhouse with the roof on: the house seen from outside
+        this.roofBtn = h('button', { class: 'pb-btn', title: 'Se huset utenfra med tak (dukkehuset uten tak viser rommene)', onclick: () => {
+          this.viewer.setRoof(!this.viewer.roofShown);
+          this.roofBtn.textContent = this.viewer.roofShown ? 'Skjul taket' : 'Vis taket';
+        } }, 'Vis taket');
+        const bar = h('div', { class: 'pb-view3d-bar' }, this.backBtn, this.stackBtn, this.facadeBtn, this.stairBtn, this.modeBtn, this.roofBtn, this.levelSel, info);
         this.helpEl = h('div', { class: 'pb-view3d-help' });
         this.crosshair = h('div', { class: 'pb-crosshair', hidden: true });
         this.view3d.append(bar, this.helpEl, this.crosshair);
@@ -1689,6 +1694,7 @@ class App {
       ? '<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> gå · hold høyre museknapp og dra for å se rundt · <kbd>Shift</kbd> løp · <kbd>E</kbd> eller klikk åpner dører'
       : 'Dra for å snu huset · hjulet zoomer · høyre knapp eller WASD flytter · «Gå inn i huset» for å gå rundt';
     this.levelSel.disabled = walk;
+    this.roofBtn.hidden = walk;
   }
   close3d() {
     if (this.viewer?.mode === 'walk') this.viewer.setMode('orbit');

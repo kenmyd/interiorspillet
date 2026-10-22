@@ -61,28 +61,6 @@ function houseRoots(layout) {
 }
 
 /**
- * stairs.js (chains) takes the stair's outer side as the LONGER way round its footprint between the top and the foot –
- * right for the half-turn stair along its shaft walls, the wrong side for a rectangular straight stair: every tread cut
- * fails and the stair gets no treads and no collision. Workaround without touching stairs.js: buildStairs gets the
- * straight stairs with a two-point footprint, one long side (its outer chain is then that side). The house data and
- * the validator keep the real hole. Request to the house work: chains() should take the side opposite the inner line
- * for a straight stair.
- */
-function straightStairFix(layout) {
-  const H = layout.house;
-  const fixed = H.stairs.map((st) => {
-    if (st.type !== 'straight' || !st.top?.edge || !st.foot?.edge) return st;
-    const a = st.top.edge[0];
-    const d = st.top.down;
-    const L = Math.abs((st.foot.edge[0][0] - a[0]) * d[0] + (st.foot.edge[0][1] - a[1]) * d[1]);
-    const tip = [a[0] + d[0] * L, a[1] + d[1] * L];
-    const b = st.foot.edge.reduce((best, p) => (Math.hypot(p[0] - tip[0], p[1] - tip[1]) < Math.hypot(best[0] - tip[0], best[1] - tip[1]) ? p : best));
-    return { ...st, footprint: [[a[0], a[1]], [b[0], b[1]]] };
-  });
-  return { ...layout, house: { ...H, stairs: fixed } };
-}
-
-/**
  * The game's builders put some faces of different materials in one plane: a window frame's sides lie on the reveal
  * (the frame is exactly as wide as the hole), the dark lining of an outer door on its trim, the cladding on the
  * reveal's edge, the end of a neighbour's outer wall in a room's face (F40). In the planbygger's houses that flickers
@@ -217,6 +195,67 @@ function doorRamps(layout, groundY) {
   return out;
 }
 
+/**
+ * A basement with a door or low windows in an outer wall stands free on that side (F111, F118: out of the basement door the
+ * player fell into nothing): a sunken yard at the basement's floor in front of that wall – flat for YARD_FLAT, then a slope
+ * up to the ground, between two retaining walls. Each run of outer basement walls on one line with an opening gets one.
+ * → { footprints: the yards' outlines in plan (holes in the ground), meshes: the yards, slopes and walls (colliders) }
+ */
+const YARD_FLAT = 2.5;
+const YARD_SLOPE_DEG = 28;
+function basementYards(layout, mainY, groundY) {
+  const H = layout.house;
+  const out = { footprints: [], meshes: [] };
+  const lower = H.levels.filter((l) => l.floorY < mainY - 0.5);
+  if (!lower.length) return out;
+  const paving = new THREE.MeshStandardMaterial({ color: '#9b958b', roughness: 0.95 });
+  const grass = new THREE.MeshStandardMaterial({ color: '#7f8f66', roughness: 0.95 });
+  const concrete = new THREE.MeshStandardMaterial({ color: '#a8a39a', roughness: 0.9, side: THREE.DoubleSide });
+  const quad = (pts, mat, name) => {
+    const g = new THREE.BufferGeometry().setFromPoints([pts[0], pts[1], pts[2], pts[0], pts[2], pts[3]]);
+    g.computeVertexNormals();
+    const m = new THREE.Mesh(g, mat);
+    m.name = name;
+    m.receiveShadow = true;
+    return m;
+  };
+  for (const lv of lower) {
+    const outer = H.walls.filter((w) => w.levelId === lv.id && w.exterior && w.thickness > 0);
+    const done = new Set();
+    // the side with the basement door stands free (a walk-out basement); without a door, the sides with windows low
+    // enough to look out of (a small one high up has a light well) – the owner's house: its front, not its back
+    const hasDoor = outer.some((w) => (w.openings || []).some((o) => o.type === 'door'));
+    const opens = (w) => (w.openings || []).some((o) => (hasDoor ? o.type === 'door' : o.type === 'window' && o.sill < 1.2));
+    for (const w of outer) {
+      if (done.has(w) || !opens(w)) continue;
+      const n = new THREE.Vector2(-w.normal.x, -w.normal.y); // out of the house
+      const dir = new THREE.Vector2(-n.y, n.x);
+      const c = w.start.dot(n);
+      // the whole run of outer walls on this line
+      const run = outer.filter((x) => Math.abs(-x.normal.x * n.x - x.normal.y * n.y - 1) < 0.01 && Math.abs(x.start.dot(n) - c) < 0.05);
+      run.forEach((x) => done.add(x));
+      const ts = run.flatMap((x) => [x.start.dot(dir), x.end.dot(dir)]);
+      const t0 = Math.min(...ts) - 0.4;
+      const t1 = Math.max(...ts) + 0.4;
+      const face = c + Math.max(...run.map((x) => x.thickness));
+      const yardY = lv.floorY - GROUND_STEP;
+      const rise = groundY - yardY;
+      if (rise < 0.4) continue;
+      const slope = rise / Math.tan((YARD_SLOPE_DEG * Math.PI) / 180);
+      const P = (t, d, y) => new THREE.Vector3(dir.x * t + n.x * (face + d), y, dir.y * t + n.y * (face + d));
+      const far = YARD_FLAT + slope;
+      // the hole in the ground: the yard and its slope, a little into the wall so nothing is left between them
+      out.footprints.push([P(t0, -0.05, 0), P(t1, -0.05, 0), P(t1, far, 0), P(t0, far, 0)].map((p) => [p.x, p.z]));
+      const up = (a, b, cc, dd) => (new THREE.Vector3().subVectors(b, a).cross(new THREE.Vector3().subVectors(dd, a)).y > 0 ? [a, b, cc, dd] : [a, dd, cc, b]);
+      out.meshes.push(quad(up(P(t0, -0.05, yardY), P(t1, -0.05, yardY), P(t1, YARD_FLAT, yardY), P(t0, YARD_FLAT, yardY)), paving, `yard:${w.id}`));
+      out.meshes.push(quad(up(P(t0, YARD_FLAT, yardY), P(t1, YARD_FLAT, yardY), P(t1, far, groundY), P(t0, far, groundY)), grass, `yard-slope:${w.id}`));
+      // the retaining walls at the two ends: from the yard up to the ground
+      for (const t of [t0, t1]) out.meshes.push(quad([P(t, -0.05, yardY), P(t, YARD_FLAT, yardY), P(t, far, groundY), P(t, -0.05, groundY)], concrete, `yard-wall:${w.id}`));
+    }
+  }
+  return out;
+}
+
 /** A minimal HUD for the interaction prompt («E Åpne døra»). */
 function promptHud(container) {
   const el = document.createElement('div');
@@ -273,6 +312,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
   let input = null;
   let state = null; // the built house
   let mode = 'orbit';
+  let showRoof = false; // the dollhouse with its roof on (setRoof)
   let orbit = null;
   let raf = 0;
   let last = 0;
@@ -340,14 +380,15 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     const mainFloor = (house.levels || []).find((l) => l.id === 'hoved')?.floorY ?? 0;
     const above = (house.levels || []).map((l) => l.floorY).filter((y) => y > mainFloor + 0.5);
     if (above.length) mainCeil = Math.max(1.8, Math.min(mainCeil, Math.min(...above) - mainFloor - 0.35));
-    spec.ceilings.push({ id: 'c-planbygger-taklinje', type: 'slope', polygon: [[-900, -900], [-899, -900], [-899, -899]], highLine: [[-900, -900], [-899, -900]], lowLine: [[-900, -899], [-899, -899]], highHeight: mainCeil, lowHeight: mainCeil, color: '#ffffff' });
+    // (only without a real roof: with roofs[] the cladding follows the roof, notes/tak.md)
+    if (!house.roofs?.length) spec.ceilings.push({ id: 'c-planbygger-taklinje', type: 'slope', polygon: [[-900, -900], [-899, -900], [-899, -899]], highLine: [[-900, -900], [-899, -900]], lowLine: [[-900, -899], [-899, -899]], highHeight: mainCeil, lowHeight: mainCeil, color: '#ffffff' });
     const layout = buildLayout(spec, undefined, { devWarnings: false });
     const collision = new CollisionWorld();
     const interaction = new InteractionSystem({ camera, collision, events });
     const roots = houseRoots(layout);
     const ctx = { scene, camera, renderer, collision, interaction, events, settings, quality, roots, audio: null, lighting: null };
     const parts = [buildRooms(ctx, layout, null)];
-    if (layout.house.stairs.length) parts.push(buildStairs(ctx, straightStairFix(layout)));
+    if (layout.house.stairs.length) parts.push(buildStairs(ctx, layout));
     scene.add(...Object.values(roots.levels));
     for (const p of parts) if (p.group && !p.group.parent) scene.add(p.group);
     const depthMats = new Map();
@@ -390,6 +431,9 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       const o = (p, k) => [p.x - w.normal.x * k, p.y - w.normal.y * k];
       polys.push([o(w.start, 0), o(w.end, 0), o(w.end, w.thickness), o(w.start, w.thickness)]);
     }
+    // the basement's open sides: sunken yards, cut out of the ground (F118)
+    const yards = basementYards(layout, mainY, mainY - GROUND_STEP);
+    polys.push(...yards.footprints);
     const hole = polys.length ? footprint(polys) : [];
     const R = size * 4;
     // the shape lies in (x, −z): rotated −90° about x it lands in (x, z) with its normal up
@@ -405,6 +449,13 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     ground.updateMatrixWorld(true);
     extra.push(ground);
     collision.addStatic(ground);
+    for (const m of yards.meshes) {
+      m.castShadow = false;
+      scene.add(m);
+      m.updateMatrixWorld(true);
+      extra.push(m);
+      collision.addStatic(m);
+    }
     // up the step at the outer doors without jumping (F60)
     for (const ramp of doorRamps(layout, mainY - GROUND_STEP)) {
       scene.add(ramp);
@@ -487,7 +538,9 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     mode = m;
     if (!state) return;
     const walk = m === 'walk';
-    for (const mesh of state.parts.flatMap((p) => p.pickables?.ceilings || [])) mesh.visible = walk;
+    // the ceilings and the roof (rooms.js puts the roof among the ceilings): shown when walking, and in the dollhouse
+    // when «Vis taket» is on
+    for (const mesh of state.parts.flatMap((p) => p.pickables?.ceilings || [])) mesh.visible = walk || showRoof;
     for (const g of state.skylights || []) g.visible = walk;
     // the dark deck over basement rooms outside the main floor (rooms.js «cover:<room>»): off in the dollhouse view
     for (const g of Object.values(state.roots.levels)) g.traverse((o) => o.isMesh && o.name.startsWith('cover:') && (o.visible = walk));
@@ -597,6 +650,14 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     load,
     setMode,
     showLevel,
+    /** The dollhouse with or without its roof and ceilings. */
+    setRoof(on) {
+      showRoof = !!on;
+      setMode(mode);
+    },
+    get roofShown() {
+      return showRoof;
+    },
     dispose,
     get mode() {
       return mode;

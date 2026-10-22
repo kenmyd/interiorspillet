@@ -359,12 +359,10 @@ section('9. Etasjer og trapp');
   const H = layout.house;
   const ls = H.stairs[0];
   check('layout: trappeflaten går fra 0 til −2,6', near(ls.surfaceY(0.9, 1.9) ?? NaN, 0, 0.05) && near(ls.surfaceY(4.45, 1.9) ?? NaN, -2.6, 0.05), `${ls.surfaceY(0.9, 1.9)} … ${ls.surfaceY(4.45, 1.9)}`);
-  // the game's stair builder on a straight stair: with the planbygger's two-point footprint (viewer.js) it has treads
+  // the game's stair builder on a straight stair with the hole as its footprint: treads and collision (chains() took the
+  // wrong side until the stair work fixed it – the viewer's workaround straightStairFix is gone)
   const raw = St.stairLayout(ls, H.levels);
-  const a = ls.top.edge[0];
-  const fixed = St.stairLayout({ ...ls, footprint: [a, ls.foot.edge.find((p) => Math.abs(p[1] - a[1]) < 1e-6 || Math.abs(p[0] - a[0]) < 1e-6)] }, H.levels);
-  check('stairs.js: en rett trapp med hullet som fotavtrykk får ingen trinn (feil i chains(), meldt videre)', raw.treads.length === 0, `${raw.treads.length} trinn`);
-  check('stairs.js: med planbyggerens omvei (fotavtrykk = én langside) får trappa 13 trinn og kollisjon', fixed.treads.length === 13 && St.stairColliders(fixed).length > 0, `${fixed.treads.length} trinn`);
+  check('stairs.js: en rett trapp med hullet som fotavtrykk får 13 trinn og kollisjon', raw.treads.length === 13 && St.stairColliders(raw).length > 0, `${raw.treads.length} trinn`);
 }
 {
   // a U stair (half-turn with winders, «half-turn-winder»): export, validator, the game's stair builder

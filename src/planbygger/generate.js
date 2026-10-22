@@ -1083,7 +1083,7 @@ export async function generate(inputs, opts = {}) {
       const bad = !ex || ex.report.warnings.find((w) => w.startsWith(`${U.name}: `) && /trapp|U-trappa/.test(w) && /hoppet over|går over en vegg|for liten|ingen tydelig retning|fant ikke rommet under/.test(w));
       if (!bad) continue;
       U.stairs = U.stairs.filter((s) => s !== d.stairPlaced);
-      questions.push(stairQuestion({ level: U.id, levelName: U.name, file: d.file, crop: { file: d.file, level: U.id, bbox: cropBox(d.stairPlaced.rect, d.ppm, d.img) }, value: d.stairPlaced.kind === 'u' ? 'u' : 'straight', why: `Trappa kunne ikke bygges slik den ble funnet (${typeof bad === 'string' ? bad.replace(`${U.name}: `, '') : 'eksporten feilet'}). Tegn den inn i «Finjuster».` }));
+      questions.push(stairQuestion({ level: U.id, levelName: U.name, file: d.file, crop: { file: d.file, level: U.id, bbox: cropBox(d.stairPlaced.rect, d.ppm, d.img) }, value: d.stairPlaced.kind ?? 'straight', why: `Trappa kunne ikke bygges slik den ble funnet (${typeof bad === 'string' ? bad.replace(`${U.name}: `, '') : 'eksporten feilet'}). Tegn den inn i «Finjuster».` }));
       step({ step: 'stairs', file: d.file, level: U.id, method: 'none', confidence: 'low', detail: `tatt ut igjen: ${typeof bad === 'string' ? bad : 'eksporten feilet'}` });
       d.stairPlaced = null;
     }
@@ -1172,19 +1172,20 @@ export async function generate(inputs, opts = {}) {
     let kind = 'straight';
     let note = null;
     if (type === 'half-turn') kind = 'u';
+    // (a quarter turn is the game's own type since the stair work, but its way down is not read from the drawing yet:
+    // orientStair finds the landings of a straight or U stair, and an L read that way came out the wrong way round –
+    // F125. It stays the nearest kind, and the stair placer turns it into an L the customer sees.)
     else if (type === 'quarter-turn' || type === 'spiral' || !type) {
-      // the house format has straight and U stairs: the nearest for an L stair is a U in a squarish box
       kind = shortSide >= 1.3 && longSide / shortSide < 1.7 ? 'u' : 'straight';
       if (type) {
-        note = `${U.name}: trappa er ${type === 'spiral' ? 'en spiraltrapp' : 'kvartsvingt (svinger 90°)'}, men husformatet har bare rette trapper og U-trapper. Den er lagt inn som ${kind === 'u' ? 'U-trapp' : 'rett trapp'}.`;
+        note = `${U.name}: trappa er ${type === 'spiral' ? 'en spiraltrapp' : 'kvartsvingt (svinger 90°)'}, og den er lagt inn som ${kind === 'u' ? 'U-trapp' : 'rett trapp'}. Velg «Kvartsvingt» i «Trapp» i 3D-visningen for å gjøre den om.`;
         report.notes.push(note);
-        if (!report.requests.some((r) => /kvartsvingt/.test(r))) report.requests.push('Motoren (stairs.js og husformatet): kvartsvingte trapper (L-trapp med svingtrinn), så planbyggeren kan bygge dem som tegnet i stedet for som U-trapp eller rett trapp.');
       }
     }
     const a = rect[0];
     const b = rect[1];
     const st = addStair(U, a, b);
-    if (kind === 'u') st.kind = 'u';
+    if (kind !== 'straight') st.kind = kind;
     // the way down: the box says where the stair is, not where it starts – the orientation whose landings are floor
     const toLowerPlan = (p) => [p[0] + off[0] - lo[0], p[1] + off[1] - lo[1]];
     let turn = orientStair(st, { level: U, found: levelRooms(U) }, { level: lower.level, found: lowerFound }, toLowerPlan);
@@ -1224,13 +1225,13 @@ export async function generate(inputs, opts = {}) {
           file: upper.file,
           crop: { file: upper.file, level: U.id, bbox: cropBox(rect, upper.ppm, upper.img) },
           value: 'none',
-          why: `${why[0].toUpperCase()}${why.slice(1)}, men den er for bratt til å gå i: ${kind === 'u' ? 'U-trappa' : 'den rette trappa'} vi fant er ${fmt(longSide, 2)} × ${fmt(shortSide, 2)} m, og med ${fmt(walkLen, 2)} m ganglinje for ${fmt(rise, 2)} m etasjehøyde blir den ${Math.round(slope)}° bratt. I 3D-huset kan man gå i høyst ${Math.round(STAIR_MAX_SLOPE_DEG)}°, så den trenger minst ${fmt(need, 1)} m ganglinje.${drawn} Den er ikke lagt inn: tegn den inn i «Finjuster», eller velg en trapp her for å få den slik den ble funnet.`,
+          why: `${why[0].toUpperCase()}${why.slice(1)}, men den er for bratt til å gå i: ${kind === 'u' ? 'U-trappa' : kind === 'l' ? 'den kvartsvingte trappa' : 'den rette trappa'} vi fant er ${fmt(longSide, 2)} × ${fmt(shortSide, 2)} m, og med ${fmt(walkLen, 2)} m ganglinje for ${fmt(rise, 2)} m etasjehøyde blir den ${Math.round(slope)}° bratt. I 3D-huset kan man gå i høyst ${Math.round(STAIR_MAX_SLOPE_DEG)}°, så den trenger minst ${fmt(need, 1)} m ganglinje.${drawn} Den er ikke lagt inn: tegn den inn i «Finjuster», eller velg en trapp her for å få den slik den ble funnet.`,
           rect: st.rect,
           axis,
           stair: { rect: st.rect, axis, down: st.down, ...(st.side != null ? { side: st.side } : {}) },
         }),
       );
-      step({ step: 'stairs', file: upper.file, level: U.id, method: 'none', confidence: 'low', detail: `${why}; ${type ?? 'ukjent type'} → ${kind === 'u' ? 'U-trapp' : 'rett trapp'} ${fmt(w, 2)} × ${fmt(h, 2)} m, ganglinje ${fmt(walkLen, 2)} m for ${fmt(rise, 2)} m: ${Math.round(slope)}° (høyst ${Math.round(STAIR_MAX_SLOPE_DEG)}°) – for bratt, ikke lagt inn` });
+      step({ step: 'stairs', file: upper.file, level: U.id, method: 'none', confidence: 'low', detail: `${why}; ${type ?? 'ukjent type'} → ${kind === 'u' ? 'U-trapp' : kind === 'l' ? 'kvartsvingt trapp' : 'rett trapp'} ${fmt(w, 2)} × ${fmt(h, 2)} m, ganglinje ${fmt(walkLen, 2)} m for ${fmt(rise, 2)} m: ${Math.round(slope)}° (høyst ${Math.round(STAIR_MAX_SLOPE_DEG)}°) – for bratt, ikke lagt inn` });
       return;
     }
     if (edge) {
@@ -1241,7 +1242,7 @@ export async function generate(inputs, opts = {}) {
     st.auto = true;
     st.from = { type, typeFrom, why, ...(turn ? {} : { landings: false }) };
     upper.stairPlaced = st;
-    step({ step: 'stairs', file: upper.file, level: U.id, method: kind, confidence: pair && turn ? 'high' : 'medium', detail: `${why}; ${type ?? 'ukjent type'}${typeFrom ? ` (fra ${typeFrom})` : ''} → ${kind === 'u' ? 'U-trapp' : 'rett trapp'} ${fmt(w, 2)} × ${fmt(h, 2)} m${turn ? `, ned mot ${axis}${st.down > 0 ? '+' : '−'}` : ', ingen retning med gulv ved begge endene'}` });
+    step({ step: 'stairs', file: upper.file, level: U.id, method: kind, confidence: pair && turn ? 'high' : 'medium', detail: `${why}; ${type ?? 'ukjent type'}${typeFrom ? ` (fra ${typeFrom})` : ''} → ${kind === 'u' ? 'U-trapp' : kind === 'l' ? 'kvartsvingt trapp' : 'rett trapp'} ${fmt(w, 2)} × ${fmt(h, 2)} m${turn ? `, ned mot ${axis}${st.down > 0 ? '+' : '−'}` : ', ingen retning med gulv ved begge endene'}` });
     // the AI and the drawing disagree: worth a question, except when the drawing shows a turn (winders, two flights:
     // they do not come from nothing) and the AI calls it straight (Haiku misreads turns as straight – K2, hus1)
     const turnSeen = classical === 'quarter-turn' || classical === 'half-turn';
@@ -1642,6 +1643,11 @@ const TREAD_LINE_T = 0.08;
  */
 export function stairWalkLength(st) {
   const g = stairGeometry(st);
+  // an L: down one long side, round the corner (a quarter of the walk circle) and along the far end (export.js)
+  if (st.kind === 'l') {
+    const w = st.flight ?? Math.max(0.7, Math.min(1.0, Math.min(g.length, g.width) * 0.5));
+    return g.length - w + (Math.PI / 4) * w + g.width - w;
+  }
   if (st.kind !== 'u') return g.length;
   const wellW = Math.min(0.2, Math.max(0.06, g.width * 0.06));
   const half = (g.width - wellW) / 2;

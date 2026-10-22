@@ -9,6 +9,7 @@
  *   openStairPlacer({ getDoc, h, intro, onChange(label, fn), onDone(changed) }) → { el, close }
  */
 import { addStair, deleteStair, stairGeometry } from './model.js';
+// (the stair kinds: none = straight, 'u' half-turn, 'l' quarter-turn – the whole L in the rectangle –, 'steep')
 import { round } from './geom.js';
 
 const SVG = 'http://www.w3.org/2000/svg';
@@ -27,13 +28,21 @@ export function levelBelow(doc, L) {
   return doc.levels.filter((l) => (l.floorY ?? 0) < (L.floorY ?? 0) - 0.5).sort((a, b) => b.floorY - a.floorY)[0] ?? null;
 }
 
+/** The width of an L stair's flights (export.js: st.flight, or half the short side within 0.7–1.0 m). */
+export function lFlight(st) {
+  const geo = stairGeometry(st);
+  return st.flight ?? Math.max(0.7, Math.min(1.0, Math.min(geo.length, geo.width) * 0.5));
+}
+
 /** Steps and steepness of a stair in its rectangle: risers, the going of a tread and the angle in degrees. */
 export function stairPitch(st, rise) {
   const geo = stairGeometry(st);
   const risers = Math.max(2, Math.round(rise / RISE));
   const r = rise / risers;
-  // a U stair walks down one half, round the far end and back: about two lengths less the turn
-  const run = st.kind === 'u' ? Math.max(0.5, 2 * geo.length - geo.width / 2) : geo.length;
+  // a U stair walks down one half, round the far end and back: about two lengths less the turn; an L down one long side,
+  // round the corner and along the far end (export.js: flights of lFlight)
+  const w = lFlight(st);
+  const run = st.kind === 'u' ? Math.max(0.5, 2 * geo.length - geo.width / 2) : st.kind === 'l' ? geo.length - w + (Math.PI / 4) * w + geo.width - w : geo.length;
   const going = run / Math.max(1, risers - 1);
   return { risers, riser: r, going, angle: (Math.atan2(r, going) * 180) / Math.PI };
 }
@@ -245,20 +254,22 @@ export function openStairPlacer({ getDoc, h, intro = null, onChange, onDone }) {
     // the type as pictures
     const pick = (value, label) => {
       const t = svg('svg', { viewBox: '0 0 56 52', width: 56, height: 52 });
-      drawStair(t, { rect: [[0, 0], [2, 1]], axis: 'x', down: 1, kind: value === 'u' ? 'u' : undefined }, (x) => 6 + x * 22, (y) => 15 + y * 22, 22, false);
+      const box = value === 'l' ? [[0, 0], [1.6, 1.4]] : [[0, 0], [2, 1]];
+      drawStair(t, { rect: box, axis: 'x', down: 1, kind: value === 'straight' ? undefined : value }, (x) => 6 + x * 22, (y) => (value === 'l' ? 10 : 15) + y * 22, 22, false);
       return h('button', { class: `fc-pick${(st.kind ?? 'straight') === value ? ' is-on' : ''}`, onclick: () => edit('Trappetype', () => {
         const s = stairOf(st.id);
-        if (value === 'u') s.kind = 'u';
-        else delete s.kind;
+        if (value === 'straight') delete s.kind;
+        else s.kind = value;
       }) }, t, h('span', {}, label));
     };
-    panel.append(h('section', { class: 'fc-section' }, h('h4', {}, 'Type'), h('div', { class: 'fc-picks sp-picks' }, pick('straight', 'Rett'), pick('u', 'Halvsvingt (U)'),
-      h('button', { class: 'fc-pick', disabled: true, title: 'Kommer når spillet kan bygge kvartsvingte trapper' }, h('span', { class: 'sp-soon' }, 'L'), h('span', {}, 'Kvartsvingt – kommer')))));
+    panel.append(...[h('section', { class: 'fc-section' }, h('h4', {}, 'Type'), h('div', { class: 'fc-picks sp-picks' }, pick('straight', 'Rett'), pick('u', 'Halvsvingt (U)'), pick('l', 'Kvartsvingt (L)'), pick('steep', 'Bratt / loftstige'))),
+      st.kind === 'l' ? h('p', { class: 'fc-note' }, 'Dra rektangelet rundt hele L-en. Det øverste løpet går ned langs den ene langsiden, svinger i hjørnet og går ut langs enden. «Speilvend» bytter side.') : null,
+      st.kind === 'steep' ? h('p', { class: 'fc-note' }, 'En bratt trapp eller loftstige for en liten sjakt. Figuren klatrer opp til ca. 66°.') : null].filter(Boolean));
     // direction
     panel.append(h('section', { class: 'fc-section' }, h('h4', {}, 'Retning'),
       h('div', { class: 'sp-row' },
         h('button', { class: 'pb-btn', onclick: () => edit('Snudde trappa', () => (stairOf(st.id).down = -stairOf(st.id).down)) }, 'Snu – toppen i andre enden'),
-        st.kind === 'u' ? h('button', { class: 'pb-btn', onclick: () => edit('Speilvendte trappa', () => (stairOf(st.id).side = stairOf(st.id).side === 1 ? 0 : 1)) }, 'Speilvend') : null)));
+        st.kind === 'u' || st.kind === 'l' ? h('button', { class: 'pb-btn', onclick: () => edit('Speilvendte trappa', () => (stairOf(st.id).side = stairOf(st.id).side === 1 ? 0 : 1)) }, 'Speilvend') : null)));
     // the measures
     const measure = (label, value, onSet) => {
       const input = h('input', { type: 'number', min: 60, max: 800, step: 1, value: cm(value) });
@@ -284,7 +295,7 @@ export function openStairPlacer({ getDoc, h, intro = null, onChange, onDone }) {
       });
     panel.append(h('section', { class: 'fc-section' }, h('h4', {}, 'Mål'),
       h('div', { class: 'fc-measures sp-measures' }, measure('Lengde', geo.length, (v) => setSize(v, geo.width)), measure('Bredde', geo.width, (v) => setSize(geo.length, v)))));
-    const steep = p.angle > 42;
+    const steep = p.angle > 42 && st.kind !== 'steep';
     panel.append(h('section', { class: 'fc-section' }, h('h4', {}, 'Trinn'),
       h('p', { class: `sp-pitch${steep ? ' is-steep' : ''}` }, `${p.risers} opptrinn på ${cm(p.riser)} cm, inntrinn ca. ${cm(p.going)} cm – ${Math.round(p.angle)}°`),
       steep ? h('p', { class: 'fc-note' }, 'Trappa blir bratt (over 42°). Gjør den lengre, eller velg halvsvingt.') : h('p', { class: 'fc-note' }, 'En vanlig trapp er 30–40°.')));
@@ -308,7 +319,26 @@ function drawStair(g, st, X, Y, k, sel) {
   const line = (a, b, cls) => g.append(svg('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], class: cls }));
   const W = geo.width;
   const L = geo.length;
-  if (st.kind === 'u') {
+  if (st.kind === 'l') {
+    // the whole L in its rectangle: the top flight down one side, the turn in the far corner, the foot flight along the end
+    const w = lFlight(st);
+    const first = st.side !== 1;
+    const [a0, a1] = first ? [0, w] : [W - w, W];
+    for (let v = 0.25; v < L - w; v += 0.25) line(P(a0, v), P(a1, v), 'sp-tread');
+    const corner = first ? [w, L - w] : [W - w, L - w];
+    for (const t of [0.33, 0.66]) line(P(corner[0], corner[1]), P(first ? a0 + (a1 - a0) * (1 - t) : a0 + (a1 - a0) * t, L), 'sp-tread');
+    line(P(corner[0], corner[1]), P(first ? 0 : W, L - w + w * 0.5), 'sp-tread');
+    const [b0, b1] = first ? [w, W] : [0, W - w];
+    for (let x = b0 + 0.25; x < b1; x += 0.25) line(P(x, L - w), P(x, L), 'sp-tread');
+    g.append(svg('path', { d: `M${P(a0, 0).join(' ')}L${P(a1, 0).join(' ')}L${P(a1, L - w).join(' ')}L${P(first ? W : 0, L - w).join(' ')}`, class: 'sp-tread' }));
+    const m = (a0 + a1) / 2;
+    const endX = first ? W - 0.15 : 0.15;
+    g.append(svg('path', { d: `M${P(m, 0.12).join(' ')}L${P(m, L - w / 2).join(' ')}L${P(endX, L - w / 2).join(' ')}`, class: 'sp-arrow' }));
+    const tip = P(endX, L - w / 2);
+    const bk = P(endX + (first ? -0.2 : 0.2), L - w / 2);
+    g.append(svg('path', { d: `M${bk[0] - (tip[1] - bk[1]) * 0.6} ${bk[1] + (tip[0] - bk[0]) * 0.6}L${tip[0]} ${tip[1]}L${bk[0] + (tip[1] - bk[1]) * 0.6} ${bk[1] - (tip[0] - bk[0]) * 0.6}`, class: 'sp-arrow' }));
+    g.append(svg('circle', { cx: P(m, 0.12)[0], cy: P(m, 0.12)[1], r: 3, class: 'sp-dot' }));
+  } else if (st.kind === 'u') {
     const well = Math.min(0.2, Math.max(0.06, W * 0.06));
     const half = (W - well) / 2;
     const sideA = st.side !== 1;
@@ -324,7 +354,9 @@ function drawStair(g, st, X, Y, k, sel) {
     const bk = P(fm, 0.3);
     g.append(svg('path', { d: `M${bk[0] - (tip[1] - bk[1]) * 0.5} ${bk[1] + (tip[0] - bk[0]) * 0.5}L${tip[0]} ${tip[1]}L${bk[0] + (tip[1] - bk[1]) * 0.5} ${bk[1] - (tip[0] - bk[0]) * 0.5}`, class: 'sp-arrow' }));
   } else {
-    for (let v = 0.25; v < L; v += 0.25) line(P(0, v), P(W, v), 'sp-tread');
+    // a steep stair: closer treads
+    const step = st.kind === 'steep' ? 0.16 : 0.25;
+    for (let v = step; v < L; v += step) line(P(0, v), P(W, v), 'sp-tread');
     const a = P(W / 2, 0.12);
     const b = P(W / 2, L - 0.12);
     line(a, b, 'sp-arrow');

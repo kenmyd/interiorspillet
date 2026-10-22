@@ -827,6 +827,16 @@ export function exportHouse(doc, opts = {}) {
             const terrace = exterior && !['entrance', 'hall', 'storage', 'laundry', 'bathroom'].includes(room.kind);
             const glass = o.glass ?? terrace;
             const look = { ...(exterior ? {} : { leafColor: LOOK.door }), ...(glass ? { glass: { cols: width >= 1.2 ? 2 : 1, rows: 3 } } : {}) };
+            // windows joined to the door in the facade check: glass panels down to the floor in its frame (notes/dortyper.md 4)
+            // the leaf keeps at least MIN_DOOR between the posts: the sidelights give way (and go below 0.15 m)
+            let sidelights = (o.sidelights || []).map((sl) => ({ side: (sl.side === 'start') === sameDir ? 'from' : 'to', w: sl.width }));
+            const sum = sidelights.reduce((t, sl) => t + sl.w + frameW, 0);
+            if (sidelights.length && width - sum < MIN_DOOR) {
+              const k = Math.max(0, width - MIN_DOOR - sidelights.length * frameW) / sidelights.reduce((t, sl) => t + sl.w, 0);
+              sidelights = sidelights.map((sl) => ({ ...sl, w: sl.w * k })).filter((sl) => sl.w >= 0.15);
+              warnings.push(`${level.name}: sidefeltene i ${entry.id} er gjort smalere så døra blir minst ${MIN_DOOR} m`);
+            }
+            if (sidelights.length) look.sidelights = sidelights.map((sl) => ({ ...sl, w: R(sl.w) }));
             if (o.built === 'double') {
               // the leaves fill the hole between the jambs; the drawn arcs' radii give their ratio
               entry.door = { variant: 'double', hinge, swing, opensInto, leaf: { w: R(o.leaf ?? width / 2), h: R(h - 0.04) }, leaf2: { w: R(o.leaf2 ?? o.leaf ?? width / 2) }, ...(o.openAngle && o.openAngle !== 90 ? { openAngleDeg: o.openAngle } : {}), handleHeight: 1.05, closed: true, ...look };
@@ -963,6 +973,7 @@ export function exportHouse(doc, opts = {}) {
     }
   });
   exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, warnings, counts, RP, R });
+  exportRoofs({ doc, house, warnings, RP, R });
   if (floorOpenings.length) house.floorOpenings = floorOpenings;
   if (stairs.length) house.stairs = stairs;
 
@@ -1075,7 +1086,8 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
       }
       // a U stair's sides as the editor draws them (editor.js _drawUStair): its top flight starts at the plan's first top
       // corner (stairGeometry top[0]) unless st.side is 1 – generate.js orientStair chooses the side by its landings
-      if (st.kind === 'u') {
+      // (a quarter-turn stair the same way: side 0 turns toward the first top corner, side 1 toward the other)
+      if (st.kind === 'u' || st.kind === 'l') {
         const n0 = toG(g.top[0]);
         if (dist(topPts[1], n0) < dist(topPts[0], n0)) topPts.reverse();
       }
@@ -1112,12 +1124,43 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
       // «half-turn-winder») has its top flight on one half of the near side, descends to the far end, turns around a
       // narrow well and comes back on the other half to the near end
       const u = st.kind === 'u';
+      // the game's stair types (notes/trapper.md): a quarter turn with winders, a steep stair for a small shaft
+      const quarter = st.kind === 'l';
+      const steep = st.kind === 'steep';
       const guards = [];
       const guard = (a, b) => guards.push({ id: `rekk-${counts.stairs}-${guards.length + 1}`, level: upper.id, line: [RP(a), RP(b)] });
       let top;
       let foot;
       let extra = {};
-      if (!u) {
+      if (quarter) {
+        // the rectangle is the whole L, as a plan draws it and the customer drags it: the top flight down one long side
+        // from the top end, the turn (a square of the flight's width) in the far corner, the foot flight along the far
+        // end to the other side (side 0: the top flight at the first top corner, the foot flight toward the second)
+        const N0 = topPts[0];
+        const N1 = topPts[1];
+        const e = unit(sub(N1, N0));
+        const B = dist(N0, N1);
+        const A = hi - lo;
+        const w = st.flight ?? Math.max(0.7, Math.min(1.0, Math.min(A, B) * 0.5));
+        if (B < w + 0.4 || A < w + 0.6) {
+          warnings.push(`${level.name}: den kvartsvingte trappa er for liten (${round(B, 2)} × ${round(A, 2)} m) for løp på ${round(w, 2)} m`);
+          continue;
+        }
+        const P = (acr, alg) => add(add(N0, mul(e, acr)), mul(dG, alg));
+        const first = !(st.side === 1);
+        top = { edge: (first ? [P(0, 0), P(w, 0)] : [P(B - w, 0), P(B, 0)]).map(RP), down: RP(dG) };
+        foot = first ? { edge: [P(B, A - w), P(B, A)].map(RP), down: RP(e) } : { edge: [P(0, A - w), P(0, A)].map(RP), down: RP(mul(e, -1)) };
+        extra = { winders: 'balanced' };
+        // guards: the hole's sides not along a wall; on the top side only the part beside the top flight (open down)
+        for (let i = 0; i < 4; i++) {
+          const p = hole[i];
+          const q = hole[(i + 1) % 4];
+          const isTop = Math.abs(along(p) - lo) < 1e-6 && Math.abs(along(q) - lo) < 1e-6;
+          if (onFace(p, q)) continue;
+          if (!isTop) guard(p, q);
+          else guard(...(first ? [P(w, 0), P(B, 0)] : [P(0, 0), P(B - w, 0)]));
+        }
+      } else if (!u) {
         top = { edge: topPts.map(RP), down: RP(dG) };
         foot = { edge: footPts.map(RP), down: RP(dG) };
         for (let i = 0; i < 4; i++) {
@@ -1165,16 +1208,17 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
       const W0 = dist(topPts[0], topPts[1]);
       const well0 = Math.min(0.2, Math.max(0.06, W0 * 0.06));
       const half0 = (W0 - well0) / 2;
-      const walk = u ? 2 * Math.max(0, hi - lo - half0) + (Math.PI * half0) / 2 + well0 : hi - lo;
+      const walk = u ? 2 * Math.max(0, hi - lo - half0) + (Math.PI * half0) / 2 + well0 : quarter ? (risers - 1) * 0.25 : hi - lo;
       const slope = (Math.atan2(rise, walk) * 180) / Math.PI;
       const maxSlope = (Math.acos(WALKABLE_NORMAL_Y) * 180) / Math.PI;
-      if (slope > maxSlope) warnings.push(`${level.name}: trappa er for bratt å gå i (${round(slope, 0)}° med ${round(walk, 2)} m ganglinje for ${round(rise, 2)} m; høyst ${round(maxSlope, 0)}°) – den trenger minst ${round(rise / Math.tan((maxSlope * Math.PI) / 180), 1)} m ganglinje`);
+      // (a steep stair is steep on purpose: the game climbs it up to its limit, notes/trapper.md)
+      if (slope > maxSlope && !steep) warnings.push(`${level.name}: trappa er for bratt å gå i (${round(slope, 0)}° med ${round(walk, 2)} m ganglinje for ${round(rise, 2)} m; høyst ${round(maxSlope, 0)}°) – den trenger minst ${round(rise / Math.tan((maxSlope * Math.PI) / 180), 1)} m ganglinje`);
       floorOpenings.push({ id: holeId, levelId: upper.id, roomId: room.id, stairId: id, polygon: hole, edgeBand: { color: '#f2efe8', depth: 0.3 }, estimated: ['polygon'] });
       stairs.push({
         id,
         name: 'Trapp',
         planbyggerId: st.id,
-        type: u ? 'half-turn-winder' : 'straight',
+        type: u ? 'half-turn-winder' : quarter ? 'quarter-turn-winder' : steep ? 'steep' : 'straight',
         fromLevel: below.id,
         toLevel: upper.id,
         openingId: holeId,
@@ -1184,15 +1228,160 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
         foot,
         ...extra,
         tread: { thickness: 0.04, nosing: 0.03, material: 'oak', color: '#bfab9b' },
-        openRisers: true,
+        // closed risers as in most Norwegian houses (F7)
+        openRisers: false,
+        riser: { color: '#f2efe8' },
         stringers: { color: '#1d1e21', thickness: 0.05, depth: 0.28 },
         guards,
-        guardStyle: { height: 1.0, stairHeight: 0.9, post: 0.065, baluster: 0.022, spacing: 0.13, topRail: [0.07, 0.05], color: '#1d1e21' },
+        // the posts end at the floor (hang 0): the owner's posts hang 0.45 m down, which looked wrong elsewhere (F12, F21, F42)
+        guardStyle: { height: 1.0, stairHeight: 0.9, post: 0.065, baluster: 0.022, spacing: 0.13, topRail: [0.07, 0.05], color: '#1d1e21', hang: 0 },
         estimated: ['*'],
-        source: `planbyggeren: ${u ? 'U-trapp' : 'rett trapp'} ${R(dist(topPts[0], topPts[1]))} × ${R(hi - lo)} m, ${risers} opptrinn à ${R(rise / risers)}`,
+        source: `planbyggeren: ${u ? 'U-trapp' : quarter ? 'kvartsvingt trapp' : steep ? 'bratt trapp' : 'rett trapp'} ${R(dist(topPts[0], topPts[1]))} × ${R(hi - lo)} m, ${risers} opptrinn à ${R(rise / risers)}`,
       });
     }
   });
+}
+
+/**
+ * The roof (notes/tak.md): over the top level, the type the facades show (doc.roof; a gable roof when there are no
+ * facades), one part per wing – the level's footprint (its rooms and outer walls) covered by up to three rectangles
+ * along the house's main axis, the largest first. A top level that is a loft (roof windows, «loft» in its name or its
+ * rooms) gets sloped ceilings (type 'roof', flat at the room's height as a collar beam) and knee walls of 1.2 m; any
+ * other top level keeps its flat ceilings with the roof resting on its walls.
+ */
+function exportRoofs({ doc, house, warnings, RP, R }) {
+  const levels = [...house.levels].sort((a, b) => b.floorY - a.floorY);
+  const top = levels[0];
+  if (!top) return;
+  const roomsHere = house.rooms.filter((r) => r.levelId === top.id);
+  const ids = new Set(roomsHere.map((r) => r.id));
+  const outer = house.walls.filter((w) => ids.has(w.roomId) && w.exterior && w.thickness > 0);
+  const slabs = house.walls.filter((w) => ids.has(w.roomId) && w.thickness > 0);
+  if (!roomsHere.length || !outer.length) return;
+  // the main axis: the longest outer wall
+  const longest = outer.reduce((b, w) => (dist(w.from, w.to) > dist(b.from, b.to) ? w : b));
+  const ax = unit(sub(longest.to, longest.from));
+  const ay = [-ax[1], ax[0]];
+  const toL = (p) => [dot(p, ax), dot(p, ay)];
+  const toG = (u, v) => add(mul(ax, u), mul(ay, v));
+  // the footprint in the main axis' frame: the rooms and the walls' slabs (behind the room face), inner walls too
+  const polys = [
+    ...roomsHere.map((r) => r.polygon.map(toL)),
+    ...slabs.map((w) => {
+      const n = w.normal ?? perp(unit(sub(w.to, w.from)));
+      const o = (p, k) => toL([p[0] - n[0] * k, p[1] - n[1] * k]);
+      return [o(w.from, 0), o(w.to, 0), o(w.to, w.thickness), o(w.from, w.thickness)];
+    }),
+  ];
+  const pts = polys.flat();
+  const u0 = Math.min(...pts.map((p) => p[0]));
+  const v0 = Math.min(...pts.map((p) => p[1]));
+  const CELL = 0.1;
+  const nu = Math.ceil((Math.max(...pts.map((p) => p[0])) - u0) / CELL);
+  const nv = Math.ceil((Math.max(...pts.map((p) => p[1])) - v0) / CELL);
+  if (!(nu > 0 && nv > 0) || nu * nv > 4e6) return;
+  const on = new Uint8Array(nu * nv);
+  for (let j = 0; j < nv; j++)
+    for (let i = 0; i < nu; i++) {
+      const c = [u0 + (i + 0.5) * CELL, v0 + (j + 0.5) * CELL];
+      if (polys.some((P) => pointInPolygon(c, P))) on[j * nu + i] = 1;
+    }
+  const total = on.reduce((s, x) => s + x, 0);
+  // a level that nearly fills its rectangle gets one roof over all of it (wings only for an L or a T)
+  const whole = total >= 0.85 * nu * nv;
+  // the largest rectangle of cells still to cover (histogram method), up to three while it pays off
+  const parts = [];
+  const left = Uint8Array.from(on);
+  if (whole) parts.push({ area: total, i0: 0, i1: nu, j0: 0, j1: nv });
+  for (let n = 0; n < 4 && !whole; n++) {
+    const hgt = new Int32Array(nu);
+    let best = null;
+    for (let j = 0; j < nv; j++) {
+      for (let i = 0; i < nu; i++) hgt[i] = left[j * nu + i] ? hgt[i] + 1 : 0;
+      const stack = [];
+      for (let i = 0; i <= nu; i++) {
+        const hh = i < nu ? hgt[i] : 0;
+        let start = i;
+        while (stack.length && stack[stack.length - 1][1] >= hh) {
+          const [si, sh] = stack.pop();
+          const area = sh * (i - si);
+          if (!best || area > best.area) best = { area, i0: si, i1: i, j0: j - sh + 1, j1: j + 1 };
+          start = si;
+        }
+        stack.push([start, hh]);
+      }
+    }
+    if (!best || best.area * CELL * CELL < 1) break;
+    parts.push(best);
+    for (let j = best.j0; j < best.j1; j++) for (let i = best.i0; i < best.i1; i++) left[j * nu + i] = 0;
+  }
+  // the wings are kept when every wall of the level stands inside one of them (a wall outside them stood under another
+  // part's overhang, where the roof comes down and cut it below its doors); else one roof over the level's rectangle.
+  // One roof over an L covered the empty corner too (F136)
+  const inPart = (q) => parts.some((p) => q[0] >= u0 + p.i0 * CELL - 0.12 && q[0] <= u0 + p.i1 * CELL + 0.12 && q[1] >= v0 + p.j0 * CELL - 0.12 && q[1] <= v0 + p.j1 * CELL + 0.12);
+  const wallsIn = slabs.every((w) => {
+    const n = w.normal ?? perp(unit(sub(w.to, w.from)));
+    const o = (p, k) => toL([p[0] - n[0] * k, p[1] - n[1] * k]);
+    return [o(w.from, 0), o(w.to, 0), o(w.from, w.thickness), o(w.to, w.thickness), o([(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2], w.thickness)].every(inPart);
+  });
+  if (!whole && (!wallsIn || parts.reduce((sum, p) => sum + p.area, 0) < 0.95 * total)) parts.splice(0, parts.length, { area: total, i0: 0, i1: nu, j0: 0, j1: nv });
+  if (!parts.length) return;
+  const kind = doc.roof?.type;
+  const type = kind === 'hip' || kind === 'mono-pitch' || kind === 'flat' ? kind : 'gable';
+  const loft = top.floorY > 0.5 && (/loft/i.test(top.name) || roomsHere.some((r) => /loft/i.test(r.name ?? '')) || house.ceilings.some((c) => ids.has(c.roomId) && c.skylights?.length));
+  // a loft under a gable or hip roof: knee walls of KNEE on the eave sides (along a part's longer side, the ridge's
+  // default), and a dormer (ark) over each window or door in them that reaches above the knee wall – the way the drawings
+  // show it (hus1 «gable-dormer», F126, F127, F129). Its front is on the wall's outer face, 0.3 m wider than the openings
+  const KNEE = 1.2;
+  const sloped = type === 'gable' || type === 'hip';
+  const dormersOf = (p) => {
+    const along = p.i1 - p.i0 >= p.j1 - p.j0 ? ax : ay;
+    const out = [];
+    for (const w of outer) {
+      const L = dist(w.from, w.to);
+      if (L < 0.1) continue;
+      const d = unit(sub(w.to, w.from));
+      if (Math.abs(dot(d, along)) < 0.9) continue;
+      const n = w.normal ?? perp(d);
+      const tall = (w.openings || []).filter((o) => (o.sill ?? 0) + (o.height ?? 0) > KNEE - 0.05).map((o) => [Math.max(0, o.offset - 0.3), Math.min(L, o.offset + o.width + 0.3)]).sort((x, y) => x[0] - y[0]);
+      const merged = [];
+      for (const iv of tall) {
+        const last = merged[merged.length - 1];
+        if (last && iv[0] <= last[1] + 0.2) last[1] = Math.max(last[1], iv[1]);
+        else merged.push([...iv]);
+      }
+      for (const [u0, u1] of merged) {
+        const P = (u) => [w.from[0] + d[0] * u - n[0] * w.thickness, w.from[1] + d[1] * u - n[1] * w.thickness];
+        const top = Math.max(...(w.openings || []).filter((o) => o.offset < u1 && o.offset + o.width > u0).map((o) => (o.sill ?? 0) + (o.height ?? 0)));
+        out.push({ id: `ark-${w.id}-${out.length + 1}`, type: 'gable', front: [P(u0), P(u1)].map(RP), height: R(Math.max(2.2, top + 0.15)) });
+      }
+    }
+    return out;
+  };
+  house.roofs = parts.map((p, i) => {
+    const a = toG(u0 + p.i0 * CELL, v0 + p.j0 * CELL);
+    const b = toG(u0 + p.i1 * CELL, v0 + p.j0 * CELL);
+    const c = toG(u0 + p.i1 * CELL, v0 + p.j1 * CELL);
+    const d = toG(u0 + p.i0 * CELL, v0 + p.j1 * CELL);
+    const dormers = loft && sloped && parts.length === 1 ? dormersOf(p) : [];
+    return {
+      id: `roof-${i + 1}`,
+      type,
+      levelId: top.id,
+      outline: [a, b, c, d].map(RP),
+      ...(loft && sloped ? { kneeHeight: KNEE } : {}),
+      // small overhangs, as the facade drawings show them (F137)
+      overhang: type === 'flat' ? 0.15 : 0.25,
+      vergeOverhang: 0.1,
+      ...(dormers.length ? { dormers } : {}),
+      estimated: ['*'],
+      source: `planbyggeren: ${kind ? `takformen fra fasadene (${kind})` : 'saltak (ingen fasader)'}${parts.length > 1 ? `, fløy ${i + 1} av ${parts.length}` : ''}${loft && sloped ? `, loft med knevegg ${KNEE} m${dormers.length ? ` og ${dormers.length} ark${dormers.length > 1 ? 'er' : ''}` : ''}` : ''}`,
+    };
+  });
+  // sloped ceilings in a loft (flat at the room's height where the roof is higher, a collar beam)
+  if (loft) for (const c of house.ceilings) if (ids.has(c.roomId)) Object.assign(c, { type: 'roof' });
+  const covered = parts.reduce((s, p) => s + p.area, 0) / total;
+  if (covered < 0.9) warnings.push(`${top.name}: taket dekker bare ${Math.round(covered * 100)} % av etasjen (huset har en form med mer enn tre fløyer)`);
 }
 
 /** An 00-ids.json for a generated house: its levels, rooms and light groups, the game's schema. */

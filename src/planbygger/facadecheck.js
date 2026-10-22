@@ -482,7 +482,16 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
       const k2 = key(op);
       const grp = svg('g', { class: `fc-op${selected === k2 ? ' is-selected' : ''}${checked.has(k2) ? ' is-checked' : ''}`, 'data-key': k2 });
       if (op.win) drawWindow(grp, x0, yT, x1, yB, windowSashes(f.o.style, f.o.width, op.height, op.sill), f.o.panes);
-      else drawDoor(grp, x0, yT, x1, yB, doorType(f.o));
+      else {
+        // its sidelights as fixed glass beside the leaf (the plan's start side is on the right when the facade runs b → a)
+        const sl = f.o.sidelights || [];
+        const px = (sd) => (sl.find((x) => x.side === sd)?.width ?? 0) * k;
+        const [wl, wr] = op.flip ? [px('end'), px('start')] : [px('start'), px('end')];
+        const fixed = [{ from: 0, to: 1, bottom: 0, top: 1, opening: false }];
+        if (wl) drawWindow(grp, x0, yT, x0 + wl, yB, fixed, null);
+        if (wr) drawWindow(grp, x1 - wr, yT, x1, yB, fixed, null);
+        drawDoor(grp, x0 + wl, yT, x1 - wr, yB, doorType(f.o));
+      }
       grp.append(svg('rect', { x: x0 - 5, y: yT - 5, width: x1 - x0 + 10, height: yB - yT + 10, rx: 4, class: 'fc-hit' }));
       grp.append(svg('circle', { cx: x0, cy: yT, r: 8, class: 'fc-num' }), svg('text', { x: x0, y: yT + 3.5, class: 'fc-num-text' }, numberOf.get(k2)));
       g.append(grp);
@@ -606,7 +615,12 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     panel.scrollTop = scroll;
   }
 
-  /** The card of the clicked window or door, beside it on the drawing. */
+  /**
+   * The card of the clicked window or door: its measures and type, ‹ › through the facade's windows and doors (top
+   * level first, left to right – F121), the ticked ones changed together when it is one of them (F120), and a window
+   * next to a door joined to it as a sidelight in the same frame (F122, F123). It stands beside the drawing when there is
+   * room, so it does not cover the windows under it (F119), else beside the window.
+   */
   function renderPop(doc, F, numberOf) {
     const op = popKey && F.openings.find((o) => key(o) === popKey);
     const f = op && find(doc, op.level, op.id);
@@ -615,9 +629,18 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
       pop.hidden = true;
       return;
     }
-    const { o } = f;
+    const { o, L, w } = f;
     const S = settings();
     const k = popKey;
+    // the ticked ones on this facade, when this is one of them
+    const tickedHere = [...checked].filter((x) => F.openings.some((q) => key(q) === x));
+    const targets = checked.has(k) && tickedHere.length >= 2 ? tickedHere : [k];
+    const many = targets.length > 1;
+    // the order of the facade, as numbered
+    const order = [...numberOf.entries()].sort((a, b) => Number(a[1]) - Number(b[1])).map(([x]) => x);
+    const at = order.indexOf(k);
+    const facadesNow = buildFacades(doc);
+    const lastFacade = facadesNow.findIndex((x) => x.key === side) === facadesNow.length - 1;
     pop.innerHTML = '';
     const pick = (options, current, onPick) =>
       h('div', { class: 'fc-picks' }, options.map(([value, label, drawFn]) => {
@@ -629,38 +652,73 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     const tw = 20 * Math.sqrt(ratio);
     const th = 20 / Math.sqrt(ratio);
     const thumb = (fn) => (t) => fn(t, 28 - tw, 26 - th, 28 + tw, 26 + th);
-    pop.append(h('div', { class: 'fc-pop-head' }, h('span', { class: 'fc-row-num' }, numberOf.get(k)),
-      h('div', {}, h('strong', {}, op.win ? 'Vindu' : 'Dør'), h('span', {}, op.levelName)),
+    const add = (...els) => pop.append(...els.filter(Boolean));
+    add(h('div', { class: 'fc-pop-head' }, h('span', { class: 'fc-row-num' }, numberOf.get(k)),
+      h('div', {}, h('strong', {}, `${op.win ? 'Vindu' : 'Dør'} ${at + 1} av ${order.length}`), h('span', {}, many ? `Endrer alle ${targets.length} valgte` : op.levelName)),
       h('button', { class: 'fc-pop-close', title: 'Lukk (Esc)', onclick: () => ((popKey = null), render()) }, '×')));
-    pop.append(h('div', { class: 'fc-row-fields' },
-      h('label', {}, h('span', {}, 'Bredde'), cmInput(o.width, 30, 800, (v) => applyTo([k], 'Bredde', setWidth(v)))),
-      h('label', {}, h('span', {}, 'Høyde'), cmInput(op.height, op.win ? 20 : 160, op.win ? 350 : 340, (v) => applyTo([k], op.win ? 'Vindushøyde' : 'Dørhøyde', setHeight(v)))),
-      op.win ? h('label', {}, h('span', {}, 'Brystning'), cmInput(op.sill, 0, 250, (v) => applyTo([k], 'Brystning', ({ o: x }) => (x.sill = round(v, 3))))) : h('span')));
+    add(h('div', { class: 'fc-row-fields' },
+      h('label', {}, h('span', {}, 'Bredde'), cmInput(o.width, 30, 800, (v) => applyTo(targets, 'Bredde', setWidth(v)))),
+      h('label', {}, h('span', {}, 'Høyde'), cmInput(op.height, op.win ? 20 : 160, op.win ? 350 : 340, (v) => applyTo(targets, op.win ? 'Vindushøyde' : 'Dørhøyde', setHeight(v)))),
+      op.win ? h('label', {}, h('span', {}, 'Brystning'), cmInput(op.sill, 0, 250, (v) => applyTo(targets, 'Brystning', ({ o: x }) => (x.sill = round(v, 3))))) : h('span')));
     if (op.win) {
       const top = op.sill + op.height;
-      const same = doc.levels.find((l) => l.id === op.level)?.openings.filter((x) => x !== o && x.type === 'window') ?? [];
-      pop.append(
+      const same = L.openings.filter((x) => x !== o && x.type === 'window');
+      // a door beside it on the same wall: the window can be its sidelight, in the door's frame
+      const door = w?.exterior && L.openings.find((x) => x.type === 'door' && x.wall === o.wall && !x.variant && Math.abs(x.at - o.at) - (x.width + o.width) / 2 < 0.35 && !(x.sidelights || []).some((sl) => sl.side === (o.at < x.at ? 'start' : 'end')));
+      add(
         h('label', { class: 'fc-check-line' }, h('input', { type: 'checkbox', checked: keepTop, onchange: (e) => ((keepTop = e.target.checked), render()) }), `Hold overkanten fast (${cm(top)} cm over gulvet) når høyden endres`),
         same.length ? h('button', { class: 'pb-btn is-small fc-align', onclick: () =>
           applyTo(same.map((x) => `${op.level}:${x.id}`), 'Lik overkant', ({ o: x }) => {
             x.sill = round(Math.max(0, top - (x.height ?? S.windowHeight)), 3);
           }) }, `Samme overkant på de ${same.length} andre vinduene i ${op.levelName.toLowerCase()}`) : null,
+        door ? h('button', { class: 'pb-btn is-small fc-align', title: 'Vinduet blir et glassfelt helt ned i dørkarmen', onclick: () => {
+          onChange('Sidefelt i døra', () => {
+            const g = find(getDoc(), op.level, op.id);
+            const d = g?.L.openings.find((x) => x.id === door.id);
+            if (!g || !d) return;
+            const lo = Math.min(d.at - d.width / 2, g.o.at - g.o.width / 2);
+            const hi = Math.max(d.at + d.width / 2, g.o.at + g.o.width / 2);
+            (d.sidelights ||= []).push({ side: g.o.at < d.at ? 'start' : 'end', width: round(g.o.width + Math.max(0, Math.abs(d.at - g.o.at) - (d.width + g.o.width) / 2), 3) });
+            d.at = round((lo + hi) / 2, 4);
+            d.width = round(hi - lo, 3);
+            g.L.openings = g.L.openings.filter((x) => x !== g.o);
+          });
+          changed = true;
+          popKey = `${op.level}:${door.id}`;
+          selected = popKey;
+          render();
+        } }, 'Slå sammen med døra (sidefelt i samme karm)') : null,
         h('h5', {}, 'Type'),
-        pick(WINDOW_STYLES.map(([v, label]) => [v, label.replace(' (etter bredden)', ''), thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, windowSashes(v, o.width, op.height, op.sill), null))]), o.style ?? 'auto', (v) => applyTo([k], 'Vindustype', setStyle(v))),
+        pick(WINDOW_STYLES.map(([v, label]) => [v, label.replace(' (etter bredden)', ''), thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, windowSashes(v, o.width, op.height, op.sill), null))]), o.style ?? 'auto', (v) => applyTo(targets, 'Vindustype', setStyle(v))),
         h('h5', {}, 'Sprosser'),
-        pick(PANES.map(([v, label, p]) => [v, label, thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, [{ from: 0, to: 1, bottom: 0, top: 1 }], p))]), Array.isArray(o.panes) ? `${o.panes[0]}x${o.panes[1]}` : '0', (v) => applyTo([k], 'Sprosser', setPanes(v))));
+        pick(PANES.map(([v, label, p]) => [v, label, thumb((t, a, b, c, d) => drawWindow(t, a, b, c, d, [{ from: 0, to: 1, bottom: 0, top: 1 }], p))]), Array.isArray(o.panes) ? `${o.panes[0]}x${o.panes[1]}` : '0', (v) => applyTo(targets, 'Sprosser', setPanes(v))));
     } else {
-      pop.append(h('h5', {}, 'Type'),
-        pick(DOOR_TYPES.map(([v, label]) => [v, label, (t) => drawDoor(t, 16, 6, 40, 48, v)]), doorType(o), (v) => applyTo([k], 'Dørtype', ({ o: x }) => setDoorType(x, v, S))),
+      add(h('h5', {}, 'Type'),
+        pick(DOOR_TYPES.map(([v, label]) => [v, label, (t) => drawDoor(t, 16, 6, 40, 48, v)]), doorType(o), (v) => applyTo(targets, 'Dørtype', ({ o: x }) => setDoorType(x, v, S))),
+        (o.sidelights || []).length ? h('p', { class: 'fc-note' }, `${o.sidelights.length === 1 ? 'Ett sidefelt' : 'To sidefelt'} i karmen. Angre med Ctrl+Z for å skille dem ut igjen.`) : null,
         doorType(o) === 'patio' && o.width < 1.35 ? h('p', { class: 'fc-note' }, 'En glass-skyvedør trenger minst 135 cm. Smalere blir den en skyvedør på skinne.') : null);
     }
-    pop.append(h('p', { class: 'fc-note' }, 'Dra vinduet eller døra på tegningen for å flytte den langs veggen.'));
-    // beside it: to the right, or to the left when there is no room, within the window
+    // ‹ › through the facade, and on to the next facade after its last one
+    const goTo = (x) => {
+      popKey = selected = x;
+      render();
+    };
+    add(h('div', { class: 'fc-pop-nav' },
+      h('button', { class: 'pb-btn', disabled: at <= 0, onclick: () => goTo(order[at - 1]) }, '‹ Forrige'),
+      at < order.length - 1
+        ? h('button', { class: 'pb-btn is-primary', onclick: () => goTo(order[at + 1]) }, 'Neste ›')
+        : h('button', { class: 'pb-btn is-primary', onclick: () => go(1) }, lastFacade ? 'Ferdig – bygg 3D-huset' : 'Neste fasade ›')));
+    // beside the drawing when there is room (it would cover the windows near this one), else beside the window
     pop.hidden = false;
     const r = grp.getBoundingClientRect();
+    const sheetBox = view.g.getBoundingClientRect();
+    const stageBox = stage.getBoundingClientRect();
     const pw = pop.offsetWidth;
     const ph = pop.offsetHeight;
-    const left = r.right + 14 + pw < window.innerWidth - 8 ? r.right + 14 : Math.max(8, r.left - 14 - pw);
+    let left;
+    if (stageBox.right - sheetBox.right >= pw + 20) left = sheetBox.right + 12;
+    else if (sheetBox.left - stageBox.left >= pw + 20) left = sheetBox.left - 12 - pw;
+    else left = r.right + 14 + pw < window.innerWidth - 8 ? r.right + 14 : Math.max(8, r.left - 14 - pw);
     const top = Math.max(70, Math.min(window.innerHeight - ph - 10, r.top + r.height / 2 - ph / 2));
     pop.style.left = `${left}px`;
     pop.style.top = `${top}px`;

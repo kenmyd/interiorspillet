@@ -27,7 +27,7 @@
  *                 open zones (a hall and a living room); they split rooms (regions.js findRooms(walls, { separators }))
  *                 and are no walls
  *       rooms:    [{ id, name, kind, seed: [x, y], ceiling?, floor? }]      labels; the polygons are found (regions.js)
- *       stairs:   [{ id, rect: [[x0, y0], [x1, y1]], axis: 'x'|'y', down: 1|-1, kind?: 'straight'|'u', side?: 0|1 }]
+ *       stairs:   [{ id, rect: [[x0, y0], [x1, y1]], axis: 'x'|'y', down: 1|-1, kind?: 'straight'|'u'|'l'|'steep', side?: 0|1, flight? }]
  *                 a stair from this level
  *                 down to the level under it: rect = the hole in this floor, axis / down = the direction it descends
  *     }],

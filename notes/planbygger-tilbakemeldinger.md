@@ -848,19 +848,136 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – plantegning.png, plantegning_kjeller.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F118.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F118.json`
-- **Status:** ny
+- **Status:** rettet (prøvd ved å gå) – kjelleren står fritt på siden med kjellerdøra (uten dør: der vinduene er lave): en senket uteplass i kjellerhøyde, skråning opp til bakken og støttemurer på sidene. Figuren går ut kjellerdøra og opp i hagen.
 
 ### F119 – Når jeg veler vindu i 1etg og så er jeg ferdig og trykker på vinduet p
 - **Tekst:** Når jeg veler vindu i 1etg og så er jeg ferdig og trykker på vinduet på fasaden i kjeller for og velge det. det går ikke an må trykke på vinduet i høyre meny først. slik kan vi ikke ha det
 - **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F119.json`
-- **Status:** ny
+- **Status:** rettet – kortet står ved siden av tegningen når det er plass, så det dekker ikke vinduene under; ellers ved vinduet.
 
 ### F120 – Når jeg velger to vindu og trykker på fast glass feks så bør begge end
 - **Tekst:** Når jeg velger to vindu og trykker på fast glass feks så bør begge endres og samme når jeg justerer målene så bør begges endres. det skjer ikke
 - **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F120.json`
-- **Status:** ny
+- **Status:** rettet – når vinduet du klikker er avkrysset sammen med andre, endrer kortet alle de valgte (mål, type, sprosser).
+
+### F121 – bra med popup, men her burde det vært en neste knapp på selve popupen 
+- **Tekst:** bra med popup, men her burde det vært en neste knapp på selve popupen og at den da velger vindu først øverste etasje fra venstre til høyre så etasjen under osv
+- **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F121.json`
+- **Status:** rettet – «‹ Forrige» og «Neste ›» i kortet, øverste etasje først fra venstre mot høyre, og «Neste fasade ›» etter det siste.
+
+### F122 – får fotsatt ikke dratt disse vinduene sammen med døra. det er jo egent
+- **Tekst:** får fotsatt ikke dratt disse vinduene sammen med døra. det er jo egentlig dør og vindusfelt i samme karm så jeg burde kunne dra dem nærme og kombinere vinduene med døra
+- **Hvor:** fasadesjekk – plantegning.png, plantegning_kjeller.png
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F122.json`
+- **Status:** rettet – et vindu inntil en dør i en yttervegg får knappen «Slå sammen med døra (sidefelt i samme karm)»; døra får et glassfelt helt ned på den siden.
+
+### F123 – det var dette jeg meldte feil om i editoren at disse vinduene egentlig
+- **Tekst:** det var dette jeg meldte feil om i editoren at disse vinduene egentlig skal henge sammen med døra
+- **Hvor:** 3D (går rundt) – plantegning.png, plantegning_kjeller.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F123.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F123.json`
+- **Status:** rettet med F122.
+
+### F124 – taket vises ikke her
+- **Tekst:** taket vises ikke her
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade2.avif, fasade4.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F124.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F124.json`
+- **Status:** som forventet – dukkehuset viser rommene uten tak; «Vis taket» viser huset med tak.
+
+### F125 – trappa ble generert feil vei
+- **Tekst:** trappa ble generert feil vei
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade2.avif, fasade4.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F125.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F125.json`
+- **Status:** rettet – en kvartsvingt trapp fra tegningen ble snudd feil; den blir U som før, og «Kvartsvingt» velges i «Trapp» der retningen ses.
+
+### F126 – ble ikke generert innvednig skråtak
+- **Tekst:** ble ikke generert innvednig skråtak
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade2.avif, fasade4.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F126.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F126.json`
+- **Status:** rettet – loftet får skrå himling med knevegg 1,2 m, og arker over vinduene og dørene i langveggene.
+
+### F127 – ble ikke generert knevegger slik som er tegnet inn
+- **Tekst:** ble ikke generert knevegger slik som er tegnet inn
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade2.avif, fasade4.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F127.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F127.json`
+- **Status:** rettet med F126.
+
+### F128 – fasaden her stemmer ikke med fasade1.avif
+- **Tekst:** fasaden her stemmer ikke med fasade1.avif
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade2.avif, fasade4.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F128.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F128.json`
+- **Status:** trolig rettet med F126 (2. etasje fikk full takhøyde); meld igjen om fasaden fortsatt avviker.
+
+### F129 – fasade stemmer ikke. det er på grunn av den har tatt full takhøyde i 2
+- **Tekst:** fasade stemmer ikke. det er på grunn av den har tatt full takhøyde i 2.etg noe som ikke stemmer. der skal det være skråtak med knevegger
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade2.avif, fasade4.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F129.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F129.json`
+- **Status:** rettet med F126.
+
+### F130 – spør fortsatt hva dette rommet heter som bare er trappa som går til st
+- **Tekst:** spør fortsatt hva dette rommet heter som bare er trappa som går til stue kjøkken
+- **Hvor:** veiviser – 2etg.avif, 1etg.avif, fasade3.avif, fasade4.avif, fasade2.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F130.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F130.json`
+- **Status:** kjent (K14) – trappestykket som eget rom; til neste runde med gjenkjenning.
+
+### F131 – dette henger sammen med stue og kjøkkenså bør ikke spør om dette
+- **Tekst:** dette henger sammen med stue og kjøkkenså bør ikke spør om dette
+- **Hvor:** veiviser – 2etg.avif, 1etg.avif, fasade3.avif, fasade4.avif, fasade2.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F131.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F131.json`
+- **Status:** kjent (K14).
+
+### F132 – må få laget til flere typer kledning. for eksempel dette huset har lit
+- **Tekst:** må få laget til flere typer kledning. for eksempel dette huset har litt forskjellig.
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade3.avif, fasade4.avif, fasade2.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F132.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F132.json`
+- **Status:** forslag til egen økt – flere kledningstyper og fasadeplater i motoren.
+
+### F133 – må få lagt inn genmerering av terrasser og rekkverk både i tre og glas
+- **Tekst:** må få lagt inn genmerering av terrasser og rekkverk både i tre og glass
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade3.avif, fasade4.avif, fasade2.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F133.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F133.json`
+- **Status:** forslag til egen økt – terrasser og rekkverk i tre og glass.
+
+### F134 – denne delen er sikkert en form for fasadeplater
+- **Tekst:** denne delen er sikkert en form for fasadeplater
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade3.avif, fasade4.avif, fasade2.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F134.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F134.json`
+- **Status:** forslag til egen økt (som F132).
+
+### F135 – ser taket på dette huset er veldig feil. Modellen sliter nok med og sk
+- **Tekst:** ser taket på dette huset er veldig feil. Modellen sliter nok med og skjønne den type fasadetegning
+- **Hvor:** 3D (dukkehus) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F135.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F135.json`
+- **Status:** til fasade-runden – takformen leses feil fra hus2s fasadeark.
+
+### F136 – ja dette taker er faktisk helt feil.
+- **Tekst:** ja dette taker er faktisk helt feil.
+- **Hvor:** 3D (dukkehus) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F136.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F136.json`
+- **Status:** kjent (K16) – hus2 har en form med flere fløyer og innhakk; takdelene dekket ikke alle veggene, så det ble ett tak over hele rektangelet.
+
+### F137 – dette taket klarte den bedre, men på fasadetegnignene ser det ut ikke 
+- **Tekst:** dette taket klarte den bedre, men på fasadetegnignene ser det ut ikke ut som det er så store utstikk. Det ser nesten ikke ut som det er utstikk i det hele tatt
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F137.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F137.json`
+- **Status:** rettet – utstikket er 25 cm ved takfoten og 10 cm ved gavlene (var 50 og 30).
 
 ---
 
@@ -929,6 +1046,10 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 ### K15 – små hakk i romkanten blir stolper og trinn i veggen (F96, F97, hus7)
 - **Hvorfor:** romkanten har et hakk på noen centimeter nær et hjørne (veggtykkelsen målt litt ulikt på to stykker), og byggeren lager et kort veggstykke som stikker ut.
 - **Status:** til neste runde: rett ut hakk under ca. 10 cm i rompolygonene før eksporten.
+
+### K16 – tak over hus med flere fløyer og innhakk (F135, F136)
+- **Hvorfor:** taket deles i rektangler langs husets akse. Et rent L- eller T-hus får én takdel per fløy, men en form med innhakk (hus2) gir deler som ikke dekker alle veggene; da blir det ett tak over hele rektangelet, også over hjørnet der det ikke er hus.
+- **Status:** til tak-runden: bedre oppdeling (flere deler, kilrenner) og takformen per fløy fra fasadene.
 ---
 
 ## Ideer: forbedringer og nye funksjoner

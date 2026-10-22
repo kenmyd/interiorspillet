@@ -1598,6 +1598,7 @@ select {
   fill: rgba(255, 181, 46, 0.12);
 }
 .sp-tread {
+  fill: none;
   stroke: #6f7275;
   stroke-width: 0.8;
 }
@@ -1964,4 +1965,15 @@ select {
 }
 .fc-op:active {
   cursor: grabbing;
+}
+.fc-pop-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--pb-line);
+}
+.fc-pop-nav .pb-btn:disabled {
+  opacity: 0.4;
 }
