@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Interiørspillet – takdetaljer</title>
+    <link rel="icon" href="data:," />
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #cfdbe6; color: #222; font: 12px system-ui, sans-serif; }
+      canvas { display: block; }
+      #bar { position: fixed; left: 8px; top: 8px; display: flex; flex-wrap: wrap; gap: 4px; z-index: 3; max-width: calc(100% - 16px); }
+      #bar button { font: 600 12px system-ui, sans-serif; padding: 5px 9px; border: 0; border-radius: 4px; background: #fffe; color: #222; cursor: pointer; box-shadow: 0 1px 3px #0003; }
+      #bar button.on { background: #2b5f8a; color: #fff; }
+      #info { position: fixed; left: 8px; bottom: 8px; background: #fffd; padding: 4px 8px; border-radius: 4px; pointer-events: none; white-space: pre; z-index: 2; }
+      #labels { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+      .lbl { position: absolute; transform: translate(-50%, -100%); padding: 2px 6px; border-radius: 3px; background: #fffd; color: #222; font: 600 11px system-ui, sans-serif; white-space: nowrap; box-shadow: 0 1px 3px #0003; }
+    </style>
+    <script>
+      // public/ files are served from the app root: dev pages live one folder down
+      window.__ASSET_BASE__ = '../';
+    </script>
+  </head>
+  <body>
+    <div id="bar"></div>
+    <div id="labels"></div>
+    <div id="info"></div>
+    <script type="module" src="/src/dev/takdetaljer.js"></script>
+  </body>
+</html>

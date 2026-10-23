@@ -4,11 +4,12 @@ import { paint, mat, emissive } from './materials.js';
 import { basis, MeshBatcher, prismX } from '../world/buildKit.js';
 import {
   UP, wallMatrix, openingMatrix, groupGeometry, wallLayer, mergeNotches, profileAt, profileSlice, floorGeometry,
-  ceilingGeometry, glassMaterial, frostedGlassMaterial, buildWindow, rectCells, FRAME_INSET,
+  ceilingGeometry, glassMaterial, frostedGlassMaterial, buildWindow, rectCells, FRAME_INSET, quadPrism,
 } from './wallkit.js';
 import { buildDoor } from './doors.js';
 import { claddingMaterial, ledStrip } from './shell.js';
 import { buildRoofs } from './roof.js';
+import { buildChimneys } from './chimney.js';
 import { buildDecks } from './decks.js';
 import { claddingPiece, gableLine } from './cladding.js';
 import { finishAt, finishKey } from './claddinggeom.js';
@@ -114,7 +115,7 @@ function mergeHoles(holes) {
   const out = [];
   for (const h of [...holes].sort((a, b) => a.x0 - b.x0)) {
     const p = out[out.length - 1];
-    if (p && h.x0 <= p.x1 + 1e-4 && Math.abs(h.y0 - p.y0) < 1e-4 && Math.abs(h.y1 - p.y1) < 1e-4) p.x1 = Math.max(p.x1, h.x1);
+    if (p && h.x0 <= p.x1 + 1e-4 && Math.abs(h.y0 - p.y0) < 1e-4 && Math.abs(h.y1 - p.y1) < 1e-4 && h.y1b == null && p.y1b == null) p.x1 = Math.max(p.x1, h.x1);
     else out.push({ ...h });
   }
   return out;
@@ -528,9 +529,11 @@ export function buildRooms(ctx, layout, M = null) {
     const outerAll = [];
     for (const o of w.openings) {
       const y0 = o.sill - (o.sillBoard ? o.sillBoard.thickness ?? 0.025 : 0);
-      if (o.sill <= EPS) notchesAll.push({ x0: o.u0, x1: o.u1, y1: o.top });
-      else holesAll.push({ x0: o.u0, x1: o.u1, y0, y1: o.top });
-      outerAll.push({ x0: o.u0, x1: o.u1, y0: Math.max(o.sill <= EPS ? bottom : 0, y0), y1: o.top, door: o.sill <= EPS, frameColor: String(o.frame?.color ?? LOOK.frame).toLowerCase() });
+      // a sloped top (notes/vindusmodeller.md): y1 at u0, y1b at u1 (ta / tb on the outer layer, y1 its bounding top)
+      const st = o.topSlope ? { y1: o.topU0, y1b: o.topU1 } : { y1: o.top };
+      if (o.sill <= EPS) notchesAll.push({ x0: o.u0, x1: o.u1, ...st });
+      else holesAll.push({ x0: o.u0, x1: o.u1, y0, ...st });
+      outerAll.push({ x0: o.u0, x1: o.u1, y0: Math.max(o.sill <= EPS ? bottom : 0, y0), y1: o.top, ...(o.topSlope ? { ta: o.topU0, tb: o.topU1 } : {}), door: o.sill <= EPS, frameColor: String(o.frame?.color ?? LOOK.frame).toLowerCase() });
     }
     const notches = mergeNotches(notchesAll);
     // pieces: cut at the ends of the faces on the back (never inside an opening)
@@ -638,8 +641,9 @@ export function buildRooms(ctx, layout, M = null) {
         // the outer layer reaches below the floor: a door is a hole in it from the floor up (as in the shell), so the
         // facade stays closed under the threshold; only a layer that starts at the floor gets a notch
         const asHole = (h) => !h.door || oBottom < -EPS;
-        const oHoles = mergeHoles(outerAll.filter((h) => asHole(h) && h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ ...h, y0: h.door ? 0 : h.y0 })));
-        const oNotches = mergeNotches(outerAll.filter((h) => !asHole(h) && inPiece(h)).map((h) => ({ x0: h.x0, x1: h.x1, y1: h.y1 }))).map(clip);
+        const shapeTop = (h) => (h.ta != null ? { y1: h.ta, y1b: h.tb } : { y1: h.y1 });
+        const oHoles = mergeHoles(outerAll.filter((h) => asHole(h) && h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ x0: h.x0, x1: h.x1, y0: h.door ? 0 : h.y0, ...shapeTop(h) })));
+        const oNotches = mergeNotches(outerAll.filter((h) => !asHole(h) && inPiece(h)).map((h) => ({ x0: h.x0, x1: h.x1, ...shapeTop(h) }))).map(clip);
         const gOut = wallLayer({ L: b - a, bottom: oBottom, top: oTop, notches: oNotches, holes: oHoles, z0: -t, z1: -rd, kStart: kS, kEnd: kE });
         if (CL && !face) {
           // the house's cladding: bands per zone / gable / plinth, flashings, corner boards, surrounds (cladding.js)
@@ -802,9 +806,18 @@ export function buildRooms(ctx, layout, M = null) {
       const y0 = -(o.sillBoard ? o.sillBoard.thickness ?? 0.025 : 0);
       const W = o.width, Hh = o.height, d = o.revealDepth;
       const s = 0.004;
-      f.box(s, Hh - y0, d, -W / 2 + s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
-      f.box(s, Hh - y0, d, W / 2 - s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
-      f.box(W - 2 * s, s, d, 0, Hh - s / 2, -d / 2, lm, { collide: false });
+      if (o.topSlope) {
+        // under a sloped top (notes/vindusmodeller.md): the sides up to it, the head along it
+        const k = o.topSlope;
+        const top = (x) => Hh - Math.abs(k) * (k > 0 ? W / 2 - x : x + W / 2);
+        const ds = s * Math.sqrt(1 + k * k);
+        for (const [a, b] of [[-W / 2, -W / 2 + s], [W / 2 - s, W / 2]]) quadPrism(f, [[a, y0], [b, y0], [b, top(b) - ds], [a, top(a) - ds]], -d, 0, lm, { collide: false });
+        quadPrism(f, [[-W / 2, top(-W / 2) - ds], [W / 2, top(W / 2) - ds], [W / 2, top(W / 2)], [-W / 2, top(-W / 2)]], -d, 0, lm, { collide: false });
+      } else {
+        f.box(s, Hh - y0, d, -W / 2 + s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
+        f.box(s, Hh - y0, d, W / 2 - s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
+        f.box(W - 2 * s, s, d, 0, Hh - s / 2, -d / 2, lm, { collide: false });
+      }
       if (!o.sillBoard && !revealFloor) f.box(W - 2 * s, s, d, 0, y0 + s / 2, -d / 2, lm, { collide: false });
     }
     const anchor = new THREE.Group();
@@ -988,6 +1001,15 @@ export function buildRooms(ctx, layout, M = null) {
       pickables.ceilings.push(m);
     }
     for (const l of built.linings) skylightLinings.push(l);
+  }
+  // ---- the chimneys (notes/tak.md «Piper», chimney.js): inside a box per level with its collider, the part over the
+  //      roof hidden with the ceilings and the roofs
+  if (H.chimneys?.length) {
+    const levelIds = new Set(rooms.map((r) => r.levelId));
+    const list = H.chimneys.filter((c) => levelIds.has(c.outsideLevelId) || c.pieces.some((p) => levelIds.has(p.levelId)));
+    const built = buildChimneys({ ...H, chimneys: list }, { roots: ctx?.roots?.levels, fallback: group, keep, quality });
+    for (const m of built.meshes) pickables.ceilings.push(m);
+    colliders.push(...built.colliders);
   }
   // ---- the decks (notes/kledning.md, decks.js): terraces, balconies, porches, roof terraces with railings and stairs
   if (H.decks?.length) {

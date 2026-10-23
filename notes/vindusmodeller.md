@@ -28,6 +28,7 @@ Et vindu er en åpning med `type: 'window'` i `walls[].openings[]`. Hullet er so
 | `frame.mullion` | `max(0.03, 0.6 × frame.width)` | Bredden på posten (loddrett) eller losholtet (vannrett) der to felt møtes. |
 | `revealFloor` | `true` når `sill` er 0 og det ikke er noen `sillBoard` | Rommets gulv går ut til karmen. Gjelder bare vinduer som står på gulvet. |
 | `reveal`, `sillBoard`, `frosted` | som før | Lysningens dybde og farge, vinduskarmplata og frostet glass. |
+| `topSlope` | – (vannrett) | Skrå overkant: grader (−80 til 80), stigende mot høyre sett fra rommet, eller `'follow-roof'` (parallelt med veggens topp over vinduet). Se «Skrå overkant» under. |
 
 Hvert felt i `sashes`:
 
@@ -65,6 +66,49 @@ Formen er bare `width`, `height` og `sill`, og inndelingen kommer i tillegg:
 - **Smalt og høyt:** `width: 0.45, height: 1.8, sill: 0.5`.
 - **Lite og firkantet:** `width: 0.6, height: 0.6, sill: 1.4`.
 - **Helt ned til gulvet:** `sill: 0`, uten `sillBoard`. Toppen kan gå opp til veggens høyde.
+- **Skrå overkant** langs taket: `topSlope`, se under.
+
+## Skrå overkant: `topSlope`
+
+Et vindu i en vegg under et skrått tak (en gavl, en vegg under et pulttak, som på hus4 og hus5) kan ha overkanten
+parallell med takfallet. Karmen, rammene, glasset, sprossene, hullet i veggen, hullet i kledningen, omrammingen
+(`cladding.trim.surrounds`) og foringen i lysningen følger skråningen. Et vindu uten `topSlope` bygges nøyaktig som før.
+
+- `topSlope: 'follow-roof'`: overkanten følger veggens topp over vinduet (linja mellom toppen ved de to sidene). Under et
+  tak (`roofs`) er veggens topp himlingen, så overkanten blir parallell med takfallet. Knekker veggens topp over
+  vinduet (mønet i en gavl), følger overkanten linja mellom endene, og validatoren varsler.
+- `topSlope: 20` (grader): overkanten stiger 20° mot høyre sett fra rommet, altså fra veggens `from` mot `to`. Negativt:
+  den faller. Fra utsiden er det motsatt, slik som for `sashes`.
+- **Høyden:** `sill + height` er den høye enden av overkanten (vinduets ytre ramme, som på fasaden). Den lave enden er
+  `width · tan(vinkel)` lavere. Det må være minst 0,1 m mellom den og brystningen.
+- **Feltene:** felt som går helt til toppen (`top: 1`, standard), får skrå overkant. Felt under et losholt (`top` < 1)
+  er rektangler og må slutte under den lave enden av skråningen der de står. Sprossene i et skrått felt går opp til
+  skråningen, og de vannrette stopper der skråningen kommer ned til dem. Rutene deles etter feltets midthøyde.
+- Et overlys over en dør er et eget vindu over døra, med `sill` over dørens topp. To åpninger over hverandre i samme
+  vegg er ikke en overlapp når det er minst 5 cm vegg mellom dem.
+
+```json
+{ "id": "win-loft-1", "type": "window", "offset": 0.55, "width": 0.8, "height": 1.3, "sill": 0.7, "topSlope": "follow-roof" }
+```
+Under skråtaket i en gavl på loftet: den høye enden 2,0 m over gulvet.
+
+```json
+{ "id": "win-stue-1", "type": "window", "offset": 0.9, "width": 2.0, "height": 3.0, "sill": 0.4, "topSlope": "follow-roof",
+  "sashes": [{ "to": 0.5, "top": 0.7 }, { "from": 0.5, "top": 0.7, "opening": true, "hinge": "right" },
+             { "to": 0.5, "bottom": 0.7 }, { "from": 0.5, "bottom": 0.7 }] }
+```
+Det store vinduet på hus5: fire felt, de to øverste følger takfallet.
+
+```json
+{ "id": "win-overlys", "type": "window", "offset": 0.8, "width": 1.0, "height": 0.55, "sill": 2.2, "topSlope": "follow-roof" }
+```
+Overlyset over en dør (offset 0.8, bredde 1.0, høyde 2.1) på hus4.
+
+Byggeren: `layout.js` gir åpningen `topSlope` (stigning per meter langs veggen, 0 = vannrett), `topU0` og `topU1`
+(toppen ved `u0` og `u1`), og `top` er fortsatt den høyeste. `wallLayer` i `wallkit.js` tar `y1b` på hull og
+utsparinger, `buildWindow` bygger skrå felt som trapeser (`quadPrism`), og `cladding.js` lager omrammingen med et skrått
+toppbord. Validatoren sjekker at den skrå toppen holder seg under veggen ved begge ender og ved hvert knekkpunkt i
+veggens topp.
 
 ## Eksempler
 
@@ -184,7 +228,9 @@ Per vindu på fasaden, koblet til vinduet på planen:
    noe symbol er feltet fast.
 4. **Sprossene** telles per felt: `panes: [kolonner, rader]` = antall ruter. Er de like i alle feltene, holder én
    `panes` på vinduet.
-5. Det som er gjettet, føres i `estimated` (for eksempel `["sashes", "panes"]`), så validatoren bare advarer.
+5. **En skrå overkant** langs taket gir `topSlope: 'follow-roof'`, med `height` målt til den høye enden. Er den skrå
+   uten å følge taket, er `topSlope` vinkelen i grader, med fortegnet sett fra rommet (motsatt av fasaden).
+6. Det som er gjettet, føres i `estimated` (for eksempel `["sashes", "panes"]`), så validatoren bare advarer.
 
 Det planbyggeren kan fjerne når dette er flettet inn (forespørsel 8, 14 og 15):
 

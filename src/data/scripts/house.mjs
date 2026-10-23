@@ -49,6 +49,7 @@ import { fileURLToPath } from 'node:url';
 import { STAIR_TYPES, STEEP, WALK_MAX_DEG, isPlanType, isQuarterTurn, isStraightType, stairPlan, stairRisers, planGoing, landingSplit, rampKnots, rampDeg, FOOT_CUT_EXTRA } from '../../home/stairtypes.js';
 import { resolveRoofs, roofField, ceilingSurface, surfaceProfile, insideHalfPlanes as insideHalfPlanesOf } from '../../home/roofgeom.js';
 import { resolveCladding, groundLevel } from '../../home/claddinggeom.js';
+import { resolveChimneys } from '../../home/chimneygeom.js';
 import { resolveDecks } from '../../home/deckgeom.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -1057,6 +1058,7 @@ export function validateHouse(spec, opts = {}) {
   push('stairs', arr(spec.stairs));
   for (const s of stairs) push('guards', arr(s.guards), { stair: s });
   push('facadeSegments', arr(spec.facadeSegments));
+  push('chimneys', arr(spec.chimneys));
 
   const frozen = reg.frozen || {};
   const isFrozen = (coll, id) => arr(frozen[coll]).includes(id);
@@ -1474,6 +1476,26 @@ export function validateHouse(spec, opts = {}) {
     }
   }
 
+  // ---- chimneys (notes/tak.md «Piper», home/chimneygeom.js): the same model as layout.js, its issues as errors /
+  //      warnings; a chimney standing in a wall is a warning
+  if (spec.chimneys != null) {
+    const lvList = levels.filter((l) => typeof l.id === 'string' && num(l.floorY)).map((l) => ({ id: l.id, floorY: l.floorY }));
+    const ch = resolveChimneys(spec.chimneys, {
+      levels: lvList,
+      rooms: rooms.filter(physical).map((r) => ({ id: r.id, levelId: r.levelId, floorY: roomFloorY(r.id), polygon: r.polygon })),
+      roofFields: roofFieldOf,
+      groundY: groundLevel(lvList, 'hoved'),
+    });
+    for (const i of ch.issues) (i.level === 'error' ? error : warn)(`${i.where}: ${i.msg}`);
+    for (const c of ch.chimneys) {
+      const lids = new Set(c.pieces.map((p) => p.levelId));
+      const probe = [c.at, ...c.footprint.map((q) => add(q, mul(unitv(sub(c.at, q)), 0.02)))];
+      const inWall = [...wallInfo.values()].filter((wi) => lids.has(wi.level) && wi.t > 0 && wi.w.backOf == null)
+        .filter((wi) => probe.some((q) => inOrOn(q, [wi.w.from, wi.w.to, add(wi.w.to, mul(wi.n, -wi.t)), add(wi.w.from, mul(wi.n, -wi.t))], -0.001)));
+      if (inWall.length) warn(`chimneys/${c.id}: pipa står i veggen ${inWall.map((wi) => wi.w.id).join(', ')} – flytt den inn i rommet eller ut av huset`);
+    }
+  }
+
   // ---- the cladding and the decks (notes/kledning.md, home/claddinggeom.js, home/deckgeom.js): the same model as
   //      layout.js, its issues as errors / warnings
   if (spec.cladding != null || spec.decks != null) {
@@ -1485,8 +1507,8 @@ export function validateHouse(spec, opts = {}) {
       // a gable zone needs a roof with gables (saltak or pulttak) over its level
       for (const z of cl.cladding?.zones ?? []) {
         if (!z.gable) continue;
-        const gabled = roofRes.parts.some((p) => (z.levelId === null || p.levelId === z.levelId) && (p.type === 'gable' || p.type === 'mono-pitch'));
-        if (!gabled) warn(`cladding.zones/${z.id}: gable, men intet saltak eller pulttak over ${z.levelId ? `nivået «${z.levelId}»` : 'huset'} – sonen brukes ikke`);
+        const gabled = roofRes.parts.some((p) => (z.levelId === null || p.levelId === z.levelId) && (p.type === 'gable' || p.type === 'half-hip' || p.type === 'mono-pitch'));
+        if (!gabled) warn(`cladding.zones/${z.id}: gable, men intet saltak eller pulttak (eller halvvalm) over ${z.levelId ? `nivået «${z.levelId}»` : 'huset'} – sonen brukes ikke`);
       }
     }
     if (spec.decks != null) {
@@ -1533,8 +1555,13 @@ export function validateHouse(spec, opts = {}) {
     if (!wi) continue;
     const list = arr(w.openings).filter((o) => isObj(o) && num(o.offset) && num(o.width) && num(o.height));
     const sorted = [...list].sort((a, b) => a.offset - b.offset);
-    for (let i = 1; i < sorted.length; i++) {
-      if (sorted[i].offset < sorted[i - 1].offset + sorted[i - 1].width - TOL) error(`openings/${sorted[i].id} overlapper ${sorted[i - 1].id} i veggen ${w.id}`);
+    // (one over the other is fine: a top light over a door, notes/vindusmodeller.md – 5 cm of wall between them)
+    const yr = (o) => [num(o.sill) ? o.sill : 0, (num(o.sill) ? o.sill : 0) + o.height];
+    const stacked = (a, b) => yr(a)[1] + 0.05 - TOL <= yr(b)[0] || yr(b)[1] + 0.05 - TOL <= yr(a)[0];
+    for (let i = 0; i < sorted.length; i++) {
+      for (let j = i + 1; j < sorted.length && sorted[j].offset < sorted[i].offset + sorted[i].width - TOL; j++) {
+        if (!stacked(sorted[i], sorted[j])) error(`openings/${sorted[j].id} overlapper ${sorted[i].id} i veggen ${w.id}`);
+      }
     }
     for (const o of list) {
       const where = `openings/${o.id} (${w.id})`;
@@ -1542,10 +1569,42 @@ export function validateHouse(spec, opts = {}) {
       if (o.width <= 0 || o.height <= 0) error(`${where}: bredde og høyde må være over 0`);
       if (o.offset < -TOL || o.offset + o.width > wi.L + TOL) error(`${where}: går utenfor veggen (u ${fmt(o.offset)}–${fmt(o.offset + o.width)} av ${fmt(wi.L)})`);
       if (sill < -TOL) error(`${where}: sill kan ikke være under gulvet`);
+      // a sloped top (notes/vindusmodeller.md): degrees rising to the right seen from the room, or 'follow-roof'
+      // (parallel to the wall's top over the window); the high end at sill + height
+      let slope = 0;
+      if (o.topSlope != null) {
+        if (o.type !== 'window') warn(`${where}: topSlope brukes bare på vinduer (type 'window')`);
+        else if (o.topSlope === 'follow-roof') {
+          const a = Math.max(0, o.offset), b = Math.min(wi.L, o.offset + o.width);
+          slope = (heightAt(w, b) - heightAt(w, a)) / Math.max(1e-6, b - a);
+          if (Math.abs(slope) < 1e-4) warn(`${where}: topSlope 'follow-roof', men veggen er vannrett over vinduet – overkanten blir vannrett`);
+          const kinks = arr(derivedTop.get(w.id) ?? w.topProfile).filter((p) => p[0] > a + 0.01 && p[0] < b - 0.01 && Math.abs(heightAt(w, a) + slope * (p[0] - a) - p[1]) > 0.02);
+          if (kinks.length) warn(`${where}: veggens topp knekker over vinduet (u ${kinks.map((p) => fmt(p[0])).join(', ')}) – overkanten følger linja mellom endene`);
+        } else if (!num(o.topSlope) || Math.abs(o.topSlope) >= 80) error(`${where}: topSlope må være grader (−80 til 80) eller 'follow-roof'`);
+        else slope = Math.tan((o.topSlope * Math.PI) / 180);
+        if (slope && o.height - Math.abs(slope) * o.width < 0.1) error(`${where}: den lave enden av den skrå overkanten (${fmt(o.height - Math.abs(slope) * o.width)} m over brystningen) er for lav – gjør vinduet høyere eller smalere`);
+        // a field that stops under the top (a transom) must stay under the sloped line
+        if (slope && Array.isArray(o.sashes)) {
+          for (const s of o.sashes.filter((x) => isObj(x) && num(x.top) && x.top < 1 - 1e-3)) {
+            const xs = [num(s.from) ? s.from : 0, num(s.to) ? s.to : 1].map((f) => f * o.width);
+            const low = Math.min(...xs.map((x) => o.height - Math.abs(slope) * (slope > 0 ? o.width - x : x)));
+            if (s.top * o.height > low + TOL) error(`${where}: feltet ${fmt(xs[0] / o.width, 2)}–${fmt(xs[1] / o.width, 2)} slutter i ${fmt(s.top * o.height)} m, over den skrå overkanten (${fmt(low)} m) – senk tverrposten eller la feltet gå til toppen (top: 1)`);
+          }
+        }
+      }
       if (w.backOf == null) {
         const top = sill + o.height;
-        const hmin = minHeight(w, Math.max(0, o.offset), Math.min(wi.L, o.offset + o.width));
-        if (top > hmin + TOL) error(`${where}: toppen ${fmt(top)} er over veggen (${fmt(hmin)})`);
+        const a = Math.max(0, o.offset), b = Math.min(wi.L, o.offset + o.width);
+        if (!slope) {
+          const hmin = minHeight(w, a, b);
+          if (top > hmin + TOL) error(`${where}: toppen ${fmt(top)} er over veggen (${fmt(hmin)})`);
+        } else {
+          // the sloped top against the wall's top at the ends and at every point of its profile between them
+          const topAt = (u) => top - Math.abs(slope) * (slope > 0 ? o.offset + o.width - u : u - o.offset);
+          const us = [a, b, ...arr(derivedTop.get(w.id) ?? w.topProfile).map((p) => p[0]).filter((u) => u > a && u < b)];
+          const worst = us.map((u) => [u, topAt(u) - heightAt(w, u)]).sort((p, q) => q[1] - p[1])[0];
+          if (worst[1] > TOL) error(`${where}: den skrå toppen (${fmt(topAt(worst[0]))} ved u ${fmt(worst[0])}) er over veggen (${fmt(heightAt(w, worst[0]))})`);
+        }
       }
       if (o.type === 'door' && !isObj(o.door)) error(`${where}: en dør må ha door:{ hinge, swing, leaf, … } (formatet til door-gang) – uten o.door blir det et hull uten dør`);
       if (o.type === 'window') {

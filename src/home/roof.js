@@ -227,12 +227,14 @@ export function buildRoofs(H, opts) {
     // ---- ridge caps: where two faces of the same roof (or dormer) meet on top
     if (part.ridgeCap) {
       const sets = [part.faces.map((f) => ({ poly: f.poly, p: part.planes[f.plane] })), ...part.dormers.map((d) => d.faces.map((f) => ({ poly: f.poly, p: d.planes[f.plane] })))];
+      // (a chimney through the roof stops them – notes/tak.md «Piper»)
+      const chimneys = (H.chimneys || []).filter((c) => c.roofLevelId === part.levelId).map((c) => c.footprint);
       for (const set of sets) {
         for (let i = 0; i < set.length; i++) {
           for (let j = i + 1; j < set.length; j++) {
             for (const [a, b] of sharedEdges(set[i].poly, set[j].poly)) {
               // not where another part of the level is higher (it goes in under that roof)
-              for (const [a1, b1] of segmentOutside(a, b, higherThan(set[i].p))) ridgeCap(caps, a1, b1, set[i].p);
+              for (const [a1, b1] of segmentOutside(a, b, [...higherThan(set[i].p), ...chimneys])) ridgeCap(caps, a1, b1, set[i].p);
             }
           }
         }
@@ -245,6 +247,8 @@ export function buildRoofs(H, opts) {
         const p = part.planes[f.plane];
         const g = Math.hypot(p.a, p.b);
         if (g < 1e-4) continue;
+        // (a half-hip's small hips high up on the gables have no gutter, only the fascia)
+        if (part.type === 'half-hip' && (p.side === 'u0' || p.side === 'u1')) continue;
         for (const r of cutRegions(f.poly, [...Rs, ...higherThan(p)])) {
           const P = r.outer;
           for (let i = 0; i < P.length; i++) {
