@@ -47,7 +47,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { STAIR_TYPES, STEEP, WALK_MAX_DEG, isPlanType, isQuarterTurn, isStraightType, stairPlan, stairRisers, planGoing, landingSplit, rampKnots, rampDeg, FOOT_CUT_EXTRA } from '../../home/stairtypes.js';
-import { resolveRoofs, roofField, ceilingSurface, surfaceProfile, insideHalfPlanes as insideHalfPlanesOf } from '../../home/roofgeom.js';
+import { resolveRoofs, roofFields, ceilingSurface, surfaceProfile, insideHalfPlanes as insideHalfPlanesOf } from '../../home/roofgeom.js';
 import { resolveCladding, groundLevel } from '../../home/claddinggeom.js';
 import { resolveChimneys } from '../../home/chimneygeom.js';
 import { resolveFireplaces } from '../../home/fireplacegeom.js';
@@ -1466,9 +1466,7 @@ export function validateHouse(spec, opts = {}) {
     if (roofIds.has(r.id)) error(`roofs/${r.id}: id-en er brukt av et annet tak`);
     roofIds.add(r.id);
   }
-  const roofFieldOf = {};
-  for (const part of roofRes.parts) (roofFieldOf[part.levelId] ||= []).push(part);
-  for (const [lid, list] of Object.entries(roofFieldOf)) roofFieldOf[lid] = roofField(list);
+  const roofFieldOf = roofFields(roofRes.parts);
   // the exterior walls of a roof's level stand under a roof (its outline, 5 cm slack) – unless a floor above covers them
   for (const [lid, field] of Object.entries(roofFieldOf)) {
     const fy = levelsById.get(lid)?.floorY ?? 0;
@@ -1597,7 +1595,7 @@ export function validateHouse(spec, opts = {}) {
       // a gable zone needs a roof with gables (saltak or pulttak) over its level
       for (const z of cl.cladding?.zones ?? []) {
         if (!z.gable) continue;
-        const gabled = roofRes.parts.some((p) => (z.levelId === null || p.levelId === z.levelId) && (p.type === 'gable' || p.type === 'half-hip' || p.type === 'mono-pitch'));
+        const gabled = roofRes.parts.some((p) => (z.levelId === null || p.levelId === z.levelId) && ['gable', 'half-hip', 'mono-pitch', 'mansard', 'butterfly'].includes(p.type) && !(p.type === 'mansard' && p.hippedEnds));
         if (!gabled) warn(`cladding.zones/${z.id}: gable, men intet saltak eller pulttak (eller halvvalm) over ${z.levelId ? `nivået «${z.levelId}»` : 'huset'} – sonen brukes ikke`);
       }
     }

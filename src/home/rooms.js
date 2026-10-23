@@ -356,7 +356,23 @@ export function buildRooms(ctx, layout, M = null) {
     if (!field) return null;
     const t = w.thickness;
     const prof = surfaceProfile([w.start.x, w.start.y], [w.end.x, w.end.y], [{ planeAt: field.planeAt, lines: field.lines, shift: [-w.normal.x * t, -w.normal.y * t] }], w.floorY, -Infinity);
-    return prof.map(([u, y]) => [u, y === -Infinity ? profileAt(w.topProfile, u) + 0.3 : y + CLADDING_INTO_ROOF]);
+    const top = prof.map(([u, y]) => [u, y === -Infinity ? profileAt(w.topProfile, u) + 0.3 : y + CLADDING_INTO_ROOF]);
+    // a parapet (attika) standing on the wall: the cladding goes up its outside to its top (roof.js lays the coping on)
+    const o = [w.start.x - w.normal.x * t, w.start.y - w.normal.y * t];
+    const off = (p) => Math.abs((p[0] - o[0]) * w.normal.x + (p[1] - o[1]) * w.normal.y);
+    const uOf = (p) => (p[0] - o[0]) * w.dir.x + (p[1] - o[1]) * w.dir.y;
+    for (const part of field.parts) {
+      if (!part.parapet) continue;
+      const ranges = [];
+      for (let i = 0; i < 4; i++) {
+        const a = part.outline[i], b = part.outline[(i + 1) % 4];
+        if (off(a) > 0.02 || off(b) > 0.02) continue;
+        const u0 = Math.max(0, Math.min(uOf(a), uOf(b))), u1 = Math.min(w.length, Math.max(uOf(a), uOf(b)));
+        if (u1 - u0 > 0.05) ranges.push([u0 - 1e-6, u1 + 1e-6]);
+      }
+      if (ranges.length) return fillProfile(top, ranges, part.parapet.topY - w.floorY, 0, w.length);
+    }
+    return top;
   }
   /** A top profile set to y inside the ranges (steps at their ends): the cladding up to the facade above. */
   function fillProfile(profile, ranges, y, x0, x1) {
@@ -654,7 +670,11 @@ export function buildRooms(ctx, layout, M = null) {
           // up to the cladding of the level above, where its facade stands on this one
           oTop = fillProfile(oTop, capRanges.map(([p, q]) => [p - a, q - a]), capY, 0, b - a);
           // the main floor's cladding goes down over the slab edge; a level above it meets the cladding below at its slab
-          oBottom = upper ? (face ? bottom : Math.min(bottom, -(lv.slabThickness ?? SLAB))) : Math.min(bottom, -SLAB);
+          // (a wall of a level above standing over a room below – set back, round a recessed roof terrace – starts at
+          // its floor: down at the slab's underside it would lie in the plane of that room's ceiling)
+          const pm = w.pointAt(mid).addScaledVector(w.normal3, -t / 2);
+          const overRoom = upper && lv?.belowId && H.rooms.some((r) => r.levelId === lv.belowId && !r.hud && r.area > 0.01 && r.contains?.(pm.x, pm.z));
+          oBottom = upper ? (face || overRoom ? bottom : Math.min(bottom, -(lv.slabThickness ?? SLAB))) : Math.min(bottom, -SLAB);
         } else {
           oTop = capProfile(pTop, capRanges.map(([p, q]) => [p - a, q - a]), capY, 0, b - a);
           oBottom = face ? bottom : Math.min(bottom, -BASEMENT_FOOT);

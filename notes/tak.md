@@ -1,10 +1,14 @@
 # Tak og skrå himling i husformatet
 
-Husformatet har nå tak: saltak, valmtak, halvvalm, pulttak og flatt tak, med ark (takopplett) på takflaten, takstein,
-skifer, papp eller stålplater, vindskier, vannbord, takrenner og mønepanne. Himlinger kan følge taket (skrå himling,
-hanebjelkeloft), og vegger under taket får toppen fra himlingen, så knevegger og gavler kommer av seg selv.
-Takvinduer (`ceilings[].skylights`) under et tak ligger i takflaten. Ytterkledningen går opp under husets eget tak.
-Piper (`chimneys[]`) går fra gulvet eller fra taket og opp gjennom taket, med beslag.
+Husformatet har nå tak: saltak (også med ulike takfall og takfot på de to sidene), valmtak, halvvalm, mansardtak (med
+gavler eller valmet), pulttak, flatt tak, V-tak og flatt tak eller pulttak bak en parapet (attika), med ark (takopplett,
+også med valm og med flere vinduer) og innfelte takterrasser i takflaten, takstein, skifer, papp eller stålplater,
+vindskier, vannbord, takrenner, mønepanne og vinkelrenner. Fløyer med ulik mønehøyde og bredde møtes i kiler og
+vinkelrenner, også når fløyen står på etasjen under (L-, T- og U-hus), og en fløy som er høyere enn mønet går tvers
+gjennom (kryssark). Himlinger kan følge taket (skrå himling, hanebjelkeloft), og vegger under taket får toppen fra
+himlingen, så knevegger og gavler kommer av seg selv. Takvinduer (`ceilings[].skylights`) under et tak ligger i
+takflaten. Ytterkledningen går opp under husets eget tak. Piper (`chimneys[]`) går fra gulvet eller fra taket og opp
+gjennom taket, med beslag.
 
 Alt er valgfrie felt. Et hus uten `roofs` bygges som før. Eierens hus har ingen `roofs`, og det ser ut nøyaktig som før,
 også lyset. Det er kontrollert med skjermbilder av spillet før og etter (stua, høyveggen, gangen, kjelleren, inngangen og
@@ -25,37 +29,50 @@ spillets figur, og `__bump('pipe-a', 's')` går figuren inn i en pipe). **Test:*
 visningene i `tools/refcheck.mjs` tatt før (b7456b7) og etter er like (0 piksler; ett bilde hadde 3–5 piksler støy, som
 også kom mellom to bilder av samme kode). Lys- og akustikkdumpen er identisk.
 
+**Flere taktyper** (se «Flere taktyper» under): `dev/taktyper.html` (ti testhus i `src/dev/taktyper-hus.js`, port 5271
+med `taktyper-test` i `.claude/launch.json`). **Test:** `node tools/house-tests/taktyper.test.mjs` (sjekker også
+fingeravtrykket til eierens hus: likt, `layout 9fd8f7a355b0f410`, `rooms a7cf211c026c6559`). De 12 visningene i
+`tools/refcheck.mjs` er like før (referanser laget fra 56caecf) og etter (to bilder med 1 piksel støy), og lys- og
+akustikkdumpen er identisk. Nytt i modellen:
+`roofFields(parts)` (feltet for hver etasje, uten taket over etasjen over), `activePlane` og `planesProfile`.
+
 ## Taket: `roofs[]`
 
-`roofs` er en ny toppnøkkel, en liste med takdeler. Hver del er et rektangel i plan med ett tak over. Et hus med L-
-eller T-form får én del per fløy, hver med `outline` på sin egen fløy. En del som står med en hel side mot en annen
-del på samme etasje (sidefløyen), går inn under den andre til midten av den. Der to deler overlapper, gjelder den
-høyeste, så fløyene møtes i kilrenner av seg selv (testhus F). Hovedhuset beholder takfoten langs sidefløyen.
+`roofs` er en ny toppnøkkel, en liste med takdeler. Hver del er et rektangel i plan med ett tak over. Et hus med L-,
+T- eller U-form får én del per fløy, hver med `outline` på sin egen fløy. En del som står med en hel side mot en annen
+del (sidefløyen, på samme etasje eller etasjen under), går inn under den andre til midten av den. Der to deler
+overlapper, gjelder den høyeste, så fløyene møtes i kilrenner av seg selv (testhus F). Hovedhuset beholder takfoten
+langs sidefløyen. Se «Tak som møtes» under for detaljene.
 
 | Felt | Standard | Betydning |
 |---|---|---|
 | `id` | `roof-<n>` | Unik id. |
 | `name` | `''` | Navn (vises bare på testsiden). |
-| `type` | `'gable'` | `'gable'` (saltak), `'hip'` (valmtak), `'half-hip'` (halvvalm), `'mono-pitch'` (pulttak) eller `'flat'`. Planbyggerens `doc.roof` bruker de samme navnene; `'gable-dormer'` er `'gable'` med `dormers`, og `'mixed'` er flere deler. |
+| `type` | `'gable'` | `'gable'` (saltak), `'hip'` (valmtak), `'half-hip'` (halvvalm), `'mansard'` (mansardtak), `'mono-pitch'` (pulttak), `'flat'` eller `'butterfly'` (V-tak). Planbyggerens `doc.roof` bruker de samme navnene; `'gable-dormer'` er `'gable'` med `dormers`, og `'mixed'` er flere deler. |
 | `levelId` | øverste etasje | Etasjen taket ligger over. Himlingene og veggene i den etasjen følger det. |
 | `outline` | rektangelet rundt utsiden av etasjens yttervegger | Fire hjørner `[[x, z], …]`: yttersiden av veggene taket dekker (uten utstikk). |
-| `pitch` | gable 35, hip 30, half-hip 35, mono-pitch 10, flat 0 | Takvinkel i grader (0–70). |
+| `pitch` | gable 35, hip 30, half-hip 35, mansard 60, mono-pitch 10, flat 0, butterfly 8 | Takvinkel i grader (0–70; mansard: den bratte nedre delen, 0–80). |
+| `pitchBack`, `eaveHeightBack`, `kneeHeightBack`, `overhangBack` | `pitch`, forsidens takfot, `overhang` | Saltak og V-tak: baksidens takvinkel, takfot og utstikk. Se «Saltak med ulike takfall og takfot». |
+| `pitchUpper`, `breakDepth`, `breakHeight`, `hipped` | 25, en seksdel av bredden, –, `false` | Mansardtak: den slake øvre delen, knekken og valmede ender. Se «Mansardtak». |
+| `parapet` | – | Flatt tak og pulttak: `true` eller `{ height, top, thickness, color, copingColor }`. Se «Parapet». |
+| `terraces` | `[]` | Innfelte takterrasser. Se «Innfelt takterrasse». |
+| `valleys`, `valleyColor` | `true`, `#3e4145` | Vinkelrenner (beslag) der deler møtes, der en ark møter taket, i V-takets dal og på mansardens knekk. |
 | `pitchEnds` | `pitch` | Valmtak og halvvalm: vinkelen på valmene (endene). |
 | `hipHeight` | en tredel av gavlens høyde | Halvvalm: hvor langt ned fra mønet valmen går, målt der den møter yttersiden av gavlveggen. Se «Halvvalm». |
 | `hipDepth` | – | Halvvalm, i stedet for `hipHeight`: hvor langt inn fra yttersiden av gavlveggen mønet begynner (`hipHeight = hipDepth · tan(pitchEnds)`). |
-| `ridge` | langs den lengste siden | Saltak og valm: mønets retning `[dx, dz]`. |
-| `fall` | se under | Pulttak: retningen taket faller mot `[dx, dz]`. Uten `fall` er den høye siden den lengste kanten med lavest nummer i `outline`. |
-| `ridgeHeight` | – | Mønehøyden: toppen av tekkingen på mønet (pulttak: den høye kanten) over etasjens gulv. |
+| `ridge` | langs den lengste siden | Saltak, valm, mansard og V-tak: mønets (V-tak: dalens) retning `[dx, dz]`. |
+| `fall` | se under | Pulttak: retningen taket faller mot `[dx, dz]`. Uten `fall` er den høye siden den lengste kanten med lavest nummer i `outline`. Saltak med ulike sider og V-tak: forsiden er den som faller mot `fall` (uten `fall`: siden med den første kanten i `outline` langs mønet). |
+| `ridgeHeight` | – | Mønehøyden: toppen av tekkingen på mønet (pulttak: den høye kanten; V-tak: de høye kantene) over etasjens gulv. |
 | `kneeHeight` | – | Kneveggshøyden: der undersiden av taket møter innsiden av ytterveggen på langsiden, over etasjens gulv. |
 | `eaveHeight` | høyeste yttervegg i etasjen | Undersiden av taket i ytterkant av veggen på langsiden (raftet), over etasjens gulv. |
-| `overhang` | 0,5 (flatt tak 0,3) | Utstikk ved takfoten (langsidene; valm og flatt tak: alle sider). |
+| `overhang` | 0,5 (flatt tak 0,3; med parapet 0) | Utstikk ved takfoten (langsidene; valm, valmet mansard og flatt tak: alle sider). |
 | `vergeOverhang` | 0,3 | Utstikk ved gavlene (pulttak: også den høye siden; halvvalm: også valmene øverst på gavlene). |
-| `thickness` | 0,3 | Takets oppbygning (sperrer, lekter og tekking) målt vinkelrett på takflaten. |
-| `covering` | gable, hip og half-hip `'tile'`, mono-pitch `'steel'`, flat `'felt'` | `'tile'` (takstein), `'slate'` (skifer), `'felt'` (papp), `'steel'` (stålplater). |
+| `thickness` | 0,3 | Takets oppbygning (sperrer, lekter og tekking) målt vinkelrett på takflaten (mansard: den øvre delen; saltak med ulike sider og V-tak: den slakeste siden). |
+| `covering` | gable, hip og half-hip `'tile'`, mansard `'slate'`, mono-pitch og butterfly `'steel'`, flat `'felt'` | `'tile'` (takstein), `'slate'` (skifer), `'felt'` (papp), `'steel'` (stålplater). |
 | `color` | tile `#3a3634`, slate `#3c4046`, felt `#2b2b2d`, steel `#30343a` | Tekkingens middelfarge. |
 | `trimColor` | `#2f2f31` | Vindskier, vannbord og takrenner. |
 | `soffitColor` | `trimColor` | Undersiden av utstikket. |
-| `gutters` | `true` når `pitch` ≥ 5 | Takrenner langs takfoten. |
+| `gutters` | `true` når `pitch` ≥ 5 (ikke med parapet) | Takrenner langs takfoten (aldri på V-takets høye kanter). |
 | `ridgeCap` | `true` unntatt på papp | Mønepanne langs mønet og gratene. |
 | `wallThickness` | median av etasjens yttervegger | Veggtykkelsen `kneeHeight` måles fra. |
 | `dormers` | `[]` | Arker og takoppletter, se under. |
@@ -92,13 +109,15 @@ himlingen: med en himling som går til mønet (`type: 'roof'`), blir toppen av g
 | Felt | Standard | Betydning |
 |---|---|---|
 | `id` | `<tak>-ark-<n>` | Unik id. |
-| `type` | `'gable'` | `'gable'` (ark med saltak og egen gavl) eller `'shed'` (pulttak, slakere enn taket). |
+| `type` | `'gable'` | `'gable'` (ark med saltak og egen gavl), `'hip'` (ark med valm: saltak med en valm foran) eller `'shed'` (pulttak, slakere enn taket). |
 | `front` | – | To punkter `[[x, z], [x, z]]`: forkanten, yttersiden av fronten. Ligger den på husets yttervegg, er det en **ark**: veggen under går opp og blir arkens gavl, og vinduet står i veggen (`walls[].openings`). Ligger den lenger opp på taket, er det en **takopplett** med egen forvegg. |
 | `height` | 2,2 | Høyden på arkens takfot foran, på undersiden, over etasjens gulv. |
-| `pitch` | gable: takets vinkel; shed: 12 | Arkens takvinkel. |
+| `pitch` | gable og hip: takets vinkel (på mansard 40); shed: 12 | Arkens takvinkel. |
+| `pitchFront` | `pitch` | Ark med valm: valmens vinkel foran (10–80). |
 | `overhang` | 0,25 | Arkens utstikk foran og på sidene. |
 | `frontThickness` | 0,15 | Takopplett: forveggens tykkelse. |
 | `window` | – | Takopplett: vinduet i forveggen, `{ width, height, sill?, frame?, sashes?, panes?, bars? }` (som et vindu, notes/vindusmodeller.md). Uten `sill` står det 15 cm under taket. |
+| `windows` | – | Takopplett over flere vinduer: en liste som `window`, hvert med `offset` (fra forkantens første punkt langs forkanten til vinduets nærmeste kant); uten `offset` fordeles de jevnt. Gjelder foran `window`. |
 
 Arken går fra fronten og inn til den møter taket (kilrennen). Forkanten bør stå parallelt med takfoten (den rettes inn).
 
@@ -116,6 +135,156 @@ yttersiden av veggen, over gulvet; `overhang` er utstikket foran og på sidene.
 
 med en balkongdør og to vinduer i veggen under (x 4,0–7,6) og
 `{ "id": "balkong", "kind": "balcony", "levelId": "loft", "y": -0.02, "outline": [[4.2, 0], [4.2, -1.2], [7.4, -1.2], [7.4, 0]] }`.
+
+## Flere taktyper
+
+Testhusene i `src/dev/taktyper-hus.js` (A–J, `dev/taktyper.html`) viser hver type. Alle feltene er valgfrie; et tak uten
+dem bygges som før.
+
+### Tak som møtes: fløyer med ulik mønehøyde og bredde (A, B)
+
+- Hver fløy er sin egen takdel med `outline` på fløyen (yttersiden av veggene). En fløy kan ligge over en annen etasje
+  enn hovedtaket (`levelId`): den lave sidefløyen og vindfanget på hus A har taket over `hoved`, hovedhuset over `loft`.
+- **Inn i den andre:** en del med en hel side mot en annen del går inn under den til midten av den (til mønet på et L)
+  og blir kuttet der den andre er høyere. Det som stikker opp over det andre taket, er kilen, og der flatene møtes,
+  kommer vinkelrennene. Det skjer ikke på en side delen faller mot (en takfot beholder utstikket: to saltak side om side
+  møtes i en renne over veggen mellom seg), og ikke når delen hele veien ligger over den andre (da går den andre inn i
+  denne, som en lavere del i flukt med gavlen).
+- **Gjennom den andre (kryssark):** er fløyens møne høyere enn den andres, går den tvers gjennom og ut på den andre
+  siden, med sitt eget gavlutstikk der. Veggen under (hovedfløyens fasade) får gavlen opp til fløyens tak, inne og ute,
+  og rommet under krysset får himlingen opp i begge takene (hus B).
+- **Takfoten over en lavere fløy:** hovedtakets utstikk ligger over fløyens tak der det er høyere og blir kuttet der
+  fløyens tak er høyere. Fløyens tak går videre inn under utstikket til veggen. Et vindfang eller tilbygg med pulttak
+  inntil veggen under takfoten (hus A) er `type: 'mono-pitch'` med den høye siden mot huset.
+- **Himlingene:** inne i en dels kjerne (outline + det den går inn i den andre) gjelder bare delene som har kjernen der,
+  så sidefløyens himling under hovedhusets takfot er sidefløyens. Et rom under krysset ser den høyeste av dem.
+- **Etasjer:** en etasje har ikke tak der en del på etasjen over har kjernen sin (etasjen over dekker den): stua under
+  loftet på hus A har flat himling, selv om sidefløyens tak går inn over den. En vegg i etasjen under som står innenfor
+  en slik kjerne, stopper under gulvet over, også når rommet på baksiden er åpent til sitt eget tak.
+- **Vinkelrenner:** et beslag 22 cm bredt på hver side der to deler møtes, der en ark møter taket, i et V-taks dal og på
+  en mansards knekk (`roof-valley:<id>`, farge `valleyColor`, av med `valleys: false`).
+- **Begrensninger:** hver del er fortsatt et rektangel (en vinkel i ett tak er to deler). En innervegg mellom to rom som
+  står opp over det lave taket, får ikke kledning: gi fløyen sin egen yttervegg med `backOf` fra rommet bak (som på
+  hus A og B).
+
+```json
+{ "id": "roof-hoved", "type": "gable", "levelId": "loft", "outline": [[0, 0], [10, 0], [10, 8], [0, 8]], "pitch": 40, "kneeHeight": 1.0 },
+{ "id": "roof-floy", "type": "gable", "levelId": "hoved", "outline": [[5.5, 8], [10, 8], [10, 13], [5.5, 13]], "pitch": 30, "ridge": [0, 1] },
+{ "id": "roof-vindfang", "type": "mono-pitch", "levelId": "hoved", "outline": [[3, -2.5], [7, -2.5], [7, 0], [3, 0]], "pitch": 12, "fall": [0, -1], "eaveHeight": 2.25 }
+```
+
+### Saltak med ulike takfall og takfot (C)
+
+`type: 'gable'` med ett eller flere av `pitchBack`, `eaveHeightBack`, `kneeHeightBack` og `overhangBack`. Forsiden er den
+taket faller mot `fall` (uten `fall`: siden med den første kanten i `outline` langs mønet) og har `pitch`, `overhang` og
+høydeankeret (`ridgeHeight`, `kneeHeight` eller `eaveHeight`). Baksiden har `pitchBack` (standard `pitch`),
+`eaveHeightBack` eller `kneeHeightBack` (standard: samme høyde som forsiden) og `overhangBack`. Mønet havner der flatene
+møtes (`split` i modellen: avstanden fra forsiden). Med `ridgeHeight` og ingen høyde for baksiden har begge takfotene
+samme høyde. Gavlsonen i kledningen begynner ved den laveste takfoten.
+
+- Feil: mønet havner utenfor huset, `pitchBack` utenfor 2–70. Advarsel: feltene på en annen type enn saltak og V-tak.
+
+```json
+{ "id": "roof-c", "type": "gable", "outline": [[34, 0], [44, 0], [44, 9], [34, 9]], "ridge": [1, 0], "fall": [0, -1],
+  "pitch": 25, "eaveHeight": 2.4, "pitchBack": 45, "eaveHeightBack": 3.6, "overhangBack": 0.3 }
+```
+
+### Mansardtak (D, E)
+
+`type: 'mansard'`: en bratt nedre del (`pitch`, standard 60°, inntil 80°) fra takfoten til knekken og en slak øvre
+(`pitchUpper`, standard 25°, minst 5° slakere) til mønet, på begge langsider. Knekken står `breakDepth` inn fra yttersiden
+av veggen (standard en seksdel av bredden), eller gi `breakHeight`: toppen av tekkingen på knekken over gulvet (les den
+i fasadetegningen). `hipped: true` gir valmede ender med de samme vinklene (valmet mansard). Høydeankrene er som for
+saltak; `kneeHeight` måles på den bratte delen. Gavlene følger profilen. Mønepanne bare på mønet og de øvre gratene,
+beslag på knekken og de nedre gratene. Arker (kvister) står i den bratte delen og må slutte under knekken.
+
+- Feil: `pitchUpper` ikke slakere enn `pitch`, knekken utenfor 0,2 m til midten − 0,3 m, et hus for kort for valmet
+  mansard, en ark som går forbi knekken. Advarsel: mansardfeltene på en annen type.
+
+```json
+{ "id": "roof-d", "type": "mansard", "levelId": "loft", "outline": [[48, 0], [58, 0], [58, 8], [48, 8]],
+  "pitch": 65, "pitchUpper": 25, "eaveHeight": 0.3, "breakDepth": 1.2,
+  "dormers": [{ "type": "gable", "front": [[52.4, 0], [53.6, 0]], "height": 1.9, "pitch": 35, "overhang": 0.15 }] },
+{ "id": "roof-e", "type": "mansard", "hipped": true, "outline": [[62, 0], [70, 0], [70, 7], [62, 7]], "pitch": 60, "pitchUpper": 22, "breakDepth": 0.8 }
+```
+
+### Parapet (attika) på flatt tak og pulttak (F, G)
+
+`parapet: true` eller `{ height, top, thickness, color, copingColor }` på `type: 'flat'` eller `'mono-pitch'`. Parapeten
+står på ytterveggene langs hele `outline` med vannrett topp: `height` over det høyeste punktet på tekkingen (standard
+0,3) eller `top` over etasjens gulv (fra fasaden). `thickness` er standard veggtykkelsen. Kledningen går opp utsiden til
+toppen, innsiden er tekkingen (eller `color`), og over ligger en beslått topp (`copingColor`, standard `trimColor`) som
+stikker 4 cm ut på begge sider. Taket har da ingen utstikk, ingen vindskier og ingen takrenner (innvendig nedløp).
+
+- Feil: parapet på en annen type, en topp under 5 cm eller over 2 m over tekkingen, `thickness` utenfor 0,08–0,8 m.
+  Advarsel: `overhang` eller `vergeOverhang` sammen med parapet (de brukes ikke).
+- Navn: `roof-parapet:<id>` (innsiden), `roof-coping:<id>` (beslaget).
+
+```json
+{ "id": "roof-f", "type": "flat", "levelId": "loft", "parapet": { "height": 0.45 } },
+{ "id": "roof-g", "type": "mono-pitch", "pitch": 4, "fall": [0, 1], "eaveHeight": 2.6, "parapet": { "top": 3.6 } }
+```
+
+### Innfelt takterrasse: `terraces[]` (H)
+
+En takterrasse skåret ned i en skrå takflate (saltak, valm, halvvalm, mansard, pulttak):
+
+| Felt | Standard | Betydning |
+|---|---|---|
+| `id` | `<tak>-terrasse-<n>` | Unik id. |
+| `front` | – | To punkter `[[x, z], [x, z]]` på takfoten: der yttersidene av sideveggene møter linja for yttersiden av veggen under raftet. |
+| `depth` | – | Hvor langt inn fra den linja yttersiden av bakveggen står (minst 0,6 m). |
+| `edge` | 0,04 | Hvor langt takkanten står ut over veggene rundt. |
+
+Taket får et hull over terrassen, takfoten og takrenna er kuttet mellom sidene, og takkantene rundt hullet får vindski.
+Veggene rundt (bakveggen med døra, sideveggene) er vanlige yttervegger i etasjen (`walls[]`), med toppen fra himlingen i
+rommene innenfor og kledning opp i taket. Terrassegulvet er et dekk (`decks[]`, `kind: 'roof-terrace'`, `levelId`
+etasjen): legg det 2 cm innenfor veggene og 2 cm over gulvet (`y: 0.02`) – kant i kant med veggene ligger dekkets kanter
+i samme plan som kledningen. En yttervegg i en etasje over som står over et rom (rundt terrassen) begynner nå ved sitt
+eget gulv, ikke nede ved undersiden av dekket (der lå den i samme plan som himlingen i rommet under).
+
+- Feil: `front` som ikke ligger på takfoten, `depth` som når mønet (eller knekken), terrasse på flatt tak eller V-tak,
+  en terrasse som overlapper en ark. Advarsel: bakveggen er lavere enn 2,0 m under taket.
+
+```json
+"terraces": [{ "id": "terrasse-h", "front": [[100.5, 0], [103.5, 0]], "depth": 2.2 }]
+```
+
+med dekket `{ "kind": "roof-terrace", "levelId": "loft", "y": 0.02, "outline": [[100.52, 0.02], [103.48, 0.02],
+[103.48, 2.18], [100.52, 2.18]], "railing": { "type": "glass" } }`.
+
+### Ark med valm og takopplett over flere vinduer (I)
+
+- **Ark med valm:** `type: 'hip'` (og `pitchFront`, standard `pitch`) på en ark eller takopplett: saltak med en valm
+  foran som stiger fra arkens takfot. Veggen under en ark på ytterveggen går opp til valmen (flat topp foran), og
+  kledningen opp i den. Mønepanne på mønet og gratene, vinkelrenner der den møter taket.
+- **Takopplett over flere vinduer:** `windows: [{ width, height, sill?, offset?, … }]` i stedet for `window`. Uten
+  `offset` fordeles vinduene jevnt. Feil: et vindu som går utenfor forveggen, overlapper det før (minst 8 cm mellom)
+  eller ikke får plass i høyden.
+
+```json
+"dormers": [
+  { "id": "ark-i", "type": "hip", "front": [[114, 0], [117, 0]], "height": 2.3, "pitch": 40, "pitchFront": 45, "overhang": 0.3 },
+  { "id": "opp-i", "type": "shed", "front": [[119.5, 7.2], [112.5, 7.2]], "height": 2.6, "pitch": 8,
+    "windows": [{ "width": 1.0, "height": 0.8 }, { "width": 1.0, "height": 0.8 }, { "width": 1.0, "height": 0.8 }] }
+]
+```
+
+### V-tak (sommerfugltak, J)
+
+`type: 'butterfly'`: to flater som faller inn mot en dal. `ridge` er dalens retning, forsiden har `pitch` (standard 8) og
+baksiden `pitchBack` (standard `pitch`); med ulike vinkler havner dalen nærmest den bratteste siden. Høydeankrene gjelder
+de høye kantene: `eaveHeight` undersiden ved yttersiden av veggen på langsidene, `kneeHeight` ved innsiden, `ridgeHeight`
+toppen av tekkingen på kantene, og `eaveHeightBack`/`kneeHeightBack` for baksiden. Gavlene blir V-formede, himlingen
+følger taket, dalen får en renne (beslag) og de høye kantene vindskier, men ingen takrenner. I modellen er V-taket det
+høyeste av de to planene (`combine: 'max'`).
+
+- Feil: dalen utenfor huset, dalen under 1,5 m over gulvet, arker eller terrasser på et V-tak.
+
+```json
+{ "id": "roof-j", "type": "butterfly", "outline": [[125, 0], [134, 0], [134, 7], [125, 7]], "ridge": [1, 0], "fall": [0, -1],
+  "pitch": 10, "pitchBack": 14, "eaveHeight": 3.0 }
+```
 
 ## Piper: `chimneys[]`
 
@@ -204,13 +373,16 @@ takflate (validatoren varsler om et vindu over mønet eller skjevt i takflaten).
   i taket, mønepanna stikker 2 cm forbi vindskiene, og sjakta går 3 mm inn under vindusrammen. Testen sjekker at ingen
   to flater med samme retning overlapper i samme plan i alle seks testhusene, at stråler opp fra hvert rom treffer en
   himling og stråler ned på hvert tak treffer taket (ingen hull), og at ingen del av et tak henger ned i et rom.
-- **Flere takdeler:** hver del kuttes der en annen del på samme etasje er høyere (også takrenner og mønepanner), og
-  himlingen får en loddrett flate der den går fra en lavere del inn under en høyere.
+- **Flere takdeler:** hver del kuttes der en annen del (på hvilken som helst etasje) er høyere, også takrenner og
+  mønepanner – men ikke der dens egen kjerne ligger under den andres utstikk (se «Tak som møtes»). Himlingen får en
+  loddrett flate der den går fra en lavere del inn under en høyere. Et hull som berører kanten av en takflate, kuttes
+  nå ut av flaten (som hull i trianguleringen ble det fylt igjen).
 - **Dukkehus:** alt i taket (tekking, underside, vindskier, renner, mønepanne, arkenes sider og forvegger) ligger i
   `pickables.ceilings` uten `pick` og uten kollisjon, og skjules sammen med himlingene. Det ligger i etasjens
   `roots.levels[levelId]`, så det skjules også med etasjen.
 - **Navn:** `roof:<id>` (tekking), `roof-soffit:<id>`, `roof-trim:<id>`, `roof-ridge:<id>`, `roof-gutter:<id>`,
-  `roof-cheeks:<id>`, `roof-front:<ark>`, `roof-front-inside:<ark>` (malingen til himlingen under), `roof-window:<ark>`.
+  `roof-cheeks:<id>`, `roof-front:<ark>`, `roof-front-inside:<ark>` (malingen til himlingen under), `roof-window:<ark>`
+  (ett per vindu), `roof-valley:<id>` (vinkelrenner og knekkbeslag), `roof-parapet:<id>`, `roof-coping:<id>`.
 - To motorretter som tak trengte: mørkt «dekke» (`cover:`) legges nå der etasjen over mangler (ikke bare
   hovedetasjens dekke), og aldri under et tak. Innervegger under et tak stoppes ikke lenger ved gulvet i etasjen over.
 
@@ -291,7 +463,10 @@ oppe på taket og har vinduet i sin egen forvegg.
   plan.
 
 `roofs` og `chimneys` er lagt til i `schema.topLevel` i `research/house/00-ids.json`. Halvvalmen og pipene sjekkes som
-beskrevet i sine avsnitt over, og vinduer med skrå overkant i notes/vindusmodeller.md.
+beskrevet i sine avsnitt over, og vinduer med skrå overkant i notes/vindusmodeller.md. De nye taktypene (saltak med
+ulike sider, mansard, parapet, innfelt takterrasse, ark med valm, takopplett med flere vinduer, V-tak) sjekkes som
+beskrevet under «Flere taktyper», og en ark som går forbi mønet eller knekken der den står, er en feil. En gavlsone i
+kledningen (`gable: true`) godtas også over mansardtak med gavler og V-tak.
 
 ## Til planbyggeren
 
@@ -318,3 +493,32 @@ beskrevet i sine avsnitt over, og vinduer med skrå overkant i notes/vindusmodel
   ingenting nytt: `buildRooms` bygger dem, og kolliderne kommer i `colliders`.
 - **Skrå overkant** (hus4, hus5): `topSlope: 'follow-roof'` på vinduet, `height` målt til den høye enden. Et skrått
   overlys over en dør er et eget vindu over den (validatoren godtar nå åpninger over hverandre med minst 5 cm vegg).
+
+### Til planbyggeren: de nye taktypene
+
+Visningen trenger ingenting nytt for noen av dem: `buildLayout` og `buildRooms` bygger alt fra feltene under. Høyder er
+over gulvet i etasjen taket ligger over (`levelId`), som før.
+
+- **Fløyer (L-, T-, U-hus):** én `roofs[]`-del per fløy med `outline` på fløyens yttervegger og `levelId` på etasjen
+  fløyen har taket over – en fløy i én etasje på et hus i 1 ½ etasje får `levelId: 'hoved'`, hovedhuset `'loft'`.
+  Fløyen går selv inn i hovedtaket (kile og vinkelrenner), eller gjennom det når mønet er høyere (kryssark); send ingen
+  ekstra felt for det. Et tilbygg eller vindfang med pulttak inntil veggen: `type: 'mono-pitch'`, `fall` bort fra huset,
+  `eaveHeight` fra fasaden. Veggen mellom hovedhuset og fløyen: hovedhusets yttervegg med `backOf` fra fløyens rom.
+- **Saltak med ulike sider:** `type: 'gable'`, `fall` mot forsiden, `pitch` og `eaveHeight` (eller `kneeHeight`) for
+  forsiden fra gavlfasaden, `pitchBack` og `eaveHeightBack` (eller `kneeHeightBack`) for baksiden, `overhangBack` når
+  utstikket er ulikt. Gi heller begge takfotene enn `ridgeHeight`: mønet havner der flatene møtes.
+- **Mansard:** `type: 'mansard'`, `pitch` (den bratte delen), `pitchUpper` (den slake), `breakHeight` (knekken: toppen
+  av tekkingen over gulvet, fra fasaden) eller `breakDepth`, og `eaveHeight`/`kneeHeight` eller `ridgeHeight`. Valmet
+  mansard: `hipped: true`. Kvister i den bratte delen er vanlige `dormers` (typisk `type: 'gable'`) med `front` på
+  ytterveggen; de må slutte under knekken.
+- **Funkis / attika:** `type: 'flat'` (eller `'mono-pitch'` med fallet) og `parapet: { top }` med toppen av attikaen
+  over gulvet fra fasaden (eller `height` over tekkingen). Ingen `overhang`. Veggene under er vanlige yttervegger.
+- **Innfelt takterrasse:** `terraces: [{ front, depth }]` på taket, veggene rundt terrassen som yttervegger i
+  etasjen (bakveggen med døra), og gulvet som `decks[]` med `kind: 'roof-terrace'`, `y: 0.02` og outline 2 cm innenfor
+  veggene.
+- **Ark med valm:** `dormers[].type: 'hip'` (og `pitchFront` når valmen er brattere). **Takopplett over flere vinduer:**
+  `windows: [{ width, height, offset? }]` på takoppletten (`offset` fra forkantens første punkt).
+- **V-tak:** `type: 'butterfly'`, `ridge` langs dalen, `fall` mot forsiden, `pitch`/`pitchBack` og `eaveHeight` (de høye
+  kantene) fra gavlfasaden.
+- Planbyggerens `doc.roof` kan bruke de samme navnene: `'mansard'` og `'butterfly'` er nye typer; attika, terrasse,
+  valmet ark og flere vinduer er felt på delene.
