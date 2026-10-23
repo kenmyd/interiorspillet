@@ -1676,7 +1676,7 @@ export class ViewModes {
           planMarks.add(new THREE.Mesh(geo, this._mats.glass));
           this._overlayGeos.push(geo);
         }
-        if (o.door && o.door.variant !== 'sliding' && o.door.variant !== 'folding') {
+        if (o.door && o.door.variant !== 'sliding' && o.door.variant !== 'folding' && o.door.variant !== 'garage') {
           const angle = planSwingAngle(o, house);
           const geo = doorSwingGeometry(o, it.t, Math.min(heightAt(o.u0), heightAt(o.u1)) + CAP_LIFT * 2, angle);
           geo.applyMatrix4(basis);

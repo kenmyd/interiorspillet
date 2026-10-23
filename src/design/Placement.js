@@ -222,7 +222,7 @@ export function buildRoom(editor, levelId = MAIN_LEVEL) {
  */
 export function swingBox(d, t) {
   const door = d.door;
-  if (!door || d.type !== 'door' || door.variant === 'sliding') return null; // a sliding door has no swing
+  if (!door || d.type !== 'door' || door.variant === 'sliding' || door.variant === 'garage') return null; // a sliding / garage door has no swing
   if (door.variant === 'folding') {
     // the folds stand out one panel width (~0.3 m) over the whole hole on the side they fold to
     const side = door.swing === 'out' ? -1 : 1;

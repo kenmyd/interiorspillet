@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { wallLayer, groupGeometry, profileAt, quadPrism } from './wallkit.js';
+import { insetPolygon } from './windowshape.js';
 import { finishAt, wallCuts, finishKey, plinthFinish, CLADDING_DEFAULTS } from './claddinggeom.js';
 import { panelUOffset } from '../world/surfaces.js';
 
@@ -193,7 +194,8 @@ export function gableLine(roofTop, u0 = null, u1 = null) {
  * @param {number} o.b         its end
  * @param {Array<[number, number]>} o.oTop  the layer's top, piece-local
  * @param {number} o.oBottom
- * @param {Array<{x0,x1,y0,y1,door,frameColor}>} o.openings  the openings of the piece, piece-local
+ * @param {Array<{x0,x1,y0,y1,door,frameColor,pts?,corner?}>} o.openings  the openings of the piece, piece-local (pts: a
+ *                                           shaped window's outline; corner: a corner window, notes/vindusmodeller.md)
  * @param {number} o.kS @param {number} o.kE  the piece's mitre factors
  * @param {number|null} o.gableY   gableLine of the wall (wall-local y) or null
  * @param {{ prev?: object, next?: object, startConvex?: boolean, endConvex?: boolean, startConcave?: boolean, endConcave?: boolean }} o.corner
@@ -280,18 +282,21 @@ export function claddingPiece(o) {
   const atStart = Math.abs(a) < 1e-6, atEnd = Math.abs(b - w.length) < 1e-6;
   const boardBottom = Math.max(oBottom, plinthTop ?? -Infinity);
   let startClear = 0, endClear = Lp; // the surrounds and flashings stay off the corner boards
+  // a corner window at an end of the piece: the corner board stops under it and starts again over it (with its surround)
+  const cornerOp = (end) => openings.find((q) => q.corner && (end ? q.x1 >= Lp - 1e-4 : q.x0 <= 1e-4));
+  const around = (y0, y1, op) => (op ? [[y0, op.y0 - (op.door ? 0 : 0.06)], [op.y1 + (surrounds ? cw : 0), y1]] : [[y0, y1]]).filter(([a, b]) => b > a + 0.05);
   if (trim?.corners) {
     // (a corner over one of the level below starts at the floor, one under the level above reaches its floor)
     const yEnd0 = Math.max(boardBottom, corner.endFrom ?? -Infinity), yEnd1 = profileAt(oTop, Lp) + (corner.endUp ?? 0);
     const yStart0 = Math.max(boardBottom, corner.startFrom ?? -Infinity), yStart1 = profileAt(oTop, 0) + (corner.startUp ?? 0);
     if (atEnd && corner.endConvex) {
       const ext = corner.next.thickness;
-      if (yEnd1 > yEnd0 + 0.05) rects.push({ x0: Lp + ext - cw, x1: Lp + ext + ct, y0: yEnd0, y1: yEnd1, key: `c|${trim.color}` });
+      for (const [y0, y1] of around(yEnd0, yEnd1, cornerOp(true))) rects.push({ x0: Lp + ext - cw, x1: Lp + ext + ct, y0, y1, key: `c|${trim.color}` });
       endClear = Lp + ext - cw;
     }
     if (atStart && corner.startConvex) {
       const ext = corner.prev.thickness;
-      if (yStart1 > yStart0 + 0.05) rects.push({ x0: -ext, x1: -ext + cw, y0: yStart0, y1: yStart1, key: `c|${trim.color}` });
+      for (const [y0, y1] of around(yStart0, yStart1, cornerOp(false))) rects.push({ x0: -ext, x1: -ext + cw, y0, y1, key: `c|${trim.color}` });
       startClear = -ext + cw;
     }
     if (atEnd && corner.endConcave) {
@@ -303,8 +308,26 @@ export function claddingPiece(o) {
   }
   if (surrounds) {
     for (const op of openings) {
-      const x0 = Math.max(startClear, op.x0 - cw), x1 = Math.min(endClear, op.x1 + cw);
+      // a corner window's head and sill boards run out to the corner, no side board there: at the window's 'to' end past
+      // the outer corner by the boards' thickness (over the end of the other wall's), at its 'from' end to the corner
+      const cEnd = op.corner && op.x1 >= Lp - 1e-4 && atEnd, cStart = op.corner && op.x0 <= 1e-4 && atStart;
+      const x0 = cStart ? -(corner.prev?.thickness ?? t) : Math.max(startClear, op.x0 - cw);
+      const x1 = cEnd ? Lp + (corner.next?.thickness ?? t) + ct : Math.min(endClear, op.x1 + cw);
       const k = `s|${op.frameColor}`;
+      if (op.pts) {
+        // a shaped window (notes/vindusmodeller.md shape): a band along its outline; on the floor without the bottom
+        const f = batch.frame(T);
+        const m = trimMat(op.frameColor);
+        const yb = op.door ? Math.max(op.y0, oBottom) : -Infinity;
+        const out = insetPolygon(op.pts, -cw).map(([x, y]) => [x, Math.max(y, yb)]);
+        for (let i = 0; i < op.pts.length; i++) {
+          const j = (i + 1) % op.pts.length;
+          if (op.door && op.pts[i][1] <= op.y0 + 1e-4 && op.pts[j][1] <= op.y0 + 1e-4) continue;
+          quadPrism(f, [out[i], out[j], op.pts[j], op.pts[i]], -t - ct, -t, m, { collide: false });
+        }
+        cutOut.push(op);
+        continue;
+      }
       if (op.ta != null) {
         // a sloped top (notes/vindusmodeller.md topSlope): the sides up to the line of the top, a sloped head board
         // along it (under the layer's top); the board under the window in the union below
@@ -325,8 +348,8 @@ export function claddingPiece(o) {
       }
       rects.push({ x0, x1, y0: op.y1, y1: Math.min(op.y1 + cw, profileAt(oTop, (op.x0 + op.x1) / 2) - 0.01), key: k });
       const yb = op.door ? Math.max(op.y0, oBottom) : op.y0 - 0.06;
-      if (op.x0 - x0 > 0.005) rects.push({ x0, x1: op.x0, y0: yb, y1: op.y1, key: k });
-      if (x1 - op.x1 > 0.005) rects.push({ x0: op.x1, x1, y0: yb, y1: op.y1, key: k });
+      if (op.x0 - x0 > 0.005 && !cStart) rects.push({ x0, x1: op.x0, y0: yb, y1: op.y1, key: k });
+      if (x1 - op.x1 > 0.005 && !cEnd) rects.push({ x0: op.x1, x1, y0: yb, y1: op.y1, key: k });
       if (!op.door) rects.push({ x0, x1, y0: op.y0 - 0.06, y1: op.y0, key: k });
       cutOut.push(op);
     }

@@ -1,16 +1,25 @@
-// DOOR TYPES – double doors, sliding doors, glazed leaves and sidelights (notes/dortyper.md): what a house from the
-// planbygger needs beyond the plain hinged single door. doors.js buildDoor hands a door here when its `door` has a
-// variant ('double' | 'sliding'), glass or sidelights; every other door is built by doors.js exactly as before.
+// DOOR TYPES – double doors, sliding doors, folding doors, garage doors, glazed leaves, sidelights and top lights
+// (notes/dortyper.md): what a house from the planbygger needs beyond the plain hinged single door. doors.js buildDoor
+// hands a door here when its `door` has a variant ('double' | 'sliding' | 'folding' | 'garage'), glass, sidelights or a
+// transom; every other door is built by doors.js exactly as before.
 //
 //   buildDoorType(ctx, d, { layout, M, batch, batchers }) → { door, info, colliders }   (the contract of buildDoor)
 //
-// Hinged (a single door with glass or sidelights, a double door): world/Door.js in the leaf bay – the clear width
-// between the jambs less the sidelights and their mullions. A double door's leaves are hinged on their own jamb and meet
-// without a post; the active leaf has the handle and an astragal over the meeting edge, the other flush bolts.
-// Sliding: world/SlidingDoor.js – 'surface' (one or two leaves on a rail in front of a wall face), 'pocket' (into the
-// wall), 'patio' (a glass panel sliding in front of a fixed one in an aluminium frame, for an exterior wall). No swing.
-// Glass (door.glass): stiles and rails around the glass, bars (sprosser) between the panes, glazing beads on both faces.
+// Hinged (a single door with glass, sidelights or a transom, a double door): world/Door.js in the leaf bay – the clear
+// width between the jambs less the sidelights and their mullions, and the height under the transom. A double door's
+// leaves are hinged on their own jamb and meet without a post; the active leaf has the handle and an astragal over the
+// meeting edge, the other flush bolts.
+// Sliding: world/SlidingDoor.js – 'surface' (one or two leaves on a rail in front of a wall face; door.leaves 2 or 3:
+// a telescopic door, the leaves on parallel rails stacking beside the hole), 'pocket' (into the wall), 'bypass' (two
+// leaves on two tracks in front of the hole, one slides behind the other – a wardrobe's), 'patio' (a glass panel
+// sliding in front of a fixed one in an aluminium frame, for an exterior wall). No swing.
+// Garage (door.style 'sectional' | 'tilt'): world/GarageDoor.js – sections running up and in under the ceiling, or one
+// panel tilting up. No swing area on the floor.
+// Glass (door.glass): stiles and rails around the glass, bars (sprosser) between the panes, glazing beads on both faces;
+// glass.width + glass.align a narrow strip beside the lock or the hinges.
 // Sidelights (door.sidelights): fixed glazed panels in the hole beside the leaf bay, glass down to the floor.
+// Transom (door.transom, overlys): a fixed glazed panel over the leaf bay and the sidelights, under the head, split at
+// the mullions.
 //
 // No face shares a plane with another: the frame stays INSET inside the hole (never in the reveal's plane), bars are
 // thinner than the leaf, beads stand proud of it, the glass lies inside the bars and the frame.
@@ -21,6 +30,7 @@ import { ring, glassMaterial, frostedGlassMaterial } from './wallkit.js';
 import { Door } from '../world/Door.js';
 import { SlidingDoor } from '../world/SlidingDoor.js';
 import { FoldingDoor } from '../world/FoldingDoor.js';
+import { GarageDoor } from '../world/GarageDoor.js';
 import { HALL_DOOR, roomLabel, hardwareMaterial, thresholdOf, thresholdMaterial, replaceLeaf } from './doors.js';
 
 /** The frame stays this far inside the hole on every side (2.5 mm: none of its faces in the reveal's plane). */
@@ -32,6 +42,12 @@ const NARROW_BAY = 0.71;
 const NARROW_KARM = 0.02;
 /** Default width of a sidelight (the panel between the jamb and the mullion). */
 const SIDELIGHT_W = 0.4;
+/** Default height of a transom (the glazed panel between the transom bar and the head). */
+const TRANSOM_H = 0.4;
+/** A garage door: the default leaf colour, section height, and the room it needs over the hole for its tracks. */
+const GARAGE_COLOR = '#ecebe7';
+const GARAGE_SECTION = 0.55;
+const GARAGE_HEADROOM = 0.35;
 
 const num = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
 const pos = (v) => (num(v) != null && v > 0 ? v : null);
@@ -41,11 +57,11 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 export function isDoorType(d) {
   const s = d?.door;
   if (!s) return false;
-  return VARIANTS.includes(s.variant) || !!s.glass || (Array.isArray(s.sidelights) && s.sidelights.length > 0);
+  return VARIANTS.includes(s.variant) || !!s.glass || !!s.transom || (Array.isArray(s.sidelights) && s.sidelights.length > 0);
 }
 
-/** The variants built here (a plain hinged single door is doors.js's, unless it has glass or sidelights). */
-const VARIANTS = ['double', 'sliding', 'folding'];
+/** The variants built here (a plain hinged single door is doors.js's, unless it has glass, sidelights or a transom). */
+const VARIANTS = ['double', 'sliding', 'folding', 'garage'];
 /** A folding door's default panel width (the count is rounded to an even number per stack). */
 const FOLD_PANEL = 0.3;
 
@@ -67,16 +83,37 @@ function glassOf(g, y0, top, def) {
   const from = clamp(pos(o.from) ?? def.from, y0 + 0.04, top - 0.25);
   const to = clamp(pos(o.to) ?? top - def.top, from + 0.1, top - 0.04);
   const n = (v) => clamp(Math.round(pos(v) ?? 1), 1, 8);
-  return { margin, from, to, cols: n(o.cols), rows: n(o.rows), bar: clamp(pos(o.bar) ?? 0.03, 0.01, 0.08), frosted: !!o.frosted };
+  // a narrow strip (glass.width) beside the lock or the hinges, or in the middle (glass.align)
+  const width = pos(o.width);
+  const align = ['lock', 'hinge'].includes(o.align) ? o.align : 'center';
+  return { margin, from, to, cols: n(o.cols), rows: n(o.rows), bar: clamp(pos(o.bar) ?? 0.03, 0.01, 0.08), frosted: !!o.frosted, ...(width ? { width, align } : {}) };
 }
 
-/** The sidelights of a door: [{ side: −1 ('from') | +1 ('to'), w, glass }] (one per side at most). */
+/**
+ * The transom (overlys) of a door, or null: `door.transom` is true or { h, glass }. bar = [y0, y1] of the transom bar
+ * (the leaf bay ends under it), panel = [y0, y1] of the glazed panel over it (up to the head).
+ */
+function transomOf(ds, Hh, fw) {
+  const t = ds.transom;
+  if (!t) return null;
+  const o = t === true ? {} : t;
+  const h = clamp(pos(o.h) ?? TRANSOM_H, 0.12, Math.max(0.12, Hh - 2 * fw - 1.85));
+  const p1 = Hh - fw;
+  const p0 = p1 - h;
+  return { h, bar: [p0 - fw, p0], panel: [p0, p1], glass: o.glass ?? true };
+}
+
+/**
+ * The sidelights of a door: [{ side: −1 ('from') | +1 ('to'), w, glass }], several on a side in a row from the jamb in
+ * (a door in a glass wall), a mullion between them.
+ */
 function sidelightsOf(ds) {
   const out = [];
   for (const s of Array.isArray(ds.sidelights) ? ds.sidelights : []) {
     const side = s?.side === 'to' ? 1 : -1;
-    if (out.some((x) => x.side === side)) continue;
-    out.push({ side, w: pos(s?.w) ?? SIDELIGHT_W, glass: s?.glass ?? ds.glass ?? true });
+    // (the door's glass without its strip width: a sidelight is glazed across)
+    const own = ds.glass && typeof ds.glass === 'object' ? { ...ds.glass, width: undefined, align: undefined } : ds.glass;
+    out.push({ side, w: pos(s?.w) ?? SIDELIGHT_W, glass: s?.glass ?? own ?? true });
   }
   return out;
 }
@@ -86,24 +123,34 @@ function sidelightsOf(ds) {
  * bars between the panes (1.2 cm thinner than the body), glazing beads on both faces (1 mm into the face, 5 mm proud,
  * 3 mm over the glass). The glass itself is returned as a rect for the caller (a mesh of its own, or in a batch).
  */
-function glazedBody(kit, { cx, y0, w, h, z0, T, mat: m, glass: g, collide = false }) {
+function glazedBody(kit, { cx, y0, w, h, z0, T, mat: m, glass: g, collide = false, dx = 0 }) {
   const o = { collide };
   const margin = Math.min(g.margin, w / 2 - 0.05);
   const yA = g.from;
   const yB = g.to;
-  ring(kit, cx, y0, w, h, margin, y0 + h - yB, yA - y0, z0, z0 + T, m, o);
-  const gw = w - 2 * margin;
+  let gw = w - 2 * margin;
+  let gx = cx;
+  if (g.width) {
+    // a narrow strip: its own width, moved dx from the middle (the caller's align), at least 5 cm of stile each side
+    gw = clamp(g.width, 0.06, w - 0.1);
+    gx = clamp(cx + dx, cx - w / 2 + 0.05 + gw / 2, cx + w / 2 - 0.05 - gw / 2);
+    const l = gx - gw / 2 - (cx - w / 2), r = cx + w / 2 - (gx + gw / 2);
+    kit.box(w, y0 + h - yB, T, cx, (yB + y0 + h) / 2, z0 + T / 2, m, o);
+    kit.box(w, yA - y0, T, cx, (y0 + yA) / 2, z0 + T / 2, m, o);
+    kit.box(l, yB - yA, T, cx - w / 2 + l / 2, (yA + yB) / 2, z0 + T / 2, m, o);
+    kit.box(r, yB - yA, T, cx + w / 2 - r / 2, (yA + yB) / 2, z0 + T / 2, m, o);
+  } else ring(kit, cx, y0, w, h, margin, y0 + h - yB, yA - y0, z0, z0 + T, m, o);
   const gh = yB - yA;
   const zc = z0 + T / 2;
   const bt = T - 0.012;
-  for (let i = 1; i < g.cols; i++) kit.box(g.bar, gh + 0.004, bt, cx - gw / 2 + (gw * i) / g.cols, yA + gh / 2, zc, m, o);
-  for (let j = 1; j < g.rows; j++) kit.box(gw + 0.004, g.bar, bt - 0.002, cx, yA + (gh * j) / g.rows, zc, m, o);
+  for (let i = 1; i < g.cols; i++) kit.box(g.bar, gh + 0.004, bt, gx - gw / 2 + (gw * i) / g.cols, yA + gh / 2, zc, m, o);
+  for (let j = 1; j < g.rows; j++) kit.box(gw + 0.004, g.bar, bt - 0.002, gx, yA + (gh * j) / g.rows, zc, m, o);
   for (const side of [1, -1]) {
     const face = side > 0 ? z0 + T : z0;
     const za = side > 0 ? face - 0.001 : face - 0.005;
-    ring(kit, cx, yA - 0.011, gw + 0.022, gh + 0.022, 0.014, 0.014, 0.014, za, za + 0.006, m, { collide: false, castShadow: false });
+    ring(kit, gx, yA - 0.011, gw + 0.022, gh + 0.022, 0.014, 0.014, 0.014, za, za + 0.006, m, { collide: false, castShadow: false });
   }
-  return { x: cx, y: yA + gh / 2, w: gw + 0.016, h: gh + 0.016, z: zc };
+  return { x: gx, y: yA + gh / 2, w: gw + 0.016, h: gh + 0.016, z: zc };
 }
 
 /** Plain body of a leaf: the slab, and on an interior leaf the routed groove ~11 cm in (as doors.js interiorLeaf). */
@@ -143,7 +190,8 @@ export function buildDoorType(ctx, d, { layout, M, batch, batchers }) {
   const wall = H?.wallsById?.[d.wallId] ?? layout.wallsById?.[d.wallId] ?? null;
   const ds = d.door ?? {};
   const outer = !!(wall?.exterior && (wall?.thickness ?? 0) >= 0.2);
-  const leafColor = ds.leafColor ?? HALL_DOOR;
+  const garage = ds.variant === 'garage';
+  const leafColor = ds.leafColor ?? (garage ? GARAGE_COLOR : HALL_DOOR);
   const leafMat = leafColor.toLowerCase() === HALL_DOOR ? M.hallDoor : mat('painted', leafColor, { roughness: outer ? 0.6 : 0.4 });
   const frameColor = d.frame?.color ?? leafColor;
   const frameMat = frameColor.toLowerCase() === HALL_DOOR ? M.hallDoor : mat('painted', frameColor, { roughness: 0.45 });
@@ -156,17 +204,19 @@ export function buildDoorType(ctx, d, { layout, M, batch, batchers }) {
   const z1 = casing.front === false ? 0.006 : 0.02;
   const other = (d.connects || []).find((id) => id !== d.roomId) ?? null;
   const c = {
-    ctx, d, ds, M, batchers, outer, dm, fw, depth, z0, z1, matrix,
+    ctx, d, ds, M, batch, batchers, outer, dm, fw, depth, z0, z1, matrix,
     W: d.width,
     Hh: d.height,
     f: batch.frame(matrix),
-    kMat: outer ? mat('painted', ds.lining?.color ?? HALL_DOOR, { roughness: 0.5 }) : frameMat,
+    // (a garage door's karm is in the frame colour, as the port's own frame)
+    kMat: outer && !garage ? mat('painted', ds.lining?.color ?? HALL_DOOR, { roughness: 0.5 }) : frameMat,
     glassMat: (g) => (g?.frosted ? frostedGlassMaterial() : M.glass ?? glassMaterial()),
     labels: { frontLabel: roomLabel(layout, other), backLabel: roomLabel(layout, d.roomId) },
     colliders: [],
     disposables: [],
   };
-  const built = ds.variant === 'sliding' ? buildSliding(c) : ds.variant === 'folding' ? buildFolding(c) : buildHinged(c);
+  const build = { sliding: buildSliding, folding: buildFolding, garage: buildGarage }[ds.variant] ?? buildHinged;
+  const built = build(c);
   const door = built.door;
   if (built.threshold !== false) buildThreshold(c, built.threshold ?? {});
   if (ds.closed === false) door.setOpen(true, { instant: true });
@@ -230,7 +280,10 @@ function buildHinged(c) {
   }
   const bw = xb - xa;
   const bc = (xa + xb) / 2;
-  const lh = (d.leaf?.h ?? Hh - fw) - 0.008;
+  // a transom (overlys): the leaf bay and the sidelights end under its bar
+  const tr = transomOf(ds, Hh, fw);
+  const bayTop = tr ? tr.bar[0] : Hh - fw;
+  const lh = (tr ? Math.min(d.leaf?.h ?? bayTop, bayTop) : d.leaf?.h ?? Hh - fw) - 0.008;
   // a plain single door keeps its leaf width from the data (as doors.js); in a bay the leaves fill it
   const lw = lights.length || double ? bw : d.leaf?.w ?? W - 2 * fw;
 
@@ -281,33 +334,53 @@ function buildHinged(c) {
   }
   f.box(W - 2 * fw, fw - INSET, kd, 0, Hh - fw + (fw - INSET) / 2, zc, kMat);
   for (const x of posts) f.box(fw, Hh - fw, kd, x + fw / 2, (Hh - fw) / 2, zc, kMat, narrow ? { collide: false } : undefined);
+  // the transom bar across the hole between the jambs, 2 mm shallower than the posts it crosses
+  if (tr) f.box(W - 2 * fw, fw, kd - 0.004, 0, (tr.bar[0] + tr.bar[1]) / 2, zc, kMat);
   const stopZ = (swing < 0 ? -depth + 0.054 : -0.054) + 0.008 * Math.sign(-swing);
-  f.box(0.012, Hh - fw, 0.016, xa + 0.006, (Hh - fw) / 2, stopZ, kMat, { collide: false });
-  f.box(0.012, Hh - fw, 0.016, xb - 0.006, (Hh - fw) / 2, stopZ, kMat, { collide: false });
-  f.box(bw - 0.024, 0.012, 0.016, bc, Hh - fw - 0.006, stopZ, kMat, { collide: false });
+  f.box(0.012, bayTop, 0.016, xa + 0.006, bayTop / 2, stopZ, kMat, { collide: false });
+  f.box(0.012, bayTop, 0.016, xb - 0.006, bayTop / 2, stopZ, kMat, { collide: false });
+  f.box(bw - 0.024, 0.012, 0.016, bc, bayTop - 0.006, stopZ, kMat, { collide: false });
 
   // sidelights: a fixed glazed panel in the leaf's plane, glass down to the floor
   const T = outer ? 0.05 : 0.04;
   const pz0 = swing > 0 ? (outer ? -0.058 : -0.049) : -depth + (outer ? 0.008 : 0.009);
-  for (const s of lights) {
-    const x0 = s.x0 + 0.001;
-    const x1 = s.x1 - 0.001;
-    const y0 = 0.008;
-    const top = Hh - fw - 0.001;
-    const g = glassOf(s.glass, y0, top, { margin: 0.05, from: 0.1, top: 0.05 });
+  /** A fixed panel x0 … x1, y0 … top in the leaf's plane: glazed (glass g) or plain. */
+  const panel = (x0, x1, y0, top, g) => {
     const pm = outer ? dm.frame : dm.leaf;
     if (!g) {
       f.box(x1 - x0, top - y0, T, (x0 + x1) / 2, (y0 + top) / 2, pz0 + T / 2, pm);
-      continue;
+      return;
     }
     const rect = glazedBody(f, { cx: (x0 + x1) / 2, y0, w: x1 - x0, h: top - y0, z0: pz0, T, mat: pm, glass: g, collide: true });
     const pg = new THREE.PlaneGeometry(rect.w, rect.h);
     f.add(pg, c.glassMat(g), { matrix: place(rect.x, rect.y, rect.z), collide: true, castShadow: false });
     pg.dispose();
+  };
+  for (const s of lights) {
+    const x0 = s.x0 + 0.001;
+    const x1 = s.x1 - 0.001;
+    const y0 = 0.008;
+    const top = bayTop - 0.001;
+    panel(x0, x1, y0, top, glassOf(s.glass, y0, top, { margin: 0.05, from: 0.1, top: 0.05 }));
+  }
+  // the transom: one panel per field between the jambs and the mullions (they run on up to the head)
+  if (tr) {
+    const [y0, y1] = [tr.panel[0] + 0.001, tr.panel[1] - 0.001];
+    const cuts = [-W / 2 + fw, ...posts.flatMap((x) => [x, x + fw]), W / 2 - fw].sort((p, q) => p - q);
+    for (let i = 0; i + 1 < cuts.length; i += 2) panel(cuts[i] + 0.001, cuts[i + 1] - 0.001, y0, y1, transomGlass(tr.glass, y0, y1));
   }
 
-  if (outer) outerElement(c, posts);
+  if (outer) outerElement(c, posts, tr);
   return { door };
+}
+
+/** Glazing of a transom field from y0 to y1 (transom.glass: true, false or { margin, cols, rows, bar, frosted }). */
+function transomGlass(g, y0, y1) {
+  if (!g) return null;
+  const o = g === true ? {} : g;
+  const margin = clamp(pos(o.margin) ?? 0.05, 0.03, Math.max(0.03, (y1 - y0) / 2 - 0.03));
+  const n = (v) => clamp(Math.round(pos(v) ?? 1), 1, 8);
+  return { margin, from: y0 + margin, to: y1 - margin, cols: n(o.cols), rows: n(o.rows), bar: clamp(pos(o.bar) ?? 0.03, 0.01, 0.08), frosted: !!o.frosted };
 }
 
 /** The outer slice NARROW_KARM of a side karm (side −1 / +1) as a static collider (the visible karm does not collide). */
@@ -328,7 +401,7 @@ function narrowKarm(c, s) {
  * An exterior door's element frame (anthracite aluminium) at the outer face, 3 mm into the opening past the lining
  * (never in the lining's planes), with a post at each mullion.
  */
-function outerElement(c, posts = []) {
+function outerElement(c, posts = [], tr = null) {
   const { d, f, dm, fw, W, Hh, depth } = c;
   const fd = d.frame?.depth ?? 0.06;
   const rw = W - 2 * INSET - 0.002;
@@ -337,6 +410,8 @@ function outerElement(c, posts = []) {
   const top = rh - (Hh - fw - 0.003);
   ring(f, 0, 0, rw, rh, side, top, 0, -depth - 0.004, -depth + fd, dm.frame, { collide: false });
   for (const x of posts) f.box(fw + 0.006, Hh - fw - 0.003, fd + 0.004, x + fw / 2, (Hh - fw - 0.003) / 2, -depth - 0.004 + (fd + 0.004) / 2, dm.frame, { collide: false });
+  // a transom bar across, 1 mm shallower than the posts on both faces
+  if (tr) f.box(W - 2 * fw + 0.006, fw + 0.006, fd + 0.002, 0, (tr.bar[0] + tr.bar[1]) / 2, -depth - 0.003 + (fd + 0.002) / 2, dm.frame, { collide: false });
 }
 
 /**
@@ -352,7 +427,11 @@ function hingedLeaf(c, { lw, lh, hs, swing, passive, astragal, name }) {
   const y0 = 0.008;
   const cx = -hs * (lw / 2);
   const glass = glassOf(ds.glass, y0, y0 + lh, outer ? { margin: 0.1, from: 0.25, top: 0.12 } : { margin: 0.12, from: 0.3, top: 0.15 });
-  const rect = glass ? glazedBody(kit, { cx, y0, w: lw, h: lh, z0, T, mat: dm.leaf, glass }) : null;
+  // a narrow strip beside the lock (the free edge, x = −hs · lw; 17 cm in at least, clear of the handle and the lock
+  // plate) or the hinges (x = 0), its margin from that edge
+  const edge = glass?.align === 'lock' ? Math.max(glass.margin, 0.17) : glass?.margin;
+  const dx = glass?.width ? (glass.align === 'center' ? 0 : (glass.align === 'hinge' ? 1 : -1) * hs * (lw / 2 - edge - Math.min(glass.width, lw - 0.1) / 2)) : 0;
+  const rect = glass ? glazedBody(kit, { cx, y0, w: lw, h: lh, z0, T, mat: dm.leaf, glass, dx }) : null;
   if (!glass) plainBody(kit, { cx, y0, w: lw, h: lh, z0, T, mat: dm.leaf, groove: outer ? null : M.hallDoorGroove });
 
   const hw = ds.hardware ?? {};
@@ -406,8 +485,8 @@ function hingedLeaf(c, { lw, lh, hs, swing, passive, astragal, name }) {
 
 function buildSliding(c) {
   const { ctx, d, ds, f, matrix, outer, fw, W, Hh, depth, z0, z1 } = c;
-  const mount = ['surface', 'pocket', 'patio'].includes(ds.mount) ? ds.mount : outer ? 'patio' : 'surface';
-  const slide = ['from', 'to', 'both'].includes(ds.slide) && !(mount === 'patio' && ds.slide === 'both') ? ds.slide : 'from';
+  const mount = ['surface', 'pocket', 'patio', 'bypass'].includes(ds.mount) ? ds.mount : outer ? 'patio' : 'surface';
+  const slide = ['from', 'to', 'both'].includes(ds.slide) && !((mount === 'patio' || mount === 'bypass') && ds.slide === 'both') ? ds.slide : 'from';
   const cL = -W / 2 + fw;
   const cR = W / 2 - fw;
   const leaves = [];
@@ -426,18 +505,50 @@ function buildSliding(c) {
     const lz0 = side > 0 ? 0.03 : -depth - 0.03 - T;
     const y0 = 0.01;
     const y1 = Hh + 0.04;
-    const spans = slide === 'both' ? [[-W / 2 - 0.02, -0.002, -1], [0.002, W / 2 + 0.02, 1]] : [[-W / 2 - 0.02, W / 2 + 0.02, slide === 'to' ? 1 : -1]];
+    // a telescopic door (door.leaves 2 or 3): the leaves on parallel rails, overlapping 4 cm; open, they stack beside
+    // the hole – leaf i counted from the side they park at, on rail i (0 nearest the wall), the last one has the pull
+    const n = slide === 'both' ? 1 : surfaceLeaves(ds);
+    const S0 = -W / 2 - 0.02;
+    const S1 = W / 2 + 0.02;
+    const ov = 0.04;
+    const lw = (S1 - S0 + (n - 1) * ov) / n;
+    const spans = slide === 'both'
+      ? [[S0, -0.002, -1, 0], [0.002, S1, 1, 0]]
+      : Array.from({ length: n }, (_, i) => (slide === 'to' ? [S1 - (i + 1) * lw + i * ov, S1 - i * lw + i * ov, 1, i] : [S0 + i * (lw - ov), S0 + i * (lw - ov) + lw, -1, i]));
     let ra = Infinity;
     let rb = -Infinity;
-    for (const [a, b, dir] of spans) {
+    for (const [a, b, dir, i] of spans) {
       const travel = dir > 0 ? cR + 0.01 - a : b - (cL - 0.01);
-      leaves.push({ body: { x0: a, x1: b, y0, y1, z0: lz0, z1: lz0 + T, dir, travel }, build: (kit) => surfaceLeaf(c, kit, { a, b, y0, y1, z0: lz0, T, dir, side }) });
+      const lz = lz0 + side * i * (T + 0.008);
+      leaves.push({ body: { x0: a, x1: b, y0, y1, z0: lz, z1: lz + T, dir, travel }, build: (kit) => surfaceLeaf(c, kit, { a, b, y0, y1, z0: lz, T, dir, side, pull: i === n - 1 || slide === 'both' }) });
       ra = Math.min(ra, a, a + dir * travel);
       rb = Math.max(rb, b, b + dir * travel);
     }
-    // the rail on the wall above the hole, over the closed and the open leaves
-    const rz0 = side > 0 ? 0.004 : -depth - 0.004 - 0.08;
-    f.box(rb - ra + 0.06, 0.05, 0.08, (ra + rb) / 2, Hh + 0.07, rz0 + 0.04, c.dm.hardware, { collide: false });
+    // the rail on the wall above the hole, over the closed and the open leaves (deeper for each further rail)
+    const rd = 0.08 + (n - 1) * (T + 0.008);
+    const rz0 = side > 0 ? 0.004 : -depth - 0.004 - rd;
+    f.box(rb - ra + 0.06, 0.05, rd, (ra + rb) / 2, Hh + 0.07, rz0 + rd / 2, c.dm.hardware, { collide: false });
+  } else if (mount === 'bypass') {
+    // a wardrobe's sliding doors: two leaves on two tracks in front of the hole on the face `swing` points to, under a
+    // head track; slide 'from': the leaf at the 'to' end (on the front track) slides over the other one
+    const side = d.swing === 'out' ? -1 : 1;
+    const Tb = 0.035;
+    const zBack = side > 0 ? 0.024 : -depth - 0.024 - Tb;
+    const zFront = zBack + side * (Tb + 0.01);
+    const y0 = 0.01;
+    const y1 = Hh + 0.02;
+    const dir = slide === 'to' ? 1 : -1;
+    const A = [-W / 2 - 0.02, 0.02];
+    const B = [-0.02, W / 2 + 0.02];
+    const [moving, fixed] = dir < 0 ? [B, A] : [A, B];
+    for (const [[a, b], lz, travel] of [[fixed, zBack, 0], [moving, zFront, W / 2]]) {
+      leaves.push({ body: { x0: a, x1: b, y0, y1, z0: lz, z1: lz + Tb, dir, travel }, build: (kit) => bypassLeaf(c, kit, { a, b, y0, y1, z0: lz, T: Tb, jamb: a < -0.03 ? -1 : 1 }) });
+    }
+    clear = dir < 0 ? [A[1], cR] : [cL, B[0]];
+    // the head track over both leaves, from the wall face out past the front one
+    const td = 2 * Tb + 0.04;
+    const tz0 = side > 0 ? 0.004 : -depth - 0.004 - td;
+    f.box(W + 0.08, 0.05, td, 0, Hh + 0.045, tz0 + td / 2, c.dm.hardware, { collide: false });
   } else if (mount === 'pocket') {
     // in the middle of the wall; it disappears into the wall up to 2.5 cm, through the slot in the jamb
     const lz0 = -depth / 2 - T / 2;
@@ -558,6 +669,133 @@ function buildFolding(c) {
   return { door };
 }
 
+/* ------------------------------------------------------------------ garage */
+
+/**
+ * A garage door (garasjeport): style 'sectional' (leddport, the default) – sections behind the hole on the garage
+ * side, running up vertical tracks beside it, round a bend over the lintel and in under the ceiling; or 'tilt'
+ * (vippeport) – one panel in the hole near the outer face whose top runs in along tracks under the head while the
+ * bottom swings out and up (world/GarageDoor.js). The garage is the owner room (swing 'in'); swing 'out' puts the
+ * tracks on the other side. The karm in the frame colour, no threshold: the floor runs through.
+ */
+function buildGarage(c) {
+  const { ctx, d, ds, fw, W, Hh, depth, dm } = c;
+  const style = ds.style === 'tilt' ? 'tilt' : 'sectional';
+  slidingKarm(c);
+  // swing 'out': the door works from the other face – its frame turned half round about the middle of the wall (the
+  // wall stays z ∈ [−depth, 0], +z into the other room)
+  const flip = d.swing === 'out';
+  const matrix = flip ? c.matrix.clone().multiply(new THREE.Matrix4().makeTranslation(0, 0, -depth)).multiply(new THREE.Matrix4().makeRotationY(Math.PI)) : c.matrix;
+  const f = flip ? c.batch.frame(matrix) : c.f;
+  const cL = -W / 2 + fw;
+  const cR = W / 2 - fw;
+  const steel = c.M.hardware;
+  const o = { collide: false };
+  // the floor across the reveal: a concrete strip flush with the floor (the garage's own threshold, door.threshold a colour)
+  c.f.box(W - 2 * fw, 0.008, depth, 0, 0.004, -depth / 2, mat('painted', typeof ds.threshold === 'string' ? ds.threshold : '#9a9893', { roughness: 0.92 }), o);
+  // the pattern's grooves: thin lines a shade darker than the leaf, 0.4 mm proud of the outer face (as an inner door's)
+  const groove = mat('painted', `#${new THREE.Color(ds.leafColor ?? GARAGE_COLOR).multiplyScalar(0.62).getHexString()}`, { roughness: 0.7 });
+  const go = { collide: false, castShadow: false };
+  let spec;
+  let build;
+  if (style === 'sectional') {
+    const T = 0.042;
+    const Hc = Hh + 0.05; // the curtain covers the hole and 5 cm of the lintel
+    const n = clamp(Math.round(pos(ds.sections) ?? Hc / GARAGE_SECTION), 2, 10);
+    const p = Hc / n;
+    const headroom = clamp(pos(ds.headroom) ?? GARAGE_HEADROOM, 0.15, 0.8);
+    const radius = clamp(headroom - 0.1, 0.08, 0.45);
+    const z0 = 0.03; // 1 cm clear of the casing
+    const bendY = Hc + 0.03;
+    const X0 = -W / 2 - 0.06;
+    const X1 = W / 2 + 0.06;
+    spec = { style, x0: X0, x1: X1, T, sections: n, sectionH: p, z0, bendY, radius, lift: Hc };
+    // the tracks beside the curtain: up, round the bend, in under the ceiling as far as the curtain's top reaches
+    const arc = (radius * Math.PI) / 2;
+    const zEnd = z0 + radius + (2 * Hc - bendY - arc) + 0.12;
+    const yH = bendY + radius + 0.02;
+    for (const x of [X0 - 0.03, X1 + 0.03]) {
+      f.box(0.035, bendY, 0.06, x, bendY / 2, z0 + 0.025, steel, o);
+      for (let i = 0; i < 4; i++) {
+        const a = ((i + 0.5) / 4) * (Math.PI / 2);
+        // (narrower than the straight tracks, every other one narrower still: none of their faces in each other's planes)
+        f.box(i % 2 ? 0.027 : 0.031, arc / 4 + 0.02, i % 2 ? 0.052 : 0.056, x, bendY + radius * Math.sin(a), z0 + 0.025 + radius * (1 - Math.cos(a)), steel, { ...o, rot: [a, 0, 0] });
+      }
+      f.box(0.035, 0.06, zEnd - z0 - radius, x, yH, (z0 + radius + zEnd) / 2, steel, o);
+    }
+    // the opener: a rail along the middle at the tracks' height and the motor past the curtain's end (both under the
+    // tracks' top, so under a ceiling the headroom allows)
+    f.box(0.04, 0.03, zEnd - z0 - 0.25, 0, yH + 0.01, (z0 + 0.25 + zEnd) / 2, steel, o);
+    f.box(0.3, 0.12, 0.42, 0, yH - 0.03, zEnd + 0.22, c.M.gasket, o);
+    // the windows (door.glass): a row of panes in the second section from the top
+    const gl = ds.glass ? (ds.glass === true ? {} : ds.glass) : null;
+    const glassRow = gl ? Math.max(0, n - 2) : -1;
+    const cols = gl ? clamp(Math.round(pos(gl.cols) ?? Math.max(2, Math.round(W / 0.7))), 1, 8) : 0;
+    const ribbed = ds.pattern !== 'flat';
+    build = (kit, leaf) => {
+      const k = leaf.k;
+      const h = p - 0.002;
+      let rect = null;
+      if (k === glassRow) {
+        const margin = Math.min(0.35, (X1 - X0) * 0.08);
+        const gw = X1 - X0 - 2 * margin;
+        const g = { margin, from: h * 0.22, to: h * 0.78, cols, rows: 1, bar: Math.max(0.08, (gw - cols * 0.5) / Math.max(1, cols - 1)) };
+        rect = { ...glazedBody(kit, { cx: 0, y0: 0, w: X1 - X0, h, z0: 0, T, mat: dm.leaf, glass: g }), glass: g };
+      } else kit.box(X1 - X0, h, T, 0, h / 2, T / 2, dm.leaf, o);
+      // lying ribs on the outer face (pattern 'flat': none), the seal under the bottom section, a handle on it
+      if (ribbed) for (const y of [h / 3, (2 * h) / 3]) if (k !== glassRow) kit.box(X1 - X0 - 0.01, 0.008, 0.0006, 0, y, -0.0004, groove, go);
+      if (k === 0) {
+        kit.box(X1 - X0, 0.018, T - 0.01, 0, 0.009, T / 2, c.M.gasket, o);
+        kit.box(0.14, 0.03, 0.03, 0, 0.22, -0.015, dm.hardware, o);
+        kit.cylinder(0.012, 0.012, 0.012, 0.12, 0.22, -0.006, dm.hardware, { ...o, rot: [Math.PI / 2, 0, 0], segments: 12 });
+      }
+      // rollers on the hinges at both edges
+      for (const x of [X0 + 0.01, X1 - 0.01]) kit.box(0.03, 0.05, 0.03, x, 0.02, T + 0.012, steel, o);
+      return rect;
+    };
+  } else {
+    const T = 0.045;
+    const x0 = cL + 0.006;
+    const x1 = cR - 0.006;
+    const top = Hh - fw - 0.006;
+    const h = top - 0.012;
+    const z0 = -depth + Math.min(0.04, depth * 0.2);
+    const run = 0.72 * h;
+    spec = { style, x0, x1, T, top, h, z0, run };
+    // the head tracks beside the hole on the garage face, as far in as the panel's top runs
+    for (const x of [-W / 2 - 0.03, W / 2 + 0.03]) f.box(0.04, 0.05, z0 + run + 0.1, x, top - 0.02, (z0 + run + 0.1) / 2, steel, o);
+    build = (kit) => {
+      kit.box(x1 - x0, h, T, (x0 + x1) / 2, -h / 2, T / 2, dm.leaf, o);
+      // standing ribs on the outer face, a handle near the bottom
+      const nr = Math.max(2, Math.round((x1 - x0) / 0.16));
+      if (ds.pattern !== 'flat') for (let i = 1; i < nr; i++) kit.box(0.008, h - 0.08, 0.0006, x0 + ((x1 - x0) * i) / nr, -h / 2, -0.0004, groove, go);
+      kit.box(0.16, 0.03, 0.03, (x0 + x1) / 2, -h + 0.25, -0.015, dm.hardware, o);
+      return null;
+    };
+  }
+  const door = new GarageDoor(ctx, {
+    id: d.id,
+    matrix,
+    width: W,
+    height: Hh,
+    depth,
+    garage: spec,
+    clear: [cL, cR],
+    locked: !!d.locked,
+    interactive: d.interactive !== false,
+    duration: style === 'tilt' ? 1.8 : 2.4,
+  });
+  for (const leaf of door.leaves) {
+    const kit = new MeshBatcher(`leaf:${d.id}:${leaf.index}`);
+    const rect = build(kit, leaf);
+    const g = kit.build();
+    c.batchers.push({ geometries: kit.geometries });
+    if (rect) c.disposables.push(addGlass(g, rect, c.glassMat(rect.glass), d.id));
+    replaceLeaf(door, g, leaf.index);
+  }
+  return { door, threshold: false };
+}
+
 /** Leaf body (plain or glazed) of a sliding leaf in door-local space; returns its glass rect (with .glass) or null. */
 function slidingBody(c, kit, { a, b, y0, y1, z0, T }) {
   const glass = glassOf(c.ds.glass, y0, y1, { margin: 0.12, from: 0.3, top: 0.15 });
@@ -569,8 +807,11 @@ function slidingBody(c, kit, { a, b, y0, y1, z0, T }) {
   return { ...glazedBody(kit, { cx, y0, w: b - a, h: y1 - y0, z0, T, mat: c.dm.leaf, glass }), glass };
 }
 
-/** A leaf on the rail: body, two hangers up into the rail, a bar pull on the free face, a flush pull toward the wall. */
-function surfaceLeaf(c, kit, { a, b, y0, y1, z0, T, dir, side }) {
+/**
+ * A leaf on the rail: body, two hangers up into the rail, a bar pull on the free face (only the leading leaf of a
+ * telescopic door: pull), a flush pull toward the wall.
+ */
+function surfaceLeaf(c, kit, { a, b, y0, y1, z0, T, dir, side, pull = true }) {
   const hwm = c.dm.hardware;
   const o = { collide: false };
   const rect = slidingBody(c, kit, { a, b, y0, y1, z0, T });
@@ -578,11 +819,30 @@ function surfaceLeaf(c, kit, { a, b, y0, y1, z0, T, dir, side }) {
   const hx = dir > 0 ? a + 0.08 : b - 0.08; // near the edge that closes against the jamb
   const hy = c.ds.handleHeight ?? 1.05;
   const free = side > 0 ? z0 + T : z0; // the face away from the wall
-  kit.box(0.022, 0.32, 0.022, hx, hy, free + side * 0.042, hwm, o);
-  for (const dy of [-0.13, 0.13]) kit.box(0.016, 0.016, 0.034, hx, hy + dy, free + side * 0.017, hwm, o);
+  if (pull) {
+    kit.box(0.022, 0.32, 0.022, hx, hy, free + side * 0.042, hwm, o);
+    for (const dy of [-0.13, 0.13]) kit.box(0.016, 0.016, 0.034, hx, hy + dy, free + side * 0.017, hwm, o);
+  }
   const wallFace = side > 0 ? z0 : z0 + T;
   kit.box(0.026, 0.14, 0.003, hx, hy, wallFace - side * 0.0015, c.M.gasket, { ...o, castShadow: false });
   return rect;
+}
+
+/** A wardrobe leaf (bypass): body, flush pulls on both faces near its jamb edge (jamb −1: at a, +1: at b). */
+function bypassLeaf(c, kit, { a, b, y0, y1, z0, T, jamb }) {
+  const rect = slidingBody(c, kit, { a, b, y0, y1, z0, T });
+  const hx = jamb < 0 ? a + 0.07 : b - 0.07;
+  const hy = c.ds.handleHeight ?? 1.05;
+  for (const side of [1, -1]) {
+    const face = side > 0 ? z0 + T : z0;
+    kit.box(0.026, 0.16, 0.003, hx, hy, face + side * 0.0015, c.M.gasket, { collide: false, castShadow: false });
+  }
+  return rect;
+}
+
+/** Leaves of a surface sliding door: door.leaves 1 (default), 2 or 3 (telescopic). */
+export function surfaceLeaves(ds) {
+  return clamp(Math.round(pos(ds?.leaves) ?? 1), 1, 3);
 }
 
 /** A pocket leaf: body and flush pulls on both faces near the edge that stays out of the wall. */
