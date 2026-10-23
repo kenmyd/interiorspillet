@@ -114,7 +114,7 @@ import { resolveChimneys } from './chimneygeom.js';
  * @property {Object[]} levels            top → bottom: { id, name, floorY, slabThickness, bottomY, ceilingDefault, plan, roomIds, aboveId, belowId }
  * @property {(y: number, previousId?: string) => Object} levelAt   level at a world y (pass the body centre); hysteresis with previousId
  * @property {Object[]} rooms             { id, name, levelId, levelName, kind, hud, floorY, floorOffset, polygon, area, netArea, centroid, bounds,
- *                                          floor, holeIds, ceilingIds, wallIds (loop order), volume, ceilingTop, yRange (hud), acoustic,
+ *                                          floor, holeIds, ceilingIds, wallIds (loop order), volume, ceilingTop, yRange (hud), acoustic, wallTiles,
  *                                          contains(x, z), containsPoint(x, y, z) }
  * @property {(x: number, y: number, z: number, opts?: { physical?: boolean, levelId?: string, previousLevelId?: string }) => Object|null} roomAt
  * @property {WallLayout[]} walls         + wallsById, wall(id), backFacesOf(id)
@@ -1385,6 +1385,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       yRange,
       acoustic: deepClone(r.acoustic) ?? { mode: living ? 'calibrated' : 'estimate' },
       autoLight: r.autoLight ?? null,
+      /** wall tiles (notes/kjokken-bad-genererte-hus.md; home/builtinplan.js): true | { height, from, color, size, wallIds, u } | [ … ] */
+      wallTiles: deepClone(r.wallTiles) ?? null,
       closed: !!r.closed,
       estimated: deepClone(r.estimated) ?? [],
       source: r.source ?? '',

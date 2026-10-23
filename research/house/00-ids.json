@@ -107,9 +107,10 @@
       "builtIns": {
         "required": ["id", "roomId", "type", "mount", "position", "dims"],
         "enums": {
-          "type": ["wc", "vanity", "shower", "mirror-round", "floor-drain", "towel-radiator", "laundry-bench", "cabinet-row", "washer", "dryer", "wardrobe-sliding"],
+          "type": ["wc", "vanity", "shower", "mirror-round", "floor-drain", "towel-radiator", "laundry-bench", "cabinet-row", "washer", "dryer", "wardrobe-sliding", "water-heater", "bathtub", "mirror", "utility-sink", "kitchen-bench", "kitchen-island", "wall-cabinets", "hood", "tall-cabinet", "fridge", "freezer", "fridge-freezer", "oven-tower", "sink", "dishwasher", "hob", "oven"],
           "mount": ["floor", "wall"]
         },
+        "numbers": ["rotationDeg", "dims.w", "dims.d", "dims.h"],
         "points3": ["position"],
         "idPattern": "^bi-"
       },

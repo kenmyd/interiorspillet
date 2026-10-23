@@ -266,8 +266,9 @@ export function buildRooms(ctx, layout, M = null) {
       }
       return tintedFloors.get(color);
     }
-    if (kind === 'vinyl') {
-      // the wet-room vinyl of steg 10 (A4: surfaces.floorFinish – bathroom, laundry); paint without texture support
+    if (kind === 'vinyl' || kind === 'tiles') {
+      // the wet-room vinyl of steg 10 (A4: surfaces.floorFinish – bathroom, laundry) and floor tiles (floor.size, the
+      // generated houses' wet rooms – notes/kjokken-bad-genererte-hus.md); paint without texture support
       let fin = null;
       try {
         fin = floorFinish(f, { res: finishRes });
@@ -280,7 +281,7 @@ export function buildRooms(ctx, layout, M = null) {
     if (kind === 'parquet') return mat('oak', color, { roughness: 0.5 });
     return paint(color);
   }
-  const footstepOf = (floor) => floor?.surface ?? (floor?.material === 'vinyl' ? 'tile' : floor?.material === 'concrete' ? 'concrete' : null);
+  const footstepOf = (floor) => floor?.surface ?? (floor?.material === 'vinyl' || floor?.material === 'tiles' ? 'tile' : floor?.material === 'concrete' ? 'concrete' : null);
 
   // ---- scene roots per room: surfaces → solid (collision) + deco (no collision); contents (lamps)
   const R = {};
