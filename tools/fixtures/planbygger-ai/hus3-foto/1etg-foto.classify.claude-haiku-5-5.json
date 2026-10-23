@@ -1,0 +1,91 @@
+{
+ "house": "hus3-foto",
+ "file": "1etg-foto.jpg",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1131,
+  "height": 1600,
+  "sha256": "29b936ef32570069207f3f97472ef3d5856b40e76db46914c6b66d8f0f5bc247"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "1etg-foto.jpg"
+ },
+ "source": {
+  "file": "1etg-foto.jpg",
+  "part": null,
+  "width": 1500,
+  "height": 2000,
+  "bbox": null,
+  "photo": {
+   "quad": [
+    [
+     336.3,
+     379.7
+    ],
+    [
+     1147.8,
+     401.1
+    ],
+    [
+     1024.9,
+     1797.5
+    ],
+    [
+     -102.1,
+     1537.3
+    ]
+   ],
+   "width": 1697,
+   "height": 2400,
+   "cut": [],
+   "aspect": 0.712
+  }
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.12,
+     0.035,
+     0.83,
+     0.86
+    ],
+    "title": "Etasje 1",
+    "levelName": "1. etasje",
+    "level": 0,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ett plan med uteplass til venstre. Ingen målestokk er skrevet. Målene 14.95 og 6.15 står på planen. Rommene er merket med arealer."
+ },
+ "usage": {
+  "input_tokens": 4515,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 806,
+  "output_tokens_details": {
+   "thinking_tokens": 660
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000855,
+ "ms": 6984,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:12:18.674Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

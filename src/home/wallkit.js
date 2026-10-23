@@ -7,7 +7,9 @@
 // the wall, +y up, +z = room normal (into the room); the wall occupies z ∈ [−thickness, 0]. Opening-local frame: origin
 // at the bottom centre of the hole on the room face (y = sill), +x = right seen from the room, +z = into the room.
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { extrudeWall, basis, MeshBatcher, place } from '../world/buildKit.js';
+import { splitTriangles, liftTriangles, stepFaces } from './roofgeom.js';
 
 export const UP = new THREE.Vector3(0, 1, 0);
 const EPS = 1e-4;
@@ -49,8 +51,9 @@ export function groupGeometry(g, materialIndex) {
  * @param {number} o.L                       wall length
  * @param {number} o.bottom                  bottom edge height
  * @param {Array<[number, number]>} o.top    top edge [[u, y], …] from u = 0 to u = L (steps allowed)
- * @param {Array<{x0,x1,y1}>} o.notches      openings cut from the bottom edge (doors)
- * @param {Array<{x0,x1,y0,y1}>} o.holes     openings inside (windows)
+ * @param {Array<{x0,x1,y1,y1b?}>} o.notches  openings cut from the bottom edge (doors)
+ * @param {Array<{x0,x1,y0,y1,y1b?}>} o.holes openings inside (windows); y1b: a sloped top, y1 at x0 and y1b at x1
+ *                                           (notes/vindusmodeller.md topSlope)
  * @param {number} o.z0 @param {number} o.z1 layer depth range (z1 > z0, both ≤ 0)
  * @param {number} o.kStart @param {number} o.kEnd  mitre factors: x += ∓k·depth at the ends (see buildWalls)
  * @returns {THREE.BufferGeometry} groups 0 back (−z), 1 front (+z), 2 sides
@@ -66,26 +69,28 @@ export function wallLayer({ L, bottom, top, notches = [], holes = [], z0, z1, kS
   let endNotch = null;
   if (ns.length && ns[0].x0 <= EPS) startNotch = ns.shift();
   if (ns.length && ns[ns.length - 1].x1 >= L - EPS) endNotch = ns.pop();
+  // (a sloped top: y1 at x0, y1b at x1; a notch over an end of the layer has its top there by the same line)
+  const topOf = (n, x) => (n.y1b == null || n.x1 - n.x0 < EPS ? n.y1 : n.y1 + ((n.y1b - n.y1) * (x - n.x0)) / (n.x1 - n.x0));
   if (startNotch) {
-    push(0, startNotch.y1);
-    push(startNotch.x1, startNotch.y1);
+    push(0, topOf(startNotch, 0));
+    push(startNotch.x1, topOf(startNotch, startNotch.x1));
     push(startNotch.x1, bottom);
   } else push(0, bottom);
   for (const n of ns) {
     push(n.x0, bottom);
     push(n.x0, n.y1);
-    push(n.x1, n.y1);
+    push(n.x1, n.y1b ?? n.y1);
     push(n.x1, bottom);
   }
   if (endNotch) {
     push(endNotch.x0, bottom);
-    push(endNotch.x0, endNotch.y1);
-    push(L, endNotch.y1);
+    push(endNotch.x0, topOf(endNotch, endNotch.x0));
+    push(L, topOf(endNotch, L));
   } else push(L, bottom);
   for (let i = top.length - 1; i >= 0; i--) push(Math.max(0, Math.min(L, top[i][0])), top[i][1]);
   if (pts.length > 2 && pts[0].distanceTo(pts[pts.length - 1]) < 1e-6) pts.pop();
   const shape = new THREE.Shape(pts);
-  for (const h of holes) shape.holes.push(new THREE.Path([v2(h.x0, h.y0), v2(h.x0, h.y1), v2(h.x1, h.y1), v2(h.x1, h.y0)]));
+  for (const h of holes) shape.holes.push(new THREE.Path([v2(h.x0, h.y0), v2(h.x0, h.y1), v2(h.x1, h.y1b ?? h.y1), v2(h.x1, h.y0)]));
   const g = extrudeWall(shape, z1 - z0, z0);
   const pos = g.attributes.position;
   for (let i = 0; i < pos.count; i++) {
@@ -122,7 +127,7 @@ export function mergeNotches(notches) {
   const out = [];
   for (const n of ns) {
     const p = out[out.length - 1];
-    if (p && n.x0 <= p.x1 + 1e-4 && Math.abs(n.y1 - p.y1) < 1e-4) p.x1 = Math.max(p.x1, n.x1);
+    if (p && n.x0 <= p.x1 + 1e-4 && Math.abs(n.y1 - p.y1) < 1e-4 && n.y1b == null && p.y1b == null) p.x1 = Math.max(p.x1, n.x1);
     else out.push(n);
   }
   return out;
@@ -272,11 +277,56 @@ export function floorGeometry(poly, y = 0, { holes = [], boards = 'z' } = {}) {
 }
 
 /**
- * Ceiling polygon → downward-facing geometry, y from heightAt(x, z) (world), UVs (x, z) metres; holes cut out (the
- * stairwell in the ceiling of the level below).
+ * 2D triangles ([[x, z] × 3]) of a polygon with holes (points as Vector2 or [x, z]).
+ * @returns {Array<Array<[number, number]>>}
  */
-export function ceilingGeometry(poly, heightAt, holes = []) {
+export function polygonTriangles(poly, holes = []) {
+  const pt = (p) => v2(p.x ?? p[0], p.y ?? p[1]);
+  let contour = poly.map(pt);
+  if (THREE.ShapeUtils.isClockWise(contour)) contour = contour.reverse();
+  const hs = holes.filter((h) => h?.length >= 3).map((h) => {
+    const c = h.map(pt);
+    return THREE.ShapeUtils.isClockWise(c) ? c : c.reverse();
+  });
+  const all = [...contour, ...hs.flat()];
+  return THREE.ShapeUtils.triangulateShape(contour, hs).map((f) => f.map((i) => [all[i].x, all[i].y]));
+}
+
+/**
+ * A ceiling under a roof (layout ceiling.surface, home/roofgeom.js): the polygon minus its holes cut along the
+ * surface's folds, each piece on its own plane, facing down, plus the vertical faces where the surface jumps inside the
+ * polygon (a dormer's sides, facing into the dormer). UVs (x, z) metres on the sloped faces, (along, y) on the steps.
+ */
+export function surfaceGeometry(poly, holes, surface) {
+  const tris = liftTriangles(splitTriangles(polygonTriangles(poly, holes), surface.lines), surface.planeAt);
+  const pos = [];
+  const uv = [];
+  for (const t of tris) {
+    // facing down: (b − a) × (c − a) has y < 0
+    const [a, b, c] = t;
+    const ny = (b[2] - a[2]) * (c[0] - a[0]) - (b[0] - a[0]) * (c[2] - a[2]);
+    for (const p of ny < 0 ? [a, b, c] : [a, c, b]) pos.push(p[0], p[1], p[2]), uv.push(p[0], p[2]);
+  }
+  const P = poly.map((p) => [p.x ?? p[0], p.y ?? p[1]]);
+  for (const q of stepFaces(surface.steps || [], P, surface)) {
+    const along = (p) => Math.hypot(p[0] - q[0][0], p[2] - q[0][2]);
+    for (const k of [0, 1, 2, 0, 2, 3]) pos.push(...q[k]), uv.push(along(q[k]), q[k][1]);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.computeVertexNormals();
+  return g;
+}
+
+/**
+ * Ceiling polygon → downward-facing geometry, y from heightAt(x, z) (world), UVs (x, z) metres; holes cut out (the
+ * stairwell in the ceiling of the level below). With `surface` (a ceiling under a roof, layout ceiling.surface) the
+ * piecewise planar surfaceGeometry.
+ */
+export function ceilingGeometry(poly, heightAt, holes = [], surface = null) {
   const hs = holes.filter((h) => h?.length >= 3);
+  if (surface) return surfaceGeometry(poly, hs, surface);
   let g;
   if (hs.length && rectilinear(poly) && hs.every(rectilinear)) g = cellsGeometry(rectCells(poly, hs), heightAt, false);
   else {
@@ -353,22 +403,124 @@ export function frostedGlassMaterial() {
 }
 
 /**
+ * The frame stands this far in from the sides and the top of its hole (2.5 mm narrower than the hole): with the frame
+ * exactly as wide as the hole its sides lay in the planes of the reveal (planbygger F3/F4/F6, request 14). It still
+ * stands on the sill.
+ */
+export const FRAME_INSET = 0.00125;
+/** Hinge sides of an opening sash, seen from the room. */
+const HINGES = new Set(['top', 'bottom', 'left', 'right']);
+/** Most panes along one side of a sash. */
+const MAX_PANES = 12;
+
+/** [cols, rows] of a panes entry ([c, r] or { cols, rows }), whole numbers 1 … MAX_PANES; [1, 1] without one. */
+export function panesOf(p) {
+  const n = (v) => Math.max(1, Math.min(MAX_PANES, Math.round(Number.isFinite(v) ? v : 1)));
+  if (Array.isArray(p)) return [n(p[0]), n(p[1])];
+  if (p && typeof p === 'object') return [n(p.cols), n(p.rows)];
+  return [1, 1];
+}
+
+/**
+ * The fields of a window in its local frame (x centred on the hole, y from the sill): one per entry of o.sashes –
+ * `from` … `to` of the width (left → right seen from the room) and `bottom` … `top` of the height, as fractions – or
+ * one fixed field without sashes. `outer` says which sides lie on the window's own edge (the rest meet a post or a
+ * transom); `panes` is the sash's own, else the window's (o.panes), else [1, 1].
+ * @returns {Array<{ x0, x1, y0, y1, outer: { l, r, b, t }, opening: boolean, hinge: string, panes: [number, number] }>}
+ */
+export function windowSashes(o) {
+  const list = (o.sashes || []).filter((s) => s && typeof s === 'object');
+  const W = o.width;
+  const H = o.height;
+  const fr = (v, d) => Math.min(1, Math.max(0, Number.isFinite(v) ? v : d));
+  return (list.length ? list : [{}])
+    .map((s) => {
+      const a = fr(s.from, 0), b = fr(s.to, 1), c = fr(s.bottom, 0), d = fr(s.top, 1);
+      return {
+        x0: -W / 2 + a * W,
+        x1: -W / 2 + b * W,
+        y0: c * H,
+        y1: d * H,
+        outer: { l: a < 1e-3, r: b > 1 - 1e-3, b: c < 1e-3, t: d > 1 - 1e-3 },
+        opening: !!s.opening,
+        hinge: HINGES.has(s.hinge) ? s.hinge : 'top',
+        panes: panesOf(s.panes ?? o.panes),
+      };
+    })
+    .filter((c) => c.x1 - c.x0 > 0.02 && c.y1 - c.y0 > 0.02);
+}
+
+/** Four boxes between an outer and an inner rectangle [x0, y0, x1, y1] (inner inside outer): a ring whose sides may differ. */
+function rectRing(f, outer, inner, z0, z1, material, o) {
+  const [ox0, oy0, ox1, oy1] = outer;
+  const [ix0, iy0, ix1, iy1] = inner;
+  const d = z1 - z0;
+  const zc = (z0 + z1) / 2;
+  const w = ox1 - ox0;
+  const cx = (ox0 + ox1) / 2;
+  if (oy1 - iy1 > 1e-6) f.box(w, oy1 - iy1, d, cx, (iy1 + oy1) / 2, zc, material, o);
+  if (iy0 - oy0 > 1e-6) f.box(w, iy0 - oy0, d, cx, (oy0 + iy0) / 2, zc, material, o);
+  const hh = iy1 - iy0;
+  if (hh <= 1e-6) return;
+  if (ix0 - ox0 > 1e-6) f.box(ix0 - ox0, hh, d, (ox0 + ix0) / 2, (iy0 + iy1) / 2, zc, material, o);
+  if (ox1 - ix1 > 1e-6) f.box(ox1 - ix1, hh, d, (ix1 + ox1) / 2, (iy0 + iy1) / 2, zc, material, o);
+}
+const inset = (r, l, b = l, rt = l, t = l) => [r[0] + l, r[1] + b, r[2] - rt, r[3] - t];
+
+/**
+ * A prism over a convex quad [[x, y] × 4] (either winding) from z0 to z1, queued in a batch frame (box UVs): the
+ * sloped pieces of a window under a sloped top (notes/vindusmodeller.md topSlope).
+ */
+export function quadPrism(f, pts, z0, z1, material, o = {}) {
+  const g = new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(([x, y]) => v2(x, y))), { depth: z1 - z0, bevelEnabled: false, steps: 1 });
+  g.translate(0, 0, z0);
+  f.add(g, material, { boxUV: true, ...o });
+  g.dispose();
+}
+/**
+ * A field of a window as a trapezoid { x0, x1, y0, yl, yr }: the bottom level at y0, the top a line from (x0, yl) to
+ * (x1, yr) – a rectangle when yl = yr. trapTop is the top line (extended past the ends), trapInset moves the sides in
+ * by l, r, the bottom up by b and the top down by t square to it (a rectangle gives exactly inset()'s numbers).
+ */
+const trapTop = (q, x) => q.yl + ((q.yr - q.yl) * (x - q.x0)) / (q.x1 - q.x0);
+function trapInset(q, l, b = l, r = l, t = l) {
+  const k = (q.yr - q.yl) / (q.x1 - q.x0);
+  const dt = t * Math.sqrt(1 + k * k);
+  const x0 = q.x0 + l, x1 = q.x1 - r;
+  return { x0, x1, y0: q.y0 + b, yl: trapTop(q, x0) - dt, yr: trapTop(q, x1) - dt };
+}
+const isRect = (q) => Math.abs(q.yl - q.yr) < 1e-9;
+/** A ring between an outer and an inner trapezoid: rectRing's boxes for rectangles, else a sloped head over two jambs. */
+function quadRing(f, outer, inner, z0, z1, material, o) {
+  if (isRect(outer) && isRect(inner)) return rectRing(f, [outer.x0, outer.y0, outer.x1, outer.yl], [inner.x0, inner.y0, inner.x1, inner.yl], z0, z1, material, o);
+  const it = (x) => trapTop(inner, x), ot = (x) => trapTop(outer, x);
+  if (inner.y0 - outer.y0 > 1e-6) f.box(outer.x1 - outer.x0, inner.y0 - outer.y0, z1 - z0, (outer.x0 + outer.x1) / 2, (outer.y0 + inner.y0) / 2, (z0 + z1) / 2, material, o);
+  quadPrism(f, [[outer.x0, it(outer.x0)], [outer.x1, it(outer.x1)], [outer.x1, ot(outer.x1)], [outer.x0, ot(outer.x0)]], z0, z1, material, o);
+  if (inner.x0 - outer.x0 > 1e-6) quadPrism(f, [[outer.x0, inner.y0], [inner.x0, inner.y0], [inner.x0, it(inner.x0)], [outer.x0, it(outer.x0)]], z0, z1, material, o);
+  if (outer.x1 - inner.x1 > 1e-6) quadPrism(f, [[inner.x1, inner.y0], [outer.x1, inner.y0], [outer.x1, it(outer.x1)], [inner.x1, it(inner.x1)]], z0, z1, material, o);
+}
+
+/**
  * Builds the frame / sash / glass / board of one opening in its local frame (origin bottom centre of the hole on the
- * room face at y = sill): a glazed terrace door's karm and threshold, a top-hung window (karm + sash with a shadow gap
- * and a handle) or fixed glazing (karm + glazing bead). The exterior window sill (vannbrett) goes into
- * `exteriorBatch`.
+ * room face at y = sill): a glazed terrace door's karm and threshold, or a window of one or more fields (o.sashes):
+ * a top-, bottom- or side-hung sash (karm + sash with a shadow gap and a handle) or fixed glazing (karm + glazing
+ * bead), posts and transoms where fields meet, glazing bars (sprosser) where a field has more than one pane. The
+ * exterior window sill (vannbrett) goes into `exteriorBatch`. A window of one field is built as before.
  * @param {object} o        a layout window (or terrace door) opening
  * @param {boolean} isDoor  terrace door
  * @param {object} k
- * @param {object} k.M      materials: frame, gasket, hardware, threshold, sill, trim, glass
+ * @param {object} k.M      materials: frame, gasket, hardware, threshold, sill, trim, glass (+ bars: the glazing bars,
+ *                          default frame)
  * @param {MeshBatcher} k.exteriorBatch
  * @param {Array} k.batchers  { geometries } of the window kit is pushed here (disposed with the builder)
  * @param {(x: any) => any} k.keep  registers a geometry / material to dispose
+ * @param {THREE.Matrix4} [k.matrix]  the opening's frame (default openingMatrix(o)) – a skylight lies in its ceiling
  * @returns {{ group: THREE.Group, glass: THREE.Mesh|null, pickMeshes: THREE.Mesh[], sillY: number|null }}
  */
-export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep }) {
+export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep, matrix = null }) {
   const kit = new MeshBatcher(`window:${o.id}`);
   const f = kit.frame(new THREE.Matrix4());
+  const om = matrix ?? openingMatrix(o);
   const W = o.width;
   const H = o.height;
   const rd = o.revealDepth;
@@ -376,7 +528,6 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep }) {
   const fw = o.frame?.width ?? 0.07;
   const zF = -rd; // room-side face of the frame
   const zB = -rd - fd; // outside face
-  const opening = !isDoor && o.sashes?.some((s) => s.opening);
   let glass = null;
   let glassRect = null;
   const nf = { collide: false };
@@ -390,32 +541,94 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep }) {
     // aluminium threshold sill under the leaf and the light oak threshold across the reveal floor
     f.box(W, 0.018, fd + 0.03, 0, 0.009, zB + (fd + 0.03) / 2, M.frame, nf);
     f.box(W, 0.012, rd, 0, 0.006, -rd / 2, M.threshold, nf);
-  } else if (opening) {
-    // top-hung window: outer frame (karm) + sash with a shadow gap and a heavier bottom rail, handle on the rail
-    const fk = Math.max(0.025, fw * 0.42);
-    const gap = 0.004;
-    const fs = Math.max(0.03, fw - fk - gap);
-    const fsB = fs + 0.012;
-    ring(f, 0, 0, W, H, fk, fk, fk, zB, zF, M.frame, nf);
-    ring(f, 0, fk, W - 2 * fk, H - 2 * fk, gap, gap, gap, zB + 0.03, zF - 0.012, M.gasket, gk);
-    const sw = W - 2 * fk - 2 * gap;
-    const sh = H - 2 * fk - 2 * gap;
-    const sy = fk + gap;
-    ring(f, 0, sy, sw, sh, fs, fs, fsB, zB + 0.012, zF + 0.002, M.frame, nf);
-    ring(f, 0, sy + fsB, sw - 2 * fs, sh - fs - fsB, 0.004, 0.004, 0.004, zB + 0.03, zF - 0.008, M.gasket, gk);
-    glassRect = { w: sw - 2 * fs + 0.01, h: sh - fs - fsB + 0.01, y: sy + fsB + (sh - fs - fsB) / 2, z: zF - 0.035 };
-    // handle: rose + horizontal lever in the middle of the bottom rail
-    const hy = sy + fsB / 2;
-    f.box(0.034, 0.07, 0.012, 0, hy + 0.005, zF + 0.008, M.hardware, nf);
-    f.box(0.12, 0.018, 0.02, 0.045, hy + 0.012, zF + 0.026, M.hardware, nf);
   } else {
-    // fixed glazing: karm + glazing bead, glass set ~4 cm into the frame
-    const fk = Math.max(0.03, fw * 0.62);
-    const fb = Math.max(0.015, fw - fk);
-    ring(f, 0, 0, W, H, fk, fk, fk, zB, zF, M.frame, nf);
-    ring(f, 0, fk, W - 2 * fk, H - 2 * fk, fb, fb, fb, zF - 0.034, zF - 0.007, M.frame, nf);
-    ring(f, 0, fw, W - 2 * fw, H - 2 * fw, 0.004, 0.004, 0.004, zF - 0.04, zF - 0.032, M.gasket, gk);
-    glassRect = { w: W - 2 * fw + 0.01, h: H - 2 * fw + 0.01, y: H / 2, z: zF - 0.04 };
+    const fields = windowSashes(o);
+    // one karm for the whole window: a window of one field keeps its own (narrow for a sash, wide for fixed glazing);
+    // fields side by side share the sash's, the fixed ones make up for it with a wider bead. Where two fields meet,
+    // each has half a post (o.frame.mullion).
+    const fkOf = (open) => (open || fields.length > 1 ? Math.max(0.025, fw * 0.42) : Math.max(0.03, fw * 0.62));
+    const half = (o.frame?.mullion ?? Math.max(0.03, fw * 0.6)) / 2;
+    const bars = M.bars ?? M.frame;
+    const rects = [];
+    // a sloped top (layout opening.topSlope, notes/vindusmodeller.md): the line through the window's top, its high end
+    // at H; the fields up to the top follow it (trapezoids), the rest stay rectangles
+    let slope = Number.isFinite(o.topSlope) ? o.topSlope : 0;
+    if (Math.abs(slope) * W > H - 0.1) slope = Math.sign(slope) * Math.max(0, H - 0.1) / W;
+    const yTop = (x) => H - Math.abs(slope) * (slope > 0 ? W / 2 - x : x + W / 2);
+    for (const c of fields) {
+      const fk = fkOf(c.opening);
+      const k = { l: c.outer.l ? fk : half, r: c.outer.r ? fk : half, b: c.outer.b ? fk : half, t: c.outer.t ? fk : half };
+      const sloped = Math.abs(slope) > 1e-6 && c.outer.t;
+      const q = { x0: c.x0, x1: c.x1, y0: c.y0, yl: sloped ? yTop(c.x0) : c.y1, yr: sloped ? yTop(c.x1) : c.y1 };
+      // the karm's outer rectangle: in from the hole on its sides and top (FRAME_INSET)
+      const outerRect = trapInset(q, c.outer.l ? FRAME_INSET : 0, 0, c.outer.r ? FRAME_INSET : 0, c.outer.t ? FRAME_INSET : 0);
+      const K = trapInset(q, k.l, k.b, k.r, k.t);
+      quadRing(f, outerRect, K, zB, zF, M.frame, nf);
+      let G; // the glass opening (what the sash or the bead leaves free)
+      let zG;
+      if (c.opening) {
+        // sash with a shadow gap to the karm and a heavier bottom rail, the handle on the rail opposite the hinge
+        const gap = 0.004;
+        const fs = Math.max(0.03, fw - fk - gap);
+        const fsB = fs + 0.012;
+        quadRing(f, K, trapInset(K, gap), zB + 0.03, zF - 0.012, M.gasket, gk);
+        const S = trapInset(K, gap);
+        G = trapInset(S, fs, fsB, fs, fs);
+        quadRing(f, S, G, zB + 0.012, zF + 0.002, M.frame, nf);
+        quadRing(f, G, trapInset(G, 0.004), zB + 0.03, zF - 0.008, M.gasket, gk);
+        zG = zF - 0.035;
+        const sx = (S.x0 + S.x1) / 2;
+        if (c.hinge === 'left' || c.hinge === 'right') {
+          // side-hung: rose + lever pointing down in the middle of the stile opposite the hinge
+          const hx = c.hinge === 'left' ? S.x1 - fs / 2 : S.x0 + fs / 2;
+          const sy = (S.y0 + trapTop(S, sloped ? hx : sx)) / 2;
+          f.box(0.034, 0.07, 0.012, hx, sy, zF + 0.008, M.hardware, nf);
+          f.box(0.018, 0.12, 0.02, hx, sy - 0.045, zF + 0.026, M.hardware, nf);
+        } else {
+          // top-hung: on the bottom rail; bottom-hung: on the top rail
+          const hy = c.hinge === 'bottom' ? trapTop(S, sx) - fs / 2 : S.y0 + fsB / 2;
+          f.box(0.034, 0.07, 0.012, sx, hy + 0.005, zF + 0.008, M.hardware, nf);
+          f.box(0.12, 0.018, 0.02, sx + 0.045, hy + 0.012, zF + 0.026, M.hardware, nf);
+        }
+      } else {
+        // fixed glazing: karm + glazing bead, glass set ~4 cm into the frame (the rubber 1 mm deeper than the glass)
+        const fb = Math.max(0.015, fw - fk);
+        G = trapInset(K, fb);
+        quadRing(f, K, G, zF - 0.034, zF - 0.007, M.frame, nf);
+        quadRing(f, G, trapInset(G, 0.004), zF - 0.041, zF - 0.032, M.gasket, gk);
+        zG = zF - 0.04;
+      }
+      // glazing bars (sprosser): through the glass, the cross bars 2 mm shallower (no faces in one plane where they cross)
+      const [cols, rows] = c.panes;
+      const gw = G.x1 - G.x0;
+      const gh = (G.yl + G.yr) / 2 - G.y0;
+      if ((cols > 1 || rows > 1) && gw > 0.02 && gh > 0.02) {
+        const bw = Math.min(o.bars?.width ?? 0.024, gw / (3 * cols), gh / (3 * rows));
+        if (!sloped) {
+          for (let i = 1; i < cols; i++) f.box(bw, gh + 0.01, 0.024, G.x0 + (i * gw) / cols, (G.y0 + G.yl) / 2, zG, bars, nf);
+          for (let j = 1; j < rows; j++) f.box(gw + 0.01, bw, 0.02, (G.x0 + G.x1) / 2, G.y0 + (j * gh) / rows, zG, bars, nf);
+        } else {
+          // under the slope: the posts reach the sloped glass edge, the cross bars stop where it comes down to them
+          for (let i = 1; i < cols; i++) {
+            const x = G.x0 + (i * gw) / cols, a = x - bw / 2, b = x + bw / 2;
+            quadPrism(f, [[a, G.y0 - 0.005], [b, G.y0 - 0.005], [b, trapTop(G, b) + 0.005], [a, trapTop(G, a) + 0.005]], zG - 0.012, zG + 0.012, bars, nf);
+          }
+          const kG = (G.yr - G.yl) / gw;
+          for (let j = 1; j < rows; j++) {
+            const y = G.y0 + (j * gh) / rows;
+            // where the top line is at the bar's top edge
+            const xs = G.x0 + (y + bw / 2 - G.yl) / kG;
+            const a = kG > 0 ? Math.max(G.x0 - 0.005, xs) : G.x0 - 0.005, b = kG > 0 ? G.x1 + 0.005 : Math.min(G.x1 + 0.005, xs);
+            if (b - a > 0.02) f.box(b - a, bw, 0.02, (a + b) / 2, y, zG, bars, nf);
+          }
+        }
+      }
+      // the glass reaches 5 mm into the sash / bead
+      if (!sloped) rects.push({ w: gw + 0.01, h: G.yl - G.y0 + 0.01, x: (G.x0 + G.x1) / 2, y: (G.y0 + G.yl) / 2, z: zG });
+      else rects.push({ poly: [[G.x0 - 0.005, G.y0 - 0.005], [G.x1 + 0.005, G.y0 - 0.005], [G.x1 + 0.005, G.yr + 0.005], [G.x0 - 0.005, G.yl + 0.005]], x: 0, y: 0, z: zG });
+    }
+    if (rects.length === 1) glassRect = rects[0];
+    else if (rects.length) glassRect = { parts: rects, z: rects[0].z };
   }
   let sillY = null;
   if (o.sillBoard && !isDoor) {
@@ -427,13 +640,13 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep }) {
     g.dispose();
     sillY = o.sill;
     // exterior window sill (vannbrett), sloping outward
-    exteriorBatch.frame(openingMatrix(o)).box(W, 0.012, 0.075, 0, -0.012, zB - 0.025, M.trim, { rot: [0.14, 0, 0], collide: false, castShadow: false });
+    exteriorBatch.frame(om).box(W, 0.012, 0.075, 0, -0.012, zB - 0.025, M.trim, { rot: [0.14, 0, 0], collide: false, castShadow: false });
   }
   const built = kit.build();
   batchers.push({ geometries: kit.geometries });
   built.name = `window:${o.id}`;
   built.matrixAutoUpdate = false;
-  built.matrix.copy(openingMatrix(o));
+  built.matrix.copy(om);
   const pickMeshes = [];
   built.traverse((m) => {
     if (!m.isMesh) return;
@@ -441,11 +654,21 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep }) {
     if (m.material !== M.sill) pickMeshes.push(m);
   });
   if (glassRect) {
-    glass = new THREE.Mesh(keep(new THREE.PlaneGeometry(glassRect.w, glassRect.h)), M.glass);
+    // one mesh per window: the panes of several fields merged, the mesh at the first pane's depth (shading.js reads the
+    // depth of the glass in the reveal from the mesh's position)
+    let geo;
+    // (a pane under a sloped top is its trapezoid, in the window's frame)
+    const pane = (r) => (r.poly ? new THREE.ShapeGeometry(new THREE.Shape(r.poly.map(([x, y]) => v2(x, y)))) : new THREE.PlaneGeometry(r.w, r.h));
+    if (glassRect.parts) {
+      const parts = glassRect.parts.map((r) => pane(r).translate(r.x, r.y, r.z - glassRect.z));
+      geo = mergeGeometries(parts, false);
+      for (const g of parts) g.dispose();
+    } else geo = pane(glassRect);
+    glass = new THREE.Mesh(keep(geo), M.glass);
     glass.name = `glass:${o.id}`;
-    glass.position.set(0, glassRect.y, glassRect.z);
+    glass.position.set(glassRect.x ?? 0, glassRect.y ?? 0, glassRect.z);
     glass.updateMatrix();
-    glass.applyMatrix4(openingMatrix(o));
+    glass.applyMatrix4(om);
     glass.castShadow = false;
     glass.receiveShadow = false;
     glass.renderOrder = 2;

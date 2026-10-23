@@ -1,0 +1,236 @@
+{
+  "about": "Measurement set for src/planbygger/clean.js (tools/test-planbygger-clean.mjs). Per plan: the scale (from the printed areas, dimensions or 1:100), the house's bounding box in pixels, the wall ink as it is drawn (luma range, max chroma; for the wall recall/precision) and the labelled rooms (label points in pixels, printed area in m² or null when the label is not the area of a closed room: attic rooms, open plans). Labels in one entry belong to one open room. photo: a phone photo, straightened with photo.js first (corners of the house and label points in the photo, size = the outer dimensions in m; pxPerM and house come from them). accept: where the cleaning is allowed to make a measure worse, with the reason (falseM2: the most false wall after, m²; doors / windows: the fewest after; colourFalseM2: hus6, the colour step against the same cleaning without it).",
+  "plans": [
+    {
+      "id": "eier", "file": "plantegning.png", "style": "dark", "pxPerM": 51.43, "scaleFrom": "målelinja 12,21 m (notes/planbygger.md)",
+      "house": [80, 40, 460, 675], "wallInk": { "luma": [0, 70], "chroma": 25 },
+      "rooms": [
+        { "name": "Bad", "at": [[150, 110]], "area": 5.62 },
+        { "name": "Gang", "at": [[170, 225]], "area": 6.58 },
+        { "name": "Soverom", "at": [[180, 310]], "area": 11.45 },
+        { "name": "Stue/kjøkken", "at": [[300, 560]], "area": 53.78 }
+      ]
+    },
+    {
+      "id": "hus1-1", "file": "plantegninger/hus1/1etg.png", "style": "dark", "pxPerM": 97.4, "scaleFrom": "arealene (fasit.json: 97,4)",
+      "house": [20, 30, 1180, 910], "wallInk": { "luma": [0, 80], "chroma": 25 },
+      "rooms": [
+        { "name": "SOV", "at": [[250, 380]], "area": 14.8 },
+        { "name": "HALL/TRAPP", "at": [[655, 300]], "area": 15.9 },
+        { "name": "BOD", "at": [[1050, 120]], "area": 4.4 },
+        { "name": "VASK", "at": [[1020, 300]], "area": 5.5 },
+        { "name": "STUE", "at": [[597, 690]], "area": 29.1 },
+        { "name": "KJØKKEN", "at": [[965, 650]], "area": 16.9 }
+      ]
+    },
+    {
+      "id": "hus1-2", "file": "plantegninger/hus1/2etg.png", "style": "dark", "pxPerM": 94, "scaleFrom": "arealene innenfor kneveggene (fasit.json: 94,0)",
+      "house": [40, 55, 1165, 895], "wallInk": { "luma": [0, 80], "chroma": 25 },
+      "rooms": [
+        { "name": "SOV 11.8", "at": [[250, 360]], "area": null },
+        { "name": "GANG/TRAPP + LOFTSTUE", "at": [[610, 470], [550, 740]], "area": null },
+        { "name": "BOD", "at": [[680, 250]], "area": null },
+        { "name": "BAD", "at": [[855, 345]], "area": null },
+        { "name": "SOV 10.0", "at": [[325, 610]], "area": null },
+        { "name": "SOV 11.9", "at": [[865, 570]], "area": null }
+      ]
+    },
+    {
+      "id": "hus2", "file": "plantegninger/hus2/1etg.png", "style": "dark", "pxPerM": 55.6, "scaleFrom": "ytre mål 15,44 × 15,13 m (fasit.json: 55,6)",
+      "house": [40, 25, 890, 890], "wallInk": { "luma": [0, 135], "chroma": 25 },
+      "rooms": [
+        { "name": "SOVEROM 10.0", "at": [[165, 145]], "area": 10.0 },
+        { "name": "KONTOR", "at": [[338, 125]], "area": 7.1 },
+        { "name": "WIC 1", "at": [[100, 240]], "area": 1.3 },
+        { "name": "WIC 2", "at": [[162, 240]], "area": 1.3 },
+        { "name": "HALL", "at": [[240, 240]], "area": 1.7 },
+        { "name": "SOVEROM 9.9", "at": [[165, 335]], "area": 9.9 },
+        { "name": "STUE 10.7", "at": [[345, 335]], "area": 10.7 },
+        { "name": "SOVEROM 11.7", "at": [[172, 570]], "area": 11.7 },
+        { "name": "BAD", "at": [[100, 640]], "area": 4.2 },
+        { "name": "WIC 4.6", "at": [[235, 680]], "area": 4.6 },
+        { "name": "VASK", "at": [[125, 790]], "area": 7.5 },
+        { "name": "WC/D", "at": [[395, 605]], "area": 3.3 },
+        { "name": "GANG + ENTRÉ + KJØKKEN + STUE", "at": [[325, 530], [365, 780], [520, 645], [735, 645]], "area": null }
+      ]
+    },
+    {
+      "id": "hus3-1", "file": "plantegninger/hus3/1etg.png", "style": "dark", "pxPerM": 47.9, "scaleFrom": "ytre mål 6,15 × 14,95 m (fasit.json: 47,9)",
+      "house": [310, 135, 615, 860], "wallInk": { "luma": [0, 135], "chroma": 25 },
+      "rooms": [
+        { "name": "KJØKKEN/STUE + ENTRÉ", "at": [[460, 345], [375, 810]], "area": 61.9 },
+        { "name": "VASK", "at": [[470, 690]], "area": 7.5 },
+        { "name": "WC/D", "at": [[515, 800]], "area": 4.1 }
+      ]
+    },
+    {
+      "id": "hus3-2", "file": "plantegninger/hus3/2etg.png", "style": "dark", "pxPerM": 47.8, "scaleFrom": "ytre mål, samme kilde (fasit.json: 47,8)",
+      "house": [60, 135, 365, 860], "wallInk": { "luma": [0, 135], "chroma": 25 },
+      "rooms": [
+        { "name": "SOVEROM 12.7", "at": [[140, 232]], "area": 12.7 },
+        { "name": "ARBEIDSROM + GANG", "at": [[290, 297], [262, 497]], "area": null },
+        { "name": "SOVEROM 8.7 a", "at": [[160, 415]], "area": 8.7 },
+        { "name": "SOVEROM 8.7 b", "at": [[160, 568]], "area": 8.7 },
+        { "name": "BOD/BADSTUE", "at": [[200, 680]], "area": 4.1 },
+        { "name": "BOD", "at": [[315, 685]], "area": 1.7 },
+        { "name": "BAD", "at": [[210, 800]], "area": 12.0 }
+      ]
+    },
+    {
+      "id": "hus3-foto", "file": "plantegninger/_png/hus3-foto/1etg-foto.png", "style": "dark-photo", "pxPerM": null,
+      "scaleFrom": "husets ytre hjørner i fotoet (fasit.json) gjennom hjørnene photo.js bruker, mot de ytre målene 6,15 × 14,95 m",
+      "note": "mobilfoto av utskriften av hus3/1etg.png; testen retter det opp med photo.js først, som generate.js gjør. Hjørnene og etikettpunktene er i fotoet (1500 × 2000 px); etikettpunktene er hus3-1 sine, flyttet med homografien fra husets hjørner i hus3/1etg.png til hjørnene i fotoet",
+      "photo": { "corners": [[613, 508], [930, 521], [805, 1321], [409, 1260]], "size": [6.15, 14.95] },
+      "house": null, "wallInk": { "luma": [0, 135], "chroma": 45 },
+      "rooms": [
+        { "name": "KJØKKEN/STUE + ENTRÉ", "at": [[728, 699], [503, 1211]], "area": 61.9 },
+        { "name": "VASK", "at": [[660, 1075]], "area": 7.5 },
+        { "name": "WC/D", "at": [[691, 1224]], "area": 4.1 }
+      ]
+    },
+    {
+      "id": "hus4-1", "file": "plantegninger/_png/hus4/1etg.png", "style": "grey-outlined", "pxPerM": 121, "scaleFrom": "arealene (fasit.json: ca. 120–121)",
+      "house": [95, 185, 1840, 1215], "wallInk": { "luma": [0, 215], "chroma": 12 },
+      "rooms": [
+        { "name": "Sov 7,5", "at": [[215, 425]], "area": 7.5 },
+        { "name": "Entre + gang + TV-stue", "at": [[508, 395], [698, 700]], "area": 21.4 },
+        { "name": "Vask", "at": [[1137, 395]], "area": 6.4 },
+        { "name": "Bad", "at": [[1195, 630]], "area": 4.3 },
+        { "name": "Sov 9,3", "at": [[297, 775]], "area": 9.3 },
+        { "name": "Sov 8,1", "at": [[1052, 925]], "area": 8.1 },
+        { "name": "Sportsbod", "at": [[1500, 1100]], "area": 5.7 }
+      ]
+    },
+    {
+      "id": "hus4-2", "file": "plantegninger/_png/hus4/2etg.png", "style": "grey-outlined", "pxPerM": 121, "scaleFrom": "arealene (fasit.json: ca. 121)",
+      "house": [95, 180, 1395, 1045], "wallInk": { "luma": [0, 215], "chroma": 12 },
+      "rooms": [
+        { "name": "W.I.C", "at": [[268, 370]], "area": null },
+        { "name": "Bad", "at": [[497, 345]], "area": 4.6 },
+        { "name": "Stue/Kjøkken", "at": [[812, 580]], "area": null },
+        { "name": "Sov", "at": [[457, 775]], "area": 10.3 }
+      ]
+    },
+    {
+      "id": "hus5", "file": "plantegninger/_png/hus5/1etg.png", "style": "dark", "pxPerM": 46.9, "scaleFrom": "arealene (fasit.json: 46,9)",
+      "house": [20, 15, 735, 790], "wallInk": { "luma": [0, 80], "chroma": 25 },
+      "rooms": [
+        { "name": "SPORTSBOD", "at": [[208, 85]], "area": 5.0 },
+        { "name": "GARD/BOD", "at": [[287, 215]], "area": 3.0 },
+        { "name": "VF", "at": [[352, 225]], "area": 6.3 },
+        { "name": "BAD 5.0", "at": [[455, 220]], "area": 5.0 },
+        { "name": "VASK/TEK", "at": [[532, 70]], "area": 4.8 },
+        { "name": "SOV 14.4", "at": [[652, 190]], "area": 14.4 },
+        { "name": "GANG 9.7", "at": [[537, 290]], "area": 9.7 },
+        { "name": "SOV 11.9", "at": [[650, 360]], "area": 11.9 },
+        { "name": "STUE/KJØKKEN + SPISESTUE", "at": [[125, 395], [382, 330]], "area": 65.7 },
+        { "name": "BAD 7.7", "at": [[610, 530]], "area": 7.7 },
+        { "name": "GANG 4.8", "at": [[540, 560]], "area": 4.8 },
+        { "name": "SOV 18.5", "at": [[550, 650]], "area": 18.5 }
+      ]
+    },
+    {
+      "id": "hus6", "file": "tools/fixtures/clean/hus6-plan-farge.png", "style": "architect", "pxPerM": 78.8, "scaleFrom": "1:100 og målekjedene (fasit.json: 78,8)",
+      "accept": {"falseM2":1.3,"why":"en vegg tvers over den brede åpningen mellom STUE 2 og SPISESTUE (to skyvedørstreker), som gjenkjenningen finner når fargesteget har tatt bort forklaringslinja over glassveggen; uten rydding finnes nesten ingen vegger (F1 0,01 → 0,60)","colourFalseM2":1.1,"colourWhy":"+0,9 m²: veggen tvers over åpningen mellom STUE 2 og SPISESTUE; til gjengjeld finnes glassveggen mot øst (funnet 43 → 45 %), som den blå forklaringslinja ellers deler"},
+      "note": "fargeutgaven av bildet i PDF-en (plantegninger/_png/hus6 er i gråtoner, men nettleseren får fargene fra pdf.js)",
+      "house": [850, 520, 1790, 1980], "wallInk": { "luma": [0, 170], "chroma": 25, "close": 4 },
+      "rooms": [
+        { "name": "STUE 2", "at": [[1072, 775]], "area": 23.4 },
+        { "name": "SPISESTUE", "at": [[1208, 1315]], "area": 21.5 },
+        { "name": "STUE", "at": [[1402, 1493]], "area": 43 },
+        { "name": "KJØKKEN", "at": [[1216, 1587]], "area": 18.5 },
+        { "name": "VASKEROM", "at": [[1092, 1803]], "area": 6 },
+        { "name": "WC", "at": [[1180, 1845]], "area": 3 },
+        { "name": "ENTRE", "at": [[1307, 1864]], "area": 18 }
+      ]
+    },
+    {
+      "id": "hus8-1", "file": "plantegninger/_png/hus8/plantegning-1.png", "style": "dark-coloured-rooms", "pxPerM": 34, "scaleFrom": "standardmål, dørhull 28–29 px (fasit.json: anslag 34 ± 6 %)",
+      "house": [75, 220, 1055, 1375], "wallInk": { "luma": [0, 80], "chroma": 25 },
+      "rooms": [
+        { "name": "K GANG", "at": [[502, 300]], "area": null },
+        { "name": "K BOD nø", "at": [[636, 283]], "area": null },
+        { "name": "K WC", "at": [[617, 372]], "area": null },
+        { "name": "K BOD v1", "at": [[487, 393]], "area": null },
+        { "name": "K BOD v2", "at": [[487, 481]], "area": null },
+        { "name": "K BOD ø", "at": [[634, 524]], "area": null },
+        { "name": "K BOD sør", "at": [[562, 668]], "area": null },
+        { "name": "SOVEROM nv", "at": [[296, 916]], "area": null },
+        { "name": "SOVEROM nø", "at": [[453, 898]], "area": null },
+        { "name": "BAD", "at": [[453, 987]], "area": null },
+        { "name": "SOVEROM sv", "at": [[303, 1052]], "area": null },
+        { "name": "GANG", "at": [[417, 1058]], "area": null },
+        { "name": "ENTRÉ", "at": [[494, 1059]], "area": null },
+        { "name": "KJØKKEN", "at": [[461, 1156]], "area": null },
+        { "name": "STUE + SPISESTUE", "at": [[325, 1218], [453, 1285]], "area": null },
+        { "name": "GARASJE", "at": [[960, 1170]], "area": null }
+      ]
+    },
+    {
+      "id": "hus8-2", "file": "plantegninger/_png/hus8/plantegning-2.png", "style": "dark-coloured-rooms", "pxPerM": 34, "scaleFrom": "som plantegning-1",
+      "house": [425, 530, 705, 1065], "wallInk": { "luma": [0, 80], "chroma": 25 },
+      "rooms": [
+        { "name": "GANG", "at": [[502, 610]], "area": null },
+        { "name": "BOD nø", "at": [[636, 593]], "area": null },
+        { "name": "WC", "at": [[617, 682]], "area": null },
+        { "name": "BOD v1", "at": [[487, 703]], "area": null },
+        { "name": "BOD v2", "at": [[487, 791]], "area": null },
+        { "name": "BOD ø", "at": [[634, 834]], "area": null },
+        { "name": "BOD sør", "at": [[562, 978]], "area": null }
+      ]
+    },
+    {
+      "id": "hus8-3", "file": "plantegninger/_png/hus8/plantegning-3.png", "style": "dark-coloured-rooms", "pxPerM": 34, "scaleFrom": "som plantegning-1",
+      "house": [75, 525, 1055, 1070], "wallInk": { "luma": [0, 80], "chroma": 25 },
+      "rooms": [
+        { "name": "SOVEROM nv", "at": [[296, 610]], "area": null },
+        { "name": "SOVEROM nø", "at": [[453, 592]], "area": null },
+        { "name": "BAD", "at": [[453, 681]], "area": null },
+        { "name": "SOVEROM sv", "at": [[303, 746]], "area": null },
+        { "name": "GANG", "at": [[417, 752]], "area": null },
+        { "name": "ENTRÉ", "at": [[494, 753]], "area": null },
+        { "name": "KJØKKEN", "at": [[461, 850]], "area": null },
+        { "name": "STUE + SPISESTUE", "at": [[325, 912], [453, 979]], "area": null },
+        { "name": "GARASJE", "at": [[960, 864]], "area": null }
+      ]
+    },
+    {
+      "id": "hus9-ovre", "file": "plantegninger/_png/hus9/ovre-etasje.png", "style": "grey-textured", "pxPerM": 45.4, "scaleFrom": "arealene (fasit.json: 45,4)",
+      "accept": {"falseM2":2.6,"why":"før ryddingen ingen ekte vegger (0 % på veggblekk); etter står trappens omriss, en gulvskjøt i stua og stolene ved spisebordet som vegger, mens rommene går fra 0 til 3 av 5"},
+      "house": [10, 45, 570, 480], "wallInk": { "luma": [140, 200], "chroma": 10 },
+      "rooms": [
+        { "name": "Stue", "at": [[205, 300]], "area": 56.38 },
+        { "name": "Hall", "at": [[298, 160]], "area": 9.07 },
+        { "name": "Bad", "at": [[418, 135]], "area": 5.44 },
+        { "name": "Vask", "at": [[517, 95]], "area": 5.45 },
+        { "name": "Kjøkken", "at": [[475, 265]], "area": 14.48 }
+      ]
+    },
+    {
+      "id": "hus9-under", "file": "plantegninger/_png/hus9/underetasje.png", "style": "grey-textured", "pxPerM": 54.1, "scaleFrom": "arealene (fasit.json: 54,1)",
+      "accept": {"falseM2":2.1,"why":"før ryddingen ingen ekte vegger (1 % på veggblekk); etter står trappetrinn, badekarkanten og sengekanter som vegger, mens rommene går fra 0 til 6 av 7"},
+      "house": [5, 5, 660, 515], "wallInk": { "luma": [140, 200], "chroma": 10 },
+      "rooms": [
+        { "name": "Stue", "at": [[235, 215]], "area": 28.91 },
+        { "name": "Bod", "at": [[390, 105]], "area": 9.30 },
+        { "name": "Bad", "at": [[560, 108]], "area": 8.94 },
+        { "name": "Sone", "at": [[505, 268]], "area": 10.78 },
+        { "name": "Barnesov v", "at": [[130, 410]], "area": 10.62 },
+        { "name": "Barnesov ø", "at": [[305, 420]], "area": 10.56 },
+        { "name": "Voksensov", "at": [[555, 440]], "area": 13.71 }
+      ]
+    },
+    {
+      "id": "hus9-alt", "file": "plantegninger/_png/hus9/underetasje-alternativ.png", "style": "grey-textured", "pxPerM": 54.1, "scaleFrom": "som underetasje (fasit.json: 54,1)",
+      "accept": {"falseM2":3.9,"why":"som underetasjen, og i tillegg de påtegnede veggene (omtrent 1 m²), som ikke er med i fasitens veggblekk (bare de trykte grå veggene er det)"},
+      "house": [5, 5, 660, 515], "wallInk": { "luma": [140, 200], "chroma": 10 },
+      "rooms": [
+        { "name": "Bod", "at": [[390, 105]], "area": 9.30 },
+        { "name": "Bad", "at": [[560, 108]], "area": 8.94 },
+        { "name": "Barnesov v", "at": [[130, 410]], "area": 10.62 },
+        { "name": "Barnesov ø", "at": [[305, 420]], "area": 10.56 },
+        { "name": "Voksensov", "at": [[555, 440]], "area": 13.71 }
+      ]
+    }
+  ]
+}

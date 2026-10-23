@@ -14,3 +14,6 @@ bilder_hus/
 .claude/worktrees/
 # bildene av resten av huset, forberedt av tools/prep-images.py (§5.6) – bare lokalt, ikke i git eller deploy
 public/img/foto-hus/
+# hemmeligheter (API-nøkler) – aldri i git
+.env
+.env.*

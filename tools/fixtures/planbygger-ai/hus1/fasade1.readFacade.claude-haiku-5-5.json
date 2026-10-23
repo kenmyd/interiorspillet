@@ -1,0 +1,147 @@
+{
+ "house": "hus1",
+ "file": "fasade1.avif",
+ "part": null,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 767,
+  "sha256": "1b6897cd522a523cd7c721bb0e27274e06ccdada5930269f79abd2ee43546e2a"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade1.avif"
+ },
+ "source": {
+  "file": "fasade1.avif",
+  "part": null,
+  "width": 1920,
+  "height": 920,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "hip",
+  "storeys": 2,
+  "windows": [
+   {
+    "bbox": [
+     0.324,
+     0.585,
+     0.372,
+     0.7
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.374,
+     0.585,
+     0.422,
+     0.7
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.634,
+     0.585,
+     0.68,
+     0.7
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.683,
+     0.585,
+     0.731,
+     0.7
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.491,
+     0.593,
+     0.566,
+     0.767
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.485,
+     0.372,
+     0.504,
+     0.463
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.509,
+     0.369,
+     0.55,
+     0.463
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.55,
+     0.372,
+     0.57,
+     0.463
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.398,
+     0.335,
+     0.42,
+     0.402
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.635,
+     0.337,
+     0.658,
+     0.402
+    ],
+    "kind": "window"
+   }
+  ],
+  "notes": "Valmtak med en takkvist i midten med balkong over inngangsdøren; to takvinduer og skorstein. Vertikal panelkledning. Fasaden alene avgjør ikke takform fullt ut."
+ },
+ "usage": {
+  "input_tokens": 3455,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 1411,
+  "output_tokens_details": {
+   "thinking_tokens": 995
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.001051,
+ "ms": 7938,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:14:15.906Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

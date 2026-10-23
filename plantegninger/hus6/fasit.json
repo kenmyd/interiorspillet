@@ -1,0 +1,56 @@
+{
+  "house": "hus6",
+  "files": {
+    "plan-1etg-tilbygg.pdf": { "kind": "plan", "level": 0 }
+  },
+  "levels": [
+    {
+      "level": 0, "name": "1. etasje", "file": "plan-1etg-tilbygg.pdf",
+      "title": "Plan 1 etg.",
+      "rooms": [
+        { "label": "STUE 2", "area": 23.4, "kind": "living" },
+        { "label": "SPISESTUE", "area": 21.5, "kind": "living" },
+        { "label": "STUE", "area": 43, "kind": "living" },
+        { "label": "KJØKKEN", "area": 18.5, "kind": "living" },
+        { "label": "VASKEROM", "area": 6, "kind": "laundry" },
+        { "label": "WC", "area": 3, "kind": "bathroom" },
+        { "label": "ENTRE", "area": 18, "kind": "entrance" }
+      ],
+      "doors": { "single": 2, "double": 0, "sliding": 6, "exterior": 4 },
+      "windows": 8,
+      "skylights": 0,
+      "stair": {
+        "type": "half-turn",
+        "note": "Innvendig U-trapp i ENTRE langs nedre vegg (inngangsfasaden), ca. x 1360–1690, y 1858–1960 i PNG-kopien (ca. 4,2 × 1,3 m): 4 svingtrinn i hver ende (2 × 90° = 180°) og 7 rette trinn mellom, ca. 15 trinn i alt, inntrinn ca. 0,28 m (22 px), trappebredde ca. 1,0 m. Ganglinja starter med en sirkel i et rektangel oppe til høyre, går ned, mot venstre og opp igjen og ender med en pil mot et like stort rektangel oppe til venstre. Den går trolig opp der, til en etasje som ikke er med i settet (retningen er ikke sikker). En stiplet linje går langs den nedre delen av trappa, ca. 0,16 m fra veggen (kan være trappa ned til kjelleren eller en kant over, uklart). I tillegg finnes to rette utvendige trapper som ikke hører til huset inne: (1) kjellernedgang langs kjøkkenets venstre (østre) yttervegg, x 848–931, y 1393–1830, bredde «1020», 10 trinn à ca. 0,28 m (y 1560–1784), sirkel ved reposet øverst i bildet og pil nederst, stiplet ende nederst – trolig ned fra nordenden til et repos i kjellerhøyde; (2) 19 trinn à ca. 0,27 m utenfor tilbyggets og spisestuas venstre (østre) vegg (x 802–858, y 873–1277), ca. 0,7 m bred, uten ganglinje – utvendig trapp eller trinn i terrenget, uklart. Foran ytterdøra: et lite rektangel (ca. 1,65 × 0,45 m, trolig rist eller matte), to rette konturer rundt det (y 2076 og 2100: repos og ett trinn, eller to trinn) og en strek-prikk-ramme ytterst (y 2111, trolig tak over inngangen)."
+      },
+      "dimensions": [
+        { "text": "5500", "m": 5.5, "what": "ytre mål øverst, vannrett: tilbyggets bredde (venstre til høyre ytterflate). Kommunens blå sirkel ligger rundt teksten" },
+        { "text": "6314", "m": 6.314, "what": "ytre lengde av den skrå veggen i tilbygget, målt langs veggen (skrått mål)" },
+        { "text": "4400", "m": 4.4, "what": "lengden av skyvedørpartiet i den skrå veggen, målt langs veggen (skrått mål)" },
+        { "text": "4400", "m": 4.4, "what": "loddrett, til høyre for tilbygget: lengden av skyvedørpartiet i tilbyggets høyre (vestre) vegg (y 583–930)" },
+        { "text": "6700", "m": 6.7, "what": "ytre mål, loddrett, til høyre for tilbygget: tilbyggets høyre vegg fra øverste hjørne ned til skillet mot det eksisterende huset (y 524–1052)" },
+        { "text": "7400", "m": 7.4, "what": "ytre mål, loddrett, til høyre for tilbygget: fra tilbyggets øverste hjørne til ytterflaten av stuas øvre (søndre) vegg, utspringet med skyvedøra (y 524–1107)" },
+        { "text": "3100", "m": 3.1, "what": "ytre mål, venstre side, målekjede: hvor mye den skrå veggen stiger loddrett, fra tilbyggets øverste hjørne til toppen av tilbyggets venstre vegg (y 524–769)" },
+        { "text": "3600", "m": 3.6, "what": "ytre mål, venstre side, målekjede: tilbyggets venstre (østre) vegg (y 769–1052)" },
+        { "text": "11800", "m": 11.8, "what": "ytre mål, venstre side, målekjede: det eksisterende huset fra skillet mot tilbygget til nedre ytterflate ved inngangen (y 1052–1982)" },
+        { "text": "11100", "m": 11.1, "what": "ytre mål, høyre side ytterst: fra ytterflaten av stuas øvre vegg (utspringet) til nedre ytterflate (y 1107–1982). Ikke lik 7800 + 3050, fordi 7800 starter 0,25 m lenger ned" },
+        { "text": "7800", "m": 7.8, "what": "ytre mål, høyre side, målekjede: stuas høyre (vestre) fasade, fra ytterflaten av den tilbaketrukne delen av stuas øvre vegg til hjørnet der fasaden trekkes inn mot entreen (y 1127–1742)" },
+        { "text": "3050", "m": 3.05, "what": "ytre mål, høyre side, målekjede: fra innhakket ved stua til nedre ytterflate, langs entreens høyre vegg (y 1742–1982)" },
+        { "text": "9815", "m": 9.815, "what": "ytre mål nederst, vannrett: inngangsfasaden fra vaskerommets venstre ytterflate til entreens høyre ytterflate (x 938–1711). Stuas utspring til høyre er ikke med" },
+        { "text": "1020", "m": 1.02, "what": "bredden av den utvendige kjellernedgangen langs kjøkkenets venstre vegg (i en ramme øverst i nedgangen)" },
+        { "text": "1170", "m": 1.17, "what": "lengden av peisen/pipeblokken mellom spisestue og stue, rotert tekst inne i pipesymbolet" },
+        { "text": "M10", "m": 1.0, "what": "dørmodul 10M på ytterdøra (karm ca. 1,0 m), liten tekst i terskelen. Ikke et mål i mm" },
+        { "text": "M8", "m": 0.8, "what": "dørmodul 8M på døra fra entré til WC, liten rotert tekst, bare 7–8 px høy (usikker lesning, kan også være «8M»). Hullet er ca. 0,8 m mellom veggendene (y 1792–1856)" }
+      ],
+      "scale": {
+        "hints": ["dimensions", "areas", "paper"],
+        "pxPerM": 78.8,
+        "note": "Målt i PNG-kopien (3309 × 2340): 9815 = 772,5 px (78,7 px/m), 11800 = 930 px (78,8), 5500 = 433,5 px (78,8), 7800 = 615 px (78,9), 11100 = 875 px (78,8), 6700 = 528 px (78,8), 7400 = 583 px (78,8). Målestokk «1:100» står i tittelfeltet, som passer med et A3-ark skannet i 200 dpi (3309 px / 420 mm = 7,88 px/mm → 78,8 px/m). OBS: PDF-siden er 1985,4 × 1404 pt (700 × 495 mm), ikke A3, så paper-metoden med PDF-sidestørrelsen gir 47,2 px/m, 40 % for lite. Kontrollmålt på nytt: 3100 = 244,5 px, 3600 = 283, 3050 = 240,5, 4400 (loddrett) = 347, 6314 = 497,5 px langs den skrå veggen (= √(5500² + 3100²)). Arealene er avrundet (6, 3, 18, 43 m²) og STUE 2 har en skrå vegg, så de er en svakere kilde. Målene er i mm uten enhet."
+      },
+      "ceiling": [],
+      "notes": "Arkitekttegning med vegger som to konturlinjer og skravur. Tilbygget (STUE 2) har en skrå vegg. Sør er opp i bildet: kompasset viser nord ca. 198° med klokka fra opp (ned og litt mot venstre), så inngangen vender mot nord, venstre i bildet er øst («Ø» står til venstre i kompasset) og høyre er vest. Rommene: KJØKKEN, SPISESTUE og STUE er ett åpent rom uten dører, bare med veggstubber, en frittstående vegg og peisen mellom seg. STUE 2 henger sammen med SPISESTUE gjennom en ca. 3,4 m bred åpning med skyvedør (fire blader). Veggene alene gir derfor færre rom enn de 7 etikettene. «Brutto tilbygg 28 m2» (øverst til venstre ved den skrå veggen) er bruttoarealet til tilbygget, ikke et rom. WC (3 m²) har en liten passasje innenfor døra fra entreen, og VASKEROM nås bare gjennom WC. ENTRE (18 m²) har med garderoben og trappa. Dørene: (a) ytterdøra nederst, med slag utover, hull ca. 1,3 m (x 1274–1375): dørblad ca. 0,9 m og et smalt sidefelt på ca. 0,3 m (sidefeltet er ikke telt som vindu); (b) slagdør fra entré til WC (ca. 0,8 m, slår inn i WC). Skyvedørene er tegnet med forskjøvne parallelle dørblader: (c) entré–stue, skyvedør i lomme med dobbel pil (ca. 1,0 m); (d) WC–vaskerom, skyvedør i lomme (ca. 0,8 m); (e) STUE 2–SPISESTUE, x 960–1228: fire svarte blader på ca. 0,88 m, to stablet på hver side (tegnet åpen, ca. 1,2 m fritt i midten); (f) og (g) tilbygget, to glasspartier på 4,4 m, i den skrå veggen og i høyre vegg; (h) stuas øvre (søndre) vegg, ca. 3,4 m. (f), (g) og (h) er ytterdører, men kan også tolkes som glassvegger med skyvefelt. Vinduene, tegnet som enkle doble linjer i veggen: STUE 2 venstre vegg (ca. 2,4 m hull, ruta ca. 2,3 m), SPISESTUE venstre vegg (ca. 0,5 m), en vegg som vender ned i nisjen over kjellernedgangen (ca. 0,5 m), KJØKKEN venstre vegg (ca. 1,3 m, to rammer), VASKEROM venstre vegg (ca. 0,8 m), ENTRE høyre vegg (ca. 0,9 m), STUE høyre vegg (ca. 0,9 m) og STUE øvre vegg i den tilbaketrukne delen (ca. 0,9 m). Dette er ikke vegger eller vinduer: snittlinja A–A, en strek-prikk-linje vannrett gjennom tilbygget; strek-prikk-linjer langs innsiden av stuas øvre vegg og entreens nedre vegg; en strek-prikk-ramme rundt trappa ved inngangen (trolig et tak over inngangen); en skrå plate inntil tilbyggets høyre vegg (møbel); små ruter med kryss og et I-symbol (søyler eller stålbjelker); tekstene «vann» og «tavle» i vaskerommet; møbler. Kommunen har lagt seks blå forklaringer oppå: «Tiltaket er målsatt med hovedmål», «Skillet mellom den eksisterende boligen og tilbygget er tydelig avgrenset», «Rombetegnelse og areal skal oppgis», «Snitthenvisninger viser …» og «På plantegninger skal himmelretning angis», pluss «Tittelfelt: Målestokk og dato er viktigst.». Fire av dem har tykke blå sirkler og ledelinjer: rundt «5500», rundt «Tilbygg», rundt snittmerket A og rundt STUE 2-etiketten. Teksten «Tilbygg» i sirkelen er svart, som tegningen, og trolig tegningens egen merkelapp. Kompasset og snittmerkene er også svarte. Den vannrette ledelinja fra STUE 2-sirkelen krysser tilbyggets høyre vegg og målelinjene. Tittelfeltet er tomt bortsett fra «Målestokk: 1:100» og «Tittel: Plan 1 etg.». Koordinatene gjelder PNG-kopien."
+    }
+  ],
+  "facades": [],
+  "notes": "Ett ark med én tegning: plan av 1. etasje med tilbygg. Settet har ingen fasader og ingen snittegning, selv om snittet A–A er markert. Originalen er en PDF med ett skannet JPEG-bilde (DeviceRGB, 3309 × 2340). Der er kommunens forklaringer mettet blå. PNG-kopien i plantegninger/_png/hus6/ er i gråtoner. Der er de blå forklaringene nesten svarte (gråverdi ca. 29) og ledelinjene 5 px tykke, altså tykkere enn tegningens egne streker. Fargefiltreringen i clean.js virker derfor bare på originalen i nettleseren, ikke på PNG-kopien i Node-testene. Rommenes «kind»: ROOM_KINDS har ingen kjøkken- eller spisestuetype, så KJØKKEN og SPISESTUE er satt til living. «doors.exterior» teller dørene som går ut, og de er også med i single og sliding: 1 slagdør og 3 skyvedører. Verifisert 2026-10-21 av en uavhengig fasit-agent mot PNG-kopien og fargebildet trukket ut av PDF-en (zoom 2–10×, veggprofiler og forlengelseslinjer i px): alle 7 etiketter og arealer, alle 15 mål og pikselavstandene deres, dørene per variant (2 slag, 6 skyve, 4 ut), de 8 vinduene (alle ytterveggene skannet for hull i skravuren), trappetypen og trinnene, tittel, målestokk og PDF-størrelse. Rettet: øst og vest var byttet om i fire beskrivelser (venstre er øst), trappas koordinater, antall blå forklaringer (seks, ikke sju) og noen mål i notatene (STUE 2-vinduet, sidefeltet, WC-døra, bladene i skyvedøra mellom STUE 2 og spisestua). Usikkert: om «M8» er «8M», hvilken vei innvendig trapp går (opp eller ned), om glasspartiene på 4,4 m er skyvedører eller glassvegger med skyvefelt, og hva den utvendige trappa på 19 trinn er."
+}

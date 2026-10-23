@@ -69,6 +69,10 @@ const FACE_MATCH = Math.cos((30 * Math.PI) / 180);
  *     addDynamicBox(box3) returns a handle { box, enabled }; mutate handle.box / handle.enabled freely.
  *  3. One heightfield (the terrain) – anything with getHeight(x,z), getNormal(x,z,target) and optionally
  *     getSurface(x,z).
+ *  4. Climbs – a steep stair (notes/trapper.md, src/home/stairs.js 'steep'): addStatic(mesh) of a mesh with
+ *     userData.climb = { contains(x,z), surfaceY(x,z), down: [x,z], depth } keeps it out of the octree (its faces are
+ *     too steep to stand on) and lifts the foot sphere onto surfaceY like the terrain, as walkable ground of the
+ *     steepest walkable slope (the climb up is slowed as on a slope).
  *
  * resolveCapsule(capsule) pushes a THREE Capsule out of everything and reports ground contact.
  *
@@ -85,6 +89,8 @@ export class CollisionWorld {
     this._statics = [];
     this._staticBoxes = [];
     this.dynamic = [];
+    /** Climbed surfaces (userData.climb of a mesh given to addStatic): see 4. above. */
+    this.climbs = [];
     this.heightfield = null;
     this.surfaceZones = [];
     /** true: dynamic boxes flagged `furniture` do not block the player (settings.physicalBody off). */
@@ -112,7 +118,7 @@ export class CollisionWorld {
       wallCount: 0,
       /** Surface tag under the feet: 'wood' (default here) | 'tile' | 'rug' | 'concrete' ... (addSurfaceZone / defaultSurface) */
       surface: null,
-      groundSource: null, // 'static' | 'dynamic' | 'terrain'
+      groundSource: null, // 'static' | 'dynamic' | 'climb' | 'terrain'
       /** The static ground under the foot is a sloped walkable face (a stair wedge), not a floor, a sill or a step. */
       slope: false,
     };
@@ -123,6 +129,10 @@ export class CollisionWorld {
 
   /** Register an Object3D (mesh, group, InstancedMesh) whose triangles become static colliders. */
   addStatic(object3D) {
+    if (object3D?.userData?.climb) {
+      this.climbs.push(object3D.userData.climb);
+      return;
+    }
     if (this.built) console.warn('[collision] addStatic after build() – call build() again');
     this._statics.push(object3D);
   }
@@ -379,6 +389,24 @@ export class CollisionWorld {
       const d = this.dynamic[i];
       if (!d.enabled || (d.furniture && this.ghostFurniture)) continue;
       if (pushCapsuleOutOfBox(capsule, d.box, _n)) this._classify(res, _n, 'dynamic');
+    }
+
+    // 2b) Climbs (a steep stair): the foot sphere onto the surface when it is at most `depth` below it (walking under
+    // the stair is free); the ground normal leans `down` at the steepest walkable slope, so _slopeSlowdown slows the
+    // climb up and the push stays vertical
+    for (let i = 0; i < this.climbs.length; i++) {
+      const cl = this.climbs[i];
+      const c = capsule.start;
+      if (!cl.contains(c.x, c.z)) continue;
+      const h = cl.surfaceY(c.x, c.z);
+      const bottom = c.y - capsule.radius;
+      if (h === null || bottom > h + 0.02 || bottom < h - (cl.depth ?? 0.6)) continue;
+      if (bottom < h) capsule.translate(_v1.set(0, h - bottom, 0));
+      const ny = WALKABLE_NORMAL_Y + 0.02;
+      const nh = Math.sqrt(1 - ny * ny);
+      res.onGround = true;
+      res.groundNormal.set((cl.down?.[0] ?? 0) * nh, ny, (cl.down?.[1] ?? 0) * nh);
+      res.groundSource = 'climb';
     }
 
     // 3) Terrain heightfield

@@ -1,0 +1,121 @@
+{
+  "levelTitle": null,
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+    {
+      "text": "SOVEROM",
+      "area": null,
+      "kind": "bedroom",
+      "at": [
+        0.27,
+        0.381
+      ]
+    },
+    {
+      "text": "SOVEROM",
+      "area": null,
+      "kind": "bedroom",
+      "at": [
+        0.402,
+        0.37
+      ]
+    },
+    {
+      "text": "BAD",
+      "area": null,
+      "kind": "bathroom",
+      "at": [
+        0.398,
+        0.426
+      ]
+    },
+    {
+      "text": "SOVEROM",
+      "area": null,
+      "kind": "bedroom",
+      "at": [
+        0.27,
+        0.466
+      ]
+    },
+    {
+      "text": "GANG",
+      "area": null,
+      "kind": "hall",
+      "at": [
+        0.368,
+        0.47
+      ]
+    },
+    {
+      "text": "ENTRE",
+      "area": null,
+      "kind": "entrance",
+      "at": [
+        0.437,
+        0.471
+      ]
+    },
+    {
+      "text": "KJØKKEN",
+      "area": null,
+      "kind": "kitchen",
+      "at": [
+        0.408,
+        0.531
+      ]
+    },
+    {
+      "text": "STUE",
+      "area": null,
+      "kind": "living",
+      "at": [
+        0.288,
+        0.57
+      ]
+    },
+    {
+      "text": "SPISESTUE",
+      "area": null,
+      "kind": "dining",
+      "at": [
+        0.402,
+        0.612
+      ]
+    },
+    {
+      "text": "TERRASSE",
+      "area": null,
+      "kind": "terrace",
+      "at": [
+        0.143,
+        0.5
+      ]
+    },
+    {
+      "text": "GARASJE",
+      "area": null,
+      "kind": "garage",
+      "at": [
+        0.848,
+        0.52
+      ]
+    }
+  ],
+  "dimensions": [],
+  "openings": [],
+  "skylights": [],
+  "stair": {
+    "present": true,
+    "at": [
+      0.333,
+      0.36
+    ],
+    "type": "straight",
+    "up": "elsewhere"
+  },
+  "ceiling": [],
+  "furniture": [],
+  "notes": "Plantegningen er ikke målbar, og noe avvik kan forekomme."
+}

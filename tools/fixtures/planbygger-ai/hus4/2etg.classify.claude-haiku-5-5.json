@@ -1,0 +1,68 @@
+{
+ "house": "hus4",
+ "file": "2etg.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "f2b4f27670ee38198bd19e237c070b2474fcc9fb45f6a24639daa56144ef7b6c"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "2etg.avif"
+ },
+ "source": {
+  "file": "2etg.avif",
+  "part": null,
+  "width": 1920,
+  "height": 1280,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.048,
+     0.072,
+     0.956,
+     0.936
+    ],
+    "title": null,
+    "levelName": "1. etasje",
+    "level": 0,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ingen tittel eller målestokk er skrevet på arket. Planen viser stue/kjøkken, soverom, bad, W.I.C., trapp og terrasse. Etasjenivå er vurdert ut fra innholdet (kjøkken og stue), ikke fra tittel."
+ },
+ "usage": {
+  "input_tokens": 4395,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 795,
+  "output_tokens_details": {
+   "thinking_tokens": 617
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000837,
+ "ms": 6571,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:20:58.420Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

@@ -1,0 +1,134 @@
+{
+ "house": "hus4",
+ "file": "fasade3.avif",
+ "part": null,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "4b0470605f6df45c49a08f7e41d966d686915906819e965514fb213a34150559"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade3.avif"
+ },
+ "source": {
+  "file": "fasade3.avif",
+  "part": null,
+  "width": 1920,
+  "height": 1280,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "flat",
+  "storeys": 2,
+  "windows": [
+   {
+    "bbox": [
+     0.211,
+     0.331,
+     0.262,
+     0.389
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.216,
+     0.399,
+     0.259,
+     0.554
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.385,
+     0.331,
+     0.489,
+     0.545
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.549,
+     0.331,
+     0.696,
+     0.554
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.211,
+     0.615,
+     0.264,
+     0.719
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.385,
+     0.615,
+     0.487,
+     0.778
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.549,
+     0.615,
+     0.654,
+     0.782
+    ],
+    "kind": "door"
+   }
+  ],
+  "notes": "Tilsynelatende flatt eller svakt skråtak med tynn takkant. Glassrekkverk foran de store glassdørene i 2. etasje, takterrasse over lavere del til høyre. Stående hvit kledning på sidefløy, liggende trekledning på hovedvolum."
+ },
+ "usage": {
+  "input_tokens": 4094,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 4094,
+    "output_tokens": 350,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 350,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.011688,
+ "ms": 5179,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:32:23.497Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

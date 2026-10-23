@@ -1,0 +1,125 @@
+{
+ "house": "hus1",
+ "file": "fasade3.avif",
+ "part": null,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 767,
+  "sha256": "15ca26b164b9b70b69e047f309482f3533f88f3e65d27c6f6a825e30702bbd26"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade3.avif"
+ },
+ "source": {
+  "file": "fasade3.avif",
+  "part": null,
+  "width": 1920,
+  "height": 920,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "hip",
+  "storeys": 2,
+  "windows": [
+   {
+    "bbox": [
+     0.333,
+     0.376,
+     0.363,
+     0.458
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.65,
+     0.374,
+     0.681,
+     0.458
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.284,
+     0.703,
+     0.341,
+     0.793
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.519,
+     0.703,
+     0.581,
+     0.793
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.678,
+     0.703,
+     0.746,
+     0.86
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.416,
+     0.714,
+     0.472,
+     0.953
+    ],
+    "kind": "door"
+   }
+  ],
+  "notes": "Valmtak med to takvinduer i takflaten og stående panel. Loftet har vinduer, men ingen egen etasje under taket i fasaden.</br>"
+ },
+ "usage": {
+  "input_tokens": 3455,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 3455,
+    "output_tokens": 276,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 276,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.00967,
+ "ms": 4997,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:30:58.970Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

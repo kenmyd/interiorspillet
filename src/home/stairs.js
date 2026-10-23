@@ -1,6 +1,10 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { mat, emissive } from './materials.js';
+import { isPlanType, stairPlan, stairRisers, nosingPlan, rampKnots, rampAt, rampDeg as rampSteepest, sideKey, planGoing, FOOT_CUT_EXTRA } from './stairtypes.js';
+
+/** The player's capsule radius (src/config.js PLAYER.radius): what a climbed stair keeps clear of the upper edge. */
+const CLIMB_R = 0.3;
 
 /**
  * STAIRS – the stair between the levels (notes/hele-huset-design.md §1.6, §2.6, §3.1, §3.3; the numbers are
@@ -38,6 +42,13 @@ import { mat, emissive } from './materials.js';
  * index.js registers them with ctx.collision (addStaticBox / addStatic), tools/test-stairs.mjs (steg 20) puts them in
  * its own CollisionWorld. The wedge's triangles face outwards (Octree's capsule test is one-sided).
  *
+ * The stair types (notes/trapper.md; src/home/stairtypes.js has their plan): 'straight', 'steep' (climbed on an
+ * analytic surface – the wedge mesh carries userData.climb, CollisionWorld.addStatic keeps it out of the octree),
+ * 'quarter-turn-winder' and 'quarter-turn-landing' go through stairPlan; the half-turn stair keeps the code below
+ * unchanged (walkLine, chains, the goings, the well guard). Every type takes the optional fields openRisers: false
+ * (closed risers), guards { on: 'inner' | 'outer' | 'left' | 'right' } (a guard along the flight) and guardStyle
+ * { infill, hang, mount, glass, bars }.
+ *
  *   buildStairs(ctx, layout) → { group, walls, windows, doors, pickables, builtInLights, colliders, update, setPaint, dispose }
  *
  * The stair spans two levels: its meshes go in ctx.roots.rooms['trapp'] (surfaces / contents; the hud room of the stair
@@ -72,6 +83,16 @@ export const STAIR = Object.freeze({
   wedgeStep: 0.025,
   /** the inner stringer becomes a plate up to the rail around the well, blended over this length */
   plateBlend: 0.14,
+  /** closed risers (openRisers: false): board thickness */
+  riserThickness: 0.018,
+  /** guardStyle.hang: how far the posts over the stair reach below the upper floor (225349: the owner's stair) */
+  postHang: 0.45,
+  /** a climbed (steep) stair: the surface keeps the capsule's centre clear of the upper floor's edge by this radius */
+  climbClear: 0.305,
+  /** … and rises at this angle from the ramp up to that circle */
+  climbApproachDeg: 70,
+  /** a climb surface lifts the foot sphere only this far from below (walking under the stair is free) */
+  climbDepth: 0.6,
 });
 
 const EPS = 1e-9;
@@ -234,6 +255,11 @@ function offsetChain(chain, d, sideOf) {
 // The walk line (avstemming V13 – the same line as stairWalk / halfTurnWalk in src/data/scripts/house.mjs)
 
 function walkLine(stair, footprint) {
+  if (isPlanType(stair.type)) {
+    // straight, steep, quarter-turn: src/home/stairtypes.js (te / fe come paired [inner, outer])
+    const plan = stairPlan(stair);
+    return { length: plan.length, segs: plan.segs, at: plan.at, param: plan.param, corners: plan.corners, P0: plan.P0, P3: plan.P3, d1: plan.d1, d2: plan.d2, w1: plan.w1, w2: plan.w2, te: plan.te, fe: plan.fe, well: [], plan };
+  }
   const top = stair.top;
   const foot = stair.foot;
   const te = [pt(top.edge[0]), pt(top.edge[1])];
@@ -354,6 +380,17 @@ function levelFloor(levels, id) {
  * of the foot (with the nosing) and the top edge.
  */
 function chains(W, footprint, nosing) {
+  if (W.plan) {
+    // a plan stair: the inner line round its corner (an L) or straight; the outer side is the flights' outer sides
+    // (the shaft walls of an L meet at its outer corner), not the footprint, which may be a larger hole
+    const [tIn, tOut] = W.te;
+    const fIn = add(W.fe[0], mul(W.d2, nosing));
+    const fOut = add(W.fe[1], mul(W.d2, nosing));
+    const inner = makeChain([fIn, ...[...W.corners].reverse(), tIn]);
+    const O = W.plan.outerCorner;
+    const outer = makeChain(O ? [fOut, O, tOut] : [fOut, tOut]);
+    return { inner, outer, tIn, tOut, fIn, fOut, wellC: null };
+  }
   const wellC = W.well.length ? centroid(W.well) : centroid(footprint);
   const near = (e) => (dist(e[0], wellC) <= dist(e[1], wellC) ? [e[0], e[1]] : [e[1], e[0]]);
   const [tIn, tOut] = near(W.te);
@@ -426,7 +463,20 @@ export function stairLayout(stair, levels = [], opts = {}) {
   const base = { id, stair, levelIds: [fromLevel, toLevel], fromLevel, toLevel, treads: [], nosings: [], sections: [] };
   if (!stair || !stair.top?.edge || !stair.foot?.edge || !isNum(bottomY) || !isNum(topY) || topY <= bottomY) return base;
   const rise = topY - bottomY;
-  const risers = Number.isInteger(stair.risers) && stair.risers >= 2 ? stair.risers : Math.max(2, Math.round(rise / 0.18));
+  let footprint = poly(stair.footprint?.length ? stair.footprint : opts.footprint);
+  if (footprint.length >= 3) footprint = ccw(footprint);
+  let W;
+  try {
+    W = walkLine(stair, footprint);
+  } catch (err) {
+    if (!isPlanType(stair.type)) throw err;
+    console.warn(`[stairs] ${id}: ${err.message}`);
+    return base;
+  }
+  // a plan stair without its own footprint: the flight's rectangle / the L (stairPlan)
+  if (W.plan && footprint.length < 3) footprint = ccw(W.plan.footprint);
+  // risers: the data's, else 2R + G ≈ 0.62 over the walk line (stairtypes.js; the half-turn stair keeps its old rule)
+  const risers = Number.isInteger(stair.risers) && stair.risers >= 2 ? stair.risers : W.plan ? stairRisers(rise, W.plan) : Math.max(2, Math.round(rise / 0.18));
   const riser = rise / risers;
   const upper = (levels || []).find((l) => l.id === toLevel);
   const slab = isNum(upper?.slabThickness) ? upper.slabThickness : 0.3;
@@ -441,33 +491,45 @@ export function stairLayout(stair, levels = [], opts = {}) {
   };
   const strT = isNum(stair.stringers?.thickness) ? stair.stringers.thickness : STAIR.stringerThickness;
   const strDepth = isNum(stair.stringers?.depth) ? stair.stringers.depth : STAIR.stringerDepth;
-  const footCut = isNum(stair.stringers?.footCut) ? stair.stringers.footCut : nosing;
+  // (a plan stair: the stringers 1,5 cm past the lowest nose, so their foot is not in the plane of its front)
+  const footCut = isNum(stair.stringers?.footCut) ? stair.stringers.footCut : W.plan ? nosing + FOOT_CUT_EXTRA : nosing;
 
-  let footprint = poly(stair.footprint?.length ? stair.footprint : opts.footprint);
-  if (footprint.length >= 3) footprint = ccw(footprint);
-  const W = walkLine(stair, footprint);
   const L = W.length;
   const n = risers - 1; // treads
   const { inner, outer, fIn, fOut } = chains(W, footprint, nosing);
   const wellC = W.well.length ? centroid(W.well) : null;
 
   // ---- goings: the foot's straight treads fill the foot flight (V14: 0.23), the rest share the walk line (V13)
+  // (a plan stair: stairtypes.js nosingPlan – equal goings, the L's winders balanced round the corner, a landing's
+  // flights each filled by their treads)
   const lastSeg = W.segs[W.segs.length - 1];
-  const firstSeg = W.segs[0];
-  let nf = clamp(Number.isInteger(stair.foot?.straightTreads) ? stair.foot.straightTreads : 0, 0, n);
-  let nt = clamp(Number.isInteger(stair.top?.straightTreads) ? stair.top.straightTreads : 0, 0, n - nf);
-  if (W.segs.length === 1) {
-    nf = n;
-    nt = 0;
+  let nf;
+  let nt;
+  let gFoot;
+  let gRest;
+  let vOf;
+  let kindOf;
+  let landingK = null;
+  if (W.plan) {
+    ({ nf, nt, gFoot, gRest, vOf, kindOf, landingK } = nosingPlan(W.plan, risers, stair));
+  } else {
+    nf = clamp(Number.isInteger(stair.foot?.straightTreads) ? stair.foot.straightTreads : 0, 0, n);
+    nt = clamp(Number.isInteger(stair.top?.straightTreads) ? stair.top.straightTreads : 0, 0, n - nf);
+    if (W.segs.length === 1) {
+      nf = n;
+      nt = 0;
+    }
+    gFoot = nf ? lastSeg.len / nf : 0;
+    if (W.segs.length > 1 && nf && (gFoot < 0.15 || gFoot > 0.35)) gFoot = L / n; // a foot flight that does not fit
+    if (W.segs.length === 1) gFoot = L / n;
+    gRest = n > nf ? (L - nf * gFoot) / (n - nf) : 0;
+    vOf = (k) => (k - 1 <= nf ? (k - 1) * gFoot : nf * gFoot + (k - 1 - nf) * gRest); // from the foot
+    kindOf = (k) => (W.segs.length === 1 || k <= nf + 1 || k >= risers - nt ? 'straight' : 'winder');
   }
-  let gFoot = nf ? lastSeg.len / nf : 0;
-  if (W.segs.length > 1 && nf && (gFoot < 0.15 || gFoot > 0.35)) gFoot = L / n; // a foot flight that does not fit
-  if (W.segs.length === 1) gFoot = L / n;
-  const gRest = n > nf ? (L - nf * gFoot) / (n - nf) : 0;
-  const vOf = (k) => (k - 1 <= nf ? (k - 1) * gFoot : nf * gFoot + (k - 1 - nf) * gRest); // from the foot
-  const kindOf = (k) => (W.segs.length === 1 || k <= nf + 1 || k >= risers - nt ? 'straight' : 'winder');
 
-  const rampY = (u) => topY - (rise * clamp(u, 0, L)) / L;
+  // the ramp: one line (a landing stair: level over the landing, stairtypes.js rampKnots)
+  const knots = W.plan ? rampKnots(W.plan, risers, topY, bottomY, stair) : null;
+  const rampY = knots && knots.length > 2 ? (u) => rampAt(knots, u) : (u) => topY - (rise * clamp(u, 0, L)) / L;
   // which side of a straight walk segment the well (inner chain) is on
   const innerSideOf = (seg) => {
     const pd = perp(seg.d);
@@ -543,6 +605,10 @@ export function stairLayout(stair, levels = [], opts = {}) {
     const b = chain.pts[k + 1];
     const m = lerp2(a, b, 0.5);
     const nn = perp(unit(sub(b, a)));
+    if (W.plan) {
+      // a plan stair: toward the walk line (the footprint may be a larger hole)
+      return dot(nn, sub(W.at(W.param(m)).p, m)) * sign >= 0 ? 1 : -1;
+    }
     const test = add(m, mul(nn, 0.01 * sign));
     const ok = footprint.length >= 3 ? pointInPolygon(test, footprint) && !(W.well.length >= 3 && pointInPolygon(test, W.well)) : true;
     return ok ? 1 : -1;
@@ -563,6 +629,7 @@ export function stairLayout(stair, levels = [], opts = {}) {
     const pts = [front.a.p, front.b.p, ...between(outerOff, front.b.s, back.b.s), back.b.p, back.a.p, ...between(innerOff, front.a.s, back.a.s).reverse()];
     return ccw(pts);
   };
+  const closedRisers = stair.openRisers === false;
   const treads = [];
   for (let k = 1; k < risers; k++) {
     const f = nosings[k - 1];
@@ -585,12 +652,39 @@ export function stairLayout(stair, levels = [], opts = {}) {
       innerGoing: Math.abs(b.sIn - f.sIn),
       outerGoing: b.sOut != null && f.sOut != null ? b.sOut - f.sOut : null,
     };
-    if (batten.h > 0) {
+    if (landingK !== null && k === landingK) t.landing = true;
+    // the batten under the nose: not with closed risers (the riser board stands there)
+    if (batten.h > 0 && !closedRisers) {
       const c0 = cut(add(f.walk, mul(f.down, nosing - batten.inset)), f.dir);
       const c1 = cut(add(f.walk, mul(f.down, nosing - batten.inset - batten.depth)), f.dir);
       if (c0 && c1) t.batten = { polygon: ccw([c1.a.p, c1.b.p, c0.b.p, c0.a.p]), y0: y - treadT - batten.h, y1: y - treadT };
     }
     treads.push(t);
+  }
+
+  // ---- closed risers (openRisers: false, F7): a board under each nosing line, 1 mm behind it, from the tread below
+  // (its underside) to 2 mm into the tread above, its ends 2 mm inside the treads' (no face in another face's plane);
+  // the top one only where it reaches below the upper slab's edge
+  const riserBoards = [];
+  if (closedRisers) {
+    const rt = isNum(stair.riser?.thickness) ? stair.riser.thickness : STAIR.riserThickness;
+    const innerOffR = offsetChain(inner, treadInset + 0.002, sideToFlight(inner, 1));
+    const outerOffR = offsetChain(outer, treadInset + 0.002, sideToFlight(outer, 1));
+    const cutR = (p, d) => {
+      const a = innerOffR.hit(p, mul(d, -1));
+      const b = outerOffR.hit(p, d);
+      return a && b ? { a, b } : null;
+    };
+    for (let k = 1; k <= risers; k++) {
+      const ns = nosings[k - 1];
+      const y0 = k === 1 ? bottomY + 0.001 : nosings[k - 2].y - treadT + 0.001;
+      const y1 = k === risers ? topY - slab - 0.003 : ns.y - treadT + 0.002;
+      if (y1 - y0 < 0.01) continue;
+      const c0 = cutR(add(ns.walk, mul(ns.down, -0.001)), ns.dir);
+      const c1 = cutR(add(ns.walk, mul(ns.down, -0.001 - rt)), ns.dir);
+      if (!c0 || !c1) continue;
+      riserBoards.push({ k, polygon: ccw([c0.a.p, c0.b.p, c1.b.p, c1.a.p]), y0, y1, along: ns.dir });
+    }
   }
 
   // ---- cross-sections of the wedge (u = 0 at the top edge … the footprint's foot edge)
@@ -644,16 +738,22 @@ export function stairLayout(stair, levels = [], opts = {}) {
   const drop = Math.max(strDepth, STAIR.stringerDrop);
   const above = STAIR.stringerAbove;
   const capTop = topY - 0.003;
-  const sampleChain = (chain, s0, s1, extra = []) => {
+  // clear: no sample this close to a corner of the chain (the corner itself stays) – a band or a sweep that thick
+  // would fold back over itself on the inside of the mitre (a plan stair; the half-turn stair keeps its samples)
+  const sampleChain = (chain, s0, s1, extra = [], clear = 0) => {
     const ss = new Set([s0, s1, ...extra.filter((s) => s > s0 && s < s1)]);
     for (let s = s0; s < s1; s += 0.05) ss.add(+s.toFixed(6));
     for (const c of chain.cum) if (c > s0 && c < s1) ss.add(c);
-    return [...ss].sort((a, b) => a - b);
+    const out = [...ss].sort((a, b) => a - b);
+    if (!clear) return out;
+    const cs = chain.cum.slice(1, -1);
+    return out.filter((v) => v === s0 || v === s1 || !cs.some((c) => Math.abs(v - c) > 1e-9 && Math.abs(v - c) < clear));
   };
+  const bandClear = W.plan ? strT + 0.006 : 0;
   // outer (wall) stringer: from the vertical foot cut (footCut past the lowest nosing line, V17) to the top edge
   const outerStart = footCut - nosing; // s on the outer chain (it starts at the nose)
   const outerEnd = nosings[risers - 1].sOut ?? outer.length;
-  const outerSamples = sampleChain(outer, -outerStart, outerEnd, nosings.map((ns) => ns.sOut).filter(isNum)).map((s) => {
+  const outerSamples = sampleChain(outer, -outerStart, outerEnd, nosings.map((ns) => ns.sOut).filter(isNum), bandClear).map((s) => {
     const top = Math.min(capTop, noseOut(s) + above);
     return { s, p: outer.at(s), top, bottom: Math.max(bottomY, Math.min(top, noseOut(s) + above) - drop) };
   });
@@ -664,7 +764,8 @@ export function stairLayout(stair, levels = [], opts = {}) {
   const cornerS = W.corners.length === 2 ? [inner.project(W.corners[1]).s, inner.project(W.corners[0]).s] : [];
   const plateW = (s) => (cornerS.length ? smoothstep(cornerS[0] - STAIR.plateBlend, cornerS[0], s) * (1 - smoothstep(cornerS[1], cornerS[1] + STAIR.plateBlend, s)) : 0);
   const innerEnd = inner.length;
-  const innerSamples = sampleChain(inner, 0, innerEnd, nosings.map((ns) => ns.sIn).filter(isNum)).map((s) => {
+  // (a plan stair's inner stringer starts at the foot cut too: from the nose, its end lay in the plane of the nose)
+  const innerSamples = sampleChain(inner, W.plan ? -outerStart : 0, innerEnd, nosings.map((ns) => ns.sIn).filter(isNum), bandClear).map((s) => {
     const base = noseIn(s) + above;
     const top = Math.min(capTop, base + (railH - above) * plateW(s));
     return { s, p: inner.at(s), top, bottom: Math.max(bottomY, base - drop), plate: plateW(s) };
@@ -711,7 +812,9 @@ export function stairLayout(stair, levels = [], opts = {}) {
   // the guards A/B/C on the upper floor (line on the hole's edge, moved half a post onto the floor)
   const post = isNum(guardStyle.post) ? guardStyle.post : 0.065;
   const gH = isNum(guardStyle.height) ? guardStyle.height : 1.0;
-  const holeish = footprint.length >= 3 ? footprint : [];
+  // (a plan stair: the hole – layout.js gives it as holePolygon – since an L's footprint reaches under the floor)
+  const holeOf = W.plan ? poly(stair.holePolygon) : [];
+  const holeish = holeOf.length >= 3 ? holeOf : footprint.length >= 3 ? footprint : [];
   for (const g of Array.isArray(stair.guards) ? stair.guards : []) {
     if (!Array.isArray(g.line) || g.line.length < 2) continue;
     const a = pt(g.line[0]);
@@ -723,15 +826,79 @@ export function stairLayout(stair, levels = [], opts = {}) {
     const probe = add(m, mul(nrm, 0.05));
     const inStair = (holeish.length && pointInPolygon(probe, holeish)) || (W.well.length >= 3 && pointInPolygon(probe, W.well));
     if (inStair) nrm = mul(nrm, -1);
-    const sh = mul(nrm, post / 2);
+    // guardStyle.mount 'edge': on the slab's edge face, 3 mm off it (into the hole)
+    const sh = guardStyle.mount === 'edge' ? mul(nrm, -(post / 2 + 0.003)) : mul(nrm, post / 2);
     guards.push({ id: g.id, level: g.level ?? toLevel, line: [add(a, sh), add(b, sh)], raw: [a, b], normal: nrm, y0: topY, height: gH, post });
+  }
+
+  // ---- guards along a flight of a plan stair ({ on: 'inner' | 'outer' | 'left' | 'right' }; 'well' = inner): on the
+  // middle of that stringer, the rail stairHeight over its nosing line (at the foot at least height − 0.05 over the
+  // floor, as the well guard), a post at the foot (from the floor), at every corner of the line (the newel of an L,
+  // from the floor below) and at the top edge (up to the upper guards' height); the infill between them is drawn by
+  // buildStairs after guardStyle.infill
+  const sideGuards = [];
+  if (W.plan) {
+    for (const g of Array.isArray(stair.guards) ? stair.guards : []) {
+      const key = g && typeof g.on === 'string' ? sideKey(W.plan, g.on) : null;
+      if (!key) continue;
+      const chain = key === 'inner' ? inner : outer;
+      const nose = key === 'inner' ? noseIn : noseOut;
+      const sideOf = sideToFlight(chain, 1);
+      const line = offsetChain(chain, strT / 2, sideOf);
+      const s0 = 0.035;
+      const sKey = key === 'inner' ? 'sIn' : 'sOut';
+      const base = (s) => nose(s) + above; // the stringer's top edge
+      // an upper guard along the same line (the hole's side over the top flight) guards above the slab: the flight's
+      // guard then stays under the slab – its rail level 3,5 cm under it – and ends where the stringer meets it
+      const n = chain.pts.length;
+      const ea = chain.pts[n - 2];
+      const eb = chain.pts[n - 1];
+      const ed = unit(sub(eb, ea));
+      const covered = guards.some((gg) => {
+        const [ga, gb] = gg.raw;
+        const gd = unit(sub(gb, ga));
+        if (Math.abs(cross(ed, gd)) > 0.05 || Math.abs(cross(ed, sub(ga, ea))) > 0.12) return false;
+        const t = [dot(sub(ga, ea), ed), dot(sub(gb, ea), ed)];
+        return Math.min(Math.max(...t), dist(ea, eb)) - Math.max(Math.min(...t), 0) > 0.2;
+      });
+      const cap = covered ? topY - slab - 0.035 : Infinity;
+      const rail = (s) => Math.min(cap, Math.max(nose(s) + railH, bottomY + gH - 0.05));
+      let s1 = Math.max(s0 + 0.05, chain.length - 0.035);
+      const extra = nosings.map((ns) => ns[sKey]).filter(isNum);
+      if (covered) {
+        let s = s0;
+        while (s < s1 && base(s) < cap - 0.08) s += 0.005;
+        s1 = Math.max(s0 + 0.05, Math.min(s1, s));
+        let k = s0;
+        while (k < s1 && nose(k) + railH < cap) k += 0.005;
+        if (k > s0 && k < s1) extra.push(k);
+      }
+      const ss = sampleChain(line, s0, s1, extra, 0.04);
+      const corners = chain.cum.slice(1, -1).filter((c) => c < s1 - 0.05);
+      const posts = [{ s: s0, p: line.at(s0), y0: bottomY, y1: rail(s0) + 0.03 }];
+      for (const c of corners) posts.push({ s: c, p: line.at(c), y0: bottomY, y1: Math.min(cap + 0.03, Math.max(rail(c - 0.06), rail(c + 0.06)) + 0.03), corner: true });
+      posts.push({ s: s1, p: line.at(s1), y0: Math.max(bottomY, base(s1) - drop), y1: covered ? cap + 0.03 : Math.max(rail(s1), topY + gH), top: true });
+      sideGuards.push({
+        id: g.id ?? `rekk-${key}`,
+        on: g.on,
+        side: key,
+        chain,
+        sideOf,
+        line,
+        posts,
+        rail: ss.map((s) => ({ s, p: line.at(s), y: rail(s), base: base(s) })),
+        railAt: rail,
+        baseAt: base,
+        covered,
+      });
+    }
   }
 
   // ---- the handrail on the shaft walls (V22): 0.90 over the nosing line along the walls, the top end at startHeight
   const handrails = [];
-  const wallName = (k) => {
-    const sgn = sideToFlight(outer, 1)(k);
-    const nIn = mul(perp(unit(sub(outer.pts[k + 1], outer.pts[k]))), sgn);
+  const wallName = (k, chain = outer) => {
+    const sgn = sideToFlight(chain, 1)(k);
+    const nIn = mul(perp(unit(sub(chain.pts[k + 1], chain.pts[k]))), sgn);
     if (Math.abs(nIn[0]) >= Math.abs(nIn[1])) return nIn[0] > 0 ? 'nord' : 'sør';
     return nIn[1] > 0 ? 'øst' : 'vest';
   };
@@ -739,16 +906,22 @@ export function stairLayout(stair, levels = [], opts = {}) {
     const prof = Array.isArray(h.profile) ? h.profile : [0.05, 0.04];
     const rh = isNum(h.height) ? h.height : 0.9;
     const off = (isNum(h.offset) ? h.offset : 0.05) + prof[1] / 2;
-    const path = offsetChain(outer, off, sideToFlight(outer, 1));
-    const walls = new Set(Array.isArray(h.walls) ? h.walls : ['øst', 'nord', 'vest']);
+    // the wall it runs on: the outer chain; a plan stair can have it on the inner side (side 'inner' / 'left' /
+    // 'right') and on every wall of that side when `walls` is not given
+    const onInner = !!W.plan && sideKey(W.plan, h.side ?? 'outer') === 'inner';
+    const hc = onInner ? inner : outer;
+    const hNose = onInner ? noseIn : noseOut;
+    const sKey = onInner ? 'sIn' : 'sOut';
+    const path = offsetChain(hc, off, sideToFlight(hc, 1));
+    const walls = Array.isArray(h.walls) ? new Set(h.walls) : W.plan ? null : new Set(['øst', 'nord', 'vest']);
     // the top end: the start point projected onto the rail line; the lower end over the middle of tread 1 (V22: «fra
     // trinn 1–2»)
     const startP = h.start ? pt(h.start) : null;
     const sTop = startP ? path.project(startP).s : path.length;
-    const sLow = nosings[0].sOut != null && nosings[1]?.sOut != null ? (nosings[0].sOut + nosings[1].sOut) / 2 : 0;
+    const sLow = nosings[0][sKey] != null && nosings[1]?.[sKey] != null ? (nosings[0][sKey] + nosings[1][sKey]) / 2 : 0;
     const startH = isNum(h.startHeight) ? topY + h.startHeight : null;
-    const ss = sampleChain(path, sLow, sTop, []);
-    const raw = (s) => noseOut(clamp(s, 0, outer.length)) + rh;
+    const ss = sampleChain(path, sLow, sTop, [], W.plan ? prof[1] / 2 + 0.01 : 0);
+    const raw = (s) => hNose(clamp(s, 0, hc.length)) + rh;
     const endRaw = raw(sTop);
     const pts = ss.map((s) => {
       let y = raw(s);
@@ -773,14 +946,14 @@ export function stairLayout(stair, levels = [], opts = {}) {
       while (k < path.cum.length - 2 && path.cum[k + 1] < s - 1e-9) k++;
       return k;
     };
-    const run = sm.map((q) => ({ ...q, wall: wallName(segOf(q.s)) }));
-    const railPts = run.filter((q) => walls.has(q.wall) || path.cum.some((c) => Math.abs(c - q.s) < 1e-6));
+    const run = sm.map((q) => ({ ...q, wall: wallName(segOf(q.s), hc) }));
+    const railPts = run.filter((q) => !walls || walls.has(q.wall) || path.cum.some((c) => Math.abs(c - q.s) < 1e-6));
     // LED strips under the rail: one per straight wall run (§4.11)
     const led = [];
     if (h.led) {
       const ledWalls = new Set(Array.isArray(h.led.walls) ? h.led.walls : ['øst', 'nord']);
       for (let k = 0; k < path.pts.length - 1; k++) {
-        const name = wallName(k);
+        const name = wallName(k, hc);
         if (!ledWalls.has(name)) continue;
         const a = Math.max(sLow, path.cum[k] + 0.04);
         const b = Math.min(sTop - 0.03, path.cum[k + 1] - 0.04);
@@ -814,7 +987,7 @@ export function stairLayout(stair, levels = [], opts = {}) {
       // the miter direction at each sample (toward the wall)
       side3: railPts.map((q) => {
         const k = segOf(q.s);
-        const sgn = sideToFlight(outer, 1)(Math.min(k, outer.pts.length - 2));
+        const sgn = sideToFlight(hc, 1)(Math.min(k, hc.pts.length - 2));
         const nIn = mul(perp(path.dirAt(k)), sgn);
         return [-nIn[0], -nIn[1]];
       }),
@@ -835,10 +1008,25 @@ export function stairLayout(stair, levels = [], opts = {}) {
 
   // ---- ramp: the walking surface (the wedge's top) at a plan point
   const contains = (p) => footprint.length >= 3 && inOrOn(p, footprint, 1e-6) && !(W.well.length >= 3 && pointInPolygon(p, W.well) && distToPolygon(p, W.well) > 1e-6);
+  // a steep stair is climbed (CollisionWorld climbs): the ramp, lifted near the top edge so the capsule (radius
+  // CLIMB_R) clears the upper floor's edge – a circle round the edge, reached from the ramp at climbApproachDeg (≥ 6°
+  // steeper than the ramp, at most 72°: a substep of 0.08 m then drops ≤ 0.25, inside the ground snap's 0.26)
+  let climbY = null;
+  if (W.plan?.steep) {
+    const R = STAIR.climbClear;
+    const deg = Math.min(72, Math.max(STAIR.climbApproachDeg, rampSteepest(knots) + 6));
+    const tanA = Math.tan((deg * Math.PI) / 180);
+    climbY = (u) => {
+      const cap = u <= R ? topY - CLIMB_R + Math.sqrt(Math.max(0, R * R - u * u)) : topY - CLIMB_R - (u - R) * tanA;
+      return Math.max(rampY(u), cap);
+    };
+  }
+  // (the climb only over the stair itself – its rectangle with the nose – not the whole hole beyond its foot)
+  const climbArea = climbY ? ccw(W.plan.footprint) : null;
   const surfaceY = (x, z) => {
     const p = [x, z];
-    if (!contains(p)) return null;
-    return rampY(W.param(p));
+    if (!contains(p) || (climbArea && !inOrOn(p, climbArea, 1e-6))) return null;
+    return climbY ? climbY(W.param(p)) : rampY(W.param(p));
   };
   /** lowest y of the stair (tread / batten / stringer underside) above a plan point, or null */
   const undersideAt = (x, z) => {
@@ -874,12 +1062,12 @@ export function stairLayout(stair, levels = [], opts = {}) {
     riser,
     slab,
     /** mean going on the walk line (the validator's), the foot's straight treads, the others */
-    going: L / n,
+    going: W.plan ? planGoing(W.plan, risers) : L / n,
     goingFoot: gFoot,
     goingRest: gRest,
     /** slope of the wedge along the walk line and of riser / mean going (the validator's θ) */
-    rampDeg: (Math.atan2(rise, L) * 180) / Math.PI,
-    slopeDeg: (Math.atan2(riser, L / n) * 180) / Math.PI,
+    rampDeg: knots ? rampSteepest(knots) : (Math.atan2(rise, L) * 180) / Math.PI,
+    slopeDeg: (Math.atan2(riser, W.plan ? planGoing(W.plan, risers) : L / n) * 180) / Math.PI,
     nosing,
     treadThickness: treadT,
     batten,
@@ -906,6 +1094,19 @@ export function stairLayout(stair, levels = [], opts = {}) {
     contains: (x, z) => contains([x, z]),
     surfaceY,
     undersideAt,
+    // the stair types (notes/trapper.md): not on the half-turn stair
+    ...(W.plan
+      ? {
+          type: stair.type,
+          plan: W.plan,
+          rampKnots: knots,
+          landingK,
+          winders: { nf, nt },
+          sideGuards,
+          climb: climbY ? { surfaceY, contains: (x, z) => contains([x, z]) && inOrOn([x, z], climbArea, 1e-6), down: W.plan.d1, depth: STAIR.climbDepth, minY: bottomY, maxY: topY + 0.01 } : null,
+        }
+      : {}),
+    ...(closedRisers ? { closedRisers: true, riserBoards } : {}),
   };
 }
 
@@ -1015,20 +1216,49 @@ export function stairColliders(lay) {
   wedge.visible = false;
   wedge.userData.collider = 'stair-wedge';
   wedge.userData.stairId = lay.id;
+  if (lay.climb) {
+    // a steep stair: climbed on its surface (CollisionWorld.addStatic keeps a climb out of the octree, whose steep
+    // faces would push the player back down)
+    wedge.userData.collider = 'stair-climb';
+    wedge.userData.climb = lay.climb;
+  }
   out.push(wedge);
 
-  // the inner stringer sides: boxes along the inner line, on the far side of it (in the well / toward the open floor)
-  const { inner } = lay;
-  const sideOf = lay.stringers.inner.side;
-  const t = STAIR.guardThickness;
-  const corners = lay.walk.corners || [];
-  const cornerS = corners.map((c) => inner.project(c).s);
+  // the inner stringer sides: boxes along the inner line, on the far side of it (in the well / toward the open floor);
+  // a plan stair: along each guarded side (sideGuards), and the corner block only at the winders of an L
   const keepOff = STAIR.cornerClear;
   const rampNear = (p, nIn) => {
     const q = add(p, mul(nIn, 0.01));
     const y = lay.surfaceY(q[0], q[1]);
     return y === null ? lay.rampY(lay.walk.param(q)) : y;
   };
+  const corners = lay.plan && lay.type !== 'quarter-turn-winder' ? [] : lay.walk.corners || [];
+  const sides = lay.plan ? lay.sideGuards.map((g) => ({ chain: g.chain, sideOf: g.sideOf })) : [{ chain: lay.inner, sideOf: lay.stringers.inner.side }];
+  for (const { chain: inner, sideOf } of sides) sideBoxes(out, lay, inner, sideOf, corners.map((c) => inner.project(c)).filter((pr) => pr.d < 1e-6).map((pr) => pr.s), rampNear);
+  // the corners of the well: the turn's arc spans every height there
+  for (const c of corners) {
+    const arcs = lay.walk.segments.filter((g) => g.kind === 'arc');
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (const g of arcs) {
+      if (!g.C || dist(g.C, c) > 1e-6) continue;
+      lo = Math.min(lo, lay.rampY(g.start + g.length + 0.1));
+      hi = Math.max(hi, lay.rampY(Math.max(0, g.start - 0.1)));
+    }
+    if (!Number.isFinite(lo)) continue;
+    out.push(new THREE.Box3(
+      new THREE.Vector3(c[0] - keepOff, Math.max(lay.bottomY, lo - STAIR.wedgeDepth), c[1] - keepOff),
+      new THREE.Vector3(c[0] + keepOff, hi + STAIR.guardCollide, c[1] + keepOff),
+    ));
+  }
+  return out;
+}
+
+/** Guard boxes along a stringer line (5 cm pieces outside the flight, from the soffit to guardCollide over the ramp),
+ *  none within cornerClear of the corners at cornerS. */
+function sideBoxes(out, lay, inner, sideOf, cornerS, rampNear) {
+  const t = STAIR.guardThickness;
+  const keepOff = STAIR.cornerClear;
   for (let k = 0; k < inner.pts.length - 1; k++) {
     const a = inner.pts[k];
     const b = inner.pts[k + 1];
@@ -1055,23 +1285,6 @@ export function stairColliders(lay) {
       ));
     }
   }
-  // the corners of the well: the turn's arc spans every height there
-  for (const c of corners) {
-    const arcs = lay.walk.segments.filter((g) => g.kind === 'arc');
-    let lo = Infinity;
-    let hi = -Infinity;
-    for (const g of arcs) {
-      if (!g.C || dist(g.C, c) > 1e-6) continue;
-      lo = Math.min(lo, lay.rampY(g.start + g.length + 0.1));
-      hi = Math.max(hi, lay.rampY(Math.max(0, g.start - 0.1)));
-    }
-    if (!Number.isFinite(lo)) continue;
-    out.push(new THREE.Box3(
-      new THREE.Vector3(c[0] - keepOff, Math.max(lay.bottomY, lo - STAIR.wedgeDepth), c[1] - keepOff),
-      new THREE.Vector3(c[0] + keepOff, hi + STAIR.guardCollide, c[1] + keepOff),
-    ));
-  }
-  return out;
 }
 
 /**
@@ -1317,6 +1530,55 @@ class Mesher {
   }
 }
 
+/** guardStyle.infill values (notes/trapper.md). */
+const INFILLS = new Set(['balusters', 'bars', 'rods', 'glass']);
+
+/**
+ * The infill of a guard between two posts along plan samples [{ p, bot, top }] (a straight line on the floor, or the
+ * stringer line of a flight with its own bottom / top at each sample): vertical balusters at `spacing`, horizontal
+ * bars / rods following the rail (liggende spiler / stag, bars.spacing apart, bars.size [height, width]) or a glass
+ * panel (glass.thickness) centred on the line.
+ */
+function drawInfill(black, glass, fill, raw) {
+  if (raw.length < 2) return;
+  const samples = raw.map((q) => ({ ...q, top: Math.max(q.top, q.bot) }));
+  const cum = [0];
+  for (let i = 1; i < samples.length; i++) cum.push(cum[i - 1] + dist(samples[i - 1].p, samples[i].p));
+  const total = cum[cum.length - 1];
+  if (total < 0.02) return;
+  const at = (s) => {
+    let i = 1;
+    while (i < cum.length - 1 && cum[i] < s) i++;
+    const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1] || 1);
+    const a = samples[i - 1];
+    const b = samples[i];
+    return { p: lerp2(a.p, b.p, t), bot: lerp(a.bot, b.bot, t), top: lerp(a.top, b.top, t) };
+  };
+  if (fill.kind === 'balusters') {
+    const count = Math.max(0, Math.round(total / fill.spacing) - 1);
+    for (let i = 1; i <= count; i++) {
+      const q = at((total * i) / (count + 1));
+      if (q.top - q.bot > 0.05) black.box(q.p[0], q.p[1], fill.balW, fill.balW, q.bot, q.top);
+    }
+    return;
+  }
+  const plan = samples.map((q) => q.p);
+  const sides = mitreSides(plan);
+  if (fill.kind === 'glass') {
+    const t = fill.glass.thickness;
+    glass.band(samples.map((q, i) => ({ p: add(q.p, mul(sides[i], t / 2)), bottom: q.bot, top: q.top })), t, sides.map((v) => mul(v, -1)));
+    return;
+  }
+  // bars / rods: evenly between the bottom and the top line, following both
+  const [h, w] = fill.bars.size;
+  const span = Math.min(...samples.map((q) => q.top - q.bot));
+  const m = Math.max(1, Math.floor(span / fill.bars.spacing));
+  for (let k = 1; k <= m; k++) {
+    const f = k / (m + 1);
+    black.sweep(samples.map((q) => [q.p[0], lerp(q.bot, q.top, f), q.p[1]]), w, h, sides);
+  }
+}
+
 /** Horizontal across-vectors of a plan polyline for a sweep: perpendicular on the ends, mitred (scaled) inside. */
 function mitreSides(plan) {
   const n = plan.length;
@@ -1410,6 +1672,12 @@ export function buildStairs(ctx, layout) {
     oak.prism(nl.lip, nl.lipY[0], nl.lipY[1], listAlong);
     oak.prism(nl.cap, nl.capY[0], nl.capY[1], listAlong);
     add3(oak.geometry(), oakMat, `stair-treads:${st.id}`);
+    // closed risers (openRisers: false): riser.color painted, else the treads' oak
+    if (lay.riserBoards?.length) {
+      const rm = new Mesher();
+      for (const r of lay.riserBoards) rm.prism(r.polygon, r.y0, r.y1, r.along);
+      add3(rm.geometry(), st.riser?.color ? mat('painted', st.riser.color, { roughness: 0.6 }) : oakMat, `stair-risers:${st.id}`);
+    }
 
     // ---- stringers, guards, rails (black)
     const black = new Mesher();
@@ -1428,38 +1696,145 @@ export function buildStairs(ctx, layout) {
     for (const b of wg.balusters) black.box(b.p[0], b.p[1], balW, balW, b.y0, b.y1);
     if (wg.rail.length >= 2) black.sweep(wg.rail, 0.05, 0.05, mitreSides(wg.rail.map((p) => [p[0], p[2]])));
     // the guards A/B/C: posts (P1′ / P2 over the stair hang down under the floor, 225349), top rail, bottom rail,
-    // balusters
+    // balusters. guardStyle (notes/trapper.md): infill 'balusters' | 'bars' | 'rods' | 'glass', hang (how far the posts
+    // over the stair reach below the floor; 0 = they end on it), mount 'edge' (on the slab's edge face, every post
+    // hanging, no floor rail), posts: false (glass without posts), topRail: false
     const postsAt = [];
     const hangs = (p) => inOrOn(p, lay.footprint, 0.02) || (lay.well.length >= 3 && inOrOn(p, lay.well, 0.02));
-    for (const g of lay.guards) {
+    const infill = INFILLS.has(gs.infill) ? gs.infill : 'balusters';
+    const edge = gs.mount === 'edge';
+    const hang = isNum(gs.hang) ? Math.max(0, gs.hang) : edge ? 0.2 : STAIR.postHang;
+    // posts: false is for glass only (the other infills need their posts)
+    const showPosts = gs.posts !== false || infill !== 'glass';
+    const hasTopRail = gs.topRail !== false;
+    const glassMesh = new Mesher();
+    const glassStyle = { thickness: 0.01, color: '#cfe3e0', opacity: 0.28, ...(gs.glass && typeof gs.glass === 'object' ? gs.glass : {}) };
+    const barStyle = infill === 'rods' ? { spacing: 0.1, size: [0.012, 0.012], ...(gs.bars || {}) } : { spacing: 0.11, size: [0.04, 0.012], ...(gs.bars || {}) };
+    const fill = { kind: infill, spacing: isNum(gs.spacing) ? gs.spacing : 0.13, balW, bars: barStyle, glass: glassStyle };
+    /** the post centre at each end of an upper guard: a free end half a post inward (off the wall / onto the floor), a
+     *  shared one where both (shifted) guard lines meet */
+    const guardEnds = (g) => {
       const [a, b] = g.line;
       const d = unit(sub(b, a));
-      const L = dist(a, b);
-      for (const [p, raw] of [[a, g.raw[0]], [b, g.raw[1]]]) {
+      return [[a, g.raw[0]], [b, g.raw[1]]].map(([p, raw]) => {
         const other = lay.guards.find((o) => o !== g && o.raw.some((q) => dist(q, raw) < 0.02));
-        // a free end goes half a post inward (off the wall / onto the floor), a shared one sits where both (shifted)
-        // guard lines meet
         let pp = add(p, mul(dist(p, a) < 1e-9 ? d : mul(d, -1), postW / 2));
         if (other) {
           const e = unit(sub(other.line[1], other.line[0]));
           const den = cross(d, e);
           pp = Math.abs(den) > 1e-6 ? add(a, mul(d, cross(sub(other.line[0], a), e) / den)) : p;
         }
+        return { pp, raw, wall: other ? pp : p, shared: !!other, first: !other || lay.guards.indexOf(other) > lay.guards.indexOf(g) };
+      });
+    };
+    // the half-turn stair without the new guardStyle fields keeps its guards exactly (the owner's stair); a plan stair
+    // or any of the new fields gets rails and infill between the posts' faces and posts 4 mm above the top rail (the
+    // rail's top would lie in the post's, and two rails cross inside a corner post)
+    const tidy = !!lay.plan || ['infill', 'hang', 'mount', 'posts'].some((k) => gs[k] != null) || gs.topRail === false;
+    const runs = [];
+    for (const g of lay.guards) {
+      const [a, b] = g.line;
+      const d = unit(sub(b, a));
+      const L = dist(a, b);
+      const ends = guardEnds(g);
+      for (const { pp, raw } of ends) {
         if (postsAt.some((q) => dist(q, pp) < 0.03)) continue;
         postsAt.push(pp);
+        if (!showPosts) continue;
         // a hanging post stands 3 mm proud all round: its hole-side faces would otherwise lie in the plane of the white
-        // edge face of the hole (rooms.js, V16) and flicker (the review of steg 19; integrator, bølge 1 gruppe 2)
-        const pw = hangs(raw) ? postW + 0.006 : postW;
-        black.box(pp[0], pp[1], pw, pw, hangs(raw) ? g.y0 - 0.45 : g.y0, g.y0 + g.height);
+        // edge face of the hole (rooms.js, V16) and flicker (the review of steg 19; integrator, bølge 1 gruppe 2); an
+        // edge-mounted one already stands 3 mm off that face (stairLayout)
+        const hanging = hang > 0 && (edge || hangs(raw));
+        const pw = hanging && !edge ? postW + 0.006 : postW;
+        black.box(pp[0], pp[1], pw, pw, hanging ? g.y0 - hang : g.y0, g.y0 + g.height + (tidy && hasTopRail ? 0.004 : 0));
       }
-      const r0 = add(a, mul(d, postW / 2));
-      const r1 = sub(b, mul(d, postW / 2));
-      black.bar([r0[0], g.y0 + g.height - topRail[1] / 2, r0[1]], [r1[0], g.y0 + g.height - topRail[1] / 2, r1[1]], topRail[0], topRail[1]);
-      black.bar([r0[0], g.y0 + 0.02, r0[1]], [r1[0], g.y0 + 0.02, r1[1]], 0.05, 0.04);
-      const count = Math.max(0, Math.round(L / (isNum(gs.spacing) ? gs.spacing : 0.13)) - 1);
-      for (let i = 1; i <= count; i++) {
-        const p = lerp2(a, b, i / (count + 1));
-        black.box(p[0], p[1], balW, balW, g.y0 + 0.04, g.y0 + g.height - topRail[1]);
+      if (!tidy) {
+        const r0 = add(a, mul(d, postW / 2));
+        const r1 = sub(b, mul(d, postW / 2));
+        black.bar([r0[0], g.y0 + g.height - topRail[1] / 2, r0[1]], [r1[0], g.y0 + g.height - topRail[1] / 2, r1[1]], topRail[0], topRail[1]);
+        black.bar([r0[0], g.y0 + 0.02, r0[1]], [r1[0], g.y0 + 0.02, r1[1]], 0.05, 0.04);
+        const count = Math.max(0, Math.round(L / (isNum(gs.spacing) ? gs.spacing : 0.13)) - 1);
+        for (let i = 1; i <= count; i++) {
+          const p = lerp2(a, b, i / (count + 1));
+          black.box(p[0], p[1], balW, balW, g.y0 + 0.04, g.y0 + g.height - topRail[1]);
+        }
+        continue;
+      }
+      // rails and infill between the posts' faces (2 / 5 mm into them); glass without posts from end to end, its top
+      // rail one run round the corners (runs, below)
+      const r0 = showPosts ? add(ends[0].pp, mul(d, postW / 2 - 0.002)) : ends[0].wall;
+      const r1 = showPosts ? sub(ends[1].pp, mul(d, postW / 2 - 0.002)) : ends[1].wall;
+      // glass without posts: 2 mm short of a free end (the nosing list), half its thickness short of a corner
+      const gIn = (end) => (showPosts ? postW / 2 - 0.005 : end.shared ? glassStyle.thickness / 2 + 0.001 : 0.002);
+      const e0 = add(showPosts ? ends[0].pp : ends[0].wall, mul(d, gIn(ends[0])));
+      const e1 = sub(showPosts ? ends[1].pp : ends[1].wall, mul(d, gIn(ends[1])));
+      const railY = g.y0 + g.height - topRail[1] / 2;
+      if (hasTopRail) {
+        // in a corner post the second rail stops at the first one's side (a rail wider than the post would otherwise
+        // cross the other inside the post's corner)
+        const tIn = (end) => (end.shared && !end.first ? Math.max(postW / 2 - 0.002, topRail[0] / 2 + 0.0005) : postW / 2 - 0.002);
+        const t0 = add(ends[0].pp, mul(d, tIn(ends[0])));
+        const t1 = sub(ends[1].pp, mul(d, tIn(ends[1])));
+        if (showPosts) black.bar([t0[0], railY, t0[1]], [t1[0], railY, t1[1]], topRail[0], topRail[1]);
+        else runs.push({ a: r0, b: r1, y: railY });
+      }
+      const railTop = g.y0 + g.height - (hasTopRail ? topRail[1] : 0);
+      // the floor rail (on the edge: in front of the slab's edge); glass has none
+      let bot = edge ? g.y0 - Math.max(0.06, hang - 0.04) : g.y0 + 0.05;
+      if (infill !== 'glass') {
+        black.bar([r0[0], bot - 0.03, r0[1]], [r1[0], bot - 0.03, r1[1]], 0.05, 0.04);
+        bot += infill === 'balusters' ? -0.01 : 0.03;
+      }
+      if (infill === 'balusters') {
+        const count = Math.max(0, Math.round(L / (isNum(gs.spacing) ? gs.spacing : 0.13)) - 1);
+        for (let i = 1; i <= count; i++) {
+          const p = lerp2(a, b, i / (count + 1));
+          black.box(p[0], p[1], balW, balW, bot, railTop);
+        }
+        continue;
+      }
+      drawInfill(black, glassMesh, fill, [{ p: e0, bot, top: railTop - 0.005 }, { p: e1, bot, top: railTop - 0.005 }]);
+    }
+    // the top rail of glass without posts: the guard lines that meet joined into one mitred sweep
+    while (runs.length) {
+      const run = [runs.shift()];
+      let grew = true;
+      while (grew) {
+        grew = false;
+        for (let i = 0; i < runs.length; i++) {
+          const r = runs[i];
+          const head = run[0];
+          const tail = run[run.length - 1];
+          if (dist(r.a, tail.b) < 1e-4) run.push(r);
+          else if (dist(r.b, head.a) < 1e-4) run.unshift(r);
+          else continue;
+          runs.splice(i, 1);
+          grew = true;
+          break;
+        }
+      }
+      const pts = [run[0].a, ...run.map((r) => r.b)];
+      black.sweep(pts.map((p) => [p[0], run[0].y, p[1]]), topRail[0], topRail[1], mitreSides(pts));
+    }
+    // guards along a flight (a plan stair's sideGuards): the posts (not where an upper guard's post stands), the rail
+    // (0.05 square, as the well guard) on the stringer, the infill between the posts from the stringer's top edge
+    for (const sg of lay.sideGuards || []) {
+      for (const p of sg.posts) {
+        if (postsAt.some((q) => dist(q, p.p) < 0.08)) continue;
+        postsAt.push(p.p);
+        if (showPosts) black.box(p.p[0], p.p[1], postW, postW, p.y0, p.y1);
+      }
+      const railPts = sg.rail.map((q) => [q.p[0], q.y, q.p[1]]);
+      if (hasTopRail && railPts.length >= 2) black.sweep(railPts, 0.05, 0.05, mitreSides(railPts.map((p) => [p[0], p[2]])));
+      const cuts = sg.posts.map((p) => p.s).sort((x, y) => x - y);
+      for (let i = 0; i < cuts.length - 1; i++) {
+        const a = cuts[i] + (showPosts ? postW / 2 - 0.005 : 0);
+        const b = cuts[i + 1] - (showPosts ? postW / 2 - 0.005 : 0);
+        if (b - a < 0.05) continue;
+        const ss = [a, ...sg.rail.map((q) => q.s).filter((s) => s > a + 1e-6 && s < b - 1e-6), b];
+        const lift = infill === 'balusters' ? 0 : 0.04;
+        const drop = infill === 'balusters' ? 0.025 : 0.03;
+        drawInfill(black, glassMesh, fill, ss.map((s) => ({ p: sg.line.at(s), bot: sg.baseAt(s) + lift, top: (hasTopRail ? sg.railAt(s) - drop : sg.railAt(s)) })));
       }
     }
     // the handrail on the shaft walls, its brackets and LED strip
@@ -1511,6 +1886,7 @@ export function buildStairs(ctx, layout) {
       }
     }
     add3(black.geometry(), strColor && strColor !== LOOK.black ? mat('painted', strColor, { roughness: 0.55 }) : blackMat, `stair-steel:${st.id}`);
+    add3(glassMesh.geometry(), mat('glass-clear', glassStyle.color, { opacity: glassStyle.opacity }), `stair-glass:${st.id}`, { shadow: false });
 
     // ---- decor (optional, §1.6): the small plant in a basket on the ledge
     for (const d of lay.decor) {

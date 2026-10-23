@@ -1,0 +1,68 @@
+{
+ "house": "hus2",
+ "file": "1etg.png",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 927,
+  "height": 980,
+  "sha256": "623926463652b38c8492c9f188a5a5cf7013e49f1c42d503a3e25829951bac68"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "1etg.png"
+ },
+ "source": {
+  "file": "1etg.png",
+  "part": null,
+  "width": 927,
+  "height": 980,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.02,
+     0,
+     0.96,
+     0.96
+    ],
+    "title": null,
+    "levelName": "1. etasje",
+    "level": 0,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ett plan på arket uten egen tittel eller målestokk. Plan for hovedetasjen med entré og kjøkken, mål i meter. Nordpil mangler."
+ },
+ "usage": {
+  "input_tokens": 3320,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 516,
+  "output_tokens_details": {
+   "thinking_tokens": 377
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.00059,
+ "ms": 5145,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:14:54.122Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

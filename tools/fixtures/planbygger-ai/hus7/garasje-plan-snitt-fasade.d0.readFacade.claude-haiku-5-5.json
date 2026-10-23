@@ -1,0 +1,62 @@
+{
+ "house": "hus7",
+ "file": "garasje-plan-snitt-fasade.pdf",
+ "part": 0,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 751,
+  "sha256": "8bfc779799cbdd446125af4d6d6c3ca2f4a895312f5f4828e71094043b9ac77b"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "garasje-plan-snitt-fasade.pdf",
+  "note": "VEST"
+ },
+ "source": {
+  "file": "garasje-plan-snitt-fasade.pdf",
+  "part": 0,
+  "width": 4771,
+  "height": 3332,
+  "bbox": [
+   62,
+   47,
+   2493,
+   1188
+  ],
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "flat",
+  "storeys": 1,
+  "windows": [],
+  "notes": "Snittegning mot vest med terreng og kotehøyder; ingen vinduer eller dører er tegnet i denne fasaden. Den nedre delen har vertikal kledning og den øvre delen er en høy boks med horisontal overkant, uten synlig takflate. Takform kan ikke fastslås sikkert av dette bildet alene."
+ },
+ "usage": {
+  "input_tokens": 3415,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 638,
+  "output_tokens_details": {
+   "thinking_tokens": 488
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000661,
+ "ms": 4734,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:23:53.560Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

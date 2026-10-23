@@ -1,0 +1,68 @@
+{
+ "house": "hus3",
+ "file": "1etg.png",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 701,
+  "height": 1001,
+  "sha256": "2428fb584b1b9f5984d38ccaa8c50ebf20ffd68d106bdae2c44dfe5125e8ee62"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "1etg.png"
+ },
+ "source": {
+  "file": "1etg.png",
+  "part": null,
+  "width": 701,
+  "height": 1001,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.121,
+     0.028,
+     0.927,
+     0.954
+    ],
+    "title": "Etasje 1",
+    "levelName": "1. etasje",
+    "level": 0,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": ""
+ },
+ "usage": {
+  "input_tokens": 3067,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 470,
+  "output_tokens_details": {
+   "thinking_tokens": 384
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000542,
+ "ms": 3239,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:16:08.883Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

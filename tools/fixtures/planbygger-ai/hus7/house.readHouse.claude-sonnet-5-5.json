@@ -1,0 +1,248 @@
+{
+ "house": "hus7",
+ "file": "house",
+ "part": null,
+ "task": "readHouse",
+ "promptVersion": "pb-house-2",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "images": [
+  {
+   "kind": "plan",
+   "label": "1. etasje, garasje-plan-snitt-fasade.pdf",
+   "width": 836,
+   "height": 891,
+   "sha256": "061aee2a5ea1643d5d0a10a89b198930e87edec48bde53223a2fc56d53ed2316",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "garasje-plan-snitt-fasade.pdf",
+    "part": 4,
+    "width": 4771,
+    "height": 3332,
+    "bbox": [
+     467,
+     2347,
+     1303,
+     3238
+    ],
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "«VEST», garasje-plan-snitt-fasade.pdf #1",
+   "width": 1200,
+   "height": 563,
+   "sha256": "73d9a74153735a694b77d51a8c77e4b836376a87229a47f7331d36ac81077157",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "garasje-plan-snitt-fasade.pdf",
+    "part": 0,
+    "width": 4771,
+    "height": 3332,
+    "bbox": [
+     62,
+     47,
+     2493,
+     1188
+    ],
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "«SØR», garasje-plan-snitt-fasade.pdf #2",
+   "width": 1200,
+   "height": 650,
+   "sha256": "d0ebdcd977989a0d0d897c2375a9226e5a5227e6cf29158a53f1a78bfbf6c2b5",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "garasje-plan-snitt-fasade.pdf",
+    "part": 1,
+    "width": 4771,
+    "height": 3332,
+    "bbox": [
+     2812,
+     87,
+     4771,
+     1148
+    ],
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "«ØST», garasje-plan-snitt-fasade.pdf #3",
+   "width": 1200,
+   "height": 600,
+   "sha256": "d687cb261d469501dd2785a6a55440a8afe94917d121a7583f29e9ab0fa3a470",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "garasje-plan-snitt-fasade.pdf",
+    "part": 2,
+    "width": 4771,
+    "height": 3332,
+    "bbox": [
+     0,
+     1167,
+     2333,
+     2333
+    ],
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "«NORD», garasje-plan-snitt-fasade.pdf #4",
+   "width": 1200,
+   "height": 521,
+   "sha256": "3f3a3d5b90fd68614289ed49b61cc11145a123ff7abf64e302512312e9d7da96",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "garasje-plan-snitt-fasade.pdf",
+    "part": 3,
+    "width": 4771,
+    "height": 3332,
+    "bbox": [
+     2287,
+     1277,
+     4708,
+     2328
+    ],
+    "photo": null
+   }
+  }
+ ],
+ "marks": [],
+ "hints": {},
+ "response": {
+  "facades": [
+   {
+    "image": 2,
+    "title": "VEST",
+    "facing": "W",
+    "planSide": "left",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "falls-left",
+    "basement": "none"
+   },
+   {
+    "image": 3,
+    "title": "SØR",
+    "facing": "S",
+    "planSide": "bottom",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "falls-left",
+    "basement": "none"
+   },
+   {
+    "image": 4,
+    "title": "ØST",
+    "facing": "E",
+    "planSide": "right",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "falls-right",
+    "basement": "none"
+   },
+   {
+    "image": 5,
+    "title": "NORD",
+    "facing": "N",
+    "planSide": "top",
+    "cladding": [
+     {
+      "part": "gable",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     },
+     {
+      "part": "lower",
+      "type": "unknown",
+      "direction": "none",
+      "color": null
+     }
+    ],
+    "terrain": "falls-right",
+    "basement": "none"
+   }
+  ],
+  "roof": {
+   "covering": "unknown",
+   "color": null,
+   "pitch": null,
+   "wings": [
+    {
+     "image": 1,
+     "rooms": [
+      "1"
+     ],
+     "type": "gable",
+     "ridge": "vertical",
+     "high": "none"
+    }
+   ],
+   "chimney": false
+  },
+  "ceilings": [],
+  "decks": [],
+  "notes": "Frittstående dobbeltgarasje med saltak. Mot nord er det to store leddporter/rulleporter side ved side. Vertikal kledning på sidene. Takutstikk rundt. Hellende terreng, kote 166,7 ved gulv og møne 171,2."
+ },
+ "usage": {
+  "input_tokens": 10413,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 10413,
+    "output_tokens": 530,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 530,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.026126,
+ "ms": 97,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-22T20:23:07.289Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

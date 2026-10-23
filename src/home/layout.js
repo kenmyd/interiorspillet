@@ -1,7 +1,12 @@
-import { Box3, Vector2, Vector3 } from 'three';
+import { Box3, ShapeUtils, Vector2, Vector3 } from 'three';
 import roomSpec from '../data/room-spec.json';
 import paletteData from '../data/palette.json';
 import { HOUSE } from '../config.js';
+import { isPlanType, isQuarterTurn, stairPlan, stairRisers, rampKnots, rampAt } from './stairtypes.js';
+import { resolveRoofs, roofField, ceilingSurface, splitTriangles, liftTriangles, volumeUnder, surfaceProfile } from './roofgeom.js';
+import { resolveCladding, groundLevel } from './claddinggeom.js';
+import { resolveDecks, deckWalkRect } from './deckgeom.js';
+import { resolveChimneys } from './chimneygeom.js';
 
 /**
  * Room layout: reads data/room-spec.json and derives typed, world-space values for every module (shell, lighting,
@@ -59,7 +64,10 @@ import { HOUSE } from '../config.js';
  * @property {Object|null} frame
  * @property {Object|null} reveal
  * @property {Object|null} sillBoard
- * @property {Object[]} sashes
+ * @property {Object[]} sashes   the window's fields [{ from, to, bottom, top, opening, hinge, panes }] (vindusmodeller.md)
+ * @property {Array|null} panes  window: [cols, rows] of every sash without its own
+ * @property {Object|null} bars  window: the glazing bars { width, color }
+ * @property {boolean|null} revealFloor  window: the room's floor out to the frame (null = on the floor without a board)
  * @property {Object|null} door
  * @property {Object|null} handle
  * @property {string|null} outsideView
@@ -112,16 +120,27 @@ import { HOUSE } from '../config.js';
  * @property {(x: number, y: number, z: number, opts?: { physical?: boolean, levelId?: string, previousLevelId?: string }) => Object|null} roomAt
  * @property {WallLayout[]} walls         + wallsById, wall(id), backFacesOf(id)
  * @property {OpeningLayout[]} openings   + openingsById, opening(id), windows, doors (+ openAngleDeg, opensInto, casing), thresholds
- * @property {Object[]} ceilings          + heightAt (above the room floor), topAt (world), holes (stairwell cut-outs)
- * @property {Object[]} lightGroups       the six living-room groups + the data groups { id, label, roomId (null: several rooms or none, e.g. boder, ute), dimmer (start level), dimmable, auto }
+ * @property {Object[]} ceilings          + heightAt (above the room floor), topAt (world), holes (stairwell cut-outs); under a
+ *                                        roof (notes/tak.md) surface ({ planeAt, heightAt (world), lines, steps }) and
+ *                                        maxHeight, else null
+ * @property {Object[]} roofs             the roofs (home/roofgeom.js resolveRoofs; [] without spec.roofs) + roofFieldOf(levelId),
+ *                                          skylights (roof windows: { id, polygon, depth, frame, sashes, panes, bars })
+ * @property {Object|null} cladding       the outer finish (notes/kledning.md, home/claddinggeom.js resolveCladding; null without
+ *                                          spec.cladding): { default, basement, zones, plinth, trim, groundY }
+ * @property {Object[]} decks             terraces, balconies, porches, roof terraces (home/deckgeom.js resolveDecks; [] without
+ *                                          spec.decks): { …data, top, bottom, groundY, edges, railings, stairs, posts, surfaceY(x, z) }
+ * @property {Object[]} chimneys          the chimneys (home/chimneygeom.js resolveChimneys; [] without spec.chimneys): { id,
+ *                                          material, at, size, footprint, bottomY, topY, pieces (inside, per level), roofLevelId }
+ * @property {Object[]} lightGroups      the six living-room groups + the data groups { id, label, roomId (null: several rooms or none, e.g. boder, ute), dimmer (start level), dimmable, auto }
  * @property {Object[]} floorOpenings     { id, levelId, roomId, stairId, polygon, area, contains(x, z) (strict) }
  * @property {Object[]} stairs            { …data, fromLevel, toLevel, risers, rise, riser, topY, bottomY, footprint, wellPolygon, walkLine,
  *                                          walkLength, going, contains(x, z), surfaceY(x, z) }
- * @property {(x: number, z: number, y?: number) => number|null} floorYAt      floor (world y) under a point, stair surfaces included
+ * @property {(x: number, z: number, y?: number) => number|null} floorYAt      floor (world y) under a point, stair and deck surfaces included
  * @property {(x: number, z: number, y?: number, previousLevelId?: string) => boolean} isInside
  * @property {(x: number, z: number, y?: number) => number} ceilingHeightAt    world y; in a hole the ceiling of the level above
  * @property {Object} bounds              { minX, maxX, minZ, maxZ, minY, maxY } of every level; levelBounds(id) per level
- * @property {Object[]} walkRects         one per level, inset 5 cm, { levelId, minX, maxX, minZ, maxZ, minY, maxY } (y = feet band)
+ * @property {Object[]} walkRects         one per level, inset 5 cm, { levelId, minX, maxX, minZ, maxZ, minY, maxY } (y = feet band),
+ *                                          then one per deck with its stairs ({ …, deckId })
  */
 
 const DEG = Math.PI / 180;
@@ -189,6 +208,12 @@ function polygonArea(poly) {
     a += p.x * q.y - q.x * p.y;
   }
   return Math.abs(a) / 2;
+}
+
+/** Triangles ([[x, z] × 3]) of a simple polygon of Vector2. */
+function polygonTriangles(poly) {
+  if (poly.length < 3) return [];
+  return ShapeUtils.triangulateShape(poly, []).map((f) => f.map((i) => [poly[i].x, poly[i].y]));
 }
 
 /** Area centroid of a simple polygon. */
@@ -368,6 +393,15 @@ function stairWalk(st, footprint, well) {
   return { walkLine: [T, F], length, param: (x, z) => clamp(along(new Vector2(x, z), T, d), 0, length) };
 }
 
+/** The walk of a plan stair (stairtypes.js stairPlan) in stairWalk's form. */
+function planWalk(plan) {
+  const L = plan.length;
+  const us = [];
+  for (let u = 0; u < L; u += 0.1) us.push(u);
+  us.push(L);
+  return { walkLine: us.map((u) => v2(plan.at(u).p)), length: L, param: (x, z) => clamp(plan.param([x, z]), 0, L) };
+}
+
 // ---------------------------------------------------------------------------------------------------------------
 
 /**
@@ -507,6 +541,9 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       const uc = (u0 + u1) / 2;
       const sill = o.sill ?? 0;
       const top = sill + o.height;
+      // a sloped top (notes/vindusmodeller.md): topSlope° rising to the right seen from the room (from → to), its high
+      // end at `top`; 'follow-roof' is resolved once the walls under a roof have their tops (below)
+      const slope = typeof o.topSlope === 'number' && Number.isFinite(o.topSlope) && Math.abs(o.topSlope) > 1e-6 && Math.abs(o.topSlope) < 80 ? Math.tan(o.topSlope * DEG) : 0;
       const corners = [pointAt(u0, sill), pointAt(u1, sill), pointAt(u1, top), pointAt(u0, top)];
       const rect = new Box3().setFromPoints(corners);
       const back = normal3.clone().multiplyScalar(-(w.thickness ?? 0.1));
@@ -524,6 +561,11 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
         height: o.height,
         sill,
         top,
+        // the sloped top: rise per metre along u (0: level), the top at u0 and at u1 (the bounding box stays sill … top)
+        topSlope: slope,
+        topSlopeSpec: o.topSlope ?? null,
+        topU0: slope > 0 ? top - o.width * slope : top,
+        topU1: slope < 0 ? top + o.width * slope : top,
         u0,
         u1,
         area: o.width * o.height,
@@ -540,6 +582,11 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
         reveal: deepClone(o.reveal) ?? null,
         sillBoard: deepClone(o.sillBoard) ?? null,
         sashes: deepClone(o.sashes) ?? [],
+        // window models (notes/vindusmodeller.md): panes per sash by default, the glazing bars' look, the floor out to
+        // the frame (null = a window on the floor without a sill board gets it)
+        panes: deepClone(o.panes) ?? null,
+        bars: deepClone(o.bars) ?? null,
+        revealFloor: typeof o.revealFloor === 'boolean' ? o.revealFloor : null,
         door: deepClone(o.door) ?? null,
         handle: deepClone(o.handle) ?? null,
         outsideView: o.outsideView ?? null,
@@ -604,8 +651,22 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
 
   // holes: a wall's own openings, plus (on a backOf face) the openings of its partner slab mapped into the face's u
   const backFacesOf = {}; // owner wall id → ids of the faces that are its back
+  /**
+   * a hole's sloped top on its face (map: its u → the opening's wall's u, dy to its floor): topU0 / topU1, only on a
+   * sloped opening ('follow-roof' sets them again below, once the walls have their tops)
+   */
+  const holeOfOpening = new Map();
+  const setSlopedTop = (h, o, map, dy) => {
+    if (!o.topSlope) return h;
+    const at = (u) => o.topU0 + ((o.topU1 - o.topU0) * (u - o.u0)) / (o.u1 - o.u0) + dy;
+    return Object.assign(h, { topU0: at(map(h.u0)), topU1: at(map(h.u1)) });
+  };
+  const slopedTop = (h, o, map, dy) => {
+    (holeOfOpening.get(o) ?? holeOfOpening.set(o, []).get(o)).push([h, map, dy]);
+    return setSlopedTop(h, o, map, dy);
+  };
   for (const w of allWalls) {
-    w.holes = w.openings.map((o) => ({ openingId: o.id, ownerWallId: w.id, type: o.type, u0: o.u0, u1: o.u1, sill: o.sill, top: o.top, door: !!o.door }));
+    w.holes = w.openings.map((o) => slopedTop({ openingId: o.id, ownerWallId: w.id, type: o.type, u0: o.u0, u1: o.u1, sill: o.sill, top: o.top, door: !!o.door }, o, (u) => u, 0));
   }
   for (const f of allWalls) {
     if (!f.backOf) continue;
@@ -624,7 +685,7 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
         const u1 = Math.min(f.length, Math.max(a, b));
         if (u1 - u0 < 1e-3) continue;
         const dy = p.floorY - f.floorY;
-        f.holes.push({ openingId: o.id, ownerWallId: p.id, type: o.type, u0, u1, sill: o.sill + dy, top: o.top + dy, door: !!o.door });
+        f.holes.push(slopedTop({ openingId: o.id, ownerWallId: p.id, type: o.type, u0, u1, sill: o.sill + dy, top: o.top + dy, door: !!o.door }, o, (fu) => o.u0 + ((fu - a) * (o.u1 - o.u0)) / (b - a), dy));
       }
     }
     f.holes.sort((a, b) => a.u0 - b.u0);
@@ -697,13 +758,39 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
   const zones = allZones.filter(isLiving);
   const zoneAt = (x, z) => zones.find((zn) => zn.contains(x, z)) || null;
 
+  // ---- roofs (notes/tak.md): spec.roofs over a level – its ceilings and the tops of its walls follow them. Without
+  //      spec.roofs nothing here runs (the owner's house).
+  let roofParts = [];
+  const roofFields = {};
+  if (spec.roofs != null) {
+    const roofWalls = (spec.walls || []).map((w) => ({
+      levelId: placeOf(w).levelId, exterior: !!w.exterior, thickness: w.backOf != null ? 0 : w.thickness ?? 0.1, from: w.from, to: w.to,
+      height: Array.isArray(w.topProfile) && w.topProfile.length ? Math.max(...w.topProfile.map((p) => p[1])) : w.height ?? undefined, backOf: w.backOf ?? null,
+    }));
+    const r = resolveRoofs(spec.roofs, { levels, walls: roofWalls });
+    for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
+    roofParts = r.parts;
+    const byLevel = {};
+    for (const p of roofParts) (byLevel[p.levelId] ||= []).push(p);
+    for (const [id, list] of Object.entries(byLevel)) roofFields[id] = roofField(list);
+  }
+
   // ---- ceilings (heightAt = above the room's floor, topAt = world y)
   const allCeilings = (spec.ceilings || []).map((c) => {
     const { roomId, levelId, floorY } = placeOf(c);
     const polygon = toPoly(c.polygon);
     let heightAt;
     let slope = 0;
-    if (c.type === 'slope' && c.highLine && c.lowLine) {
+    // under a roof (notes/tak.md): type 'roof' follows it (flat at `height` above that, if given); a flat ceiling is
+    // cut by it where the roof comes lower. `surface` is the piecewise planar ceiling (wallkit / lighting split it).
+    let surface = null;
+    const field = roofFields[levelId];
+    if (c.type === 'roof' && !field) console.warn(`[layout] ceiling ${c.id}: type 'roof' without a roof over ${levelId} → flat`);
+    if (field && c.type !== 'slope') {
+      const flat = c.type === 'roof' ? c.height ?? Infinity : c.height ?? levelsById[levelId]?.ceilingDefault ?? 2.4;
+      surface = ceilingSurface(field, floorY + flat);
+      heightAt = (x, z) => surface.heightAt(x, z) - floorY;
+    } else if (c.type === 'slope' && c.highLine && c.lowLine) {
       const h0 = v2(c.highLine[0]);
       const h1 = v2(c.highLine[1]);
       const along = h1.clone().sub(h0).normalize();
@@ -724,6 +811,14 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     }
     const area = polygonArea(polygon);
     const centroid = polygonCentroid(polygon);
+    // under a roof: the volume and the highest point from the ceiling cut along its folds
+    let volume = area * heightAt(centroid.x, centroid.y);
+    let maxHeight = null;
+    if (surface) {
+      const tris = splitTriangles(polygonTriangles(polygon), surface.lines);
+      volume = volumeUnder(tris, surface.planeAt, floorY);
+      maxHeight = Math.max(...liftTriangles(tris, surface.planeAt).flat().map((p) => p[1] - floorY));
+    }
     return {
       id: c.id,
       name: c.name,
@@ -731,6 +826,9 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       levelId,
       floorY,
       type: c.type ?? 'flat',
+      /** under a roof: { planeAt, heightAt (world), lines, steps } – notes/tak.md; null for every other ceiling */
+      surface,
+      maxHeight,
       paint: c.paint ?? c.color ?? 'sand',
       paintHex: resolvePaint(c.paint ?? c.color ?? 'sand'),
       trim: c.trim ?? null,
@@ -746,13 +844,87 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       topAt: (x, z) => floorY + heightAt(x, z),
       /** floor openings of the level above that cut this ceiling (Vector2 polygons; filled in below) */
       holes: [],
+      /** roof windows in this ceiling (notes/vindusmodeller.md): the hole (Vector2 polygon) and the window's look */
+      skylights: (c.skylights || []).filter((s) => s?.polygon?.length >= 3).map((s) => ({ ...deepClone(s), polygon: toPoly(s.polygon) })),
       estimated: deepClone(c.estimated) ?? [],
       source: c.source ?? '',
       // A plane ceiling's mean height is its height at the area centroid, so this is exact for flat + sloped.
-      volume: area * heightAt(centroid.x, centroid.y),
+      volume,
     };
   });
   const ceilings = allCeilings.filter(isLiving);
+
+  // ---- the walls under a roof without their own topProfile reach the ceiling (notes/tak.md): the top is the highest
+  //      of the ceilings on its two sides (its room's, 1 cm into the room, and the rooms of its backOf faces) – a knee
+  //      wall where the slope meets it, a gable up to the slope, a step at a dormer's side
+  if (roofParts.length) {
+    const ceilingsOfRoom = {};
+    for (const c of allCeilings) (ceilingsOfRoom[c.roomId] ||= []).push(c);
+    /** a ceiling without a surface (a 'slope' entry): the plane through it near the point */
+    const planeOf = (c) => ({
+      planeAt: (x, z) => {
+        const h0 = c.topAt(x, z);
+        const a = (c.topAt(x + 0.01, z) - h0) / 0.01, b = (c.topAt(x, z + 0.01) - h0) / 0.01;
+        return { a, b, c: h0 - a * x - b * z };
+      },
+      lines: [],
+    });
+    const samplerOf = (roomId) => {
+      const rb = roomBase[roomId];
+      const lv = rb && levelsById[rb.levelId];
+      const field = lv && roofFields[lv.id];
+      const list = (ceilingsOfRoom[roomId] || []).map((c) => c.surface ?? planeOf(c));
+      if (!list.length) return field ? ceilingSurface(field, rb.floorY + lv.ceilingDefault) : null;
+      if (list.length === 1) return list[0];
+      const cs = ceilingsOfRoom[roomId];
+      return {
+        planeAt: (x, z) => {
+          let k = cs.findIndex((c) => pointInPolygon(x, z, c.polygon));
+          if (k < 0) {
+            let best = Infinity;
+            cs.forEach((c, i) => {
+              const d = distToPolygon(x, z, c.polygon);
+              if (d < best) (best = d), (k = i);
+            });
+          }
+          return list[k].planeAt(x, z);
+        },
+        lines: list.flatMap((s) => s.lines),
+      };
+    };
+    for (const w of allWalls) {
+      if (!roofFields[w.levelId] || w.backOf || !(w.thickness > 0)) continue;
+      const raw = (spec.walls || []).find((x) => x.id === w.id);
+      if (Array.isArray(raw?.topProfile) && raw.topProfile.length) continue;
+      const samplers = [];
+      const own = samplerOf(w.roomId);
+      if (own) samplers.push({ ...own, shift: [w.normal.x * 0.01, w.normal.y * 0.01] });
+      for (const fid of backFacesOf[w.id] || []) {
+        const s = samplerOf(houseWallsById[fid].roomId);
+        const k = w.thickness + 0.01;
+        if (s) samplers.push({ ...s, shift: [-w.normal.x * k, -w.normal.y * k] });
+      }
+      if (!samplers.length) continue;
+      const prof = surfaceProfile([w.start.x, w.start.y], [w.end.x, w.end.y], samplers, w.floorY, w.height);
+      w.topProfile = prof;
+      w.height = Math.max(...prof.map((p) => p[1]));
+      w.heightAt = (u) => profileAt(prof, u);
+    }
+  }
+
+  // ---- window tops that follow the wall's top (topSlope 'follow-roof', notes/vindusmodeller.md): parallel to the top
+  //      over the window (the line between its ends), now that the walls under a roof have theirs
+  for (const w of allWalls) {
+    for (const o of w.openings) {
+      if (o.topSlopeSpec !== 'follow-roof') continue;
+      const k = (w.heightAt(o.u1 - 1e-6) - w.heightAt(o.u0 + 1e-6)) / o.width;
+      if (Math.abs(k) < 1e-6 || Math.abs(k) > Math.tan(80 * DEG)) continue;
+      o.topSlope = k;
+      o.topU0 = k > 0 ? o.top - o.width * k : o.top;
+      o.topU1 = k < 0 ? o.top + o.width * k : o.top;
+      for (const [h, map, dy] of holeOfOpening.get(o) || []) setSlopedTop(h, o, map, dy);
+    }
+  }
 
   // ---- bulkheads (vertical drops in the ceiling)
   const allBulkheads = (spec.bulkheads || []).map((b) => {
@@ -1098,16 +1270,28 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     const upper = levelsById[st.toLevel] ?? mainLevel;
     const opening = floorOpeningsById[st.openingId] ?? null;
     if (st.openingId && !opening) console.warn(`[layout] stair ${st.id}: floor opening ${st.openingId} does not exist`);
-    const footprint = st.footprint?.length ? toPoly(st.footprint) : opening ? opening.polygon.map((p) => p.clone()) : [];
+    // the stair types (notes/trapper.md, stairtypes.js): an L without its own footprint gets the L, not the hole (its
+    // lower flight may run on under the floor)
+    let plan = null;
+    if (isPlanType(st.type) && st.top?.edge && st.foot?.edge) {
+      try {
+        plan = stairPlan(st);
+      } catch (err) {
+        console.warn(`[layout] stair ${st.id}: ${err.message}`);
+      }
+    }
+    const footprint = st.footprint?.length ? toPoly(st.footprint) : plan && isQuarterTurn(st.type) ? toPoly(plan.footprint) : opening ? opening.polygon.map((p) => p.clone()) : [];
     const wellPolygon = toPoly(st.well?.polygon);
     const topY = upper.floorY;
     const bottomY = lower.floorY;
     const rise = topY - bottomY;
-    const risers = st.risers ?? Math.max(1, Math.round(rise / 0.18));
-    const walk = st.top?.edge && st.foot?.edge ? stairWalk(st, footprint, wellPolygon) : null;
+    const risers = st.risers ?? (plan ? stairRisers(rise, plan) : Math.max(1, Math.round(rise / 0.18)));
+    const walk = plan ? planWalk(plan) : st.top?.edge && st.foot?.edge && !isPlanType(st.type) ? stairWalk(st, footprint, wellPolygon) : null;
+    const knots = plan ? rampKnots(plan, risers, topY, bottomY, st) : null;
     const contains = (x, z) => footprint.length >= 3 && pointInPolygon(x, z, footprint) && !(wellPolygon.length >= 3 && pointStrictlyInPolygon(x, z, wellPolygon));
     return {
       ...deepClone(st),
+      ...(plan ? { holePolygon: opening ? opening.polygon.map((p) => [p.x, p.y]) : null } : {}),
       fromLevel: lower.id,
       toLevel: upper.id,
       roomIds: [...(st.roomIds || [])],
@@ -1126,6 +1310,7 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       /** World y of the walking surface (ramp along the walk line) at a plan point; null outside the footprint. */
       surfaceY: (x, z) => {
         if (!walk || !contains(x, z)) return null;
+        if (knots) return rampAt(knots, walk.param(x, z));
         return topY - (rise * walk.param(x, z)) / walk.length;
       },
     };
@@ -1162,7 +1347,7 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     const roomCeilings = allCeilings.filter((c) => ceilingIds.includes(c.id));
     const vol = roomCeilings.length ? roomCeilings.reduce((s, c) => s + c.volume, 0) : area * level.ceilingDefault;
     const ceilingTop = roomCeilings.length
-      ? Math.max(...roomCeilings.map((c) => c.floorY + Math.max(c.highHeight ?? 0, c.lowHeight ?? 0, c.height ?? 0, c.heightAt(c.centroid.x, c.centroid.y))))
+      ? Math.max(...roomCeilings.map((c) => c.floorY + Math.max(c.highHeight ?? 0, c.lowHeight ?? 0, c.maxHeight ?? c.height ?? 0, c.heightAt(c.centroid.x, c.centroid.y))))
       : base.floorY + level.ceilingDefault;
     // the clockwise loop, starting at the first wall of the spec
     const list = wallsOfRoom[r.id] || [];
@@ -1218,6 +1403,46 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
   const roomsByLevel = groupByLevel(physicalRooms);
   for (const lv of levels) lv.roomIds = rooms.filter((rm) => rm.levelId === lv.id).map((rm) => rm.id);
 
+  // ---- the cladding and the decks (notes/kledning.md, home/claddinggeom.js, home/deckgeom.js). Without spec.cladding
+  //      and spec.decks nothing here runs (the owner's house).
+  let houseCladding = null;
+  let decks = [];
+  if (spec.cladding != null || spec.decks != null) {
+    const lvList = levels.map((l) => ({ id: l.id, floorY: l.floorY }));
+    if (spec.cladding != null) {
+      const r = resolveCladding(spec.cladding, { levels: lvList, walls: allWalls.map((w) => ({ id: w.id, levelId: w.levelId, exterior: w.exterior })), mainLevelId: MAIN_LEVEL_ID });
+      for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
+      houseCladding = r.cladding;
+    }
+    if (spec.decks != null) {
+      const r = resolveDecks(spec.decks, {
+        levels: lvList,
+        walls: allWalls.filter((w) => w.thickness > 0).map((w) => ({
+          id: w.id, levelId: w.levelId, exterior: w.exterior, start: [w.start.x, w.start.y], end: [w.end.x, w.end.y], normal: [w.normal.x, w.normal.y],
+          thickness: w.thickness, floorY: w.floorY, height: w.height,
+        })),
+        rooms: physicalRooms.map((rm) => ({ id: rm.id, levelId: rm.levelId, floorY: rm.floorY, polygon: rm.polygon.map((p) => [p.x, p.y]) })),
+        groundY: groundLevel(lvList, MAIN_LEVEL_ID),
+      });
+      for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
+      decks = r.decks;
+    }
+  }
+  // ---- the chimneys (notes/tak.md «Piper», home/chimneygeom.js): through the roofs above. Without spec.chimneys
+  //      nothing here runs (the owner's house).
+  let chimneys = [];
+  if (spec.chimneys != null) {
+    const lvList = levels.map((l) => ({ id: l.id, floorY: l.floorY }));
+    const r = resolveChimneys(spec.chimneys, {
+      levels: lvList,
+      rooms: physicalRooms.map((rm) => ({ id: rm.id, levelId: rm.levelId, floorY: rm.floorY, polygon: rm.polygon.map((p) => [p.x, p.y]) })),
+      roofFields,
+      groundY: groundLevel(lvList, MAIN_LEVEL_ID),
+    });
+    for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
+    chimneys = r.chimneys;
+  }
+
   /**
    * Room at a point. physical (default): the room of the level at y whose plan contains (x, z) – lighting and
    * acoustics never see hud rooms. physical:false (the HUD banner): hud rooms (the stair) are tested first, by their
@@ -1256,6 +1481,10 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       if (h !== null) take(h);
     }
     for (const t of thresholds) if (t.contains(x, z)) take(t.floorY);
+    for (const dk of decks) {
+      const h = dk.surfaceY(x, z);
+      if (h !== null) take(h);
+    }
     return best;
   }
 
@@ -1323,6 +1552,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       maxY: i > 0 ? levels[i - 1].bottomY : Infinity,
     };
   });
+  // the decks and their stairs are walkable too (notes/kledning.md)
+  for (const dk of decks) walkRects.push(deckWalkRect(dk));
 
   /**
    * The whole house (§1.8). Lists hold every entry (the living room's included, same objects as the old fields);
@@ -1360,6 +1591,16 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     photoCamera: findCamera(allPhotoCameras),
     floorOpenings,
     stairs,
+    /** the roofs (notes/tak.md, home/roofgeom.js resolveRoofs: parts with planes, faces, dormers); [] without spec.roofs */
+    roofs: roofParts,
+    /** one level's roof as a height field (roofgeom.js roofField: innerAt, planeAt, lines, steps), null without one */
+    roofFieldOf: (levelId) => roofFields[levelId] ?? null,
+    /** the outer finish (notes/kledning.md, home/claddinggeom.js resolveCladding); null without spec.cladding */
+    cladding: houseCladding,
+    /** terraces, balconies, porches, roof terraces (home/deckgeom.js resolveDecks); [] without spec.decks */
+    decks,
+    /** the chimneys (notes/tak.md, home/chimneygeom.js resolveChimneys); [] without spec.chimneys */
+    chimneys,
     outsideHouse: deepClone(spec.outsideHouse) ?? null,
     floorYAt,
     isInside: isInsideHouse,

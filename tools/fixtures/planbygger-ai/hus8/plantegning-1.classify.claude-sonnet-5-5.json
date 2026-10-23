@@ -1,0 +1,122 @@
+{
+ "house": "hus8",
+ "file": "plantegning-1.jpg",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1131,
+  "height": 1600,
+  "sha256": "d094e1cb625e8538d96de14836c1b008f36f79302b3f9e5ad637b0887a0b3c44"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "plantegning-1.jpg"
+ },
+ "source": {
+  "file": "plantegning-1.jpg",
+  "part": null,
+  "width": 1131,
+  "height": 1600,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.378,
+     0.14,
+     0.622,
+     0.469
+    ],
+    "title": null,
+    "levelName": "Kjeller",
+    "level": -1,
+    "detached": false
+   },
+   {
+    "kind": "plan",
+    "bbox": [
+     0.068,
+     0.524,
+     0.505,
+     0.858
+    ],
+    "title": null,
+    "levelName": "1. etasje",
+    "level": 0,
+    "detached": false
+   },
+   {
+    "kind": "plan",
+    "bbox": [
+     0.768,
+     0.635,
+     0.929,
+     0.797
+    ],
+    "title": "GARASJE",
+    "levelName": null,
+    "level": 0,
+    "detached": true
+   },
+   {
+    "kind": "text",
+    "bbox": [
+     0.07,
+     0.94,
+     0.93,
+     0.975
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Plantegningen er ikke målbar, og noe avvik kan forekomme. Nordpil er markert. Øvre plan har kun bod, gang og WC og er tolket som kjeller; nedre plan har entré, kjøkken og stue. Garasjen er egen bygning."
+ },
+ "usage": {
+  "input_tokens": 4514,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 4514,
+    "output_tokens": 342,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 342,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.012448,
+ "ms": 3706,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T18:03:11.395Z",
+ "via": "tools/planbygger-ai-fixtures.mjs",
+ "upgraded": "2026-10-21T22:33:30.785Z"
+}
