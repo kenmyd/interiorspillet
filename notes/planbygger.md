@@ -1218,6 +1218,47 @@ er åpen mot stua og blir slått sammen med den. hus11 har valmtak og hus12 halv
 - Testene lager hus uten KI med vilje (`window.__planbyggerAllowNoAi`).
 - En reserve-KI (DeepSeek eller en annen) kan komme senere.
 
+### Neste: motorfunksjonene inn i «Generer» (overlevering 23.10, kveld)
+
+Ni grener er flettet inn i `claude/planbygger-5d0fe3`, lokalt og uten push:
+- motorgrenen `hungry-mendeleev` med halvvalm, pulttaksark i ytterveggen, piper og vinduer med skrå overkant;
+- belysning, møblering, peis og ovn, vindus- og dørtyper, taktyper, kjøkken og bad, uterom og uteområdet.
+
+Etter flettingen er `test-house` grønn (34/34), og det samme er planbyggerens enhetstester (158/158) og
+genereringstestene (355/355). Ingen av grenene endret `src/planbygger/*`, så planbyggeren sender ingenting nytt ennå.
+Hver økt har skrevet hva planbyggeren skal sende. Rekkefølge:
+
+1. **Uterom** (`notes/uterom.md`, «Til planbyggeren»): `rooms[].outdoor` fra dokumentets `outdoor` (carport eller
+   garasje, `closeAround`), betong `#a7a49e`, `soffit`, og F149 med dør og bodfront i grå platefarge.
+   - `labelRooms` gir `label.outdoor` i `export.js`.
+2. **Møbler** (`notes/moblering-genererte-hus.md`): `furnishing.hints` fra readPlans `furniture` (0–1 i KI-bildet →
+   planmeter → `houseFrame().toGame`), og `rooms[id].use`.
+3. **Lys** (`notes/belysning-genererte-hus.md`): `house.lighting = { level: 'standard', hints }` i stedet for
+   plafond og lysgruppe per rom, og `rooms[].use`. `viewer.js` bytter løkka med `PointLight` mot `LampRig`.
+4. **Ovn og pipe** (`notes/peis-og-ovn.md`):
+   - KI-ens `stove` og `fireplace` (FURNITURE_KINDS) blir `fireplaces`;
+   - `chimneys` fra readHouse `roof.chimney` og fasadene;
+   - F167.
+5. **Kjøkken og bad** (`notes/kjokken-bad-genererte-hus.md`):
+   - `builtIns` per symbol (KI-ens `kitchen`, `toilet`, `shower`, `bathtub`, `washbasin`, `washer`, festet til
+     nærmeste vegg);
+   - flis på våtrom;
+   - `viewer.js` bygger `buildBuiltIns`.
+6. **Tomt** (`notes/uteomradet.md`): `site.terrain.lines` fra fasadenes bakkelinje. `viewer.js` bygger ikke egen
+   bakke, `basementYards` eller `doorRamps` når huset har `site`.
+7. **Tak** (`notes/tak.md`, «Til planbyggeren: de nye taktypene»):
+   - halvvalm fra fasadene (hus1, F157, F158);
+   - arken i veggliv (hus12, hus1);
+   - fløyer som møtes.
+8. **Vindus- og dørtyper** (`notes/dortyper.md`, `notes/vindusmodeller.md` «Fra fasaden til formatet»): sidefelt,
+   overlys, skrå overkant (F164), garasjeport (hus7) og skyvedør utenpå veggen (F138).
+
+Regler som gjelder:
+- Feltene sendes bare når `idsRegistry.schema.topLevel` har dem, slik som `cladding` og `decks`.
+- Hvert punkt får en enhetstest og en sjekk i nettleseren (port 5277).
+- Kjør `test-house` og planbyggersuitene før hver commit.
+- Ingen push før eieren har testet. Eierens server (5270) kjører fra denne worktreen.
+
 ## Rommene og eksporten
 
 **Rom** (`regions.js`). Veggene i editormodellen (senterlinjer med tykkelse) tegnes i et raster på 2 cm. Hver ende
