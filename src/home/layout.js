@@ -6,6 +6,7 @@ import { resolveRoofs, roofField, ceilingSurface, splitTriangles, liftTriangles,
 import { resolveCladding, groundLevel } from './claddinggeom.js';
 import { resolveDecks, deckWalkRect } from './deckgeom.js';
 import { resolveChimneys } from './chimneygeom.js';
+import { planLighting, OUTSIDE_ROOM } from './lightplan.js';
 
 /**
  * Room layout: reads data/room-spec.json and derives typed, world-space values for every module (shell, lighting,
@@ -504,6 +505,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     const roomId = e?.roomId ?? LIVING_ROOM_ID;
     const rb = roomBase[roomId];
     if (rb) return { roomId, levelId: rb.levelId, floorY: rb.floorY };
+    // outdoors (the outdoor lamps of notes/belysning-genererte-hus.md): on its level, no room
+    if (roomId === OUTSIDE_ROOM && levelsById[e?.levelId]) return { roomId, levelId: e.levelId, floorY: levelsById[e.levelId].floorY };
     if (!warnedRooms.has(roomId)) {
       warnedRooms.add(roomId);
       console.warn(`[layout] ${e?.id ?? '?'}: unknown room ${roomId}`);
@@ -1062,10 +1065,12 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
 
   // ---- light groups: the six contract groups of the living room (code) + the house's groups (data, §4.10)
   const dataGroups = [];
-  for (const g of spec.lightGroups || []) {
+  const dataGroupIds = new Set();
+  for (const g of spec.lightGroups || []) addLightGroup(g);
+  function addLightGroup(g) {
     if (LIGHT_GROUP_IDS.has(g.id) || dataGroups.some((d) => d.id === g.id)) {
       console.warn(`[layout] light group ${g.id} is defined twice – the first one is kept`);
-      continue;
+      return;
     }
     // a group with roomId null spans several rooms or none (boder, ute): it keeps null instead of becoming the living
     // room's (placeOf's default), so a lighting step that picks groups by room does not count it as stue-kjokken
@@ -1081,13 +1086,14 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       dimmable: g.dimmer !== false,
       auto: g.auto ?? null,
     });
+    dataGroupIds.add(g.id);
   }
-  const dataGroupIds = new Set(dataGroups.map((g) => g.id));
   /** Light group of a light outside the living room that names none / an unknown one: its room's first group. */
   const roomGroupFallback = (roomId) => dataGroups.find((g) => g.roomId === roomId)?.id ?? roomId;
 
   // ---- built-in lights (stay in the shell; LightManager drives them)
-  const allBuiltInLights = (spec.builtInLights || []).map((l) => {
+  const allBuiltInLights = (spec.builtInLights || []).map(parseLight);
+  function parseLight(l) {
     const { roomId, levelId, floorY } = placeOf(l);
     if (l.lightColorK == null && l.kelvin != null) console.warn(`[layout] light ${l.id}: use lightColorK, not kelvin (ignored)`);
     if (l.dims == null && l.diameter != null) console.warn(`[layout] light ${l.id}: use dims.d, not diameter (ignored)`);
@@ -1127,8 +1133,17 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     if (l.dims?.bottomY != null && l.position) out.bottom = new Vector3(l.position[0], floorY ? l.dims.bottomY + floorY : l.dims.bottomY, l.position[2]);
     if (!out.direction && out.position) out.direction = new Vector3(0, -1, 0);
     if (out.lumens == null) out.lumens = 0;
+    // the fittings of notes/belysning-genererte-hus.md: a wall lamp's facing (out of its wall), the tilt of a ceiling
+    // fitting on a sloping ceiling, how a strip is mounted, the wall it sits on (only set when the data has them)
+    if (Array.isArray(l.normal)) out.normal = new Vector3(l.normal[0], 0, l.normal[1]).normalize();
+    if (Array.isArray(l.ceilingNormal)) out.ceilingNormal = new Vector3(...l.ceilingNormal).normalize();
+    if (l.mount != null) out.mount = l.mount;
+    if (l.style != null) out.style = l.style;
+    if (l.wallId != null) out.wallId = l.wallId;
+    if (l.outdoor) out.outdoor = true;
+    if (typeof l.source === 'string' && l.source.startsWith('lysregler')) out.generated = true; // made by the rules: lampfittings.js
     return out;
-  });
+  }
   const builtInLights = allBuiltInLights.filter(isLiving);
   const lightGroups = LIGHT_GROUPS.filter((g) => builtInLights.some((l) => l.group === g.id));
 
@@ -1554,6 +1569,48 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
   // the decks and their stairs are walkable too (notes/kledning.md)
   for (const dk of decks) walkRects.push(deckWalkRect(dk));
 
+  // ---- the lighting rules (notes/belysning-genererte-hus.md, home/lightplan.js): a house with `lighting` gets the
+  //      lights of a real house in every room without lights of its own, outdoors and in the stairs. Their output is
+  //      plain data like the file's, parsed the same way. Without spec.lighting nothing here runs (the owner's house).
+  let lightPlan = null;
+  if (spec.lighting != null && spec.lighting !== false) {
+    const rawRoomsById = new Map((spec.rooms || []).map((r) => [r.id, r]));
+    const lit = new Set(allBuiltInLights.map((l) => l.roomId));
+    const ceilingsOfRoom = (id) => allCeilings.filter((c) => c.roomId === id);
+    const xz = (p) => [p.x, p.y];
+    lightPlan = planLighting({
+      lighting: spec.lighting,
+      levels: levels.map((l) => ({ id: l.id, floorY: l.floorY })),
+      rooms: otherRooms.map((rm) => ({
+        id: rm.id, name: rm.name, kind: rm.kind, use: rawRoomsById.get(rm.id)?.use, lighting: rawRoomsById.get(rm.id)?.lighting,
+        levelId: rm.levelId, floorY: rm.floorY, polygon: rm.polygon.map(xz), hasLights: lit.has(rm.id),
+      })),
+      walls: allWalls.filter((w) => w.roomId !== LIVING_ROOM_ID).map((w) => ({
+        id: w.id, roomId: w.roomId, levelId: w.levelId, floorY: w.floorY, start: xz(w.start), end: xz(w.end), normal: xz(w.normal),
+        thickness: w.thickness, exterior: w.exterior, heightAt: w.heightAt,
+        openings: w.openings.map((o) => ({ id: o.id, type: o.type, u0: o.u0, u1: o.u1, sill: o.sill, top: o.top, connects: o.connects })),
+      })),
+      ceilingAt: (roomId, x, z) => {
+        const rm = roomsById[roomId];
+        const list = ceilingsOfRoom(roomId);
+        return list.length ? ceilingIn(list, bulkheadsByLevel[rm?.levelId] || NONE, x, z).h : (levelsById[rm?.levelId]?.ceilingDefault ?? 2.4);
+      },
+      ceilingHoles: Object.fromEntries(otherRooms.map((rm) => [rm.id, ceilingsOfRoom(rm.id).flatMap((c) => c.holes.map((h) => h.map(xz)))])),
+      stairs: stairs.map((st) => ({
+        id: st.id, fromLevel: st.fromLevel, toLevel: st.toLevel, roomIds: st.roomIds, bottomY: st.bottomY, topY: st.topY, risers: st.risers,
+        walkLine: (st.walkLine || []).map((p) => (Array.isArray(p) ? p : xz(p))).reverse(), surfaceY: st.surfaceY, // foot → top
+      })),
+      decks: decks.map((dk) => ({ id: dk.id, kind: dk.kind, levelId: dk.levelId, top: dk.top, outline: dk.outline, edges: dk.edges })),
+      // the chimneys run through the rooms (notes/tak.md «Piper»): no ceiling fitting in them
+      obstacles: chimneys.map((c) => ({ polygon: c.footprint, bottomY: c.bottomY, topY: c.topY })),
+      groups: dataGroups.map((g) => ({ id: g.id, roomId: g.roomId })),
+      lightIds: allBuiltInLights.map((l) => l.id),
+    });
+    for (const i of lightPlan.issues) if (devWarnings) console.warn(`[layout] ${i.where}: ${i.msg}`);
+    for (const g of lightPlan.lightGroups) addLightGroup(g);
+    for (const l of lightPlan.builtInLights) allBuiltInLights.push(parseLight(l));
+  }
+
   /**
    * The whole house (§1.8). Lists hold every entry (the living room's included, same objects as the old fields);
    * each entry has roomId, levelId and floorY.
@@ -1583,6 +1640,9 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     bulkheads: allBulkheads,
     builtInLights: allBuiltInLights,
     lightGroups: [...lightGroups.map((g) => ({ ...g, roomId: LIVING_ROOM_ID, levelId: MAIN_LEVEL_ID, dimmable: true, auto: null })), ...dataGroups],
+    /** what the lighting rules made (home/lightplan.js): { builtInLights, lightGroups (as data – a planbygger may write
+     *  them into the file), stats, issues }; null without spec.lighting */
+    lightPlan,
     fixtures: allFixtures,
     furniture: allFurniture,
     builtIns: allBuiltIns,

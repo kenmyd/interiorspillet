@@ -191,7 +191,7 @@ const STRIP_SIGNATURE = 8;
  */
 const HOUSE = {
   stripSignature: 1, maxDownlightSpots: 2, reachLkeyCap: 2, roomEase: 1.5, portalOpen: 0.5, frostedT: 0.5,
-  downlight: { angle: 50 * DEG, penumbra: 0.7 }, plafond: { angle: 82 * DEG },
+  downlight: { angle: 50 * DEG, penumbra: 0.7 }, plafond: { angle: 82 * DEG }, pendant: { angle: 55 * DEG }, step: { angle: 60 * DEG },
   wbLocal: 0.9, wbRelMax: 4, hop: { door: 0.45, opening: 0.6, hole: 0.35 }, slotDepth: 1, portalStep: 0.2,
 };
 /** LAMP_BOUNCE of a house room: ≈ 1 for a small closed room (its lamps light all of it), less for a big one. */
@@ -2003,7 +2003,9 @@ export class LightManager {
    * (home.house.builtInLights after the living room's); builder lights without data (the mirror ring, the handrail
    * LED …) as they come. plafond → Lambertian disc downward; downlights → at most two spots per room and group (the
    * nearest along the room's long axis, their flux summed, the cone widened over the group); led-strip → a thin rect
-   * (signature 1); anything else a point. Their bounce goes into their room's model.
+   * (signature 1); the lighting rules' fittings (notes/belysning-genererte-hus.md): pendant → a soft cone down from the
+   * shade, step → a spot down and out of the wall, wall → a point in front of the wall (their outdoor lamps: roomId
+   * 'ute'); anything else a point. Their bounce goes into their room's model.
    */
   _buildHouseLamps() {
     this._houseLamps = [];
@@ -2025,7 +2027,8 @@ export class LightManager {
       return list.flatMap((b) => b.emissiveMeshes || []);
     };
     for (const l of h.builtInLights || []) {
-      if (l.roomId === LIVING_ID || l.emits === false || !this._worlds.has(l.roomId)) continue;
+      // (outdoor lamps of the lighting rules come as roomId 'ute' – notes/belysning-genererte-hus.md)
+      if (l.roomId === LIVING_ID || l.emits === false || (!this._worlds.has(l.roomId) && l.roomId !== OUTSIDE_ID)) continue;
       entries.push({ ...l, emissiveMeshes: take(l.id) });
     }
     for (const l of h.outsideHouse?.lights || []) {
@@ -2082,6 +2085,17 @@ export class LightManager {
           const drop = (dims.h ?? 0.07) + 0.01;
           push({ ...base, id: `builtin:${l.id}`, kind: 'spot', position: l.position.clone().setY(l.position.y - drop), direction: new THREE.Vector3(0, -1, 0),
             angle: HOUSE.plafond.angle, penumbra: 1, lambert: true, noShadow: true });
+        } else if (l.type === 'pendant') {
+          // the lighting rules' pendants (home/lampfittings.js): a soft downward cone from the opal bottom of the shade
+          push({ ...base, id: `builtin:${l.id}`, kind: 'spot', position: l.position.clone().setY(l.position.y - (dims.drop ?? 0.7) + 0.02), direction: new THREE.Vector3(0, -1, 0),
+            angle: HOUSE.pendant.angle, penumbra: 0.8, noShadow: true });
+        } else if (l.type === 'step' && l.normal) {
+          // step lights: low in the wall, aimed down and out over the treads
+          push({ ...base, id: `builtin:${l.id}`, kind: 'spot', position: l.position.clone().addScaledVector(l.normal, 0.03), direction: l.normal.clone().multiplyScalar(0.6).add(new THREE.Vector3(0, -1, 0)).normalize(),
+            angle: HOUSE.step.angle, penumbra: 0.9, noShadow: true });
+        } else if (l.type === 'wall' && l.normal) {
+          // wall lamps (inside and out): a point a little in front of the wall
+          push({ ...base, id: `builtin:${l.id}`, kind: 'point', position: l.position.clone().addScaledVector(l.normal, (dims.depth ?? 0.1) / 2 + 0.06), noShadow: true });
         } else {
           push({ ...base, id: `builtin:${l.id}`, kind: 'point', position: l.position.clone(), noShadow: true });
         }

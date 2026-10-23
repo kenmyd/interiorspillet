@@ -61,7 +61,7 @@
     "idSyntax": "^[a-z0-9][a-z0-9_æøå-]*$",
     "topLevel": [
       "meta", "zones", "floor", "baseboard", "walls", "ceilings", "bulkheads", "builtInLights", "kitchen", "furniture", "fixtures", "highWall", "outside", "photoCameras",
-      "levels", "rooms", "floorOpenings", "stairs", "builtIns", "lightGroups", "facadeSegments", "outsideHouse", "roofs", "cladding", "decks", "chimneys"
+      "levels", "rooms", "floorOpenings", "stairs", "builtIns", "lightGroups", "facadeSegments", "outsideHouse", "roofs", "cladding", "decks", "chimneys", "lighting"
     ],
     "protected": ["meta", "floor", "baseboard", "highWall"],
     "collections": {
@@ -94,7 +94,7 @@
       "bulkheads": { "required": ["id", "from", "to"], "idPattern": "^b-" },
       "builtInLights": {
         "required": ["id", "group", "type"],
-        "enums": { "type": ["led-strip", "spot", "ceiling-ring", "track", "pendant-cylinder", "plafond", "downlight"] },
+        "enums": { "type": ["led-strip", "spot", "ceiling-ring", "track", "pendant-cylinder", "plafond", "downlight", "pendant", "wall", "step"] },
         "numbers": ["lumens", "lumensPerM", "lightColorK"],
         "forbidden": ["kelvin", "diameter", "colorK"],
         "idPattern": "^l-"
