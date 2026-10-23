@@ -609,6 +609,26 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     const n = Gm.dropStubs(l6);
     check('korte, tynne veggbiter med en løs ende i et rom forsvinner; innerveggen og en tykk stubb blir', n === 2 && !l6.walls.some((w) => w.id === 'tick' || w.id === 'ext') && l6.walls.some((w) => w.id === 'i') && l6.walls.some((w) => w.id === 'thick'), l6.walls.map((w) => w.id).join(','));
   }
+  // a beam drawn as a double dash-dot line across a room, read as a wall (K14): it goes; a grey filled wall stays
+  {
+    const Gm = await imp('src/planbygger/generate.js');
+    const { lv: l7 } = make();
+    const ppm = 50;
+    const W = 9 * ppm;
+    const H = 7 * ppm;
+    const img = { width: W, height: H, data: new Uint8ClampedArray(W * H * 4).fill(255) };
+    const ink = (x, y, v) => {
+      const i = (y * W + x) * 4;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+    };
+    // the beam at y 3,0 (0,17 m): two dash-dot edges, paper between
+    for (const y of [Math.round(2.915 * ppm), Math.round(3.085 * ppm)]) for (let x = Math.round(5.1 * ppm); x < 7.9 * ppm; x++) if (x % 12 < 7 || x % 12 === 9) ink(x, y, 60);
+    // a grey wall at x 5 (the inner wall of make(), 0,1 m)
+    for (let y = Math.round(0.15 * ppm); y < 5.85 * ppm; y++) for (let x = Math.round(4.95 * ppm); x <= 5.05 * ppm; x++) ink(x, y, 150);
+    l7.walls.push({ id: 'beam', a: [5.05, 3], b: [7.85, 3], t: 0.17 });
+    const n = Gm.dropBeams(l7, img, ppm);
+    check('en drager tegnet med stiplede kanter og uten fyll tas bort, den grå innerveggen blir', n === 1 && !l7.walls.some((w) => w.id === 'beam') && l7.walls.some((w) => w.id === 'i'), l7.walls.map((w) => w.id).join(','));
+  }
   // a terrace drawn with boards outside the east wall: its outline from around the AI's point, on the wall's outer face
   {
     const DF = await imp('src/planbygger/deckfind.js');

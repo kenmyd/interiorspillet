@@ -1083,6 +1083,10 @@ En skrå himling blir `type: 'roof'` uten høyde, altså helt opp til mønet.
   under 1 m, høyst 0,10 m tykke, ingen åpning og ikke yttervegg.
   - hus7 (F96, F97): hjelpelinja og skråstreken fra målsettingen i garasjen.
   - hus9: trinnstrekene i trappa og en strek ved badet.
+- **Dragere (K14):** en innervegg på minst 1,5 m med lys midte (median grå ≥ 235) og en stiplet kant (under 85 % strek,
+  minst 2 brudd per meter) er en drager tegnet som en dobbel strek-prikk-linje. Den fjernes (`dropBeams`).
+  - hus4 2. etasje: stua er ett rom igjen, med trappa og kjøkkenbenken. Det gir 3 rom med navn og ingen romspørsmål.
+  - Ingen andre testhus endres.
 
 ### Åpent etter natta
 

@@ -873,6 +873,9 @@ export async function generate(inputs, opts = {}) {
     // the ticks and extension lines of a dimension inside a room, read as short walls (K15)
     const stubs = dropStubs(L);
     if (stubs) step({ step: 'walls', file: d.file, method: 'stubs', confidence: 'medium', detail: `${stubs} korte, tynne veggbiter med en løs ende og samme rom på begge sider tatt bort (merkestreker fra målsettingen)` });
+    // a beam in the ceiling drawn as a double dash-dot line, read as a wall (K14)
+    const beams = dropBeams(L, d.img, d.ppm);
+    if (beams) step({ step: 'walls', file: d.file, method: 'beams', confidence: 'medium', detail: `${beams} «vegg${beams === 1 ? '' : 'er'}» tegnet med stiplede kanter og uten fyll tatt bort (en drager i taket, ikke en vegg)` });
     const ai = d.aiPlan;
     const W = d.img.width;
     const H = d.img.height;
@@ -2034,6 +2037,55 @@ export function dropStubs(L) {
     if (s1 >= 0 && s1 === s2) gone.add(w.id);
   }
   if (gone.size) L.walls = L.walls.filter((w) => !gone.has(w.id));
+  return gone.size;
+}
+
+/**
+ * Interior «walls» that are a beam in the ceiling (K14, F56, F57: hus4's upper floor, the double dash-dot line across
+ * the living room read as a wall of 0,17 m, cutting off the stair and the kitchen counter as rooms of their own): a wall
+ * at least 1,5 m long whose middle is paper (median grey ≥ 235: no fill) and with a dashed edge (under 85 % ink with at
+ * least 2 breaks per metre) goes, with its openings. A wall drawn as two solid thin lines (hus7) keeps its edges solid
+ * and stays. img: the plan image, ppm its px per metre. → how many went
+ */
+export function dropBeams(L, img, ppm) {
+  if (!img?.data || !(ppm > 0)) return 0;
+  const lum = (x, y) => {
+    const xi = Math.round(x);
+    const yi = Math.round(y);
+    if (xi < 0 || yi < 0 || xi >= img.width || yi >= img.height) return 255;
+    const k = (yi * img.width + xi) * 4;
+    return 0.299 * img.data[k] + 0.587 * img.data[k + 1] + 0.114 * img.data[k + 2];
+  };
+  const gone = new Set();
+  for (const w of L.walls) {
+    const len = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]);
+    if (w.exterior || len < 1.5) continue;
+    const u = [(w.b[0] - w.a[0]) / len, (w.b[1] - w.a[1]) / len];
+    const n = [-u[1], u[0]];
+    // the darkest of three pixels across, every pixel along, 0,1 m in from the ends
+    const line = (off) => {
+      const out = [];
+      for (let s = 0.1; s <= len - 0.1; s += 1 / ppm) {
+        const x = (w.a[0] + u[0] * s + n[0] * off) * ppm;
+        const y = (w.a[1] + u[1] * s + n[1] * off) * ppm;
+        out.push(Math.min(lum(x, y), lum(x + n[0], y + n[1]), lum(x - n[0], y - n[1])));
+      }
+      return out;
+    };
+    const mid = line(0).sort((a, b) => a - b);
+    if (!mid.length || mid[mid.length >> 1] < 235) continue;
+    const dashed = [w.t / 2, -w.t / 2].some((off) => {
+      const dark = line(off).map((v) => v < 200);
+      let breaks = 0;
+      for (let i = 1; i < dark.length; i++) if (dark[i - 1] && !dark[i]) breaks++;
+      return dark.filter(Boolean).length / dark.length < 0.85 && breaks / len >= 2;
+    });
+    if (dashed) gone.add(w.id);
+  }
+  if (gone.size) {
+    L.walls = L.walls.filter((w) => !gone.has(w.id));
+    L.openings = (L.openings || []).filter((o) => !gone.has(o.wall));
+  }
   return gone.size;
 }
 
