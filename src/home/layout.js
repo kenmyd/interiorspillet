@@ -116,10 +116,12 @@ import { resolveChimneys } from './chimneygeom.js';
  * @property {(y: number, previousId?: string) => Object} levelAt   level at a world y (pass the body centre); hysteresis with previousId
  * @property {Object[]} rooms             { id, name, levelId, levelName, kind, hud, floorY, floorOffset, polygon, area, netArea, centroid, bounds,
  *                                          floor, holeIds, ceilingIds, wallIds (loop order), volume, ceilingTop, yRange (hud), acoustic,
+ *                                          outdoor ('carport' | 'garage' | 'porch' | null, notes/uterom.md), soffit,
  *                                          contains(x, z), containsPoint(x, y, z) }
  * @property {(x: number, y: number, z: number, opts?: { physical?: boolean, levelId?: string, previousLevelId?: string }) => Object|null} roomAt
  * @property {WallLayout[]} walls         + wallsById, wall(id), backFacesOf(id)
- * @property {OpeningLayout[]} openings   + openingsById, opening(id), windows, doors (+ openAngleDeg, opensInto, casing), thresholds
+ * @property {OpeningLayout[]} openings   + openingsById, opening(id), windows, doors (+ openAngleDeg, opensInto, casing, outer and
+ *                                        outsideFront: a door between an outdoor and an indoor room), thresholds
  * @property {Object[]} ceilings          + heightAt (above the room floor), topAt (world), holes (stairwell cut-outs); under a
  *                                        roof (notes/tak.md) surface ({ planeAt, heightAt (world), lines, steps }) and
  *                                        maxHeight, else null
@@ -161,6 +163,11 @@ const STEP_UP = 0.35;
 const THRESHOLD_SILL = 0.05;
 /** The hud room of a stair reaches this far above the upper floor (§1.4: «1. etasjes gulv + 1 m»). */
 const STAIR_HUD_TOP = 1.0;
+/** A room that is outside (rooms[].outdoor, notes/uterom.md): a carport, an open garage, a covered entrance / porch. */
+export const OUTDOOR_KINDS = Object.freeze(['carport', 'garage', 'porch']);
+/** A ceiling lamp (plafond) in an outdoor room becomes a downlight in its soffit with this much light (the owner's
+ *  niche downlights give 350 lm). */
+const OUTDOOR_LUMENS = [350, 800];
 
 const DEV = !!import.meta.env?.DEV;
 
@@ -499,6 +506,9 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     const floorOffset = r.floorOffset ?? 0;
     roomBase[r.id] = { levelId: lv.id, floorOffset, floorY: lv.floorY + floorOffset };
   }
+  /** The outdoor rooms (notes/uterom.md): their faces are facade, their doors to an indoor room outer doors. */
+  const outdoorIds = new Set(roomsRaw.filter((r) => OUTDOOR_KINDS.includes(r.outdoor)).map((r) => r.id));
+  const isOut = (id) => id === 'ute' || outdoorIds.has(id);
   const warnedRooms = new Set();
   /** Room, level and floor height (world y) of a spec entry: its room's; without a room the living room's. */
   function placeOf(e) {
@@ -706,8 +716,13 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     .map((o) => {
       const swing = o.door.swing ?? 'in';
       const other = o.connects.find((id) => id !== o.roomId) ?? null;
+      // a door between an outdoor room and an indoor room is an outer door (notes/uterom.md), whatever its wall;
+      // outsideFront: the outdoor room is the owner's side (+z), so its outer face is the front
+      const outdoor = o.connects.length === 2 && o.connects.some((id) => outdoorIds.has(id)) && isOut(o.connects[0]) !== isOut(o.connects[1]);
       return {
         ...o,
+        outer: outdoor ? true : null,
+        outsideFront: outdoor && isOut(o.roomId),
         hinge: o.door.hinge ?? 'from',
         swing,
         leaf: o.door.leaf ?? { w: o.width - 2 * (o.frame?.width ?? 0.05), h: o.height - (o.frame?.width ?? 0.05) },
@@ -1080,7 +1095,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       // data: dimmer = dimmable (bool), defaultDimmer = the level it starts at; layout: dimmer = the start level
       dimmer: typeof g.defaultDimmer === 'number' ? g.defaultDimmer : typeof g.dimmer === 'number' ? g.dimmer : 1,
       dimmable: g.dimmer !== false,
-      auto: g.auto ?? null,
+      // an outdoor room's lamps are outdoor lights: on when the sun is down (as the owner's «ute»)
+      auto: g.auto ?? (outdoorIds.has(roomId) ? 'evening' : null),
     });
   }
   const dataGroupIds = new Set(dataGroups.map((g) => g.id));
@@ -1088,8 +1104,12 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
   const roomGroupFallback = (roomId) => dataGroups.find((g) => g.roomId === roomId)?.id ?? roomId;
 
   // ---- built-in lights (stay in the shell; LightManager drives them)
-  const allBuiltInLights = (spec.builtInLights || []).map((l) => {
-    const { roomId, levelId, floorY } = placeOf(l);
+  const allBuiltInLights = (spec.builtInLights || []).map((raw) => {
+    const { roomId, levelId, floorY } = placeOf(raw);
+    // no ceiling lamp in an outdoor room: a plafond there is a downlight in its soffit (notes/uterom.md)
+    const l = outdoorIds.has(roomId) && raw.type === 'plafond' && raw.position
+      ? { ...raw, type: 'downlight', dims: { d: 0.09 }, color: '#d9d9d6', lumens: Math.min(OUTDOOR_LUMENS[1], Math.max(OUTDOOR_LUMENS[0], raw.lumens ?? 0)), lightColorK: raw.lightColorK ?? 2800 }
+      : raw;
     if (l.lightColorK == null && l.kelvin != null) console.warn(`[layout] light ${l.id}: use lightColorK, not kelvin (ignored)`);
     if (l.dims == null && l.diameter != null) console.warn(`[layout] light ${l.id}: use dims.d, not diameter (ignored)`);
     const group = lightGroupOf(l, { groups: dataGroupIds, fallback: roomId === LIVING_ROOM_ID ? 'kjokken' : roomGroupFallback(roomId) });
@@ -1386,6 +1406,9 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       yRange,
       acoustic: deepClone(r.acoustic) ?? { mode: living ? 'calibrated' : 'estimate' },
       autoLight: r.autoLight ?? null,
+      /** 'carport' | 'garage' | 'porch' (notes/uterom.md) or null: a room that is outside – facade on its faces, outer doors, a soffit */
+      outdoor: outdoorIds.has(r.id) ? r.outdoor : null,
+      soffit: outdoorIds.has(r.id) ? deepClone(r.soffit) ?? null : null,
       closed: !!r.closed,
       estimated: deepClone(r.estimated) ?? [],
       source: r.source ?? '',
@@ -1410,7 +1433,7 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
   if (spec.cladding != null || spec.decks != null) {
     const lvList = levels.map((l) => ({ id: l.id, floorY: l.floorY }));
     if (spec.cladding != null) {
-      const r = resolveCladding(spec.cladding, { levels: lvList, walls: allWalls.map((w) => ({ id: w.id, levelId: w.levelId, exterior: w.exterior })), mainLevelId: MAIN_LEVEL_ID });
+      const r = resolveCladding(spec.cladding, { levels: lvList, walls: allWalls.map((w) => ({ id: w.id, levelId: w.levelId, exterior: w.exterior || outdoorIds.has(w.roomId) })), mainLevelId: MAIN_LEVEL_ID });
       for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
       houseCladding = r.cladding;
     }

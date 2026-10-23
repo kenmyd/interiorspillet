@@ -1178,6 +1178,37 @@ export function validateHouse(spec, opts = {}) {
     }
   }
 
+  // ---- outdoor rooms (rooms[].outdoor, notes/uterom.md): a carport, an open garage, a porch – the schema's enum checks
+  //      the kind; here the floor, the soffit, the way out and the lamps
+  const outdoorRooms = new Set(rooms.filter((r) => r.outdoor != null).map((r) => r.id));
+  const SOFFIT_TYPES = ['boards', 'panels', 'concrete', 'paint'];
+  const allOpenings = [...walls.flatMap((w) => arr(w.openings)), ...objs(spec.wallOpenings).flatMap((p) => arr(p.openings))].filter(isObj);
+  for (const r of rooms) {
+    const where = `rooms/${r.id}`;
+    if (r.soffit !== undefined && r.outdoor == null) warn(`${where}: soffit gjelder bare uterom (outdoor) – den brukes ikke`);
+    if (r.outdoor == null) continue;
+    const fm = r.floor?.material;
+    if (fm != null && fm !== 'concrete' && fm !== 'paving') warn(`${where}: uterommet har gulvet «${fm}» – bruk «concrete» (betong) eller «paving» (belegning)`);
+    const s = r.soffit;
+    if (s !== undefined) {
+      if (!isObj(s)) error(`${where}: soffit må være { type, color }`);
+      else {
+        if (s.type != null && !SOFFIT_TYPES.includes(s.type)) error(`${where}: soffit.type «${s.type}» er ikke en av ${SOFFIT_TYPES.join(', ')}`);
+        if (s.color != null && !/^#[0-9a-f]{6}$/i.test(s.color)) error(`${where}: soffit.color må være #rrggbb`);
+        if (s.module != null && !(Array.isArray(s.module) && s.module.length === 2 && s.module.every((v) => num(v) && v > 0))) error(`${where}: soffit.module må være [bredde, lengde] i meter`);
+        const unknown = Object.keys(s).filter((k) => !['type', 'color', 'module'].includes(k));
+        if (unknown.length) warn(`${where}: soffit har ukjente felt ${unknown.join(', ')}`);
+      }
+    }
+    // a way out: a door or an opening to «ute» (a carport's open side is a wall that is one opening)
+    if (!allOpenings.some((o) => Array.isArray(o.connects) && o.connects.includes(r.id) && o.connects.includes('ute'))) {
+      warn(`${where}: uterommet har ingen åpning eller dør ut (connects [«${r.id}», «ute»])`);
+    }
+  }
+  for (const l of objs(spec.builtInLights)) {
+    if (outdoorRooms.has(l.roomId) && l.type === 'plafond') warn(`builtInLights/${l.id}: en taklampe i uterommet «${l.roomId}» blir en downlight i himlingen (utelys) – send type «downlight»`);
+  }
+
   // ---- references to rooms and levels
   const roomExists = (id) => roomsById.has(id) || pseudoRooms.has(id);
   // a room or light group that is registered in 00-ids.json but not modelled yet comes from another house file (the
@@ -1501,7 +1532,7 @@ export function validateHouse(spec, opts = {}) {
   if (spec.cladding != null || spec.decks != null) {
     const lvList = levels.filter((l) => typeof l.id === 'string' && num(l.floorY)).map((l) => ({ id: l.id, floorY: l.floorY }));
     if (spec.cladding != null) {
-      const cl = resolveCladding(spec.cladding, { levels: lvList, walls: walls.map((w) => ({ id: w.id, levelId: levelOf(roomOf(w)), exterior: !!w.exterior })), mainLevelId: 'hoved' });
+      const cl = resolveCladding(spec.cladding, { levels: lvList, walls: walls.map((w) => ({ id: w.id, levelId: levelOf(roomOf(w)), exterior: !!w.exterior || outdoorRooms.has(roomOf(w)) })), mainLevelId: 'hoved' });
       for (const i of cl.issues) (i.level === 'error' ? error : warn)(`${i.where}: ${i.msg}`);
       if (arr(spec.facadeSegments).length) warn('cladding: huset har også facadeSegments – materialet og fargen der brukes ikke (cladding gjelder for alle yttervegger)');
       // a gable zone needs a roof with gables (saltak or pulttak) over its level

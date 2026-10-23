@@ -187,13 +187,16 @@ export function gableLine(roofTop, u0 = null, u1 = null) {
  * @param {object} o.CL        layout.house.cladding
  * @param {object} o.w         the layout wall
  * @param {object} o.lv        its level (layout.house.levelsById)
- * @param {THREE.BufferGeometry} o.gOut  wallLayer of the piece, piece-local (disposed here)
+ * @param {THREE.BufferGeometry} [o.gOut]  wallLayer of the piece, piece-local (disposed here)
+ * @param {THREE.BufferGeometry|null} [o.clad]  instead of gOut: the clad face alone, piece-local, in the outer plane
+ *                            (z = −thickness, facing −z; disposed here) – a face toward an outdoor room (rooms.js)
  * @param {THREE.Matrix4} o.T  piece-local → world
  * @param {number} o.a         the piece's start along the wall
  * @param {number} o.b         its end
  * @param {Array<[number, number]>} o.oTop  the layer's top, piece-local
  * @param {number} o.oBottom
- * @param {Array<{x0,x1,y0,y1,door,frameColor}>} o.openings  the openings of the piece, piece-local
+ * @param {Array<{x0,x1,y0,y1,door,passage,frameColor}>} o.openings  the openings of the piece, piece-local (a passage
+ *                            – an opening without door or window – has no frame: no surround, the trim in its reveal)
  * @param {number} o.kS @param {number} o.kE  the piece's mitre factors
  * @param {number|null} o.gableY   gableLine of the wall (wall-local y) or null
  * @param {{ prev?: object, next?: object, startConvex?: boolean, endConvex?: boolean, startConcave?: boolean, endConcave?: boolean }} o.corner
@@ -201,9 +204,13 @@ export function gableLine(roofTop, u0 = null, u1 = null) {
  * @param {(f: object) => THREE.Material} o.finishMat
  * @param {(hex: string) => THREE.Material} o.trimMat
  * @param {THREE.Material} o.sideMat  the layer's other sides (top, bottom, ends)
+ * @param {boolean} [o.flashInset]  the flashings stop their depth short of the piece's ends (a face in an outdoor room)
  */
 export function claddingPiece(o) {
   const { CL, w, lv, T, a, b, oTop, oBottom, openings, kS, kE, gableY, corner = {}, batch, finishMat, trimMat, sideMat } = o;
+  // a face toward an outdoor room meets the next one in a concave corner: its flashings stop short by their depth, so
+  // the two never end in each other's plane
+  const inset = o.flashInset ? FLASH.proud : 0;
   const Lp = b - a;
   const t = w.thickness;
   const toLocal = (lv?.floorY ?? w.floorY) - w.floorY;
@@ -211,14 +218,17 @@ export function claddingPiece(o) {
   const surrounds = !!trim?.surrounds;
 
   // ---- the sides: the reveals in the opening's frame colour (surrounds), the rest as before
-  const clad = groupGeometry(o.gOut, 0);
-  const sides = groupGeometry(o.gOut, 2);
-  o.gOut.dispose();
+  const clad = o.gOut ? groupGeometry(o.gOut, 0) : o.clad ?? null;
+  const sides = o.gOut ? groupGeometry(o.gOut, 2) : null;
+  o.gOut?.dispose();
+  const framed = openings.filter((q) => !q.passage);
+  // a reveal in its opening's frame colour (surrounds); a passage's in the trim colour (it has no frame)
+  const sideKey = (q) => (q.passage ? trim?.color ?? '' : surrounds ? q.frameColor : '');
   if (sides) {
-    if (surrounds && openings.length) {
+    if (openings.some(sideKey)) {
       const groups = partition(sides, (x, y) => {
         const op = openings.find((q) => x > q.x0 - 1e-4 && x < q.x1 + 1e-4 && y > q.y0 - 1e-4 && y < q.y1 + 1e-4);
-        return op ? op.frameColor : '';
+        return op ? sideKey(op) : '';
       });
       for (const [k, g] of groups) {
         g.applyMatrix4(T);
@@ -302,7 +312,7 @@ export function claddingPiece(o) {
     }
   }
   if (surrounds) {
-    for (const op of openings) {
+    for (const op of framed) {
       const x0 = Math.max(startClear, op.x0 - cw), x1 = Math.min(endClear, op.x1 + cw);
       const k = `s|${op.frameColor}`;
       if (op.ta != null) {
@@ -344,7 +354,7 @@ export function claddingPiece(o) {
     const y = bands[k].lo;
     const y0 = y - FLASH.below, y1 = y + FLASH.above;
     if (y0 < oBottom - EPS || y + w.floorY < CL.groundY) continue; // (none under the ground)
-    let free = [[Math.max(0, startClear), Math.min(Lp, endClear)]];
+    let free = [[Math.max(0, startClear) + inset, Math.min(Lp, endClear) - inset]];
     for (const op of openings) {
       if (op.y1 + (surrounds ? cw : 0) <= y0 || op.y0 - (surrounds ? 0.06 : 0) >= y1) continue;
       const c0 = op.x0 - (surrounds ? cw : 0), c1 = op.x1 + (surrounds ? cw : 0);

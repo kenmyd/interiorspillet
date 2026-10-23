@@ -181,6 +181,7 @@ trapper (`deckId`).
 - **Ingen flater i samme plan:** Båndene møtes uten overlapp (kuttene regnes likt fra begge sider). Hjørnekasser og
   omramming i ett veggstykke er én union av rektangler. Beslagene står 2,5 cm ut, gjæres i hjørner mellom yttervegger og
   ender rett ved en T-skjøt mot en skillevegg. Rekkverk slutter 1,2 cm fra husveggen, dekkets kant og trappas vanger.
+  Ved et hjørne med hjørnekasse slutter rekkverket 1,2 cm fra hjørnekassa (`notes/uterom.md`).
   Håndlister som møtes i et hjørne, overlapper ikke. Lister er smalere enn stolpene og ender ved stolpeflatene.
   Testen sjekker dette for alle fem testhusene.
 - **Navn:** `room-outside:<rom>:<materiale>` (kledningen er i rommets utebatch og kolliderer som før, `facade-<type>`,
@@ -266,6 +267,9 @@ med `default` som liggende dobbeltfals.
 
 ## Til planbyggeren
 
+- **Uterom (carport, åpen garasje, overbygd inngang):** `rooms[].outdoor` gir kledning etter sonene på veggene mot
+  rommet, ytterdører, betong eller belegning, himlingsbord og utelys. En sone kan nevne uterommets vegg i `walls`.
+  Det planbyggeren skal sende, står i `notes/uterom.md`.
 - **Navnene er som dere ba om.** Nye felt: `cladding.trim.surrounds`, `zones[].name`, `module` (plater),
   `decks[].thickness`, `decks[].groundY` og `decks[].railing.color`.
 - **Bakken** er hovedetasjens gulv − 0,15, det samme som `GROUND_STEP` i `viewer.js`. Sokkelen måles herfra, og dekk

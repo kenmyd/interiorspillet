@@ -37,6 +37,14 @@ const num = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
 const pos = (v) => (num(v) != null && v > 0 ? v : null);
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
+/**
+ * An outer door: in an exterior wall (at least 0.2 thick), or between an outdoor room and an indoor room (layout.js
+ * d.outer, notes/uterom.md) – the anthracite frame and lining, the outer leaf, its outer face at −z.
+ */
+export function isOuterDoor(d, wall) {
+  return d.outer ?? !!(wall?.exterior && (wall?.thickness ?? 0) >= 0.2);
+}
+
 /** Does this door need the door types (anything beyond doors.js's plain hinged single leaf)? */
 export function isDoorType(d) {
   const s = d?.door;
@@ -142,7 +150,7 @@ export function buildDoorType(ctx, d, { layout, M, batch, batchers }) {
   const H = layout.house;
   const wall = H?.wallsById?.[d.wallId] ?? layout.wallsById?.[d.wallId] ?? null;
   const ds = d.door ?? {};
-  const outer = !!(wall?.exterior && (wall?.thickness ?? 0) >= 0.2);
+  const outer = isOuterDoor(d, wall);
   const leafColor = ds.leafColor ?? HALL_DOOR;
   const leafMat = leafColor.toLowerCase() === HALL_DOOR ? M.hallDoor : mat('painted', leafColor, { roughness: outer ? 0.6 : 0.4 });
   const frameColor = d.frame?.color ?? leafColor;

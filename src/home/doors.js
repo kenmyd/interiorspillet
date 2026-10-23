@@ -25,7 +25,7 @@ import { basis, MeshBatcher } from '../world/buildKit.js';
 import { mat } from './materials.js';
 import { ring } from './wallkit.js';
 import { Door } from '../world/Door.js';
-import { isDoorType, buildDoorType } from './doortypes.js';
+import { isDoorType, buildDoorType, isOuterDoor } from './doortypes.js';
 
 export const HALL_DOOR = '#1d1e21';
 /** Holes narrower than this get side karms that collide only with their outer NARROW_KARM (D11: bod-1 can be entered). */
@@ -81,7 +81,7 @@ export function buildDoor(ctx, d, { layout, M, batch, batchers }) {
   const wall = H?.wallsById?.[d.wallId] ?? layout.wallsById?.[d.wallId] ?? null;
   const hinge = d.hinge === 'to' ? 1 : -1;
   const swing = d.swing === 'in' ? 1 : -1;
-  const outer = !!(wall?.exterior && (wall?.thickness ?? 0) >= 0.2);
+  const outer = isOuterDoor(d, wall);
   const leafColor = d.door?.leafColor ?? HALL_DOOR;
   const leafMat = leafColor.toLowerCase() === HALL_DOOR ? M.hallDoor : mat('painted', leafColor, { roughness: outer ? 0.6 : 0.4 });
   const frameColor = d.frame?.color ?? leafColor;

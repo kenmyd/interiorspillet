@@ -137,8 +137,13 @@ export function resolveDecks(raw, { levels = [], walls = [], rooms = [], groundY
   const outer = walls
     .filter((w) => w.exterior && w.thickness > 0.02 && isPt(w.start) && isPt(w.end) && isPt(w.normal))
     .map((w) => {
-      const o = [-w.normal[0] * w.thickness, -w.normal[1] * w.thickness];
-      return { w, a: add(w.start, o), b: add(w.end, o), quad: [w.start, w.end, add(w.end, o), add(w.start, o)] };
+      // the outer face carried over the mitred corners (a deck flush with two facades: the terrace over hus4's carport)
+      const t = w.thickness;
+      const o = [-w.normal[0] * t, -w.normal[1] * t];
+      const L = len(sub(w.end, w.start));
+      const dir = L > 0 ? [(w.end[0] - w.start[0]) / L, (w.end[1] - w.start[1]) / L] : [0, 0];
+      const a = add(add(w.start, o), dir, -t), b = add(add(w.end, o), dir, t);
+      return { w, a, b, quad: [w.start, w.end, b, a] };
     });
 
   raw.forEach((d, i) => {
