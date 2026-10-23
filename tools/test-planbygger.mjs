@@ -628,6 +628,23 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     l7.walls.push({ id: 'beam', a: [5.05, 3], b: [7.85, 3], t: 0.17 });
     const n = Gm.dropBeams(l7, img, ppm);
     check('en drager tegnet med stiplede kanter og uten fyll tas bort, den grå innerveggen blir', n === 1 && !l7.walls.some((w) => w.id === 'beam') && l7.walls.some((w) => w.id === 'i'), l7.walls.map((w) => w.id).join(','));
+    // one «wall» that is a grey wall with a door (x 0,15–4,9) and a beam on from it (x 5,1–7,85), as on hus4: the
+    // wall stays, with its door, and the beam goes
+    const { lv: l8 } = make();
+    l8.walls = l8.walls.filter((w) => w.id !== 'i');
+    const img2 = { width: W, height: H, data: new Uint8ClampedArray(W * H * 4).fill(255) };
+    const ink2 = (x, y, v) => {
+      const i = (y * W + x) * 4;
+      img2.data[i] = img2.data[i + 1] = img2.data[i + 2] = v;
+    };
+    for (let y = Math.round(3.415 * ppm); y <= 3.585 * ppm; y++) for (let x = Math.round(0.15 * ppm); x < 4.9 * ppm; x++) if (x < 1.5 * ppm || x > 2.4 * ppm) ink2(x, y, 150);
+    for (const y of [Math.round(3.415 * ppm), Math.round(3.585 * ppm)]) for (let x = Math.round(5.1 * ppm); x < 7.85 * ppm; x++) if (x % 12 < 7 || x % 12 === 9) ink2(x, y, 60);
+    l8.walls.push({ id: 'line', a: [0.15, 3.5], b: [7.85, 3.5], t: 0.17 });
+    l8.openings.push({ id: 'dl', wall: 'line', type: 'door', at: 1.8, width: 0.9 });
+    const n2 = Gm.dropBeams(l8, img2, ppm);
+    const kept = l8.walls.find((w) => w.id === 'line-1');
+    const door = l8.openings.find((o) => o.id === 'dl');
+    check('en vegg med dør som går over i en drager: veggen og døra blir, drageren går', n2 === 1 && !!kept && Math.abs(kept.a[0] - 0.15) < 0.05 && Math.abs(kept.b[0] - 4.9) < 0.15 && door?.wall === 'line-1' && Math.abs(door.at - 1.8) < 0.05 && !l8.walls.some((w) => w.id !== 'line-1' && /^line/.test(w.id)), JSON.stringify({ kept, door }));
   }
   // a terrace drawn with boards outside the east wall: its outline from around the AI's point, on the wall's outer face
   {

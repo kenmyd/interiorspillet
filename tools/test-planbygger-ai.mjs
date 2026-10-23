@@ -625,7 +625,11 @@ section('«Generer» spiller av opptakene (alle husene, uten nøkkel)');
   // against 13 and 8 without the AI (detect.js clean loses most walls above about 53 px/m on that plan). generate.js no
   // longer shares the scale there (44.7 px/m, −1.6 %, 26 walls, 9 windows). hus7's garage at its true scale (117.5
   // px/m) keeps 6 walls against 9 at the standard guess (47 px/m): above the line.
-  const KNOWN_DROPS = {};
+  const KNOWN_DROPS = {
+    // without the AI the scale is 60 % off (K9: an empty house) and its 9 «walls» are lines and text; with it the four
+    // walls and the door wall stay, and the tick of the dimension chain inside the garage is gone (K15, dropStubs)
+    'hus7 garasje-plan-snitt-fasade.pdf': 'uten KI er målestokken feil (K9); med KI er merkestreken fra målsettingen tatt bort (K15)',
+  };
   const levelCounts = (doc) => new Map(doc.levels.map((L) => [`${L.image?.source?.file ?? L.id}`, { walls: L.walls.length, windows: L.openings.filter((o) => o.type === 'window').length, ppm: L.image?.pxPerM ?? null }]));
   const dropsSeen = new Set();
   for (const h of houses) {

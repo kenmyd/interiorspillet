@@ -2053,8 +2053,9 @@ export function dropStubs(L) {
  * Interior «walls» that are a beam in the ceiling (K14, F56, F57: hus4's upper floor, the double dash-dot line across
  * the living room read as a wall of 0,17 m, cutting off the stair and the kitchen counter as rooms of their own): a wall
  * at least 1,5 m long whose middle is paper (median grey ≥ 235: no fill) and with a dashed edge (under 85 % ink with at
- * least 2 breaks per metre) goes, with its openings. A wall drawn as two solid thin lines (hus7) keeps its edges solid
- * and stays. img: the plan image, ppm its px per metre. → how many went
+ * least 2 breaks per metre) goes; the filled stretches of it (a real wall in line with the beam) stay as walls of their
+ * own, with their openings. A wall drawn as two solid thin lines (hus7) keeps its edges solid and stays. img: the plan
+ * image, ppm its px per metre. → how many went
  */
 export function dropBeams(L, img, ppm) {
   if (!img?.data || !(ppm > 0)) return 0;
@@ -2066,6 +2067,8 @@ export function dropBeams(L, img, ppm) {
     return 0.299 * img.data[k] + 0.587 * img.data[k + 1] + 0.114 * img.data[k + 2];
   };
   const gone = new Set();
+  const pieces = [];
+  const moved = [];
   for (const w of L.walls) {
     const len = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]);
     if (w.exterior || len < 1.5) continue;
@@ -2089,10 +2092,69 @@ export function dropBeams(L, img, ppm) {
       for (let i = 1; i < dark.length; i++) if (dark[i - 1] && !dark[i]) breaks++;
       return dark.filter(Boolean).length / dark.length < 0.85 && breaks / len >= 2;
     });
-    if (dashed) gone.add(w.id);
+    if (!dashed) continue;
+    // the stretches of it that are filled (a real wall in line with the beam: hus4's bathroom wall, read as one wall
+    // with the beam) stay as walls of their own, at least 0,4 m long; the rest goes
+    const step = 1 / ppm;
+    const fill = line(0).map((v) => v < 235);
+    const half = Math.max(1, Math.round(0.15 / step));
+    // (a door or a window in it is wall: hus4's bathroom door is the gap in that wall; a passage is not – the gaps
+    // between the beam's dashes were read as passages)
+    const ops = (L.openings || []).filter((o) => o.wall === w.id && (o.type === 'door' || o.type === 'window'));
+    const solid = fill.map((_, i) => {
+      const at = 0.1 + i * step;
+      if (ops.some((o) => Math.abs(at - o.at) <= o.width / 2 + 0.05)) return true;
+      let c = 0;
+      let n = 0;
+      for (let j = Math.max(0, i - half); j <= Math.min(fill.length - 1, i + half); j++) (n++, (c += fill[j] ? 1 : 0));
+      return c > n / 2;
+    });
+    const keep = [];
+    for (let i = 0; i < solid.length; ) {
+      if (!solid[i]) {
+        i++;
+        continue;
+      }
+      let j = i;
+      while (j < solid.length && solid[j]) j++;
+      // (0,1 m in from the ends: a run touching an end reaches it)
+      const s0 = i === 0 ? 0 : 0.1 + i * step;
+      const s1 = j === solid.length ? len : 0.1 + j * step;
+      if (s1 - s0 >= 0.4) keep.push([s0, s1]);
+      i = j;
+    }
+    // a short gap between two of them with an opening in it is a passage in the real wall (hus4: the stair room's way
+    // into the living room), not beam
+    const all = (L.openings || []).filter((o) => o.wall === w.id);
+    for (let k = keep.length - 1; k > 0; k--) {
+      const g0 = keep[k - 1][1];
+      const g1 = keep[k][0];
+      if (g1 - g0 <= 1.3 && all.some((o) => o.at > g0 - 0.05 && o.at < g1 + 0.05)) keep.splice(k - 1, 2, [keep[k - 1][0], keep[k][1]]);
+    }
+    gone.add(w.id);
+    keep.forEach(([s0, s1], k) => {
+      const id = `${w.id}-${k + 1}`;
+      const a = [w.a[0] + u[0] * s0, w.a[1] + u[1] * s0];
+      const b = [w.a[0] + u[0] * s1, w.a[1] + u[1] * s1];
+      pieces.push({ ...w, id, a: a.map((v) => round(v, 4)), b: b.map((v) => round(v, 4)) });
+      for (const o of L.openings || []) {
+        if (o.wall !== w.id) continue;
+        if (o.at - o.width / 2 >= s0 - 0.01 && o.at + o.width / 2 <= s1 + 0.01) moved.push([o, id, o.at - s0]);
+        else if (o.type === 'opening') {
+          // a passage reaching into the beam's stretch: the part of it in this piece, when it is wide enough to walk
+          const o0 = Math.max(o.at - o.width / 2, s0);
+          const o1 = Math.min(o.at + o.width / 2, s1);
+          if (o1 - o0 >= 0.6) {
+            o.width = round(o1 - o0, 4);
+            moved.push([o, id, (o0 + o1) / 2 - s0]);
+          }
+        }
+      }
+    });
   }
   if (gone.size) {
-    L.walls = L.walls.filter((w) => !gone.has(w.id));
+    for (const [o, id, at] of moved) Object.assign(o, { wall: id, at: round(at, 4) });
+    L.walls = [...L.walls.filter((w) => !gone.has(w.id)), ...pieces];
     L.openings = (L.openings || []).filter((o) => !gone.has(o.wall));
   }
   return gone.size;

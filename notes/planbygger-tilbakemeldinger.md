@@ -1041,7 +1041,7 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 
 ### K14 – hus4 2. etasje: drager, trapp og kjøkkenøy blir egne rom (F56, F57)
 - **Hvorfor:** strek-prikk-linja med søyler (⊠) i hver ende er en drager i taket, og trappa og kjøkkenøya er møbler/trapp; de skal ikke lukke rom. Nå blir to stykker av stue/kjøkken egne rom som veiviseren spør om (og gjetter bad).
-- **Status:** til neste runde med gjenkjenning. Tanke: et rom uten etikett som bare skilles fra et navngitt rom av slike linjer, slås sammen med det, og spørsmålet får valget «del av rommet ved siden av». **Rettet (23.10):** drageren var én «vegg» (w2, 8,6 m × 0,17 m) med lys midte og stiplede kanter. `dropBeams` i generate.js tar bort innervegger uten fyll med en stiplet kant (vegger tegnet med to heltrukne streker blir), og 2. etasje får 3 rom, alle med navn, uten romspørsmål.
+- **Status:** til neste runde med gjenkjenning. Tanke: et rom uten etikett som bare skilles fra et navngitt rom av slike linjer, slås sammen med det, og spørsmålet får valget «del av rommet ved siden av». **Rettet (23.10):** drageren var én «vegg» (w2, 8,6 m × 0,17 m) med lys midte og stiplede kanter. `dropBeams` i generate.js tar bort de stiplede strekningene uten fyll (vegger tegnet med to heltrukne streker blir, og fylte biter i samme linje – badet og trapperommet – blir egne vegger). Kjøkkenbenken hører nå til stua; trapperommet er fortsatt et eget rom uten navn (ett romspørsmål, mot to).
 
 ### K15 – små hakk i romkanten blir stolper og trinn i veggen (F96, F97, hus7)
 - **Hvorfor:** romkanten har et hakk på noen centimeter nær et hjørne (veggtykkelsen målt litt ulikt på to stykker), og byggeren lager et kort veggstykke som stikker ut.

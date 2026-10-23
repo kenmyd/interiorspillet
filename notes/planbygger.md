@@ -1085,7 +1085,12 @@ En skrå himling blir `type: 'roof'` uten høyde, altså helt opp til mønet.
   - hus9: trinnstrekene i trappa og en strek ved badet.
 - **Dragere (K14):** en innervegg på minst 1,5 m med lys midte (median grå ≥ 235) og en stiplet kant (under 85 % strek,
   minst 2 brudd per meter) er en drager tegnet som en dobbel strek-prikk-linje. Den fjernes (`dropBeams`).
-  - hus4 2. etasje: stua er ett rom igjen, med trappa og kjøkkenbenken. Det gir 3 rom med navn og ingen romspørsmål.
+  - Veggen deles langs lengden. Fylte biter på minst 0,4 m blir egne vegger. Dører og vinduer teller som vegg, og et
+    kort hull (høyst 1,3 m) med en åpning mellom to fylte biter er en passasje i en ekte vegg. Passasjer som stikker
+    inn i drageren klippes.
+  - hus4: drageren lå på linje med sørveggen til badet og trapperommet, og var lest som én vegg med dem. Badet og
+    trapperommet beholder veggene sine, og kjøkkenbenken hører til stua. Det gir 4 rom med navn og ett romspørsmål
+    (trapperommet), mot to før.
   - Ingen andre testhus endres.
 - **Fasadetegningen i fasadesjekken:** «Generer» tar vare på hver fasadetegning med plasseringen fra matchingen
   (`doc.facades[].image` og `fit`: siden, `a` og `k` i `s = a + k·u`, venstre kant, gulvlinja og bildestørrelsen).
