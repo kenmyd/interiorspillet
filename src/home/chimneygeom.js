@@ -2,12 +2,14 @@
  * CHIMNEY GEOMETRY – the chimneys of the house format (notes/tak.md «Piper»), without three.js: layout.js, the builder
  * (home/chimney.js) and the validator (data/scripts/house.mjs) read the same model.
  *
- *   resolveChimneys(raw, { levels, rooms, roofFields, groundY }) → { chimneys, issues }
+ *   resolveChimneys(raw, { levels, rooms, roofFields, groundY, seats }) → { chimneys, issues }
  *
  * A chimney stands on the floor of the lowest room it is in (from: 'floor'; outside the house on the ground) and goes
  * up through the roof over it, or starts in that roof (from: 'roof'). Inside the house it is split per level (a box in
- * each room it passes, its own collider), the part above the roof's inner plane is the chimney seen outside. Plan
- * points are [x, z]; heights are world y.
+ * each room it passes, its own collider), the part above the roof's inner plane is the chimney seen outside. A
+ * fireplace that names the chimney (notes/peis-og-ovn.md, fireplacegeom.js) seats it: a steel chimney starts at its
+ * stove's outlet, a masonry chimney's piece in the fireplace's room starts at the top of the surround round it, and a
+ * chimney without `at` stands where its fireplace puts it. Plan points are [x, z]; heights are world y.
  */
 import { planeY } from './roofgeom.js';
 
@@ -30,7 +32,7 @@ const num = (v) => typeof v === 'number' && Number.isFinite(v);
 const isPt = (p) => Array.isArray(p) && p.length === 2 && p.every(num);
 
 /** Even-odd point in polygon ([x, z] points; on an edge counts as inside). */
-function inPolygon(x, z, P) {
+export function inPolygon(x, z, P) {
   let inside = false;
   for (let i = 0, j = P.length - 1; i < P.length; j = i++) {
     const a = P[i], b = P[j];
@@ -47,13 +49,14 @@ function inPolygon(x, z, P) {
  * @param {object[]} raw  spec.chimneys (house format, notes/tak.md)
  * @param {{ levels: Array<{ id, floorY }>, rooms: Array<{ id, levelId, floorY, polygon: [x, z][] }>,
  *           roofFields: Object<string, { planeAt(x, z) }>, groundY: number }} ctx
- *   roofFields: the roof over each level (roofgeom.js roofField), planes with their `tv`
+ *   roofFields: the roof over each level (roofgeom.js roofField), planes with their `tv`; seats: per chimney id the
+ *   fireplaces on it (fireplacegeom.js resolveFireplaces: [{ fireplaceId, mode 'base'|'cut'|'flue', levelId, roomId, y, at }])
  * @returns {{ chimneys: object[], issues: Array<{ level: 'error'|'warn', where: string, msg: string }> }}
  *   a chimney: { id, name, material, round, color, insideColor, flashingColor, from, at, size, footprint,
  *   bottomY, topY, roofLevelId | null, pieces: [{ levelId, y0, y1 | null }] (inside; y1 null: up to the roof's inner
- *   plane), outsideLevelId, coverMin, coverMax, innerMin, innerMax }
+ *   plane), outsideLevelId, coverMin, coverMax, innerMin, innerMax, fireplaceIds }
  */
-export function resolveChimneys(raw, { levels = [], rooms = [], roofFields = {}, groundY = -0.15 } = {}) {
+export function resolveChimneys(raw, { levels = [], rooms = [], roofFields = {}, groundY = -0.15, seats = {} } = {}) {
   const issues = [];
   const chimneys = [];
   if (raw == null) return { chimneys, issues };
@@ -71,7 +74,11 @@ export function resolveChimneys(raw, { levels = [], rooms = [], roofFields = {},
     const id = c.id ?? `pipe-${i + 1}`;
     if (ids.has(id)) return err('id-en er brukt av en annen pipe');
     ids.add(id);
-    if (!isPt(c.at)) return err('at må være [x, z] (midten av pipa)');
+    // a steel chimney stands on its stove's outlet; a chimney without `at` where its fireplace puts it
+    const seated = seats[id] || [];
+    const base = seated.find((s) => s.mode === 'base') ?? null;
+    const at = base?.at ?? (isPt(c.at) ? c.at : seated.find((s) => isPt(s.at))?.at);
+    if (!isPt(at)) return err('at må være [x, z] (midten av pipa), eller pipa må være chimney for et ildsted (fireplaces)');
     const material = c.material ?? 'brick';
     if (!CHIMNEY_MATERIALS.includes(material)) return err(`material «${material}» er ikke en av ${CHIMNEY_MATERIALS.join(', ')}`);
     const from = c.from ?? 'floor';
@@ -83,7 +90,7 @@ export function resolveChimneys(raw, { levels = [], rooms = [], roofFields = {},
     const levelId = c.levelId ?? null;
     if (levelId != null && !levels.some((l) => l.id === levelId)) return err(`nivået «${levelId}» finnes ikke`);
     for (const k of ['top']) if (c[k] != null && !num(c[k])) return err(`${k} må være et tall (m)`);
-    const [x, z] = c.at;
+    const [x, z] = at;
     const [w, d] = round ? [Math.min(...size), Math.min(...size)] : size;
     const footprint = [[x - w / 2, z - d / 2], [x + w / 2, z - d / 2], [x + w / 2, z + d / 2], [x - w / 2, z + d / 2]];
     // the roof it goes through: the lowest roof over its middle
@@ -112,9 +119,12 @@ export function resolveChimneys(raw, { levels = [], rooms = [], roofFields = {},
     }
     // the bottom: the floor of the lowest room it stands in, the ground outside the house, or in the roof
     const under = rooms.filter((r) => Array.isArray(r.polygon) && r.polygon.length >= 3 && inPolygon(x, z, r.polygon) && (!roof || r.floorY < roof.y - 0.5));
-    const lowest = under.sort((a, b) => a.floorY - b.floorY)[0] ?? null;
+    // on a stove: from its outlet, in its room
+    const lowest = base ? rooms.find((r) => r.id === base.roomId) ?? null : under.sort((a, b) => a.floorY - b.floorY)[0] ?? null;
+    if (seated.length && from === 'roof') return err(`from: 'roof', men ildstedet ${seated[0].fireplaceId} står under pipa`);
     let bottomY;
-    if (from === 'roof') {
+    if (base) bottomY = base.y;
+    else if (from === 'roof') {
       if (!roof) return err("from: 'roof', men intet tak over pipa");
       bottomY = innerMin;
     } else bottomY = lowest ? lowest.floorY : groundY;
@@ -138,8 +148,11 @@ export function resolveChimneys(raw, { levels = [], rooms = [], roofFields = {},
         return;
       }
       stack.forEach((l, k) => {
-        const y0 = k === 0 ? bottomY : l.floorY;
+        let y0 = k === 0 ? bottomY : l.floorY;
         const y1 = k === stack.length - 1 ? null : stack[k + 1].floorY;
+        // inside a fireplace's surround: the piece starts at its top (none when that reaches the floor above)
+        for (const s of seated) if (s.mode === 'cut' && s.levelId === l.id) y0 = Math.max(y0, s.y);
+        if (y0 >= (y1 ?? innerMin) - 0.02) return;
         pieces.push({ levelId: l.id, y0, y1 });
       });
     }
@@ -168,6 +181,9 @@ export function resolveChimneys(raw, { levels = [], rooms = [], roofFields = {},
       innerMax,
       coverMin,
       coverMax,
+      // from a floor inside the house (its part outside starts at the roof, also when a surround hides all of it inside)
+      inHouse: from === 'floor' && !!roof && !!lowest,
+      fireplaceIds: seated.map((s) => s.fireplaceId),
       source: c.source ?? '',
     });
   });

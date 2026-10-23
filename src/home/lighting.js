@@ -188,10 +188,14 @@ const STRIP_SIGNATURE = 8;
  *               slotDepth: light slots only for rooms this many portals away (the visibility keeps depth 2) – the
  *               basement hall's downlights two portals away (door + stairwell) took the living room's pendants' slots
  *   portalStep  a swinging door recomputes the rooms only per this step of its opening (and when it stops)
+ *   fire        a fire (notes/peis-og-ovn.md, builder entries of type 'fire'): a Lambertian spot out of the stove's
+ *               window / the fireplace's opening (no light behind the stove; no shadow, as every house lamp), its slot
+ *               intensity flickering by ± `flicker` per frame (_flicker: no recompute, no shader change)
  */
 const HOUSE = {
   stripSignature: 1, maxDownlightSpots: 2, reachLkeyCap: 2, roomEase: 1.5, portalOpen: 0.5, frostedT: 0.5,
   downlight: { angle: 50 * DEG, penumbra: 0.7 }, plafond: { angle: 82 * DEG }, pendant: { angle: 55 * DEG }, step: { angle: 60 * DEG },
+  fire: { angle: 85 * DEG, flicker: 0.14 },
   wbLocal: 0.9, wbRelMax: 4, hop: { door: 0.45, opening: 0.6, hole: 0.35 }, slotDepth: 1, portalStep: 0.2,
 };
 /** LAMP_BOUNCE of a house room: ≈ 1 for a small closed room (its lamps light all of it), less for a big one. */
@@ -1359,6 +1363,7 @@ export class LightManager {
       this._applyDirty = true;
     } else if (this._ambTarget != null) this._ambNow = this._ambTarget;
     this._apply(dt);
+    if (this._flickers?.length) this._flicker();
   }
 
   /**
@@ -2096,6 +2101,11 @@ export class LightManager {
         } else if (l.type === 'wall' && l.normal) {
           // wall lamps (inside and out): a point a little in front of the wall
           push({ ...base, id: `builtin:${l.id}`, kind: 'point', position: l.position.clone().addScaledVector(l.normal, (dims.depth ?? 0.1) / 2 + 0.06), noShadow: true });
+        } else if (l.type === 'fire') {
+          // a fire: out of its window or opening, flickering (HOUSE.fire)
+          const dir = (l.direction?.isVector3 ? l.direction.clone() : new THREE.Vector3(0, 0, 1)).normalize();
+          push({ ...base, id: `builtin:${l.id}`, kind: 'spot', position: l.position.clone(), direction: dir, angle: HOUSE.fire.angle, penumbra: 1, lambert: true,
+            noShadow: true, flicker: true, phase: (this._houseLamps.length * 2.39) % (2 * Math.PI) });
         } else {
           push({ ...base, id: `builtin:${l.id}`, kind: 'point', position: l.position.clone(), noShadow: true });
         }
@@ -2132,6 +2142,23 @@ export class LightManager {
       }
     }
     for (const g of this.builtInGroups) g.lumens = Math.round(groupLumens[g.id] || 0);
+    this._flickers = this._houseLamps.filter((c) => c.flicker);
+  }
+
+  /**
+   * The fires' flicker (HOUSE.fire): each frame the light slot of a burning fire gets its intensity × a sum of three
+   * sines (≈ ± HOUSE.fire.flicker) – the same base _apply gives it, so nothing drifts and nothing recomputes.
+   */
+  _flicker() {
+    const S = this._S ?? this._Starget;
+    const t = this._clock;
+    const A = HOUSE.fire.flicker / 1.15;
+    for (const c of this._flickers) {
+      const s = c.slot;
+      if (!s || s.cand !== c || !c.on) continue;
+      const k = 1 + A * (0.6 * Math.sin(t * 9.1 + c.phase) + 0.3 * Math.sin(t * 23.7 + c.phase * 2.3) + 0.25 * Math.sin(t * 4.3 + c.phase * 0.7));
+      s.light.intensity = c.phys * S * (c.fade ?? 1) * k;
+    }
   }
 
   /** Direction from `pos` to the point `drop` m below where `dir` meets the nearest wall (unchanged without a hit). */

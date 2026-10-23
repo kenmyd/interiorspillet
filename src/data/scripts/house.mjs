@@ -50,6 +50,7 @@ import { STAIR_TYPES, STEEP, WALK_MAX_DEG, isPlanType, isQuarterTurn, isStraight
 import { resolveRoofs, roofField, ceilingSurface, surfaceProfile, insideHalfPlanes as insideHalfPlanesOf } from '../../home/roofgeom.js';
 import { resolveCladding, groundLevel } from '../../home/claddinggeom.js';
 import { resolveChimneys } from '../../home/chimneygeom.js';
+import { resolveFireplaces } from '../../home/fireplacegeom.js';
 import { resolveDecks } from '../../home/deckgeom.js';
 import { lightingIssues, ROOM_USES } from '../../home/lightplan.js';
 import { resolveFurnishing } from '../../home/furnishgeom.js';
@@ -1061,6 +1062,7 @@ export function validateHouse(spec, opts = {}) {
   for (const s of stairs) push('guards', arr(s.guards), { stair: s });
   push('facadeSegments', arr(spec.facadeSegments));
   push('chimneys', arr(spec.chimneys));
+  push('fireplaces', arr(spec.fireplaces));
 
   const frozen = reg.frozen || {};
   const isFrozen = (coll, id) => arr(frozen[coll]).includes(id);
@@ -1478,6 +1480,21 @@ export function validateHouse(spec, opts = {}) {
     }
   }
 
+  // ---- fireplaces and stoves (notes/peis-og-ovn.md, home/fireplacegeom.js): the same model as layout.js (without the
+  //      ceilings: a surround without a height reaches the level's ceilingDefault here), its issues as errors / warnings;
+  //      their seats go to the chimneys below
+  let fireplaceSeats = {};
+  if (spec.fireplaces != null) {
+    const fr = resolveFireplaces(spec.fireplaces, {
+      levels: roofLevels,
+      rooms: rooms.filter(physical).map((r) => ({ id: r.id, levelId: r.levelId, floorY: roomFloorY(r.id), polygon: r.polygon })),
+      walls: [...wallInfo.values()].map((wi) => ({ id: wi.w.id, roomId: wi.room, levelId: wi.level, start: wi.w.from, end: wi.w.to, normal: wi.n, thickness: wi.t })),
+      chimneys: spec.chimneys,
+    });
+    for (const i of fr.issues) (i.level === 'error' ? error : warn)(`${i.where}: ${i.msg}`);
+    fireplaceSeats = fr.seats;
+  }
+
   // ---- chimneys (notes/tak.md «Piper», home/chimneygeom.js): the same model as layout.js, its issues as errors /
   //      warnings; a chimney standing in a wall is a warning
   if (spec.chimneys != null) {
@@ -1487,6 +1504,7 @@ export function validateHouse(spec, opts = {}) {
       rooms: rooms.filter(physical).map((r) => ({ id: r.id, levelId: r.levelId, floorY: roomFloorY(r.id), polygon: r.polygon })),
       roofFields: roofFieldOf,
       groundY: groundLevel(lvList, 'hoved'),
+      seats: fireplaceSeats,
     });
     for (const i of ch.issues) (i.level === 'error' ? error : warn)(`${i.where}: ${i.msg}`);
     for (const c of ch.chimneys) {

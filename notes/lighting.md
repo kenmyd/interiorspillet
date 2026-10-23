@@ -45,6 +45,12 @@ Exported names and signatures from the stub are kept (`LightManager`, `sunPositi
   160 lux (dawn, dusk, dark winter days, all blinds down). `day` clamps the clock into the day, `evening` = blue
   hour (sun −4°), `night` = −16°, both with lamps on.
 
+- **Fires** (notes/peis-og-ovn.md): a fireplace's builder entry of type `'fire'` (id = group = `fire-<id>`, no `:`)
+  becomes a Lambertian spot out of the stove's window (`HOUSE.fire`: 85°, no shadow) in the normal light budget; its
+  slot intensity flickers ± 14 % per frame (`_flicker`, after `_apply`: no recompute, no shader change). The embers are
+  its emissive mesh; the flames follow their glow. Its group is a data group of its room with `auto: 'evening'`.
+  The owner's house has none (`_flickers` is empty).
+
 ## Measured (RTX 2060 SUPER, headless Edge, ANGLE D3D11)
 
 | What | Result |

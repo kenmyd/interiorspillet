@@ -168,7 +168,7 @@ export function buildChimneys(H, opts) {
     }
 
     // ---- outside: from the roof's inner plane (or the ground, a chimney standing free) up to the top
-    const fromRoof = ch.from === 'roof' || ch.pieces.length > 0;
+    const fromRoof = ch.from === 'roof' || ch.pieces.length > 0 || !!ch.inHouse;
     const out = new Acc();
     ringFaces(out, ring, ch.at, split, (q, m) => (fromRoof && field ? innerAt(q, m) : ch.bottomY), () => bodyTop);
     const lv = ch.outsideLevelId;

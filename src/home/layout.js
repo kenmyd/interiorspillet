@@ -8,6 +8,7 @@ import { resolveDecks, deckWalkRect } from './deckgeom.js';
 import { resolveChimneys } from './chimneygeom.js';
 import { planLighting, OUTSIDE_ROOM } from './lightplan.js';
 import { resolveFurnishing } from './furnishgeom.js';
+import { resolveFireplaces } from './fireplacegeom.js';
 
 /**
  * Room layout: reads data/room-spec.json and derives typed, world-space values for every module (shell, lighting,
@@ -134,6 +135,9 @@ import { resolveFurnishing } from './furnishgeom.js';
  *                                          material, at, size, footprint, bottomY, topY, pieces (inside, per level), roofLevelId }
  * @property {Object|null} furnishing     a generated house's furnishing (notes/moblering-genererte-hus.md, home/furnishgeom.js
  *                                          resolveFurnishing; null without spec.furnishing): { auto, rooms, hints, seed }
+ * @property {Object[]} fireplaces        open fireplaces, inserts, stoves (home/fireplacegeom.js resolveFireplaces; [] without
+ *                                          spec.fireplaces): { id, type, roomId, levelId, at, facing, size, hearth, outlet,
+ *                                          chimneyId, flue, fire, lightGroup } – each fire is a light group of its room
  * @property {Object[]} lightGroups      the six living-room groups + the data groups { id, label, roomId (null: several rooms or none, e.g. boder, ute), dimmer (start level), dimmable, auto }
  * @property {Object[]} floorOpenings     { id, levelId, roomId, stairId, polygon, area, contains(x, z) (strict) }
  * @property {Object[]} stairs            { …data, fromLevel, toLevel, risers, rise, riser, topY, bottomY, footprint, wellPolygon, walkLine,
@@ -180,6 +184,8 @@ const LIGHT_GROUPS = [
   { id: 'tvstue', label: 'Taklampe i TV-stua', dimmer: 0.35 },
 ];
 const LIGHT_GROUP_IDS = new Set(LIGHT_GROUPS.map((g) => g.id));
+/** The light group of a fire without a name (notes/peis-og-ovn.md). */
+const FIRE_LABEL = { stove: 'Vedovn', 'fireplace-stove': 'Peisovn', insert: 'Peis', open: 'Åpen peis' };
 const SPEC_GROUP_TO_GROUP = { 'led-lister': 'led', 'spotter-hoyvegg': 'spots', 'taklampe-tvstue': 'tvstue', kjokkenlys: 'kjokken' };
 
 /**
@@ -1445,6 +1451,30 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       decks = r.decks;
     }
   }
+  // ---- the fireplaces and stoves (notes/peis-og-ovn.md, home/fireplacegeom.js): on their room's floor, seated on the
+  //      chimney they name (resolveChimneys below builds that chimney from them), each with its fire's light group.
+  //      Without spec.fireplaces nothing here runs (the owner's house).
+  let fireplaces = [];
+  let seats = {};
+  if (spec.fireplaces != null) {
+    const r = resolveFireplaces(spec.fireplaces, {
+      levels: levels.map((l) => ({ id: l.id, floorY: l.floorY, ceilingDefault: l.ceilingDefault })),
+      rooms: physicalRooms.map((rm) => ({ id: rm.id, levelId: rm.levelId, floorY: rm.floorY, polygon: rm.polygon.map((p) => [p.x, p.y]) })),
+      walls: allWalls.filter((w) => w.length > 1e-6).map((w) => ({
+        id: w.id, roomId: w.roomId, levelId: w.levelId, start: [w.start.x, w.start.y], end: [w.end.x, w.end.y], normal: [w.normal.x, w.normal.y], thickness: w.thickness,
+      })),
+      chimneys: spec.chimneys,
+      ceilingAt: (x, z, floorY) => houseCeilingHeightAt(x, z, floorY + 0.5),
+    });
+    for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
+    fireplaces = r.fireplaces;
+    seats = r.seats;
+    for (const fp of fireplaces) {
+      if (!fp.fire || dataGroups.some((g) => g.id === fp.lightGroup)) continue;
+      // the fire as a light group of its room: lit in the evening, on and off in the light panel
+      dataGroups.push({ id: fp.lightGroup, label: fp.name || FIRE_LABEL[fp.type], roomId: fp.roomId, levelId: fp.levelId, dimmer: 1, dimmable: true, auto: fp.fire.on ? 'evening' : 'off' });
+    }
+  }
   // ---- the chimneys (notes/tak.md «Piper», home/chimneygeom.js): through the roofs above. Without spec.chimneys
   //      nothing here runs (the owner's house).
   let chimneys = [];
@@ -1455,6 +1485,7 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       rooms: physicalRooms.map((rm) => ({ id: rm.id, levelId: rm.levelId, floorY: rm.floorY, polygon: rm.polygon.map((p) => [p.x, p.y]) })),
       roofFields,
       groundY: groundLevel(lvList, MAIN_LEVEL_ID),
+      seats,
     });
     for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
     chimneys = r.chimneys;
@@ -1673,6 +1704,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     chimneys,
     /** the furnishing settings and hints (home/furnishgeom.js resolveFurnishing); null without spec.furnishing */
     furnishing,
+    /** the fireplaces and stoves (notes/peis-og-ovn.md, home/fireplacegeom.js resolveFireplaces); [] without spec.fireplaces */
+    fireplaces,
     outsideHouse: deepClone(spec.outsideHouse) ?? null,
     floorYAt,
     isInside: isInsideHouse,
