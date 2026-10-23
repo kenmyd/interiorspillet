@@ -13,6 +13,9 @@ Alt er valgfritt: én ny toppnøkkel, `lighting`, to nye romfelt, `use` og `ligh
 fingeravtrykk av alle lysene, gruppene og byggerens lysliste (`tools/house-tests/fixtures/owner-lights.json`). Det ble tatt
 før arbeidet og er byte for byte likt etter.
 
+**Grunnlag:** grenen `claude/serene-babbage-e8bceb` bygger på planbyggergrenen `claude/planbygger-5d0fe3` (93d505f).
+Takdetaljene (`claude/hungry-mendeleev-b747e9`: halvvalm, piper, vinduer med skrå overkant) er flettet inn. Ingen av
+grenene er godkjent inn i master ennå.
 **Kode:** reglene står i `src/home/lightplan.js` (uten three.js, ren data inn og ut). `layout.js` kjører dem når huset har
 `lighting`, og resultatet tolkes som filens egne `builtInLights` og `lightGroups`. Armaturene bygges av
 `src/home/lampfittings.js`, som kalles fra `rooms.js`. `src/home/lighting.js` (LightManager) har fått de nye typene og
@@ -119,6 +122,8 @@ som i resten av formatet. Planbyggeren kan skrive dem inn i fila selv (`layout.h
 - **Spottene:** et rutenett langs rommets lengste vegg, 0,45 m fra veggene, bare der himlingen er minst 2,0 m og ikke over
   et trappehull. Det blir aldri flere spotter enn rommets lysmengde trenger (én per 300 lm) og aldri over 16 per rom.
   Lumen per spot er 250–600.
+- **Piper** (`chimneys`, notes/tak.md): ingen spot eller taklampe står i en pipe eller nærmere den enn 0,15 m, i noen
+  av etasjene den går gjennom. Pendler følger hintet sitt.
 - **Taklamper:** settes på det friste punktet i hver del av rommet. På skrå himling legges de der himlingen er flat
   (hanebjelken) og minst 2,1 m.
 - **Skrå himling (himlingen følger taket):** har mindre enn en fjerdedel av rommet en flat himling på minst 2,1 m (helning

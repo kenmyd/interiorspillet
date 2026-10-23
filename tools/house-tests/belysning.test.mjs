@@ -256,6 +256,19 @@ section('Nivåer og unntak');
   some.builtInLights = [{ id: 'l-eget', roomId: sov.id, group: 'eget', type: 'plafond', position: [sov.polygon[0][0] + 1, 2.4, sov.polygon[0][1] + 1], dims: { d: 0.3, h: 0.07 }, lumens: 900, lightColorK: 2700 }];
   const sh = build(some).house;
   check('et rom med lighting: false får ingen lys; et rom med egne lys beholder dem og får ikke regellys', !sh.builtInLights.some((l) => l.roomId === bod.id) && sh.builtInLights.filter((l) => l.roomId === sov.id).map((l) => l.id).join() === 'l-eget');
+  // a chimney (notes/tak.md «Piper») where a ceiling lamp of the loft was: the lamps move off it, on both floors
+  const pl = of('Loftstue', (l) => l.type === 'plafond')[0];
+  const withChimney = JSON.parse(JSON.stringify(house));
+  withChimney.chimneys = [{ id: 'pipe-1', material: 'brick', at: [pl.position.x, pl.position.z] }];
+  const ch = build(withChimney).house;
+  const fp = ch.chimneys[0]?.footprint ?? [];
+  const near = (l) => {
+    const [x0, z0] = fp[0], [x1, z1] = fp[2];
+    return l.position.x > Math.min(x0, x1) - 0.149 && l.position.x < Math.max(x0, x1) + 0.149 && l.position.z > Math.min(z0, z1) - 0.149 && l.position.z < Math.max(z0, z1) + 0.149;
+  };
+  // (the pendants follow their hint – here the island under the chimney – the rules place spots and ceiling lamps)
+  const ceilingFits = ch.builtInLights.filter((l) => ['downlight', 'plafond'].includes(l.type));
+  check(`en pipe der loftsstuas taklampe sto: ingen spot eller taklampe i eller inntil pipa i noen etasje, loftsstua har fortsatt ${ch.builtInLights.filter((l) => l.roomId === pl.roomId && l.type === 'plafond').length} taklamper`, fp.length === 4 && !ceilingFits.some(near) && ch.builtInLights.filter((l) => l.roomId === pl.roomId && l.type === 'plafond').length >= 2 && validate(withChimney).errors.length === 0, validate(withChimney).errors.slice(0, 2).join(' | '));
   check('med hint = false: ingen pendler, overskapslys, speil- eller leselamper, ingen carport-lampe', (() => {
     const nh = build(B.belysningHus({ hints: false }).house).house.builtInLights;
     return !nh.some((l) => l.type === 'pendant' || l.type === 'led-strip' || l.style === 'bar' || l.style === 'reading' || l.group === 'ute-carport') && nh.length > 20;

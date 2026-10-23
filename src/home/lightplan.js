@@ -24,6 +24,7 @@
  *   ceilingHoles {roomId: polygon[]} – holes in the room's ceiling (the stairwell of the level above)
  *   stairs       [{ id, fromLevel, toLevel, roomIds, bottomY, topY (world), risers, walkLine (foot → top), surfaceY(x, z) }]
  *   decks        [{ id, kind, levelId, top (world), outline, edges: [{ a, b, dir, out, house: [[s0, s1]] }] }]
+ *   obstacles    [{ polygon, bottomY, topY (world) }] – what stands through rooms (chimneys): no ceiling fitting in it
  *   groups       the file's light groups [{ id, roomId }]
  *   lightIds     ids already taken by the file's lights
  */
@@ -336,6 +337,12 @@ export function planLighting(input) {
   const holes = input.ceilingHoles || {};
   const inHole = (roomId, p) => (holes[roomId] || []).some((poly) => inPolygon(p[0], p[1], poly.map(P)));
   const roomAt = (levelId, p) => rooms.find((r) => r.levelId === levelId && inPolygon(p[0], p[1], r.polygon)) ?? null;
+  const obstacles = (input.obstacles || []).map((o) => ({ ...o, polygon: o.polygon.map(P) }));
+  /** In (or within 0,15 m of) something that stands through the room at its ceiling (a chimney)? */
+  const blocked = (room, p) => obstacles.some((o) => {
+    const y = room.floorY + ceilingAt(room.id, p[0], p[1]) - 0.1;
+    return y >= (o.bottomY ?? -Infinity) && y <= (o.topY ?? Infinity) && (inPolygon(p[0], p[1], o.polygon) || edgeDist(p, o.polygon) < 0.15);
+  });
 
   // ---- hints, per room
   const hintsOf = new Map();
@@ -397,7 +404,7 @@ export function planLighting(input) {
   }
   /** Is p a place for a ceiling fitting in the room (inside, off the walls, under a ceiling of at least `min`)? */
   let roomMin = LIGHT.minCeiling; // the lowest ceiling for a fitting in the room being lit (USE_RULES minCeil)
-  const ceilingOk = (room, p, inset, min = roomMin) => inPolygon(p[0], p[1], room.polygon) && edgeDist(p, room.polygon) >= inset - EPS && !inHole(room.id, p) && ceilingAt(room.id, p[0], p[1]) >= min;
+  const ceilingOk = (room, p, inset, min = roomMin) => inPolygon(p[0], p[1], room.polygon) && edgeDist(p, room.polygon) >= inset - EPS && !inHole(room.id, p) && ceilingAt(room.id, p[0], p[1]) >= min && !blocked(room, p);
 
   /** A ceiling fitting at p: position on the ceiling, its tilt on a sloping ceiling as `ceilingNormal` (x, y, z, down). */
   function ceilingLight(room, p, type, group, extra) {
