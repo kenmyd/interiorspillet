@@ -25,14 +25,14 @@
 const DEG = Math.PI / 180;
 const EPS = 1e-7;
 
-export const ROOF_TYPES = Object.freeze(['gable', 'hip', 'mono-pitch', 'flat']);
+export const ROOF_TYPES = Object.freeze(['gable', 'hip', 'half-hip', 'mono-pitch', 'flat']);
 export const DORMER_TYPES = Object.freeze(['gable', 'shed']);
 export const COVERINGS = Object.freeze(['tile', 'slate', 'felt', 'steel']);
 
 /** Defaults of the format (notes/tak.md). */
 export const ROOF_DEFAULTS = Object.freeze({
-  pitch: Object.freeze({ gable: 35, hip: 30, 'mono-pitch': 10, flat: 0 }),
-  covering: Object.freeze({ gable: 'tile', hip: 'tile', 'mono-pitch': 'steel', flat: 'felt' }),
+  pitch: Object.freeze({ gable: 35, hip: 30, 'half-hip': 35, 'mono-pitch': 10, flat: 0 }),
+  covering: Object.freeze({ gable: 'tile', hip: 'tile', 'half-hip': 'tile', 'mono-pitch': 'steel', flat: 'felt' }),
   color: Object.freeze({ tile: '#3a3634', slate: '#3c4046', felt: '#2b2b2d', steel: '#30343a' }),
   overhang: 0.5,
   flatOverhang: 0.3,
@@ -278,7 +278,8 @@ export function resolveRoofs(raw, { levels = [], walls = [] } = {}) {
     const pitch = r.pitch ?? ROOF_DEFAULTS.pitch[type];
     if (!num(pitch) || pitch < 0 || pitch > 70) return err('pitch må være 0–70 grader');
     if (type !== 'flat' && pitch < 2) warn(`${pitch}° er veldig slakt for ${type}`);
-    const pitchEnds = type === 'hip' ? r.pitchEnds ?? pitch : null;
+    const hipped = type === 'hip' || type === 'half-hip';
+    const pitchEnds = hipped ? r.pitchEnds ?? pitch : null;
     if (pitchEnds != null && (!num(pitchEnds) || pitchEnds < 5 || pitchEnds > 70)) return err('pitchEnds må være 5–70 grader');
     for (const k of ['ridge', 'fall']) if (r[k] != null && !(isPt(r[k]) && len(r[k]) > 1e-6)) return err(`${k} må være en retning [dx, dz]`);
     const mono = type === 'mono-pitch' || (type === 'flat' && pitch > 0);
@@ -290,7 +291,7 @@ export function resolveRoofs(raw, { levels = [], walls = [] } = {}) {
     const tv = thickness / Math.cos(pitch * DEG);
     const tws = ext.map((w) => w.thickness).filter(num).sort((a, b) => a - b);
     const wallThickness = r.wallThickness ?? (tws.length ? tws[Math.floor(tws.length / 2)] : ROOF_DEFAULTS.wallThickness);
-    const half = type === 'gable' || type === 'hip' ? F.Lv / 2 : F.Lv;
+    const half = type === 'gable' || hipped ? F.Lv / 2 : F.Lv;
     // the inner plane's height at the outline (the outer face of the eave walls), world y
     let E;
     const anchors = ['ridgeHeight', 'kneeHeight', 'eaveHeight'].filter((k) => r[k] != null);
@@ -303,15 +304,28 @@ export function resolveRoofs(raw, { levels = [], walls = [] } = {}) {
       const hs = ext.map((w) => w.height).filter(num);
       E = floorY + (hs.length ? Math.max(...hs) : level.ceilingDefault ?? 2.4);
     }
+    // half-hip (halvvalm): the top of each gable is hipped – the hip planes start `hipHeight` under the ridge at the
+    // outline (the gable walls' outer faces), so the gable under them stays a wall
+    let hipHeight = null;
+    if (type === 'half-hip') {
+      const rise = (t * F.Lv) / 2;
+      if (r.hipHeight != null && r.hipDepth != null) warn('både hipHeight og hipDepth er gitt – hipHeight gjelder');
+      for (const k of ['hipHeight', 'hipDepth']) if (r[k] != null && !num(r[k])) return err(`${k} må være et tall (m)`);
+      hipHeight = r.hipHeight ?? (r.hipDepth != null ? r.hipDepth * te : Math.round((rise / 3) * 100) / 100);
+      if (hipHeight < 0.1 || hipHeight > rise - 0.1) return err(`hipHeight må være 0,1–${(rise - 0.1).toFixed(2)} m (fra mønet ned til der valmen møter gavlveggen; lenger ned er det et valmtak)`);
+      if ((2 * hipHeight) / te > F.Lu - 0.2) return err(`valmene (${(hipHeight / te).toFixed(2)} m inn fra hver gavl) møtes – gjør hipHeight mindre eller pitchEnds brattere`);
+    }
     // planes (inner surface)
     const planes = [];
     const P = (du, dv, k, side) => planes.push({ ...localPlane(F, du, dv, k), tv, side, role: 'roof' });
-    if (type === 'gable' || type === 'hip') {
+    if (type === 'gable' || hipped) {
       P(0, t, E, 'v0');
       P(0, -t, E + t * F.Lv, 'v1');
-      if (type === 'hip') {
-        P(te, 0, E, 'u0');
-        P(-te, 0, E + te * F.Lu, 'u1');
+      if (hipped) {
+        // a hip's ends start at the eave, a half-hip's `hipHeight` under the ridge
+        const Eh = type === 'hip' ? E : E + (t * F.Lv) / 2 - hipHeight;
+        P(te, 0, Eh, 'u0');
+        P(-te, 0, Eh + te * F.Lu, 'u1');
       }
     } else P(0, t, E, 'v0');
     // the overhang box (local)
@@ -332,6 +346,9 @@ export function resolveRoofs(raw, { levels = [], walls = [] } = {}) {
       type,
       pitch,
       pitchEnds,
+      /** half-hip: how far under the ridge the hips meet the gable walls' outer faces, how far in from them the ridge ends */
+      hipHeight,
+      hipDepth: hipHeight != null ? hipHeight / te : null,
       covering,
       color: r.color ?? ROOF_DEFAULTS.color[covering],
       trimColor: r.trimColor ?? ROOF_DEFAULTS.trimColor,

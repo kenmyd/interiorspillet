@@ -5,6 +5,7 @@ import { isPlanType, isQuarterTurn, stairPlan, stairRisers, rampKnots, rampAt } 
 import { resolveRoofs, roofField, ceilingSurface, splitTriangles, liftTriangles, volumeUnder, surfaceProfile } from './roofgeom.js';
 import { resolveCladding, groundLevel } from './claddinggeom.js';
 import { resolveDecks, deckWalkRect } from './deckgeom.js';
+import { resolveChimneys } from './chimneygeom.js';
 
 /**
  * Room layout: reads data/room-spec.json and derives typed, world-space values for every module (shell, lighting,
@@ -127,6 +128,8 @@ import { resolveDecks, deckWalkRect } from './deckgeom.js';
  *                                          spec.cladding): { default, basement, zones, plinth, trim, groundY }
  * @property {Object[]} decks             terraces, balconies, porches, roof terraces (home/deckgeom.js resolveDecks; [] without
  *                                          spec.decks): { …data, top, bottom, groundY, edges, railings, stairs, posts, surfaceY(x, z) }
+ * @property {Object[]} chimneys          the chimneys (home/chimneygeom.js resolveChimneys; [] without spec.chimneys): { id,
+ *                                          material, at, size, footprint, bottomY, topY, pieces (inside, per level), roofLevelId }
  * @property {Object[]} lightGroups      the six living-room groups + the data groups { id, label, roomId (null: several rooms or none, e.g. boder, ute), dimmer (start level), dimmable, auto }
  * @property {Object[]} floorOpenings     { id, levelId, roomId, stairId, polygon, area, contains(x, z) (strict) }
  * @property {Object[]} stairs            { …data, fromLevel, toLevel, risers, rise, riser, topY, bottomY, footprint, wellPolygon, walkLine,
@@ -537,6 +540,9 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       const uc = (u0 + u1) / 2;
       const sill = o.sill ?? 0;
       const top = sill + o.height;
+      // a sloped top (notes/vindusmodeller.md): topSlope° rising to the right seen from the room (from → to), its high
+      // end at `top`; 'follow-roof' is resolved once the walls under a roof have their tops (below)
+      const slope = typeof o.topSlope === 'number' && Number.isFinite(o.topSlope) && Math.abs(o.topSlope) > 1e-6 && Math.abs(o.topSlope) < 80 ? Math.tan(o.topSlope * DEG) : 0;
       const corners = [pointAt(u0, sill), pointAt(u1, sill), pointAt(u1, top), pointAt(u0, top)];
       const rect = new Box3().setFromPoints(corners);
       const back = normal3.clone().multiplyScalar(-(w.thickness ?? 0.1));
@@ -554,6 +560,11 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
         height: o.height,
         sill,
         top,
+        // the sloped top: rise per metre along u (0: level), the top at u0 and at u1 (the bounding box stays sill … top)
+        topSlope: slope,
+        topSlopeSpec: o.topSlope ?? null,
+        topU0: slope > 0 ? top - o.width * slope : top,
+        topU1: slope < 0 ? top + o.width * slope : top,
         u0,
         u1,
         area: o.width * o.height,
@@ -639,8 +650,22 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
 
   // holes: a wall's own openings, plus (on a backOf face) the openings of its partner slab mapped into the face's u
   const backFacesOf = {}; // owner wall id → ids of the faces that are its back
+  /**
+   * a hole's sloped top on its face (map: its u → the opening's wall's u, dy to its floor): topU0 / topU1, only on a
+   * sloped opening ('follow-roof' sets them again below, once the walls have their tops)
+   */
+  const holeOfOpening = new Map();
+  const setSlopedTop = (h, o, map, dy) => {
+    if (!o.topSlope) return h;
+    const at = (u) => o.topU0 + ((o.topU1 - o.topU0) * (u - o.u0)) / (o.u1 - o.u0) + dy;
+    return Object.assign(h, { topU0: at(map(h.u0)), topU1: at(map(h.u1)) });
+  };
+  const slopedTop = (h, o, map, dy) => {
+    (holeOfOpening.get(o) ?? holeOfOpening.set(o, []).get(o)).push([h, map, dy]);
+    return setSlopedTop(h, o, map, dy);
+  };
   for (const w of allWalls) {
-    w.holes = w.openings.map((o) => ({ openingId: o.id, ownerWallId: w.id, type: o.type, u0: o.u0, u1: o.u1, sill: o.sill, top: o.top, door: !!o.door }));
+    w.holes = w.openings.map((o) => slopedTop({ openingId: o.id, ownerWallId: w.id, type: o.type, u0: o.u0, u1: o.u1, sill: o.sill, top: o.top, door: !!o.door }, o, (u) => u, 0));
   }
   for (const f of allWalls) {
     if (!f.backOf) continue;
@@ -659,7 +684,7 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
         const u1 = Math.min(f.length, Math.max(a, b));
         if (u1 - u0 < 1e-3) continue;
         const dy = p.floorY - f.floorY;
-        f.holes.push({ openingId: o.id, ownerWallId: p.id, type: o.type, u0, u1, sill: o.sill + dy, top: o.top + dy, door: !!o.door });
+        f.holes.push(slopedTop({ openingId: o.id, ownerWallId: p.id, type: o.type, u0, u1, sill: o.sill + dy, top: o.top + dy, door: !!o.door }, o, (fu) => o.u0 + ((fu - a) * (o.u1 - o.u0)) / (b - a), dy));
       }
     }
     f.holes.sort((a, b) => a.u0 - b.u0);
@@ -883,6 +908,20 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       w.topProfile = prof;
       w.height = Math.max(...prof.map((p) => p[1]));
       w.heightAt = (u) => profileAt(prof, u);
+    }
+  }
+
+  // ---- window tops that follow the wall's top (topSlope 'follow-roof', notes/vindusmodeller.md): parallel to the top
+  //      over the window (the line between its ends), now that the walls under a roof have theirs
+  for (const w of allWalls) {
+    for (const o of w.openings) {
+      if (o.topSlopeSpec !== 'follow-roof') continue;
+      const k = (w.heightAt(o.u1 - 1e-6) - w.heightAt(o.u0 + 1e-6)) / o.width;
+      if (Math.abs(k) < 1e-6 || Math.abs(k) > Math.tan(80 * DEG)) continue;
+      o.topSlope = k;
+      o.topU0 = k > 0 ? o.top - o.width * k : o.top;
+      o.topU1 = k < 0 ? o.top + o.width * k : o.top;
+      for (const [h, map, dy] of holeOfOpening.get(o) || []) setSlopedTop(h, o, map, dy);
     }
   }
 
@@ -1388,6 +1427,20 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       decks = r.decks;
     }
   }
+  // ---- the chimneys (notes/tak.md «Piper», home/chimneygeom.js): through the roofs above. Without spec.chimneys
+  //      nothing here runs (the owner's house).
+  let chimneys = [];
+  if (spec.chimneys != null) {
+    const lvList = levels.map((l) => ({ id: l.id, floorY: l.floorY }));
+    const r = resolveChimneys(spec.chimneys, {
+      levels: lvList,
+      rooms: physicalRooms.map((rm) => ({ id: rm.id, levelId: rm.levelId, floorY: rm.floorY, polygon: rm.polygon.map((p) => [p.x, p.y]) })),
+      roofFields,
+      groundY: groundLevel(lvList, MAIN_LEVEL_ID),
+    });
+    for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
+    chimneys = r.chimneys;
+  }
 
   /**
    * Room at a point. physical (default): the room of the level at y whose plan contains (x, z) – lighting and
@@ -1545,6 +1598,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     cladding: houseCladding,
     /** terraces, balconies, porches, roof terraces (home/deckgeom.js resolveDecks); [] without spec.decks */
     decks,
+    /** the chimneys (notes/tak.md, home/chimneygeom.js resolveChimneys); [] without spec.chimneys */
+    chimneys,
     outsideHouse: deepClone(spec.outsideHouse) ?? null,
     floorYAt,
     isInside: isInsideHouse,

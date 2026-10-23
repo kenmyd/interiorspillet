@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { wallLayer, groupGeometry, profileAt } from './wallkit.js';
+import { wallLayer, groupGeometry, profileAt, quadPrism } from './wallkit.js';
 import { finishAt, wallCuts, finishKey, plinthFinish, CLADDING_DEFAULTS } from './claddinggeom.js';
 import { panelUOffset } from '../world/surfaces.js';
 
@@ -305,6 +305,24 @@ export function claddingPiece(o) {
     for (const op of openings) {
       const x0 = Math.max(startClear, op.x0 - cw), x1 = Math.min(endClear, op.x1 + cw);
       const k = `s|${op.frameColor}`;
+      if (op.ta != null) {
+        // a sloped top (notes/vindusmodeller.md topSlope): the sides up to the line of the top, a sloped head board
+        // along it (under the layer's top); the board under the window in the union below
+        const line = (x) => op.ta + ((op.tb - op.ta) * (x - op.x0)) / (op.x1 - op.x0);
+        const dh = cw * Math.hypot(1, (op.tb - op.ta) / (op.x1 - op.x0));
+        const head = (x) => Math.max(line(x), Math.min(line(x) + dh, profileAt(oTop, x) - 0.01));
+        const f = batch.frame(T);
+        const m = trimMat(op.frameColor);
+        const yb = op.door ? Math.max(op.y0, oBottom) : op.y0;
+        const z0 = -t - ct, z1 = -t;
+        const side = (x) => Math.min(line(x), profileAt(oTop, x) - 0.01);
+        if (op.x0 - x0 > 0.005) quadPrism(f, [[x0, yb], [op.x0, yb], [op.x0, side(op.x0)], [x0, side(x0)]], z0, z1, m, { collide: false });
+        if (x1 - op.x1 > 0.005) quadPrism(f, [[op.x1, yb], [x1, yb], [x1, side(x1)], [op.x1, side(op.x1)]], z0, z1, m, { collide: false });
+        if (head(x0) - line(x0) > 0.005 && head(x1) - line(x1) > 0.005) quadPrism(f, [[x0, line(x0)], [x1, line(x1)], [x1, head(x1)], [x0, head(x0)]], z0, z1, m, { collide: false });
+        if (!op.door) rects.push({ x0, x1, y0: op.y0 - 0.06, y1: op.y0, key: k });
+        cutOut.push(op);
+        continue;
+      }
       rects.push({ x0, x1, y0: op.y1, y1: Math.min(op.y1 + cw, profileAt(oTop, (op.x0 + op.x1) / 2) - 0.01), key: k });
       const yb = op.door ? Math.max(op.y0, oBottom) : op.y0 - 0.06;
       if (op.x0 - x0 > 0.005) rects.push({ x0, x1: op.x0, y0: yb, y1: op.y1, key: k });
