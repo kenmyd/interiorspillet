@@ -21,7 +21,9 @@ dukkehusvisningen). **Test:** `node tools/house-tests/tak.test.mjs` (også med i
 (fire testhus i `src/dev/takdetaljer-hus.js`, port 5279 med `takdetaljer-test` i `.claude/launch.json`; «Gå» går med
 spillets figur, og `__bump('pipe-a', 's')` går figuren inn i en pipe). **Test:**
 `node tools/house-tests/takdetaljer.test.mjs`. Pipene: modellen er `src/home/chimneygeom.js`, byggeren
-`src/home/chimney.js`.
+`src/home/chimney.js`. Eierens hus er uendret også etter dette: fingeravtrykket er byte for byte likt, og de 12
+visningene i `tools/refcheck.mjs` tatt før (b7456b7) og etter er like (0 piksler; ett bilde hadde 3–5 piksler støy, som
+også kom mellom to bilder av samme kode). Lys- og akustikkdumpen er identisk.
 
 ## Taket: `roofs[]`
 
