@@ -509,6 +509,8 @@ export function buildRooms(ctx, layout, M = null) {
     if (type === 'concrete') return outdoorFinish('concrete', hex);
     if (type === 'panels') return outdoorFinish('panels', hex, s.module ? { module: s.module } : {});
     return outdoorFinish('wood', hex, { profile: 'plain' });
+  }
+
   // ---- a generated house's site (notes/uteomradet.md): the ground the lowest walls' outer layer reaches down to
   const SITE = H?.site ?? null;
   /** World y of the lowest ground just outside a piece [a, b] of a wall (its mitres included), null without a site. */
