@@ -233,13 +233,16 @@ export function claddingPiece(o) {
   }
 
   // ---- the bands of the clad face
-  // the plinth: a band from plinthFoot under the ground up to `height` over it (world y → the wall's frame)
-  const plinthTop = CL.plinth ? CL.groundY + CL.plinth.height - w.floorY : null;
-  const plinthBottom = CL.plinth ? CL.groundY - CLADDING_DEFAULTS.plinthFoot - w.floorY : null;
+  // the plinth: a band from plinthFoot under the ground up to `height` over it (world y → the wall's frame). On a
+  // site whose ground falls below the main floor's step (o.siteFoot, notes/uteomradet.md) the layer reaches down to the
+  // ground and the plinth with it: everything under its top is plinth (a bare concrete one where the data has none)
+  const sitePlinth = !!o.siteFoot && !CL.plinth;
+  const plinthTop = CL.plinth ? CL.groundY + CL.plinth.height - w.floorY : sitePlinth ? CL.groundY - w.floorY : null;
+  const plinthBottom = o.siteFoot ? -Infinity : CL.plinth ? CL.groundY - CLADDING_DEFAULTS.plinthFoot - w.floorY : null;
   const gLevel = gableY === null ? null : gableY - toLocal;
   const levelCuts = wallCuts(CL, { levelId: w.levelId, wallId: w.id, gableY: gLevel });
-  const cuts = [...new Set([...levelCuts.map((y) => y + toLocal), ...(plinthTop !== null ? [plinthBottom, plinthTop] : [])].map((y) => Math.round(y * 1e6) / 1e6))].sort((p, q) => p - q);
-  const plinthF = plinthFinish(CL);
+  const cuts = [...new Set([...levelCuts.map((y) => y + toLocal), ...(plinthTop !== null ? [plinthBottom, plinthTop] : [])].filter(Number.isFinite).map((y) => Math.round(y * 1e6) / 1e6))].sort((p, q) => p - q);
+  const plinthF = sitePlinth ? plinthFinish({ plinth: { material: 'concrete', color: CLADDING_DEFAULTS.plinth.color.concrete } }) : plinthFinish(CL);
   const finishOf = (y) => (plinthTop !== null && y < plinthTop && y >= plinthBottom ? plinthF : finishAt(CL, { levelId: w.levelId, wallId: w.id, y: y - toLocal, gableY: gLevel }));
   const bands = [];
   for (let k = 0; k <= cuts.length; k++) {

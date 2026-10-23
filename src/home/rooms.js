@@ -11,7 +11,8 @@ import { claddingMaterial, ledStrip } from './shell.js';
 import { buildRoofs } from './roof.js';
 import { buildChimneys } from './chimney.js';
 import { buildDecks } from './decks.js';
-import { claddingPiece, gableLine } from './cladding.js';
+import { buildSite } from './site.js';
+import { claddingPiece, gableLine, splitByY } from './cladding.js';
 import { finishAt, finishKey } from './claddinggeom.js';
 import { surfaceProfile, planeY, CLADDING_INTO_ROOF } from './roofgeom.js';
 import { wallFinish, floorFinish, facadeFinish } from '../world/surfaces.js';
@@ -83,6 +84,8 @@ const LOOK = {
 const BASEMENT_FOOT = 0.6;
 /** Outer layer of a ground-floor wall: down over the slab edge (as the shell's SLAB). */
 const SLAB = 0.3;
+/** On a site (notes/uteomradet.md) the lowest outer layer reaches this far under the lowest ground beside it. */
+const SITE_FOOT = 0.3;
 
 const v2 = (x, y) => new THREE.Vector2(x, y);
 const cross = (a, b) => a.x * b.y - a.y * b.x;
@@ -378,6 +381,33 @@ export function buildRooms(ctx, layout, M = null) {
     return plaster(f?.color ?? LOOK.plaster);
   }
 
+  // ---- a generated house's site (notes/uteomradet.md): the ground the lowest walls' outer layer reaches down to
+  const SITE = H?.site ?? null;
+  /** World y of the lowest ground just outside a piece [a, b] of a wall (its mitres included), null without a site. */
+  function siteLow(w, a, b) {
+    if (!SITE) return null;
+    const out = -(w.thickness + 0.05);
+    let low = Infinity;
+    const n = Math.max(2, Math.ceil((b - a + 0.6) / 0.5));
+    for (let k = 0; k <= n; k++) {
+      const u = a - 0.3 + ((b - a + 0.6) * k) / n;
+      low = Math.min(low, SITE.heightAt(w.start.x + w.dir.x * u + w.normal.x * out, w.start.y + w.dir.y * u + w.normal.y * out));
+    }
+    return low;
+  }
+  let plinthMat = null;
+  /** The bare concrete plinth under the facade of a house without `cladding` on a site. */
+  function sitePlinthMaterial() {
+    if (!plinthMat) {
+      try {
+        plinthMat = facadeFinish('concrete', '#9c9b96', { res: facadeRes });
+      } catch {
+        plinthMat = mat('painted', '#9c9b96', { roughness: 0.9 }); // no texture support
+      }
+    }
+    return plinthMat;
+  }
+
   // ---- helpers on walls
   const uOn = (w, p) => (p.x - w.start.x) * w.dir.x + (p.y - w.start.y) * w.dir.y;
   const offOn = (w, p) => (p.x - w.start.x) * w.normal.x + (p.y - w.start.y) * w.normal.y;
@@ -638,6 +668,16 @@ export function buildRooms(ctx, layout, M = null) {
           oTop = capProfile(pTop, capRanges.map(([p, q]) => [p - a, q - a]), capY, 0, b - a);
           oBottom = face ? bottom : Math.min(bottom, -BASEMENT_FOOT);
         }
+        // on a site the outer layer of the lowest walls goes down to the ground where it falls away (the plinth); not
+        // where the wall stands on a facade of the level below
+        let siteFoot = false;
+        if (SITE && !upper && !face && !(isMain && inRanges(overFacade(w), mid))) {
+          const low = siteLow(w, a, b) - w.floorY - SITE_FOOT;
+          if (low < oBottom - 1e-3) {
+            oBottom = low;
+            siteFoot = true;
+          }
+        }
         // the outer layer reaches below the floor: a door is a hole in it from the floor up (as in the shell), so the
         // facade stays closed under the threshold; only a layer that starts at the floor gets a notch
         const asHole = (h) => !h.door || oBottom < -EPS;
@@ -649,7 +689,7 @@ export function buildRooms(ctx, layout, M = null) {
           // the house's cladding: bands per zone / gable / plinth, flashings, corner boards, surrounds (cladding.js)
           const openings = outerAll.filter((h) => h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ ...h, y0: h.door ? Math.max(0, oBottom) : h.y0 }));
           claddingPiece({
-            CL, w, lv, gOut, T, a, b, oTop, oBottom, openings, kS, kE, gableY, corner, batch: rr.outside,
+            CL, w, lv, gOut, T, a, b, oTop, oBottom, openings, kS, kE, gableY, corner, batch: rr.outside, siteFoot: siteFoot && isMain,
             finishMat: finishMaterial, trimMat: trimMaterial, sideMat: K.trim,
           });
           continue;
@@ -660,7 +700,15 @@ export function buildRooms(ctx, layout, M = null) {
         gOut.dispose();
         if (clad) {
           if (face) (faceGeos.get(face.id) ?? faceGeos.set(face.id, []).get(face.id)).push(clad);
-          else {
+          else if (siteFoot && isMain) {
+            // the facade down to the main floor's step, bare concrete under it (the ground falls away there)
+            const [under, over] = splitByY(clad, [SITE.groundY]);
+            clad.dispose();
+            if (under) rr.outside.add(under, sitePlinthMaterial());
+            if (over) rr.outside.add(over, facade);
+            under?.dispose();
+            over?.dispose();
+          } else {
             rr.outside.add(clad, facade);
             clad.dispose();
           }
@@ -1013,8 +1061,17 @@ export function buildRooms(ctx, layout, M = null) {
   }
   // ---- the decks (notes/kledning.md, decks.js): terraces, balconies, porches, roof terraces with railings and stairs
   if (H.decks?.length) {
-    const built = buildDecks(H, { roots: ctx?.roots?.levels, fallback: group, keep, batchers, quality, mainLevelId: mainId });
+    const built = buildDecks(H, { roots: ctx?.roots?.levels, fallback: group, keep, batchers, quality, mainLevelId: mainId, groundAt: SITE ? SITE.heightAt : null });
     for (const g of built.groups) roots[g.name] = g;
+    colliders.push(...built.colliders);
+  }
+  // ---- the site (notes/uteomradet.md, site.js): the ground, surfaces, walls, steps, fences and hedges round the house
+  if (SITE) {
+    const built = buildSite(SITE, { keep, quality });
+    const parent = ctx?.roots?.levels?.[mainId] ?? group;
+    parent.add(built.group);
+    built.group.updateMatrixWorld(true);
+    roots[built.group.name] = built.group;
     colliders.push(...built.colliders);
   }
 

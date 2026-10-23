@@ -51,6 +51,7 @@ import { resolveRoofs, roofField, ceilingSurface, surfaceProfile, insideHalfPlan
 import { resolveCladding, groundLevel } from '../../home/claddinggeom.js';
 import { resolveChimneys } from '../../home/chimneygeom.js';
 import { resolveDecks } from '../../home/deckgeom.js';
+import { resolveSite } from '../../home/sitegeom.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../..');
@@ -1496,9 +1497,9 @@ export function validateHouse(spec, opts = {}) {
     }
   }
 
-  // ---- the cladding and the decks (notes/kledning.md, home/claddinggeom.js, home/deckgeom.js): the same model as
-  //      layout.js, its issues as errors / warnings
-  if (spec.cladding != null || spec.decks != null) {
+  // ---- the cladding, the decks and the site (notes/kledning.md, notes/uteomradet.md, home/claddinggeom.js,
+  //      home/deckgeom.js, home/sitegeom.js): the same model as layout.js, its issues as errors / warnings
+  if (spec.cladding != null || spec.decks != null || spec.site != null) {
     const lvList = levels.filter((l) => typeof l.id === 'string' && num(l.floorY)).map((l) => ({ id: l.id, floorY: l.floorY }));
     if (spec.cladding != null) {
       const cl = resolveCladding(spec.cladding, { levels: lvList, walls: walls.map((w) => ({ id: w.id, levelId: levelOf(roomOf(w)), exterior: !!w.exterior })), mainLevelId: 'hoved' });
@@ -1511,19 +1512,20 @@ export function validateHouse(spec, opts = {}) {
         if (!gabled) warn(`cladding.zones/${z.id}: gable, men intet saltak eller pulttak (eller halvvalm) over ${z.levelId ? `nivået «${z.levelId}»` : 'huset'} – sonen brukes ikke`);
       }
     }
-    if (spec.decks != null) {
+    if (spec.decks != null || spec.site != null) {
       const topOf = (wi) => {
         const prof = derivedTop.get(wi.w.id) ?? (Array.isArray(wi.w.topProfile) && wi.w.topProfile.length ? wi.w.topProfile : null);
         return prof ? Math.max(...prof.map((q) => q[1])) : num(wi.w.height) ? wi.w.height : 2.4;
       };
-      const dk = resolveDecks(spec.decks, {
-        levels: lvList,
-        walls: [...wallInfo.values()].filter((wi) => wi.w.backOf == null && wi.t > 0).map((wi) => ({
-          id: wi.w.id, levelId: wi.level, exterior: !!wi.w.exterior, start: wi.w.from, end: wi.w.to, normal: wi.n, thickness: wi.t, floorY: roomFloorY(wi.room), height: topOf(wi),
-        })),
-        rooms: rooms.filter(physical).map((r) => ({ id: r.id, levelId: r.levelId, floorY: roomFloorY(r.id), polygon: r.polygon })),
-        groundY: groundLevel(lvList, 'hoved'),
-      });
+      const deckWalls = [...wallInfo.values()].filter((wi) => wi.w.backOf == null && wi.t > 0).map((wi) => ({
+        id: wi.w.id, levelId: wi.level, exterior: !!wi.w.exterior, start: wi.w.from, end: wi.w.to, normal: wi.n, thickness: wi.t, floorY: roomFloorY(wi.room), height: topOf(wi),
+        openings: arr(wi.w.openings).filter(isObj).map((o) => ({ id: o.id, type: o.type, offset: o.offset, width: o.width, door: !!o.door, connects: o.connects })),
+      }));
+      const deckRooms = rooms.filter(physical).map((r) => ({ id: r.id, levelId: r.levelId, floorY: roomFloorY(r.id), polygon: r.polygon }));
+      // with a site the decks stand on its terrain (their groundY from it) and its entrances add porches
+      const dk = spec.site != null
+        ? resolveSite(spec.site, { levels: lvList, mainLevelId: 'hoved', walls: deckWalls, rooms: deckRooms, decks: spec.decks ?? null })
+        : resolveDecks(spec.decks, { levels: lvList, walls: deckWalls, rooms: deckRooms, groundY: groundLevel(lvList, 'hoved') });
       for (const i of dk.issues) (i.level === 'error' ? error : warn)(`${i.where}: ${i.msg}`);
     }
   }

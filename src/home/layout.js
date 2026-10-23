@@ -7,6 +7,7 @@ import { resolveRoofs, roofField, ceilingSurface, splitTriangles, liftTriangles,
 import { resolveCladding, groundLevel } from './claddinggeom.js';
 import { resolveDecks, deckWalkRect } from './deckgeom.js';
 import { resolveChimneys } from './chimneygeom.js';
+import { resolveSite } from './sitegeom.js';
 
 /**
  * Room layout: reads data/room-spec.json and derives typed, world-space values for every module (shell, lighting,
@@ -131,6 +132,9 @@ import { resolveChimneys } from './chimneygeom.js';
  *                                          spec.decks): { …data, top, bottom, groundY, edges, railings, stairs, posts, surfaceY(x, z) }
  * @property {Object[]} chimneys          the chimneys (home/chimneygeom.js resolveChimneys; [] without spec.chimneys): { id,
  *                                          material, at, size, footprint, bottomY, topY, pieces (inside, per level), roofLevelId }
+ * @property {Object|null} site           the outside of a generated house (notes/uteomradet.md, home/sitegeom.js resolveSite; null
+ *                                          without spec.site): terrain, surfaces, retaining walls, garden walls, fences, steps,
+ *                                          entrances, heightAt(x, z); with it the decks' groundY comes from the terrain
  * @property {Object[]} lightGroups      the six living-room groups + the data groups { id, label, roomId (null: several rooms or none, e.g. boder, ute), dimmer (start level), dimmable, auto }
  * @property {Object[]} floorOpenings     { id, levelId, roomId, stairId, polygon, area, contains(x, z) (strict) }
  * @property {Object[]} stairs            { …data, fromLevel, toLevel, risers, rise, riser, topY, bottomY, footprint, wellPolygon, walkLine,
@@ -1407,14 +1411,31 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
   //      and spec.decks nothing here runs (the owner's house).
   let houseCladding = null;
   let decks = [];
-  if (spec.cladding != null || spec.decks != null) {
+  let site = null;
+  if (spec.cladding != null || spec.decks != null || spec.site != null) {
     const lvList = levels.map((l) => ({ id: l.id, floorY: l.floorY }));
     if (spec.cladding != null) {
       const r = resolveCladding(spec.cladding, { levels: lvList, walls: allWalls.map((w) => ({ id: w.id, levelId: w.levelId, exterior: w.exterior })), mainLevelId: MAIN_LEVEL_ID });
       for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
       houseCladding = r.cladding;
     }
-    if (spec.decks != null) {
+    // the site (notes/uteomradet.md, home/sitegeom.js): the terrain, the surfaces, the entrances; the decks stand on it
+    if (spec.site != null) {
+      const r = resolveSite(spec.site, {
+        levels: lvList,
+        mainLevelId: MAIN_LEVEL_ID,
+        walls: allWalls.filter((w) => w.thickness > 0).map((w) => ({
+          id: w.id, levelId: w.levelId, exterior: w.exterior, start: [w.start.x, w.start.y], end: [w.end.x, w.end.y], normal: [w.normal.x, w.normal.y],
+          thickness: w.thickness, floorY: w.floorY, height: w.height,
+          openings: w.openings.map((o) => ({ id: o.id, type: o.type, offset: o.offset, width: o.width, door: !!o.door, connects: o.connects })),
+        })),
+        rooms: physicalRooms.map((rm) => ({ id: rm.id, levelId: rm.levelId, floorY: rm.floorY, polygon: rm.polygon.map((p) => [p.x, p.y]) })),
+        decks: spec.decks ?? null,
+      });
+      for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
+      site = r.site;
+      decks = r.decks;
+    } else if (spec.decks != null) {
       const r = resolveDecks(spec.decks, {
         levels: lvList,
         walls: allWalls.filter((w) => w.thickness > 0).map((w) => ({
@@ -1554,6 +1575,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
   });
   // the decks and their stairs are walkable too (notes/kledning.md)
   for (const dk of decks) walkRects.push(deckWalkRect(dk));
+  // …and the site round a generated house (notes/uteomradet.md)
+  if (site) walkRects.push({ levelId: MAIN_LEVEL_ID, site: true, minX: site.bounds.minX, maxX: site.bounds.maxX, minZ: site.bounds.minZ, maxZ: site.bounds.maxZ, minY: site.yRange[0] - 0.5, maxY: site.yRange[1] + 3 });
 
   /**
    * The whole house (§1.8). Lists hold every entry (the living room's included, same objects as the old fields);
@@ -1601,6 +1624,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     decks,
     /** the chimneys (notes/tak.md, home/chimneygeom.js resolveChimneys); [] without spec.chimneys */
     chimneys,
+    /** the outside of a generated house (notes/uteomradet.md, home/sitegeom.js resolveSite); null without spec.site */
+    site,
     outsideHouse: deepClone(spec.outsideHouse) ?? null,
     floorYAt,
     isInside: isInsideHouse,
