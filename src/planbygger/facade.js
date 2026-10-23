@@ -19,6 +19,7 @@
  *     roofFrom: 'ai'|'outline'|null, notes: [Norwegian text]
  *     roofPitch: degrees (an end view: a gable's or a mono-pitch's slope, as drawn) | undefined
  *     roofHigh: 'left'|'right' (a mono-pitch end: the end the roof is high at, as seen in the drawing) | undefined
+ *     roofView: 'long' (a long side with the roof surface seen: eaveY → ridgeY is the rise) | undefined
  *     skew: degrees (0 = straight), workScale: working px per image px (prepareFacade)
  *   }
  *   img is RGBA ({ width, height, data }), one facade per image (a sheet with several is split by sheet.js first).
@@ -976,8 +977,8 @@ function roofFromOutline(p, { bandH, H, eaveH, dormer }) {
       // a long side with the roof surface seen; sloping ends from about the eave up → hipped
       if (ends <= eaveH / H + 0.15 && top < 0.85 && i0 / n > 0.08 && (n - 1 - i1) / n > 0.08) return { roof: 'hip', options: ['hip'], why: 'skrå ender fra takfoten' };
       // the roof surface seen from the eave: a gable's long side or a mono-pitch's low side look the same
-      if (dormer) return { roof: 'gable-dormer', options: ['gable-dormer', 'mono-pitch'], why: 'langside med takflate og ark' };
-      return { roof: 'gable', options: ['gable', 'mono-pitch'], why: 'langside med takflate' };
+      if (dormer) return { roof: 'gable-dormer', options: ['gable-dormer', 'mono-pitch'], why: 'langside med takflate og ark', view: 'long' };
+      return { roof: 'gable', options: ['gable', 'mono-pitch'], why: 'langside med takflate', view: 'long' };
     }
     // no roof surface under the edge: a flat roof or the high side of a mono-pitch
     return { roof: 'flat', options: ['flat', 'mono-pitch'], why: 'flatt omriss uten takflate' };
@@ -1009,8 +1010,9 @@ function roofFromOutline(p, { bandH, H, eaveH, dormer }) {
     const l = fit(Math.min(lo, Math.max(0, i0 - 2)), i0);
     const r = fit(i1, Math.max(hi, Math.min(n - 1, i1 + 2)));
     const bump = Math.max(l.worst, r.worst);
-    if (bump > 0.06 || dormer) return { roof: 'gable-dormer', options: ['gable-dormer'], why: `gavl med ark (avvik ${Math.round(bump * 100)} %)` };
-    return { roof: 'gable', options: ['gable', 'gable-dormer'], why: 'gavl', pitch: (Math.atan(((Math.abs(l.k) + Math.abs(r.k)) / 2) * H) * 180) / Math.PI };
+    const slope = (Math.atan(((Math.abs(l.k) + Math.abs(r.k)) / 2) * H) * 180) / Math.PI;
+    if (bump > 0.06 || dormer) return { roof: 'gable-dormer', options: ['gable-dormer'], why: `gavl med ark (avvik ${Math.round(bump * 100)} %)`, pitch: slope };
+    return { roof: 'gable', options: ['gable', 'gable-dormer'], why: 'gavl', pitch: slope };
   }
   if (low > 0.2) return { roof: 'mixed', options: ['mixed'], why: 'sammensatt omriss' };
   return { roof: 'mixed', options: ['mixed'], why: 'uklart omriss' };
@@ -1702,7 +1704,38 @@ function readCore(img, options) {
     }
     result.roofOptions = fromOutline.options;
     // an end view: the pitch of its slopes, and which end a mono-pitch roof is high at (facadematch.js roofFromFacades)
-    if (fromOutline.pitch > 2 && fromOutline.pitch < 70) result.roofPitch = Math.round(fromOutline.pitch * 10) / 10;
+    if (fromOutline.pitch > 2 && fromOutline.pitch < 70) {
+      result.roofPitch = Math.round(fromOutline.pitch * 10) / 10;
+      result.roofPitchOf = fromOutline.roof === 'mono-pitch' ? 'mono-pitch' : 'gable';
+    }
+    // the dormer's own roof (F157: hus1's is a shed, falling forward over the balcony – built as a gable it stood over
+    // the ridge): over its window the roof's dark starts across the whole width at once (a shed's edge), or at the
+    // sides first and in the middle much higher (a gable's triangle)
+    if (dormer) {
+      // the dormer's front: every opening above the eave, together
+      const up = ops.filter((q) => q.y1 < eaveY - H * 0.02);
+      const dq = { x0: Math.min(...up.map((q) => q.x0)), x1: Math.max(...up.map((q) => q.x1)), y0: Math.min(...up.map((q) => q.y0)) };
+      const wq = dq.x1 - dq.x0;
+      const t = ink + 0.5 * range;
+      if (wq > 10) {
+        const fill = (y) => {
+          let d = 0;
+          for (let x = Math.round(dq.x0); x <= dq.x1; x++) if (grey.data[y * w + x] < t) d++;
+          return d / (wq + 1);
+        };
+        let some = null;
+        let full = null;
+        for (let y = Math.round(dq.y0) - 2; y > Math.max(1, dq.y0 - 1.5 * wq) && full == null; y--) {
+          const f = fill(y);
+          if (some == null && f >= 0.3) some = y;
+          if (f >= 0.85) full = y;
+        }
+        if (some != null && full != null) result.dormerRoof = some - full > 0.25 * wq ? 'gable' : 'shed';
+      }
+    }
+    // a long side with the roof surface seen: the eave to the ridge is the roof's rise (facadematch.js: the pitch from
+    // the plan's depth – a gable end's slope is no measure where the end is half-hipped, hus1)
+    if (fromOutline.view === 'long') result.roofView = 'long';
     if (fromOutline.high) result.roofHigh = fromOutline.high;
     notes.push(`Takfot fra ${eaveFrom}; takform fra omrisset: ${fromOutline.roof ?? 'ukjent'} (${fromOutline.why}).`);
   };

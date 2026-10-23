@@ -979,6 +979,214 @@ eller faller, eller huset står på feil sted.
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F137.json`
 - **Status:** rettet – utstikket er 25 cm ved takfoten og 10 cm ved gavlene (var 50 og 30).
 
+### F138 – skyvedør som ikke er inne i vegg
+- **Tekst:** skyvedør som ikke er inne i vegg
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F138.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F138.json`
+- **Status:** ny
+
+### F139 – overgang mellom skråtak og flatt tak har feilet, men i dette huset er 
+- **Tekst:** overgang mellom skråtak og flatt tak har feilet, men i dette huset er det egentlig skråtak helt ut til veggen til soverom 11,7m2 og WIC 4,6m2
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F139.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F139.json`
+- **Status:** ny
+
+### F140 – dette innhukket har feilet. den mangler del av vegg imelleom der du se
+- **Tekst:** dette innhukket har feilet. den mangler del av vegg imelleom der du ser grønt nede
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F140.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F140.json`
+- **Status:** ny
+
+### F141 – vinduene og ytterdører stemmer generelt ikke med faseden. mener type v
+- **Tekst:** vinduene og ytterdører stemmer generelt ikke med faseden. mener type vindu som er valgt.
+- **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F141.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F141.json`
+- **Status:** ny
+
+### F142 – hvorfor spør genereringen om dette egentlig? trappa er jo ikke tegnet 
+- **Tekst:** hvorfor spør genereringen om dette egentlig? trappa er jo ikke tegnet noe utydelig
+- **Hvor:** veiviser – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F142.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F142.json`
+- **Status:** ny
+
+### F143 – dette må modellen vite av seg selv. dette er jo trappa og ikke et eget
+- **Tekst:** dette må modellen vite av seg selv. dette er jo trappa og ikke et eget rom
+- **Hvor:** veiviser – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F143.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F143.json`
+- **Status:** fikset – et rom uten navn der trappa dekker minst 40 % av gulvet heter «Trapp» (gang), uten spørsmål (generate.js, etter at trappene er på plass)
+
+### F144 – generert. vindu og dørtyper som blir valgt er feil
+- **Tekst:** generert. vindu og dørtyper som blir valgt er feil
+- **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F144.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F144.json`
+- **Status:** ny
+
+### F145 – Fasaden på dette huset ser jeg at noe er veldig vanskelig og genereree
+- **Tekst:** Fasaden på dette huset ser jeg at noe er veldig vanskelig og genereree. På fasadetegning 3 så set du at det er kledning i toppen på taket som går ned på høyre side og så fortsettte den rett under rekkverk på glassrekkverk bort til boden. Og boden skulle også hatt stående kledning
+- **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F145.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F145.json`
+- **Status:** ny
+
+### F146 – her er det det samme som forrige feil der vi har den markerte kledning
+- **Tekst:** her er det det samme som forrige feil der vi har den markerte kledningsen som går ifra taket og ned på høyre side og fortsetter på etasjeskillet bort til terrasse og ned
+- **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F146.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F146.json`
+- **Status:** ny
+
+### F147 – under hele terrassen her skal det være kledning
+- **Tekst:** under hele terrassen her skal det være kledning
+- **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F147.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F147.json`
+- **Status:** ny
+
+### F148 – det er to loddrette streker på fasaden på høyre del her.
+- **Tekst:** det er to loddrette streker på fasaden på høyre del her.
+- **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F148.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F148.json`
+- **Status:** ny
+
+### F149 – fronten på boden skulle vært med grå fasadeplater. og døre skulle også
+- **Tekst:** fronten på boden skulle vært med grå fasadeplater. og døre skulle også vært grå i samme farge.
+- **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F149.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F149.json`
+- **Status:** ny
+
+### F150 – det er naturlig at det er en støpt betongplatting under terrassen her 
+- **Tekst:** det er naturlig at det er en støpt betongplatting under terrassen her og bort til stoltene. Disse stoltene skulle helller ikke vært her visst du ser fasadetegning 1
+- **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F150.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F150.json`
+- **Status:** ny
+
+### F151 – hva skjer med gulvet her. hvorfor har det blitt delt
+- **Tekst:** hva skjer med gulvet her. hvorfor har det blitt delt
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F151.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F151.json`
+- **Status:** ny
+
+### F152 – det er hull i etasjeskillet
+- **Tekst:** det er hull i etasjeskillet
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F152.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F152.json`
+- **Status:** fikset – trappehullet holdes 6 cm fra flaten på en yttervegg oppe, så veggens underkant ikke synes gjennom etasjeskillet (export.js exportStairs; test i seksjon 12)
+
+### F153 – hva har skjedd her. 1. det er gjerde på tvers slik at jeg ikke kan gå 
+- **Tekst:** hva har skjedd her. 1. det er gjerde på tvers slik at jeg ikke kan gå bortover terrassen. 2 det er forskjellig terrasse underlag. tre forskjellige typer.
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F153.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F153.json`
+- **Status:** ny
+
+### F154 – skyvedør generering har feilet her
+- **Tekst:** skyvedør generering har feilet her
+- **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F154.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F154.json`
+- **Status:** ny
+
+### F155 – her har taket blitt med helt feil takvinkel. det gjelder overalt. Noe 
+- **Tekst:** her har taket blitt med helt feil takvinkel. det gjelder overalt. Noe skjer nok galt i genereringen
+- **Hvor:** 3D (dukkehus) – 1etg.avif, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F155.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F155.json`
+- **Status:** fikset – KI-ens fløy brukes for en takdel bare når minst 60 % av fløyens rom ligger i den delen (hus5 fikk saltak med 35° over alle tre delene); vinkelen fra fasadene
+
+### F156 – Du må studere dette fordi jeg tror det har skjedd noe helt feil med ta
+- **Tekst:** Du må studere dette fordi jeg tror det har skjedd noe helt feil med tak og takkonstruksjonen som gjør at jeg nesten ikke klarer og skjønne fasadetenignene mot genereringen
+- **Hvor:** 3D (dukkehus) – 1etg.avif, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F156.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F156.json`
+- **Status:** fikset – samme som F155: takdelene får typen og vinkelen fra fasadene og fløyene som hører til dem
+
+### F157 – her er genereingen feil. 1 utstikk på taket er feil vei.tak er bygget 
+- **Tekst:** her er genereingen feil. 1 utstikk på taket er feil vei.tak er bygget forbi i fronten på utstikk. Det er vinkel i mænet både på høyre og venstre side
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F157.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F157.json`
+- **Status:** delvis – arken er en pultark som på fasaden (avlest på fasadene), takfoten og vinkelen fra fasadene. Halvvalmen og en ark i veggliv (takfoten brutt foran arken) venter på motoren (taksesjonen)
+
+### F158 – Mønet her har en vinkel ned. sammenlikn med fasadetegning
+- **Tekst:** Mønet her har en vinkel ned. sammenlikn med fasadetegning
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F158.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F158.json`
+- **Status:** delvis – taket er saltak med rett møne og vinkelen fra fasadenes høyde (44° på hus1); halvvalmen i endene venter på motoren
+
+### F159 – Huset er mye høyere enn fasadetegningen. Visst du sammenlikner dem så 
+- **Tekst:** Huset er mye høyere enn fasadetegningen. Visst du sammenlikner dem så ser du det. Tror 2.etg er blitt bygget som en full eteajse, men har ikke vært inne i huset enda
+- **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F159.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F159.json`
+- **Status:** fikset – takfoten fra fasadene (5 cm over loftsgulvet på hus1) i stedet for knevegger på 1,2 m i ytterveggene; huset er like høyt som fasadetegningen
+
+### F160 – når jeg går i trappa så kan jeg se ut rett igjennom etasjeskillet
+- **Tekst:** når jeg går i trappa så kan jeg se ut rett igjennom etasjeskillet
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F160.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F160.json`
+- **Status:** fikset – hullet for en kvartsvingt trapp er L-formet (trappa og reposet), og rekkverket følger det (export.js exportStairs)
+
+### F161 – det har blitt generert knevegger, men etter tegning så skulle den knev
+- **Tekst:** det har blitt generert knevegger, men etter tegning så skulle den kneveggen vært helt ute ved takvinduet nesten
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F161.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F161.json`
+- **Status:** fikset – kneveggen er den tynne linja planen tegner parallelt med ytterveggen 0,5–2,2 m inne, der taket over linja står 0,4–1,8 m over gulvet; stripen bak heter «Kneveggsbod» (generate.js addKneeWalls; test i seksjon 12)
+
+### F162 – samme gjelder med kneveggen her og de andre plassene
+- **Tekst:** samme gjelder med kneveggen her og de andre plassene
+- **Hvor:** 3D (går rundt) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F162.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F162.json`
+- **Status:** fikset – samme regel som F161, på alle ytterveggene på loftet
+
+### F163 – det ser ikke ut som dørene og veggene treffer 100% på de orginale tegn
+- **Tekst:** det ser ikke ut som dørene og veggene treffer 100% på de orginale tegningene.
+- **Hvor:** fasadesjekk – 2etg.avif, 1etg.avif, fasade4.avif, fasade3.avif, fasade2.avif, fasade1.avif
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F163.json`
+- **Status:** ny
+
+### F164 – Samme her ser du at vinduene er høyere og har det skråfeltet. Mulig at
+- **Tekst:** Samme her ser du at vinduene er høyere og har det skråfeltet. Mulig at noe har skjedd feil når jeg skrev takhøyden. Kanskje det er høyere takhøyde her enn 2,4 meter det er det antagelig. men det kunne kanskje genereringen visst og måt av seg selv? det gjør den ikke idag. Feks her vet den jo ca høyde på vindu og vet at etasjeskille normalt er 20cm så kan sikkert modellen generere takhøydene automatisk. Må kanskje gjøre noe med vindugenerering slik de kan genereres med den vinkelen som er på vinduene i øverste etasje
+- **Hvor:** fasadesjekk – 2etg.avif, 1etg.avif, fasade4.avif, fasade3.avif, fasade2.avif, fasade1.avif
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F164.json`
+- **Status:** ny
+
+### F165 – her er det fortsatt noe i hjørnet
+- **Tekst:** her er det fortsatt noe i hjørnet
+- **Hvor:** 3D (går rundt) – garasje-plan-snitt-fasade.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F165.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F165.json`
+- **Status:** ny
+
+### F166 – forrige feil med noe i hjørnet. det vises også her på plantegning, men
+- **Tekst:** forrige feil med noe i hjørnet. det vises også her på plantegning, men det er ikke på den plantegning PDFen
+- **Hvor:** 2D-editor – garasje-plan-snitt-fasade.pdf
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F166.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F166.json`
+- **Status:** ny
+
+### F167 – midt i bildet her er pipa, den blir ikke generert. Samme med pipe på u
+- **Tekst:** midt i bildet her er pipa, den blir ikke generert. Samme med pipe på utsiden. Vi må lage en plan på hvordan dette skal genereres og i hvilken fase vi skal gjøre det
+- **Hvor:** 2D-editor – 2etg.png, 1etg.png, fasade4.avif, fasade3.avif, fasade2.avif, fasade1.avif
+- **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F167.jpg`
+- **Tilstand:** `.shots/planbygger/tilbakemeldinger/F167.json`
+- **Status:** ny
+
 ---
 
 ## Kjent fra sluttkontrollen (Claude)

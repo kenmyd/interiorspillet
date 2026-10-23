@@ -1083,7 +1083,23 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
         box[k] = best;
         if (outside(box) > 5e-4) box[k] = was;
       }
+      // a side on an exterior wall's face comes 6 cm in: a strip of floor stays along the wall, and its edge closes the
+      // slot between the storeys there (F152, hus4: the sky showed between the walls beside the stair)
+      const upperExt = house.walls.filter((w) => w.exterior && w.thickness > 0 && roomLevel.get(w.roomId) === upper.id);
+      for (const [k, axis, sign] of [[1, 1, 1], [3, 1, -1], [0, 0, 1], [2, 0, -1]]) {
+        const span = axis === 1 ? [box[0], box[2]] : [box[1], box[3]];
+        const onExt = upperExt.some((w) => {
+          if (Math.abs(w.from[axis] - w.to[axis]) > 1e-3 || Math.abs(w.from[axis] - box[k]) > 0.03) return false;
+          const lo = Math.min(w.from[1 - axis], w.to[1 - axis]);
+          const hi = Math.max(w.from[1 - axis], w.to[1 - axis]);
+          return Math.min(span[1], hi) - Math.max(span[0], lo) > 0.5 * (span[1] - span[0]);
+        });
+        if (onExt) box[k] += 0.06 * sign;
+      }
       const hole = [[box[0], box[1]], [box[2], box[1]], [box[2], box[3]], [box[0], box[3]]].map(RP);
+      // the floor's hole: the rectangle, or for an L only the two flights (F160: the floor over the inner corner was
+      // open, and one saw through the floor from the stair)
+      let holePoly = hole;
       // the way down in game coordinates, and the edges on the (clipped) hole
       const dG = unit(frame.vecToGame(g.down));
       const along = (p) => dot(p, dG);
@@ -1162,14 +1178,16 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
         top = { edge: (first ? [P(0, 0), P(w, 0)] : [P(B - w, 0), P(B, 0)]).map(RP), down: RP(dG) };
         foot = first ? { edge: [P(B, A - w), P(B, A)].map(RP), down: RP(e) } : { edge: [P(0, A - w), P(0, A)].map(RP), down: RP(mul(e, -1)) };
         extra = { winders: 'balanced' };
-        // guards: the hole's sides not along a wall; on the top side only the part beside the top flight (open down)
-        for (let i = 0; i < 4; i++) {
-          const p = hole[i];
-          const q = hole[(i + 1) % 4];
+        holePoly = (first ? [P(0, 0), P(w, 0), P(w, A - w), P(B, A - w), P(B, A), P(0, A)] : [P(B - w, 0), P(B, 0), P(B, A), P(0, A), P(0, A - w), P(B - w, A - w)]).map(RP);
+        // (the format's polygons wind with a positive area, like the rectangle's)
+        if (Math.sign(signedArea(holePoly)) !== Math.sign(signedArea(hole))) holePoly.reverse();
+        // guards: the hole's sides not along a wall, except the top flight's own top edge (the way off upstairs)
+        for (let i = 0; i < holePoly.length; i++) {
+          const p = holePoly[i];
+          const q = holePoly[(i + 1) % holePoly.length];
           const isTop = Math.abs(along(p) - lo) < 1e-6 && Math.abs(along(q) - lo) < 1e-6;
-          if (onFace(p, q)) continue;
-          if (!isTop) guard(p, q);
-          else guard(...(first ? [P(w, 0), P(B, 0)] : [P(0, 0), P(B - w, 0)]));
+          if (isTop || onFace(p, q)) continue;
+          guard(p, q);
         }
       } else if (!u) {
         top = { edge: topPts.map(RP), down: RP(dG) };
@@ -1224,7 +1242,7 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
       const maxSlope = (Math.acos(WALKABLE_NORMAL_Y) * 180) / Math.PI;
       // (a steep stair is steep on purpose: the game climbs it up to its limit, notes/trapper.md)
       if (slope > maxSlope && !steep) warnings.push(`${level.name}: trappa er for bratt å gå i (${round(slope, 0)}° med ${round(walk, 2)} m ganglinje for ${round(rise, 2)} m; høyst ${round(maxSlope, 0)}°) – den trenger minst ${round(rise / Math.tan((maxSlope * Math.PI) / 180), 1)} m ganglinje`);
-      floorOpenings.push({ id: holeId, levelId: upper.id, roomId: room.id, stairId: id, polygon: hole, edgeBand: { color: '#f2efe8', depth: 0.3 }, estimated: ['polygon'] });
+      floorOpenings.push({ id: holeId, levelId: upper.id, roomId: room.id, stairId: id, polygon: holePoly, edgeBand: { color: '#f2efe8', depth: 0.3 }, estimated: ['polygon'] });
       stairs.push({
         id,
         name: 'Trapp',
@@ -1463,9 +1481,14 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
   // default), and a dormer (ark) over each window or door in them that reaches above the knee wall – the way the drawings
   // show it (hus1 «gable-dormer», F126, F127, F129). Its front is on the wall's outer face, 0.3 m wider than the openings
   const KNEE = 1.2;
+  // a loft's eave as the facades show it (generate.js doc.roof.eaveTop, the eave over the loft's floor: hus1's is at
+  // the floor, F159 – the house was 1,2 m too high with knee walls in the outer walls), never under 5 cm (the storey
+  // below stands up to the floor); without facades knee walls of KNEE
+  const eaveLoft = Number.isFinite(doc.roof?.eaveTop) ? Math.max(0.05, Math.min(1.6, doc.roof.eaveTop)) : null;
+  const kneeOf = (pitch) => (eaveLoft != null ? eaveLoft + 0.25 * Math.tan(((pitch ?? 35) * Math.PI) / 180) : KNEE);
   // tekking: the AI's reading of the roof (houseread.js) in the house format's words
   const COVERING = { tiles: 'tile', slate: 'slate', felt: 'felt', metal: 'steel' };
-  const dormersOf = (p) => {
+  const dormersOf = (p, knee = KNEE) => {
     const along = p.i1 - p.i0 >= p.j1 - p.j0 ? ax : ay;
     const out = [];
     for (const w of outer) {
@@ -1474,7 +1497,7 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
       const d = unit(sub(w.to, w.from));
       if (Math.abs(dot(d, along)) < 0.9) continue;
       const n = w.normal ?? perp(d);
-      const tall = (w.openings || []).filter((o) => (o.sill ?? 0) + (o.height ?? 0) > KNEE - 0.05).map((o) => [Math.max(0, o.offset - 0.3), Math.min(L, o.offset + o.width + 0.3)]).sort((x, y) => x[0] - y[0]);
+      const tall = (w.openings || []).filter((o) => (o.sill ?? 0) + (o.height ?? 0) > knee - 0.05).map((o) => [Math.max(0, o.offset - 0.3), Math.min(L, o.offset + o.width + 0.3)]).sort((x, y) => x[0] - y[0]);
       const merged = [];
       for (const iv of tall) {
         const last = merged[merged.length - 1];
@@ -1484,7 +1507,7 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
       for (const [u0, u1] of merged) {
         const P = (u) => [w.from[0] + d[0] * u - n[0] * w.thickness, w.from[1] + d[1] * u - n[1] * w.thickness];
         const top = Math.max(...(w.openings || []).filter((o) => o.offset < u1 && o.offset + o.width > u0).map((o) => (o.sill ?? 0) + (o.height ?? 0)));
-        out.push({ id: `ark-${w.id}-${out.length + 1}`, type: 'gable', front: [P(u0), P(u1)].map(RP), height: R(Math.max(2.2, top + 0.15)) });
+        out.push({ id: `ark-${w.id}-${out.length + 1}`, type: doc.roof?.dormerType === 'shed' ? 'shed' : 'gable', front: [P(u0), P(u1)].map(RP), height: R(Math.max(2.2, top + 0.15)) });
       }
     }
     return out;
@@ -1495,19 +1518,22 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
   };
   /** The part's roof: the ridge line drawn with a sloped ceiling (its direction, and at an edge: a mono-pitch roof high
    *  there), else the AI's wing with most of its rooms in the part, else the house's type from the facades. */
-  const roofOf = (p) => {
+  const roofOf = (p, withRise = true) => {
     const line = marks.find((m) => m.kind === 'sloped' && m.ridge && inPartOf(p, G([(m.ridge[0][0] + m.ridge[1][0]) / 2, (m.ridge[0][1] + m.ridge[1][1]) / 2])));
+    // the AI's wing of this part: one with most of its rooms in it (F155: a «gable» wing over rooms all over hus5
+    // made all three parts gables, steep at the default 35°)
     let wing = null;
     let most = 0;
     for (const w of wingsHere) {
       const n = w.points.filter((q) => inPartOf(p, G(q))).length;
-      if (n > most) [wing, most] = [w, n];
+      if (n >= 0.6 * w.points.length && n > most) [wing, most] = [w, n];
     }
-    const degrees = doc.roof?.pitchSet ?? marks.find((m) => m.kind === 'sloped' && m.degrees && m.points.some((q) => inPartOf(p, G(q))))?.degrees ?? doc.roof?.pitch ?? doc.roof?.pitchFacades ?? null;
+    const written = doc.roof?.pitchSet ?? marks.find((m) => m.kind === 'sloped' && m.degrees && m.points.some((q) => inPartOf(p, G(q))))?.degrees ?? doc.roof?.pitch ?? null;
     // the AI's type only where it split the house into wings: one roof over it all keeps the facades' type (they read
     // hus1's half-hip with dormers right, the AI called it hip – notes/planbygger.md, «KI-laget»)
     const wingType = wingsHere.length >= 2 && ['gable', 'hip', 'mono-pitch', 'flat'].includes(wing?.type) ? wing.type : null;
-    const out = { type: wingType ?? type, from: wingType ? 'KI' : kind ? 'fasadene' : null, ...(degrees ? { pitch: degrees } : {}) };
+    const typeHere = wingType ?? type;
+    const out = { type: typeHere, from: wingType ? 'KI' : kind ? 'fasadene' : null };
     if (line) {
       const a = G(line.ridge[0]);
       const b = G(line.ridge[1]);
@@ -1538,7 +1564,29 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
         if (f) out.fall = unit(frame.vecToGame(f)).map((v) => R(v) || 0);
       }
     }
+    // the facades' measured slope only for the type it was measured on (a gable end's, a mono-pitch end's); a gable's
+    // or a hip's from the long sides' rise (one pitch for the house, over the main part's depth), else the gable ends'
+    const pitchedHere = out.type === 'gable' || out.type === 'hip';
+    const measured = out.type === 'mono-pitch' ? doc.roof?.pitchMono : pitchedHere ? (withRise ? risePitchOf() : null) ?? doc.roof?.pitchGable ?? doc.roof?.pitchFacades : null;
+    const degrees = written ?? measured ?? null;
+    if (degrees) out.pitch = degrees;
     return out;
+  };
+  /** A part's depth across its ridge (along its longer side when no ridge is given). */
+  const depthAcross = (p, ridge) => (ridge ? (Math.abs(dot(ridge, ax)) >= Math.abs(dot(ridge, ay)) ? p.j1 - p.j0 : p.i1 - p.i0) : Math.min(p.i1 - p.i0, p.j1 - p.j0)) * CELL;
+  /** The pitch from the facades' long-side rise (generate.js doc.roof.riseFacades, the eave to the ridge): over half the
+   *  biggest part's depth across its ridge, 15–60° (a rise read off a wing seen end on is no pitch) */
+  let risePitch;
+  const risePitchOf = () => {
+    if (risePitch !== undefined) return risePitch;
+    risePitch = null;
+    const rise = doc.roof?.riseFacades;
+    const main = [...parts].sort((x, y) => y.area - x.area)[0];
+    if (!(rise > 0) || !main) return null;
+    const depth = depthAcross(main, roofOf(main, false).ridge);
+    const deg = depth > 1 ? (Math.atan(rise / (depth / 2)) * 180) / Math.PI : null;
+    risePitch = deg >= 15 && deg <= 60 ? Math.round(deg) : null;
+    return risePitch;
   };
   const NAMES = { gable: 'saltak', hip: 'valmtak', 'mono-pitch': 'pulttak', flat: 'flatt tak' };
   house.roofs = parts.map((p, i) => {
@@ -1548,7 +1596,7 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
     const d = toG(u0 + p.i0 * CELL, v0 + p.j1 * CELL);
     const rf = roofOf(p);
     const pitched = rf.type === 'gable' || rf.type === 'hip';
-    const dormers = loft && pitched && parts.length === 1 ? dormersOf(p) : [];
+    const dormers = loft && pitched && parts.length === 1 ? dormersOf(p, kneeOf(rf.pitch)) : [];
     return {
       id: `roof-${i + 1}`,
       type: rf.type,
@@ -1557,14 +1605,14 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
       ...(rf.ridge ? { ridge: rf.ridge } : {}),
       ...(rf.fall ? { fall: rf.fall } : {}),
       ...(rf.pitch ? { pitch: rf.pitch } : {}),
-      ...(loft && pitched ? { kneeHeight: KNEE } : {}),
+      ...(loft && pitched ? (eaveLoft != null ? { eaveHeight: R(eaveLoft) } : { kneeHeight: KNEE }) : {}),
       ...(COVERING[doc.roof?.covering] ? { covering: COVERING[doc.roof.covering] } : {}),
       // small overhangs, as the facade drawings show them (F137)
       overhang: rf.type === 'flat' ? 0.15 : 0.25,
       vergeOverhang: 0.1,
       ...(dormers.length ? { dormers } : {}),
       estimated: ['*'],
-      source: `planbyggeren: ${NAMES[rf.type]}${rf.from ? ` fra ${rf.from}` : ' (ingen fasader)'}${rf.pitch ? `, ${rf.pitch}°` : ''}${parts.length > 1 ? `, fløy ${i + 1} av ${parts.length}` : ''}${loft && pitched ? `, loft med knevegg ${KNEE} m${dormers.length ? ` og ${dormers.length} ark${dormers.length > 1 ? 'er' : ''}` : ''}` : ''}`,
+      source: `planbyggeren: ${NAMES[rf.type]}${rf.from ? ` fra ${rf.from}` : ' (ingen fasader)'}${rf.pitch ? `, ${rf.pitch}°` : ''}${parts.length > 1 ? `, fløy ${i + 1} av ${parts.length}` : ''}${loft && pitched ? `, loft ${eaveLoft != null ? `med takfoten ${R(eaveLoft)} m over gulvet (fasadene)` : `med knevegg ${KNEE} m`}${dormers.length ? ` og ${dormers.length} ark${dormers.length > 1 ? 'er' : ''}` : ''}` : ''}`,
     };
   });
   // the ceilings: a loft follows the roof everywhere (flat at the room's height where the roof is higher, a collar

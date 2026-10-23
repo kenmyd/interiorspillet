@@ -691,6 +691,74 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     const area = (o) => Math.abs(o.reduce((s, p, i) => s + p[0] * o[(i + 1) % o.length][1] - o[(i + 1) % o.length][0] * p[1], 0) / 2);
     check('den lave delen uten etasje over (3 × 6 m) får et flatt tak på sin egen etasje, og huset er uten feil', annex.length === 1 && annex[0].type === 'flat' && area(annex[0].outline) > 12 && area(annex[0].outline) < 22 && v.errors.length === 0, `${annex.length} tak, ${annex[0] ? area(annex[0].outline).toFixed(1) : '–'} m²; ${v.errors.slice(0, 2).join(' | ')}`);
   }
+  // a loft's knee wall drawn as a thin line 1,3 m inside the north wall (hus1, F161): a wall of its own there, when
+  // the roof over it stands a knee wall's height above the floor; none where no line is drawn
+  {
+    const Gm = await imp('src/planbygger/generate.js');
+    const ppm = 50;
+    const W = 9 * ppm;
+    const H = 7 * ppm;
+    const img = { width: W, height: H, data: new Uint8ClampedArray(W * H * 4).fill(255) };
+    for (let x = Math.round(0.15 * ppm); x < 7.85 * ppm; x++) for (const y of [Math.round(1.45 * ppm), Math.round(1.45 * ppm) + 1]) {
+      const k = (y * W + x) * 4;
+      img.data[k] = img.data[k + 1] = img.data[k + 2] = 70;
+    }
+    const { lv: l9 } = make();
+    const knees = Gm.addKneeWalls(l9, img, ppm, { eaveTop: 0.05, pitch: 44 });
+    const kn = knees[0];
+    check('kneveggen: den tynne linja 1,3 m innenfor nordveggen blir en vegg langs hele veggen, de andre veggene får ingen', knees.length === 1 && kn.id === 'knee-n' && kn.knee && Math.abs(kn.a[1] - 1.45) < 0.04 && Math.abs(kn.b[1] - 1.45) < 0.04 && Math.min(kn.a[0], kn.b[0]) < 0.05 && Math.max(kn.a[0], kn.b[0]) > 7.95, JSON.stringify(knees));
+    const { lv: l10 } = make();
+    check('og ingen knevegg der taket over linja står 2,7 m over gulvet (takfoten 1,5 m, 40°)', Gm.addKneeWalls(l10, img, ppm, { eaveTop: 1.5, pitch: 40 }).length === 0);
+  }
+  // a loft under a gable roof, the facades read: the eave 5 cm over the loft floor, the long sides' 2,9 m rise over the
+  // 6 m depth (44°), shed dormers (hus1, F157–F159)
+  {
+    const { doc: d4 } = make();
+    const up = M.createLevel(d4, { id: 'loft', name: 'Loft', image: { name: 'syntetisk-2', width: 1, height: 1, pxPerM: 100 } });
+    up.floorY = 2.7;
+    up.walls = [
+      { id: 'un', a: [0, 0], b: [8, 0], t: 0.3, exterior: true },
+      { id: 'ue', a: [8, 6], b: [8, 0], t: 0.3, exterior: true },
+      { id: 'us', a: [8, 6], b: [0, 6], t: 0.3, exterior: true },
+      { id: 'uw', a: [0, 0], b: [0, 6], t: 0.3, exterior: true },
+    ];
+    up.openings = [{ id: 'uv', wall: 'us', type: 'window', at: 4, width: 1, sill: 0.3, height: 1.4 }];
+    up.rooms = [{ id: 'u', seed: [4, 3], name: 'Loftstue', kind: 'living' }];
+    d4.roof = { type: 'gable', from: 'fasader', eaveTop: 0.05, riseFacades: 2.9, dormerType: 'shed' };
+    const ex = E.exportHouse(d4);
+    const v = await validateGenerated(ex);
+    const r = (ex.house.roofs ?? []).find((x) => x.levelId === 'loft');
+    check('loftet: takfoten 5 cm over gulvet, vinkelen fra fasadenes høyde (2,9 m over 6,3 m: 43°), og vinduet over takfoten får en pultark', !!r && r.type === 'gable' && r.eaveHeight === 0.05 && r.kneeHeight === undefined && r.pitch >= 42 && r.pitch <= 45 && r.dormers?.length === 1 && r.dormers[0].type === 'shed' && v.errors.length === 0, JSON.stringify({ r: r && { type: r.type, eave: r.eaveHeight, pitch: r.pitch, dormers: r.dormers }, errors: v.errors.slice(0, 2) }));
+  }
+  // a stair along an upper exterior wall (hus4, F152): the hole stays 6 cm off the wall's face, so the wall's bottom
+  // edge never shows through the floor
+  {
+    const doc = M.createDoc('Trapp mot ytterveggen');
+    const box = (lv) => {
+      lv.walls = [
+        { id: 'n', a: [0, 0], b: [8, 0], t: 0.25, exterior: true },
+        { id: 'e', a: [8, 0], b: [8, 6], t: 0.25, exterior: true },
+        { id: 's', a: [8, 6], b: [0, 6], t: 0.25, exterior: true },
+        { id: 'w', a: [0, 6], b: [0, 0], t: 0.25, exterior: true },
+      ];
+      lv.openings = [];
+    };
+    box(M.createLevel(doc, { id: 'hoved', floorY: 0 }));
+    box(M.createLevel(doc, { id: 'oppe', name: '2. etasje', floorY: 2.7 }));
+    M.addStair(doc.levels[1], [1.0, 0.125], [4.6, 1.1]);
+    const ex = E.exportHouse(doc);
+    const v = await validateGenerated(ex);
+    const hole = ex.house.floorOpenings?.[0]?.polygon ?? [];
+    const lv = new Map(ex.house.rooms.map((r) => [r.id, r.levelId]));
+    const ext = ex.house.walls.filter((w) => w.exterior && lv.get(w.roomId) === 'oppe');
+    const off = (p, w) => {
+      const d = [w.to[0] - w.from[0], w.to[1] - w.from[1]];
+      const L = Math.hypot(d[0], d[1]);
+      return Math.abs((p[0] - w.from[0]) * d[1] - (p[1] - w.from[1]) * d[0]) / L;
+    };
+    const gap = Math.min(...hole.map((p) => Math.min(...ext.map((w) => off(p, w)))));
+    check('trappehullet langs ytterveggen oppe: minst 5 cm fra veggflaten, og huset er uten feil', hole.length >= 4 && gap >= 0.05 && gap < 0.2 && v.errors.length === 0, `${gap.toFixed(3)} m; ${v.errors.slice(0, 2).join(' | ')}`);
+  }
 }
 
 done();

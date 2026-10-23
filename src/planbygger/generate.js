@@ -1468,7 +1468,7 @@ export async function generate(inputs, opts = {}) {
     const n = applyFacadeMatch(doc, usable.map((d) => ({ reading: d.reading })), match, { ceiling: doc.settings.ceiling });
     // the roof's pitch and a mono-pitch roof's high side as the end views show them on their sides
     const rf = roofFromFacades(usable.map((d) => ({ reading: d.reading })), match);
-    if (rf.pitch || rf.high) doc.roof = { ...(doc.roof || {}), ...(rf.pitch ? { pitchFacades: rf.pitch } : {}), ...(rf.high ? { monoHigh: rf.high } : {}) };
+    doc.roof = { ...(doc.roof || {}), ...(rf.pitch ? { pitchFacades: rf.pitch } : {}), ...(rf.pitchGable ? { pitchGable: rf.pitchGable } : {}), ...(rf.pitchMono ? { pitchMono: rf.pitchMono } : {}), ...(rf.eaveTop != null ? { eaveTop: rf.eaveTop } : {}), ...(rf.rise ? { riseFacades: rf.rise } : {}), ...(rf.dormerType ? { dormerType: rf.dormerType } : {}), ...(rf.high ? { monoHigh: rf.high } : {}) };
     usable.forEach((d, i) => {
       d.match = match.drawings[i];
       const f = doc.facades?.find((x) => x.file === d.file && x.part === d.part);
@@ -1641,6 +1641,48 @@ export async function generate(inputs, opts = {}) {
     report.validation = { errors: res.errors, warnings: res.warnings.length, before, fixes };
     step({ step: 'validate', method: 'validateHouse', confidence: res.errors.length ? 'low' : 'high', detail: `${res.errors.length} feil${before !== res.errors.length ? ` (var ${before})` : ''}, ${res.warnings.length} advarsler${fixes.length ? `; rettet: ${fixes.join('; ')}` : ''}${res.errors.length ? `: ${res.errors.slice(0, 3).join(' | ')}` : ''}`, ms: Math.round(now() - t) });
     if (res.errors.length) report.notes.push(`Kontrollen fant ${res.errors.length} feil i 3D-huset; rett dem i «Finjuster» (${res.errors.slice(0, 2).join('; ')}${res.errors.length > 2 ? ' …' : ''}).`);
+  }
+
+  // ---- the rooms still without a name, now that the levels and the stairs are in place: a loft's knee walls with
+  //      the low strip behind each («Kneveggsbod», F161, F162), and a room that is mostly the stair («Trapp», F143) –
+  //      named by rule, not asked about
+  for (const d of byNo) {
+    const L = d.level;
+    if (!d.found) continue;
+    let found = d.found;
+    if (L === TL && loftish) {
+      const before = found;
+      const knees = addKneeWalls(L, d.img, d.ppm, { eaveTop: Number.isFinite(doc.roof?.eaveTop) ? Math.max(0.05, doc.roof.eaveTop) : null, pitch: doc.roof?.pitchGable ?? doc.roof?.pitchFacades ?? 35 });
+      if (knees.length) {
+        found = levelRooms(L);
+        // a name whose point is now in the strip behind a knee wall goes to the main part of its room
+        const isStrip = (r) => (r.edges ?? []).some((e) => /^knee-/.test(e.wall ?? ''));
+        for (const lab of L.rooms) {
+          const now = found.rooms.find((r) => r.index === found.at(lab.seed[0], lab.seed[1]));
+          if (!now || !isStrip(now)) continue;
+          const old = before.rooms.find((r) => r.index === before.at(lab.seed[0], lab.seed[1]));
+          const main = old ? found.rooms.filter((r) => !isStrip(r) && pointInPolygon(r.inside, old.polygon)).sort((x, y) => y.area - x.area)[0] : null;
+          if (main) lab.seed = [round(main.inside[0], 3), round(main.inside[1], 3)];
+        }
+        step({ step: 'walls', level: L.id, method: 'knee', confidence: 'medium', detail: `${knees.length} knevegg${knees.length === 1 ? '' : 'er'} fra de tynne linjene innenfor ytterveggene` });
+      }
+    }
+    const named = new Set(L.rooms.map((r) => found.at(r.seed[0], r.seed[1])).filter((k) => k >= 0));
+    const areaIn = (poly, rect) => {
+      const [[x0, y0], [x1, y1]] = rect;
+      return Math.abs(signedArea(clipPolygon(poly, [[x0, y0], [x1, y0], [x1, y1], [x0, y1]])));
+    };
+    for (const room of found.rooms) {
+      if (named.has(room.index) || room.area < 0.5) continue;
+      const knee = (room.edges ?? []).some((e) => /^knee-/.test(e.wall ?? ''));
+      const stair = (L.stairs ?? []).reduce((s, st) => s + areaIn(room.polygon, st.rect), 0);
+      const name = knee ? 'Kneveggsbod' : stair >= 0.4 * room.area ? 'Trapp' : null;
+      if (!name) continue;
+      L.rooms.push({ id: `r${L.rooms.length + 1}`, name, kind: name === 'Trapp' ? 'hall' : 'storage', seed: [round(room.inside[0], 3), round(room.inside[1], 3)], auto: true, from: 'regel' });
+      named.add(room.index);
+    }
+    d.found = found;
+    if (d.rooms) d.rooms.unnamed = found.rooms.filter((r) => !named.has(r.index) && r.area >= 0.5).map((r) => r.index);
   }
 
   // ---- 8. questions
@@ -2158,6 +2200,67 @@ export function dropBeams(L, img, ppm) {
     L.openings = (L.openings || []).filter((o) => !gone.has(o.wall));
   }
   return gone.size;
+}
+
+/**
+ * A loft's knee walls (F161, F162, K10: hus1's 2. etasje draws them as thin lines 1,3 m inside the eave walls, by the
+ * roof windows; the rooms went out to the outer walls): along each exterior wall at least 3 m long, the thin line
+ * parallel to it 0,5–2,2 m inside its inner face, ink along at least half its length (the darkest of three pixels
+ * across) and not a band (a wall: 0,15 m to either side has far less ink), with no wall there already → a wall of
+ * 0,1 m, `knee: true`. With the facades' eave over the floor and the roof's pitch (roof: { eaveTop, pitch }), the roof
+ * over the line must stand 0,4–1,8 m above the floor there (a knee wall's height; a kitchen counter's front 0,6 m in under
+ * an eave at the floor is no knee wall). img: the plan image, ppm its px per metre. → the walls added
+ */
+export function addKneeWalls(L, img, ppm, roof = {}) {
+  if (!img?.data || !(ppm > 0)) return [];
+  const lum = (x, y) => {
+    const xi = Math.round(x);
+    const yi = Math.round(y);
+    if (xi < 0 || yi < 0 || xi >= img.width || yi >= img.height) return 255;
+    const k = (yi * img.width + xi) * 4;
+    return 0.299 * img.data[k] + 0.587 * img.data[k + 1] + 0.114 * img.data[k + 2];
+  };
+  const found = levelRooms(L);
+  const added = [];
+  for (const w of L.walls.filter((x) => x.exterior)) {
+    const len = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]);
+    if (len < 3) continue;
+    const u = [(w.b[0] - w.a[0]) / len, (w.b[1] - w.a[1]) / len];
+    let n = [-u[1], u[0]];
+    // inward: the side with a room
+    const mid = [(w.a[0] + w.b[0]) / 2, (w.a[1] + w.b[1]) / 2];
+    if (found.at(mid[0] + n[0] * (w.t / 2 + 0.3), mid[1] + n[1] * (w.t / 2 + 0.3)) < 0) n = [-n[0], -n[1]];
+    const inkAt = (d) => {
+      let dark = 0;
+      let all = 0;
+      for (let s = 0.3; s <= len - 0.3; s += 1 / ppm) {
+        const x = (w.a[0] + u[0] * s + n[0] * d) * ppm;
+        const y = (w.a[1] + u[1] * s + n[1] * d) * ppm;
+        all++;
+        if (Math.min(lum(x, y), lum(x + n[0], y + n[1]), lum(x - n[0], y - n[1])) < 160) dark++;
+      }
+      return all ? dark / all : 0;
+    };
+    let best = null;
+    for (let d = w.t / 2 + 0.5; d <= w.t / 2 + 2.2; d += 1 / ppm) {
+      const f = inkAt(d);
+      if (!best || f > best.f) best = { d, f };
+    }
+    if (!best || best.f < 0.5 || inkAt(best.d - 0.15) > 0.5 * best.f || inkAt(best.d + 0.15) > 0.5 * best.f) continue;
+    if (Number.isFinite(roof.eaveTop) && roof.pitch > 0) {
+      const h = roof.eaveTop + best.d * Math.tan((roof.pitch * Math.PI) / 180);
+      if (h < 0.4 || h > 1.8) continue;
+    }
+    // (0,15 m on at each end, into the walls it runs between: from the wall's end points it stopped short of them)
+    const a = [w.a[0] + n[0] * best.d - u[0] * 0.15, w.a[1] + n[1] * best.d - u[1] * 0.15];
+    const b = [w.b[0] + n[0] * best.d + u[0] * 0.15, w.b[1] + n[1] * best.d + u[1] * 0.15];
+    // not a wall already (an inner wall along it)
+    if (L.walls.some((x) => x !== w && Math.abs(((x.b[0] - x.a[0]) * u[1] - (x.b[1] - x.a[1]) * u[0])) < 0.05 * Math.hypot(x.b[0] - x.a[0], x.b[1] - x.a[1]) && projectToSegment(a, x.a, x.b).d < 0.15 && projectToSegment(b, x.a, x.b).d < 0.15)) continue;
+    const k = { id: `knee-${w.id}`, a: a.map((v) => round(v, 4)), b: b.map((v) => round(v, 4)), t: 0.1, auto: true, knee: true };
+    L.walls.push(k);
+    added.push(k);
+  }
+  return added;
 }
 
 /** How a level's walls were read (report and notes). */

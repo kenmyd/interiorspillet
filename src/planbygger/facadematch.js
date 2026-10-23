@@ -223,17 +223,34 @@ export function matchFacades(doc, drawings, { levelsByNo = {} } = {}) {
  * The roof as the facades show it from their sides: the pitch (the median of the end views' slopes) and, for a
  * mono-pitch roof, the plan direction it is high towards – each end view on its side: seen from outside, the drawing's
  * right end lies towards the side's right hand. Views that disagree (two mono-pitch wings high towards the middle, hus5)
- * cancel out. → { pitch: degrees | null, high: [dx, dy] (plan, north 0) | null, n }
+ * cancel out. → { pitch, pitchGable, pitchMono (degrees: all end views, the gable ends', the mono-pitch ends' – each
+ * within sane limits), eaveTop (m: the eave over the top storey's floor, from the views with two storeys or more),
+ * high: [dx, dy] (plan, north 0) | null, n }
  */
 export function roofFromFacades(drawings, match) {
   const OUT = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
   const pitches = [];
+  const gable = [];
+  const mono = [];
+  const eaves = [];
+  const rises = [];
+  const dormers = { gable: 0, shed: 0 };
   const sum = [0, 0];
   let n = 0;
   match.drawings.forEach((m, i) => {
     const r = drawings[i]?.reading;
     if (!r || !m.planSide) return;
-    if (r.roofPitch) pitches.push(r.roofPitch);
+    if (r.roofPitch) {
+      pitches.push(r.roofPitch);
+      // (sane slopes only: a gable 15–55°, a mono-pitch 3–30°)
+      if (r.roofPitchOf === 'mono-pitch' && r.roofPitch >= 3 && r.roofPitch <= 30) mono.push(r.roofPitch);
+      else if (r.roofPitchOf !== 'mono-pitch' && r.roofPitch >= 15 && r.roofPitch <= 55) gable.push(r.roofPitch);
+    }
+    // the eave over the top storey's floor (a loft: hus1's eave is at its floor, F159)
+    const top = Array.isArray(r.floorYs) && r.storeys >= 2 ? r.floorYs[r.storeys - 1] : null;
+    if (Number.isFinite(top) && Number.isFinite(r.eaveY) && r.pxPerM > 0) eaves.push(((top - r.eaveY) * (m.k || 1)) / r.pxPerM);
+    if (r.dormerRoof) dormers[r.dormerRoof]++;
+    if (r.roofView === 'long' && Number.isFinite(r.eaveY) && Number.isFinite(r.ridgeY) && r.eaveY > r.ridgeY && r.pxPerM > 0) rises.push(((r.eaveY - r.ridgeY) * (m.k || 1)) / r.pxPerM);
     if (r.roof === 'mono-pitch' && r.roofHigh) {
       const d = OUT[m.planSide];
       const right = [d[1], -d[0]];
@@ -243,12 +260,16 @@ export function roofFromFacades(drawings, match) {
       n++;
     }
   });
-  pitches.sort((a, b) => a - b);
-  const pitch = pitches.length ? pitches[(pitches.length - 1) >> 1] : null;
+  const med = (a) => (a.length ? [...a].sort((x, y) => x - y)[(a.length - 1) >> 1] : null);
+  const pitch = med(pitches);
   // a clear majority along one axis
   const len = Math.hypot(sum[0], sum[1]);
   const high = n && len >= Math.max(1, 0.6 * n) ? (Math.abs(sum[0]) >= Math.abs(sum[1]) ? [Math.sign(sum[0]), 0] : [0, Math.sign(sum[1])]) : null;
-  return { pitch: pitch != null ? Math.round(pitch) : null, high, n };
+  const g = med(gable);
+  const mo = med(mono);
+  const e = med(eaves);
+  const ri = med(rises);
+  return { pitch: pitch != null ? Math.round(pitch) : null, pitchGable: g != null ? Math.round(g) : null, pitchMono: mo != null ? Math.round(mo) : null, eaveTop: e != null ? Math.round(e * 100) / 100 : null, rise: ri != null ? Math.round(ri * 100) / 100 : null, dormerType: dormers.shed > dormers.gable ? 'shed' : dormers.gable ? 'gable' : null, high, n };
 }
 
 /**
