@@ -61,7 +61,7 @@
     "idSyntax": "^[a-z0-9][a-z0-9_æøå-]*$",
     "topLevel": [
       "meta", "zones", "floor", "baseboard", "walls", "ceilings", "bulkheads", "builtInLights", "kitchen", "furniture", "fixtures", "highWall", "outside", "photoCameras",
-      "levels", "rooms", "floorOpenings", "stairs", "builtIns", "lightGroups", "facadeSegments", "outsideHouse", "roofs", "cladding", "decks", "chimneys", "lighting"
+      "levels", "rooms", "floorOpenings", "stairs", "builtIns", "lightGroups", "facadeSegments", "outsideHouse", "roofs", "cladding", "decks", "chimneys", "lighting", "furnishing"
     ],
     "protected": ["meta", "floor", "baseboard", "highWall"],
     "collections": {

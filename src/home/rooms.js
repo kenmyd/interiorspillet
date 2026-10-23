@@ -12,6 +12,7 @@ import { buildRoofs } from './roof.js';
 import { buildChimneys } from './chimney.js';
 import { buildDecks } from './decks.js';
 import { GlowBatch, ruleFitting } from './lampfittings.js';
+import { buildFurnishing } from './furnish.js';
 import { claddingPiece, gableLine } from './cladding.js';
 import { finishAt, finishKey } from './claddinggeom.js';
 import { surfaceProfile, planeY, CLADDING_INTO_ROOF } from './roofgeom.js';
@@ -39,6 +40,9 @@ import { wallFinish, floorFinish, facadeFinish } from '../world/surfaces.js';
  *     the roof plane;
  *   • the decks (decks.js, layout.house.decks): terraces, balconies, porches and roof terraces in their level's root,
  *     with railings, stairs and their colliders (in `colliders`);
+ *   • a generated house's furniture (furnish.js, layout.house.furnishing – notes/moblering-genererte-hus.md) when there
+ *     is no design to build it (no ctx.design: the planbygger's view, the dev pages): the models in each room's
+ *     `contents`, their colliders in `colliders`, the builder's result in `furniture`;
  *   • a floor per room (oak shared with the living room / tinted for the basement, vinyl, concrete, parquet) with the
  *     stairwell cut out, the ceilings (the basement's with the hole; roof windows in ceilings[].skylights: hole, shaft
  *     and window), black ceiling trims, the white edge face on the
@@ -55,7 +59,7 @@ import { wallFinish, floorFinish, facadeFinish } from '../world/surfaces.js';
  * Not here: the stair (stairs.js), built-ins / bathroom (builtins.js), the lights themselves (lighting.js), the
  * terrain / forecourt / pillar (exterior.js), sockets and switches (fixtures).
  *
- *   buildRooms(ctx, layout, M) → { group, walls, windows, doors, pickables, builtInLights, colliders, update, setPaint, dispose }
+ *   buildRooms(ctx, layout, M) → { group, walls, windows, doors, pickables, builtInLights, colliders, furniture, update, setPaint, dispose }
  *
  * ctx     the createHome ctx (scene, collision, interaction, quality …). ctx.roots holds the scene roots of the house:
  *         ctx.roots.levels[levelId] and ctx.roots.rooms[roomId] = { id, name, levelId, kind, hud, group, surfaces,
@@ -160,6 +164,7 @@ export function buildRooms(ctx, layout, M = null) {
     setPaint() {},
     dispose() {
       for (const d of doors) d.door?.dispose();
+      furnished?.dispose();
       group.removeFromParent();
       for (const r of Object.values(roots)) r.removeFromParent();
       for (const b of batchers) for (const g of b.geometries || []) g.dispose();
@@ -168,6 +173,7 @@ export function buildRooms(ctx, layout, M = null) {
     ...extra,
   });
   const roots = {}; // what this builder put into ctx.roots (taken out on dispose)
+  let furnished = null; // a generated house's furniture (furnish.js), when there is no design
   if (!rooms.length) return contract();
 
   const quality = ctx?.quality || {};
@@ -1506,6 +1512,15 @@ export function buildRooms(ctx, layout, M = null) {
   }
   for (const r of rooms) R[r.id].solid.updateMatrixWorld(true);
 
+  // ---- the furniture of a generated house (notes/moblering-genererte-hus.md, furnish.js) where no design builds it
+  //      (the planbygger's 3D view, the dev pages): the models in the rooms' contents, static colliders. In the game
+  //      (ctx.design) the same items are original design items: SceneSync builds and collides them.
+  if (H.furnishing && !ctx?.design) {
+    furnished = buildFurnishing(ctx, layout);
+    if (furnished.group.children.length) group.add(furnished.group);
+    colliders.push(...furnished.colliders);
+  }
+
   /** Paint a wall / backOf face or a ceiling of these rooms ('sand' | 'marrakesh' | '#hex', null = the data's colour). */
   function setPaint(id, color) {
     const wm = wallFaceMeshes.get(id);
@@ -1522,7 +1537,7 @@ export function buildRooms(ctx, layout, M = null) {
     }
   }
 
-  return contract({ setPaint });
+  return contract({ setPaint, furniture: furnished });
 }
 
 /**

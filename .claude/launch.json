@@ -78,6 +78,12 @@
       "port": 5274
     },
     {
+      "name": "moblering-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5274", "--strictPort"],
+      "port": 5274
+    },
+    {
       "name": "takdetaljer-test",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5279", "--strictPort"],
