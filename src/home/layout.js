@@ -2,7 +2,7 @@ import { Box3, ShapeUtils, Vector2, Vector3 } from 'three';
 import roomSpec from '../data/room-spec.json';
 import paletteData from '../data/palette.json';
 import { isPlanType, isQuarterTurn, stairPlan, stairRisers, rampKnots, rampAt } from './stairtypes.js';
-import { resolveRoofs, roofField, ceilingSurface, splitTriangles, liftTriangles, volumeUnder, surfaceProfile } from './roofgeom.js';
+import { resolveRoofs, roofFields as fieldsOfRoofs, ceilingSurface, splitTriangles, liftTriangles, volumeUnder, surfaceProfile } from './roofgeom.js';
 import { resolveCladding, groundLevel } from './claddinggeom.js';
 import { resolveDecks, deckWalkRect } from './deckgeom.js';
 import { resolveChimneys } from './chimneygeom.js';
@@ -769,9 +769,7 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     const r = resolveRoofs(spec.roofs, { levels, walls: roofWalls });
     for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
     roofParts = r.parts;
-    const byLevel = {};
-    for (const p of roofParts) (byLevel[p.levelId] ||= []).push(p);
-    for (const [id, list] of Object.entries(byLevel)) roofFields[id] = roofField(list);
+    Object.assign(roofFields, fieldsOfRoofs(roofParts));
   }
 
   // ---- ceilings (heightAt = above the room's floor, topAt = world y)
@@ -904,7 +902,24 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
         if (s) samplers.push({ ...s, shift: [-w.normal.x * k, -w.normal.y * k] });
       }
       if (!samplers.length) continue;
-      const prof = surfaceProfile([w.start.x, w.start.y], [w.end.x, w.end.y], samplers, w.floorY, w.height);
+      let prof = surfaceProfile([w.start.x, w.start.y], [w.end.x, w.end.y], samplers, w.floorY, w.height);
+      // (a wall the floor above covers – inside the core of a roof part on a higher level, the wing's wall against the
+      // main house – stops under that floor, even where the room behind it is open to its own roof)
+      const above = levelsById[w.levelId]?.aboveId ? levelsById[levelsById[w.levelId].aboveId] : null;
+      const inCore = (q) => roofParts.some((p) => p.floorY > w.floorY + 0.5 && p.coreHps.every((hp) => hp.a * q[0] + hp.b * q[1] + hp.c <= 0.02));
+      const outer = (pt) => [pt.x - w.normal.x * w.thickness * 0.5, pt.y - w.normal.y * w.thickness * 0.5];
+      if (above && inCore(outer(w.start)) && inCore(outer(w.end))) {
+        const cap = above.bottomY - w.floorY;
+        if (prof.some((q) => q[1] > cap)) {
+          const capped = [];
+          prof.forEach(([u, y], i) => {
+            const [u0, y0] = prof[i - 1] ?? [u, y];
+            if ((y0 - cap) * (y - cap) < 0 && u > u0) capped.push([u0 + ((u - u0) * (cap - y0)) / (y - y0), cap]);
+            capped.push([u, Math.min(y, cap)]);
+          });
+          prof = capped;
+        }
+      }
       w.topProfile = prof;
       w.height = Math.max(...prof.map((p) => p[1]));
       w.heightAt = (u) => profileAt(prof, u);

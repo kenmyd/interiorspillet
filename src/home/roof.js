@@ -4,7 +4,7 @@ import { roofFinish } from '../world/surfaces.js';
 import { basis } from '../world/buildKit.js';
 import { UP, wallLayer, groupGeometry, buildWindow, polygonTriangles } from './wallkit.js';
 import {
-  planeY, clipAll, subtractConvex, polyArea, inPolygon, inConvex, insideHalfPlanes, edgeDistance, ROOF_GAP, CLADDING_INTO_ROOF,
+  planeY, clipAll, subtractConvex, polyArea, inPolygon, inConvex, insideHalfPlanes, edgeDistance, planesProfile, ROOF_GAP, CLADDING_INTO_ROOF,
 } from './roofgeom.js';
 
 /**
@@ -15,9 +15,15 @@ import {
  *     own that plane), the fascia / verge boards on the outer edges (the eave cut off at an ark's front);
  *   • holes for the openings of the dormers and for the roof windows (ceilings[].skylights under the roof – their
  *     shafts and windows are rooms.js's);
- *   • a ridge cap along the ridge and the hips (not on felt), half-round gutters along the eaves (`gutters`);
+ *   • a ridge cap along the ridge and the hips (not on felt; on a mansard only between the upper slopes), half-round
+ *     gutters along the eaves (`gutters`);
+ *   • valley flashings (vinkelrenner) where two parts meet, where a dormer meets the roof and in a V roof's valley, a
+ *     flashing on a mansard's break (`valleys`);
  *   • the dormers: their own slabs, the cheeks (the cladding of their sides, from the main roof up into theirs) and the
- *     front wall of a takopplett with its window (wallkit buildWindow) – its inside in the paint of the ceiling under it.
+ *     front wall of a takopplett with its windows (wallkit buildWindow) – its inside in the paint of the ceiling under it;
+ *   • a hole for each recessed roof terrace (the eave cut between its sides, a fascia round it);
+ *   • a parapet (attika): its inner lining from the covering up and a coping over it (the wall's cladding goes up its
+ *     outside – rooms.js).
  * Everything goes into the level's scene root and is hidden with the ceilings (pickables.ceilings, no pick of its own),
  * no collision.
  *
@@ -72,26 +78,19 @@ function slopeUV(p, fallbackDir) {
 /** The regions left of a convex polygon after cutting convex polygons out: [{ outer, holes }]. */
 function cutRegions(poly, cuts) {
   let regions = [{ outer: poly, holes: [] }];
-  for (const q of cuts) {
-    if (q.length < 3) continue;
-    const next = [];
-    for (const r of regions) {
-      const inter = clipAll(r.outer, insideHalfPlanes(q));
-      if (!inter.length || Math.abs(polyArea(inter)) < 1e-6) {
-        next.push(r);
-        continue;
-      }
-      const inside = q.every((p) => inPolygon(p[0], p[1], r.outer) && edgeDistance(p, r.outer) > 1e-3);
-      const clear = r.holes.every((h) => !clipAll(h, insideHalfPlanes(q)).length);
-      if (inside && clear) {
-        next.push({ outer: r.outer, holes: [...r.holes, q] });
-        continue;
-      }
-      for (const piece of subtractConvex(r.outer, q)) next.push({ outer: piece, holes: r.holes.filter((h) => h.every((p) => inConvex(p[0], p[1], piece))) });
-    }
-    regions = next;
-  }
+  for (const q of cuts) if (q.length >= 3) regions = regions.flatMap((r) => cutRegion(r, q));
   return regions;
+}
+/** One region minus one convex polygon: a hole when it lies clear inside, else the pieces around it. */
+function cutRegion(r, q) {
+  const inter = clipAll(r.outer, insideHalfPlanes(q));
+  if (!inter.length || Math.abs(polyArea(inter)) < 1e-6) return [r];
+  const inside = q.every((p) => inPolygon(p[0], p[1], r.outer) && edgeDistance(p, r.outer) > 1e-3);
+  const clear = r.holes.every((h) => !clipAll(h, insideHalfPlanes(q)).length);
+  if (inside && clear) return [{ outer: r.outer, holes: [...r.holes, q] }];
+  // the old holes go into the pieces again: a hole touching a piece's edge is cut out of it (a hole on the outline
+  // is no hole for the triangulation)
+  return subtractConvex(r.outer, q).flatMap((piece) => r.holes.reduce((acc, h) => acc.flatMap((pr) => cutRegion(pr, h)), [{ outer: piece, holes: [] }]));
 }
 
 const onLine = (hp, p) => Math.abs(hp.a * p[0] + hp.b * p[1] + hp.c) < 1e-6;
@@ -123,6 +122,12 @@ export function buildRoofs(H, opts) {
     }
   };
 
+  /** part → the visible regions of its faces ([{ p, regions }]), for the valleys between parts */
+  const visible = new Map();
+  const valleyAcc = new Map();
+  const valleysOf = (part) => valleyAcc.get(part) ?? valleyAcc.set(part, new Acc()).get(part);
+  /** plane → the flashings laid on it (foldStrip) */
+  const laid = new Map();
   for (const part of parts) {
     const top = new Acc();
     const bottom = new Acc();
@@ -186,22 +191,34 @@ export function buildRoofs(H, opts) {
       }
       return out;
     };
-    // another part of the level that is higher: this face goes under it (they meet in a valley) – cut where it is
-    const others = parts.filter((q) => q !== part && q.levelId === part.levelId);
-    const higherThan = (p) => others.map((q) => clipAll(q.over, [...q.boxHps, ...q.planes.map((qp) => ({ a: p.a - qp.a, b: p.b - qp.b, c: p.c - qp.c }))])).filter((Q) => Q.length >= 3 && Math.abs(polyArea(Q)) > 1e-6);
+    // another part (of any level) that is higher: this face goes under it (they meet in a valley) – cut where it is,
+    // but not where this part's own roof (its core) is under the other's overhang (a wing under the main house's eave)
+    const others = parts.filter((q) => q !== part);
+    const higherThan = (p) => others.flatMap((q) => {
+      const hp = (qp) => ({ a: p.a - qp.a, b: p.b - qp.b, c: p.c - qp.c });
+      const hs = q.combine === 'max' ? q.planes.map((qp) => clipAll(q.over, [...q.boxHps, hp(qp)])) : [clipAll(q.over, [...q.boxHps, ...q.planes.map(hp)])];
+      return hs.filter(valid).flatMap((Q) => [clipAll(Q, q.coreHps), ...subtractConvex(Q, part.core)]);
+    }).filter(valid);
+    const holes = part.terraces.map((t) => t.hole);
+    const holeHps = holes.map((h) => insideHalfPlanes(h));
+    const faceRegions = [];
     for (const f of part.faces) {
       const p = part.planes[f.plane];
       const sky = skylights.filter((s) => {
         const c = s.polygon.reduce((acc, q) => [acc[0] + q[0] / s.polygon.length, acc[1] + q[1] / s.polygon.length], [0, 0]);
         return inConvex(c[0], c[1], f.poly);
       });
-      const regions = cutRegions(f.poly, [...Rs, ...higherThan(p), ...sky.map((s) => s.polygon)]);
+      const regions = cutRegions(f.poly, [...Rs, ...holes, ...higherThan(p), ...sky.map((s) => s.polygon)]);
+      faceRegions.push({ p, f, regions });
       slab(p, regions, (a, b) => {
-        if (part.boxHps.some((hp) => onLine(hp, a) && onLine(hp, b))) return [[a, b]];
+        // (a parapet stands on the outline: the wall's cladding is there, no fascia)
+        if (part.boxHps.some((hp) => onLine(hp, a) && onLine(hp, b))) return part.parapet ? [] : [[a, b]];
+        if (holeHps.some((hs) => hs.some((hp) => onLine(hp, a) && onLine(hp, b)))) return [[a, b]];
         if (Rs.some((R) => insideHalfPlanes(R).some((hp) => onLine(hp, a) && onLine(hp, b)))) return outsideOutline(a, b);
         return [];
       });
     }
+    visible.set(part, faceRegions);
     // ---- dormers: their slabs, cheeks, a takopplett's front wall
     for (const d of part.dormers) {
       const dbox = boxLines(d);
@@ -223,23 +240,44 @@ export function buildRoofs(H, opts) {
         wallQuad(c.side, c.a, [-d.frame.ev[0], -d.frame.ev[1]], front(c.side), front(c.a));
       }
       if (d.frontWall) frontWall(part, d, dormerAt);
-    }
-    // ---- ridge caps: where two faces of the same roof (or dormer) meet on top
-    if (part.ridgeCap) {
-      const sets = [part.faces.map((f) => ({ poly: f.poly, p: part.planes[f.plane] })), ...part.dormers.map((d) => d.faces.map((f) => ({ poly: f.poly, p: d.planes[f.plane] })))];
-      // (a chimney through the roof stops them – notes/tak.md «Piper»)
-      const chimneys = (H.chimneys || []).filter((c) => c.roofLevelId === part.levelId).map((c) => c.footprint);
-      for (const set of sets) {
-        for (let i = 0; i < set.length; i++) {
-          for (let j = i + 1; j < set.length; j++) {
-            for (const [a, b] of sharedEdges(set[i].poly, set[j].poly)) {
-              // not where another part of the level is higher (it goes in under that roof)
-              for (const [a1, b1] of segmentOutside(a, b, [...higherThan(set[i].p), ...chimneys])) ridgeCap(caps, a1, b1, set[i].p);
-            }
+      // the valleys where it meets the main roof: its faces' edges on the main plane
+      const mainFace = part.faces.find((f) => part.planes[f.plane] === d.main);
+      if (part.valleys && mainFace) {
+        for (const f of d.faces) {
+          const dp = d.planes[f.plane];
+          const P = f.poly;
+          for (let i = 0; i < P.length; i++) {
+            const a = P[i], b = P[(i + 1) % P.length];
+            if (Math.abs(planeY(dp, ...a) - planeY(d.main, ...a)) > 1e-4 || Math.abs(planeY(dp, ...b) - planeY(d.main, ...b)) > 1e-4) continue;
+            for (const [a1, b1] of segmentOutside(a, b, higherThan(d.main))) foldStrip(valleysOf(part), laid, a1, b1, { p: dp, poly: P }, { p: d.main, poly: mainFace.poly });
           }
         }
       }
     }
+    // ---- ridge caps: where two faces of the same roof (or dormer) meet on top (a V roof's valley, a mansard's break
+    //      and its steep hips get a flashing instead)
+    const folds = (set, fn) => {
+      for (let i = 0; i < set.length; i++) {
+        for (let j = i + 1; j < set.length; j++) {
+          // not where another part is higher (it goes in under that roof)
+          for (const [a, b] of sharedEdges(set[i].poly, set[j].poly)) for (const [a1, b1] of segmentOutside(a, b, [...higherThan(set[i].p), ...holes])) fn(a1, b1, set[i], set[j]);
+        }
+      }
+    };
+    const mainSet = part.faces.map((f) => ({ poly: f.poly, p: part.planes[f.plane] }));
+    const isCap = (A, B) => part.combine !== 'max' && (part.type !== 'mansard' || (A.p.tier === 'upper' && B.p.tier === 'upper'));
+    if (part.valleys) folds(mainSet, (a, b, A, B) => !isCap(A, B) && foldStrip(valleysOf(part), laid, a, b, A, B));
+    if (part.ridgeCap) {
+      const sets = [mainSet, ...part.dormers.map((d) => d.faces.map((f) => ({ poly: f.poly, p: d.planes[f.plane] })))];
+      // (a chimney through the roof stops them – notes/tak.md «Piper»)
+      const chimneys = (H.chimneys || []).filter((c) => c.roofLevelId === part.levelId).map((c) => c.footprint);
+      sets.forEach((set, k) => folds(set, (a, b, A, B) => {
+        if (k === 0 && !isCap(A, B)) return;
+        for (const [a1, b1] of segmentOutside(a, b, chimneys)) ridgeCap(caps, a1, b1, A.p);
+      }));
+    }
+    // ---- a parapet (attika) round a flat or mono-pitch roof
+    if (part.parapet) parapet(part);
     // ---- gutters along the eaves (the low, horizontal outer edges of the main faces)
     if (part.gutters) {
       const gm = mat('painted', part.trimColor, { roughness: 0.5, side: 'double' });
@@ -249,7 +287,7 @@ export function buildRoofs(H, opts) {
         if (g < 1e-4) continue;
         // (a half-hip's small hips high up on the gables have no gutter, only the fascia)
         if (part.type === 'half-hip' && (p.side === 'u0' || p.side === 'u1')) continue;
-        for (const r of cutRegions(f.poly, [...Rs, ...higherThan(p)])) {
+        for (const r of cutRegions(f.poly, [...Rs, ...holes, ...higherThan(p)])) {
           const P = r.outer;
           for (let i = 0; i < P.length; i++) {
             const a = P[i], b = P[(i + 1) % P.length];
@@ -262,6 +300,9 @@ export function buildRoofs(H, opts) {
             let out = [-dir[1], dir[0]];
             if (out[0] * -p.a + out[1] * -p.b < 0) out = [-out[0], -out[1]];
             if (out[0] * -p.a + out[1] * -p.b < g * 0.5) continue;
+            // (and downhill must lead out of the face: a V roof's high outer edges have no gutter)
+            const cx = P.reduce((s, q) => s + q[0], 0) / P.length, cz = P.reduce((s, q) => s + q[1], 0) / P.length;
+            if (out[0] * ((a[0] + b[0]) / 2 - cx) + out[1] * ((a[1] + b[1]) / 2 - cz) < 0) continue;
             const y = planeY(p, ...a) + p.tv - 0.06;
             const geo = new THREE.CylinderGeometry(GUTTER_R, GUTTER_R, L, 12, 1, true, -Math.PI / 2, Math.PI);
             geo.rotateX(Math.PI / 2); // axis along z, the open half up
@@ -285,6 +326,69 @@ export function buildRoofs(H, opts) {
     add(caps.build(mat('painted', part.color, { roughness: 0.7 }), `roof-ridge:${part.id}`, keep), part.levelId);
     add(cheeks.build(opts.cladding?.(part.levelId) ?? paint('#4a4642'), `roof-cheeks:${part.id}`, keep), part.levelId);
   }
+  // ---- the valleys between parts: where the visible faces of two parts meet at the same height
+  for (let i = 0; i < parts.length; i++) {
+    for (let j = i + 1; j < parts.length; j++) {
+      const A = parts[i], B = parts[j];
+      if ((!A.valleys && !B.valleys) || !clipAll(A.over, B.boxHps).length) continue;
+      for (const fa of visible.get(A)) for (const fb of visible.get(B)) for (const r1 of fa.regions) for (const r2 of fb.regions) {
+        for (const [a, b] of sharedEdges(r1.outer, r2.outer)) {
+          if (Math.abs(planeY(fa.p, ...a) - planeY(fb.p, ...a)) > 1e-3 || Math.abs(planeY(fa.p, ...b) - planeY(fb.p, ...b)) > 1e-3) continue;
+          foldStrip(valleysOf(A.valleys ? A : B), laid, a, b, { p: fa.p, poly: r1.outer }, { p: fb.p, poly: r2.outer });
+        }
+      }
+    }
+  }
+  for (const [part, acc] of valleyAcc) add(acc.build(mat('painted', part.valleyColor, { roughness: 0.55, side: 'double' }), `roof-valley:${part.id}`, keep), part.levelId);
+
+  /**
+   * A parapet (attika): the lining of its inner face from just under the covering up to its top, the coping over the
+   * wall (a plate from 4 cm outside the outline to 3 cm inside the lining, lips 6 cm down on both sides). The outside
+   * is the wall's cladding (rooms.js takes it up to the top).
+   */
+  function parapet(part) {
+    const pp = part.parapet;
+    const lining = new Acc();
+    const coping = new Acc();
+    const coverAt = (x, z) => Math.min(...part.planes.map((p) => planeY(p, x, z))) + part.tv;
+    const ring = (P, d) => {
+      // P (a rectangle) grown by d (shrunk when d < 0)
+      const c = P.reduce((s, q) => [s[0] + q[0] / P.length, s[1] + q[1] / P.length], [0, 0]);
+      const F = part.frame;
+      return P.map((q) => {
+        const su = Math.sign((q[0] - c[0]) * F.eu[0] + (q[1] - c[1]) * F.eu[1]), sv = Math.sign((q[0] - c[0]) * F.ev[0] + (q[1] - c[1]) * F.ev[1]);
+        return [q[0] + (F.eu[0] * su + F.ev[0] * sv) * d, q[1] + (F.eu[1] * su + F.ev[1] * sv) * d];
+      });
+    };
+    const inner = pp.inner;
+    const c = inner.reduce((s, q) => [s[0] + q[0] / 4, s[1] + q[1] / 4], [0, 0]);
+    /** a vertical quad over a → b from y0(a), y0(b) to y1, facing toward (`toward` true) or away from the middle */
+    const wall = (acc, a, b, y0a, y0b, y1, toward) => {
+      const fn = [-(b[1] - a[1]), b[0] - a[0]]; // (b − a) × up
+      const inward = fn[0] * (c[0] - a[0]) + fn[1] * (c[1] - a[1]) > 0;
+      const [p0, p1, l0, l1] = inward === toward ? [a, b, y0a, y0b] : [b, a, y0b, y0a];
+      const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+      acc.quad([p0[0], l0, p0[1]], [p1[0], l1, p1[1]], [p1[0], y1, p1[1]], [p0[0], y1, p0[1]], [0, l0], [L, l1], [L, y1], [0, y1]);
+    };
+    for (let i = 0; i < 4; i++) {
+      const a = inner[i], b = inner[(i + 1) % 4];
+      wall(lining, a, b, coverAt(...a) - 0.03, coverAt(...b) - 0.03, pp.topY, true);
+    }
+    const outer = ring(part.outline, 0.04), lip = ring(inner, -0.03);
+    const yt = pp.topY + 0.012;
+    for (const t of polygonTriangles(outer, [lip])) {
+      const T = t.map(([x, z]) => [x, yt, z]);
+      const up = (T[1][2] - T[0][2]) * (T[2][0] - T[0][0]) - (T[1][0] - T[0][0]) * (T[2][2] - T[0][2]) > 0;
+      const [ta, tb, tc] = up ? T : [T[0], T[2], T[1]];
+      coping.tri(ta, tb, tc, [ta[0], ta[2]], [tb[0], tb[2]], [tc[0], tc[2]]);
+    }
+    for (let i = 0; i < 4; i++) {
+      wall(coping, outer[i], outer[(i + 1) % 4], yt - 0.06, yt - 0.06, yt, false);
+      wall(coping, lip[i], lip[(i + 1) % 4], yt - 0.06, yt - 0.06, yt, true);
+    }
+    add(lining.build(pp.color ? paint(pp.color, { roughness: 0.8 }) : covering(part), `roof-parapet:${part.id}`, keep), part.levelId);
+    add(coping.build(mat('painted', pp.copingColor, { roughness: 0.45, side: 'double' }), `roof-coping:${part.id}`, keep), part.levelId);
+  }
 
   /** A takopplett's front wall (r 0 … tf): cladding outside, the ceiling's paint inside, its window. */
   function frontWall(part, d, dormerAt) {
@@ -302,10 +406,17 @@ export function buildRoofs(H, opts) {
     const W = d.width;
     const bottom = planeY(d.main, ...at(W / 2));
     const us = d.type === 'gable' ? [0, W / 2, W] : [0, W];
-    const topProfile = us.map((u) => [u, dormerAt(...at(u)) + CLADDING_INTO_ROOF]);
-    const w = fw.window;
-    const holes = [];
-    if (w) holes.push({ x0: W / 2 - w.width / 2, x1: W / 2 + w.width / 2, y0: part.floorY + w.sill, y1: part.floorY + w.sill + w.height });
+    // (a hipped dormer's front: flat under the hip, the corners where the hip meets the sides)
+    const topProfile = d.type === 'hip'
+      ? planesProfile(d.planes, 'min', at(0), at(W)).map(([u, y]) => [u, y + CLADDING_INTO_ROOF])
+      : us.map((u) => [u, dormerAt(...at(u)) + CLADDING_INTO_ROOF]);
+    // the windows: s along the front from its first point; u along x3 from `start`
+    const wins = (fw.windows ?? (fw.window ? [fw.window] : [])).map((w) => {
+      const s0 = w.offset ?? (W - w.width) / 2;
+      const u0 = fromS0 ? s0 : W - s0 - w.width;
+      return { w, u0, u1: u0 + w.width, s: s0 + w.width / 2 };
+    });
+    const holes = wins.map(({ w, u0, u1 }) => ({ x0: u0, x1: u1, y0: part.floorY + w.sill, y1: part.floorY + w.sill + w.height }));
     const g = wallLayer({ L: W, bottom, top: topProfile, holes, z0: -tf, z1: 0 });
     g.applyMatrix4(basis(x3, UP, n3, new THREE.Vector3(start[0], 0, start[1])));
     const inner = groupGeometry(g, 1);
@@ -326,10 +437,10 @@ export function buildRoofs(H, opts) {
       add(m, part.levelId);
       if (geo === inner && lin?.ceilingId) linings.push({ ceilingId: lin.ceilingId, mesh: m });
     }
-    if (w && opts.windowMaterials) {
+    if (opts.windowMaterials) wins.forEach(({ w, s }, k) => {
       const fd = w.frame?.depth ?? 0.07;
       const o = {
-        id: `win-${d.id}`,
+        id: k ? `win-${d.id}-${k + 1}` : `win-${d.id}`,
         width: w.width,
         height: w.height,
         revealDepth: Math.max(0.02, tf - fd - 0.01),
@@ -339,7 +450,8 @@ export function buildRoofs(H, opts) {
         bars: w.bars ?? null,
         sillBoard: null,
       };
-      const origin = new THREE.Vector3(mid[0], part.floorY + w.sill, mid[1]);
+      const c = at(fromS0 ? s : W - s);
+      const origin = new THREE.Vector3(c[0], part.floorY + w.sill, c[1]);
       const win = buildWindow(o, false, { M: opts.windowMaterials(), exteriorBatch: opts.exteriorBatch?.(part.levelId, mid[0] + n[0] * 0.2, mid[1] + n[1] * 0.2), batchers, keep, matrix: basis(x3, UP, n3, origin) });
       win.group.name = `roof-window:${d.id}`;
       win.group.userData.noCollide = true;
@@ -350,7 +462,7 @@ export function buildRoofs(H, opts) {
         meshes.push(m);
       }
       windows.push({ id: o.id, dormerId: d.id, group: win.group, glass: win.glass ? [win.glass] : [] });
-    }
+    });
   }
 
   return { meshes, windows, linings };
@@ -365,6 +477,37 @@ function boxLines(d) {
   const o = [dot(F.O, F.eu), dot(F.O, F.ev)];
   for (const [e, k] of [[F.eu, o[0] - ov], [F.eu, o[0] + d.width + ov], [F.ev, o[1] - ov]]) lines.push({ a: e[0], b: e[1], c: -k });
   return lines;
+}
+
+const valid = (Q) => Q.length >= 3 && Math.abs(polyArea(Q)) > 1e-6;
+
+/**
+ * A flashing along a fold a – b where two faces meet (a valley, a mansard's break): a strip `w` wide on each face,
+ * 6 mm over its covering, clipped to the face (A.poly, B.poly; B is on the other side of the line from A) and to the
+ * strips already laid on that plane (`laid`: plane → polygons; where two folds meet they would overlap).
+ */
+function foldStrip(acc, laid, a, b, A, B, w = 0.22) {
+  const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+  if (L < 0.05) return;
+  const n = [-(b[1] - a[1]) / L, (b[0] - a[0]) / L];
+  const c = A.poly.reduce((s, q) => [s[0] + q[0] / A.poly.length, s[1] + q[1] / A.poly.length], [0, 0]);
+  const sA = (c[0] - a[0]) * n[0] + (c[1] - a[1]) * n[1] > 0 ? 1 : -1;
+  for (const [F, s] of [[A, sA], [B, -sA]]) {
+    const o = [n[0] * s * w, n[1] * s * w];
+    const P = clipAll([a, b, [b[0] + o[0], b[1] + o[1]], [a[0] + o[0], a[1] + o[1]]], insideHalfPlanes(F.poly));
+    if (!valid(P)) continue;
+    const before = laid.get(F.p) ?? laid.set(F.p, []).get(F.p);
+    const pieces = before.reduce((acc2, Q) => acc2.flatMap((pc) => subtractConvex(pc, Q)), [P]).filter(valid);
+    before.push(P);
+    for (const Pc of pieces) {
+      for (let i = 1; i < Pc.length - 1; i++) {
+        const T = [Pc[0], Pc[i], Pc[i + 1]].map(([x, z]) => [x, planeY(F.p, x, z) + F.p.tv + 0.006, z]);
+        const up = (T[1][2] - T[0][2]) * (T[2][0] - T[0][0]) - (T[1][0] - T[0][0]) * (T[2][2] - T[0][2]) > 0;
+        const [ta, tb, tc] = up ? T : [T[0], T[2], T[1]];
+        acc.tri(ta, tb, tc, [ta[0], ta[2]], [tb[0], tb[2]], [tc[0], tc[2]]);
+      }
+    }
+  }
 }
 
 /** The parts of segment a – b outside every convex polygon in Qs. */
