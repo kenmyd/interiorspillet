@@ -1624,6 +1624,13 @@ select {
   cursor: not-allowed;
 }
 
+/* the facade drawing behind the facade check (facadecheck.js): see-through, the clicks go to the windows */
+.fc-drawing {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
 /* ---- Himling (ceilingplace.js): the top level's rooms, sloped ones tinted, the ridge lines dash-dot */
 .cp-room {
   fill: #f6f4ef;

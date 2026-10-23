@@ -413,6 +413,7 @@ function houseChecks(r) {
   }
   if (T.roof) check(`${r.house}: taket ${r.roof} (fasit ${r.roofTruth})`, r.roof === r.roofTruth);
   // each facade drawing on the side the fasit's notes give it (facadematch.js, from the positions of its openings)
+  if (T.sides) check(`${r.house}: alle ${Object.keys(T.sides).length} fasadetegningene tatt vare på med plasseringen sin, til fasadesjekken (${r.facadeFits})`, r.facadeFits === Object.keys(T.sides).length);
   if (T.sides) for (const [file, side] of Object.entries(T.sides)) check(`${r.house}: ${file} er fasaden mot ${side} (${r.facadeSides?.[file] ?? 'ingen side'})`, r.facadeSides?.[file] === side, JSON.stringify(r.facadeSides));
 }
 

@@ -10,7 +10,9 @@
  * owner's own house, F110, F112: «generer huset først og vis fasadene side etter side der jeg kan klikke på vinduene»).
  *
  *   buildFacades(doc)   → [{ key, name, walls, openings, sMin, sMax, yMin, yMax }]   pure, plan metres
- *   openFacadeCheck({ getDoc, h, intro, onChange(label, fn), onDone(changed) }) → { el, close }
+ *   openFacadeCheck({ getDoc, h, intro, onChange(label, fn), onDone(changed), facadeImage(key) → url | null }) → { el, close }
+ *     facadeImage: the URL of a facade drawing (doc.facades[].image): it is drawn behind the side it shows, placed by
+ *     the fit facadematch.js found (doc.facades[].fit), so the drawn windows can be compared with the ones here
  */
 import { WINDOW_STYLES, windowSashes } from './export.js';
 import { DEFAULT_SETTINGS, setOpeningKind, openingKind } from './model.js';
@@ -140,6 +142,13 @@ export function buildFacades(doc) {
     F.levels = [...new Map(F.walls.map((w) => [w.level, { id: w.level, name: w.levelName, y0: w.y0, y1: w.y1 }])).values()].sort((a, b) => b.y0 - a.y0);
   }
   return list;
+}
+
+/** The facade drawing that shows side F (doc.facades[].fit.planSide, turned by the plan's north as buildFacades turns it). */
+function facadeDrawingOf(doc, F) {
+  const keys = ['N', 'E', 'S', 'W'];
+  const turn = Math.round((doc.settings?.north ?? 0) / 90);
+  return (doc.facades ?? []).find((f) => f.image && f.fit && keys[(((keys.indexOf(f.fit.planSide) - turn) % 4) + 4) % 4] === F.key) ?? null;
 }
 
 const SVG = 'http://www.w3.org/2000/svg';
@@ -281,8 +290,9 @@ function drawCompass(F, all, size = 92) {
  * a drag moves it along its wall. getDoc() is the current document (undo replaces it), onChange(label, fn) runs fn on
  * it with an undo step, onDone(changed) when it is closed.
  */
-export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
+export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone, facadeImage = () => null }) {
   let side = null; // the facade on screen
+  let showDrawing = true; // the facade drawing behind (when the house has one for this side)
   let selected = null; // the one with its measures on the drawing: 'level:id'
   let popKey = null; // the one with its card open: 'level:id'
   let keepTop = true; // a new height keeps the top of a window where it is (the sill follows) – F115
@@ -297,6 +307,12 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
   const stage = h('div', { class: 'fc-stage' });
   const panel = h('aside', { class: 'fc-panel' });
   const pop = h('div', { class: 'fc-pop', hidden: true });
+  // «Tegningen»: the facade drawing behind, on and off (shown only for a side that has one)
+  const drawingBtn = h('button', { class: 'pb-btn is-active', title: 'Vis eller skjul fasadetegningen bak', hidden: true, onclick: () => {
+    showDrawing = !showDrawing;
+    drawingBtn.classList.toggle('is-active', showDrawing);
+    render();
+  } }, 'Tegningen');
   const close = () => {
     window.removeEventListener('keydown', onKey);
     window.removeEventListener('resize', onResize);
@@ -323,7 +339,7 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     h('header', { class: 'fc-head' },
       h('div', { class: 'fc-title' }, h('h2', {}, 'Fasadesjekk'), h('p', {}, intro ?? 'Huset sett utenfra, fasade for fasade. Klikk på et vindu eller en dør for å rette det, eller dra det langs veggen.')),
       tabs,
-      h('div', { class: 'fc-head-actions' }, h('button', { class: 'pb-btn', onclick: () => close() }, 'Ferdig – bygg 3D-huset'))),
+      h('div', { class: 'fc-head-actions' }, drawingBtn, h('button', { class: 'pb-btn', onclick: () => close() }, 'Ferdig – bygg 3D-huset'))),
     h('div', { class: 'fc-body' }, stage, panel),
     pop);
   window.addEventListener('keydown', onKey);
@@ -468,6 +484,16 @@ export function openFacadeCheck({ getDoc, h, intro = null, onChange, onDone }) {
     const g = svg('svg', { viewBox: `0 0 ${W} ${Hh}`, width: W, height: Hh, class: 'fc-svg' },
       svg('defs', {}, svg('pattern', { id: 'fc-earth', width: 7, height: 7, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, svg('line', { x1: 0, y1: 0, x2: 0, y2: 7, class: 'fc-earth-line' }))));
     for (const w of F.walls) g.append(svg('rect', { x: X(w.s0), y: Y(w.y1), width: Math.max(1, (w.s1 - w.s0) * k), height: (w.y1 - w.y0) * k, class: 'fc-wall' }));
+    // the facade drawing of this side behind the windows (generate.js doc.facades[].fit: s = a + k·u from its span,
+    // the main floor on its floor line), half see-through, clicks go through it
+    const drawing = facadeDrawingOf(doc, F);
+    drawingBtn.hidden = !(drawing && facadeImage(drawing.image));
+    const url = drawing && showDrawing ? facadeImage(drawing.image) : null;
+    if (url) {
+      const ft = drawing.fit;
+      const sc = (ft.k * k) / ft.ppm;
+      g.append(svg('image', { href: url, x: padL + ft.a * k - ft.span0 * sc, y: padT + (F.yMax - (ft.floor0 * ft.k) / ft.ppm) * k, width: ft.width * sc, height: ft.height * sc, class: 'fc-drawing', preserveAspectRatio: 'none' }));
+    }
     // the earth under the ground line over the walls, under the windows and doors (they stay clickable – F116)
     g.append(svg('rect', { x: 0, y: Y(ground), width: W, height: Hh - Y(ground), class: 'fc-earth' }), svg('line', { x1: 0, x2: W, y1: Y(ground), y2: Y(ground), class: 'fc-ground' }));
     for (const l of F.levels) {

@@ -593,6 +593,7 @@ class App {
       getDoc: () => this.doc,
       h,
       intro,
+      facadeImage: (key) => this._facadeUrls?.get(key) ?? null,
       onChange: (label, fn) => {
         this.snapshot();
         fn();
@@ -628,6 +629,20 @@ class App {
       c.getContext('2d').putImageData(imageData, 0, 0);
       c.toBlob((blob) => blob && idbPut(lv.id + ':' + (lv.image.name ?? ''), blob), 'image/png');
     }
+    // the facade drawings, for the facade check (behind the facade they show; kept for «Fortsett med …» too)
+    this._facadeUrls = new Map();
+    for (const fa of doc.facades ?? []) {
+      const im = fa.image ? images?.[fa.image]?.img : null;
+      if (!im) continue;
+      const c = document.createElement('canvas');
+      c.width = im.width;
+      c.height = im.height;
+      c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(im.data), im.width, im.height), 0, 0);
+      const blob = await new Promise((resolve) => c.toBlob(resolve, 'image/png'));
+      if (!blob) continue;
+      this._facadeUrls.set(fa.image, URL.createObjectURL(blob));
+      idbPut(fa.image, blob);
+    }
     this.startEl.hidden = true;
     this.startEl.classList.remove('is-wide');
     this.statusInfo.textContent = this.gen?.ai ? 'KI-en fikk nedskalerte kopier av tegningene for å lese tekst og symboler. Målene er regnet ut i nettleseren.' : 'Huset er laget i nettleseren – tegningene er ikke sendt noen steder.';
@@ -654,6 +669,11 @@ class App {
     for (const lv of this.doc.levels) {
       const blob = await idbGet(lv.id + ':' + (lv.image?.name ?? ''));
       if (blob) await this._loadImageBlob(lv, blob, { store: false });
+    }
+    this._facadeUrls = new Map();
+    for (const fa of this.doc.facades ?? []) {
+      const blob = fa.image ? await idbGet(fa.image) : null;
+      if (blob) this._facadeUrls.set(fa.image, URL.createObjectURL(blob));
     }
     this.startEl.hidden = true;
     this._afterLevelChange();

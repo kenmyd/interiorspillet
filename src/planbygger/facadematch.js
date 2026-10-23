@@ -5,7 +5,8 @@
  *
  *   matchFacades(doc, drawings, { levelsByNo }) → {
  *     north:    degrees (the plan's north from the titles) | null (no titles, or they do not agree with the plan)
- *     drawings: [{ side: 'N'|'E'|'S'|'W' (under north), score, k, pairs: [{ i, level, id, win }], unmatched: [i],
+ *     drawings: [{ side: 'N'|'E'|'S'|'W' (under north), planSide (the side under north 0), score, k, a (s = a + k·u: the
+ *                  side's metres from its left against the drawing's from its span), shift, pairs: [{ i, level, id, win }], unmatched: [i],
  *                  missing: n (plan openings on that side the drawing does not show), title compass | null }]
  *   }
  *     drawings: [{ reading (facade.js readFacade), title, planSide ('top'|'right'|'bottom'|'left', the AI's reading of
@@ -206,6 +207,7 @@ export function matchFacades(doc, drawings, { levelsByNo = {} } = {}) {
         planSide: key,
         score: Math.round(m.score * 100) / 100,
         k: Math.round(m.k * 1000) / 1000,
+        a: Math.round(m.a * 1000) / 1000,
         shift: m.shift,
         pairs,
         unmatched: D[i].list.filter((x) => !m.pairs.some((p) => p.d.i === x.i)).map((x) => x.i),

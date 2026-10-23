@@ -438,6 +438,8 @@ export async function measureHouse(house, { ai = true, model = null, fixtures = 
     // the side each facade drawing was put on (facadematch.js), by «file» or «file#n» for a sheet's n-th
     facadeSides: Object.fromEntries((doc.facades ?? []).map((f) => [f.part != null ? `${f.file}#${f.part + 1}` : f.file, f.side ?? null])),
     north: doc.settings?.north ?? 0,
+    // the facade drawings kept for the facade check, with their fit (generate.js doc.facades[].fit and images)
+    facadeFits: (doc.facades ?? []).filter((x) => x.fit && x.image && res.images?.[x.image]?.img).length,
     questions: questions.length,
     qByKind,
     questionList: questions.map((q) => ({ id: q.id, kind: q.kind, text: q.text, default: q.default, help: q.help ?? null })),

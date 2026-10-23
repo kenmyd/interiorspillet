@@ -1087,6 +1087,10 @@ En skrå himling blir `type: 'roof'` uten høyde, altså helt opp til mønet.
   minst 2 brudd per meter) er en drager tegnet som en dobbel strek-prikk-linje. Den fjernes (`dropBeams`).
   - hus4 2. etasje: stua er ett rom igjen, med trappa og kjøkkenbenken. Det gir 3 rom med navn og ingen romspørsmål.
   - Ingen andre testhus endres.
+- **Fasadetegningen i fasadesjekken:** «Generer» tar vare på hver fasadetegning med plasseringen fra matchingen
+  (`doc.facades[].image` og `fit`: siden, `a` og `k` i `s = a + k·u`, venstre kant, gulvlinja og bildestørrelsen).
+  Appen lagrer den i IndexedDB som etasjebildene. Fasadesjekken legger den halvgjennomsiktig over veggene og under
+  vinduene på riktig side. «Tegningen» slår den av og på. Sett på hus4: tegningens vinduer faller sammen med de beregnede.
 
 ### Åpent etter natta
 

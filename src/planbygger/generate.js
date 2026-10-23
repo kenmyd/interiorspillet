@@ -1473,6 +1473,15 @@ export async function generate(inputs, opts = {}) {
       d.match = match.drawings[i];
       const f = doc.facades?.find((x) => x.file === d.file && x.part === d.part);
       if (f) Object.assign(f, { side: d.match.side, matched: d.match.pairs.length, unmatched: d.match.unmatched.length, missing: d.match.missing });
+      // the drawing behind the facade check (facadecheck.js): where its pixels go on the side (s = a + k·u, the main
+      // floor at its floor line)
+      const r = d.reading;
+      const floor0 = Array.isArray(r.floorYs) ? r.floorYs[-(d.match.shift ?? 0)] ?? r.floorYs[0] : null;
+      if (f && d.match.planSide && Array.isArray(r.span) && Number.isFinite(floor0)) {
+        f.image = `fasade:${d.file}#${d.part ?? 0}`;
+        f.fit = { planSide: d.match.planSide, a: d.match.a, k: d.match.k, span0: r.span[0], ppm: r.pxPerM, floor0, width: d.img.width, height: d.img.height };
+        images[f.image] = { img: d.img, file: d.file, part: d.part, facade: true };
+      }
     });
     const NAME = { N: 'nord', E: 'øst', S: 'sør', W: 'vest' };
     step({ step: 'facade-match', method: match.north != null ? 'titles+positions' : 'positions', confidence: n ? 'medium' : 'low', detail: `${usable.map((d) => `${d.title ? `«${d.title}»` : d.file}${d.part != null ? ` #${d.part + 1}` : ''} → ${d.match.side ? `${NAME[d.match.side]} (${d.match.pairs.length} av ${d.reading.windows.length} åpninger, ${d.match.missing} i planen uten partner)` : 'ingen side'}`).join('; ')}; ${n} vinduer og dører fikk høyden sin fra fasaden`, ms: Math.round(now() - t) });
