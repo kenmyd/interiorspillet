@@ -3,7 +3,9 @@
  * Dørtypene (notes/dortyper.md): dobbeltdør, skyvedør (på skinne, inn i veggen, patio av glass), glassfelt og sidefelt.
  *   node tools/house-tests/doortypes.test.mjs        (from the project root; exit code 1 on failure)
  *
- * Also foldedør (variant 'folding', world/FoldingDoor.js). On the test house (tools/dortyper/testhus.mjs), in Node (no renderer): the validator (no error but the owner-only
+ * Also foldedør (variant 'folding', world/FoldingDoor.js), garasjeport (variant 'garage': leddport and vippeport,
+ * world/GarageDoor.js), forbiløpende og teleskopisk skyvedør (mount 'bypass', leaves 2), overlys (door.transom) and a glass
+ * strip beside the lock (glass.width / align). On the test house (tools/dortyper/testhus.mjs), in Node (no renderer): the validator (no error but the owner-only
  * «stue-kjokken», and the errors it must give for broken door types); the builder (home/doors.js → home/doortypes.js:
  * the right class and number of leaves per door, the bay of a door with sidelights); the figure (PlayerController,
  * radius 0.3, the real CollisionWorld) walks through every open door both ways and is stopped by every closed one; a
@@ -21,6 +23,7 @@ const { isDoorType } = await imp('src/home/doortypes.js');
 const { Door } = await imp('src/world/Door.js');
 const { SlidingDoor } = await imp('src/world/SlidingDoor.js');
 const { FoldingDoor } = await imp('src/world/FoldingDoor.js');
+const { GarageDoor } = await imp('src/world/GarageDoor.js');
 const { CollisionWorld } = await imp('src/core/Collision.js');
 const { PlayerController } = await imp('src/player/PlayerController.js');
 const { PLAYER } = await imp('src/config.js');
@@ -58,11 +61,20 @@ const BROKEN = [
   ['lomme forbi veggens ende', 'door-glass', (o) => Object.assign(o.door, { variant: 'sliding', mount: 'pocket', slide: 'from' }), /lommen i veggen trenger/],
   ['for smal for figuren (sidefelt)', 'door-terrasse', (o) => (o.door.sidelights = [{ side: 'to', w: 0.7 }]), /figuren/],
   ['for smal skyvedør', 'door-skyve', (o) => (o.width = 0.7), /figuren/],
-  ['to sidefelt på samme side', 'door-inngang', (o) => (o.door.sidelights = [{ side: 'from' }, { side: 'from' }]), /to sidefelt/],
+  ['sidefeltene tar hele hullet', 'door-inngang', (o) => (o.door.sidelights = [{ side: 'from', w: 0.8 }, { side: 'to', w: 0.8 }]), /sidefeltene tar hele hullet/],
   ['glass.rows ikke heltall', 'door-glass', (o) => (o.door.glass = { rows: 2.5 }), /glass\.rows/],
   ['active 3', 'door-dobbel-ulik', (o) => (o.door.active = 3), /active må være/],
   ['foldedør med 1 ledd', 'door-folde', (o) => (o.door.panels = 1), /panels må være/],
   ['for smal foldedør', 'door-folde', (o) => (o.width = 0.7), /figuren/],
+  ['overlys over et for lavt hull', 'door-overlys', (o) => (o.height = 2.2), /under overlyset/],
+  ['transom.h utenfor 0,12–1,2', 'door-overlys', (o) => (o.door.transom = { h: 1.5 }), /transom\.h/],
+  ['glass.align ukjent', 'door-glasstripe', (o) => (o.door.glass.align = 'left'), /glass\.align/],
+  ['bypass med slide «both»', 'door-garderobe', (o) => (o.door.slide = 'both'), /forbiløpende/],
+  ['for smal bypass', 'door-garderobe', (o) => (o.width = 1.2), /figuren/],
+  ['teleskop med 4 blad', 'door-teleskop', (o) => (o.door.leaves = 4), /leaves må være/],
+  ['garasjeport: ukjent style', 'door-garasje', (o) => (o.door.style = 'roller'), /style må være/],
+  ['garasjeport: for lav', 'door-vippe', (o) => (o.height = 1.7), /figuren trenger/],
+  ['garasjeport: sections ikke heltall', 'door-garasje', (o) => (o.door.sections = 3.5), /sections/],
 ];
 for (const [name, id, change, re] of BROKEN) {
   const r = broken(id, change);
@@ -73,6 +85,12 @@ for (const [name, id, change, re] of BROKEN) {
   check('advarsel: skyvedør på skinne parkerer over en annen dør', r.warnings.some((e) => /det åpne bladet.*går over/.test(e)) && !r.errors.length, [...r.errors, ...r.warnings].join(' | '));
   const s = broken('door-skyve', (o) => delete o.door.hinge);
   check('skyvedør uten hinge er gyldig', !s.errors.length, s.errors.join(' | '));
+  // the open leaf over another door: the warning says what would fit (a telescopic door, or none beside for a bypass)
+  check('advarselen foreslår teleskop-skyvedør', r.warnings.some((e) => /teleskop-skyvedør \(leaves: 2\) trenger/.test(e)), r.warnings.join(' | '));
+  const g = broken('door-garasje', (o) => (o.door.headroom = 0.6));
+  check('advarsel: leddporten trenger mer plass under himlingen', g.warnings.some((e) => /trenger 2,60 m under himlingen/.test(e)) && !g.errors.length, [...g.errors, ...g.warnings].join(' | '));
+  const i = broken('door-vippe', (o) => delete o.interactive);
+  check('advarsel: garasjeport uten interactive', i.warnings.some((e) => /interactive: true/.test(e)), i.warnings.join(' | '));
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -87,6 +105,7 @@ const EXPECT = {
   'door-inngang': [Door, 1], 'door-glass': [Door, 1], 'door-dobbel-glass': [Door, 2], 'door-skyve': [SlidingDoor, 1], 'door-lomme': [SlidingDoor, 1],
   'door-skyve-dobbel': [SlidingDoor, 2], 'door-dobbel-ulik': [Door, 2], 'door-patio': [SlidingDoor, 1], 'door-terrasse': [Door, 1], 'door-terrasse-dobbel': [Door, 2],
   'door-folde': [FoldingDoor, 8], 'door-folde-glass': [FoldingDoor, 8],
+  'door-overlys': [Door, 1], 'door-glasstripe': [Door, 1], 'door-garasje': [GarageDoor, 4], 'door-vippe': [GarageDoor, 1], 'door-garderobe': [SlidingDoor, 2], 'door-teleskop': [SlidingDoor, 2],
 };
 check('alle dørene i testhuset er bygd', DOORS.every((id) => byId.has(id)), DOORS.filter((id) => !byId.has(id)).join(', '));
 for (const [id, [cls, n]] of Object.entries(EXPECT)) {
@@ -99,6 +118,37 @@ for (const [id, [cls, n]] of Object.entries(EXPECT)) {
   check('ulike blad: forholdet 0,4 : 0,8 i hele bredden mellom karmene', near(ls[1] / ls[0], 2, 0.03) && near(ls[0] + ls[1], 1.3 - 0.12 - 0.002, 0.003), ls.map(f2).join(' / '));
   const t = byId.get('door-terrasse').door;
   check('terrassedør med sidefelt: bladet fyller bukta (1,45 − 2·0,05 − 0,4 − 0,05)', near(t.leaves[0].length, 0.9, 0.002), f2(t.leaves[0].length));
+  // the transom: the leaf ends under its bar (2.4 − 0.05 head − 0.4 panel − 0.05 bar), its glass panel over the bay and the sidelight
+  const ov = byId.get('door-overlys').door;
+  check('overlys: dørbladet slutter under losholtet (bukta 1,90 m)', near(ov.height, 1.9 - 0.008 + 0.046, 0.002), f2(ov.height));
+  const glassOf = (root) => { const out = []; root.traverse((o) => o.name.startsWith('glass:') && out.push(o)); return out; };
+  const pane = glassOf(ov.leaves[0].pivot)[0];
+  check('overlys: dørbladet har glass (2 ruter)', !!pane);
+  // the glass strip: 16 cm wide, beside the lock (the free edge, away from the hinge)
+  const gs = byId.get('door-glasstripe').door;
+  const strip = glassOf(gs.leaves[0].pivot)[0];
+  const lw = gs.leaves[0].length;
+  const sx = strip ? strip.position.x : NaN;
+  const sw = strip ? strip.geometry.parameters.width : NaN;
+  check('glasstripe: 16 cm bred, ved låskanten', near(sw, 0.16 + 0.016, 0.002) && Math.abs(sx) > lw / 2, `bredde ${f2(sw)}, x ${f2(sx)} av bladet ${f2(lw)}`);
+  // the garage doors: sections up and in under the ceiling, the tilt panel level under the head with a third outside
+  const gd = byId.get('door-garasje').door;
+  gd.setOpen(true, { instant: true });
+  const tops = gd.leaves.map((l) => l.pivot.getWorldPosition(V(0, 0, 0)).y);
+  check('leddport åpen: alle seksjonene over hullet (2,0 m)', tops.every((y) => y > 2.02), tops.map(f2).join(', '));
+  gd.setOpen(false, { instant: true });
+  const vd = byId.get('door-vippe').door;
+  vd.setOpen(true, { instant: true });
+  const vb = vd.leaves[0].segments[0].box;
+  const dv = layout.house.doors.find((x) => x.id === 'door-vippe');
+  const outside = -(vb.min.z - dv.basis.origin.z) - 0.25; // the wall's outer face at z − 0.25 (the gang's north wall faces +z)
+  check('vippeport åpen: vannrett under overkarmen, en tredel ut over innkjørselen', vb.min.y > 1.8 && vb.max.y - vb.min.y < 0.1 && outside > 0.4, `y ${f2(vb.min.y)}–${f2(vb.max.y)}, ${f2(outside)} m ute`);
+  vd.setOpen(false, { instant: true });
+  // a bypass door's open passage: the moving leaf parked over the fixed one; a telescopic door's leaves stacked beside
+  const bd = byId.get('door-garderobe').door;
+  check('forbiløpende: ett blad står, det andre går halve bredden', bd.leaves[0].travel === 0 && near(bd.leaves[1].travel, 0.75, 0.001), bd.leaves.map((l) => f2(l.travel)).join(' / '));
+  const td = byId.get('door-teleskop').door;
+  check('teleskop: bladene parkerer på hver sin skinne ved siden av hullet', td.leaves[0].travel < td.leaves[1].travel && td.leaves[0].bodyMin.z !== td.leaves[1].bodyMin.z, td.leaves.map((l) => `${f2(l.travel)} @ z ${f2(l.bodyMin.z)}`).join(' / '));
 }
 check('eierens hus: ingen dør går til doortypes.js', ownerLayout.house.doors.every((d) => !isDoorType(d)), ownerLayout.house.doors.filter(isDoorType).map((d) => d.id).join(', '));
 
@@ -168,10 +218,10 @@ function closeOnFigure(id) {
     return Math.hypot(cx - feet.x, cz - feet.z) < PLAYER.radius - 1e-3;
   });
   const away = feet.clone().addScaledVector(layout.house.doors.find((x) => x.id === id).basis.zAxis, 2);
-  for (let i = 0; i < 120; i++) door.update(1 / 60, { playerPosition: away });
+  for (let i = 0; i < 180; i++) door.update(1 / 60, { playerPosition: away }); // (a garage door takes 2,4 s)
   return { held, inside, closed: door.t === 0 };
 }
-for (const id of ['door-skyve', 'door-lomme', 'door-skyve-dobbel', 'door-patio', 'door-dobbel-glass', 'door-dobbel-ulik', 'door-folde', 'door-folde-glass']) {
+for (const id of ['door-skyve', 'door-lomme', 'door-skyve-dobbel', 'door-patio', 'door-dobbel-glass', 'door-dobbel-ulik', 'door-folde', 'door-folde-glass', 'door-garasje', 'door-vippe', 'door-garderobe', 'door-teleskop']) {
   const r = closeOnFigure(id);
   check(`${id}: holdes igjen av figuren`, r.held > 0.05 && !r.inside, `t ${f2(r.held)}${r.inside ? ', et blad står inni figuren' : ''}`);
   check(`${id}: lukkes når figuren har gått`, r.closed);

@@ -1,7 +1,9 @@
 /**
- * Testhuset for dørtypene (notes/dortyper.md): én etasje med en gang (z 0–3) og en stue (z 3,1–7), 17 m lange (x −3 til 14). Alle de
- * nye dørtypene står i mellomveggen og i ytterveggene, så tools/dortyper/index.html (se, gå, åpne med E) og
- * tools/house-tests/doortypes.test.mjs (bygg, valider, gå gjennom) bruker samme hus.
+ * Testhuset for dørtypene (notes/dortyper.md): én etasje med en gang (z 0–3) og en stue (z 3,1–7), 17 m lange (x −3 til 14), og
+ * en garderobe vest for gangen (x −6 til −3). Alle de nye dørtypene står i mellomveggene og i ytterveggene (gangens yttervegg har
+ * ytterdører med overlys og glasstripe, en leddport og en vippeport; veggen mot garderoben en forbiløpende skyvedør og en
+ * teleskop-skyvedør), så tools/dortyper/index.html (se, gå, åpne med E) og tools/house-tests/doortypes.test.mjs (bygg, valider,
+ * gå gjennom) bruker samme hus.
  *
  *   testHouse()      → husfila (formatet i research/house/NN-*.json, som planbyggeren lager)
  *   testHouseSpec()  → husfila lagt på en tom grunnspes, klar for home/layout.js buildLayout (som planbyggerens viewer)
@@ -32,6 +34,7 @@ export function testHouse() {
     levels: [{ id: 'hoved', name: 'Hovedetasje', floorY: 0, slabThickness: 0.3, ceilingDefault: 2.4 }],
     rooms: [
       { id: 'gang', name: 'Gang', levelId: 'hoved', kind: 'hall', acoustic: { mode: 'estimate' }, polygon: [[-3, 0], [14, 0], [14, 3], [-3, 3]], floor: { material: 'oak-plank', color: '#b8a48c' }, ceilingIds: ['c-gang'] },
+      { id: 'garderobe', name: 'Garderobe', levelId: 'hoved', kind: 'storage', acoustic: { mode: 'estimate' }, polygon: [[-6, 0], [-3.1, 0], [-3.1, 3], [-6, 3]], floor: { material: 'oak-plank', color: '#b8a48c' }, ceilingIds: ['c-garderobe'] },
       { id: 'stue', name: 'Stue', levelId: 'hoved', kind: 'living', acoustic: { mode: 'estimate' }, polygon: [[-3, 3.1], [14, 3.1], [14, 7], [-3, 7]], floor: { material: 'oak-plank', color: '#a8916f' }, ceilingIds: ['c-stue'] },
     ],
     walls: [
@@ -39,7 +42,15 @@ export function testHouse() {
         id: 'w-gang-nord', roomId: 'gang', levelId: 'hoved', from: [-3, 0], to: [14, 0], normal: [0, 1], ...EXT,
         openings: [
           // front door: glazed leaf with bars, a sidelight on each side down to the floor
+          // a front door with a sidelight and a top light over both (overlys), the hole up to the wall's top
+          { ...outer('gang', 'door-overlys', 'Ytterdør med sidefelt og overlys', 0.5, 1.4, { hinge: 'to', glass: { cols: 1, rows: 2 }, sidelights: [{ side: 'from', w: 0.35 }], transom: { h: 0.4, glass: { cols: 1 } } }), height: 2.4 },
+          // a front door with a narrow glass strip beside the lock
+          outer('gang', 'door-glasstripe', 'Ytterdør med glasstripe ved låsen', 2.4, 1.0, { hinge: 'from', glass: { width: 0.16, align: 'lock', from: 0.3, to: 1.9 }, hardware: { type: 'lever', lock: 'keypad' } }),
+          // a sectional garage door (leddport) with a row of windows, the tracks into the gang (2.0 + 0.35 under 2.4)
+          { ...outer('gang', 'door-garasje', 'Leddport med vinduer', 3.9, 2.6, { variant: 'garage', style: 'sectional', glass: { cols: 4 } }), height: 2.0 },
           outer('gang', 'door-inngang', 'Inngangsdør med sidefelt', 8.9, 1.9, { hinge: 'from', glass: { cols: 1, rows: 3 }, sidelights: [{ side: 'from', w: 0.4 }, { side: 'to', w: 0.4 }], hardware: { type: 'lever', lock: 'keypad' } }),
+          // an up-and-over garage door (vippeport) with standing ribs
+          { ...outer('gang', 'door-vippe', 'Vippeport', 11.6, 2.4, { variant: 'garage', style: 'tilt', leafColor: '#4a4f55' }), height: 2.0 },
         ],
       },
       { id: 'w-gang-ost', roomId: 'gang', levelId: 'hoved', from: [14, 0], to: [14, 3], normal: [-1, 0], ...EXT },
@@ -56,7 +67,19 @@ export function testHouse() {
           inner('door-folde', 'Foldedør med mange ledd', 14.2, 2.4, { variant: 'folding', slide: 'to', panels: 8 }),
         ],
       },
-      { id: 'w-gang-vest', roomId: 'gang', levelId: 'hoved', from: [-3, 3], to: [-3, 0], normal: [1, 0], ...EXT },
+      {
+        id: 'w-gang-vest', roomId: 'gang', levelId: 'hoved', from: [-3, 3], to: [-3, 0], normal: [1, 0], thickness: 0.1, ...WALL,
+        openings: [
+          // a wardrobe's sliding doors: two leaves, the one at the 'to' end slides over the other (no wall beside needed)
+          { ...inner('door-garderobe', 'Forbiløpende skyvedør (garderobe)', 0.1, 1.5, { variant: 'sliding', mount: 'bypass', slide: 'from' }), connects: ['gang', 'garderobe'], door: { variant: 'sliding', mount: 'bypass', slide: 'from', leafColor: '#e9e6df', opensInto: 'gang', closed: true, swing: 'in' } },
+          // a telescopic sliding door on the rail: two leaves stacking beside the hole – half the wall a single leaf needs
+          { ...inner('door-teleskop', 'Teleskop-skyvedør', 2.1, 0.85, { variant: 'sliding', mount: 'surface', slide: 'from', leaves: 2 }), connects: ['gang', 'garderobe'], door: { variant: 'sliding', mount: 'surface', slide: 'from', leaves: 2, leafColor: '#1d1e21', opensInto: 'gang', closed: true, swing: 'in' } },
+        ],
+      },
+      { id: 'w-gard-nord', roomId: 'garderobe', levelId: 'hoved', from: [-6, 0], to: [-3.1, 0], normal: [0, 1], ...EXT },
+      { id: 'w-gard-ost', roomId: 'garderobe', levelId: 'hoved', from: [-3.1, 0], to: [-3.1, 3], normal: [-1, 0], backOf: 'w-gang-vest', ...WALL },
+      { id: 'w-gard-sor', roomId: 'garderobe', levelId: 'hoved', from: [-3.1, 3], to: [-6, 3], normal: [0, -1], ...EXT, thickness: 0.1 },
+      { id: 'w-gard-vest', roomId: 'garderobe', levelId: 'hoved', from: [-6, 3], to: [-6, 0], normal: [1, 0], ...EXT },
       { id: 'w-stue-gang', roomId: 'stue', levelId: 'hoved', from: [-3, 3.1], to: [14, 3.1], normal: [0, 1], backOf: 'w-gang-stue', ...WALL },
       { id: 'w-stue-ost', roomId: 'stue', levelId: 'hoved', from: [14, 3.1], to: [14, 7], normal: [-1, 0], ...EXT },
       {
@@ -76,6 +99,7 @@ export function testHouse() {
     ],
     ceilings: [
       { id: 'c-gang', roomId: 'gang', polygon: [[-3, 0], [14, 0], [14, 3], [-3, 3]], type: 'flat', height: 2.4, paint: '#f2f2f0' },
+      { id: 'c-garderobe', roomId: 'garderobe', polygon: [[-6, 0], [-3.1, 0], [-3.1, 3], [-6, 3]], type: 'flat', height: 2.4, paint: '#f2f2f0' },
       { id: 'c-stue', roomId: 'stue', polygon: [[-3, 3.1], [14, 3.1], [14, 7], [-3, 7]], type: 'flat', height: 2.4, paint: '#f2f2f0' },
     ],
     builtInLights: [],
@@ -85,6 +109,7 @@ export function testHouse() {
 /** The doors and where the walk test starts / ends (world x, z on each side of the hole's middle). */
 export const DOORS = [
   'door-inngang', 'door-glass', 'door-dobbel-glass', 'door-skyve', 'door-lomme', 'door-skyve-dobbel', 'door-dobbel-ulik', 'door-folde', 'door-patio', 'door-terrasse', 'door-terrasse-dobbel', 'door-folde-glass',
+  'door-overlys', 'door-glasstripe', 'door-garasje', 'door-vippe', 'door-garderobe', 'door-teleskop',
 ];
 
 /**

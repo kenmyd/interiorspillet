@@ -9,6 +9,7 @@ import { resolveChimneys } from './chimneygeom.js';
 import { planLighting, OUTSIDE_ROOM } from './lightplan.js';
 import { resolveFurnishing } from './furnishgeom.js';
 import { resolveFireplaces } from './fireplacegeom.js';
+import { WINDOW_SHAPES, windowOutline } from './windowshape.js';
 
 /**
  * Room layout: reads data/room-spec.json and derives typed, world-space values for every module (shell, lighting,
@@ -591,13 +592,21 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
         revealDepth: o.reveal?.depth ?? w.thickness ?? 0.2,
         frame: deepClone(o.frame) ?? null,
         reveal: deepClone(o.reveal) ?? null,
-        sillBoard: deepClone(o.sillBoard) ?? null,
+        // (a round window has no sill board: its bottom is no edge)
+        sillBoard: o.shape === 'round' ? null : deepClone(o.sillBoard) ?? null,
         sashes: deepClone(o.sashes) ?? [],
         // window models (notes/vindusmodeller.md): panes per sash by default, the glazing bars' look, the floor out to
         // the frame (null = a window on the floor without a sill board gets it)
         panes: deepClone(o.panes) ?? null,
         bars: deepClone(o.bars) ?? null,
         revealFloor: typeof o.revealFloor === 'boolean' ? o.revealFloor : null,
+        // a shaped window (notes/vindusmodeller.md shape, home/windowshape.js): its outline in its frame is set below,
+        // once the walls under a roof have their tops (a gable window follows them); a corner window (corner 'from' /
+        // 'to') runs round that end of its wall
+        shape: o.type === 'window' && WINDOW_SHAPES.includes(o.shape) ? o.shape : null,
+        shapeSpec: o.type === 'window' && WINDOW_SHAPES.includes(o.shape) ? { peak: o.peak ?? null, shoulder: o.shoulder ?? null, points: deepClone(o.points) ?? null } : null,
+        outline: null,
+        corner: o.type === 'window' && (o.corner === 'from' || o.corner === 'to') ? o.corner : null,
         door: deepClone(o.door) ?? null,
         handle: deepClone(o.handle) ?? null,
         outsideView: o.outsideView ?? null,
@@ -934,6 +943,22 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
       o.topU0 = k > 0 ? o.top - o.width * k : o.top;
       o.topU1 = k < 0 ? o.top + o.width * k : o.top;
       for (const [h, map, dy] of holeOfOpening.get(o) || []) setSlopedTop(h, o, map, dy);
+    }
+  }
+  // ---- the outlines of the shaped windows (home/windowshape.js): a gable window's slopes follow the wall's top over it
+  for (const w of allWalls) {
+    for (const o of w.openings) {
+      if (!o.shape) continue;
+      let roof = null;
+      if (o.shape === 'gable') {
+        const us = [o.u0, o.u1, ...w.topProfile.map((q) => q[0]).filter((u) => u > o.u0 + 1e-6 && u < o.u1 - 1e-6)];
+        const peakU = us.reduce((a, u) => (w.heightAt(u) > w.heightAt(a) + 1e-6 ? u : a), us[0]);
+        const hp = w.heightAt(peakU);
+        const slopeL = peakU > o.u0 + 1e-6 ? (hp - w.heightAt(o.u0 + 1e-6)) / (peakU - o.u0) : 0;
+        const slopeR = peakU < o.u1 - 1e-6 ? (hp - w.heightAt(o.u1 - 1e-6)) / (o.u1 - peakU) : 0;
+        if (Math.abs(slopeL) > 1e-3 || Math.abs(slopeR) > 1e-3) roof = { peakAt: (peakU - o.u0) / o.width, slopeL, slopeR };
+      }
+      o.outline = windowOutline({ shape: o.shape, width: o.width, height: o.height, ...o.shapeSpec }, roof);
     }
   }
 

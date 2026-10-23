@@ -11,6 +11,11 @@ karmen og takvinduene, `layout.js` sender feltene videre, og `validateHouse` i `
 **Se dem:** `dev/vinduer.html` (testhuset i `src/dev/vinduer-hus.js`: 20 vinduer og 2 takvinduer, med knapper for
 visningene). **Test:** `node tools/house-tests/vinduer.test.mjs` (også med i `node tools/test-house.mjs`).
 
+2026-10-23: formede vinduer (`shape`: gavlvindu, trekant, rundt, mangekant), hjørnevindu (`corner`), glassvegg og
+fransk balkong (`frenchBalcony`), se «Fasadetypene» under. **Se dem:** `dev/fasadetyper.html` (to hus i
+`src/dev/fasadetyper-hus.js`). **Test:** `node tools/house-tests/fasadetyper.test.mjs`. Bygget på grenen
+`claude/hungry-mendeleev-b747e9` (vinduer med skrå overkant), som ikke er godkjent inn i master ennå.
+
 ## Feltene på et vindu
 
 Et vindu er en åpning med `type: 'window'` i `walls[].openings[]`. Hullet er som før: `offset`, `width`, `height` og
@@ -109,6 +114,126 @@ Byggeren: `layout.js` gir åpningen `topSlope` (stigning per meter langs veggen,
 utsparinger, `buildWindow` bygger skrå felt som trapeser (`quadPrism`), og `cladding.js` lager omrammingen med et skrått
 toppbord. Validatoren sjekker at den skrå toppen holder seg under veggen ved begge ender og ved hvert knekkpunkt i
 veggens topp.
+
+## Fasadetypene
+
+Alt er valgfrie felt på åpningen i `walls[].openings[]`. Uten dem bygges vinduet nøyaktig som før.
+
+### Formede vinduer: `shape`
+
+| Felt | Standard | Betydning |
+|---|---|---|
+| `shape` | – (rektangel) | `'gable'` (femkant under mønet), `'triangle'`, `'round'` eller `'polygon'`. Bare på `type: 'window'`. |
+| `width`, `height`, `sill` | som før | Boksen rundt formen. `sill + height` er det høyeste punktet (toppen). |
+| `peak` | der veggens topp er høyest over vinduet (mønet), ellers 0,5 | `'gable'` og `'triangle'`: der toppen er, brøk av bredden fra venstre sett fra rommet. |
+| `shoulder` | etter taket | `'gable'`: høyden på de loddrette sidene over `sill`, i meter. Uten den følger skråkantene veggens topp (taket), og uten tak over er de 35°. |
+| `points` | – | `'polygon'`: hjørnene `[[x, y], …]` som brøker av bredden (fra venstre sett fra rommet) og høyden (fra `sill`). Formen må være konveks. |
+
+- **Gavlvindu** (`'gable'`): de loddrette sidene opp til skuldrene, så to skråkanter til toppen. I en gavl under et
+  tak (`roofs`) er skråkantene parallelle med takfallet på hver side av mønet, og `height` sier hvor nær mønet
+  toppen er. Med mønet utenfor vinduet blir det en trapes. Er skulderen på brystningen, blir den siden en trekant.
+- **Trekantvindu** (`'triangle'`): bunnen er hele bredden, og toppen er `peak`. Skråkantene følger ikke taket.
+- **Rundt vindu** (`'round'`): en sirkel (en ellipse når `width` og `height` er ulike). Det kan ikke stå på gulvet,
+  og det får ingen vinduskarmplate.
+- **Inndeling:** et formet vindu er fast. Grensene i `sashes` blir poster og losholt (`frame.mullion` brede), og
+  `panes` gir sprosser som klippes av glasset. `opening: true` brukes ikke, og validatoren varsler.
+- Byggeren følger omrisset med karm, glassliste, gummilist, glass, hullet i veggen, hullet i kledningen, omrammingen
+  (`cladding.trim.surrounds`) og foringen i lysningen. `topSlope` brukes ikke sammen med `shape`.
+
+```json
+{ "id": "win-gavl", "type": "window", "offset": 1.7, "width": 3.0, "height": 3.6, "sill": 0.5, "shape": "gable",
+  "sashes": [{ "to": 0.3333 }, { "from": 0.3333, "to": 0.6667 }, { "from": 0.6667 }] }
+```
+Gavlvindu i vestgavlen under et saltak (35°), med to poster: skråkantene følger takfallet.
+
+```json
+{ "id": "win-trekant", "type": "window", "offset": 2.45, "width": 1.5, "height": 1.05, "sill": 2.75, "shape": "triangle" }
+{ "id": "win-rund", "type": "window", "offset": 4.65, "width": 0.7, "height": 0.7, "sill": 1.3, "shape": "round", "panes": [2, 2] }
+{ "id": "win-sekskant", "type": "window", "offset": 1.0, "width": 0.8, "height": 0.8, "sill": 1.2, "shape": "polygon",
+  "points": [[0.25, 0], [0.75, 0], [1, 0.5], [0.75, 1], [0.25, 1], [0, 0.5]] }
+```
+
+### Hjørnevindu: `corner`
+
+To vinduer i to yttervegger som møtes i et utvendig hjørne. Hjørnet mellom dem er borte fra brystningen til toppen, og
+en hjørnepost står der (så dyp som veggen utenfor rammen, 10 cm i en 0,3 m vegg med `reveal.depth` 0,2).
+
+| Felt | Betydning |
+|---|---|
+| `corner` | `'to'`: vinduet går til veggens `to`-ende og rundt hjørnet; `'from'`: til `from`-enden. |
+
+- Vinduet på den andre veggen har motsatt `corner` (`'to'` møter `'from'`). Begge har samme `sill` og `height`, og
+  samme `reveal.depth`. `offset` og `width` er hullet på romsiden: `offset + width` er veggens lengde for `'to'`,
+  og `offset` er 0 for `'from'`.
+- Rammen går forbi rommets hjørne inn til hjørneposten, uten karm på den siden. Karmplata og vannbrettet er gjæret
+  inn i hjørnet. Kledningens hjørnekasse stopper under vinduet og fortsetter over det, og omrammingen går rundt
+  hjørnet.
+- Validatoren gir feil når vinduet ikke når hjørnet, når den andre veggen mangler et vindu med motsatt `corner`, når
+  de har ulik høyde, og når hjørnet er innvendig. Et hjørnevindu kan ikke ha `shape` eller `topSlope`.
+
+```json
+{ "id": "win-hj-s", "type": "window", "offset": 8.3, "width": 1.1, "height": 1.3, "sill": 0.8, "corner": "to",
+  "sashes": [{ "opening": true, "hinge": "left" }] }
+{ "id": "win-hj-o", "type": "window", "offset": 0, "width": 1.4, "height": 1.3, "sill": 0.8, "corner": "from" }
+```
+Sørveggen (9,4 m) til høyre ende, østveggen fra sin første ende: de møtes i sørøst.
+
+### Glassvegg og dør i glassvegg
+
+- **Glassvegg:** et vanlig vindu over flere meter med `sill: 0` og `height` til like under veggens topp, delt med
+  `sashes` (postene `frame.mullion` brede). Gulvet går ut til karmen. Feltene kan være åpningsbare.
+- **Dør i glassvegg:** en dør med flere sidefelt (`door.sidelights`, se `notes/dortyper.md` 4). Flere sidefelt på
+  samme side står etter hverandre fra karmen og inn, med en post mellom. Da er glassveggen og døra ett element med
+  felles karm.
+
+```json
+{ "id": "win-glassvegg", "type": "window", "offset": 0.3, "width": 4.0, "height": 2.25, "sill": 0,
+  "sashes": [{ "to": 0.2 }, { "from": 0.2, "to": 0.4 }, { "from": 0.4, "to": 0.6, "opening": true, "hinge": "left" },
+             { "from": 0.6, "to": 0.8 }, { "from": 0.8 }] }
+```
+
+### Fransk balkong: `frenchBalcony`
+
+Et rekkverk på fasaden foran en dør eller et vindu ned mot gulvet, uten balkonggulv. Det stopper figuren.
+
+| Felt | Standard | Betydning |
+|---|---|---|
+| `frenchBalcony` | – | `true` eller `{ style, height, color }`. På en åpning (dør eller vindu) i en yttervegg. |
+| `style` | `'glass'` | `'glass'` (glass i en smal ramme) eller `'bars'` (stålspiler, høyst 10 cm mellom dem). |
+| `height` | 1,0 | Håndlistens topp over gulvet (0,8–1,3 m). |
+| `color` | rammens farge | Rekkverkets farge. |
+
+Rekkverket står 7 cm ut fra fasaden, 6 cm bredere enn hullet på hver side, med fester inn i veggen. Validatoren gir
+feil når en dør til en fransk balkong slår ut, og varsler når brystningen er over 0,6 m eller veggen ikke er en
+yttervegg.
+
+```json
+{ "id": "door-sov-balkong", "type": "door", "offset": 1.0, "width": 1.3, "height": 2.1, "sill": 0, "interactive": true,
+  "connects": ["sov1", "ute"], "frenchBalcony": { "style": "glass" },
+  "door": { "variant": "double", "hinge": "from", "swing": "in", "opensInto": "sov1", "glass": true } }
+{ "id": "win-sov2", "type": "window", "offset": 0.9, "width": 1.6, "height": 2.1, "sill": 0, "frenchBalcony": { "style": "bars" },
+  "sashes": [{ "to": 0.5, "opening": true, "hinge": "left" }, { "from": 0.5, "opening": true, "hinge": "right" }] }
+```
+
+### Hva byggeren gjør (fasadetypene)
+
+- `src/home/windowshape.js` (ny, uten three.js) lager omrisset (`windowOutline`). `layout.js` gir et formet vindu
+  `outline` (i vinduets ramme) etter at veggene under et tak har fått toppen sin, og `corner` sendes videre.
+- `wallkit.js`: `buildWindow` bygger formede vinduer langs omrisset og hjørnevinduer med rammen inn til hjørneposten.
+  `wallLayer` tar hull med `pts` og hjørnekutt (`corner`). Et lag med slike hull trianguleres med gjæringen på plass,
+  hver endeflate for seg. Det gamle laget flyttet endene etterpå, og da brettet de tynne trekantene fra veggenden mot et
+  rundt hull seg over hverandre. Lag uten formede hull bygges som før.
+- `rooms.js`: hullene etter omrisset, hjørnekuttet, foringen, fransk balkong (`src/home/frenchbalcony.js`, ny) med
+  kollisjon. `cladding.js`: omramming langs omrisset, rundt hjørnevinduet og hjørnekassen delt rundt det.
+- Testen sjekker blant annet at stråler gjennom glasset går ut og stråler ved siden av formen treffer veggen, at hjørnet
+  er åpent bare mellom brystning og topp, at figuren stoppes av rekkverket (og går ut uten det), og at ingen to flater
+  med samme retning overlapper i samme plan.
+
+Ikke med:
+
+- Et formet vindu er alltid fast, og et hjørnevindu har alltid hjørnepost (ikke glass mot glass uten post).
+- `lighting.js` (lyset i eierens spill) regner et formet vindu som boksen rundt det.
+- Et formet vindu i en innervegg med baksideflate (`backOf`) får et rektangulært hull i baksideflaten.
 
 ## Eksempler
 
@@ -231,6 +356,16 @@ Per vindu på fasaden, koblet til vinduet på planen:
 5. **En skrå overkant** langs taket gir `topSlope: 'follow-roof'`, med `height` målt til den høye enden. Er den skrå
    uten å følge taket, er `topSlope` vinkelen i grader, med fortegnet sett fra rommet (motsatt av fasaden).
 6. Det som er gjettet, føres i `estimated` (for eksempel `["sashes", "panes"]`), så validatoren bare advarer.
+7. **Et vindu som ikke er et rektangel** gir `shape`. Under mønet i en gavl, med loddrette sider og skråkanter langs
+   taket: `'gable'` med `height` til toppen (skråkantene kommer fra taket). Uten tak i huset: `shoulder` (sidenes
+   høyde). En ren trekant: `'triangle'`, et koøye: `'round'`, alt annet konvekst: `'polygon'` med `points`.
+8. **To vinduer som møtes i et hjørne** uten vegg mellom seg (fasaden viser glass på begge sider av hjørnet) får
+   `corner`: `'to'` på vinduet ved veggens `to`-ende og `'from'` på vinduet på neste vegg. Hullene skal gå helt til
+   hjørnet på romsiden, med samme `sill` og `height`.
+9. **Et rekkverk rett foran en dør eller et vindu ned til gulvet** i en etasje over bakken, uten balkonggulv, gir
+   `frenchBalcony` (`style: 'glass'` eller `'bars'` etter tegningen). Døra skal slå inn.
+10. **Glassvegg:** ett vindu med `sill: 0` og `sashes` per felt. Står det en dør i glassveggen, er det en dør med
+   sidefelt (`door.sidelights`, flere på samme side), se `notes/dortyper.md`.
 
 Det planbyggeren kan fjerne når dette er flettet inn (forespørsel 8, 14 og 15):
 

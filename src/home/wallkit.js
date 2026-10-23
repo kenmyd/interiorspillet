@@ -10,6 +10,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { extrudeWall, basis, MeshBatcher, place } from '../world/buildKit.js';
 import { splitTriangles, liftTriangles, stepFaces } from './roofgeom.js';
+import { insetPolygon, spanAtX, spanAtY } from './windowshape.js';
 
 export const UP = new THREE.Vector3(0, 1, 0);
 const EPS = 1e-4;
@@ -51,9 +52,12 @@ export function groupGeometry(g, materialIndex) {
  * @param {number} o.L                       wall length
  * @param {number} o.bottom                  bottom edge height
  * @param {Array<[number, number]>} o.top    top edge [[u, y], …] from u = 0 to u = L (steps allowed)
- * @param {Array<{x0,x1,y1,y1b?}>} o.notches  openings cut from the bottom edge (doors)
- * @param {Array<{x0,x1,y0,y1,y1b?}>} o.holes openings inside (windows); y1b: a sloped top, y1 at x0 and y1b at x1
- *                                           (notes/vindusmodeller.md topSlope)
+ * @param {Array<{x0,x1,y1,y1b?,pts?}>} o.notches  openings cut from the bottom edge (doors); pts: a shaped window's
+ *                                           top from x0 to x1 [[x, y], …] (notes/vindusmodeller.md shape)
+ * @param {Array<{x0,x1,y0,y1,y1b?,pts?,corner?}>} o.holes openings inside (windows); y1b: a sloped top, y1 at x0 and y1b
+ *                                           at x1 (notes/vindusmodeller.md topSlope); pts: a shaped window's outline;
+ *                                           corner: a corner window – a hole reaching an end of the layer is cut out
+ *                                           of that end (y0 … y1, along the mitre)
  * @param {number} o.z0 @param {number} o.z1 layer depth range (z1 > z0, both ≤ 0)
  * @param {number} o.kStart @param {number} o.kEnd  mitre factors: x += ∓k·depth at the ends (see buildWalls)
  * @returns {THREE.BufferGeometry} groups 0 back (−z), 1 front (+z), 2 sides
@@ -78,26 +82,58 @@ export function wallLayer({ L, bottom, top, notches = [], holes = [], z0, z1, kS
   } else push(0, bottom);
   for (const n of ns) {
     push(n.x0, bottom);
-    push(n.x0, n.y1);
-    push(n.x1, n.y1b ?? n.y1);
+    if (n.pts) for (const [x, y] of n.pts) push(x, y);
+    else {
+      push(n.x0, n.y1);
+      push(n.x1, n.y1b ?? n.y1);
+    }
     push(n.x1, bottom);
   }
+  // corner windows: a hole flagged corner that reaches an end is cut out of that end (the mitre shift below moves its
+  // corners at the end onto the mitre, so the two walls of the corner leave it open between them)
+  const endCuts = holes.filter((h) => h.corner && h.x1 >= L - EPS).sort((a, b) => a.y0 - b.y0);
+  const startCuts = holes.filter((h) => h.corner && h.x0 <= EPS && !endCuts.includes(h)).sort((a, b) => b.y0 - a.y0);
   if (endNotch) {
     push(endNotch.x0, bottom);
     push(endNotch.x0, topOf(endNotch, endNotch.x0));
     push(L, topOf(endNotch, L));
-  } else push(L, bottom);
+  } else {
+    push(L, bottom);
+    for (const c of endCuts) {
+      push(L, c.y0);
+      push(c.x0, c.y0);
+      push(c.x0, c.y1);
+      push(L, c.y1);
+    }
+  }
   for (let i = top.length - 1; i >= 0; i--) push(Math.max(0, Math.min(L, top[i][0])), top[i][1]);
+  if (!startNotch) {
+    for (const c of startCuts) {
+      push(0, c.y1);
+      push(c.x1, c.y1);
+      push(c.x1, c.y0);
+      push(0, c.y0);
+    }
+  }
   if (pts.length > 2 && pts[0].distanceTo(pts[pts.length - 1]) < 1e-6) pts.pop();
   const shape = new THREE.Shape(pts);
-  for (const h of holes) shape.holes.push(new THREE.Path([v2(h.x0, h.y0), v2(h.x0, h.y1), v2(h.x1, h.y1b ?? h.y1), v2(h.x1, h.y0)]));
-  const g = extrudeWall(shape, z1 - z0, z0);
+  for (const h of holes) {
+    if (endCuts.includes(h) || startCuts.includes(h)) continue;
+    shape.holes.push(new THREE.Path(h.pts ? h.pts.map(([x, y]) => v2(x, y)) : [v2(h.x0, h.y0), v2(h.x0, h.y1), v2(h.x1, h.y1b ?? h.y1), v2(h.x1, h.y0)]));
+  }
+  // a layer with a shaped hole or a corner cut (notes/vindusmodeller.md) has each cap triangulated after its own mitre
+  // shift: shifting the ends of one triangulation (below) can fold the thin triangles that fan from an end to a
+  // many-sided hole over each other. Every other layer is built as before.
+  const shaped = holes.some((h) => h.pts || h.corner) || ns.some((n) => n.pts);
+  const g = shaped ? extrudeMitred(pts, shape.holes.map((h) => h.getPoints()), z0, z1, (x, d) => (x < EPS ? x - kStart * d : x > L - EPS ? x + kEnd * d : x)) : extrudeWall(shape, z1 - z0, z0);
   const pos = g.attributes.position;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i);
-    const d = -pos.getZ(i);
-    if (x < EPS) pos.setX(i, x - kStart * d);
-    else if (x > L - EPS) pos.setX(i, x + kEnd * d);
+  if (!shaped) {
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i);
+      const d = -pos.getZ(i);
+      if (x < EPS) pos.setX(i, x - kStart * d);
+      else if (x > L - EPS) pos.setX(i, x + kEnd * d);
+    }
   }
   pos.needsUpdate = true;
   g.computeVertexNormals();
@@ -117,6 +153,54 @@ export function wallLayer({ L, bottom, top, notches = [], holes = [], z0, z1, kS
 }
 
 /**
+ * The extrusion of a wall layer from z0 to z1 (z1 > z0, both ≤ 0) with its mitre shift applied before triangulating:
+ * each cap triangulated on its own shifted outline (shift(x, depth) → x), the sides between them. Groups as
+ * extrudeWall: 0 back (−z), 1 front (+z), 2 sides; non-indexed, with a uv attribute for the caller to fill.
+ * @param {THREE.Vector2[]} outline  the layer's outline
+ * @param {THREE.Vector2[][]} holes
+ */
+function extrudeMitred(outline, holes, z0, z1, shift) {
+  const ring = (P, cw) => {
+    const r = P.map((q) => v2(q.x, q.y));
+    if (r.length > 2 && r[0].distanceTo(r[r.length - 1]) < 1e-9) r.pop();
+    if (THREE.ShapeUtils.isClockWise(r) !== cw) r.reverse();
+    return r;
+  };
+  // the outline counter-clockwise, the holes clockwise: the material lies left of every edge
+  const outer = ring(outline, false);
+  const hs = holes.map((h) => ring(h, true)).filter((h) => h.length >= 3);
+  const pos = [];
+  const g = new THREE.BufferGeometry();
+  for (const [z, face] of [[z0, -1], [z1, 1]]) {
+    const start = pos.length / 3;
+    const d = -z;
+    const C = outer.map((q) => v2(shift(q.x, d), q.y));
+    const H = hs.map((h) => h.map((q) => v2(shift(q.x, d), q.y)));
+    const all = [...C, ...H.flat()];
+    for (const t of THREE.ShapeUtils.triangulateShape(C, H)) {
+      let [a, b, c] = t.map((i) => all[i]);
+      const cr = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+      if (cr > 0 !== face > 0) [b, c] = [c, b];
+      pos.push(a.x, a.y, z, b.x, b.y, z, c.x, c.y, z);
+    }
+    g.addGroup(start, pos.length / 3 - start, face > 0 ? 1 : 0);
+  }
+  const sides = pos.length / 3;
+  for (const R of [outer, ...hs]) {
+    for (let i = 0; i < R.length; i++) {
+      const a = R[i], b = R[(i + 1) % R.length];
+      const a0 = [shift(a.x, -z0), a.y, z0], b0 = [shift(b.x, -z0), b.y, z0];
+      const a1 = [shift(a.x, -z1), a.y, z1], b1 = [shift(b.x, -z1), b.y, z1];
+      pos.push(...a0, ...b0, ...b1, ...a0, ...b1, ...a1);
+    }
+  }
+  g.addGroup(sides, pos.length / 3 - sides, 2);
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array((pos.length / 3) * 2), 2));
+  return g;
+}
+
+/**
  * Notches (door holes cut from the bottom edge) side by side merged into one (an outer door between two sidelights):
  * wallLayer would otherwise trace a zero-width spike down to the bottom edge between them.
  * @param {Array<{x0,x1,y1}>} notches
@@ -127,7 +211,7 @@ export function mergeNotches(notches) {
   const out = [];
   for (const n of ns) {
     const p = out[out.length - 1];
-    if (p && n.x0 <= p.x1 + 1e-4 && Math.abs(n.y1 - p.y1) < 1e-4 && n.y1b == null && p.y1b == null) p.x1 = Math.max(p.x1, n.x1);
+    if (p && n.x0 <= p.x1 + 1e-4 && Math.abs(n.y1 - p.y1) < 1e-4 && n.y1b == null && p.y1b == null && !n.pts && !p.pts) p.x1 = Math.max(p.x1, n.x1);
     else out.push(n);
   }
   return out;
@@ -478,6 +562,29 @@ export function quadPrism(f, pts, z0, z1, material, o = {}) {
   g.dispose();
 }
 /**
+ * A ring of prisms between a convex polygon A and its inset B (corresponding corners, [x, y]) from z0 to z1: the karm,
+ * bead and gasket of a shaped window (notes/vindusmodeller.md shape), one prism per edge.
+ */
+export function polyRing(f, A, B, z0, z1, material, o = {}) {
+  for (let i = 0; i < A.length; i++) {
+    const j = (i + 1) % A.length;
+    quadPrism(f, [A[i], A[j], B[j], B[i]], z0, z1, material, o);
+  }
+}
+/**
+ * A prism over a convex footprint [[x, z], …] in a batch frame from y0 to y1 (box UVs): the mitred ends of a corner
+ * window's sill board and the halves of its corner post.
+ */
+export function prismY(f, pts, y0, y1, material, o = {}) {
+  const g = new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(([x, z]) => v2(x, -z))), { depth: y1 - y0, bevelEnabled: false, steps: 1 });
+  // the shape's (x, −z) plane turned up: (X, Y, Z) → (X, Z, −Y), then lifted to y0
+  g.rotateX(-Math.PI / 2);
+  g.translate(0, y0, 0);
+  f.add(g, material, { boxUV: true, ...o });
+  g.dispose();
+}
+
+/**
  * A field of a window as a trapezoid { x0, x1, y0, yl, yr }: the bottom level at y0, the top a line from (x0, yl) to
  * (x1, yr) – a rectangle when yl = yr. trapTop is the top line (extended past the ends), trapInset moves the sides in
  * by l, r, the bottom up by b and the top down by t square to it (a rectangle gives exactly inset()'s numbers).
@@ -541,8 +648,66 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep, matri
     // aluminium threshold sill under the leaf and the light oak threshold across the reveal floor
     f.box(W, 0.018, fd + 0.03, 0, 0.009, zB + (fd + 0.03) / 2, M.frame, nf);
     f.box(W, 0.012, rd, 0, 0.006, -rd / 2, M.threshold, nf);
+  } else if (o.outline) {
+    // a shaped window (layout opening.outline, notes/vindusmodeller.md shape): fixed glazing in a karm along the
+    // outline (karm, bead, gasket: one prism per edge), posts and transoms where o.sashes divide it, glazing bars
+    // clipped to the glass
+    const P = o.outline;
+    const fk = Math.max(0.03, fw * 0.62);
+    const fb = Math.max(0.015, fw - fk);
+    const K = insetPolygon(P, fk);
+    polyRing(f, insetPolygon(P, FRAME_INSET), K, zB, zF, M.frame, nf);
+    const G = insetPolygon(K, fb);
+    polyRing(f, K, G, zF - 0.034, zF - 0.007, M.frame, nf);
+    polyRing(f, G, insetPolygon(G, 0.004), zF - 0.041, zF - 0.032, M.gasket, gk);
+    const zG = zF - 0.04;
+    const fin = (v) => typeof v === 'number' && Number.isFinite(v) && v > 0.01 && v < 0.99;
+    const xs = new Set();
+    const ys = new Set();
+    for (const sa of (o.sashes || []).filter((x) => x && typeof x === 'object')) {
+      for (const v of [sa.from, sa.to]) if (fin(v)) xs.add(Math.round(v * 1e4) / 1e4);
+      for (const v of [sa.bottom, sa.top]) if (fin(v)) ys.add(Math.round(v * 1e4) / 1e4);
+    }
+    // a post's / transom's ends reach 2 mm into the karm (past its sloped side), 2 mm shallower than the karm: none of
+    // its faces in the karm's or the bead's planes
+    const mull = o.frame?.mullion ?? Math.max(0.03, fw * 0.6);
+    const reach = (spans) => {
+      const ok = spans.filter(Boolean);
+      return ok.length ? [Math.min(...ok.map((q) => q[0])) - 0.002, Math.max(...ok.map((q) => q[1])) + 0.002] : null;
+    };
+    for (const fx of xs) {
+      const x = -W / 2 + fx * W;
+      const sp = reach([spanAtX(K, x - mull / 2), spanAtX(K, x + mull / 2)]);
+      if (sp) f.box(mull, sp[1] - sp[0], fd - 0.004, x, (sp[0] + sp[1]) / 2, (zB + zF) / 2, M.frame, nf);
+    }
+    for (const fy of ys) {
+      const y = fy * H;
+      const sp = reach([spanAtY(K, y - mull / 2), spanAtY(K, y + mull / 2)]);
+      if (sp) f.box(sp[1] - sp[0], mull, fd - 0.006, (sp[0] + sp[1]) / 2, y, (zB + zF) / 2, M.frame, nf);
+    }
+    // glazing bars (o.panes over the whole window), through the glass, the cross bars 2 mm shallower
+    const [cols, rows] = panesOf(o.panes);
+    const gx0 = Math.min(...G.map((q) => q[0])), gx1 = Math.max(...G.map((q) => q[0]));
+    const gy0 = Math.min(...G.map((q) => q[1])), gy1 = Math.max(...G.map((q) => q[1]));
+    const bw = Math.min(o.bars?.width ?? 0.024, (gx1 - gx0) / (3 * cols), (gy1 - gy0) / (3 * rows));
+    for (let i = 1; i < cols; i++) {
+      const x = gx0 + ((gx1 - gx0) * i) / cols;
+      const sp = spanAtX(G, x);
+      if (sp) f.box(bw, sp[1] - sp[0] + 0.01, 0.024, x, (sp[0] + sp[1]) / 2, zG, M.bars ?? M.frame, nf);
+    }
+    for (let j = 1; j < rows; j++) {
+      const y = gy0 + ((gy1 - gy0) * j) / rows;
+      const sp = spanAtY(G, y);
+      if (sp) f.box(sp[1] - sp[0] + 0.01, bw, 0.02, (sp[0] + sp[1]) / 2, y, zG, M.bars ?? M.frame, nf);
+    }
+    // the glass reaches 5 mm into the bead
+    glassRect = { poly: insetPolygon(G, -0.005), x: 0, y: 0, z: zG };
   } else {
-    const fields = windowSashes(o);
+    // a corner window (o.corner, notes/vindusmodeller.md): the frame runs on past the hole's end on the room face to
+    // the mitre at the frame's depth (cornerK · revealDepth), where it stops at the corner post – no karm on that side
+    const cs = o.corner === 'to' ? 1 : o.corner === 'from' ? -1 : 0;
+    const ext = cs ? (o.cornerK ?? 1) * rd : 0;
+    const fields = cs ? windowSashes({ ...o, width: W + ext }).map((c) => ({ ...c, x0: c.x0 + (cs * ext) / 2, x1: c.x1 + (cs * ext) / 2 })) : windowSashes(o);
     // one karm for the whole window: a window of one field keeps its own (narrow for a sash, wide for fixed glazing);
     // fields side by side share the sash's, the fixed ones make up for it with a wider bead. Where two fields meet,
     // each has half a post (o.frame.mullion).
@@ -558,10 +723,14 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep, matri
     for (const c of fields) {
       const fk = fkOf(c.opening);
       const k = { l: c.outer.l ? fk : half, r: c.outer.r ? fk : half, b: c.outer.b ? fk : half, t: c.outer.t ? fk : half };
+      // (the corner side: the post is the karm)
+      const atCorner = (cs > 0 && c.outer.r) || (cs < 0 && c.outer.l);
+      if (cs > 0 && c.outer.r) k.r = 0;
+      if (cs < 0 && c.outer.l) k.l = 0;
       const sloped = Math.abs(slope) > 1e-6 && c.outer.t;
       const q = { x0: c.x0, x1: c.x1, y0: c.y0, yl: sloped ? yTop(c.x0) : c.y1, yr: sloped ? yTop(c.x1) : c.y1 };
       // the karm's outer rectangle: in from the hole on its sides and top (FRAME_INSET)
-      const outerRect = trapInset(q, c.outer.l ? FRAME_INSET : 0, 0, c.outer.r ? FRAME_INSET : 0, c.outer.t ? FRAME_INSET : 0);
+      const outerRect = trapInset(q, c.outer.l && !(atCorner && cs < 0) ? FRAME_INSET : 0, 0, c.outer.r && !(atCorner && cs > 0) ? FRAME_INSET : 0, c.outer.t ? FRAME_INSET : 0);
       const K = trapInset(q, k.l, k.b, k.r, k.t);
       quadRing(f, outerRect, K, zB, zF, M.frame, nf);
       let G; // the glass opening (what the sash or the bead leaves free)
@@ -629,18 +798,35 @@ export function buildWindow(o, isDoor, { M, exteriorBatch, batchers, keep, matri
     }
     if (rects.length === 1) glassRect = rects[0];
     else if (rects.length) glassRect = { parts: rects, z: rects[0].z };
+    if (cs) {
+      // this window's half of the corner post: the corner of the two walls from the frame's depth out to the facade,
+      // split along the mitre with the window on the other wall (o.wallThickness: this wall's)
+      const k = o.cornerK ?? 1;
+      const t = o.wallThickness ?? rd + fd + 0.03;
+      const y0 = o.sillBoard ? -(o.sillBoard.thickness ?? 0.025) : 0;
+      if (t > rd + 0.005) prismY(f, [[cs * (W / 2 + k * rd), -rd], [cs * (W / 2 + k * rd), -t], [cs * (W / 2 + k * t), -t]], y0, H, M.frame, nf);
+    }
   }
   let sillY = null;
   if (o.sillBoard && !isDoor) {
     const st = o.sillBoard.thickness ?? 0.025;
     const over = o.sillBoard.overhang ?? 0.01;
     const depth = rd + over;
-    const g = new THREE.BoxGeometry(W, st, depth);
-    f.add(g, M.sill, { matrix: place(0, -st / 2, -rd + depth / 2), collide: false, boxUV: true });
-    g.dispose();
+    const cs = o.outline ? 0 : o.corner === 'to' ? 1 : o.corner === 'from' ? -1 : 0;
+    const k = o.cornerK ?? 1;
+    if (cs) {
+      // a corner window's board runs into the corner, mitred with the one on the other wall
+      const xa = -cs * (W / 2);
+      prismY(f, [[xa, -rd], [cs * (W / 2 + k * rd), -rd], [cs * (W / 2 - k * over), over], [xa, over]], -st, 0, M.sill, { collide: false });
+    } else {
+      const g = new THREE.BoxGeometry(W, st, depth);
+      f.add(g, M.sill, { matrix: place(0, -st / 2, -rd + depth / 2), collide: false, boxUV: true });
+      g.dispose();
+    }
     sillY = o.sill;
-    // exterior window sill (vannbrett), sloping outward
-    exteriorBatch.frame(om).box(W, 0.012, 0.075, 0, -0.012, zB - 0.025, M.trim, { rot: [0.14, 0, 0], collide: false, castShadow: false });
+    // exterior window sill (vannbrett), sloping outward (a corner window's out to the corner)
+    const vx = cs ? k * (-zB + 0.075) : 0;
+    exteriorBatch.frame(om).box(W + vx, 0.012, 0.075, (cs * vx) / 2, -0.012, zB - 0.025, M.trim, { rot: [0.14, 0, 0], collide: false, castShadow: false });
   }
   const built = kit.build();
   batchers.push({ geometries: kit.geometries });

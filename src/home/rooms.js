@@ -4,9 +4,11 @@ import { paint, mat, emissive } from './materials.js';
 import { basis, MeshBatcher, prismX } from '../world/buildKit.js';
 import {
   UP, wallMatrix, openingMatrix, groupGeometry, wallLayer, mergeNotches, profileAt, profileSlice, floorGeometry,
-  ceilingGeometry, glassMaterial, frostedGlassMaterial, buildWindow, rectCells, FRAME_INSET, quadPrism,
+  ceilingGeometry, glassMaterial, frostedGlassMaterial, buildWindow, rectCells, FRAME_INSET, quadPrism, polyRing, prismY,
 } from './wallkit.js';
 import { buildDoor } from './doors.js';
+import { buildFrenchBalcony } from './frenchbalcony.js';
+import { flatBottom, topChain, insetPolygon } from './windowshape.js';
 import { claddingMaterial, ledStrip } from './shell.js';
 import { buildRoofs } from './roof.js';
 import { buildChimneys } from './chimney.js';
@@ -124,7 +126,7 @@ function mergeHoles(holes) {
   const out = [];
   for (const h of [...holes].sort((a, b) => a.x0 - b.x0)) {
     const p = out[out.length - 1];
-    if (p && h.x0 <= p.x1 + 1e-4 && Math.abs(h.y0 - p.y0) < 1e-4 && Math.abs(h.y1 - p.y1) < 1e-4 && h.y1b == null && p.y1b == null) p.x1 = Math.max(p.x1, h.x1);
+    if (p && h.x0 <= p.x1 + 1e-4 && Math.abs(h.y0 - p.y0) < 1e-4 && Math.abs(h.y1 - p.y1) < 1e-4 && h.y1b == null && p.y1b == null && !h.pts && !p.pts && !h.corner && !p.corner) p.x1 = Math.max(p.x1, h.x1);
     else out.push({ ...h });
   }
   return out;
@@ -542,9 +544,16 @@ export function buildRooms(ctx, layout, M = null) {
       const y0 = o.sill - (o.sillBoard ? o.sillBoard.thickness ?? 0.025 : 0);
       // a sloped top (notes/vindusmodeller.md): y1 at u0, y1b at u1 (ta / tb on the outer layer, y1 its bounding top)
       const st = o.topSlope ? { y1: o.topU0, y1b: o.topU1 } : { y1: o.top };
-      if (o.sill <= EPS) notchesAll.push({ x0: o.u0, x1: o.u1, ...st });
-      else holesAll.push({ x0: o.u0, x1: o.u1, y0, ...st });
-      outerAll.push({ x0: o.u0, x1: o.u1, y0: Math.max(o.sill <= EPS ? bottom : 0, y0), y1: o.top, ...(o.topSlope ? { ta: o.topU0, tb: o.topU1 } : {}), door: o.sill <= EPS, frameColor: String(o.frame?.color ?? LOOK.frame).toLowerCase() });
+      // a shaped window (notes/vindusmodeller.md shape): the hole along its outline (wall-local, its bottom corners
+      // down to the sill board); on the floor its top is the notch's top. A corner window (corner) is cut from the end.
+      const uc = (o.u0 + o.u1) / 2;
+      const flat = !!o.outline && flatBottom(o.outline);
+      const shp = o.outline ? { pts: o.outline.map(([x, y]) => [uc + x, y < 1e-6 ? y0 : o.sill + y]) } : {};
+      const tops = flat ? topChain(o.outline).map(([x, y]) => [uc + x, o.sill + y]) : null;
+      const cr = o.corner ? { corner: o.corner } : {};
+      if (o.sill <= EPS && (!o.outline || flat)) notchesAll.push({ x0: o.u0, x1: o.u1, ...st, ...(tops ? { pts: tops } : {}) });
+      else holesAll.push({ x0: o.u0, x1: o.u1, y0, ...st, ...shp, ...cr });
+      outerAll.push({ x0: o.u0, x1: o.u1, y0: Math.max(o.sill <= EPS ? bottom : 0, y0), y1: o.top, ...(o.topSlope ? { ta: o.topU0, tb: o.topU1 } : {}), ...shp, ...(tops ? { tops } : {}), ...cr, door: o.sill <= EPS, frameColor: String(o.frame?.color ?? LOOK.frame).toLowerCase() });
     }
     const notches = mergeNotches(notchesAll);
     // pieces: cut at the ends of the faces on the back (never inside an opening)
@@ -598,7 +607,8 @@ export function buildRooms(ctx, layout, M = null) {
       const kS = i === 0 ? kStart : 0;
       const kE = i === us.length - 2 ? kEnd : 0;
       const inPiece = (n) => n.x1 > a + EPS && n.x0 < b - EPS;
-      const clip = (n) => ({ ...n, x0: Math.max(n.x0, a) - a, x1: Math.min(n.x1, b) - a });
+      const shift = (q) => q?.map(([x, y]) => [x - a, y]);
+      const clip = (n) => ({ ...n, x0: Math.max(n.x0, a) - a, x1: Math.min(n.x1, b) - a, ...(n.pts ? { pts: shift(n.pts) } : {}), ...(n.tops ? { tops: shift(n.tops) } : {}) });
       const pTop = profileSlice(top, a, b);
       const pNotches = notches.filter(inPiece).map(clip);
       const pHoles = holesAll.filter((h) => h.x0 >= a - EPS && h.x1 <= b + EPS).map(clip);
@@ -653,8 +663,8 @@ export function buildRooms(ctx, layout, M = null) {
         // facade stays closed under the threshold; only a layer that starts at the floor gets a notch
         const asHole = (h) => !h.door || oBottom < -EPS;
         const shapeTop = (h) => (h.ta != null ? { y1: h.ta, y1b: h.tb } : { y1: h.y1 });
-        const oHoles = mergeHoles(outerAll.filter((h) => asHole(h) && h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ x0: h.x0, x1: h.x1, y0: h.door ? 0 : h.y0, ...shapeTop(h) })));
-        const oNotches = mergeNotches(outerAll.filter((h) => !asHole(h) && inPiece(h)).map((h) => ({ x0: h.x0, x1: h.x1, ...shapeTop(h) }))).map(clip);
+        const oHoles = mergeHoles(outerAll.filter((h) => asHole(h) && h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ x0: h.x0, x1: h.x1, y0: h.door ? 0 : h.y0, ...shapeTop(h), ...(h.pts ? { pts: h.pts } : {}), ...(h.corner ? { corner: h.corner } : {}) })));
+        const oNotches = mergeNotches(outerAll.filter((h) => !asHole(h) && inPiece(h)).map((h) => ({ x0: h.x0, x1: h.x1, ...shapeTop(h), ...(h.tops ? { pts: h.tops } : {}) }))).map(clip);
         const gOut = wallLayer({ L: b - a, bottom: oBottom, top: oTop, notches: oNotches, holes: oHoles, z0: -t, z1: -rd, kStart: kS, kEnd: kE });
         if (CL && !face) {
           // the house's cladding: bands per zone / gable / plinth, flashings, corner boards, surrounds (cladding.js)
@@ -700,6 +710,11 @@ export function buildRooms(ctx, layout, M = null) {
     for (const o of w.openings) {
       if (o.type !== 'window') continue;
       buildRoomWindow(w, o, rr);
+    }
+    // a french balcony on the facade in front of a door or a window on the floor (frenchbalcony.js)
+    for (const o of w.openings) {
+      const raw = rawOpening.get(o.id);
+      if (raw?.frenchBalcony && exterior) colliders.push(...buildFrenchBalcony(o, raw, w, { batch: rr.outside, matrix: openingMatrix(o, o.floorY) }));
     }
     // the ledge on top of the wall (V21) and its two corner fillers up to the floor above
     const ledge = rawWall.get(w.id)?.ledge;
@@ -801,6 +816,11 @@ export function buildRooms(ctx, layout, M = null) {
       const pts = [[-hw, 0], [hw, 0], [hw, -o.revealDepth], [-hw, -o.revealDepth]].map(([x, z]) => new THREE.Vector3(x, 0, z).applyMatrix4(m));
       (revealFloors.get(o.roomId) ?? revealFloors.set(o.roomId, []).get(o.roomId)).push(pts);
     }
+    // a corner window: the mitre at its end and the wall's thickness (its frame runs on to the corner post)
+    if (o.corner) {
+      const { kStart, kEnd } = mitre(w);
+      o = { ...o, cornerK: Math.abs(o.corner === 'to' ? kEnd : kStart) || 1, wallThickness: w.thickness };
+    }
     const win = buildWindow(o, false, { M: WM, exteriorBatch: rr.outside, batchers, keep });
     win.group.userData.pick = { kind: 'window', windowId: o.id };
     rr.deco.add(win.group);
@@ -817,7 +837,19 @@ export function buildRooms(ctx, layout, M = null) {
       const y0 = -(o.sillBoard ? o.sillBoard.thickness ?? 0.025 : 0);
       const W = o.width, Hh = o.height, d = o.revealDepth;
       const s = 0.004;
-      if (o.topSlope) {
+      if (o.outline) {
+        // a shaped window: a lining along its outline (notes/vindusmodeller.md shape)
+        const P = o.outline.map(([x, y]) => [x, y < 1e-6 ? y0 : y]);
+        polyRing(f, P, insetPolygon(P, s), -d, 0, lm, { collide: false });
+      } else if (o.corner) {
+        // a corner window: no side on the corner, the head (and the bottom without a board) mitred into the corner
+        const cs = o.corner === 'to' ? 1 : -1;
+        const k = o.cornerK ?? 1;
+        f.box(s, Hh - y0, d, -cs * (W / 2 - s / 2), (y0 + Hh) / 2, -d / 2, lm, { collide: false });
+        const plate = (ya, yb) => prismY(f, [[-cs * (W / 2 - s), -d], [cs * (W / 2 + k * d), -d], [cs * (W / 2), 0], [-cs * (W / 2 - s), 0]], ya, yb, lm, { collide: false });
+        plate(Hh - s, Hh);
+        if (!o.sillBoard && !revealFloor) plate(y0, y0 + s);
+      } else if (o.topSlope) {
         // under a sloped top (notes/vindusmodeller.md): the sides up to it, the head along it
         const k = o.topSlope;
         const top = (x) => Hh - Math.abs(k) * (k > 0 ? W / 2 - x : x + W / 2);
@@ -829,7 +861,7 @@ export function buildRooms(ctx, layout, M = null) {
         f.box(s, Hh - y0, d, W / 2 - s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
         f.box(W - 2 * s, s, d, 0, Hh - s / 2, -d / 2, lm, { collide: false });
       }
-      if (!o.sillBoard && !revealFloor) f.box(W - 2 * s, s, d, 0, y0 + s / 2, -d / 2, lm, { collide: false });
+      if (!o.sillBoard && !revealFloor && !o.outline && !o.corner) f.box(W - 2 * s, s, d, 0, y0 + s / 2, -d / 2, lm, { collide: false });
     }
     const anchor = new THREE.Group();
     anchor.name = `window-anchor:${o.id}`;

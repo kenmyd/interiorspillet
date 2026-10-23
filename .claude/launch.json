@@ -94,6 +94,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5276", "--strictPort"],
       "port": 5276
+    },
+    {
+      "name": "fasadetyper-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5273", "--strictPort"],
+      "port": 5273
     }
   ]
 }
