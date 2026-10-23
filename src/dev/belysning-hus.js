@@ -113,7 +113,9 @@ export function belysningHus({ level = 'standard', hints = true, lighting = true
   for (const c of house.ceilings) if (house.rooms.find((r) => r.id === c.roomId)?.levelId === 'etasje-2') Object.assign(c, { type: 'roof', height: 2.4 });
   // … the terrace outside the sliding door (its edge on the outer face of the west wall) …
   house.decks = [{ id: 'dekk-1', kind: 'terrace', levelId: 'hoved', y: -0.02, outline: rect([-3.2, 0.6], [-0.125, 4.6]), surface: 'boards' }];
-  // … and the lighting with the hints it has (plan metres → the game's x, z)
+  // … and the lighting with the hints it has (plan metres → the game's x, z); the planbygger's export sends its own
+  // `lighting` now (the hints from the AI's symbols), replaced here by the test house's
+  delete house.lighting;
   if (lighting) {
     house.lighting = { level };
     if (hints) {

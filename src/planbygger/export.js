@@ -34,10 +34,13 @@
  */
 import idsRegistry from '../../research/house/00-ids.json';
 import { levelRooms as roomsOfLevel, wallBand, footprint } from './regions.js';
-import { sub, add, mul, dot, cross, dist, unit, perp, signedArea, centroid, slug, round, clipPolygon, pointInPolygon } from './geom.js';
+import { sub, add, mul, dot, cross, dist, unit, perp, signedArea, centroid, slug, round, clipPolygon, pointInPolygon, projectToSegment } from './geom.js';
 import { DEFAULT_SETTINGS, wallLength, wallDir, stairGeometry, LOFT_NAME } from './model.js';
 import { ceilingSlope } from './houseread.js';
 import { WALKABLE_NORMAL_Y } from '../config.js';
+import { FURNISH_USES, FURNISH_HINTS, roomUse } from '../home/furnishgeom.js';
+import { ROOM_USES, USE_RULES, roomUse as lightRoomUse } from '../home/lightplan.js';
+import { fittingsOf } from './fittings.js';
 
 const RESERVED_IDS = new Set(['stue-kjokken', 'trapp', 'ute', 'forplass']);
 const MAIN = 'hoved';
@@ -48,6 +51,8 @@ const JAMB = 0.05;
 const MIN_DOOR = 0.82;
 /** metres of wall between two openings side by side (a door and its sidelight): a post, not a sliver */
 const MIN_POST = 0.1;
+/** the narrowest passage the validator accepts through a door (src/data/scripts/house.mjs MIN_PASSAGE) */
+const MIN_PASSAGE = 0.62;
 
 /** The window types the facade check offers (doc opening.style), [style, Norwegian label]; no style = 'auto'. */
 export const WINDOW_STYLES = Object.freeze([
@@ -99,7 +104,16 @@ export const LOOK = Object.freeze({
   door: '#f2f0eb',
   frame: '#f2f0eb',
   floor: { living: ['oak-plank', '#b8a48c'], bedroom: ['oak-plank', '#b8a48c'], hall: ['oak-plank', '#b0a089'], entrance: ['vinyl', '#7d7a78'], bathroom: ['vinyl', '#8c8789'], laundry: ['vinyl', '#8c8789'], storage: ['concrete', '#8a8580'] },
+  // a carport's or a garage's cast floor (notes/uterom.md: lighter than a store's)
+  outdoorFloor: ['concrete', '#a7a49e'],
+  // a wet room's floor (notes/kjokken-bad-genererte-hus.md)
+  tiles: { material: 'tiles', color: '#8f8c88', size: [0.3, 0.3], surface: 'tile' },
 });
+
+/** The rooms that are outside (notes/uterom.md rooms[].outdoor), once the engine knows the field: carport, garage, porch. */
+const OUTDOOR_ROOMS = new Set(idsRegistry.schema?.collections?.rooms?.enums?.outdoor ?? []);
+/** The compass side a game direction looks to (+x south, +z west). */
+const sideOf = (v) => (Math.abs(v[0]) >= Math.abs(v[1]) ? (v[0] > 0 ? 'S' : 'N') : v[1] > 0 ? 'W' : 'E');
 
 const KIND_NAMES = { living: 'Stue', bedroom: 'Soverom', bathroom: 'Bad', hall: 'Gang', laundry: 'Vaskerom', storage: 'Bod', entrance: 'Entré' };
 
@@ -283,6 +297,20 @@ export function exportHouse(doc, opts = {}) {
   const stairs = [];
   const counts = { rooms: 0, walls: 0, backOf: 0, exterior: 0, doors: 0, windows: 0, openings: 0, stairs: 0, doubleDoors: 0, slidingDoors: 0, skylights: 0, openBoundaries: 0 };
   const levelRooms = []; // per level the rooms in game coordinates (for the stairs)
+  // the cladding the AI read on the facades (houseread.js doc.cladding), once the engine knows the key (notes/kledning.md)
+  const cladding = idsRegistry.schema?.topLevel?.includes('cladding') ? claddingOf(doc) : null;
+  const outdoorFronts = []; // { roomId, name, side, walls, doorWalls }: the fronts inside the outdoor rooms (F149)
+  // the plan opening of each window and door of the house (the sloped tops below; generate.js's repairs by window id)
+  const planOpening = new Map();
+  // the engine's lighting rules (notes/belysning-genererte-hus.md) light the rooms, once it knows the key: no ceiling
+  // light and light group per room from here then (an outdoor room keeps its downlight: the rules have no carport)
+  const lit = !!idsRegistry.schema?.topLevel?.includes('lighting');
+  const lightHints = [];
+  const fires = []; // the stoves and fireplaces of the plans (fireplacesOf)
+  const narrowRooms = []; // rooms too narrow for the lighting rules' spots: { r, inside }
+  // the kitchens', bathrooms' and laundries' fittings and tiles (fittings.js), once the engine builds them
+  const tiles = !!idsRegistry.schema?.topLevel?.includes('builtIns');
+  const builtIns = [];
 
   doc.levels.forEach((level, li) => {
     const { rooms } = perLevel[li];
@@ -330,9 +358,16 @@ export function exportHouse(doc, opts = {}) {
         edges = edges.filter((_, k) => k !== i);
         i = -1;
       }
-      return { ...r, polygon, edges, ceiling: r.label?.ceiling ?? ceilingDefault };
+      return { ...r, polygon, edges, ceiling: r.label?.ceiling ?? ceilingDefault, outdoor: OUTDOOR_ROOMS.has(r.label?.outdoor) ? r.label.outdoor : null };
     });
     levelRooms[li] = R2;
+    // the furniture symbols the AI saw, in the house's metres, and what the lighting rules light each room as (sent when
+    // it is more than its name and kind say; the dining tables, the stoves, the fittings and a garage's door use it)
+    const symbols = (level.furniture ?? []).filter((f) => Array.isArray(f.at)).map((f) => ({ kind: f.kind, g: frame.toGame(f.at, levelId) }));
+    for (const r of R2) {
+      r.light = !r.outdoor ? lightingUse(r, symbols) : null;
+      r.lightUse = r.light?.use ?? null;
+    }
     const wallsById = new Map(level.walls.map((w) => [w.id, w]));
 
     // every room edge as a line with its plan wall reference
@@ -790,6 +825,8 @@ export function exportHouse(doc, opts = {}) {
         const room = R2[p.ri];
         const wallH = wall.height ?? room.ceiling;
         const entry = { id: null, type: o.type === 'door' ? 'door' : o.type === 'window' ? 'window' : 'opening', offset: R(off), width: R(width) };
+        // a wide opening out of a garage (not an open one, a carport) is its door (notes/dortyper.md 6, hus7)
+        const gate = entry.type === 'opening' && other === 'ute' && !selfWall && width >= 2.0 && room.lightUse === 'garage' && !room.outdoor && targets.length === 1;
         if (entry.type === 'window') {
           // a window a few centimetres off the floor stands on it: the game then runs the floor out to the frame
           // (rooms.js, revealFloor – it was the viewer's own strip until the window models came, F5)
@@ -800,6 +837,7 @@ export function exportHouse(doc, opts = {}) {
           entry.height = R(h);
           entry.sill = R(sill);
           entry.sashes = windowSashes(o.style, width, h, sill);
+          planOpening.set(entry, { levelId, o });
           // bars (sprosser) the facade check set: [columns, rows] of panes in each sash
           if (Array.isArray(o.panes) && o.panes.length === 2) entry.panes = o.panes;
           entry.estimated = ['*'];
@@ -815,7 +853,10 @@ export function exportHouse(doc, opts = {}) {
             const hinge = hingeStart === sameDir ? 'from' : 'to';
             const swingVec = frame.vecToGame(mul(perp(u), o.side || 1));
             const swing = dot(swingVec, p.e.n) > 0 ? 'in' : 'out';
-            const exterior = other === 'ute' && !selfWall;
+            // a door between an outdoor room (a carport) and a room inside is an outer door too, as the engine builds it
+            // (notes/uterom.md): the outer door's frame, reveal and leaf; glass only toward the open air (below)
+            const toOutdoor = !selfWall && !!(room.outdoor || R2.find((x) => x.id === other)?.outdoor);
+            const exterior = (other === 'ute' && !selfWall) || toOutdoor;
             // an outer door as the owner's (30-kjeller.json door-ute): a deeper frame and a dark-lined reveal in the thick
             // wall – with an inner door's 2 cm frame the leaf's clearance showed the outside as a slit (F17)
             const frameW = exterior ? 0.05 : 0.06;
@@ -829,9 +870,18 @@ export function exportHouse(doc, opts = {}) {
             // an outer door from a living room, a kitchen or a bedroom is a terrace or balcony door: glass with bars in
             // the leaf (F99, F100, F108); the front door (entrance, hall) and the doors of storerooms stay closed
             // (the customer's choice in the facade check, o.glass, wins)
-            const terrace = exterior && !['entrance', 'hall', 'storage', 'laundry', 'bathroom'].includes(room.kind);
-            const glass = o.glass ?? terrace;
-            const look = { ...(exterior ? {} : { leafColor: LOOK.door }), ...(glass ? { glass: { cols: width >= 1.2 ? 2 : 1, rows: 3 } } : {}) };
+            const terrace = exterior && other === 'ute' && !room.outdoor && !['entrance', 'hall', 'storage', 'laundry', 'bathroom'].includes(room.kind);
+            // an outer door as its facade drawing shows it (facadematch.js o.facadeDoor, F141, F144): glass or a solid leaf,
+            // the panes per leaf and a lower panel, a transom over it – where the leaf under it keeps 1,9 m
+            const fd = exterior && other === 'ute' ? o.facadeDoor ?? null : null;
+            // a door out onto a terrace or a balcony (a deck of its level within 0,6 m of it) is a glass door too, from a
+            // hall as well (hus12's loft lounge and stair hall)
+            const c0 = add(pw.a, mul(u, o.at));
+            const onDeck = exterior && other === 'ute' && (doc.decks ?? []).some((d) => d.level === levelId && Array.isArray(d.outline) && d.outline.length >= 3 && (pointInPolygon(c0, d.outline) || edgeDistance(c0, d.outline) <= 0.6));
+            const glass = o.glass ?? (fd ? fd.glass : terrace || onDeck);
+            const panes = glass && fd?.panes ? { cols: fd.panes[0], rows: fd.panes[1], ...(fd.panel ? { from: 0.75 } : {}) } : null;
+            const tr = fd?.transom && o.built !== 'sliding' && o.built !== 'folding' ? Math.min(1.2, fd.transom, h - 2 * frameW - 1.9) : 0;
+            const look = { ...(exterior ? {} : { leafColor: LOOK.door }), ...(glass ? { glass: panes ?? { cols: width >= 1.2 ? 2 : 1, rows: 3 } } : {}), ...(tr >= 0.12 ? { transom: { h: R(tr) } } : {}) };
             // windows joined to the door in the facade check: glass panels down to the floor in its frame (notes/dortyper.md 4)
             // the leaf keeps at least MIN_DOOR between the posts: the sidelights give way (and go below 0.15 m)
             let sidelights = (o.sidelights || []).map((sl) => ({ side: (sl.side === 'start') === sameDir ? 'from' : 'to', w: sl.width }));
@@ -872,6 +922,20 @@ export function exportHouse(doc, opts = {}) {
             }
             entry.interactive = true;
             entry.estimated = ['*'];
+          } else if (gate) {
+            // a sectional door where its tracks have room under the ceiling (0,35 m over the hole), else a tilting one;
+            // it opens with E
+            const headroom = room.ceiling - 0.36;
+            const sectional = headroom >= 1.95;
+            entry.type = 'door';
+            entry.id = `door-${owner}-${++counts.doors}`;
+            entry.height = R(sectional ? Math.min(2.1, headroom) : Math.min(2.1, wallH - 0.05));
+            entry.frame = { color: '#ecebe7', width: 0.06, depth: 0.06 };
+            entry.door = { variant: 'garage', style: sectional ? 'sectional' : 'tilt', swing: 'in', opensInto: owner, closed: true };
+            entry.interactive = true;
+            entry.estimated = ['*'];
+            entry.source = 'planbyggeren: garasjeporten (en bred åpning ut fra garasjen)';
+            counts.garageDoors = (counts.garageDoors ?? 0) + 1;
           } else {
             entry.id = `open-${owner}-${++counts.openings}`;
             entry.estimated = ['*'];
@@ -925,6 +989,53 @@ export function exportHouse(doc, opts = {}) {
         if (wish === 'must' && o.door.mount !== 'pocket') warnings.push(`${level.name}: skyvedøra ${o.id} får ikke plass inne i veggen og står på skinne`);
       }
     }
+    // a sliding door on its rail needs the wall beside the hole for its open leaf; where there is too little (F138:
+    // hus2's WIC, 1,14 m of wall with a 0,88 m door and the other WIC's door beside it) it parks telescopic, in two or
+    // three leaves, or a wide one runs past itself on two rails (bypass) – the fewest leaves that fit, its own side first
+    // (the validator's teleNeed, notes/dortyper.md)
+    for (const w of house.walls) {
+      const os = w.openings || [];
+      const L = dist(w.from, w.to);
+      for (const o of os) {
+        if (o.door?.variant !== 'sliding' || o.door.mount !== 'surface' || o.door.slide === 'both') continue;
+        const fw = o.frame?.width ?? 0.06;
+        const need = (n) => (n === 1 ? o.width - 2 * fw + 0.08 : (o.width + 0.04 + (n - 1) * 0.04) / n - fw + 0.04);
+        const room = (side) =>
+          side === 'from'
+            ? o.offset - Math.max(0, ...os.filter((q) => q !== o && q.offset + q.width <= o.offset + 0.01).map((q) => q.offset + q.width))
+            : Math.min(L, ...os.filter((q) => q !== o && q.offset >= o.offset + o.width - 0.01).map((q) => q.offset)) - (o.offset + o.width);
+        const sides = [o.door.slide, o.door.slide === 'from' ? 'to' : 'from'];
+        let fit = null;
+        for (let n = 1; n <= 3 && !fit; n++) for (const side of sides) if (!fit && need(n) <= room(side) - 0.01) fit = { n, side };
+        if (fit) {
+          if (fit.n === 1 && fit.side === o.door.slide) continue;
+          o.door.slide = fit.side;
+          if (fit.n > 1) o.door.leaves = fit.n;
+          o.source = `${o.source ? `${o.source}; ` : 'planbyggeren: '}${fit.n > 1 ? `teleskop-skyvedør i ${fit.n} blad` : 'skyvedøra går mot siden med plass'} (veggen ved siden av er kort)`;
+        } else if (o.width / 2 - fw - 0.02 >= MIN_PASSAGE) {
+          o.door.mount = 'bypass';
+          o.source = `${o.source ? `${o.source}; ` : 'planbyggeren: '}to blad som går forbi hverandre (ingen vegg ved siden av å skyve inn mot)`;
+        }
+      }
+    }
+
+    // ---- an outdoor room's front (F149): its walls toward a room inside that face its open side, which the facade
+    //      looking in through the opening shows (hus4: the store's grey panels and door seen through the carport)
+    R2.forEach((r, ri) => {
+      if (!r.outdoor) return;
+      const mine = groups.filter((g) => g.ri === ri);
+      const open = mine.find((g) => (wallObjs.get(g)?.openings ?? []).some((o) => o.type === 'opening' && o.connects?.includes('ute') && o.width >= 0.6 * dist(g.from, g.to)));
+      if (!open) return;
+      const front = mine.filter((g) => {
+        if ((g.role !== 'slab' && g.role !== 'face') || dot(g.e.n, open.e.n) > -0.99) return false;
+        const q = g.pieces.find((p) => p.partner && !p.absorbed)?.partner;
+        return q && q.ri !== ri && !R2[q.ri].outdoor;
+      });
+      if (!front.length) return;
+      const walls = front.map((g) => wallObjs.get(g).id);
+      const behind = front.flatMap((g) => (g.role === 'face' ? [wallObjs.get(g).backOf].flat() : []));
+      outdoorFronts.push({ roomId: r.id, name: r.name, side: sideOf(mul(open.e.n, -1)), walls, doorWalls: [...walls, ...behind] });
+    });
 
     // ---- skylights: on the ceiling of the room they lie in. The house format has flat ceilings without roof windows,
     //      so they are kept as data on the ceiling entry (nothing builds them yet – a request in notes/planbygger.md)
@@ -953,7 +1064,7 @@ export function exportHouse(doc, opts = {}) {
       const RANK = { living: 0, bedroom: 0, hall: 0, entrance: 1, storage: 2 };
       const root = R2.map((_, i) => i);
       const find = (i) => (root[i] === i ? i : (root[i] = find(root[i])));
-      for (const [a, b] of openPairs) if (!WET.has(R2[a].kind) && !WET.has(R2[b].kind)) root[find(a)] = find(b);
+      for (const [a, b] of openPairs) if (!WET.has(R2[a].kind) && !WET.has(R2[b].kind) && !R2[a].outdoor && !R2[b].outdoor) root[find(a)] = find(b);
       const groupsOf = new Map();
       R2.forEach((r, i) => groupsOf.set(find(i), [...(groupsOf.get(find(i)) ?? []), r]));
       for (const g of groupsOf.values()) {
@@ -966,15 +1077,26 @@ export function exportHouse(doc, opts = {}) {
 
     // ---- rooms, ceilings, lights
     for (const r of R2) {
-      const [mat, color] = floorOf.get(r) ?? LOOK.floor[r.kind] ?? LOOK.floor.living;
+      const [mat, color] = r.outdoor ? LOOK.outdoorFloor : floorOf.get(r) ?? LOOK.floor[r.kind] ?? LOOK.floor.living;
       const inside = frame.toGame(r.region.inside, levelId);
+      const light = r.light;
+      // a wet room is tiled (notes/kjokken-bad-genererte-hus.md): the floor, and the walls – a bathroom to the ceiling, a
+      // laundry 1,2 m (to the ceiling with a shower in it), a WC not
+      const wet = tiles && (['bathroom', 'wc', 'laundry'].includes(r.lightUse) || r.kind === 'bathroom' || r.kind === 'laundry');
+      const showered = symbols.some((s) => s.kind === 'shower' && pointInPolygon(s.g, r.polygon));
+      const wallTiles = !wet || r.lightUse === 'wc' ? null : r.lightUse === 'laundry' && !showered ? { height: 1.2 } : true;
       house.rooms.push({
         id: r.id,
         name: r.name,
         levelId,
         kind: r.kind,
+        ...(lit && light?.send ? { use: light.use } : {}),
+        // a carport or a garage is a room outside (notes/uterom.md): clad walls, a cast floor, the underside of what is
+        // over it for a ceiling (boards in the cladding's colour; without cladding the engine chooses)
+        ...(r.outdoor ? { outdoor: r.outdoor, ...(cladding?.default?.color ? { soffit: { type: 'boards', color: cladding.default.color } } : {}) } : {}),
         polygon: r.polygon.map(RP),
-        floor: { material: mat, color, ...(mat === 'oak-plank' ? { boards: 'x' } : {}) },
+        floor: wet ? { ...LOOK.tiles, size: [...LOOK.tiles.size] } : { material: mat, color, ...(mat === 'oak-plank' ? { boards: 'x' } : {}) },
+        ...(wallTiles ? { wallTiles } : {}),
         ceilingIds: [`c-${r.id}`],
         acoustic: { mode: 'estimate' },
         estimated: ['polygon', 'floor'],
@@ -982,19 +1104,71 @@ export function exportHouse(doc, opts = {}) {
       });
       const sky = skylightsOf.get(r);
       house.ceilings.push({ id: `c-${r.id}`, roomId: r.id, polygon: r.polygon.map(RP), height: R(r.ceiling), color: LOOK.ceiling, ...(sky ? { skylights: sky } : {}), estimated: ['height'] });
-      house.lightGroups.push({ id: r.id, label: r.name, roomId: r.id, dimmer: true, defaultDimmer: 0.6 });
-      house.builtInLights.push({
-        id: `l-${r.id}`,
-        roomId: r.id,
-        group: r.id,
-        type: 'plafond',
-        position: [R(inside[0]), R(r.ceiling), R(inside[1])],
-        dims: { d: 0.35, h: 0.07 },
-        lumens: Math.round(Math.max(600, Math.min(2400, r.region.area * 110))),
-        lightColorK: 3000,
-        estimated: ['*'],
-      });
       counts.rooms++;
+      // the lighting rules light the room, unless it is outdoors; a room too narrow for their grid of spots (0,45 m off
+      // the walls: hus12's 0,38 m strip of «Entré» stayed dark) gets a downlight of its own once the roofs are known
+      if (lit && !r.outdoor) {
+        if (USE_RULES[r.lightUse]?.general === 'downlight' && edgeDistance(inside, r.polygon) < 0.45) narrowRooms.push({ r, inside });
+        continue;
+      }
+      house.lightGroups.push({ id: r.id, label: r.name, roomId: r.id, dimmer: true, defaultDimmer: 0.6 });
+      // an outdoor room's light is a downlight in its soffit (the engine turns a plafond there into one, and warns)
+      house.builtInLights.push(
+        r.outdoor
+          ? { id: `l-${r.id}`, roomId: r.id, group: r.id, type: 'downlight', position: [R(inside[0]), R(r.ceiling), R(inside[1])], dims: { d: 0.09 }, lumens: Math.round(Math.max(350, Math.min(800, r.region.area * 25))), lightColorK: 2800, estimated: ['*'], source: 'planbyggeren: downlight i himlingen i uterommet' }
+          : {
+              id: `l-${r.id}`,
+              roomId: r.id,
+              group: r.id,
+              type: 'plafond',
+              position: [R(inside[0]), R(r.ceiling), R(inside[1])],
+              dims: { d: 0.35, h: 0.07 },
+              lumens: Math.round(Math.max(600, Math.min(2400, r.region.area * 110))),
+              lightColorK: 3000,
+              estimated: ['*'],
+            },
+      );
+    }
+    // pendants over the dining table the plan draws (a table in front of a sofa is a coffee table): one per room, the
+    // table nearest the kitchen symbol, else the room's middle (hus3-foto's open plan had a second table by the hall,
+    // under a lower ceiling than its pendants)
+    for (const r of lit ? R2 : []) {
+      if (!['kitchen', 'kitchen-living', 'dining', 'living'].includes(r.lightUse)) continue;
+      const tables = symbols.filter((f) => f.kind === 'table' && !coffeeTable(f, symbols) && pointInPolygon(f.g, r.polygon));
+      if (!tables.length) continue;
+      const kitchen = symbols.find((s) => s.kind === 'kitchen' && pointInPolygon(s.g, r.polygon));
+      const to = kitchen?.g ?? centroid(r.polygon);
+      const f = tables.reduce((b, t) => (dist(t.g, to) < dist(b.g, to) ? t : b));
+      // the table along the room's longer side
+      const xs = r.polygon.map((p) => p[0]);
+      const zs = r.polygon.map((p) => p[1]);
+      const angle = Math.max(...xs) - Math.min(...xs) >= Math.max(...zs) - Math.min(...zs) ? 0 : 90;
+      lightHints.push({ type: 'dining-table', position: RP(f.g), size: [1.8, 0.9], angle });
+    }
+    // the stoves and fireplaces the AI saw (notes/peis-og-ovn.md, F167); a stove in a kitchen or by the kitchen symbol
+    // is the cooker
+    for (const f of symbols) {
+      if (f.kind !== 'stove' && f.kind !== 'fireplace') continue;
+      const r = R2.find((x) => pointInPolygon(f.g, x.polygon));
+      if (!r || r.outdoor) continue;
+      if (f.kind === 'stove' && (r.lightUse === 'kitchen' || symbols.some((s) => s.kind === 'kitchen' && dist(s.g, f.g) <= 1.5))) continue;
+      const foot = ['storage', 'technical', 'laundry', 'wardrobe', 'garage', 'bathroom', 'wc'].includes(r.lightUse);
+      fires.push({ kind: f.kind, levelId, roomId: r.id, at: RP(f.g), nearWall: edgeDistance(f.g, r.polygon) <= 0.7, foot });
+    }
+    // the kitchen, bathroom and laundry fittings from the symbols, against the nearest wall of their room
+    if (tiles && symbols.length) {
+      const levelOpenings = [];
+      for (const w of house.walls) {
+        if (!w.openings?.length || !R2.some((r) => r.id === w.roomId)) continue;
+        const d = unit(sub(w.to, w.from));
+        for (const o of w.openings) levelOpenings.push({ a: add(w.from, mul(d, o.offset)), b: add(w.from, mul(d, o.offset + o.width)), type: o.type, sill: o.sill ?? 0, height: o.height ?? 2.1 });
+      }
+      for (const r of R2) {
+        if (r.outdoor) continue;
+        const got = fittingsOf(r, symbols, { walls: house.walls.filter((w) => w.roomId === r.id), openings: levelOpenings });
+        builtIns.push(...got.builtIns);
+        if (lit) lightHints.push(...got.hints);
+      }
     }
   });
   exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, warnings, counts, RP, R });
@@ -1002,12 +1176,42 @@ export function exportHouse(doc, opts = {}) {
   // before the roofs: a lower part under a deck has the deck for its roof
   const decks = idsRegistry.schema?.topLevel?.includes('decks') ? decksOf(doc, frame, RP, house) : [];
   exportRoofs({ doc, house, warnings, RP, R, frame, decks });
-  // the cladding the AI read on the facades (houseread.js doc.cladding), once the engine knows the key (notes/kledning.md)
-  if (idsRegistry.schema?.topLevel?.includes('cladding')) {
-    const cladding = claddingOf(doc);
-    if (cladding) house.cladding = cladding;
+  slopedTops(house, planOpening, R);
+  if (cladding) {
+    frontZones(doc, cladding, outdoorFronts, house);
+    house.cladding = cladding;
   }
   if (decks.length) house.decks = decks;
+  // the furniture (notes/moblering-genererte-hus.md): the engine furnishes each room by its use and size, the symbols
+  // the AI saw on the plans put the pieces where they are drawn
+  if (idsRegistry.schema?.topLevel?.includes('furnishing')) house.furnishing = furnishingOf(doc, frame, perLevel);
+  if (lit) house.lighting = { level: 'standard', ...(lightHints.length ? { hints: lightHints } : {}) };
+  // a downlight in a room too narrow for the rules, under a flat ceiling (one under the roof is lit by nothing yet)
+  for (const { r, inside } of narrowRooms) {
+    if (house.ceilings.find((c) => c.roomId === r.id)?.type === 'roof') continue;
+    const rule = USE_RULES[r.lightUse];
+    house.lightGroups.push({ id: r.id, label: r.name, roomId: r.id, dimmer: true, defaultDimmer: rule.dimmer, auto: rule.auto });
+    house.builtInLights.push({ id: `l-${r.id}`, roomId: r.id, group: r.id, type: 'downlight', position: [R(inside[0]), R(r.ceiling), R(inside[1])], dims: { d: 0.09 }, lumens: 350, lightColorK: rule.K, estimated: ['*'], source: 'planbyggeren: rommet er for smalt for lysreglenes spotter' });
+  }
+  if (builtIns.length) house.builtIns = builtIns;
+  // the ground round the house from the facades' ground lines (notes/uteomradet.md)
+  if (idsRegistry.schema?.topLevel?.includes('site')) {
+    const site = siteOf(doc, house);
+    if (site) house.site = site;
+  }
+  if (fires.length && ['fireplaces', 'chimneys'].every((k) => idsRegistry.schema?.topLevel?.includes(k))) {
+    Object.assign(house, fireplacesOf(fires, house, levelRooms));
+    // a room with a fire keeps its own light group: the lighting rules take a room's first data group for its general
+    // light, and the fire's group (layout.js: fire-<id>, in the room) would have the room's lamps on the fire's switch
+    if (lit) {
+      for (const f of house.fireplaces ?? []) {
+        const r = levelRooms.flat().find((x) => x.id === f.roomId);
+        if (!r || house.lightGroups.some((g) => g.id === r.id)) continue;
+        const rule = USE_RULES[r.lightUse] ?? USE_RULES.living;
+        house.lightGroups.push({ id: r.id, label: r.name, roomId: r.id, dimmer: true, defaultDimmer: rule.dimmer, auto: rule.auto });
+      }
+    }
+  } else if (doc.roof?.chimney) warnings.push('fasadene viser en pipe, men planene har ikke noe ildsted den hører til – pipa er ikke med');
   if (floorOpenings.length) house.floorOpenings = floorOpenings;
   if (stairs.length) house.stairs = stairs;
 
@@ -1015,7 +1219,7 @@ export function exportHouse(doc, opts = {}) {
     house,
     registry: registryFor(house),
     rooms: perLevel.map((p, li) => ({ levelId: doc.levels[li].id, found: p.found, rooms: p.rooms })),
-    report: { warnings, counts },
+    report: { warnings, counts, planOpenings: new Map([...planOpening].map(([e, v]) => [e.id, { levelId: v.levelId, id: v.o.id }])) },
     frame,
   };
 }
@@ -1314,6 +1518,9 @@ export function loftLevel(doc, top, names = [], skylights = false) {
   return LOFT_NAME.test(top.name ?? '') || names.some((n) => LOFT_NAME.test(n ?? '')) || !!skylights;
 }
 
+/** the roofs that slope from eaves to a ridge: a loft under them has knee walls and dormers */
+const PITCHED = new Set(['gable', 'hip', 'half-hip']);
+
 function exportRoofs({ doc, house, warnings, RP, R, frame, decks = [] }) {
   const levels = [...house.levels].sort((a, b) => b.floorY - a.floorY);
   const top = levels[0];
@@ -1511,7 +1718,7 @@ function exportRoofs({ doc, house, warnings, RP, R, frame, decks = [] }) {
   if (!whole && (!wallsIn || parts.reduce((sum, p) => sum + p.area, 0) < 0.95 * total)) parts.splice(0, parts.length, { area: total, i0: 0, i1: nu, j0: 0, j1: nv });
   if (!parts.length) return;
   const kind = doc.roof?.type;
-  const type = kind === 'hip' || kind === 'mono-pitch' || kind === 'flat' ? kind : 'gable';
+  const type = kind === 'hip' || kind === 'half-hip' || kind === 'mono-pitch' || kind === 'flat' ? kind : 'gable';
   const loft = loftLevel(doc, top, roomsHere.map((r) => r.name), house.ceilings.some((c) => ids.has(c.roomId) && c.skylights?.length));
   // a loft under a gable or hip roof: knee walls of KNEE on the eave sides (along a part's longer side, the ridge's
   // default), and a dormer (ark) over each window or door in them that reaches above the knee wall – the way the drawings
@@ -1592,7 +1799,7 @@ function exportRoofs({ doc, house, warnings, RP, R, frame, decks = [] }) {
       out.from = 'planen (mønelinja)';
     } else {
       // (one AI wing over the whole house says nothing about a part of it: its ridge only for one roof)
-      if (wing?.ridge && (wingsHere.length >= 2 || parts.length === 1) && (out.type === 'gable' || out.type === 'hip')) out.ridge = unit(frame.vecToGame(wing.ridge)).map((v) => R(v) || 0);
+      if (wing?.ridge && (wingsHere.length >= 2 || parts.length === 1) && PITCHED.has(out.type)) out.ridge = unit(frame.vecToGame(wing.ridge)).map((v) => R(v) || 0);
       // a mono-pitch roof's fall: the AI's per wing where it split the house, else the end views' high side (classical,
       // facadematch.js roofFromFacades), else the AI's
       if (out.type === 'mono-pitch') {
@@ -1602,7 +1809,7 @@ function exportRoofs({ doc, house, warnings, RP, R, frame, decks = [] }) {
     }
     // the facades' measured slope only for the type it was measured on (a gable end's, a mono-pitch end's); a gable's
     // or a hip's from the long sides' rise (one pitch for the house, over the main part's depth), else the gable ends'
-    const pitchedHere = out.type === 'gable' || out.type === 'hip';
+    const pitchedHere = PITCHED.has(out.type);
     const measured = out.type === 'mono-pitch' ? doc.roof?.pitchMono : pitchedHere ? (withRise ? risePitchOf() : null) ?? doc.roof?.pitchGable ?? doc.roof?.pitchFacades : null;
     const degrees = written ?? measured ?? null;
     if (degrees) out.pitch = degrees;
@@ -1624,14 +1831,25 @@ function exportRoofs({ doc, house, warnings, RP, R, frame, decks = [] }) {
     risePitch = deg >= 15 && deg <= 60 ? Math.round(deg) : null;
     return risePitch;
   };
-  const NAMES = { gable: 'saltak', hip: 'valmtak', 'mono-pitch': 'pulttak', flat: 'flatt tak' };
+  const NAMES = { gable: 'saltak', hip: 'valmtak', 'half-hip': 'halvvalm', 'mono-pitch': 'pulttak', flat: 'flatt tak' };
+  // a half-hip's hips as the long sides show them (generate.js doc.roof.hipDrop: the ridge to the verge under the hip):
+  // to where they meet the gable wall, the verge's 0,1 m overhang at the hips' slope less (notes/tak.md «Halvvalm»);
+  // the engine's third of the gable when it does not fit under the rise
+  const hipHeightOf = (pitch) => {
+    const drop = doc.roof?.hipDrop;
+    if (!(drop > 0)) return null;
+    const h = drop - 0.1 * Math.tan(((pitch ?? 35) * Math.PI) / 180);
+    const rise = doc.roof?.riseFacades;
+    return h >= 0.2 && (!(rise > 0) || h <= rise - 0.3) ? R(h) : null;
+  };
   house.roofs = parts.map((p, i) => {
     const a = toG(u0 + p.i0 * CELL, v0 + p.j0 * CELL);
     const b = toG(u0 + p.i1 * CELL, v0 + p.j0 * CELL);
     const c = toG(u0 + p.i1 * CELL, v0 + p.j1 * CELL);
     const d = toG(u0 + p.i0 * CELL, v0 + p.j1 * CELL);
     const rf = roofOf(p);
-    const pitched = rf.type === 'gable' || rf.type === 'hip';
+    const pitched = PITCHED.has(rf.type);
+    const hipHeight = rf.type === 'half-hip' ? hipHeightOf(rf.pitch) : null;
     const dormers = loft && pitched && parts.length === 1 ? dormersOf(p, kneeOf(rf.pitch)) : [];
     return {
       id: `roof-${i + 1}`,
@@ -1641,8 +1859,11 @@ function exportRoofs({ doc, house, warnings, RP, R, frame, decks = [] }) {
       ...(rf.ridge ? { ridge: rf.ridge } : {}),
       ...(rf.fall ? { fall: rf.fall } : {}),
       ...(rf.pitch ? { pitch: rf.pitch } : {}),
+      ...(hipHeight ? { hipHeight } : {}),
       ...(loft && pitched ? (eaveLoft != null ? { eaveHeight: R(eaveLoft) } : { kneeHeight: KNEE }) : {}),
       ...(COVERING[doc.roof?.covering] ? { covering: COVERING[doc.roof.covering] } : {}),
+      // the covering's colour the AI read on the facades (hus12's red tiles)
+      ...(colorHex(doc.roof?.color) ? { color: colorHex(doc.roof.color) } : {}),
       // small overhangs, as the facade drawings show them (F137)
       overhang: rf.type === 'flat' ? 0.15 : 0.25,
       vergeOverhang: 0.1,
@@ -1730,15 +1951,24 @@ function exportRoofs({ doc, house, warnings, RP, R, frame, decks = [] }) {
       if (!best || best.area * CELL * CELL < 3 || Math.min(best.i1 - best.i0, best.j1 - best.j0) * CELL < 1.5) break;
       for (let j = best.j0; j < best.j1; j++) for (let i = best.i0; i < best.i1; i++) open[j * mu + i] = 0;
       const corners = [[best.i0, best.j0], [best.i1, best.j0], [best.i1, best.j1], [best.i0, best.j1]].map(([i, j]) => toG(a0 + i * CELL, b0 + j * CELL));
+      // a wing of its own the AI saw on this level (a garage, an annex with its own lower roof): its type, its ridge or
+      // its fall, where most of the wing's rooms are in the rectangle – the engine runs it into the main roof (notes/
+      // tak.md «Tak som møtes»); else a flat roof
+      const inRect = (q) => pointInPolygon(frame.toGame(q, L.id), corners);
+      const wing = (doc.roof?.wings ?? []).filter((w) => w.level === L.id && ['gable', 'hip', 'mono-pitch'].includes(w.type)).find((w) => w.points.filter(inRect).length >= 0.6 * w.points.length);
+      const dir = (v) => unit(frame.vecToGame(v)).map((x) => R(x) || 0);
       house.roofs.push({
         id: `roof-${L.id}-${k + 1}`,
-        type: 'flat',
+        type: wing?.type ?? 'flat',
         levelId: L.id,
         outline: corners.map(RP),
-        overhang: 0.15,
+        ...(wing?.ridge && wing.type !== 'mono-pitch' ? { ridge: dir(wing.ridge) } : {}),
+        ...(wing?.fall && wing.type === 'mono-pitch' ? { fall: dir(wing.fall) } : {}),
+        ...(wing?.type === 'mono-pitch' && doc.roof?.pitchMono ? { pitch: doc.roof.pitchMono } : {}),
+        overhang: wing ? 0.25 : 0.15,
         vergeOverhang: 0.1,
         estimated: ['*'],
-        source: `planbyggeren: flatt tak over den delen av ${L.name.toLowerCase()} som ikke har noen etasje over seg`,
+        source: wing ? `planbyggeren: ${NAMES[wing.type]} fra KI-en over den delen av ${L.name.toLowerCase()} som ikke har noen etasje over seg (en fløy for seg)` : `planbyggeren: flatt tak over den delen av ${L.name.toLowerCase()} som ikke har noen etasje over seg`,
       });
     }
   }
@@ -1763,6 +1993,45 @@ const COLOR_WORDS = [
 ];
 export const colorHex = (s) => (typeof s === 'string' ? (/^#[0-9a-f]{6}$/i.test(s.trim()) ? s.trim() : COLOR_WORDS.find(([re]) => re.test(s))?.[1] ?? null) : null);
 
+/** One finish the AI read (type, direction, colour words) → a cladding finish of the house format. */
+function finish(f) {
+  const out = { type: f.type };
+  if ((f.type === 'wood' || f.type === 'panels') && f.direction) out.direction = f.direction;
+  if (f.type === 'wood') out.profile = (f.direction ?? 'vertical') === 'horizontal' ? 'shiplap' : 'board-batten';
+  const hex = colorHex(f.color);
+  if (hex) out.color = hex;
+  return out;
+}
+
+/**
+ * The fronts inside the outdoor rooms (F149: hus4's store seen through the carport, grey panels and a grey door): the
+ * facade on the side the room is open to shows them, and a part the AI calls «other» there, unlike the house's main
+ * cladding, is their finish – a cladding zone on the front walls, and the doors in them in its colour (leaf, frame,
+ * lining). A plain fill in a carport is panels (fasadeplater), which the AI calls render.
+ */
+function frontZones(doc, cladding, fronts, house) {
+  const main = doc.cladding?.main ?? {};
+  const differs = (p) => p.type !== main.type || (p.direction ?? null) !== (main.direction ?? null) || (p.color ?? null) !== (main.color ?? null);
+  for (const f of fronts) {
+    const facade = (doc.cladding?.facades ?? []).find((x) => x.side === f.side);
+    const part = facade?.parts.find((p) => p.part === 'other' && p.type && differs(p));
+    if (!part) continue;
+    const look = finish({ ...part, type: part.type === 'render' ? 'panels' : part.type });
+    (cladding.zones ||= []).push({ id: `front-${f.roomId}`, name: `Fronten i ${f.name.toLowerCase()}`, walls: f.walls, ...look, source: 'planbyggeren: KI-en på fasaden som ser inn i rommet' });
+    if (!look.color) continue;
+    for (const w of house.walls) {
+      if (!f.doorWalls.includes(w.id)) continue;
+      for (const o of w.openings ?? []) {
+        if (o.type !== 'door' || !o.connects?.includes(f.roomId)) continue;
+        o.door.leafColor = look.color;
+        o.door.lining = { color: look.color };
+        o.frame = { ...(o.frame ?? {}), color: look.color };
+        if (o.reveal) o.reveal.color = look.color;
+      }
+    }
+  }
+}
+
 /**
  * The house format's cladding (notes/kledning.md) from what the AI read on the facades (doc.cladding): the house's most
  * common finish as `default`, the gable triangles and the basement as zones when they differ, a 30 cm concrete plinth,
@@ -1771,14 +2040,6 @@ export const colorHex = (s) => (typeof s === 'string' ? (/^#[0-9a-f]{6}$/i.test(
 export function claddingOf(doc) {
   const c = doc.cladding;
   if (!c?.main?.type) return null;
-  const finish = (f) => {
-    const out = { type: f.type };
-    if ((f.type === 'wood' || f.type === 'panels') && f.direction) out.direction = f.direction;
-    if (f.type === 'wood') out.profile = (f.direction ?? 'vertical') === 'horizontal' ? 'shiplap' : 'board-batten';
-    const hex = colorHex(f.color);
-    if (hex) out.color = hex;
-    return out;
-  };
   const main = finish(c.main);
   const same = (f) => f.type === c.main.type && (f.direction ?? null) === (c.main.direction ?? null);
   const parts = (c.facades ?? []).flatMap((f) => f.parts ?? []);
@@ -1875,6 +2136,150 @@ export function decksOf(doc, frame, RP = (p) => p, house = null) {
     out.push(deck);
   }
   return out;
+}
+
+/**
+ * The fireplaces and their chimneys (notes/peis-og-ovn.md, F167) from the stoves and fireplaces of the plans
+ * ({ kind: 'stove' | 'fireplace', levelId, roomId, at, nearWall }, game metres): a fireplace against a wall is an insert
+ * with a masonry chimney inside its surround; a stove against a wall with a floor over it gets a masonry chimney behind
+ * it (up through the floors), any other stove a steel one from its top. The engine finds the placement and the facing
+ * from the walls, and sets the chimney over the stove or behind it.
+ */
+function fireplacesOf(fires, house, levelRooms) {
+  const fireplaces = [];
+  const chimneys = [];
+  for (const f of fires) {
+    const y = house.levels.find((l) => l.id === f.levelId)?.floorY ?? 0;
+    // a floor over it: a room of a level above over the point, or its wall (hus1: the chimney stands in the wall between
+    // two bedrooms upstairs)
+    const above = house.levels.some((l, i) => l.floorY > y + 0.5 && (levelRooms[i] ?? []).some((r) => pointInPolygon(f.at, r.polygon) || edgeDistance(f.at, r.polygon) <= 0.6));
+    const n = chimneys.length + 1;
+    // in a store, a technical room or a wet room the symbol is the chimney's foot, no fireplace (hus8's basement)
+    if (f.foot) {
+      chimneys.push({ id: `pipe-${n}`, material: 'brick', at: f.at, estimated: ['*'], source: 'planbyggeren: pipa der planen tegner et ildsted i en bod eller et teknisk rom' });
+      continue;
+    }
+    const insert = f.kind === 'fireplace' && f.nearWall;
+    const material = insert || (above && f.nearWall) ? 'brick' : 'steel';
+    chimneys.push({ id: `pipe-${n}`, material, estimated: ['*'], source: `planbyggeren: pipa til ${insert ? 'peisen' : 'ovnen'} på planen` });
+    fireplaces.push({ id: `${insert ? 'peis' : 'ovn'}-${n}`, type: insert ? 'insert' : 'stove', roomId: f.roomId, levelId: f.levelId, at: f.at, chimney: `pipe-${n}`, estimated: ['*'], source: `planbyggeren: ${f.kind === 'fireplace' ? 'peissymbolet' : 'ovnssymbolet'} KI-en så på planen` });
+  }
+  return { ...(fireplaces.length ? { fireplaces } : {}), chimneys };
+}
+
+/**
+ * The site (notes/uteomradet.md) from the facades' ground lines: per facade drawing matched to a side (generate.js
+ * doc.facades[].fit.ground, the ground line's row) a terrain line along the outer faces of the walls on that side of
+ * the main level (and the levels under it), at the height the drawing shows the ground under the main floor
+ * ((floor − ground) · k / px per m, 0,1–4 m down). The lines stop 0,5 m short of the corners, where the sides' heights
+ * meet: the engine's ground goes through each line and slopes between them. null without a line.
+ */
+export function siteOf(doc, house) {
+  const OUT = { N: [-1, 0], S: [1, 0], E: [0, -1], W: [0, 1] };
+  const low = new Set(house.levels.filter((l) => l.floorY <= 0.5).map((l) => l.id));
+  const levelOf = new Map(house.rooms.map((r) => [r.id, r.levelId]));
+  const lines = [];
+  for (const f of doc.facades ?? []) {
+    const ft = f.fit;
+    const out = OUT[f.side];
+    if (!out || !ft || !Number.isFinite(ft.ground) || !Number.isFinite(ft.floor0) || !(ft.ppm > 0) || lines.some((l) => l.side === f.side)) continue;
+    // the walls facing that way (their normal points in, out of the house is −normal), their outer faces
+    const faces = house.walls.filter((w) => w.exterior && w.thickness > 0 && low.has(levelOf.get(w.roomId)) && dot(w.normal, out) < -0.9);
+    if (!faces.length) continue;
+    const pts = faces.flatMap((w) => [w.from, w.to].map((p) => add(p, mul(w.normal, -w.thickness))));
+    const along = perp(out);
+    const c = Math.max(...pts.map((p) => dot(p, out)));
+    const t0 = Math.min(...pts.map((p) => dot(p, along)));
+    const t1 = Math.max(...pts.map((p) => dot(p, along)));
+    const inset = Math.min(0.5, (t1 - t0) / 4);
+    const y = round(Math.max(-4, Math.min(-0.1, ((ft.floor0 - ft.ground) * (ft.k || 1)) / ft.ppm)), 3);
+    const P = (t) => add(mul(out, c), mul(along, t));
+    lines.push({ id: `bakke-${f.side.toLowerCase()}`, side: f.side, points: [t0 + inset, t1 - inset].map((t) => [round(P(t)[0], 3), round(P(t)[1], 3), y]) });
+  }
+  return lines.length ? { terrain: { lines }, source: 'planbyggeren: bakkelinja på fasadetegningene' } : null;
+}
+
+/**
+ * Windows drawn higher than a flat ceiling in a room whose ceiling follows the roof (F164: hus4's upper windows run up
+ * under the mono-pitch roof, their tops along it): their full height as the facade draws it (o.facadeTop, the high
+ * end) and a top that follows the roof (topSlope 'follow-roof'), in a wall whose top slopes with the roof: a gable end,
+ * or a wall along a mono-pitch roof's fall (along an eave the top is level, and the window keeps its height under the
+ * ceiling). A window generate.js found too high for its wall keeps a level top (o.flatTop).
+ */
+function slopedTops(house, planOpening, R) {
+  const ceilingOf = new Map(house.ceilings.map((c) => [c.roomId, c]));
+  const roomOf = new Map(house.rooms.map((r) => [r.id, r]));
+  // the roof over a wall: the part of its level whose outline holds the wall's middle (else the level's first)
+  const roofAt = (w) => {
+    const lv = roomOf.get(w.roomId)?.levelId;
+    const mine = (house.roofs ?? []).filter((r) => r.levelId === lv);
+    const mid = mul(add(w.from, w.to), 0.5);
+    return mine.find((r) => Array.isArray(r.outline) && pointInPolygon(mid, r.outline)) ?? mine[0] ?? null;
+  };
+  for (const w of house.walls) {
+    const c = ceilingOf.get(w.roomId);
+    if (c?.type !== 'roof') continue;
+    const rf = roofAt(w);
+    // the direction the roof falls in: a mono-pitch's fall, across a ridge (the roof's longer side without one)
+    const ridge = rf?.ridge ?? (rf?.outline ? (dist(rf.outline[0], rf.outline[1]) >= dist(rf.outline[1], rf.outline[2]) ? unit(sub(rf.outline[1], rf.outline[0])) : unit(sub(rf.outline[2], rf.outline[1]))) : null);
+    const fall = rf?.type === 'mono-pitch' ? rf.fall : ridge ? perp(ridge) : null;
+    if (!fall || rf.type === 'flat' || Math.abs(dot(unit(sub(w.to, w.from)), fall)) < 0.5) continue;
+    for (const e of w.openings ?? []) {
+      const src = planOpening.get(e);
+      const o = src?.o;
+      const flat = w.height ?? c.height ?? roomOf.get(w.roomId)?.ceiling;
+      // (under a loft's collar beam, c.height, the wall stops there)
+      const high = Math.min(o?.facadeTop ?? 0, (c.height ?? Infinity) - 0.05);
+      if (e.type !== 'window' || !o || o.flatTop || !(high > (flat ?? Infinity) + 0.1)) continue;
+      e.height = R(high - e.sill);
+      e.topSlope = 'follow-roof';
+      e.sashes = windowSashes(o.style, e.width, e.height, e.sill);
+      e.source = `${e.source ? `${e.source}; ` : 'planbyggeren: '}overkanten følger taket, så høyt som fasaden tegner den`;
+    }
+  }
+}
+
+/** Distance from p to the nearest edge of a polygon. */
+const edgeDistance = (p, poly) => Math.min(...poly.map((a, i) => projectToSegment(p, a, poly[(i + 1) % poly.length]).d));
+
+/** A table symbol within 1,6 m of a sofa symbol is the coffee table in front of it, not a dining table. */
+const coffeeTable = (f, symbols) => symbols.some((s) => s.kind === 'sofa' && dist(s.g, f.g) <= 1.6);
+
+/**
+ * What the engine's lighting rules light a room as (home/lightplan.js roomUse: its `use`, else its name, else its
+ * kind): the name's use when it says one, else the AI's kind (generate.js label.use: a kitchen, an office), else the
+ * kind's; a living room with the kitchen symbol in it is a kitchen-living room. send: whether that is more than the
+ * engine reads from the name and kind itself.
+ */
+function lightingUse(r, symbols) {
+  const derived = lightRoomUse({ name: r.name, kind: r.kind });
+  // the name says a use when the kind does not change it
+  const named = lightRoomUse({ name: r.name, kind: 'bedroom' }) === lightRoomUse({ name: r.name, kind: 'storage' });
+  let use = named ? derived : ROOM_USES.includes(r.label?.use) ? r.label.use : derived;
+  if (use === 'living' && symbols.some((f) => f.kind === 'kitchen' && pointInPolygon(f.g, r.polygon))) use = 'kitchen-living';
+  return { use, send: use !== derived };
+}
+
+/**
+ * The house format's furnishing from the document: the AI's furniture symbols (level.furniture, plan metres) as hints in
+ * the house's metres, and a room's use where the AI's kind says more than the plan's kinds and its name says nothing
+ * (generate.js: «Rom 3» that the AI read as an office). {} furnishes every room by its name and kind.
+ */
+export function furnishingOf(doc, frame, perLevel) {
+  const hints = [];
+  const rooms = {};
+  doc.levels.forEach((L, li) => {
+    const symbols = (L.furniture ?? []).filter((f) => Array.isArray(f.at)).map((f) => ({ kind: f.kind, g: frame.toGame(f.at, L.id) }));
+    for (const f of symbols) {
+      if (f.kind === 'other' || !FURNISH_HINTS.includes(f.kind)) continue;
+      hints.push({ kind: f.kind === 'table' && coffeeTable(f, symbols) ? 'coffee-table' : f.kind, at: f.g.map((v) => round(v, 3)), levelId: L.id });
+    }
+    for (const r of perLevel[li]?.rooms ?? []) {
+      const use = r.label?.use;
+      if (FURNISH_USES.includes(use) && roomUse({ id: r.id, name: r.name, kind: null }) === 'other') rooms[r.id] = { use };
+    }
+  });
+  return { ...(Object.keys(rooms).length ? { rooms } : {}), ...(hints.length ? { hints } : {}) };
 }
 
 /** An 00-ids.json for a generated house: its levels, rooms and light groups, the game's schema. */

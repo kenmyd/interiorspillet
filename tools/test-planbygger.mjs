@@ -878,4 +878,242 @@ section('12. Fasadetegningene på riktig side, og himlingene');
   }
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+section('13. Motorfunksjonene i «Generer»');
+// the 8 × 6 m house of section 12 with a carport east of it, open to the east (closed by closeAround), a door from the
+// bedroom into it; the facades read as hus4's: horizontal beige boards, and on the side looking into the carport an
+// «other» part in grey (the store's front, F149)
+const carportHouse = async () => {
+  const Gm = await imp('src/planbygger/generate.js');
+  const doc = M.createDoc('Carport');
+  const lv = M.createLevel(doc, { id: 'hoved', image: { name: 'syntetisk', width: 1, height: 1, pxPerM: 100 } });
+  lv.walls = [
+    { id: 'n', a: [0, 0], b: [8, 0], t: 0.3, exterior: true },
+    { id: 'e', a: [8, 6], b: [8, 0], t: 0.3, exterior: true },
+    { id: 's', a: [8, 6], b: [0, 6], t: 0.3, exterior: true },
+    { id: 'w', a: [0, 0], b: [0, 6], t: 0.3, exterior: true },
+    { id: 'i', a: [5, 0], b: [5, 6], t: 0.1 },
+    { id: 'cn', a: [8, 0], b: [11.5, 0], t: 0.2, exterior: true },
+    { id: 'cs', a: [8, 6], b: [11.5, 6], t: 0.2, exterior: true },
+  ];
+  lv.openings = [
+    { id: 'vn', wall: 'n', type: 'window', at: 2, width: 1, sill: 0.9, height: 1.2 },
+    { id: 'ds', wall: 's', type: 'door', at: 2, width: 0.9 },
+    { id: 'dc', wall: 'e', type: 'door', at: 3, width: 0.9 },
+  ];
+  const how = Gm.closeAround(lv, [9.75, 3]);
+  lv.rooms = [{ id: 'a', seed: [2, 3], name: 'Stue', kind: 'living' }, { id: 'b', seed: [6.5, 3], name: 'Bod', kind: 'storage' }, { id: 'c', seed: [9.75, 3], name: 'Carport', kind: 'storage', outdoor: 'carport' }];
+  const main = { type: 'wood', direction: 'horizontal', color: 'beige/brun' };
+  doc.cladding = { main, facades: [{ side: 'E', parts: [{ part: 'all', ...main }, { part: 'other', type: 'render', direction: null, color: 'grå' }] }, { side: 'N', parts: [{ part: 'other', type: 'wood', direction: 'vertical', color: 'hvit' }] }] };
+  return { doc, lv, how };
+};
+// 1. the carport is a room outside (notes/uterom.md): rooms[].outdoor, a cast floor, the soffit in the cladding's colour,
+// a downlight; the front of the store inside it as the facade looking in shows it, its door grey too (F149)
+{
+  const { doc, how } = await carportHouse();
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  const car = ex.house.rooms.find((r) => r.name === 'Carport');
+  const light = ex.house.builtInLights.find((l) => l.roomId === car?.id);
+  const zone = ex.house.cladding?.zones?.find((z) => z.id === `front-${car?.id}`);
+  const door = ex.house.walls.flatMap((w) => w.openings ?? []).find((o) => o.type === 'door' && o.connects?.includes(car?.id));
+  check('carporten er et uterom: outdoor, betonggulv #a7a49e, himlingsbord i kledningens farge og en downlight', !!how && car?.outdoor === 'carport' && car.floor.material === 'concrete' && car.floor.color === '#a7a49e' && car.soffit?.type === 'boards' && car.soffit.color === '#b39e80' && light?.type === 'downlight' && light.lumens >= 350 && light.lumens <= 800, JSON.stringify({ how, car, light }));
+  check('bodfronten inne i carporten (F149): grå plater som sone på carportens vegg mot boden, og døra grå i samme farge', zone?.type === 'panels' && zone.color === '#8b8b88' && zone.walls.length >= 1 && zone.walls.every((id) => ex.house.walls.find((w) => w.id === id)?.roomId === car.id) && door?.door?.leafColor === '#8b8b88' && door.door.lining?.color === '#8b8b88' && door.frame?.color === '#8b8b88', JSON.stringify({ zone, door }));
+  check('og huset med carporten er uten feil i validatoren', v.errors.length === 0, v.errors.slice(0, 3).join(' | '));
+  // without the «other» part on the side it is open to, no front zone, and the door is an outer door in the frame colour
+  doc.cladding.facades[0].parts.pop();
+  const ex2 = E.exportHouse(doc);
+  const door2 = ex2.house.walls.flatMap((w) => w.openings ?? []).find((o) => o.type === 'door' && o.connects?.includes(car.id));
+  check('uten et eget felt på fasaden inn mot carporten: ingen sone, og døra er en ytterdør (mørk karm, ikke glass)', !(ex2.house.cladding?.zones ?? []).some((z) => /^front-/.test(z.id)) && door2?.frame?.color === '#25272b' && !door2.door.glass && !door2.door.leafColor, JSON.stringify(door2));
+}
+// 2. the furniture (notes/moblering-genererte-hus.md): the AI's symbols as hints in the house's metres on their level, a
+// room's use where its name says nothing (the AI read «Rom» as an office), none where it does («Kjøkken»)
+{
+  const { doc, lv } = await carportHouse();
+  lv.rooms[0] = { ...lv.rooms[0], name: 'Rom', use: 'office' };
+  lv.rooms[1] = { ...lv.rooms[1], name: 'Kjøkken', use: 'kitchen' };
+  lv.furniture = [{ kind: 'sofa', at: [2, 3] }, { kind: 'bed', at: [6.5, 3] }, { kind: 'other', at: [1, 1] }];
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  const f = ex.house.furnishing;
+  const g = ex.frame.toGame([2, 3], 'hoved');
+  const rom = ex.house.rooms.find((r) => r.name === 'Rom');
+  const kj = ex.house.rooms.find((r) => r.name === 'Kjøkken');
+  check('møblene: KI-ens sofa og seng som hint i husets meter på etasjen, «other» utelatt; kontoret får bruken, kjøkkenet har den i navnet', f?.hints?.length === 2 && f.hints[0].kind === 'sofa' && Math.abs(f.hints[0].at[0] - g[0]) < 1e-3 && Math.abs(f.hints[0].at[1] - g[1]) < 1e-3 && f.hints[0].levelId === 'hoved' && f.rooms?.[rom.id]?.use === 'office' && !f.rooms?.[kj.id] && v.errors.length === 0, JSON.stringify({ f, errors: v.errors.slice(0, 2) }));
+  M.rescaleLevel(lv, 50);
+  check('og symbolene skaleres med etasjen når målestokken rettes', lv.furniture[0].at[0] === 4 && lv.furniture[0].at[1] === 6, JSON.stringify(lv.furniture[0]));
+}
+// 3. the light (notes/belysning-genererte-hus.md): `lighting` for the engine's rules instead of a ceiling lamp and a group
+// per room (the carport keeps its downlight); a living room with the kitchen symbol in it is a kitchen-living room, a
+// table away from the sofa a dining table with pendants (along the room), a table in front of the sofa a coffee table
+{
+  const { doc, lv } = await carportHouse();
+  lv.furniture = [{ kind: 'kitchen', at: [0.6, 3] }, { kind: 'table', at: [3, 3] }, { kind: 'sofa', at: [7, 2] }, { kind: 'table', at: [7, 3] }];
+  lv.rooms[1] = { ...lv.rooms[1], name: 'Rom', kind: 'living', use: 'office' };
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  const H = ex.house;
+  const stue = H.rooms.find((r) => r.name === 'Stue');
+  const rom = H.rooms.find((r) => r.name === 'Rom');
+  const car = H.rooms.find((r) => r.outdoor);
+  const dining = H.lighting?.hints?.filter((x) => x.type === 'dining-table') ?? [];
+  const g = ex.frame.toGame([3, 3], 'hoved');
+  check('lyset: lighting «standard», ingen taklampe eller gruppe per rom, carporten beholder downlighten', H.lighting?.level === 'standard' && H.builtInLights.length === 1 && H.builtInLights[0].roomId === car.id && H.lightGroups.length === 1 && v.errors.length === 0, JSON.stringify({ lights: H.builtInLights.map((l) => l.roomId), groups: H.lightGroups.map((x) => x.id), errors: v.errors.slice(0, 2) }));
+  check('stua med kjøkkensymbolet er kjøkken/stue, «Rom» som KI-en leste som kontor er kontor', stue?.use === 'kitchen-living' && rom?.use === 'office', JSON.stringify({ stue: stue?.use, rom: rom?.use }));
+  check('bordet i stua gir pendler over spisebordet (langs rommet), bordet foran sofaen er et sofabord og gir ingen', dining.length === 1 && Math.abs(dining[0].position[0] - g[0]) < 1e-3 && Math.abs(dining[0].position[1] - g[1]) < 1e-3 && [0, 90].includes(dining[0].angle) && H.furnishing.hints.filter((x) => x.kind === 'coffee-table').length === 1, JSON.stringify({ dining, hints: H.furnishing.hints }));
+}
+// 4. the stove and its chimney (notes/peis-og-ovn.md, F167): a stove symbol by a wall in the living room is a stove with a
+// steel chimney (no floor over it); a stove by the kitchen symbol is the cooker; a fireplace symbol in a store is the
+// chimney's foot (a masonry chimney there, no fireplace); the room with the fire keeps its own light group
+{
+  const { doc, lv } = await carportHouse();
+  lv.furniture = [{ kind: 'stove', at: [0.6, 3] }, { kind: 'kitchen', at: [4.5, 1] }, { kind: 'stove', at: [4.5, 1.8] }, { kind: 'fireplace', at: [6.5, 5.5] }];
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  const H = ex.house;
+  const stue = H.rooms.find((r) => r.name === 'Stue');
+  const fp = H.fireplaces ?? [];
+  const pipeOf = (id) => H.chimneys.find((c) => c.id === id);
+  check('ovnen ved veggen i stua: en vedovn med stålpipe, ingen ovn ved kjøkkenet, pipefoten i boden uten ildsted', fp.length === 1 && fp[0].type === 'stove' && fp[0].roomId === stue.id && pipeOf(fp[0].chimney)?.material === 'steel' && H.chimneys.length === 2 && H.chimneys.some((c) => c.material === 'brick' && Array.isArray(c.at)), JSON.stringify({ fp, chimneys: H.chimneys }));
+  check('stua med ilden har sin egen lysgruppe (ikke ildens), og huset er uten feil', H.lightGroups.some((x) => x.id === stue.id && x.roomId === stue.id) && v.errors.length === 0, JSON.stringify({ groups: H.lightGroups, errors: v.errors.slice(0, 3) }));
+}
+// 5. the kitchen and the bathroom (notes/kjokken-bad-genererte-hus.md): «Kjøkken» without a counter on the plan gets a
+// bench along its longest free wall with the sink, the hob, the fridge and the wall cabinets; «Bad» with a WC and a
+// shower symbol gets the WC on the nearest wall, the shower in the corner, a basin with its mirror, and tiles
+{
+  const { doc, lv } = await carportHouse();
+  lv.rooms[0] = { ...lv.rooms[0], name: 'Kjøkken' };
+  lv.rooms[1] = { ...lv.rooms[1], name: 'Bad', kind: 'bathroom' };
+  lv.furniture = [{ kind: 'toilet', at: [6.5, 0.5] }, { kind: 'shower', at: [7.5, 5.4] }];
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  const H = ex.house;
+  const kj = H.rooms.find((r) => r.name === 'Kjøkken');
+  const bad = H.rooms.find((r) => r.name === 'Bad');
+  const of = (room, type) => (H.builtIns ?? []).filter((b) => b.roomId === room.id && b.type === type);
+  const types = (room) => (H.builtIns ?? []).filter((b) => b.roomId === room.id).map((b) => b.type).sort().join(',');
+  const bench = of(kj, 'kitchen-bench')[0];
+  const wallOf = (b) => H.walls.find((w) => w.id === b?.wallId);
+  check('kjøkkenet uten benk på planen: benk langs den lengste ledige veggen med kum, koketopp, ovn, oppvaskmaskin, kjøleskap, ventilator og overskap', !!bench && bench.dims.w >= 1.8 && wallOf(bench)?.roomId === kj.id && ['sink', 'hob', 'oven', 'dishwasher', 'fridge-freezer', 'hood', 'wall-cabinets'].every((t) => of(kj, t).length >= 1), types(kj));
+  const wc = of(bad, 'wc')[0];
+  const shower = of(bad, 'shower')[0];
+  const sp = shower ? ex.frame.toPlan([shower.position[0], shower.position[2]], 'hoved') : null;
+  check('badet: WC-en på veggen, dusjen inn i hjørnet (0,45 m fra begge veggene), servant med speil, fliser på gulvet og veggene', wallOf(wc)?.roomId === bad.id && !!sp && Math.abs(sp[0] - (8 - 0.15 - 0.45)) < 0.02 && Math.abs(sp[1] - (6 - 0.15 - 0.45)) < 0.02 && of(bad, 'vanity').length === 1 && of(bad, 'mirror').length === 1 && bad.floor.material === 'tiles' && bad.wallTiles === true && H.lighting.hints.some((x) => x.type === 'mirror'), JSON.stringify({ types: types(bad), sp, floor: bad.floor, wallTiles: bad.wallTiles }));
+  check('og huset med kjøkken og bad er uten feil i validatoren', v.errors.length === 0, v.errors.slice(0, 3).join(' | '));
+}
+// 6. the site (notes/uteomradet.md): the ground line of a facade drawing matched to the south side, 30 px under its
+// floor line at 100 px/m, is a terrain line 0,3 m under the main floor along the south walls' outer face
+{
+  const { doc } = await carportHouse();
+  doc.facades = [{ file: 'fasade.png', side: 'S', fit: { planSide: 'S', a: 0, k: 1, span0: 0, ppm: 100, floor0: 400, ground: 430 } }, { file: 'uten-bakke.png', side: 'N', fit: { planSide: 'N', a: 0, k: 1, span0: 0, ppm: 100, floor0: 400 } }];
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  const lines = ex.house.site?.terrain?.lines ?? [];
+  const south = Math.max(...ex.house.walls.filter((w) => w.exterior && w.normal[0] < -0.9).map((w) => w.from[0] + w.thickness));
+  check('tomta: én terrenglinje på sørsiden, 0,3 m under gulvet, langs ytterflaten; ingen der tegningen ikke har bakkelinje', lines.length === 1 && lines[0].side === 'S' && lines[0].points.every((p) => p[2] === -0.3 && Math.abs(p[0] - south) < 0.01) && v.errors.length === 0, JSON.stringify({ lines, south, errors: v.errors.slice(0, 2) }));
+}
+// 7. the roofs (notes/tak.md): hus1's long side seen in its facade drawing is a half-hip (the upper corners cut off), and
+// a loft under a half-hip gets the type, the hips' height from the drawings and its dormer; a lower wing the AI gave a
+// roof of its own gets that roof, not a flat one
+{
+  const Fc = await imp('src/planbygger/facade.js');
+  const r1 = Fc.readFacade(readPng(path.join(ROOT, 'plantegninger/_png/hus1/fasade3.png')));
+  const r2 = Fc.readFacade(readPng(path.join(ROOT, 'plantegninger/_png/hus5/fasade3.png')));
+  check('hus1s langside: halvvalm (endene skrått opp til mønet), med hvor langt valmen går ned; hus5s langside (saltak) er ikke det', r1.roof === 'half-hip' && r1.roofHipDrop > 0 && r1.roofView === 'long' && r2.roofView === 'long' && r2.roof !== 'half-hip', JSON.stringify({ hus1: [r1.roof, r1.roofHipDrop], hus5: r2.roof }));
+  const doc = M.createDoc('Halvvalm');
+  const box = (lv) => {
+    lv.walls = [
+      { id: 'n', a: [0, 0], b: [8, 0], t: 0.3, exterior: true },
+      { id: 'e', a: [8, 6], b: [8, 0], t: 0.3, exterior: true },
+      { id: 's', a: [8, 6], b: [0, 6], t: 0.3, exterior: true },
+      { id: 'w', a: [0, 0], b: [0, 6], t: 0.3, exterior: true },
+    ];
+    lv.openings = [];
+  };
+  box(M.createLevel(doc, { id: 'hoved', image: { name: 'syntetisk', width: 1, height: 1, pxPerM: 100 } }));
+  const up = M.createLevel(doc, { id: 'loft', name: 'Loft', image: { name: 'syntetisk-2', width: 1, height: 1, pxPerM: 100 } });
+  box(up);
+  up.floorY = 2.7;
+  up.openings = [{ id: 'uv', wall: 's', type: 'window', at: 4, width: 1, sill: 0.3, height: 1.4 }];
+  up.rooms = [{ id: 'u', seed: [4, 3], name: 'Loftstue', kind: 'living' }];
+  doc.roof = { type: 'half-hip', from: 'fasader', eaveTop: 0.05, riseFacades: 2.9, hipDrop: 1.3, dormerType: 'shed' };
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  const rf = ex.house.roofs.find((x) => x.levelId === 'loft');
+  const want = 1.3 - 0.1 * Math.tan((rf?.pitch * Math.PI) / 180);
+  check('loftet under halvvalm: typen, valmens høyde fra fasadene (ned til vannbordet, minus utstikket), arken, uten feil', rf?.type === 'half-hip' && Math.abs(rf.hipHeight - want) < 0.01 && rf.dormers?.length === 1 && v.errors.length === 0, JSON.stringify({ rf: rf && { type: rf.type, pitch: rf.pitch, hip: rf.hipHeight, dormers: rf.dormers?.length }, errors: v.errors.slice(0, 2) }));
+  // a one-storey wing beside a two-storey part, its own mono-pitch roof (the AI's wing on the lower level)
+  const d2 = M.createDoc('Fløy');
+  box(M.createLevel(d2, { id: 'hoved', image: { name: 'syntetisk', width: 1, height: 1, pxPerM: 100 } }));
+  d2.levels[0].walls.push({ id: 'i', a: [5, 0], b: [5, 6], t: 0.1 });
+  d2.levels[0].rooms = [{ id: 'a', seed: [2, 3], name: 'Stue', kind: 'living' }, { id: 'b', seed: [6.5, 3], name: 'Garasje', kind: 'storage' }];
+  const u2 = M.createLevel(d2, { id: 'oppe', name: '2. etasje', image: { name: 'syntetisk-2', width: 1, height: 1, pxPerM: 100 } });
+  u2.floorY = 2.7;
+  u2.walls = [
+    { id: 'un', a: [0, 0], b: [5, 0], t: 0.3, exterior: true },
+    { id: 'ue', a: [5, 6], b: [5, 0], t: 0.3, exterior: true },
+    { id: 'us', a: [5, 6], b: [0, 6], t: 0.3, exterior: true },
+    { id: 'uw', a: [0, 0], b: [0, 6], t: 0.3, exterior: true },
+  ];
+  u2.openings = [];
+  u2.rooms = [{ id: 'u', seed: [2.5, 3], name: 'Sov', kind: 'bedroom' }];
+  d2.roof = { type: 'gable', wings: [{ level: 'hoved', points: [[6.5, 3]], type: 'mono-pitch', ridge: null, fall: [1, 0] }] };
+  const ex2 = E.exportHouse(d2);
+  const v2 = await validateGenerated(ex2);
+  const low = (ex2.house.roofs ?? []).filter((x) => x.levelId === 'hoved');
+  const fall = ex2.frame.vecToGame([1, 0]);
+  check('fløyen i én etasje får sitt eget pulttak fra KI-en (fallet bort fra huset), ikke flatt tak', low.length === 1 && low[0].type === 'mono-pitch' && Math.abs(low[0].fall[0] - fall[0]) < 1e-3 && Math.abs(low[0].fall[1] - fall[1]) < 1e-3 && v2.errors.length === 0, JSON.stringify({ low, errors: v2.errors.slice(0, 2) }));
+  // a window drawn up under the roof in a gable end of an upper floor whose ceilings follow the roof (a gable roof: a
+  // half-hip's hip cuts the gable wall's top off level, a loft's collar beam stops it): its top follows the roof, as
+  // high as the facade draws it
+  doc.roof = { type: 'gable', from: 'fasader', eaveTop: 1.8, riseFacades: 2.9 };
+  doc.levels.find((l) => l.id === 'loft').name = 'Oppe';
+  doc.levels.find((l) => l.id === 'loft').ceilingRule = 'roof';
+  doc.levels.find((l) => l.id === 'loft').openings = [{ id: 'gv', wall: 'e', type: 'window', at: 2.4, width: 0.6, sill: 0.4, height: 1.2, facadeTop: 2.6 }, { id: 'gd', wall: 'n', type: 'door', at: 2, width: 0.9 }];
+  const ex4 = E.exportHouse(doc);
+  const v4 = await validateGenerated(ex4);
+  const gw = ex4.house.walls.flatMap((w) => w.openings ?? []).find((o) => o.type === 'window' && o.topSlope);
+  check('vinduet i gavlen som fasaden tegner opp under taket: overkanten følger taket, 2,2 m høyt, uten feil', gw?.topSlope === 'follow-roof' && Math.abs(gw.height - 2.2) < 0.01 && v4.errors.length === 0, JSON.stringify({ gw, errors: v4.errors.slice(0, 2) }));
+}
+// 8. the doors and windows from the facades (notes/dortyper.md, F138, F141, F144): a window down to the floor beside the
+// front door is its sidelight; a door the facade shows as glass with two rows of panes and a transom gets them (and one
+// drawn solid none, from a living room too); a wide opening out of a garage is a sectional door; a sliding door on a rail
+// with too little wall beside it is telescopic
+{
+  const FMm = await imp('src/planbygger/facadematch.js');
+  const { doc, lv } = await carportHouse();
+  lv.openings.push({ id: 'sl', wall: 's', type: 'window', at: 2.7, width: 0.4, sill: 0, height: 2.1 });
+  const n = FMm.joinSidelights(doc);
+  const ds = lv.openings.find((o) => o.id === 'ds');
+  check('vinduet ned til gulvet inntil ytterdøra blir sidefelt i dørkarmen: døra tar det med, vinduet går', n === 1 && !lv.openings.some((o) => o.id === 'sl') && ds.sidelights?.length === 1 && Math.abs(ds.width - 1.35) < 0.01, JSON.stringify(ds));
+  // the facade's glass door with a transom, from the living room through the north wall
+  lv.openings.push({ id: 'dn', wall: 'n', type: 'door', at: 4, width: 1.0, height: 2.5, facadeDoor: { glass: true, panes: [1, 2], transom: 0.4 } }, { id: 'dn2', wall: 'n', type: 'door', at: 2, width: 0.9, facadeDoor: { glass: false } });
+  lv.openings = lv.openings.filter((o) => o.id !== 'vn');
+  const ex = E.exportHouse(doc);
+  const v = await validateGenerated(ex);
+  const all = ex.house.walls.flatMap((w) => w.openings ?? []);
+  const front = all.find((o) => o.door?.sidelights?.length);
+  const glassDoor = all.find((o) => o.door?.transom);
+  const solid = all.filter((o) => o.type === 'door' && o.connects?.includes('ute') && o.connects?.includes('stue') && !o.door.transom);
+  check('sidefeltet i ytterdøra, glassdøra med to ruter over hverandre og overlys (0,4 m tegnet, så mye bladet tåler under himlingen), og den tette døra fra stua uten glass', front?.door.sidelights[0].w > 0.3 && glassDoor?.door.glass?.rows === 2 && glassDoor.door.transom.h >= 0.3 && glassDoor.door.transom.h <= 0.4 && solid.length === 1 && !solid[0].door.glass && v.errors.length === 0, JSON.stringify({ sl: front?.door.sidelights, glassDoor: glassDoor?.door, solid: solid.map((o) => o.door), errors: v.errors.slice(0, 2) }));
+  // a garage closed on all sides, a 2,6 m opening out of it
+  const { doc: dg, lv: lg } = await carportHouse();
+  lg.rooms[2] = { ...lg.rooms[2], name: 'Garasje', outdoor: undefined };
+  delete lg.rooms[2].outdoor;
+  const close = lg.walls.find((w) => w.from === 'closed');
+  lg.openings = lg.openings.filter((o) => o.wall !== close.id);
+  lg.openings.push({ id: 'port', wall: close.id, type: 'opening', at: Math.hypot(close.b[0] - close.a[0], close.b[1] - close.a[1]) / 2, width: 2.6 });
+  const exg = E.exportHouse(dg);
+  const vg = await validateGenerated(exg);
+  const port = exg.house.walls.flatMap((w) => w.openings ?? []).find((o) => o.door?.variant === 'garage');
+  check('en bred åpning ut fra garasjen er en leddport som åpnes med E, uten feil', port?.door.style === 'sectional' && port.interactive === true && port.height >= 1.95 && vg.errors.length === 0, JSON.stringify({ port, errors: vg.errors.slice(0, 2) }));
+  // an inner sliding door between two others on a short stretch of wall: telescopic
+  const { doc: dt, lv: lt } = await carportHouse();
+  lt.openings.push({ id: 'skyv', wall: 'i', type: 'door', variant: 'sliding', at: 0.8, width: 0.9, hinge: 'start' }, { id: 'd2', wall: 'i', type: 'door', at: 2.0, width: 0.8 });
+  const ext = E.exportHouse(dt);
+  const vt = await validateGenerated(ext);
+  const sk = ext.house.walls.flatMap((w) => w.openings ?? []).find((o) => o.door?.variant === 'sliding');
+  check('skyvedøra med for lite vegg ved siden av blir en teleskopdør, og validatoren har ikke noe å si om bladet', sk?.door.leaves >= 2 && !vt.warnings.some((m) => m.includes(sk.id) && /bladet/.test(m)) && vt.errors.length === 0, JSON.stringify({ door: sk?.door, warn: vt.warnings.filter((m) => m.includes(sk?.id)) }));
+}
+
 done();

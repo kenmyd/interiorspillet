@@ -1,9 +1,9 @@
 /**
  * The lighting of generated houses (notes/belysning-genererte-hus.md) on the planbygger's test set: every house of
  * tools/test-planbygger-build3d.mjs generated (src/planbygger/generate.js, the recorded AI answers or none, every
- * question's default taken), exported (export.js) and then given what the planbygger should send for the lighting – its
- * one ceiling lamp per room and its per-room groups left out, `lighting: { level }` in – and built with the game's
- * builders (buildLayout, buildRooms) in Node:
+ * question's default taken) and exported (export.js) as the planbygger sends it – `lighting` with its hints, no ceiling
+ * lamp or group per room of its own (an outdoor room keeps its downlight) – and built with the game's builders
+ * (buildLayout, buildRooms) in Node (--level sets another level than the export's 'standard'):
  *
  *   node tools/test-planbygger-belysning.mjs [--quick] [--only hus1,hus2] [--mode ai|noai|both] [--level standard]
  *                                            [--json file]                     (--quick: hus1, hus2 and hus4)
@@ -11,8 +11,8 @@
  * Checked per house: 0 errors in the game's validator; every room of 1 m² or more lit; every outer door with a lamp
  * outside (or a note why not); every stair between two levels with step lights or a lamp over it; every ceiling fitting
  * on its room's ceiling and every wall fitting on a wall face off its windows and doors; a fitting and a glowing mesh
- * for every light; the spawn point of the planbygger's 3D view (viewer.js spawnPoint: the largest room's first light)
- * still at least a player's radius from the room's edges; the doors and windows built as without the lighting.
+ * for every light; the spawn point of the planbygger's 3D view (spawn.js spawnPoint: the largest room, clear of its
+ * edges and the furniture) at least a player's radius from the room's edges; the doors and windows built as without the lighting.
  * Measured: lights per type, groups, the lamp rig's candidates, lamp meshes (draw calls), build time with and without.
  */
 import fs from 'node:fs';
@@ -30,6 +30,7 @@ const { buildRooms } = await imp('src/home/rooms.js');
 const { createHouseRoots } = await imp('src/home/index.js');
 const { candidatesOf } = await imp('src/home/lamprig.js');
 const { PLAYER } = await imp('src/config.js');
+const { spawnPoint } = await imp('src/planbygger/spawn.js');
 
 const args = process.argv.slice(2);
 const opt = (n, d) => {
@@ -39,7 +40,7 @@ const opt = (n, d) => {
 const quick = args.includes('--quick');
 const only = opt('only', null)?.split(',');
 const mode = opt('mode', 'ai');
-const level = opt('level', 'standard');
+const level = opt('level', null);
 const houses = only ?? (quick ? ['hus1', 'hus2', 'hus4'] : HOUSES);
 const modes = mode === 'both' ? [true, false] : [mode !== 'noai'];
 
@@ -57,12 +58,15 @@ const inPoly = (x, z, poly) => {
   }
   return inside;
 };
-/** What the planbygger should send (notes/belysning-genererte-hus.md): no lamps of its own, `lighting`. */
+/** The export's house (with `lighting`, or at --level), and the same without the lighting rules (the comparison). */
 function withLighting(house) {
   const h = JSON.parse(JSON.stringify(house));
-  h.builtInLights = [];
-  h.lightGroups = [];
-  h.lighting = { level };
+  if (level) h.lighting = { ...(h.lighting ?? {}), level };
+  return h;
+}
+function withoutLighting(house) {
+  const h = JSON.parse(JSON.stringify(house));
+  delete h.lighting;
   return h;
 }
 const rooms3d = (layout) => {
@@ -92,12 +96,13 @@ for (const h of houses) {
     const answers = Object.fromEntries(res.questions.filter((q) => q.default != null).map((q) => [q.id, q.default]));
     const ex = E.exportHouse(Q.applyAnswers(res.doc, res.questions, answers));
     const house = withLighting(ex.house);
+    check(`${tag}: eksporten sender lighting (${house.lighting?.level}, ${house.lighting?.hints?.length ?? 0} hint) og ingen taklampe per rom (egne lys bare i uterom og rom for smale for spottene: ${house.builtInLights.length})`, !!house.lighting && house.builtInLights.every((l) => /uterommet|for smalt/.test(l.source ?? '')));
     const errors = validate(house);
     check(`${tag}: 0 feil i spillets validator med lighting (${errors.length})`, errors.length === 0, errors.slice(0, 3).join(' | '));
     let layout, built, plainMs, litMs;
     try {
       let t0 = performance.now();
-      const plain = buildLayout(E.mergeOnto(E.baseSpec(), ex.house), undefined, { devWarnings: false });
+      const plain = buildLayout(E.mergeOnto(E.baseSpec(), withoutLighting(ex.house)), undefined, { devWarnings: false });
       const pr = rooms3d(plain);
       plainMs = performance.now() - t0;
       t0 = performance.now();
@@ -143,13 +148,14 @@ for (const h of houses) {
       return segDist(fx, fz, w.start, w.end) > 0.01 || w.openings.some((o) => u > o.u0 - 0.05 && u < o.u1 + 0.05 && y > o.sill - 0.1 && y < o.top + 0.1);
     });
     check(`${tag}: ${wallFits.length} vegg- og trinnlamper på en veggflate, ingen i et vindu eller en dør`, badWall.length === 0, badWall.slice(0, 3).map((l) => l.id).join(', '));
-    check(`${tag}: et lys med glødende mesh i byggerens liste for hvert lys (${built.builtInLights.length}/${L.length})`, built.builtInLights.length === L.length && built.builtInLights.every((e) => e.emissiveMeshes?.length));
-    // the spawn point of viewer.js: the largest room of the main level, at its first light
-    const main = H.levelsById.hoved ?? H.levels[0];
-    const big = rooms.filter((r) => r.levelId === main.id).sort((a, b) => b.area - a.area)[0];
-    const first = L.find((l) => l.roomId === big?.id && l.position);
-    const sp = first ? [first.position.x, first.position.z] : big ? [big.centroid.x, big.centroid.y] : null;
-    check(`${tag}: viewer.js' startpunkt (første lys i ${big?.name}) er minst ${PLAYER.radius} m fra rommets kanter (${sp ? edgeDist(sp[0], sp[1], big.polygon).toFixed(2) : '–'})`, !big || (sp && inPoly(sp[0], sp[1], big.polygon) && edgeDist(sp[0], sp[1], big.polygon) >= PLAYER.radius));
+    // (the fires of the fireplaces are lights of the builder's own, not of the data: notes/peis-og-ovn.md)
+    const lamps = built.builtInLights.filter((e) => e.type !== 'fire');
+    check(`${tag}: et lys med glødende mesh i byggerens liste for hvert lys (${lamps.length}/${L.length})`, lamps.length === L.length && lamps.every((e) => e.emissiveMeshes?.length));
+    // the spawn point of viewer.js (spawn.js): the largest room of the main level, clear of the furniture
+    const s0 = spawnPoint(layout, { boxes: (built.colliders ?? []).filter((c) => c?.isBox3) });
+    const big = s0?.room ?? null;
+    const sp = s0 ? [s0.position[0], s0.position[2]] : null;
+    check(`${tag}: viewer.js' startpunkt (i ${big?.name}) er minst ${PLAYER.radius} m fra rommets kanter og møblene (${sp ? Math.min(s0.clear, edgeDist(sp[0], sp[1], big.polygon)).toFixed(2) : '–'})`, !big || (sp && inPoly(sp[0], sp[1], big.polygon) && edgeDist(sp[0], sp[1], big.polygon) >= PLAYER.radius && s0.clear >= PLAYER.radius));
     // measured
     const lampMeshes = [];
     const visit = (o, inLamps) => {

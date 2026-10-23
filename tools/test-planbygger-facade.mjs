@@ -264,8 +264,8 @@ check('vinduer: sum |avvik| ≤ 7', winErr <= 7, `${winErr} (${sum((x) => x.nw)}
 check('dører: sum |avvik| ≤ 7', doorErr <= 7, `${doorErr} (${sum((x) => x.nd)} / ${doorTruth})`);
 check('riktig antall vinduer og dører på minst 12 av 20 fasader', exact >= 12, `${exact}`);
 check('takform riktig på minst 15 av 20', roofOk >= 15, `${roofOk}`);
-check('husets tak: hus1 saltak med ark, hus2 og hus3 saltak, hus4 pulttak',
-  houseRoofs.hus1 === 'gable-dormer' && houseRoofs.hus2 === 'gable' && houseRoofs.hus3 === 'gable' && houseRoofs.hus4 === 'mono-pitch',
+check('husets tak: hus1 halvvalm (med ark), hus2 og hus3 saltak, hus4 pulttak',
+  houseRoofs.hus1 === 'half-hip' && houseRoofs.hus2 === 'gable' && houseRoofs.hus3 === 'gable' && houseRoofs.hus4 === 'mono-pitch',
   JSON.stringify(houseRoofs));
 check('etasjer riktig på minst 18 av 20', storeysOk >= 18, `${storeysOk}`);
 check('skala innen 10 % på alle med kjent skala', within(0.1) === scaled.length, `${within(0.1)}/${scaled.length}`);

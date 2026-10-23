@@ -984,7 +984,7 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F138.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F138.json`
-- **Status:** åpen – veggen ved WIC-døra er 1,14 m og døra 0,88 m, og den andre WIC-ens skyvedør står rett ved, så det er ikke plass til døra inne i veggen; den står på skinne
+- **Status:** delvis (venter på test) – en skyvedør på skinne med for lite vegg ved siden av går nå mot siden med plass, blir teleskopdør (2–3 blad) eller går forbi seg selv i et bredt hull; i hus2s WIC får ingen av dem plass (validatoren varsler), så den står fortsatt på skinne
 
 ### F139 – overgang mellom skråtak og flatt tak har feilet, men i dette huset er 
 - **Tekst:** overgang mellom skråtak og flatt tak har feilet, men i dette huset er det egentlig skråtak helt ut til veggen til soverom 11,7m2 og WIC 4,6m2
@@ -1005,7 +1005,7 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F141.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F141.json`
-- **Status:** delvis – vindustypen leses nå fra fasadetegningen der den er skarp nok (felt, overlys og sprosser, facade.js paneGrid), men hus2s fasader er på 10 px/m og viser ingen sprosser, så hus2 får fortsatt typen etter bredden; ytterdørenes type er ikke gjort
+- **Status:** delvis (venter på test) – ytterdørene får typen fra fasaden: tett blad (mørkt eller hvitt dørblad) eller glass med ruter, brystning og overlys, og et vindu ned til gulvet inntil døra blir sidefelt i karmen; vinduene på hus2 (fasadene for små) gjenstår
 
 ### F142 – hvorfor spør genereringen om dette egentlig? trappa er jo ikke tegnet 
 - **Tekst:** hvorfor spør genereringen om dette egentlig? trappa er jo ikke tegnet noe utydelig
@@ -1026,7 +1026,7 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F144.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F144.json`
-- **Status:** delvis – vinduene på hus4 får felt og sprosser fra fasadetegningene (de brede glassfeltene todelt, enkeltvinduene ett felt, ingen falske sprosser fra glassrekkverket); dørtypene (glass, sidefelt, overlys) er ikke gjort ennå
+- **Status:** fikset (venter på test) – vinduene får felt og sprosser, og dørene på hus4 typen fra fasadene: inngangsdøra tett, balkongdørene oppe glass med overlys, terrassedøra glass
 
 ### F145 – Fasaden på dette huset ser jeg at noe er veldig vanskelig og genereree
 - **Tekst:** Fasaden på dette huset ser jeg at noe er veldig vanskelig og genereree. På fasadetegning 3 så set du at det er kledning i toppen på taket som går ned på høyre side og så fortsettte den rett under rekkverk på glassrekkverk bort til boden. Og boden skulle også hatt stående kledning
@@ -1061,7 +1061,7 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F149.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F149.json`
-- **Status:** ny
+- **Status:** fikset (venter på test) – carportens vegg mot boden får feltet fasaden inn i carporten viser (grå plater), og døra samme grå farge på blad, karm og foring (export.js frontZones); carporten er et uterom med betonggulv
 
 ### F150 – det er naturlig at det er en støpt betongplatting under terrassen her 
 - **Tekst:** det er naturlig at det er en støpt betongplatting under terrassen her og bort til stoltene. Disse stoltene skulle helller ikke vært her visst du ser fasadetegning 1
@@ -1117,14 +1117,14 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F157.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F157.json`
-- **Status:** delvis – arken er en pultark som på fasaden (avlest på fasadene), takfoten og vinkelen fra fasadene. Halvvalmen og en ark i veggliv (takfoten brutt foran arken) venter på motoren (taksesjonen)
+- **Status:** fikset (venter på test) – halvvalm fra fasadene (langsidenes skårne hjørner), valmens høyde fra tegningen, og pulttaksarken i veggliv med takfoten kuttet foran balkongen
 
 ### F158 – Mønet her har en vinkel ned. sammenlikn med fasadetegning
 - **Tekst:** Mønet her har en vinkel ned. sammenlikn med fasadetegning
 - **Hvor:** 3D (dukkehus) – 2etg.png, 1etg.png, fasade3.avif, fasade4.avif, fasade1.avif, fasade2.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F158.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F158.json`
-- **Status:** delvis – taket er saltak med rett møne og vinkelen fra fasadenes høyde (44° på hus1); halvvalmen i endene venter på motoren
+- **Status:** fikset (venter på test) – taket er halvvalm 44° med rett møne, som fasadene viser
 
 ### F159 – Huset er mye høyere enn fasadetegningen. Visst du sammenlikner dem så 
 - **Tekst:** Huset er mye høyere enn fasadetegningen. Visst du sammenlikner dem så ser du det. Tror 2.etg er blitt bygget som en full eteajse, men har ikke vært inne i huset enda
@@ -1164,7 +1164,7 @@ eller faller, eller huset står på feil sted.
 - **Tekst:** Samme her ser du at vinduene er høyere og har det skråfeltet. Mulig at noe har skjedd feil når jeg skrev takhøyden. Kanskje det er høyere takhøyde her enn 2,4 meter det er det antagelig. men det kunne kanskje genereringen visst og måt av seg selv? det gjør den ikke idag. Feks her vet den jo ca høyde på vindu og vet at etasjeskille normalt er 20cm så kan sikkert modellen generere takhøydene automatisk. Må kanskje gjøre noe med vindugenerering slik de kan genereres med den vinkelen som er på vinduene i øverste etasje
 - **Hvor:** fasadesjekk – 2etg.avif, 1etg.avif, fasade4.avif, fasade3.avif, fasade2.avif, fasade1.avif
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F164.json`
-- **Status:** delvis – etasjehøyden kommer fra fasadenes gulvlinjer (hus4: 2,87 m fra gulv til gulv, himling 2,57 m med etasjeskillet på 0,3 m som appen bruker). Vinduer med skrå overkant venter på motoren
+- **Status:** fikset (venter på test) – etasjehøyden fra fasadene, og vinduene som fasaden tegner opp under taket får skrå overkant langs takfallet i veggene der toppen skråner (export.js slopedTops)
 
 ### F165 – her er det fortsatt noe i hjørnet
 - **Tekst:** her er det fortsatt noe i hjørnet
@@ -1185,7 +1185,7 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 2D-editor – 2etg.png, 1etg.png, fasade4.avif, fasade3.avif, fasade2.avif, fasade1.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F167.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F167.json`
-- **Status:** ny
+- **Status:** fikset (venter på test) – ovnssymbolet KI-en ser på planen blir en vedovn i stua med teglpipe opp gjennom taket (export.js fireplacesOf); et ildsted i en bod blir bare pipa
 
 ---
 

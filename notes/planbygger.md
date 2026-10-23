@@ -1160,17 +1160,13 @@ Reglene er generelle: de bruker det tegningene viser, ikke husets navn.
     sprosser. hus4 får de brede glassfeltene todelt, og enkeltvinduene ett felt uten sprosser.
 - **Ikke gjort:**
   - **F138:** skyvedøra i hus2s WIC står på skinne. Veggen er 1,14 m med 0,88 m dør, og den andre WIC-ens skyvedør
-    står rett ved, så det er ikke plass i veggen.
+    står rett ved, så det er ikke plass i veggen. Heller ikke en teleskopdør får plass (se «Motorfunksjonene» punkt 8).
   - **F154:** skyvedøra mellom W.I.C og badet i hus4s 2. etasje er tegnet som to tynne linjer i veggen. Den leses som en
     åpning. KI-en sier «dør», men å gjøre åpninger til dører etter KI-en gjorde tellingene verre (`aiOpeningKind`).
     Det trengs en klassisk regel i `detect.js` for skyvedør i veggliv.
-  - **F141, F144:** ytterdørenes type fra fasadetegningene (glass, sidefelt, overlys). Vinduene på hus2, der fasadene er
-    for små.
-  - **F145, F146, F148, F149:** kledningssoner per vegg.
-  - **F157, F158:** halvvalm.
-  - **F164:** vinduer med skrå overkant.
-  - **F167:** pipe.
-  - Halvvalm, skrå vinduer og pipe venter på motoren (taksesjonen).
+  - **F141, F144:** vinduene på hus2, der fasadene er for små. Ytterdørene er gjort (punkt 8 under).
+  - **F145, F146, F148:** kledningssoner per vegg. F149 er gjort (punkt 1 under).
+  - Halvvalm (F157, F158), skrå vinduer (F164) og pipe (F167) er gjort. Se «Motorfunksjonene i «Generer»» under.
 
 ### Tre nye hus (hus10–hus12, 23.10, kveld)
 
@@ -1258,6 +1254,132 @@ Regler som gjelder:
 - Hvert punkt får en enhetstest og en sjekk i nettleseren (port 5277).
 - Kjør `test-house` og planbyggersuitene før hver commit.
 - Ingen push før eieren har testet. Eierens server (5270) kjører fra denne worktreen.
+
+### Motorfunksjonene i «Generer» (23.10, kveld)
+
+Gjort i worktreen `reverent-thompson-95fb17` (grenen `claude/reverent-thompson-95fb17`, spolt fram fra
+`claude/planbygger-5d0fe3`). Økta fikk ikke skrive i planbyggerens worktree. Forhåndsvisningen er `planbygger-rt` på port
+5278 (5276 brukes av `-ai`-testen). Enhetstestene står i `test-planbygger.mjs` seksjon 13. Reglene er generelle.
+
+1. **Uterom** (`export.js`):
+   - Et rom med `outdoor` får `rooms[].outdoor`, betonggulv `#a7a49e`, `soffit` med bord i kledningens farge og en
+     downlight (350–800 lm) i stedet for plafonden.
+   - Gulvet tas ikke med i felles gulv over en åpen grense.
+   - En dør mellom et uterom og et innerom er en ytterdør: mørk karm og smyg, men ikke glass. Glass får bare dører ut
+     i det fri.
+   - Bare en carport, eller en garasje med en åpen side som `closeAround` lukket, er et uterom (`generate.js`). En
+     garasje med vegger rundt (hus7) er et vanlig rom.
+   - **F149, bodfronten:** carportens vegger mot et innerom, som vender mot den åpne siden, er fronten. Fasaden på
+     siden carporten er åpen mot, viser den. Et felt KI-en kaller «other» der, og som er ulikt hovedkledningen, blir en
+     kledningssone på frontveggene (`front-<rom>`). En slett flate (KI-ens «render») blir plater. Dørene i fronten får
+     sonens farge på blad, karm og foring. hus4: grå plater og grå dør.
+2. **Møbler** (`generate.js`, `export.js`, `spawn.js`):
+   - KI-ens møbelsymboler lagres på etasjen som `L.furniture` (planmeter, skaleres med `rescaleLevel`).
+   - `export.js` sender `furnishing` med symbolene som `hints` i husets meter.
+   - Et bord innen 1,6 m fra en sofa er et sofabord (`coffee-table`).
+   - `rooms[id].use` sendes fra KI-ens romtype (`label.use`: kitchen, office, wc …) når romnavnet ikke sier noe.
+   - En carport og en garasje får `use` `garage` (ingen møbler).
+   - **Startpunktet** (`spawn.js`, brukt av `viewer.js` og 3D-testen): det største rommet, ikke et uterom. Punktet står
+     minst 0,7 m fra kantene og møblene og nærmest midten, på rommets gulv og ikke over et trappehull. Før sto figuren
+     ved lampa og kunne starte inne i en sofa.
+   - **Rettet i motoren** (`src/home/furnishgeom.js` `roomInput`): møbleringen holdt «foten» fri ved toppen av
+     ganglinja (layout går fra topp til fot), og ingenting ved toppen oppe. hus3 uten KI fikk en sofa der trappa kommer
+     opp, og figuren kom ikke av trappa. Nå holdes 1,6 × 1,6 m fritt foran foten nede og ved toppen oppe.
+3. **Lys** (`export.js`, `viewer.js`):
+   - Med `lighting` i skjemaet sender eksporten `lighting: { level: 'standard', hints }` og ingen taklampe eller
+     lysgruppe per rom. Et uterom beholder sin downlight, siden reglene ikke har carport som rom.
+   - `rooms[].use` sendes når lysreglene ellers ville lest noe annet av navn og type:
+     - KI-ens type når navnet ikke sier noe;
+     - `kitchen-living` for en stue med kjøkkensymbolet i seg.
+   - Hint: `dining-table` for et bord som ikke er et sofabord, i kjøkken, stue eller spisestue, langs rommets lengste
+     side.
+   - `viewer.js` bruker `LampRig` (8 faste lys til lampene nær kameraet) i stedet for ett `PointLight` per lampe. hus4
+     får 64 lamper og 20 grupper.
+   - `test-planbygger-belysning.mjs` tester nå det eksporten sender.
+4. **Ovn og pipe** (`export.js`, F167):
+   - KI-ens `stove` og `fireplace` blir `fireplaces` med en pipe hver i `chimneys`.
+   - En `stove` i et kjøkken, eller innen 1,5 m fra kjøkkensymbolet, er komfyren.
+   - En peis inntil en vegg er en innsats med murt pipe.
+   - En ovn inntil en vegg med en etasje over seg får en murt pipe bak seg. Etasjen over teller også når punktet står
+     i en vegg der.
+   - En annen ovn får stålpipe fra toppen.
+   - Et ildsted i en bod, et teknisk rom eller et våtrom er pipefoten: en murt pipe med `at`, uten ildsted. Det gjelder
+     hus8s kjeller.
+   - hus1: vedovn i stua og teglpipe gjennom taket.
+   - Rommet med ilden får sin egen lysgruppe med lysreglenes dimmer og `auto`. Ellers tar lysreglene ildens gruppe
+     (`fire-<id>`) som rommets grunnlys (forespørsel til motoren under).
+   - Sier fasadene at det er en pipe, men planene ikke har noe ildsted, kommer en advarsel, og ingen pipe.
+   - hus4s runde ovn er ikke med: KI-opptaket av 2. etasje har ikke ovnssymbolet.
+5. **Kjøkken og bad** (`fittings.js`, `export.js`, `viewer.js`):
+   - Hvert symbol blir en `builtIns`-oppføring mot nærmeste vegg i rommet, og innredningen tar plassen langs alle
+     veggene den står mot:
+     - WC og servant med speil (og hint for speillys);
+     - dusj og badekar inn i hjørnet når symbolet står nær det;
+     - vaskemaskin og kjøleskap.
+   - **Kjøkkensymbolet** blir en benk langs veggen, mellom dørene og de lave vinduene og høyst 3,6 m lang. På benken:
+     - kjøleskap ved enden;
+     - kum under vinduet, ellers ved den andre enden;
+     - koketopp og ovn ved komfyrsymbolet, ellers bort fra kummen, med oppvaskmaskin ved kummen;
+     - ventilator over koketoppen;
+     - overskap der det er vegg, med hint for LED under dem.
+   - I et vaskerom er «kjøkkensymbolet» vaskeromsbenken med skyllekar, og vaskemaskinen under den blir en plass i benken
+     (hus4). I et bad blir det ingenting.
+   - Et rom som heter kjøkken (eller kjøkken/stue), men der KI-en ikke så benken, får den langs den lengste ledige
+     veggen (hus4 «Stue/Kjøkken»). Det er samme vegg som møbleringen holder fri.
+   - Et bad uten servantsymbol får servant og speil på den lengste ledige veggen.
+   - Våtrom får flisgulv. Badet får flis på veggene til taket, vaskerommet 1,2 m (til taket med dusj), og WC-en ikke.
+   - `viewer.js` bygger `buildBuiltIns`, med kolliderne i kollisjonen og lysene i riggen. 3D-testen har dem også med.
+6. **Tomt** (`generate.js`, `export.js` `siteOf`, `viewer.js`):
+   - Fasadens bakkelinje (`fit.ground`) gir én terrenglinje per matchet fasade, langs ytterflatene på den siden. Høyden er
+     den tegningen viser under hovedgulvet, 0,1–4 m ned.
+   - Linjene stopper 0,5 m før hjørnene.
+   - Med `site` bygger ikke visningen egen bakke, `basementYards` eller `doorRamps`. Gåområdet er tomtas.
+   - hus8 får ingen tomt: fasadene matches ikke.
+7. **Tak** (`facade.js`, `facadematch.js`, `export.js`):
+   - **Halvvalm:** fra langsiden står endene av omrisset godt over takfoten og stiger jevnt til mønet. På hus1 står
+     endene på 0,79 av høyden, takfoten på 0,35, og stigningen går over de ytterste 15 %.
+   - Viser alle langsidene det, er huset halvvalmet (`houseRoof`).
+   - Valmens høyde (`hipDrop`) måles ned til vannbordet og gir `hipHeight`. Utstikket ganger vinkelen trekkes fra.
+   - hus1: halvvalm 44°, valmhøyde 1,19 m og pulttaksark i veggliv over balkongen. hus1s fasit har nå `half-hip` på
+     langsidene.
+   - **Ark i veggliv** (hus1, hus12): arkenes front står allerede på ytterflaten. Motoren lar nå veggen gå opp i arken
+     og kutter takfoten foran. hus12s saltaksark går ned til balkongen som på fasaden.
+   - **Fløyer:** fløyene på samme etasje møtes i motoren (hus2, hus5).
+   - En lavere del uten etasje over seg får typen, mønet eller fallet fra KI-ens fløy på den etasjen, i stedet for flatt
+     tak. Ingen av testhusene har en slik fløy, så regelen er bare enhetstestet.
+   - Takfargen KI-en leste, sendes nå (hus12: rød).
+8. **Vindus- og dørtyper** (`facade.js`, `facadematch.js`, `generate.js`, `export.js`):
+   - **Ytterdører fra fasaden** (F141, F144): et mørkt blad eller et hvitt dørblad er tett. Glass har flere felt,
+     ruter, brystningspanel eller overlys. Glasset får rutene og brystningen, og overlyset høyden fasaden viser, så langt
+     bladet under beholder 1,9 m.
+     - hus4: inngangsdøra tett, balkongdørene oppe glass med overlys;
+     - hus1: terrassedøra glass med brystning;
+     - hus12: dobbeltdøra glass 2 × 2.
+   - En ytterdør ut til et dekk er en glassdør, også fra en gang (hus12s balkongdør).
+   - **Sidefelt:** et vindu ned til gulvet inntil en ytterdør (høyst 0,7 m bredt, under 0,35 m unna) blir sidefelt i
+     dørkarmen (`joinSidelights`).
+   - **Skrå overkant** (F164):
+     - Et vindu som fasaden tegner høyere enn den flate himlingen, får `topSlope: 'follow-roof'` og hele høyden. Det
+       gjelder bare der himlingen følger taket og veggtoppen skråner (gavl, pulttakets sidevegger).
+     - Under hanebjelken på et loft stopper vinduet under den.
+     - Går den skrå toppen likevel over veggen, gir «Generer» vinduet vannrett overkant (`flatTop`).
+     - hus4: vinduet i gavlveggen oppe.
+   - **Garasjeport** (hus7): en bred åpning (minst 2 m) ut fra en garasje som ikke er et uterom, blir en leddport. Er
+     det for lite plass under himlingen for skinnene, blir det en vippeport. hus7: 5,17 × 2,04 m leddport.
+   - **Skyvedør på skinne** (F138): med for lite vegg ved siden av hullet går den mot siden med plass. Ellers blir den
+     en teleskopdør med 2–3 blad, eller går forbi seg selv (`bypass`) når hullet er bredt nok. hus2s WIC har ikke plass
+     til noen av dem (validatoren varsler), og hus12s entrédør heller ikke.
+
+**Rettet i motoren underveis:** møbleringen holder trappenes ender frie (punkt 2). `tools/house-tests/belysning.test.mjs`
+og `src/dev/belysning-hus.js` fjerner nå eksportens egen `lighting` før de setter testhusets.
+
+**Forespørsler til motoren:**
+- Lysreglene tar ildens gruppe som rommets grunnlysgruppe (`dataGroupOfRoom`). Planbyggeren sender egen gruppe for rom
+  med ild.
+- En pendel over et spisebordhint som krysser to himlingshøyder, henger i den høyeste. hus3-foto fikk en pendel 2 m over
+  en himling på 2,4. Planbyggeren sender nå bare ett spisebord per rom.
+- Et rom smalere enn 0,9 m får ingen spotter av lysreglene. Planbyggeren sender en egen downlight når himlingen er flat
+  (hus12s smale entré).
 
 ## Rommene og eksporten
 

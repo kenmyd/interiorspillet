@@ -11,7 +11,8 @@
  *   v.dispose()
  *
  * The game's living room (shell.js, kitchen.js, lighting.js, the design) is not used: a customer's house has none. The
- * light is simple (sky, sun from the south of the plan, one lamp per room), shadows only from the sun.
+ * light: sky, sun from the south of the plan, and the house's lamps (the lighting rules' fittings) through the lamp rig
+ * (home/lamprig.js); shadows only from the sun. The player starts clear of the furniture (spawn.js).
  *
  * Skylights (house.ceilings[].skylights) are built by the game with the ceilings, and hidden with them in the
  * dollhouse view.
@@ -21,6 +22,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { buildLayout } from '../home/layout.js';
 import { buildRooms } from '../home/rooms.js';
 import { buildStairs } from '../home/stairs.js';
+import { buildBuiltIns } from '../home/builtins.js';
 import { configureMaterials, prepareMaterials } from '../home/materials.js';
 import { CollisionWorld } from '../core/Collision.js';
 import { InteractionSystem } from '../core/Interaction.js';
@@ -31,6 +33,8 @@ import { PlayerController } from '../player/PlayerController.js';
 import { setMaxAnisotropy } from '../world/proctex.js';
 import { baseSpec, mergeOnto } from './export.js';
 import { footprint } from './regions.js';
+import { spawnPoint } from './spawn.js';
+import { LampRig } from '../home/lamprig.js';
 
 /** metres from the ground up to the main floor: one threshold step the player walks up (its stepHeight is 0.3) */
 const GROUND_STEP = 0.15;
@@ -359,6 +363,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     }
     for (const g of Object.values(state.roots.levels)) g.removeFromParent();
     for (const m of state.depthMats?.values() ?? []) m.dispose();
+    state.rig?.dispose();
     state.interaction?.dispose?.();
     hud.setPrompt(null);
     state = null;
@@ -389,6 +394,8 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     const ctx = { scene, camera, renderer, collision, interaction, events, settings, quality, roots, audio: null, lighting: null };
     const parts = [buildRooms(ctx, layout, null)];
     if (layout.house.stairs.length) parts.push(buildStairs(ctx, layout));
+    // the kitchens', bathrooms' and laundries' fittings and the wall tiles (notes/kjokken-bad-genererte-hus.md)
+    parts.push(buildBuiltIns(ctx, layout));
     scene.add(...Object.values(roots.levels));
     for (const p of parts) if (p.group && !p.group.parent) scene.add(p.group);
     const depthMats = new Map();
@@ -423,6 +430,9 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     // basement (it must not see the ground): the exact outline of the levels below (their rooms + wall slabs,
     // regions.js footprint). The ground is a mesh with its normal up, also the walkable surface outside (Octree,
     // one-sided).
+    // A house with `site` (notes/uteomradet.md) has its ground, its entrances and the basement's open sides from the
+    // game's builders (rooms.js, colliders in parts): no plate, yards or ramps of the view's own then
+    const site = layout.house.site ?? null;
     const lowerIds = new Set(layout.house.levels.filter((l) => l.floorY < mainY - 0.5).map((l) => l.id));
     const polys = [];
     for (const r of layout.house.rooms) if (lowerIds.has(r.levelId) && !r.hud && r.polygon.length >= 3) polys.push(r.polygon.map((p) => [p.x, p.y]));
@@ -432,7 +442,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       polys.push([o(w.start, 0), o(w.end, 0), o(w.end, w.thickness), o(w.start, w.thickness)]);
     }
     // the basement's open sides: sunken yards, cut out of the ground (F118)
-    const yards = basementYards(layout, mainY, mainY - GROUND_STEP);
+    const yards = site ? { footprints: [], meshes: [] } : basementYards(layout, mainY, mainY - GROUND_STEP);
     polys.push(...yards.footprints);
     const hole = polys.length ? footprint(polys) : [];
     const R = size * 4;
@@ -440,15 +450,17 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     const V = (x, z) => new THREE.Vector2(x, -z);
     const shape = new THREE.Shape([V(cx - R, cz - R), V(cx + R, cz - R), V(cx + R, cz + R), V(cx - R, cz + R)]);
     if (hole.length >= 3) shape.holes.push(new THREE.Path(hole.map((p) => V(p[0], p[1]))));
-    const ground = new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshStandardMaterial({ color: '#7f8f66', roughness: 0.95 }));
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = mainY - GROUND_STEP;
-    ground.receiveShadow = true;
-    ground.name = 'ground';
-    scene.add(ground);
-    ground.updateMatrixWorld(true);
-    extra.push(ground);
-    collision.addStatic(ground);
+    if (!site) {
+      const ground = new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshStandardMaterial({ color: '#7f8f66', roughness: 0.95 }));
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = mainY - GROUND_STEP;
+      ground.receiveShadow = true;
+      ground.name = 'ground';
+      scene.add(ground);
+      ground.updateMatrixWorld(true);
+      extra.push(ground);
+      collision.addStatic(ground);
+    }
     for (const m of yards.meshes) {
       m.castShadow = false;
       scene.add(m);
@@ -457,7 +469,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       collision.addStatic(m);
     }
     // up the step at the outer doors without jumping (F60)
-    for (const ramp of doorRamps(layout, mainY - GROUND_STEP)) {
+    for (const ramp of site ? [] : doorRamps(layout, mainY - GROUND_STEP)) {
       scene.add(ramp);
       ramp.updateMatrixWorld(true);
       extra.push(ramp);
@@ -483,55 +495,32 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
     sun.shadow.normalBias = 0.03;
     scene.add(sun, sun.target);
     extra.push(sun, sun.target);
-    for (const l of layout.house.builtInLights) {
-      if (!l.position) continue;
-      const room = layout.house.roomsById[l.roomId];
-      const pl = new THREE.PointLight('#ffe2bf', 1, 0, 2);
-      pl.intensity = Math.max(4, Math.min(18, (room?.area ?? 10) * 1.1));
-      pl.position.copy(l.position).add(new THREE.Vector3(0, -0.25, 0));
-      (roots.rooms[l.roomId]?.contents ?? scene).add(pl);
-      extra.push(pl);
-    }
+    // the lamps (the lighting rules' fittings, notes/belysning-genererte-hus.md): a fixed pool of lights handed to the
+    // lamps nearest the camera (home/lamprig.js) – one PointLight per lamp gave 30–70 lights and seconds of shader
+    // compiling; every group on, as an evening
+    const rig = new LampRig({ scene, layout, lights: parts.flatMap((p) => p.builtInLights ?? []) });
     // skylights are built by the game with the ceilings (rooms.js, since the window models)
     const skylights = [];
     collision.build();
-    if (collision.setBounds) collision.setBounds(b.minX - size, b.maxX + size, b.minZ - size, b.maxZ + size);
+    // the walkable ground: the site's fine grid when the house has one, else the house's bounds and its size round it
+    const sb = site?.bounds;
+    if (collision.setBounds) collision.setBounds(...(sb ? [sb.minX, sb.maxX, sb.minZ, sb.maxZ] : [b.minX - size, b.maxX + size, b.minZ - size, b.maxZ + size]));
     if (collision.setFloorField && layout.house.floorYAt) {
       collision.setFloorField((x, z, y) => layout.house.floorYAt(x, z, y));
     }
     // ---- the player
     if (!input) input = new Input(renderer.domElement, settings);
     const player = new PlayerController({ camera, collision, input, settings, events });
-    const start = spawnPoint(layout);
+    // never inside a piece of furniture (the furnishing's colliders are boxes)
+    const sp = spawnPoint(layout, { boxes: parts.flatMap((p) => p.colliders || []).filter((c) => c?.isBox3) });
+    const start = sp ? { position: new THREE.Vector3(...sp.position), yaw: sp.yaw } : { position: new THREE.Vector3(), yaw: 0 };
     player.teleport(start.position, start.yaw, 0);
-    state = { layout, collision, interaction, roots, parts, extra, skylights, player, start, bounds: b, center: new THREE.Vector3(cx, mainY, cz), size, groundY: mainY - GROUND_STEP, depthMats };
+    state = { layout, collision, interaction, roots, parts, extra, skylights, player, start, bounds: b, center: new THREE.Vector3(cx, mainY, cz), size, groundY: site ? Math.min(mainY - GROUND_STEP, site.yRange?.[0] ?? -Infinity) : mainY - GROUND_STEP, depthMats, rig };
     setMode(mode);
     const realRooms = layout.house.rooms.filter((r) => !r.hud && r.area > 0.01 && r.id !== 'stue-kjokken');
     onInfo(`${realRooms.length} rom, ${layout.house.doors.length} dører, ${layout.house.windows.length} vinduer`);
     if (!raf) loop();
     return state;
-  }
-
-  /** Inside the largest room of the main level, at its freest point, looking at the room's centre. */
-  function spawnPoint(layout) {
-    const H = layout.house;
-    const main = H.levelsById.hoved ?? H.levels[0];
-    const rooms = H.rooms.filter((r) => !r.hud && r.polygon.length >= 3 && r.levelId === main.id).sort((a, b) => b.area - a.area);
-    const r = rooms[0];
-    const light = H.builtInLights.find((l) => l.roomId === r?.id && l.position);
-    const p = light ? new THREE.Vector3(light.position.x, r.floorY, light.position.z) : r ? new THREE.Vector3(r.centroid.x, r.floorY, r.centroid.y) : new THREE.Vector3();
-    // look across the room (toward its far corner from the spawn point)
-    let far = null;
-    let fd = -1;
-    for (const q of r?.polygon ?? []) {
-      const d = Math.hypot(q.x - p.x, q.y - p.z);
-      if (d > fd) {
-        fd = d;
-        far = q;
-      }
-    }
-    const yaw = far ? Math.atan2(-(far.x - p.x), -(far.y - p.z)) : 0;
-    return { position: p, yaw };
   }
 
   function setMode(m) {
@@ -602,6 +591,7 @@ export function createViewer(container, { onInfo = () => {} } = {}) {
       if (orbit.target.y < g) orbit.target.y = g;
       if (camera.position.y < g + 0.3) camera.position.y = g + 0.3;
     }
+    state.rig?.update(camera, dt);
     const pstate = { camera, playerPosition: state.player.position };
     for (const p of state.parts) {
       if (p.update) p.update(dt, pstate);

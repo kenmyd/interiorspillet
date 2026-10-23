@@ -71,7 +71,7 @@ import { cleanForWalls } from './clean.js';
 import { detectPlan } from './detect.js';
 import { autoScale, estimateScale, similarSource, innerArea, wallModes } from './autoscale.js';
 import { readFacade, houseRoof } from './facade.js';
-import { matchFacades, applyFacadeMatch, roofFromFacades, behindDeck } from './facadematch.js';
+import { matchFacades, joinSidelights, applyFacadeMatch, roofFromFacades, behindDeck } from './facadematch.js';
 import { applyHouseReading, refineRidge } from './houseread.js';
 import { findDecks } from './deckfind.js';
 import { findStairs, alignLevelTo } from './align.js';
@@ -139,6 +139,8 @@ const fmt = (v, d = 1) => (Number.isFinite(v) ? String(Math.round(v * 10 ** d) /
 const DRAWING_KINDS = new Set(['plan', 'facade', 'section']);
 const NOT_A_ROOM = /brutto|\bbta\b|\bbra\b|p-rom|s-rom|totalt|\bsum\b|tomt|bebygd|åpent opp|apent opp/i;
 const OUTDOOR = new Set(['terrace', 'balcony', 'carport', 'garage']);
+/** The AI's room kinds the plan's kinds lack → what the room is furnished as (src/home/furnishgeom.js FURNISH_USES). */
+const AI_USE = { kitchen: 'kitchen', dining: 'dining', office: 'office', wc: 'wc', wardrobe: 'wardrobe', technical: 'technical', garage: 'garage', carport: 'garage' };
 /** A mark in brackets of 1–3 letters («(G)» garderobe, «(L)»): a symbol in a room, not its name. */
 const MARK_ONLY = /^\(\s*[a-zæøå]{1,3}\.?\s*\)$/i;
 
@@ -986,6 +988,7 @@ export async function generate(inputs, opts = {}) {
       const room = after.rooms.find((r) => r.index === roomAt(after, p));
       if (room && room.area >= 6 && (!(it.area > 0) || logRatio(room.area, it.area) < 0.35)) {
         found = after;
+        it.openSide = true;
         step({ step: 'rooms', file: d.file, method: 'open-side', confidence: 'medium', detail: `«${it.name}»: ${how}` });
       } else Object.assign(L, JSON.parse(saved));
     }
@@ -1041,12 +1044,22 @@ export async function generate(inputs, opts = {}) {
         // the same name twice (one room cut in two by the detection, both halves labelled: «WC/D + WC/D», K7) once
         const name = [...new Set(its.map((x) => displayName(x.name)))].join(' + ');
         if (its.length > 1) merged++;
-        L.rooms.push({ id: `r${L.rooms.length + 1}`, name, kind, seed: [round(room.inside[0], 3), round(room.inside[1], 3)], auto: true, from: 'ai', labels: its.map((x) => ({ text: x.name, area: x.area ?? null })), ...(OUTDOOR.has(main.kind) ? { outdoor: main.kind } : {}) });
+        // what the room is used for when the AI's kind says more than the plan's kinds (a kitchen, an office, a WC: the
+        // furniture, notes/moblering-genererte-hus.md); the room's name wins in the export when it says it
+        const use = AI_USE[main.kind] ?? null;
+        // a room outside (notes/uterom.md): a carport, or a garage open on one side (closed above); a garage with its
+        // walls all round (hus7, with a garage door) is a room inside
+        const outdoor = OUTDOOR.has(main.kind) && (main.kind !== 'garage' || main.openSide);
+        L.rooms.push({ id: `r${L.rooms.length + 1}`, name, kind, seed: [round(room.inside[0], 3), round(room.inside[1], 3)], auto: true, from: 'ai', labels: its.map((x) => ({ text: x.name, area: x.area ?? null })), ...(outdoor ? { outdoor: main.kind } : {}), ...(use ? { use } : {}) });
       } else if (room.area >= 0.5) {
         unnamed.push(room);
       }
     }
     d.rooms = { named: L.rooms.length, merged, unplaced, unnamed: unnamed.map((r) => r.index), total: found.rooms.length };
+    // the furniture and fittings the AI saw on the plan, in plan metres: where the house's furniture goes, and the
+    // kitchens, baths and stoves the export builds (notes/moblering-genererte-hus.md, kjokken-bad-genererte-hus.md)
+    L.furniture = (ai?.furniture ?? []).filter((f) => f.at && f.kind && f.kind !== 'other').map((f) => ({ kind: f.kind, at: roundPt(toPlan(f.at), 3), from: 'ai' }));
+    if (!L.furniture.length) delete L.furniture;
     const bigRooms = found.rooms.filter((r) => r.area >= o.roomQuestionMin).length;
     const roomsConf = !ai || !bigRooms || unplaced > L.rooms.length ? 'low' : unnamed.some((r) => r.area >= o.roomQuestionMin) || unplaced || merged ? 'medium' : 'high';
     step({ step: 'rooms', file: d.file, method: ai ? 'ai' : 'guess', confidence: roomsConf, detail: `${found.rooms.length} rom, ${L.rooms.length} med navn fra tegningen${merged ? `, ${merged} med flere etiketter` : ''}${unplaced ? `, ${unplaced} etiketter utenfor rommene` : ''}` });
@@ -1507,7 +1520,7 @@ export async function generate(inputs, opts = {}) {
     }
     // the roof's pitch and a mono-pitch roof's high side as the end views show them on their sides
     const rf = roofFromFacades(usable.map((d) => ({ reading: d.reading })), match);
-    doc.roof = { ...(doc.roof || {}), ...(rf.pitch ? { pitchFacades: rf.pitch } : {}), ...(rf.pitchGable ? { pitchGable: rf.pitchGable } : {}), ...(rf.pitchMono ? { pitchMono: rf.pitchMono } : {}), ...(rf.eaveTop != null ? { eaveTop: rf.eaveTop } : {}), ...(rf.rise ? { riseFacades: rf.rise } : {}), ...(rf.dormerType ? { dormerType: rf.dormerType } : {}), ...(rf.high ? { monoHigh: rf.high } : {}), ...(rf.storeyHeight ? { storeyFacades: rf.storeyHeight } : {}) };
+    doc.roof = { ...(doc.roof || {}), ...(rf.pitch ? { pitchFacades: rf.pitch } : {}), ...(rf.pitchGable ? { pitchGable: rf.pitchGable } : {}), ...(rf.pitchMono ? { pitchMono: rf.pitchMono } : {}), ...(rf.eaveTop != null ? { eaveTop: rf.eaveTop } : {}), ...(rf.rise ? { riseFacades: rf.rise } : {}), ...(rf.dormerType ? { dormerType: rf.dormerType } : {}), ...(rf.high ? { monoHigh: rf.high } : {}), ...(rf.storeyHeight ? { storeyFacades: rf.storeyHeight } : {}), ...(rf.hipDrop ? { hipDrop: rf.hipDrop } : {}) };
     // the storeys as tall as the facades draw them (F164: hus4's are 2,87 m floor to floor, its windows stood up into
     // the ceiling at 2,7): floor to floor 2,6–3,6 m (a storey with a 2,4 m ceiling and its slab; a loft's floor line is
     // no storey), the levels above moved up, a level with one over it a ceiling SLAB under the next floor (the slab
@@ -1523,6 +1536,9 @@ export async function generate(inputs, opts = {}) {
     }
     // the windows from the drawings, under the ceilings the storeys now have
     const n = applyFacadeMatch(doc, usable.map((d) => ({ reading: d.reading })), match, { ceiling: doc.settings.ceiling });
+    // a window down to the floor beside an outer door is its sidelight, in the door's frame (F141)
+    const joinedSl = joinSidelights(doc);
+    if (joinedSl) step({ step: 'facades', method: 'sidelights', confidence: 'medium', detail: `${joinedSl} vindu${joinedSl === 1 ? '' : 'er'} ned til gulvet inntil en ytterdør er sidefelt i dørkarmen` });
     usable.forEach((d, i) => {
       d.match = match.drawings[i];
       const f = doc.facades?.find((x) => x.file === d.file && x.part === d.part);
@@ -1533,7 +1549,7 @@ export async function generate(inputs, opts = {}) {
       const floor0 = Array.isArray(r.floorYs) ? r.floorYs[-(d.match.shift ?? 0)] ?? r.floorYs[0] : null;
       if (f && d.match.planSide && Array.isArray(r.span) && Number.isFinite(floor0)) {
         f.image = `fasade:${d.file}#${d.part ?? 0}`;
-        f.fit = { planSide: d.match.planSide, a: d.match.a, k: d.match.k, span0: r.span[0], ppm: r.pxPerM, floor0, width: d.img.width, height: d.img.height };
+        f.fit = { planSide: d.match.planSide, a: d.match.a, k: d.match.k, span0: r.span[0], ppm: r.pxPerM, floor0, ...(Number.isFinite(r.groundY) ? { ground: r.groundY } : {}), width: d.img.width, height: d.img.height };
         images[f.image] = { img: d.img, file: d.file, part: d.part, facade: true };
       }
     });
@@ -1655,6 +1671,19 @@ export async function generate(inputs, opts = {}) {
         const still = (r2) => !r2.errors.map(parseBlocked).filter(Boolean).map((b) => docDoorOf(doc, r2.ex, b)).some((h) => h?.op === op);
         const v = await attempt(variants, still);
         if (v) fixes.push(`${L.name}: dør ${v.label}`);
+      }
+      // a window whose top follows the roof but comes out over its wall (export.js slopedTops): a level top for it
+      const sloped = res.errors.filter((e) => /skrå overkant|den skrå toppen|toppen [0-9,]+ er over veggen/.test(e)).map((e) => /^openings\/(\S+)/.exec(e)?.[1]).filter(Boolean);
+      if (sloped.length) {
+        const ops = sloped.map((id) => res.ex?.report?.planOpenings?.get(id)).filter(Boolean).map(({ levelId, id }) => doc.levels.find((l) => l.id === levelId)?.openings.find((o) => o.id === id)).filter(Boolean);
+        const flat = {
+          label: 'vannrett overkant',
+          apply: () => {
+            for (const o of ops) o.flatTop = true;
+            return () => ops.forEach((o) => delete o.flatTop);
+          },
+        };
+        if (ops.length && (await attempt([flat]))) fixes.push(`${ops.length} vindu${ops.length === 1 ? '' : 'er'} med vannrett overkant (den skrå gikk over veggen)`);
       }
       // two passages on one room wall
       const gone = new Set();

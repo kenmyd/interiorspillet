@@ -279,9 +279,11 @@ section('Nivåer og unntak');
 section('Uten lighting: som før');
 {
   const today = B.belysningHus({ lighting: false });
+  // the planbygger's export without its `lighting` (it sends the key now, and a lamp only in an outdoor room)
   const ex = E.exportHouse(B.belysningDoc());
+  delete ex.house.lighting;
   const lt = build(ex.house).house;
-  check(`et planbyggerhus uten lighting får bare sine egne lys (${lt.builtInLights.length} taklamper, en per rom), ingen regellys`, lt.lightPlan === null && lt.builtInLights.length === ex.house.builtInLights.length && lt.builtInLights.every((l) => !l.generated));
+  check(`et planbyggerhus uten lighting får bare sine egne lys (${lt.builtInLights.length}), ingen regellys`, lt.lightPlan === null && lt.builtInLights.length === ex.house.builtInLights.length && lt.builtInLights.every((l) => !l.generated));
   check('testhuset uten lighting: ingen lys', build(today.house).house.builtInLights.length === 0);
 }
 

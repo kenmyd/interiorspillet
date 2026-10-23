@@ -197,6 +197,10 @@ Prøvd på alle planbyggerens testhus (hus1–hus9 med KI-opptakene og `furnishi
 
 ## Kjent og ikke gjort
 
+- **Rettet 23.10 (planbyggerøkta):** `roomInput` holdt «foten» av trappa fri ved `walkLine[0]`, men layout går fra
+  toppen til foten, og ved toppen oppe var ingenting fritt. hus3 uten KI fikk en sofa der trappa kommer opp, og figuren
+  kom ikke av trappa. Nå holdes 1,6 × 1,6 m fritt foran foten nede og foran toppen oppe, 0,5 m ut langs ganglinja.
+
 - **Trang stue/kjøkken:** i testhusets stue (24 m² med kjøkkenbenk, sofagruppe og passasje) får spisebordet tre stoler
   på én side. Bord og stoler prøves sammen, og plassen med flest stoler vinner.
 - **TV-benken** står mot veggen rett overfor sofaen. Er midten av den veggen en dør eller et gulvvindu, flyttes den til

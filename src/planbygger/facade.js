@@ -981,6 +981,14 @@ function roofFromOutline(p, { bandH, H, eaveH, dormer }) {
     if (bandH >= 0.12 * H) {
       // a long side with the roof surface seen; sloping ends from about the eave up → hipped
       if (ends <= eaveH / H + 0.15 && top < 0.85 && i0 / n > 0.08 && (n - 1 - i1) / n > 0.08) return { roof: 'hip', options: ['hip'], why: 'skrå ender fra takfoten', view: 'long' };
+      // the upper corners cut off: the ends stand well above the eave and slope evenly up to the ridge – the hips at the
+      // top of the gables seen from the long side (a half-hip, hus1: the ends at 0,79 of the height, the eave at 0,35,
+      // the ridge reached over the outer 15 %); a gable's long side stands to its full height at the ends
+      const slopeL = i0 > 2 ? fit(0, i0) : null;
+      const slopeR = n - 1 - i1 > 2 ? fit(i1, n - 1) : null;
+      if (slopeL && slopeR && Math.max(qa, qb) < 0.93 && ends > eaveH / H + 0.15 && Math.abs(qa - qb) <= 0.06 && i0 / n >= 0.05 && (n - 1 - i1) / n >= 0.05 && Math.max(slopeL.worst, slopeR.worst) <= 0.03) {
+        return { roof: 'half-hip', options: ['half-hip'], why: `halvvalm: endene på ${Math.round(((qa + qb) / 2) * 100)} % av høyden, skrått opp til mønet`, view: 'long', hipDrop: 1 - (qa + qb) / 2 };
+      }
       // the roof surface seen from the eave: a gable's long side or a mono-pitch's low side look the same
       if (dormer) return { roof: 'gable-dormer', options: ['gable-dormer', 'mono-pitch'], why: 'langside med takflate og ark', view: 'long' };
       return { roof: 'gable', options: ['gable', 'mono-pitch'], why: 'langside med takflate', view: 'long' };
@@ -1067,6 +1075,10 @@ function hasHandle(grey, u, floorY, pxPerM, darkT) {
  * sees only one view, and the eave side does not tell a gable from a mono-pitch for it either). → roof | null
  */
 export function houseRoof(results, { aiWeight = 1 } = {}) {
+  // the long sides all show the hips at the top of the gables: a half-hip (its gable ends look like a gable's, and a
+  // dormer seen from the end like a gable with a dormer: hus1)
+  const longs = results.filter((r) => r?.roofView === 'long' && r.roofFrom !== 'ai');
+  if (longs.length && longs.every((r) => r.roof === 'half-hip')) return 'half-hip';
   const votes = new Map();
   const add = (k, v) => votes.set(k, (votes.get(k) ?? 0) + v);
   for (const r of results) {
@@ -1784,6 +1796,8 @@ function readCore(img, options) {
     // the plan's depth – a gable end's slope is no measure where the end is half-hipped, hus1)
     if (fromOutline.view === 'long') result.roofView = 'long';
     if (fromOutline.high) result.roofHigh = fromOutline.high;
+    // a half-hip: how far down from the ridge the hips come at the ends (px; facadematch.js roofFromFacades)
+    if (fromOutline.hipDrop) result.roofHipDrop = Math.round(fromOutline.hipDrop * H * 10) / 10;
     notes.push(`Takfot fra ${eaveFrom}; takform fra omrisset: ${fromOutline.roof ?? 'ukjent'} (${fromOutline.why}).`);
   };
   if (!pxPerM) {
@@ -1879,6 +1893,8 @@ function readCore(img, options) {
     x0: u.x0, y0: u.y0, x1: u.x1, y1: u.y1, kind: u.kind, storey: u.storey,
     sill: round(Math.max(0, (floorOf(u.storey) - 1 - u.y1) / pxPerM), 2), height: round(boxH(u) / pxPerM, 2),
     ...(u.kind === 'window' ? { grid: paneGrid(u.parts, pxPerM, boxH(u)) } : {}),
+    // a door: a dark leaf (a solid door) or glass (its panes), a transom over it (the bar's row), a lower panel
+    ...(u.kind === 'door' ? { dark: !!u.dark, leaf: !!u.leaf, ...(u.dark ? {} : { grid: paneGrid(u.parts, pxPerM, boxH(u)) }), ...(u.transom ? { transom: u.transom } : {}), ...(u.panel ? { panel: true } : {}), ...(u.gate ? { gate: true } : {}) } : {}),
   }));
   joined.sort((a, b) => a.storey - b.storey || a.x0 - b.x0);
   // the storeys: a given count (the plans, the AI) wins, but never fewer than the openings stand in, so every

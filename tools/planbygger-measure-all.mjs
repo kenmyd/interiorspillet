@@ -382,7 +382,8 @@ export async function measureHouse(house, { ai = true, model = null, fixtures = 
     for (const op of L.openings) v[kindOf(op)]++;
     row.doors = { single: v.single, double: v.double, sliding: v.sliding };
     row.doorsTruth = { single: fl.doors?.single ?? null, double: fl.doors?.double ?? null, sliding: fl.doors?.sliding ?? null };
-    row.windows = v.window;
+    // a sidelight in a door's frame was a window symbol of its own on the plan (the fasit counts it: hus5's entrance)
+    row.windows = v.window + L.openings.reduce((s, op) => s + (op.sidelights?.length ?? 0), 0);
     row.windowsTruth = fl.windows;
     row.walls = L.walls.length;
     row.outline = outlineOf(L);

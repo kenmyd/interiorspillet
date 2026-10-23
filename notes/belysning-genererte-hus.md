@@ -233,6 +233,11 @@ Endre ikke `src/home/*`. Dette er det planbyggerøkta kobler inn:
 
 ## Kjent og ikke gjort
 
+- **Ildens gruppe (23.10, planbyggerøkta):** `planLighting` tar rommets første datagruppe som grunnlysgruppe
+  (`dataGroupOfRoom`). I et rom med et ildsted er det ildens gruppe (`fire-<id>`, laget i `layout.js`), så taklampene
+  havner på ildens bryter, og `lightGroupOf` varsler om en ukjent gruppe. Planbyggeren sender derfor en egen lysgruppe
+  for rom med ild. Forespørsel: hopp over `fire-`-grupper i `dataGroupOfRoom`.
+
 - LightManager er ikke prøvd med et generert hus i nettleseren, fordi spillet ikke laster kundehus ennå (det trenger
   eierens stue). De nye typene er lagt inn i `_buildHouseLamps` på samme måte som de gamle, men den første gangen et
   generert hus lastes i spillet, må det ses på.

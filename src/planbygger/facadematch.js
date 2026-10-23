@@ -225,7 +225,8 @@ export function matchFacades(doc, drawings, { levelsByNo = {} } = {}) {
  * right end lies towards the side's right hand. Views that disagree (two mono-pitch wings high towards the middle, hus5)
  * cancel out. → { pitch, pitchGable, pitchMono (degrees: all end views, the gable ends', the mono-pitch ends' – each
  * within sane limits), eaveTop (m: the eave over the top storey's floor, from the views with two storeys or more),
- * high: [dx, dy] (plan, north 0) | null, n }
+ * hipDrop (m: a half-hip's hips from the ridge down to the verge, on the long sides), high: [dx, dy] (plan, north 0) |
+ * null, n }
  */
 export function roofFromFacades(drawings, match) {
   const OUT = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
@@ -235,6 +236,7 @@ export function roofFromFacades(drawings, match) {
   const eaves = [];
   const rises = [];
   const storeyHs = [];
+  const hipDrops = [];
   const dormers = { gable: 0, shed: 0 };
   const sum = [0, 0];
   let n = 0;
@@ -255,6 +257,8 @@ export function roofFromFacades(drawings, match) {
     // floor to floor between the storeys the drawing shows (F164: hus4's are taller than the 2,7 m the levels got)
     if (Array.isArray(r.floorYs) && r.pxPerM > 0) for (let s = 0; s + 1 < Math.min(r.storeys ?? 0, r.floorYs.length); s++) storeyHs.push(((r.floorYs[s] - r.floorYs[s + 1]) * (m.k || 1)) / r.pxPerM);
     if (r.roofView === 'long' && Number.isFinite(r.eaveY) && Number.isFinite(r.ridgeY) && r.eaveY > r.ridgeY && r.pxPerM > 0) rises.push(((r.eaveY - r.ridgeY) * (m.k || 1)) / r.pxPerM);
+    // a half-hip seen from the long side: from the ridge down to the ends of the outline (the verge under the hips)
+    if (r.roofView === 'long' && r.roofHipDrop > 0 && r.pxPerM > 0) hipDrops.push((r.roofHipDrop * (m.k || 1)) / r.pxPerM);
     if (r.roof === 'mono-pitch' && r.roofHigh) {
       const d = OUT[m.planSide];
       const right = [d[1], -d[0]];
@@ -274,7 +278,8 @@ export function roofFromFacades(drawings, match) {
   const e = med(eaves);
   const ri = med(rises);
   const sh = med(storeyHs);
-  return { storeyHeight: sh != null && sh > 0 ? Math.round(sh * 100) / 100 : null, pitch: pitch != null ? Math.round(pitch) : null, pitchGable: g != null ? Math.round(g) : null, pitchMono: mo != null ? Math.round(mo) : null, eaveTop: e != null ? Math.round(e * 100) / 100 : null, rise: ri != null ? Math.round(ri * 100) / 100 : null, dormerType: dormers.shed > dormers.gable ? 'shed' : dormers.gable ? 'gable' : null, high, n };
+  const hd = med(hipDrops);
+  return { hipDrop: hd != null ? Math.round(hd * 100) / 100 : null, storeyHeight: sh != null && sh > 0 ? Math.round(sh * 100) / 100 : null, pitch: pitch != null ? Math.round(pitch) : null, pitchGable: g != null ? Math.round(g) : null, pitchMono: mo != null ? Math.round(mo) : null, eaveTop: e != null ? Math.round(e * 100) / 100 : null, rise: ri != null ? Math.round(ri * 100) / 100 : null, dormerType: dormers.shed > dormers.gable ? 'shed' : dormers.gable ? 'gable' : null, high, n };
 }
 
 /**
@@ -302,6 +307,33 @@ export function behindDeck(doc, L, o) {
     return hit;
   };
   return [1, -1].some((s) => decks.some((d) => inside([c[0] + n[0] * s * k, c[1] + n[1] * s * k], d.outline)));
+}
+
+/**
+ * A window down to the floor beside an outer door (within 0,35 m, at most 0,7 m wide) is a sidelight in the door's frame
+ * (notes/dortyper.md 4, F141): the window goes, the door's hole takes it in, and the door gets a sidelight on that side –
+ * what the facade check's «Slå sammen med døra» does. → the number joined
+ */
+export function joinSidelights(doc) {
+  let n = 0;
+  for (const L of doc.levels) {
+    for (const d of [...L.openings]) {
+      const w = L.walls.find((x) => x.id === d.wall);
+      if (d.type !== 'door' || d.variant || !w?.exterior) continue;
+      for (const o of L.openings.filter((x) => x.type === 'window' && x.wall === d.wall && (x.sill ?? 1) <= 0.1 && x.width <= 0.7)) {
+        const side = o.at < d.at ? 'start' : 'end';
+        if (Math.abs(d.at - o.at) - (d.width + o.width) / 2 >= 0.35 || (d.sidelights || []).some((sl) => sl.side === side)) continue;
+        const lo = Math.min(d.at - d.width / 2, o.at - o.width / 2);
+        const hi = Math.max(d.at + d.width / 2, o.at + o.width / 2);
+        (d.sidelights ||= []).push({ side, width: Math.round((o.width + Math.max(0, Math.abs(d.at - o.at) - (d.width + o.width) / 2)) * 1000) / 1000 });
+        d.at = Math.round(((lo + hi) / 2) * 10000) / 10000;
+        d.width = Math.round((hi - lo) * 1000) / 1000;
+        L.openings = L.openings.filter((x) => x !== o);
+        n++;
+      }
+    }
+  }
+  return n;
 }
 
 export function applyFacadeMatch(doc, drawings, match, { ceiling = 2.4 } = {}) {
@@ -341,6 +373,10 @@ export function applyFacadeMatch(doc, drawings, match, { ceiling = 2.4 } = {}) {
         n++;
       } else if (o.type === 'door' && height >= 1.9 && height <= 2.8) {
         o.facadeTop = Math.round(height * 100) / 100;
+        // the leaf as drawn (export.js, F141, F144): glass where the drawing shows panes, a lower panel or a transom in a
+        // door that is neither dark nor a plain leaf (a grey door of one field is a plain one); the transom's height
+        const glass = !w.dark && !w.leaf && ((w.grid?.sashes ?? 1) >= 2 || (w.grid?.panes?.[0] ?? 1) * (w.grid?.panes?.[1] ?? 1) > 1 || !!w.panel || Number.isFinite(w.transom));
+        o.facadeDoor = { glass, ...(glass && w.grid ? { panes: [...w.grid.panes] } : {}), ...(w.panel ? { panel: true } : {}), ...(Number.isFinite(w.transom) ? { transom: Math.round(((w.transom - w.y0) / ppm) * 100) / 100 } : {}) };
         if (Math.abs(height - (o.height ?? 2.1)) > 0.15) {
           o.height = Math.round(Math.min(height, top) * 100) / 100;
           o.fromFacade = true;

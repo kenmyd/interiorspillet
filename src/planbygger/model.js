@@ -395,6 +395,7 @@ export function rescaleLevel(level, newPxPerM) {
   for (const s of level.stairs || []) s.rect = s.rect.map(sc);
   for (const s of level.skylights || []) s.rect = s.rect.map(sc);
   for (const s of level.stairHints || []) s.rect = s.rect.map(sc);
+  for (const f of level.furniture || []) f.at = sc(f.at);
   for (const s of level.separators || []) {
     s.a = sc(s.a);
     s.b = sc(s.b);

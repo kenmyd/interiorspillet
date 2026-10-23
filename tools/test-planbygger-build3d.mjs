@@ -45,6 +45,8 @@ const E = await imp('src/planbygger/export.js');
 const { buildLayout } = await imp('src/home/layout.js');
 const { buildRooms } = await imp('src/home/rooms.js');
 const St = await imp('src/home/stairs.js');
+const Sp = await imp('src/planbygger/spawn.js');
+const { buildBuiltIns } = await imp('src/home/builtins.js');
 const { PLAYER } = await imp('src/config.js');
 
 /** The player's radius (src/player): the spawn point must be at least this far from the room's edges. */
@@ -308,16 +310,19 @@ for (const h of houses) {
     let layout = null;
     let built = null;
     let stairsBuilt = null;
+    let builtIns = null;
     let err = null;
     try {
       layout = buildLayout(E.mergeOnto(E.baseSpec(), ex.house), undefined, { devWarnings: false });
       built = buildRooms({ quality: { level: 'low' } }, layout, null);
       const fixed = { ...layout, house: { ...layout.house, stairs: layout.house.stairs.map(straightStairFix) } };
       if (layout.house.stairs.length) stairsBuilt = St.buildStairs({ quality: { level: 'low' } }, fixed);
+      // the kitchens', bathrooms' and laundries' fittings, as viewer.js builds them (their colliders count)
+      builtIns = buildBuiltIns({ quality: { level: 'low' } }, layout);
     } catch (e) {
       err = e;
     }
-    check(`${tag}: spillets byggere bygger huset (buildLayout, buildRooms${layout?.house.stairs.length ? ', buildStairs' : ''})`, !!built && !err, err ? String(err.stack ?? err).split('\n').slice(0, 3).join(' | ') : '');
+    check(`${tag}: spillets byggere bygger huset (buildLayout, buildRooms${layout?.house.stairs.length ? ', buildStairs' : ''}, buildBuiltIns)`, !!built && !err, err ? String(err.stack ?? err).split('\n').slice(0, 3).join(' | ') : '');
     if (!built) continue;
     check(`${tag}: dørene og vinduene i dataene er bygd (${built.doors.length}/${ex.report.counts.doors} dører, ${built.windows.length}/${ex.report.counts.windows} vinduer)`, built.doors.length === ex.report.counts.doors && built.windows.length === ex.report.counts.windows);
     const H = layout.house;
@@ -329,15 +334,15 @@ for (const h of houses) {
       row.levels.push(lrow);
       check(`${where}: minst ett rom (${rooms.length})`, rooms.length >= 1);
       if (!rooms.length) continue;
-      // the spawn point for this level as viewer.js spawnPoint takes it on the main level
-      const r = [...rooms].sort((a, b) => b.area - a.area)[0];
-      const light = H.builtInLights.find((l) => l.roomId === r.id && l.position);
-      const p = light ? [light.position.x, light.position.z] : [r.centroid.x, r.centroid.y];
+      // the spawn point for this level as viewer.js takes it on the main level (spawn.js: clear of the furniture too)
+      const sp = Sp.spawnPoint(layout, { levelId: lv.id, boxes: [...(built.colliders ?? []), ...(builtIns?.colliders ?? [])].filter((c) => c?.isBox3) });
+      const r = sp?.room ?? [...rooms].sort((a, b) => b.area - a.area)[0];
+      const p = sp ? [sp.position[0], sp.position[2]] : [r.centroid.x, r.centroid.y];
       const inRoom = r.contains(p[0], p[1]);
       const floorY = H.floorYAt(p[0], p[1], lv.floorY + 0.1);
-      const clear = edgeDistance(p[0], p[1], r.polygon);
+      const clear = Math.min(edgeDistance(p[0], p[1], r.polygon), sp?.clear ?? Infinity);
       Object.assign(lrow, { spawnRoom: r.id, clear: Math.round(clear * 100) / 100 });
-      check(`${where}: startpunkt i ${r.id} (${r.area.toFixed(1)} m²) på gulvet (${floorY == null ? 'intet gulv' : floorY.toFixed(2)} mot ${lv.floorY.toFixed(2)}), ${clear.toFixed(2)} m fra kantene`, inRoom && floorY != null && Math.abs(floorY - lv.floorY) < 0.02 && clear >= PLAYER_R);
+      check(`${where}: startpunkt i ${r.id} (${r.area.toFixed(1)} m²) på gulvet (${floorY == null ? 'intet gulv' : floorY.toFixed(2)} mot ${lv.floorY.toFixed(2)}), ${clear.toFixed(2)} m fra kantene og møblene`, inRoom && floorY != null && Math.abs(floorY - lv.floorY) < 0.02 && clear >= PLAYER_R);
       // colliders: the level's wall meshes (each room's solid group collides), and the doors' own
       const wallMeshes = built.walls.filter((w) => w.levelId === lv.id).reduce((n, w) => n + (w.meshes?.length ?? 0), 0);
       lrow.wallMeshes = wallMeshes;
@@ -349,7 +354,7 @@ for (const h of houses) {
       console.log(`  (målt) ${where}: ${reach} av ${rooms.length} rom nås fra ${r.id} gjennom dører, åpninger og trapp${reach < rooms.length ? `; ikke: ${rooms.filter((x) => !seen.has(x.id)).map((x) => x.id).join(', ')}` : ''}`);
     }
     // the stairs between neighbouring levels
-    const col = levels.length > 1 && H.stairs.length ? collisionWorld(layout, [built, stairsBuilt]) : null;
+    const col = levels.length > 1 && H.stairs.length ? collisionWorld(layout, [built, stairsBuilt, builtIns]) : null;
     for (let i = 1; i < levels.length; i++) {
       const lo = levels[i - 1];
       const hi = levels[i];
@@ -388,6 +393,7 @@ for (const h of houses) {
     }
     built.dispose?.();
     stairsBuilt?.dispose?.();
+    builtIns?.dispose?.();
   }
 }
 

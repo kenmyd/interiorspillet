@@ -1293,17 +1293,27 @@ export function roomInput(layout, roomId, { settings = null, hints = [] } = {}) 
     const x0 = Math.min(...xs), x1 = Math.max(...xs), z0 = Math.min(...zs), z1 = Math.max(...zs);
     return { ...box((x0 + x1) / 2, (z0 + z1) / 2, 0, x1 - x0, z1 - z0), what, solid };
   };
+  // the floor where a stair ends, beyond its end along the walk line (layout.js walkLine runs top → foot): the foot on
+  // the lower level, the arrival at the top on the upper one – free for the player 0,6 m out and its radius (a sofa
+  // against the wall the stair arrives along closed hus3's stair at its top)
+  const endBox = (wl, top) => {
+    const P = (p) => [p.x ?? p[0], p.z ?? p.y ?? p[1]];
+    const e = P(top ? wl[0] : wl[wl.length - 1]);
+    const q = P(top ? wl[1] : wl[wl.length - 2]);
+    const L = Math.hypot(e[0] - q[0], e[1] - q[1]) || 1;
+    const out = [(e[0] - q[0]) / L, (e[1] - q[1]) / L];
+    return { ...box(e[0] + out[0] * 0.5, e[1] + out[1] * 0.5, 0, 1.6, 1.6), what: 'stair' };
+  };
   for (const st of H.stairs || []) {
-    const lower = (H.level(st.fromLevel)?.floorY ?? 0) <= (H.level(st.toLevel)?.floorY ?? 0) ? st.fromLevel : st.toLevel;
+    const up = (H.level(st.fromLevel)?.floorY ?? 0) <= (H.level(st.toLevel)?.floorY ?? 0);
+    const lower = up ? st.fromLevel : st.toLevel;
+    const upper = up ? st.toLevel : st.fromLevel;
+    const wl = st.walkLine;
     if (lower === r.levelId && st.footprint?.length) {
       keepOut.push(grow(polyBox(st.footprint, 'stair'), 0.1));
-      // the floor at its foot
-      const wl = st.walkLine;
-      if (wl?.length) {
-        const f = wl[0];
-        keepOut.push({ ...box(f.x ?? f[0], f.z ?? f.y ?? f[1], 0, 1.4, 1.4), what: 'stair' });
-      }
+      if (wl?.length >= 2) keepOut.push(endBox(wl, false));
     }
+    if (upper === r.levelId && wl?.length >= 2) keepOut.push(endBox(wl, true));
   }
   for (const fo of H.floorOpenings || []) if (fo.levelId === r.levelId && fo.polygon?.length) keepOut.push(grow(polyBox(fo.polygon, 'stairwell', true), 0.15));
   for (const b of H.builtIns || []) {
