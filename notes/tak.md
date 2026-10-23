@@ -31,7 +31,9 @@ også kom mellom to bilder av samme kode). Lys- og akustikkdumpen er identisk.
 
 **Flere taktyper** (se «Flere taktyper» under): `dev/taktyper.html` (ti testhus i `src/dev/taktyper-hus.js`, port 5271
 med `taktyper-test` i `.claude/launch.json`). **Test:** `node tools/house-tests/taktyper.test.mjs` (sjekker også
-fingeravtrykket til eierens hus: likt, `layout 9fd8f7a355b0f410`, `rooms a7cf211c026c6559`). Nytt i modellen:
+fingeravtrykket til eierens hus: likt, `layout 9fd8f7a355b0f410`, `rooms a7cf211c026c6559`). De 12 visningene i
+`tools/refcheck.mjs` er like før (referanser laget fra 56caecf) og etter (to bilder med 1 piksel støy), og lys- og
+akustikkdumpen er identisk. Nytt i modellen:
 `roofFields(parts)` (feltet for hver etasje, uten taket over etasjen over), `activePlane` og `planesProfile`.
 
 ## Taket: `roofs[]`
