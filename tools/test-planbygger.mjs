@@ -563,12 +563,13 @@ section('12. Fasadetegningene på riktig side, og himlingene');
   check('mønelinja gjennom soverommet gjør det skrått mot en bred «PLAN HIMLING», men ikke mot «PLANTAK» over bare det', HR.ceilingSlope(L3, inB).slope && !HR.ceilingSlope(L4, inB).slope);
   check('uten tekst og med regelen «roof» (pulttak): alle rom skrå; brukerens valg vinner', HR.ceilingSlope(L2, inB).slope && !HR.ceilingSlope({ ...L2, ceilingMarks: [{ kind: 'flat', points: [[6, 3]], from: 'bruker' }] }, inB).slope);
 
-  // the ridge line the AI read on hus2, along the dash-dot line drawn: it gives x 0.50–0.93, the line runs from the WC
-  // core's west face (x 0.39) to the east wall
+  // the ridge line the AI read on hus2, along the line drawn: it gives x 0.50–0.93; the line (thin grey, dash-dot in the
+  // kitchen) runs at y 0.631 from the hall's west wall (x 0.30) to the east wall – the hall is under the sloped ceiling
+  // too (F139; the row of the WC core's wall, y 0.646, stopped it at the core)
   {
     const img = readPng(path.join(ROOT, 'plantegninger/hus2/1etg.png'));
     const r = HR.refineRidge(img, [0.5, 0.646, 0.93, 0.646], 55.7);
-    check('hus2: mønelinja forlenget langs strek-prikk-linja, fra WC-kjernen (x 0,39) til østveggen (x 0,93)', Math.abs(r[0] - 0.393) < 0.01 && Math.abs(r[2] - 0.932) < 0.01 && Math.abs(r[1] - 0.646) < 0.005, r.map((v) => v.toFixed(3)).join(', '));
+    check('hus2: mønelinja forlenget langs den tynne linja, fra gangens vestvegg (x 0,30) til østveggen (x 0,93)', Math.abs(r[0] - 0.304) < 0.01 && Math.abs(r[2] - 0.932) < 0.01 && Math.abs(r[1] - 0.631) < 0.005, r.map((v) => v.toFixed(3)).join(', '));
   }
   // the export: «SKRÅ HIMLING 24°» in the living room with its ridge along the middle → a gable roof, ridge along the
   // house, 24°, and the living room's ceiling up to the ridge; the bedroom flat
@@ -608,6 +609,13 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     l6.walls.push({ id: 'tick', a: [0.15, 3], b: [0.29, 3], t: 0.085 }, { id: 'ext', a: [7.5, 0.15], b: [7.5, 0.85], t: 0.085 }, { id: 'thick', a: [2, 0.15], b: [2, 0.8], t: 0.2 });
     const n = Gm.dropStubs(l6);
     check('korte, tynne veggbiter med en løs ende i et rom forsvinner; innerveggen og en tykk stubb blir', n === 2 && !l6.walls.some((w) => w.id === 'tick' || w.id === 'ext') && l6.walls.some((w) => w.id === 'i') && l6.walls.some((w) => w.id === 'thick'), l6.walls.map((w) => w.id).join(','));
+    // the end of a dimension line in a corner with an «opening» over most of it, called exterior (hus7, F165, F166): it
+    // goes with its opening; a stub with a narrow opening (a real one) stays
+    const { lv: l7 } = make();
+    l7.walls.push({ id: 'dim', a: [7.6, 0.15], b: [7.6, 0.86], t: 0.085, exterior: true }, { id: 'real', a: [6, 5.85], b: [6, 4.95], t: 0.085 });
+    l7.openings.push({ id: 'od', wall: 'dim', type: 'opening', at: 0.4, width: 0.53 }, { id: 'or', wall: 'real', type: 'opening', at: 0.3, width: 0.3 });
+    const n7 = Gm.dropStubs(l7);
+    check('og en slik stubb med en «åpning» over det meste av seg går, med åpningen; en med en smal åpning blir', n7 === 1 && !l7.walls.some((w) => w.id === 'dim') && !l7.openings.some((o) => o.id === 'od') && l7.walls.some((w) => w.id === 'real'), JSON.stringify({ n7, walls: l7.walls.map((w) => w.id) }));
   }
   // a beam drawn as a double dash-dot line across a room, read as a wall (K14): it goes; a grey filled wall stays
   {
@@ -758,6 +766,80 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     };
     const gap = Math.min(...hole.map((p) => Math.min(...ext.map((w) => off(p, w)))));
     check('trappehullet langs ytterveggen oppe: minst 5 cm fra veggflaten, og huset er uten feil', hole.length >= 4 && gap >= 0.05 && gap < 0.2 && v.errors.length === 0, `${gap.toFixed(3)} m; ${v.errors.slice(0, 2).join(' | ')}`);
+  }
+  // a carport against the house, open to the north (hus4, F147, F150): closed there by a wall that is one passage, so
+  // it is a room (its walls in the house, a concrete floor)
+  {
+    const Gm = await imp('src/planbygger/generate.js');
+    const R = await imp('src/planbygger/regions.js');
+    const { lv: lc } = make();
+    lc.walls.push({ id: 'cs', a: [8, 6], b: [11.5, 6], t: 0.2, exterior: true }, { id: 'ce', a: [11.5, 0.5], b: [11.5, 6], t: 0.2, exterior: true });
+    const how = Gm.closeAround(lc, [9.75, 3]);
+    const w = lc.walls.find((x) => x.from === 'closed');
+    const port = lc.openings.find((o) => o.wall === w?.id);
+    const found = R.levelRooms(lc);
+    const room = found.rooms.find((r) => r.index === found.at(9.75, 3));
+    check('carporten åpen mot nord: lukket der den korteste sideveggen slutter, med én åpning, og et rom på 16–20 m²', !!how && !!w && Math.abs(w.a[1] - 0.5) < 0.01 && port?.type === 'opening' && port.width > 3 && !!room && room.area > 16 && room.area < 20, JSON.stringify({ how, w, port, area: room?.area }));
+    const { lv: ld } = make();
+    check('og ingenting å lukke midt i et rom med vegger på alle sider', Gm.closeAround(ld, [2, 3]) === null);
+  }
+  // a terrace over the low part (no level over it) and a balcony along the upper level touching it (hus4, F153, F150):
+  // one deck, standing on the house, and no flat roof of its own under it
+  {
+    const { doc: d5 } = make();
+    const up = M.createLevel(d5, { id: 'oppe', name: '2. etasje', image: { name: 'syntetisk-2', width: 1, height: 1, pxPerM: 100 } });
+    up.floorY = 2.7;
+    up.walls = [
+      { id: 'un', a: [0, 0], b: [5, 0], t: 0.3, exterior: true },
+      { id: 'ue', a: [5, 6], b: [5, 0], t: 0.3, exterior: true },
+      { id: 'us', a: [5, 6], b: [0, 6], t: 0.3, exterior: true },
+      { id: 'uw', a: [0, 0], b: [0, 6], t: 0.3, exterior: true },
+    ];
+    up.openings = [{ id: 'ud', wall: 'ue', type: 'door', at: 3, width: 0.9 }];
+    up.rooms = [{ id: 'u', seed: [2.5, 3], name: 'Stue', kind: 'living' }];
+    d5.decks = [
+      { kind: 'terrace', level: 'oppe', railing: 'glass', outline: [[5.15, -0.15], [8.15, -0.15], [8.15, 6.15], [5.15, 6.15]], surface: 'tiles' },
+      { kind: 'balcony', level: 'oppe', railing: 'glass', outline: [[0, 6.15], [8.15, 6.15], [8.15, 7.3], [0, 7.3]], surface: 'boards' },
+    ];
+    const ex = E.exportHouse(d5);
+    const v = await validateGenerated(ex);
+    const dk = ex.house.decks ?? [];
+    const area = (o) => Math.abs(o.reduce((a, p, k) => a + p[0] * o[(k + 1) % o.length][1] - o[(k + 1) % o.length][0] * p[1], 0) / 2);
+    const low = (ex.house.roofs ?? []).filter((r) => r.levelId === 'hoved');
+    check('terrassen over den lave delen og balkongen langs etasjen: ett dekk, fliser, som står på huset, og ikke noe flatt tak under det', dk.length === 1 && Math.abs(area(dk[0].outline) - 28.3) < 0.8 && dk[0].surface === 'tiles' && dk[0].supports === 'none' && low.length === 0 && v.errors.length === 0, JSON.stringify({ decks: dk.map((x) => ({ area: area(x.outline).toFixed(1), surface: x.surface, supports: x.supports })), low: low.length, errors: v.errors.slice(0, 2) }));
+    d5.decks[1].outline = [[0, 6.15], [8.15, 6.15], [8.15, 9.3], [0, 9.3]];
+    const ex2 = E.exportHouse(d5);
+    check('men et dekk som går 3 m ut over bakken, står på stolper', (ex2.house.decks ?? []).length === 1 && ex2.house.decks[0].supports === undefined);
+  }
+  // a living room open to the entrance along a line with no wall (hus4's beam line, F151): one floor, the living room's
+  {
+    const { doc: d6, lv: l6 } = make();
+    l6.walls = l6.walls.filter((w) => w.id !== 'i');
+    l6.openings = l6.openings.filter((o) => o.wall !== 'i');
+    l6.separators = [{ id: 's-1', a: [5, 0], b: [5, 6] }];
+    l6.rooms = [{ id: 'a', seed: [2, 3], name: 'Stue', kind: 'living' }, { id: 'b', seed: [6.5, 3], name: 'Entré', kind: 'entrance' }];
+    const ex = E.exportHouse(d6);
+    const fl = ex.house.rooms.map((r) => r.floor.material);
+    check('stua og entréen uten vegg mellom: samme gulv (stuas eik)', fl.length === 2 && fl.every((m) => m === 'oak-plank'), fl.join(', '));
+  }
+  // the storeys' height from the facades' floor lines (hus4, F164): floor to floor, the median of the drawings
+  {
+    const drawings = [{ reading: { floorYs: [500, 213], storeys: 2, pxPerM: 100 } }, { reading: { floorYs: [800, 511], storeys: 2, pxPerM: 100 } }];
+    const match = { drawings: [{ planSide: 'S', k: 1 }, { planSide: 'N', k: 1 }] };
+    const rf = FM.roofFromFacades(drawings, match);
+    check('etasjehøyden fra fasadenes gulvlinjer: 2,87 m fra gulv til gulv (medianen)', rf.storeyHeight === 2.87, JSON.stringify(rf));
+  }
+  // two wall stubs standing into one room from its north wall (hus2's living room, F140): each stub is built with its
+  // thickness on one face, none paired with the other stub across the room
+  {
+    const { doc: d7, lv: l7 } = make();
+    l7.walls.push({ id: 'st1', a: [1.5, 0.15], b: [1.5, 2.6], t: 0.15 }, { id: 'st2', a: [3.5, 0.15], b: [3.5, 2.2], t: 0.15 });
+    const ex = E.exportHouse(d7);
+    const v = await validateGenerated(ex);
+    const len = (w) => Math.hypot(w.to[0] - w.from[0], w.to[1] - w.from[1]);
+    // each stub's two long faces: 2.05 and 2.45 m (from the north wall's inner face to the stub's end)
+    const built = [2.05, 2.45].map((L) => ex.house.walls.filter((w) => Math.abs(len(w) - L) < 0.03).map((w) => w.thickness ?? 0).sort((x, y) => y - x));
+    check('to stubber inn i samme rom: hver bygd med 15 cm på én side, og huset er uten feil', built.every((ts) => ts.length === 2 && Math.abs(ts[0] - 0.15) < 0.01 && ts[1] === 0) && v.errors.length === 0, JSON.stringify({ built, errors: v.errors.slice(0, 2) }));
   }
 }
 

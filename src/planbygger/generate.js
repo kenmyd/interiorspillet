@@ -101,6 +101,7 @@ import {
   facadeQuestion,
   wallsQuestion,
   mergeCeilingQuestions,
+  SLAB,
 } from './questions.js';
 
 export { applyAnswers };
@@ -950,6 +951,22 @@ export async function generate(inputs, opts = {}) {
         step({ step: 'rooms', file: d.file, method: 'niche', confidence: 'medium', detail: `«${alone[1][0].name}» skilt ut som eget rom langs strek-prikk-linja foran nisjen (${fmt(len, 2)} m)` });
       } else L.separators.pop();
     }
+    // a carport or a garage open on one side, against the house: a room once that side is closed (closeAround), when
+    // the room then fits its label
+    for (const it of items) {
+      if (it.kind !== 'carport' && it.kind !== 'garage') continue;
+      const p = it.p ?? toPlan(it.at);
+      if (roomAt(found, p) >= 0) continue;
+      const saved = JSON.stringify({ walls: L.walls, openings: L.openings });
+      const how = closeAround(L, p);
+      if (!how) continue;
+      const after = levelRooms(L);
+      const room = after.rooms.find((r) => r.index === roomAt(after, p));
+      if (room && room.area >= 6 && (!(it.area > 0) || logRatio(room.area, it.area) < 0.35)) {
+        found = after;
+        step({ step: 'rooms', file: d.file, method: 'open-side', confidence: 'medium', detail: `«${it.name}»: ${how}` });
+      } else Object.assign(L, JSON.parse(saved));
+    }
     d.found = found;
     const per = new Map();
     let unplaced = 0;
@@ -1333,9 +1350,10 @@ export async function generate(inputs, opts = {}) {
     upper.stairPlaced = st;
     step({ step: 'stairs', file: upper.file, level: U.id, method: kind, confidence: pair && turn ? 'high' : 'medium', detail: `${why}; ${type ?? 'ukjent type'}${typeFrom ? ` (fra ${typeFrom})` : ''} → ${kind === 'u' ? 'U-trapp' : kind === 'l' ? 'kvartsvingt trapp' : 'rett trapp'} ${fmt(w, 2)} × ${fmt(h, 2)} m${turn ? `, ned mot ${axis}${st.down > 0 ? '+' : '−'}` : ', ingen retning med gulv ved begge endene'}` });
     // the AI and the drawing disagree: worth a question, except when the drawing shows a turn (winders, two flights:
-    // they do not come from nothing) and the AI calls it straight (Haiku misreads turns as straight – K2, hus1)
+    // they do not come from nothing) and the AI calls it straight (Haiku misreads turns as straight – K2, hus1) or a
+    // spiral (hus4's U with winders, F142: the house format has no spiral stairs, the drawing's turn is built either way)
     const turnSeen = classical === 'quarter-turn' || classical === 'half-turn';
-    const disagree = aiType && classical && aiType !== classical && aiType !== 'unknown' && !(turnSeen && aiType === 'straight');
+    const disagree = aiType && classical && aiType !== classical && aiType !== 'unknown' && !(turnSeen && (aiType === 'straight' || aiType === 'spiral'));
     const unclear = !pair || !type || !turn || disagree;
     if (unclear) questions.push(stairQuestion({ level: U.id, levelName: U.name, file: upper.file, crop: { file: upper.file, level: U.id, bbox: cropBox(rect, upper.ppm, upper.img) }, value: kind, why: `${why[0].toUpperCase()}${why.slice(1)}. ${type ? `Tegningen ser ut som ${TYPE_NO[type] ?? 'en trapp'}${disagree ? `, men KI-en mener ${TYPE_NO[aiType] ?? aiType}` : ''}.` : 'Typen er usikker.'}${turn ? '' : ' Vi fant ingen vei for trappa med gulv å gå ut på både oppe og nede; sjekk den i «Finjuster».'}`, stairId: st.id, rect: st.rect, axis }));
   }
@@ -1468,7 +1486,20 @@ export async function generate(inputs, opts = {}) {
     const n = applyFacadeMatch(doc, usable.map((d) => ({ reading: d.reading })), match, { ceiling: doc.settings.ceiling });
     // the roof's pitch and a mono-pitch roof's high side as the end views show them on their sides
     const rf = roofFromFacades(usable.map((d) => ({ reading: d.reading })), match);
-    doc.roof = { ...(doc.roof || {}), ...(rf.pitch ? { pitchFacades: rf.pitch } : {}), ...(rf.pitchGable ? { pitchGable: rf.pitchGable } : {}), ...(rf.pitchMono ? { pitchMono: rf.pitchMono } : {}), ...(rf.eaveTop != null ? { eaveTop: rf.eaveTop } : {}), ...(rf.rise ? { riseFacades: rf.rise } : {}), ...(rf.dormerType ? { dormerType: rf.dormerType } : {}), ...(rf.high ? { monoHigh: rf.high } : {}) };
+    doc.roof = { ...(doc.roof || {}), ...(rf.pitch ? { pitchFacades: rf.pitch } : {}), ...(rf.pitchGable ? { pitchGable: rf.pitchGable } : {}), ...(rf.pitchMono ? { pitchMono: rf.pitchMono } : {}), ...(rf.eaveTop != null ? { eaveTop: rf.eaveTop } : {}), ...(rf.rise ? { riseFacades: rf.rise } : {}), ...(rf.dormerType ? { dormerType: rf.dormerType } : {}), ...(rf.high ? { monoHigh: rf.high } : {}), ...(rf.storeyHeight ? { storeyFacades: rf.storeyHeight } : {}) };
+    // the storeys as tall as the facades draw them (F164: hus4's are 2,87 m floor to floor, its windows stood up into
+    // the ceiling at 2,7): floor to floor 2,6–3,6 m (a storey with a 2,4 m ceiling and its slab; a loft's floor line is
+    // no storey), the levels above moved up, a level with one over it a ceiling SLAB under the next floor (the slab
+    // questions.js restacks the levels with)
+    const sh = rf.storeyHeight;
+    if (sh >= 2.6 && sh <= 3.6 && Math.abs(sh - o.floorHeight) >= 0.1 && doc.levels.length > 1) {
+      const no = new Map(byNo.map((d) => [d.level, d.levelNo]));
+      for (const L of doc.levels) if (no.has(L)) L.floorY = round(no.get(L) * sh, 3);
+      for (const L of doc.levels) if (doc.levels.some((U) => U.floorY > L.floorY + 0.5)) L.ceiling = round(sh - SLAB, 2);
+      doc.generated.floorHeight = sh;
+      report.notes.push(`Etasjehøyden er ${fmt(sh, 2)} m fra gulv til gulv, som fasadene viser (himlingen ${fmt(sh - SLAB, 2)} m i etasjene under en annen).`);
+      step({ step: 'facades', method: 'storeys', confidence: 'medium', detail: `fra gulv til gulv ${fmt(sh, 2)} m (medianen av fasadene), himling ${fmt(sh - SLAB, 2)} m` });
+    }
     usable.forEach((d, i) => {
       d.match = match.drawings[i];
       const f = doc.facades?.find((x) => x.file === d.file && x.part === d.part);
@@ -2070,14 +2101,18 @@ function dropLoose(L, minArea) {
 /**
  * Short thin walls with a free end and the same room on both sides – the ticks and the extension lines of a dimension
  * drawn inside a room (K15, F96, F97: hus7's garage got two «posts» in its walls, a 0,14 m tick and a 0,7 m extension
- * line, both 8,5 cm): under 1 m long, at most 0,10 m thick, no opening, not exterior. → how many went
+ * line, both 8,5 cm): under 1 m long, at most 0,10 m thick, no opening – or openings over most of it (F165, F166: the
+ * end of the inner dimension line in hus7's corner, 0,71 m with a 0,53 m «opening» and called exterior; with the same
+ * room on both sides it is inside, whatever the flag says). Its openings go with it. → how many went
  */
 export function dropStubs(L) {
   const found = levelRooms(L);
   const gone = new Set();
   for (const w of L.walls) {
     const len = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]);
-    if (w.exterior || !(w.t <= 0.1) || !(len > 0) || len >= 1 || (L.openings || []).some((o) => o.wall === w.id)) continue;
+    if (!(w.t <= 0.1) || !(len > 0) || len >= 1) continue;
+    const open = (L.openings || []).filter((o) => o.wall === w.id).reduce((sum, o) => sum + (o.width ?? 0), 0);
+    if (open > 0 && open < 0.6 * len) continue;
     const free = [w.a, w.b].some((p) => !L.walls.some((x) => x !== w && !gone.has(x.id) && projectToSegment(p, x.a, x.b).d <= x.t / 2 + 0.05));
     if (!free) continue;
     const n = [-(w.b[1] - w.a[1]) / len, (w.b[0] - w.a[0]) / len];
@@ -2087,7 +2122,10 @@ export function dropStubs(L) {
     const s2 = found.at(c[0] - n[0] * k, c[1] - n[1] * k);
     if (s1 >= 0 && s1 === s2) gone.add(w.id);
   }
-  if (gone.size) L.walls = L.walls.filter((w) => !gone.has(w.id));
+  if (gone.size) {
+    L.walls = L.walls.filter((w) => !gone.has(w.id));
+    L.openings = (L.openings || []).filter((o) => !gone.has(o.wall));
+  }
   return gone.size;
 }
 
@@ -2432,6 +2470,58 @@ function closeOpenSide(L) {
   }
   const where = { top: 'øverst', bottom: 'nederst', left: 'til venstre', right: 'til høyre' }[s.name];
   return `den åpne siden ${where} er lukket med en vegg med ${gaps.length} åpning${gaps.length === 1 ? '' : 'er'} der portene står`;
+}
+
+/**
+ * A carport or a garage against the house, open on one side (hus4's carport under the terrace, F147, F150: its label
+ * is in no room, so its walls never came into the house): from the label point p (plan metres), the nearest long wall
+ * across each of the four directions within `reach`; with exactly one direction free, the open side is closed between
+ * the two walls beside it, where the nearer of them ends, by a wall that is one passage (from 'closed', as in
+ * closeOpenSide). → Norwegian text about it, or null when the walls are not like that
+ */
+export function closeAround(L, p, reach = 12) {
+  const axisOf = (w) => (Math.abs(w.a[1] - w.b[1]) < 0.02 ? 'h' : Math.abs(w.a[0] - w.b[0]) < 0.02 ? 'v' : null);
+  const walls = L.walls.filter((w) => axisOf(w) && Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) >= 1);
+  // k: the coordinate a ray moves along, s: its sign
+  const dirs = [
+    { name: 'left', k: 0, s: -1 },
+    { name: 'right', k: 0, s: 1 },
+    { name: 'top', k: 1, s: -1 },
+    { name: 'bottom', k: 1, s: 1 },
+  ];
+  for (const D of dirs) {
+    const o = 1 - D.k;
+    let best = null;
+    for (const w of walls) {
+      if (axisOf(w) !== (D.k === 0 ? 'v' : 'h')) continue;
+      if (p[o] < Math.min(w.a[o], w.b[o]) - 0.05 || p[o] > Math.max(w.a[o], w.b[o]) + 0.05) continue;
+      const d = (w.a[D.k] - p[D.k]) * D.s;
+      if (d > 0 && d <= reach && (!best || d < best.d)) best = { w, d };
+    }
+    D.hit = best;
+  }
+  const free = dirs.filter((D) => !D.hit);
+  if (free.length !== 1) return null;
+  const open = free[0];
+  const beside = dirs.filter((D) => D.k !== open.k).map((D) => D.hit.w);
+  // each side wall's end toward the open side; the new wall where the nearer one ends (the other runs on past it)
+  const ends = beside.map((w) => (open.s > 0 ? Math.max(w.a[open.k], w.b[open.k]) : Math.min(w.a[open.k], w.b[open.k])));
+  const line = open.s > 0 ? Math.min(...ends) : Math.max(...ends);
+  if ((line - p[open.k]) * open.s < 0.3) return null;
+  const at = beside.map((w) => w.a[1 - open.k]).sort((x, y) => x - y);
+  const len = at[1] - at[0];
+  const t = Math.max(0.1, Math.min(...beside.map((w) => w.t ?? 0.1)));
+  const [t0, t1] = (beside[0].a[1 - open.k] <= beside[1].a[1 - open.k] ? beside : [...beside].reverse()).map((w) => w.t ?? 0.1);
+  const width = len - (t0 + t1) / 2 - 0.02;
+  if (width < 0.6) return null;
+  const P = (u) => (open.k === 1 ? [round(u, 4), round(line, 4)] : [round(line, 4), round(u, 4)]);
+  const wall = addWall(L, P(at[0]), P(at[1]), t);
+  wall.exterior = true;
+  wall.auto = true;
+  wall.from = 'closed';
+  (L.openings ||= []).push({ id: `o-port-${L.openings.length + 1}`, wall: wall.id, type: 'opening', at: round((t0 / 2 + len - t1 / 2) / 2, 4), width: round(width, 4), auto: true, from: 'closed' });
+  const where = { top: 'øverst', bottom: 'nederst', left: 'til venstre', right: 'til høyre' }[open.name];
+  return `den åpne siden ${where} er lukket med en vegg som er én åpning (${fmt(width, 1)} m)`;
 }
 
 /**

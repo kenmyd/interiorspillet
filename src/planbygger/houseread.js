@@ -110,7 +110,9 @@ export function refineRidge(img, seg, ppm, { maxGap = 0.9 } = {}) {
     const k = dashes(c, a0, a1);
     if (k > best.n) best = { c, n: k };
   }
-  if (best.n < 5) return seg;
+  // a ridge drawn as a thin grey line: its row has far more thin ink than the row with the dark runs (furniture)
+  const thin = thinRows(img, ppm, { horiz, a0, a1, c0, band });
+  if (best.n < 5 || thin.cover(best.c) < 0.8 * thin.best.n) return thinRidge(img, seg, ppm, thin, { horiz, a0, a1, maxGap });
   const c = best.c;
   const on = (a) => dark(a, c) || dark(a, c - 1) || dark(a, c + 1);
   const gapPx = maxGap * ppm;
@@ -135,6 +137,55 @@ export function refineRidge(img, seg, ppm, { maxGap = 0.9 } = {}) {
   const lo = follow(a0, -1);
   const hi = follow(a1, 1);
   if (hi - lo < (a1 - a0) * 0.9) return seg;
+  return horiz ? [lo / W, c / H, hi / W, c / H] : [c / W, lo / H, c / W, hi / H];
+}
+
+/**
+ * refineRidge for a ridge drawn as a thin grey line, unbroken at the plan's resolution (hus2: «SKRÅ HIMLING 24°» on a
+ * line of grey 150–200, F139 – the hall it runs through had a flat ceiling): thinRows scores each row near the AI's by
+ * its thin ink inside the AI's segment (ink with paper 5 cm above or below it: no wall, no hatch); thinRidge follows
+ * the best both ways over gaps up to `maxGap` m and across the walls it crosses, to the last pixel of the line itself
+ * (the face of the wall where it stops). → the segment, normalised (the AI's when no such line covers a third of it)
+ */
+function thinRows(img, ppm, { horiz, a0, a1, c0, band }) {
+  const { width: W, height: H, data } = img;
+  const n = horiz ? W : H;
+  const m = horiz ? H : W;
+  const ink = (a, c) => {
+    if (a < 0 || a >= n || c < 0 || c >= m) return false;
+    const i = (horiz ? c * W + a : a * W + c) * 4;
+    return 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2] < 205;
+  };
+  const k = Math.max(3, Math.round(0.05 * ppm));
+  const line = (a, c) => (ink(a, c) || ink(a, c - 1) || ink(a, c + 1)) && !(ink(a, c - k) && ink(a, c + k));
+  const cover = (c) => {
+    let cnt = 0;
+    for (let a = a0; a <= a1; a++) if (line(a, c)) cnt++;
+    return cnt;
+  };
+  let best = { c: c0, n: 0 };
+  for (let c = c0 - band; c <= c0 + band; c++) {
+    const cnt = cover(c);
+    if (cnt > best.n) best = { c, n: cnt };
+  }
+  return { best, cover, line, n };
+}
+
+function thinRidge(img, seg, ppm, { best, line, n }, { horiz, a0, a1, maxGap }) {
+  const { width: W, height: H } = img;
+  if (best.n < 0.35 * (a1 - a0)) return seg;
+  const c = best.c;
+  const gapPx = maxGap * ppm;
+  const follow = (start, step) => {
+    let last = start;
+    for (let a = start; a >= 0 && a < n; a += step) {
+      if (line(a, c)) last = a;
+      else if (Math.abs(a - last) > gapPx) break;
+    }
+    return last;
+  };
+  const lo = follow(a0, -1);
+  const hi = follow(a1, 1);
   return horiz ? [lo / W, c / H, hi / W, c / H] : [c / W, lo / H, c / W, hi / H];
 }
 

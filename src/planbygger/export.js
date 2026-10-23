@@ -33,7 +33,7 @@
  * level's rooms start at x = 0, z = 0.
  */
 import idsRegistry from '../../research/house/00-ids.json';
-import { levelRooms as roomsOfLevel, wallBand } from './regions.js';
+import { levelRooms as roomsOfLevel, wallBand, footprint } from './regions.js';
 import { sub, add, mul, dot, cross, dist, unit, perp, signedArea, centroid, slug, round, clipPolygon, pointInPolygon } from './geom.js';
 import { DEFAULT_SETTINGS, wallLength, wallDir, stairGeometry } from './model.js';
 import { ceilingSlope } from './houseread.js';
@@ -427,10 +427,12 @@ export function exportHouse(doc, opts = {}) {
     const piecesOf = R2.map((_, ri) => pieces.filter((p) => p.ri === ri));
     const partnerOf = (p) => {
       if (!p.behind) return null;
-      // the other room's piece on the same stretch (the same cuts were made on both sides)
+      // the other room's piece on the same stretch (the same cuts were made on both sides), on the edge found behind it
+      // (F140: a stub standing into hus2's living room paired with the room's walls across the room, both faces were
+      // void and the stub's end stood alone with a hole down to the ground)
       let best = null;
       for (const q of piecesOf[p.behind.ri]) {
-        if (!q.behind || q.behind.ri !== p.ri || dot(q.e.d, p.e.d) > -0.999) continue;
+        if (q.e !== p.behind.f || !q.behind || q.behind.ri !== p.ri || dot(q.e.d, p.e.d) > -0.999) continue;
         const qa = dot(sub(q.from, p.from), p.e.d);
         const qb = dot(sub(q.to, p.from), p.e.d);
         const ov = overlap(0, dist(p.from, p.to), Math.min(qa, qb), Math.max(qa, qb));
@@ -678,6 +680,7 @@ export function exportHouse(doc, opts = {}) {
     //      owner side is a wall of no thickness (rooms.js builds nothing for it) with one passage over its whole length
     //      and height – the portal between the two rooms (visibility.js); the other side is its backOf face
     //      (notes/planbygger.md, «Forespørsler» 12)
+    const openPairs = [];
     for (const g of groups) {
       if (g.e.separator == null || g.role !== 'slab') continue;
       const wall = wallObjs.get(g);
@@ -685,6 +688,7 @@ export function exportHouse(doc, opts = {}) {
       const other = g.pieces.find((p) => p.partner && !p.absorbed)?.partner;
       const L = Math.floor(dist(wall.from, wall.to) * 1000) / 1000;
       if (!other || L < 0.02) continue;
+      openPairs.push([g.ri, other.ri]);
       wall.openings = [{ id: `open-${owner}-${++counts.openings}`, type: 'opening', offset: 0, width: L, height: wall.height, sill: 0, connects: [owner, R2[other.ri].id], estimated: ['*'], source: `planbyggeren: ${/^cut/.test(g.e.separator) ? 'åpen plan rundt et rom midt i rommet (delt med en tenkt linje)' : 'skillelinje mellom to soner'}, ingen vegg` }];
       counts.openBoundaries++;
     }
@@ -940,9 +944,29 @@ export function exportHouse(doc, opts = {}) {
       counts.skylights++;
     }
 
+    // ---- one floor across an open boundary (F151: hus4's TV room open to the hall along the beam line had oak, the
+    //      hall vinyl, though the plan draws one parquet): the rooms joined without a wall, wet rooms aside, have the
+    //      floor of the one that is a living room, a bedroom or a hall before an entrance or a store (the largest of them)
+    const floorOf = new Map();
+    {
+      const WET = new Set(['bathroom', 'laundry']);
+      const RANK = { living: 0, bedroom: 0, hall: 0, entrance: 1, storage: 2 };
+      const root = R2.map((_, i) => i);
+      const find = (i) => (root[i] === i ? i : (root[i] = find(root[i])));
+      for (const [a, b] of openPairs) if (!WET.has(R2[a].kind) && !WET.has(R2[b].kind)) root[find(a)] = find(b);
+      const groupsOf = new Map();
+      R2.forEach((r, i) => groupsOf.set(find(i), [...(groupsOf.get(find(i)) ?? []), r]));
+      for (const g of groupsOf.values()) {
+        if (g.length < 2) continue;
+        const area = (r) => Math.abs(signedArea(r.polygon));
+        const lead = [...g].sort((x, y) => (RANK[x.kind] ?? 0) - (RANK[y.kind] ?? 0) || area(y) - area(x))[0];
+        for (const r of g) floorOf.set(r, LOOK.floor[lead.kind] ?? LOOK.floor.living);
+      }
+    }
+
     // ---- rooms, ceilings, lights
     for (const r of R2) {
-      const [mat, color] = LOOK.floor[r.kind] ?? LOOK.floor.living;
+      const [mat, color] = floorOf.get(r) ?? LOOK.floor[r.kind] ?? LOOK.floor.living;
       const inside = frame.toGame(r.region.inside, levelId);
       house.rooms.push({
         id: r.id,
@@ -974,17 +998,16 @@ export function exportHouse(doc, opts = {}) {
     }
   });
   exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, warnings, counts, RP, R });
-  exportRoofs({ doc, house, warnings, RP, R, frame });
+  // the terraces and balconies with an outline from the plan (generate.js, deckfind.js), notes/kledning.md «decks»;
+  // before the roofs: a lower part under a deck has the deck for its roof
+  const decks = idsRegistry.schema?.topLevel?.includes('decks') ? decksOf(doc, frame, RP, house) : [];
+  exportRoofs({ doc, house, warnings, RP, R, frame, decks });
   // the cladding the AI read on the facades (houseread.js doc.cladding), once the engine knows the key (notes/kledning.md)
   if (idsRegistry.schema?.topLevel?.includes('cladding')) {
     const cladding = claddingOf(doc);
     if (cladding) house.cladding = cladding;
   }
-  // the terraces and balconies with an outline from the plan (generate.js, deckfind.js), notes/kledning.md «decks»
-  if (idsRegistry.schema?.topLevel?.includes('decks')) {
-    const decks = decksOf(doc, frame, RP);
-    if (decks.length) house.decks = decks;
-  }
+  if (decks.length) house.decks = decks;
   if (floorOpenings.length) house.floorOpenings = floorOpenings;
   if (stairs.length) house.stairs = stairs;
 
@@ -1278,7 +1301,7 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
  * rooms) gets sloped ceilings (type 'roof', flat at the room's height as a collar beam) and knee walls of 1.2 m; any
  * other top level keeps its flat ceilings with the roof resting on its walls.
  */
-function exportRoofs({ doc, house, warnings, RP, R, frame }) {
+function exportRoofs({ doc, house, warnings, RP, R, frame, decks = [] }) {
   const levels = [...house.levels].sort((a, b) => b.floorY - a.floorY);
   const top = levels[0];
   if (!top) return;
@@ -1636,7 +1659,8 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
   const covered = parts.reduce((s, p) => s + p.area, 0) / total;
   if (covered < 0.9) warnings.push(`${top.name}: taket dekker bare ${Math.round(covered * 100)} % av etasjen (huset har en form med mer enn tre fløyer)`);
   // the parts of a lower level with no level over them (a garage, a storage room, a carport beside a two-storey house,
-  // hus4): a flat roof of their own, over the largest rectangles of what the levels above leave open
+  // hus4): a flat roof of their own, over the largest rectangles of what the levels above leave open – a deck of a level
+  // above is over it too (hus4's terrace over the carport and the storage room, F153: their roof stood up through it)
   for (const L of levels.slice(1)) {
     const rs = house.rooms.filter((r) => r.levelId === L.id);
     const lids = new Set(rs.map((r) => r.id));
@@ -1649,7 +1673,8 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
       return [o(w.from, 0), o(w.to, 0), o(w.to, w.thickness), o(w.from, w.thickness)];
     };
     const mine = [...rs.map((r) => r.polygon.map(toL)), ...own.map(slab)];
-    const over = [...house.rooms.filter((r) => aboveIds.has(r.id)).map((r) => r.polygon.map(toL)), ...above.map(slab)];
+    const aboveLevels = new Set(levels.filter((l) => l.floorY > L.floorY + 0.5).map((l) => l.id));
+    const over = [...house.rooms.filter((r) => aboveIds.has(r.id)).map((r) => r.polygon.map(toL)), ...above.map(slab), ...decks.filter((dk) => aboveLevels.has(dk.levelId)).map((dk) => dk.outline.map(toL))];
     if (!mine.length || !over.length) continue;
     const q = mine.flat();
     const a0 = Math.min(...q.map((p) => p[0]));
@@ -1761,16 +1786,71 @@ export function claddingOf(doc) {
  * The house format's decks from the document's (doc.decks with an outline, plan metres): on the level the plan is of,
  * 2 cm under its floor (the door threshold), boards or tiles as drawn, the railing the AI read, and one stair down from
  * the edge farthest from the house when the AI saw steps. The engine puts railings on the free edges with a fall.
+ * Decks on one level that touch are one deck (F153: hus4's terrace and the balcony along the front had a railing
+ * across between them, and three surfaces), with the surface, the kind and the railing of the largest. With `house`
+ * (its rooms and walls), a deck on an upper level stands on the house, no posts, when every part of it is over a room
+ * of the level below or at most 1,6 m from a wall (a balcony out from the wall; hus4's terrace over the carport and the
+ * storage room, F150) – the engine's default for its kind otherwise.
  */
-export function decksOf(doc, frame, RP = (p) => p) {
-  const out = [];
+export function decksOf(doc, frame, RP = (p) => p, house = null) {
+  const pieces = [];
   for (const d of doc.decks ?? []) {
     const L = doc.levels.find((l) => l.id === d.level);
     if (!L || !Array.isArray(d.outline) || d.outline.length < 3) continue;
-    const outline = d.outline.map((p) => RP(frame.toGame(p, L.id)));
+    const outline = d.outline.map((p) => frame.toGame(p, L.id));
+    pieces.push({ d, L, outline, area: Math.abs(signedArea(outline)) });
+  }
+  // touching decks on a level → one (a seam under 0,1 m closes: regions.js footprint); one inside another goes in it
+  const groups = pieces.map((p) => ({ ...p, parts: [p] }));
+  for (let merged = true; merged; ) {
+    merged = false;
+    for (let i = 0; i < groups.length && !merged; i++)
+      for (let j = i + 1; j < groups.length && !merged; j++) {
+        const A = groups[i];
+        const B = groups[j];
+        if (A.L !== B.L) continue;
+        const [big, small] = A.area >= B.area ? [A, B] : [B, A];
+        const inside = small.outline.every((q) => pointInPolygon(q, big.outline) || big.outline.some((r) => dist(r, q) < 0.05));
+        const union = inside ? big.outline : footprint([A.outline, B.outline]);
+        const area = Math.abs(signedArea(union));
+        // joined: the union is more than the larger one alone, and no more than both (a deck around the house would
+        // fill the house)
+        if (!inside && !(area > big.area + 0.2 && area <= A.area + B.area + 0.3)) continue;
+        groups.splice(j, 1);
+        groups[i] = { ...big, outline: union, area, parts: [...A.parts, ...B.parts] };
+        merged = true;
+      }
+  }
+  // what a deck can stand on: the rooms of the levels below it, and the walls of its own level and the one below
+  const roomsBelow = (L) => (house?.rooms ?? []).filter((r) => (house.levels.find((l) => l.id === r.levelId)?.floorY ?? 0) < L.floorY - 0.5);
+  const carried = (g) => {
+    if (!house || !(g.L.floorY > 0.5)) return false;
+    const rooms = roomsBelow(g.L);
+    const near = house.walls.filter((w) => w.thickness > 0 && rooms.concat(house.rooms.filter((r) => r.levelId === g.L.id)).some((r) => r.id === w.roomId));
+    const xs = g.outline.map((p) => p[0]);
+    const zs = g.outline.map((p) => p[1]);
+    const step = 0.25;
+    for (let x = Math.min(...xs) + step / 2; x < Math.max(...xs); x += step)
+      for (let z = Math.min(...zs) + step / 2; z < Math.max(...zs); z += step) {
+        const q = [x, z];
+        if (!pointInPolygon(q, g.outline) || rooms.some((r) => pointInPolygon(q, r.polygon))) continue;
+        const d = Math.min(Infinity, ...near.map((w) => {
+          const u = sub(w.to, w.from);
+          const t = Math.max(0, Math.min(1, dot(sub(q, w.from), u) / Math.max(1e-9, dot(u, u))));
+          return dist(q, add(w.from, mul(u, t)));
+        }));
+        if (d > 1.6) return false;
+      }
+    return true;
+  };
+  const out = [];
+  for (const g of groups) {
+    const { d, L } = g;
+    const outline = g.outline.map(RP);
     const deck = { id: `dekk-${out.length + 1}`, kind: d.kind ?? 'terrace', levelId: L.id, y: -0.02, outline, surface: d.surface === 'tiles' ? 'tiles' : 'boards' };
+    if (carried(g)) deck.supports = 'none';
     if (d.railing && d.railing !== 'unknown') deck.railing = { type: d.railing };
-    if (d.stairs) {
+    if (g.parts.some((p) => p.d.stairs)) {
       // the edge farthest from the level's walls
       const mids = outline.map((p, i) => [(p[0] + outline[(i + 1) % outline.length][0]) / 2, (p[1] + outline[(i + 1) % outline.length][1]) / 2]);
       const wallPts = L.walls.flatMap((w) => [frame.toGame(w.a, L.id), frame.toGame(w.b, L.id)]);
@@ -1778,7 +1858,7 @@ export function decksOf(doc, frame, RP = (p) => p) {
       const edge = mids.reduce((b, m, i) => (far(m) > far(mids[b]) ? i : b), 0);
       deck.stairs = [{ edge }];
     }
-    deck.source = `planbyggeren: ${d.kind === 'balcony' ? 'balkongen' : 'terrassen'} KI-en så, omrisset fra planen`;
+    deck.source = `planbyggeren: ${d.kind === 'balcony' ? 'balkongen' : 'terrassen'} KI-en så, omrisset fra planen${g.parts.length > 1 ? ` (${g.parts.length} dekk som henger sammen)` : ''}${deck.supports === 'none' ? ', står på huset' : ''}`;
     out.push(deck);
   }
   return out;

@@ -234,6 +234,7 @@ export function roofFromFacades(drawings, match) {
   const mono = [];
   const eaves = [];
   const rises = [];
+  const storeyHs = [];
   const dormers = { gable: 0, shed: 0 };
   const sum = [0, 0];
   let n = 0;
@@ -250,6 +251,8 @@ export function roofFromFacades(drawings, match) {
     const top = Array.isArray(r.floorYs) && r.storeys >= 2 ? r.floorYs[r.storeys - 1] : null;
     if (Number.isFinite(top) && Number.isFinite(r.eaveY) && r.pxPerM > 0) eaves.push(((top - r.eaveY) * (m.k || 1)) / r.pxPerM);
     if (r.dormerRoof) dormers[r.dormerRoof]++;
+    // floor to floor between the storeys the drawing shows (F164: hus4's are taller than the 2,7 m the levels got)
+    if (Array.isArray(r.floorYs) && r.pxPerM > 0) for (let s = 0; s + 1 < Math.min(r.storeys ?? 0, r.floorYs.length); s++) storeyHs.push(((r.floorYs[s] - r.floorYs[s + 1]) * (m.k || 1)) / r.pxPerM);
     if (r.roofView === 'long' && Number.isFinite(r.eaveY) && Number.isFinite(r.ridgeY) && r.eaveY > r.ridgeY && r.pxPerM > 0) rises.push(((r.eaveY - r.ridgeY) * (m.k || 1)) / r.pxPerM);
     if (r.roof === 'mono-pitch' && r.roofHigh) {
       const d = OUT[m.planSide];
@@ -269,7 +272,8 @@ export function roofFromFacades(drawings, match) {
   const mo = med(mono);
   const e = med(eaves);
   const ri = med(rises);
-  return { pitch: pitch != null ? Math.round(pitch) : null, pitchGable: g != null ? Math.round(g) : null, pitchMono: mo != null ? Math.round(mo) : null, eaveTop: e != null ? Math.round(e * 100) / 100 : null, rise: ri != null ? Math.round(ri * 100) / 100 : null, dormerType: dormers.shed > dormers.gable ? 'shed' : dormers.gable ? 'gable' : null, high, n };
+  const sh = med(storeyHs);
+  return { storeyHeight: sh != null && sh > 0 ? Math.round(sh * 100) / 100 : null, pitch: pitch != null ? Math.round(pitch) : null, pitchGable: g != null ? Math.round(g) : null, pitchMono: mo != null ? Math.round(mo) : null, eaveTop: e != null ? Math.round(e * 100) / 100 : null, rise: ri != null ? Math.round(ri * 100) / 100 : null, dormerType: dormers.shed > dormers.gable ? 'shed' : dormers.gable ? 'gable' : null, high, n };
 }
 
 /**

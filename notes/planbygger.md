@@ -1099,13 +1099,66 @@ En skrå himling blir `type: 'roof'` uten høyde, altså helt opp til mønet.
 
 ### Åpent etter natta
 
-- **hus2:** KI-en legger GANG (merke 6) under «PLAN HIMLING», så gang og entré blir flate. De er åpne mot den skrå
-  stua og burde vært skrå. Mønelinja den leser (x 0,50–0,93) er kortere enn streken (x 0,31–0,94). Rettes i «Himling»
-  med ett klikk. En klassisk forlengelse av strek-prikk-linja er en mulig forbedring.
-- **Carporten på hus4** er ikke tegnet som rom og får derfor ikke tak. Takterrassen over den er heller ikke laget,
-  fordi dekkene trenger et omriss.
-- **Kledning og terrasser:** motoren har dem på grenen `claude/kledning-terrasser-c92360` (ca0894e). Den skal flettes
-  inn etter at eieren har sagt ja. Da slår kledningseksporten seg på av seg selv.
+- **hus2:** gang og entré blir nå skrå (F139, se under).
+- **Carporten på hus4** er nå et rom, og terrassen over den står på huset (F147, F150, se under).
+- **Kledning og terrasser:** flettet inn 23.10.
+
+### Feilrunden F138–F167 (23.10, ettermiddag)
+
+Reglene er generelle: de bruker det tegningene viser, ikke husets navn.
+
+- **Loftet (F157–F162):**
+  - Takfoten over loftsgulvet kommer fra fasadene (`doc.roof.eaveTop`, `eaveHeight` i taket). Huset er like høyt som
+    tegningen, i stedet for 1,2 m knevegg i ytterveggene.
+  - Vinkelen kommer fra høyden fasadenes langside viser fra takfot til møne (`riseFacades`). Den gjelder hele huset og
+    måles over hoveddelens dybde på tvers av mønet.
+  - Arken er en pultark eller en saltaksark, som fasaden viser (gråfeltet over vinduene: takflaten på en saltaksark
+    smalner av oppover).
+  - **Kneveggene** er de tynne linjene planen tegner parallelt med ytterveggen 0,5–2,2 m inne (`addKneeWalls`). Taket
+    over linja må stå 0,4–1,8 m over gulvet, så en benkefront under en lav takfot ikke blir knevegg. Stripa bak heter
+    «Kneveggsbod».
+- **Takdeler (F155, F156):** KI-ens fløy gjelder en takdel bare når minst 60 % av fløyens rom ligger i den.
+- **Trapp (F143, F152, F160):**
+  - Et rom uten navn der trappa dekker minst 40 % av gulvet, heter «Trapp».
+  - Hullet for en kvartsvingt trapp er L-formet.
+  - Hullet holdes 6 cm fra flaten på en yttervegg oppe.
+  - Et KI-svar «spiraltrapp» mot en tegning som svinger, gir ikke spørsmål (F142). Husformatet har ingen
+    spiraltrapper, og svingen bygges uansett.
+- **Carport og garasje inntil huset (F147, F150):** en carport- eller garasjeetikett som ikke ligger i noe rom, men har
+  vegger på tre sider, lukkes på den fjerde (`closeAround`). Den nye veggen er én åpning. Carporten blir et rom med
+  betonggulv, og ytterveggene får kledning.
+- **Dekkene (F150, F153):**
+  - Dekk på samme etasje som henger sammen, blir ett (`regions.js footprint`). Dekket får flaten, typen og
+    rekkverket til det største, og det står ikke rekkverk på tvers.
+  - Et dekk oppe står på huset (`supports: 'none'`) når hver del av det er over et rom i etasjen under, eller høyst
+    1,6 m fra en vegg.
+  - Under et dekk fra etasjen over blir det ikke noe eget flatt tak. hus4s bodtak sto opp gjennom terrassen.
+- **Gulvet (F151):** rom med en åpen grense mellom seg, uten vegg, får samme gulv. Gulvet hentes fra stua, soverommet
+  eller gangen før entré og bod. Våtrom beholder sitt eget.
+- **Stubber (F140, F165, F166):**
+  - To veggstubber inn i samme rom ble paret med hverandre på tvers av rommet. Da ble begge sider uten tykkelse, og det
+    ble et hull ned til bakken. Nå pares en side bare med kanten rett bak seg (`export.js` `partnerOf`).
+  - En stubb med en «åpning» over minst 60 % av seg går, også når den er merket som yttervegg. Har den samme rom på
+    begge sider, står den inne.
+- **Mønelinja tegnet som en tynn grå strek (F139, hus2):** `refineRidge` velger raden med mest tynn strek (`thinRows`)
+  når de mørke strekene den fant i en annen rad, er møbler. Streken følges til veggen der den slutter.
+  - Mønelinja går fra gangens vestvegg, så gang og entré blir skrå helt ut til veggene mot soverommet og WIC.
+- **Etasjehøyden fra fasadene (F164):**
+  - Fra gulv til gulv er medianen av fasadenes gulvlinjer, når den er 2,6–3,6 m. En loftsgulvlinje er ingen etasje.
+  - Etasjene over flyttes opp, og himlingen blir det minus `SLAB` (0,3 m, som `restackLevels` bruker).
+  - hus4: 2,87 m fra gulv til gulv, himling 2,57 m.
+- **Ikke gjort:**
+  - **F138:** skyvedøra i hus2s WIC står på skinne. Veggen er 1,14 m med 0,88 m dør, og den andre WIC-ens skyvedør
+    står rett ved, så det er ikke plass i veggen.
+  - **F154:** skyvedøra mellom W.I.C og badet i hus4s 2. etasje er tegnet som to tynne linjer i veggen. Den leses som en
+    åpning. KI-en sier «dør», men å gjøre åpninger til dører etter KI-en gjorde tellingene verre (`aiOpeningKind`).
+    Det trengs en klassisk regel i `detect.js` for skyvedør i veggliv.
+  - **F141, F144:** vindustyper og ytterdører fra fasadetegningene (sprosser, sidefelt, overlys).
+  - **F145, F146, F148, F149:** kledningssoner per vegg.
+  - **F157, F158:** halvvalm.
+  - **F164:** vinduer med skrå overkant.
+  - **F167:** pipe.
+  - Halvvalm, skrå vinduer og pipe venter på motoren (taksesjonen).
 
 ## Rommene og eksporten
 
@@ -1659,6 +1712,10 @@ omveier. Dette ville gjort omveiene unødvendige:
 17. **Stolpene over trappehullet:** de henger 0,45 m ned under gulvet. Det er en detalj fra eierens hus, og i
     planbyggerens hus ser det ut som stolpen står langt ned på veggen (F12). Det trengs et valg i husformatet,
     for eksempel `guardStyle.hang`.
+18. **Et rom som er ute** (`rooms[].outdoor`, for en carport eller en åpen garasje). Veggene mot det skal få kledning
+    og ikke maling, og en dør inn fra det skal være en ytterdør. Det skal ikke ha himlingslys (F149: bodfronten i
+    hus4s carport skal ha grå fasadeplater og en grå dør). I dag er carporten et vanlig rom (bod) med betonggulv.
+19. **Vinduer med skrå overkant**, som følger et pulttak i øverste etasje (F164, hus4s 2. etasje).
 
 ## Åpne oppgaver i planbyggeren
 

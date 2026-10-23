@@ -984,21 +984,21 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F138.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F138.json`
-- **Status:** ny
+- **Status:** åpen – veggen ved WIC-døra er 1,14 m og døra 0,88 m, og den andre WIC-ens skyvedør står rett ved, så det er ikke plass til døra inne i veggen; den står på skinne
 
 ### F139 – overgang mellom skråtak og flatt tak har feilet, men i dette huset er 
 - **Tekst:** overgang mellom skråtak og flatt tak har feilet, men i dette huset er det egentlig skråtak helt ut til veggen til soverom 11,7m2 og WIC 4,6m2
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F139.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F139.json`
-- **Status:** ny
+- **Status:** fikset – mønelinja er en tynn grå strek på hus2; den følges nå fra gangens vestvegg (houseread.js thinRows/thinRidge), så gang og entré blir skrå helt ut til veggene mot soverom 11,7 og WIC 4,6
 
 ### F140 – dette innhukket har feilet. den mangler del av vegg imelleom der du se
 - **Tekst:** dette innhukket har feilet. den mangler del av vegg imelleom der du ser grønt nede
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F140.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F140.json`
-- **Status:** ny
+- **Status:** fikset – en veggstubb inn i stua ble paret med en vegg på tvers av rommet, så begge sider fikk tykkelse 0 og det ble et hull ned til bakken; en side pares nå bare med kanten rett bak seg (export.js partnerOf; test i seksjon 12)
 
 ### F141 – vinduene og ytterdører stemmer generelt ikke med faseden. mener type v
 - **Tekst:** vinduene og ytterdører stemmer generelt ikke med faseden. mener type vindu som er valgt.
@@ -1012,7 +1012,7 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** veiviser – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F142.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F142.json`
-- **Status:** ny
+- **Status:** fikset – KI-ens «spiraltrapp» mot en tegning som svinger, gir ikke lenger spørsmål (husformatet har ingen spiraltrapp, svingen bygges uansett)
 
 ### F143 – dette må modellen vite av seg selv. dette er jo trappa og ikke et eget
 - **Tekst:** dette må modellen vite av seg selv. dette er jo trappa og ikke et eget rom
@@ -1047,7 +1047,7 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F147.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F147.json`
-- **Status:** ny
+- **Status:** fikset – carporten under terrassen er et rom nå (en carport/garasje med vegger på tre sider lukkes med en vegg som er én åpning), så ytterveggene under hele terrassen får kledning
 
 ### F148 – det er to loddrette streker på fasaden på høyre del her.
 - **Tekst:** det er to loddrette streker på fasaden på høyre del her.
@@ -1068,14 +1068,14 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F150.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F150.json`
-- **Status:** ny
+- **Status:** fikset – carporten har betonggulv, og terrassen over den står på huset uten stolper (et dekk oppe over rom i etasjen under eller høyst 1,6 m fra en vegg)
 
 ### F151 – hva skjer med gulvet her. hvorfor har det blitt delt
 - **Tekst:** hva skjer med gulvet her. hvorfor har det blitt delt
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F151.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F151.json`
-- **Status:** ny
+- **Status:** fikset – rom med åpen grense mellom seg (ingen vegg, her draglinja) får samme gulv: stuas, soverommets eller gangens før entréens og bodens; våtrom beholder sitt
 
 ### F152 – det er hull i etasjeskillet
 - **Tekst:** det er hull i etasjeskillet
@@ -1089,14 +1089,14 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F153.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F153.json`
-- **Status:** ny
+- **Status:** fikset – dekk på samme etasje som henger sammen, blir ett dekk med én flate og uten rekkverk på tvers, og bodtaket under terrassen er borte (det sto opp gjennom den)
 
 ### F154 – skyvedør generering har feilet her
 - **Tekst:** skyvedør generering har feilet her
 - **Hvor:** 3D (går rundt) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F154.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F154.json`
-- **Status:** ny
+- **Status:** åpen – skyvedøra mellom W.I.C og badet er tegnet som to tynne linjer i veggen og leses som en åpning; trenger en klassisk regel for skyvedør i veggliv i detect.js
 
 ### F155 – her har taket blitt med helt feil takvinkel. det gjelder overalt. Noe 
 - **Tekst:** her har taket blitt med helt feil takvinkel. det gjelder overalt. Noe skjer nok galt i genereringen
@@ -1164,21 +1164,21 @@ eller faller, eller huset står på feil sted.
 - **Tekst:** Samme her ser du at vinduene er høyere og har det skråfeltet. Mulig at noe har skjedd feil når jeg skrev takhøyden. Kanskje det er høyere takhøyde her enn 2,4 meter det er det antagelig. men det kunne kanskje genereringen visst og måt av seg selv? det gjør den ikke idag. Feks her vet den jo ca høyde på vindu og vet at etasjeskille normalt er 20cm så kan sikkert modellen generere takhøydene automatisk. Må kanskje gjøre noe med vindugenerering slik de kan genereres med den vinkelen som er på vinduene i øverste etasje
 - **Hvor:** fasadesjekk – 2etg.avif, 1etg.avif, fasade4.avif, fasade3.avif, fasade2.avif, fasade1.avif
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F164.json`
-- **Status:** ny
+- **Status:** delvis – etasjehøyden kommer fra fasadenes gulvlinjer (hus4: 2,87 m fra gulv til gulv, himling 2,57 m med etasjeskillet på 0,3 m som appen bruker). Vinduer med skrå overkant venter på motoren
 
 ### F165 – her er det fortsatt noe i hjørnet
 - **Tekst:** her er det fortsatt noe i hjørnet
 - **Hvor:** 3D (går rundt) – garasje-plan-snitt-fasade.pdf
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F165.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F165.json`
-- **Status:** ny
+- **Status:** fikset – enden av målelinja i hjørnet (0,71 m med en «åpning» på 0,53 m, merket som yttervegg) fjernes nå som de andre stubbene (dropStubs); gjelder etter ny generering
 
 ### F166 – forrige feil med noe i hjørnet. det vises også her på plantegning, men
 - **Tekst:** forrige feil med noe i hjørnet. det vises også her på plantegning, men det er ikke på den plantegning PDFen
 - **Hvor:** 2D-editor – garasje-plan-snitt-fasade.pdf
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F166.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F166.json`
-- **Status:** ny
+- **Status:** fikset – samme som F165: stubben og åpningen er borte fra planen etter ny generering
 
 ### F167 – midt i bildet her er pipa, den blir ikke generert. Samme med pipe på u
 - **Tekst:** midt i bildet her er pipa, den blir ikke generert. Samme med pipe på utsiden. Vi må lage en plan på hvordan dette skal genereres og i hvilken fase vi skal gjøre det
