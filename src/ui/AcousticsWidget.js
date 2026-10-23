@@ -167,9 +167,10 @@ export class AcousticsWidget {
     const layout = ed.layout ?? ed.home?.layout;
     const H = layout?.house;
     if (!H?.roomsById) return LIVING_ROOM_ID;
+    // (an outdoor room – a carport, a porch – is outside: the badge keeps the last room, notes/uterom.md)
     const physical = (id) => {
       const rm = id ? H.roomsById[id] : null;
-      return rm && !rm.hud ? rm.id : null;
+      return rm && !rm.hud && !rm.outdoor ? rm.id : null;
     };
     const sel = ed.selected || {};
     if (sel.kind === 'item') {
@@ -190,7 +191,7 @@ export class AcousticsWidget {
     const p = g?.player?.position;
     if (p && typeof H.roomAt === 'function') {
       const r = H.roomAt(p.x, p.y + 0.9, p.z, { previousLevelId: g?._levelId ?? null });
-      if (r && !r.hud) return r.id;
+      if (r && !r.hud && !r.outdoor) return r.id;
     }
     return this.roomId ?? LIVING_ROOM_ID;
   }

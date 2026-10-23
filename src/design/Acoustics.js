@@ -30,7 +30,8 @@ import { finishArea, hasFelt, surfaceKind } from './Finishes.js';
  *   - Items count in ONE room (itemRoomId): a wall item in the room of its wall (attach.wallId, backOf faces have
  *     their own room), anything else in the physical room of its level that contains (x, z); outside every room
  *     (window sills, recesses) the nearest room of the level within NEAR_ROOM m; further out (the terrace, the
- *     garden) it counts nowhere.
+ *     garden) it counts nowhere. An outdoor room (rooms[].outdoor: a carport, a porch) is outside: nothing counts
+ *     there, and its acoustics are the living room's, as outside the house.
  *   - The living room (`acoustic.mode 'calibrated'`) keeps the 0.86 s calibration with its own originals
  *     (originalItems(layout), exactly as before); the high wall belongs to it alone; shading counts per room, for
  *     the room's own windows.
@@ -299,7 +300,8 @@ function distToPolygon(x, z, poly) {
   return best;
 }
 
-const isPhysical = (rm) => !!rm && !rm.hud && Array.isArray(rm.polygon) && rm.polygon.length >= 3;
+/** A room with acoustics of its own: not a hud room, not an outdoor room (a carport, a porch: outside, notes/uterom.md). */
+const isPhysical = (rm) => !!rm && !rm.hud && !rm.outdoor && Array.isArray(rm.polygon) && rm.polygon.length >= 3;
 
 /**
  * The room an item counts in (see the top of this file), or null outside the house. Works for design items (world y,
@@ -319,6 +321,7 @@ export function itemRoomId(item, layout = defaultLayout) {
   const x = num(p[0]);
   const z = num(p[2]);
   const r = H.roomAt(x, 0, z, { levelId });
+  if (r?.outdoor) return null; // outside (notes/uterom.md)
   if (r) return r.id;
   let best = null;
   let bestD = NEAR_ROOM;

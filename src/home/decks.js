@@ -124,6 +124,20 @@ export function buildDecks(H, opts) {
     }
   };
 
+  // a railing ends 1.2 cm off the house wall – off the corner board (cladding trim.corners, 22 mm proud) where it ends
+  // at an outer corner of the house (a deck flush with two facades: the terrace over hus4's carport, notes/uterom.md)
+  const ct = H.cladding?.trim?.corners ? H.cladding.trim.thickness ?? 0.022 : 0;
+  const corners = [];
+  if (ct) {
+    for (const w of H.walls || []) {
+      if (!w.exterior || !(w.thickness >= 0.2)) continue;
+      const t = w.thickness;
+      for (const [p, s] of [[w.start, -1], [w.end, 1]]) corners.push([p.x - w.normal.x * t + s * w.dir.x * t, p.y - w.normal.y * t + s * w.dir.y * t]);
+    }
+  }
+  const cw = (H.cladding?.trim?.width ?? 0.1) + 0.03;
+  const houseGap = (p) => 0.012 + (ct && corners.some((c) => Math.hypot(c[0] - p[0], c[1] - p[1]) < cw) ? ct : 0);
+
   for (const d of decks) {
     const batch = new MeshBatcher(`deck:${d.id}`);
     batchers.push(batch);
@@ -296,7 +310,7 @@ export function buildDecks(H, opts) {
         ));
       }
     };
-    for (const r of d.railings) railing(r.a, r.b, d.top, d.top, r.out, { trim0: r.house0 ? 0.012 : 0, trim1: r.house1 ? 0.012 : 0 });
+    for (const r of d.railings) railing(r.a, r.b, d.top, d.top, r.out, { trim0: r.house0 ? houseGap(r.a) : 0, trim1: r.house1 ? houseGap(r.b) : 0 });
 
     // ---- stairs
     d.stairs.forEach((s, k) => {

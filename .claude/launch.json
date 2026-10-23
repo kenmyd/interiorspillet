@@ -62,56 +62,132 @@
     {
       "name": "trapper-test",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5275", "--strictPort"],
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/vite.test.config.mjs",
+        "--port",
+        "5275",
+        "--strictPort"
+      ],
       "port": 5275
     },
     {
       "name": "kledning-test",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5278", "--strictPort"],
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/vite.test.config.mjs",
+        "--port",
+        "5278",
+        "--strictPort"
+      ],
       "port": 5278
     },
     {
       "name": "belysning-test",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5274", "--strictPort"],
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/vite.test.config.mjs",
+        "--port",
+        "5274",
+        "--strictPort"
+      ],
       "port": 5274
     },
     {
       "name": "moblering-test",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5274", "--strictPort"],
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/vite.test.config.mjs",
+        "--port",
+        "5274",
+        "--strictPort"
+      ],
       "port": 5274
     },
     {
       "name": "taktyper-test",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5271", "--strictPort"],
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/vite.test.config.mjs",
+        "--port",
+        "5271",
+        "--strictPort"
+      ],
       "port": 5271
     },
     {
       "name": "kjokkenbad-test",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5271", "--strictPort"],
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/vite.test.config.mjs",
+        "--port",
+        "5271",
+        "--strictPort"
+      ],
       "port": 5271
     },
     {
       "name": "takdetaljer-test",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5279", "--strictPort"],
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/vite.test.config.mjs",
+        "--port",
+        "5279",
+        "--strictPort"
+      ],
       "port": 5279
     },
     {
       "name": "peis-test",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5276", "--strictPort"],
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/vite.test.config.mjs",
+        "--port",
+        "5276",
+        "--strictPort"
+      ],
       "port": 5276
     },
     {
       "name": "fasadetyper-test",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5273", "--strictPort"],
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/vite.test.config.mjs",
+        "--port",
+        "5273",
+        "--strictPort"
+      ],
       "port": 5273
+    },
+    {
+      "name": "uterom-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "tools/vite.test.config.mjs",
+        "--port",
+        "5274",
+        "--strictPort"
+      ],
+      "port": 5274
     }
   ]
 }

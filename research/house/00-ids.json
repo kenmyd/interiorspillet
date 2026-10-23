@@ -72,7 +72,7 @@
       "rooms": {
         "required": ["id", "name", "kind", "polygon"],
         "requiredPhysical": ["levelId", "floor", "floor.material", "floor.color", "ceilingIds", "acoustic.mode"],
-        "enums": { "kind": ["living", "bathroom", "hall", "bedroom", "laundry", "storage", "entrance", "hud"], "acoustic.mode": ["calibrated", "estimate"] },
+        "enums": { "kind": ["living", "bathroom", "hall", "bedroom", "laundry", "storage", "entrance", "hud"], "acoustic.mode": ["calibrated", "estimate"], "outdoor": ["carport", "garage", "porch"] },
         "numbers": ["floorOffset"],
         "polygons": ["polygon"]
       },

@@ -19,7 +19,7 @@ import { buildFurnishing } from './furnish.js';
 import { claddingPiece, gableLine } from './cladding.js';
 import { finishAt, finishKey } from './claddinggeom.js';
 import { surfaceProfile, planeY, CLADDING_INTO_ROOF } from './roofgeom.js';
-import { wallFinish, floorFinish, facadeFinish } from '../world/surfaces.js';
+import { wallFinish, floorFinish, facadeFinish, surfaceFinish } from '../world/surfaces.js';
 
 /**
  * ROOMS – every room of the house except the living room / kitchen / TV-stue (notes/hele-huset-design.md §2.1,
@@ -42,12 +42,17 @@ import { wallFinish, floorFinish, facadeFinish } from '../world/surfaces.js';
  *     its surface (cut along the folds, with the vertical faces at a dormer's sides); a roof window under a roof lies in
  *     the roof plane;
  *   • the decks (decks.js, layout.house.decks): terraces, balconies, porches and roof terraces in their level's root,
- *     with railings, stairs and their colliders (in `colliders`);
+ *     with railings, stairs and their colliders (in `colliders`); an exterior wall under a deck of a level above has
+ *     its outer layer up to the deck's underside;
  *   • a generated house's furniture (furnish.js, layout.house.furnishing – notes/moblering-genererte-hus.md) when there
  *     is no design to build it (no ctx.design: the planbygger's view, the dev pages): the models in each room's
  *     `contents`, their colliders in `colliders`, the builder's result in `furniture`;
  *   • the fireplaces and stoves (fireplace.js, layout.house.fireplaces – notes/peis-og-ovn.md): in their level's root
  *     with their colliders, the fire's light in builtInLights (type 'fire'), the flames animated in update();
+ *   • an outdoor room (rooms[].outdoor: a carport, an open garage, a porch – notes/uterom.md): every face toward it is
+ *     clad like an outer layer (cladding.js; its own walls' room faces and the backs of the slabs its backOf faces lie
+ *     on), its reveals in the trim colour, no skirting, the floor cast concrete or paving, the ceiling its soffit
+ *     (rooms[].soffit), a door to an indoor room an outer door (owned by the outdoor room: built from the other side);
  *   • a floor per room (oak shared with the living room / tinted for the basement, vinyl, concrete, parquet) with the
  *     stairwell cut out, the ceilings (the basement's with the hole; roof windows in ceilings[].skylights: hole, shaft
  *     and window), black ceiling trims, the white edge face on the
@@ -408,6 +413,101 @@ export function buildRooms(ctx, layout, M = null) {
     return plaster(f?.color ?? LOOK.plaster);
   }
 
+  // ---- outdoor rooms (rooms[].outdoor, notes/uterom.md): a carport, an open garage, a porch. Their faces are facade,
+  //      their floor concrete or paving, their ceiling the soffit under the deck, floor or roof above
+  const isOutdoor = (id) => !!H.roomsById?.[id]?.outdoor;
+  const outdoorFinish = (kind, hex, o = {}) => {
+    try {
+      return kind === 'tiles' ? surfaceFinish('tiles', hex, { res: facadeRes, ...o }) : facadeFinish(kind, hex, { res: facadeRes, ...o });
+    } catch {
+      return mat('painted', hex, { roughness: 0.88 }); // no texture support
+    }
+  };
+  /**
+   * A face toward an outdoor room, clad like an outer layer (cladding.js, or the facade material without the house's
+   * cladding), in the outdoor room's outside batch. geo: the face, piece-local (wall w's frame from u = a; disposed
+   * here); front: it is w's room face (z = 0, facing +z) – it is turned half round the piece's vertical axis into the
+   * outer plane cladding.js clads (z = −thickness, facing −z). Zones name the outdoor room's wall (faceId).
+   */
+  function outdoorFace(geo, { w, faceId, roomId, a, b, T, top, bottom, openings, front }) {
+    const t = w.thickness;
+    const Lp = b - a;
+    const batch = (R[roomId] ?? R[w.roomId]).outside;
+    let M = T, oTop = top, ops = openings;
+    if (front) {
+      const turn = new THREE.Matrix4().set(-1, 0, 0, Lp, 0, 1, 0, 0, 0, 0, -1, -t, 0, 0, 0, 1);
+      geo.applyMatrix4(turn);
+      M = T.clone().multiply(turn);
+      oTop = top.map(([u, y]) => [Lp - u, y]).reverse();
+      ops = openings.map((h) => ({ ...h, x0: Lp - h.x1, x1: Lp - h.x0, ...(h.ta != null ? { ta: h.tb, tb: h.ta } : {}) }));
+    }
+    if (!CL) {
+      geo.applyMatrix4(M);
+      batch.add(geo, facadeMaterial(w));
+      geo.dispose();
+      return;
+    }
+    claddingPiece({
+      CL, w: { id: faceId, levelId: w.levelId, floorY: w.floorY, thickness: t, length: w.length }, lv: H.levelsById[w.levelId],
+      clad: geo, T: M, a, b, oTop, oBottom: bottom, openings: ops, kS: 0, kE: 0, gableY: null, corner: {}, batch, flashInset: true,
+      finishMat: finishMaterial, trimMat: trimMaterial, sideMat: K.trim,
+    });
+  }
+  /**
+   * The outer layer's top (piece-local profile of the piece a…b) capped at the underside of a deck that lies over the
+   * wall (over its outer face and not lower than its top, wallTop): it stops there instead of 0.3 over the wall, so it
+   * never reaches into the deck or stands in the plane of the deck's edge (the terrace over hus4's carport).
+   */
+  function underDecks(w, prof, wallTop, a, b) {
+    let out = prof;
+    const Lp = b - a;
+    const k = w.thickness - 0.01; // 1 cm inside the outer face: a deck edge on the face covers it
+    const n = Math.max(1, Math.ceil(Lp / 0.05));
+    for (const d of H.decks || []) {
+      const yMax = d.bottom - w.floorY;
+      const over = (u) => {
+        const s = a + u;
+        return yMax > profileAt(wallTop, u) - 0.01 && profileAt(out, u) > yMax + EPS && d.contains(w.start.x + w.dir.x * s - w.normal.x * k, w.start.y + w.dir.y * s - w.normal.y * k);
+      };
+      const ranges = [];
+      let r0 = null;
+      for (let i = 0; i <= n; i++) {
+        const u = (i / n) * Lp;
+        if (over(u)) r0 ??= u;
+        else if (r0 !== null) {
+          ranges.push([r0, (i - 1) / n * Lp]);
+          r0 = null;
+        }
+      }
+      if (r0 !== null) ranges.push([r0, Lp]);
+      if (ranges.length) out = capProfile(out, ranges, yMax, 0, Lp);
+    }
+    return out;
+  }
+  /** The floor of an outdoor room: cast concrete or paving (belegningsstein); null for another material (as indoors). */
+  function outdoorFloorMaterial(floor) {
+    const kind = floor?.material;
+    if (kind === 'concrete') return outdoorFinish('concrete', floor.color || '#a7a49e');
+    if (kind !== 'paving') return null;
+    const hex = floor.color || '#8f8b85';
+    const c = new THREE.Color(hex).multiplyScalar(0.7);
+    return outdoorFinish('tiles', hex, { size: floor.size ?? [0.21, 0.14], grout: 0.006, groutColor: `#${c.getHexString()}`, roughness: 0.85 });
+  }
+  /**
+   * The soffit of an outdoor room (its ceiling): rooms[].soffit { type 'boards' | 'panels' | 'concrete' | 'paint',
+   * color }; by default boards in the colour of the roof's soffit over it, else of the house's cladding.
+   */
+  function soffitMaterial(r, c) {
+    const s = r.soffit ?? {};
+    const roof = c.surface ? (H.roofs || []).find((p) => p.levelId === r.levelId && p.soffitColor && inPoly(c.centroid.x, c.centroid.y, (p.outline || []).map((q) => v2(q[0] ?? q.x, q[1] ?? q.y)))) : null;
+    const hex = s.color ?? roof?.soffitColor ?? CL?.default?.color ?? LOOK.cladding;
+    const type = s.type ?? 'boards';
+    if (type === 'paint') return paint(hex, { roughness: 0.8 });
+    if (type === 'concrete') return outdoorFinish('concrete', hex);
+    if (type === 'panels') return outdoorFinish('panels', hex, s.module ? { module: s.module } : {});
+    return outdoorFinish('wood', hex, { profile: 'plain' });
+  }
+
   // ---- helpers on walls
   const uOn = (w, p) => (p.x - w.start.x) * w.dir.x + (p.y - w.start.y) * w.dir.y;
   const offOn = (w, p) => (p.x - w.start.x) * w.normal.x + (p.y - w.start.y) * w.normal.y;
@@ -570,9 +670,11 @@ export function buildRooms(ctx, layout, M = null) {
       const cr = o.corner ? { corner: o.corner } : {};
       if (o.sill <= EPS && (!o.outline || flat)) notchesAll.push({ x0: o.u0, x1: o.u1, ...st, ...(tops ? { pts: tops } : {}) });
       else holesAll.push({ x0: o.u0, x1: o.u1, y0, ...st, ...shp, ...cr });
-      outerAll.push({ x0: o.u0, x1: o.u1, y0: Math.max(o.sill <= EPS ? bottom : 0, y0), y1: o.top, ...(o.topSlope ? { ta: o.topU0, tb: o.topU1 } : {}), ...shp, ...(tops ? { tops } : {}), ...cr, door: o.sill <= EPS, frameColor: String(o.frame?.color ?? LOOK.frame).toLowerCase() });
+      outerAll.push({ x0: o.u0, x1: o.u1, y0: Math.max(o.sill <= EPS ? bottom : 0, y0), y1: o.top, ...(o.topSlope ? { ta: o.topU0, tb: o.topU1 } : {}), ...shp, ...(tops ? { tops } : {}), ...cr, door: o.sill <= EPS, passage: o.type === 'opening', frameColor: String(o.frame?.color ?? LOOK.frame).toLowerCase() });
     }
     const notches = mergeNotches(notchesAll);
+    const outFront = isOutdoor(w.roomId);
+    const outSideMat = outFront && CL?.trim ? trimMaterial(CL.trim.color) : K.trim;
     // pieces: cut at the ends of the faces on the back (never inside an opening)
     const faceRanges = faces.map((f) => ({ f, r: [Math.min(uOn(w, f.start), uOn(w, f.end)), Math.max(uOn(w, f.start), uOn(w, f.end))] }));
     const cuts = new Set();
@@ -634,13 +736,29 @@ export function buildRooms(ctx, layout, M = null) {
       const face = faceAt(mid);
       // inner layer: the room face + the reveals (+ the back of an interior wall)
       const gIn = wallLayer({ L: b - a, bottom, top: pTop, notches: pNotches, holes: pHoles, z0: -rd, z1: 0, kStart: kS, kEnd: kE });
+      // a face toward an outdoor room (notes/uterom.md) is clad, not painted: the room face of an outdoor room's wall,
+      // the back of a slab whose face is an outdoor room's
+      const outBack = !exterior && !!face && isOutdoor(face.roomId);
+      const outFace = (front, geo) => {
+        const ops = outerAll.filter((h) => h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ ...h, y0: h.door ? Math.max(0, bottom) : h.y0 }));
+        outdoorFace(geo, { w, faceId: front ? w.id : face.id, roomId: front ? w.roomId : face.roomId, a, b, T, top: pTop, bottom, openings: ops, front });
+      };
+      if (outFront) {
+        const g = groupGeometry(gIn, 1);
+        if (g) outFace(true, g);
+      }
+      if (outBack) {
+        const g = groupGeometry(gIn, 0);
+        if (g) outFace(false, g);
+      }
       gIn.applyMatrix4(T);
-      const front = groupGeometry(gIn, 1);
+      const front = outFront ? null : groupGeometry(gIn, 1);
       const sides = groupGeometry(gIn, 2);
-      const back = groupGeometry(gIn, 0);
+      const back = outBack ? null : groupGeometry(gIn, 0);
       gIn.dispose();
       if (front) roomFace.push(front);
-      if (sides) rr.walls.add(sides, sideMat);
+      // (an outdoor room's reveals – a carport's open side, a porch's posts – in the trim colour, not painted)
+      if (sides) rr.walls.add(sides, outFront ? outSideMat : sideMat);
       sides?.dispose();
       if (back && !exterior) {
         if (face) (faceGeos.get(face.id) ?? faceGeos.set(face.id, []).get(face.id)).push(back);
@@ -670,6 +788,8 @@ export function buildRooms(ctx, layout, M = null) {
           } else oTop = pTop.map(([u, y]) => [u, y + 0.3]);
           // up to the cladding of the level above, where its facade stands on this one
           oTop = fillProfile(oTop, capRanges.map(([p, q]) => [p - a, q - a]), capY, 0, b - a);
+          // under a deck of a level above (the terrace over a carport, notes/uterom.md): up to its underside
+          if (!roofTop) oTop = underDecks(w, oTop, pTop, a, b);
           // the main floor's cladding goes down over the slab edge; a level above it meets the cladding below at its slab
           // (a wall of a level above standing over a room below – set back, round a recessed roof terrace – starts at
           // its floor: down at the slab's underside it would lie in the plane of that room's ceiling)
@@ -930,7 +1050,8 @@ export function buildRooms(ctx, layout, M = null) {
     for (const o of w.openings) {
       const d = doorDefs.get(o.id);
       if (d) {
-        const built = buildDoor(ctx, d, { layout, M: doorM, batch: rr.walls, batchers });
+        const built = buildDoor(ctx, d.outsideFront ? turnedDoor(d) : d, { layout, M: doorM, batch: rr.walls, batchers });
+        built.info.roomId = d.roomId;
         rr.deco.add(built.door.root);
         colliders.push(...built.colliders);
         doors.push(built.info);
@@ -938,6 +1059,31 @@ export function buildRooms(ctx, layout, M = null) {
       }
       if (o.type === 'opening') buildSteps(w, o, rr);
     }
+  }
+
+  /**
+   * An outer door whose owner is the outdoor room (layout d.outsideFront, notes/uterom.md) seen from the other side:
+   * the frame turned half round (origin on the far face, x and z reversed) with hinge, swing, casing, slide and
+   * sidelights mirrored, so the door is the same in the world and its outer face (−z) is toward the outdoor room.
+   */
+  function turnedDoor(d) {
+    const depth = H.wallsById[d.wallId]?.thickness || 0.1;
+    const B = d.basis;
+    const swap = (v, a, b) => (v === a ? b : v === b ? a : v);
+    const ds = d.door ?? {};
+    return {
+      ...d,
+      roomId: d.connects.find((id) => id !== d.roomId) ?? d.roomId,
+      hinge: swap(d.hinge, 'from', 'to'),
+      swing: swap(d.swing, 'in', 'out'),
+      casing: { front: d.casing?.back !== false, back: d.casing?.front !== false },
+      basis: { origin: B.origin.clone().addScaledVector(B.zAxis, -depth), xAxis: B.xAxis.clone().negate(), yAxis: B.yAxis.clone(), zAxis: B.zAxis.clone().negate() },
+      door: {
+        ...ds,
+        ...(ds.slide ? { slide: swap(ds.slide, 'from', 'to') } : {}),
+        ...(Array.isArray(ds.sidelights) ? { sidelights: ds.sidelights.map((x) => ({ ...x, side: swap(x?.side ?? 'from', 'from', 'to') })) } : {}),
+      },
+    };
   }
 
   /**
@@ -1001,25 +1147,28 @@ export function buildRooms(ctx, layout, M = null) {
     let fg = floorGeometry(r.polygon, r.floorY, { holes, boards });
     if (revealFloors.has(r.id)) fg = withRevealFloors(fg, revealFloors.get(r.id), boards);
     keep(fg);
-    const fl = new THREE.Mesh(fg, floorMaterial(floor));
+    const fl = new THREE.Mesh(fg, (r.outdoor && outdoorFloorMaterial(floor)) || floorMaterial(floor));
     fl.name = `floor:${r.id}`;
     fl.receiveShadow = true;
     fl.userData.pick = { kind: 'floor', roomId: r.id };
     rr.solid.add(fl);
     pickables.floor.push(fl);
-    const surface = footstepOf(floor);
+    // an outdoor room's floor sounds like the paving outside (exterior.js: the forecourt's 'tile')
+    const surface = r.outdoor ? 'tile' : footstepOf(floor);
     if (surface && ctx?.collision?.addSurfaceZone) {
       const b = r.bounds;
       ctx.collision.addSurfaceZone(new THREE.Box3(new THREE.Vector3(b.minX, r.floorY - 0.2, b.minZ), new THREE.Vector3(b.maxX, r.floorY + 2.2, b.maxZ)), surface);
     }
-    buildSkirting(r, raw.baseboard, holes);
+    if (!r.outdoor) buildSkirting(r, raw.baseboard, holes);
   }
   for (const c of H.ceilings) {
     if (!roomIds.has(c.roomId)) continue;
     const rr = R[c.roomId];
     const sky = c.skylights || [];
     const g = keep(ceilingGeometry(c.polygon, (x, z) => c.topAt(x, z), sky.length ? [...(c.holes || []), ...sky.map((s) => s.polygon)] : c.holes || [], c.surface));
-    const mesh = new THREE.Mesh(g, paint(c.paint));
+    // an outdoor room has no ceiling of its own: its soffit (and no ceiling trim)
+    const outdoor = H.roomsById?.[c.roomId]?.outdoor ? H.roomsById[c.roomId] : null;
+    const mesh = new THREE.Mesh(g, outdoor ? soffitMaterial(outdoor, c) : paint(c.paint));
     mesh.name = `ceiling:${c.id}`;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -1029,7 +1178,7 @@ export function buildRooms(ctx, layout, M = null) {
     pickables.ceilings.push(mesh);
     ceilingMeshes.set(c.id, mesh);
     const raw = (spec.ceilings || []).find((x) => x.id === c.id);
-    if (c.trim) buildCeilingTrim(c, raw?.trimHeight ?? 0.035);
+    if (c.trim && !outdoor) buildCeilingTrim(c, raw?.trimHeight ?? 0.035);
     for (const s of sky) buildSkylight(c, s, rr, mesh);
   }
 
