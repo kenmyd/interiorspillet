@@ -829,6 +829,22 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     const rf = FM.roofFromFacades(drawings, match);
     check('etasjehøyden fra fasadenes gulvlinjer: 2,87 m fra gulv til gulv (medianen)', rf.storeyHeight === 2.87, JSON.stringify(rf));
   }
+  // a window's sashes and bars from its panes in the facade drawing (F141, F144): at 100 px/m two sashes of 2 × 3
+  // panes (bars of 3 cm, 11 cm between the sashes), a transom over two sashes, and nothing from a drawing too small
+  {
+    const Fc = await imp('src/planbygger/facade.js');
+    const box = (x0, y0, x1, y1) => ({ x0, y0, x1, y1 });
+    const panes = [];
+    for (const [c0, c1] of [[0, 22], [26, 48], [60, 82], [86, 108]]) for (const [r0, r1] of [[0, 30], [34, 64], [68, 98]]) panes.push(box(c0, r0, c1, r1));
+    const g1 = Fc.paneGrid(panes, 100, 99);
+    const g2 = Fc.paneGrid([box(0, 0, 108, 25), box(0, 35, 48, 150), box(60, 35, 108, 150)], 100, 151);
+    check('vinduet fra fasadetegningen: to rammer med 2 × 3 ruter, et overlys over to rammer, og ingenting fra en tegning på 10 px/m', g1?.sashes === 2 && !g1.transom && g1.panes[0] === 2 && g1.panes[1] === 3 && g2?.sashes === 2 && g2.transom === true && Fc.paneGrid(panes, 10, 99) === null, JSON.stringify({ g1, g2 }));
+    // behind a balcony along the wall, the railing's rails are no bars
+    const { doc: d8, lv: l8 } = make();
+    d8.decks = [{ kind: 'balcony', level: 'hoved', outline: [[0, 6.15], [8, 6.15], [8, 7.4], [0, 7.4]] }];
+    const FMb = await imp('src/planbygger/facadematch.js');
+    check('og et vindu i veggen mot en balkong står bak rekkverket, et vindu i en annen vegg gjør ikke det', FMb.behindDeck(d8, l8, l8.openings.find((o) => o.id === 'vs')) && !FMb.behindDeck(d8, l8, l8.openings.find((o) => o.id === 'vn')));
+  }
   // two wall stubs standing into one room from its north wall (hus2's living room, F140): each stub is built with its
   // thickness on one face, none paired with the other stub across the room
   {

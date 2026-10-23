@@ -281,6 +281,28 @@ export function roofFromFacades(drawings, match) {
  * differs by more than 15 cm (a tall glass door). Openings the user fixed (o.fixed) are left alone. Positions and
  * widths stay the plan's.
  */
+/** Whether a deck of the opening's level lies just outside its wall (within the wall's half thickness + 0.3 m). */
+export function behindDeck(doc, L, o) {
+  const w = L.walls.find((x) => x.id === o.wall);
+  const decks = (doc.decks ?? []).filter((d) => d.level === L.id && Array.isArray(d.outline) && d.outline.length >= 3);
+  if (!w || !decks.length) return false;
+  const len = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) || 1;
+  const u = [(w.b[0] - w.a[0]) / len, (w.b[1] - w.a[1]) / len];
+  const n = [-u[1], u[0]];
+  const c = [w.a[0] + u[0] * o.at, w.a[1] + u[1] * o.at];
+  const k = (w.t ?? 0.2) / 2 + 0.3;
+  const inside = (p, poly) => {
+    let hit = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i];
+      const [xj, yj] = poly[j];
+      if (yi > p[1] !== yj > p[1] && p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi) + xi) hit = !hit;
+    }
+    return hit;
+  };
+  return [1, -1].some((s) => decks.some((d) => inside([c[0] + n[0] * s * k, c[1] + n[1] * s * k], d.outline)));
+}
+
 export function applyFacadeMatch(doc, drawings, match, { ceiling = 2.4 } = {}) {
   let n = 0;
   match.drawings.forEach((m, di) => {
@@ -306,6 +328,15 @@ export function applyFacadeMatch(doc, drawings, match, { ceiling = 2.4 } = {}) {
         // the top as drawn, before it was kept under a flat ceiling: higher means the room is open to the roof
         o.facadeTop = Math.round((sill + height) * 100) / 100;
         o.fromFacade = true;
+        // the sashes and bars as drawn (paneGrid; the facade check lets the customer change them afterwards)
+        const g = w.grid;
+        if (g) {
+          o.style = g.transom ? 'transom' : g.sashes >= 3 ? 'three' : g.sashes === 2 ? 'two' : 'one';
+          // (behind a deck's railing its rails cross the window in the drawing: generate.js drops those rows once the
+          // decks are known, behindDeck)
+          if (g.panes[0] * g.panes[1] > 1) o.panes = [...g.panes];
+          else delete o.panes;
+        }
         n++;
       } else if (o.type === 'door' && height >= 1.9 && height <= 2.8) {
         o.facadeTop = Math.round(height * 100) / 100;

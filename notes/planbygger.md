@@ -1147,13 +1147,25 @@ Reglene er generelle: de bruker det tegningene viser, ikke husets navn.
   - Fra gulv til gulv er medianen av fasadenes gulvlinjer, når den er 2,6–3,6 m. En loftsgulvlinje er ingen etasje.
   - Etasjene over flyttes opp, og himlingen blir det minus `SLAB` (0,3 m, som `restackLevels` bruker).
   - hus4: 2,87 m fra gulv til gulv, himling 2,57 m.
+- **Vindustypen fra fasadetegningen (F141, F144):** `paneGrid` (`facade.js`) leser rutene i hvert vindu på en matchet
+  tegning.
+  - Kolonnene deles der mellomrommet er en ramme mellom to felt (minst 6 cm), ikke en sprosse.
+  - En øverste rad under 35 % av høyden er et overlys.
+  - Det gir `style` ('one', 'two', 'three', 'transom') og `panes` (sprossene per felt).
+  - Bare tegninger med minst 40 px per meter brukes. hus2s fasader er på 10 px/m og viser ingen sprosser.
+  - Et vindu i en vegg mot et dekk på samme etasje mister de vannrette sprossene. Rekkverket krysser vinduet på
+    tegningen (`behindDeck`, etter at dekkene er funnet).
+  - Etasjehøyden settes nå før vinduene tilpasses himlingene. På hus4 ble de kuttet ved 2,35 m.
+  - hus1 får 4 × 3 og 4 × 2 ruter. Rammen mellom de to feltene er tegnet like tynn som sprossene, så det blir ett felt med
+    sprosser. hus4 får de brede glassfeltene todelt, og enkeltvinduene ett felt uten sprosser.
 - **Ikke gjort:**
   - **F138:** skyvedøra i hus2s WIC står på skinne. Veggen er 1,14 m med 0,88 m dør, og den andre WIC-ens skyvedør
     står rett ved, så det er ikke plass i veggen.
   - **F154:** skyvedøra mellom W.I.C og badet i hus4s 2. etasje er tegnet som to tynne linjer i veggen. Den leses som en
     åpning. KI-en sier «dør», men å gjøre åpninger til dører etter KI-en gjorde tellingene verre (`aiOpeningKind`).
     Det trengs en klassisk regel i `detect.js` for skyvedør i veggliv.
-  - **F141, F144:** vindustyper og ytterdører fra fasadetegningene (sprosser, sidefelt, overlys).
+  - **F141, F144:** ytterdørenes type fra fasadetegningene (glass, sidefelt, overlys). Vinduene på hus2, der fasadene er
+    for små.
   - **F145, F146, F148, F149:** kledningssoner per vegg.
   - **F157, F158:** halvvalm.
   - **F164:** vinduer med skrå overkant.

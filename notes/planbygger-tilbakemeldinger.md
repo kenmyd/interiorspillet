@@ -1005,7 +1005,7 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – 1etg.png, fasader.png
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F141.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F141.json`
-- **Status:** ny
+- **Status:** delvis – vindustypen leses nå fra fasadetegningen der den er skarp nok (felt, overlys og sprosser, facade.js paneGrid), men hus2s fasader er på 10 px/m og viser ingen sprosser, så hus2 får fortsatt typen etter bredden; ytterdørenes type er ikke gjort
 
 ### F142 – hvorfor spør genereringen om dette egentlig? trappa er jo ikke tegnet 
 - **Tekst:** hvorfor spør genereringen om dette egentlig? trappa er jo ikke tegnet noe utydelig
@@ -1026,7 +1026,7 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (dukkehus) – 2etg.avif, 1etg.avif, fasade2.avif, fasade1.avif, fasade4.avif, fasade3.avif
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F144.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F144.json`
-- **Status:** ny
+- **Status:** delvis – vinduene på hus4 får felt og sprosser fra fasadetegningene (de brede glassfeltene todelt, enkeltvinduene ett felt, ingen falske sprosser fra glassrekkverket); dørtypene (glass, sidefelt, overlys) er ikke gjort ennå
 
 ### F145 – Fasaden på dette huset ser jeg at noe er veldig vanskelig og genereree
 - **Tekst:** Fasaden på dette huset ser jeg at noe er veldig vanskelig og genereree. På fasadetegning 3 så set du at det er kledning i toppen på taket som går ned på høyre side og så fortsettte den rett under rekkverk på glassrekkverk bort til boden. Og boden skulle også hatt stående kledning

@@ -71,7 +71,7 @@ import { cleanForWalls } from './clean.js';
 import { detectPlan } from './detect.js';
 import { autoScale, estimateScale, similarSource, innerArea, wallModes } from './autoscale.js';
 import { readFacade, houseRoof } from './facade.js';
-import { matchFacades, applyFacadeMatch, roofFromFacades } from './facadematch.js';
+import { matchFacades, applyFacadeMatch, roofFromFacades, behindDeck } from './facadematch.js';
 import { applyHouseReading, refineRidge } from './houseread.js';
 import { findDecks } from './deckfind.js';
 import { findStairs, alignLevelTo } from './align.js';
@@ -1483,7 +1483,6 @@ export async function generate(inputs, opts = {}) {
       doc.settings.north = match.north;
       report.notes.push(`Nordretningen er satt fra fasadetitlene: nord er ${['opp', 'til høyre', 'ned', 'til venstre'][match.north / 90]} i planen.`);
     }
-    const n = applyFacadeMatch(doc, usable.map((d) => ({ reading: d.reading })), match, { ceiling: doc.settings.ceiling });
     // the roof's pitch and a mono-pitch roof's high side as the end views show them on their sides
     const rf = roofFromFacades(usable.map((d) => ({ reading: d.reading })), match);
     doc.roof = { ...(doc.roof || {}), ...(rf.pitch ? { pitchFacades: rf.pitch } : {}), ...(rf.pitchGable ? { pitchGable: rf.pitchGable } : {}), ...(rf.pitchMono ? { pitchMono: rf.pitchMono } : {}), ...(rf.eaveTop != null ? { eaveTop: rf.eaveTop } : {}), ...(rf.rise ? { riseFacades: rf.rise } : {}), ...(rf.dormerType ? { dormerType: rf.dormerType } : {}), ...(rf.high ? { monoHigh: rf.high } : {}), ...(rf.storeyHeight ? { storeyFacades: rf.storeyHeight } : {}) };
@@ -1500,6 +1499,8 @@ export async function generate(inputs, opts = {}) {
       report.notes.push(`Etasjehøyden er ${fmt(sh, 2)} m fra gulv til gulv, som fasadene viser (himlingen ${fmt(sh - SLAB, 2)} m i etasjene under en annen).`);
       step({ step: 'facades', method: 'storeys', confidence: 'medium', detail: `fra gulv til gulv ${fmt(sh, 2)} m (medianen av fasadene), himling ${fmt(sh - SLAB, 2)} m` });
     }
+    // the windows from the drawings, under the ceilings the storeys now have
+    const n = applyFacadeMatch(doc, usable.map((d) => ({ reading: d.reading })), match, { ceiling: doc.settings.ceiling });
     usable.forEach((d, i) => {
       d.match = match.drawings[i];
       const f = doc.facades?.find((x) => x.file === d.file && x.part === d.part);
@@ -1542,6 +1543,14 @@ export async function generate(inputs, opts = {}) {
     if (decked) step({ step: 'decks', method: 'ai+texture', confidence: 'medium', detail: `${decked} terrasse${decked === 1 ? '' : 'r'} og balkong${decked === 1 ? '' : 'er'} med omriss fra planen (bord eller fliser utenfor veggene)` });
     step({ step: 'house', method: 'ai', confidence: 'medium', detail: `KI-en leste huset:${got.wings} takdel${got.wings === 1 ? '' : 'er'}${doc.roof?.pitch ? ` (${doc.roof.pitch}°)` : ''}, ${got.ceilings} himlingstekst${got.ceilings === 1 ? '' : 'er'}, kledning på ${got.cladding} fasade${got.cladding === 1 ? '' : 'r'}${doc.cladding?.main ? ` (mest ${doc.cladding.main.type}${doc.cladding.main.direction ? `, ${doc.cladding.main.direction}` : ''})` : ''}, ${got.decks} terrasse${got.decks === 1 ? '' : 'r'} og balkong${got.decks === 1 ? '' : 'er'}` });
   }
+  // a window behind a deck's railing: the railing crosses it in the facade drawing, its rails are no glazing bars
+  // (hus4's upper floor, F144)
+  for (const L of doc.levels)
+    for (const o of L.openings) {
+      if (o.type !== 'window' || !(o.panes?.[1] > 1) || !behindDeck(doc, L, o)) continue;
+      if (o.panes[0] > 1) o.panes = [o.panes[0], 1];
+      else delete o.panes;
+    }
   // the ceilings of the top level when no drawing says anything about them: a loft follows the roof by itself
   // (export.js); a mono-pitch roof right over the level, or a window or door drawn higher than a flat ceiling, makes the
   // level follow the roof – a guess, asked once; anything else stays flat. With a ceiling text anywhere on the plans,

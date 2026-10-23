@@ -1140,6 +1140,45 @@ function edgeBottom(mask, ridgeY, H, x0, x1) {
 }
 
 /**
+ * A window's sashes and glazing bars from its panes (the glass boxes found inside it, F141, F144): the columns of
+ * panes, split where the gap between two is a frame between sashes (at least 6 cm) and not a bar; the same for the
+ * rows, and a top row under 35 % of the height is a transom. Only where the drawing is sharp enough to show a bar
+ * (40 px per metre: hus2's facades at 10 px/m are not). → { sashes, transom, panes: [cols, rows] per sash } or null
+ */
+export function paneGrid(parts, pxPerM, height) {
+  const ps = (parts ?? []).filter((p) => p.x1 > p.x0 && p.y1 > p.y0);
+  if (!ps.length || !(pxPerM >= 40)) return null;
+  // the intervals the panes cover along x (y), merged where they overlap: one per column (row) of panes
+  const lanes = (list, lo, hi) => {
+    const out = [];
+    for (const [a, b] of list.map((p) => [p[lo], p[hi]]).sort((x, y) => x[0] - y[0])) {
+      const last = out[out.length - 1];
+      if (last && a <= last[1] + 1) last[1] = Math.max(last[1], b);
+      else out.push([a, b]);
+    }
+    return out;
+  };
+  const frame = 0.06 * pxPerM;
+  const split = (lns) => {
+    const runs = [[lns[0]]];
+    for (let i = 1; i < lns.length; i++) {
+      if (lns[i][0] - lns[i - 1][1] - 1 >= frame) runs.push([lns[i]]);
+      else runs[runs.length - 1].push(lns[i]);
+    }
+    return runs;
+  };
+  const rows = split(lanes(ps, 'y0', 'y1'));
+  const top = rows[0];
+  const transom = rows.length >= 2 && height > 0 && top[top.length - 1][1] - top[0][0] + 1 <= 0.35 * height;
+  // the sashes under a transom (its pane spans them all)
+  const cols = split(lanes(transom ? ps.filter((p) => p.y0 > top[top.length - 1][1]) : ps, 'x0', 'x1'));
+  // the bars: the panes per sash, the most common count over the sashes (a transom's own row aside)
+  const body = transom ? rows.slice(1) : rows;
+  const most = (xs) => xs.sort((a, b) => xs.filter((v) => v === b).length - xs.filter((v) => v === a).length)[0];
+  return { sashes: cols.length, transom, panes: [most(cols.map((c) => c.length)), most(body.map((r) => r.length))] };
+}
+
+/**
  * Windows and doors: closed frames with a lighter inside (see the file header, step 5). → units [{ x0, y0, x1, y1,
  * parts, mean, dark?, leaf?, panel?, transom? }] in px, before the scale is known.
  */
@@ -1822,7 +1861,7 @@ function readCore(img, options) {
         const a = joined[i];
         const b = joined[j];
         const box2 = (p, q) => ({ x0: Math.min(p.x0, q.x0), y0: Math.min(p.y0, q.y0), x1: Math.max(p.x1, q.x1), y1: Math.max(p.y1, q.y1) });
-        joined[i] = { ...a, ...box2(a, b), g: box2(a.g, b.g) };
+        joined[i] = { ...a, ...box2(a, b), g: box2(a.g, b.g), parts: [...(a.parts ?? []), ...(b.parts ?? [])] };
         joined.splice(j, 1);
         again = true;
       }
@@ -1831,6 +1870,7 @@ function readCore(img, options) {
   joined = joined.map((u) => ({
     x0: u.x0, y0: u.y0, x1: u.x1, y1: u.y1, kind: u.kind, storey: u.storey,
     sill: round(Math.max(0, (floorOf(u.storey) - 1 - u.y1) / pxPerM), 2), height: round(boxH(u) / pxPerM, 2),
+    ...(u.kind === 'window' ? { grid: paneGrid(u.parts, pxPerM, boxH(u)) } : {}),
   }));
   joined.sort((a, b) => a.storey - b.storey || a.x0 - b.x0);
   // the storeys: a given count (the plans, the AI) wins, but never fewer than the openings stand in, so every
