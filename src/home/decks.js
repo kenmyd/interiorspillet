@@ -22,7 +22,8 @@ import { DECK_DEFAULTS } from './deckgeom.js';
  *
  *   buildDecks(H, opts) → { groups, colliders }
  *
- * opts: { roots (ctx.roots.levels), fallback (Group), keep, batchers, quality, mainLevelId }
+ * opts: { roots (ctx.roots.levels), fallback (Group), keep, batchers, quality, mainLevelId, groundAt? } – groundAt(x, z):
+ * the ground of a site (notes/uteomradet.md); the posts and a solid deck's skirt then reach down to it.
  * Mesh names: `deck:<id>:<material>` (the batch of one deck), `deck-wedge:<id>:<n>` (the stairs' colliders, not in the
  * scene).
  */
@@ -100,7 +101,7 @@ function prismGeometry(profile, origin, out, across, w) {
  * @param {object} opts
  */
 export function buildDecks(H, opts) {
-  const { keep = (x) => x, batchers = [], quality = {} } = opts;
+  const { keep = (x) => x, batchers = [], quality = {}, groundAt = null } = opts;
   // the facade's texture sets (rooms.js facadeRes): full resolution on «høy» only, the decks are seen from outside
   const res = quality.level === 'high' ? 1 : 0.5;
   const groups = [];
@@ -157,6 +158,7 @@ export function buildDecks(H, opts) {
     {
       const P = d.outline;
       const top = d.top, bot = d.bottom;
+      const solidTo = (p, y) => (d.supports === 'solid' && groundAt ? Math.min(y, groundAt(p[0], p[1]) - 0.1) : y);
       const b = d.boardDir;
       const acrossB = [-b[1], b[0]];
       const uvTop = (x, z) => [x * acrossB[0] + z * acrossB[1], x * b[0] + z * b[1]];
@@ -175,15 +177,23 @@ export function buildDecks(H, opts) {
       }
       let run = 0;
       for (const e of d.edges) {
-        for (const [s0, s1] of e.free) {
+        // (a solid deck on a site: the skirt in pieces of ≤ 0.5 m, each down to the ground under its ends)
+        const pieces = d.supports === 'solid' && groundAt
+          ? e.free.flatMap(([f0, f1]) => {
+            const m = Math.max(1, Math.ceil((f1 - f0) / 0.5));
+            return Array.from({ length: m }, (_, k) => [f0 + ((f1 - f0) * k) / m, f0 + ((f1 - f0) * (k + 1)) / m]);
+          })
+          : e.free;
+        for (const [s0, s1] of pieces) {
           const p = [e.a[0] + e.dir[0] * s0, e.a[1] + e.dir[1] * s0];
           const q = [e.a[0] + e.dir[0] * s1, e.a[1] + e.dir[1] * s1];
           const u0 = run + s0, u1 = run + s1;
           // facing e.out: p → q along the edge, seen from outside counter-clockwise (p low, q low, q high, p high)
-          const quad = [[p[0], bot, p[1]], [q[0], bot, q[1]], [q[0], top, q[1]], [p[0], top, p[1]]];
+          const bp = solidTo(p, bot), bq = solidTo(q, bot);
+          const quad = [[p[0], bp, p[1]], [q[0], bq, q[1]], [q[0], top, q[1]], [p[0], top, p[1]]];
           const nrm = new THREE.Vector3(...quad[1]).sub(new THREE.Vector3(...quad[0])).cross(new THREE.Vector3(...quad[2]).sub(new THREE.Vector3(...quad[0])));
           const flip = nrm.x * e.out[0] + nrm.z * e.out[1] < 0;
-          const uv = d.supports === 'solid' ? [[u0, bot], [u1, bot], [u1, top], [u0, top]] : [[bot, u0], [bot, u1], [top, u1], [top, u0]];
+          const uv = d.supports === 'solid' ? [[u0, bp], [u1, bq], [u1, top], [u0, top]] : [[bot, u0], [bot, u1], [top, u1], [top, u0]];
           if (flip) S.quad(quad[1], quad[0], quad[3], quad[2], uv[1], uv[0], uv[3], uv[2]);
           else S.quad(...quad, ...uv);
         }
@@ -199,7 +209,7 @@ export function buildDecks(H, opts) {
     // ---- posts
     const ps = DECK_DEFAULTS.postSize;
     for (const p of d.posts) {
-      const y0 = d.groundY - 0.1;
+      const y0 = (groundAt ? groundAt(p[0], p[1]) : d.groundY) - 0.1;
       const h = d.bottom - y0;
       if (h > 0.05) batch.box(ps, h, ps, p[0], y0 + h / 2, p[1], M.post, { rot: [0, yawOf(d.boardDir), 0], collide: true });
     }
