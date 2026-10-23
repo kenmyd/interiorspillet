@@ -699,14 +699,14 @@ eller faller, eller huset står på feil sted.
 - **Hvor:** 3D (går rundt) – garasje-plan-snitt-fasade.pdf
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F96.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F96.json`
-- **Status:** til oppryddingen (K15) – et lite hakk i romkanten ved hjørnet.
+- **Status:** rettet (K15, 23.10) – en merkestrek fra målsettingen var lest som en kort vegg; den fjernes nå. Generer huset på nytt.
 
 ### F97 – feil med generering, en stolpe eller noe som stikke ut av vegg
 - **Tekst:** feil med generering, en stolpe eller noe som stikke ut av vegg
 - **Hvor:** 3D (går rundt) – garasje-plan-snitt-fasade.pdf
 - **Skjermbilde:** `.shots/planbygger/tilbakemeldinger/F97.jpg`
 - **Tilstand:** `.shots/planbygger/tilbakemeldinger/F97.json`
-- **Status:** til oppryddingen (K15) – et hakk på noen centimeter i romkanten ved hjørnet blir en «stolpe» i veggen.
+- **Status:** rettet (K15, 23.10) – «stolpen» var hjelpelinja fra målsettingen, lest som en vegg på 0,7 m; den fjernes nå. Generer huset på nytt.
 
 ### F98 – skyvedører skal være en del av veggen slik døre gå inn i veggen. når s
 - **Tekst:** skyvedører skal være en del av veggen slik døre gå inn i veggen. når skyvedøre er lukke skal bare en liten del av døra syntes.
@@ -1016,7 +1016,7 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 
 ### K8 – trappene: kvartsvingte bygges som U eller rett, og hus8 får ingen trapp (for bratt)
 - **Hvorfor:** spillet har ikke kvartsvingte trapper. hus1-trappa har også dårlige trinnmål (2R+G 0,68).
-- **Status:** motoren har nå kvartsvingte og bratte trapper (notes/trapper.md). Kvartsvingte trapper fra tegningen bygges fortsatt som U eller rett (retningen leses feil, F125); «Trapp» i 3D-visningen lager dem. hus8: den bratte trappa i sjakten har ikke gulv bak foten i kjelleren (det nedre løpet er ikke tegnet), så den legges ikke inn av seg selv, men spørsmålet har nå «Bratt trapp eller loftstige» (natt til 23.10).
+- **Status:** motoren har nå kvartsvingte og bratte trapper (notes/trapper.md). Kvartsvingte trapper fra tegningen blir L når begge endene har gulv (hus1, 23.10); på hus8 og hus9 finner gjenkjenningen bare ett løp, og de blir fortsatt U eller rett; «Trapp» i 3D-visningen lager dem. hus8: den bratte trappa i sjakten har ikke gulv bak foten i kjelleren (det nedre løpet er ikke tegnet), så den legges ikke inn av seg selv, men spørsmålet har nå «Bratt trapp eller loftstige» (natt til 23.10).
 
 ### K9 – hus7 uten KI blir et tomt hus
 - **Hvorfor:** veggene er tegnet med to tynne streker, og målestokken bommer med 60 %.
@@ -1045,7 +1045,7 @@ Feil Claude vet om fra testene og sluttkontrollen etter fase C. De trenger ikke 
 
 ### K15 – små hakk i romkanten blir stolper og trinn i veggen (F96, F97, hus7)
 - **Hvorfor:** romkanten har et hakk på noen centimeter nær et hjørne (veggtykkelsen målt litt ulikt på to stykker), og byggeren lager et kort veggstykke som stikker ut.
-- **Status:** til neste runde: rett ut hakk under ca. 10 cm i rompolygonene før eksporten.
+- **Status:** rettet (23.10) – «hakkene» var korte veggbiter fra målsettingen (hjelpelinja og skråstreken inne i garasjen på hus7). Korte, tynne vegger med løs ende og samme rom på begge sider fjernes nå (`dropStubs` i generate.js).
 
 ### K16 – tak over hus med flere fløyer og innhakk (F135, F136)
 - **Hvorfor:** taket deles i rektangler langs husets akse. Et rent L- eller T-hus får én takdel per fløy, men en form med innhakk (hus2) gir deler som ikke dekker alle veggene; da blir det ett tak over hele rektangelet, også over hjørnet der det ikke er hus.

@@ -980,6 +980,11 @@ export function exportHouse(doc, opts = {}) {
     const cladding = claddingOf(doc);
     if (cladding) house.cladding = cladding;
   }
+  // the terraces and balconies with an outline from the plan (generate.js, deckfind.js), notes/kledning.md «decks»
+  if (idsRegistry.schema?.topLevel?.includes('decks')) {
+    const decks = decksOf(doc, frame, RP);
+    if (decks.length) house.decks = decks;
+  }
   if (floorOpenings.length) house.floorOpenings = floorOpenings;
   if (stairs.length) house.stairs = stairs;
 
@@ -1655,6 +1660,7 @@ function exportRoofs({ doc, house, warnings, RP, R, frame }) {
 
 /** Colour words on Norwegian drawings → the house format's hex (an NCS code or anything else: none, the default's). */
 const COLOR_WORDS = [
+  [/beige\s*\/\s*brun|brun\s*\/\s*beige|lysebrun|lys\s*brun|\btan\b/i, '#b39e80'],
   [/antrasitt/i, '#3a3d40'],
   [/m[øo]rke?\s*gr[åa]/i, '#4a4642'],
   [/lyse?\s*gr[åa]/i, '#c9c8c3'],
@@ -1701,6 +1707,33 @@ export function claddingOf(doc) {
     plinth: { height: 0.3, material: 'concrete' },
     trim: { corners: true, surrounds: true },
   };
+}
+
+/**
+ * The house format's decks from the document's (doc.decks with an outline, plan metres): on the level the plan is of,
+ * 2 cm under its floor (the door threshold), boards or tiles as drawn, the railing the AI read, and one stair down from
+ * the edge farthest from the house when the AI saw steps. The engine puts railings on the free edges with a fall.
+ */
+export function decksOf(doc, frame, RP = (p) => p) {
+  const out = [];
+  for (const d of doc.decks ?? []) {
+    const L = doc.levels.find((l) => l.id === d.level);
+    if (!L || !Array.isArray(d.outline) || d.outline.length < 3) continue;
+    const outline = d.outline.map((p) => RP(frame.toGame(p, L.id)));
+    const deck = { id: `dekk-${out.length + 1}`, kind: d.kind ?? 'terrace', levelId: L.id, y: -0.02, outline, surface: d.surface === 'tiles' ? 'tiles' : 'boards' };
+    if (d.railing && d.railing !== 'unknown') deck.railing = { type: d.railing };
+    if (d.stairs) {
+      // the edge farthest from the level's walls
+      const mids = outline.map((p, i) => [(p[0] + outline[(i + 1) % outline.length][0]) / 2, (p[1] + outline[(i + 1) % outline.length][1]) / 2]);
+      const wallPts = L.walls.flatMap((w) => [frame.toGame(w.a, L.id), frame.toGame(w.b, L.id)]);
+      const far = (m) => Math.min(...wallPts.map((q) => Math.hypot(q[0] - m[0], q[1] - m[1])));
+      const edge = mids.reduce((b, m, i) => (far(m) > far(mids[b]) ? i : b), 0);
+      deck.stairs = [{ edge }];
+    }
+    deck.source = `planbyggeren: ${d.kind === 'balcony' ? 'balkongen' : 'terrassen'} KI-en så, omrisset fra planen`;
+    out.push(deck);
+  }
+  return out;
 }
 
 /** An 00-ids.json for a generated house: its levels, rooms and light groups, the game's schema. */

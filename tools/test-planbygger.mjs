@@ -600,6 +600,35 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     const out = Qm.applyAnswers(d4, [q], { [q.id]: 'steep' });
     check('trappespørsmålet har «Bratt trapp eller loftstige», og svaret gjør trappa bratt', q.options.some((o) => o.value === 'steep') && out.levels[0].stairs[0].kind === 'steep');
   }
+  // the ticks and extension lines of a dimension inside a room, read as short walls (K15, F96, F97): they go; the inner
+  // wall at x 5 (it runs wall to wall) stays
+  {
+    const Gm = await imp('src/planbygger/generate.js');
+    const { lv: l6 } = make();
+    l6.walls.push({ id: 'tick', a: [0.15, 3], b: [0.29, 3], t: 0.085 }, { id: 'ext', a: [7.5, 0.15], b: [7.5, 0.85], t: 0.085 }, { id: 'thick', a: [2, 0.15], b: [2, 0.8], t: 0.2 });
+    const n = Gm.dropStubs(l6);
+    check('korte, tynne veggbiter med en løs ende i et rom forsvinner; innerveggen og en tykk stubb blir', n === 2 && !l6.walls.some((w) => w.id === 'tick' || w.id === 'ext') && l6.walls.some((w) => w.id === 'i') && l6.walls.some((w) => w.id === 'thick'), l6.walls.map((w) => w.id).join(','));
+  }
+  // a terrace drawn with boards outside the east wall: its outline from around the AI's point, on the wall's outer face
+  {
+    const DF = await imp('src/planbygger/deckfind.js');
+    const R = await imp('src/planbygger/regions.js');
+    const { lv: l5 } = make();
+    const ppm = 50;
+    const W = 14 * ppm;
+    const H = 8 * ppm;
+    const img = { width: W, height: H, data: new Uint8ClampedArray(W * H * 4).fill(255) };
+    const ink = (x, y, v = 200) => {
+      const i = (y * W + x) * 4;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+    };
+    // boards: thin grey lines every 0,1 m across x 8,15–11,5 m, y 1–5 m
+    for (let y = Math.round(1 * ppm); y < 5 * ppm; y += 5) for (let x = Math.round(8.15 * ppm); x < 11.5 * ppm; x++) ink(x, y, 225);
+    const r = DF.findDeck(img, ppm, l5, [9.8, 3], { found: R.levelRooms(l5) });
+    const near = (a, b) => Math.abs(a - b) <= 0.15;
+    check('terrassen av bord øst for huset: omrisset fra mønsteret, inntil veggens ytterside, og bord', !!r && near(r.outline[0][0], 8.15) && near(r.outline[1][0], 11.5) && near(r.outline[0][1], 1) && near(r.outline[2][1], 5) && r.against === 'e' && r.surface === 'boards', JSON.stringify(r));
+    check('og ingen terrasse der det ikke er tegnet noe', DF.findDeck(img, ppm, l5, [3, 7.5], { found: R.levelRooms(l5) }) === null);
+  }
   // the cladding the AI read → the house format's (notes/kledning.md; exported once the engine knows the key)
   {
     const cl = E.claddingOf({ levels: [], cladding: { main: { type: 'wood', direction: 'vertical', color: 'mørk grå' }, facades: [{ side: 'S', parts: [{ part: 'all', type: 'wood', direction: 'vertical', color: null }, { part: 'gable', type: 'panels', direction: null, color: 'hvit' }] }] } });

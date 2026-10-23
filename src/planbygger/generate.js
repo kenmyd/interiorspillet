@@ -73,6 +73,7 @@ import { autoScale, estimateScale, similarSource, innerArea, wallModes } from '.
 import { readFacade, houseRoof } from './facade.js';
 import { matchFacades, applyFacadeMatch, roofFromFacades } from './facadematch.js';
 import { applyHouseReading, refineRidge } from './houseread.js';
+import { findDecks } from './deckfind.js';
 import { findStairs, alignLevelTo } from './align.js';
 import { drawMarks, targetsFromLevel } from './marks.js';
 import { levelRooms } from './regions.js';
@@ -80,7 +81,7 @@ import { roomKindOf } from './ai.js';
 import { luma } from './image.js';
 import { guessKind, exportHouse, baseSpec, ownerOnly } from './export.js';
 import { createDoc, applyDetection, addStair, addWall, setOpeningKind, wallById, wallPoint, stairGeometry, DEFAULT_SETTINGS } from './model.js';
-import { clipPolygon, signedArea, dist, round, roundPt, pointInPolygon } from './geom.js';
+import { clipPolygon, signedArea, dist, round, roundPt, pointInPolygon, projectToSegment } from './geom.js';
 import { WALKABLE_NORMAL_Y } from '../config.js';
 import {
   applyAnswers,
@@ -869,6 +870,9 @@ export async function generate(inputs, opts = {}) {
   function semantics(d) {
     const firstStep = report.steps.length;
     const L = d.level;
+    // the ticks and extension lines of a dimension inside a room, read as short walls (K15)
+    const stubs = dropStubs(L);
+    if (stubs) step({ step: 'walls', file: d.file, method: 'stubs', confidence: 'medium', detail: `${stubs} korte, tynne veggbiter med en løs ende og samme rom på begge sider tatt bort (merkestreker fra målsettingen)` });
     const ai = d.aiPlan;
     const W = d.img.width;
     const H = d.img.height;
@@ -1225,16 +1229,17 @@ export async function generate(inputs, opts = {}) {
     let kind = 'straight';
     let note = null;
     if (type === 'half-turn') kind = 'u';
-    // (a quarter turn is the game's own type since the stair work, but its way down is not read from the drawing yet:
-    // orientStair finds the landings of a straight or U stair, and an L read that way came out the wrong way round –
-    // F125. It stays the nearest kind, and the stair placer turns it into an L the customer sees.)
-    else if (type === 'quarter-turn' || type === 'spiral' || !type) {
-      kind = shortSide >= 1.3 && longSide / shortSide < 1.7 ? 'u' : 'straight';
-      if (type) {
-        note = `${U.name}: trappa er ${type === 'spiral' ? 'en spiraltrapp' : 'kvartsvingt (svinger 90°)'}, og den er lagt inn som ${kind === 'u' ? 'U-trapp' : 'rett trapp'}. Velg «Kvartsvingt» i «Trapp» i 3D-visningen for å gjøre den om.`;
-        report.notes.push(note);
-      }
-    }
+    // a quarter turn is the game's own type (an L, the whole L in the box): orientStair finds the way whose landings are
+    // floor – the top flight's end on this level, the foot flight's side exit on the one below (F125: read as a U it
+    // came out the wrong way round). Without such a way, the nearest kind as before, and the stair placer makes the L
+    const nearest = shortSide >= 1.3 && longSide / shortSide < 1.7 ? 'u' : 'straight';
+    if (type === 'quarter-turn') kind = 'l';
+    else if (type === 'spiral' || !type) kind = nearest;
+    const fallbackNote = () => {
+      note = `${U.name}: trappa er ${type === 'spiral' ? 'en spiraltrapp' : 'kvartsvingt (svinger 90°)'}, og den er lagt inn som ${kind === 'u' ? 'U-trapp' : 'rett trapp'}. Velg «Kvartsvingt» i «Trapp» i 3D-visningen for å gjøre den om.`;
+      report.notes.push(note);
+    };
+    if (type === 'spiral') fallbackNote();
     const a = rect[0];
     const b = rect[1];
     const st = addStair(U, a, b);
@@ -1256,6 +1261,15 @@ export async function generate(inputs, opts = {}) {
         }
         U.walls = walls;
       }
+    }
+    // an L with no way down that has floor at both ends: the nearest kind, as before
+    if (!turn && kind === 'l') {
+      kind = nearest;
+      if (kind === 'straight') delete st.kind;
+      else st.kind = kind;
+      delete st.side;
+      turn = orientStair(st, { level: U, found: levelRooms(U) }, { level: lower.level, found: lowerFound }, toLowerPlan);
+      fallbackNote();
     }
     if (turn) Object.assign(st, turn);
     const axis = st.axis;
@@ -1470,6 +1484,19 @@ export async function generate(inputs, opts = {}) {
       if (c.ridge && im?.kind === 'plan') c.ridge = refineRidge(im.d.img, c.ridge, im.d.level.image?.pxPerM);
     }
     const got = applyHouseReading(doc, aiHouse, images, { sides });
+    // the terraces and balconies the AI saw: their outline from the plan (deckfind.js, the boards or tiles drawn
+    // outside the walls around its point); a porch (a covered entrance) has nothing drawn to find
+    let decked = 0;
+    for (const { d, kind } of houseImages) {
+      if (kind !== 'plan') continue;
+      const mine = (doc.decks ?? []).filter((x) => x.level === d.level.id && x.at && x.kind !== 'porch');
+      if (!mine.length) continue;
+      for (const r of findDecks(d.img, d.level.image?.pxPerM, d.level, mine, { found: levelRooms(d.level) })) {
+        Object.assign(r.deck, { outline: r.outline, surface: r.surface, against: r.against });
+        decked++;
+      }
+    }
+    if (decked) step({ step: 'decks', method: 'ai+texture', confidence: 'medium', detail: `${decked} terrasse${decked === 1 ? '' : 'r'} og balkong${decked === 1 ? '' : 'er'} med omriss fra planen (bord eller fliser utenfor veggene)` });
     step({ step: 'house', method: 'ai', confidence: 'medium', detail: `KI-en leste huset:${got.wings} takdel${got.wings === 1 ? '' : 'er'}${doc.roof?.pitch ? ` (${doc.roof.pitch}°)` : ''}, ${got.ceilings} himlingstekst${got.ceilings === 1 ? '' : 'er'}, kledning på ${got.cladding} fasade${got.cladding === 1 ? '' : 'r'}${doc.cladding?.main ? ` (mest ${doc.cladding.main.type}${doc.cladding.main.direction ? `, ${doc.cladding.main.direction}` : ''})` : ''}, ${got.decks} terrasse${got.decks === 1 ? '' : 'r'} og balkong${got.decks === 1 ? '' : 'er'}` });
   }
   // the ceilings of the top level when no drawing says anything about them: a loft follows the roof by itself
@@ -1869,13 +1896,16 @@ function orientStair(st, upper, lower, toLower) {
   const dy = y1 - y0;
   const long = dx >= dy ? 'x' : 'y';
   const cands = [];
-  for (const axis of st.kind === 'u' ? [long, long === 'x' ? 'y' : 'x'] : [long]) {
+  for (const axis of st.kind === 'u' || st.kind === 'l' ? [long, long === 'x' ? 'y' : 'x'] : [long]) {
     const across = axis === 'x' ? dy : dx;
     const along = axis === 'x' ? dx : dy;
     const half = (across - Math.min(0.2, Math.max(0.06, across * 0.06))) / 2;
     if (st.kind === 'u' && (half < 0.6 || along < half + 0.4)) continue;
+    // an L (export.js: flights of lFlight, the turn a square of it in the far corner) needs room for both flights
+    const fl = Math.max(0.7, Math.min(1.0, Math.min(across, along) * 0.5));
+    if (st.kind === 'l' && (across < fl + 0.4 || along < fl + 0.6)) continue;
     for (const down of axis === st.axis ? [st.down, -st.down] : [1, -1]) {
-      if (st.kind === 'u') for (const side of st.side === 1 ? [1, 0] : [0, 1]) cands.push({ axis, down, side });
+      if (st.kind === 'u' || st.kind === 'l') for (const side of st.side === 1 ? [1, 0] : [0, 1]) cands.push({ axis, down, side });
       else cands.push({ axis, down });
     }
   }
@@ -1924,6 +1954,20 @@ function orientStair(st, upper, lower, toLower) {
       const topMid = across(g.top, c.side === 1 ? W - half / 2 : half / 2);
       const footMid = across(g.top, c.side === 1 ? half / 2 : W - half / 2);
       ok = wide(upper, g.top, topMid, back) && wide(lower, g.top, footMid, back, toLower);
+    } else if (st.kind === 'l') {
+      // the L as export.js builds it: the top flight on the side at the first top corner (side 0) or the other, down
+      // the length; the foot flight along the far end, stepping off sideways out of the box beyond the other side
+      const W = g.width;
+      const A = g.length;
+      const w = Math.max(0.7, Math.min(1.0, Math.min(W, A) * 0.5));
+      const first = c.side !== 1;
+      const topMid = across(g.top, first ? w / 2 : W - w / 2);
+      const e = [(g.top[1][0] - g.top[0][0]) / (W || 1), (g.top[1][1] - g.top[0][1]) / (W || 1)];
+      const out = first ? e : [-e[0], -e[1]];
+      const sideAt = across(g.top, first ? W : 0);
+      const footMid = [sideAt[0] + g.down[0] * (A - w / 2), sideAt[1] + g.down[1] * (A - w / 2)];
+      const footEdge = [[sideAt[0] + g.down[0] * (A - w), sideAt[1] + g.down[1] * (A - w)], [sideAt[0] + g.down[0] * A, sideAt[1] + g.down[1] * A]];
+      ok = wide(upper, g.top, topMid, back) && wide(lower, footEdge, footMid, out, toLower);
     } else ok = wide(upper, g.top, across(g.top, g.width / 2), back) && wide(lower, g.foot, across(g.foot, g.width / 2), g.down, toLower);
     if (ok) return c;
   }
@@ -1967,6 +2011,30 @@ function dropLoose(L, minArea) {
     total += gone.size;
   }
   return total;
+}
+
+/**
+ * Short thin walls with a free end and the same room on both sides – the ticks and the extension lines of a dimension
+ * drawn inside a room (K15, F96, F97: hus7's garage got two «posts» in its walls, a 0,14 m tick and a 0,7 m extension
+ * line, both 8,5 cm): under 1 m long, at most 0,10 m thick, no opening, not exterior. → how many went
+ */
+export function dropStubs(L) {
+  const found = levelRooms(L);
+  const gone = new Set();
+  for (const w of L.walls) {
+    const len = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]);
+    if (w.exterior || !(w.t <= 0.1) || !(len > 0) || len >= 1 || (L.openings || []).some((o) => o.wall === w.id)) continue;
+    const free = [w.a, w.b].some((p) => !L.walls.some((x) => x !== w && !gone.has(x.id) && projectToSegment(p, x.a, x.b).d <= x.t / 2 + 0.05));
+    if (!free) continue;
+    const n = [-(w.b[1] - w.a[1]) / len, (w.b[0] - w.a[0]) / len];
+    const c = [(w.a[0] + w.b[0]) / 2, (w.a[1] + w.b[1]) / 2];
+    const k = w.t / 2 + 0.08;
+    const s1 = found.at(c[0] + n[0] * k, c[1] + n[1] * k);
+    const s2 = found.at(c[0] - n[0] * k, c[1] - n[1] * k);
+    if (s1 >= 0 && s1 === s2) gone.add(w.id);
+  }
+  if (gone.size) L.walls = L.walls.filter((w) => !gone.has(w.id));
+  return gone.size;
 }
 
 /** How a level's walls were read (report and notes). */

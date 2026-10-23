@@ -1057,6 +1057,33 @@ En skrå himling blir `type: 'roof'` uten høyde, altså helt opp til mønet.
   valget «Bratt trapp eller loftstige». På hus8 har sjakten ikke gulv bak foten i kjelleren (det nedre løpet er ikke
   tegnet), så den blir et spørsmål som før.
 
+### Dagen etter (23.10): kledningen, kvartsvingte trapper, terrasser og stubber
+
+- **Kledningen** er flettet inn (`claude/kledning-terrasser-c92360`). `claddingOf` skrives nå:
+  - hus4 får liggende kledning i beige og brun («beige/brun» blir #b39e80), slik fasadene viser;
+  - de andre husene får stående mørk kledning;
+  - sokkel, hjørnekasser og omramming;
+  - 0 feil i validatoren.
+- **Kvartsvingte trapper** fra tegningen blir L (`kind: 'l'`, motorens `quarter-turn-winder`). `orientStair` prøver
+  begge aksene, begge retningene og begge sidene. Det skal være gulv bak toppen av det øverste løpet i etasjen over, og
+  gulv sideveis ut av foten i etasjen under, slik `export.js` bygger L-en (F125 var lest som en U).
+  - hus1 får sin L: 41°, går opp og ned, og retningen er som i fasiten.
+  - Uten en slik retning blir det som før.
+  - hus8 og hus9: gjenkjenningen finner bare ett løp av trappa.
+- **Terrasser og balkonger** (`deckfind.js`): KI-ens punkt gir hvor de er.
+  - Et rektangel vokser fra det over mønsteret utenfor veggene (bord eller fliser, grått 242: hus5s bord er svært
+    svake).
+  - Det trimmes til første rad med strek, og siden mot huset legges på veggens ytterside.
+  - De største dekkene finnes først, og de neste holdes unna dem.
+  - En veranda (overbygd inngang) letes ikke etter.
+  - Funnet: hus2 to fliselagte terrasser, hus5 terrassen av bord mellom fløyene, og hus4 takterrassen over carporten
+    og balkongen langs nedre kant med glassrekkverk. Den smale stripa på 0,7 m langs øvre kant blir for grunn.
+  - 0 feil i validatoren, og sett i nettleseren.
+- **Stubber (K15):** korte, tynne veggbiter med løs ende og samme rom på begge sider fjernes (`dropStubs`). Kravet er
+  under 1 m, høyst 0,10 m tykke, ingen åpning og ikke yttervegg.
+  - hus7 (F96, F97): hjelpelinja og skråstreken fra målsettingen i garasjen.
+  - hus9: trinnstrekene i trappa og en strek ved badet.
+
 ### Åpent etter natta
 
 - **hus2:** KI-en legger GANG (merke 6) under «PLAN HIMLING», så gang og entré blir flate. De er åpne mot den skrå
