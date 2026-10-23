@@ -76,6 +76,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5279", "--strictPort"],
       "port": 5279
+    },
+    {
+      "name": "peis-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5276", "--strictPort"],
+      "port": 5276
     }
   ]
 }

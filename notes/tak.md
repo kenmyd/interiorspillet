@@ -125,7 +125,7 @@ begynner i taket, og går opp gjennom taket over seg.
 | Felt | Standard | Betydning |
 |---|---|---|
 | `id` | `pipe-<n>` | Unik id (blant alle id-ene i huset). |
-| `at` | – | Midten av pipa i plan, `[x, z]`. |
+| `at` | – | Midten av pipa i plan, `[x, z]`. Kan utelates når et ildsted nevner pipa (`fireplaces[].chimney`, notes/peis-og-ovn.md): da står den over ovnen eller inne i omrammingen. |
 | `size` | brick og render `[0.5, 0.5]`, steel `[0.2, 0.2]` | `[bredde langs x, dybde langs z]`. En stålpipe er rund, og diameteren er den minste. |
 | `material` | `'brick'` | `'brick'` (murt, teglstein), `'render'` (pusset) eller `'steel'` (rund stålpipe). |
 | `color` | brick `#8a4b3c`, render `#d9d5cd`, steel `#2f3135` | Fargen utenfor. |
@@ -144,6 +144,9 @@ begynner i taket, og går opp gjennom taket over seg.
   Alt over taket ligger i `pickables.ceilings` (skjules med taket) uten kollisjon.
 - **Navn:** `chimney-inside:<id>:<nivå>`, `chimney:<id>`, `chimney-cap:<id>`, `chimney-flue:<id>`,
   `chimney-flashing:<id>`.
+- **Ildsteder** (notes/peis-og-ovn.md): en stålpipe på en ovn begynner på toppen av ovnen (ingenting i etasjene under),
+  en murt pipe bak en peis begynner i rommet på toppen av omrammingen, og en ovn foran en murt pipe får et røykrør inn i
+  den. Pipa legges inn én gang, i `chimneys[]`.
 - **Feil:** ukjent `material` eller `from`, `at` eller `size` som ikke er gyldige, et nivå som ikke finnes, en id brukt
   to ganger, `from: 'roof'` uten tak over, ingen `top` og ikke noe tak over, en topp under 0,3 m over taket eller for
   nær bunnen. **Advarsler:** en pipe som står i en vegg, på kanten av taket eller ikke under et tak.

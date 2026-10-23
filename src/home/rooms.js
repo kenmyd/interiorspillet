@@ -10,6 +10,7 @@ import { buildDoor } from './doors.js';
 import { claddingMaterial, ledStrip } from './shell.js';
 import { buildRoofs } from './roof.js';
 import { buildChimneys } from './chimney.js';
+import { buildFireplaces } from './fireplace.js';
 import { buildDecks } from './decks.js';
 import { claddingPiece, gableLine } from './cladding.js';
 import { finishAt, finishKey } from './claddinggeom.js';
@@ -38,6 +39,8 @@ import { wallFinish, floorFinish, facadeFinish } from '../world/surfaces.js';
  *     the roof plane;
  *   • the decks (decks.js, layout.house.decks): terraces, balconies, porches and roof terraces in their level's root,
  *     with railings, stairs and their colliders (in `colliders`);
+ *   • the fireplaces and stoves (fireplace.js, layout.house.fireplaces – notes/peis-og-ovn.md): in their level's root
+ *     with their colliders, the fire's light in builtInLights (type 'fire'), the flames animated in update();
  *   • a floor per room (oak shared with the living room / tinted for the basement, vinyl, concrete, parquet) with the
  *     stairwell cut out, the ceilings (the basement's with the hole; roof windows in ceilings[].skylights: hole, shaft
  *     and window), black ceiling trims, the white edge face on the
@@ -1011,6 +1014,15 @@ export function buildRooms(ctx, layout, M = null) {
     for (const m of built.meshes) pickables.ceilings.push(m);
     colliders.push(...built.colliders);
   }
+  // ---- the fireplaces and stoves (notes/peis-og-ovn.md, fireplace.js): in their level's root with a collider each, the
+  //      fire's light in builtInLights (lighting.js: a flickering glow in its own light group), the flames in update()
+  let fires = null;
+  if (H.fireplaces?.length) {
+    const list = H.fireplaces.filter((f) => roomIds.has(f.roomId));
+    fires = buildFireplaces({ ...H, fireplaces: list }, { roots: ctx?.roots?.levels, fallback: group, keep, quality });
+    colliders.push(...fires.colliders);
+    builtInLights.push(...fires.lights);
+  }
   // ---- the decks (notes/kledning.md, decks.js): terraces, balconies, porches, roof terraces with railings and stairs
   if (H.decks?.length) {
     const built = buildDecks(H, { roots: ctx?.roots?.levels, fallback: group, keep, batchers, quality, mainLevelId: mainId });
@@ -1487,7 +1499,14 @@ export function buildRooms(ctx, layout, M = null) {
     }
   }
 
-  return contract({ setPaint });
+  if (!fires) return contract({ setPaint });
+  return contract({
+    setPaint,
+    update(dt, state) {
+      for (const d of doors) d.door?.update(dt, state);
+      fires.update(dt);
+    },
+  });
 }
 
 /**
