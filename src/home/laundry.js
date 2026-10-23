@@ -24,7 +24,7 @@ const _sinks = new Map();
  * Inset sink seen from inside: the same material set-up as the kitchen's basin (back faces, no maps), so it shares
  * the kitchen sink's shader program. Cached per colour.
  */
-function sinkMaterial(hex) {
+export function sinkMaterial(hex) {
   let m = _sinks.get(hex);
   if (!m) {
     m = new THREE.MeshStandardMaterial({ color: hex, roughness: 0.62, side: THREE.BackSide });
@@ -82,11 +82,26 @@ export function buildLaundryBench(F, b, k) {
   const ph = P.plinth ?? 0.08;
   const yT = h - t; // underside of the worktop
   const zf = d / 2 - 0.012; // face of the fronts, the worktop overhangs a little
+  // the spans with a carcass: all of it, or round the machines under the worktop (b.gaps, builtinplan.js)
+  const spans = [];
+  let x = -w / 2;
+  for (const [a, c] of (b.gaps || []).map((g) => [Math.max(-w / 2, g[0]), Math.min(w / 2, g[1])]).sort((p, q) => p[0] - q[0])) {
+    if (a - x > 0.02) spans.push([x, a]);
+    x = Math.max(x, c);
+  }
+  if (w / 2 - x > 0.02) spans.push([x, w / 2]);
   // carcass behind the fronts, plinth recessed 6 cm
-  F.box(w, yT - ph, d - 0.012 - FRONT_T, 0, ph + (yT - ph) / 2, -d / 2 + (d - 0.012 - FRONT_T) / 2, carcass);
-  F.box(w, ph, d - 0.08, 0, yF + ph / 2, -d / 2 + (d - 0.08) / 2, plinthM, { castShadow: false });
+  for (const [a, c] of spans) {
+    F.box(c - a, yT - ph, d - 0.012 - FRONT_T, (a + c) / 2, ph + (yT - ph) / 2, -d / 2 + (d - 0.012 - FRONT_T) / 2, carcass);
+    F.box(c - a, ph, d - 0.08, (a + c) / 2, yF + ph / 2, -d / 2 + (d - 0.08) / 2, plinthM, { castShadow: false });
+  }
   const mods = (P.modules || []).map((m) => ({ ...m, lx: localRange(k, b, 'x', m.x) }));
-  const fronts = mods.length ? mods : [{ kind: 'door', lx: [-w / 2, w / 2] }];
+  // without modules: doors of about 0.6 over each span
+  const doors = ([a, c]) => {
+    const n = Math.max(1, Math.round((c - a) / 0.6));
+    return Array.from({ length: n }, (_, i) => ({ kind: 'door', lx: [a + ((c - a) * i) / n, a + ((c - a) * (i + 1)) / n] }));
+  };
+  const fronts = mods.length ? mods : spans.flatMap(doors);
   const fh = yT - ph - GAP; // front height
   const fy0 = ph + GAP / 2;
   for (const m of fronts) {
@@ -116,13 +131,14 @@ export function buildLaundryBench(F, b, k) {
   const S = P.sink;
   let hole = null, sx = 0, sz = 0.02;
   if (S) {
-    sx = Number.isFinite(S.centerX) ? k.toLocal(S.centerX, b.position.z).x : 0;
+    // centerX: world x (the basement's bench runs along x); at: along the bench from its middle (local)
+    sx = Number.isFinite(S.centerX) ? k.toLocal(S.centerX, b.position.z).x : Number.isFinite(S.at) ? S.at : 0;
     hole = { x: sx, z: sz, w: S.w ?? 0.5, d: S.d ?? 0.42, r: 0.02 };
   }
   makeWorktop(F, { x0: -w / 2, x1: w / 2, z0: -d / 2, z1: d / 2, y0: yT, t }, topM, { hole });
   if (S) {
     const sinkHex = hexOr(C.sink, '#1a1a1a');
-    makeSink(F, { x: sx, z: sz, w: hole.w, d: hole.d, h: 0.19, topY: h }, { basin: sinkMaterial(sinkHex), steel: mat('steel', '#b0b3b6'), vent: mat('plastic', DARK, { roughness: 0.9, flat: true }) });
+    makeSink(F, { x: sx, z: sz, w: hole.w, d: hole.d, h: S.depth ?? 0.19, topY: h }, { basin: sinkMaterial(sinkHex), steel: mat('steel', '#b0b3b6'), vent: mat('plastic', DARK, { roughness: 0.9, flat: true }) });
     const tapMat = mat('black-metal', '#151515', { roughness: 0.32 });
     makeTap(F, { x: sx, z: sz - hole.d / 2 - 0.035, topY: h, h: 0.33 }, tapMat, { low: k.low });
   }
@@ -339,9 +355,21 @@ export function buildSlidingWardrobe(F, b, k) {
   }
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Utility sink (skyllekar): a short bench with a deep basin in the middle and one door under it
+
+/** @param {object} F @param {object} b @param {object} k */
+export function buildUtilitySink(F, b, k) {
+  const P = b.params || {};
+  const S = P.sink || {};
+  const sink = { w: Math.min(b.dims.w - 0.1, S.w ?? 0.45), d: Math.min(b.dims.d - 0.14, S.d ?? 0.38), depth: S.depth ?? 0.3, at: S.at ?? 0 };
+  buildLaundryBench(F, { ...b, params: { ...P, sink, modules: [] }, colors: { sink: '#b7babd', ...(b.colors || {}) } }, k);
+}
+
 /** Builders of this module by builtIns type (builtins.js dispatches on them). */
 export const LAUNDRY_BUILDERS = Object.freeze({
   'laundry-bench': buildLaundryBench,
+  'utility-sink': buildUtilitySink,
   'cabinet-row': buildCabinetRow,
   washer: buildWasher,
   dryer: buildDryer,

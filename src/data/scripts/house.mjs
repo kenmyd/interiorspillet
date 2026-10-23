@@ -55,6 +55,7 @@ import { resolveDecks } from '../../home/deckgeom.js';
 import { lightingIssues, ROOM_USES } from '../../home/lightplan.js';
 import { resolveFurnishing } from '../../home/furnishgeom.js';
 import { WINDOW_SHAPES, windowOutline, isConvex, spanAtX } from '../../home/windowshape.js';
+import { hostOf, tileSpecs, SLOT_TYPES } from '../../home/builtinplan.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../..');
@@ -2147,6 +2148,59 @@ export function validateHouse(spec, opts = {}) {
     if (r && goodRooms.has(r.id) && physical(r) && Array.isArray(b.position) && b.position.length === 3 && !inOrOn([b.position[0], b.position[2]], r.polygon, 0.05)) {
       warn(`${where}: står utenfor rommet ${r.id}`);
     }
+  }
+  // the kitchens and wet rooms of generated houses (notes/kjokken-bad-genererte-hus.md, home/builtinplan.js)
+  const builtInList = objs(spec.builtIns);
+  const oneOf = (where, P, key, allowed) => {
+    if (P[key] != null && !allowed.includes(P[key])) error(`${where}: params.${key} «${P[key]}» er ikke en av ${allowed.map(String).join(', ')}`);
+  };
+  const HUNG = new Set(['wall-cabinets', 'hood', 'mirror', 'mirror-round', 'vanity', 'wc', 'towel-radiator']);
+  for (const b of builtInList) {
+    const where = `builtIns/${b.id}`;
+    if (isObj(b.dims) && !['w', 'd', 'h'].every((k) => num(b.dims[k]) && b.dims[k] > 0)) error(`${where}: dims må ha w, d og h over 0 (m)`);
+    const P = isObj(b.params) ? b.params : {};
+    if (b.type === 'shower') {
+      oneOf(where, P, 'enclosure', ['glass', 'none']);
+      oneOf(where, P, 'door', ['auto', 'sliding', 'swing', 'none']);
+      oneOf(where, P, 'drain', [true, false, 'linear']);
+      oneOf(where, P, 'shape', ['rect', 'pentagon']);
+    }
+    if (b.type === 'bathtub') oneOf(where, P, 'style', ['built-in', 'freestanding']);
+    if (b.type === 'floor-drain') oneOf(where, P, 'shape', ['round', 'square', 'linear']);
+    if (b.type === 'sink' && P.bowls != null && ![1, 2].includes(P.bowls)) error(`${where}: params.bowls må være 1 eller 2`);
+    if ((b.type === 'kitchen-bench' || b.type === 'kitchen-island') && P.backsplash != null && P.backsplash !== true && P.backsplash !== false && !isObj(P.backsplash)) error(`${where}: params.backsplash må være true, false eller { color, size, height }`);
+    if (b.type === 'kitchen-island' && P.backsplash) warn(`${where}: en øy står ikke mot en vegg – backsplash gjelder benker med mount «wall»`);
+    if (HUNG.has(b.type) && b.mount !== 'wall') error(`${where}: ${b.type} henger på en vegg – mount «wall» og wallId`);
+    if ((b.type === 'wall-cabinets' || b.type === 'hood') && Array.isArray(b.position) && num(b.position[1]) && b.position[1] < 1.2) warn(`${where}: underkanten står ${fmt(b.position[1])} m over gulvet (position[1] er underkanten; overskap henger vanligvis 1,45)`);
+    const tallCold = (b.type === 'fridge' || b.type === 'freezer') && num(b.dims?.h) && b.dims.h > 1.0;
+    if (SLOT_TYPES.includes(b.type) && !tallCold && !hostOf(b, builtInList)) warn(`${where}: ${b.type} står ikke i en kitchen-bench eller kitchen-island i rommet – den får en egen benk`);
+  }
+  for (const r of rooms) {
+    if (r.wallTiles == null) continue;
+    const where = `rooms/${r.id}: wallTiles`;
+    if (!(r.wallTiles === true || isObj(r.wallTiles) || Array.isArray(r.wallTiles))) {
+      error(`${where} må være true, { height, from, color, size, wallIds, u } eller en liste av slike`);
+      continue;
+    }
+    if (Array.isArray(r.wallTiles) && r.wallTiles.some((t) => !isObj(t))) error(`${where}: hver oppføring må være et objekt`);
+    tileSpecs(r.wallTiles).forEach((t, i) => {
+      const w0 = Array.isArray(r.wallTiles) ? `${where}[${i}]` : where;
+      if (t.height != null && t.height !== 'ceiling' && !(num(t.height) && t.height > 0)) error(`${w0}: height må være «ceiling» eller en høyde over gulvet i meter`);
+      if (t.from != null && !(num(t.from) && t.from >= 0)) error(`${w0}: from må være en høyde ≥ 0`);
+      if (num(t.from) && num(t.height) && t.from >= t.height) error(`${w0}: from (${fmt(t.from)}) må være under height (${fmt(t.height)})`);
+      if (t.color != null && !(typeof t.color === 'string' && /^#[0-9a-f]{6}$/i.test(t.color))) error(`${w0}: color må være '#rrggbb'`);
+      if (t.size != null && !(Array.isArray(t.size) && t.size.length === 2 && t.size.every((v) => num(v) && v > 0 && v <= 3))) error(`${w0}: size må være [bredde, høyde] i meter`);
+      for (const id of arr(t.wallIds)) {
+        const w = wallsById.get(id);
+        if (!w) error(`${w0}: veggen «${id}» finnes ikke`);
+        else if (roomOf(w) !== r.id) error(`${w0}: veggen ${id} er i rommet ${roomOf(w)}, ikke ${r.id}`);
+      }
+      if (t.u != null && !(Array.isArray(t.u) && t.u.length === 2 && t.u.every(num))) error(`${w0}: u må være [fra, til] langs veggen`);
+      else if (t.u != null && arr(t.wallIds).length !== 1) error(`${w0}: u gjelder én vegg – oppgi wallIds med én vegg`);
+    });
+  }
+  for (const r of rooms) {
+    if (r.floor?.material === 'tiles' && r.floor.size != null && !(Array.isArray(r.floor.size) && r.floor.size.length === 2 && r.floor.size.every((v) => num(v) && v > 0 && v <= 3))) error(`rooms/${r.id}: floor.size må være [bredde, dybde] i meter`);
   }
   for (const f of objs(spec.fixtures)) {
     if (f.wallId == null) continue;

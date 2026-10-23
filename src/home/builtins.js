@@ -1,14 +1,23 @@
 import * as THREE from 'three';
 import { MeshBatcher } from '../world/buildKit.js';
 import { paint } from './materials.js';
-import { wallFinish } from '../world/surfaces.js';
+import { wallFinish, surfaceFinish } from '../world/surfaces.js';
 import { BATHROOM_BUILDERS } from './bathroom.js';
 import { LAUNDRY_BUILDERS } from './laundry.js';
+import { KITCHEN_BUILDERS } from './kitchenkit.js';
+import { planBuiltIns } from './builtinplan.js';
+import { addWallTiles } from './walltiles.js';
 
 /**
  * BUILT-INS – fixed fittings of the house that cannot be moved (notes/hele-huset-design.md §1.2 `builtIns[]`, §2.1):
- * wc, vanity, shower, mirror-round, floor-drain, towel-radiator (bathroom.js), laundry-bench, cabinet-row, washer,
- * dryer, water-heater, wardrobe-sliding (laundry.js).
+ * wc, vanity, shower, mirror-round, mirror, bathtub, floor-drain, towel-radiator (bathroom.js), laundry-bench,
+ * utility-sink, cabinet-row, washer, dryer, water-heater, wardrobe-sliding (laundry.js), and the kitchens of generated
+ * houses: kitchen-bench, kitchen-island, wall-cabinets, hood, tall-cabinet, fridge, freezer, fridge-freezer, oven-tower
+ * and the appliances in a bench – sink, dishwasher, hob, oven (kitchenkit.js; notes/kjokken-bad-genererte-hus.md).
+ * Before building, builtinplan.js planBuiltIns works out what the symbols of a generated house mean together (the
+ * appliances become slots of their bench, a shower its glass and drain from the walls round it) and the wall tiles of
+ * the rooms (rooms[].wallTiles …), built here into the room's batch (walltiles.js). The owner's house passes through
+ * it unchanged.
  *
  *   buildBuiltIns(ctx, layout) → { group, walls, windows, doors, pickables, builtInLights, colliders, update, setPaint, dispose }
  *
@@ -42,6 +51,7 @@ export function buildBuiltIns(ctx, layout) {
     pickables: { floor: [], walls: [], ceilings: [], windows: [] },
     builtInLights: [],
     colliders: [],
+    wallTiles: [], // { roomId, wallId, zones, triangles }
     update() {},
     setPaint() {},
     dispose() {
@@ -49,8 +59,9 @@ export function buildBuiltIns(ctx, layout) {
     },
   };
   const H = layout?.house;
-  const list = H?.builtIns || [];
-  if (!list.length) return result;
+  const plan = planBuiltIns(H);
+  const list = plan.list;
+  if (!list.length && !plan.tiles.size) return result;
 
   const low = ctx?.quality?.level === 'low';
   const roots = ctx?.roots;
@@ -78,6 +89,15 @@ export function buildBuiltIns(ctx, layout) {
     followers.push(...mine.followers);
     for (const l of mine.lights) result.builtInLights.push({ ...l, label: groupLabel[l.group] ?? b.name ?? b.id, roomId: b.roomId, levelId: b.levelId });
     result.colliders.push(...worldColliders(b, mine, frame));
+  }
+  // the wall tiles of each room, in its batch (one merged mesh per tile finish)
+  for (const [roomId, walls] of plan.tiles) {
+    let batch = batchers.get(roomId);
+    if (!batch) batchers.set(roomId, (batch = new MeshBatcher(`built-ins:${roomId}`)));
+    for (const { wall, zones } of walls) {
+      const triangles = addWallTiles(batch, wall, zones, tileMaterial);
+      result.wallTiles.push({ roomId, wallId: wall.id, zones, triangles });
+    }
   }
 
   const geometries = [];
@@ -214,7 +234,16 @@ class StaticFrame {
 }
 
 /** Builders by builtIns type. */
-export const BUILDERS = Object.freeze({ ...BATHROOM_BUILDERS, ...LAUNDRY_BUILDERS });
+export const BUILDERS = Object.freeze({ ...BATHROOM_BUILDERS, ...LAUNDRY_BUILDERS, ...KITCHEN_BUILDERS });
+
+/** Material of a tile finish { color, size, grout, groutColor } (cached by surfaces.js; matt paint without textures). */
+function tileMaterial(f) {
+  try {
+    return surfaceFinish('tiles', f.color, { size: f.size, grout: f.grout, groutColor: f.groutColor ?? undefined }) ?? paint(f.color);
+  } catch {
+    return paint(f.color);
+  }
+}
 
 const UP = new THREE.Vector3(0, 1, 0);
 const DEG = Math.PI / 180;
@@ -252,6 +281,7 @@ function makeKit(b, frame, H, wallsById, low, mine) {
     dirToLocal: (x, z) => new THREE.Vector3(x * c + z * s, 0, -x * s + z * c),
     wall: (id) => (id ? wallsById[id] ?? null : null),
     wallMaterial: (wallId, hex) => (hex ? paint(hex) : wallMaterialOf(wallsById[wallId], null)),
+    tileMaterial,
     surface(geometry, material, { wallId = null, follow = false } = {}) {
       const mesh = new THREE.Mesh(geometry, material);
       mesh.name = `built-in:${b.id}:surface`;

@@ -90,6 +90,12 @@
       "port": 5271
     },
     {
+      "name": "kjokkenbad-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5271", "--strictPort"],
+      "port": 5271
+    },
+    {
       "name": "takdetaljer-test",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5279", "--strictPort"],

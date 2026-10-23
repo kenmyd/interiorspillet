@@ -20,7 +20,7 @@
 // material carries the same map set as the textured kinds (§4.16).
 import * as THREE from 'three';
 import { mat, emissive } from './materials.js';
-import { place } from '../world/buildKit.js';
+import { place, applyBoxUV } from '../world/buildKit.js';
 import { tube, smoothNormals } from '../models/kit.js';
 import { makeTap, FRONT_T, GAP } from './fittings.js';
 import { surfaceFinish, cloudContrast } from '../world/surfaces.js';
@@ -170,15 +170,25 @@ export function buildWC(F, b, k) {
   const M = wetMaterials(b);
   const bowl = { w: 0.36, d: 0.54, rimH: 0.42, ...(P.bowl || {}) };
   const yF = k.floorY ?? 0; // local y of the floor
-  // cistern box: own mesh in the wall's finish (a repaint of the wall repaints it)
-  const boxMat = k.wallMaterial(b.wallId, b.colors?.box);
+  // cistern box: own mesh in the wall's finish (a repaint of the wall repaints it) – or tiled like the wall in a tiled
+  // room (b.tileFinish, builtinplan.js: UVs in metres, it does not follow the paint)
+  const tiled = b.tileFinish && k.tileMaterial;
+  const boxMat = tiled ? k.tileMaterial(b.tileFinish) : k.wallMaterial(b.wallId, b.colors?.box);
+  const follow = !tiled && (!b.colors?.box || b.colors.box === k.wall(b.wallId)?.paintHex);
+  // tiles want UVs in metres (applyBoxUV works on unindexed triangles)
+  const metres = (g) => {
+    if (!tiled) return g;
+    const n = g.toNonIndexed();
+    g.dispose();
+    return applyBoxUV(n), n;
+  };
   const box = new THREE.BoxGeometry(w, h - 0.012, d);
   box.translate(0, (h - 0.012) / 2, 0);
-  k.surface(box, boxMat, { wallId: b.wallId, follow: !b.colors?.box || b.colors.box === k.wall(b.wallId)?.paintHex });
+  k.surface(metres(box), boxMat, { wallId: b.wallId, follow });
   // top shelf (same finish) + aluminium edge profiles: along the top front and both top sides, down both front edges
   const shelf = new THREE.BoxGeometry(w + 0.004, 0.012, d + 0.004);
   shelf.translate(0, h - 0.006, 0.002);
-  k.surface(shelf, boxMat, { wallId: b.wallId, follow: !b.colors?.box || b.colors.box === k.wall(b.wallId)?.paintHex });
+  k.surface(metres(shelf), boxMat, { wallId: b.wallId, follow });
   const e = 0.012;
   F.box(w + 0.006, e, e, 0, h - e / 2 + 0.001, d / 2 + 0.004 - e / 2 + 0.001, M.alu, { collide: false });
   for (const s of [-1, 1]) {
@@ -350,6 +360,9 @@ export function buildShower(F, b, k) {
   } else {
     runs = [{ a: pts[0], b: pts[1], panels: [{ kind: 'fixed' }] }, { a: pts[1], b: pts[2], panels: [{ kind: 'fixed' }, { kind: 'sliding', handle: 'bar' }] }];
   }
+  // a shower without walls (enclosure 'none', builtinplan.js): no glass, nothing to bump into – only the set
+  const open = P.enclosure === 'none';
+  if (open) runs = [];
   const y0 = yF + 0.012; // glass bottom
   const ym = y0 + H / 2;
   const up = new THREE.Vector3(0, 1, 0);
@@ -414,7 +427,7 @@ export function buildShower(F, b, k) {
   }
   // U-profiles on the walls at the two outer ends of the glass
   const first = runs[0], last = runs[runs.length - 1];
-  for (const [p, q] of [[first.a, first.b], [last.b, last.a]]) {
+  for (const [p, q] of runs.length ? [[first.a, first.b], [last.b, last.a]] : []) {
     const dir = q.clone().sub(p).normalize();
     const at = p.clone().addScaledVector(dir, 0.015); // the profile's back on the wall face
     F.box(0.03, H + 0.004, 0.022, 0, 0, 0, prof, { matrix: new THREE.Matrix4().makeBasis(dir, up, new THREE.Vector3(-dir.z, 0, dir.x)).setPosition(at.x, ym, at.z), collide: false });
@@ -446,7 +459,9 @@ export function buildShower(F, b, k) {
   }
   // colliders: rect → the footprint; pentagon → the two return strips and steps along the diagonal
   const yTop = y0 + H;
-  if (pentagon && pts.length === 4) {
+  if (open) {
+    // walk in: no collider
+  } else if (pentagon && pts.length === 4) {
     // boxes from the walls' corner to points along the diagonal: a staircase under the glass (≤ half a step past it)
     const C = k.toLocal(wallCornerW[0], wallCornerW[1]);
     const box = (q) => k.collider(new THREE.Box3(new THREE.Vector3(Math.min(C.x, q.x), yF, Math.min(C.z, q.z)), new THREE.Vector3(Math.max(C.x, q.x), yTop, Math.max(C.z, q.z))));
@@ -485,6 +500,8 @@ function buildShowerSet(F, b, k, footprint) {
     along = new THREE.Vector3(1, 0, 0);
     out = new THREE.Vector3(0, 0, 1);
   }
+  // on a tiled wall the set stands on the tiles (s.standoff, builtinplan.js TILE_T)
+  if (s.standoff) origin.addScaledVector(out, s.standoff);
   const W = F.frame(new THREE.Matrix4().makeBasis(along, up, out).setPosition(origin.x, yF, origin.z));
   const seg = k.low ? 10 : 16;
   const th = s.thermostatH ?? 1.0;
@@ -686,6 +703,13 @@ export function buildFloorDrain(F, b, k) {
   const dark = wetMaterials(b).dark;
   const y = (k.floorY ?? 0) + 0.0012;
   const seg = k.low ? 24 : 40;
+  if (P.shape === 'linear') {
+    // a channel drain along local x: a steel strip with a long dark slot down the middle (dims.w long, dims.d wide)
+    const len = b.dims?.w ?? 0.8, wd = b.dims?.d ?? 0.07;
+    F.box(len, 0.0024, wd, 0, y, 0, finish, { collide: false, castShadow: false });
+    F.box(len - 0.03, 0.0026, Math.min(0.014, wd * 0.25), 0, y + 0.0002, 0, dark, { collide: false, castShadow: false });
+    return;
+  }
   if (P.shape === 'square') {
     F.box(size, 0.0024, size, 0, y, 0, finish, { collide: false, castShadow: false });
     for (let i = 0; i < 5; i++) F.box(size * 0.7, 0.0026, 0.006, 0, y + 0.0002, -size * 0.3 + (i * size * 0.6) / 4, dark, { collide: false, castShadow: false });
@@ -702,6 +726,88 @@ export function buildFloorDrain(F, b, k) {
   F.cylinder(size * 0.07, size * 0.07, 0.0026, 0, y + 0.0002, 0, dark, { segments: 16, collide: false, castShadow: false });
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Bathtub: built in (params.style 'built-in', default: a white apron to the rim, the back and ends on the walls) or
+// freestanding (an oval shell on the floor); the basin lofted down inside the rim, a drain and a mixer on the rim at
+// the end params.tapEnd ('left' | 'right', default the left end seen from the front) – a freestanding tub gets a
+// floor-standing spout
+
+/** @param {object} F @param {object} b @param {object} k */
+export function buildBathtub(F, b, k) {
+  const { w, d, h } = b.dims;
+  const P = b.params || {};
+  const free = P.style === 'freestanding';
+  const yF = k.floorY ?? 0;
+  const seg = k.low ? 5 : 9;
+  const enamel = mat('ceramic', hexOr(b.colors?.tub, '#f4f4f2'), { roughness: 0.12 });
+  // a built-in tub's apron in the room's tiles (b.tileFinish, builtinplan.js), else enamel
+  const apron = !free && b.tileFinish && k.tileMaterial ? k.tileMaterial(b.tileFinish) : enamel;
+  const tapMat = P.tap === 'chrome' ? mat('chrome', '#dfe1e3') : mat('black-metal', '#151515', { roughness: 0.3 });
+  const rim = free ? 0.045 : 0.07;
+  const rOut = free ? Math.min(d * 0.48, w * 0.3) : 0.02;
+  const out = roundedRectXZ(w, d, rOut, rOut, seg, -d / 2);
+  const iw = w - 2 * rim, id = d - 2 * rim;
+  const rIn = free ? Math.max(0.05, rOut - rim) : 0.12;
+  const hole = roundedRectXZ(iw, id, rIn, rIn, seg, -id / 2);
+  const topT = 0.02;
+  if (free) {
+    // the shell: narrower at the foot, a thin top edge
+    const shell = loft(out, [
+      { y: yF, sx: 0.84, sz: 0.8 },
+      { y: yF + 0.06, sx: 0.88, sz: 0.85 },
+      { y: yF + (h - yF) * 0.55, sx: 0.97, sz: 0.96 },
+      { y: h - topT, sx: 1, sz: 1 },
+    ], { capBottom: true, capTop: false });
+    F.add(shell, enamel, { collide: false });
+    shell.dispose();
+  } else {
+    // the apron and the back / ends as panels (a solid box would close the basin under the rim)
+    const ah = h - topT - yF, ay = yF + ah / 2, pt = 0.02;
+    for (const sz of [-1, 1]) F.box(w, ah, pt, 0, ay, sz * (d / 2 - pt / 2), apron);
+    for (const sx of [-1, 1]) F.box(pt, ah, d - 2 * pt, sx * (w / 2 - pt / 2), ay, 0, apron);
+  }
+  // the rim with the basin's opening, and the basin
+  const shape = shapeXZ(out);
+  shape.holes.push(pathXZ(hole));
+  const slab = plate(shape, h - topT, topT, seg);
+  F.add(slab, enamel, { collide: false });
+  slab.dispose();
+  const depth = Math.min(0.45, h - yF - 0.08);
+  const basin = loft(hole, [
+    { y: h - depth, sx: 0.86, sz: 0.78 },
+    { y: h - depth + 0.04, sx: 0.93, sz: 0.88 },
+    { y: h - 0.06, sx: 0.99, sz: 0.98 },
+    { y: h - 0.001, sx: 1, sz: 1 },
+  ], { inward: true, capTop: false, capBottom: true });
+  F.add(basin, enamel, { collide: false });
+  basin.dispose();
+  const sx = P.tapEnd === 'right' ? 1 : -1;
+  F.cylinder(0.025, 0.025, 0.004, sx * (iw / 2 - 0.12), h - depth + 0.002, 0, tapMat, { segments: 16, collide: false, castShadow: false });
+  if (free) {
+    // floor-standing spout at the tap end
+    const x = sx * (w / 2 + 0.09);
+    F.cylinder(0.018, 0.022, h + 0.18 - yF, x, yF + (h + 0.18 - yF) / 2, 0, tapMat, { segments: 14, collide: false });
+    const spout = tube([[x, h + 0.17, 0], [x - sx * 0.06, h + 0.2, 0], [x - sx * 0.16, h + 0.14, 0]], 0.012, { radial: 10, seg: 12 });
+    F.add(spout, tapMat, { collide: false });
+    spout.dispose();
+  } else {
+    makeTap(F, { x: sx * (w / 2 - rim / 2), z: -d / 2 + rim / 2 + 0.01, topY: h, h: 0.16, style: 'basin' }, tapMat, { low: k.low });
+  }
+  k.collider(new THREE.Box3(new THREE.Vector3(-w / 2, yF, -d / 2), new THREE.Vector3(w / 2, h, d / 2)));
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Rectangular mirror (mount 'wall', position y = underside): a mirror pane on a dark backing set back from its edge
+
+/** @param {object} F @param {object} b @param {object} k */
+export function buildMirror(F, b) {
+  const { w, d, h } = b.dims;
+  const backing = mat('painted', '#2a2a2b', { roughness: 0.8 });
+  const mirror = mat('mirror', '#e9ebea', { roughness: 0.1 });
+  F.box(Math.max(0.05, w - 0.06), Math.max(0.05, h - 0.06), d - 0.006, 0, h / 2, -0.003, backing, { collide: false });
+  F.box(w, h, 0.005, 0, h / 2, d / 2 - 0.0025, mirror, { collide: false });
+}
+
 /** Builders of this module by builtIns type (builtins.js dispatches on them). */
 export const BATHROOM_BUILDERS = Object.freeze({
   wc: buildWC,
@@ -710,4 +816,6 @@ export const BATHROOM_BUILDERS = Object.freeze({
   'mirror-round': buildRoundLedMirror,
   'towel-radiator': buildTowelRadiator,
   'floor-drain': buildFloorDrain,
+  bathtub: buildBathtub,
+  mirror: buildMirror,
 });
