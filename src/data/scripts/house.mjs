@@ -51,6 +51,7 @@ import { resolveRoofs, roofField, ceilingSurface, surfaceProfile, insideHalfPlan
 import { resolveCladding, groundLevel } from '../../home/claddinggeom.js';
 import { resolveChimneys } from '../../home/chimneygeom.js';
 import { resolveDecks } from '../../home/deckgeom.js';
+import { resolveFurnishing } from '../../home/furnishgeom.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../..');
@@ -1493,6 +1494,18 @@ export function validateHouse(spec, opts = {}) {
       const inWall = [...wallInfo.values()].filter((wi) => lids.has(wi.level) && wi.t > 0 && wi.w.backOf == null)
         .filter((wi) => probe.some((q) => inOrOn(q, [wi.w.from, wi.w.to, add(wi.w.to, mul(wi.n, -wi.t)), add(wi.w.from, mul(wi.n, -wi.t))], -0.001)));
       if (inWall.length) warn(`chimneys/${c.id}: pipa står i veggen ${inWall.map((wi) => wi.w.id).join(', ')} – flytt den inn i rommet eller ut av huset`);
+    }
+  }
+
+  // ---- the furnishing of a generated house (notes/moblering-genererte-hus.md, home/furnishgeom.js): the settings and
+  //      the plan's hints, the same model as layout.js; a hint that is in no room is a warning (it is not used)
+  if (spec.furnishing != null) {
+    const fr = resolveFurnishing(spec.furnishing, { roomIds: rooms.map((r) => r.id), levelIds: levels.map((l) => l.id) });
+    for (const i of fr.issues) (i.level === 'error' ? error : warn)(i.msg);
+    for (const h of fr.furnishing?.hints ?? []) {
+      if (h.roomId) continue;
+      const inRoom = rooms.filter(physical).some((r) => (!h.levelId || (r.levelId ?? 'hoved') === h.levelId) && Array.isArray(r.polygon) && inOrOn(h.at, r.polygon, 0.05));
+      if (!inRoom) warn(`furnishing.hints: «${h.kind}» ved [${h.at.map((v) => v.toFixed(2)).join(', ')}] står ikke i noe rom – brukes ikke`);
     }
   }
 

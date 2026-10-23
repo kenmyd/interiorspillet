@@ -6,6 +6,7 @@ import { resolveRoofs, roofField, ceilingSurface, splitTriangles, liftTriangles,
 import { resolveCladding, groundLevel } from './claddinggeom.js';
 import { resolveDecks, deckWalkRect } from './deckgeom.js';
 import { resolveChimneys } from './chimneygeom.js';
+import { resolveFurnishing } from './furnishgeom.js';
 
 /**
  * Room layout: reads data/room-spec.json and derives typed, world-space values for every module (shell, lighting,
@@ -130,6 +131,8 @@ import { resolveChimneys } from './chimneygeom.js';
  *                                          spec.decks): { …data, top, bottom, groundY, edges, railings, stairs, posts, surfaceY(x, z) }
  * @property {Object[]} chimneys          the chimneys (home/chimneygeom.js resolveChimneys; [] without spec.chimneys): { id,
  *                                          material, at, size, footprint, bottomY, topY, pieces (inside, per level), roofLevelId }
+ * @property {Object|null} furnishing     a generated house's furnishing (notes/moblering-genererte-hus.md, home/furnishgeom.js
+ *                                          resolveFurnishing; null without spec.furnishing): { auto, rooms, hints, seed }
  * @property {Object[]} lightGroups      the six living-room groups + the data groups { id, label, roomId (null: several rooms or none, e.g. boder, ute), dimmer (start level), dimmable, auto }
  * @property {Object[]} floorOpenings     { id, levelId, roomId, stairId, polygon, area, contains(x, z) (strict) }
  * @property {Object[]} stairs            { …data, fromLevel, toLevel, risers, rise, riser, topY, bottomY, footprint, wellPolygon, walkLine,
@@ -1441,6 +1444,14 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.where}: ${i.msg}`);
     chimneys = r.chimneys;
   }
+  // ---- the furnishing of a generated house (notes/moblering-genererte-hus.md, home/furnishgeom.js): only the settings
+  //      and the plan's hints – the furniture itself is furnishHouse(layout, catalog). Without spec.furnishing: null.
+  let furnishing = null;
+  if (spec.furnishing != null) {
+    const r = resolveFurnishing(spec.furnishing, { roomIds: rooms.map((rm) => rm.id), levelIds: levels.map((l) => l.id) });
+    for (const i of r.issues) if (i.level === 'error') console.warn(`[layout] ${i.msg}`);
+    furnishing = r.furnishing;
+  }
 
   /**
    * Room at a point. physical (default): the room of the level at y whose plan contains (x, z) – lighting and
@@ -1600,6 +1611,8 @@ export function buildLayout(spec = roomSpec, palette = paletteData, { devWarning
     decks,
     /** the chimneys (notes/tak.md, home/chimneygeom.js resolveChimneys); [] without spec.chimneys */
     chimneys,
+    /** the furnishing settings and hints (home/furnishgeom.js resolveFurnishing); null without spec.furnishing */
+    furnishing,
     outsideHouse: deepClone(spec.outsideHouse) ?? null,
     floorYAt,
     isInside: isInsideHouse,

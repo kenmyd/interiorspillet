@@ -1,4 +1,6 @@
 import schema from '../data/archetypes.json';
+import { allProducts, productToItemSpec } from '../catalog/index.js';
+import { furnishHouse } from './furnishgeom.js';
 
 /**
  * The furniture that stands in the real room today (room-spec «furniture») as DesignState item specs.
@@ -16,7 +18,28 @@ import schema from '../data/archetypes.json';
  * The rest of the house (hele-huset step 12+31i): `originalItems(layout, { rooms })` also gives the original furniture
  * of the other rooms (layout.house.furniture: bedroom, bathroom, basement …) with `roomId`, `level` and a y over the
  * room's own floor. Without `rooms` the result is the living room's, byte for byte as before.
+ *
+ * A generated house (notes/moblering-genererte-hus.md): with `furnishing` in the house file the rooms get the furniture
+ * home/furnishgeom.js chooses from the catalogue (furnishedItems: catalogue items, uid 'mb-<room>-<n>'), after the
+ * data's own. The owner's house has no `furnishing`: nothing changes.
  */
+
+/** The catalogue as home/furnishgeom.js reads it (one object: furnishHouse caches per layout and catalogue). */
+const CATALOG = { products: allProducts(), toSpec: productToItemSpec };
+
+/**
+ * The furniture the game chose for a generated house (layout.house.furnishing), as item specs: every room's, or only
+ * those of `rooms`. [] without furnishing.
+ * @param {Object} layout
+ * @param {'all'|string|string[]} [rooms]
+ */
+export function furnishedItems(layout, rooms = 'all') {
+  if (!layout?.house?.furnishing) return [];
+  const all = furnishHouse(layout, CATALOG).items;
+  if (rooms === 'all') return all.map(clone);
+  const want = new Set(Array.isArray(rooms) ? rooms : [rooms]);
+  return all.filter((it) => want.has(it.roomId)).map(clone);
+}
 
 const VALID_MATERIALS = new Set(Object.values(schema.materials).flat());
 
@@ -603,6 +626,8 @@ export function originalItems(layout, opts = {}) {
     }
     items.push(clone(item));
   }
+  // a generated house: the furniture the game chose (catalogue items, y over the room's floor like the data's)
+  if (opts?.rooms != null) items.push(...furnishedItems(layout, opts.rooms));
   liftOntoRugs(items);
   return items;
 }

@@ -1,5 +1,5 @@
 import { Emitter } from '../core/Events.js';
-import { originalItems } from '../home/existing.js';
+import { originalItems, furnishedItems } from '../home/existing.js';
 import { getProduct } from '../catalog/index.js';
 import { layout as defaultLayout } from '../home/layout.js';
 import schema from '../data/archetypes.json';
@@ -459,6 +459,8 @@ function originalsOf(layout) {
   if (c && c.gen === _limitsGen) return c;
   const living = originalItems(layout);
   const withFurniture = new Set((layout?.house?.furniture || []).map((f) => f.roomId ?? LIVING_ROOM));
+  // a generated house: the rooms the game furnished (notes/moblering-genererte-hus.md)
+  for (const it of furnishedItems(layout)) withFurniture.add(it.roomId);
   const others = (layout?.house?.rooms || []).map((r) => r.id).filter((id) => id !== LIVING_ROOM && withFurniture.has(id));
   const otherSpecs = others.length ? originalItems(layout, { rooms: others }) : [];
   const items = [];
