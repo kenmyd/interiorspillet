@@ -70,6 +70,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5278", "--strictPort"],
       "port": 5278
+    },
+    {
+      "name": "belysning-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--config", "tools/vite.test.config.mjs", "--port", "5274", "--strictPort"],
+      "port": 5274
     }
   ]
 }

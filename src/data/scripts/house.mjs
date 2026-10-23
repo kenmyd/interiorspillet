@@ -50,6 +50,7 @@ import { STAIR_TYPES, STEEP, WALK_MAX_DEG, isPlanType, isQuarterTurn, isStraight
 import { resolveRoofs, roofField, ceilingSurface, surfaceProfile, insideHalfPlanes as insideHalfPlanesOf } from '../../home/roofgeom.js';
 import { resolveCladding, groundLevel } from '../../home/claddinggeom.js';
 import { resolveDecks } from '../../home/deckgeom.js';
+import { lightingIssues, ROOM_USES } from '../../home/lightplan.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../..');
@@ -1504,6 +1505,17 @@ export function validateHouse(spec, opts = {}) {
       });
       for (const i of dk.issues) (i.level === 'error' ? error : warn)(`${i.where}: ${i.msg}`);
     }
+  }
+
+  // ---- the lighting rules (notes/belysning-genererte-hus.md, home/lightplan.js): `lighting` and its hints, and what a
+  //      room says about itself for them (`use`, `lighting`)
+  for (const r of rooms) {
+    if (r.use != null && !ROOM_USES.includes(r.use)) error(`rooms/${r.id}: use «${r.use}» er ikke en av ${ROOM_USES.join(', ')}`);
+    if (r.lighting != null && ![false, 'none', 'auto'].includes(r.lighting)) error(`rooms/${r.id}: lighting må være false, «none» eller «auto»`);
+  }
+  if (spec.lighting != null) {
+    const at = (p) => rooms.find((r) => goodRooms.has(r.id) && physical(r) && inOrOn(p, r.polygon, 0.02))?.id ?? null;
+    for (const i of lightingIssues(spec.lighting, { roomIds: new Set(rooms.map((r) => r.id)), roomAt: at })) (i.level === 'error' ? error : warn)(`${i.where}: ${i.msg}`);
   }
 
   // ---- openings

@@ -10,6 +10,7 @@ import { buildDoor } from './doors.js';
 import { claddingMaterial, ledStrip } from './shell.js';
 import { buildRoofs } from './roof.js';
 import { buildDecks } from './decks.js';
+import { GlowBatch, ruleFitting } from './lampfittings.js';
 import { claddingPiece, gableLine } from './cladding.js';
 import { finishAt, finishKey } from './claddinggeom.js';
 import { surfaceProfile, planeY, CLADDING_INTO_ROOF } from './roofgeom.js';
@@ -46,7 +47,8 @@ import { wallFinish, floorFinish, facadeFinish } from '../world/surfaces.js';
  *     the walkable floor strip in each hole, the two entrance steps of 0.15 in the opening GANG ↔ entré (visible
  *     treads, an invisible wedge collides – §3.11);
  *   • the lamp fittings `plafond`, `downlight`, `led-strip` (dark – their light comes with L1, steg 13), returned in
- *     builtInLights → home.house.builtInLights;
+ *     builtInLights → home.house.builtInLights; the lights of the lighting rules (layout `generated`, and the outdoor
+ *     lamps of roomId 'ute') with lampfittings.js (notes/belysning-genererte-hus.md);
  *   • static collision: the room surfaces, the slab box y −0.30 … 0 under the whole ground floor minus the hole (§2.8 –
  *     the floors are one-sided, a head from below would pass), ceiling boxes under the low ceilings (−0.50).
  * Not here: the stair (stairs.js), built-ins / bathroom (builtins.js), the lights themselves (lighting.js), the
@@ -1299,10 +1301,37 @@ export function buildRooms(ctx, layout, M = null) {
 
   // ---- lamp fittings (their light comes with L1: dark until then, see the top)
   const groupLabel = Object.fromEntries((H.lightGroups || []).map((g) => [g.id, g.label]));
+  // the lights of the lighting rules (notes/belysning-genererte-hus.md, lampfittings.js): their glowing faces merged per
+  // room and group; the outdoor lamps on the outer walls in a group of their own per level
+  const glow = new GlowBatch();
+  const outdoorRoots = new Map();
+  const outdoorRoot = (levelId) => {
+    if (!outdoorRoots.has(levelId)) {
+      const lamps = new THREE.Group();
+      lamps.name = `outdoor-lamps:${levelId}`;
+      lamps.userData.noCollide = true;
+      (ctx?.roots?.levels?.[levelId] ?? group).add(lamps);
+      roots[lamps.name] = lamps;
+      const fittings = new MeshBatcher(`outdoor-fittings:${levelId}`);
+      batchers.push(fittings);
+      outdoorRoots.set(levelId, { lamps, fittings });
+    }
+    return outdoorRoots.get(levelId);
+  };
   for (const l of H.builtInLights) {
-    if (!roomIds.has(l.roomId)) continue;
-    const rr = R[l.roomId];
+    const outdoor = l.roomId === 'ute' && l.outdoor && roomIds.size > 0;
+    if (!roomIds.has(l.roomId) && !outdoor) continue;
     const label = groupLabel[l.group] || l.name;
+    if (outdoor || l.generated) {
+      const rr = outdoor ? outdoorRoot(l.levelId) : R[l.roomId];
+      const e = ruleFitting(l, { fittings: rr.fittings, parent: rr.lamps, glow, label, alu: K.alu, ceilingHeightAt: (x, z) => H.ceilingHeightAt(x, z, (l.from?.y ?? l.position?.y ?? 0) - 0.1) });
+      if (!e) continue;
+      if (e.owned) owned.push(...e.owned);
+      delete e.owned;
+      builtInLights.push(e);
+      continue;
+    }
+    const rr = R[l.roomId];
     if (l.type === 'plafond' && l.position) {
       const d = l.dims?.d ?? 0.4, h = l.dims?.h ?? 0.07;
       const p = l.position;
@@ -1351,6 +1380,7 @@ export function buildRooms(ctx, layout, M = null) {
       });
     }
   }
+  glow.build(owned);
 
   // ---- soffits outside (outsideHouse.soffits: V4, V6, V28): built ONCE, by exterior.js (steg 25, C3) – its niche
   // soffit follows the deck out to its SW corner (x 10.35 · z 6.75) and has the tuned dark material (225543); a second
@@ -1446,6 +1476,11 @@ export function buildRooms(ctx, layout, M = null) {
     const fg = rr.fittings.build();
     fg.userData.noCollide = true;
     rr.lamps.add(fg);
+  }
+  for (const o of outdoorRoots.values()) {
+    const fg = o.fittings.build();
+    fg.userData.noCollide = true;
+    o.lamps.add(fg);
   }
   for (const r of rooms) R[r.id].solid.updateMatrixWorld(true);
 

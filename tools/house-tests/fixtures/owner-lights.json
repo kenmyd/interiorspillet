@@ -1,0 +1,11 @@
+{
+  "$comment": "The owner's lights before the lighting rules (notes/belysning-genererte-hus.md): sha-1 (16 hex) of layout.house.builtInLights, layout.house.lightGroups, the living room's layout.builtInLights + lightGroups, and buildRooms' builtInLights (emissive meshes by name) – belysning.test.mjs ownerLightFingerprint(). Taken on 93d505f before any change.",
+  "lights": "6c61a3f643797054",
+  "groups": "52ab52932c022517",
+  "living": "cb8bddf364c67d576e680acfdd072a07",
+  "built": "796e101355595653",
+  "n": 55,
+  "nb": 40,
+  "layout": "9fd8f7a355b0f410",
+  "rooms": "a7cf211c026c6559"
+}
