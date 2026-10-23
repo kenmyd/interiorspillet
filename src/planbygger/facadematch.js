@@ -247,9 +247,10 @@ export function roofFromFacades(drawings, match) {
       if (r.roofPitchOf === 'mono-pitch' && r.roofPitch >= 3 && r.roofPitch <= 30) mono.push(r.roofPitch);
       else if (r.roofPitchOf !== 'mono-pitch' && r.roofPitch >= 15 && r.roofPitch <= 55) gable.push(r.roofPitch);
     }
-    // the eave over the top storey's floor (a loft: hus1's eave is at its floor, F159)
+    // the eave over the top storey's floor (a loft: hus1's eave is at its floor, F159), seen on a long side: on a gable
+    // or a hip end the «eave» is the foot of the end (hus11's ends gave 1,05 and −0,52 m, its long side 2,31)
     const top = Array.isArray(r.floorYs) && r.storeys >= 2 ? r.floorYs[r.storeys - 1] : null;
-    if (Number.isFinite(top) && Number.isFinite(r.eaveY) && r.pxPerM > 0) eaves.push(((top - r.eaveY) * (m.k || 1)) / r.pxPerM);
+    if (r.roofView === 'long' && Number.isFinite(top) && Number.isFinite(r.eaveY) && r.pxPerM > 0) eaves.push(((top - r.eaveY) * (m.k || 1)) / r.pxPerM);
     if (r.dormerRoof) dormers[r.dormerRoof]++;
     // floor to floor between the storeys the drawing shows (F164: hus4's are taller than the 2,7 m the levels got)
     if (Array.isArray(r.floorYs) && r.pxPerM > 0) for (let s = 0; s + 1 < Math.min(r.storeys ?? 0, r.floorYs.length); s++) storeyHs.push(((r.floorYs[s] - r.floorYs[s + 1]) * (m.k || 1)) / r.pxPerM);

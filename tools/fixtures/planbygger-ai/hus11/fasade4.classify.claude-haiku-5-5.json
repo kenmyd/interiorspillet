@@ -1,0 +1,68 @@
+{
+ "house": "hus11",
+ "file": "fasade4.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 800,
+  "sha256": "002718b5f7ee775eef7d6aa3825e55d78a4a071eed254e15ec6a1c89d0686237"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade4.avif"
+ },
+ "source": {
+  "file": "fasade4.avif",
+  "part": null,
+  "width": 1920,
+  "height": 960,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "facade",
+    "bbox": [
+     0.285,
+     0.15,
+     0.815,
+     0.84
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Fasade uten tittel og målestokk; ingen tekst på arket."
+ },
+ "usage": {
+  "input_tokens": 3814,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 102,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000432,
+ "ms": 1637,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:05:20.441Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

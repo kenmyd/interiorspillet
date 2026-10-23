@@ -1,0 +1,68 @@
+{
+ "house": "hus10",
+ "file": "1.etg.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1232,
+  "height": 769,
+  "sha256": "d073d8bc0cd5cc61cdb90a342c126cb3a63c7cf3b00ac7918c69dad3faf3cad7"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "1.etg.avif"
+ },
+ "source": {
+  "file": "1.etg.avif",
+  "part": null,
+  "width": 1232,
+  "height": 769,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.023,
+     0.042,
+     0.974,
+     0.956
+    ],
+    "title": null,
+    "levelName": "1. etasje",
+    "level": 0,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ingen tittel eller målestokk synlig. Planen viser entré, stue/kjøkken og soverom med skrå himling; nivå er satt ut fra innhold, ikke tittel."
+ },
+ "usage": {
+  "input_tokens": 3365,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 769,
+  "output_tokens_details": {
+   "thinking_tokens": 623
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000721,
+ "ms": 5668,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:04:23.126Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

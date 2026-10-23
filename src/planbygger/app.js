@@ -403,6 +403,14 @@ class App {
     if (typeof window.__planbyggerAiOverride === 'function') return { available: true, model: 'opptak', remaining: 0, override: true };
     return aiStatus();
   }
+  /**
+   * Whether a house may be made without the AI: not for a customer – without the rooms' names, the areas and the texts
+   * on the drawings the house is not good enough (the owner, 23.10.2026: they come back later; a backup AI service may
+   * come). The tests generate without it on purpose (window.__planbyggerAllowNoAi).
+   */
+  _noAiAllowed() {
+    return window.__planbyggerAllowNoAi === true;
+  }
   /** generate()'s AI: ai.js aiRead, or a test's override (the replayed recordings; it gets no pixels). */
   _ai(status) {
     const o = window.__planbyggerAiOverride;
@@ -419,12 +427,23 @@ class App {
     try {
       const status = await (this._aiPromise ??= this._aiStatus());
       const ai = this._ai(status);
+      if (!ai && !this._noAiAllowed()) {
+        stack?.progress(null);
+        this.toast('KI-tjenesten svarer ikke akkurat nå, og uten den blir ikke huset godt nok. Prøv igjen om litt.', 10);
+        return null;
+      }
       const res = await generate(inputs, {
         ai,
         exec: workerExecutor() ?? undefined,
         answers: answers ?? undefined,
         onProgress: (p) => stack?.progress(p),
       });
+      // the AI went away on the way: a plan it did not read has no names, areas or texts
+      if (ai && !this._noAiAllowed() && res.report.ai.some((a) => !a.ok && a.task === 'readPlan')) {
+        stack?.progress(null);
+        this.toast('KI-tjenesten svarte ikke på alle plantegningene, og uten det blir ikke huset godt nok. Prøv igjen om litt.', 10);
+        return null;
+      }
       this.gen = { inputs, res, ms: Math.round(performance.now() - t0), ai: !!ai, answers: answers ?? {} };
       window.__planbyggerLastGenerate = { ms: this.gen.ms, ai: this.gen.ai, questions: res.questions.map((q) => ({ id: q.id, kind: q.kind, input: q.input })), notes: res.report.notes, aiCalls: res.report.ai };
       stack?.progress(null);

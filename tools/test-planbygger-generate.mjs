@@ -26,7 +26,7 @@ import path from 'node:path';
 import { ROOT, imp, check, section, done } from './planbygger-lib.mjs';
 import { readPng } from './planbygger-png.mjs';
 import { fixtureAi, frameMap, marksHash } from './planbygger-ai-fixtures.mjs';
-import { HOUSES, houseInputs, measureHouse, doneMeans, OPEN_PLANS } from './planbygger-measure-all.mjs';
+import { HOUSES, AI_ONLY, houseInputs, measureHouse, doneMeans, OPEN_PLANS } from './planbygger-measure-all.mjs';
 import { renderPlan, samplePlans } from './planbygger-synth.mjs';
 
 const G = await imp('src/planbygger/generate.js');
@@ -322,8 +322,10 @@ for (const h of houses) {
 }
 
 const noAi = [];
-section(`6. Husene uten KI (${houses.length})`);
-for (const h of houses) {
+// (the newer houses are generated with the AI only: measure-all.mjs AI_ONLY)
+const housesNoAi = houses.filter((h) => !AI_ONLY.has(h));
+section(`6. Husene uten KI (${housesNoAi.length})`);
+for (const h of housesNoAi) {
   let r;
   try {
     r = await measureHouse(h, { ai: false });

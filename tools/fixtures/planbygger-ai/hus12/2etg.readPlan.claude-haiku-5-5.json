@@ -1,0 +1,980 @@
+{
+ "house": "hus12",
+ "file": "2etg.avif",
+ "part": null,
+ "task": "readPlan",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 767,
+  "sha256": "dec95f2bfd3fc0040d7b0e2a7f2566dc9d308c96a930019fbe11c344e4256fbe"
+ },
+ "marks": [
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.3756,
+    0.3053
+   ],
+   "drawnAt": [
+    0.3756,
+    0.3053
+   ],
+   "ref": 0,
+   "polygon": [
+    [
+     0.3027,
+     0.1619
+    ],
+    [
+     0.4497,
+     0.1619
+    ],
+    [
+     0.4497,
+     0.5188
+    ],
+    [
+     0.3478,
+     0.5188
+    ],
+    [
+     0.3478,
+     0.4657
+    ],
+    [
+     0.3027,
+     0.4657
+    ]
+   ]
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.4656,
+    0.184
+   ],
+   "drawnAt": [
+    0.4656,
+    0.184
+   ],
+   "ref": 1,
+   "polygon": [
+    [
+     0.455,
+     0.1619
+    ],
+    [
+     0.5375,
+     0.1619
+    ],
+    [
+     0.5375,
+     0.2055
+    ],
+    [
+     0.455,
+     0.2055
+    ]
+   ]
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.5982,
+    0.2705
+   ],
+   "drawnAt": [
+    0.5982,
+    0.2705
+   ],
+   "ref": 2,
+   "polygon": [
+    [
+     0.542,
+     0.1619
+    ],
+    [
+     0.6204,
+     0.1619
+    ],
+    [
+     0.6204,
+     0.3113
+    ],
+    [
+     0.542,
+     0.3113
+    ]
+   ]
+  },
+  {
+   "id": "4",
+   "kind": "room",
+   "at": [
+    0.6932,
+    0.2531
+   ],
+   "drawnAt": [
+    0.6932,
+    0.2531
+   ],
+   "ref": 3,
+   "polygon": [
+    [
+     0.6246,
+     0.1619
+    ],
+    [
+     0.7721,
+     0.1619
+    ],
+    [
+     0.7721,
+     0.4495
+    ],
+    [
+     0.6246,
+     0.4495
+    ]
+   ]
+  },
+  {
+   "id": "5",
+   "kind": "room",
+   "at": [
+    0.536,
+    0.4304
+   ],
+   "drawnAt": [
+    0.536,
+    0.4304
+   ],
+   "ref": 4,
+   "polygon": [
+    [
+     0.455,
+     0.2151
+    ],
+    [
+     0.5375,
+     0.2151
+    ],
+    [
+     0.5375,
+     0.3201
+    ],
+    [
+     0.6204,
+     0.3201
+    ],
+    [
+     0.6204,
+     0.8312
+    ],
+    [
+     0.455,
+     0.8312
+    ]
+   ]
+  },
+  {
+   "id": "6",
+   "kind": "room",
+   "at": [
+    0.7349,
+    0.776
+   ],
+   "drawnAt": [
+    0.7349,
+    0.776
+   ],
+   "ref": 5,
+   "polygon": [
+    [
+     0.6246,
+     0.4587
+    ],
+    [
+     0.6964,
+     0.4587
+    ],
+    [
+     0.6964,
+     0.544
+    ],
+    [
+     0.6618,
+     0.544
+    ],
+    [
+     0.6618,
+     0.5536
+    ],
+    [
+     0.7357,
+     0.5536
+    ],
+    [
+     0.7357,
+     0.544
+    ],
+    [
+     0.7006,
+     0.544
+    ],
+    [
+     0.7006,
+     0.4649
+    ],
+    [
+     0.7721,
+     0.4649
+    ],
+    [
+     0.7721,
+     0.8838
+    ],
+    [
+     0.6246,
+     0.8838
+    ]
+   ]
+  },
+  {
+   "id": "7",
+   "kind": "room",
+   "at": [
+    0.3797,
+    0.7319
+   ],
+   "drawnAt": [
+    0.3797,
+    0.7319
+   ],
+   "ref": 6,
+   "polygon": [
+    [
+     0.3027,
+     0.4755
+    ],
+    [
+     0.3431,
+     0.4755
+    ],
+    [
+     0.3431,
+     0.5276
+    ],
+    [
+     0.4495,
+     0.5276
+    ],
+    [
+     0.4495,
+     0.8838
+    ],
+    [
+     0.3027,
+     0.8838
+    ]
+   ]
+  },
+  {
+   "id": "A",
+   "kind": "opening",
+   "at": [
+    0.3544,
+    0.1522
+   ],
+   "drawnAt": [
+    0.3544,
+    0.2024
+   ],
+   "ref": "o1"
+  },
+  {
+   "id": "B",
+   "kind": "opening",
+   "at": [
+    0.3974,
+    0.1522
+   ],
+   "drawnAt": [
+    0.3974,
+    0.2024
+   ],
+   "ref": "o2"
+  },
+  {
+   "id": "C",
+   "kind": "opening",
+   "at": [
+    0.6987,
+    0.1522
+   ],
+   "drawnAt": [
+    0.6987,
+    0.2024
+   ],
+   "ref": "o3"
+  },
+  {
+   "id": "D",
+   "kind": "opening",
+   "at": [
+    0.5656,
+    0.3157
+   ],
+   "drawnAt": [
+    0.5656,
+    0.2875
+   ],
+   "ref": "o4"
+  },
+  {
+   "id": "E",
+   "kind": "opening",
+   "at": [
+    0.4888,
+    0.8409
+   ],
+   "drawnAt": [
+    0.4888,
+    0.8074
+   ],
+   "ref": "o5"
+  },
+  {
+   "id": "F",
+   "kind": "opening",
+   "at": [
+    0.537,
+    0.8409
+   ],
+   "drawnAt": [
+    0.5173,
+    0.8074
+   ],
+   "ref": "o6"
+  },
+  {
+   "id": "G",
+   "kind": "opening",
+   "at": [
+    0.5857,
+    0.8409
+   ],
+   "drawnAt": [
+    0.5857,
+    0.8074
+   ],
+   "ref": "o7"
+  },
+  {
+   "id": "H",
+   "kind": "opening",
+   "at": [
+    0.3549,
+    0.8931
+   ],
+   "drawnAt": [
+    0.3667,
+    0.86
+   ],
+   "ref": "o8"
+  },
+  {
+   "id": "J",
+   "kind": "opening",
+   "at": [
+    0.3971,
+    0.8931
+   ],
+   "drawnAt": [
+    0.3971,
+    0.86
+   ],
+   "ref": "o9"
+  },
+  {
+   "id": "K",
+   "kind": "opening",
+   "at": [
+    0.6771,
+    0.8931
+   ],
+   "drawnAt": [
+    0.6771,
+    0.86
+   ],
+   "ref": "o10"
+  },
+  {
+   "id": "L",
+   "kind": "opening",
+   "at": [
+    0.7199,
+    0.8931
+   ],
+   "drawnAt": [
+    0.7199,
+    0.8601
+   ],
+   "ref": "o11"
+  },
+  {
+   "id": "M",
+   "kind": "opening",
+   "at": [
+    0.2979,
+    0.3087
+   ],
+   "drawnAt": [
+    0.2639,
+    0.3087
+   ],
+   "ref": "o12"
+  },
+  {
+   "id": "N",
+   "kind": "opening",
+   "at": [
+    0.2979,
+    0.3527
+   ],
+   "drawnAt": [
+    0.3562,
+    0.3527
+   ],
+   "ref": "o13"
+  },
+  {
+   "id": "P",
+   "kind": "opening",
+   "at": [
+    0.2979,
+    0.4201
+   ],
+   "drawnAt": [
+    0.2639,
+    0.4447
+   ],
+   "ref": "o14"
+  },
+  {
+   "id": "Q",
+   "kind": "opening",
+   "at": [
+    0.2979,
+    0.6261
+   ],
+   "drawnAt": [
+    0.2639,
+    0.6015
+   ],
+   "ref": "o15"
+  },
+  {
+   "id": "R",
+   "kind": "opening",
+   "at": [
+    0.2979,
+    0.7201
+   ],
+   "drawnAt": [
+    0.2526,
+    0.7324
+   ],
+   "ref": "o16"
+  },
+  {
+   "id": "S",
+   "kind": "opening",
+   "at": [
+    0.4523,
+    0.4712
+   ],
+   "drawnAt": [
+    0.4664,
+    0.4712
+   ],
+   "ref": "o17"
+  },
+  {
+   "id": "T",
+   "kind": "opening",
+   "at": [
+    0.4523,
+    0.6245
+   ],
+   "drawnAt": [
+    0.4664,
+    0.6245
+   ],
+   "ref": "o18"
+  },
+  {
+   "id": "U",
+   "kind": "opening",
+   "at": [
+    0.6225,
+    0.3609
+   ],
+   "drawnAt": [
+    0.636,
+    0.3609
+   ],
+   "ref": "o19"
+  },
+  {
+   "id": "V",
+   "kind": "opening",
+   "at": [
+    0.6225,
+    0.6141
+   ],
+   "drawnAt": [
+    0.636,
+    0.6141
+   ],
+   "ref": "o20"
+  },
+  {
+   "id": "W",
+   "kind": "opening",
+   "at": [
+    0.7768,
+    0.3245
+   ],
+   "drawnAt": [
+    0.7527,
+    0.3245
+   ],
+   "ref": "o21"
+  },
+  {
+   "id": "X",
+   "kind": "opening",
+   "at": [
+    0.7768,
+    0.6038
+   ],
+   "drawnAt": [
+    0.7527,
+    0.6038
+   ],
+   "ref": "o22"
+  },
+  {
+   "id": "Y",
+   "kind": "opening",
+   "at": [
+    0.7768,
+    0.7033
+   ],
+   "drawnAt": [
+    0.7527,
+    0.7033
+   ],
+   "ref": "o23"
+  }
+ ],
+ "unmarked": [],
+ "hints": {
+  "fileName": "2etg.avif",
+  "levelName": "1. etasje"
+ },
+ "source": {
+  "file": "2etg.avif",
+  "part": null,
+  "width": 1920,
+  "height": 920,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "levelTitle": null,
+  "scaleText": null,
+  "rooms": [
+   {
+    "mark": "1",
+    "at": [
+     0.41,
+     0.37
+    ],
+    "name": "SOV",
+    "area": 14.2,
+    "kind": "bedroom"
+   },
+   {
+    "mark": "2",
+    "at": [
+     0.466,
+     0.184
+    ],
+    "name": "",
+    "area": null,
+    "kind": "other"
+   },
+   {
+    "mark": "3",
+    "at": [
+     0.578,
+     0.22
+    ],
+    "name": "BOD",
+    "area": 3.3,
+    "kind": "storage"
+   },
+   {
+    "mark": "4",
+    "at": [
+     0.701,
+     0.32
+    ],
+    "name": "BAD",
+    "area": 12,
+    "kind": "bathroom"
+   },
+   {
+    "mark": "5",
+    "at": [
+     0.545,
+     0.49
+    ],
+    "name": "GANG/TRAPP",
+    "area": 14.3,
+    "kind": "hall"
+   },
+   {
+    "mark": "6",
+    "at": [
+     0.695,
+     0.78
+    ],
+    "name": "SOV",
+    "area": 14,
+    "kind": "bedroom"
+   },
+   {
+    "mark": "7",
+    "at": [
+     0.393,
+     0.66
+    ],
+    "name": "SOV",
+    "area": 15.5,
+    "kind": "bedroom"
+   }
+  ],
+  "labels": [
+   {
+    "text": "LOFTSTUE",
+    "area": 11.5,
+    "kind": "living",
+    "at": [
+     0.541,
+     0.77
+    ]
+   },
+   {
+    "text": "GARD",
+    "area": 1.7,
+    "kind": "wardrobe",
+    "at": [
+     0.66,
+     0.5
+    ]
+   },
+   {
+    "text": "GARD",
+    "area": 1.6,
+    "kind": "wardrobe",
+    "at": [
+     0.733,
+     0.5
+    ]
+   },
+   {
+    "text": "BALKONG",
+    "area": 4.7,
+    "kind": "balcony",
+    "at": [
+     0.538,
+     0.94
+    ]
+   }
+  ],
+  "dimensions": [],
+  "openings": [
+   {
+    "mark": "A",
+    "at": [
+     0.354,
+     0.165
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "B",
+    "at": [
+     0.397,
+     0.16
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "C",
+    "at": [
+     0.699,
+     0.16
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "D",
+    "at": [
+     0.566,
+     0.3
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "E",
+    "at": [
+     0.489,
+     0.94
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "F",
+    "at": [
+     0.517,
+     0.93
+    ],
+    "kind": "double-door"
+   },
+   {
+    "mark": "G",
+    "at": [
+     0.586,
+     0.94
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "H",
+    "at": [
+     0.367,
+     0.9
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "J",
+    "at": [
+     0.397,
+     0.9
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "K",
+    "at": [
+     0.677,
+     0.9
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "L",
+    "at": [
+     0.72,
+     0.9
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "M",
+    "at": [
+     0.295,
+     0.309
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "N",
+    "at": [
+     0.3,
+     0.353
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "P",
+    "at": [
+     0.295,
+     0.445
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "Q",
+    "at": [
+     0.295,
+     0.602
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "R",
+    "at": [
+     0.295,
+     0.732
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "S",
+    "at": [
+     0.466,
+     0.471
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "T",
+    "at": [
+     0.466,
+     0.625
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "U",
+    "at": [
+     0.636,
+     0.361
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "V",
+    "at": [
+     0.636,
+     0.614
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "W",
+    "at": [
+     0.753,
+     0.325
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "X",
+    "at": [
+     0.753,
+     0.604
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "Y",
+    "at": [
+     0.753,
+     0.703
+    ],
+    "kind": "window"
+   }
+  ],
+  "skylights": [],
+  "stair": {
+   "present": true,
+   "at": [
+    0.497,
+    0.313
+   ],
+   "type": "straight",
+   "up": "unknown"
+  },
+  "ceiling": [],
+  "furniture": [
+   {
+    "kind": "bed",
+    "at": [
+     0.425,
+     0.25
+    ]
+   },
+   {
+    "kind": "bed",
+    "at": [
+     0.347,
+     0.795
+    ]
+   },
+   {
+    "kind": "bed",
+    "at": [
+     0.698,
+     0.652
+    ]
+   },
+   {
+    "kind": "bathtub",
+    "at": [
+     0.744,
+     0.222
+    ]
+   },
+   {
+    "kind": "toilet",
+    "at": [
+     0.638,
+     0.287
+    ]
+   },
+   {
+    "kind": "table",
+    "at": [
+     0.538,
+     0.626
+    ]
+   }
+  ],
+  "notes": ""
+ },
+ "usage": {
+  "input_tokens": 7492,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 3238,
+  "output_tokens_details": {
+   "thinking_tokens": 1918
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.002368,
+ "ms": 15321,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:07:16.301Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

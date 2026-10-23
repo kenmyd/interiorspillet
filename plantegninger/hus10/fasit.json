@@ -1,0 +1,106 @@
+{
+  "house": "hus10",
+  "files": {
+    "1.etg.avif": {
+      "kind": "plan",
+      "level": 0
+    },
+    "fasade1.avif": {
+      "kind": "facade"
+    },
+    "fasade2.avif": {
+      "kind": "facade"
+    }
+  },
+  "levels": [
+    {
+      "level": 0,
+      "name": "1. etasje",
+      "file": "1.etg.avif",
+      "title": null,
+      "rooms": [
+        {
+          "label": "STUE/KJØKKEN",
+          "area": 44.8,
+          "kind": "living"
+        },
+        {
+          "label": "ENTRE",
+          "area": 7.7,
+          "kind": "entrance"
+        },
+        {
+          "label": "BOD",
+          "area": 3.3,
+          "kind": "storage"
+        },
+        {
+          "label": "SOV",
+          "area": 15.9,
+          "kind": "bedroom"
+        },
+        {
+          "label": "GANG",
+          "area": 6.8,
+          "kind": "hall"
+        },
+        {
+          "label": "BAD",
+          "area": 6.2,
+          "kind": "bathroom"
+        },
+        {
+          "label": "SOV",
+          "area": 7.2,
+          "kind": "bedroom"
+        },
+        {
+          "label": "SOV",
+          "area": 7.5,
+          "kind": "bedroom"
+        }
+      ],
+      "doors": {
+        "single": null,
+        "double": null,
+        "sliding": null,
+        "exterior": null
+      },
+      "windows": null,
+      "skylights": 0,
+      "stair": {
+        "type": "none"
+      },
+      "dimensions": [],
+      "scale": {
+        "hints": [
+          "areas"
+        ],
+        "pxPerM": null,
+        "note": "Bare romarealer på tegningen; skalaen er ikke kontrollmålt ennå."
+      },
+      "ceiling": [
+        "Mønt himling",
+        "Skrå himling"
+      ],
+      "notes": "Én etasje. Stiplede diagonaler med «Mønt himling» (stue/kjøkken) og «Skrå himling» (soverommet 15,9) viser rommene med himling som følger taket. Skyvedører til soverommene og boden (strek med pil i veggen), en skyvedør i stua mot vest."
+    }
+  ],
+  "facades": [
+    {
+      "file": "fasade1.avif",
+      "roof": null,
+      "storeys": 1,
+      "windows": null,
+      "doors": null
+    },
+    {
+      "file": "fasade2.avif",
+      "roof": null,
+      "storeys": 1,
+      "windows": null,
+      "doors": null
+    }
+  ],
+  "notes": "Lagt inn av eieren 23.10.2026. Fasiten har romnavn og arealer fra tegningen; antall dører og vinduer er ikke talt ennå."
+}

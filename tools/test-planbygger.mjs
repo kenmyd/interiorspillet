@@ -829,6 +829,25 @@ section('12. Fasadetegningene på riktig side, og himlingene');
     const rf = FM.roofFromFacades(drawings, match);
     check('etasjehøyden fra fasadenes gulvlinjer: 2,87 m fra gulv til gulv (medianen)', rf.storeyHeight === 2.87, JSON.stringify(rf));
   }
+  // a loft by its eave, not by «Loftstue» (hus11, hus12: full upper floors with a «Loftstue» got knee walls and dormers)
+  {
+    const names = ['Loft', 'Loftet', 'Loftsrom', 'Loftetasje', 'Hems/loft'].every((n) => M.LOFT_NAME.test(n)) && !['Loftstue', 'Gang/trapp + Loftstue', 'Loftsgang', 'Stue'].some((n) => M.LOFT_NAME.test(n));
+    const up = { floorY: 2.7, name: '2. etasje' };
+    const lofts = [
+      E.loftLevel({ roof: { eaveTop: 2.31 } }, up, ['Loftstue/Trapp']),
+      E.loftLevel({ roof: { eaveTop: 0.92 } }, up, ['Stue']),
+      E.loftLevel({ roof: {} }, up, ['Loftstue']),
+      E.loftLevel({ roof: {} }, up, ['Loft']),
+    ];
+    check('loftet: «Loft» men ikke «Loftstue» i navnet, og med fasadenes takfot er takfoten det som avgjør (2,31 m: ikke loft, 0,92 m: loft)', names && lofts.join() === 'false,true,false,true', lofts.join());
+    // the eave is read on the long sides only: an end's «eave» is the foot of the gable (hus11's ends gave 1,05 and −0,52)
+    const rf = FM.roofFromFacades([{ reading: { floorYs: [765, 555], storeys: 2, pxPerM: 100, eaveY: 324, roofView: 'long' } }, { reading: { floorYs: [779, 532], storeys: 2, pxPerM: 100, eaveY: 427 } }], { drawings: [{ planSide: 'S', k: 1 }, { planSide: 'E', k: 1 }] });
+    check('takfoten bare fra langsidene: 2,31 m, gavlens fot teller ikke', rf.eaveTop === 2.31, JSON.stringify(rf));
+    // a window made a door loses the window's sill and height (a 1,2 m door in hus11's slanted wall)
+    const o = { type: 'window', width: 0.9, sill: 0.9, height: 1.2, facadeTop: 2.1 };
+    M.setOpeningKind(o, 'single');
+    check('et vindu som blir dør, mister vinduets brystning og høyde', o.type === 'door' && o.sill === undefined && o.height === undefined && o.facadeTop === undefined, JSON.stringify(o));
+  }
   // a window's sashes and bars from its panes in the facade drawing (F141, F144): at 100 px/m two sashes of 2 × 3
   // panes (bars of 3 cm, 11 cm between the sashes), a transom over two sashes, and nothing from a drawing too small
   {

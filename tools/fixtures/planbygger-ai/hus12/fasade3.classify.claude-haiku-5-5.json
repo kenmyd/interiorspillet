@@ -1,0 +1,68 @@
+{
+ "house": "hus12",
+ "file": "fasade3.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 767,
+  "sha256": "f5775a50d2d19e41b4f8d85cf69ff6a5f776296ada63aa42c807f9115e89ac47"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade3.avif"
+ },
+ "source": {
+  "file": "fasade3.avif",
+  "part": null,
+  "width": 1920,
+  "height": 920,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "facade",
+    "bbox": [
+     0.114,
+     0.052,
+     0.886,
+     0.987
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ett fasadeoppriss uten tittel og målestokk. Ingen tekst eller målsetting er synlig på arket."
+ },
+ "usage": {
+  "input_tokens": 3756,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 280,
+  "output_tokens_details": {
+   "thinking_tokens": 160
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000516,
+ "ms": 2717,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:06:37.506Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

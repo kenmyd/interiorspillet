@@ -1,0 +1,191 @@
+{
+  "house": "hus12",
+  "files": {
+    "1etg.avif": {
+      "kind": "plan",
+      "level": 0
+    },
+    "2etg.avif": {
+      "kind": "plan",
+      "level": 1
+    },
+    "fasade1.avif": {
+      "kind": "facade"
+    },
+    "fasade2.avif": {
+      "kind": "facade"
+    },
+    "fasade3.avif": {
+      "kind": "facade"
+    },
+    "fasade4.avif": {
+      "kind": "facade"
+    }
+  },
+  "levels": [
+    {
+      "level": 0,
+      "name": "1. etasje",
+      "file": "1etg.avif",
+      "title": null,
+      "rooms": [
+        {
+          "label": "STUE",
+          "area": 44.2,
+          "kind": "living"
+        },
+        {
+          "label": "HALL/TRAPP",
+          "area": 15.6,
+          "kind": "hall"
+        },
+        {
+          "label": "BOD",
+          "area": 4.7,
+          "kind": "storage"
+        },
+        {
+          "label": "BAD/VASK",
+          "area": 7.9,
+          "kind": "bathroom"
+        },
+        {
+          "label": "KJØKKEN",
+          "area": 14.7,
+          "kind": "living"
+        }
+      ],
+      "doors": {
+        "single": null,
+        "double": null,
+        "sliding": null,
+        "exterior": null
+      },
+      "windows": null,
+      "skylights": 0,
+      "stair": {
+        "type": "quarter-turn"
+      },
+      "dimensions": [],
+      "scale": {
+        "hints": [
+          "areas"
+        ],
+        "pxPerM": null,
+        "note": "Bare romarealer på tegningen; skalaen er ikke kontrollmålt ennå."
+      },
+      "ceiling": [],
+      "notes": "Kvartsvingt trapp i hallen. Dobbeltdør fra hallen til stua og ut til terrassen mot sør. Vindfang/inngang med takoverbygg mot nord."
+    },
+    {
+      "level": 1,
+      "name": "2. etasje",
+      "file": "2etg.avif",
+      "title": null,
+      "rooms": [
+        {
+          "label": "SOV",
+          "area": 14.2,
+          "kind": "bedroom"
+        },
+        {
+          "label": "BOD",
+          "area": 3.3,
+          "kind": "storage"
+        },
+        {
+          "label": "BAD",
+          "area": 12,
+          "kind": "bathroom"
+        },
+        {
+          "label": "GANG/TRAPP",
+          "area": 14.3,
+          "kind": "hall"
+        },
+        {
+          "label": "SOV",
+          "area": 15.5,
+          "kind": "bedroom"
+        },
+        {
+          "label": "LOFTSTUE",
+          "area": 11.5,
+          "kind": "living"
+        },
+        {
+          "label": "GARD",
+          "area": 1.7,
+          "kind": "storage"
+        },
+        {
+          "label": "GARD",
+          "area": 1.6,
+          "kind": "storage"
+        },
+        {
+          "label": "SOV",
+          "area": 14,
+          "kind": "bedroom"
+        },
+        {
+          "label": "BALKONG",
+          "area": 4.7,
+          "kind": null
+        }
+      ],
+      "doors": {
+        "single": null,
+        "double": null,
+        "sliding": null,
+        "exterior": null
+      },
+      "windows": null,
+      "skylights": 0,
+      "stair": {
+        "type": "quarter-turn"
+      },
+      "dimensions": [],
+      "scale": {
+        "hints": [
+          "areas"
+        ],
+        "pxPerM": null,
+        "note": "Bare romarealer på tegningen; skalaen er ikke kontrollmålt ennå."
+      },
+      "ceiling": [],
+      "notes": "Gang/trapp og loftstue er ett åpent rom. Balkong 4,7 m² mot sør. Stiplet omriss rundt etasjen er takutstikket."
+    }
+  ],
+  "facades": [
+    {
+      "file": "fasade1.avif",
+      "roof": null,
+      "storeys": 2,
+      "windows": null,
+      "doors": null
+    },
+    {
+      "file": "fasade2.avif",
+      "roof": null,
+      "storeys": 2,
+      "windows": null,
+      "doors": null
+    },
+    {
+      "file": "fasade3.avif",
+      "roof": null,
+      "storeys": 2,
+      "windows": null,
+      "doors": null
+    },
+    {
+      "file": "fasade4.avif",
+      "roof": null,
+      "storeys": 2,
+      "windows": null,
+      "doors": null
+    }
+  ],
+  "notes": "Lagt inn av eieren 23.10.2026. Fasiten har romnavn og arealer fra tegningene; antall dører og vinduer er ikke talt ennå."
+}

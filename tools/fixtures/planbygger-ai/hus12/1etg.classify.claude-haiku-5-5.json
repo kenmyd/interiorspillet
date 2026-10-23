@@ -1,0 +1,68 @@
+{
+ "house": "hus12",
+ "file": "1etg.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 767,
+  "sha256": "39a712c0573b5ee04a64c6077c86e07deb3d5d8bdabd28c54641508c77e1b834"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "1etg.avif"
+ },
+ "source": {
+  "file": "1etg.avif",
+  "part": null,
+  "width": 1920,
+  "height": 920,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.264,
+     0.01,
+     0.736,
+     0.991
+    ],
+    "title": null,
+    "levelName": "1. etasje",
+    "level": 0,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ingen tittel eller målestokk på arket. Plan av hovedplan med stue, kjøkken, hall/trapp, bad/vask og bod. Hovedinngang nederst med trapp, så nivå 0."
+ },
+ "usage": {
+  "input_tokens": 3756,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 665,
+  "output_tokens_details": {
+   "thinking_tokens": 510
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000708,
+ "ms": 5699,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:06:23.935Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

@@ -1172,6 +1172,52 @@ Reglene er generelle: de bruker det tegningene viser, ikke husets navn.
   - **F167:** pipe.
   - Halvvalm, skrå vinduer og pipe venter på motoren (taksesjonen).
 
+### Tre nye hus (hus10–hus12, 23.10, kveld)
+
+Eieren la inn tre ferdighus og ble skuffet over genereringen. KI-svarene er tatt opp (23 + 2 kall, $0,14), og fasitene
+har romnavn og arealer.
+
+**Funnet og rettet (generelle regler):**
+
+- **«Loftstue» er ikke et loft.** Navnet brukes om stua oppe i mange toetasjes hus.
+  - Et navn sier loft bare som «Loft», «Loftet», «Loftsrom» eller «Loftetasje» (`model.js LOFT_NAME`).
+  - Med fasadenes takfot avgjør den: loft når takfoten er høyst 1,5 m over gulvet oppe (`export.js loftLevel`, brukt
+    både i genereringen og eksporten).
+  - Egne knevegger bare når takfoten er høyst 0,6 m over gulvet (hus1). Med en høyere takfot er ytterveggen kneveggen.
+    hus12s 2. etasje fikk ellers tre falske kneveggsboder av senger og skap.
+- **Takfoten leses bare på langsidene.** På en gavl eller en valmende er «takfoten» foten av enden (hus11: 1,05 og
+  −0,52 m, langsiden 2,31).
+- **Valm sett fra langsiden:** et kort møne (minst 10 % av bredden) med fall til begge ender er valm, ikke en gavl
+  (`roofFromOutline`). hus11 får valmtak.
+- **Skalaen i en etasje tegnet i en annen målestokk (hus12):** arealene oppe ga 79,0 px/m med 0,2 % spredning, og
+  omrisset mot 1. etasje ga 79,1, men dørene (75,3) vant fordi arealene på et «loft» vektes ned. Nå beholder de
+  vekten når de stemmer med omrisset innen 1,5 %.
+- **Skrå vegger tegnet fylt (hus11):** `slantedWalls` krevde to streker på tvers. En mørk flate minst halvt så bred
+  som veggen teller nå også.
+- **En skillelinje uten vegg** (her den stiplede kanalen i himlingen over loftstua) deler et rom bare der planen har
+  romnavn på begge sider.
+- **Et «vindu» i en innervegg som KI-en kaller dør, blir dør.** Et vindu som blir dør, mister vinduets brystning og
+  høyde.
+- **Rekkverksbord** i fasadene må stå med jevne mellomrom. De høye rutene i koblede vinduer (5 px mellom rutene,
+  26 px mellom vinduene) ble tatt for et rekkverk, så hus12s høye vinduer ble bare overlyset.
+
+**Resultat:** 0 feil i 3D-kontrollen på alle tre. Romnavn og arealer stemmer med tegningene, utenom gangen i hus10, som
+er åpen mot stua og blir slått sammen med den. hus11 har valmtak og hus12 halvannen etasje med ark.
+
+**Gjenstår:**
+- **hus10:** begge fasadene er gavler, og de kobles til feil side (E og N). Den ene får dobbel skala, og glassfeltene
+  opp i gavlen og de skrå vinduene leses ikke. Kledningen i den innfelte delen er lys liggende.
+- **hus12:** arken går i veggliv ned til balkongen. Det trenger motorgrenen.
+- **hus11:** trappa i 1. etasje finnes ikke klart nok til et par, så det kommer et trappespørsmål. Standardsvaret (U)
+  er riktig.
+
+**Uten KI lages ikke noe hus:**
+- Svarer ikke KI-tjenesten, sier stabelen «KI-tjenesten svarer ikke akkurat nå – prøv igjen om litt», og «Generer» er
+  av.
+- Mister genereringen KI-svaret på en plantegning underveis, stopper den med samme beskjed.
+- Testene lager hus uten KI med vilje (`window.__planbyggerAllowNoAi`).
+- En reserve-KI (DeepSeek eller en annen) kan komme senere.
+
 ## Rommene og eksporten
 
 **Rom** (`regions.js`). Veggene i editormodellen (senterlinjer med tykkelse) tegnes i et raster på 2 cm. Hver ende

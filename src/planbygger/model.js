@@ -298,6 +298,12 @@ export function setOpeningKind(o, kind, settings = DEFAULT_SETTINGS) {
   delete o.variant;
   delete o.leaf2;
   if (door) {
+    // a window made a door: the window's sill and height are not the door's (a 1,2 m door in hus11's slanted wall)
+    if (was === 'window') {
+      delete o.sill;
+      delete o.height;
+      delete o.facadeTop;
+    }
     o.hinge ??= 'start';
     o.side ||= 1;
     if (kind !== 'single') o.variant = kind;
@@ -453,3 +459,9 @@ export function checkLevel(level) {
   }
   return out;
 }
+
+/**
+ * A name that says loft: «Loft», «Loftet», «Loftsrom», «Loftetasje» – not «Loftstue» or «Loftsgang», the upstairs living
+ * room and hall of many two-storey houses (hus11, hus12: their full upper floors were taken for lofts)
+ */
+export const LOFT_NAME = /(?<![a-zæøå])loft(et|s?rom|s?etasjen?|s?etg\.?)?(?![a-zæøå])/i;

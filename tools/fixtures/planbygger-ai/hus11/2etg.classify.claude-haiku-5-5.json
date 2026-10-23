@@ -1,0 +1,68 @@
+{
+ "house": "hus11",
+ "file": "2etg.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1009,
+  "height": 906,
+  "sha256": "cf417bfe21972a28ff1fbfe997f9ea49200d73c1e8d7321fa2cace4530c9847f"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "2etg.avif"
+ },
+ "source": {
+  "file": "2etg.avif",
+  "part": null,
+  "width": 1009,
+  "height": 906,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.03,
+     0.031,
+     0.971,
+     0.966
+    ],
+    "title": null,
+    "levelName": "2. etasje",
+    "level": 1,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ingen tittel på arket. Planen viser øvre etasje med Loftstue/Trapp, to soverom, bad og bod. Ingen målestokk er skrevet."
+ },
+ "usage": {
+  "input_tokens": 3353,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 778,
+  "output_tokens_details": {
+   "thinking_tokens": 638
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000724,
+ "ms": 4787,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:05:12.566Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

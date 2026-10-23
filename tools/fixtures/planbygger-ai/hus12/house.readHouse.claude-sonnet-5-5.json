@@ -1,0 +1,440 @@
+{
+ "house": "hus12",
+ "file": "house",
+ "part": null,
+ "task": "readHouse",
+ "promptVersion": "pb-house-2",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "images": [
+  {
+   "kind": "plan",
+   "label": "1. etasje, 1etg.avif",
+   "width": 1600,
+   "height": 767,
+   "sha256": "d772bb9c2765461caf42450304d8cedc3d454c9dee884c42b917189c29b7abf7",
+   "marksHash": "9310ab9313423f93412e5ced0746591f71bc58a348ac2c7958dcb56d2f217278",
+   "source": {
+    "file": "1etg.avif",
+    "part": null,
+    "width": 1920,
+    "height": 920,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "plan",
+   "label": "2. etasje, 2etg.avif",
+   "width": 1600,
+   "height": 767,
+   "sha256": "dec95f2bfd3fc0040d7b0e2a7f2566dc9d308c96a930019fbe11c344e4256fbe",
+   "marksHash": "6f0185a59d52df5b2e75d2f27faa7a6381468e5c13609ef6f035a7f3492803eb",
+   "source": {
+    "file": "2etg.avif",
+    "part": null,
+    "width": 1920,
+    "height": 920,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasade1.avif",
+   "width": 1200,
+   "height": 575,
+   "sha256": "3238ea81f762e1e18ec52248f4bf3ec447106f68fadb52357771635244c31475",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasade1.avif",
+    "part": null,
+    "width": 1920,
+    "height": 920,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasade2.avif",
+   "width": 1200,
+   "height": 575,
+   "sha256": "0acd6c41c37e817eed360e1f7d536c321fcdb9f9d0206ea44d2ddecbe4e548fc",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasade2.avif",
+    "part": null,
+    "width": 1920,
+    "height": 920,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasade3.avif",
+   "width": 1200,
+   "height": 575,
+   "sha256": "210ff6cbe3896b256deedc01f8faf390d15460862d8a03b81269511cee0074e5",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasade3.avif",
+    "part": null,
+    "width": 1920,
+    "height": 920,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasade4.avif",
+   "width": 1200,
+   "height": 575,
+   "sha256": "388470f2728f6f68a00a1bcf89e845a8e49ccf270415fde0cbd95de42e777b8f",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasade4.avif",
+    "part": null,
+    "width": 1920,
+    "height": 920,
+    "bbox": null,
+    "photo": null
+   }
+  }
+ ],
+ "marks": [
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.35,
+    0.6152
+   ],
+   "drawnAt": [
+    0.35,
+    0.6152
+   ],
+   "image": 1
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.5984,
+    0.2362
+   ],
+   "drawnAt": [
+    0.5984,
+    0.2362
+   ],
+   "image": 1
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.6897,
+    0.2362
+   ],
+   "drawnAt": [
+    0.6897,
+    0.2362
+   ],
+   "image": 1
+  },
+  {
+   "id": "4",
+   "kind": "room",
+   "at": [
+    0.5289,
+    0.2951
+   ],
+   "drawnAt": [
+    0.5289,
+    0.2951
+   ],
+   "image": 1
+  },
+  {
+   "id": "5",
+   "kind": "room",
+   "at": [
+    0.6191,
+    0.3925
+   ],
+   "drawnAt": [
+    0.6191,
+    0.3925
+   ],
+   "image": 1
+  },
+  {
+   "id": "6",
+   "kind": "room",
+   "at": [
+    0.6733,
+    0.6658
+   ],
+   "drawnAt": [
+    0.6733,
+    0.6658
+   ],
+   "image": 1
+  },
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.3756,
+    0.3053
+   ],
+   "drawnAt": [
+    0.3756,
+    0.3053
+   ],
+   "image": 2
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.4656,
+    0.184
+   ],
+   "drawnAt": [
+    0.4656,
+    0.184
+   ],
+   "image": 2
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.5982,
+    0.2705
+   ],
+   "drawnAt": [
+    0.5982,
+    0.2705
+   ],
+   "image": 2
+  },
+  {
+   "id": "4",
+   "kind": "room",
+   "at": [
+    0.6932,
+    0.2531
+   ],
+   "drawnAt": [
+    0.6932,
+    0.2531
+   ],
+   "image": 2
+  },
+  {
+   "id": "5",
+   "kind": "room",
+   "at": [
+    0.536,
+    0.4304
+   ],
+   "drawnAt": [
+    0.536,
+    0.4304
+   ],
+   "image": 2
+  },
+  {
+   "id": "6",
+   "kind": "room",
+   "at": [
+    0.7349,
+    0.776
+   ],
+   "drawnAt": [
+    0.7349,
+    0.776
+   ],
+   "image": 2
+  },
+  {
+   "id": "7",
+   "kind": "room",
+   "at": [
+    0.3797,
+    0.7319
+   ],
+   "drawnAt": [
+    0.3797,
+    0.7319
+   ],
+   "image": 2
+  }
+ ],
+ "hints": {},
+ "response": {
+  "facades": [
+   {
+    "image": 3,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "bottom",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "horizontal",
+      "color": "hvit"
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 4,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "right",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "horizontal",
+      "color": "hvit"
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 5,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "top",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "horizontal",
+      "color": "hvit"
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 6,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "left",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "horizontal",
+      "color": "hvit"
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   }
+  ],
+  "roof": {
+   "covering": "tiles",
+   "color": "rød",
+   "pitch": null,
+   "wings": [
+    {
+     "image": 2,
+     "rooms": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+     ],
+     "type": "gable",
+     "ridge": "horizontal",
+     "high": "none"
+    }
+   ],
+   "chimney": true
+  },
+  "ceilings": [],
+  "decks": [
+   {
+    "kind": "balcony",
+    "image": 2,
+    "at": [
+     0.538,
+     0.935
+    ],
+    "railing": "wood-vertical",
+    "stairs": false
+   },
+   {
+    "kind": "porch",
+    "image": 1,
+    "at": [
+     0.5,
+     0.04
+    ],
+    "railing": "none",
+    "stairs": false
+   },
+   {
+    "kind": "terrace",
+    "image": 1,
+    "at": [
+     0.5,
+     0.9
+    ],
+    "railing": "none",
+    "stairs": true
+   }
+  ],
+  "notes": "Inngangsparti med eget lite tak og søyler på nordsiden (fasade 3). Frontspiss med balkong over inngangsdør på fasade 1. Liten skråtakt overbygning/carport på siden."
+ },
+ "usage": {
+  "input_tokens": 12741,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 12741,
+    "output_tokens": 631,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 631,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.031792,
+ "ms": 9337,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:07:27.448Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

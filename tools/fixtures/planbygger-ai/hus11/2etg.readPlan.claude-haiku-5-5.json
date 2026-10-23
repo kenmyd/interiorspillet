@@ -1,0 +1,829 @@
+{
+ "house": "hus11",
+ "file": "2etg.avif",
+ "part": null,
+ "task": "readPlan",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1009,
+  "height": 906,
+  "sha256": "7cfe3bfb6896014177029a4daea9fbf8a7adc37c3af67380519581ae1db23bec"
+ },
+ "marks": [
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.1865,
+    0.301
+   ],
+   "drawnAt": [
+    0.1865,
+    0.301
+   ],
+   "ref": 0,
+   "polygon": [
+    [
+     0.0543,
+     0.1968
+    ],
+    [
+     0.3178,
+     0.1968
+    ],
+    [
+     0.3178,
+     0.4909
+    ],
+    [
+     0.0543,
+     0.4909
+    ]
+   ]
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.4678,
+    0.3443
+   ],
+   "drawnAt": [
+    0.4678,
+    0.3443
+   ],
+   "ref": 1,
+   "polygon": [
+    [
+     0.6182,
+     0.4956
+    ],
+    [
+     0.3285,
+     0.4956
+    ],
+    [
+     0.3285,
+     0.1968
+    ],
+    [
+     0.5884,
+     0.1968
+    ],
+    [
+     0.5884,
+     0.397
+    ],
+    [
+     0.764,
+     0.397
+    ],
+    [
+     0.764,
+     0.4909
+    ],
+    [
+     0.6182,
+     0.4909
+    ]
+   ]
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.6268,
+    0.2364
+   ],
+   "drawnAt": [
+    0.6268,
+    0.2364
+   ],
+   "ref": 2,
+   "polygon": [
+    [
+     0.5977,
+     0.1968
+    ],
+    [
+     0.7581,
+     0.1968
+    ],
+    [
+     0.7581,
+     0.388
+    ],
+    [
+     0.5977,
+     0.388
+    ]
+   ]
+  },
+  {
+   "id": "4",
+   "kind": "room",
+   "at": [
+    0.8723,
+    0.2938
+   ],
+   "drawnAt": [
+    0.8723,
+    0.2938
+   ],
+   "ref": 3,
+   "polygon": [
+    [
+     0.7724,
+     0.1968
+    ],
+    [
+     0.9491,
+     0.1968
+    ],
+    [
+     0.9491,
+     0.4844
+    ],
+    [
+     0.7724,
+     0.4844
+    ]
+   ]
+  },
+  {
+   "id": "5",
+   "kind": "room",
+   "at": [
+    0.4411,
+    0.6427
+   ],
+   "drawnAt": [
+    0.4411,
+    0.6427
+   ],
+   "ref": 4,
+   "polygon": [
+    [
+     0.3285,
+     0.4956
+    ],
+    [
+     0.6182,
+     0.4956
+    ],
+    [
+     0.6182,
+     0.7939
+    ],
+    [
+     0.3478,
+     0.7939
+    ],
+    [
+     0.3478,
+     0.6262
+    ],
+    [
+     0.2381,
+     0.5624
+    ],
+    [
+     0.2381,
+     0.5002
+    ],
+    [
+     0.3285,
+     0.5002
+    ]
+   ]
+  },
+  {
+   "id": "6",
+   "kind": "room",
+   "at": [
+    0.7586,
+    0.6115
+   ],
+   "drawnAt": [
+    0.7586,
+    0.6115
+   ],
+   "ref": 5,
+   "polygon": [
+    [
+     0.7726,
+     0.5002
+    ],
+    [
+     0.9491,
+     0.5002
+    ],
+    [
+     0.9491,
+     0.7939
+    ],
+    [
+     0.6265,
+     0.7939
+    ],
+    [
+     0.6265,
+     0.5002
+    ]
+   ]
+  },
+  {
+   "id": "7",
+   "kind": "room",
+   "at": [
+    0.1671,
+    0.6181
+   ],
+   "drawnAt": [
+    0.1671,
+    0.6181
+   ],
+   "ref": 6,
+   "polygon": [
+    [
+     0.0543,
+     0.5068
+    ],
+    [
+     0.2292,
+     0.5068
+    ],
+    [
+     0.2292,
+     0.5678
+    ],
+    [
+     0.3399,
+     0.6321
+    ],
+    [
+     0.3399,
+     0.7939
+    ],
+    [
+     0.0543,
+     0.7939
+    ]
+   ]
+  },
+  {
+   "id": "A",
+   "kind": "opening",
+   "at": [
+    0.1868,
+    0.1875
+   ],
+   "drawnAt": [
+    0.1868,
+    0.1431
+   ],
+   "ref": "o1"
+  },
+  {
+   "id": "B",
+   "kind": "opening",
+   "at": [
+    0.501,
+    0.1875
+   ],
+   "drawnAt": [
+    0.501,
+    0.2171
+   ],
+   "ref": "o2"
+  },
+  {
+   "id": "C",
+   "kind": "opening",
+   "at": [
+    0.6779,
+    0.3925
+   ],
+   "drawnAt": [
+    0.6779,
+    0.4172
+   ],
+   "ref": "o3"
+  },
+  {
+   "id": "D",
+   "kind": "opening",
+   "at": [
+    0.2785,
+    0.4956
+   ],
+   "drawnAt": [
+    0.2785,
+    0.5204
+   ],
+   "ref": "o4"
+  },
+  {
+   "id": "E",
+   "kind": "opening",
+   "at": [
+    0.719,
+    0.4958
+   ],
+   "drawnAt": [
+    0.719,
+    0.5209
+   ],
+   "ref": "o5"
+  },
+  {
+   "id": "F",
+   "kind": "opening",
+   "at": [
+    0.1561,
+    0.8035
+   ],
+   "drawnAt": [
+    0.1561,
+    0.8483
+   ],
+   "ref": "o6"
+  },
+  {
+   "id": "G",
+   "kind": "opening",
+   "at": [
+    0.2765,
+    0.8035
+   ],
+   "drawnAt": [
+    0.2765,
+    0.8483
+   ],
+   "ref": "o7"
+  },
+  {
+   "id": "H",
+   "kind": "opening",
+   "at": [
+    0.4227,
+    0.8035
+   ],
+   "drawnAt": [
+    0.4227,
+    0.8483
+   ],
+   "ref": "o8"
+  },
+  {
+   "id": "J",
+   "kind": "opening",
+   "at": [
+    0.4735,
+    0.8035
+   ],
+   "drawnAt": [
+    0.4735,
+    0.8334
+   ],
+   "ref": "o9"
+  },
+  {
+   "id": "K",
+   "kind": "opening",
+   "at": [
+    0.5305,
+    0.8035
+   ],
+   "drawnAt": [
+    0.5305,
+    0.8334
+   ],
+   "ref": "o10"
+  },
+  {
+   "id": "L",
+   "kind": "opening",
+   "at": [
+    0.5837,
+    0.8035
+   ],
+   "drawnAt": [
+    0.5837,
+    0.8483
+   ],
+   "ref": "o11"
+  },
+  {
+   "id": "M",
+   "kind": "opening",
+   "at": [
+    0.726,
+    0.8035
+   ],
+   "drawnAt": [
+    0.726,
+    0.8483
+   ],
+   "ref": "o12"
+  },
+  {
+   "id": "N",
+   "kind": "opening",
+   "at": [
+    0.8464,
+    0.8035
+   ],
+   "drawnAt": [
+    0.8464,
+    0.8483
+   ],
+   "ref": "o13"
+  },
+  {
+   "id": "P",
+   "kind": "opening",
+   "at": [
+    0.0453,
+    0.3449
+   ],
+   "drawnAt": [
+    0.0725,
+    0.3348
+   ],
+   "ref": "o14"
+  },
+  {
+   "id": "Q",
+   "kind": "opening",
+   "at": [
+    0.7682,
+    0.4409
+   ],
+   "drawnAt": [
+    0.7905,
+    0.4409
+   ],
+   "ref": "o15"
+  },
+  {
+   "id": "R",
+   "kind": "opening",
+   "at": [
+    0.9576,
+    0.3449
+   ],
+   "drawnAt": [
+    0.9309,
+    0.3449
+   ],
+   "ref": "o16"
+  },
+  {
+   "id": "S",
+   "kind": "opening",
+   "at": [
+    0.2943,
+    0.6003
+   ],
+   "drawnAt": [
+    0.3098,
+    0.5672
+   ],
+   "ref": "o17"
+  }
+ ],
+ "unmarked": [],
+ "hints": {
+  "fileName": "2etg.avif",
+  "levelName": "2. etasje"
+ },
+ "source": {
+  "file": "2etg.avif",
+  "part": null,
+  "width": 1009,
+  "height": 906,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "levelTitle": null,
+  "scaleText": null,
+  "rooms": [
+   {
+    "mark": "1",
+    "at": [
+     0.188,
+     0.345
+    ],
+    "name": "Sov",
+    "area": 12.6,
+    "kind": "bedroom"
+   },
+   {
+    "mark": "2",
+    "at": [
+     0.5,
+     0.4
+    ],
+    "name": "Loftstue/Trapp",
+    "area": 30,
+    "kind": "living"
+   },
+   {
+    "mark": "3",
+    "at": [
+     0.677,
+     0.263
+    ],
+    "name": "Bod",
+    "area": 5,
+    "kind": "storage"
+   },
+   {
+    "mark": "4",
+    "at": [
+     0.872,
+     0.317
+    ],
+    "name": "Bad",
+    "area": 8.2,
+    "kind": "bathroom"
+   },
+   {
+    "mark": "5",
+    "at": [
+     0.441,
+     0.643
+    ],
+    "name": "",
+    "area": null,
+    "kind": "living"
+   },
+   {
+    "mark": "6",
+    "at": [
+     0.76,
+     0.6
+    ],
+    "name": "Sov",
+    "area": 15.3,
+    "kind": "bedroom"
+   },
+   {
+    "mark": "7",
+    "at": [
+     0.19,
+     0.66
+    ],
+    "name": "Sov",
+    "area": 11.7,
+    "kind": "bedroom"
+   }
+  ],
+  "labels": [],
+  "dimensions": [],
+  "openings": [
+   {
+    "mark": "A",
+    "at": [
+     0.187,
+     0.143
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "B",
+    "at": [
+     0.501,
+     0.217
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "C",
+    "at": [
+     0.678,
+     0.417
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "D",
+    "at": [
+     0.279,
+     0.52
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "E",
+    "at": [
+     0.719,
+     0.521
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "F",
+    "at": [
+     0.156,
+     0.848
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "G",
+    "at": [
+     0.277,
+     0.848
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "H",
+    "at": [
+     0.423,
+     0.848
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "J",
+    "at": [
+     0.474,
+     0.833
+    ],
+    "kind": "double-door"
+   },
+   {
+    "mark": "K",
+    "at": [
+     0.531,
+     0.833
+    ],
+    "kind": "double-door"
+   },
+   {
+    "mark": "L",
+    "at": [
+     0.584,
+     0.848
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "M",
+    "at": [
+     0.726,
+     0.848
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "N",
+    "at": [
+     0.846,
+     0.848
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "P",
+    "at": [
+     0.073,
+     0.335
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "Q",
+    "at": [
+     0.791,
+     0.441
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "R",
+    "at": [
+     0.931,
+     0.345
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "S",
+    "at": [
+     0.31,
+     0.567
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": null,
+    "at": [
+     0.348,
+     0.62
+    ],
+    "kind": "sliding-door"
+   }
+  ],
+  "skylights": [],
+  "stair": {
+   "present": true,
+   "at": [
+    0.38,
+    0.37
+   ],
+   "type": "quarter-turn",
+   "up": "elsewhere"
+  },
+  "ceiling": [
+   "Innkasset kanal i himling"
+  ],
+  "furniture": [
+   {
+    "kind": "bed",
+    "at": [
+     0.092,
+     0.22
+    ]
+   },
+   {
+    "kind": "bed",
+    "at": [
+     0.275,
+     0.26
+    ]
+   },
+   {
+    "kind": "bed",
+    "at": [
+     0.085,
+     0.63
+    ]
+   },
+   {
+    "kind": "bed",
+    "at": [
+     0.87,
+     0.59
+    ]
+   },
+   {
+    "kind": "sofa",
+    "at": [
+     0.56,
+     0.65
+    ]
+   },
+   {
+    "kind": "toilet",
+    "at": [
+     0.8,
+     0.33
+    ]
+   },
+   {
+    "kind": "bathtub",
+    "at": [
+     0.88,
+     0.37
+    ]
+   },
+   {
+    "kind": "washer",
+    "at": [
+     0.82,
+     0.2
+    ]
+   }
+  ],
+  "notes": "Plan for 2. etasje med trapp; innkassert kanal i himling. Ingen mål er tegnet."
+ },
+ "usage": {
+  "input_tokens": 7016,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 3727,
+  "output_tokens_details": {
+   "thinking_tokens": 2590
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.002565,
+ "ms": 19340,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:26:17.832Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

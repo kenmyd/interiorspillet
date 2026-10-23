@@ -647,9 +647,11 @@ export class DrawingStack {
     this.noticeEl.hidden = !this.notices.length;
     this.noticeEl.replaceChildren(...this.notices.map((t) => h('li', {}, t)));
     const loading = this.items.some((x) => x.loading);
-    this.genBtn.disabled = this.busy || loading || !floors;
     const ai = this.ai;
-    this.aiEl.textContent = !ai ? 'KI: sjekker …' : ai.available ? 'KI er på: romnavn og mål leses fra tegningen' : 'KI er av: du får noen flere spørsmål';
+    // without the AI no house is made for a customer (app.js _noAiAllowed): «Generer» waits for it
+    const noAi = ai && !ai.available && window.__planbyggerAllowNoAi !== true;
+    this.genBtn.disabled = this.busy || loading || !floors || noAi;
+    this.aiEl.textContent = !ai ? 'KI: sjekker …' : ai.available ? 'KI er på: romnavn og mål leses fra tegningen' : noAi ? 'KI-tjenesten svarer ikke akkurat nå – prøv igjen om litt' : 'KI er av: du får noen flere spørsmål';
     this.aiEl.className = `pb-stack-ai ${ai?.available ? 'is-on' : ai ? 'is-off' : ''}`;
     this.aiEl.title = ai?.available ? 'En nedskalert kopi av hver tegning sendes til KI-tjenesten, som leser tekst og symboler. Alle mål regnes ut i nettleseren.' : 'Uten KI leses ikke romnavn og tekst på tegningen. Alt regnes ut i nettleseren.';
     this.summaryEl.textContent = loading

@@ -18,6 +18,9 @@ Ikke del dem videre, og ikke bruk dem i markedsføring.
 | `hus7` | Oslo kommune: garasje med plan, snitt og fasader på ett ark (PDF, skannet) | flere tegninger på ett ark, kotehøyder |
 | `hus8` | FINN-meglertegning: kjeller + 1. etasje + garasje på ett ark, og hver for seg; bare romnavn | ingen arealer eller mål → skala fra standardmål eller BRA |
 | `hus9` | Byggebolig.no: hobbytegning av sokkelhus, øvre etasje og underetasje, lav oppløsning | lav oppløsning, teksturgulv, fargede møbler |
+| `hus10` | ferdighus i én etasje, saltak, «Mønt himling» og «Skrå himling» langs stiplede linjer, 2 fasader (gavlene, AVIF) | himling som følger taket etter tekst, skyvedører, bare to fasader |
+| `hus11` | toetasjes ferdighus med valmtak, U-trapp med svingtrinn, skråvegg ved soverommet, «Loftstue» i full 2. etasje, 4 fasader (AVIF) | valm sett fra langsiden, skrå vegg med dør, en stiplet kanal over et åpent rom |
+| `hus12` | halvannenetasjes ferdighus med saltak og bred ark over balkongen, kvartsvingt trapp, 2. etasje tegnet i en annen målestokk, 4 fasader (AVIF) | loft uten egne knevegger (takfoten 1 m over gulvet), sprosser og overlys, ulik målestokk per etasje |
 
 ## `_png/`
 

@@ -35,7 +35,7 @@
 import idsRegistry from '../../research/house/00-ids.json';
 import { levelRooms as roomsOfLevel, wallBand, footprint } from './regions.js';
 import { sub, add, mul, dot, cross, dist, unit, perp, signedArea, centroid, slug, round, clipPolygon, pointInPolygon } from './geom.js';
-import { DEFAULT_SETTINGS, wallLength, wallDir, stairGeometry } from './model.js';
+import { DEFAULT_SETTINGS, wallLength, wallDir, stairGeometry, LOFT_NAME } from './model.js';
 import { ceilingSlope } from './houseread.js';
 import { WALKABLE_NORMAL_Y } from '../config.js';
 
@@ -1301,6 +1301,19 @@ function exportStairs({ doc, house, levelRooms, frame, floorOpenings, stairs, wa
  * rooms) gets sloped ceilings (type 'roof', flat at the room's height as a collar beam) and knee walls of 1.2 m; any
  * other top level keeps its flat ceilings with the roof resting on its walls.
  */
+/**
+ * Whether the top level is a loft under the roof. With the facades' eave over its floor (doc.roof.eaveTop, read on the
+ * long sides): an eave at most 1,5 m over it (hus1 −0,29, hus12 0,92; a full storey's is over 2 m, hus11 2,31) – the
+ * names say nothing then («Loftstue» is the upstairs living room of many two-storey houses: hus11, hus12 got knee walls
+ * and dormers over the ridge). Without it: a name that says loft (model.js LOFT_NAME), or a roof window.
+ */
+export function loftLevel(doc, top, names = [], skylights = false) {
+  if (!(top?.floorY > 0.5)) return false;
+  const e = doc.roof?.eaveTop;
+  if (Number.isFinite(e)) return e <= 1.5;
+  return LOFT_NAME.test(top.name ?? '') || names.some((n) => LOFT_NAME.test(n ?? '')) || !!skylights;
+}
+
 function exportRoofs({ doc, house, warnings, RP, R, frame, decks = [] }) {
   const levels = [...house.levels].sort((a, b) => b.floorY - a.floorY);
   const top = levels[0];
@@ -1499,7 +1512,7 @@ function exportRoofs({ doc, house, warnings, RP, R, frame, decks = [] }) {
   if (!parts.length) return;
   const kind = doc.roof?.type;
   const type = kind === 'hip' || kind === 'mono-pitch' || kind === 'flat' ? kind : 'gable';
-  const loft = top.floorY > 0.5 && (/loft/i.test(top.name) || roomsHere.some((r) => /loft/i.test(r.name ?? '')) || house.ceilings.some((c) => ids.has(c.roomId) && c.skylights?.length));
+  const loft = loftLevel(doc, top, roomsHere.map((r) => r.name), house.ceilings.some((c) => ids.has(c.roomId) && c.skylights?.length));
   // a loft under a gable or hip roof: knee walls of KNEE on the eave sides (along a part's longer side, the ridge's
   // default), and a dormer (ark) over each window or door in them that reaches above the knee wall – the way the drawings
   // show it (hus1 «gable-dormer», F126, F127, F129). Its front is on the wall's outer face, 0.3 m wider than the openings

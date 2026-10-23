@@ -749,10 +749,11 @@ export function scoreAnswer(fx, out, { facadeIndex = 0 } = {}) {
     }
     if (E.at) for (const item of placeItems(fx, out, E.at, L.scale?.pxPerM)) add(item.id, item.ok, item.detail);
     const count = (k) => out.openings.filter((o) => o.kind === k).length;
-    add('enkeltdører', count('door') === L.doors.single, `${count('door')} (fasit ${L.doors.single})`);
-    add('dobbeltdører', count('double-door') === L.doors.double, `${count('double-door')} (fasit ${L.doors.double})`);
-    add('skyvedører', count('sliding-door') === L.doors.sliding, `${count('sliding-door')} (fasit ${L.doors.sliding})`);
-    add('vinduer', count('window') === L.windows, `${count('window')} (fasit ${L.windows})`);
+    // (a count the fasit does not have yet – null, a house just added – is not scored)
+    if (L.doors?.single != null) add('enkeltdører', count('door') === L.doors.single, `${count('door')} (fasit ${L.doors.single})`);
+    if (L.doors?.double != null) add('dobbeltdører', count('double-door') === L.doors.double, `${count('double-door')} (fasit ${L.doors.double})`);
+    if (L.doors?.sliding != null) add('skyvedører', count('sliding-door') === L.doors.sliding, `${count('sliding-door')} (fasit ${L.doors.sliding})`);
+    if (L.windows != null) add('vinduer', count('window') === L.windows, `${count('window')} (fasit ${L.windows})`);
     add('takvinduer', out.skylights.length === L.skylights, `${out.skylights.length} (fasit ${L.skylights})`);
     const stair = L.stair?.type ?? L.stair ?? 'none';
     add('trapp', stair === 'none' ? !out.stair.present : out.stair.present && out.stair.type === stair, `${out.stair.present ? out.stair.type : 'ingen'} (fasit ${stair})`);

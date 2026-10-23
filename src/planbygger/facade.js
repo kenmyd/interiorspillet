@@ -895,9 +895,14 @@ function darkDoors(grey, t, box, o) {
 
 /**
  * Drops railing boards: four or more narrow boxes (height ≥ 2.5 × width) of the same height in a row, spaced by
- * less than twice their width.
+ * less than twice their width and evenly (the largest gap at most twice the smallest: the tall panes of coupled
+ * windows, 5 px apart in a window and 26 px between windows, are no railing – hus12's ground floor lost them).
  */
 function dropRailings(boxes) {
+  const even = (run) => {
+    const gaps = run.slice(1).map((r, i) => r.x0 - run[i].x1 - 1);
+    return Math.max(...gaps) <= 2 * Math.min(...gaps) + 2;
+  };
   const narrow = boxes.filter((b) => boxH(b) >= 2.5 * boxW(b));
   const drop = new Set();
   for (const b of narrow) {
@@ -909,7 +914,7 @@ function dropRailings(boxes) {
     for (let i = 1; i <= row.length; i++) {
       if (i < row.length && row[i].x0 - run[run.length - 1].x1 - 1 <= 2 * boxW(b)) run.push(row[i]);
       else {
-        if (run.length >= 4) for (const r of run) drop.add(r);
+        if (run.length >= 4 && even(run)) for (const r of run) drop.add(r);
         if (i < row.length) run = [row[i]];
       }
     }
@@ -975,7 +980,7 @@ function roofFromOutline(p, { bandH, H, eaveH, dormer }) {
     const ends = Math.min(qa, qb);
     if (bandH >= 0.12 * H) {
       // a long side with the roof surface seen; sloping ends from about the eave up → hipped
-      if (ends <= eaveH / H + 0.15 && top < 0.85 && i0 / n > 0.08 && (n - 1 - i1) / n > 0.08) return { roof: 'hip', options: ['hip'], why: 'skrå ender fra takfoten' };
+      if (ends <= eaveH / H + 0.15 && top < 0.85 && i0 / n > 0.08 && (n - 1 - i1) / n > 0.08) return { roof: 'hip', options: ['hip'], why: 'skrå ender fra takfoten', view: 'long' };
       // the roof surface seen from the eave: a gable's long side or a mono-pitch's low side look the same
       if (dormer) return { roof: 'gable-dormer', options: ['gable-dormer', 'mono-pitch'], why: 'langside med takflate og ark', view: 'long' };
       return { roof: 'gable', options: ['gable', 'mono-pitch'], why: 'langside med takflate', view: 'long' };
@@ -983,6 +988,9 @@ function roofFromOutline(p, { bandH, H, eaveH, dormer }) {
     // no roof surface under the edge: a flat roof or the high side of a mono-pitch
     return { roof: 'flat', options: ['flat', 'mono-pitch'], why: 'flatt omriss uten takflate' };
   }
+  // a short ridge, the roof falling to both ends from it: a hipped roof's long side (hus11: the ridge is a fifth of the
+  // width; a gable end comes to a point)
+  if (top >= 0.1 && bandH >= 0.12 * H && qa < 0.9 && qb < 0.9 && i0 / n > 0.08 && (n - 1 - i1) / n > 0.08) return { roof: 'hip', options: ['hip'], why: `langside med valm (mønet ${Math.round(top * 100)} % av bredden)`, view: 'long' };
   // a peak: both sides fall to the ends
   const peak = (i0 + i1) / 2 / n;
   if (top < 0.35 && peak > 0.2 && peak < 0.8 && qa < 0.9 && qb < 0.9) {

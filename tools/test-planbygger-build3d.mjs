@@ -35,7 +35,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, imp, check, section, done, validateGenerated } from './planbygger-lib.mjs';
 import { fixtureAi } from './planbygger-ai-fixtures.mjs';
-import { HOUSES, houseInputs, walkStair, collisionWorld, straightStairFix, MAX_SLOPE } from './planbygger-measure-all.mjs';
+import { HOUSES, AI_ONLY, houseInputs, walkStair, collisionWorld, straightStairFix, MAX_SLOPE } from './planbygger-measure-all.mjs';
 
 const G = await imp('src/planbygger/generate.js');
 const M = await imp('src/planbygger/model.js');
@@ -285,6 +285,8 @@ for (const [name, len, walkable] of [['3,3 m', 3.3, true], ['1,3 m', 1.3, false]
 const results = [];
 for (const h of houses) {
   for (const ai of modes) {
+    // (the newer houses are generated with the AI only: measure-all.mjs AI_ONLY)
+    if (!ai && AI_ONLY.has(h)) continue;
     const tag = `${h} ${ai ? 'med KI' : 'uten KI'}`;
     section(tag);
     const t0 = Date.now();

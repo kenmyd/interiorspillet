@@ -1,0 +1,171 @@
+{
+  "house": "hus11",
+  "files": {
+    "1etg.avif": {
+      "kind": "plan",
+      "level": 0
+    },
+    "2etg.avif": {
+      "kind": "plan",
+      "level": 1
+    },
+    "fasade1.avif": {
+      "kind": "facade"
+    },
+    "fasade2.avif": {
+      "kind": "facade"
+    },
+    "fasade3.avif": {
+      "kind": "facade"
+    },
+    "fasade4.avif": {
+      "kind": "facade"
+    }
+  },
+  "levels": [
+    {
+      "level": 0,
+      "name": "1. etasje",
+      "file": "1etg.avif",
+      "title": null,
+      "rooms": [
+        {
+          "label": "Hall",
+          "area": 16.7,
+          "kind": "hall"
+        },
+        {
+          "label": "Bod",
+          "area": 3.3,
+          "kind": "storage"
+        },
+        {
+          "label": "Bad/Vask",
+          "area": 8.4,
+          "kind": "bathroom"
+        },
+        {
+          "label": "Stue",
+          "area": 39.5,
+          "kind": "living"
+        },
+        {
+          "label": "Kjøkken",
+          "area": 15.1,
+          "kind": "living"
+        }
+      ],
+      "doors": {
+        "single": null,
+        "double": null,
+        "sliding": null,
+        "exterior": null
+      },
+      "windows": null,
+      "skylights": 0,
+      "stair": {
+        "type": "half-turn"
+      },
+      "dimensions": [],
+      "scale": {
+        "hints": [
+          "areas"
+        ],
+        "pxPerM": null,
+        "note": "Bare romarealer på tegningen; skalaen er ikke kontrollmålt ennå."
+      },
+      "ceiling": [],
+      "notes": "U-trapp med svingtrinn i hallen. «Evt. sov» er en sone i stua, ikke et rom. Stiplede bueslag er dørenes slagområde; «Maks 1:20» er en rampe/trapp utenfor."
+    },
+    {
+      "level": 1,
+      "name": "2. etasje",
+      "file": "2etg.avif",
+      "title": null,
+      "rooms": [
+        {
+          "label": "Sov",
+          "area": 12.6,
+          "kind": "bedroom"
+        },
+        {
+          "label": "Loftstue/Trapp",
+          "area": 30,
+          "kind": "living"
+        },
+        {
+          "label": "Bod",
+          "area": 5,
+          "kind": "storage"
+        },
+        {
+          "label": "Bad",
+          "area": 8.2,
+          "kind": "bathroom"
+        },
+        {
+          "label": "Sov",
+          "area": 11.7,
+          "kind": "bedroom"
+        },
+        {
+          "label": "Sov",
+          "area": 15.3,
+          "kind": "bedroom"
+        }
+      ],
+      "doors": {
+        "single": null,
+        "double": null,
+        "sliding": null,
+        "exterior": null
+      },
+      "windows": null,
+      "skylights": 0,
+      "stair": {
+        "type": "half-turn"
+      },
+      "dimensions": [],
+      "scale": {
+        "hints": [
+          "areas"
+        ],
+        "pxPerM": null,
+        "note": "Bare romarealer på tegningen; skalaen er ikke kontrollmålt ennå."
+      },
+      "ceiling": [],
+      "notes": "Samme U-trapp. «Innkasset kanal i himling» er en stiplet linje, ingen vegg. Balkong mot sør med «Sikkerhetsglass»."
+    }
+  ],
+  "facades": [
+    {
+      "file": "fasade1.avif",
+      "roof": null,
+      "storeys": 2,
+      "windows": null,
+      "doors": null
+    },
+    {
+      "file": "fasade2.avif",
+      "roof": null,
+      "storeys": 2,
+      "windows": null,
+      "doors": null
+    },
+    {
+      "file": "fasade3.avif",
+      "roof": null,
+      "storeys": 2,
+      "windows": null,
+      "doors": null
+    },
+    {
+      "file": "fasade4.avif",
+      "roof": null,
+      "storeys": 2,
+      "windows": null,
+      "doors": null
+    }
+  ],
+  "notes": "Lagt inn av eieren 23.10.2026. Fasiten har romnavn og arealer fra tegningene; antall dører og vinduer er ikke talt ennå."
+}

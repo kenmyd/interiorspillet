@@ -1,0 +1,282 @@
+{
+ "house": "hus10",
+ "file": "house",
+ "part": null,
+ "task": "readHouse",
+ "promptVersion": "pb-house-2",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "images": [
+  {
+   "kind": "plan",
+   "label": "1. etasje, 1.etg.avif",
+   "width": 1232,
+   "height": 769,
+   "sha256": "2717b173e9b7c23bd1ce7b8864c965bd510667eaaea3bbbaae9ce3272d8e534f",
+   "marksHash": "1d504df6f6222b54bc53d9cb8e58a680c5bd7366f2fd6944f71f9f34ec60001a",
+   "source": {
+    "file": "1.etg.avif",
+    "part": null,
+    "width": 1232,
+    "height": 769,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasade1.avif",
+   "width": 1200,
+   "height": 575,
+   "sha256": "192806e172d0d4b836c6ac64ed5935efd4bd1fe1be46ee8d9f9ca16eaecccff8",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasade1.avif",
+    "part": null,
+    "width": 1670,
+    "height": 800,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasade2.avif",
+   "width": 1200,
+   "height": 575,
+   "sha256": "cd935c25f1e5e8a54592ba3e17f07d45e571964206a9d2341c9783e13caf7096",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasade2.avif",
+    "part": null,
+    "width": 1670,
+    "height": 800,
+    "bbox": null,
+    "photo": null
+   }
+  }
+ ],
+ "marks": [
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.259,
+    0.6227
+   ],
+   "drawnAt": [
+    0.259,
+    0.6227
+   ],
+   "image": 1
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.7081,
+    0.1979
+   ],
+   "drawnAt": [
+    0.7081,
+    0.1979
+   ],
+   "image": 1
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.8651,
+    0.1725
+   ],
+   "drawnAt": [
+    0.8651,
+    0.1725
+   ],
+   "image": 1
+  },
+  {
+   "id": "4",
+   "kind": "room",
+   "at": [
+    0.5206,
+    0.2735
+   ],
+   "drawnAt": [
+    0.5206,
+    0.2735
+   ],
+   "image": 1
+  },
+  {
+   "id": "5",
+   "kind": "room",
+   "at": [
+    0.5153,
+    0.8444
+   ],
+   "drawnAt": [
+    0.5153,
+    0.8444
+   ],
+   "image": 1
+  },
+  {
+   "id": "6",
+   "kind": "room",
+   "at": [
+    0.6936,
+    0.8359
+   ],
+   "drawnAt": [
+    0.6936,
+    0.8359
+   ],
+   "image": 1
+  }
+ ],
+ "hints": {},
+ "response": {
+  "facades": [
+   {
+    "image": 2,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "left",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": "mørk grå"
+     },
+     {
+      "part": "other",
+      "type": "wood",
+      "direction": "horizontal",
+      "color": "lys beige"
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 3,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "right",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": "mørk grå"
+     },
+     {
+      "part": "other",
+      "type": "wood",
+      "direction": "horizontal",
+      "color": "lys beige"
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   }
+  ],
+  "roof": {
+   "covering": "unknown",
+   "color": null,
+   "pitch": null,
+   "wings": [
+    {
+     "image": 1,
+     "rooms": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+     ],
+     "type": "gable",
+     "ridge": "horizontal",
+     "high": "none"
+    }
+   ],
+   "chimney": false
+  },
+  "ceilings": [
+   {
+    "image": 1,
+    "text": "Mønt himling",
+    "kind": "open",
+    "degrees": null,
+    "rooms": [
+     "1"
+    ],
+    "ridge": null
+   },
+   {
+    "image": 1,
+    "text": "Skrå himling",
+    "kind": "sloped",
+    "degrees": null,
+    "rooms": [
+     "2",
+     "3"
+    ],
+    "ridge": null
+   }
+  ],
+  "decks": [
+   {
+    "kind": "porch",
+    "image": 1,
+    "at": [
+     0.5,
+     0.09
+    ],
+    "railing": "none",
+    "stairs": false
+   }
+  ],
+  "notes": "Gavlene har høye glassfelt mot stue og soverom. Fasadene har mørk stående kledning og lys liggende kledning."
+ },
+ "usage": {
+  "input_tokens": 8630,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 8630,
+    "output_tokens": 515,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 515,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.02241,
+ "ms": 6331,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:04:59.767Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

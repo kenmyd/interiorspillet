@@ -1,0 +1,68 @@
+{
+ "house": "hus12",
+ "file": "fasade2.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 767,
+  "sha256": "50017d94029c7ae04ccb46fe90b898e45c909551a0c07ffcf80b4449bcb45a00"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade2.avif"
+ },
+ "source": {
+  "file": "fasade2.avif",
+  "part": null,
+  "width": 1920,
+  "height": 920,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "facade",
+    "bbox": [
+     0.15,
+     0.17,
+     0.77,
+     0.98
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Fasadetegning uten tittel og målestokk. Viser hus med saltak, skorstein og to etasjer med vinduer, samt et lite anneks eller bod til høyre."
+ },
+ "usage": {
+  "input_tokens": 3756,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 138,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000445,
+ "ms": 1956,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:06:34.465Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

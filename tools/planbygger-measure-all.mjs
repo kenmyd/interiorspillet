@@ -65,7 +65,12 @@ const { CollisionWorld } = await imp('src/core/Collision.js');
 const { PlayerController } = await imp('src/player/PlayerController.js');
 const { PLAYER, WALKABLE_NORMAL_Y } = await imp('src/config.js');
 
-export const HOUSES = ['hus1', 'hus2', 'hus3', 'hus3-foto', 'hus4', 'hus5', 'hus6', 'hus7', 'hus8', 'hus9'];
+export const HOUSES = ['hus1', 'hus2', 'hus3', 'hus3-foto', 'hus4', 'hus5', 'hus6', 'hus7', 'hus8', 'hus9', 'hus10', 'hus11', 'hus12'];
+/**
+ * The houses added after «Generer» stopped making houses without the AI for a customer (23.10.2026, app.js
+ * _noAiAllowed): measured with the recorded AI answers only – the runs without it are not tested for them.
+ */
+export const AI_ONLY = new Set(['hus10', 'hus11', 'hus12']);
 
 // ---------------------------------------------------------------------------------------------------------------
 // Walking the stairs: the game's player in the house's collision (also tools/test-planbygger-build3d.mjs)

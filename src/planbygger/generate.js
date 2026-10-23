@@ -79,7 +79,7 @@ import { drawMarks, targetsFromLevel } from './marks.js';
 import { levelRooms } from './regions.js';
 import { roomKindOf } from './ai.js';
 import { luma } from './image.js';
-import { guessKind, exportHouse, baseSpec, ownerOnly } from './export.js';
+import { guessKind, exportHouse, baseSpec, ownerOnly, loftLevel } from './export.js';
 import { createDoc, applyDetection, addStair, addWall, setOpeningKind, wallById, wallPoint, stairGeometry, DEFAULT_SETTINGS } from './model.js';
 import { clipPolygon, signedArea, dist, round, roundPt, pointInPolygon, projectToSegment } from './geom.js';
 import { WALKABLE_NORMAL_Y } from '../config.js';
@@ -951,6 +951,28 @@ export async function generate(inputs, opts = {}) {
         step({ step: 'rooms', file: d.file, method: 'niche', confidence: 'medium', detail: `«${alone[1][0].name}» skilt ut som eget rom langs strek-prikk-linja foran nisjen (${fmt(len, 2)} m)` });
       } else L.separators.pop();
     }
+    // a line with no wall that cuts a room in two splits it only where the plan names both parts (hus4's TV room and
+    // hall, hus2's niche): with a label on one side only it is one room (hus11's boxed-in duct, a dashed line across
+    // the loft lounge, cut off half of it, which the AI's labels then gave to a bedroom)
+    if ((L.separators ?? []).some((s) => !s.niche)) {
+      const at = (it) => roomAt(found, it.p ?? toPlan(it.at));
+      const named = new Set(items.map(at).filter((k) => k >= 0));
+      const keep = (L.separators ?? []).filter((s) => {
+        if (s.niche) return true;
+        const len = dist(s.a, s.b);
+        if (!(len > 0)) return true;
+        const n = [-(s.b[1] - s.a[1]) / len, (s.b[0] - s.a[0]) / len];
+        const m = [(s.a[0] + s.b[0]) / 2, (s.a[1] + s.b[1]) / 2];
+        const sides = [1, -1].map((k) => roomAt(found, [m[0] + n[0] * k * 0.2, m[1] + n[1] * k * 0.2]));
+        return !(sides[0] >= 0 && sides[1] >= 0 && sides[0] !== sides[1] && named.has(sides[0]) !== named.has(sides[1]));
+      });
+      if (keep.length < L.separators.length) {
+        const gone = L.separators.length - keep.length;
+        L.separators = keep;
+        found = levelRooms(L);
+        step({ step: 'rooms', file: d.file, method: 'separator', confidence: 'medium', detail: `${gone} skillelinje${gone === 1 ? '' : 'r'} uten vegg tatt bort: planen har romnavn bare på den ene siden` });
+      }
+    }
     // a carport or a garage open on one side, against the house: a room once that side is closed (closeAround), when
     // the room then fits its label
     for (const it of items) {
@@ -1558,7 +1580,7 @@ export async function generate(inputs, opts = {}) {
   const topD = byNo[byNo.length - 1];
   const TL = topD?.level;
   const ceilingTexts = doc.levels.some((l) => (l.ceilingMarks ?? []).some((m) => m.kind !== 'height'));
-  const loftish = TL && TL.floorY > 0.5 && (/loft/i.test(TL.name) || TL.rooms.some((r) => /loft/i.test(r.name ?? '')) || TL.skylights?.length > 0);
+  const loftish = !!TL && loftLevel(doc, TL, TL.rooms.map((r) => r.name), TL.skylights?.length > 0);
   if (TL && !ceilingTexts && !loftish) {
     const ceil = TL.ceiling ?? doc.settings.ceiling ?? 2.4;
     const tall = TL.openings.filter((o) => (o.facadeTop ?? 0) > ceil + 0.1);
@@ -1683,6 +1705,21 @@ export async function generate(inputs, opts = {}) {
     if (res.errors.length) report.notes.push(`Kontrollen fant ${res.errors.length} feil i 3D-huset; rett dem i «Finjuster» (${res.errors.slice(0, 2).join('; ')}${res.errors.length > 2 ? ' …' : ''}).`);
   }
 
+  // ---- roof windows only where no level is over them (hus12: four armchairs drawn as turned squares with double
+  //      outlines in the living room were three «roof windows» on the ground floor): a level's plan points compared
+  //      through the levels' offsets (align.js)
+  for (const d of byNo) {
+    const L = d.level;
+    if (!L.skylights?.length) continue;
+    const over = byNo.filter((u) => u.level.floorY > L.floorY + 0.5 && u.found);
+    if (!over.length) continue;
+    const off = (lv) => lv.offset ?? [0, 0];
+    const covered = (p) => over.some((u) => u.found.at(p[0] + off(L)[0] - off(u.level)[0], p[1] + off(L)[1] - off(u.level)[1]) >= 0);
+    const before = L.skylights.length;
+    L.skylights = L.skylights.filter((k) => !covered([(k.rect[0][0] + k.rect[1][0]) / 2, (k.rect[0][1] + k.rect[1][1]) / 2]));
+    if (L.skylights.length < before) step({ step: 'skylights', file: d.file, level: L.id, method: 'covered', confidence: 'high', detail: `${before - L.skylights.length} takvindu${before - L.skylights.length === 1 ? '' : 'er'} under en etasje til tatt bort` });
+  }
+
   // ---- the rooms still without a name, now that the levels and the stairs are in place: a loft's knee walls with
   //      the low strip behind each («Kneveggsbod», F161, F162), and a room that is mostly the stair («Trapp», F143) –
   //      named by rule, not asked about
@@ -1690,7 +1727,9 @@ export async function generate(inputs, opts = {}) {
     const L = d.level;
     if (!d.found) continue;
     let found = d.found;
-    if (L === TL && loftish) {
+    // knee walls of their own only where the eave is at the floor (hus1): with the eave higher the outer wall is the
+    // knee wall (hus12, its eave 0,92 m up: the lines 0,5–2,2 m in were beds and wardrobes)
+    if (L === TL && loftish && Number.isFinite(doc.roof?.eaveTop) && doc.roof.eaveTop <= 0.6) {
       const before = found;
       const knees = addKneeWalls(L, d.img, d.ppm, { eaveTop: Number.isFinite(doc.roof?.eaveTop) ? Math.max(0.05, doc.roof.eaveTop) : null, pitch: doc.roof?.pitchGable ?? doc.roof?.pitchFacades ?? 35 });
       if (knees.length) {
@@ -1796,7 +1835,8 @@ const kindOf = (op) => (op.type === 'door' ? op.variant ?? 'single' : op.type);
  * sliding door (hus2, hus3), a plain passage → a hinged door (hus2, hus5); Haiku over-counts hinged doors and
  * under-counts sliding ones on marked plans (notes). So the AI decides only
  *   - a hinged door wide enough for two leaves (≥ 1.05 m) that it calls a double door (two arcs read as one);
- *   - a plain passage in an interior wall that it calls a sliding door (a pocket door drawn as a gap: hus8).
+ *   - a plain passage in an interior wall that it calls a sliding door (a pocket door drawn as a gap: hus8);
+ *   - a window in an interior wall that it calls a door (hus11's slanted wall).
  */
 function aiOpeningKind(op, aiKind, L) {
   const ours = kindOf(op);
@@ -1805,6 +1845,9 @@ function aiOpeningKind(op, aiKind, L) {
   const exterior = !!wallById(L, op.wall)?.exterior;
   if (ours === 'single' && want === 'double') return op.width >= 1.05 ? 'double' : null;
   if (ours === 'opening' && want === 'sliding' && !exterior) return 'sliding';
+  // a «window» in a wall between two rooms that the AI calls a door: a door, its frame lines read as a window's
+  // (hus11's slanted bedroom wall, where no swing arc is looked for)
+  if (ours === 'window' && want === 'single' && !exterior) return 'single';
   return null;
 }
 

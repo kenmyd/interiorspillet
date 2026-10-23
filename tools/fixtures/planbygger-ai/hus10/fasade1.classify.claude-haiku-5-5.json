@@ -1,0 +1,68 @@
+{
+ "house": "hus10",
+ "file": "fasade1.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 766,
+  "sha256": "d5c466dcef1920a91895b56d3a243ad6aa2c9f1d23f6cba519af5bc3978afd8b"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade1.avif"
+ },
+ "source": {
+  "file": "fasade1.avif",
+  "part": null,
+  "width": 1670,
+  "height": 800,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "facade",
+    "bbox": [
+     0.22,
+     0.09,
+     0.772,
+     0.872
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ett fasadebilde uten tittel, målestokk og måltall. Bygningen har sadeltak med mørk kledning og lys trekledning, med store glassfelt i gavlen."
+ },
+ "usage": {
+  "input_tokens": 3756,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 140,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000446,
+ "ms": 1974,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-23T14:04:25.335Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

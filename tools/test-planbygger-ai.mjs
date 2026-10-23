@@ -491,11 +491,17 @@ const KNOWN = {
   // the second Barnesov («10,56», mark 6) named without its area (phase B: read as 9.56)
   'hus9/underetasje.jpg readPlan haiku': ['rom Barnesov 10.56', 'trapp'],
   'hus9/underetasje.jpg readPlan sonnet': ['skyvedører'],
+  // the U stair with winders read as quarter-turn on both floors; «Evt. sov» (a zone in the living room) as a bedroom
+  'hus11/1etg.avif readPlan haiku': ['ekstra rom Evt. sov', 'trapp'],
+  'hus11/2etg.avif readPlan haiku': ['trapp'],
+  // the quarter-turn stair as straight on both floors
+  'hus12/1etg.avif readPlan haiku': ['trapp'],
+  'hus12/2etg.avif readPlan haiku': ['trapp'],
 };
 
 const fixtures = FX.listFixtures(FIX);
 const folders = new Set(fixtures.map((f) => f.fx.house)).size;
-check(`opptak finnes (${fixtures.length}), fra ${folders} av de 10 husmappene`, fixtures.length >= 60 && folders === 10);
+check(`opptak finnes (${fixtures.length}), fra ${folders} av de ${MA.HOUSES.length} husmappene`, fixtures.length >= 60 && folders === MA.HOUSES.length);
 check('alle opptakene er tatt opp gjennom «Generer» (kilde, bilde, merker og hint lagret)', fixtures.every((f) => f.fx.via === 'tools/planbygger-ai-fixtures.mjs' && f.fx.source && f.fx.image?.sha256 && Array.isArray(f.fx.marks) && f.fx.hints), fixtures.filter((f) => !f.fx.source).map((f) => f.tag).join(', '));
 check(`alle opptakene har promptversjon ${PROMPTS.PROMPT_VERSION}`, fixtures.every((f) => f.fx.promptVersion === PROMPTS.PROMPT_VERSION), fixtures.filter((f) => f.fx.promptVersion !== PROMPTS.PROMPT_VERSION).map((f) => `${f.tag} ${f.fx.promptVersion}`).join(', '));
 

@@ -70,7 +70,7 @@ import { luma, histogram, raster } from './image.js';
 import { autoDarkThreshold, autoWallTone, detectPlan } from './detect.js';
 import { traceLine } from './scale.js';
 import { pointInPolygon, projectToSegment } from './geom.js';
-import { applyDetection } from './model.js';
+import { applyDetection, LOFT_NAME } from './model.js';
 import { levelRooms } from './regions.js';
 
 /** The median door hole (frame included) of Norwegian plans, metres: 0.91–0.95 on the test plans at their truth. */
@@ -166,8 +166,9 @@ export function isLoft(ai) {
   if (!ai) return false;
   if (Array.isArray(ai.skylights) && ai.skylights.length) return true;
   const names = [ai.levelTitle, ...(ai.rooms || []).map((r) => r?.name), ...(ai.labels || []).map((l) => l?.text)];
-  return names.some((n) => typeof n === 'string' && /loft/i.test(n));
+  return names.some((n) => typeof n === 'string' && LOFT_NAME.test(n));
 }
+
 
 // ---------------------------------------------------------------------------------------------------------------
 // Wall thickness modes (classical, scale-free)
@@ -1077,6 +1078,14 @@ export function estimateScale(input) {
   const tightPrior = dims && dims.conf === 'high' ? dims.pxPerM : areasPrior;
   const paper = paperLayer(input, tightPrior ?? loosePrior, tightPrior != null);
   const bra = braLayer(input);
+  // a loft's labels that give the scale the other level gives through the outlines (sameSource, within 1,5 %) count the
+  // whole floor after all (hus12's upper floor: 79,0 from the areas at 0,2 % spread and 79,1 from the outlines; the
+  // doors' 75,3 won and the rooms came out 10 % too large) – no loft penalty
+  if (areas?.loft && same.some((l) => relDiff(l.pxPerM, areas.pxPerM) <= 0.015)) {
+    areas.weight /= 0.35;
+    areas.loft = false;
+    areas.detail = areas.detail.replace(', loft: arealene er mindre enn gulvet', ', loft, men samme skala som den andre etasjen gir gjennom omrisset');
+  }
 
   const layers = [dims, paper, areas, ...same, bra, ...standard].filter((l) => l && l.pxPerM > 0 && Number.isFinite(l.pxPerM));
   const candidates = [

@@ -211,6 +211,10 @@ let failed = false;
 try {
   if (!opt.only || opt.only === 'v1') {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    // the tests generate without the AI on purpose (app.js stops there for a customer)
+    await context.addInitScript(() => {
+      window.__planbyggerAllowNoAi = true;
+    });
     const page = await context.newPage();
     const watch = watchPage(page, { quiet: true });
     await page.goto(`${base}/planbygger.html`);
@@ -435,6 +439,10 @@ try {
    */
   async function generateHus3({ label, replay }) {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    // the tests generate without the AI on purpose (app.js stops there for a customer)
+    await context.addInitScript(() => {
+      window.__planbyggerAllowNoAi = true;
+    });
     const page = await context.newPage();
     const watch = watchPage(page, { quiet: true });
     let replayer = null;
@@ -678,6 +686,10 @@ try {
   /** A fresh page on the start screen. → { context, page, watch } */
   async function freshPage() {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    // the tests generate without the AI on purpose (app.js stops there for a customer)
+    await context.addInitScript(() => {
+      window.__planbyggerAllowNoAi = true;
+    });
     const page = await context.newPage();
     const watch = watchPage(page, { quiet: true });
     await page.goto(`${base}/planbygger.html`);

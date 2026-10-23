@@ -3078,8 +3078,9 @@ function fanOf(segs, ppm, near, inside, { minLines = 4, minMember = 0.4 * ppm, o
  * Slanted walls (hus6's extension, its wall at 29°): the walls run along the axes, so a slanted one is never a piece.
  * Two free ends of the house's walls (nothing else's band holds them) with a band of ink between them at a slant
  * (15–75°), pointing at each other and crossing no wall, are joined by one: the band drawn – outlines, hatching, glass
- * lines – within half a wall's thickness of the line from end to end over 90 % of it, and two lines or more across it
- * over 60 % (a wall has two faces; a dimension line is one). Each end once, the best covered first. Its openings: the
+ * lines – within half a wall's thickness of the line from end to end over 90 % of it, and two lines or more across it,
+ * or one dark run at least half the wall's thickness (a filled wall, hus11's bedroom corner), over 60 % (a wall has two
+ * faces; a dimension line is one thin line). Each end once, the best covered first. Its openings: the
  * stretches that are not solid (core) between its ends, drawn with lines – a window, or a sliding door when one line in
  * it covers only part of the stretch (a leaf) beside lines that run through (the frame).
  * @returns {{ a, b, t, openings: { from, to, type, variant?, symbol }[] }[]}  pixels; from / to along a → b
@@ -3128,14 +3129,18 @@ function slantedWalls(ctx, walls, tolJ) {
         let runs = 0;
         let on = false;
         let any = false;
+        let run = 0;
+        let widest = 0;
         for (let k = -half - 2; k <= half + 2; k++) {
           const v = ink(...at(s, k));
           if (v && Math.abs(k) <= half) any = true;
           if (v && !on) runs++;
+          run = v ? run + 1 : 0;
+          widest = Math.max(widest, run);
           on = v;
         }
         if (any) inked++;
-        if (runs >= 2) two++;
+        if (runs >= 2 || widest >= Math.max(3, 0.5 * t)) two++;
       }
       if (!total || inked < 0.9 * total || two < 0.6 * total) continue;
       cands.push({ A, B, L, u, t, half, at, cover: inked / total });
