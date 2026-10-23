@@ -22,6 +22,20 @@ export default defineConfig({
         // the planbygger: a floor plan → a 3D house (src/planbygger, notes/planbygger.md)
         planbygger: resolve(import.meta.dirname, 'planbygger.html'),
       },
+      output: {
+        // the catalogue data in one chunk per category: in one chunk (with room-spec) it reached the 2000 kB warning
+        // limit with this round's products. Every file is still loaded at start (static imports); only the chunking
+        // changes – and a data-only change leaves the code chunks cached.
+        codeSplitting: {
+          groups: [{
+            debugName: 'catalog-data',
+            name: (id) => {
+              const m = /[\\/]src[\\/]data[\\/]catalog[\\/]([a-z0-9-]+)\.json$/.exec(id);
+              return m ? `catalog-${m[1]}` : null;
+            },
+          }],
+        },
+      },
     },
   },
 });

@@ -1,0 +1,460 @@
+[
+  {
+    "id": "bohus-quadrato-pall-93x93",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "Quadrato pall 93x93",
+    "brand": "Jakobsen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/puff/quadrato-pall-93x93-1",
+    "priceNok": 5125,
+    "salePriceNok": 3075,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 284172, Storm 09 Taupe / svart ben): 3 075 kr (før 5 125 kr, kampanje «QUADRATO-serien i tekstil Storm» til 2026-11-30). Andre varianter: Storm 02 Natural (varenr. 284171) 3 075 kr (før 5 125 kr); Storm 97 Dark grey (varenr. 312827) 3 075 kr (før 5 125 kr). Bestillingsvare; standard komfortskum.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.93,
+      "d": 0.93,
+      "h": 0.43
+    },
+    "archetype": "pouf",
+    "mount": "floor",
+    "params": {
+      "shape": "square",
+      "texture": "woven",
+      "legs": "none",
+      "stitchedLines": false,
+      "storage": false,
+      "piping": true,
+      "round": 0.2,
+      "puff": 0.03
+    },
+    "variants": [
+      {
+        "name": "Storm 09 Taupe",
+        "colors": {
+          "fabric": "#8a7f72",
+          "piping": "#8a7f72",
+          "legs": "#8a7f72"
+        },
+        "materials": {
+          "fabric": "woven",
+          "piping": "woven",
+          "legs": "woven"
+        }
+      },
+      {
+        "name": "Storm 02 Natural",
+        "colors": {
+          "fabric": "#cfc7bb",
+          "piping": "#cfc7bb",
+          "legs": "#cfc7bb"
+        },
+        "materials": {
+          "fabric": "woven",
+          "piping": "woven",
+          "legs": "woven"
+        },
+        "url": "https://www.bohus.no/stoler/puff/quadrato-pall-93x93",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/QUADRATO/257790/image-thumb__257790__PDP-Product/284171%20-%20Quadrato%20pall%2093x93%20storm%20natural%2002%20med%20svarte%20-%201.07f7b4a2.jpg"
+      },
+      {
+        "name": "Storm 97 Dark grey",
+        "colors": {
+          "fabric": "#6f6c69",
+          "piping": "#6f6c69",
+          "legs": "#6f6c69"
+        },
+        "materials": {
+          "fabric": "woven",
+          "piping": "woven",
+          "legs": "woven"
+        },
+        "url": "https://www.bohus.no/stoler/puff/quadrato-pall-93x93-14",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/QUADRATO/333745/image-thumb__333745__PDP-Product/312826%20-%20Quadrato%20pall%2093x93%20Storm%2097%20Dark%20grey%20med%20ben%20svart%202.5cm%20pocket%20-%201.98beb3b6.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.3,
+    "absorptionNote": "Stor polstret puff (0,93 × 0,93 m) – litt over standard 0,25.",
+    "shapeNote": "Stor, kvadratisk og tett polstret pall med kantsøm rundt toppen og ned hjørnene; svarte glideknotter på 2,5 cm skjult under.",
+    "description": "Stor kvadratisk pall i vevd Storm-stoff med kantsømmer – matcher Quadrato-sofaen og kan brukes som fotskammel eller ekstra sete.",
+    "why": "Fungerer som fotskammel og ekstra sete foran sofaen i kjellerstua (20,6 m²), og demper klangen i rommet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/QUADRATO/311918/image-thumb__311918__PDP-Product/302640%20-%20Quadrato%20pall%2093x93%20Storm%20Taupe%2009%20med%20svart%202.5cm%20pocket%20-%203.e88ce37f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, B93 × D93 × H43 cm, sittehøyde 43 cm, ben 2,5 cm, bilde, varenr. 284172 / 284171 / 312827. Farger anslått fra produktbildene."
+  },
+  {
+    "id": "bohus-ella-pall-75x57",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "Ella pall 75x57",
+    "brand": "Stressless",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/puff/ella-pall-75x58",
+    "priceNok": 9412,
+    "salePriceNok": 6588,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 267584, Paloma Taupe / krom ben): 6 588 kr (før 9 412 kr, kampanje «Stressless ELLA-serien i hud» til 2026-11-30). Andre varianter: Skinn Paloma Black, svarte ben (varenr. 275274) 6 588 kr (før 9 412 kr); Skinn Paloma Cognac, svarte ben (varenr. 275275) 6 588 kr (før 9 412 kr). Bestillingsvare.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.75,
+      "d": 0.57,
+      "h": 0.44
+    },
+    "archetype": "pouf",
+    "mount": "floor",
+    "params": {
+      "shape": "square",
+      "texture": "leather",
+      "legs": "sled",
+      "legHeight": 0.24,
+      "stitchedLines": false,
+      "storage": false,
+      "piping": false,
+      "tufted": false
+    },
+    "variants": [
+      {
+        "name": "Skinn Paloma Taupe, krom ben",
+        "colors": {
+          "fabric": "#b9875f",
+          "piping": "#b9875f",
+          "legs": "#c4c6c8"
+        },
+        "materials": {
+          "fabric": "leather",
+          "piping": "leather",
+          "legs": "chrome"
+        }
+      },
+      {
+        "name": "Skinn Paloma Black, svarte ben",
+        "colors": {
+          "fabric": "#232323",
+          "piping": "#232323",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "fabric": "leather",
+          "piping": "leather",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/puff/ella-pall",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Ekornes%20AS/Produkter/ELLA/156351/image-thumb__156351__PDP-Product/275274%20-%20Ella%20pall%20paloma%20black%2019%20-%202.1f52e7b2.jpg"
+      },
+      {
+        "name": "Skinn Paloma Cognac, svarte ben",
+        "colors": {
+          "fabric": "#a35a32",
+          "piping": "#a35a32",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "fabric": "leather",
+          "piping": "leather",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/puff/ella-pall-3",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Ekornes%20AS/Produkter/ELLA/156363/image-thumb__156363__PDP-Product/275275%20-%20Ella%20pall%20paloma%20new%20cognac%2040%20-%203.fd071674.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.2,
+    "absorptionNote": "Skinnpall – noe mindre enn en stoffpuff.",
+    "shapeNote": "Rektangulær skinnpall med avrundede kanter og stikninger som deler toppen i felt; to Y-formede metallføtter (meier) under kortendene. Benhøyde 24 cm ifølge Bohus.",
+    "description": "Stressless-pall i Paloma-skinn med stikninger på toppen, på to Y-formede metallføtter.",
+    "why": "Skinnpall foran sofa eller lenestol i stua – skinn tåler føtter og er lett å holde ren, og cognac eller taupe gir varme mot de lyse veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Ekornes%20AS/Produkter/ELLA/151324/image-thumb__151324__PDP-Product/267584%20-%20Ella%20pall%2075x58%20paloma%20taupe%2084%20-%203.33e71b90.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, B75 × D57 × H44 cm, benhøyde 24 cm, bilde, varenr. 267584 / 275274 / 275275. Farger anslått fra produktbildene."
+  },
+  {
+    "id": "bohus-garnes-puff-o55",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "Garnes puff Ø55",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/puff/garnes-puff-o55-1",
+    "priceNok": 1999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 327920, Beige): 1 999 kr. Andre varianter: Brun (varenr. 327921) 1 999 kr.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.55,
+      "d": 0.55,
+      "h": 0.35
+    },
+    "archetype": "pouf",
+    "mount": "floor",
+    "params": {
+      "shape": "cylinder",
+      "texture": "shaggy",
+      "legs": "none",
+      "stitchedLines": false,
+      "storage": false,
+      "piping": false
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "fabric": "#d8cdb6",
+          "piping": "#d8cdb6",
+          "legs": "#d8cdb6"
+        },
+        "materials": {
+          "fabric": "teddy",
+          "piping": "teddy",
+          "legs": "teddy"
+        }
+      },
+      {
+        "name": "Brun",
+        "colors": {
+          "fabric": "#5a4a37",
+          "piping": "#5a4a37",
+          "legs": "#5a4a37"
+        },
+        "materials": {
+          "fabric": "teddy",
+          "piping": "teddy",
+          "legs": "teddy"
+        },
+        "url": "https://www.bohus.no/stoler/puff/garnes-puff-o55",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/GARNES/611378/image-thumb__611378__PDP-Product/327921%20-%20Garnes%20puff%20%C3%9855%20Brun%20-%201.a7361a28.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.25,
+    "shapeNote": "Lav, rund trommel helt kledd i langhåret, krøllete fuskepels; ingen synlige ben.",
+    "description": "Lav, rund puff kledd i myk, langhåret fuskepels – beige eller brun.",
+    "why": "Gir en lun, myk tekstur på soverommet eller i kjellerstua, og passer som fotskammel foran en lenestol.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/GARNES/614596/image-thumb__614596__PDP-Product/327920%20-%20Garnes%20puff%20%C3%9855%20Beige%20-%202.574516f8.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, Ø55 × H35 cm, kryssfiner/polyester, bilde, varenr. 327920 / 327921. Farger anslått fra produktbildene."
+  },
+  {
+    "id": "bohus-spazio-puff-med-oppbevaring-o55",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "Spazio puff med oppbevaring Ø55",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/puff/spazio-puff-med-oppbevaring-o55-1",
+    "priceNok": 2499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 316752, Brun / svart metall ben): 2 499 kr. Andre varianter: Beige, svarte metallben (varenr. 316751) 2 499 kr.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.55,
+      "d": 0.55,
+      "h": 0.4
+    },
+    "archetype": "pouf",
+    "mount": "floor",
+    "params": {
+      "shape": "cylinder",
+      "texture": "wool",
+      "legs": "metal",
+      "legHeight": 0.07,
+      "stitchedLines": false,
+      "storage": true,
+      "piping": false,
+      "legsOutside": true,
+      "legCount": 4,
+      "legRise": 0.15
+    },
+    "variants": [
+      {
+        "name": "Brun, svarte metallben",
+        "colors": {
+          "fabric": "#8b7765",
+          "piping": "#8b7765",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "fabric": "felt",
+          "piping": "felt",
+          "legs": "black-metal"
+        }
+      },
+      {
+        "name": "Beige, svarte metallben",
+        "colors": {
+          "fabric": "#c8bba5",
+          "piping": "#c8bba5",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "fabric": "felt",
+          "piping": "felt",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/stoler/puff/spazio-puff-med-oppbevaring-o55",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/SPAZIO/349696/image-thumb__349696__PDP-Product/316751%20-%20Spazio%20puff%20med%20oppbevaring%20%C3%9855%20Beige%20-%203.33f8150f.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.25,
+    "shapeNote": "Rund trommel med løftbart lokk (avrundet kant) i filtaktig stoff, hevet på fire tynne, svarte metallben som går opp langs sidene. Benhøyde anslått 8 cm fra bildet.",
+    "description": "Rund puff med oppbevaring under lokket, trukket i filtaktig stoff og hevet på tynne, svarte metallben.",
+    "why": "Ryddig oppbevaring for pledd eller leker i stua eller soverommet, og de svarte bena passer husets metalldetaljer.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Nordic%20Furniture%20Group%20AS/Produkter/SPAZIO/349700/image-thumb__349700__PDP-Product/316752%20-%20Spazio%20puff%20med%20oppbevaring%20%C3%9855%20Chocolate%20-%204.8a09700c.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, Ø55 × H40 cm, maks 120 kg, bilde, varenr. 316752 / 316751. Anslått: benhøyde 8 cm. Farger anslått fra produktbildene."
+  },
+  {
+    "id": "ikea-sandared-puff-o45",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "SANDARED puff Ø45",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/sandared-puff-beige-00385314/",
+    "priceNok": 599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.no, art. 003.853.14, beige, 45 cm): 599 kr, ingen kampanje.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.45,
+      "d": 0.45,
+      "h": 0.33
+    },
+    "archetype": "pouf",
+    "mount": "floor",
+    "params": {
+      "shape": "round",
+      "texture": "knit",
+      "legs": "none",
+      "stitchedLines": false,
+      "storage": false,
+      "piping": false,
+      "chunky": true
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "fabric": "#b5a58c",
+          "piping": "#b5a58c",
+          "legs": "#b5a58c"
+        },
+        "materials": {
+          "fabric": "knit",
+          "piping": "knit",
+          "legs": "knit"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.2,
+    "shapeNote": "Lav, rund og myk puff med strikket trekk i grovt sikksakk-mønster og en stjerne midt på toppen.",
+    "description": "Rund, myk puff med strikket trekk i beige – lav nok til å brukes som fotskammel.",
+    "why": "En lett og rimelig ekstra sitteplass i stua eller soverommet; strikken gir en rolig tekstur uten å bli rotete.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/sandared-puff-beige__0560902_pe662686_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-21 (produktside): pris 599 kr, Ø45 × H33 cm, bilde, art. 003.853.14. Farge anslått fra produktbildet."
+  },
+  {
+    "id": "ikea-tolkning-puff-med-oppbevaring-o50",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "TOLKNING puff med oppbevaring Ø50",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/tolkning-puff-med-oppbevaring-handlaget-rotting-90512666/",
+    "priceNok": 995,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.no, art. 905.126.66, håndlaget rotting): 995 kr, ingen kampanje.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.5,
+      "h": 0.41
+    },
+    "archetype": "pouf",
+    "mount": "floor",
+    "params": {
+      "shape": "cylinder",
+      "texture": "woven",
+      "legs": "none",
+      "stitchedLines": false,
+      "storage": true,
+      "piping": false
+    },
+    "variants": [
+      {
+        "name": "Håndlaget rotting",
+        "colors": {
+          "fabric": "#c8985f",
+          "piping": "#c8985f",
+          "legs": "#c8985f"
+        },
+        "materials": {
+          "fabric": "rattan",
+          "piping": "rattan",
+          "legs": "rattan"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.1,
+    "absorptionNote": "Hard rottingflett – absorberer lite.",
+    "shapeNote": "Rund kurv-puff i håndflettet rotting med løst lokk og flettet kant; små føtter under (ikke modellert).",
+    "description": "Rund puff i håndflettet rotting med lokk og oppbevaring inni.",
+    "why": "Naturlig rotting gir varme mot de lyse veggene i stua og skjuler pledd eller fjernkontroller – ryddig og nyttig.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/tolkning-puff-med-oppbevaring-handlaget-rotting__1098697_pe865490_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-21 (produktside): pris 995 kr, Ø50 × H41 cm, maks 100 kg, bilde, art. 905.126.66. Farge anslått fra produktbildet."
+  },
+  {
+    "id": "jysk-dalager-puff-o56",
+    "category": "tekstil",
+    "subcategory": "puff",
+    "name": "Puff DALAGER Ø56",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/stue/puffer/puff-dalager-o56-beige-stoff",
+    "priceNok": 849,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3610108, beige stoff): 849 kr, ingen kampanje. Mulig frakt i tillegg.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.56,
+      "d": 0.56,
+      "h": 0.4
+    },
+    "archetype": "pouf",
+    "mount": "floor",
+    "params": {
+      "shape": "cylinder",
+      "texture": "boucle",
+      "legs": "block",
+      "legHeight": 0.06,
+      "stitchedLines": false,
+      "storage": false,
+      "piping": false,
+      "legsOutside": true,
+      "legCount": 4,
+      "legRise": 0.2
+    },
+    "variants": [
+      {
+        "name": "Beige stoff, ben i massivt tre",
+        "colors": {
+          "fabric": "#cfc6b9",
+          "piping": "#cfc6b9",
+          "legs": "#b48a5c"
+        },
+        "materials": {
+          "fabric": "boucle",
+          "piping": "boucle",
+          "legs": "oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.25,
+    "shapeNote": "Rund, polstret trommel i bouclé-aktig stoff på fire flate, buede treklosser som går opp langs siden; ca. 6 cm klaring under (anslått fra bildet).",
+    "description": "Rund puff i beige bouclé-aktig stoff på fire brede, avrundede treben.",
+    "why": "Myk ekstra sitteplass med lyse treklosser som passer et rolig, nordisk uttrykk i stua eller på soverommet.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/285288",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21 (produktside og JSON-LD): pris 849 kr, Ø56 × H40 cm, stofftrekk, ben i massivt tre, bilde, varenr. 3610108. Anslått: benhøyde 6 cm. Lagerstatus for levering kunne ikke leses sikkert fra siden (JSON-LD: InStock)."
+  }
+]

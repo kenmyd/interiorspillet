@@ -1,4 +1,5 @@
 import { ORIGINAL_NAME, DESIGN_VERSION, DesignState, looksLikeDesign } from './DesignState.js';
+import { imageRefs } from './ImageStore.js';
 
 /**
  * Saved designs (ARCHITECTURE §7): several named designs in localStorage under `interiorspillet.designs.v1`,
@@ -18,6 +19,11 @@ import { ORIGINAL_NAME, DESIGN_VERSION, DesignState, looksLikeDesign } from './D
  * Design version 2 (hele-huset §5.5, steg 16): the store key and format stay; the designs inside become version 2 as
  * they are written. Before the FIRST write that would replace stored version 1 designs, the whole stored text is
  * copied once to `interiorspillet.designs.v1.backup` (BACKUP_KEY; never overwritten). Version 1 designs still load.
+ *
+ * Uploaded pictures («egne bilder») are never stored here – items keep `params.imageId`; the bytes are in
+ * design/ImageStore.js (IndexedDB) and travel inside exported files (a last top-level `images` block, only when the
+ * design uses pictures – an export without pictures is exactly as before). importText registers that block in the
+ * picture store; the stored design never holds it. imageRoots() gives the store's clean-up the ids still in use.
  */
 
 export const STORAGE_KEY = 'interiorspillet.designs.v1';
@@ -27,6 +33,8 @@ const STORE_VERSION = 1;
 /** «Forrige økt (…)» entries kept in the Design list. */
 export const KEEP_SESSIONS = 3;
 export const SESSION_PREFIX = 'Forrige økt (';
+/** A design file larger than this is refused before it is read (pictures included). */
+export const MAX_DESIGN_FILE_BYTES = 150 * 1024 * 1024;
 const pad = (n) => String(n).padStart(2, '0');
 
 /** «Forrige økt (18.10. 19:30)». */
@@ -78,8 +86,10 @@ export class Saves {
    * @param {string} [opts.key]             storage key
    * @param {boolean} [opts.autosave=true]  save the active design on every change (debounced)
    * @param {number} [opts.autosaveDelay=1200] ms
+   * @param {import('./ImageStore.js').ImageStore|null} [opts.images] uploaded pictures (exports embed them, imports
+   *   register them); null: exports carry no pictures, imports ignore them
    */
-  constructor(design, { storage = defaultStorage(), key = STORAGE_KEY, autosave = true, autosaveDelay = 1200 } = {}) {
+  constructor(design, { storage = defaultStorage(), key = STORAGE_KEY, autosave = true, autosaveDelay = 1200, images = null } = {}) {
     this.design = design;
     this.storage = storage;
     this.key = key;
@@ -96,6 +106,15 @@ export class Saves {
     /** True once this Saves copied the stored version 1 designs to BACKUP_KEY. */
     this.backupWritten = false;
     this._backupChecked = false;
+    /** Uploaded pictures (design/ImageStore.js) or null: exports then carry no pictures, imports ignore them. */
+    this.images = images;
+    /**
+     * Result of the last importText: { added, existing, rejected, unsaved } (picture ids); importFile adds
+     * unsavedReason 'memory' (this browser keeps no pictures) | 'quota' (a write failed) when `unsaved` is not empty.
+     */
+    this.lastImport = null;
+    /** Picture ids the last export could not include (not in this browser). */
+    this.lastExportMissing = [];
     // undo/redo across an «Åpne»/«Importer» restores the design's name: the active slot follows it
     this._offHistory = design?.on?.('change', (e) => {
       if (e?.type === 'undo' || e?.type === 'redo') this._followName();
@@ -197,16 +216,15 @@ export class Saves {
         _originalKey = '';
       }
     }
-    // an older design (version 1: no level, world y) is compared in today's form
+    // compared in today's form, as it would load: a version 1 design (no level, world y), and today's pieces the user
+    // never changed follow the current room data (meta.specRevision – e.g. the painting's category 'smatt' → 'kunst')
     let cur = json;
-    if (!(Number(json.version) >= DESIGN_VERSION)) {
-      try {
-        const d = new DesignState({ layout: this.design?.layout, original: false });
-        d.load(json);
-        cur = d.toJSON();
-      } catch {
-        cur = json;
-      }
+    try {
+      const d = new DesignState({ layout: this.design?.layout, original: false });
+      d.load(json);
+      cur = d.toJSON();
+    } catch {
+      cur = json;
     }
     return workKey(cur) !== _originalKey;
   }
@@ -289,7 +307,7 @@ export class Saves {
 
   /**
    * Saved designs, newest first, with «Original» always first.
-   * @returns {Array<{ name: string, original?: boolean, active: boolean, createdAt?: string, updatedAt?: string, itemCount?: number, proposalId?: string|null }>}
+   * @returns {Array<{ name: string, original?: boolean, active: boolean, createdAt?: string, updatedAt?: string, itemCount?: number, proposalId?: string|null, imageCount?: number }>}
    */
   list() {
     const store = this._read();
@@ -300,6 +318,7 @@ export class Saves {
       updatedAt: d?.meta?.updatedAt,
       itemCount: Array.isArray(d?.items) ? d.items.length : 0,
       proposalId: d?.wall?.proposalId ?? null,
+      imageCount: imageRefs(d).size,
     }));
     rows.sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
     return [{ name: ORIGINAL_NAME, original: true, active: store.active === null && this.design.meta.name === ORIGINAL_NAME }, ...rows];
@@ -359,6 +378,7 @@ export class Saves {
     const store = this._read();
     const json = store.designs[name];
     if (!json) return false;
+    this._preloadImages(json);
     this.lastKept = this._beforeSwitch(store);
     this._suspend++;
     try {
@@ -470,6 +490,7 @@ export class Saves {
     const store = this._read();
     const json = store.active ? store.designs[store.active] : store.autosave;
     if (!json) return false;
+    this._preloadImages(json);
     this._suspend++;
     try {
       this.design.load(json);
@@ -510,19 +531,63 @@ export class Saves {
     return `interiorspillet-${slug}-${new Date().toISOString().slice(0, 10)}.json`;
   }
 
-  /** The current design (or a saved one) as pretty JSON text. */
-  exportText(name) {
-    const json = name && name !== ORIGINAL_NAME ? this._read().designs[name] : name === ORIGINAL_NAME ? this.design.originalJSON() : this.design.toJSON();
-    return json ? JSON.stringify({ app: 'Interiørspillet', ...json }, null, 2) : null;
+  /** The design JSON an export of `name` writes (a saved design, «Original», or the current design). */
+  _jsonFor(name) {
+    return name && name !== ORIGINAL_NAME ? this._read().designs[name] : name === ORIGINAL_NAME ? this.design.originalJSON() : this.design.toJSON();
+  }
+
+  /** Fire-and-forget: loads the pictures of a design about to open (fewer placeholder frames on the first build). */
+  _preloadImages(json) {
+    if (!this.images?.load) return;
+    try {
+      const ids = imageRefs(json);
+      if (ids.size) this.images.load(ids).catch?.(() => {});
+    } catch {
+      /* pictures are optional */
+    }
   }
 
   /**
-   * Downloads the current design (or a saved one) as a .json file.
-   * @returns {boolean}
+   * The current design (or a saved one) as pretty JSON text. Stays synchronous: the pictures the design uses are
+   * embedded from memory as a last `images` key (absent when there are none – the text is then exactly as without a
+   * picture store); ids not in memory end up in `lastExportMissing` (exportFile loads them first).
+   * @param {string} [name]
+   * @param {{ images?: boolean }} [o]  images: false leaves the pictures out
+   * @returns {string|null}
    */
-  exportFile(name) {
+  exportText(name, { images: embed = true } = {}) {
+    const json = this._jsonFor(name);
+    if (!json) return null;
+    const out = { app: 'Interiørspillet', ...json };
+    this.lastExportMissing = [];
+    if (embed && this.images) {
+      const ids = imageRefs(json);
+      if (ids.size) {
+        const { images, missing } = this.images.exportSync(ids);
+        if (Object.keys(images).length) out.images = images; // last key
+        this.lastExportMissing = missing;
+      }
+    }
+    return JSON.stringify(out, null, 2);
+  }
+
+  /**
+   * Downloads the current design (or a saved one) as a .json file, with the pictures it uses (loaded first).
+   * @returns {Promise<boolean>}
+   */
+  async exportFile(name) {
+    if (typeof document === 'undefined') return false;
+    if (this.images) {
+      try {
+        const json = this._jsonFor(name);
+        const ids = json ? imageRefs(json) : new Set();
+        if (ids.size) await this.images.load(ids, { decode: false });
+      } catch {
+        /* exportText reports what is missing */
+      }
+    }
     const text = this.exportText(name);
-    if (!text || typeof document === 'undefined') return false;
+    if (!text) return false;
     try {
       const blob = new Blob([text], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -543,7 +608,8 @@ export class Saves {
   }
 
   /**
-   * Imports a design from text (JSON), loads it (undoable) and stores it under its own name (made unique).
+   * Imports a design from text (JSON), loads it (undoable) and stores it under its own name (made unique). Pictures in
+   * the file (`images`) go to the picture store (lastImport); a picture that is refused never blocks the design.
    * @param {string} text
    * @returns {string} the stored name
    * @throws {Error} Norwegian message when the file is not a design
@@ -557,6 +623,16 @@ export class Saves {
     }
     if (!looksLikeDesign(data)) {
       throw new Error('Filen inneholder ikke et design fra Interiørspillet.');
+    }
+    const emb = data.images && typeof data.images === 'object' && !Array.isArray(data.images) ? data.images : null;
+    delete data.images; // never part of the design (load ignores it anyway)
+    this.lastImport = { added: [], existing: [], rejected: [], unsaved: [] };
+    if (emb && this.images) {
+      try {
+        Object.assign(this.lastImport, this.images.import(emb));
+      } catch (err) {
+        console.warn('[saves] could not read the pictures of the file', err);
+      }
     }
     const given = typeof data.meta?.name === 'string' ? data.meta.name.trim().slice(0, 80) : '';
     const name = this.uniqueName(given && given !== ORIGINAL_NAME ? given : 'Importert design');
@@ -582,8 +658,17 @@ export class Saves {
    */
   async importFile(file) {
     if (!file) throw new Error('Ingen fil valgt.');
+    if (file.size > MAX_DESIGN_FILE_BYTES) throw new Error('Filen er for stor til å være et design fra Interiørspillet.');
     const text = typeof file.text === 'function' ? await file.text() : await new Response(file).text();
-    return this.importText(text);
+    const name = this.importText(text);
+    if (this.images && this.lastImport?.added?.length) {
+      const res = await this.images.flush();
+      const failed = new Set(res?.failed || []);
+      this.lastImport.unsaved = this.lastImport.added.filter((id) => failed.has(id) || this.images.info(id)?.persisted === false);
+      // why: the browser keeps no pictures at all (private window, blocked storage) or a write failed (storage full)
+      if (this.lastImport.unsaved.length) this.lastImport.unsavedReason = this.images.persistent === false ? 'memory' : 'quota';
+    }
+    return name;
   }
 
   /**
@@ -610,6 +695,34 @@ export class Saves {
       document.body.appendChild(input);
       input.click();
     });
+  }
+
+  /**
+   * Picture ids used by every stored design (named, «Forrige økt», the autosave slot) and the version 1 backup – the
+   * roots of the picture store's clean-up. null when the stored designs cannot be read: then nothing may be deleted.
+   * @returns {Set<string>|null}
+   */
+  imageRoots() {
+    const out = new Set();
+    if (!this.storage) return out;
+    let raws;
+    try {
+      raws = [this.storage.getItem(this.key), this.storage.getItem(BACKUP_KEY)];
+    } catch {
+      return null;
+    }
+    for (const raw of raws) {
+      if (!raw) continue;
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        return null;
+      }
+      const designs = data?.designs && typeof data.designs === 'object' ? Object.values(data.designs) : [];
+      for (const d of [...designs, data?.autosave]) for (const id of imageRefs(d)) out.add(id);
+    }
+    return out;
   }
 
   /**

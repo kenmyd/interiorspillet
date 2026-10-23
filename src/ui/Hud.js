@@ -1,6 +1,8 @@
 import { h, svg, keycap, PAUSE_EVENT } from './dom.js';
 import { ICONS } from './icons.js';
 import { buildControlsList } from './controlsHelp.js';
+import { TOUCH_ICONS } from './TouchControls.js';
+import { inputMode } from '../core/Device.js';
 
 /**
  * In-game HUD (DOM overlay). Never captures the mouse: everything is pointer-events: none.
@@ -27,12 +29,47 @@ import { buildControlsList } from './controlsHelp.js';
  *   setPaused(bool)                 freezes the toast / room-banner / help timers (the HUD sits under the pause
  *                                   overlay, so messages would otherwise expire unseen). Called automatically when
  *                                   PauseMenu dispatches PAUSE_EVENT on the same root.
+ *   promptShown                     the text of the visible prompt (null when none) – TouchControls lights «Bruk»
+ *   onPromptTap = () => {}          assigned by Game: a tap on the prompt while the touch controls are on (= E)
+ *   onOpenControls = () => {}       assigned by Game: «Bytt styring» in the help panel (opens «Slik styrer du»)
+ * The help text follows the control scheme / touch layout and switches when the touch controls come and go
+ * (Device.js inputMode); with the touch controls the prompt shows a finger instead of the E key cap.
  *
  * Most setters are called every frame, so they only touch the DOM when the value actually changes.
  */
 
 const ROOM_TIME = 2.6; // seconds the room banner stays (incl. fades)
 const MAX_TOASTS = 3;
+/** Settings the help text depends on. */
+const HELP_KEYS = new Set(['mouseMode', 'turnWithKeys', 'runToggle', 'controlScheme', 'touchLayout']);
+
+const CSS = `
+.kv-prompt__tap { display: none; width: 1.6em; height: 1.6em; place-items: center; border-radius: 50%;
+  background: var(--kv-accent); color: var(--kv-accent-ink); }
+.kv-prompt__tap .kv-icon { width: 1.1em; height: 1.1em; }
+.kv-touch .kv-prompt .kv-key { display: none; }
+.kv-touch .kv-prompt__tap { display: grid; }
+.kv-help__foot { justify-content: space-between; }
+.kv-help__footkey { display: inline-flex; align-items: center; gap: 0.5em; }
+.kv-touch .kv-help__footkey { display: none; }
+.kv-help__switch { pointer-events: auto; display: inline-flex; align-items: center; gap: 0.4em; height: 2.1em; padding: 0 0.75em;
+  border-radius: 2em; border: 1px solid var(--kv-line-2); background: rgba(255, 255, 255, 0.06); color: var(--kv-ink);
+  font: inherit; font-weight: 600; text-shadow: none; }
+.kv-help__switch:hover { background: rgba(255, 255, 255, 0.12); }
+.kv-help__switch .kv-icon { width: 1.1em; height: 1.1em; color: var(--kv-accent); }
+.kv-help:not(.is-visible) .kv-help__switch { pointer-events: none; }
+`;
+
+function injectCss() {
+  if (typeof document === 'undefined') return;
+  let el = document.getElementById('kv-hud-css');
+  if (!el) {
+    el = document.createElement('style');
+    el.id = 'kv-hud-css';
+    document.head.append(el);
+  }
+  if (el.textContent !== CSS) el.textContent = CSS;
+}
 
 export class Hud {
   /**
@@ -42,6 +79,7 @@ export class Hud {
    * @param {string} [o.placeName]  shown above the room name in the room banner (e.g. 'Hjemme')
    */
   constructor(root, settings, { placeName = '' } = {}) {
+    injectCss();
     this.root = root;
     this.settings = settings;
     this.placeName = placeName;
@@ -68,9 +106,17 @@ export class Hud {
     // crosshair + prompt
     this.crosshair = h('div.kv-crosshair', { hidden: true });
     this.promptKey = keycap('E');
+    this.promptTap = h('span.kv-prompt__tap', { 'aria-hidden': 'true' }, svg(TOUCH_ICONS.hand));
     this.promptText = h('span.kv-prompt__text');
     this.promptStatus = h('span.kv-prompt__status', { hidden: true });
-    this.prompt = h('div.kv-prompt', {}, this.promptKey, this.promptText, this.promptStatus);
+    this.prompt = h('div.kv-prompt', {}, this.promptKey, this.promptTap, this.promptText, this.promptStatus);
+    this.onPromptTap = () => {};
+    this.onOpenControls = () => {};
+    this.prompt.addEventListener('pointerdown', (e) => {
+      if (!inputMode.touch || !this._prompt.text) return;
+      e.preventDefault();
+      this.onPromptTap();
+    });
 
     // toasts
     this.toasts = h('div.kv-toasts', { 'aria-live': 'polite' });
@@ -78,10 +124,13 @@ export class Hud {
     // help panel
     this.helpList = h('div.kv-help__list');
     this.helpBar = h('div.kv-help__timer');
+    this.helpSwitch = h('button.kv-help__switch', { type: 'button', on: { click: () => this.onOpenControls() } },
+      svg(ICONS.sliders), h('span', { text: 'Bytt styring' }));
+    this.helpFootKey = h('span.kv-help__footkey', {}, keycap('H'), h('span', { text: 'skjuler hjelpen' }));
     this.help = h('aside.kv-help', { 'aria-hidden': 'true' },
       h('header.kv-help__head', {}, svg(ICONS.keyboard), h('span', { text: 'Kontroller' })),
       this.helpList,
-      h('footer.kv-help__foot', {}, keycap('H'), h('span', { text: 'skjuler hjelpen' })),
+      h('footer.kv-help__foot', {}, this.helpFootKey, this.helpSwitch),
       this.helpBar,
     );
     this.helpHint = h('div.kv-helphint', {}, keycap('H'), h('span', { text: 'Hjelp' }));
@@ -91,10 +140,11 @@ export class Hud {
     );
     root.append(this.el);
 
-    // the help text depends on mouse / key settings
+    // the help text depends on the mouse / key / touch settings and on whether the touch controls are in use
     this._offSettings = settings.on?.('change', ({ key }) => {
-      if (key === 'mouseMode' || key === 'turnWithKeys' || key === 'runToggle') this._renderHelp();
+      if (HELP_KEYS.has(key)) this._renderHelp();
     });
+    this._offMode = inputMode.on('change', () => this._renderHelp());
     this._renderHelp();
 
     this._onPause = (e) => this.setPaused(!!e.detail?.paused);
@@ -123,6 +173,11 @@ export class Hud {
       this.prompt.classList.remove('is-visible');
     }
     this.crosshair.classList.toggle('has-target', !!text);
+  }
+
+  /** Text of the visible prompt, or null. */
+  get promptShown() {
+    return this._prompt.text ?? null;
   }
 
   /** @param {'default'|'pointer'|'none'|string} type */
@@ -264,6 +319,7 @@ export class Hud {
 
   dispose() {
     this._offSettings?.();
+    this._offMode?.();
     this.root.removeEventListener(PAUSE_EVENT, this._onPause);
     this.setCursor('default');
     this.el.remove();

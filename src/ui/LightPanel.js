@@ -4,10 +4,19 @@
 // Automatisk», and the lumens that are lit. The sun, the time of day, the light mode, the weather, the exposure and
 // the latitude are in SunPanel («Sol»).
 // Everything that belongs to the design goes through design.setEnv / design.update (saved, undoable).
+// A grid of downlights is one row («Downlight (9 stk)»: one dimmer for all its fittings); a lamp whose light reaches
+// the view only as ambient light (the room's light slots are taken, LightManager.itemLightState) says so under its
+// name (MASTER D49).
 //
 // Also the shared base of both panels (EnvPanel: design/LightManager wiring, dirty flag, design.setEnv) and their CSS.
 import { BasePanel, section, slider, toggle, button } from './panelKit.js';
 import { h, fmtNumber } from './dom.js';
+import { itemQuantity } from '../design/grid.js';
+
+/** Sub-line of a lamp that holds no light slot right now (MASTER D49). */
+const AMBIENT_NOTE = 'Lyser via omgivelseslys nå (lysbudsjettet i rommet er brukt)';
+/** How often the open panel re-reads which lamps hold a light slot (ms; the budget changes as the camera moves). */
+const NOTE_POLL_MS = 500;
 
 /** Level label of a room header on another level than the camera's (two rooms are called «Gang» and «Soverom»). */
 const LEVEL_NAMES = { hoved: '1. etasje', kjeller: 'kjeller' };
@@ -41,6 +50,8 @@ const CSS = `
 .lp-lamp__head { display: flex; align-items: center; gap: 0.6em; }
 .lp-lamp__name { flex: 1; min-width: 0; font-size: 0.9em; }
 .lp-lamp__name small { display: block; color: var(--kv-ink-4); font-size: 0.82em; }
+.lp-lamp__name small.lp-lamp__note { color: var(--kv-ink-3); font-size: 0.78em; line-height: 1.3; margin-top: 0.1em; }
+.lp-lamp__name small.lp-lamp__note[hidden] { display: none; }
 .lp-lamp__auto { font-size: 0.72em; font-weight: 650; padding: 0.1em 0.5em; border-radius: 1em; background: var(--kv-surface-3); color: var(--kv-ink-3); }
 .lp-lamp .ip-slider { margin-top: 0.3em; }
 .lp-lamp.is-off .ip-slider { opacity: 0.45; }
@@ -149,6 +160,28 @@ export class LightPanel extends EnvPanel {
   /** @param {import('../design/Editor.js').Editor} editor */
   constructor(editor) {
     super(editor, { id: 'light', title: 'Belysning', icon: 'bulb' });
+    this._notesAt = 0;
+  }
+
+  /** Also re-reads every NOTE_POLL_MS which lamps hold a light slot (the rows are updated in place). */
+  update() {
+    super.update();
+    if (!this.isOpen || !this._lampRows || typeof this.lighting?.itemLightState !== 'function') return;
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    if (now - this._notesAt < NOTE_POLL_MS) return;
+    this._notesAt = now;
+    this._refreshLamps();
+  }
+
+  /** The D49 sub-line of a design lamp: on, its room competes for this view's slots, and none of its lights has one. */
+  _itemNote(uid) {
+    const L = this.lighting;
+    try {
+      if (L?.itemLightState?.(uid) !== 'ambient') return '';
+      return (L.itemLightHere?.(uid) ?? true) ? AMBIENT_NOTE : '';
+    } catch {
+      return '';
+    }
   }
 
   // ---- construction ----------------------------------------------------------------------------------------
@@ -288,10 +321,13 @@ export class LightPanel extends EnvPanel {
     for (const uid of uids) {
       const it = this.design.get(uid);
       const light = it.light || {};
+      // a grid of downlights is n fittings on one switch and dimmer
+      const n = itemQuantity(it);
       specs.push({
         key: `i:${uid}`,
-        name: it.name || 'Lampe',
+        name: `${it.name || 'Lampe'}${n > 1 ? ` (${n} stk)` : ''}`,
         sub: light.colorK ? `${fmtNumber(light.colorK, 0)} K` : '',
+        note: light.on !== false ? this._itemNote(uid) : '',
         on: light.on !== false,
         dimmer: light.dimmer ?? 1,
         auto: false,
@@ -339,14 +375,18 @@ export class LightPanel extends EnvPanel {
     const tg = toggle({ label: '', value: spec.on, onChange: (v) => cur.onToggle(v) });
     const sl = slider({ min: 0, max: 1, step: 0.01, value: spec.dimmer, format: (v) => `${Math.round(v * 100)} %`, onInput: (v) => cur.onDim(v) });
     const badgeEl = h('span.lp-lamp__auto', { text: 'auto', title: 'Følger tiden på døgnet' });
+    // «Lyser via omgivelseslys nå …» (design lamps only; updated in place, not part of the row key)
+    const noteEl = h('small.lp-lamp__note', { title: 'Lampen lyser fortsatt, men som jevnt omgivelseslys – flytt deg nærmere, slå av en annen lampe i rommet, eller velg kvalitet «Høy» for flere lyskilder.' });
     const el = h('div.lp-lamp', {},
       h('div.lp-lamp__head', {},
-        h('div.lp-lamp__name', {}, h('span', { text: spec.name }), spec.sub ? h('small', { text: spec.sub }) : null),
+        h('div.lp-lamp__name', {}, h('span', { text: spec.name }), spec.sub ? h('small', { text: spec.sub }) : null, noteEl),
         badgeEl,
         tg.el),
       sl.el);
     const sync = (s) => {
       cur = s;
+      if (noteEl.textContent !== (s.note || '')) noteEl.textContent = s.note || '';
+      noteEl.hidden = !s.note;
       el.classList.toggle('is-off', !s.on);
       badgeEl.hidden = !s.auto;
       tg.set(s.on);

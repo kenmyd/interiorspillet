@@ -1,0 +1,2337 @@
+[
+  {
+    "id": "ikea-pjatteryd-bilde-evig-tidevann-140x56",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "PJÄTTERYD Bilde, evig tidevann 140x56 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/pjaetteryd-bilde-evig-tidevann-30623460/",
+    "priceNok": 399,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 306.234.60, evig tidevann): 399 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.4,
+      "d": 0.025,
+      "h": 0.56
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "ocean",
+      "motifOpts": {
+        "variant": "sea"
+      },
+      "seed": 5,
+      "palette": [
+        "#f6e9e4",
+        "#cfd9d2",
+        "#ead6c9",
+        "#a9b6af",
+        "#f4dcd2"
+      ],
+      "frame": "none",
+      "texture": "canvas",
+      "edge": "wrap",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Evig tidevann",
+        "colors": {
+          "print": "#cfd9d2",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.06,
+    "description": "Panoramabilde av en lys strand med skumtopper i blek rosa, sand og mint, 140 × 56 cm. Bildet er trykt på lerret som er trukket rundt blindrammen, uten ramme.",
+    "why": "Det lange formatet passer over sofaen i stua eller over sengen; de blasse fargene er rolige mot Sand-veggen og gir en lett sommerfølelse.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/pjaetteryd-bilde-evig-tidevann__1483713_pe1001318_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 399 kr, mål B140 × H56 cm (Mål-fanen), bilde, varenr. 306.234.60, på lager. Anslått: dybde ca. 2,5 cm (blindramme); palett og motiv fra produktbildet."
+  },
+  {
+    "id": "ikea-pjatteryd-bilde-storby-118x78",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "PJÄTTERYD Bilde, storby 118x78 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/pjaetteryd-bilde-storby-40623469/",
+    "priceNok": 479,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 406.234.69, storby): 479 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.18,
+      "d": 0.025,
+      "h": 0.78
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "city-night",
+      "seed": 2,
+      "palette": [
+        "#33475a",
+        "#e6b45a",
+        "#4f6a80",
+        "#121a24",
+        "#f1d9a0"
+      ],
+      "frame": "none",
+      "texture": "canvas",
+      "edge": "wrap",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Storby",
+        "colors": {
+          "print": "#e6b45a",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.07,
+    "description": "Fotomotiv av en storby i skumring sett ovenfra, med blågrå skyskrapere og varmt lys i vinduene, 118 × 78 cm. Bildet er trykt på lerret som er trukket rundt blindrammen, uten ramme.",
+    "why": "Et stort, mørkt motiv for kjellerstua eller hjemmekontoret i kjelleren – de varme lysprikkene gjør det levende også om kvelden.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/pjaetteryd-bilde-storby__1483717_pe1001319_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 479 kr, mål B118 × H78 cm (Mål-fanen), bilde, varenr. 406.234.69, på lager. Anslått: dybde ca. 2,5 cm (blindramme); palett og motiv fra produktbildet."
+  },
+  {
+    "id": "ikea-pjatteryd-bilde-maneskinn-50x70",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "PJÄTTERYD Bilde, måneskinn 50x70 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/pjaetteryd-bilde-maneskinn-50554502/",
+    "priceNok": 249,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 505.545.02, måneskinn): 249 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.02,
+      "h": 0.7
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "sunset",
+      "motifOpts": {
+        "variant": "moon"
+      },
+      "seed": 3,
+      "palette": [
+        "#cfcfcc",
+        "#2b2b2b",
+        "#8e8e8c",
+        "#161616",
+        "#e6e6e3"
+      ],
+      "frame": "none",
+      "texture": "canvas",
+      "edge": "wrap",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Måneskinn",
+        "colors": {
+          "print": "#2b2b2b",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "shapeNote": "Fotoet viser én stor fullmåne på sort bunn med litt tekst; spillet bruker «Måneskinn»-varianten (måne over vann) i sort og sølv.",
+    "description": "Fullmåne i sølvaktig trykk mot matt sort bakgrunn, med en kort engelsk tekst under, 50 × 70 cm. Bildet er trykt på lerret som er trukket rundt blindrammen, uten ramme.",
+    "why": "Passer over sengen på soverommet eller i det lille kjellersoverommet; sort og sølv går godt sammen med de sorte metalldetaljene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/pjaetteryd-bilde-maneskinn__1179598_pe896010_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 249 kr, mål B50 × H70 cm (Mål-fanen), bilde, varenr. 505.545.02, på lager. Anslått: dybde ca. 2 cm (blindramme); palett fra produktbildet, motivet er tilnærmet."
+  },
+  {
+    "id": "ikea-pjatteryd-bilde-stripete-blad-90x90",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "PJÄTTERYD Bilde, stripete blad 90x90 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/pjaetteryd-bilde-stripete-blad-80623448/",
+    "priceNok": 399,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 806.234.48, stripete blad): 399 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.9,
+      "d": 0.025,
+      "h": 0.9
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "big-leaf",
+      "motifOpts": {
+        "variant": "striped"
+      },
+      "seed": 5,
+      "palette": [
+        "#f4ebbf",
+        "#4aa0a6",
+        "#3f7a45",
+        "#1f2a48",
+        "#e88c86"
+      ],
+      "frame": "none",
+      "texture": "canvas",
+      "edge": "wrap",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Stripete blad",
+        "colors": {
+          "print": "#4aa0a6",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.06,
+    "description": "Akvarell av et stort blad med fargerike, diagonale striper i turkis, grønt, rosa og marine på lys gul bunn, 90 × 90 cm. Bildet er trykt på lerret som er trukket rundt blindrammen, uten ramme.",
+    "why": "En frisk og leken fargeklatt for kjellerstua eller hjemmekontoret; det kvadratiske formatet passer over en kommode eller sofa.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/pjaetteryd-bilde-stripete-blad__1483724_pe1001324_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 399 kr, mål B90 × H90 cm (Mål-fanen), bilde, varenr. 806.234.48, på lager. Anslått: dybde ca. 2,5 cm (blindramme); palett fra produktbildet."
+  },
+  {
+    "id": "ikea-pjatteryd-bilde-fargerike-former-56x56",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "PJÄTTERYD Bilde, fargerike former 56x56 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/pjaetteryd-bilde-fargerike-former-00623923/",
+    "priceNok": 159,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 006.239.23, fargerike former): 159 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.56,
+      "d": 0.02,
+      "h": 0.56
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "bauhaus",
+      "seed": 7,
+      "palette": [
+        "#fbf7f5",
+        "#fd4a1b",
+        "#fdb515",
+        "#d6136b",
+        "#a6d6d8",
+        "#ffd5df"
+      ],
+      "frame": "none",
+      "texture": "canvas",
+      "edge": "wrap",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Fargerike former",
+        "colors": {
+          "print": "#fd4a1b",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "Grafiske buer og halvsirkler i oransje, gult, cerise, rosa og lys turkis på hvit bunn, 56 × 56 cm. Trykt på lerret av resirkulert polyester, uten ramme.",
+    "why": "Et muntert, grafisk bilde for hjemmekontoret i kjelleren eller gangen; et lite format som gir farge uten å ta over.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/pjaetteryd-bilde-fargerike-former__1483769_pe1001335_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 159 kr, mål B56 × H56 cm (Mål-fanen), bilde, varenr. 006.239.23, på lager. Anslått: dybde ca. 2 cm (blindramme); palett fra produktbildet."
+  },
+  {
+    "id": "ikea-pjatteryd-bilde-skandinavisk-bokstav-40x50",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "PJÄTTERYD Bilde, Skandinavisk bokstav 40x50 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/pjaetteryd-bilde-skandinavisk-bokstav-50623925/",
+    "priceNok": 139,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 506.239.25, Skandinavisk bokstav): 139 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.4,
+      "d": 0.02,
+      "h": 0.5
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "typography",
+      "motifOpts": {
+        "variant": "centre",
+        "text": "Ä"
+      },
+      "seed": 3,
+      "palette": [
+        "#fbfaf8",
+        "#e9e6e0",
+        "#d9d5ce",
+        "#121212",
+        "#8c8a86"
+      ],
+      "frame": "none",
+      "texture": "canvas",
+      "edge": "wrap",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Skandinavisk bokstav",
+        "colors": {
+          "print": "#e9e6e0",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "Stor sort bokstav Ä på hvit bunn – enkel skandinavisk typografi, 40 × 50 cm. Trykt på lerret av resirkulert polyester, uten ramme.",
+    "why": "Grafisk og enkelt – passer i gangen eller på hjemmekontoret, og kan kombineres med andre sort-hvite bilder i en liten bildevegg.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/pjaetteryd-bilde-skandinavisk-bokstav__1484184_pe1001484_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 139 kr, mål B40 × H50 cm (Mål-fanen), bilde, varenr. 506.239.25, på lager. Anslått: dybde ca. 2 cm (blindramme)."
+  },
+  {
+    "id": "ikea-pjatteryd-bilde-prismatisk-passasje-50x70",
+    "category": "kunst",
+    "subcategory": "lerret",
+    "name": "PJÄTTERYD Bilde, prismatisk passasje 50x70 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/pjaetteryd-bilde-prismatisk-passasje-50619607/",
+    "priceNok": 229,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 506.196.07, prismatisk passasje): 229 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.02,
+      "h": 0.7
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "arches",
+      "motifOpts": {
+        "variant": "doors"
+      },
+      "seed": 5,
+      "palette": [
+        "#f2ece6",
+        "#f08bb0",
+        "#f6c23a",
+        "#e8532f",
+        "#7fd0c4"
+      ],
+      "frame": "none",
+      "texture": "canvas",
+      "edge": "wrap",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Prismatisk passasje",
+        "colors": {
+          "print": "#f08bb0",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "description": "Fotomotiv av en buegang med søyler i rosa, oransje, gult og turkis i skarpt sollys, 50 × 70 cm. Bildet er trykt på lerret som er trukket rundt blindrammen, uten ramme.",
+    "why": "Et fargesterkt, høyt motiv som løfter en lys vegg – fint i gangen eller ved trappen ned til kjelleren.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/pjaetteryd-bilde-prismatisk-passasje__1446539_pe988623_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 229 kr, mål B50 × H70 cm (Mål-fanen), bilde, varenr. 506.196.07, på lager. Anslått: dybde ca. 2 cm (blindramme); palett fra produktbildet."
+  },
+  {
+    "id": "ikea-blodflader-bilde-the-seine-at-giverny-118x78",
+    "category": "kunst",
+    "subcategory": "innrammet",
+    "name": "BLODFLÄDER Bilde, The Seine at Giverny 118x78 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/blodflaeder-bilde-the-seine-at-giverny-20601915/",
+    "priceNok": 649,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 206.019.15, The Seine at Giverny): 649 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.2,
+      "d": 0.03,
+      "h": 0.8
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "impression",
+      "motifOpts": {
+        "variant": "river"
+      },
+      "seed": 4,
+      "palette": [
+        "#e3ddd0",
+        "#6b6a5e",
+        "#9a9580",
+        "#3e3a46",
+        "#c9c0b5"
+      ],
+      "frame": "floater",
+      "frameW": 0.01,
+      "texture": "canvas",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "The Seine at Giverny",
+        "colors": {
+          "print": "#6b6a5e",
+          "frame": "#6e5038"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "walnut"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.07,
+    "description": "Reproduksjon av Monets elvelandskap ved Giverny – trær som speiler seg i vannet i dempet grått, oliven og fiolett. Trykt på lin-blandet lerret i tynn ramme med valnøttmønster.",
+    "why": "Det store, stille landskapet passer over sofaen i stua eller i kjellerstua; de gråfiolette tonene er rolige mot Sand- og Marrakesh-veggene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/blodflaeder-bilde-the-seine-at-giverny__1392143_pe966004_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 649 kr, mål bilde B118 × H78, ramme 120 × 80 × 3 cm (Mål-fanen), bilde, varenr. 206.019.15, på lager. Anslått: rammeprofil ca. 1 cm fra produktbildet; palett fra bildet."
+  },
+  {
+    "id": "ikea-blodflader-bilde-kraftige-blomster-50x70",
+    "category": "kunst",
+    "subcategory": "innrammet",
+    "name": "BLODFLÄDER Bilde, kraftige blomster 50x70 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/blodflaeder-bilde-kraftige-blomster-60623473/",
+    "priceNok": 329,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 606.234.73, kraftige blomster): 329 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.52,
+      "d": 0.03,
+      "h": 0.72
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "still-life",
+      "motifOpts": {
+        "variant": "vase"
+      },
+      "seed": 1,
+      "palette": [
+        "#2a2d38",
+        "#b25a30",
+        "#7d8a4a",
+        "#15171d",
+        "#d6d59b"
+      ],
+      "frame": "floater",
+      "frameW": 0.01,
+      "texture": "painted",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Kraftige blomster",
+        "colors": {
+          "print": "#b25a30",
+          "frame": "#c49a68"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.03,
+    "description": "Malte, lysegrønne blomster i en terrakottafarget vase mot mørk blå bunn, trykt på lin-blandet lerret i tynn ramme med eikemønster.",
+    "why": "Den mørke bakgrunnen gir dybde i stua eller på soverommet; terrakottavasen spiller på Marrakesh-veggen og eikemøblene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/blodflaeder-bilde-kraftige-blomster__1514000_pe1010769_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 329 kr, mål bilde B50 × H70, ramme 52 × 72 × 3 cm (Mål-fanen), bilde, varenr. 606.234.73, på lager. Anslått: rammeprofil ca. 1 cm fra produktbildet; palett fra bildet."
+  },
+  {
+    "id": "ikea-sannahed-ramme-med-bilde-bla-vase-med-blomster-50x50",
+    "category": "kunst",
+    "subcategory": "innrammet",
+    "name": "SANNAHED Ramme med bilde, blå vase med blomster 50x50 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/sannahed-ramme-med-bilde-bla-vase-med-blomster-90619610/",
+    "priceNok": 249,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 906.196.10, blå vase med blomster): 249 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.52,
+      "d": 0.06,
+      "h": 0.52
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "still-life",
+      "motifOpts": {
+        "variant": "vase"
+      },
+      "seed": 15,
+      "palette": [
+        "#ece6dc",
+        "#3d6cc0",
+        "#6f9a4a",
+        "#3f5a32",
+        "#f0a63a"
+      ],
+      "frame": "box",
+      "frameW": 0.015,
+      "texture": "paper",
+      "mat": true,
+      "matW": 0.1,
+      "glass": true
+    },
+    "variants": [
+      {
+        "name": "Blå vase med blomster",
+        "colors": {
+          "print": "#3d6cc0",
+          "frame": "#f2f1ee"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "painted"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "shapeNote": "Passepartouten er hvit med lyseblå prikker; spillet viser den hvit.",
+    "description": "Dyp hvit boksramme med et folkekunst-inspirert motiv av en blå vase med oransje og rosa blomster på prikkete passepartout.",
+    "why": "Fin på soverommet eller i gangen; flere SANNAHED kan henges sammen, og den dype hvite rammen er rolig mot de lyse veggene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/sannahed-ramme-med-bilde-bla-vase-med-blomster__1460702_pe993985_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 249 kr, mål ramme 52 × 52 × 6 cm, passepartout-åpning 29 × 29 cm (Mål-fanen), bilde, varenr. 906.196.10, på lager. Anslått: rammeprofil ca. 1,5 cm; passepartout-bredde avledet av åpningen."
+  },
+  {
+    "id": "ikea-rodalm-ramme-med-bilde-paix-lineaire-50x70",
+    "category": "kunst",
+    "subcategory": "innrammet",
+    "name": "RÖDALM Ramme med bilde, Paix Lineaire 50x70 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/roedalm-ramme-med-bilde-paix-lineaire-40583557/",
+    "priceNok": 229,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 405.835.57, Paix Lineaire): 229 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.03,
+      "h": 0.7
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "typography",
+      "motifOpts": {
+        "variant": "block",
+        "text": "PAIX",
+        "subtext": "PAIX LINÉAIRE"
+      },
+      "seed": 4,
+      "palette": [
+        "#efe6da",
+        "#b4a2b8",
+        "#d8cbd6",
+        "#8f7f93",
+        "#ffffff"
+      ],
+      "frame": "thin",
+      "frameW": 0.012,
+      "texture": "paper",
+      "mat": false,
+      "glass": true
+    },
+    "variants": [
+      {
+        "name": "Paix Lineaire",
+        "colors": {
+          "print": "#b4a2b8",
+          "frame": "#c9a46e"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "shapeNote": "Den hvite duen i strek vises ikke; spillet bruker tekstplakaten med lilla fargefelt og ordet PAIX.",
+    "description": "Plakat i galleristil med en hvit, strektegnet due på et lilla felt og teksten «Paix Linéaire», levert i tynn ramme med eikemønster og plastfront.",
+    "why": "Et lett og lyst bilde for soverommet eller gangen; lilla og krem passer til de varme sandtonene og eikedetaljene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/roedalm-ramme-med-bilde-paix-lineaire__1313280_pe940109_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 229 kr, mål B50 × H70 cm (Mål-fanen), bilde, varenr. 405.835.57, på lager. Anslått: dybde 3 cm og profil ca. 1,2 cm som RÖDALM-rammen; motivet er tilnærmet."
+  },
+  {
+    "id": "ikea-bild-plakat-prikk-50x70",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "BILD Plakat, prikk 50x70 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/bild-plakat-prikk-90623476/",
+    "priceNok": 49,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 906.234.76, prikk): 49 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.005,
+      "h": 0.7
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "dots",
+      "motifOpts": {
+        "variant": "scatter"
+      },
+      "seed": 3,
+      "palette": [
+        "#f5a6c4",
+        "#2236d1",
+        "#f4d9cb",
+        "#1a2aa8",
+        "#2236d1"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Prikk",
+        "colors": {
+          "print": "#2236d1",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "shapeNote": "Leoparden vises ikke; spillet viser en rosa flate med kongeblå prikker.",
+    "description": "Grafisk plakat av en rosa leopard med kongeblå prikker på fersken bunn, 50 × 70 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Leken og fargesterk – en fargeklatt i kjellerstua eller på hjemmekontoret; ser fint ut i en RÖDALM- eller Helsinki-ramme 50 × 70.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/bild-plakat-prikk__1482870_pe1001197_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 49 kr, mål B50 × H70 cm (Mål-fanen), bilde, varenr. 906.234.76, på lager. Anslått: motivet er tilnærmet (rosa flate med blå prikker i stedet for leoparden)."
+  },
+  {
+    "id": "ikea-bild-plakat-rufsete-rev-40x50",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "BILD Plakat, rufsete rev 40x50 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/bild-plakat-rufsete-rev-40623493/",
+    "priceNok": 39,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 406.234.93, rufsete rev): 39 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.4,
+      "d": 0.005,
+      "h": 0.5
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "kids-animals",
+      "motifOpts": {
+        "variant": "fox"
+      },
+      "seed": 1,
+      "palette": [
+        "#ece6da",
+        "#c8742c",
+        "#e9e2d6",
+        "#1e1a17",
+        "#8a5a2e"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Rufsete rev",
+        "colors": {
+          "print": "#c8742c",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Plakat av en rev i broderistil på lys linbakgrunn, 40 × 50 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Et koselig naturmotiv for gangen eller soverommet; den varme oransje reven passer til Marrakesh-veggen og eikerammer.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/bild-plakat-rufsete-rev__1482871_pe1001198_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 39 kr, mål B40 × H50 cm (Mål-fanen), bilde, varenr. 406.234.93, på lager. Anslått: palett fra produktbildet."
+  },
+  {
+    "id": "ikea-bild-bilde-nordiske-kurver-30x40",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "BILD Bilde, Nordiske kurver 30x40 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/bild-bilde-nordiske-kurver-70623359/",
+    "priceNok": 29,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 706.233.59, Nordiske kurver): 29 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.3,
+      "d": 0.005,
+      "h": 0.4
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "arches",
+      "motifOpts": {
+        "variant": "rainbow"
+      },
+      "seed": 6,
+      "palette": [
+        "#e9e1d2",
+        "#3d4f63",
+        "#d3523a",
+        "#24303f",
+        "#e2c24a"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Nordiske kurver",
+        "colors": {
+          "print": "#3d4f63",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Papirtrykk med brede, buede bånd i skiferblått, marine, oransje og sennepsgult på sandfarget bunn, 30 × 40 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Et lite grafisk bilde for hjemmekontoret i kjelleren eller gangen; fargene passer til både sort metall og eik.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/bild-bilde-nordiske-kurver__1484195_pe1001489_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 29 kr, mål B30 × H40 cm (Mål-fanen), bilde, varenr. 706.233.59, på lager. Anslått: palett fra produktbildet."
+  },
+  {
+    "id": "ikea-pjatteryd-bilde-9-stk-mist-in-the-forest",
+    "category": "kunst",
+    "subcategory": "bildevegg",
+    "name": "PJÄTTERYD Bilde, 9 stk., mist in the forest 179x112 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/pjaetteryd-bilde-9-stk-mist-in-the-forest-90567970/",
+    "priceNok": 799,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 905.679.70, mist in the forest): 799 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.79,
+      "d": 0.025,
+      "h": 1.12
+    },
+    "archetype": "art-set",
+    "mount": "wall",
+    "params": {
+      "layout": "custom",
+      "gap": 0.05,
+      "frame": "none",
+      "mat": false,
+      "glass": false,
+      "mirror": false,
+      "seed": 1,
+      "texture": "canvas",
+      "edge": "wrap",
+      "palette": [
+        "#dfe3d3",
+        "#5f6f4a",
+        "#9aa585",
+        "#26301f",
+        "#e9ecd9"
+      ],
+      "frames": [
+        {
+          "x": -0.455,
+          "y": 0.2,
+          "w": 0.88,
+          "h": 0.72,
+          "motif": "forest",
+          "motifOpts": {
+            "variant": "mist"
+          },
+          "seed": 1
+        },
+        {
+          "x": 0.1625,
+          "y": 0.3825,
+          "w": 0.255,
+          "h": 0.355,
+          "motif": "botanical-print",
+          "motifOpts": {
+            "variant": "fern"
+          },
+          "seed": 2
+        },
+        {
+          "x": 0.465,
+          "y": 0.3825,
+          "w": 0.255,
+          "h": 0.355,
+          "motif": "misty-trees",
+          "seed": 3
+        },
+        {
+          "x": 0.7675,
+          "y": 0.3825,
+          "w": 0.255,
+          "h": 0.355,
+          "motif": "forest",
+          "motifOpts": {
+            "variant": "mist"
+          },
+          "seed": 4
+        },
+        {
+          "x": -0.7675,
+          "y": -0.3825,
+          "w": 0.255,
+          "h": 0.355,
+          "motif": "misty-trees",
+          "seed": 5
+        },
+        {
+          "x": -0.4645,
+          "y": -0.3825,
+          "w": 0.255,
+          "h": 0.355,
+          "motif": "landscape",
+          "seed": 6
+        },
+        {
+          "x": -0.1615,
+          "y": -0.3825,
+          "w": 0.255,
+          "h": 0.355,
+          "motif": "fjord",
+          "seed": 7
+        },
+        {
+          "x": 0.2375,
+          "y": -0.2,
+          "w": 0.405,
+          "h": 0.72,
+          "motif": "ocean",
+          "motifOpts": {
+            "variant": "rocks"
+          },
+          "seed": 8
+        },
+        {
+          "x": 0.6925,
+          "y": -0.2,
+          "w": 0.405,
+          "h": 0.72,
+          "motif": "forest",
+          "motifOpts": {
+            "variant": "mist"
+          },
+          "seed": 9
+        }
+      ]
+    },
+    "variants": [
+      {
+        "name": "Mist in the forest",
+        "colors": {
+          "print": "#5f6f4a",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.13,
+    "shapeNote": "Oppsettet følger produktbildet: ett stort liggende lerret øverst til venstre, tre små øverst til høyre, tre små nederst til venstre og to høye nederst til høyre.",
+    "description": "Bildevegg med ni lerreter i tåkete skog- og naturmotiver i dempet grønt, til sammen 179 × 112 cm. Lerretene er trukket rundt blindrammer, uten ramme.",
+    "why": "Fyller en stor vegg i stua eller kjellerstua (20,6 m²) på én gang; de grønne, tåkete tonene er rolige og passer til eik og lin.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/pjaetteryd-bilde-9-stk-mist-in-the-forest__1193819_pe901646_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 799 kr, mål B179 × H112 cm for hele oppsettet (Mål-fanen), bilde, varenr. 905.679.70, på lager. Anslått: størrelsen og plasseringen av de ni lerretene er målt fra produktbildet (ett 88 × 72, seks 25,5 × 35,5 og to 40,5 × 72 cm); dybde ca. 2,5 cm; motivene per lerret er tilnærmet."
+  },
+  {
+    "id": "ikea-knoppang-ramme-med-plakat-sett-med-8-stk-folkeeventyr",
+    "category": "kunst",
+    "subcategory": "bildevegg",
+    "name": "KNOPPÄNG Ramme med plakat, sett med 8 stk., folkeeventyr",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/knoppaeng-ramme-med-plakat-sett-med-8-stk-folkeeventyr-80601998/",
+    "priceNok": 429,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 806.019.98, folkeeventyr): 429 kr. På lager på nett.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.952,
+      "d": 0.025,
+      "h": 0.878
+    },
+    "archetype": "art-set",
+    "mount": "wall",
+    "params": {
+      "layout": "custom",
+      "gap": 0.04,
+      "frame": "thin",
+      "frameW": 0.012,
+      "mat": true,
+      "matW": 0.02,
+      "glass": true,
+      "mirror": false,
+      "seed": 1,
+      "texture": "paper",
+      "palette": [
+        "#f4ede0",
+        "#c4372e",
+        "#8fb04a",
+        "#1f2a4a",
+        "#f2d35a"
+      ],
+      "frames": [
+        {
+          "x": -0.393,
+          "y": 0.336,
+          "w": 0.123,
+          "h": 0.174,
+          "motif": "botanical-print",
+          "motifOpts": {
+            "variant": "eucalyptus"
+          },
+          "seed": 3,
+          "palette": [
+            "#1f2a4a",
+            "#8fb04a",
+            "#3f6fb5",
+            "#f1ede4",
+            "#c8402e"
+          ]
+        },
+        {
+          "x": -0.24,
+          "y": 0.336,
+          "w": 0.123,
+          "h": 0.174,
+          "motif": "still-life",
+          "motifOpts": {
+            "variant": "vase"
+          },
+          "seed": 4,
+          "palette": [
+            "#f3efe9",
+            "#c8372d",
+            "#8fb04a",
+            "#3a2f2a",
+            "#e9b3a8"
+          ]
+        },
+        {
+          "x": 0.042,
+          "y": 0.228,
+          "w": 0.32,
+          "h": 0.42,
+          "motif": "botanical-print",
+          "motifOpts": {
+            "variant": "olive"
+          },
+          "seed": 5,
+          "palette": [
+            "#1f2a4a",
+            "#9cc04f",
+            "#4a7fd0",
+            "#f2eee6",
+            "#c4372e"
+          ]
+        },
+        {
+          "x": 0.362,
+          "y": 0.297,
+          "w": 0.154,
+          "h": 0.206,
+          "motif": "geometric-lines",
+          "seed": 6,
+          "palette": [
+            "#f6f1ee",
+            "#d9473f",
+            "#f2c9c4",
+            "#d9473f",
+            "#e9a49e"
+          ]
+        },
+        {
+          "x": -0.316,
+          "y": 0.002,
+          "w": 0.32,
+          "h": 0.42,
+          "motif": "botanical-print",
+          "motifOpts": {
+            "variant": "olive"
+          },
+          "seed": 7,
+          "palette": [
+            "#efe8e2",
+            "#5f8a4a",
+            "#a9c08a",
+            "#3a3a30",
+            "#c4372e"
+          ]
+        },
+        {
+          "x": 0.36,
+          "y": 0.009,
+          "w": 0.232,
+          "h": 0.32,
+          "motif": "still-life",
+          "motifOpts": {
+            "variant": "vase"
+          },
+          "seed": 8,
+          "palette": [
+            "#e4e6e8",
+            "#4f6fc4",
+            "#c2704a",
+            "#2e3a2a",
+            "#6f8f5a"
+          ]
+        },
+        {
+          "x": 0.042,
+          "y": -0.229,
+          "w": 0.32,
+          "h": 0.42,
+          "motif": "stripes",
+          "motifOpts": {
+            "variant": "vertical"
+          },
+          "seed": 9,
+          "palette": [
+            "#f7f6f3",
+            "#7fb0cf",
+            "#d6e6f0",
+            "#3f6f9a",
+            "#a9cde0"
+          ]
+        },
+        {
+          "x": -0.313,
+          "y": -0.338,
+          "w": 0.149,
+          "h": 0.202,
+          "motif": "kids-animals",
+          "motifOpts": {
+            "variant": "bird"
+          },
+          "seed": 10,
+          "palette": [
+            "#1f2a4a",
+            "#c4372e",
+            "#8fb04a",
+            "#f2eee6",
+            "#f2d35a"
+          ]
+        }
+      ]
+    },
+    "variants": [
+      {
+        "name": "Folkeeventyr",
+        "colors": {
+          "print": "#c4372e",
+          "frame": "#f2f1ee"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "painted"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "shapeNote": "Plasseringen av de åtte rammene er målt fra produktbildet (collage-malen følger med).",
+    "description": "Bildevegg-sett med åtte hvite rammer og ferdige plakater i folkeeventyrstil i marine, rødt og grønt: 2 × 10x15, 2 × 13x18, 1 × 21x30 og 3 × 30x40 cm.",
+    "why": "En ferdig bildevegg for gangen eller trappeveggen; de hvite rammene er rolige mot Sand-veggen, og motivene gir farge uten rot.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/knoppaeng-ramme-med-plakat-sett-med-8-stk-folkeeventyr__1392157_pe966019_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 429 kr, mål bildestørrelser 2 × 10x15, 2 × 13x18, 1 × 21x30, 3 × 30x40 cm («Godt å vite») (Mål-fanen), bilde, varenr. 806.019.98, på lager. Anslått: rammenes ytre mål (ca. 1,2 cm profil) og plasseringen i settet (95 × 88 cm totalt) er målt fra produktbildet; dybde ca. 2,5 cm; motivene per ramme er tilnærmet."
+  },
+  {
+    "id": "ikea-pjatteryd-bilde-morgendis-30x40-2-stk",
+    "category": "kunst",
+    "subcategory": "bildevegg",
+    "name": "PJÄTTERYD Bilde, morgendis 30x40 cm, 2 stk.",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/pjaetteryd-bilde-morgendis-90623867/",
+    "priceNok": 139,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 906.238.67, morgendis): 139 kr. På lager på nett. Prisen gjelder to bilder (Antall i pakken: 2 stk.).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.64,
+      "d": 0.02,
+      "h": 0.4
+    },
+    "archetype": "art-set",
+    "mount": "wall",
+    "params": {
+      "layout": "custom",
+      "gap": 0.04,
+      "frame": "none",
+      "mat": false,
+      "glass": false,
+      "mirror": false,
+      "seed": 4,
+      "texture": "canvas",
+      "edge": "wrap",
+      "palette": [
+        "#ece6e0",
+        "#2f5068",
+        "#7f9aab",
+        "#14222d",
+        "#dfe6ea"
+      ],
+      "frames": [
+        {
+          "x": -0.17,
+          "y": 0,
+          "w": 0.3,
+          "h": 0.4,
+          "motif": "forest",
+          "motifOpts": {
+            "variant": "mist"
+          },
+          "seed": 4
+        },
+        {
+          "x": 0.17,
+          "y": 0,
+          "w": 0.3,
+          "h": 0.4,
+          "motif": "forest",
+          "motifOpts": {
+            "variant": "mist"
+          },
+          "seed": 11
+        }
+      ]
+    },
+    "variants": [
+      {
+        "name": "Morgendis",
+        "colors": {
+          "print": "#2f5068",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "linen",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "To lerreter med tåkete, blå skogkledde åser og en fugleflokk, 30 × 40 cm hver. Selges sammen som et par, trukket rundt blindrammer og uten ramme.",
+    "why": "Et rolig par over sengen på soverommet eller ved trappen; de blå tonene gir en kjølig kontrast til de varme veggfargene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/pjaetteryd-bilde-morgendis__1483780_pe1001343_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 139 kr, mål B30 × H40 cm per bilde, 2 stk. i pakken (Mål-fanen), bilde, varenr. 906.238.67, på lager. Anslått: avstand 4 cm mellom bildene som på produktbildet; dybde ca. 2 cm."
+  },
+  {
+    "id": "ikea-knoppang-ramme-med-bilde-vintage-botanical-fruit-charts-40x50-2-stk",
+    "category": "kunst",
+    "subcategory": "bildevegg",
+    "name": "KNOPPÄNG Ramme med bilde, vintage botanical fruit charts 40x50 cm, 2 stk.",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/knoppaeng-ramme-med-bilde-vintage-botanical-fruit-charts-50578895/",
+    "priceNok": 269,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 505.788.95, vintage botanical fruit charts): 269 kr. På lager på nett. Prisen gjelder to innrammede bilder (Antall i pakken: 2 stk.).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.85,
+      "d": 0.025,
+      "h": 0.5
+    },
+    "archetype": "art-set",
+    "mount": "wall",
+    "params": {
+      "layout": "custom",
+      "gap": 0.05,
+      "frame": "thin",
+      "frameW": 0.012,
+      "mat": false,
+      "glass": true,
+      "mirror": false,
+      "seed": 2,
+      "texture": "paper",
+      "palette": [
+        "#171717",
+        "#c63b2f",
+        "#5f8a3e",
+        "#ece6d4",
+        "#e3c24a"
+      ],
+      "frames": [
+        {
+          "x": -0.225,
+          "y": 0,
+          "w": 0.4,
+          "h": 0.5,
+          "motif": "fruit",
+          "motifOpts": {
+            "variant": "chart"
+          },
+          "seed": 2
+        },
+        {
+          "x": 0.225,
+          "y": 0,
+          "w": 0.4,
+          "h": 0.5,
+          "motif": "botanical-print",
+          "motifOpts": {
+            "variant": "poppy"
+          },
+          "seed": 3,
+          "palette": [
+            "#171717",
+            "#5f8a3e",
+            "#8fb04a",
+            "#ece6d4",
+            "#c63b2f"
+          ]
+        }
+      ]
+    },
+    "variants": [
+      {
+        "name": "Vintage botanical fruit charts",
+        "colors": {
+          "print": "#c63b2f",
+          "frame": "#171717"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "painted"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "shapeNote": "Jordbærplansjen vises med motivet «Botanisk plansje» (valmue) i samme farger.",
+    "description": "To sorte rammer med vintage botaniske plansjer av eple og jordbær på sort bunn, 40 × 50 cm hver. Motivene kan byttes ut.",
+    "why": "Passer på kjøkkenveggen eller ved spisebordet i stua; de sorte rammene henger sammen med de sorte metalldetaljene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/knoppaeng-ramme-med-bilde-vintage-botanical-fruit-charts__1285836_pe933405_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 269 kr, mål B40 × H50 cm per ramme, 2 stk. i pakken (Mål-fanen), bilde, varenr. 505.788.95, på lager. Anslått: dybde ca. 2,5 cm og profil ca. 1,2 cm fra produktbildet; avstand 5 cm mellom rammene."
+  },
+  {
+    "id": "ikea-bild-plakat-nordisk-landskap-21x30-3-stk",
+    "category": "kunst",
+    "subcategory": "bildevegg",
+    "name": "BILD Plakat, Nordisk landskap 21x30 cm, 3 stk.",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/bild-plakat-nordisk-landskap-60623864/",
+    "priceNok": 49,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 606.238.64, Nordisk landskap): 49 kr. På lager på nett. Prisen gjelder tre plakater (Antall i pakken: 3 stk.).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.71,
+      "d": 0.005,
+      "h": 0.3
+    },
+    "archetype": "art-set",
+    "mount": "wall",
+    "params": {
+      "layout": "custom",
+      "gap": 0.04,
+      "frame": "none",
+      "mat": false,
+      "glass": false,
+      "mirror": false,
+      "seed": 3,
+      "texture": "paper",
+      "edge": "white",
+      "palette": [
+        "#e6e9ec",
+        "#6f8a5a",
+        "#9fb0c8",
+        "#2f3a2c",
+        "#c9b896"
+      ],
+      "frames": [
+        {
+          "x": -0.25,
+          "y": 0,
+          "w": 0.21,
+          "h": 0.3,
+          "motif": "fjord",
+          "seed": 3
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0.21,
+          "h": 0.3,
+          "motif": "landscape",
+          "seed": 4
+        },
+        {
+          "x": 0.25,
+          "y": 0,
+          "w": 0.21,
+          "h": 0.3,
+          "motif": "ocean",
+          "motifOpts": {
+            "variant": "rocks"
+          },
+          "seed": 5
+        }
+      ]
+    },
+    "variants": [
+      {
+        "name": "Nordisk landskap",
+        "colors": {
+          "print": "#6f8a5a",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Tre små plakater med klassiske nordiske landskapsmalerier – innsjø, tre og hav under skyer, 21 × 30 cm hver. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Tre små motiver på rad passer på en smal vegg i gangen eller over nattbordet; naturfargene er rolige mot Sand-veggen.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/bild-plakat-nordisk-landskap__1485735_pe1002128_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 49 kr, mål B21 × H30 cm per plakat, 3 stk. i pakken (Mål-fanen), bilde, varenr. 606.238.64, på lager. Anslått: plakatene vist på rad med 4 cm mellomrom; motivene er tilnærmet."
+  },
+  {
+    "id": "ikea-rodalm-ramme-50x70",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "RÖDALM Ramme 50x70 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/roedalm-ramme-svart-70548925/",
+    "priceNok": 159,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 705.489.25, svart): 159 kr. På lager på nett. Samme pris for 905.489.29 (hvit), 605.664.01 (eikemønstret), 105.489.28 (valnøttmønstret), 005.489.24 (bjørkemønstret).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.52,
+      "d": 0.03,
+      "h": 0.72
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "stripes",
+      "motifOpts": {
+        "variant": "blocks"
+      },
+      "seed": 3,
+      "palette": [
+        "#efe6d8",
+        "#c6826b",
+        "#e0c3a3",
+        "#4a3b33",
+        "#8ea39a"
+      ],
+      "frame": "thin",
+      "frameW": 0.012,
+      "texture": "paper",
+      "mat": true,
+      "matW": 0.053,
+      "glass": true,
+      "acceptsImage": true,
+      "matH": 0.103
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#c6826b",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/roedalm-ramme-svart-70548925/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/roedalm-ramme-svart__1251252_pe924216_s5.jpg"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "print": "#c6826b",
+          "frame": "#f2f1ee"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/roedalm-ramme-hvit-90548929/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/roedalm-ramme-hvit__1251256_pe924220_s5.jpg"
+      },
+      {
+        "name": "Eikemønstret",
+        "colors": {
+          "print": "#c6826b",
+          "frame": "#c9a46e"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/roedalm-ramme-eikemonstret-60566401/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/roedalm-ramme-eikemonstret__1279762_pe931531_s5.jpg"
+      },
+      {
+        "name": "Valnøttmønstret",
+        "colors": {
+          "print": "#c6826b",
+          "frame": "#6e5038"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "walnut"
+        },
+        "url": "https://www.ikea.com/no/no/p/roedalm-ramme-valnottmonstret-10548928/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/roedalm-ramme-valnottmonstret__1251254_pe924218_s5.jpg"
+      },
+      {
+        "name": "Bjørkemønstret",
+        "colors": {
+          "print": "#c6826b",
+          "frame": "#dccdb4"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "ash"
+        },
+        "url": "https://www.ikea.com/no/no/p/roedalm-ramme-bjorkemonstret-00548924/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/roedalm-ramme-bjorkemonstret__1251250_pe924214_s5.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Tynn ramme i fiberplate med folie, passepartout for 40 × 50 cm og plastfront; for plakater 50 × 70 cm, ytre mål 52 × 72 cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "En rimelig standardramme for plakater 50 × 70 i stua, gangen eller soverommet; fem finisher gjør det lett å matche eik, valnøtt eller sort metall.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/roedalm-ramme-svart__1251252_pe924216_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 159 kr, mål ramme 52 × 72 × 3 cm, bilde 50 × 70 cm, passepartout-åpning 39 × 49 cm (Mål-fanen), bilde, varenr. 705.489.25, på lager. Anslått: profilbredde ca. 1,2 cm lest av produktbildet; passepartouten er ca. 5,3 cm på sidene og 10,3 cm oppe og nede, så åpningen blir 39 × 49 cm. Bildet i rammen er et eksempelmotiv. Variantene 905.489.29 (hvit), 605.664.01 (eikemønstret), 105.489.28 (valnøttmønstret), 005.489.24 (bjørkemønstret) er sjekket på sine egne produktsider."
+  },
+  {
+    "id": "ikea-lomviken-ramme-50x70",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "LOMVIKEN Ramme 50x70 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/lomviken-ramme-gullfarget-80419602/",
+    "priceNok": 269,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 804.196.02, gullfarget): 269 kr. På lager på nett. Samme pris for 702.867.73 (svart).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.515,
+      "d": 0.02,
+      "h": 0.715
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "botanical",
+      "seed": 4,
+      "palette": [
+        "#f3eee3",
+        "#7d8a5c",
+        "#b5b38a",
+        "#33331f",
+        "#c9a86a"
+      ],
+      "frame": "alu",
+      "frameW": 0.006,
+      "texture": "paper",
+      "mat": true,
+      "matW": 0.057,
+      "glass": true,
+      "acceptsImage": true,
+      "matH": 0.107
+    },
+    "variants": [
+      {
+        "name": "Gullfarget",
+        "colors": {
+          "print": "#7d8a5c",
+          "frame": "#c8a463"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "brass"
+        },
+        "url": "https://www.ikea.com/no/no/p/lomviken-ramme-gullfarget-80419602/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/lomviken-ramme-gullfarget__0661072_pe711302_s5.jpg"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#7d8a5c",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        },
+        "url": "https://www.ikea.com/no/no/p/lomviken-ramme-svart-70286773/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/lomviken-ramme-svart__0638245_pe698795_s5.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Smal aluminiumsramme med passepartout for 40 × 50 cm og plastfront; for plakater 50 × 70 cm, ytre mål 51,5 × 71,5 cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Den tynne gullfargede profilen gir et lett, eksklusivt preg i stua, mens den sorte passer de sorte metalldetaljene på kjøkkenet.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/lomviken-ramme-gullfarget__0661072_pe711302_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 269 kr, mål ramme 51,5 × 71,5 × 2 cm, bilde 50 × 70 cm, passepartout-åpning 39 × 49 cm (Mål-fanen), bilde, varenr. 804.196.02, på lager. Anslått: profilbredde ca. 0,6 cm lest av produktbildet; passepartouten er ca. 5,7 cm på sidene og 10,7 cm oppe og nede, så åpningen blir 39 × 49 cm. Bildet i rammen er et eksempelmotiv. Variantene 702.867.73 (svart) er sjekket på sine egne produktsider."
+  },
+  {
+    "id": "ikea-sannahed-ramme-25x25",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "SANNAHED Ramme 25x25 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/sannahed-ramme-svart-60459118/",
+    "priceNok": 69,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com-produktdata, varenr. 604.591.18, svart): 69 kr. På lager på nett. Samme pris for 004.591.16 (hvit).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.27,
+      "d": 0.06,
+      "h": 0.27
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "northern-lights",
+      "seed": 3,
+      "palette": [
+        "#0b1622",
+        "#5fd3a0",
+        "#2c7a8a",
+        "#05080d",
+        "#b48ad6"
+      ],
+      "frame": "box",
+      "frameW": 0.012,
+      "texture": "photo",
+      "mat": true,
+      "matW": 0.06,
+      "glass": true,
+      "acceptsImage": true
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#5fd3a0",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/sannahed-ramme-svart-60459118/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/sannahed-ramme-svart__0835517_pe778450_s5.jpg"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "print": "#5fd3a0",
+          "frame": "#f2f1ee"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/sannahed-ramme-hvit-00459116/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/sannahed-ramme-hvit__0835452_pe778441_s5.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Dyp boksramme (6 cm) med passepartout for 13 × 13 cm og plastfront; ytre mål 27 × 27 cm. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Små, dype rammer passer to–tre side om side over nattbordet på soverommet eller i gangen, til små bilder og minner.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/sannahed-ramme-svart__0835517_pe778450_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com 2026-10-21 (produktdata): pris 69 kr, mål ramme 27 × 27 × 6 cm, bilde 25 × 25 cm, passepartout-åpning 12 × 12 cm (Mål-fanen), bilde, varenr. 604.591.18, på lager. Anslått: profilbredde ca. 1,2 cm lest av produktbildet. Bildet i rammen er et eksempelmotiv. Variantene 004.591.16 (hvit) er sjekket på sine egne produktsider."
+  },
+  {
+    "id": "nordicnest-paper-collective-blomst-02-ochra-poster-50x70",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "Blomst 02 Ochra poster 50x70 cm",
+    "brand": "Paper Collective",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/paper-collective/blomst-02-ochra-poster/?variantId=35521-02",
+    "priceNok": 825,
+    "salePriceNok": 809,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 35521-02): 809 kr (før 825 kr). På lager.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.005,
+      "h": 0.7
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "still-life",
+      "motifOpts": {
+        "variant": "vase"
+      },
+      "seed": 6,
+      "palette": [
+        "#e3b35f",
+        "#b5501f",
+        "#7d8a5a",
+        "#6b4a2a",
+        "#d99aa6"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "50x70 cm",
+        "colors": {
+          "print": "#b5501f",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Fotoplakat av en løs bukett i en ravfarget glassvase mot en okergul vegg, 50 × 70 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Den varme okerfargen passer fint mot Sand- og Marrakesh-veggene i stua; flott i en eikeramme over skjenken eller ved spisebordet.",
+    "imageUrl": "https://prod.nordicnest.dev/assets/blobs/paper-collective-blomst-02-ochra-poster-50x70-cm/35521-02_1_ProductImageMain_1-fbd6b4b07a.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 809 kr (før 825), mål B50 × H70 cm («Mål»), bilde, varenr. 35521-02, på lager. Anslått: palett fra produktbildet."
+  },
+  {
+    "id": "nordicnest-paper-collective-painted-shapes-02-plakat-50x70",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "Painted Shapes 02 plakat 50x70 cm",
+    "brand": "Paper Collective",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/paper-collective/painted-shapes-02-plakat/?variantId=578477-01",
+    "priceNok": 825,
+    "salePriceNok": 549,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 578477-01): 549 kr (før 825 kr). Begrenset lager.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.005,
+      "h": 0.7
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "blobs",
+      "seed": 1,
+      "palette": [
+        "#d8c2a4",
+        "#7e3a2c",
+        "#aec4e6",
+        "#4a2333",
+        "#c35a2a"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "50x70 cm",
+        "colors": {
+          "print": "#7e3a2c",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Malte, myke former i rustbrunt, plomme, oransje, sand og lys blå, 50 × 70 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Jordfargene henger sammen med Marrakesh-veggen og eik; et rolig, moderne valg over sofaen eller i kjellerstua.",
+    "imageUrl": "https://prod.nordicnest.dev/assets/blobs/paper-collective-painted-shapes-02-plakat-50x70-cm/578477-01_1_ProductImageMain-9e06f14f3c.jpeg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 549 kr (før 825), mål B50 × H70 cm («Mål»), bilde, varenr. 578477-01, begrenset lager. Anslått: palett fra produktbildet."
+  },
+  {
+    "id": "nordicnest-paper-collective-orange-vallmo-poster-30x40",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "Orange Vallmo poster 30x40 cm",
+    "brand": "Paper Collective",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/paper-collective/orange-vallmo-poster/?variantId=572872-01",
+    "priceNok": 525,
+    "salePriceNok": 349,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 572872-01): 349 kr (før 525 kr). Begrenset lager.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.3,
+      "d": 0.005,
+      "h": 0.4
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "cutouts",
+      "motifOpts": {
+        "variant": "flower"
+      },
+      "seed": 1,
+      "palette": [
+        "#f5e7cf",
+        "#ee7a2c",
+        "#f2a35e",
+        "#8fa47f",
+        "#1d1a18"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "30 x 40 cm",
+        "colors": {
+          "print": "#ee7a2c",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Akvarellplakat av en enkelt oransje valmue på lang stilk mot kremhvit bunn, 30 × 40 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "En liten, varm fargeklatt for soverommet eller gangen; passer i en Helsinki- eller RÖDALM-ramme i eik.",
+    "imageUrl": "https://prod.nordicnest.dev/assets/blobs/paper-collective-orange-vallmo-poster-30-x-40-cm/572872-01_1_ProductImageMain-aaacbcc9eb.jpeg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 349 kr (før 525), mål B30 × H40 cm («Mål»), bilde, varenr. 572872-01, begrenset lager. Anslått: palett fra produktbildet."
+  },
+  {
+    "id": "nordicnest-paper-collective-lemons-poster-30x40",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "Lemons poster 30x40 cm",
+    "brand": "Paper Collective",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/paper-collective/lemons-poster/?variantId=590806-01",
+    "priceNok": 525,
+    "salePriceNok": 399,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 590806-01): 399 kr (før 525 kr). Restordre – kan bestilles, leveres senere.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.3,
+      "d": 0.005,
+      "h": 0.4
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "fruit",
+      "motifOpts": {
+        "variant": "lemons"
+      },
+      "seed": 1,
+      "palette": [
+        "#f39a4c",
+        "#f2e46a",
+        "#8f9a4a",
+        "#3a2a20",
+        "#fbe9a0"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "30x40 cm",
+        "colors": {
+          "print": "#f2e46a",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Malte sitroner i blekt gult mot en kraftig oransje bakgrunn, 30 × 40 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Frisk og glad på kjøkkenveggen eller ved spisebordet; den oransje fargen varmer opp et lyst rom.",
+    "imageUrl": "https://prod.nordicnest.dev/assets/blobs/paper-collective-lemons-poster-30x40-cm/590806-01_1_ProductImageMain-16b930f31e.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 399 kr (før 525), mål B30 × H40 cm («Mål»), bilde, varenr. 590806-01, restordre – kan bestilles, leveres senere. Anslått: palett fra produktbildet."
+  },
+  {
+    "id": "nordicnest-fine-little-day-skog-poster-70x100",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "Skog poster 70x100 cm",
+    "brand": "Fine Little Day",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/fine-little-day/skog-poster/?variantId=23565-01",
+    "priceNok": 709,
+    "salePriceNok": 639,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 23565-01): 639 kr (før 709 kr). På lager.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.7,
+      "d": 0.005,
+      "h": 1
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "forest",
+      "motifOpts": {
+        "variant": "mist"
+      },
+      "seed": 8,
+      "palette": [
+        "#e3e6e3",
+        "#4f5f4c",
+        "#8b9a88",
+        "#1f2a22",
+        "#d3d8d3"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "70 x 100 cm",
+        "colors": {
+          "print": "#4f5f4c",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "shapeNote": "Den brune lyngmarken i forgrunnen vises ikke; spillet viser grå tåke over grønne og sorte graner.",
+    "description": "Fotoplakat av en granskog i tett tåke over en brun lyngmark, 70 × 100 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Et stort, stille naturbilde for kjellerstua eller over sengen; passer akkurat i Helsinki-rammen 70 × 100 fra Bohus.",
+    "imageUrl": "https://prod.nordicnest.dev/assets/blobs/fine-little-day-skog-poster-70-x-100-cm/p_23565-01-01-4ab567b28f.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 639 kr (før 709), mål B70 × H100 cm («Mål»), bilde, varenr. 23565-01, på lager. Anslått: palett fra produktbildet."
+  },
+  {
+    "id": "nordicnest-fine-little-day-landscape-poster-40x50",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "Landscape poster 40x50 cm",
+    "brand": "Fine Little Day",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/fine-little-day/landskap-poster-40x50-cm/?variantId=46303-01",
+    "priceNok": 491,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 46303-01): 491 kr. Begrenset lager.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.005,
+      "h": 0.4
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "sunset",
+      "motifOpts": {
+        "variant": "hills"
+      },
+      "seed": 7,
+      "palette": [
+        "#e88bb5",
+        "#2a2826",
+        "#8a5fa8",
+        "#1a1918",
+        "#f1c9d6"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Multi",
+        "colors": {
+          "print": "#2a2826",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Malt landskap med sorte fjell, lilla penselstrøk og rosa himmel, liggende format 50 × 40 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Et liggende, fargesterkt bilde over en kommode i det lille kjellersoverommet eller i gangen; rosa og sort gir kontrast til de lyse veggene.",
+    "imageUrl": "https://prod.nordicnest.dev/assets/blobs/fine-little-day-landscape-poster-40x50-cm-multi/46303-01_1_ProductImageMain-7bfaaa80fa.jpeg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 491 kr, mål B50 × H40 cm (liggende) («Mål»), bilde, varenr. 46303-01, begrenset lager. Anslått: palett fra produktbildet; motivet er tilnærmet."
+  },
+  {
+    "id": "nordicnest-fine-little-day-dyeforindigo-ocean-2-plakat-40x50",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "Dyeforindigo ocean 2 plakat 40x50 cm",
+    "brand": "Fine Little Day",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/fine-little-day/dyeforindigo-ocean-2-plakat-40-x-50-cm/?variantId=505219-01",
+    "priceNok": 491,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 505219-01): 491 kr. Begrenset lager.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.4,
+      "d": 0.005,
+      "h": 0.5
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "mountain",
+      "seed": 9,
+      "palette": [
+        "#f1ede4",
+        "#2b4566",
+        "#e9e6dd",
+        "#1c2c44",
+        "#8ea5bd"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false
+    },
+    "variants": [
+      {
+        "name": "Blå-hvit",
+        "colors": {
+          "print": "#2b4566",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Indigofarget trykk av en mørk, kornete form som stiger mot en lys himmel, 40 × 50 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Den dype indigoen gir ro på soverommet eller hjemmekontoret i kjelleren; fin sammen med sorte rammer og lyse vegger.",
+    "imageUrl": "https://prod.nordicnest.dev/assets/blobs/fine-little-day-dyeforindigo-ocean-2-plakat-40-x-50-cm-bla-hvit/505219-01_1_ProductImageMain-64a75da896.jpeg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 491 kr, mål B40 × H50 cm («Mål»), bilde, varenr. 505219-01, begrenset lager. Anslått: palett fra produktbildet; motivet er tilnærmet."
+  },
+  {
+    "id": "nordicnest-design-house-stockholm-birds-1967-plakat-nr-5-50x70",
+    "category": "kunst",
+    "subcategory": "plakat",
+    "name": "Birds 1967 plakat Nr. 5 50x70 cm",
+    "brand": "Design House Stockholm",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/design-house-stockholm/birds-1967-plakat-50x70-cm/?variantId=635397-01",
+    "priceNok": 450,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 635397-01): 450 kr. Restordre – kan bestilles, leveres senere.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.005,
+      "h": 0.7
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "mid-century",
+      "seed": 6,
+      "palette": [
+        "#f2dc38",
+        "#57a0d3",
+        "#8fc1e6",
+        "#1e2f66",
+        "#3f7fc0"
+      ],
+      "frame": "none",
+      "texture": "paper",
+      "edge": "white",
+      "mat": false,
+      "glass": false,
+      "motifOpts": {
+        "variant": "drops"
+      }
+    },
+    "variants": [
+      {
+        "name": "Nr. 5",
+        "colors": {
+          "print": "#57a0d3",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Retroplakat med Lisa Larsons mønster fra 1967: blå dråpeformer med marineblå prikker på gul bunn og hvit kant, 50 × 70 cm. Selges uten ramme – se Rammer i samme størrelse.",
+    "why": "Et muntert 60-tallsmotiv for hjemmekontoret i kjelleren eller kjøkkenet; gult og blått gir farge mot de nøytrale veggene.",
+    "imageUrl": "https://prod.nordicnest.dev/assets/blobs/design-house-stockholm-birds-1967-plakat-50x70-cm-nr-5/635397-01_1_IM-d4a3746e35.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 450 kr, mål B50 × H70 cm («Mål»), bilde, varenr. 635397-01, restordre – kan bestilles, leveres senere. Anslått: palett fra produktbildet; motivet er tilnærmet."
+  },
+  {
+    "id": "nordicnest-moebe-frame-a3",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "Moebe Frame A3 31,7x44 cm",
+    "brand": "MOEBE",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/moebe/moebe-frame-a3/?variantId=36455-01",
+    "priceNok": 735,
+    "salePriceNok": 469,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 36455-01): 469 kr (før 735 kr). På lager. Andre farger: Røkt eik 643986-01: 559 kr (før 735), på lager; Svart 36455-02: 489 kr (før 660), restordre – kan bestilles, leveres senere; Hvit 36455-03: 509 kr (før 660), på lager.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.317,
+      "d": 0.02,
+      "h": 0.44
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "line-art",
+      "seed": 4,
+      "palette": [
+        "#f3efe8",
+        "#c08a6a",
+        "#d9c7b3",
+        "#1c1a18",
+        "#efe3d6"
+      ],
+      "frame": "thin",
+      "frameW": 0.012,
+      "texture": "paper",
+      "mat": false,
+      "glass": true,
+      "acceptsImage": true
+    },
+    "variants": [
+      {
+        "name": "Eik",
+        "colors": {
+          "print": "#c08a6a",
+          "frame": "#c9a87c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "oak"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/moebe/moebe-frame-a3/?variantId=36455-01",
+        "imageUrl": "https://prod.nordicnest.dev/assets/blobs/moebe-moebe-frame-a3-317x44-cm-eik/36455-01-01-275547e489.jpg"
+      },
+      {
+        "name": "Røkt eik",
+        "colors": {
+          "print": "#c08a6a",
+          "frame": "#5b4535"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/moebe/moebe-frame-a3/?variantId=643986-01",
+        "priceNok": 735,
+        "salePriceNok": 559,
+        "priceConfidence": "checked",
+        "imageUrl": "https://prod.nordicnest.dev/assets/blobs/moebe-moebe-frame-a3-317x44-cm-smoked-oak/643986-01_1_ProductImageMain-47ec0e484c.png"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#c08a6a",
+          "frame": "#231f1d"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "black-oak"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/moebe/moebe-frame-a3/?variantId=36455-02",
+        "priceNok": 660,
+        "salePriceNok": 489,
+        "priceConfidence": "checked",
+        "imageUrl": "https://prod.nordicnest.dev/assets/blobs/moebe-moebe-frame-a3-317x44-cm-svart/36455-02-01-4cf1c0f3b7.jpg"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "print": "#c08a6a",
+          "frame": "#f2f1ee"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "painted"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/moebe/moebe-frame-a3/?variantId=36455-03",
+        "priceNok": 660,
+        "salePriceNok": 509,
+        "priceConfidence": "checked",
+        "imageUrl": "https://prod.nordicnest.dev/assets/blobs/moebe-moebe-frame-a3-317x44-cm-hvit/36455-03-01-7cade6c13e.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Minimalistisk ramme i massivt tre med akryl på begge sider, så bildet ser ut til å sveve; henges i en tynn stropp. A3-format. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Lett og luftig – fin til plakater og tegninger i gangen eller på hjemmekontoret; eik og røkt eik matcher møblene i stua.",
+    "imageUrl": "https://prod.nordicnest.dev/assets/blobs/moebe-moebe-frame-a3-317x44-cm-eik/36455-01-01-275547e489.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 469 kr (før 735), mål B31,7 × H44 cm («Mål»), bilde, varenr. 36455-01; alle fargevarianter lest på produktsidene. Anslått: dybde ca. 2 cm og profil ca. 1,2 cm fra produktbildet; opphengsstroppen vises ikke. Bildet i rammen er et eksempelmotiv."
+  },
+  {
+    "id": "nordicnest-paper-collective-ramme-plexiglass-50x70",
+    "category": "kunst",
+    "subcategory": "ramme",
+    "name": "Paper Collective ramme plexiglass 50x70 cm",
+    "brand": "Paper Collective",
+    "store": "Nordic Nest",
+    "url": "https://www.nordicnest.no/merkevarer/paper-collective/paper-collective-ramme-plexiglass-eik/?variantId=46039-02",
+    "priceNok": 525,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (nordicnest.no-produktdata, varenr. 46039-02): 525 kr. På lager. Andre farger: Mørk eik 505410-01: 525 kr, på lager; Svart 46040-02: 525 kr, begrenset lager.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.5,
+      "d": 0.02,
+      "h": 0.7
+    },
+    "archetype": "art-frame",
+    "mount": "wall",
+    "params": {
+      "motif": "photo",
+      "seed": 2,
+      "palette": [
+        "#eef0ee",
+        "#7d8c96",
+        "#9fb2c2",
+        "#2c2f2e",
+        "#e9e1d4"
+      ],
+      "frame": "thin",
+      "frameW": 0.013,
+      "texture": "photo",
+      "mat": false,
+      "glass": true,
+      "acceptsImage": true
+    },
+    "variants": [
+      {
+        "name": "Eik",
+        "colors": {
+          "print": "#7d8c96",
+          "frame": "#d2ad83"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "oak"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/paper-collective/paper-collective-ramme-plexiglass-eik/?variantId=46039-02",
+        "imageUrl": "https://prod.nordicnest.dev/assets/blobs/paper-collective-paper-collective-ramme-plexiglass-eik-50x70-cm/46039-02-01-a85910b8e2.jpg"
+      },
+      {
+        "name": "Mørk eik",
+        "colors": {
+          "print": "#7d8c96",
+          "frame": "#5a4535"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "smoked-oak"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/paper-collective/paper-collective-ramme-plexiglass-og-mork-eik/?variantId=505410-01",
+        "imageUrl": "https://prod.nordicnest.dev/assets/blobs/paper-collective-paper-collective-ramme-plexiglass-mrk-eik-50-x-70-cm/505410-01_1_ProductImageMain-921eaf0d5e.jpg"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "print": "#7d8c96",
+          "frame": "#1c1c1c"
+        },
+        "materials": {
+          "print": "paper",
+          "frame": "painted"
+        },
+        "url": "https://www.nordicnest.no/merkevarer/paper-collective/paper-collective-ramme-plexiglass-svart/?variantId=46040-02",
+        "imageUrl": "https://prod.nordicnest.dev/assets/blobs/paper-collective-paper-collective-ramme-plexiglass-svart-50x70-cm/46040-02-01-31b78112ed.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.01,
+    "description": "Smal treramme med antirefleks-plexiglass for plakater 50 × 70 cm, i eik, mørk eik eller sort. Selges tom – legg inn ditt eget bilde i spillet. Bildet i rammen er et eksempelmotiv.",
+    "why": "Passer alle plakatene på 50 × 70 i kunstkategorien; eik i stua, mørk eik eller sort i kjellerstua.",
+    "imageUrl": "https://prod.nordicnest.dev/assets/blobs/paper-collective-paper-collective-ramme-plexiglass-eik-50x70-cm/46039-02-01-a85910b8e2.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på nordicnest.no 2026-10-21 (produktdata): pris 525 kr, mål B50 × H70 cm («Mål»), bilde, varenr. 46039-02; alle fargevarianter lest på produktsidene. Anslått: dybde ca. 2 cm og profil ca. 1,3 cm fra produktbildet. Hver farge har sin egen produktside hos Nordic Nest."
+  }
+]

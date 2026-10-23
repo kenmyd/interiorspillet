@@ -206,6 +206,11 @@
   height: 1.9em;
 }
 
+/* touch start screen: no «Enter» on the start button */
+.kv-menu--touch .kv-play .kv-key {
+  display: none;
+}
+
 /* mouse key pictogram */
 .kv-mousekey {
   display: inline-flex;
@@ -1850,6 +1855,7 @@
 }
 
 .kv-pause__panel[data-view='settings'],
+.kv-pause__panel[data-view='scheme'],
 .kv-pause__panel[data-view='controls'] {
   width: min(50em, 100%);
 }

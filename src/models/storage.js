@@ -80,6 +80,9 @@ function toWallOrigin(inner, { h, d }) {
 
 const CAB = P_CABINET;
 const FRONTS_HINT = { type: 'number', min: 1, max: 6, step: 1, label: 'Antall kolonner' };
+// dressers and nightstands on tall legs (Isak, Charon ≈ 0.42, Signature 0.58; buildCabinet still caps the legs at
+// legMaxFrac × h, hidden, default 0.6)
+const LEG_H_TALL = { ...CAB.legH, max: 0.6 };
 const P_WARDROBE = {
   base: { type: 'enum', label: 'Understell', options: [['plinth', 'Sokkel'], ['legs', 'Ben'], ['none', 'Rett på gulvet']] },
   legStyle: CAB.legStyle,
@@ -99,7 +102,7 @@ const P_WARDROBE = {
 const P_DRESSER = {
   base: CAB.base,
   legStyle: CAB.legStyle,
-  legH: CAB.legH,
+  legH: LEG_H_TALL,
   doors: FRONTS_HINT,
   drawerRow: CAB.drawerRow,
   drawerRowPos: CAB.drawerRowPos,
@@ -113,7 +116,7 @@ const P_NIGHT = {
   base: CAB.base,
   mountHeight: { ...CAB.mountHeight, label: 'Høyde over gulv når den henger (m)' },
   legStyle: CAB.legStyle,
-  legH: CAB.legH,
+  legH: LEG_H_TALL,
   drawerRow: { ...CAB.drawerRow, label: 'Skuffer øverst' },
   drawerH: { type: 'number', min: 0.06, max: 0.4, step: 0.01, label: 'Skuffehøyde (m)', default: 0.12 },
   frontStyle: CAB.frontStyle,
@@ -350,11 +353,13 @@ function buildBookcase(spec) {
     // sides / posts
     if (frame) {
       for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(g, K.box(postW, h, postW, { grain: 'y' }), legsMat, 'legs', sx * (w / 2 - postW / 2), h / 2, sz * (d / 2 - postW / 2));
-      // a light X brace across the back
-      const bl = Math.hypot(w - 2 * postW, h - yb);
-      for (const s of [-1, 1]) {
-        const m = add(g, K.box(0.006, bl, 0.006), legsMat, 'legs', 0, (h + yb) / 2, -d / 2 + 0.004);
-        m.rotation.z = s * Math.atan2(w - 2 * postW, h - yb);
+      // a light X brace across the back (hidden brace:false leaves it out: Gotland)
+      if (P.brace !== false) {
+        const bl = Math.hypot(w - 2 * postW, h - yb);
+        for (const s of [-1, 1]) {
+          const m = add(g, K.box(0.006, bl, 0.006), legsMat, 'legs', 0, (h + yb) / 2, -d / 2 + 0.004);
+          m.rotation.z = s * Math.atan2(w - 2 * postW, h - yb);
+        }
       }
     } else {
       for (const sx of [-1, 1]) add(g, K.box(T, h - (base === 'legs' ? yb : 0), d, { grain: 'y' }), bodyV, 'body', sx * (w / 2 - T / 2), (h + (base === 'legs' ? yb : 0)) / 2, 0);
@@ -370,44 +375,111 @@ function buildBookcase(spec) {
       for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(g, K.cylinder(0.016, 0.013, legH, { seg: qSeg(spec, 12) }), legsMat, 'legs', sx * (w / 2 - 0.04), 0, sz * (d / 2 - 0.04));
     }
     // columns and shelves
+    const layout = Array.isArray(P.layout) && P.layout.length && P.layout.every((r) => Array.isArray(r) && r.every((v) => typeof v === 'number' && Number.isFinite(v))) ? P.layout.slice(0, 10) : null;
+    const nRows = layout ? layout.length : rows;
     const colW = (ix1 - ix0 - (cols - 1) * T) / cols;
     const iy0 = yb + T, iy1 = h - T;
-    const rowH = (iy1 - iy0 - (rows - 1) * T) / rows;
-    const doorRows = clamp(Math.round(num(P.doorRows, 0)), 0, rows);
+    const rowH = (iy1 - iy0 - (nRows - 1) * T) / nRows;
+    const doorRows = clamp(Math.round(num(P.doorRows, 0)), 0, nRows);
     const doorStyle = ['flat', 'glass', 'framed'].includes(P.doorStyle) ? P.doorStyle : 'flat';
-    for (let c = 0; c < cols; c++) {
-      const x0 = ix0 + c * (colW + T), x1 = x0 + colW;
-      if (c > 0) add(g, K.box(T, iy1 - iy0, d - 0.01, { grain: 'y' }), bodyV, 'body', x0 - T / 2, (iy0 + iy1) / 2, 0.003);
-      for (let r = 0; r < rows; r++) {
-        const y = iy0 + r * (rowH + T);
-        if (r > 0) add(g, K.box(colW, T, d - 0.015, { grain: 'x' }), body, 'body', (x0 + x1) / 2, y - T / 2, 0.004);
-        const door = r < doorRows;
-        if (door) {
-          const nd = colW > 0.62 ? 2 : 1;
-          const dw = (colW - 0.004 - (nd - 1) * 0.003) / nd;
-          for (let k = 0; k < nd; k++) {
-            const dx0 = x0 + 0.002 + k * (dw + 0.003), cx = dx0 + dw / 2;
-            const dy0 = y + (r === 0 ? 0.002 : -T / 2 + 0.002), dy1 = y + rowH + (r === doorRows - 1 ? -0.002 : T / 2 - 0.002);
-            const dh = dy1 - dy0, cy = (dy0 + dy1) / 2, zF = d / 2;
-            if (doorStyle === 'flat') add(g, K.box(dw, dh, 0.018, { grain: 'y' }), frontMat, 'front', cx, cy, zF - 0.009);
-            else {
-              const fw = Math.min(0.06, dw * 0.16);
-              for (const s of [-1, 1]) add(g, K.box(fw, dh, 0.018, { grain: 'y' }), frontMat, 'front', cx + s * (dw / 2 - fw / 2), cy, zF - 0.009);
-              for (const s of [-1, 1]) add(g, K.box(dw - 2 * fw, fw, 0.018, { grain: 'x' }), frontMat, 'front', cx, cy + s * (dh / 2 - fw / 2), zF - 0.009);
-              if (doorStyle === 'glass') add(g, K.box(dw - 2 * fw + 0.006, dh - 2 * fw + 0.006, 0.004), mat('glass-clear', '#f2f6f4'), null, cx, cy, zF - 0.009);
-              else add(g, K.box(dw - 2 * fw + 0.006, dh - 2 * fw + 0.006, 0.01, { grain: 'y' }), frontMat, 'front', cx, cy, zF - 0.012);
-            }
-            if (P.handle === 'knob' || P.handle === 'bar') {
-              const side = nd === 1 ? 1 : k === 0 ? 1 : -1;
-              const hx = side > 0 ? dx0 + dw - 0.035 : dx0 + 0.035;
-              if (P.handle === 'knob') add(g, K.cylinder(0.011, 0.013, 0.022, { seg: qSeg(spec, 12) }), handleMat, 'handle', hx, dy1 - 0.06, zF, [Math.PI / 2, 0, 0]);
-              else add(g, K.box(0.011, Math.min(0.12, dh * 0.4), 0.011, { grain: 'y' }), handleMat, 'handle', hx, dy1 - 0.04 - Math.min(0.12, dh * 0.4) / 2, zF + 0.02);
-            }
-          }
-          if (doorStyle !== 'glass') continue;
+    /** The doors over one opening x0..x1 × dy0..dy1 (a pair when it is wider than 62 cm), with their pulls. */
+    const doorsOver = (x0, x1, dy0, dy1) => {
+      const ow = x1 - x0;
+      const nd = ow > 0.62 ? 2 : 1;
+      const dw = (ow - 0.004 - (nd - 1) * 0.003) / nd;
+      for (let k = 0; k < nd; k++) {
+        const dx0 = x0 + 0.002 + k * (dw + 0.003), cx = dx0 + dw / 2;
+        const dh = dy1 - dy0, cy = (dy0 + dy1) / 2, zF = d / 2;
+        if (doorStyle === 'flat') add(g, K.box(dw, dh, 0.018, { grain: 'y' }), frontMat, 'front', cx, cy, zF - 0.009);
+        else {
+          const fw = Math.min(0.06, dw * 0.16);
+          for (const s of [-1, 1]) add(g, K.box(fw, dh, 0.018, { grain: 'y' }), frontMat, 'front', cx + s * (dw / 2 - fw / 2), cy, zF - 0.009);
+          for (const s of [-1, 1]) add(g, K.box(dw - 2 * fw, fw, 0.018, { grain: 'x' }), frontMat, 'front', cx, cy + s * (dh / 2 - fw / 2), zF - 0.009);
+          if (doorStyle === 'glass') add(g, K.box(dw - 2 * fw + 0.006, dh - 2 * fw + 0.006, 0.004), mat('glass-clear', '#f2f6f4'), null, cx, cy, zF - 0.009);
+          else add(g, K.box(dw - 2 * fw + 0.006, dh - 2 * fw + 0.006, 0.01, { grain: 'y' }), frontMat, 'front', cx, cy, zF - 0.012);
         }
-        surfaces.push({ y: +y.toFixed(4), w: +(colW - 0.01).toFixed(3), d: +(d - 0.04).toFixed(3), center: [+((x0 + x1) / 2).toFixed(4), 0] });
-        levels.push({ x0, x1, y, clear: rowH - 0.01, z0: -d / 2 + (style === 'closed' ? 0.012 : 0.02), z1: d / 2 - (door ? 0.03 : 0.015), bay: c });
+        if (P.handle === 'knob' || P.handle === 'bar') {
+          const side = nd === 1 ? 1 : k === 0 ? 1 : -1;
+          const hx = side > 0 ? dx0 + dw - 0.035 : dx0 + 0.035;
+          // a tall spanning door gets its pull a little lower than a small door's
+          const hy = dh > 0.5 && P.doorsSpanRows === true ? dy1 - Math.min(0.12, dh * 0.15) : dy1 - 0.06;
+          if (P.handle === 'knob') add(g, K.cylinder(0.011, 0.013, 0.022, { seg: qSeg(spec, 12) }), handleMat, 'handle', hx, hy, zF, [Math.PI / 2, 0, 0]);
+          else add(g, K.box(0.011, Math.min(0.12, dh * 0.4), 0.011, { grain: 'y' }), handleMat, 'handle', hx, dy1 - 0.04 - Math.min(0.12, dh * 0.4) / 2, zF + 0.02);
+        }
+      }
+    };
+    const zIn0 = -d / 2 + (style === 'closed' ? 0.012 : 0.02);
+    if (layout) {
+      // staggered compartments (Rangoon, GADEHUSE): hidden `layout` = one list of divider x-fractions (0–1 of the inner
+      // width) per row, from the TOP row down; `shelfGaps` [[row, x0, x1]] leaves the shelf under that row (top-down)
+      // out between the two fractions, so a compartment runs through two rows (its edges become dividers in both rows by
+      // themselves); `doorCells` [[row, cell]] puts a door on a compartment (row top-down, cell left to right)
+      const iw = ix1 - ix0;
+      const gaps = Array.isArray(P.shelfGaps) ? P.shelfGaps.filter((q) => Array.isArray(q) && q.length >= 3 && q.every((v) => typeof v === 'number')) : [];
+      const doorSet = new Set((Array.isArray(P.doorCells) ? P.doorCells : []).filter((q) => Array.isArray(q) && q.length >= 2).map(([r, c]) => `${Math.round(r)}|${Math.round(c)}`));
+      const gapBelow = (rt, x) => gaps.some(([r, a, b]) => Math.round(r) === rt && x > ix0 + Math.min(a, b) * iw && x < ix0 + Math.max(a, b) * iw);
+      const rowY = (rt) => iy0 + (nRows - 1 - rt) * (rowH + T); // floor of top-down row rt
+      // a gap's edges are dividers in both rows it joins, and no divider stands inside it (it would hang or stub)
+      const gapsAt = (rt) => gaps.filter(([r]) => Math.round(r) === rt).map(([, a, b]) => [Math.min(a, b), Math.max(a, b)]);
+      const rowFracs = (rt) => {
+        const joined = [...gapsAt(rt), ...gapsAt(rt - 1)];
+        const fr = [...layout[rt], ...joined.flat()].filter((f) => f > 0.03 && f < 0.97 && !joined.some(([a, b]) => f > a + T / iw && f < b - T / iw));
+        return fr.sort((a, b) => a - b).filter((f, i, arr) => i === 0 || f - arr[i - 1] > (1.5 * T) / iw);
+      };
+      for (let rt = 0; rt < nRows; rt++) {
+        const y = rowY(rt);
+        const xs = rowFracs(rt).map((f) => ix0 + f * iw);
+        const cells = [];
+        let ca = ix0;
+        for (const x of xs) {
+          cells.push([ca, x - T / 2]);
+          ca = x + T / 2;
+        }
+        cells.push([ca, ix1]);
+        // dividers reach half a board into the shelves above and below (they bridge a left-out shelf)
+        for (const x of xs) add(g, K.box(T, rowH + T, d - 0.01, { grain: 'y' }), bodyV, 'body', x, y + rowH / 2, 0.003);
+        // the shelf under this row, in pieces round its gaps
+        if (rt < nRows - 1) {
+          const cut = gaps.filter(([r]) => Math.round(r) === rt).map(([, a, b]) => [ix0 + Math.min(a, b) * iw, ix0 + Math.max(a, b) * iw]).sort((p, q) => p[0] - q[0]);
+          let a = ix0;
+          for (const [c0, c1] of [...cut, [ix1, ix1]]) {
+            if (c0 - a > 0.02) add(g, K.box(c0 - a, T, d - 0.015, { grain: 'x' }), body, 'body', (a + c0) / 2, y - T / 2, 0.004);
+            a = Math.max(a, c1);
+          }
+        }
+        cells.forEach(([x0, x1], ci) => {
+          const cx = (x0 + x1) / 2;
+          if (rt < nRows - 1 && gapBelow(rt, cx)) return; // the upper part of a tall compartment
+          let clear = rowH;
+          for (let k = rt - 1; k >= 0 && gapBelow(k, cx); k--) clear += rowH + T;
+          const door = doorSet.has(`${rt}|${ci}`);
+          if (door) doorsOver(x0, x1, y + 0.002, y + clear - 0.002);
+          if (door && doorStyle !== 'glass') return;
+          surfaces.push({ y: +y.toFixed(4), w: +(x1 - x0 - 0.01).toFixed(3), d: +(d - 0.04).toFixed(3), center: [+cx.toFixed(4), 0] });
+          levels.push({ x0, x1, y, clear: clear - 0.01, z0: zIn0, z1: d / 2 - (door ? 0.03 : 0.015), bay: rt * 8 + ci });
+        });
+      }
+    } else {
+      // hidden doorsSpanRows: one tall door (pair) per column over all door rows, the shelves behind it (HÖGBO, OXBERG)
+      const spanDoors = P.doorsSpanRows === true && doorRows > 0;
+      for (let c = 0; c < cols; c++) {
+        const x0 = ix0 + c * (colW + T), x1 = x0 + colW;
+        // hidden dividers:'posts' (frame style): a front and a back post from the floor instead of a solid board (Gotland)
+        if (c > 0 && frame && P.dividers === 'posts') {
+          for (const sz of [-1, 1]) add(g, K.box(postW, h - T, postW, { grain: 'y' }), legsMat, 'legs', x0 - T / 2, (h - T) / 2, sz * (d / 2 - postW / 2));
+        } else if (c > 0) add(g, K.box(T, iy1 - iy0, d - 0.01, { grain: 'y' }), bodyV, 'body', x0 - T / 2, (iy0 + iy1) / 2, 0.003);
+        if (spanDoors) doorsOver(x0, x1, iy0 + 0.002, iy0 + doorRows * (rowH + T) - T - 0.002);
+        for (let r = 0; r < rows; r++) {
+          const y = iy0 + r * (rowH + T);
+          if (r > 0) add(g, K.box(colW, T, d - 0.015, { grain: 'x' }), body, 'body', (x0 + x1) / 2, y - T / 2, 0.004);
+          const door = r < doorRows;
+          if (door) {
+            if (!spanDoors) doorsOver(x0, x1, y + (r === 0 ? 0.002 : -T / 2 + 0.002), y + rowH + (r === doorRows - 1 ? -0.002 : T / 2 - 0.002));
+            if (doorStyle !== 'glass') continue;
+          }
+          surfaces.push({ y: +y.toFixed(4), w: +(colW - 0.01).toFixed(3), d: +(d - 0.04).toFixed(3), center: [+((x0 + x1) / 2).toFixed(4), 0] });
+          levels.push({ x0, x1, y, clear: rowH - 0.01, z0: zIn0, z1: d / 2 - (door ? 0.03 : 0.015), bay: c });
+        }
       }
     }
   }

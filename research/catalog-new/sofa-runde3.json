@@ -1,0 +1,921 @@
+[
+  {
+    "id": "bohus-weston-4-seter-sofa",
+    "category": "sofa",
+    "subcategory": "4-seter",
+    "name": "Weston 4 seter sofa",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/sofa/4-seter/weston-4-seter-sofa-12",
+    "priceNok": 26665,
+    "salePriceNok": 15999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 331759, Ecohud lys brun, arm 01 15 cm, pocket komfort, metallben svart 15 cm): 15 999 kr (før 26 665 kr, kampanje «WESTON-serien i tekstil Aragon og Ecohud» til 2026-11-30). Ecohud mørk brun (varenr. 331758) 15 999 kr (før 26 665 kr) – samme pris. Finnes også med smalere arm (arm 02, 262 cm) i flere stoffer.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 2.68,
+      "d": 0.9,
+      "h": 0.82
+    },
+    "archetype": "sofa-straight",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.48,
+      "armW": 0.15,
+      "armH": 0.62,
+      "seats": 3,
+      "armStyle": "slim",
+      "backStyle": "cushions",
+      "seatStyle": "split",
+      "legStyle": "slim-metal",
+      "legH": 0.15,
+      "piping": true,
+      "backT": 0.2
+    },
+    "variants": [
+      {
+        "name": "Ecohud lys brun / svarte metallben",
+        "colors": {
+          "upholstery": "#8a5a3a",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "black-metal"
+        }
+      },
+      {
+        "name": "Ecohud mørk brun / svarte metallben",
+        "colors": {
+          "upholstery": "#3b2c24",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/sofa/4-seter/weston-4-seter-sofa-11",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Dominari%20Grupe%20UAB/Produkter/WESTON/614200/image-thumb__614200__PDP-Product/331758%20-%20Weston%204%20seter%20sofa%20arm%2001%20pocket%20komfort%20Ecohud%20m%C3%B8rk%20brun%20med%20metallben%20svart%2015cm%20-%202.ae7251cd.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 2.81,
+    "absorptionNote": "≈ 1,05 × bredde (2,68 m).",
+    "shapeNote": "Lang, rett sofa med smale, rette armlener (15 cm), tre løse rygg- og seteputer med kantbånd og tynne svarte metallben (15 cm). Ecohud er skinnimitasjon, satt som skinn. Armlenehøyde anslått fra bildet.",
+    "description": "Lang 4-seter i skinnimitasjon med tre løse rygg- og seteputer, kantbånd, pocketfjær i setet og høye, tynne svarte metallben.",
+    "why": "Med 268 cm er den sofaen for den lange veggen i kjellerstua; den brune skinnlooken er lett å holde ren og passer sammen med Weston-hjørnesofaen fra samme serie.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Dominari%20Grupe%20UAB/Produkter/WESTON/614201/image-thumb__614201__PDP-Product/331759%20-%20Weston%204%20seter%20sofa%20arm%2001%20pocket%20komfort%20Ecohud%20lys%20brun%20med%20metallben%20svart%2015cm%20-%202.c65f55db.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål B268 D90 H82 cm, setehøyde 48, sittedybde 58, arm 01 15 cm, metallben svart 15 cm, bilde, varenr. 331759 og 331758 (eget bilde sjekket). Anslått: armlenehøyde fra bildet."
+  },
+  {
+    "id": "bohus-freja-2-seter-sofa",
+    "category": "sofa",
+    "subcategory": "2-seter",
+    "name": "Freja 2 seter sofa",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/sofa/2-seter/freja-2-seter-sofa",
+    "priceNok": 11665,
+    "salePriceNok": 6999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 318011, Milo grønn, treben hvitoljet 14 cm): 6 999 kr (før 11 665 kr, kampanje «FREJA 2 seter i tekstil Milo» til 2026-11-30). Loft Stone (varenr. 328872) 11 665 kr. Bestillingsvare (sortiment GT) med kort leveringstid ifølge Bohus.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.48,
+      "d": 0.85,
+      "h": 0.83
+    },
+    "archetype": "sofa-straight",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "armW": 0.12,
+      "armH": 0.6,
+      "seats": 2,
+      "armStyle": "sloped",
+      "backStyle": "cushions",
+      "seatStyle": "split",
+      "legStyle": "wood-taper",
+      "legH": 0.14,
+      "piping": false,
+      "backT": 0.18
+    },
+    "variants": [
+      {
+        "name": "Milo grønn / hvitoljet ben",
+        "colors": {
+          "upholstery": "#6d735d",
+          "legs": "#d9c4a6"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "white-oak"
+        }
+      },
+      {
+        "name": "Loft Stone / hvitoljet ben",
+        "colors": {
+          "upholstery": "#7b7064",
+          "legs": "#d9c4a6"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "white-oak"
+        },
+        "url": "https://www.bohus.no/sofa/2-seter/freja-2-seter-sofa-5",
+        "priceNok": 11665,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Dominari%20Grupe%20UAB/Produkter/FREJA/611128/image-thumb__611128__PDP-Product/328872%20-%20Freja%202%20seter%20sofa%20Loft%20Stone%20med%20treben%20hvitoljet%2014cm%20-%201.056e401f.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.55,
+    "absorptionNote": "≈ 1,05 × bredde (1,48 m).",
+    "shapeNote": "Smale armlener som skrår svakt ned mot ryggen, to løse rygg- og seteputer og rette, runde treben (14 cm). Armlenebredde og -høyde anslått fra bildet.",
+    "description": "Kompakt 2-seter på 148 cm med smale, svakt skrånende armlener, vendbare ryggputer i kaldskum og lyse, hvitoljede treben.",
+    "why": "Med 148 cm bredde er dette den lille sofaen kjellerstua mangler – den får plass under vinduet eller på tvers foran TV-en, og passer også på det lille kjellersoverommet som hjemmekontor.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Dominari%20Grupe%20UAB/Produkter/FREJA/346879/image-thumb__346879__PDP-Product/318011%20-%20Freja%202%20seter%20sofa%20Milo%20gr%C3%B8nn%20med%20treben%20hvitoljet%2014cm%20-%201.3ad1b3e5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål B148 D85 H83 cm, setehøyde 46, sittedybde 55, treben hvitoljet 14 cm, bilde, varenr. 318011 og 328872 (Loft Stone, eget bilde sjekket). Anslått: armlenebredde (ca. 12 cm) og -høyde fra bildet."
+  },
+  {
+    "id": "bohus-fia-2-seter-sofa",
+    "category": "sofa",
+    "subcategory": "2-seter",
+    "name": "Fia 2 seter sofa",
+    "brand": "Brunstad",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/sofa/2-seter/fia-2-seter-1",
+    "priceNok": 29250,
+    "salePriceNok": 20475,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 243745, Abby 06 Brown, klassisk, arm A, ben 370 hvitpigmentert eik): 20 475 kr (før 29 250 kr, kampanje «FIA-serien i tekstil Abby» til 2026-11-30). Abby 37 Concrete (varenr. 276735) 20 475 kr (før 29 250 kr) – samme pris. Norskprodusert bestillingsvare (sortiment GT).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.45,
+      "d": 0.79,
+      "h": 0.86
+    },
+    "archetype": "sofa-straight",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.45,
+      "armW": 0.14,
+      "armH": 0.64,
+      "seats": 2,
+      "armStyle": "round",
+      "backStyle": "tight",
+      "seatStyle": "split",
+      "legStyle": "wood-taper",
+      "legH": 0.12,
+      "piping": true,
+      "backT": 0.18,
+      "backSplit": true
+    },
+    "variants": [
+      {
+        "name": "Abby 06 Brown / hvitpigmentert eik",
+        "colors": {
+          "upholstery": "#7a604f",
+          "legs": "#d8ccb8"
+        },
+        "materials": {
+          "upholstery": "velvet",
+          "legs": "white-oak"
+        }
+      },
+      {
+        "name": "Abby 37 Concrete / hvitpigmentert eik",
+        "colors": {
+          "upholstery": "#56514a",
+          "legs": "#d8ccb8"
+        },
+        "materials": {
+          "upholstery": "velvet",
+          "legs": "white-oak"
+        },
+        "url": "https://www.bohus.no/sofa/2-seter/fia-2-seter",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Brunstad%20AS/Produkter/FIA/233255/image-thumb__233255__PDP-Product/276735%20-%20Fia%202%20seter%20sofa%202s%20a%20abby%2037%20concrete%20med%20370%20hvitoljet%20eik%20-%201.115ae1e7.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.52,
+    "absorptionNote": "≈ 1,05 × bredde (1,45 m).",
+    "shapeNote": "Fast, formstøpt rygg delt i to buede felt, utsvingte runde armlener med kantbånd og løse, vendbare seteputer; korte koniske eikeben. Armlenebredde og benhøyde anslått fra bildet. Butikkens dybde 79 cm ligger 1 cm under arketypens dybdeområde (0,8–1,15).",
+    "description": "Norskprodusert 2-seter i myk velur med fast, formstøpt rygg, utsvingte armlener med kantbånd og koniske ben i hvitpigmentert eik.",
+    "why": "Den faste ryggen og den grunne dybden (79 cm) gjør den rank og plassbesparende – fin i stua ved vinduene mot sør eller som lesesofa i kjellerstua, og velurens brune toner går godt med Sand og Marrakesh.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Brunstad%20AS/Produkter/FIA/118861/image-thumb__118861__PDP-Product/243745%20-%20Fia%202%20seter%20sofa%202s%20a%20abby%206%20brown%20med%20370%20hvitoljet%20-%202.15055dea.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål B145 D79 H86 cm, setehøyde 45, sittedybde 52, fast og formstøpt rygg, ben 370 hvitpigmentert eik, bilde, varenr. 243745 og 276735 (eget bilde sjekket). Anslått: armlenebredde og benhøyde (ca. 12 cm) fra bildet."
+  },
+  {
+    "id": "bohus-signature-250-3-seter-sofa-xl",
+    "category": "sofa",
+    "subcategory": "3-seter",
+    "name": "Signature 250 3 seter sofa XL",
+    "brand": "Signature Collection By Halvor Bakke",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/sofa/3-seter/signature-250-3-seter-sofa",
+    "priceNok": 35999,
+    "salePriceNok": 25199,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 298823, Sebastian Liver, treben svart 12 cm): 25 199 kr (før 35 999 kr, kampanje «SIGNATURE 250-serien i tekstil Noah og Sebastian» til 2026-11-30). Noah Liver (varenr. 314927) 27 283 kr (før 38 975 kr); Solid Onyx (varenr. 306539) 42 250 kr; Solid Marble (varenr. 306538) 42 250 kr; Solid Brown (varenr. 306537) 42 250 kr. Bestillingsvare (sortiment GT).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 2.66,
+      "d": 1.09,
+      "h": 0.81
+    },
+    "archetype": "sofa-straight",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.45,
+      "armW": 0.16,
+      "armH": 0.6,
+      "seats": 2,
+      "armStyle": "box",
+      "backStyle": "cushions",
+      "seatStyle": "split",
+      "legStyle": "block",
+      "legH": 0.12,
+      "piping": false,
+      "backT": 0.22
+    },
+    "variants": [
+      {
+        "name": "Sebastian Liver / svarte treben",
+        "colors": {
+          "upholstery": "#b3ae94",
+          "legs": "#262220"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        }
+      },
+      {
+        "name": "Noah Liver / svarte treben",
+        "colors": {
+          "upholstery": "#85735f",
+          "legs": "#262220"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.bohus.no/sofa/3-seter/signature-250-3-seter-sofa-xl",
+        "priceNok": 38975,
+        "salePriceNok": 27283,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/SIGNATURE%20250/339842/image-thumb__339842__PDP-Product/314927%20-%20Signature%20250%203%20seter%20sofa%20XL%20Noah%20Liver%20med%20treben%20svart%2012cm%20-%203.e6667ea8.jpg"
+      },
+      {
+        "name": "Solid Onyx / svarte treben",
+        "colors": {
+          "upholstery": "#333230",
+          "legs": "#262220"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.bohus.no/sofa/3-seter/signature-250-3-seter-sofa-3",
+        "priceNok": 42250,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/SIGNATURE%20250/319851/image-thumb__319851__PDP-Product/306539%20-%20Signature%20250%203%20seter%20sofa%20XL%20Solid%20Onyx%20med%20treben%20svart%2012cm%20-%201.d6a23f59.jpg"
+      },
+      {
+        "name": "Solid Marble / svarte treben",
+        "colors": {
+          "upholstery": "#a9a8a4",
+          "legs": "#262220"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.bohus.no/sofa/3-seter/signature-250-3-seter-sofa-2",
+        "priceNok": 42250,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/SIGNATURE%20250/319850/image-thumb__319850__PDP-Product/306538%20-%20Signature%20250%203%20seter%20sofa%20XL%20Solid%20Marble%20med%20treben%20svart%2012cm%20-%201.e8aa176e.jpg"
+      },
+      {
+        "name": "Solid Brown / svarte treben",
+        "colors": {
+          "upholstery": "#3b312b",
+          "legs": "#262220"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-oak"
+        },
+        "url": "https://www.bohus.no/sofa/3-seter/signature-250-3-seter-sofa-1",
+        "priceNok": 42250,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/SIGNATURE%20250/319848/image-thumb__319848__PDP-Product/306537%20-%20Signature%20250%203%20seter%20sofa%20XL%20Solid%20Brown%20med%20treben%20svart%2012cm%20-%201.272fcc10.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 2.79,
+    "absorptionNote": "≈ 1,05 × bredde (2,66 m).",
+    "shapeNote": "Lang, dyp sofa med kantete armlener, to brede seteputer, løse ryggputer med to små korsryggputer foran og korte, firkantede svarte ben. Stofftypen i Noah- og Solid-stoffene er ikke oppgitt (satt som vevd stoff).",
+    "description": "Romslig 3-seter XL (266 cm) designet av Halvor Bakke, med dype seteputer, myke rygg- og korsryggputer og korte, svarte treben.",
+    "why": "Den lange, dype sofaen fyller en vegg i den 20,6 m² store kjellerstua og gir plass til hele familien foran TV-en; de rolige stoffene og de svarte bena passer husets fargepalett.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/SIGNATURE%20250/319945/image-thumb__319945__PDP-Product/298823%20-%20Signature%20250%203%20seter%20sofa%20XL%20Sebastian%20Liver%20med%20treben%20svarte%2012cm%20-%201.6398f6a0.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, B266 D109, setehøyde 45, sittedybde 58, treben svart 12 cm, bilde, varenr. 298823, 314927, 306539, 306538 og 306537 (egne bilder sjekket). Høyden: varenr. 298823 oppgir H60, de andre fargene i samme modell H81, og bildet viser ca. 80 cm – satt til 0,81. Anslått: armlenebredde og -høyde fra bildet."
+  },
+  {
+    "id": "bohus-melby-2-seter-sofa",
+    "category": "sofa",
+    "subcategory": "2-seter",
+    "name": "Melby 2 seter sofa",
+    "brand": "IMG",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/sofa/2-seter/melby-2-seter-2",
+    "priceNok": 28905,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 251890, hud Elite Nimbus, arm 1, standard komfort, ben alu svart 18 cm): 28 905 kr, ingen kampanje. Hud Trend T409 Cognac (varenr. 266567) 28 525 kr; tekstil Salsa 154 Stone med ubehandlet eik (varenr. 266566) 20 420 kr. Bestillingsvare (sortiment GT).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.48,
+      "d": 0.85,
+      "h": 0.8
+    },
+    "archetype": "sofa-straight",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.44,
+      "armW": 0.12,
+      "armH": 0.6,
+      "seats": 2,
+      "armStyle": "box",
+      "backStyle": "cushions",
+      "seatStyle": "split",
+      "legStyle": "slim-metal",
+      "legH": 0.18,
+      "piping": false,
+      "backT": 0.16
+    },
+    "variants": [
+      {
+        "name": "Hud Elite Nimbus / svarte aluben",
+        "colors": {
+          "upholstery": "#6b675e",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "black-metal"
+        }
+      },
+      {
+        "name": "Hud Trend T409 Cognac / svarte aluben",
+        "colors": {
+          "upholstery": "#6a3a32",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "leather",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/sofa/2-seter/melby-2-seter",
+        "priceNok": 28525,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/IMG%20avd%20Skandinavia%2C%20Ekornes%20AS/Produkter/MELBY/147217/image-thumb__147217__PDP-Product/266567%20-%20Melby%202%20seter%20sofa%201%20trend%20cognac%20409%20med%20alu%20svart%20-%202.e2965b47.jpg"
+      },
+      {
+        "name": "Salsa 154 Stone / ubehandlet eik",
+        "colors": {
+          "upholstery": "#a29d97",
+          "legs": "#d6bf9c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak"
+        },
+        "url": "https://www.bohus.no/sofa/2-seter/melby-2-seter-1",
+        "priceNok": 20420,
+        "paramsOverride": {
+          "legStyle": "wood-taper",
+          "legH": 0.18
+        },
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/IMG%20avd%20Skandinavia%2C%20Ekornes%20AS/Produkter/MELBY/147241/image-thumb__147241__PDP-Product/266566%20-%20Melby%202%20seter%20sofa%201%20salsa%20stone%20154%20med%20914v%20ubehandlet%20eik%20-%203.16e86e69.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.55,
+    "absorptionNote": "≈ 1,05 × bredde (1,48 m).",
+    "shapeNote": "Rett, slank 2-seter med tynne, kantete armlener, to løse ryggputer og høye, smale ben (18 cm). Armlenebredde og -høyde anslått fra bildet.",
+    "description": "Slank 2-seter i ekte skinn med rette, tynne armlener, formstøpte vendbare seteputer og høye, svarte aluminiumsben – også i tekstil med eikeben.",
+    "why": "En skinnsofa på bare 148 cm som tåler hverdagsbruk i kjellerstua; de høye bena holder gulvet synlig og gjentar de svarte detaljene i huset, og den passer også på hjemmekontoret i kjelleren.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/IMG%20avd%20Skandinavia%2C%20Ekornes%20AS/Produkter/MELBY/135379/image-thumb__135379__PDP-Product/251890%20-%20Melby%202%20seter%20sofa%201%20standard%20komfort%20elite%20nimbus%20med%20alu%20svart%20-%201.0bab5c8a.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål B148 D85 H80 cm, setehøyde 44, sittedybde 50, ben alu svart 18 cm, bilde, varenr. 251890, 266567 og 266566 (egne bilder sjekket). Anslått: armlenebredde og -høyde fra bildet."
+  },
+  {
+    "id": "bohus-amalie-hjornesofa",
+    "category": "sofa",
+    "subcategory": "hjornesofa",
+    "name": "Amalie hjørnesofa",
+    "brand": "Scapa",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/sofa/hjornesofa/amalie-hjornesofa",
+    "priceNok": 29998,
+    "salePriceNok": 14999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 298415, oppsett 9, arm C, standard komfort, Ager 7146 Stone, ben 03 svart 15 cm): 14 999 kr (før 29 998 kr, kampanje «AMALIE-serien i tekstil Ager» til 2026-11-30). Oppsett 9 selges bare i Ager 7146 Stone; andre oppsett og stoffer har egne varenumre og priser.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 3.06,
+      "d": 2.41,
+      "h": 0.83
+    },
+    "archetype": "sofa-modular-l",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.45,
+      "depth": 0.92,
+      "armH": 0.62,
+      "layout": "corner",
+      "shortLegSide": "+x",
+      "armSide": "both",
+      "armStyle": "box",
+      "piping": false,
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legH": 0.15,
+      "armW": 0.15,
+      "backT": 0.2,
+      "shortLegBackTo": 2.26
+    },
+    "variants": [
+      {
+        "name": "Ager 7146 Stone / svarte ben",
+        "colors": {
+          "upholstery": "#7a7369",
+          "piping": "#7a7369",
+          "legs": "#262220"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "piping": "woven",
+          "legs": "black-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 3.21,
+    "absorptionNote": "≈ 1,05 × bredde (3,06 m).",
+    "shapeNote": "Klassisk L-sofa: lang del på 306 cm med hjørnet til høyre og et 241 cm langt ben framover på høyre side; smale, kantete armlener i begge ender, løse rygg- og seteputer og koniske svarte ben (15 cm). Kan speilvendes.",
+    "description": "Romslig L-formet hjørnesofa (306 × 241 cm) med smale, rette armlener, pocketfjær i seteputene, vendbare ryggputer og slanke svarte ben.",
+    "why": "En hjørnesofa som rammer inn TV-hjørnet i den 20,6 m² store kjellerstua med plass til mange; den varme gråbrune fargen og de svarte bena står fint mot husets svarte detaljer.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Scapa%20UAB/Produkter/AMALIE/311462/image-thumb__311462__PDP-Product/298415%20-%20Amalie%20hj%C3%B8rnesofa%20oppsett%209%20arm%20c%20Ager%20Stone%207146%20med%20ben%2003%20svart%20-%203.0e1f5711.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål B306 D92 H83 cm og dybde 2 = 241 cm (det lange benet), setehøyde 45, sittedybde 55, ben 03 svart 15 cm, arm C, bilde, varenr. 298415. Anslått: armlenebredde og -høyde fra bildet."
+  },
+  {
+    "id": "bohus-altera-hjornesofa-med-endeavslutning",
+    "category": "sofa",
+    "subcategory": "hjornesofa",
+    "name": "Altera hjørnesofa med endeavslutning",
+    "brand": "Vilmers",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/sofa/hjornesofa/altera-hjornesofa-med-endeavslutning-15",
+    "priceNok": 45783,
+    "salePriceNok": 22892,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 313623, oppsett 4 venstre, Erdite Rainy day, stålben svart 15 cm): 22 892 kr (før 45 783 kr, kampanje «ALTERA-serien i tekstil Erdite og Tin» til 2026-11-30). Erdite Silver fern (varenr. 313621) 22 892 kr (før 45 783 kr); Erdite Aluminium (varenr. 313622) 22 892 kr (før 45 783 kr); Tin Mocca (varenr. 322390) 24 999 kr (før 49 998 kr); Dolomite Myrtle (varenr. 313069) 49 998 kr. Speilvendt oppsett (høyre) har egne varenumre. Bestillingsvare (sortiment GT).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 2.87,
+      "d": 2.2,
+      "h": 0.81
+    },
+    "archetype": "sofa-modular-l",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.45,
+      "depth": 0.99,
+      "armH": 0.6,
+      "layout": "chaise",
+      "shortLegSide": "-x",
+      "armSide": "+x",
+      "armStyle": "slim",
+      "piping": false,
+      "openEnd": "-x",
+      "openEndW": 1,
+      "base": "legs",
+      "legStyle": "slim-metal",
+      "legH": 0.15,
+      "armW": 0.1,
+      "backT": 0.2
+    },
+    "variants": [
+      {
+        "name": "Erdite Rainy day / svarte stålben",
+        "colors": {
+          "upholstery": "#e4e0d6",
+          "piping": "#e4e0d6",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "piping": "woven",
+          "legs": "black-metal"
+        }
+      },
+      {
+        "name": "Erdite Silver fern / svarte stålben",
+        "colors": {
+          "upholstery": "#e2d6ae",
+          "piping": "#e2d6ae",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "piping": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/sofa/hjornesofa/altera-hjornesofa-med-endeavslutning-13",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/ALTERA/336846/image-thumb__336846__PDP-Product/313621%20-%20Altera%20hj%C3%B8rnesofa%20med%20endeavslutning%20oppsett%204%20venstre%20Erdite%20Silver%20fern%20med%20st%C3%A5lben%20svart%2015cm%20-%203.d3fd437a.jpg"
+      },
+      {
+        "name": "Erdite Aluminium / svarte stålben",
+        "colors": {
+          "upholstery": "#e2e2dc",
+          "piping": "#e2e2dc",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "piping": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/sofa/hjornesofa/altera-hjornesofa-med-endeavslutning-14",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/ALTERA/336847/image-thumb__336847__PDP-Product/313622%20-%20Altera%20hj%C3%B8rnesofa%20med%20endeavslutning%20oppsett%204%20venstre%20Erdite%20Aluminium%20med%20st%C3%A5lben%20svart%2015cm%20-%201.cc8e05ae.jpg"
+      },
+      {
+        "name": "Tin Mocca / svarte stålben",
+        "colors": {
+          "upholstery": "#6f5e50",
+          "piping": "#6f5e50",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "piping": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/sofa/hjornesofa/altera-hjornesofa-med-endeavslutning-21",
+        "priceNok": 49998,
+        "salePriceNok": 24999
+      },
+      {
+        "name": "Dolomite Myrtle / svarte stålben",
+        "colors": {
+          "upholstery": "#686c51",
+          "piping": "#686c51",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "piping": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/sofa/hjornesofa/altera-hjornesofa-med-endeavslutning-11",
+        "priceNok": 49998,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/ALTERA/336854/image-thumb__336854__PDP-Product/313069%20-%20Altera%20hj%C3%B8rnesofa%20med%20endeavslutning%20oppsett%204%20venstre%20Dolomite%20Myrtle%20med%20st%C3%A5lben%20svart%2015cm%20-%202.6b904f62.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 3.01,
+    "absorptionNote": "≈ 1,05 × bredde (2,87 m).",
+    "shapeNote": "Oppsett 4 venstre: ryggen går rett langs hele baksiden; venstre del er en dyp, åpen liggedel (endeavslutning, 220 cm fra bakkant til front) uten armlene, med bare en lav sidekant helt bakerst og to ryggputer i hjørnet. Smalt, rett armlene bare til høyre, tynne svarte stålben. Bredden på liggedelen (ca. 1 m) er anslått fra bildet; Tin Mocca har ikke eget bilde, fargen er satt etter navnet.",
+    "description": "Hjørnesofa med åpen endeavslutning til venstre der man kan legge beina opp, smalt armlene til høyre, løse puter og slanke svarte stålben.",
+    "why": "Endeavslutningen gir en liggeplass mot hjørnet i kjellerstua uten et tungt armlene, og de tynne stålbena holder sofaen luftig og ryddig i rommet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Vilmers/Produkter/ALTERA/336852/image-thumb__336852__PDP-Product/313623%20-%20Altera%20hj%C3%B8rnesofa%20med%20endeavslutning%20oppsett%204%20venstre%20Erdite%20Rainy%20day%20med%20st%C3%A5lben%20svart%2015cm%20-%203.ce3df637.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål B287 D99 H81 cm og dybde 2 = 220 cm, setehøyde 45, sittedybde 61, stålben svart 15 cm, bilde, varenr. 313623, 313621, 313622, 322390 og 313069. Egne bilder sjekket for alle varianter unntatt Tin Mocca. Anslått: bredden på endeavslutningen, armlenebredde og fargen på Tin Mocca."
+  },
+  {
+    "id": "bohus-tampa-3-5-seter-sofa-med-sjeselong",
+    "category": "sofa",
+    "subcategory": "sjeselong",
+    "name": "Tampa 3,5 seter sofa med sjeselong",
+    "brand": "Jakobsen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/sofa/3-seter/tampa-3-5-seter-sofa-med-sjeselong-2",
+    "priceNok": 24320,
+    "salePriceNok": 14592,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 310611, oppsett 3, Wind 21 Taupe, ben svart 2,5 cm): 14 592 kr (før 24 320 kr, kampanje «TAMPA-serien i tekstil Wind» til 2026-11-30). Wind 99 Onyx (varenr. 310613) 14 592 kr (før 24 320 kr); Aragon 80 Light grey (varenr. 310610) 24 998 kr; Aragon 20 Liver (varenr. 310609) 24 998 kr. Kan speilvendes. Bestillingsvare (sortiment GT).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 2.53,
+      "d": 1.51,
+      "h": 0.75
+    },
+    "archetype": "sofa-modular-l",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.43,
+      "depth": 0.93,
+      "armH": 0.58,
+      "layout": "chaise",
+      "shortLegSide": "+x",
+      "armSide": "both",
+      "armStyle": "round",
+      "piping": false,
+      "base": "plinth",
+      "armW": 0.14,
+      "backT": 0.2,
+      "chaiseArm": "short",
+      "plinthInset": 0.06
+    },
+    "variants": [
+      {
+        "name": "Wind 21 Taupe",
+        "colors": {
+          "upholstery": "#878077",
+          "piping": "#878077",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "piping": "woven",
+          "legs": "black-metal"
+        }
+      },
+      {
+        "name": "Wind 99 Onyx",
+        "colors": {
+          "upholstery": "#303134",
+          "piping": "#303134",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "piping": "woven",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/sofa/3-seter/tampa-3-5-seter-sofa-med-sjeselong-4",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/TAMPA/330398/image-thumb__330398__PDP-Product/310613%20-%20Tampa%203%2C5%20seter%20sofa%20med%20sjeselong%20oppsett%203%20Wind%2099%20Onyx%20med%20ben%20svart%202.5cm%20-%203.79659534.jpg"
+      },
+      {
+        "name": "Aragon 80 Light grey",
+        "colors": {
+          "upholstery": "#a4a4a3",
+          "piping": "#a4a4a3",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "piping": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/sofa/3-seter/tampa-3-5-seter-sofa-med-sjeselong-1",
+        "priceNok": 24998,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/TAMPA/330378/image-thumb__330378__PDP-Product/310610%20-%20Tampa%203%2C5%20seter%20sofa%20med%20sjeselong%20oppsett%203%20Aragon%2080%20Grey%20med%20ben%20svart%202.5cm%20-%202.08360ace.jpg"
+      },
+      {
+        "name": "Aragon 20 Liver",
+        "colors": {
+          "upholstery": "#a3978b",
+          "piping": "#a3978b",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "velour",
+          "piping": "velour",
+          "legs": "black-metal"
+        },
+        "url": "https://www.bohus.no/sofa/3-seter/tampa-3-5-seter-sofa-med-sjeselong",
+        "priceNok": 24998,
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/TAMPA/330373/image-thumb__330373__PDP-Product/310609%20-%20Tampa%203%2C5%20seter%20sofa%20med%20sjeselong%20oppsett%203%20Aragon%2020%20Liver%20med%20ben%20svart%202.5cm%20-%203.f763e384.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 2.66,
+    "absorptionNote": "≈ 1,05 × bredde (2,53 m).",
+    "shapeNote": "Myk, avrundet sofa med fast rygg delt i tre felt, sjeselong til høyre (151 cm dyp) og lavt avrundet armlene i begge ender; nesten usynlige ben (2,5 cm), så den står som på sokkel. Armlenehøyden er anslått fra bildet.",
+    "description": "Myk og avrundet 3,5-seter med sjeselong (253 × 151 cm), runde armlener og lave, nesten skjulte ben – en lun sofa å slenge seg i.",
+    "why": "Sjeselongen gir liggeplass foran TV-en i kjellerstua, og de myke, avrundede formene og det rolige gråbrune stoffet gjør rommet varmt og ryddig.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Jakobsen%20Home/Produkter/TAMPA/330385/image-thumb__330385__PDP-Product/310611%20-%20Tampa%203%2C5%20seter%20sofa%20med%20sjeselong%20oppsett%203%20Wind%2021%20Taupe%20med%20ben%20svart%202.5cm%20-%203.2d9b1e27.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, mål B253 D151 H75 cm (sjeselongens dybde; dybde 2 = 93 cm), setehøyde 43, sittedybde 59, ben svart 2,5 cm, bilde, varenr. 310611, 310613, 310610 og 310609 (egne bilder sjekket). Anslått: armlenehøyde fra bildet."
+  },
+  {
+    "id": "ikea-saltsjobaden-2-seters-sofa",
+    "category": "sofa",
+    "subcategory": "2-seter",
+    "name": "SALTSJÖBADEN 2-seters sofa",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/saltsjoebaden-2-seters-sofa-fridtuna-lys-beige-s39599903/",
+    "priceNok": 5495,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 395.999.03, Fridtuna lys beige): 5 495 kr, ingen førpris eller kampanje. Tonerud grå (art.nr. 095.791.81) koster 4 495 kr. Trekket kan tas av og kjøpes separat.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.64,
+      "d": 0.88,
+      "h": 0.9
+    },
+    "archetype": "sofa-straight",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "armW": 0.13,
+      "armH": 0.64,
+      "seats": 2,
+      "armStyle": "box",
+      "backStyle": "cushions",
+      "seatStyle": "split",
+      "legStyle": "wood-taper",
+      "legH": 0.17,
+      "piping": false,
+      "backT": 0.18
+    },
+    "variants": [
+      {
+        "name": "Fridtuna lys beige",
+        "colors": {
+          "upholstery": "#d8d0c1",
+          "legs": "#dcc6a2"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "ash"
+        }
+      },
+      {
+        "name": "Tonerud grå",
+        "colors": {
+          "upholstery": "#b9bcb9",
+          "legs": "#dcc6a2"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "ash"
+        },
+        "url": "https://www.ikea.com/no/no/p/saltsjoebaden-2-seters-sofa-tonerud-gra-s09579181/",
+        "priceNok": 4495,
+        "imageUrl": "https://www.ikea.com/no/no/images/products/saltsjoebaden-2-seters-sofa-tonerud-gra__1578253_pe1033917_s5.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 1.72,
+    "absorptionNote": "≈ 1,05 × bredde (1,64 m).",
+    "shapeNote": "Rette, kantete armlener (13 cm), to løse rygg- og seteputer og runde, lyse treben; høyden 90 cm er med ryggputene.",
+    "description": "Lett 2-seter på 164 cm med rette armlener, løse rygg- og seteputer, avtakbart trekk og lyse treben.",
+    "why": "En rimelig og lys sofa som passer i det lille kjellersoverommet/hjemmekontoret eller som ekstra sitteplass i kjellerstua; det lyse trekket og treverket holder rommet rolig.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/saltsjoebaden-2-seters-sofa-fridtuna-lys-beige__1578241_pe1033909_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»-fanen): 5 495 kr, bredde 164, dybde 88, høyde med ryggputer 90, setehøyde 46, armlenehøyde 64, armlenebredde 13, fri høyde under 17 cm, bilde, art.nr. 395.999.03 og 095.791.81 (4 495 kr, eget bilde sjekket). Anslått: benhøyde ≈ fri høyde."
+  },
+  {
+    "id": "ikea-grunnarp-3-seters-sovesofa",
+    "category": "sofa",
+    "subcategory": "sovesofa",
+    "name": "GRUNNARP 3-seters sovesofa",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/grunnarp-3-seters-sovesofa-gunnared-beige-30583384/",
+    "priceNok": 6995,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no, art.nr. 305.833.84, Gunnared beige): 6 995 kr, ingen førpris eller kampanje. Sengemål 142 × 200 cm.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 2.32,
+      "d": 0.89,
+      "h": 0.87
+    },
+    "archetype": "sofa-straight",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "armW": 0.14,
+      "armH": 0.62,
+      "seats": 3,
+      "armStyle": "round",
+      "backStyle": "cushions",
+      "seatStyle": "bench",
+      "legStyle": "wood-taper",
+      "legH": 0.15,
+      "piping": false,
+      "backT": 0.16
+    },
+    "variants": [
+      {
+        "name": "Gunnared beige",
+        "colors": {
+          "upholstery": "#d9d6cd",
+          "legs": "#c9a77c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 2.44,
+    "absorptionNote": "≈ 1,05 × bredde (2,32 m).",
+    "shapeNote": "Sovesofa med tre løse ryggputer, ett gjennomgående sete, runde, puteformede armlener og runde treben med en treramme under setet. Høyden 87 cm er med ryggputene (rammen 80 cm). Trerammen under setet er ikke med i modellen.",
+    "description": "Sovesofa med runde armlener, tre løse ryggputer og gjennomgående sete som trekkes ut til en seng på 142 × 200 cm; ben og ramme i tre.",
+    "why": "Gir en gjesteseng i kjellerstua uten at rommet trenger en egen seng; det lyse beige stoffet og treverket passer resten av huset.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/grunnarp-3-seters-sovesofa-gunnared-beige__1409865_pe972413_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»-fanen): 6 995 kr, bredde 232, dybde 89, høyde 80 (87 med ryggputer), setehøyde 46, armlenehøyde 62, fri høyde under 15 cm, sengemål 142 × 200, bilde, art.nr. 305.833.84. Anslått: armlenebredde og benhøyde fra bildet."
+  },
+  {
+    "id": "skeidar-ask-3-seter-sofa",
+    "category": "sofa",
+    "subcategory": "3-seter",
+    "name": "Ask 3-seter sofa",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-sofaer/sofa/ask-3-seter-sofa?VariationId=V_5637560100",
+    "priceNok": 14099,
+    "salePriceNok": 7999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no, art.nr. 1775629, Nordic 2 Linen): kampanje 7 999 kr til 15.11, før 14 099 kr. Bestillingsvare på nett, leveringstid ca. 11–12 uker.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 2.14,
+      "d": 0.87,
+      "h": 0.86
+    },
+    "archetype": "sofa-straight",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "armW": 0.15,
+      "armH": 0.62,
+      "seats": 3,
+      "armStyle": "box",
+      "backStyle": "cushions",
+      "seatStyle": "split",
+      "legStyle": "slim-metal",
+      "legH": 0.12,
+      "piping": false,
+      "backT": 0.18
+    },
+    "variants": [
+      {
+        "name": "Nordic 2 Linen",
+        "colors": {
+          "upholstery": "#d4cac0",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "woven",
+          "legs": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 2.25,
+    "absorptionNote": "≈ 1,05 × bredde (2,14 m).",
+    "shapeNote": "Rett 3-seter med kantete armlener, tre løse rygg- og seteputer og vinklede, svarte metallben. Armlenebredde og benhøyde anslått fra bildet.",
+    "description": "Stram 3-seter med rette linjer, tre løse rygg- og seteputer, avtakbare trekk i lyst, linfarget stoff og slanke svarte metallben.",
+    "why": "Et rolig, lyst alternativ til stua i 214 cm – de svarte metallbena gjentar husets svarte detaljer, og den rette formen passer langs veggen under skråtaket.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/1775629/1775629_V10235454-AskSofa1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21 (produktdata): kampanje 7 999 kr (før 14 099 kr), bredde 214, dybde 87, høyde 86, sittehøyde 46, sittedybde 53, farge Nordic 2 Linen (#D4CAC0), sort metall understell, bilde, art.nr. 1775629. Anslått: armlenebredde og benhøyde fra bildet."
+  },
+  {
+    "id": "jysk-andrup-3-seter-oval",
+    "category": "sofa",
+    "subcategory": "3-seter",
+    "name": "Sofa ANDRUP 3-seter oval",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/stue/sofaer/sofa-andrup-3-seter-oval-beige-stoff",
+    "priceNok": 4499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no, varenr. 3630035, beige stoff): 4 499 kr, ingen kampanje. Leveres flatpakket i 1 kolli; siden sier «Ikke på lager i alle butikker», og frakt kan komme i tillegg.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.91,
+      "d": 0.86,
+      "h": 0.76
+    },
+    "archetype": "sofa-curved",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.45,
+      "wingRise": 0.06,
+      "wingEnd": "-x",
+      "bolsterH": 0.6,
+      "base": "plinth",
+      "piping": false
+    },
+    "variants": [
+      {
+        "name": "Beige stoff",
+        "colors": {
+          "upholstery": "#e3ddd2",
+          "legs": "#dcd6cb"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "boucle"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 2.01,
+    "absorptionNote": "≈ 1,05 × bredde (1,91 m).",
+    "shapeNote": "Organisk, nyreformet sofa i ett stykke: ryggen bøyer seg rundt i armlenene og er høyest i venstre ende, tykt helt sete og en tilbaketrukket sokkel i samme stoff. Hvor mye den venstre enden stiger (ca. 6 cm) og armlenehøyden er anslått fra bildene.",
+    "description": "Buet, organisk 3-seter i lyst, kornet stoff som minner om bouclé, med rygg og armlener i én myk bue, helt sete og lav sokkel.",
+    "why": "Den runde formen bryter de rette linjene under skråtaket i stua og gir en myk sittekrok mot vinduene i sør; i lyst beige stoff passer den rett inn mot veggfargene Sand og Marrakesh.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/264033",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21 (produktdata): 4 499 kr, «Størrelse montert» B191 H76 D86 cm, setehøyde 45, setedybde 54, bilder, varenr. 3630035. Anslått: vingeendens stigning og armlenehøyde fra bildene."
+  }
+]

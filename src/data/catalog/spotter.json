@@ -1,0 +1,2719 @@
+[
+  {
+    "id": "bohus-anillo-takplafond-o30",
+    "category": "spotter",
+    "subcategory": "utenpaliggende",
+    "name": "Anillo takplafond Ø30",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/takplafond/anillo-takplafond",
+    "priceNok": 799,
+    "salePriceNok": 479,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 236660, hvit): 479 kr (før 799 kr, kampanje «en mengde taklamper*» til 2026-11-30). Svart (varenr. 244044) samme pris. Integrert LED 12 W, 555 lm, 3000 K, dimbar.",
+    "dims": {
+      "w": 0.3,
+      "d": 0.3,
+      "h": 0.05
+    },
+    "archetype": "downlight-surface",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "lensDepth": 0,
+      "beamDeg": 110,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#eeece8",
+          "inner": "#f1ece2",
+          "base": "#eeece8",
+          "metal": "#eeece8",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "glass-opal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/taklamper/takplafond/anillo-takplafond"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#f1ece2",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/taklamper/takplafond/anillo-takplafond-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 555,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 12 W, 555 lm, 3000 K"
+    },
+    "description": "Flat, rund takplafond i metall med opal front og integrert LED. Bare 5 cm høy, så den ligger tett inntil taket som en stor, utenpåliggende downlight.",
+    "why": "Jevnt allmennlys i gangen (3,11 × 2,07 m) eller boden uten å bygge ned taket; den svarte varianten passer til de svarte detaljene i stua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/ANILLO/106182/image-thumb__106182__PDP-Product/236660%20-%20Anillo%20takplafond%20metall%20hvit%20-%201.8e8a203e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 479 kr (før 799), Ø30 H5 cm, integrert LED 555 lm, 3000 K, dimbar, bilde, varenr. 236660 (hvit) og 244044 (svart), status Not Expired. Anslått: spredning 110° (opal plate).",
+    "priceConfidence": "checked",
+    "shapeNote": "Flat plafond med opal front; vist som utenpåliggende downlight med linsen i flukt med underkanten."
+  },
+  {
+    "id": "bohus-valerie-takplafond-o18-5",
+    "category": "spotter",
+    "subcategory": "utenpaliggende",
+    "name": "Valerie takplafond Ø18,5",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/takplafond/valerie-takplafond-o18-5",
+    "priceNok": 799,
+    "salePriceNok": 479,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 327601, hvit): 479 kr (før 799 kr, kampanje «en mengde taklamper*» til 2026-11-30). E27 maks 60 W, lyspære følger ikke med.",
+    "dims": {
+      "w": 0.185,
+      "d": 0.185,
+      "h": 0.2
+    },
+    "archetype": "downlight-surface",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "lensDepth": 0,
+      "beamDeg": 120,
+      "driver": "socket",
+      "plateD": 0.09,
+      "plateH": 0.035
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#eef0ed",
+          "inner": "#f4f3ef",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "glass-opal",
+          "inner": "glass-opal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "E27 LED 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Liten takplafond med en sylinder av riflet opalglass under en hvit takkopp. E27-sokkel; dimbar med dimbar pære og lysbryter.",
+    "why": "En myk lyssylinder i trappa ned til kjelleren eller i entreen, der en åpen spot ville blende; riflet glass gir lun stemning uten rot.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/VALERIE/606478/image-thumb__606478__PDP-Product/327601%20-%20Valerie%20takplafond%20%C3%9818.5%20E27%20dimbar%20glass%20hvit%20-%202.68d861fb.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 479 kr (før 799), Ø18,5 H20 cm, E27, dimbar, bilde, varenr. 327601, status Not Expired. Anslått: lysstrøm for E27-pære som ikke følger med (806 lm).",
+    "priceConfidence": "checked",
+    "shapeNote": "Sylinder av riflet opalglass under en hvit takkopp; vist som et opalhvitt hus, riflene er ikke modellert."
+  },
+  {
+    "id": "elektroimportoren-namron-alfa-reflektor-soft-downlight-warmdim-10w",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Namron Alfa reflektor Soft Downlight WarmDim 10W",
+    "brand": "Namron",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/namron-alfa-reflektor-soft-downlight-warmdim-10w-matt-hvit/3220264/Product.html",
+    "priceNok": 699,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 3220264, matt hvit): 399,90 kr (ordinær pris 699 kr, kampanje −43 % til og med søndag 25.10.2026). Matt sort (art.nr. 3220266): 699 kr, ingen kampanje. Selges enkeltvis, driver følger med.",
+    "dims": {
+      "w": 0.095,
+      "d": 0.095,
+      "h": 0.006
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "trim": "ring",
+      "reflector": "deep",
+      "beamDeg": 35,
+      "tiltable": false,
+      "cutout": 0.083,
+      "ip": 44,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Matt hvit",
+        "colors": {
+          "shade": "#f2f1ee",
+          "inner": "#f2f1ee",
+          "base": "#f2f1ee",
+          "metal": "#f2f1ee",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/namron-alfa-reflektor-soft-downlight-warmdim-10w-matt-hvit/3220264/Product.html",
+        "salePriceNok": 399.9
+      },
+      {
+        "name": "Matt sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#c4c6c8",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "chrome",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/namron-alfa-reflektor-soft-downlight-warmdim-10w-matt-sort/3220266/Product.html"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 700,
+      "colorK": 2800,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 10 W, 700 lm, WarmDim 2800–2200 K, 35°"
+    },
+    "description": "Innfelt LED-downlight med inntrukket lyskilde og fasettert reflektor som demper blending. WarmDim gir varmere lys når den dimmes; IP44 og kan monteres rett i isolasjon.",
+    "why": "IP44 gjør den riktig for badet (2,53 × 2,22 m) og vaskerommet i kjelleren, og WarmDim gir lun kveldsbelysning. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/3220264.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata): pris, hulltaking 82–84 mm, 700 lm, 2800–2200 K, 35°, IP44, dimbar, bilde, art.nr. 3220264 og 3220266. Anslått: ytre Ø 9,5 cm og synlig høyde 6 mm fra hulltaking og produktbildet; innbyggingsdybde ikke oppgitt.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "elektroimportoren-plejd-dwn-02-downlight-deep",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Plejd DWN-02 Downlight Deep",
+    "brand": "Plejd",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/plejd-dwn-02-w-downlight-deep-hvit/3203812/Product.html",
+    "priceNok": 619,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 3203812, hvit): 619 kr, ingen kampanje. Sort (art.nr. 3203813) samme pris. Smart downlight med innebygd dimmer (Plejd-app eller bryter), driver inkludert.",
+    "dims": {
+      "w": 0.094,
+      "d": 0.094,
+      "h": 0.006
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "trim": "ring",
+      "reflector": "deep",
+      "tiltable": false,
+      "cutout": 0.083,
+      "recessDepth": 0.04,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#e9e8e4",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/plejd-dwn-02-w-downlight-deep-hvit/3203812/Product.html"
+      },
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#161616",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/plejd-dwn-02-b-downlight-deep-sort/3203813/Product.html"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 515,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 7 W, 515 lm, justerbar 2200–4000 K"
+    },
+    "description": "Smart innfelt downlight med dypt inntrukket lyskilde som skjermer godt mot blending. Innebygd dimmer og justerbar fargetemperatur via Plejd; kan monteres mot isolasjon.",
+    "why": "Den dype, blendfrie fronten er behagelig over sofaen i stua under skråtaket, der man ofte ser rett opp i lyset. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/3203812.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata, målskisse og datablad): pris, ytre Ø 94 mm, hulltaking Ø 83 mm, innbyggingsdybde 40 mm, 515 lm, 2200–4000 K, bilde, art.nr. 3203812 og 3203813. Anslått: synlig høyde 6 mm; fargetemperatur satt til 2700 K (justerbar); spredning ikke oppgitt.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "elektroimportoren-namron-alfa-soft-trimless-downlight-warmdim-10w",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Namron Alfa Soft Trimless Downlight WarmDim 10W",
+    "brand": "Namron",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/namron-alfa-soft-trimless-downlight-warmdim-10w-matt-hvit/3220274/Product.html",
+    "priceNok": 699,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 3220274, matt hvit): 529 kr (ordinær pris 699 kr, kampanje −24 % til og med søndag 25.10.2026). Matt sort (art.nr. 3220275): 699 kr, ingen kampanje. Driver følger med.",
+    "dims": {
+      "w": 0.085,
+      "d": 0.085,
+      "h": 0.005
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "trim": "flush",
+      "reflector": "deep",
+      "aperture": 0.9,
+      "tiltable": false,
+      "cutout": 0.083,
+      "ip": 44,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Matt hvit",
+        "colors": {
+          "shade": "#f2f1ee",
+          "inner": "#2b2622",
+          "base": "#f2f1ee",
+          "metal": "#f2f1ee",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "black-metal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/namron-alfa-soft-trimless-downlight-warmdim-10w-matt-hvit/3220274/Product.html",
+        "salePriceNok": 529
+      },
+      {
+        "name": "Matt sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#2b2622",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/namron-alfa-soft-trimless-downlight-warmdim-10w-matt-sort/3220275/Product.html"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 730,
+      "colorK": 2800,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 10 W, 730 lm, WarmDim 2800–2000 K"
+    },
+    "description": "Innfelt downlight med nesten usynlig kant, så lyspunktet glir inn i taket. Inntrukket lyskilde, WarmDim og IP44; driver følger med.",
+    "why": "Gir et rolig, kantløst tak i stua og på kjøkkenet; flere på rad over spisebordet under skråtaket blir diskret. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/3220274.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata): pris, hulltaking 82–84 mm, 730 lm, 2800–2000 K, IP44, dimbar, bilde, art.nr. 3220274 og 3220275. Anslått: ytre Ø 8,5 cm (smal kant) og synlig høyde 5 mm (kantløs); innbyggingsdybde ikke oppgitt.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "elektroimportoren-j-el-aura-downlight-9w",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "J&EL Aura downlight 9W",
+    "brand": "J&EL",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/j-el-aura-downlight-9w-matt-hvit/3215520/Product.html",
+    "priceNok": 399.9,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 3215520, matt hvit): 399,90 kr, ingen kampanje. Matt sort (art.nr. 3215521): 199,90 kr (ordinær pris 399,90 kr, kampanje −50 % til og med søndag 25.10.2026). Driver følger med.",
+    "dims": {
+      "w": 0.09,
+      "d": 0.09,
+      "h": 0.008
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "trim": "ring",
+      "reflector": "deep",
+      "tiltable": false,
+      "cutout": 0.082,
+      "ip": 20,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Matt hvit",
+        "colors": {
+          "shade": "#f0efea",
+          "inner": "#f2f1ee",
+          "base": "#f0efea",
+          "metal": "#f0efea",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/j-el-aura-downlight-9w-matt-hvit/3215520/Product.html"
+      },
+      {
+        "name": "Matt sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#c4c6c8",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "chrome",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/j-el-aura-downlight-9w-matt-sort/3215521/Product.html",
+        "salePriceNok": 199.9
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 500,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 9 W, 500 lm, 2700 K"
+    },
+    "description": "Innfelt downlight med en lysende spalte mellom linsen og ytterringen, som gir en myk glorie rundt lyspunktet. Inntrukket LED 9 W, dimbar; driver følger med.",
+    "why": "En rimelig og litt spesiell downlight for gangen (3,11 × 2,07 m) eller entreen; den sorte varianten matcher de svarte detaljene. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/3215520.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata): pris, hulltaking 80–83 mm, 500 lm, 2700 K, IP20, dimbar, bilde, art.nr. 3215520 og 3215521. Anslått: ytre Ø 9 cm og synlig høyde 8 mm fra produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "lampehuset-malmbergs-downlight-led-md-99-ip44-3pk",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Downlight LED MD-99 IP44 3pk",
+    "brand": "Malmbergs",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/taklamper/downlights/downlight-led-md-99-ip44-3pk-hvit/",
+    "priceNok": 299.67,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, varenr. 5852100353, hvit): 899 kr for 3 stk. (299,67 kr per downlight), ingen kampanje. Pakken har dimbar driver, 3-veis forgreningsboks og skjøtekabler.",
+    "dims": {
+      "w": 0.075,
+      "d": 0.075,
+      "h": 0.005
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "trim": "ring",
+      "reflector": "smooth",
+      "tiltable": false,
+      "cutout": 0.06,
+      "recessDepth": 0.024,
+      "ip": 44,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#c4c6c8",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "chrome",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 320,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 7 W, 320 lm, 2700 K (per downlight)"
+    },
+    "description": "Tre små innfelte LED-downlights med hvit frontring og felles dimbar driver. Lav innbyggingsdybde (24 mm), hull 60 mm og IP44, så de passer også i fuktige rom.",
+    "why": "Tre stykker gir jevnt lys i badet/vaskerommet i kjelleren; lav byggehøyde passer der det er lite plass over taket. Monteres av elektriker.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/5852100353/downlight-led-md-99-ip44-3pk-hvit.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris 899 kr/3 stk., Ø7,5 cm, høyde 2,7 cm, hull 60 mm, innbyggingsdybde 24 mm, 320 lm, 2700 K, IP44, dimbar, bilde, varenr. 5852100353. Anslått: synlig høyde under taket 5 mm.",
+    "priceConfidence": "checked",
+    "packSize": 3,
+    "packPriceNok": 899
+  },
+  {
+    "id": "lampehuset-malmbergs-downlight-led-md-305-3pk",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Downlight LED MD-305 3pk",
+    "brand": "Malmbergs",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/taklamper/downlights/downlight-led-md-305-3pk-stal/",
+    "priceNok": 233,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, varenr. 5852000321, stål): 699 kr for 3 stk. (233 kr per downlight), ingen kampanje. Dimbar driver, forgreningsboks og skjøtekabler følger med; distanseringer for utenpåliggende montering.",
+    "dims": {
+      "w": 0.075,
+      "d": 0.075,
+      "h": 0.006
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "trim": "ring",
+      "reflector": "smooth",
+      "aperture": 0.55,
+      "tiltable": false,
+      "ip": 21,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Stål",
+        "colors": {
+          "shade": "#8f8f8c",
+          "inner": "#f1ece2",
+          "base": "#8f8f8c",
+          "metal": "#8f8f8c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "steel",
+          "inner": "glass-opal",
+          "base": "steel",
+          "metal": "steel",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 175,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 3 W, 175 lm, 3000 K (per downlight)"
+    },
+    "description": "Tre flate LED-downlights med ring i børstet stål og opal front, bare 6 mm høye. Dimbar driver og kabler følger med.",
+    "why": "Små, lave lyspunkt i taket over en hylle eller en nisje i kjellerstua, der stålfargen passer til armaturer og beslag. Monteres av elektriker.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/5852000321/downlight-led-md-305-3pk-stal.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris 699 kr/3 stk., Ø7,5 cm, høyde 0,6 cm, 175 lm, 3000 K, IP21, dimbar, bilde, varenr. 5852000321. Hulltaking og innbyggingsdybde står ikke i produktdataene.",
+    "priceConfidence": "checked",
+    "packSize": 3,
+    "packPriceNok": 699
+  },
+  {
+    "id": "elektroimportoren-unex-ecoled-o-90-100mm-3000k-u-driver",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Unex EcoLed ø 90-100mm 3000K u/driver",
+    "brand": "Unex",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/unex-ecoled-oe-90-100mm-3000k-hvit-u-driver/92300/Product.html",
+    "priceNok": 699,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 92300, hvit): 699 kr, ingen kampanje; på lager i 1 av 32 butikker. Selges uten driver: Unex EcoLed driver 22W fase dim (art.nr. 92307) koster 599 kr og driver to downlights i serie.",
+    "dims": {
+      "w": 0.11,
+      "d": 0.11,
+      "h": 0.006
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "trim": "ring",
+      "reflector": "smooth",
+      "beamDeg": 80,
+      "tiltable": false,
+      "cutout": 0.09,
+      "recessDepth": 0.055,
+      "ip": 44,
+      "driver": "separate"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1ece2",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "glass-opal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 920,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 7,1 W, 920 lm, 3000 K, CRI 90 (med 500 mA-driver; 660 lm med 350 mA)"
+    },
+    "description": "Hvit innfelt downlight med inntrukket opal front og avtakbar frontring som kan males. Lav byggehøyde (55 mm) og IP44 nedenfra; driveren kjøpes separat.",
+    "why": "Mykt, bredt lys (80°) i kjellerstua eller vaskerommet; to downlights deler én dimbar driver, så de passer i par over et bord eller en benk. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/92300.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata og produktblad): pris, ytre Ø 110 mm, hulltaking 90–100 mm, innbyggingsdybde 55 mm, 920 lm ved 500 mA (660 lm ved 350 mA), 3000 K, 80°, IP20/IP44, uten driver, bilde, art.nr. 92300; driver art.nr. 92307 599 kr (500 mA, 20–44 V). Anslått: synlig høyde 6 mm; to downlights per driver ut fra driverens spenningsområde.",
+    "priceConfidence": "checked",
+    "requiredExtras": [
+      {
+        "name": "Unex EcoLed driver 22W fase dim (én per to downlights)",
+        "priceNok": 599,
+        "store": "Elektroimportøren",
+        "perUnit": 0.5
+      }
+    ]
+  },
+  {
+    "id": "elektroimportoren-plejd-dwn-01-downlight-tilt",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Plejd DWN-01 Downlight Tilt",
+    "brand": "Plejd",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/plejd-dwn-01-w-downlight-tilt-hvit/3203810/Product.html",
+    "priceNok": 669,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 3203810, hvit): 669 kr, ingen kampanje. Sort (art.nr. 3203811) samme pris; finnes også som 6-pakning (art.nr. 3202564, 3 399 kr). Innebygd dimmer, driver inkludert.",
+    "dims": {
+      "w": 0.094,
+      "d": 0.094,
+      "h": 0.006
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "trim": "ring",
+      "reflector": "smooth",
+      "tiltable": true,
+      "cutout": 0.083,
+      "recessDepth": 0.04,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#e9e8e4",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/plejd-dwn-01-w-downlight-tilt-hvit/3203810/Product.html"
+      },
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#161616",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/plejd-dwn-01-b-downlight-tilt-sort/3203811/Product.html"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 515,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 7 W, 515 lm, justerbar 2200–4000 K"
+    },
+    "description": "Smart vippbar downlight: lyskilden kan vinkles for å rette lyset mot en vegg eller et bilde. Innebygd dimmer og justerbar fargetemperatur via Plejd.",
+    "why": "Vippbar er nyttig i skråtaket i stua: rett lyset mot en vegg eller et bilde i stedet for rett ned. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/3203810.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata og datablad): pris, ytre Ø 94 mm, hulltaking Ø 83 mm, innbyggingsdybde 40 mm, 515 lm, 2200–4000 K, bilde, art.nr. 3203810 og 3203811. Anslått: synlig høyde 6 mm; fargetemperatur satt til 2700 K (justerbar); vippevinkel ikke oppgitt.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "elektroimportoren-namron-artos-gu10-u-paere",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Namron Artos GU10 u/pære",
+    "brand": "Namron",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/namron-artos-boerstet-staal-gu10-u-paere/3202128/Product.html",
+    "priceNok": 199.9,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 3202128, børstet stål): 199,90 kr, ingen kampanje. Matt hvit (3202127) og matt sort (3225432): 149,90 kr. GU10-pære følger ikke med.",
+    "dims": {
+      "w": 0.092,
+      "d": 0.092,
+      "h": 0.008
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "trim": "ring",
+      "reflector": "smooth",
+      "tiltable": true,
+      "tiltMax": 30,
+      "cutout": 0.083,
+      "recessDepth": 0.11,
+      "ip": 23,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Børstet stål",
+        "colors": {
+          "shade": "#a9aaa7",
+          "inner": "#c4c6c8",
+          "base": "#a9aaa7",
+          "metal": "#a9aaa7",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "steel",
+          "inner": "chrome",
+          "base": "steel",
+          "metal": "steel",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/namron-artos-boerstet-staal-gu10-u-paere/3202128/Product.html"
+      },
+      {
+        "name": "Matt hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#c4c6c8",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "chrome",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/namron-artos-matt-hvit-gu10-u-paere/3202127/Product.html",
+        "priceNok": 149.9
+      },
+      {
+        "name": "Matt sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#c4c6c8",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "chrome",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/namron-artos-matt-sort-gu10-u-paere/3225432/Product.html",
+        "priceNok": 149.9
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 345,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "downlight",
+      "bulb": "GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Rimelig vippbar downlight i presstøpt aluminium for GU10-pære; kan vinkles opptil 30°. Fås i børstet stål, matt hvit og matt sort.",
+    "why": "Fleksibel og billig: velg pære selv og vinkle lyset mot kjøkkenbenken eller en vegg i kjellerstua. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/3202128.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata): priser, hulltaking 82–84 mm, innbyggingshøyde 10–12 cm, vippbar 30°, IP23, GU10, bilde, art.nr. 3202128, 3202127 og 3225432. Anslått: ytre Ø 9,2 cm og synlig høyde 8 mm; lysstrøm for GU10-pære som ikke følger med.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "lampehuset-malmbergs-downlight-md-360-led-dimtowarm-ip44",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Downlight MD-360 LED DimToWarm IP44",
+    "brand": "Malmbergs",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/taklamper/downlights/downlight-md-360-led-dimtowarm-ip44-1pk-sort/",
+    "priceNok": 449,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, varenr. 5855400071, sort): 449 kr, ingen kampanje. Selges enkeltvis (1-pakning), uten ekstern driver.",
+    "dims": {
+      "w": 0.1,
+      "d": 0.1,
+      "h": 0.005
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "trim": "ring",
+      "reflector": "smooth",
+      "tiltable": true,
+      "tiltMax": 25,
+      "cutout": 0.083,
+      "recessDepth": 0.03,
+      "ip": 44,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#1e1e1e",
+          "inner": "#1c1c1c",
+          "base": "#1e1e1e",
+          "metal": "#1e1e1e",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 460,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 6 W, 460 lm, DimToWarm 3000–1900 K"
+    },
+    "description": "Svart, vippbar LED-downlight som kan vinkles 25°. Dim-to-warm gir varmere lys når den dimmes, og IP44 gjør den egnet for bad og kjøkken.",
+    "why": "Svart front passer til de svarte detaljene i stua, og vippefunksjonen lar deg rette lyset mot kjøkkenbenken fra skråtaket. Monteres av elektriker.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/5855400071/sites-default-files-commerce-product-images-7392529147063_1.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris, Ø10 cm, høyde 0,5 cm, hull 83 mm, innbyggingsdybde 30 mm, vippbar 25°, 460 lm, 1900–3000 K, IP44, dimbar, bilde, varenr. 5855400071.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "elektroimportoren-lucide-chimney-downlight-firkantet-gu10",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Lucide Chimney Downlight Firkantet GU10",
+    "brand": "Lucide",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/lucide-chimney-downlight-firkantet-gu10-sort/91832/Product.html",
+    "priceNok": 469.9,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 91832, sort): 469,90 kr, ingen kampanje. GU10-pære følger ikke med. På lager i 4 av 32 butikker.",
+    "dims": {
+      "w": 0.115,
+      "d": 0.115,
+      "h": 0.006
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "square",
+      "trim": "ring",
+      "reflector": "smooth",
+      "tiltable": true,
+      "recessDepth": 0.093,
+      "ip": 20,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#141414",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 345,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Firkantet innfelt spot i sort med en rund, justerbar lyskilde i en dyp ramme. For GU10-pære; dimbar med dimbar pære.",
+    "why": "Den firkantede, sorte rammen gir et grafisk preg i taket på kjøkkenet eller i gangen og matcher de svarte detaljene. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/91832.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata og målskisse): pris, 11,5 × 11,5 cm, innbyggingsdybde 9,3 cm, justerbar lyskilde, IP20, dimbar, bilde, art.nr. 91832. Anslått: synlig høyde 6 mm; hulltaking ikke oppgitt; lysstrøm for GU10-pære som ikke følger med.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "elektroimportoren-philips-hue-centura-innfelt-firkantet-1x4-2w",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "Philips Hue Centura innfelt firkantet 1x4,2W",
+    "brand": "Philips Hue",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/philips-hue-centura-innfelt-firkantet-1x4-2w-hvit/61116/Product.html",
+    "priceNok": 819,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 61116, hvit): 819 kr («Spesialpris»), bestillingsvare 8–16 dager. Smart White and Color Ambiance-spot; Hue Bridge selges separat.",
+    "dims": {
+      "w": 0.09,
+      "d": 0.09,
+      "h": 0.005
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "square",
+      "trim": "ring",
+      "reflector": "smooth",
+      "tiltable": false,
+      "recessDepth": 0.1,
+      "ip": 20,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f2f2f0",
+          "inner": "#c4c6c8",
+          "base": "#f2f2f0",
+          "metal": "#f2f2f0",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "chrome",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 350,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Hue GU10-lyskilde 4,2 W følger med, justerbar hvit og farger"
+    },
+    "description": "Firkantet, hvit innfelt spot fra Philips Hue med farger og justerbar hvit tone. Styres med app eller bryter; Hue Bridge trengs for alle funksjoner.",
+    "why": "En firkantet, hvit downlight som forsvinner i det hvite taket på soverommet (3,11 × 3,69 m) og kan skrus til varmt nattlys fra mobilen. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/61116.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata og målskisse): pris, 90 × 90 mm, innbyggingsdybde 100 mm, IP20, dimbar, bilde, art.nr. 61116. Anslått: lysstrøm ca. 350 lm (ikke oppgitt) og synlig høyde 5 mm; hulltaking ikke oppgitt.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "elektroimportoren-slv-plastra-downlight-firkantet-gu10-gips",
+    "category": "spotter",
+    "subcategory": "innfelt",
+    "name": "SLV Plastra Downlight Firkantet GU10 Gips",
+    "brand": "SLV",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/slv-plastra-downlight-firkantet-gu10-hvit-gips/90826/Product.html",
+    "priceNok": 649,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 90826, hvit gips): 649 kr, ingen kampanje, bestillingsvare 7–14 dager. GU10-pære følger ikke med.",
+    "dims": {
+      "w": 0.13,
+      "d": 0.13,
+      "h": 0.005
+    },
+    "archetype": "downlight",
+    "mount": "ceiling",
+    "params": {
+      "shape": "square",
+      "trim": "flush",
+      "reflector": "smooth",
+      "tiltable": false,
+      "cutout": 0.115,
+      "recessDepth": 0.14,
+      "driver": "socket",
+      "aperture": 0.45
+    },
+    "variants": [
+      {
+        "name": "Hvit gips",
+        "colors": {
+          "shade": "#f3f2ee",
+          "inner": "#f3f2ee",
+          "base": "#f3f2ee",
+          "metal": "#f3f2ee",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 345,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "downlight",
+      "bulb": "GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Firkantet innfelt downlight i gips som sparkles inn og males i takfargen, så bare lysåpningen synes. For GU10-pære.",
+    "why": "Gir et helt kantløst, rolig tak i stua; gipsen males i samme farge som taket, så bare lyset synes. Monteres av elektriker. Sparkling og maling trengs.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/90826.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata og FDV-dokument): pris, ytre mål 13 × 13 cm, hulltaking 11,5 × 11,5 cm, innbyggingsdybde 14 cm, GU10, bilde, art.nr. 90826. Anslått: lysstrøm for GU10-pære som ikke følger med.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "elektroimportoren-lucide-lex-taklampe-1xe27-25cm",
+    "category": "spotter",
+    "subcategory": "utenpaliggende",
+    "name": "Lucide Lex Taklampe 1xE27 25cm",
+    "brand": "Lucide",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/lucide-lex-taklampe-1xe27-25cm-sort/91801/Product.html",
+    "priceNok": 379.9,
+    "salePriceNok": 279.9,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 91801, sort): 279,90 kr (ordinær pris 379,90 kr, kampanje −26 % til og med søndag 25.10.2026). Hvit (art.nr. 91895): 319,90 kr (ordinær pris 439,90 kr, −27 %). E27-pære følger ikke med.",
+    "dims": {
+      "w": 0.25,
+      "d": 0.25,
+      "h": 0.07
+    },
+    "archetype": "downlight-surface",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "lensDepth": 0,
+      "beamDeg": 120,
+      "ip": 20,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#f1ece2",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/lucide-lex-taklampe-1xe27-25cm-sort/91801/Product.html"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1ece2",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "glass-opal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/lucide-lex-taklampe-1xe27-25cm-hvit/91895/Product.html",
+        "priceNok": 439.9,
+        "salePriceNok": 319.9
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "E27 LED 806 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Lav, rund taklampe med metallring og opal glasskuppel, Ø25 cm og 7 cm høy. Enkel E27-sokkel; dimbar med dimbar pære.",
+    "why": "Et rimelig, flatt lyspunkt i entreen eller boden i kjelleren, der lavt tak gjør pendler upraktiske; den sorte ringen passer til svarte detaljer.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/91801.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata og målskisse): priser, Ø25 × H7 cm, IP20, dimbar, bilde, art.nr. 91801 og 91895. Anslått: lysstrøm for E27-pære som ikke følger med (806 lm).",
+    "priceConfidence": "checked",
+    "shapeNote": "Lav opal glasskuppel under en metallring; vist som flat utenpåliggende downlight."
+  },
+  {
+    "id": "elektroimportoren-namron-taklampe-myra-led-15w-ip54-firkantet",
+    "category": "spotter",
+    "subcategory": "utenpaliggende",
+    "name": "Namron Taklampe Myra LED 15W IP54 Firkantet",
+    "brand": "Namron",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/namron-taklampe-myra-led-15w-ip54-firkantet/3306777/Product.html",
+    "priceNok": 499.9,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 3306777, hvit): 499,90 kr, ingen kampanje. Integrert LED 15 W, 1250 lm, 3000 K.",
+    "dims": {
+      "w": 0.22,
+      "d": 0.22,
+      "h": 0.048
+    },
+    "archetype": "downlight-surface",
+    "mount": "ceiling",
+    "params": {
+      "shape": "square",
+      "lensDepth": 0,
+      "beamDeg": 120,
+      "ip": 54,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1ece2",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "glass-opal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1250,
+      "colorK": 3000,
+      "dimmable": false,
+      "kind": "downlight",
+      "bulb": "Integrert LED 15 W, 1250 lm, 3000 K"
+    },
+    "description": "Firkantet, hvit plafond med opal front og integrert LED, 22 × 22 cm og 4,8 cm høy. IP54 tåler fukt og sprut.",
+    "why": "Kraftig og tett lys for vaskerommet eller boden i kjelleren; IP54 og den firkantede formen passer mellom fliser og hyller.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/3306777.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata og bruksanvisning): pris, 220 × 220 × 48 mm, 15 W, 1250 lm (bruksanvisningen oppgir 1380 lm), 3000 K, IP54, bilde, art.nr. 3306777. Anslått: spredning; dimbar er ikke oppgitt.",
+    "priceConfidence": "checked",
+    "shapeNote": "Firkantet, lav boks med opal front; hjørnene er litt avrundet."
+  },
+  {
+    "id": "elektroimportoren-namron-taklampe-meta-led-220-ip44-dim",
+    "category": "spotter",
+    "subcategory": "utenpaliggende",
+    "name": "Namron Taklampe Meta LED 220 IP44 Dim",
+    "brand": "Namron",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/namron-taklampe-meta-led-220-ip44-dim/3308440/Product.html",
+    "priceNok": 569,
+    "salePriceNok": 349.9,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 3308440, hvit): 349,90 kr (ordinær pris 569 kr, kampanje −39 % til og med søndag 25.10.2026). Integrert LED 15 W, 1250 lm, 2700 K, dimbar.",
+    "dims": {
+      "w": 0.22,
+      "d": 0.22,
+      "h": 0.053
+    },
+    "archetype": "downlight-surface",
+    "mount": "ceiling",
+    "params": {
+      "shape": "round",
+      "lensDepth": 0,
+      "beamDeg": 120,
+      "ip": 44,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1ece2",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "glass-opal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1250,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "downlight",
+      "bulb": "Integrert LED 15 W, 1250 lm, 2700 K"
+    },
+    "description": "Flat, rund LED-plafond Ø22 cm med opal front, 5,3 cm dyp med feste. Dimbar og sprutsikker (IP44).",
+    "why": "God grunnbelysning i badet (2,53 × 2,22 m) eller vaskerommet uten å bygge ned taket; IP44 og varmt 2700 K-lys.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/3308440.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata): pris, Ø22 cm, dybde med feste 5,3 cm, 1250 lm, 2700 K, IP44, dimbar, bilde, art.nr. 3308440. Anslått: spredning.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-hugin-spotskinne-l75",
+    "category": "spotter",
+    "subcategory": "skinne",
+    "name": "Hugin spotskinne L75",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/spotter/hugin-takspot-75cm-1",
+    "priceNok": 1199,
+    "salePriceNok": 719,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 298720, svart): 719 kr (før 1 199 kr, kampanje «en mengde taklamper*» til 2026-11-30). Hvit (298719) samme pris; børstet stål (316867): 839 kr (før 1 399 kr). 4 × GU10 maks 9 W, pærer følger ikke med.",
+    "dims": {
+      "w": 0.75,
+      "d": 0.12,
+      "h": 0.2
+    },
+    "archetype": "spot-track",
+    "mount": "ceiling",
+    "params": {
+      "heads": 4,
+      "trackShape": "straight",
+      "railKind": "bar",
+      "headShape": "cylinder",
+      "headD": 0.055,
+      "headL": 0.09,
+      "tilt": 45,
+      "aim": "parallel",
+      "beamDeg": 36,
+      "driver": "socket",
+      "canopyD": 0.12,
+      "canopyH": 0.035,
+      "barShape": "round"
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#1c1c1c",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/taklamper/spotter/hugin-takspot-75cm-1"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1f0ec",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/taklamper/spotter/hugin-takspot-75cm"
+      },
+      {
+        "name": "Børstet stål",
+        "colors": {
+          "shade": "#b9bcbf",
+          "inner": "#b9bcbf",
+          "base": "#b9bcbf",
+          "metal": "#b9bcbf",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "steel",
+          "inner": "steel",
+          "base": "steel",
+          "metal": "steel",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/taklamper/spotter/hugin-spotskinne-l75",
+        "priceNok": 1399,
+        "salePriceNok": 839
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1380,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "track",
+      "bulb": "4 × GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Tynn takstang i metall med fire dreibare sylinderspotter for GU10, 75 cm lang. Dimbar med dimbare pærer; svart, hvit eller børstet stål.",
+    "why": "Fire spotter fra én takboks lyser opp kjøkkenbenken eller en lang vegg i gangen; hodene kan rettes mot bilder uten nye kabler.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/HUGIN/308154/image-thumb__308154__PDP-Product/298720%20-%20Hugin%20takspot%204%20spot%20GU10%209W%20svart%20-%202.5ddb9b4a.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, L75 D12 H20 cm, 4 × GU10 maks 9 W, dimbar, bilde, varenr. 298720, 298719 og 316867, status Not Expired. Anslått: lysstrøm for GU10-pærer som ikke følger med (4 × 345 lm) og hodemål fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Tynn rund stang med fire sylinderhoder på korte ledd; D12 cm er takkoppens bredde, hodene er ca. 5,5 cm i diameter."
+  },
+  {
+    "id": "bohus-hugin-takspot-o25",
+    "category": "spotter",
+    "subcategory": "takspot",
+    "name": "Hugin takspot Ø25",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/spotter/hugin-takspot-o25cm-1",
+    "priceNok": 999,
+    "salePriceNok": 599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 298718, svart): 599 kr (før 999 kr, kampanje «en mengde taklamper*» til 2026-11-30). Hvit (298717) samme pris; børstet stål (316866): 659 kr (før 1 099 kr). 3 × GU10 maks 9 W, pærer følger ikke med.",
+    "dims": {
+      "w": 0.25,
+      "d": 0.25,
+      "h": 0.14
+    },
+    "archetype": "spot-track",
+    "mount": "ceiling",
+    "params": {
+      "heads": 3,
+      "railKind": "plate",
+      "headShape": "cylinder",
+      "headD": 0.05,
+      "headL": 0.08,
+      "tilt": 25,
+      "aim": "fan",
+      "spread": 60,
+      "beamDeg": 36,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#1c1c1c",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/taklamper/spotter/hugin-takspot-o25cm-1"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1f0ec",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/taklamper/spotter/hugin-takspot-o25cm"
+      },
+      {
+        "name": "Børstet stål",
+        "colors": {
+          "shade": "#b9bcbf",
+          "inner": "#b9bcbf",
+          "base": "#b9bcbf",
+          "metal": "#b9bcbf",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "steel",
+          "inner": "steel",
+          "base": "steel",
+          "metal": "steel",
+          "cord": "cotton"
+        },
+        "url": "https://www.bohus.no/lamper/taklamper/spotter/hugin-takspot-o25",
+        "priceNok": 1099,
+        "salePriceNok": 659
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1035,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "spot",
+      "bulb": "3 × GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Rund takplate Ø25 cm med tre dreibare sylinderspotter for GU10. Dimbar med dimbare pærer; svart, hvit eller børstet stål.",
+    "why": "Tre spotter fra ett punkt passer på soverommet (3,11 × 3,69 m) eller i gangen: rett én mot klesskapet og to mot sengen eller trappa.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/HUGIN/308155/image-thumb__308155__PDP-Product/298718%20-%20Hugin%20takspot%20%C3%9825cm%203%20spot%20GU10%209W%20svart%20-%201.40ad8677.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, Ø25 H14 cm, 3 × GU10 maks 9 W, dimbar, bilde, varenr. 298718, 298717 og 316866, status Not Expired. Anslått: lysstrøm for GU10-pærer som ikke følger med (3 × 345 lm) og hodemål fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Rund takplate Ø25 cm med tre sylinderhoder samlet under platen."
+  },
+  {
+    "id": "bohus-flint-taklampe",
+    "category": "spotter",
+    "subcategory": "takspot",
+    "name": "Flint taklampe",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/spotter/flint-taklampe",
+    "priceNok": 1499,
+    "salePriceNok": 749,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 214620, matt svart): 749 kr (før 1 499 kr, kampanje «utvalgte taklamper*» til 2026-11-30). 3 × GU10 maks 35 W, pærer følger ikke med.",
+    "dims": {
+      "w": 0.46,
+      "d": 0.46,
+      "h": 0.17
+    },
+    "archetype": "spot-track",
+    "mount": "ceiling",
+    "params": {
+      "heads": 3,
+      "railKind": "plate",
+      "headShape": "cone",
+      "headD": 0.12,
+      "headL": 0.13,
+      "tilt": 8,
+      "aim": "fan",
+      "spread": 28,
+      "beamDeg": 50,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Matt svart",
+        "colors": {
+          "shade": "#1d1d1d",
+          "inner": "#eeece8",
+          "base": "#1d1d1d",
+          "metal": "#1d1d1d",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "painted",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1035,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "spot",
+      "bulb": "3 × GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Taklampe i matt svart stål med tre vinklbare spotskjermer i verkstedstil på en rund takplate. For GU10-pærer; dimbar med dimbare pærer.",
+    "why": "Tre svarte spotskjermer over spisebordet eller kjøkkenøya gir et røft verkstedpreg som passer til svarte metalldetaljer i stua.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/FLINT/68352/image-thumb__68352__PDP-Product/214620%20-%20Flint%20taklampe%201x35W%20GU10%20st%C3%A5l%20matt%20svart%20-%201.7641becd.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, B46 L46 H17 cm, 3 × GU10 maks 35 W, dimbar, bilde, varenr. 214620, status Not Expired. Anslått: skjermmål og vinkel fra bildet, lysstrøm for GU10-pærer som ikke følger med.",
+    "priceConfidence": "checked",
+    "shapeNote": "Tre klokkeformede metallskjermer (hvite innvendig) på korte, vinklbare ledd under en stor rund takplate."
+  },
+  {
+    "id": "bohus-avenir-takspot-o33-5",
+    "category": "spotter",
+    "subcategory": "takspot",
+    "name": "Avenir takspot Ø33,5",
+    "brand": "Aneta Lighting",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/taklamper/spotter/avenir-takspot-o33-5",
+    "priceNok": 2599,
+    "salePriceNok": 1559,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 298721, hvit): 1 559 kr (før 2 599 kr, kampanje «en mengde taklamper*» til 2026-11-30). Integrert LED 24 W, 1850 lm, 3000 K; fjernkontroll følger med.",
+    "dims": {
+      "w": 0.335,
+      "d": 0.335,
+      "h": 0.16
+    },
+    "archetype": "spot-track",
+    "mount": "ceiling",
+    "params": {
+      "heads": 3,
+      "railKind": "plate",
+      "headShape": "cylinder",
+      "headD": 0.07,
+      "headL": 0.06,
+      "tilt": 20,
+      "aim": "fan",
+      "spread": 60,
+      "beamDeg": 40,
+      "driver": "integrated"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1ece2",
+          "base": "#f1f0ec",
+          "metal": "#c4c6c8",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "glass-opal",
+          "base": "painted",
+          "metal": "chrome",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1850,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "spot",
+      "bulb": "Integrert LED 24 W, 1850 lm, 3000 K, med indirekte lys og fjernkontroll"
+    },
+    "description": "Hvit takspot med tre korte, dreibare LED-hoder og et indirekte lys som lyser opp mot taket fra platen. Dimbar med medfølgende fjernkontroll.",
+    "why": "Integrert LED og fjernkontroll gjør den lettvint i kjellerstua (20,6 m²) eller på soverommet: rettet lys og mykt indirekte nattlys i én lampe.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Aneta%20Lighting%20AS/Produkter/AVENIR/308157/image-thumb__308157__PDP-Product/298721%20-%20Avenir%20takspot%20integrert%204%20spot%2024W%20dimbar%20hvit%20-%201.1e421fe6.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris, Ø33,5 H16 cm, integrert LED 1850 lm, 3000 K, dimbar, bilde, varenr. 298721, status Not Expired. Anslått: hodemål fra bildet (bildefilen sier «4 spot», men navn, tekst og bilde viser tre spotter).",
+    "priceConfidence": "checked",
+    "shapeNote": "Tre korte, brede LED-hoder på forkrommede stilker; det indirekte lyset opp mot taket er ikke modellert."
+  },
+  {
+    "id": "ikea-nymane-takspotlight-med-4-spotter",
+    "category": "spotter",
+    "subcategory": "takspot",
+    "name": "NYMÅNE Takspotlight med 4 spotter",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/nymane-takspotlight-med-4-spotter-hvit-70337701/",
+    "priceNok": 749,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 703.377.01, hvit): 749 kr. Antrasitt (804.150.86) samme pris. 4 × GU10 maks 8,5 W, pærer selges separat.",
+    "dims": {
+      "w": 0.73,
+      "d": 0.07,
+      "h": 0.12
+    },
+    "archetype": "spot-track",
+    "mount": "ceiling",
+    "params": {
+      "heads": 4,
+      "trackShape": "straight",
+      "railKind": "bar",
+      "headShape": "cylinder",
+      "headD": 0.06,
+      "headL": 0.07,
+      "tilt": 20,
+      "aim": "parallel",
+      "beamDeg": 36,
+      "driver": "socket",
+      "railW": 0.07,
+      "railH": 0.015,
+      "stemLen": 0
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#1c1c1c",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "black-metal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.ikea.com/no/no/p/nymane-takspotlight-med-4-spotter-hvit-70337701/"
+      },
+      {
+        "name": "Antrasitt",
+        "colors": {
+          "shade": "#3a3b3c",
+          "inner": "#1c1c1c",
+          "base": "#3a3b3c",
+          "metal": "#3a3b3c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "black-metal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.ikea.com/no/no/p/nymane-takspotlight-med-4-spotter-antrasitt-80415086/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1380,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "spot",
+      "bulb": "4 × GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Flat takplate på 73 cm med fire dreibare sylinderspotter for GU10. Hvit eller antrasitt; dimbar med dimbare pærer.",
+    "why": "Fire spotter på en lav, avlang plate passer over kjøkkenbenken under skråtaket og lyser ned på arbeidsflaten der du står.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/nymane-takspotlight-med-4-spotter-hvit__0607350_pe682899_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata): pris, L73 B7 H12 cm, 4 × GU10 maks 8,5 W, dimbar, bilde, art.nr. 703.377.01 og 804.150.86. Anslått: lysstrøm for GU10-pærer som ikke følger med og hodemål fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Flat, avlang takplate (ikke skinne) med fire sylinderhoder rett under."
+  },
+  {
+    "id": "ikea-nymane-takspot-med-1-spot",
+    "category": "spotter",
+    "subcategory": "takspot",
+    "name": "NYMÅNE Takspot med 1 spot",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/nymane-takspot-med-1-spot-hvit-00424787/",
+    "priceNok": 279,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 004.247.87, hvit): 279 kr. GU10 maks 8,5 W, pære selges separat.",
+    "dims": {
+      "w": 0.08,
+      "d": 0.08,
+      "h": 0.13
+    },
+    "archetype": "spot-ceiling",
+    "mount": "ceiling",
+    "params": {
+      "headShape": "cylinder",
+      "headD": 0.065,
+      "headL": 0.08,
+      "tilt": 10,
+      "beamDeg": 36,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#1c1c1c",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "black-metal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 345,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "spot",
+      "bulb": "GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Enkel takspot med dreibart sylinderhode på en rund takkopp, 13 cm høy. For GU10-pære; dimbar med dimbar pære.",
+    "why": "Rimelig enkeltspot som kan settes i rad eller rutenett i kjellerstua, eller rette lys mot et bilde i gangen.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/nymane-takspot-med-1-spot-hvit__0666493_pe713601_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata): pris, H13 cm, takkopp Ø8 cm, GU10 maks 8,5 W, dimbar, bilde, art.nr. 004.247.87. Anslått: hodemål og lysstrøm for GU10-pære som ikke følger med.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-baeve-led-takskinne-3-spotter",
+    "category": "spotter",
+    "subcategory": "skinne",
+    "name": "BÄVE LED takskinne, 3 spotter",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/baeve-led-takskinne-3-spotter-hvit-00527238/",
+    "priceNok": 599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 005.272.38, hvit): 599 kr. Integrert LED med driver; kan ikke dimmes.",
+    "dims": {
+      "w": 0.78,
+      "d": 0.04,
+      "h": 0.09
+    },
+    "archetype": "spot-track",
+    "mount": "ceiling",
+    "params": {
+      "heads": 3,
+      "trackShape": "straight",
+      "railKind": "bar",
+      "headShape": "cylinder",
+      "headD": 0.04,
+      "headL": 0.05,
+      "tilt": 0,
+      "aim": "parallel",
+      "beamDeg": 36,
+      "driver": "integrated",
+      "railW": 0.03,
+      "railH": 0.025
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#c4c6c8",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "chrome",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 900,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "track",
+      "bulb": "Integrert LED 11 W, 900 lm, 2700 K (ikke dimbar)"
+    },
+    "description": "Slank hvit takstang på 78 cm med tre små, dreibare LED-spotter. Integrert lyskilde og driver; kan ikke dimmes.",
+    "why": "Den smale stangen blir nesten usynlig i det hvite taket i gangen og gir lys langs hele rommet; spottene kan rettes mot trappa og knaggene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/baeve-led-takskinne-3-spotter-hvit__0607328_pe682887_s5.jpg",
+    "verified": false,
+    "verifiedNote": "IKKE verifisert: mangler høyde. Bekreftet på ikea.com/no 2026-10-21 (produktdata): pris, L78 B3 cm, spotdiameter 3 cm, 900 lm (målfanen sier 800 lm), 2700 K, ikke dimbar, bilde, art.nr. 005.272.38. Anslått: høyde 9 cm fra bildet; dybde og hodediameter satt til 4 cm (minste verdi spillet godtar, butikken oppgir 3 cm).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-nymane-vegglampe-dobbel",
+    "category": "spotter",
+    "subcategory": "veggspot",
+    "name": "NYMÅNE Vegglampe dobbel",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/nymane-vegglampe-dobbel-hvit-20428647/",
+    "priceNok": 599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 204.286.47, hvit): 599 kr. 2 × GU10 maks 8,5 W, pærer selges separat; ledning 2,3 m med støpsel.",
+    "dims": {
+      "w": 0.29,
+      "d": 0.13,
+      "h": 0.08
+    },
+    "archetype": "spot-wall",
+    "mount": "wall",
+    "params": {
+      "heads": 2,
+      "layout": "side",
+      "plateShape": "square",
+      "headShape": "cylinder",
+      "headD": 0.066,
+      "headL": 0.08,
+      "armLen": 0.03,
+      "tilt": 65,
+      "beamDeg": 36,
+      "powered": "cord",
+      "mountHeight": 1.4,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#1c1c1c",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#f1f0ec"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "black-metal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 690,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "wall-spot",
+      "bulb": "2 × GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Hvit vegglampe med to dreibare sylinderspotter på en avlang veggplate, med ledning og støpsel. For GU10-pærer; dimbar med dimbare pærer.",
+    "why": "To leselys fra ett punkt over sengen på soverommet eller ved sofaen; med støpsel kan den settes opp uten elektriker.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/nymane-vegglampe-dobbel-hvit__0666566_pe713610_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata): pris, L29 B7 cm, spot Ø6,6 cm, ledning 2,3 m, dimbar, bilde, art.nr. 204.286.47. Anslått: utstikk 13 cm fra bildet, monteringshøyde og lysstrøm for GU10-pærer som ikke følger med.",
+    "priceConfidence": "checked",
+    "shapeNote": "Avlang veggplate (B7 cm er platens høyde) med en dreibar sylinderspot i hver ende."
+  },
+  {
+    "id": "lampehuset-lucide-grado-takspot-1lys-10cm",
+    "category": "spotter",
+    "subcategory": "takspot",
+    "name": "Grado takspot 1lys 10cm",
+    "brand": "Lucide",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/taklamper/spotter-og-skinner/grado-takspot-1lys-10cm-beige/",
+    "priceNok": 499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, varenr. 5045800100, beige): 499 kr, ingen kampanje. Lyskilde følger ikke med.",
+    "dims": {
+      "w": 0.1,
+      "d": 0.1,
+      "h": 0.23
+    },
+    "archetype": "spot-ceiling",
+    "mount": "ceiling",
+    "params": {
+      "headShape": "cylinder",
+      "headD": 0.04,
+      "headL": 0.13,
+      "tilt": 15,
+      "beamDeg": 30,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "shade": "#c2b6a1",
+          "inner": "#2a2724",
+          "base": "#c2b6a1",
+          "metal": "#c2b6a1",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "black-metal",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 345,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "spot",
+      "bulb": "GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Slank takspot i beige aluminium med kvadratisk takplate og et smalt rør som kan roteres og vippes; honeycomb-filter demper blending.",
+    "why": "Den beige fargen glir inn mot Sand-veggene i stua, og spotten kan rettes mot et maleri eller en plante fra skråtaket.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/5045800100/grado-takspot-1lys-10cm-beige.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris, L10 B10 H23 cm, roterbar og vippbar, dimbar med dimbar pære, bilde, varenr. 5045800100. Anslått: hodemål fra bildet; sokkelen står som G9 i spesifikasjonen og GU10/MR11 i beskrivelsen – lysstrøm satt som for GU10.",
+    "priceConfidence": "checked",
+    "shapeNote": "Kvadratisk takplate 10 × 10 cm og et smalt, langt rør med honeycomb-filter."
+  },
+  {
+    "id": "elektroimportoren-lucide-punch-takspot-1xgu10",
+    "category": "spotter",
+    "subcategory": "takspot",
+    "name": "Lucide Punch takspot 1xGU10",
+    "brand": "Lucide",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/lucide-punch-takspot-1xgu10-sort/92254/Product.html",
+    "priceNok": 309.9,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 92254, sort): 309,90 kr, ingen kampanje. GU10-pære følger ikke med.",
+    "dims": {
+      "w": 0.1,
+      "d": 0.1,
+      "h": 0.14
+    },
+    "archetype": "spot-ceiling",
+    "mount": "ceiling",
+    "params": {
+      "headShape": "dome",
+      "headD": 0.065,
+      "headL": 0.09,
+      "tilt": 20,
+      "beamDeg": 36,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#141414",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 345,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "spot",
+      "bulb": "GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Minimalistisk takspot i sort aluminium med avrundet hode på en rund takkopp Ø10 cm. Retter lyset dit du vil; dimbar med ekstern dimmer.",
+    "why": "Fremhever et bilde eller en hylle i gangen eller på soverommet; sort matcher metalldetaljene i stua. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/92254.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på elektroimportoren.no 2026-10-21 (produktdata og målskisse): pris, takkopp Ø10 cm, høyde 14 cm, hode Ø6,5 cm, utstikk 9,5 cm, bilde, art.nr. 92254. Anslått: lysstrøm for GU10-pære som ikke følger med.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "lampehuset-nova-life-track-spot-skinne-3lys-1m",
+    "category": "spotter",
+    "subcategory": "skinne",
+    "name": "Track Spot skinne 3lys 1m",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/taklamper/spotter-og-skinner/track-spot-skinne-3lys-1m-sort/",
+    "priceNok": 899,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, varenr. 5042100371, sort): 899 kr, ingen kampanje. Hvit (5042100353) samme pris. 3 × GU10 maks 25 W, pærer følger ikke med.",
+    "dims": {
+      "w": 1,
+      "d": 0.06,
+      "h": 0.17
+    },
+    "archetype": "spot-track",
+    "mount": "ceiling",
+    "params": {
+      "heads": 3,
+      "trackShape": "straight",
+      "railKind": "track",
+      "headShape": "cylinder",
+      "headD": 0.06,
+      "headL": 0.1,
+      "tilt": 5,
+      "aim": "parallel",
+      "beamDeg": 36,
+      "ip": 20,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#1c1c1c",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.lampehuset.no/produkter/lamper/taklamper/spotter-og-skinner/track-spot-skinne-3lys-1m-sort/"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1f0ec",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.lampehuset.no/produkter/lamper/taklamper/spotter-og-skinner/track-spot-skinne-3lys-1m-hvit/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1035,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "track",
+      "bulb": "3 × GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Én meter skinnesystem i matt aluminium med tre flyttbare, vinklbare GU10-spotter. Kan bygges ut med flere skinner, skjøter og hoder.",
+    "why": "En 1-faset skinne over spisebordet eller langs kjøkkenet lar deg flytte spottene når møblene flyttes; sort passer til de svarte detaljene.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/5042100371/trackspot3lyssort.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris, L100 H17 cm, skinnebredde 3,5 cm, 3 × GU10, dimbar, IP20, bilde, varenr. 5042100371 og 5042100353. Anslått: hodediameter 6 cm fra bildet og lysstrøm for GU10-pærer som ikke følger med.",
+    "priceConfidence": "checked",
+    "shapeNote": "Dybden er hodediameteren; selve skinnen er 3,5 cm bred."
+  },
+  {
+    "id": "elektroimportoren-namron-pluto-3-spot-skinne-gu10",
+    "category": "spotter",
+    "subcategory": "skinne",
+    "name": "Namron Pluto 3-Spot Skinne GU10",
+    "brand": "Namron",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/namron-pluto-3-spot-skinne-gu10-matt-sort/3222294/Product.html",
+    "priceNok": 849,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 3222294, matt sort): 849 kr, ingen kampanje. Matt hvit (3202166) samme pris. 3 × GU10 maks 35 W, pærer følger ikke med.",
+    "dims": {
+      "w": 0.96,
+      "d": 0.06,
+      "h": 0.13
+    },
+    "archetype": "spot-track",
+    "mount": "ceiling",
+    "params": {
+      "heads": 3,
+      "trackShape": "straight",
+      "railKind": "bar",
+      "headShape": "cylinder",
+      "headD": 0.055,
+      "headL": 0.08,
+      "tilt": 10,
+      "aim": "parallel",
+      "beamDeg": 36,
+      "ip": 20,
+      "driver": "socket",
+      "canopyD": 0.1,
+      "canopyH": 0.02
+    },
+    "variants": [
+      {
+        "name": "Matt sort",
+        "colors": {
+          "shade": "#1c1c1c",
+          "inner": "#1c1c1c",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/namron-pluto-3-spot-skinne-gu10-matt-sort/3222294/Product.html"
+      },
+      {
+        "name": "Matt hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1f0ec",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.elektroimportoren.no/namron-pluto-3-spot-skinne-gu10-matt-hvit/3202166/Product.html"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1035,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "track",
+      "bulb": "3 × GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Flat spotstang på 96 cm med tre spotter som roteres 360° og vippes 90°, med inntrukket GU10-lyskilde. Matt sort eller matt hvit.",
+    "why": "Lang nok til å følge kjøkkenbenken eller gangen (3,11 m); de tre hodene kan vinkles mot ulike flater. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/3222294.jpg",
+    "verified": false,
+    "verifiedNote": "IKKE verifisert: mangler høyde. Bekreftet på elektroimportoren.no 2026-10-21 (produktdata og bruksanvisning): pris, lengde 960 mm, 3 × GU10 maks 35 W, rotasjon 360°, vipp 90°, IP20, bilde, art.nr. 3222294 og 3202166. Anslått: høyde 13 cm og hodemål fra bildet, lysstrøm for GU10-pærer som ikke følger med.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "elektroimportoren-namron-rock-skinnesett-3-spot-ral-9003",
+    "category": "spotter",
+    "subcategory": "skinne",
+    "name": "Namron Rock skinnesett 3 spot RAL 9003",
+    "brand": "Namron",
+    "store": "Elektroimportøren",
+    "url": "https://www.elektroimportoren.no/namron-rock-skinnesett-3-spot-hvit-ral-9003/3211123/Product.html",
+    "priceNok": 1499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (elektroimportoren.no-produktdata, art.nr. 3211123, hvit RAL 9003): 1 499 kr, ingen kampanje. Tilkoblingsstykke og endelokk følger med; lyskilder kjøpes separat.",
+    "dims": {
+      "w": 1,
+      "d": 0.06,
+      "h": 0.15
+    },
+    "archetype": "spot-track",
+    "mount": "ceiling",
+    "params": {
+      "heads": 3,
+      "trackShape": "straight",
+      "railKind": "track",
+      "headShape": "cylinder",
+      "headD": 0.055,
+      "headL": 0.1,
+      "tilt": 5,
+      "aim": "parallel",
+      "beamDeg": 36,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1f0ec",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 1035,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "track",
+      "bulb": "3 × GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Hvitt, utbyggbart skinnesystem med tre spotter på én meter skinne. Spottene roteres 360° og vinkles 90°; kan forlenges med skjøter og hjørner.",
+    "why": "Et fleksibelt skinnesystem for kjellerstua (20,6 m²) som kan forlenges rundt et hjørne senere. Monteres av elektriker.",
+    "imageUrl": "https://picture.elektroimportoren.no/teazer/3211123.jpg",
+    "verified": false,
+    "verifiedNote": "IKKE verifisert: mangler høyde. Bekreftet på elektroimportoren.no 2026-10-21 (produktdata): pris, skinne 1 m, tre spotter (360°/90°), bilde, art.nr. 3211123. Anslått: høyde 15 cm og hodemål fra bildet; GU10-sokkel (butikkens Rock-spotter er GU10) og lysstrøm for pærer som ikke følger med.",
+    "priceConfidence": "checked",
+    "shapeNote": "Sylinderhodene har skrått avskåret front."
+  },
+  {
+    "id": "lampehuset-nova-life-scott-leselampe-vegg-2lys-32cm",
+    "category": "spotter",
+    "subcategory": "veggspot",
+    "name": "Scott leselampe vegg 2lys 32cm",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/vegglamper/leselamper-vegg/scott-leselampe-vegg-2lys-32cm-hvit/",
+    "priceNok": 1399,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, varenr. 4042600253, hvit): 1 399 kr, ingen kampanje. 2 × GU10 maks 25 W, pærer følger ikke med; ledning med bryter.",
+    "dims": {
+      "w": 0.32,
+      "d": 0.07,
+      "h": 0.09
+    },
+    "archetype": "spot-wall",
+    "mount": "wall",
+    "params": {
+      "heads": 2,
+      "layout": "side",
+      "plateShape": "square",
+      "headShape": "cylinder",
+      "headD": 0.05,
+      "headL": 0.08,
+      "armLen": 0.02,
+      "tilt": 0,
+      "beamDeg": 36,
+      "powered": "cord",
+      "mountHeight": 1.5,
+      "driver": "socket"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1f0ec",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#f1f0ec"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 690,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "wall-spot",
+      "bulb": "2 × GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Hvit veggspot med to justerbare sylinderhoder på en avlang veggplate, 32 cm bred. Ledning med bryter; for GU10-pærer.",
+    "why": "To retningsbare leselys over skrivebordet i det lille kjellersoverommet (7,4 m²) eller over sengen, uten fast installasjon.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/4042600253/scott-2lyshvit.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris, H9 B32 D7 cm, 2 × GU10, ledning med bryter, ikke dimbar, bilde, varenr. 4042600253. Anslått: hodemål, monteringshøyde og lysstrøm for GU10-pærer som ikke følger med.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "lampehuset-nova-life-noor-ii-leselampe-vegg-1lys-14cm",
+    "category": "spotter",
+    "subcategory": "veggspot",
+    "name": "Noor II leselampe vegg 1lys 14cm",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/vegglamper/leselamper-vegg/noor-ii-leselampe-vegg-1lys-14cm-sort/",
+    "priceNok": 699,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, varenr. 4047600171, sort): 699 kr, ingen kampanje. Hvit (4047600153) samme pris. GU10 maks 25 W, pære følger ikke med; dimmer på lampen og 2 m ledning.",
+    "dims": {
+      "w": 0.08,
+      "d": 0.15,
+      "h": 0.14
+    },
+    "archetype": "spot-wall",
+    "mount": "wall",
+    "params": {
+      "heads": 1,
+      "layout": "side",
+      "plateShape": "round",
+      "headShape": "cylinder",
+      "headD": 0.06,
+      "tilt": 30,
+      "beamDeg": 36,
+      "powered": "cord",
+      "mountHeight": 1.3,
+      "driver": "socket",
+      "plateD": 0.08
+    },
+    "variants": [
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#232523",
+          "inner": "#1c1c1c",
+          "base": "#232523",
+          "metal": "#232523",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "black-metal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.lampehuset.no/produkter/lamper/vegglamper/leselamper-vegg/noor-ii-leselampe-vegg-1lys-14cm-sort/"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "shade": "#f1f0ec",
+          "inner": "#f1f0ec",
+          "base": "#f1f0ec",
+          "metal": "#f1f0ec",
+          "cord": "#f1f0ec"
+        },
+        "materials": {
+          "shade": "painted",
+          "inner": "painted",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "cotton"
+        },
+        "url": "https://www.lampehuset.no/produkter/lamper/vegglamper/leselamper-vegg/noor-ii-leselampe-vegg-1lys-14cm-hvit/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 345,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "wall-spot",
+      "bulb": "GU10 LED 345 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Veggspot med oval veggplate og dreibart sylinderhode, med dimmer på lampen og ledning med støpsel. For GU10-pære.",
+    "why": "Et lite leselys ved sofaen eller nattbordet som settes opp uten elektriker; sort står fint mot Marrakesh-veggen og de svarte detaljene.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/4047600171/sites-default-files-product_image-5_17.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris, L15 H14 B8 cm, brakett 6 cm, GU10, dimmer på lampen, ledning 2 m, bilde, varenr. 4047600171 og 4047600153. Anslått: monteringshøyde og lysstrøm for GU10-pære som ikke følger med.",
+    "priceConfidence": "checked",
+    "shapeNote": "Veggplaten er oval (vist rund)."
+  },
+  {
+    "id": "lampehuset-nova-life-bino-led-leselampe-vegg-22-5cm",
+    "category": "spotter",
+    "subcategory": "veggspot",
+    "name": "Bino LED leselampe vegg 22,5cm",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/vegglamper/leselamper-vegg/bino-led-leselampe-vegg-225cm-sort/",
+    "priceNok": 1199,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, varenr. 4051100171, sort): 1 199 kr, ingen kampanje. Integrert LED 6 W, 550 lm, 3000 K, touchdimmer, ledning 2 m med bryter.",
+    "dims": {
+      "w": 0.1,
+      "d": 0.15,
+      "h": 0.225
+    },
+    "archetype": "spot-wall",
+    "mount": "wall",
+    "params": {
+      "heads": 1,
+      "layout": "side",
+      "plateShape": "round",
+      "headShape": "cylinder",
+      "headD": 0.04,
+      "tilt": 20,
+      "beamDeg": 30,
+      "powered": "cord",
+      "mountHeight": 1.2,
+      "driver": "integrated",
+      "plateD": 0.1
+    },
+    "variants": [
+      {
+        "name": "Sort",
+        "colors": {
+          "shade": "#222222",
+          "inner": "#f1ece2",
+          "base": "#222222",
+          "metal": "#222222",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 550,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "wall-spot",
+      "bulb": "Integrert LED 6 W, 550 lm, 3000 K, touchdimmer"
+    },
+    "description": "Slank leselampe for vegg i matt sort metall: et smalt LED-rør på en kort arm fra en rund veggplate, med touchdimmer og ledning.",
+    "why": "Et presist leselys ved lenestolen eller sengen; 550 lm integrert LED og touchdimmer, og ingen elektriker trengs.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/4051100171/bino-vegg.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris, H22,5 cm, B10 cm, integrert LED 550 lm, 3000 K, touchdimmer, ledning 2 m, bilde, varenr. 4051100171. Anslått: utstikk 15 cm og hodemål fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Smalt LED-rør på en tynn arm ut fra en rund veggplate; vist som ett jevnt rør (den tynne øvre delen og den tykkere lysdelen er ikke skilt)."
+  },
+  {
+    "id": "lampehuset-nova-life-cavo-led-maleribelysning-58cm",
+    "category": "spotter",
+    "subcategory": "bildebelysning",
+    "name": "Cavo LED maleribelysning 58cm",
+    "brand": "Nova Life",
+    "store": "Lampehuset",
+    "url": "https://www.lampehuset.no/produkter/lamper/vegglamper/maleribelysning/cavo-led-maleribelysning-58cm-antikk-messing/",
+    "priceNok": 1999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampehuset.no-produktdata, varenr. 11000000633, antikk messing): 1 999 kr, ingen kampanje, på lager. Integrert LED, dimbar med ekstern dimmer.",
+    "dims": {
+      "w": 0.58,
+      "d": 0.185,
+      "h": 0.055
+    },
+    "archetype": "picture-light",
+    "mount": "wall",
+    "params": {
+      "headShape": "bar",
+      "armShape": "straight",
+      "tilt": 40,
+      "beamDeg": 110,
+      "powered": "wired",
+      "mountHeight": 1.95
+    },
+    "variants": [
+      {
+        "name": "Antikk messing",
+        "colors": {
+          "shade": "#a8905e",
+          "inner": "#f3e9d2",
+          "base": "#a8905e",
+          "metal": "#a8905e",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "brass",
+          "inner": "glass-opal",
+          "base": "brass",
+          "metal": "brass",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 340,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "picture",
+      "bulb": "Integrert LED 11 W, 340 lm, 2700 K"
+    },
+    "description": "Bildebelysning i antikk messing: en 58 cm lang lysbjelke med integrert LED på en arm fra en rektangulær veggplate. Dimbar med ekstern dimmer.",
+    "why": "Over et maleri eller en bildevegg over skjenken i stua; messingtonen er varm mot Sand-veggene. Monteres av elektriker.",
+    "imageUrl": "https://www.lampehuset.no/cdn-cgi/image/w=1280,h=1280,fit=scale-down,f=webp,q=85/https://stlampehuset.blob.core.windows.net/products/11000000633/cavo-led-maleribelysning-58cm-antikk-messing.png",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris, L58 H5,5 B18,5 cm, integrert LED 340 lm, 2700 K, dimbar, IP20, bilde, varenr. 11000000633. Anslått: monteringshøyde 1,95 m (bare startforslag; spillet plasserer lampen over bildet).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "lampemesteren-lindby-mailine-led-vegglampe-69cm",
+    "category": "spotter",
+    "subcategory": "bildebelysning",
+    "name": "Mailine LED vegglampe 69 cm",
+    "brand": "Lindby",
+    "store": "Lampemesteren",
+    "url": "https://www.lampemesteren.no/p/mailine-led-vegglampe-brass-lindby-9624436.html",
+    "priceNok": 1091,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampemesteren.no-produktdata, art.nr. 9624436, messing matt): 1 091 kr (veil. pris 1 589 kr), på lager, leveringstid 6–10 virkedager. Gammel messing (art.nr. 9624435): 816 kr. Integrert LED 13 W, ikke dimbar, med bryter.",
+    "dims": {
+      "w": 0.69,
+      "d": 0.15,
+      "h": 0.115
+    },
+    "archetype": "picture-light",
+    "mount": "wall",
+    "params": {
+      "headShape": "bar",
+      "armShape": "swan",
+      "tilt": 40,
+      "beamDeg": 110,
+      "powered": "wired",
+      "mountHeight": 1.95,
+      "armGap": 0.05
+    },
+    "variants": [
+      {
+        "name": "Messing matt",
+        "colors": {
+          "shade": "#a89b72",
+          "inner": "#f6f0e2",
+          "base": "#a89b72",
+          "metal": "#a89b72",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "brass",
+          "inner": "glass-opal",
+          "base": "brass",
+          "metal": "brass",
+          "cord": "cotton"
+        },
+        "url": "https://www.lampemesteren.no/p/mailine-led-vegglampe-brass-lindby-9624436.html"
+      },
+      {
+        "name": "Gammel messing",
+        "colors": {
+          "shade": "#8e8a74",
+          "inner": "#f6f0e2",
+          "base": "#8e8a74",
+          "metal": "#8e8a74",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "brass",
+          "inner": "glass-opal",
+          "base": "brass",
+          "metal": "brass",
+          "cord": "cotton"
+        },
+        "url": "https://www.lampemesteren.no/p/mailine-led-vegglampe-antique-brass-lindby-9624435.html",
+        "priceNok": 816
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 678,
+      "colorK": 3000,
+      "dimmable": false,
+      "kind": "picture",
+      "bulb": "Integrert LED 13 W, 678 lm, 3000 K"
+    },
+    "description": "Bildelampe i messing med en 69 cm lang lysbjelke og integrert LED langs hele undersiden. Hodet kan vippes; butikken kaller den en gallerilampe for bilder og fotografier.",
+    "why": "Bred nok til et stort maleri eller en bildevegg over sofaen; 678 lm i varm 3000 K. Butikken oppgir ingen ledning, så regn med at den monteres av elektriker.",
+    "imageUrl": "https://lw-cdn.com/images/A07F0F0B69DA/k_a61502be586f5128f22808742221c18b;w_1600;h_1600;q_90/9624436.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampemesteren.no 2026-10-21 (produktdata): pris, B69 H11,5 utstikk 15 cm, integrert LED 13 W, 678 lm, 3000 K, ikke dimbar, IP20, bilde, art.nr. 9624436 og 9624435. Anslått: fast tilkobling (ingen ledning oppgitt), monteringshøyde 1,95 m (bare startforslag).",
+    "priceConfidence": "checked",
+    "shapeNote": "Rund lysbjelke med lysflate langs hele undersiden, på to buede armer fra en rektangulær veggplate."
+  },
+  {
+    "id": "lampemesteren-elstead-picture-lights-vegglampe-36cm",
+    "category": "spotter",
+    "subcategory": "bildebelysning",
+    "name": "Picture Lights vegglampe 36 cm",
+    "brand": "Elstead",
+    "store": "Lampemesteren",
+    "url": "https://www.lampemesteren.no/p/picture-lights-vegglampe-svart-36-cm-metall-elstead-3049090.html",
+    "priceNok": 2231,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (lampemesteren.no-produktdata, art.nr. 3049090, svart): 2 231 kr, leveringstid 3–4 uker. Mørk bronse (art.nr. 3049094): 2 556 kr. 2 × E14 maks 40 W, lyspærer følger ikke med; dimbar med ekstern dimmer.",
+    "dims": {
+      "w": 0.36,
+      "d": 0.2,
+      "h": 0.135
+    },
+    "archetype": "picture-light",
+    "mount": "wall",
+    "params": {
+      "headShape": "hood",
+      "armShape": "swan",
+      "tilt": 40,
+      "beamDeg": 110,
+      "powered": "wired",
+      "mountHeight": 1.95
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "shade": "#1f1f1f",
+          "inner": "#f3e9d2",
+          "base": "#1f1f1f",
+          "metal": "#1f1f1f",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "black-metal",
+          "inner": "glass-opal",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        },
+        "url": "https://www.lampemesteren.no/p/picture-lights-vegglampe-svart-36-cm-metall-elstead-3049090.html"
+      },
+      {
+        "name": "Mørk bronse",
+        "colors": {
+          "shade": "#4d4038",
+          "inner": "#f3e9d2",
+          "base": "#4d4038",
+          "metal": "#4d4038",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "bronze",
+          "inner": "glass-opal",
+          "base": "bronze",
+          "metal": "bronze",
+          "cord": "cotton"
+        },
+        "url": "https://www.lampemesteren.no/p/picture-lights-vegglampe-mork-bronse-36-cm-elstead-3049094.html",
+        "priceNok": 2556
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "light": {
+      "lumens": 940,
+      "colorK": 2700,
+      "dimmable": true,
+      "kind": "picture",
+      "bulb": "2 × E14 LED 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Klassisk bildelampe i metall: en rørformet skjerm på en svanehalsarm fra en kvadratisk veggplate, for to E14-pærer. Dimbar med ekstern dimmer.",
+    "why": "Et tradisjonelt bildelys over et maleri i stua eller gangen; svart passer til svarte rammer, mørk bronse til en varmere vegg. Butikken oppgir ingen ledning, så regn med elektriker.",
+    "imageUrl": "https://lw-cdn.com/images/1AD4271E4505/k_08ab744861aff84c97768334a7f629ec;w_1600;h_1600;q_90/3049090.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampemesteren.no 2026-10-21 (produktdata): pris, B36 H13,5 utstikk 20 cm, 2 × E14 maks 40 W, dimbar, IP20, bilde, art.nr. 3049090 og 3049094. Anslått: lysstrøm for E14-pærer som ikke følger med, fast tilkobling (ingen ledning oppgitt), monteringshøyde 1,95 m (bare startforslag).",
+    "priceConfidence": "checked",
+    "shapeNote": "Klassisk rørformet skjerm som er åpen mot bildet, på en buet arm fra en kvadratisk veggplate."
+  }
+]

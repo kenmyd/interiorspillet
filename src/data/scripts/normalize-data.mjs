@@ -2,8 +2,10 @@
 /**
  * Data normaliser: research/* → src/data/*.
  *
- *   node src/data/scripts/normalize-data.mjs [--only=catalog|room-spec|palette|walls,…] [--out=<dir>] [--verbose]
- *   (run from the project root; --out writes the files to another folder instead of src/data – e.g. to diff them)
+ *   node src/data/scripts/normalize-data.mjs [--only=catalog|room-spec|palette|walls,…] [--out=<dir>] [--catalog-new=<dir>] [--verbose]
+ *   (run from the project root; --out writes the files to another folder instead of src/data – e.g. to diff them;
+ *   --catalog-new reads the newer research files from another folder instead of research/catalog-new – e.g. a temp
+ *   copy of research/catalog-new plus staged files to validate, tools/check-research.mjs. Use it with --out.)
  *
  * - room-spec.json: research/room-spec.json (the living room) with every research/house/NN-*.json merged in and the
  *   whole house validated (house.mjs: mergeHouse + validateHouse, which throws on errors – nothing is written then;
@@ -40,6 +42,8 @@ const argValue = (name) => {
 };
 /** Output folder (default src/data). */
 const OUT = argValue('out') ? path.resolve(argValue('out')) : DATA;
+/** Folder of the newer research files (default research/catalog-new). */
+const CATALOG_NEW = argValue('catalog-new') ? path.resolve(argValue('catalog-new')) : path.join(RESEARCH, 'catalog-new');
 /** Which outputs to write (default: all). */
 const ONLY = argValue('only') ? new Set(argValue('only').split(',').map((s) => s.trim())) : null;
 const wants = (what) => !ONLY || ONLY.has(what);
@@ -48,7 +52,7 @@ const SCHEMA = readJson(path.join(DATA, 'archetypes.json'));
 /** Catalogue categories in catalogue order (catalog/index.js CATEGORIES). */
 export const CATEGORY_KEYS = [
   'sofa', 'lenestol', 'bord', 'stoler', 'skjenk', 'tvbenk', 'vitrineskap', 'hylle', 'seng', 'nattbord', 'kommode', 'garderobe', 'speil', 'bad', 'gang',
-  'taklampe', 'smalamper', 'tekstil', 'teppe', 'solskjerming', 'akustikk', 'smatt',
+  'taklampe', 'spotter', 'smalamper', 'tekstil', 'teppe', 'solskjerming', 'akustikk', 'kunst', 'smatt',
 ];
 const VALID_MATERIALS = new Set(Object.values(SCHEMA.materials).flat());
 const FABRIC_MATERIALS = new Set(SCHEMA.materials.fabric);
@@ -408,8 +412,9 @@ const PRODUCT_FIELD_ORDER = [
 const productList = (raw) => (Array.isArray(raw) ? raw : raw?.products || raw?.items || []);
 
 /**
- * Research products per category: research/catalog/<key>.json first, then research/catalog-new/*.json (sorted by
- * file name) – a newer product with the same id replaces the older one in place, other new ones are appended.
+ * Research products per category: research/catalog/<key>.json first, then research/catalog-new/*.json (or the
+ * --catalog-new folder; sorted by file name) – a newer product with the same id replaces the older one in place, other
+ * new ones are appended.
  * @returns {Map<string, object[]>}
  */
 function researchProducts() {
@@ -418,13 +423,13 @@ function researchProducts() {
     const file = path.join(RESEARCH, 'catalog', `${key}.json`);
     if (fs.existsSync(file)) byCat.get(key).push(...productList(readJson(file)));
   }
-  const dir = path.join(RESEARCH, 'catalog-new');
+  const dir = CATALOG_NEW;
   const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith('.json')).sort() : [];
   for (const f of files) {
     const fallback = f.replace(/\.json$/, '').split('-')[0];
     for (const src of productList(readJson(path.join(dir, f)))) {
       const key = String(src.category || fallback).trim();
-      if (!byCat.has(key)) throw new Error(`research/catalog-new/${f}: unknown category «${key}» (${src.id})`);
+      if (!byCat.has(key)) throw new Error(`${path.relative(ROOT, path.join(dir, f)).replace(/\\/g, '/')}: unknown category «${key}» (${src.id})`);
       const list = byCat.get(key);
       const i = src.id ? list.findIndex((p) => String(p.id).trim().toLowerCase() === String(src.id).trim().toLowerCase()) : -1;
       if (i >= 0) {

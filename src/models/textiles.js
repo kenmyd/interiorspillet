@@ -18,8 +18,13 @@ import { createCanvas, canvasTexture, heightToNormalCanvas, TileableNoise, hash2
  *            dims: h ≤ 2.5 cm → w × d is the fabric (1.3 × 1.7 …) and h its thickness; h > 2.5 cm → w × d × h are the
  *            visible bounds of the folded/draped throw (room-spec «existing» throws). The arm/back is at local +x
  *            (over-arm) / −z (over-back); y = 0 is the seat, a hanging part may reach below it.
- *   pouf     params.shape 'round' | 'square' | 'cylinder', params.legs 'none' | 'wood' | 'plinth' (+ legHeight),
- *            stitchedLines, storage (lid seam), piping. Parts fabric, piping, legs.
+ *   pouf     params.shape 'round' | 'square' | 'cylinder' | 'oval' (round, stretched to dims.d), params.legs 'none' |
+ *            'wood' | 'plinth' | 'metal' | 'block' | 'sled' (two flat Y-feet) (+ legHeight), legsOutside (metal tubes /
+ *            arched wooden slabs round the drum, + legRise up the side, hidden legCount), stitchedLines, storage (lid
+ *            seam), piping, tufted (buttons in dimples on the top), handle (leather strap loop on the front), woodTrim
+ *            (wooden band round the top edge / lid seam); texture 'shaggy' (long faux fur) or 'rattan' (also
+ *            materials.fabric 'rattan': a woven basket); hidden round / puff (square: edge radius / top bulge).
+ *            Parts fabric, piping, legs.
  *   rug      params.shape 'rect' | 'round' | 'oval' | 'organic'; pile 'flat' | 'low' | 'medium' | 'high' | 'shaggy';
  *            pattern 'solid' | 'border' | 'stripes' | 'geometric' | 'melange' | 'abstract' | 'wool-knotted' |
  *            'pebble'; weave 'handwoven' | 'hand-tufted' | 'machine-woven' | 'flatweave' | 'braided' | 'felted';
@@ -308,9 +313,74 @@ function waffleSet(res) {
   } });
 }
 
+// ---- long-haired faux fur («shaggy» poufs): the rug builder's shag pile made long – wavy strands that hang down in
+// soft locks (no hard cell edges: the locks are only a gentle light/shade swell under the strands)
+
+function shaggySet(res) {
+  const N = new TileableNoise(311);
+  const C = {};
+  return genSet(`shaggy@${res}`, { w: 320 * res, h: 320 * res, tile: [0.18, 0.18], normal: 3.2, res, pixel(u, v, o) {
+    // strands: fine streaks that run down (v) and wave sideways, in a few lock directions
+    const warp = nz(N, u, v, 6, 4) * 0.35 + nz(N, u, v, 14, 9) * 0.12;
+    const su = u + warp * 0.18;
+    const strands = nz(N, su, v, 90, 6) * 0.55 + nz(N, su, v, 180, 10) * 0.45;
+    // locks: soft lighter clumps ≈ 3 cm with a darker gap low down where the next lock begins
+    cellNoise(su, v, 6, 5, 53, 0.9, C);
+    const lock = smooth(0.95, 0.2, C.f1);
+    const tip = smooth(0.05, 0.45, -C.dy) * 0.25;
+    const curl = 0.5 + 0.5 * Math.sin((C.dx * 7 + v * 60 + C.r1 * 6) + warp * 8);
+    o.r = (0.6 + 0.3 * strands + 0.07 * lock + 0.05 * curl) * (1 - tip * 0.25) * (0.96 + 0.06 * C.r2);
+    o.h = 0.6 * strands + 0.18 * lock + 0.15 * curl - 0.08 * tip;
+  } });
+}
+
+// ---- hand-woven wicker (rattan baskets: TOLKNING): weft strands ≈ 9 mm round stakes every 2.5 cm, each row offset
+// half a stake (basket weave), per-strand tone variation and a thin dark gap between the rows
+
+function wickerSet(res) {
+  const N = new TileableNoise(313);
+  const stakes = 4, rows = 7;
+  return genSet(`wicker@${res}`, { w: 256 * res, h: 256 * res, tile: [0.1, 0.063], normal: 3.5, res, pixel(u, v, o) {
+    const gy = v * rows, row = Math.floor(gy), fy = fract(gy);
+    const rr = ((row % rows) + rows) % rows;
+    const gx = u * stakes + (rr & 1) * 0.5, fx = fract(gx), col = ((Math.floor(gx) % stakes) + stakes) % stakes;
+    const round = Math.sin(Math.PI * clamp((fy - 0.06) / 0.88)) ** 0.55;
+    // over a stake the strand swells, between stakes it dips behind the next one
+    const over = 0.72 + 0.28 * Math.cos(Math.PI * 2 * (fx - 0.5));
+    const tone = 0.86 + 0.24 * hash2(rr, col, 71) + 0.06 * nz(N, u, v, 128, 6);
+    o.r = (0.42 + 0.58 * round * over) * tone;
+    o.h = round * over + 0.04 * nz(N, u, v, 64, 8);
+  } });
+}
+
+const _wicker = new Map();
+
+/** Wicker basket material: the materials.js rattan kind with the wicker maps (shared, cached per colour). */
+function wickerMaterial(hex, res) {
+  const key = `${hexOf(hex)}|${res}`;
+  let m = _wicker.get(key);
+  if (m) return m;
+  const set = wickerSet(res);
+  m = mat('rattan', hex).clone();
+  m.map = set.map;
+  m.normalMap = set.normalMap;
+  m.normalScale = new THREE.Vector2(1.2, 1.2);
+  m.roughnessMap = null;
+  m.roughness = 0.72;
+  m.alphaMap = null;
+  m.color.copy(linColor(hex)).multiplyScalar(1 / set.ref);
+  const mx = Math.max(m.color.r, m.color.g, m.color.b);
+  if (mx > 1.05) m.color.multiplyScalar(1.05 / mx);
+  m.name = `textile wicker ${hexOf(hex)}`;
+  m.userData = { shared: true, kind: 'rattan', hex: hexOf(hex), textile: true };
+  _wicker.set(key, m);
+  return m;
+}
+
 function reliefSet(id, res) {
   if (id === 'bobble') return { ...bobbleSet(res), ns: 1.1 };
   if (id === 'waffle') return { ...waffleSet(res), ns: 1.0 };
+  if (id === 'shaggy') return { ...shaggySet(res), ns: 1.3 };
   return null;
 }
 
@@ -1341,42 +1411,130 @@ function buildThrow(spec) {
 // ---------------------------------------------------------------------------------------------------------------
 // Poufs
 
+/** Wood kinds a pouf's wooden trim may use (other leg kinds – metals – give oak). */
+const TRIM_WOODS = new Set(['oak', 'white-oak', 'smoked-oak', 'walnut', 'black-oak', 'teak', 'ash', 'painted', 'lacquer']);
+/** Metal leg kinds (anything else → black metal for metal legs). */
+const LEG_METALS = new Set(['black-metal', 'brass', 'chrome', 'steel', 'bronze']);
+
+/**
+ * Pushes the vertices of a pouf top down round each button (x, z): −depth·exp(−(dist/0.035)²), only above yMin.
+ * Returns the geometry (normals recomputed).
+ */
+function dimple(geo, buttons, yMin, depth = 0.012) {
+  const p = geo.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const y = p.getY(i);
+    if (y < yMin) continue;
+    let dy = 0;
+    for (const [bx, bz] of buttons) dy = Math.min(dy, -depth * Math.exp(-(((p.getX(i) - bx) ** 2 + (p.getZ(i) - bz) ** 2) / 0.035 ** 2)));
+    if (dy) p.setY(i, y + dy);
+  }
+  p.needsUpdate = true;
+  geo.computeVertexNormals();
+  return geo;
+}
+
+/** Half-sizes { hx, hz } of a geometry's outline between heights y0 and y1 (its vertices in that slab). */
+function outlineIn(geo, y0, y1) {
+  const p = geo.attributes.position;
+  let hx = 0, hz = 0;
+  for (let i = 0; i < p.count; i++) {
+    const y = p.getY(i);
+    if (y < y0 || y > y1) continue;
+    hx = Math.max(hx, Math.abs(p.getX(i)));
+    hz = Math.max(hz, Math.abs(p.getZ(i)));
+  }
+  return { hx, hz };
+}
+
+/** Height of the top surface of geo at (x, z): the highest vertex among the nearest ones (where a button sits). */
+function topAt(geo, x, z) {
+  const p = geo.attributes.position;
+  let best = -Infinity, bestD = Infinity;
+  for (let i = 0; i < p.count; i++) {
+    const dd = (p.getX(i) - x) ** 2 + (p.getZ(i) - z) ** 2;
+    if (dd < bestD - 1e-8 || (Math.abs(dd - bestD) <= 1e-8 && p.getY(i) > best)) { bestD = dd; best = p.getY(i); }
+  }
+  return best;
+}
+
 function buildPouf(spec) {
   const { dims, params: P, colors: C, materials: M } = spec;
   const q = spec.quality || 'medium';
   const seg = SEG_OF[q] ?? 1, res = RES_OF[q] ?? 1;
-  const shape = ['round', 'square', 'cylinder'].includes(P.shape) ? P.shape : 'round';
+  const shape = ['round', 'square', 'cylinder', 'oval'].includes(P.shape) ? P.shape : 'round';
+  // oval = the round pouf built at Ø dims.w and stretched to dims.d at the end
+  const oval = shape === 'oval';
+  const tufted = P.tufted === true;
+  const buttons = [];
+  // a hand-woven rattan basket (TOLKNING): rattan body and lid, crisp edges, braided rims
+  const rattan = M.fabric === 'rattan' || P.texture === 'rattan';
+  // long-haired faux fur (Garnes): coarse shag locks and a slightly ragged silhouette
+  const shaggy = !rattan && P.texture === 'shaggy';
   const kind = fabricKind(M.fabric, P.texture, 'boucle');
-  const relief = isBobble(P.texture) ? 'bobble' : P.pattern === 'waffle' ? 'waffle' : null;
+  const relief = isBobble(P.texture) ? 'bobble' : P.pattern === 'waffle' ? 'waffle' : shaggy ? 'shaggy' : null;
   const knitScale = kind === 'knit' ? (P.texture === 'chunky' || P.chunky ? 3.2 : 2.2) : 1;
   const hex = C.fabric || '#ece7dd';
-  const fab = fabricMaterial(kind, hex, { relief, pattern: PATTERNED.has(P.pattern) ? P.pattern : null, patternColor: P.patternColor, scale: knitScale, res });
+  const fab = rattan ? wickerMaterial(hex, res) : fabricMaterial(kind, hex, { relief, pattern: PATTERNED.has(P.pattern) ? P.pattern : null, patternColor: P.patternColor, scale: knitScale, res });
   const pipKind = fabricKind(M.piping, null, kind);
   const pipe = mat(pipKind, C.piping || hex, pipKind === 'knit' ? { scale: knitScale } : undefined);
   const legsKind = M.legs, legsHex = C.legs || '#c9a978';
-  const legs = ['none', 'wood', 'plinth'].includes(P.legs) ? P.legs : 'none';
-  const legH = legs === 'none' ? 0 : clamp(P.legHeight ?? (legs === 'plinth' ? 0.03 : 0.1), 0.01, dims.h * 0.5);
+  const legs = ['none', 'wood', 'plinth', 'metal', 'block', 'sled'].includes(P.legs) ? P.legs : 'none';
+  // legs up to half the height – more on tall poufs, as long as 20 cm of body remains (Ella: 24 cm sled feet)
+  const legH = legs === 'none' ? 0 : clamp(P.legHeight ?? (legs === 'plinth' ? 0.03 : legs === 'block' ? 0.05 : legs === 'sled' ? 0.2 : 0.1), 0.01, Math.max(dims.h * 0.5, dims.h - 0.2));
   const W = dims.w, D = dims.d, Hb = Math.max(0.08, dims.h - legH);
   const g = new THREE.Group();
-  const R = Math.min(W, D) / 2;
+  const R = oval ? W / 2 : Math.min(W, D) / 2;
   let topY = dims.h;
+  let bulgeR = R, seamAt = null, edgeY = Hb, sqTrim = null;
 
   if (shape === 'square') {
-    const geo = K.cushion(W, Hb, D, { axis: 'y', puff: 0.06, round: 0.55, top: 1, bottom: 0.25, sides: 0.35, pinch: 0.08, seg: Math.max(8, Math.round(16 * seg)), bottomOrigin: true, grain: 'x' });
+    // hidden round / puff (edge radius as a fraction of half the height, top bulge): a crisp sofa-module ottoman
+    // (Quadrato) uses a small radius; the side bulge follows the radius (the default 0.55 keeps 0.35)
+    const sqRound = Number.isFinite(P.round) ? clamp(P.round, 0.05, 1) : 0.55;
+    const sqPuff = Number.isFinite(P.puff) ? clamp(P.puff, 0, 0.2) : 0.06;
+    const sqSides = sqRound >= 0.55 ? 0.35 : 0.35 * (sqRound / 0.55);
+    const geo = K.cushion(W, Hb, D, { axis: 'y', puff: sqPuff, round: sqRound, top: 1, bottom: 0.25, sides: sqSides, pinch: 0.08, seg: Math.max(8, Math.round(16 * seg)), bottomOrigin: true, grain: 'x' });
+    if (tufted) {
+      // a grid of buttons at 0.2 m pitch
+      const nx = Math.max(1, Math.floor((W - 0.12) / 0.2) + 1), nz = Math.max(1, Math.floor((D - 0.12) / 0.2) + 1);
+      for (let i = 0; i < nx; i++) for (let k = 0; k < nz; k++) buttons.push([(i - (nx - 1) / 2) * 0.2, (k - (nz - 1) / 2) * 0.2]);
+      dimple(geo, buttons, Hb * 0.75);
+      for (const b of buttons) b.push(topAt(geo, b[0], b[1]));
+    }
+    // the cushion's edges are rounded by ≈ round/2 · Hb (0.275·Hb by default): piping and trim follow its real
+    // outline, not W × D
+    const Re = (sqRound / 2) * Hb;
+    edgeY = Hb - Re - 0.03;
+    sqTrim = outlineIn(geo, edgeY - 0.005, edgeY + 0.035);
     geo.translate(0, legH, 0);
     g.add(K.partMesh(geo, fab, 'fabric'));
     if (P.piping) {
-      const r = Math.min(0.03, Hb * 0.15);
-      const pts = K.roundedRectShape(W - r * 0.6, D - r * 0.6, r * 1.4).getPoints(6).map((p) => new THREE.Vector3(p.x, legH + Hb - r * 0.35, p.y));
+      const yP = Hb - Re * 0.45;
+      const o = outlineIn(geo, legH + yP, legH + Hb + 1);
+      const r = clamp(Re * 1.1, 0.01, Math.min(o.hx, o.hz) * 0.9);
+      const pts = K.roundedRectShape(2 * o.hx - 0.004, 2 * o.hz - 0.004, r).getPoints(6).map((p) => new THREE.Vector3(p.x, legH + yP + 0.003, p.y));
       if (pts.length > 2 && pts[0].distanceTo(pts[pts.length - 1]) < 1e-6) pts.pop();
       g.add(K.partMesh(K.tube(pts, 0.0045, { radial: 6, closed: true, curve: 'catmull' }), pipe, 'piping'));
     }
   } else {
     const cyl = shape === 'cylinder';
-    const rcTop = cyl ? Math.min(0.025, Hb * 0.12) : Math.min(0.09, Hb * 0.3, R * 0.35);
-    const rcBot = cyl ? 0.008 : Math.min(0.035, Hb * 0.12);
-    const bulge = cyl ? 0.004 : R * 0.035;
-    const dome = cyl ? 0.004 : Math.min(0.018, Hb * 0.05);
+    let rcTop = cyl ? Math.min(0.025, Hb * 0.12) : Math.min(0.09, Hb * 0.3, R * 0.35);
+    let rcBot = cyl ? 0.008 : Math.min(0.035, Hb * 0.12);
+    let bulge = cyl ? 0.004 : R * 0.035;
+    let dome = cyl ? 0.004 : Math.min(0.018, Hb * 0.05);
+    if (rattan) {
+      // a woven basket: straight crisp walls, a flat lid
+      rcTop = Math.min(0.01, Hb * 0.05);
+      rcBot = 0.006;
+      bulge = 0.002;
+      dome = 0.002;
+    } else if (shaggy) {
+      // the fur rounds the edges off
+      rcTop = Math.max(rcTop, Math.min(0.06, Hb * 0.18, R * 0.3));
+      rcBot = Math.max(rcBot, Math.min(0.03, Hb * 0.1));
+      dome = Math.max(dome, Math.min(0.012, Hb * 0.04));
+    }
     const prof = [[0.001, 0]];
     const arcN = Math.max(4, Math.round(7 * seg));
     for (let k = 0; k <= arcN; k++) {
@@ -1401,7 +1559,7 @@ function buildPouf(spec) {
       const f = (k / arcN) * (Math.PI / 2);
       prof.push([R - rcTop + rcTop * Math.cos(f), Hb - rcTop + rcTop * Math.sin(f)]);
     }
-    const topN = Math.max(3, Math.round(5 * seg));
+    const topN = Math.max(3, Math.round((tufted ? 8 : 5) * seg));
     for (let k = 1; k <= topN; k++) {
       const f = k / topN;
       prof.push([(R - rcTop) * (1 - f) + 0.001 * f, Hb + dome * Math.sin((f * Math.PI) / 2)]);
@@ -1423,7 +1581,34 @@ function buildPouf(spec) {
         p.setXYZ(i, x * f, y, z * f);
       }
     }
+    if (shaggy) {
+      // ragged fur silhouette: ±1 cm out of the sides, a little up and down on the top (whole waves round the axis,
+      // so the lathe seam stays closed)
+      const p = geo.attributes.position;
+      for (let i = 0; i < p.count; i++) {
+        const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+        const r = Math.hypot(x, z);
+        if (r < 0.02) continue;
+        const a = Math.atan2(z, x);
+        const wave = 0.5 * Math.sin(5 * a + 2.1 + y * 9) + 0.3 * Math.sin(11 * a + 0.7 - y * 13) + 0.2 * Math.sin(17 * a + 4 + y * 23);
+        const side = smooth(R * 0.55, R * 0.95, r);
+        const f = 1 + (0.013 * wave * side) / r;
+        const topW = smooth(Hb - rcTop, Hb, y) * (0.5 + 0.5 * Math.sin(7 * a + r * 31));
+        p.setXYZ(i, x * f, y + 0.005 * topW * wave, z * f);
+      }
+    }
     geo.computeVertexNormals();
+    if (tufted) {
+      // centre + 6 at half the radius (+ 12 at 0.8 R on big poufs)
+      buttons.push([0, 0]);
+      for (let k = 0; k < 6; k++) buttons.push([Math.sin((k * Math.PI) / 3) * R * 0.5, Math.cos((k * Math.PI) / 3) * R * 0.5]);
+      if (R > 0.35) for (let k = 0; k < 12; k++) buttons.push([Math.sin(((k + 0.5) * Math.PI) / 6) * R * 0.8, Math.cos(((k + 0.5) * Math.PI) / 6) * R * 0.8]);
+      dimple(geo, buttons, Hb - rcTop * 0.6);
+      for (const b of buttons) b.push(topAt(geo, b[0], b[1]));
+    }
+    bulgeR = R + bulge;
+    seamAt = seamY;
+    edgeY = Hb - rcTop - 0.03;
     geo.translate(0, legH, 0);
     g.add(K.partMesh(geo, fab, 'fabric'));
     topY = legH + Hb + dome;
@@ -1431,11 +1616,113 @@ function buildPouf(spec) {
       const pr = R - rcTop * 0.3, py = legH + Hb - rcTop * 0.3;
       g.add(K.partMesh(K.torus(pr, 0.0045, { radial: 6, tubular: 96 }).rotateX(Math.PI / 2).translate(0, py, 0), pipe, 'piping'));
     }
+    if (rattan) {
+      // braided rims: round the lid edge, under the lid seam (storage) and round the foot
+      const rm = wickerMaterial(shadeHex(hex, 0.9), res);
+      const rims = [[R + 0.002, Hb - rcTop - 0.005, 0.007], [R + 0.001, 0.009, 0.0055]];
+      if (seamY != null) rims.push([R + 0.003, seamY - 0.008, 0.0065]);
+      const tub = Math.max(40, Math.round(64 * seg));
+      for (const [rr, y, t] of rims) g.add(K.partMesh(K.torus(rr, t, { radial: 5, tubular: tub }).rotateX(Math.PI / 2).translate(0, legH + y, 0), rm, 'fabric'));
+    }
   }
 
-  if (legs === 'wood') {
+  if (tufted) {
+    // buttons in the dimples (piping part, a shade darker)
+    const bm = mat(pipKind, shadeHex(C.piping || hex, 0.82));
+    for (const [x, z, y] of buttons) g.add(K.partMesh(K.sphere(0.009, { wSeg: 8, hSeg: 5 }), bm, 'piping', { position: [x, legH + y + 0.003, z] }));
+  }
+  if (P.handle === true) {
+    // leather strap loop hanging out of the front
+    const y0 = legH + 0.6 * Hb, zf = (shape === 'square' ? D / 2 : bulgeR) - 0.004;
+    const pts = [[-0.06, y0, zf], [-0.055, y0 - 0.012, zf + 0.022], [-0.03, y0 - 0.03, zf + 0.036], [0, y0 - 0.036, zf + 0.04], [0.03, y0 - 0.03, zf + 0.036], [0.055, y0 - 0.012, zf + 0.022], [0.06, y0, zf]];
+    const lm = pipKind === 'leather' ? pipe : mat('leather', C.piping && C.piping !== hex ? C.piping : '#7a5236');
+    g.add(K.partMesh(K.tube(pts, 0.006, { radial: 6, seg: 24 }), lm, 'piping'));
+  }
+  if (P.woodTrim === true) {
+    // wooden band round the lid seam (storage) or just under the top edge – four boards on a square pouf
+    const wk = TRIM_WOODS.has(legsKind) ? legsKind : 'oak';
+    const tm = mat(wk, TRIM_WOODS.has(legsKind) ? legsHex : '#b88a5a', { grain: 'x' });
+    const bh = 0.03, bt = 0.012;
+    if (shape === 'square') {
+      const y = legH + edgeY + bh / 2;
+      const { hx, hz } = sqTrim;
+      for (const sz of [-1, 1]) g.add(K.partMesh(K.roundedBox(2 * hx + 2 * bt, bh, bt, 0.003, 1, { grain: 'x' }), tm, 'legs', { position: [0, y, sz * (hz + bt / 2 - 0.003)] }));
+      for (const sx of [-1, 1]) g.add(K.partMesh(K.roundedBox(bt, bh, 2 * hz, 0.003, 1, { grain: 'z' }), tm, 'legs', { position: [sx * (hx + bt / 2 - 0.003), y, 0] }));
+    } else {
+      const y0 = legH + (seamAt != null ? seamAt - bh / 2 : edgeY);
+      const ri = bulgeR - 0.004, ro = ri + bt;
+      g.add(K.partMesh(K.lathe([[ri, y0], [ro, y0], [ro, y0 + bh], [ri, y0 + bh], [ri, y0]], { seg: Math.max(24, Math.round(32 * seg)) }), tm, 'legs'));
+    }
+  }
+  // legs outside the drum (round / cylinder / oval): params.legsOutside, legRise (how far up the side, m), legCount
+  const outside = P.legsOutside === true && (legs === 'metal' || legs === 'block') && shape !== 'square';
+  if (outside) {
+    // Spazio: black tubes Ø 22 mm round the drum from the floor up its side, joined by a cross under the body;
+    // Dalager: flat wooden slabs with an arched top, tangent to the drum
+    const n = clamp(Math.round(Number.isFinite(P.legCount) ? P.legCount : 4), 3, 6);
+    const yTop = legH + clamp(Number.isFinite(P.legRise) ? P.legRise : 0.15, 0, Hb * 0.85);
+    const lm = legs === 'metal' ? legMaterial(LEG_METALS.has(legsKind) ? legsKind : 'black-metal', LEG_METALS.has(legsKind) ? legsHex : '#1e1e1e') : legMaterial(legsKind, legsHex);
+    for (let k = 0; k < n; k++) {
+      const a = n === 4 ? Math.PI / 4 + (k * Math.PI) / 2 : Math.PI / 2 + (k * Math.PI * 2) / n;
+      const c = Math.cos(a), s = Math.sin(a);
+      if (legs === 'metal') {
+        const lr = 0.011, rl = bulgeR + lr;
+        g.add(K.partMesh(K.cylinder(lr, lr, yTop, { seg: 12 }), lm, 'legs', { position: [c * rl, 0, s * rl] }));
+        // a flat bar from the centre to the leg, just under the body
+        g.add(K.partMesh(K.box(rl, 0.008, 0.016).rotateY(-a).translate((c * rl) / 2, legH - 0.006, (s * rl) / 2), lm, 'legs'));
+      } else {
+        const bw = clamp(R * 0.36, 0.05, 0.11), bt = 0.025, ra = bw / 2;
+        const hs = Math.max(yTop, ra + 0.02);
+        const sh = new THREE.Shape();
+        sh.moveTo(-bw / 2, 0);
+        sh.lineTo(bw / 2, 0);
+        sh.lineTo(bw / 2, hs - ra);
+        sh.absarc(0, hs - ra, ra, 0, Math.PI, false);
+        sh.lineTo(-bw / 2, 0);
+        const slab = K.extrudeShape(sh, bt, { bevel: 0.003, curveSegments: Math.max(6, Math.round(10 * seg)), center: true });
+        const rs = bulgeR + bt / 2 + 0.001;
+        g.add(K.partMesh(slab.rotateY(Math.PI / 2 - a).translate(c * rs, 0, s * rs), lm, 'legs'));
+      }
+    }
+  } else if (legs === 'sled') {
+    // two flat steel Y-feet (Stressless Ella) under the ends of the long side: a vertical blade from the body that
+    // splits into two arms down to glides at the front and the back (30 × 9 mm flat bar)
+    const metalK = LEG_METALS.has(legsKind) ? legsKind : 'black-metal';
+    // polished chrome mirrors the dark studio and reads black: a satin finish shows it as steel
+    const lm = mat(metalK, LEG_METALS.has(legsKind) ? legsHex : '#1e1e1e', metalK === 'chrome' ? { grain: 'v', roughness: 0.32, metalness: 0.55 } : { grain: 'v' });
+    const swap = shape === 'square' && D > W;
+    const spanU = shape === 'square' ? (swap ? D : W) : 2 * R, spanV = shape === 'square' ? (swap ? W : D) : 2 * R;
+    const eu = spanU * 0.27, zF = spanV * 0.4, yJ = legH * 0.38;
+    const sw = 0.035, st = 0.009;
+    const parts = [];
+    for (const su of [-1, 1]) {
+      const u = su * eu;
+      parts.push(K.roundedBox(sw, legH + 0.01 - yJ, st, 0.002, 1).translate(u, yJ + (legH + 0.01 - yJ) / 2, 0));
+      for (const sv of [-1, 1]) {
+        const la = Math.hypot(yJ, zF) + st;
+        parts.push(K.roundedBox(sw, la, st, 0.002, 1).rotateX(Math.atan2(-sv * zF, yJ)).translate(u, yJ / 2 + 0.006, (sv * zF) / 2));
+        parts.push(K.roundedBox(sw * 1.1, 0.008, 0.035, 0.002, 1).translate(u, 0.004, sv * zF));
+      }
+    }
+    for (const p of parts) g.add(K.partMesh(swap ? p.rotateY(Math.PI / 2) : p, lm, 'legs'));
+  } else if (legs === 'metal' || legs === 'block') {
+    // thin metal rods splayed 5° (3 under a round pouf, 4 under a square or oval one), or four block feet
+    const n = shape === 'round' || shape === 'cylinder' ? 3 : 4;
+    const lm = legs === 'metal' ? legMaterial(LEG_METALS.has(legsKind) ? legsKind : 'black-metal', LEG_METALS.has(legsKind) ? legsHex : '#1e1e1e') : legMaterial(legsKind, legsHex);
+    for (let k = 0; k < n; k++) {
+      const a = n === 4 ? Math.PI / 4 + (k * Math.PI) / 2 : Math.PI / 2 + (k * Math.PI * 2) / n;
+      const rx = shape === 'square' ? (W / 2 - 0.05) * Math.SQRT2 * 0.72 : R * 0.62, rz = shape === 'square' ? (D / 2 - 0.05) * Math.SQRT2 * 0.72 : R * 0.62;
+      const pos = [Math.cos(a) * rx, 0, Math.sin(a) * rz];
+      if (legs === 'block') g.add(K.partMesh(K.roundedBox(0.05, legH + 0.01, 0.05, 0.006, 1, { bottom: true, grain: 'y' }), lm, 'legs', { position: pos }));
+      else {
+        const m = K.partMesh(K.cylinder(0.008, 0.008, legH + 0.012, { seg: 10 }), lm, 'legs', { position: pos });
+        m.rotation.set(Math.sin(a) * 5 * DEG, 0, -Math.cos(a) * 5 * DEG);
+        g.add(m);
+      }
+    }
+  } else if (legs === 'wood') {
     const lm = legMaterial(legsKind, legsHex);
-    const n = shape === 'square' ? 4 : 3;
+    const n = shape === 'square' || oval ? 4 : 3;
     for (let k = 0; k < n; k++) {
       const a = shape === 'square' ? Math.PI / 4 + (k * Math.PI) / 2 : Math.PI / 2 + (k * Math.PI * 2) / n;
       const rx = shape === 'square' ? (W / 2 - 0.05) * Math.SQRT2 : R * 0.68;
@@ -1450,6 +1737,19 @@ function buildPouf(spec) {
     const lm = legMaterial(legsKind, legsHex);
     if (shape === 'square') g.add(K.partMesh(K.roundedBox(W - 0.06, legH, D - 0.06, 0.004, 2, { bottom: true, grain: 'x' }), lm, 'legs'));
     else g.add(K.partMesh(K.cylinder(R * 0.86, R * 0.86, legH, { seg: Math.max(24, Math.round(40 * seg)) }), mat(WOOD_KINDS.has(legsKind) ? legsKind : 'oak', legsHex), 'legs'));
+  }
+  if (oval) {
+    // stretch the round pouf (legs, piping, buttons and all) to the oval: bake each mesh's transform, scale z
+    for (const m of g.children) {
+      m.updateMatrix();
+      const geo = m.geometry.clone().applyMatrix4(m.matrix);
+      geo.scale(1, 1, D / W);
+      m.geometry = geo;
+      m.position.set(0, 0, 0);
+      m.rotation.set(0, 0, 0);
+      m.scale.set(1, 1, 1);
+    }
+    return K.finishModel(g, { seatY: topY, surfaces: [{ y: topY, w: +(W * 0.65).toFixed(3), d: +(D * 0.65).toFixed(3), center: [0, 0] }] });
   }
   const top = shape === 'square' ? Math.min(W, D) * 0.75 : R * 1.3;
   return K.finishModel(g, { seatY: topY, surfaces: [{ y: topY, w: top, d: top, center: [0, 0] }] });
@@ -2202,13 +2502,18 @@ export const archetypes = {
       materials: { fabric: 'teddy', piping: 'teddy', legs: 'oak' },
     },
     params: {
-      shape: ENUM([['round', 'Rund'], ['cylinder', 'Sylinder'], ['square', 'Firkantet']], 'Form', 'round'),
-      texture: ENUM(TEXTURE_OPTIONS, 'Overflate', 'teddy'),
-      legs: ENUM([['none', 'Ingen ben'], ['wood', 'Treben'], ['plinth', 'Sokkel']], 'Understell', 'none'),
-      legHeight: NUM(0.01, 0.2, 0.01, 'Benhøyde', ' m'),
+      shape: ENUM([['round', 'Rund'], ['cylinder', 'Sylinder'], ['square', 'Firkantet'], ['oval', 'Oval']], 'Form', 'round'),
+      texture: ENUM([...TEXTURE_OPTIONS, ['shaggy', 'Langhåret pels'], ['rattan', 'Flettet rotting']], 'Overflate', 'teddy'),
+      legs: ENUM([['none', 'Ingen ben'], ['wood', 'Treben'], ['plinth', 'Sokkel'], ['metal', 'Metallben'], ['block', 'Klosser'], ['sled', 'Y-føtter i metall']], 'Understell', 'none'),
+      legHeight: NUM(0.01, 0.3, 0.01, 'Benhøyde', ' m'),
+      legsOutside: BOOL('Ben utenpå siden (metallben/klosser)'),
+      legRise: { ...NUM(0, 0.3, 0.01, 'Ben opp langs siden', ' m'), default: 0.15, requires: 'legsOutside' },
       stitchedLines: BOOL('Stikninger (kanaler)'),
       storage: BOOL('Oppbevaring (lokk)'),
       piping: BOOL('Kantbånd (piping)'),
+      tufted: BOOL('Knapper på toppen'),
+      handle: BOOL('Stropp/hank'),
+      woodTrim: BOOL('Trelist rundt toppen'),
     },
     dimsRange: { w: [0.3, 1.0], d: [0.3, 1.0], h: [0.2, 0.6] },
     build: buildPouf,

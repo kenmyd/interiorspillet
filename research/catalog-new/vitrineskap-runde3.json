@@ -1,0 +1,426 @@
+[
+  {
+    "id": "bohus-wolin-vitrineskap-90x40",
+    "category": "vitrineskap",
+    "name": "Wolin vitrineskap 90x40",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/vitrineskap/wolin-vitrineskap-90x40-3",
+    "priceNok": 12699,
+    "salePriceNok": 7499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 322845, hvitoljet eikefiner): 7 499 kr (før 12 699 kr, kampanje «WOLIN-serien i hvitoljet» til 30.11.2026). Røykfarget (varenr. 322844) 12 699 kr uten kampanje. Leveres flatpakket; ingen innebygd belysning.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.9,
+      "d": 0.4,
+      "h": 1.8
+    },
+    "archetype": "display-cabinet",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legH": 0.25,
+      "doors": 2,
+      "doorLayout": "side-by-side",
+      "doorStyle": "glass-framed",
+      "frameW": 0.045,
+      "glassSides": false,
+      "shelves": 3,
+      "shelfMaterial": "wood",
+      "drawers": 1,
+      "drawerPosition": "bottom",
+      "bottomHeight": 0,
+      "led": false,
+      "decor": true,
+      "handle": "bar",
+      "handleCutout": false,
+      "top": "same",
+      "corners": "square",
+      "legFrame": true,
+      "glassBars": 1
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eikefiner",
+        "colors": {
+          "body": "#ccb196",
+          "front": "#ceb398",
+          "top": "#d2b89e",
+          "legs": "#c6aa8e",
+          "handle": "#c2a68a"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/vitrineskap/wolin-vitrineskap-90x40-3",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/WOLIN/595348/image-thumb__595348__PDP-Product/313974%20-%20Wolin%20vitrineskap%2090x40%20H180%202%20glassd%C3%B8rer%201%20skuff%203%20hyllerplater%20hvitoljet%20eikefiner%20-%207.8251778e.jpg"
+      },
+      {
+        "name": "Røykfarget eikefiner",
+        "colors": {
+          "body": "#5a4130",
+          "front": "#5e4433",
+          "top": "#5a4130",
+          "legs": "#563e2e",
+          "handle": "#4a3527"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/vitrineskap/wolin-vitrineskap-90x40-2",
+        "priceNok": 12699,
+        "priceConfidence": "checked",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/WOLIN/350652/image-thumb__350652__PDP-Product/313975%20-%20Wolin%20vitrineskap%2090x40%20H180%202%20glassd%C3%B8rer%201%20skuff%203%20hyllerplater%20eikefiner%20r%C3%B8ykfarget%20-%206.05612c45.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "shapeNote": "Hver glassdør har én vannrett sprosse midt på. Et lite loddrett trehåndtak på den ene døren og to ovale innfreste grep på skuffen; understellet er en egen eikeramme med rette ben (25 cm fra Bohus).",
+    "description": "Vitrineskap i hvitoljet eikefiner med to sprossede glassdører, tre trehyller og en bred skuff nederst, på et understell med 25 cm høye ben.",
+    "why": "Samme Wolin-serie som skjenken og TV-benken; i stua viser det frem servise og glass, og den lyse eiken holder seg rolig mot SAND-veggene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/WOLIN/595348/image-thumb__595348__PDP-Product/313974%20-%20Wolin%20vitrineskap%2090x40%20H180%202%20glassd%C3%B8rer%201%20skuff%203%20hyllerplater%20hvitoljet%20eikefiner%20-%207.8251778e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): 7 499 kr (før 12 699, kampanje til 30.11) i hvitoljet, røykfarget 12 699 kr, B90 D40 H180, benhøyde 25 cm, 2 dører, 1 skuff, 3 hyller, eikefiner, heltre eik og glass, bilde, varenr. 322845/322844, status Not Expired (sortiment G1). Anslått: rammebredde, skuffehøyde og fargene fra produktbildene."
+  },
+  {
+    "id": "bohus-elements-vitrineskap-136x42",
+    "category": "vitrineskap",
+    "name": "Elements vitrineskap 136x42",
+    "brand": "Kristensen & Kristensen",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/vitrineskap/elements-vitrineskap-136x42",
+    "priceNok": 43099,
+    "salePriceNok": 32324,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 288767, oljet ask smoked, farge C11): 32 324 kr (før 43 099 kr, kampanje «ELEMENTS-serien i farge C6, C11, C20, C44 og 518» til 30.11.2026). Håndlaget dansk design fra Kristensen & Kristensen; leveres montert, bestillingsvare.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 1.36,
+      "d": 0.42,
+      "h": 1.42
+    },
+    "archetype": "display-cabinet",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legStyle": "block",
+      "legH": 0.24,
+      "doors": 3,
+      "doorLayout": "side-by-side",
+      "doorStyle": "glass-framed",
+      "frameW": 0.04,
+      "glassSides": true,
+      "shelves": 2,
+      "shelfMaterial": "glass",
+      "drawers": 0,
+      "drawerPosition": "bottom",
+      "bottomHeight": 0,
+      "led": false,
+      "decor": true,
+      "handle": "bar",
+      "handleCutout": false,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Mørk grå oljet ask (C11)",
+        "colors": {
+          "body": "#4e463a",
+          "front": "#50483c",
+          "top": "#4e463a",
+          "legs": "#4a4236",
+          "handle": "#3e372e"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/vitrineskap/elements-vitrineskap-136x42",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Kristensen%20%26%20Kristensen%20A-S/Produkter/ELEMENTS/290300/image-thumb__290300__PDP-Product/288767%20-%20Elements%20vitrineskap%20136x42%20H142%203%20d%C3%B8rer%20oljet%20heltre%20ask%20m%C3%B8rk%20gr%C3%A5%20c11%20med%20treben%20-%201.f487975e.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "shapeNote": "Tre like glassdører i smale askerammer med lange, loddrette trehåndtak; glass også i begge sider og to glasshyller. Rette treben, 24 cm fra Bohus.",
+    "description": "Lavt og bredt vitrineskap i oljet, røkt ask med tre glassdører, glass i sidene og to glasshyller, på treben. Håndlaget dansk design.",
+    "why": "Med 142 cm høyde passer det under vinduet eller langs den lave delen av skråtaket i stua, der et høyt vitrineskap ikke får plass.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Kristensen%20%26%20Kristensen%20A-S/Produkter/ELEMENTS/290300/image-thumb__290300__PDP-Product/288767%20-%20Elements%20vitrineskap%20136x42%20H142%203%20d%C3%B8rer%20oljet%20heltre%20ask%20m%C3%B8rk%20gr%C3%A5%20c11%20med%20treben%20-%201.f487975e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): 32 324 kr (før 43 099, kampanje til 30.11), B136 D42 H142, benhøyde 24 cm, 3 dører, 2 hyller, ask smoked (mørk grå oljet), bilde, varenr. 288767, status Not Expired (bestillingsvare GT). Anslått: rammebredde og fargen fra produktbildet."
+  },
+  {
+    "id": "bohus-madrid-vitrineskap-78x33",
+    "category": "vitrineskap",
+    "name": "Madrid vitrineskap 78x33",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/vitrineskap/madrid-vitrineskap-78x33-4",
+    "priceNok": 6699,
+    "salePriceNok": 3349,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 328705, matt svart): 3 349 kr (før 6 699 kr, kampanje «MADRID-serien i svart og hvit» til 30.11.2026). Hvit (varenr. 249673) samme pris og kampanje; eik (328704) 5 299 kr og cashmere (317865) 6 699 kr uten kampanje. Leveres flatpakket med to sett grep.",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.78,
+      "d": 0.33,
+      "h": 1.99
+    },
+    "archetype": "display-cabinet",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legStyle": "block",
+      "legH": 0.08,
+      "doors": 2,
+      "doorLayout": "side-by-side",
+      "doorStyle": "glass-framed",
+      "frameW": 0.05,
+      "glassSides": false,
+      "shelves": 3,
+      "shelfMaterial": "wood",
+      "drawers": 3,
+      "drawerPosition": "bottom",
+      "bottomHeight": 0.58,
+      "led": false,
+      "decor": true,
+      "handle": "knob",
+      "handleCutout": false,
+      "top": "same",
+      "corners": "square",
+      "glassBars": 2
+    },
+    "variants": [
+      {
+        "name": "Matt svart",
+        "colors": {
+          "body": "#464647",
+          "front": "#444445",
+          "top": "#464647",
+          "legs": "#424243",
+          "handle": "#ad7a5e"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/vitrineskap/madrid-vitrineskap-78x33-4",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/132106/image-thumb__132106__PDP-Product/249674%20-%20Madrid%20vitrineskap%2078x33%20H199%202%20d%C3%B8rer%203%20skuffer%203%20hyller%20svart%20foliert%20sponplate%20-%206.3dd7903c.jpg"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f2f2f0",
+          "front": "#f2f2f0",
+          "top": "#f2f2f0",
+          "legs": "#ededeb",
+          "handle": "#ad7a5e"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/vitrineskap/madrid-vitrineskap-32x78",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/132090/image-thumb__132090__PDP-Product/249673%20-%20Madrid%20vitrineskap%2078x33%20H199%202%20d%C3%B8rer%203%20skuffer%203%20hyller%20hvit%20foliert%20sponplate%20-%209.85b6bb26.jpg"
+      },
+      {
+        "name": "Eik",
+        "colors": {
+          "body": "#c1a78c",
+          "front": "#c5aa8d",
+          "top": "#c8ae93",
+          "legs": "#b79c82",
+          "handle": "#1d1d1d"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/vitrineskap/madrid-vitrineskap-78x33-5",
+        "priceNok": 5299,
+        "priceConfidence": "checked",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/321369/image-thumb__321369__PDP-Product/308428%20-%20Madrid%20vitrineskap%2078x32%20H199%202%20d%C3%B8rer%203%20skuffer%20foliert%20spon%20eik%20-%206.bf3de63f.jpg"
+      },
+      {
+        "name": "Cashmere",
+        "colors": {
+          "body": "#c9c0b7",
+          "front": "#c9c0b7",
+          "top": "#c9c0b7",
+          "legs": "#c4bbb2",
+          "handle": "#5e4331"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/vitrineskap/madrid-vitrineskap-78x33-1",
+        "priceNok": 6699,
+        "priceConfidence": "checked",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/344728/image-thumb__344728__PDP-Product/317865%20-%20Madrid%20vitrineskap%2078x33%20H199%202%20glassd%C3%B8rer%203%20skuffer%203%20hyllerplater%20foliert%20spon%20cashmere%20-%203.20bdcdc3.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "shapeNote": "Glassdørene har dekorative sprosser i rutemønster (vist forenklet som vannrette sprosser). Tre skuffer med lærstropp i en lukket del på ca. 58 cm nederst (anslått); sidene går ned som korte ben.",
+    "description": "Høyt og smalt vitrineskap i foliert spon med to sprossede glassdører øverst og tre skuffer nederst. Lærstropper eller sølvknotter følger med.",
+    "why": "Tar lite gulvplass (78 × 33 cm) og passer ved spisebordet eller i kjellerstua; skuffene gir lukket plass til duker og lys, glasset viser frem det fine.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/132106/image-thumb__132106__PDP-Product/249674%20-%20Madrid%20vitrineskap%2078x33%20H199%202%20d%C3%B8rer%203%20skuffer%203%20hyller%20svart%20foliert%20sponplate%20-%206.3dd7903c.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): matt svart og hvit 3 349 kr (før 6 699, kampanje til 30.11), eik 5 299 kr, cashmere 6 699 kr, B78 D33 H199, 2 dører, 3 skuffer, 3 hyller, foliert spon, bilde, varenr. 328705/249673/328704/317865, status Not Expired. Anslått: høyden på skuffedelen og fargene fra produktbildene (fargene følger Madrid-seriens øvrige møbler i katalogen)."
+  },
+  {
+    "id": "ikea-fabrikor-vitrineskap-57x150",
+    "category": "vitrineskap",
+    "name": "FABRIKÖR Vitrineskap 57x150 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/fabrikoer-vitrineskap-mork-gra-00242278/",
+    "priceNok": 1995,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 002.422.78, mørk grå): 1 995 kr, ingen kampanje. Døren kan låses; finnes også i mørk gul (ikke tatt med).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.57,
+      "d": 0.47,
+      "h": 1.5
+    },
+    "archetype": "display-cabinet",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legStyle": "metal-frame",
+      "legH": 0.33,
+      "doors": 1,
+      "doorLayout": "side-by-side",
+      "doorStyle": "glass-framed",
+      "frameW": 0.022,
+      "glassSides": true,
+      "shelves": 2,
+      "shelfMaterial": "glass",
+      "drawers": 0,
+      "drawerPosition": "bottom",
+      "bottomHeight": 0,
+      "led": false,
+      "decor": true,
+      "handle": "knob",
+      "handleCutout": false,
+      "top": "same",
+      "corners": "square",
+      "legCross": true
+    },
+    "variants": [
+      {
+        "name": "Mørk grå",
+        "colors": {
+          "body": "#4f4e4b",
+          "front": "#4f4e4b",
+          "top": "#4f4e4b",
+          "legs": "#4a4946",
+          "handle": "#c4c6c8"
+        },
+        "materials": {
+          "body": "black-metal",
+          "front": "black-metal",
+          "top": "black-metal",
+          "legs": "black-metal",
+          "handle": "chrome"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "shapeNote": "Smal stålramme rundt dør, sider og topp med glass i døren og begge sider; to glasshyller. Skapet står på fire tynne, litt skrå stålben med kryss-stag nederst (benhøyde ca. 33 cm, anslått fra bildet).",
+    "description": "Retroinspirert vitrineskap i pulverlakkert stål med glass på tre sider, to flyttbare glasshyller og låsbar dør, på slanke ben med kryss-stag.",
+    "why": "Et smalt og lett skap til samlerobjekter i kjellerstua eller på soverommet; den mørkegrå stålrammen spiller på de svarte metalldetaljene i huset.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/fabrikoer-vitrineskap-mork-gra__0644199_pe702478_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»): 1 995 kr, B57 D47 H150, stål med pulverlakk og herdet glass, maks 10 kg per hylle, bilde, art.nr. 002.422.78, på lager. Anslått: benhøyde og fargen fra produktbildet."
+  },
+  {
+    "id": "skeidar-mistral-skap-veggmontert-45x33",
+    "category": "vitrineskap",
+    "name": "Mistral skap",
+    "brand": "Hammel",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/vitrineskap/mistral-skap?VariationId=V_55043271203",
+    "priceNok": 10999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no-produktdata, art.nr. 3271203, beige lakkert): 10 999 kr, ingen kampanje. Veggmontert; bestillingsvare på nett, leveringstid ca. 6 uker. Mistral-serien finnes i mange farger og treslag (ikke tatt med).",
+    "priceConfidence": "checked",
+    "dims": {
+      "w": 0.4535,
+      "d": 0.325,
+      "h": 0.416
+    },
+    "archetype": "display-cabinet",
+    "mount": "wall",
+    "params": {
+      "base": "wall",
+      "mountHeight": 1.3,
+      "legH": 0,
+      "doors": 1,
+      "doorLayout": "side-by-side",
+      "doorStyle": "glass-full",
+      "glassSides": false,
+      "shelves": 1,
+      "shelfMaterial": "wood",
+      "drawers": 0,
+      "drawerPosition": "bottom",
+      "bottomHeight": 0,
+      "led": false,
+      "decor": true,
+      "handle": "knob",
+      "handleCutout": false,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Beige lakkert",
+        "colors": {
+          "body": "#c8c0aa",
+          "front": "#c8c0aa",
+          "top": "#cbc3ad",
+          "legs": "#c8c0aa",
+          "handle": "#c4c6c8"
+        },
+        "materials": {
+          "body": "lacquer",
+          "front": "lacquer",
+          "top": "lacquer",
+          "legs": "lacquer",
+          "handle": "chrome"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "shapeNote": "Liten kasse med svakt avrundede kanter, helglassdør uten ramme (41,8 × 38 cm) og en liten krom knott; én flyttbar hylle. Monteringshøyde (underkant) 1,30 m er anslått.",
+    "description": "Lite veggmontert skap fra danske Hammel med klar glassdør, én hylle og beige lakkert finish; kan kombineres med andre Mistral-moduler.",
+    "why": "Henger på veggen i stua eller gangen og holder små skatter samlet uten å ta gulvplass; den beige lakken ligger nær SAND-fargen på veggene.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/3271203/3271203_V02010952-MistralSkap1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21 (sidens innebygde produktdata): 10 999 kr, B45,35 D32,5 H41,6, veggmontert, glassdør 41,8 × 38 cm, lakkert, bestillingsvare ca. 6 uker, bilde, art.nr. 3271203. Anslått: monteringshøyde og fargen fra produktbildet."
+  }
+]

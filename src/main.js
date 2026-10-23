@@ -1,6 +1,7 @@
 import './style.css';
 import './ui/ui.css';
 import { Settings } from './core/Settings.js';
+import { device, deviceDefaults } from './core/Device.js';
 import { AudioSystem } from './core/Audio.js';
 import { Menu } from './ui/Menu.js';
 import { LoadingScreen } from './ui/Loading.js';
@@ -28,7 +29,11 @@ const params = new URLSearchParams(location.search);
 /** A dev flag is on unless it is 0 / false / no / nei (?nohelp, ?nohelp=1 …). */
 const truthy = (v) => v != null && !['0', 'false', 'no', 'nei'].includes(String(v).trim().toLowerCase());
 
-const settings = new Settings();
+// the device decides a few defaults (a phone starts with low graphics quality) and which controls are offered
+const settings = new Settings({ defaults: deviceDefaults(device) });
+document.documentElement.dataset.device = device.kind;
+// Safari zooms the page on a pinch whatever the viewport says: the game is never zoomed (panels scroll as before)
+for (const type of ['gesturestart', 'gesturechange']) document.addEventListener(type, (e) => e.preventDefault(), { passive: false });
 const audio = new AudioSystem(settings);
 const menu = new Menu(uiRoot, { settings, audio, image: MENU_IMAGE });
 let game = null;
@@ -133,9 +138,11 @@ async function startGame(mode = 'original', { menu: fromMenu = false } = {}) {
   }
   loading.hide();
   applyDoorParam(game);
-  game.start();
-  // ?nohelp=1: no controls overview at the start (tests and screenshots; the setting itself is untouched)
-  if (truthy(params.get('nohelp'))) game.hud?.showHelp?.(false);
+  // ?nohelp=1: no controls overview / «Slik styrer du» at the start (tests and screenshots; the setting is untouched).
+  // From the start screen the popup explains the controls; ?play=1 (tests) keeps the HUD help as before.
+  const nohelp = truthy(params.get('nohelp'));
+  game.start({ intro: (fromMenu || truthy(params.get('intro'))) && !nohelp });
+  if (nohelp) game.hud?.showHelp?.(false);
 }
 
 /**
@@ -207,7 +214,9 @@ function applyDoorParam(g) {
  * view (yaw 0 looks along −z = east, 90 = north/−x, −90 = south/+x toward the big windows); &view=walk|orbit|plan
  * (Editor); &design=<saved name>; &start=continue (last session instead of today's room); &doors=open|closed|<ids>
  * (every door open / closed, or the listed ones open – applyDoorParam); &nohelp=1 (no controls overview at the start);
- * &nowarm=1 (Game: skip compiling the catalogue's material variants); &spawn=saved|outside|inside|fresh (Game: the
+ * &nowarm=1 (Game: skip compiling the catalogue's material variants); &intro=1 (the popup «Slik styrer du» also with
+ * ?play=1); &device=phone|tablet|touch-pc|pc (Device.js: pretend to be that device – the touch controls in a desktop
+ * browser); &spawn=saved|outside|inside|fresh (Game: the
  * saved position (else outside) / the forecourt by the front door / the dining area / outside ignoring the saved
  * position – also ute, lagret, inne, stua; ?play=1 alone = inside, the start screen = saved). With &pos= y may be any
  * level's floor (the room and its level follow from y).

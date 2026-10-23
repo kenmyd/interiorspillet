@@ -45,9 +45,13 @@ fra en annen modul som ikke finnes ennå, så bruk kontrakten slik den står her
   planen sier det;
 - skriver «Målelista» (alle `estimated`-felt) som generert avsnitt i `research/room-spec-notes.md`.
 
-Kategorinøkler (katalogrekkefølge): `sofa`, `lenestol`, `bord`, `stoler`, `skjenk`, `tvbenk`, `vitrineskap`, `hylle`, `seng`,
-`nattbord`, `kommode`, `garderobe`, `speil`, `bad`, `gang`, `taklampe`, `smalamper`, `tekstil`, `teppe`, `solskjerming`,
-`akustikk`, `smatt` (372 produkter; se `notes/katalog-hele-huset.md`).
+Kategorinøkler (katalogrekkefølge = `normalize-data.mjs CATEGORY_KEYS`, 24): `sofa`, `lenestol`, `bord`, `stoler`, `skjenk`,
+`tvbenk`, `vitrineskap`, `hylle`, `seng`, `nattbord`, `kommode`, `garderobe`, `speil`, `bad`, `gang`, `taklampe`, `spotter`,
+`smalamper`, `tekstil`, `teppe`, `solskjerming`, `akustikk`, `kunst`, `smatt` (597 produkter etter runde 3; se
+`notes/katalog-hele-huset.md` og `notes/katalog-runde3.md`). Katalogen bygges fra `research/catalog/*.json` og
+`research/catalog-new/*.json` (runde 3: `*-runde3*.json`, én eier per fil) pluss `src/data/scripts/fixes.mjs`, alltid med
+`node src/data/scripts/normalize-data.mjs --only=catalog` (deterministisk; en ny kjøring gir ingen endring).
+`tools/test-design.mjs` har `EXPECT` med antallet per kategori (`QA_PRINT_EXPECT=1` skriver det ut).
 Bilder som spillet viser (fotomontasjer, stuebilder til fotosammenligning, utsikt) ligger nedskalert under
 `public/img/…` og refereres med **relative** stier (`img/forslag/B.jpg`) – bygget skal virke i en undermappe.
 
@@ -57,8 +61,11 @@ Bilder som spillet viser (fotomontasjer, stuebilder til fotosammenligning, utsik
 src/
   main.js, config.js, style.css               (scaffold)
   core/      Events, Input, Collision, Interaction, Highlight, Settings, Audio, Music, Game   (scaffold; Game: integrasjon; Music: bakgrunnsmusikk)
+             Device (enhetsgjenkjenning + inputMode: touch eller mus/tastatur akkurat nå)
   player/    PlayerController.js, Seats.js    (scaffold; Seats: sitte i stoler/sofaer – E over et møbel med seatY, E/WASD reiser deg)
+             AutoWalk.js (touch «Trykk for å gå dit»)
   ui/        dom, Hud, PauseMenu, SettingsPanel, Loading, Dialog, icons, controlsHelp, ui.css (scaffold)
+             TouchControls (joystick/knapper), ControlsIntro (popupen «Slik styrer du»)
   world/     proctex, surfaces, shapeUtil, propMaterials, Door                         (scaffold)
   data/      *.json                            (FOUNDATION)
   catalog/index.js                             (FOUNDATION)
@@ -86,6 +93,14 @@ src/
     shading.js      solskjerming på vinduer                          (SHADING)
     walldesigns.js  elementene i veggforslagene                     (WALLS)
     surfaceslats.js spiler på vegger og tak (overflatefinish) → bokser   (FINISH)
+    spots.js        downlights, takspotter, spotskinner, veggspotter, bildebelysning   (runde 3, P02)
+    desks.js        skrivebord · stools.js krakker og kontorstoler · tasklamps.js arbeidslamper   (runde 3, P06/P07/P08)
+    artlayout.js    rammer, passepartout, mål og oppsett for bilder og bildevegger (ren JS)   (runde 3, P04)
+    artmotifs.js    motivregisteret (nøkkel → maler, varianter); art/graphic.js, art/painted.js, art/paintkit.js er malerne (P03)
+    artcache.js     tekstur-cache for motiver/atlas/egne bilder med pikselbudsjett (P04)
+    artcustom.js    tekstur for et eget bilde: plassholder → bildet tegnes inn i samme canvas, «mangler» skravert (P04)
+    artImages.js    bildekilden modellene leser egne bilder fra (`setArtImageSource`, `getArtImageSource`) (P05)
+  catalog/facts.js  «Fakta»-linjer per familie: spotfacts.js (lys, IP, pakker), artfacts.js (ramme, passepartout, glass)
   design/
     DesignState.js  hele designet som data + angre/gjør om          (FOUNDATION)
     Finishes.js     spiler på vegger/tak som data: utseender, mål, flaten de dekker (ren JS)   (FINISH)
@@ -93,8 +108,14 @@ src/
     Acoustics.js    etterklangstid (Sabine)                          (FOUNDATION)
     Saves.js        lagring (localStorage), eksport/import          (FOUNDATION)
     Placement.js    plassering og flytting                          (INTERACT)
+    placementHooks.js  wallSnap: bildelampe over et bilde på samme vegg (runde 3, P01)
     Selection.js    velge objekter/vegger/vinduer med musa          (INTERACT)
     ViewModes.js    gå / oversikt (dukkehus) / plan                 (INTERACT)
+    grid.js         rekke/rutenett av like armaturer: GRIDABLE, gridOf, itemQuantity, cellWorld (ren JS)  (runde 3)
+    gridOps.js      «Fordel jevnt i rommet» (distributeGrid) og «Del opp i enkeltspotter» (splitGrid)   (P01)
+    ImageStore.js   egne bilder i IndexedDB (`interiorspillet-images`), opplasting, eksport/import, opprydding (P05)
+    imageArt.js     rene hjelpere for egne bilder: valg ↔ params, mål, skarphet (P05)
+  home/lightclusters.js  planSpotSeats og klyngene for armaturene i designet (ren JS, P01)
   ui/ (nye)
     panelKit.js     felles paneler, faner, kort, fargevelger, glidere (FOUNDATION)
     panels.css      stil for de nye panelene (bygger på ui.css)      (FOUNDATION)
@@ -102,6 +123,9 @@ src/
     WallPanel.js, PhotoCompare.js               (WALLS)
     WindowPanel.js                              (SHADING)
     LightPanel.js, SunPanel.js                  (LIGHTING)
+    ImageUpload.js, imageInspector.js, customArtShopping.js   egne bilder: dialog, Inspector «Bilde», handleliste (P05)
+    inspector/gridSection.js   Inspector «Antall og rutenett» + katalogknappen «Legg inn flere …» (P01)
+    inspectorKit.js            hjelpere for Inspector-utvidelser (throttle, blurSoon, seg, cm, clone)
 public/img/…        nedskalerte bilder           (FOUNDATION; WALLS legger til miniatyrer ved behov)
 deploy/             .htaccess-mal, README for opplasting (INTEGRATION)
 ```
@@ -210,33 +234,63 @@ til en grå boks hvis noe kaster), `archetypesFor(category)`.
 ### Arketyper per fil
 - **seating.js**: `tub-swivel wingback lounge-wood club-box recliner shell-legs rocking dining-chair bar-stool
   sofa-modular-l sofa-curved sofa-straight`
+- **chairs.js**: `chair shell-chair` · **stools.js**: `stool office-chair` (runde 3)
 - **tables.js**: `coffee-table-rect coffee-table-round-nesting dining-table-oval side-table-round side-table-c
-  side-table-nesting sideboard tv-bench wall-shelf display-cabinet` (vitrineskap: gulv eller vegg – `mounts`)
+  side-table-nesting coffee-table sideboard tv-bench display-cabinet wall-shelf` (vitrineskap: gulv eller vegg – `mounts`;
+  `coffee-table` er runde 3s sofabord og småbord: form, kant, understell, hylle, skuffer, sett) · **desks.js**: `desk`
+- **storage.js**: `wardrobe dresser bedside-table shoe-cabinet wall-cabinet mirror-cabinet bookcase` (bygger på
+  tables.js `buildCabinet`) · **beds.js**: `bed headboard bench` · **fixtures.js**: `mirror-floor towel towel-ladder
+  towel-rail bath-accessory coat-rack coat-stand` (parametre: `notes/katalog-hele-huset.md` §3)
 - **lamps.js**: `pendant-dome pendant-globe pendant-cylinder pendant-linear pendant-multi pendant-tiered
   pendant-woven pendant-mushroom pendant-slatted ceiling-ring chandelier-molecule floor-arc floor-tripod floor-pole-shade
   floor-mushroom floor-uplight floor-globe floor-reading table-mushroom table-shade table-globe table-portable
-  table-dome wall-sconce wall-arm`
+  table-dome wall-sconce wall-arm` · **tasklamps.js**: `table-task` (runde 3)
+- **spots.js** (runde 3): `downlight downlight-surface spot-ceiling spot-track spot-wall picture-light`. Lysene har
+  `cluster` ('downlight' for downlights og takspotter, 'fixture' for skinner og veggspotter) og `fitting`
+  ('recessed'|'surface'|'spot'|'track'|'wall-spot'|'picture'), alle mesher `noShadow`, `thumbView` 'below' for
+  downlights og 'under' for resten. Takspot med rund plate: platen er 0,78 × spennet og spottene sitter på korte stammer
+  under den (godkjent avvik). Bildebelysning: lysflaten («wash»-decal) lyser opp bildet, mens selve spotlyset peker ned
+  og ut i rommet (godkjent avvik fra lysplanen; `lightbudget` E5 tester dette).
 - **textiles.js**: `cushion throw pouf rug`
-- **decor.js**: `plant-floor plant-small vase art-frame mirror candle-holder basket tv speaker slat-panel
-  fabric-panel acoustic-art felt-shape ceiling-absorber`
-- **beds.js**: `bed headboard bench` · **storage.js**: `wardrobe dresser bedside-table shoe-cabinet wall-cabinet
-  mirror-cabinet bookcase` · **chairs.js**: `chair` · **fixtures.js**: `mirror-floor towel towel-ladder towel-rail
-  bath-accessory coat-rack coat-stand` (parametre: `notes/katalog-hele-huset.md` §3)
+- **decor.js**: `plant-floor plant-small vase art-frame art-set mirror candle-holder basket tv speaker slat-panel
+  fabric-panel acoustic-art felt-shape ceiling-absorber`. `art-frame`/`art-set`: motivet males av `artmotifs.js`
+  (nøkkel `motif`, `seed` 1–20, `palette` 3–6 farger med trykkfargen på plass 2, `motifOpts.variant`), rammen og
+  passepartouten kommer fra `artlayout.js` (`frame`, `frameW`, `mat`, `matW`, `matH` = bredden oppe og nede, `glass`).
+  `art-set` (bildevegg) tegner alle bildene i ett atlas og én trykk-mesh. `motif: 'custom'` + `imageId` = eget bilde.
+
+Runde 3 la også til skjulte parametre (bare data, ingen glidebryter) på eksisterende arketyper – se
+`tools/lib/research-rules.mjs` `CONTRACT`/`EXTENSIONS`, som er den ene listen forskningsfilene sjekkes mot.
 
 Hvis room-spec bruker en `kind` som ikke finnes, mapper `home/existing.js` den til nærmeste arketype.
 
 ## 6. Katalog (`catalog/index.js`)
 ```js
-CATEGORIES: [{ key, label, icon, iconSvg, rooms }]   // norsk: Sofaer, Lenestoler, Bord, Spisestoler, Skjenker, TV-benker, Vitrineskap,
-                                                     // Hyller, Senger, Nattbord, Kommoder, Garderobeskap, Speil, Bad, Gang, Taklamper,
-                                                     // Små lamper, Puter og pledd, Tepper, Solskjerming, Akustikk, Smått
+CATEGORIES: [{ key, label, icon, iconSvg, rooms }]   // norsk: Sofaer, Lenestoler, Bord, Stoler og krakker, Skjenker, TV-benker,
+                                                     // Vitrineskap, Hyller, Senger, Nattbord, Kommoder, Garderobeskap, Speil, Bad,
+                                                     // Gang, Taklamper, Spotter og downlights, Små lamper, Puter, pledd og puffer,
+                                                     // Tepper, Solskjerming, Akustikk, Kunst og bilder, Smått
                                                      // rooms: stue | kjellerstue | soverom | bad | gang | alle (for et romfilter)
 EXTRA_CATEGORIES: { elektronikk }                    // sofa/bord/stoler/hylle er katalogkategorier – eksisterende møbler kan byttes
+SUBCATEGORY_LABELS: { innfelt: 'Innfelte downlights', lerret: 'Lerret, malerier og glassbilder', ramme: 'Rammer', … }
+CATEGORY_HINTS: { spotter: { text, goto: 'smalamper', sub: 'vegglampe' }, smatt: { text, goto: 'kunst' } }  // dempet linje under brikkene
 products(categoryKey) → Product[]; getProduct(id); search(text)
 productToItemSpec(product, variantIndex = product.defaultVariant) → item-spec for DesignState.add (uten position)
 ```
 Product-feltene: `id category subcategory? name brand store url priceNok salePriceNok? priceNote dims archetype
-params variants[{name, colors, materials}] defaultVariant absorption light? description why imageUrl verified`.
+params variants[{name, colors, materials, paramsOverride?, imageUrl?}] defaultVariant absorption light? description why
+imageUrl verified` – runde 3 også `packSize`/`packPriceNok` (pakker: `priceNok` er per stk., handlelista runder opp til
+hele pakker med `purchaseOf`), `shapeNote` (hva modellen forenkler) og `verifiedNote`.
+- `light` (lamper): `{ lumens, colorK, dimmable, kind, bulb }`, `lumens` = én armatur (én downlight, én hel skinne).
+  `kind`: `downlight spot track wall-spot picture table floor wall pendant`.
+- Kunst: `art-frame`-produkter i `kunst` har undergruppene `lerret`, `innrammet`, `plakat`, `bildevegg` (`art-set`) og
+  `ramme` (tomme rammer). `params.acceptsImage: true` betyr at rammen kan få et eget bilde («Med eget bilde …»); varen
+  beholder `source: 'catalog'` og får bare `motif: 'custom'`, `imageId`, `imageAspect` og `fit`.
+- Et opplastet bilde uten katalogvare er `{ source: 'custom', refId: 'custom-image', name: 'Eget bilde – <navn>',
+  category: 'kunst', archetype: 'art-frame', params: { motif: 'custom', imageId, imageAspect, fit, frameStyle, frame,
+  frameW, mat, matW, matColor, texture, depth, edge } }`. Bildet selv ligger aldri i designet, bare `imageId`
+  (`img-` + 28 hex, innholdshash).
+- `src/home/existing.js CATEGORY_BY_ARCHETYPE`: `coffee-table`/`desk` → bord, `office-chair`/`shell-chair`/`stool` →
+  stoler, `table-task` → smalamper, spot-arketypene → spotter, `art-frame`/`art-set` → kunst.
 
 ## 7. `design/` – modellen av designet
 
@@ -309,6 +363,18 @@ Flere navngitte design i localStorage (`interiorspillet.designs.v1`), autolagrin
     kommer inn også i et rom designet allerede hadde. Et listet møbel brukeren fjernet, kommer ikke tilbake.
   - `meta.specRevision`: hash per original slik dataene ga det. Et urørt original følger dataene.
   - Før første skriving kopieres v1-lagringer til `interiorspillet.designs.v1.backup` (én gang).
+- **Egne bilder** (runde 3, `design/ImageStore.js`): bildene lagres aldri i localStorage – et møbel har bare
+  `params.imageId`. Bytene ligger i IndexedDB (`interiorspillet-images` v1, store `images`, nedskalert til maks 1600 px,
+  maks 4 MB per bilde). `new Saves(design, { images })`:
+  - `exportText(name)` legger en `images`-blokk `{ <imageId>: { mime, w, h, name, origW, origH, data (data-URL) } }`
+    sist i fila for bildene designet bruker (`imageRefs`); bilder som mangler i nettleseren står i `lastExportMissing`.
+  - `importText`/`importFile` leser `images`, legger nye bilder i lageret (`lastImport: { added, existing, rejected,
+    unsaved }`) og lagrer designet uten blokken. Et avvist bilde stopper aldri designet; det vises som «mangler».
+  - Opprydding (`gc`): én gang per start, 20 s etter lasting (når nettleseren er ledig, aldri på dev-sidene); bilder som
+    verken et lagret design (`saves.imageRoots()`) eller det åpne designet bruker, slettes etter `GRACE_DAYS` = 14 dager.
+    Kan de lagrede designene ikke leses, ryddes ingenting. `DESIGN_VERSION` er fortsatt 2.
+  - `home/index.js` lager lageret (`getImageStore`), kaller `setArtImageSource(images)` før møblene bygges og venter
+    inntil 3 s på bildene i designet; `window.__game.home.images` er lageret.
 
 ## 8. Solskjerming (`models/shading.js`)
 ```js
@@ -345,6 +411,21 @@ class LightManager {
 ```
 Retning mot sola for asimut A (fra nord, med klokka) og høyde h: `(−cos A·cos h, sin h, −sin A·cos h)`.
 
+**Armaturer i designet (runde 3: downlights, spotter, skinner, bildebelysning).** SceneSync gir `setItemLights(uid, lights)`
+verdensposisjoner pluss `on`, `dimmer`, `roomId` (fra møblets nivå) og `lumens = item.light.lumens × itemQuantity(item) ×
+andel`. Et rutenett (`grid.js`, `params.gridRows/gridCols/gridDx/gridDz`) er ett møbel med rader × kolonner hoder.
+- `LIGHT_BUDGET = { itemSpots: { low: 2, medium: 2, high: 3 }, maxDownlightSpots: 2, fixtureMergeDeg: 25 }`.
+- Klynger: downlights og takspotter som står tett (`HOUSE.itemCluster`: gap 2,0 m, spenn 2,4 m) blir én kandidat
+  (`cluster:<rom>|<sone>:<k>`); hodene på en skinne som peker nesten likt (≤ 25°), slås sammen (`item:<uid>:m<k>`).
+- **Seteplanen** (`home/lightclusters.js planSpotSeats`, D5): spotplassene fordeles først som om de nye armaturene ikke
+  fantes; så får hvert rom inntil `itemSpots[nivå]` armaturkandidater, først på ledige plasser, deretter på plassen til
+  den svakeste lampa uten skygge **i samme rom**. Ingen lampe i et annet rom mister plassen sin (invariantene I1–I4 i
+  `lightbudget.test`). Den åpne stua (kjøkken, spisestue, stue, TV-stue) er ett rom: på «Middels» får to spotgrupper
+  ekte lys, på «Høy» tre. De andre lyser via omgivelseslyset.
+- `itemLightState(uid)` → `'off' | 'slot' | 'ambient' | null` og `itemLightHere(uid)`: Belysning viser «Lyser via
+  omgivelseslys nå …» for en lampe i et rom som konkurrerer om plassene.
+- Uten armaturer i designet er alt byte for byte som før (fixture-seksjon 0 i `downlights.test`).
+
 ## 11. Interaksjon (`design/`)
 - **Velg**: venstreklikk (uten å dra) på et objekt → velg det (Inspector åpnes). Klikk på den høye veggen →
   WallPanel. Klikk på en annen vegg → Inspector: veggfarge og «Spiler». Klikk på taket → Inspector «Tak»: takfarge og
@@ -374,6 +455,36 @@ Verktøylinja (nederst): Katalog (K) · Veggforslag (V) · Vinduer (B) · Belysn
 Før/etter (O) · Design (M: lagre/åpne/eksport) · Handleliste (I) · Bilde (P) · Angre/Gjør om. Hjørnebadge:
 etterklangstid («Etterklang ≈ 0,72 s», grønn ≤ 0,6, gul ≤ 0,7, rød over), klikk viser fordelingen.
 
+**Utvidelseskrokene (runde 3)** – nye funksjoner kobles på uten å endre panelene:
+- `Inspector.addExtension({ head?, sections?: { afterHead?, afterLight?, size? }, hide?, candidates?, carry? }) → off`
+  (unntak fanges og logges). Et skjema-param med `defaultFrom: '<annen param>'` viser verdien til den andre når det
+  ikke er satt (rammens `matH` → `matW`); `defaultFor(dims, params)` viser verdien byggeren faktisk bruker (rammens
+  `matW`: 9 % av korteste side). En arketype med `paramPatch(item, key, value) → { dims?, params? }` får det med i
+  samme endring (benk/krakk/barkrakk: rygg på → setet blir, høyden øker), og størrelsen tilpasses rommet.
+- Roter 15° (knappene, `R` / `Shift+R`) avvises med «Får ikke plass rotert her» når `Placement.constrain` sier
+  `blocked` etter vendingen men ikke før – som rotasjonshåndtaket.
+- `CatalogPanel.addPinned(fn) → off` (kort først i en kategori), `addDetailAction(fn) → off` (knapp på produktkortet),
+  `CATEGORY_HINTS` som dempet lenke under brikkene, «Fakta» fra `catalog/facts.js`.
+- `ShoppingPanel.addSection({ list, render, text, csv, print }) → off` (seksjoner legges aldri til totalen); grupper
+  teller `itemQuantity` og hele pakker.
+- Miniatyrstudioet (`CatalogPanel` `ThumbRenderer`) har ikke miljøkart (for å spare oppstartstid). Metall
+  (metalness ≥ 0,5: krom, stål, messing, bronse) og speilglass får derfor midlertidige, matte kopier av materialet bare
+  mens miniatyren tegnes (`_studioMaterials`), så «Krom» og «Messing» ikke ser svarte ut. Rommet bruker de ekte
+  materialene. `thumbView` 'below' tegner et tak bak en downlight; lysflater (`lightDecal`) skjules.
+
+**Kunst og bilder → Last opp eget bilde** (`ui/ImageUpload.js`, `editor.ui.imageUpload`): festet kort først i «Kunst og
+bilder», «Med eget bilde …» på rammer med `acceptsImage`, og dra-og-slipp av en bildefil på spillvinduet. Dialogen viser
+bildet med ramme (`frameStyle`), passepartout, «Beskjær»/«Hele bildet» (`fit`), størrelse og et skarphetsvarsel
+(ppi), og «Plasser på veggen». Inspector «Bilde» (`ui/imageInspector.js`) har «Bytt bilde …» og samme valg; et maleri
+som byttes til eget bilde, får tilbake originalen med «Tilbakestill». Handlelista har seksjonen «Egne bilder» (trykk og
+innramming bestilles selv; ikke med i totalen). JPEG, PNG og WebP godtas; HEIC avvises med en forklaring.
+
+**Antall og rutenett** (`ui/inspector/gridSection.js`, for `downlight`, `downlight-surface`, `spot-ceiling`): rader,
+kolonner og avstand, størrelsen på ett hode, «Fordel jevnt i rommet» (`gridOps.distributeGrid`: ytterspottene står
+`EDGE` (5 cm) + avstand/2 fra veggen, LIGHT §5.1 – kanten gjør at et fordelt rutenett aldri blokkeres av veggene),
+«Roter 90°» og «Del opp i enkeltspotter» (`splitGrid`). Katalogkortet har «Legg inn flere (rekke/rutenett) …».
+Bildebelysning fester seg over et bilde på samme vegg (`placementHooks.wallSnap`).
+
 ## 13. Kanoniske delnavn (`parts`) – samme navn i katalog-varianter og modeller
 
 | Arketyper | Deler |
@@ -388,6 +499,16 @@ etterklangstid («Etterklang ≈ 0,72 s», grønn ≤ 0,6, gul ≤ 0,7, rød ove
 | håndklær | `fabric`, `piping` (bord/stripe) |
 | håndklestige/-stang, knaggrekke, stumtjener, badetilbehør | `body`, `accent` (knagger/pumpe), `fabric` (håndklær/klær som vises) |
 | lamper | `shade` (skjerm), `inner` (innside skjerm), `base` (fot/stativ), `metal` (arm/ramme/oppheng), `cord` |
+| downlight (runde 3) | `shade` «Kant / front», `inner` «Reflektor» |
+| downlight-surface | `shade` «Hus», `inner` «Reflektor», `base` «Takplate» |
+| spot-ceiling · spot-track | `shade` «Spothode(r)», `inner` «Reflektor», `base` «Takkopp» / «Skinne / takplate», `metal` «Ledd» / «Adaptere og ledd» |
+| spot-wall · picture-light | `shade` «Spothode» / «Lysbjelke», `inner` «Reflektor» / «Lysflate», `base` «Veggplate», `metal` «Arm og ledd» / «Arm» |
+| table-task (arbeidslampe) | `shade` «Lampehode», `inner`, `base` «Fot», `metal` «Arm og ledd», `cord` |
+| coffee-table · desk | som bord: `body`, `front` (desk: «Skuffer/dører»), `top`, `legs` (desk: «Understell»), `handle` |
+| shell-chair | `frame` «Skall», `upholstery` «Pute/trekk», `legs` «Understell» |
+| stool | `upholstery` «Sete», `legs` «Ben/fot», `frame` «Fotstøtte og rygg» |
+| office-chair | `upholstery` «Trekk/nett», `frame` «Rygg, armlener og mekanisme», `legs` «Stjernefot og søyle» |
+| art-set (bildevegg) | som kunst: `print` (alle motivene), `frame` |
 | pute, pledd, puff | `fabric`, `piping` |
 | teppe | `base`, `accent`, `accent2` |
 | solskjerming | `fabric` (stoff), `slat` (lameller), `rail` (skinne/kasse/beslag) |
@@ -433,8 +554,38 @@ Mesh[] }]` (verdenskoordinater). `group` er en av `led` (LED-lister), `spots` (s
 av/på følger tiden på døgnet til gruppen slås av eller på for hånd. LightManager lager lyskildene og styrer emissiveMeshes. `buildExterior` returnerer `{ group, setDaylight(level
 0..1, skyHex) }` så lyset kan dimme utsikten om kvelden.
 
+Husets egne spotter (gruppa `spots` og takspottene i de andre rommene) er innebygde lys og konkurrerer om spotplassene
+som før. Downlights og spotter fra katalogen (runde 3) er **møbler** med `item.light` og går gjennom
+`setItemLights` (§10): de får klynger, seteplan og `itemLightState`, og de vises i Belysning under «Lamper i designet»
+med antall («Navn (9 stk)»).
+
 ## 16. Testing
 - `npm run dev` (port 5180). URL-parametre: `?play=1&pos=x,y,z&yaw=deg&pitch=deg&view=walk|orbit|plan&design=<lagret navn>`.
 - `node tools/shot.mjs "/?play=1&pos=…" ut.png --steps='[…]'` for skjermbilder (Edge headless).
 - `window.__game` (Game), `window.__game.home`, `window.__game.design` (DesignState) for test-skript.
 - Ingen konsollfeil. Bildefrekvens ≥ 50 fps på «middels» på en vanlig bærbar.
+- Node-tester: `node tools/test-design.mjs` (data, `EXPECT`), `node tools/test-house.mjs` (alle filene i
+  `tools/house-tests/`; `QA_PARTIAL=1` gjør rundens mål myke) og `node tools/smoke-import.mjs` (importerer
+  hovedmodulene på under 3 s). Runde 3 la til `models.test` (alle arketyper, alle valg, alle produkter, mål og budsjett),
+  `catalog-round.test`, `downlights.test`, `spots-models.test`, `lightbudget.test`, `art.test`, `images.test`,
+  `image-art.test`, `ui-image-shop.test` (bildestørrelse på smale vegger, feiltekster, pakkepriser og CSV),
+  `inspector-hooks.test` (Inspektørens kroker: `defaultFor`, `paramPatch`, avvist rotering, `setRef`) og
+  `stop-browser.test` (`tools/lib/browser-pid.mjs`: hvilke prosesser stop-browser får stoppe).
+
+**Verktøy fra runde 3** (nettleserverktøyene bruker Edge uten vindu; `--port=<testserver> --lock --step=<navn>` deler en
+GPU-lås og en pidfil):
+
+| Verktøy | Hva |
+| --- | --- |
+| `tools/check-research.mjs <filer> --build [--claims=]` | Reglene for forskningsfiler (`tools/lib/research-rules.mjs`): felt, butikker, mål, params mot `CONTRACT`/`EXTENSIONS`, duplikater; `--build` normaliserer i en temp-mappe og bygger hvert produkt i Node |
+| `tools/research/pageprobe.mjs`, `bohus-probe.mjs`, `fetch.mjs`, `net.mjs` | Henter produktsider og Bohus-data for forskning og ærlighetssjekk (`--no-cache`) |
+| `tools/thumbcheck.mjs [--cat=] [--ids=] [--new-since=c28070d] [--variants=all] [--research=<fil>] [--sheets] [--photos]` | Miniatyrkontroll (FAILED/FALLBACK/BLANK/BLACK/EDGE/DIMS/NOGLOW/CONSOLE), kontaktark og sammenligning mot butikkfoto; `tools/thumbcheck-allow.json` tar bare produkter fra før runden |
+| `tools/spotcheck.mjs [--only=grid,slope,picture,a,b,c,d,e,thumbs]` | Spotter og downlights i spillet: lyser de, ligger de i taket, bildelampe, alle rom |
+| `tools/artcheck.mjs --mode=legacy,motifs,profiles,sets,custom,catalog,research` | Kunst: de gamle bildene uendret mot `tools/fixtures/art-legacy-golden.json`, motiver, rammeprofiler, bildevegger, egne bilder, katalogen |
+| `tools/imagecheck.mjs` | Egne bilder fra ende til ende: last opp → last på nytt → eksport/import → bytt → angre → mangler |
+| `tools/refcheck.mjs [--make]` | 12 faste visninger mot referansebilder (`.shots/hus/ref`), innenfor støy |
+| `tools/perf.mjs --only=load,frames --compare=<baseline> [--scene=stress\|ref]` | Lastetid, draw calls, trekanter og frame-tid |
+| `tools/check-build.mjs [--out=]` | `npm run build`: bare de 2 kjente advarslene, ingen chunk over 2000 kB |
+| `tools/check-ui-text.mjs [--all]` | Finner engelske UI-tekster lagt til siden c28070d |
+| `tools/smoke-import.mjs` | Importerer hovedmodulene i Node |
+| `tools/stop-browser.mjs --step=<navn>` | Stopper en hengende hodeløs Edge/Chrome fra et verktøy (`--browser` trengs ikke) – bare prosessen i pidfila (aldri etter navn); en levende prosess som ikke er en hodeløs nettleser blir ikke drept, og pidfila beholdes (exit 1) |
