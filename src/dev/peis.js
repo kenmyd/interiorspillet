@@ -44,7 +44,7 @@ const VIEWS = {
   aNede: { label: 'A: 1. etasje (ingen pipe)', pos: [8.2, 1.6, 2.0], look: [4.2, 1.6, 5.9], fov: 60 },
   bPeis: { label: 'B: åpen peis', pos: [18.5, 1.55, 3.4], look: [18.5, 1.25, 7.4], fov: 60 },
   bOvn: { label: 'B: peisovn i hjørnet', pos: [17.1, 1.6, 3.1], look: [15.0, 0.9, 1.0], fov: 60 },
-  bUte: { label: 'B: pipene', pos: [27, 9, -8], look: [18, 4, 4], fov: 50 },
+  bUte: { label: 'B: pipene', pos: [8.5, 9.0, 4.0], look: [18.0, 3.6, 4.0], fov: 50 },
   cPeis: { label: 'C: murt innsats', pos: [32.6, 1.6, 4.6], look: [28.6, 1.0, 3.5], fov: 60 },
   cKjeller: { label: 'C: pipa i kjelleren', pos: [32.4, -1.0, 1.4], look: [28.55, -1.6, 3.5], fov: 60 },
   dInne: { label: 'D: platekledd innsats og vedovn', pos: [45.2, 1.6, 1.1], look: [47.2, 1.2, 4.4], fov: 70 },
