@@ -1,0 +1,68 @@
+{
+ "house": "hus4",
+ "file": "fasade2.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "d6faeb027a39dd80c413910922e78e092b6be045a1d80a36406647095a82a8f6"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade2.avif"
+ },
+ "source": {
+  "file": "fasade2.avif",
+  "part": null,
+  "width": 1920,
+  "height": 1280,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "facade",
+    "bbox": [
+     0.245,
+     0.22,
+     0.725,
+     0.78
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Fasade uten tittel og uten målestokk. Bygningen har skråtak med pipe og vertikal kledning over en underdel med trekledning og to vinduer."
+ },
+ "usage": {
+  "input_tokens": 4395,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 133,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000506,
+ "ms": 1784,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:21:04.023Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

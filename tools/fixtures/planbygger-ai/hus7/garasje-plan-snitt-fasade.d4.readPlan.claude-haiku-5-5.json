@@ -1,0 +1,132 @@
+{
+ "house": "hus7",
+ "file": "garasje-plan-snitt-fasade.pdf",
+ "part": 4,
+ "task": "readPlan",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 836,
+  "height": 891,
+  "sha256": "061aee2a5ea1643d5d0a10a89b198930e87edec48bde53223a2fc56d53ed2316"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "garasje-plan-snitt-fasade.pdf"
+ },
+ "source": {
+  "file": "garasje-plan-snitt-fasade.pdf",
+  "part": 4,
+  "width": 4771,
+  "height": 3332,
+  "bbox": [
+   467,
+   2347,
+   1303,
+   3238
+  ],
+  "photo": null
+ },
+ "response": {
+  "levelTitle": "PLAN",
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+   {
+    "text": "GARASJE 30,25",
+    "area": 30.25,
+    "kind": "garage",
+    "at": [
+     0.42,
+     0.68
+    ]
+   }
+  ],
+  "dimensions": [
+   {
+    "text": "5700",
+    "value": 5.7,
+    "at": [
+     0.5,
+     0.08
+    ],
+    "along": "h",
+    "what": "outer"
+   },
+   {
+    "text": "5500",
+    "value": 5.5,
+    "at": [
+     0.5,
+     0.22
+    ],
+    "along": "h",
+    "what": "other"
+   },
+   {
+    "text": "5700",
+    "value": 5.7,
+    "at": [
+     0.93,
+     0.5
+    ],
+    "along": "v",
+    "what": "outer"
+   },
+   {
+    "text": "5500",
+    "value": 5.5,
+    "at": [
+     0.76,
+     0.63
+    ],
+    "along": "v",
+    "what": "other"
+   }
+  ],
+  "openings": [
+   {
+    "mark": null,
+    "at": [
+     0.5,
+     0.9
+    ],
+    "kind": "opening"
+   }
+  ],
+  "skylights": [],
+  "stair": {
+   "present": false,
+   "at": null,
+   "type": "none",
+   "up": "unknown"
+  },
+  "ceiling": [],
+  "furniture": [],
+  "notes": "Garasje med åpen front mot bunnen av planen; ingen dører eller vinduer er tegnet. Høyde i rommet er ikke angitt."
+ },
+ "usage": {
+  "input_tokens": 6442,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 1098,
+  "output_tokens_details": {
+   "thinking_tokens": 716
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.001193,
+ "ms": 6712,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:23:47.444Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

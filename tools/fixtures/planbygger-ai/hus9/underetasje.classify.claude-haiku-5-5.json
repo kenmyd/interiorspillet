@@ -1,0 +1,68 @@
+{
+ "house": "hus9",
+ "file": "underetasje.jpg",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 766,
+  "height": 518,
+  "sha256": "2200ab0cf8c0e128d7cb238b59cac72bdeccf98a46836b0f096d78453af6b291"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "underetasje.jpg"
+ },
+ "source": {
+  "file": "underetasje.jpg",
+  "part": null,
+  "width": 766,
+  "height": 518,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.005,
+     0.005,
+     0.98,
+     0.995
+    ],
+    "title": "Under etg",
+    "levelName": "Underetasje",
+    "level": -1,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ingen målestokk er angitt. Planen viser møblert underetasje med stue, bad, soverom og en trapp."
+ },
+ "usage": {
+  "input_tokens": 2664,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 524,
+  "output_tokens_details": {
+   "thinking_tokens": 398
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000528,
+ "ms": 4237,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:19:13.905Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

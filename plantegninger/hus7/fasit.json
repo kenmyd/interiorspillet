@@ -1,0 +1,132 @@
+{
+  "house": "hus7",
+  "files": {
+    "garasje-plan-snitt-fasade.pdf": {
+      "kind": "plan",
+      "level": 0,
+      "pdfPage": { "widthPt": 1145.04, "heightPt": 799.68 },
+      "drawings": [
+        { "kind": "plan", "title": "PLAN", "level": 0, "bbox": [505, 2385, 1261, 3199] },
+        { "kind": "section", "title": "SNITT", "bbox": [1460, 2480, 2716, 3152] },
+        { "kind": "facade", "title": "VEST", "bbox": [103, 87, 2452, 1148] },
+        { "kind": "facade", "title": "SØR", "bbox": [2852, 126, 4770, 1108] },
+        { "kind": "facade", "title": "ØST", "bbox": [8, 1209, 2329, 2292] },
+        { "kind": "facade", "title": "NORD", "bbox": [2328, 1319, 4665, 2289] },
+        { "kind": "text", "title": "Tittelfelt («Søknad om tillatelse til nybygg - garasje», Målestokk: 1:100 (A3), Høydereferanse: NN2000)", "bbox": [3364, 2849, 4567, 3197] },
+        { "kind": "text", "title": "E 1.4 (tegningsnummer)", "bbox": [4378, 70, 4542, 123] },
+        { "kind": "text", "title": "Kommunens forklaring om fasadene (med pekelinje inn i VEST)", "bbox": [467, 22, 1532, 191] },
+        { "kind": "text", "title": "Kommunens forklaring om plan, snitt og fasade på én tegning", "bbox": [468, 1241, 1449, 1407] },
+        { "kind": "text", "title": "Kommunens forklaring om tittelfeltet (med pekelinje til tittelfeltet)", "bbox": [2738, 2478, 3806, 2650] },
+        { "kind": "text", "title": "Kommunens forklaring om plan og snitt (med pekelinje inn i PLAN og SNITT)", "bbox": [2183, 3204, 3252, 3313] }
+      ]
+    }
+  },
+  "levels": [
+    {
+      "level": 0,
+      "name": "1. etasje",
+      "file": "garasje-plan-snitt-fasade.pdf",
+      "title": "PLAN",
+      "rooms": [
+        { "label": "GARASJE", "area": 30.25, "kind": "storage" }
+      ],
+      "doors": { "single": 0, "double": 0, "sliding": 0, "exterior": 2 },
+      "windows": 0,
+      "skylights": 0,
+      "stair": { "type": "none", "note": "Ingen trapp. Garasjen har én etasje, og det er ikke tegnet noen trapp eller loftsluke opp til loftsrommet over himlingen (verken i planen eller i snittet)." },
+      "dimensions": [
+        { "text": "5700", "m": 5.7, "what": "ytre mål, bredde (over planen, horisontal). Hjelpelinjene går til den midtre veggstreken: x 517,5–1187 = 670 px" },
+        { "text": "5500", "m": 5.5, "what": "innvendig mål, bredde (horisontal, øverst inne i garasjen, linja på y 2556,5): mellom de innerste veggstrekene x 529,5–1175,5 = 646 px" },
+        { "text": "5700", "m": 5.7, "what": "ytre mål, dybde (høyre side, vertikal): y 2477,5–3146,5 = 669 px" },
+        { "text": "5500", "m": 5.5, "what": "innvendig mål, dybde (vertikal, ca. 0,55 m innenfor høyre vegg, linja på x 1110–1112): fra den innerste veggstreken øverst til innsiden av vegg-endene ved portene, y 2489,5–3134,5 = 645 px" }
+      ],
+      "scale": {
+        "hints": ["dimensions", "areas", "paper"],
+        "pxPerM": 117.4,
+        "note": "Målt i PNG-kopien (4771 × 3332 px): 5700 = 669–670 px (117,4–117,5 px/m), 5500 = 645–646 px (117,3–117,5 px/m), og kotelinjalen ved fasadene har 1 m = 117,4 px (165–173 over 939 px). Papir: bildet er 300 dpi (4771 px / 1145,04 pt), og 1:100 gir da 118,1 px/m, 0,6 % for høyt. Sidestørrelsen i PDF-en er 403,9 × 282,1 mm, ikke A3 (420 × 297) som tittelfeltet sier. Areal: 646 × 645 px innvendig gir 30,23 m² mot etiketten 30,25 m² (−0,1 %)."
+      },
+      "ceiling": [],
+      "notes": "Én plan for hele bygget: en dobbelgarasje 5,7 × 5,7 m med ett rom, «GARASJE 30,25» (BRA 30,25 = 5,5 × 5,5 m). Ingen romtype for garasje i ROOM_KINDS, så storage er nærmeste (uoppvarmet uthus). Inne står to store «G» (x ≈ 678–705 og 1021–1048, y ≈ 2805), trolig én per bilplass (betydningen står ikke); de er ikke rom. Veggene er konturlinjer, ikke fylte: tre tynne streker (venstre vegg x 513,5 / 517,5 / 529,5, høyre 1175,5 / 1187 / 1191, øvre y 2473 / 2477,5 / 2489,5), den ytterste (kledningen) ca. 4 px (3 cm) utenfor den midtre, og 12 px (0,10 m) mellom den midtre og den innerste. Hovedmålene 5700 går til den midtre streken. Planen er en U som er åpen i bunnen: to portåpninger på 280 px (2,39 m) hver (x 557–837 og 868–1148), en frittstående midtstolpe på 0,26 m (x 837–868, y 3134,5–3146,5) og en vegg-ende på 27 px (0,23 m) innenfor hvert hjørne (x 529,5–556,5 og 1148,5–1175,5, 0,10 m dyp). Ingen strek går over portåpningene. Portene er ikke tegnet i planen (bare hull), men fasade NORD viser to leddporter/vippeporter med liggende felt. Dører: de telles som 2 ytterdører (exterior = 2), men ingen av typene single/double/sliding passer, så variantene er 0. Det er et bevisst unntak fra regelen i hus3/hus4 om at exterior er en delmengde av variantene: en måling som finner 0 dører her, har bommet på portene. Ingen vinduer, takvinduer eller gangdør: alle tre veggene er sammenhengende (sjekket langs alle tre strekene i hver vegg), og fasadene viser heller ingen. Nord er trolig ned i planen (portene vender mot nord ifølge fasade NORD), og da er øst til venstre og vest til høyre; det er ingen nordpil. Himlingshøyden står bare i snittet: «2300» fra gulv til underkant himling/bjelkelag (målt 270 px = 2,30 m), saltak 30° («30 g») over et kaldt loftsrom; ingen loftsluke eller trapp er tegnet. Kommunens tykke pekelinje (blå i originalen, fra forklaringen om plan og snitt) går vannrett fra x 1137, y 2959–2966 inne i garasjen, ut gjennom høyre vegg og målelinjene og videre til x 1655 i snittet. Den kan bli tolket som en vegg."
+    }
+  ],
+  "facades": [
+    {
+      "file": "garasje-plan-snitt-fasade.pdf",
+      "title": "VEST",
+      "bbox": [103, 87, 2452, 1148],
+      "roof": "gable",
+      "storeys": 1,
+      "windows": 0,
+      "doors": 0,
+      "dimensions": [
+        { "text": "3000", "m": 3.0, "what": "nytt terreng: den vannrette delen av avkjørselen (y 943,5, ca. kote 166,2), fra endepunktet til venstre til der stigningen 1:10 begynner; 352 px" },
+        { "text": "7950", "m": 7.95, "what": "fra endepunktet til venstre til garasjeveggen (hele avkjørselen, 3000 er en del av den); 935 px" },
+        { "text": "5700", "m": 5.7, "what": "garasjens dybde nord–sør (raftveggen)" },
+        { "text": "1000", "m": 1.0, "what": "fra garasjeveggen til «Grense» (nabogrensen) til høyre" }
+      ],
+      "kotes": [
+        { "text": "171,2", "m": 171.2, "what": "mønekote" },
+        { "text": "166,7", "m": 166.7, "what": "gulv/terreng ved garasjen" }
+      ],
+      "notes": "Raftveggen sett fra vest (garasjen er kvadratisk, så alle veggene er 5,7 m): stående kledning uten vinduer og dører, saltaket som en flate med mønet øverst (målt 528 px = 4,50 m over gulvet, som kotene 171,2 − 166,7). Sett fra vest er nord til venstre: avkjørselen går nordover og faller 1:10 bort fra portene. «1:10» er stigningen på avkjørselen. «nytt terr.» (grønn heltrukken i originalen) og «eks. terr.» (blå stiplet) er merket. Stiplet omriss av eksisterende hus («EKS. HUS») oppe til venstre. Kotelinjal 165–173 til høyre. Kommunens tykke L-formede pekelinje går inn i fasaden."
+    },
+    {
+      "file": "garasje-plan-snitt-fasade.pdf",
+      "title": "SØR",
+      "bbox": [2852, 126, 4770, 1108],
+      "roof": "gable",
+      "storeys": 1,
+      "windows": 0,
+      "doors": 0,
+      "dimensions": [
+        { "text": "5700", "m": 5.7, "what": "garasjens bredde (gavlveggen)" },
+        { "text": "1000", "m": 1.0, "what": "fra garasjeveggen til «Kant reg. vei»" },
+        { "text": "6200", "m": 6.2, "what": "fra garasjeveggen til «Grense», som står ute i Olleveien (ca. 2,9 m fra vegkanten); 727 px" }
+      ],
+      "kotes": [
+        { "text": "171,2", "m": 171.2, "what": "mønekote" },
+        { "text": "166,7", "m": 166.7, "what": "gulv/terreng ved garasjen" }
+      ],
+      "notes": "Gavlvegg uten vinduer og dører, takvinkel 30°. En kort stiplet strek midt i gavlen (x ≈ 3557–3677, y 603–605, ca. 2,4 m over gulvet, omtrent på himlingshøyde) er blå i originalen, samme farge som «eks. terr.»; betydningen står ikke, men det er ikke et vindu. Sett fra sør er øst til høyre: «Kant reg. vei» 1,0 m fra veggen (kote ca. 168,0), terrenget stiger litt videre til kanten av Olleveien ca. 3,3 m fra veggen, bilen på veien og «Grense» ute i veien. Det nye terrenget ligger høyere på østsiden (ca. kote 167,5 ved veggen). Kotelinjal 165–173 til venstre."
+    },
+    {
+      "file": "garasje-plan-snitt-fasade.pdf",
+      "title": "ØST",
+      "bbox": [8, 1209, 2329, 2292],
+      "roof": "gable",
+      "storeys": 1,
+      "windows": 0,
+      "doors": 0,
+      "dimensions": [
+        { "text": "1000", "m": 1.0, "what": "fra «Grense» til venstre til garasjeveggen" },
+        { "text": "5700", "m": 5.7, "what": "garasjens dybde nord–sør (raftveggen)" },
+        { "text": "7950", "m": 7.95, "what": "fra garasjeveggen til endepunktet til høyre (hele avkjørselen, 3000 er en del av den)" },
+        { "text": "3000", "m": 3.0, "what": "nytt terreng: den vannrette delen av avkjørselen ytterst til høyre (y 2142–2145)" }
+      ],
+      "kotes": [
+        { "text": "171,2", "m": 171.2, "what": "mønekote" },
+        { "text": "166,7", "m": 166.7, "what": "gulv/terreng ved garasjen" }
+      ],
+      "notes": "Raftveggen sett fra øst: samme garasje som VEST, speilvendt, uten vinduer og dører (sett fra øst er sør til venstre). Terrenget er ikke likt VEST: på østsiden faller det nye terrenget langs veggen fra ca. kote 167,6 i sør til 166,7 ved portene, og grunnmuren står synlig over terrenget med fire trinn i underkant av kledningen. Under den går en stiplet fundamentlinje. «1:10» er stigningen. Stiplet omriss av eksisterende hus («EKS. HUS») oppe til høyre. Kotelinjal 165–173 til venstre. Kommunens forklaringstekst om plan, snitt og fasade ligger inne i rammen, over fasaden."
+    },
+    {
+      "file": "garasje-plan-snitt-fasade.pdf",
+      "title": "NORD",
+      "bbox": [2328, 1319, 4665, 2289],
+      "roof": "gable",
+      "storeys": 1,
+      "windows": 0,
+      "doors": 2,
+      "dimensions": [
+        { "text": "6200", "m": 6.2, "what": "fra «Grense» til venstre (ute i veien) til garasjeveggen; 727 px" },
+        { "text": "1000", "m": 1.0, "what": "fra «Kant reg. vei» til garasjeveggen" }
+      ],
+      "kotes": [
+        { "text": "171,2", "m": 171.2, "what": "mønekote" },
+        { "text": "166,7", "m": 166.7, "what": "gulv/terreng ved garasjen" }
+      ],
+      "notes": "Gavlveggen med to garasjeporter side om side (leddporter/vippeporter med liggende felt), ingen vinduer, takvinkel 30° (målt 30,1°). Portbladene er 282 px = 2,40 m brede (x 3496,5–3778,5 og 3807–4089,5), som portåpningene i planen (280 px), og ca. 246 px = 2,1 m høye; åpningen går opp til 2,30 m over gulvet. Midtstolpen er 29 px (0,25 m), i planen 0,26 m. Ingen gangdør. En kort stiplet strek i gavlen rett over portene (x 3734–3852, y 1801–1803, ca. 2,35 m over gulvet) er blå i originalen, som i SØR; betydningen står ikke, og den er ikke et vindu. Sett fra nord er øst til venstre: «Kant reg. vei» 1,0 m fra veggen, en skråning opp til veien, og «Grense» ute i veien med bilen på andre siden av grensen. Kotelinjal 165–173 til høyre."
+    }
+  ],
+  "notes": "Ett ark: én PDF-side på 1145,04 × 799,68 pt med ett JPEG-bilde i RGB (4771 × 3332 px, 300 dpi). Bildet er ikke en skanning med støy: det er rent digitalt, uten skjevhet, og bakgrunnen er ren 255 (README og info.txt kaller det skannet). Arket har seks tegninger: PLAN og SNITT nederst til venstre, fasadene VEST (øverst til venstre), SØR (øverst til høyre), ØST (midten til venstre) og NORD (midten til høyre), og tittelfeltet nederst til høyre. Planen er level 0 og eneste etasje. Rammene i files.drawings er i PNG-kopien plantegninger/_png/hus7/garasje-plan-snitt-fasade.png, omtrentlige (±20 px), og tar med målelinjer, koter, kotelinjal og titler. Fasade- og snittrammene overlapper kommunens forklaringer og pekelinjer der de går inn i tegningene. Målestokk 1:100 for alle tegningene (samme 117,4 px/m). Snittet: «5700» (bredde, til den midtre veggstreken som i planen, x 1610,5–2280 = 669,5 px; innvendig 645,5 px = 5,50 m), «2300» (gulv til underkant himling/bjelkelag, y 2727–2997,5 = 270,5 px = 2,30 m), «30 g» (takvinkel 30°, målt 30,0–30,1° på sperrene) og koten «177,6» ved gulvet. Den koten stemmer ikke med fasadene, som har 166,7 ved gulvet og 171,2 på mønet (4,5 m mønehøyde, målt 528 px i VEST og NORD). Det er trolig en feil i eksempelet, men teksten er gjengitt slik den står. Mønet i snittet ligger også litt lavere enn i fasadene: ytre takflate ca. 500 px = 4,3 m over gulvet (mønekappen 4,4 m). Tittelfeltet sier «Fasade nord og sør», selv om arket har alle fire fasadene, planen og snittet. Det sier også A3, men PDF-siden er 403,9 × 282,1 mm. Blå forklaringer fra kommunen ligger oppå arket, med tykke pekelinjer inn i VEST, PLAN, SNITT og mot tittelfeltet. Fargene i originalen: blått (ca. 0,0,220) er forklaringene og pekelinjene, «eks. terr.» (stiplet), de små sirklene på terrengpunktene og de korte stiplede strekene i gavlene på SØR og NORD. Grønt (ca. 1,127,17) er «nytt terr.» og bakkelinja i snittet. Resten er svart og grått. Gråtone-PNG-en har mistet fargene: blått blir ca. 25 (nesten svart, mest under 32) og ser ut som vanlig tekst, og grønt blir ca. 77. Nettleseren får originalen, så clean.js kan fjerne det blå der, men ikke i Node-testene på PNG-en. Verifisert 2026-10-21 av en uavhengig fasit-agent mot PNG-kopien og JPEG-bildet trukket ut av PDF-en: alle etiketter og mål lest på nytt med zoom, veggene og åpningene målt med pikselskanning, dører, vinduer, takvinduer og trapp telt på nytt (0 vinduer, 0 takvinduer, ingen trapp, 2 porter), PDF-sidestørrelsen lest fra MediaBox, kotelinjalen (117,4 px/m) og kotene sjekket mot fasadene. Rettet: innvendig bredde 646 px (ikke 645) og arealet 30,23 m² (ikke 30,1), «slake» → vannrette 3000-strekninger, «langveggen» → raftveggen (garasjen er kvadratisk), «Grense» står ute i Olleveien (ikke på andre siden), portbredden 2,40 m (ikke ca. 2,5), og «skannet» er rettet. Lagt til: fargene i originalen, himmelretningene i planen, terrenget på ØST og SØR, snittets lavere møne og unntaket for exterior. Usikkert: hva de blå stiplede strekene i gavlene og de to «G»-ene betyr, at nord er ned (ingen nordpil), og om portene bør telles som dører eller åpninger."
+}

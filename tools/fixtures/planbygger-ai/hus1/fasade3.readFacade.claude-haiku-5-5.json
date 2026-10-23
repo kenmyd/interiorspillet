@@ -1,0 +1,111 @@
+{
+ "house": "hus1",
+ "file": "fasade3.avif",
+ "part": null,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 767,
+  "sha256": "15ca26b164b9b70b69e047f309482f3533f88f3e65d27c6f6a825e30702bbd26"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade3.avif"
+ },
+ "source": {
+  "file": "fasade3.avif",
+  "part": null,
+  "width": 1920,
+  "height": 920,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "hip",
+  "storeys": 2,
+  "windows": [
+   {
+    "bbox": [
+     0.333,
+     0.374,
+     0.362,
+     0.46
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.651,
+     0.374,
+     0.68,
+     0.46
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.279,
+     0.705,
+     0.346,
+     0.797
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.519,
+     0.705,
+     0.586,
+     0.797
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.679,
+     0.701,
+     0.747,
+     0.863
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.414,
+     0.708,
+     0.473,
+     0.949
+    ],
+    "kind": "door"
+   }
+  ],
+  "notes": "Fasaden alene avgjør ikke takformen fullt ut; takflaten har valmede endebilder. To takvinduer i takflaten indikerer loft, og det er telt som en etasje til. Kledning med liggende/loddrett panel i lys farge. Ingen skorstein er tegnet utover pipen øverst til høyre. Ingen tittel synlig."
+ },
+ "usage": {
+  "input_tokens": 3455,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 1106,
+  "output_tokens_details": {
+   "thinking_tokens": 762
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000899,
+ "ms": 6487,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:14:30.098Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

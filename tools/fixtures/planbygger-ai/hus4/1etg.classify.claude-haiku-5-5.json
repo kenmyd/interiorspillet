@@ -1,0 +1,68 @@
+{
+ "house": "hus4",
+ "file": "1etg.avif",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "6b458029fe20033174ab91974050803628af53bda47b70fc7969c6d7a797b951"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "1etg.avif"
+ },
+ "source": {
+  "file": "1etg.avif",
+  "part": null,
+  "width": 1920,
+  "height": 1280,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.045,
+     0.045,
+     0.962,
+     0.945
+    ],
+    "title": null,
+    "levelName": "1. etasje",
+    "level": 0,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ingen tegningstittel eller målestokk på arket. Planen viser hovedetasjen med inngang fra Entre, og carport og sportsbod er tegnet inntil huset. Filnavnet «1etg» kan tyde på en annen etasje, men innholdet tyder på hovedetasjen."
+ },
+ "usage": {
+  "input_tokens": 4395,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 821,
+  "output_tokens_details": {
+   "thinking_tokens": 637
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.00085,
+ "ms": 5321,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:20:51.221Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

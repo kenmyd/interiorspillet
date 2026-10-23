@@ -495,6 +495,8 @@ const SWEEP_STEPS = 6;
  * @returns {THREE.Box3|null}
  */
 export function sweptLeafBox(door) {
+  // a sliding door (world/SlidingDoor.js) knows its own box over its whole travel
+  if (typeof door?.sweptBox === 'function') return door.sweptBox();
   const box = new THREE.Box3();
   const tmp = new THREE.Box3();
   for (const leaf of door?.leaves || []) {

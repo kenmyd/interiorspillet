@@ -1,0 +1,102 @@
+{
+ "house": "hus5",
+ "file": "fasade4.avif",
+ "part": null,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 766,
+  "sha256": "2c7c7538c885bad64b8a003aeb158ee8fa337a6d625abfff2fa135104e35a77f"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade4.avif"
+ },
+ "source": {
+  "file": "fasade4.avif",
+  "part": null,
+  "width": 1670,
+  "height": 800,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "gable",
+  "storeys": 1,
+  "windows": [
+   {
+    "bbox": [
+     0.127,
+     0.495,
+     0.153,
+     0.702
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.365,
+     0.495,
+     0.391,
+     0.702
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.492,
+     0.495,
+     0.561,
+     0.702
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.684,
+     0.495,
+     0.729,
+     0.702
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.824,
+     0.569,
+     0.894,
+     0.623
+    ],
+    "kind": "window"
+   }
+  ],
+  "notes": "Enetasjes hus med mørkt takbelegg og loddrett kledning. Skorstein i takfoten. Fasaden alene avgjør ikke om taket er saltak eller pulttak."
+ },
+ "usage": {
+  "input_tokens": 3455,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 903,
+  "output_tokens_details": {
+   "thinking_tokens": 648
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000797,
+ "ms": 5138,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:18:59.983Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

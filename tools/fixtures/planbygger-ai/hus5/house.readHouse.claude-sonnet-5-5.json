@@ -1,0 +1,407 @@
+{
+ "house": "hus5",
+ "file": "house",
+ "part": null,
+ "task": "readHouse",
+ "promptVersion": "pb-house-2",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "images": [
+  {
+   "kind": "plan",
+   "label": "1. etasje, 1etg.avif",
+   "width": 761,
+   "height": 800,
+   "sha256": "471fd583e20a1324423241d21f5d789f65a5b3c74ed1bd6a4a2d8a162cf675a9",
+   "marksHash": "7170432dbcd3185ca061c8f9a746ee0bf968e02de21a6e51ec47dbb7bef8dad9",
+   "source": {
+    "file": "1etg.avif",
+    "part": null,
+    "width": 761,
+    "height": 800,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasade1.avif",
+   "width": 1200,
+   "height": 575,
+   "sha256": "ae9c549916cd6dbf5fc4f20f96323b49e4a81a3dc17edf282881cf8bee680bdf",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasade1.avif",
+    "part": null,
+    "width": 1670,
+    "height": 800,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasade2.avif",
+   "width": 1200,
+   "height": 575,
+   "sha256": "6dfa368473dfe8d5f75b14bb023e4a1896af35e550dab3b799196cc23b66fb47",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasade2.avif",
+    "part": null,
+    "width": 1670,
+    "height": 800,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasade3.avif",
+   "width": 1200,
+   "height": 575,
+   "sha256": "27a1053930bbdb02057aa1ec20b75daac7afd01c8e12a53868b8ba0c40a6a3fc",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasade3.avif",
+    "part": null,
+    "width": 1670,
+    "height": 800,
+    "bbox": null,
+    "photo": null
+   }
+  },
+  {
+   "kind": "facade",
+   "label": "fasade4.avif",
+   "width": 1200,
+   "height": 575,
+   "sha256": "e3cd25d940df83809e98be606e3398a0335e94c1038c69b09ead239cca1488a0",
+   "marksHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "source": {
+    "file": "fasade4.avif",
+    "part": null,
+    "width": 1670,
+    "height": 800,
+    "bbox": null,
+    "photo": null
+   }
+  }
+ ],
+ "marks": [
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.2974,
+    0.0621
+   ],
+   "drawnAt": [
+    0.2974,
+    0.0621
+   ],
+   "image": 1
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.6963,
+    0.1412
+   ],
+   "drawnAt": [
+    0.6963,
+    0.1412
+   ],
+   "image": 1
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.8655,
+    0.1899
+   ],
+   "drawnAt": [
+    0.8655,
+    0.1899
+   ],
+   "image": 1
+  },
+  {
+   "id": "4",
+   "kind": "room",
+   "at": [
+    0.2216,
+    0.5465
+   ],
+   "drawnAt": [
+    0.2216,
+    0.5465
+   ],
+   "image": 1
+  },
+  {
+   "id": "5",
+   "kind": "room",
+   "at": [
+    0.3775,
+    0.2206
+   ],
+   "drawnAt": [
+    0.3775,
+    0.2206
+   ],
+   "image": 1
+  },
+  {
+   "id": "6",
+   "kind": "room",
+   "at": [
+    0.4969,
+    0.2531
+   ],
+   "drawnAt": [
+    0.4969,
+    0.2531
+   ],
+   "image": 1
+  },
+  {
+   "id": "7",
+   "kind": "room",
+   "at": [
+    0.7048,
+    0.4157
+   ],
+   "drawnAt": [
+    0.7048,
+    0.4157
+   ],
+   "image": 1
+  },
+  {
+   "id": "8",
+   "kind": "room",
+   "at": [
+    0.9082,
+    0.4356
+   ],
+   "drawnAt": [
+    0.9082,
+    0.4356
+   ],
+   "image": 1
+  },
+  {
+   "id": "9",
+   "kind": "room",
+   "at": [
+    0.7817,
+    0.8362
+   ],
+   "drawnAt": [
+    0.7817,
+    0.8362
+   ],
+   "image": 1
+  },
+  {
+   "id": "10",
+   "kind": "room",
+   "at": [
+    0.8767,
+    0.6425
+   ],
+   "drawnAt": [
+    0.8767,
+    0.6425
+   ],
+   "image": 1
+  }
+ ],
+ "hints": {},
+ "response": {
+  "facades": [
+   {
+    "image": 2,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "top",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 3,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "bottom",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 4,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "right",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   },
+   {
+    "image": 5,
+    "title": null,
+    "facing": "unknown",
+    "planSide": "left",
+    "cladding": [
+     {
+      "part": "all",
+      "type": "wood",
+      "direction": "vertical",
+      "color": null
+     }
+    ],
+    "terrain": "flat",
+    "basement": "none"
+   }
+  ],
+  "roof": {
+   "covering": "metal",
+   "color": "mørk grå",
+   "pitch": null,
+   "wings": [
+    {
+     "image": 1,
+     "rooms": [
+      "4",
+      "5",
+      "6"
+     ],
+     "type": "mono-pitch",
+     "ridge": "vertical",
+     "high": "right"
+    },
+    {
+     "image": 1,
+     "rooms": [
+      "1",
+      "2",
+      "3",
+      "7",
+      "8",
+      "10",
+      "9"
+     ],
+     "type": "mono-pitch",
+     "ridge": "vertical",
+     "high": "left"
+    }
+   ],
+   "chimney": true
+  },
+  "ceilings": [
+   {
+    "image": 1,
+    "text": "Skråhiml.",
+    "kind": "sloped",
+    "degrees": null,
+    "rooms": [
+     "4"
+    ],
+    "ridge": null
+   },
+   {
+    "image": 1,
+    "text": "Skråhiml.",
+    "kind": "sloped",
+    "degrees": null,
+    "rooms": [
+     "4"
+    ],
+    "ridge": null
+   }
+  ],
+  "decks": [
+   {
+    "kind": "porch",
+    "image": 1,
+    "at": [
+     0.5,
+     0.12
+    ],
+    "railing": "none",
+    "stairs": false
+   },
+   {
+    "kind": "terrace",
+    "image": 1,
+    "at": [
+     0.5,
+     0.72
+    ],
+    "railing": "none",
+    "stairs": false
+   }
+  ],
+  "notes": "Pulttak med to motsatte fall, lavere flatt tak over midtpartiet. Overbygd inngangsparti. Pipe på taket."
+ },
+ "usage": {
+  "input_tokens": 10176,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 10176,
+    "output_tokens": 689,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 689,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.027242,
+ "ms": 10161,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-22T20:22:39.615Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

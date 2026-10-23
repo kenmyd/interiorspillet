@@ -1,0 +1,68 @@
+{
+ "house": "hus3",
+ "file": "2etg.png",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 440,
+  "height": 925,
+  "sha256": "88066a41a9d3bd279908dec2bbe356b8f7430517edc8415159fbbe6ad6a01406"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "2etg.png"
+ },
+ "source": {
+  "file": "2etg.png",
+  "part": null,
+  "width": 440,
+  "height": 925,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.148,
+     0.027,
+     0.818,
+     0.924
+    ],
+    "title": "Etasje 2",
+    "levelName": "2. etasje",
+    "level": 1,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ett plantegning av andre etasje med romnavn og arealer. Ingen målestokk eller nordpil er angitt."
+ },
+ "usage": {
+  "input_tokens": 2674,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 566,
+  "output_tokens_details": {
+   "thinking_tokens": 438
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.00055,
+ "ms": 4154,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:16:13.261Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

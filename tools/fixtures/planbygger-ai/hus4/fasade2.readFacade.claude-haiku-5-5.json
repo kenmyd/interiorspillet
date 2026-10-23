@@ -1,0 +1,75 @@
+{
+ "house": "hus4",
+ "file": "fasade2.avif",
+ "part": null,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "d6faeb027a39dd80c413910922e78e092b6be045a1d80a36406647095a82a8f6"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade2.avif"
+ },
+ "source": {
+  "file": "fasade2.avif",
+  "part": null,
+  "width": 1920,
+  "height": 1280,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "mono-pitch",
+  "storeys": 1,
+  "windows": [
+   {
+    "bbox": [
+     0.358,
+     0.605,
+     0.413,
+     0.712
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.526,
+     0.605,
+     0.581,
+     0.712
+    ],
+    "kind": "window"
+   }
+  ],
+  "notes": "Ensidig skråtak med takfot lavt til venstre og høyere mot høyre; pipe over taket. Liggende trekledning i nedre del med to vinduer, stående panel over. Grå sokkel/inntrukket del i begge hjørner."
+ },
+ "usage": {
+  "input_tokens": 4094,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 681,
+  "output_tokens_details": {
+   "thinking_tokens": 496
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.00075,
+ "ms": 12966,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:22:24.893Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "planbygger-ai",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Planbyggerens KI-lag: Connect-mellomvare som sender plantegninger til Claude og gir strukturerte svar.",
+  "main": "index.mjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.0.0"
+  }
+}

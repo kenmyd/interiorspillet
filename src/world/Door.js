@@ -123,6 +123,8 @@ export class Door {
    * @param {number} o.depth           wall thickness
    * @param {{leaf:THREE.Material, frame:THREE.Material, hardware:THREE.Material, dark:THREE.Material}} o.materials
    * @param {boolean} [o.double=false] two leaves (hinges on both jambs)
+   * @param {number} [o.splitX=0]      double: x of the meeting edge (unequal leaves)
+   * @param {0|1} [o.activeLeaf=1]     double: the leaf with the handle (0 = the −x leaf); the other gets flush bolts
    * @param {1|-1} [o.hingeSide=1]     single leaf: +1 = hinges on the +x jamb
    * @param {1|-1} [o.swing=1]         +1 = opens toward the front (+z), −1 toward the back
    * @param {string} [o.frontLabel]    room name shown in the prompt when the camera is on the front side
@@ -301,9 +303,12 @@ export class Door {
   _leafSpecs(o) {
     const cw = this.width - 2 * FRAME_FACE;
     if (o.double) {
+      // the meeting edge at o.splitX (unequal leaves), the handle and the astragal on o.activeLeaf
+      const s = o.splitX ?? 0;
+      const active = o.activeLeaf === 0 ? 0 : 1;
       return [
-        { x0: -cw / 2 - OVERLAP, x1: -0.001, hingeSide: -1, handle: false },
-        { x0: 0.001, x1: cw / 2 + OVERLAP, hingeSide: 1, handle: true, astragal: true },
+        { x0: -cw / 2 - OVERLAP, x1: s - 0.001, hingeSide: -1, handle: active === 0, astragal: active === 0 },
+        { x0: s + 0.001, x1: cw / 2 + OVERLAP, hingeSide: 1, handle: active === 1, astragal: active === 1 },
       ];
     }
     return [{ x0: -cw / 2 - OVERLAP, x1: cw / 2 + OVERLAP, hingeSide: o.hingeSide ?? 1, handle: true }];

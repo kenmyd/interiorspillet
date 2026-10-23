@@ -1,0 +1,68 @@
+{
+ "house": "hus1",
+ "file": "2etg.png",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1206,
+  "height": 954,
+  "sha256": "4e8909c53da99804aef573fc8d1a69cd7617df101eabc55ca00a0418c69b4bfb"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "2etg.png"
+ },
+ "source": {
+  "file": "2etg.png",
+  "part": null,
+  "width": 1206,
+  "height": 954,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "plan",
+    "bbox": [
+     0.008,
+     0.005,
+     0.994,
+     0.993
+    ],
+    "title": null,
+    "levelName": "2. etasje",
+    "level": 1,
+    "detached": false
+   }
+  ],
+  "scaleText": null,
+  "notes": "Ingen tittel eller målestokk på arket. Planen er inndelt i nivå etter innhold: takvinduer, skråtak og trapp fra underliggende etasje, og filnavnet «2etg» er brukt som støtte. Plantegningen har romnavn og kvadratmeter (GANG/TRAPP 15,1 m², LOFTSTUE 8,2 m², SOV 11,8 m², SOV 10,0 m², SOV 11,9 m², BOD 2,4 m², BAD 9,6 m²). Nordpil mangler."
+ },
+ "usage": {
+  "input_tokens": 3671,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 892,
+  "output_tokens_details": {
+   "thinking_tokens": 621
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.000813,
+ "ms": 5930,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:13:17.553Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

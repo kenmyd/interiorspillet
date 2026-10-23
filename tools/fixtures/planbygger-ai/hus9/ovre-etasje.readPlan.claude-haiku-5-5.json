@@ -1,0 +1,651 @@
+{
+ "house": "hus9",
+ "file": "ovre-etasje.jpg",
+ "part": null,
+ "task": "readPlan",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 713,
+  "height": 485,
+  "sha256": "074430f2dcb5ed527e8b637b35adc8ab0861e57f4c7293fa6d875a6528b0e46d"
+ },
+ "marks": [
+  {
+   "id": "1",
+   "kind": "room",
+   "at": [
+    0.4684,
+    0.6534
+   ],
+   "drawnAt": [
+    0.4684,
+    0.6534
+   ],
+   "ref": 0,
+   "polygon": [
+    [
+     0.0443,
+     0.1406
+    ],
+    [
+     0.3157,
+     0.1406
+    ],
+    [
+     0.3157,
+     0.2866
+    ],
+    [
+     0.3097,
+     0.2866
+    ],
+    [
+     0.3097,
+     0.2948
+    ],
+    [
+     0.3157,
+     0.2948
+    ],
+    [
+     0.3157,
+     0.299
+    ],
+    [
+     0.3097,
+     0.299
+    ],
+    [
+     0.3097,
+     0.3072
+    ],
+    [
+     0.3157,
+     0.3072
+    ],
+    [
+     0.3157,
+     0.5475
+    ],
+    [
+     0.3271,
+     0.5475
+    ],
+    [
+     0.3271,
+     0.4362
+    ],
+    [
+     0.7638,
+     0.4362
+    ],
+    [
+     0.7638,
+     0.9433
+    ],
+    [
+     0.0443,
+     0.9433
+    ]
+   ]
+  },
+  {
+   "id": "2",
+   "kind": "room",
+   "at": [
+    0.558,
+    0.1877
+   ],
+   "drawnAt": [
+    0.558,
+    0.1877
+   ],
+   "ref": 2,
+   "polygon": [
+    [
+     0.5259,
+     0.1406
+    ],
+    [
+     0.6382,
+     0.1406
+    ],
+    [
+     0.6382,
+     0.422
+    ],
+    [
+     0.5259,
+     0.422
+    ]
+   ]
+  },
+  {
+   "id": "3",
+   "kind": "room",
+   "at": [
+    0.681,
+    0.2413
+   ],
+   "drawnAt": [
+    0.681,
+    0.2413
+   ],
+   "ref": 3,
+   "polygon": [
+    [
+     0.649,
+     0.1406
+    ],
+    [
+     0.7588,
+     0.1406
+    ],
+    [
+     0.7588,
+     0.422
+    ],
+    [
+     0.649,
+     0.422
+    ]
+   ]
+  },
+  {
+   "id": "A",
+   "kind": "opening",
+   "at": [
+    0.1928,
+    0.1219
+   ],
+   "drawnAt": [
+    0.2058,
+    0.1784
+   ],
+   "ref": "o1"
+  },
+  {
+   "id": "B",
+   "kind": "opening",
+   "at": [
+    0.4123,
+    0.1219
+   ],
+   "drawnAt": [
+    0.4123,
+    0.0371
+   ],
+   "ref": "o2"
+  },
+  {
+   "id": "C",
+   "kind": "opening",
+   "at": [
+    0.4663,
+    0.1219
+   ],
+   "drawnAt": [
+    0.4663,
+    0.0371
+   ],
+   "ref": "o3"
+  },
+  {
+   "id": "D",
+   "kind": "opening",
+   "at": [
+    0.7236,
+    0.1219
+   ],
+   "drawnAt": [
+    0.7236,
+    0.0371
+   ],
+   "ref": "o4"
+  },
+  {
+   "id": "E",
+   "kind": "opening",
+   "at": [
+    0.4088,
+    0.4291
+   ],
+   "drawnAt": [
+    0.383,
+    0.474
+   ],
+   "ref": "o5"
+  },
+  {
+   "id": "F",
+   "kind": "opening",
+   "at": [
+    0.1515,
+    0.9634
+   ],
+   "drawnAt": [
+    0.1515,
+    0.8418
+   ],
+   "ref": "o6"
+  },
+  {
+   "id": "G",
+   "kind": "opening",
+   "at": [
+    0.4243,
+    0.9634
+   ],
+   "drawnAt": [
+    0.4888,
+    0.9055
+   ],
+   "ref": "o7"
+  },
+  {
+   "id": "H",
+   "kind": "opening",
+   "at": [
+    0.6452,
+    0.9634
+   ],
+   "drawnAt": [
+    0.6452,
+    0.8418
+   ],
+   "ref": "o8"
+  },
+  {
+   "id": "J",
+   "kind": "opening",
+   "at": [
+    0.0313,
+    0.8649
+   ],
+   "drawnAt": [
+    0.07,
+    0.8017
+   ],
+   "ref": "o9"
+  },
+  {
+   "id": "K",
+   "kind": "opening",
+   "at": [
+    0.5215,
+    0.3124
+   ],
+   "drawnAt": [
+    0.5517,
+    0.3503
+   ],
+   "ref": "o10"
+  },
+  {
+   "id": "L",
+   "kind": "opening",
+   "at": [
+    0.6436,
+    0.3216
+   ],
+   "drawnAt": [
+    0.6747,
+    0.3216
+   ],
+   "ref": "o11"
+  },
+  {
+   "id": "M",
+   "kind": "opening",
+   "at": [
+    0.7616,
+    0.344
+   ],
+   "drawnAt": [
+    0.7901,
+    0.344
+   ],
+   "ref": "o12"
+  },
+  {
+   "id": "N",
+   "kind": "opening",
+   "at": [
+    0.7767,
+    0.2021
+   ],
+   "drawnAt": [
+    0.8153,
+    0.2021
+   ],
+   "ref": "o13"
+  },
+  {
+   "id": "P",
+   "kind": "opening",
+   "at": [
+    0.7767,
+    0.7701
+   ],
+   "drawnAt": [
+    0.8153,
+    0.7701
+   ],
+   "ref": "o14"
+  }
+ ],
+ "unmarked": [
+  {
+   "kind": "room",
+   "ref": 1,
+   "at": [
+    0.4212,
+    0.2805
+   ],
+   "polygon": [
+    [
+     0.3271,
+     0.1406
+    ],
+    [
+     0.5203,
+     0.1406
+    ],
+    [
+     0.5203,
+     0.1475
+    ],
+    [
+     0.517,
+     0.1475
+    ],
+    [
+     0.517,
+     0.422
+    ],
+    [
+     0.3271,
+     0.422
+    ]
+   ],
+   "reason": "covered"
+  }
+ ],
+ "hints": {
+  "fileName": "ovre-etasje.jpg",
+  "levelName": "1. etasje"
+ },
+ "source": {
+  "file": "ovre-etasje.jpg",
+  "part": null,
+  "width": 713,
+  "height": 485,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "levelTitle": "Øvre etg",
+  "scaleText": null,
+  "rooms": [
+   {
+    "mark": "1",
+    "at": [
+     0.296,
+     0.598
+    ],
+    "name": "Stue",
+    "area": 56.38,
+    "kind": "living"
+   },
+   {
+    "mark": "2",
+    "at": [
+     0.583,
+     0.318
+    ],
+    "name": "Bad",
+    "area": 5.44,
+    "kind": "bathroom"
+   },
+   {
+    "mark": "3",
+    "at": [
+     0.703,
+     0.19
+    ],
+    "name": "Vask",
+    "area": 5.45,
+    "kind": "laundry"
+   }
+  ],
+  "labels": [
+   {
+    "text": "Hall",
+    "area": 9.07,
+    "kind": "hall",
+    "at": [
+     0.446,
+     0.313
+    ]
+   },
+   {
+    "text": "Kjøkken",
+    "area": 14.48,
+    "kind": "kitchen",
+    "at": [
+     0.677,
+     0.553
+    ]
+   }
+  ],
+  "dimensions": [],
+  "openings": [
+   {
+    "mark": "A",
+    "at": [
+     0.195,
+     0.103
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "B",
+    "at": [
+     0.42,
+     0.09
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "C",
+    "at": [
+     0.466,
+     0.09
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "D",
+    "at": [
+     0.724,
+     0.09
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "E",
+    "at": [
+     0.383,
+     0.44
+    ],
+    "kind": "opening"
+   },
+   {
+    "mark": "F",
+    "at": [
+     0.152,
+     0.975
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "G",
+    "at": [
+     0.489,
+     0.975
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "H",
+    "at": [
+     0.645,
+     0.975
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "J",
+    "at": [
+     0.03,
+     0.83
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "K",
+    "at": [
+     0.545,
+     0.35
+    ],
+    "kind": "door"
+   },
+   {
+    "mark": "L",
+    "at": [
+     0.65,
+     0.3
+    ],
+    "kind": "opening"
+   },
+   {
+    "mark": "M",
+    "at": [
+     0.78,
+     0.344
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "N",
+    "at": [
+     0.78,
+     0.202
+    ],
+    "kind": "window"
+   },
+   {
+    "mark": "P",
+    "at": [
+     0.78,
+     0.77
+    ],
+    "kind": "window"
+   }
+  ],
+  "skylights": [],
+  "stair": {
+   "present": true,
+   "at": [
+    0.6,
+    0.45
+   ],
+   "type": "straight",
+   "up": "unknown"
+  },
+  "ceiling": [],
+  "furniture": [
+   {
+    "kind": "sofa",
+    "at": [
+     0.09,
+     0.25
+    ]
+   },
+   {
+    "kind": "table",
+    "at": [
+     0.2,
+     0.38
+    ]
+   },
+   {
+    "kind": "table",
+    "at": [
+     0.45,
+     0.79
+    ]
+   },
+   {
+    "kind": "kitchen",
+    "at": [
+     0.75,
+     0.62
+    ]
+   },
+   {
+    "kind": "bathtub",
+    "at": [
+     0.58,
+     0.39
+    ]
+   },
+   {
+    "kind": "washer",
+    "at": [
+     0.66,
+     0.39
+    ]
+   },
+   {
+    "kind": "other",
+    "at": [
+     0.1,
+     0.8
+    ]
+   },
+   {
+    "kind": "other",
+    "at": [
+     0.2,
+     0.82
+    ]
+   }
+  ],
+  "notes": ""
+ },
+ "usage": {
+  "input_tokens": 6173,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 3312,
+  "output_tokens_details": {
+   "thinking_tokens": 2443
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.002273,
+ "ms": 16297,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-22T03:30:16.137Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

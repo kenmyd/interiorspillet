@@ -1,0 +1,110 @@
+{
+  "levelTitle": null,
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+    {
+      "text": "SOV",
+      "area": 11.8,
+      "kind": "bedroom",
+      "at": [
+        0.216,
+        0.383
+      ]
+    },
+    {
+      "text": "SOV",
+      "area": 10,
+      "kind": "bedroom",
+      "at": [
+        0.265,
+        0.642
+      ]
+    },
+    {
+      "text": "BOD",
+      "area": 2.4,
+      "kind": "storage",
+      "at": [
+        0.572,
+        0.264
+      ]
+    },
+    {
+      "text": "BAD",
+      "area": 9.6,
+      "kind": "bathroom",
+      "at": [
+        0.709,
+        0.362
+      ]
+    },
+    {
+      "text": "GANG/TRAPP",
+      "area": 15.1,
+      "kind": "hall",
+      "at": [
+        0.506,
+        0.493
+      ]
+    },
+    {
+      "text": "SOV",
+      "area": 11.9,
+      "kind": "bedroom",
+      "at": [
+        0.717,
+        0.606
+      ]
+    },
+    {
+      "text": "LOFTSTUE",
+      "area": 8.2,
+      "kind": "living",
+      "at": [
+        0.456,
+        0.776
+      ]
+    }
+  ],
+  "dimensions": [],
+  "openings": [],
+  "skylights": [
+    {
+      "at": [
+        0.265,
+        0.257
+      ]
+    },
+    {
+      "at": [
+        0.73,
+        0.267
+      ]
+    },
+    {
+      "at": [
+        0.265,
+        0.739
+      ]
+    },
+    {
+      "at": [
+        0.734,
+        0.739
+      ]
+    }
+  ],
+  "stair": {
+    "present": true,
+    "at": [
+      0.39,
+      0.262
+    ],
+    "type": "quarter-turn",
+    "up": "elsewhere"
+  },
+  "ceiling": [],
+  "furniture": [],
+  "notes": ""
+}

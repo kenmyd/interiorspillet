@@ -1,0 +1,135 @@
+{
+ "house": "hus4",
+ "file": "fasade1.avif",
+ "part": null,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1067,
+  "sha256": "768a942f33da0fb3e7f98fe6b20b3693579179ab1e13476137b1c2ce44fc4413"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasade1.avif"
+ },
+ "source": {
+  "file": "fasade1.avif",
+  "part": null,
+  "width": 1920,
+  "height": 1280,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "gable",
+  "storeys": 2,
+  "windows": [
+   {
+    "bbox": [
+     0.525,
+     0.385,
+     0.583,
+     0.547
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.677,
+     0.385,
+     0.708,
+     0.547
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.775,
+     0.385,
+     0.808,
+     0.547
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.36,
+     0.638,
+     0.418,
+     0.69
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.774,
+     0.638,
+     0.808,
+     0.689
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.652,
+     0.608,
+     0.709,
+     0.772
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.178,
+     0.608,
+     0.223,
+     0.771
+    ],
+    "kind": "door"
+   }
+  ],
+  "notes": "Bred, mørk takflate med horisontal overkant uten tydelig mønekam; fasaden alene avgjør ikke om taket er saltak eller pulttak. Takterrasse med glassrekkverk på lavere del til venstre. Liggende trekledning, grå vegg på bod."
+ },
+ "usage": {
+  "input_tokens": 4094,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 4094,
+    "output_tokens": 349,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 349,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.011678,
+ "ms": 4714,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T18:03:42.886Z",
+ "via": "tools/planbygger-ai-fixtures.mjs",
+ "upgraded": "2026-10-21T22:32:16.471Z"
+}

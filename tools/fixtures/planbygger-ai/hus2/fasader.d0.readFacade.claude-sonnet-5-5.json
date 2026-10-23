@@ -1,0 +1,103 @@
+{
+ "house": "hus2",
+ "file": "fasader.png",
+ "part": 0,
+ "task": "readFacade",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-sonnet-5-5",
+ "servedModel": "claude-sonnet-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 202,
+  "height": 81,
+  "sha256": "c6bfd9a58f83e06bd54ac167f9fe027e06a7e6d5db48b59b4b8b2ef3c2764833"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "fasader.png"
+ },
+ "source": {
+  "file": "fasader.png",
+  "part": 0,
+  "width": 980,
+  "height": 160,
+  "bbox": [
+   24,
+   31,
+   226,
+   112
+  ],
+  "photo": null
+ },
+ "response": {
+  "title": null,
+  "roof": "gable",
+  "storeys": 1,
+  "windows": [
+   {
+    "bbox": [
+     0.208,
+     0.568,
+     0.376,
+     0.827
+    ],
+    "kind": "door"
+   },
+   {
+    "bbox": [
+     0.52,
+     0.58,
+     0.584,
+     0.827
+    ],
+    "kind": "window"
+   },
+   {
+    "bbox": [
+     0.644,
+     0.543,
+     0.842,
+     0.728
+    ],
+    "kind": "window"
+   }
+  ],
+  "notes": "Énetasjes bolig med vertikal kledning. Gavlen med saltak mot venstre og lavere fløy mot høyre. Tegningen er liten og uten tittel, så plasseringen av åpningene er omtrentlig."
+ },
+ "usage": {
+  "input_tokens": 1852,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "iterations": [
+   {
+    "input_tokens": 1852,
+    "output_tokens": 206,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "type": "message",
+    "model": null
+   }
+  ],
+  "output_tokens": 206,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.005764,
+ "ms": 3593,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T22:30:23.814Z",
+ "via": "tools/planbygger-ai-fixtures.mjs"
+}

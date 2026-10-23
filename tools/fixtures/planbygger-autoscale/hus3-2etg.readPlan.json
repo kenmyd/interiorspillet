@@ -1,0 +1,96 @@
+{
+  "levelTitle": "Etasje 2",
+  "scaleText": null,
+  "rooms": [],
+  "labels": [
+    {
+      "text": "SOVEROM",
+      "area": 12.7,
+      "kind": "bedroom",
+      "at": [
+        0.318,
+        0.252
+      ]
+    },
+    {
+      "text": "ARBEIDSROM",
+      "area": 10.1,
+      "kind": "office",
+      "at": [
+        0.659,
+        0.321
+      ]
+    },
+    {
+      "text": "SOVEROM",
+      "area": 8.7,
+      "kind": "bedroom",
+      "at": [
+        0.398,
+        0.449
+      ]
+    },
+    {
+      "text": "GANG",
+      "area": 7.8,
+      "kind": "hall",
+      "at": [
+        0.595,
+        0.537
+      ]
+    },
+    {
+      "text": "SOVEROM",
+      "area": 8.7,
+      "kind": "bedroom",
+      "at": [
+        0.398,
+        0.614
+      ]
+    },
+    {
+      "text": "BOD/BADSTUE",
+      "area": 4.1,
+      "kind": "storage",
+      "at": [
+        0.42,
+        0.735
+      ]
+    },
+    {
+      "text": "BOD",
+      "area": 1.7,
+      "kind": "storage",
+      "at": [
+        0.716,
+        0.735
+      ]
+    },
+    {
+      "text": "BAD",
+      "area": 12,
+      "kind": "bathroom",
+      "at": [
+        0.539,
+        0.841
+      ]
+    }
+  ],
+  "dimensions": [],
+  "openings": [],
+  "skylights": [],
+  "stair": {
+    "present": true,
+    "at": [
+      0.72,
+      0.55
+    ],
+    "type": "straight",
+    "up": "elsewhere"
+  },
+  "ceiling": [
+    "ÅPENT NED"
+  ],
+  "furniture": [],
+  "notes": ""
+}

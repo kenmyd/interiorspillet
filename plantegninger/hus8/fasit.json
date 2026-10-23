@@ -1,0 +1,95 @@
+{
+  "house": "hus8",
+  "files": {
+    "plantegning-1.jpg": {
+      "kind": "plan", "level": null,
+      "drawings": [
+        { "kind": "plan", "level": -1, "title": null, "bbox": [428, 226, 702, 749], "sameAs": "plantegning-2.jpg" },
+        { "kind": "plan", "level": 0, "title": null, "bbox": [81, 838, 567, 1370], "sameAs": "plantegning-3.jpg" },
+        { "kind": "plan", "level": null, "title": "GARASJE (frittstående bygning)", "bbox": [869, 1016, 1050, 1282], "sameAs": "plantegning-3.jpg" },
+        { "kind": "other", "title": "Nordpil", "bbox": [994, 71, 1048, 124] },
+        { "kind": "text", "title": "Meglerens forbehold (to linjer: plantegningen er ikke målbar, innredningen kan avvike)", "bbox": [83, 1508, 1047, 1557] }
+      ]
+    },
+    "plantegning-2.jpg": {
+      "kind": "plan", "level": -1,
+      "drawings": [
+        { "kind": "plan", "level": -1, "title": null, "bbox": [428, 537, 702, 1059] },
+        { "kind": "other", "title": "Nordpil", "bbox": [994, 71, 1048, 124] },
+        { "kind": "text", "title": "Meglerens forbehold", "bbox": [83, 1508, 1047, 1557] }
+      ]
+    },
+    "plantegning-3.jpg": {
+      "kind": "plan", "level": 0,
+      "drawings": [
+        { "kind": "plan", "level": 0, "title": null, "bbox": [81, 532, 567, 1064] },
+        { "kind": "plan", "level": null, "title": "GARASJE (frittstående bygning)", "bbox": [869, 710, 1050, 976] },
+        { "kind": "other", "title": "Nordpil", "bbox": [994, 71, 1048, 124] },
+        { "kind": "text", "title": "Meglerens forbehold", "bbox": [83, 1508, 1047, 1557] }
+      ]
+    }
+  },
+  "levels": [
+    {
+      "level": -1, "name": "Kjeller", "file": "plantegning-2.jpg",
+      "title": null,
+      "rooms": [
+        { "label": "GANG", "area": null, "kind": "hall" },
+        { "label": "BOD", "area": null, "kind": "storage" },
+        { "label": "WC", "area": null, "kind": "bathroom" },
+        { "label": "BOD", "area": null, "kind": "storage" },
+        { "label": "BOD", "area": null, "kind": "storage" },
+        { "label": "BOD", "area": null, "kind": "storage" },
+        { "label": "BOD", "area": null, "kind": "storage" }
+      ],
+      "doors": { "single": 5, "double": 0, "sliding": 0, "exterior": 0 },
+      "windows": 4,
+      "skylights": 0,
+      "stair": {
+        "type": "quarter-turn",
+        "note": "Kvartsvingt trapp (90° med svingtrinn) i nordøstre hjørne av GANG, inntil nordveggen og veggen mot BOD i nordøst. Den ligger på x ≈ 530–577 og y ≈ 548–593 (ca. 47 × 45 px). Den prikkede ganglinja starter i vest ved x ≈ 532, går østover langs nordveggen (y ≈ 563) og svinger 90° ved x ≈ 561. Der stråler svingtrinnene ut fra et punkt ved ca. (547, 579). Så går den sørover til en pil og en skrå, stiplet bruddlinje ved y ≈ 583–593. Pila peker sørover mot bruddlinja, altså trolig retningen opp. Det vestre løpet har rette trinn med ca. 8 px inntrinn. Det er ingen dør mellom trappa og GANG. Det søndre løpet (x ≈ 545–577) ligger rett under trappa i 1. etasje (x 360–392): målt fra vestflaten av ytterveggen er det 116–149 px i kjelleren og 118–150 px i 1. etasje."
+      },
+      "dimensions": [],
+      "scale": {
+        "hints": ["standard"],
+        "pxPerM": null,
+        "note": "Tegningen har ingen mål, ingen arealer og ingen målestokk. Teksten nederst på arket sier «Plantegningen er ikke målbar». Bare standardmål kan brukes. Alle dørhull og åpninger er 28–29 px (sju her, og de samme i 1. etasje og i garasjen). Ytterveggene er 10 px og innerveggene 4 px. En dør på 0,8–0,9 m gir 32–36 px/m, og 1. etasjes kjøkkenbenk (20–23 px dyp, 0,6 m) gir 33–38 px/m. Beste anslag er ca. 34 px/m (±6 %), men det er et anslag, ikke fasit. Kjelleren er 273 × 522 px ytre (x 429–701, y 538–1059), altså ca. 8,0 × 15,4 m ved 34 px/m. Den har samme skala som 1. etasje (samme kilde, samme ark i plantegning-1). Planen er 7–9 px mindre enn 1. etasje (280 × 531 px). Vestflaten og trappa ligger likt, mens nord-, øst- og sørflaten ligger 4–7 px innenfor. BRA står ikke på tegningene."
+      },
+      "ceiling": [],
+      "notes": "Koordinatene er i px i plantegninger/_png/hus8/plantegning-2.png (1131 × 1600). Plantegning-1 har samme tegning 311 px høyere opp, på samme x. Rommene (innvendige flater): 1) GANG, L-formet: den brede delen x 439–577, y 548–666, med trappa i nordøst, og en korridor x 539–577 ned til y 842; 2) BOD i nordøst, x 581–692, y 548–639; 3) WC, x 581–652, y 644–723; 4) BOD i vest, øverst, x 439–535, y 670–738; 5) BOD i vest, nederst, x 439–535, y 741–842; 6) BOD i øst, midten, x 581–652 for y 728–796 og x 581–692 for y 796–912; 7) den store BOD i sør, L-formet, x 439–692, y 846–1050 (den østre delen starter ved y 915). Fem dører med ett slagblad, alle fra GANG og alle 28–29 px: øvre vestre BOD (x 537, y 695–722), nedre vestre BOD (x 537, y 777–805), WC (x 579, y 692–720), BOD i øst (x 579, y 758–785) og den store BOD i sør (y 844, x 543–571). Alle slår inn i rommet. Åpninger, tegnet som et hvitt felt med stiplede kanter (samme symbol som mellom GANG og ENTRÉ i 1. etasje), regnet som åpning uten dør og ikke som dør: a) BOD i nordøst–WC (y 640, x 593–621); b) BOD i øst–store BOD (y 913, x 600–628), rett øst for pipa. BOD i nordøst har altså adkomst bare gjennom WC. Ingen ytterdør er tegnet i kjelleren. Vestveggen og sørveggen er helt tette. Vinduer (4), alle 32–33 px, tegnet som et hvitt felt med en tynn grå linje: 1) nordveggen i GANG (x 483–515); 2) østveggen i BOD i nordøst (y 574–606); 3) østveggen i BOD i øst (y 832–863); 4) østveggen i den store BOD (y 963–995). Kjelleren har et innhakk i østfasaden, x 652–701 og y 639–796 (utvendig, hvitt), under ENTRÉ og den østre delen av BAD i 1. etasje, trolig uutgravd under inngangen. Veggene i innhakket er tette. Pipe med ildsted: en svart blokk, smal øverst (x 578–598, y 897–911) og bred nederst (x 564–603, y 912–952), i skjøten mellom korridorveggen og sørveggen i BOD i øst, med en hvit plate foran mot sør, inn i den store BOD. Pipa går videre opp til peisen i STUE. Innredning: et lite avrundet kvadrat i nordvestre hjørne av BOD i nordøst (x 582–597, y 548–570), trolig en utslagsvask. WC har toalett og en liten vask på østveggen. Ingen takvinduer og ingen himlingstekst."
+    },
+    {
+      "level": 0, "name": "1. etasje", "file": "plantegning-3.jpg",
+      "title": null,
+      "rooms": [
+        { "label": "SOVEROM", "area": null, "kind": "bedroom" },
+        { "label": "SOVEROM", "area": null, "kind": "bedroom" },
+        { "label": "BAD", "area": null, "kind": "bathroom" },
+        { "label": "SOVEROM", "area": null, "kind": "bedroom" },
+        { "label": "GANG", "area": null, "kind": "hall" },
+        { "label": "ENTRÉ", "area": null, "kind": "entrance" },
+        { "label": "KJØKKEN", "area": null, "kind": "living" },
+        { "label": "STUE", "area": null, "kind": "living" },
+        { "label": "SPISESTUE", "area": null, "kind": "living" },
+        { "label": "TERRASSE", "area": null, "kind": null }
+      ],
+      "doors": { "single": 7, "double": 0, "sliding": 3, "exterior": 3 },
+      "windows": 6,
+      "skylights": 0,
+      "stair": {
+        "type": "straight",
+        "note": "Her er bare det øverste, rette løpet tegnet. Hele trappa er kvartsvingt, og svingtrinnene ses bare i kjelleren. Løpet ligger på x 360–392 (mellom veggene 356–359 og 393–396) og y 543–604, inntil nordveggen mellom SOVEROM i nordvest (med det hvite rektangelet) og SOVEROM i nordøst. En skrå, stiplet bruddlinje går fra (361, 570) i vest til (391, 563) i øst. Over den er det gulvfarge, under den seks tynne tverrlinjer (y ≈ 572, 578, 584, 590, 596 og 604, ca. 6,4 px mellom; den siste ligger inntil dørterskelen ved y 605–608). Ingen svingtrinn er tegnet her. Midt i løpet går en prikket ganglinje med pil mot sør. Pila peker mot døra ut til GANG (y 605), samme retning som i kjelleren, og viser trolig retningen opp: trappa ender her ved døra. Trappa går ikke videre opp, og arkene har ingen loftsplan. Den utvendige inngangstrappa øst for ENTRÉ er ikke regnet med her, se notatene."
+      },
+      "dimensions": [],
+      "scale": {
+        "hints": ["standard"],
+        "pxPerM": null,
+        "note": "Tegningen har ingen mål, ingen arealer og ingen målestokk («Plantegningen er ikke målbar»). Standardmål: alle dørhull og åpninger er 28–29 px (ti her, ellers bare skyvedøra i stua, som er 77 px). Kjøkkenbenken er 20–23 px dyp (nordbenken y 794–814, sørbenken y 888–911, vestbenken x 402–425). Ytterveggene er 10 px og innerveggene 4 px. En dør på 0,8–0,9 m gir 32–36 px/m, og benken på 0,6 m gir 33–38 px/m. Beste anslag er ca. 34 px/m (±6 %), men det er et anslag, ikke fasit. Huset er 280 × 531 px ytre (x 242–521, y 533–1063), altså ca. 8,2 × 15,6 m (ca. 128 m² fotavtrykk) ved 34 px/m, og 115–145 m² over spennet 32–36 px/m. Vinduene er 42–43 px (ca. 1,25 m), og badevinduet 21 px. Plantegning-1 har samme tegning i samme skala, bare 306 px lenger ned."
+      },
+      "ceiling": [],
+      "notes": "Koordinatene er i px i plantegninger/_png/hus8/plantegning-3.png (1131 × 1600). Rommene (innvendige flater): 1) SOVEROM i nordvest, x 252–356, y 543–678. I nordøstre hjørne står et hvitt rektangel med tynn kant (x 333–355, y 543–625), trolig et garderobeskap eller en innkassing, kanskje over det nedre løpet av kjellertrappa. Det er ikke et eget rom. 2) SOVEROM i nordøst, x 397–512, y 543–642. 3) BAD, x 397–512, y 646–714, med toalett, servant med skap og et dusjhjørne med buet front. 4) SOVEROM i vest, midten, x 252–356, y 682–790. Langs nordveggen har det en garderobe (y 682–699) med skyvedører: fronten er to forskjøvne tynne linjer ved y 700–702 (to blad, skjøt ved x ≈ 302) med to motsatte piler (ved x ≈ 334 mot vest og x ≈ 274 mot øst). Det er innredning, ikke en dør, og den er ikke talt med. 5) GANG: en korridor x 360–393 fra trappedøra (y 605) ned til y 790, som blir bredere under BAD (x 360–473, y 718–790). 6) ENTRÉ, x 477–512, y 718–790. 7) KJØKKEN, x 403–512, y 794–911, med innredning langs nord-, vest- og sørveggen (vask, oppvaskmaskin, komfyr med fire plater og to hvitevarer). 8) og 9) STUE og SPISESTUE er ett åpent, L-formet rom, x 252–512, y 794–1054, uten KJØKKEN. Det er ingen vegg mellom dem: STUE står i vest (ca. 325, 912) og SPISESTUE i sørøst under kjøkkenet (ca. 455, 980). Typene er tolket: KJØKKEN, STUE og SPISESTUE er living, fordi ROOM_KINDS ikke har kjøkken. Dører med ett slagblad (7, alle 28–29 px): 1) trappedøra mellom trappa og GANG (y 605), slår inn i GANG; 2) GANG–SOVEROM i nordøst (x 394, y 612–640), slår inn i soverommet; 3) GANG–SOVEROM i nordvest (x 357, y 634–661), slår inn i soverommet; 4) GANG–SOVEROM i vest (x 357, y 720–747), slår inn i soverommet; 5) GANG–BAD (y 715, x 435–463), slår ut i GANG; 6) inngangsdøra i østveggen i ENTRÉ (y 728–755), slår ut på trappeavsatsen; 7) terrassedøra i vestveggen i SOVEROM i nordvest (y 636–664), slår ut på TERRASSE. Skyvedører (3): 8) skyvedøra i vestveggen i STUE mot TERRASSE (y 863–939, 77 px), to forskjøvne blad med hver sin pil; 9) GANG–STUE (y 791, x 366–394) og 10) GANG–KJØKKEN (y 791, x 407–434). Dør 9 og 10 er grå, fylte blad i veggflukt (y 789–793, samme grå som terskelfeltet i slagdørene, men uten bue), trolig skyvedører inn i veggen. Over hvert blad står et lite strekmerke 3 px fra veggen (y 786), ved den vestre enden av dør 9 (x 371–374) og den østre enden av dør 10 (x 428–431). Det passer med to skyvedører som går inn i veggen hver sin vei, men pilspissene kan ikke leses. Det er usikkert: de ligner ikke vinduer (hvitt med tynn grå linje) eller åpninger (stiplet). KJØKKEN har ingen annen adkomst. «exterior» er dørene 6, 7 og 8, som også er talt med i «single» eller «sliding». Åpning uten dør (ikke talt med): GANG–ENTRÉ (x 474, y 729–757), et hvitt felt med stiplede kanter. Vinduer (6): 1) vestveggen i SOVEROM i nordvest (y 553–595); 2) vestveggen i SOVEROM i vest (y 711–753); 3) østveggen i SOVEROM i nordøst (y 569–611); 4) østveggen i BAD (y 669–689, smalt); 5) østveggen i KJØKKEN (y 835–876); 6) østveggen i SPISESTUE (y 968–1009). Nordveggen og sørveggen er helt tette. Peis: en svart blokk med ildsted mot vest inn i STUE, ved x 380–402, y 893–923, i enden av kjøkkenets vestvegg. Den står over pipa i kjelleren. Utenfor huset, ikke vegger: a) TERRASSE langs hele vestsiden (x 81–242, y 542–1056). Etiketten står i rooms med kind null (utendørs, slik Terrasse og Carport står i hus4), men flaten har ingen vegger og blir ikke noe rom i gjenkjenningen. Den har grått gulv og rekkverk som en tynn dobbel linje, med avfasede hjørner i nordvest og sørvest og to små sprang i vestkanten (y ≈ 724 og 810). b) En utvendig trapp eller avsats øst for ENTRÉ og BAD (x 522–566, y 642–786), med svarte vanger eller murer i nord (y 632–641) og sør (y 786–796) og to trinnlinjer (x ≈ 540 og 554) parallelt med fasaden. Den er tegnet på samme måte som en trapp, men den er utvendig. c) GARASJE, en frittstående bygning til høyre (se notatene for huset). Den er ikke tatt med i rommene eller tellingene her. Ingen takvinduer og ingen himlingstekst."
+    }
+  ],
+  "facades": [],
+  "notes": "Kilde: FINN-annonse 398608131 (enebolig fra 1960 med kjeller, Moss), meglerens plantegninger, jf. info.txt. Mappa har tre JPG-er (1131 × 1600 px, stående A-format) og ingen fasader. Plantegning-1 har tre tegninger på ett ark: kjelleren øverst, 1. etasje med terrasse nederst til venstre og en frittstående garasje nederst til høyre. Plantegning-2 er bare kjelleren, og plantegning-3 er 1. etasje med garasjen. Plantegning-1 har nøyaktig de samme tegningene i samme skala, bare flyttet. Kjelleren ligger 311 px lavere i plantegning-2, og 1. etasje 306 px høyere i plantegning-3, på samme x. Middelavviket (absolutt, gråtoner) er 2,6 for kjelleren, 1,5 for 1. etasje og 0,8 for garasjen. I kjelleren ligger avvikene bare langs de vannrette veggkantene (en forskyvning på under én piksel), ellers er det bare JPG-støy. En generator som får alle tre filene, må kjenne igjen duplikatene og lage to etasjer, ikke fire. Tegningene har ingen titler. Etasjenavnene kommer fra info.txt, og rekkefølgen kan leses av innholdet: 1. etasje har ENTRÉ med ytterdør, KJØKKEN og STUE, mens kjelleren har bare GANG, boder og WC, ingen ytterdør og en trapp opp. Etasjene kan legges oppå hverandre etter vestflaten og trappa, som ligger likt (±2 px). På begge arkene står en nordpil øverst til høyre, ved (1021, 97). Den peker ca. 11° mot venstre for opp (nord ≈ 349° med klokka fra opp i bildet), så inngangen, kjøkkenet og kjellervinduene vender omtrent mot øst og terrassen mot vest. Fargene: soverommene er oransje-beige, bad og WC lyseblå, de andre rommene lys beige og terrassen grå. Veggene er helsvarte. Det er ingen mål, ingen arealer og ingen målestokk. Forbeholdet nederst på arket sier at plantegningen ikke er målbar, så skalaen må komme fra standardmål (ca. 34 px/m, se scale.note) eller fra BRA, som ikke står på tegningene. Slik er dørene talt: hver dør er talt én gang under sin variant, og ytterdørene er i tillegg talt i «exterior». Åpninger uten dør (stiplet felt) og garderobefronter med skyvedører er ikke talt med. For hele huset (uten garasjen) blir det 12 dører med ett slagblad, 0 doble, 3 skyvedører, 3 ytterdører og 10 vinduer. GARASJE: en frittstående bygning, x 870–1049 og y 711–957 i plantegning-3 (x 870–1049, y 1016–1263 i plantegning-1), altså 180 × 247 px ytre (ca. 5,3 × 7,3 m ved 34 px/m). Ytterveggene er 10 px, og den har ingen vinduer. Sørveggen har en sidedør (x 886–914, 29 px, ett slagblad, hengsel i vest, slår ut mot sør) og en garasjeport (x 930–1024, 95 px, ca. 2,8 m), tegnet som en tynn dobbel linje uten bue eller pil. Skal garasjen telles med, blir det rommet GARASJE (storage, uten areal), én dør med ett slagblad (ytterdør), én port og 0 vinduer. Kontrollert 2026-10-21 (uavhengig gjennomgang): etikettene, dørene per variant, vinduene, takvinduene, trappa, målene, etasjenumrene, bbox-ene og fasadene er lest på nytt mot PNG-kopiene, med forstørrelse og pikselskanning av alle veggene. Tellingene stemte. Rettet: TERRASSE er lagt til i rommene i 1. etasje (kind null), trinnlinjene og bruddlinja i 1. etasje, arealspennet (115–145 m²), noen koordinater (det hvite rektangelet, garderoben, terrassespranget, pipa og garasjeporten) og middelavvikene mellom arkene. Fortsatt usikkert: om dør 9 og 10 i 1. etasje er skyvedører eller åpninger med terskel, og om trappetypen i 1. etasje skal være «straight» (det som er tegnet der) eller «quarter-turn» (hele trappa, slik kjelleren viser)."
+}

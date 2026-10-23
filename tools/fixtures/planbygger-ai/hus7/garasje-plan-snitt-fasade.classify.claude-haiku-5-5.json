@@ -1,0 +1,147 @@
+{
+ "house": "hus7",
+ "file": "garasje-plan-snitt-fasade.pdf",
+ "part": null,
+ "task": "classify",
+ "promptVersion": "pb-ai-4",
+ "model": "claude-haiku-5-5",
+ "servedModel": "claude-haiku-5-5",
+ "effort": "medium",
+ "image": {
+  "width": 1600,
+  "height": 1117,
+  "sha256": "8755888acd49597865ee4cb2e546fec862bc0db429c681b1c641091999882bd5"
+ },
+ "marks": [],
+ "unmarked": [],
+ "hints": {
+  "fileName": "garasje-plan-snitt-fasade.pdf"
+ },
+ "source": {
+  "file": "garasje-plan-snitt-fasade.pdf",
+  "part": null,
+  "width": 4771,
+  "height": 3332,
+  "bbox": null,
+  "photo": null
+ },
+ "response": {
+  "drawings": [
+   {
+    "kind": "facade",
+    "bbox": [
+     0.081,
+     0.005,
+     0.488,
+     0.349
+    ],
+    "title": "VEST",
+    "levelName": null,
+    "level": null,
+    "detached": false
+   },
+   {
+    "kind": "facade",
+    "bbox": [
+     0.597,
+     0.085,
+     0.984,
+     0.336
+    ],
+    "title": "SØR",
+    "levelName": null,
+    "level": null,
+    "detached": false
+   },
+   {
+    "kind": "facade",
+    "bbox": [
+     0.019,
+     0.371,
+     0.425,
+     0.689
+    ],
+    "title": "ØST",
+    "levelName": null,
+    "level": null,
+    "detached": false
+   },
+   {
+    "kind": "facade",
+    "bbox": [
+     0.488,
+     0.448,
+     0.978,
+     0.694
+    ],
+    "title": "NORD",
+    "levelName": null,
+    "level": null,
+    "detached": false
+   },
+   {
+    "kind": "plan",
+    "bbox": [
+     0.106,
+     0.723,
+     0.253,
+     0.947
+    ],
+    "title": "PLAN",
+    "levelName": null,
+    "level": 0,
+    "detached": true
+   },
+   {
+    "kind": "section",
+    "bbox": [
+     0.319,
+     0.743,
+     0.497,
+     0.941
+    ],
+    "title": "SNITT",
+    "levelName": null,
+    "level": null,
+    "detached": false
+   },
+   {
+    "kind": "text",
+    "bbox": [
+     0.705,
+     0.851,
+     0.958,
+     0.96
+    ],
+    "title": null,
+    "levelName": null,
+    "level": null,
+    "detached": false
+   }
+  ],
+  "scaleText": "1:100",
+  "notes": "Arket viser garasje med fasader vest, sør, øst og nord, en plan og et snitt. Situasjonsplanen må være en egen tegning, og den finnes ikke på dette arket. Planen gjelder en frittliggende garasje, ikke en etasje i huset."
+ },
+ "usage": {
+  "input_tokens": 4464,
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "cache_creation": {
+   "ephemeral_5m_input_tokens": 0,
+   "ephemeral_1h_input_tokens": 0
+  },
+  "output_tokens": 1619,
+  "output_tokens_details": {
+   "thinking_tokens": 1117
+  },
+  "service_tier": "standard",
+  "inference_geo": "global",
+  "speed": "standard"
+ },
+ "cost": 0.001256,
+ "ms": 10662,
+ "stopReason": "end_turn",
+ "recorded": "2026-10-21T18:53:32.403Z",
+ "via": "tools/planbygger-ai-fixtures.mjs",
+ "upgraded": "2026-10-21T22:23:37.619Z"
+}

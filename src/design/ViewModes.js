@@ -1676,7 +1676,7 @@ export class ViewModes {
           planMarks.add(new THREE.Mesh(geo, this._mats.glass));
           this._overlayGeos.push(geo);
         }
-        if (o.door) {
+        if (o.door && o.door.variant !== 'sliding' && o.door.variant !== 'folding') {
           const angle = planSwingAngle(o, house);
           const geo = doorSwingGeometry(o, it.t, Math.min(heightAt(o.u0), heightAt(o.u1)) + CAP_LIFT * 2, angle);
           geo.applyMatrix4(basis);
@@ -1850,33 +1850,43 @@ export function planSwingAngle(o, house) {
  * @returns {THREE.BufferGeometry}
  */
 function doorSwingGeometry(o, t, hy, angleDeg = 90) {
-  const leaf = o.door.leaf?.w ?? o.width;
   const hingeAtEnd = o.door.hinge === 'to';
-  const hu = hingeAtEnd ? o.u1 : o.u0;
-  const towards = hingeAtEnd ? -1 : 1; // along u toward the other jamb
   const outward = o.door.swing === 'out' ? -1 : 1; // local z: + = into the room
   const zEdge = outward > 0 ? 0 : -t;
   const A = clamp((Number.isFinite(angleDeg) ? angleDeg : 90) * DEG, 0.2, Math.PI);
   const N = Math.max(12, Math.round((24 * A) / (Math.PI / 2)));
-  const pts = [];
-  for (let k = 0; k <= N; k++) {
-    const a = (k / N) * A;
-    pts.push([hu + towards * leaf * Math.cos(a), zEdge + outward * leaf * Math.sin(a)]);
-  }
   const ribbon = [];
   const wdt = 0.014;
-  for (let k = 0; k < N; k++) {
-    const [x0, z0] = pts[k], [x1, z1] = pts[k + 1];
-    const ex = z1 - z0, ez = -(x1 - x0);
-    const l = Math.hypot(ex, ez) || 1;
-    const ox = (ex / l) * wdt / 2, oz = (ez / l) * wdt / 2;
-    ribbon.push(x0 - ox, hy, z0 - oz, x1 - ox, hy, z1 - oz, x1 + ox, hy, z1 + oz, x0 - ox, hy, z0 - oz, x1 + ox, hy, z1 + oz, x0 + ox, hy, z0 + oz);
+  /** The arc and the open leaf of one leaf hinged at u = hu, closing toward `towards` (±1 along u). */
+  const swing = (hu, towards, leaf) => {
+    const pts = [];
+    for (let k = 0; k <= N; k++) {
+      const a = (k / N) * A;
+      pts.push([hu + towards * leaf * Math.cos(a), zEdge + outward * leaf * Math.sin(a)]);
+    }
+    for (let k = 0; k < N; k++) {
+      const [x0, z0] = pts[k], [x1, z1] = pts[k + 1];
+      const ex = z1 - z0, ez = -(x1 - x0);
+      const l = Math.hypot(ex, ez) || 1;
+      const ox = (ex / l) * wdt / 2, oz = (ez / l) * wdt / 2;
+      ribbon.push(x0 - ox, hy, z0 - oz, x1 - ox, hy, z1 - oz, x1 + ox, hy, z1 + oz, x0 - ox, hy, z0 - oz, x1 + ox, hy, z1 + oz, x0 + ox, hy, z0 + oz);
+    }
+    // the open leaf: from the hinge along the open direction, 4 cm wide
+    const dx = towards * Math.cos(A), dz = outward * Math.sin(A);
+    const px = -dz * 0.02, pz = dx * 0.02;
+    const x0 = hu, z0 = zEdge, x1 = hu + dx * leaf, z1 = zEdge + dz * leaf;
+    ribbon.push(x0 - px, hy, z0 - pz, x0 + px, hy, z0 + pz, x1 + px, hy, z1 + pz, x0 - px, hy, z0 - pz, x1 + px, hy, z1 + pz, x1 - px, hy, z1 - pz);
+  };
+  if (o.door.variant === 'double') {
+    // a double door (doortypes.js): `leaf` on the hinge jamb, `leaf2` on the other, splitting the hole
+    const w1 = o.door.leaf?.w ?? o.width / 2;
+    const w2 = o.door.leaf2?.w ?? w1;
+    const a = (o.width * w1) / (w1 + w2);
+    swing(hingeAtEnd ? o.u1 : o.u0, hingeAtEnd ? -1 : 1, a);
+    swing(hingeAtEnd ? o.u0 : o.u1, hingeAtEnd ? 1 : -1, o.width - a);
+  } else {
+    swing(hingeAtEnd ? o.u1 : o.u0, hingeAtEnd ? -1 : 1, o.door.leaf?.w ?? o.width);
   }
-  // the open leaf: from the hinge along the open direction, 4 cm wide
-  const dx = towards * Math.cos(A), dz = outward * Math.sin(A);
-  const px = -dz * 0.02, pz = dx * 0.02;
-  const x0 = hu, z0 = zEdge, x1 = hu + dx * leaf, z1 = zEdge + dz * leaf;
-  ribbon.push(x0 - px, hy, z0 - pz, x0 + px, hy, z0 + pz, x1 + px, hy, z1 + pz, x0 - px, hy, z0 - pz, x1 + px, hy, z1 + pz, x1 - px, hy, z1 - pz);
   return new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(ribbon, 3));
 }
 

@@ -4,26 +4,43 @@ import { paint, mat, emissive } from './materials.js';
 import { basis, MeshBatcher, prismX } from '../world/buildKit.js';
 import {
   UP, wallMatrix, openingMatrix, groupGeometry, wallLayer, mergeNotches, profileAt, profileSlice, floorGeometry,
-  ceilingGeometry, glassMaterial, frostedGlassMaterial, buildWindow, rectCells,
+  ceilingGeometry, glassMaterial, frostedGlassMaterial, buildWindow, rectCells, FRAME_INSET, quadPrism,
 } from './wallkit.js';
 import { buildDoor } from './doors.js';
 import { claddingMaterial, ledStrip } from './shell.js';
-import { wallFinish, floorFinish } from '../world/surfaces.js';
+import { buildRoofs } from './roof.js';
+import { buildChimneys } from './chimney.js';
+import { buildDecks } from './decks.js';
+import { claddingPiece, gableLine } from './cladding.js';
+import { finishAt, finishKey } from './claddinggeom.js';
+import { surfaceProfile, planeY, CLADDING_INTO_ROOF } from './roofgeom.js';
+import { wallFinish, floorFinish, facadeFinish } from '../world/surfaces.js';
 
 /**
  * ROOMS – every room of the house except the living room / kitchen / TV-stue (notes/hele-huset-design.md §2.1,
  * §2.3–2.8; hele-huset-avstemming.md V1–V70 overrides it), steps 8 + 21 + 24 (A2, A2′, C2):
  *   • the walls of each room loop at their floor (level floorY + room floorOffset), mitred per loop like the shell, with
  *     paint, the room's own skirting (rooms[].baseboard: a board, the bathroom's dark upstand, the laundry's upturn)
- *     and windows (frame, glass – frosted on the bathroom –, board, a lining when the reveal has its own colour);
+ *     and windows (frame, glass – frosted on the bathroom –, board, a lining when the reveal has its own colour; the
+ *     fields, glazing bars and the floor out to the frame of a window on the floor – notes/vindusmodeller.md);
  *   • D13: a wall's back that is another room's face (`backOf`) is that face: the slab is cut at the faces' ends and
  *     each piece's back becomes a mesh with the face's id, paint and pick – nothing is built twice. A slab whose face
  *     has a lower floor (the entrance, bod-3: floorOffset −0.30) reaches down to it;
- *   • exterior walls get the outer layer of their facade segment (facadeSegments: cladding on the ground floor, plaster
- *     on the basement), up under the roof on the ground floor (as the shell) and up to the slab underside under a
- *     ground-floor facade on the basement (no two layers in one plane);
+ *   • exterior walls get the outer layer of their facade segment (facadeSegments: cladding on the ground floor and the
+ *     floors above, plaster on the basement), up under the roof on the ground floor (as the shell; with roofs –
+ *     notes/tak.md – up into the house's own roof, else 0.3 over the wall), up to the cladding of the floor above where
+ *     its facade stands on this one, and up to the slab underside under a ground-floor facade on the basement (no two
+ *     layers in one plane);
+ *   • with the house's `cladding` (notes/kledning.md, layout.house.cladding) the outer layer is cladding.js's: bands
+ *     per zone, gable and plinth, flashings, corner boards and surrounds – facadeSegments then give no material;
+ *   • the roofs (roof.js, layout.house.roofs): over their level, hidden with the ceilings; a ceiling under a roof is
+ *     its surface (cut along the folds, with the vertical faces at a dormer's sides); a roof window under a roof lies in
+ *     the roof plane;
+ *   • the decks (decks.js, layout.house.decks): terraces, balconies, porches and roof terraces in their level's root,
+ *     with railings, stairs and their colliders (in `colliders`);
  *   • a floor per room (oak shared with the living room / tinted for the basement, vinyl, concrete, parquet) with the
- *     stairwell cut out, the ceilings (the basement's with the hole), black ceiling trims, the white edge face on the
+ *     stairwell cut out, the ceilings (the basement's with the hole; roof windows in ceilings[].skylights: hole, shaft
+ *     and window), black ceiling trims, the white edge face on the
  *     free edges of the hole (V16), the stairwell walls (topProfile in the data), the ledge (V21) and its two corner
  *     fillers (the soffits under the overhangs and in the entrance niche are exterior.js's, steg 25);
  *   • the doors (doors.js: openAngleDeg, the storage doors closed but openable, the outer door opening outwards) with
@@ -98,7 +115,7 @@ function mergeHoles(holes) {
   const out = [];
   for (const h of [...holes].sort((a, b) => a.x0 - b.x0)) {
     const p = out[out.length - 1];
-    if (p && h.x0 <= p.x1 + 1e-4 && Math.abs(h.y0 - p.y0) < 1e-4 && Math.abs(h.y1 - p.y1) < 1e-4) p.x1 = Math.max(p.x1, h.x1);
+    if (p && h.x0 <= p.x1 + 1e-4 && Math.abs(h.y0 - p.y0) < 1e-4 && Math.abs(h.y1 - p.y1) < 1e-4 && h.y1b == null && p.y1b == null) p.x1 = Math.max(p.x1, h.x1);
     else out.push({ ...h });
   }
   return out;
@@ -206,6 +223,29 @@ export function buildRooms(ctx, layout, M = null) {
     return claddings.get(hex);
   }
   const plaster = (hex) => mat('painted', hex || LOOK.plaster, { roughness: 0.95 });
+  // the house's cladding (notes/kledning.md): one material per finish – board-and-batten is the shell's woodCladding
+  // (claddingMaterial), the other kinds surfaces.js facadeFinish (cached, colour-neutral textures tinted per use)
+  const CL = H?.cladding ?? null;
+  const facadeRes = quality.level === 'high' ? 1 : 0.5;
+  const finishMats = new Map();
+  function finishMaterial(f) {
+    const key = finishKey(f);
+    if (!finishMats.has(key)) {
+      let m;
+      if (!f.plinth && f.type === 'wood' && f.profile === 'board-batten') m = cladding(f.color);
+      else {
+        const kind = f.plinth ? (f.material === 'concrete' ? 'concrete' : f.material) : f.type;
+        try {
+          m = facadeFinish(kind, f.color, { profile: f.profile ?? 'plain', module: f.module ?? undefined, res: facadeRes });
+        } catch {
+          m = mat('painted', f.color, { roughness: 0.9 }); // no texture support
+        }
+      }
+      finishMats.set(key, m);
+    }
+    return finishMats.get(key);
+  }
+  const trimMaterial = (hex) => mat('painted', hex, { roughness: 0.6 });
   const tintedFloors = new Map();
   /** Floor material of a room's floor entry. */
   function floorMaterial(floor) {
@@ -279,22 +319,61 @@ export function buildRooms(ctx, layout, M = null) {
     colliders.push(solid);
   }
   const roomOf = (id) => R[id] ?? null;
+  /** roomId → the floor strips in the reveals of its windows on the floor ([4 Vector3] each, filled by buildRoomWindow) */
+  const revealFloors = new Map();
 
-  // ---- the ground floor's roof line (the shell's formula: the outer cladding of a ground-floor wall reaches under it)
+  // ---- the ground floor's roof line (the shell's formula: the outer cladding of a ground-floor wall reaches under it).
+  //      A house with roofs (notes/tak.md) uses them instead; a house with neither (no sloping living-room ceiling)
+  //      lets the cladding end 0.3 over the wall (planbygger request 4).
   const ceilingSlope = (layout.ceilings || []).find((c) => c.type === 'slope');
   const slope = ceilingSlope?.slope ?? 0.16216;
   const highX = ceilingSlope ? ceilingSlope.polygon.reduce((m, p) => Math.min(m, p.x), Infinity) : 3.22;
   const highH = ceilingSlope?.highHeight ?? 3.0;
   const roofUnder = (x) => Math.min(highH, highH - slope * (x - highX)) + 0.3;
+  const legacyRoofLine = !!ceilingSlope && !H.roofs?.length;
   const mainId = H.levels.find((l) => l.id === 'hoved')?.id ?? H.levels[0]?.id;
+  const mainFloorY = H.levelsById[mainId]?.floorY ?? 0;
+  /**
+   * The top of a wall's outer layer under its level's roof (notes/tak.md): the roof's inner plane at the wall's outer
+   * face + CLADDING_INTO_ROOF, [[u, y], …] over the whole wall; where no roof is over it, the wall's top + 0.3. null
+   * without a roof on the level.
+   */
+  function roofCladdingTop(w) {
+    const field = H.roofFieldOf?.(w.levelId);
+    if (!field) return null;
+    const t = w.thickness;
+    const prof = surfaceProfile([w.start.x, w.start.y], [w.end.x, w.end.y], [{ planeAt: field.planeAt, lines: field.lines, shift: [-w.normal.x * t, -w.normal.y * t] }], w.floorY, -Infinity);
+    return prof.map(([u, y]) => [u, y === -Infinity ? profileAt(w.topProfile, u) + 0.3 : y + CLADDING_INTO_ROOF]);
+  }
+  /** A top profile set to y inside the ranges (steps at their ends): the cladding up to the facade above. */
+  function fillProfile(profile, ranges, y, x0, x1) {
+    if (!ranges.length) return profile;
+    const cuts = new Set([x0, x1]);
+    for (const p of profile) cuts.add(p[0]);
+    for (const [a, b] of ranges) {
+      if (a > x0 && a < x1) cuts.add(a);
+      if (b > x0 && b < x1) cuts.add(b);
+    }
+    const us = [...cuts].sort((a, b) => a - b);
+    const inside = (u) => ranges.some(([a, b]) => u > a - EPS && u < b + EPS);
+    const out = [];
+    for (let i = 0; i < us.length - 1; i++) {
+      const a = us[i], b = us[i + 1];
+      if (b - a < 1e-6) continue;
+      const fill = inside((a + b) / 2);
+      out.push([a, fill ? y : profileAt(profile, a + 1e-6)], [b, fill ? y : profileAt(profile, b - 1e-6)]);
+    }
+    return out;
+  }
 
   // ---- facades of the exterior walls (facadeSegments)
   const facadeOf = new Map();
   for (const f of spec.facadeSegments || []) for (const id of f.wallIds || []) facadeOf.set(id, f);
-  /** Material of a wall's outer layer. */
+  /** Material of a wall's outer layer: cladding on the main floor and the floors above it, plaster on the basement. */
   function facadeMaterial(w) {
+    if (CL) return finishMaterial(finishAt(CL, { levelId: w.levelId, wallId: w.id, y: 1.2 }));
     const f = facadeOf.get(w.id);
-    const kind = f?.material ?? (w.levelId === mainId ? 'cladding' : 'plaster');
+    const kind = f?.material ?? (w.levelId === mainId || w.floorY > mainFloorY + 0.5 ? 'cladding' : 'plaster');
     if (kind === 'cladding') return cladding(f?.color ?? LOOK.cladding);
     return plaster(f?.color ?? LOOK.plaster);
   }
@@ -368,6 +447,22 @@ export function buildRooms(ctx, layout, M = null) {
     }
     return out;
   }
+  /** u-ranges of a wall's outer plane that stand on an exterior wall of the level below (underFacade seen from above). */
+  const overFacades = new Map();
+  function overFacade(w) {
+    if (overFacades.has(w.id)) return overFacades.get(w.id);
+    const lv = H.levelsById[w.levelId];
+    const out = [];
+    for (const o of lv?.belowId ? H.walls : []) {
+      if (o.levelId !== lv.belowId || !o.exterior || o.thickness < 0.2 || o.normal.dot(w.normal) < 0.99) continue;
+      if (Math.abs(offOn(w, o.start) - o.thickness + w.thickness) > 0.02) continue;
+      const ua = uOn(w, o.start), ub = uOn(w, o.end);
+      out.push([Math.min(ua, ub) - o.thickness, Math.max(ua, ub) + o.thickness]);
+    }
+    overFacades.set(w.id, out);
+    return out;
+  }
+  const inRanges = (ranges, u) => ranges.some(([p, q]) => u >= p - 1e-3 && u <= q + 1e-3);
   /** A top profile capped at yMax inside the ranges (steps at their ends). */
   function capProfile(profile, ranges, yMax, x0, x1) {
     if (!ranges.length) return profile;
@@ -425,16 +520,20 @@ export function buildRooms(ctx, layout, M = null) {
     // under that floor – its top face was coplanar with the floor above where it runs under it (floor:soverom over
     // w-kg-vest at z 4.53–4.55 flickered in front of the skirting). Integrator, bølge 1 gruppe 2.
     const lvTop = H.levelsById[w.levelId];
-    const aboveTop = lvTop?.aboveId && !w.exterior ? H.levelsById[lvTop.aboveId].floorY - w.floorY - 0.002 : Infinity;
+    // (an inner wall under its level's own roof – notes/tak.md – is not under the floor above: it reaches the roof)
+    const underRoof = !!H.roofFieldOf?.(w.levelId)?.planeAt((w.start.x + w.end.x) / 2, (w.start.y + w.end.y) / 2);
+    const aboveTop = lvTop?.aboveId && !w.exterior && !underRoof ? H.levelsById[lvTop.aboveId].floorY - w.floorY - 0.002 : Infinity;
     const top = w.topProfile.map(([u, h]) => [u, Math.min(h, aboveTop)]);
     const notchesAll = [];
     const holesAll = [];
     const outerAll = [];
     for (const o of w.openings) {
       const y0 = o.sill - (o.sillBoard ? o.sillBoard.thickness ?? 0.025 : 0);
-      if (o.sill <= EPS) notchesAll.push({ x0: o.u0, x1: o.u1, y1: o.top });
-      else holesAll.push({ x0: o.u0, x1: o.u1, y0, y1: o.top });
-      outerAll.push({ x0: o.u0, x1: o.u1, y0: Math.max(o.sill <= EPS ? bottom : 0, y0), y1: o.top, door: o.sill <= EPS });
+      // a sloped top (notes/vindusmodeller.md): y1 at u0, y1b at u1 (ta / tb on the outer layer, y1 its bounding top)
+      const st = o.topSlope ? { y1: o.topU0, y1b: o.topU1 } : { y1: o.top };
+      if (o.sill <= EPS) notchesAll.push({ x0: o.u0, x1: o.u1, ...st });
+      else holesAll.push({ x0: o.u0, x1: o.u1, y0, ...st });
+      outerAll.push({ x0: o.u0, x1: o.u1, y0: Math.max(o.sill <= EPS ? bottom : 0, y0), y1: o.top, ...(o.topSlope ? { ta: o.topU0, tb: o.topU1 } : {}), door: o.sill <= EPS, frameColor: String(o.frame?.color ?? LOOK.frame).toLowerCase() });
     }
     const notches = mergeNotches(notchesAll);
     // pieces: cut at the ends of the faces on the back (never inside an opening)
@@ -452,9 +551,36 @@ export function buildRooms(ctx, layout, M = null) {
     const sideMat = paint(paintOf(w));
     const facade = exterior ? facadeMaterial(w) : null;
     const isMain = w.levelId === mainId;
-    const capRanges = exterior && !isMain ? underFacade(w) : [];
     const lv = H.levelsById[w.levelId];
+    const upper = !isMain && (lv?.floorY ?? 0) > mainFloorY + 0.5;
+    // the u-ranges under a facade of the level above: the basement's outer layer stops at the slab underside there; on
+    // the main level and up the cladding runs on up to it (where the cladding of the level above begins)
+    const capRanges = exterior ? underFacade(w) : [];
     const capY = lv?.aboveId ? H.levelsById[lv.aboveId].bottomY - w.floorY : Infinity;
+    const roofTop = exterior ? roofCladdingTop(w) : null;
+    // with the house's cladding: the gable line and the corners to the neighbouring exterior walls (cladding.js)
+    const gableY = CL && roofTop ? gableLine(roofTop, -kStart * t, L + kEnd * t) : null;
+    const isExt = (x) => !!x && x.exterior && x.thickness >= 0.2;
+    let corner = null;
+    if (CL && exterior) {
+      const prev = H.wallsById[w.prevId], next = H.wallsById[w.nextId];
+      // a corner standing on a corner of the level below starts at the floor (the board below reaches up to it, over
+      // the slab edge); a corner under one of the level above reaches up to that floor
+      const slabAbove = lv?.aboveId ? H.levelsById[lv.aboveId].floorY - H.levelsById[lv.aboveId].bottomY : 0;
+      const onBelow = (u, o, uo) => inRanges(overFacade(w), u) || (!!o && isExt(o) && inRanges(overFacade(o), uo));
+      const underAbove = (u, o, uo) => inRanges(capRanges, u) || (!!o && isExt(o) && inRanges(underFacade(o), uo));
+      corner = {
+        prev, next,
+        startConvex: kStart > 1e-6 && isExt(prev),
+        startConcave: kStart < -1e-6 && isExt(prev),
+        endConvex: kEnd > 1e-6 && isExt(next),
+        endConcave: kEnd < -1e-6 && isExt(next),
+        startFrom: onBelow(0, prev, prev?.length) ? 0 : -Infinity,
+        endFrom: onBelow(L, next, 0) ? 0 : -Infinity,
+        startUp: underAbove(0, prev, prev?.length) ? slabAbove : 0,
+        endUp: underAbove(L, next, 0) ? slabAbove : 0,
+      };
+    }
     for (let i = 0; i < us.length - 1; i++) {
       const a = us[i], b = us[i + 1];
       if (b - a < 1e-3) continue;
@@ -489,18 +615,25 @@ export function buildRooms(ctx, layout, M = null) {
         // outer layer: the facade (or a face of another room, the pillar in the entrance), dark trim in the reveals
         let oTop;
         let oBottom;
-        if (isMain) {
-          const xs = [0, b - a];
-          if (Math.abs(w.dir.x) > 1e-3) {
-            const uHigh = (highX - w.start.x) / w.dir.x - a;
-            if (uHigh > 0 && uHigh < b - a) xs.push(uHigh);
-          }
-          xs.sort((p, q) => p - q);
-          oTop = xs.map((u) => {
-            const p = w.pointAt(u + a).addScaledVector(w.normal3, -t);
-            return [u, Math.max(profileAt(top, u + a) + 0.25, roofUnder(p.x) + 0.05)];
-          });
-          oBottom = Math.min(bottom, -SLAB);
+        if (isMain || upper) {
+          if (roofTop) oTop = profileSlice(roofTop, a, b);
+          else if (upper) oTop = pTop;
+          else if (legacyRoofLine) {
+            const xs = [0, b - a];
+            if (Math.abs(w.dir.x) > 1e-3) {
+              const uHigh = (highX - w.start.x) / w.dir.x - a;
+              if (uHigh > 0 && uHigh < b - a) xs.push(uHigh);
+            }
+            xs.sort((p, q) => p - q);
+            oTop = xs.map((u) => {
+              const p = w.pointAt(u + a).addScaledVector(w.normal3, -t);
+              return [u, Math.max(profileAt(top, u + a) + 0.25, roofUnder(p.x) + 0.05)];
+            });
+          } else oTop = pTop.map(([u, y]) => [u, y + 0.3]);
+          // up to the cladding of the level above, where its facade stands on this one
+          oTop = fillProfile(oTop, capRanges.map(([p, q]) => [p - a, q - a]), capY, 0, b - a);
+          // the main floor's cladding goes down over the slab edge; a level above it meets the cladding below at its slab
+          oBottom = upper ? (face ? bottom : Math.min(bottom, -(lv.slabThickness ?? SLAB))) : Math.min(bottom, -SLAB);
         } else {
           oTop = capProfile(pTop, capRanges.map(([p, q]) => [p - a, q - a]), capY, 0, b - a);
           oBottom = face ? bottom : Math.min(bottom, -BASEMENT_FOOT);
@@ -508,9 +641,19 @@ export function buildRooms(ctx, layout, M = null) {
         // the outer layer reaches below the floor: a door is a hole in it from the floor up (as in the shell), so the
         // facade stays closed under the threshold; only a layer that starts at the floor gets a notch
         const asHole = (h) => !h.door || oBottom < -EPS;
-        const oHoles = mergeHoles(outerAll.filter((h) => asHole(h) && h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ ...h, y0: h.door ? 0 : h.y0 })));
-        const oNotches = mergeNotches(outerAll.filter((h) => !asHole(h) && inPiece(h)).map((h) => ({ x0: h.x0, x1: h.x1, y1: h.y1 }))).map(clip);
+        const shapeTop = (h) => (h.ta != null ? { y1: h.ta, y1b: h.tb } : { y1: h.y1 });
+        const oHoles = mergeHoles(outerAll.filter((h) => asHole(h) && h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ x0: h.x0, x1: h.x1, y0: h.door ? 0 : h.y0, ...shapeTop(h) })));
+        const oNotches = mergeNotches(outerAll.filter((h) => !asHole(h) && inPiece(h)).map((h) => ({ x0: h.x0, x1: h.x1, ...shapeTop(h) }))).map(clip);
         const gOut = wallLayer({ L: b - a, bottom: oBottom, top: oTop, notches: oNotches, holes: oHoles, z0: -t, z1: -rd, kStart: kS, kEnd: kE });
+        if (CL && !face) {
+          // the house's cladding: bands per zone / gable / plinth, flashings, corner boards, surrounds (cladding.js)
+          const openings = outerAll.filter((h) => h.x0 >= a - EPS && h.x1 <= b + EPS).map((h) => clip({ ...h, y0: h.door ? Math.max(0, oBottom) : h.y0 }));
+          claddingPiece({
+            CL, w, lv, gOut, T, a, b, oTop, oBottom, openings, kS, kE, gableY, corner, batch: rr.outside,
+            finishMat: finishMaterial, trimMat: trimMaterial, sideMat: K.trim,
+          });
+          continue;
+        }
         gOut.applyMatrix4(T);
         const clad = groupGeometry(gOut, 0);
         const trim = groupGeometry(gOut, 2);
@@ -619,20 +762,34 @@ export function buildRooms(ctx, layout, M = null) {
   /** A window of a room wall: frame / sash / glass / board (wallkit), a lining in its reveal colour, the anchor. */
   function buildRoomWindow(w, o, rr) {
     // a reveal deeper than the wall leaves room for the frame (win-sk: reveal 0.38 (V63) in a 0.30 wall (V4) would put
-    // the frame, the board and the lining 8–14 cm out of the facade). Door elements (the sidelights) keep the door's depth.
+    // the frame, the board and the lining 8–14 cm out of the facade; a window on the floor without reveal.depth got the
+    // wall's thickness, the frame outside the facade – planbygger F6). Door elements (the sidelights) keep the door's depth.
+    const element = !!rawOpening.get(o.id)?.element;
     const fdepth = o.frame?.depth ?? 0.07;
     const maxRd = w.thickness - fdepth - 0.005;
-    if (o.sill > EPS && !rawOpening.get(o.id)?.element && o.revealDepth > maxRd && maxRd > 0.02) {
+    if (!element && o.revealDepth > maxRd && maxRd > 0.02) {
       o = { ...o, revealDepth: maxRd, sillBoard: o.sillBoard ? { ...o.sillBoard, depth: Math.min(o.sillBoard.depth ?? maxRd, maxRd) } : o.sillBoard };
     }
     const sillHex = o.sillBoard?.color;
     const frameHex = o.frame?.color;
+    const barsHex = o.bars?.color;
+    const frameM = frameHex && !sameHex(frameHex, LOOK.frame) ? mat('black-metal', frameHex, { roughness: 0.42 }) : K.frame;
     const WM = {
       ...pickMats(),
       sill: sillHex ? paint(sillHex, { roughness: 0.42 }) : K.sill,
-      frame: frameHex && !sameHex(frameHex, LOOK.frame) ? mat('black-metal', frameHex, { roughness: 0.42 }) : K.frame,
+      frame: frameM,
+      bars: barsHex && !sameHex(barsHex, frameHex || LOOK.frame) ? mat('black-metal', barsHex, { roughness: 0.42 }) : frameM,
       glass: o.frosted ? frostedGlassMaterial() : K.glass,
     };
+    // a window on the floor: the room's floor runs out to the frame (planbygger F5, request 15) – a strip merged into
+    // the room's floor mesh (its material and boards) where the floors are built
+    const revealFloor = !element && (o.revealFloor ?? !o.sillBoard) && o.sill <= 0.005 && o.revealDepth > 0.005;
+    if (revealFloor) {
+      const m = openingMatrix(o, w.floorY);
+      const hw = o.width / 2;
+      const pts = [[-hw, 0], [hw, 0], [hw, -o.revealDepth], [-hw, -o.revealDepth]].map(([x, z]) => new THREE.Vector3(x, 0, z).applyMatrix4(m));
+      (revealFloors.get(o.roomId) ?? revealFloors.set(o.roomId, []).get(o.roomId)).push(pts);
+    }
     const win = buildWindow(o, false, { M: WM, exteriorBatch: rr.outside, batchers, keep });
     win.group.userData.pick = { kind: 'window', windowId: o.id };
     rr.deco.add(win.group);
@@ -649,10 +806,19 @@ export function buildRooms(ctx, layout, M = null) {
       const y0 = -(o.sillBoard ? o.sillBoard.thickness ?? 0.025 : 0);
       const W = o.width, Hh = o.height, d = o.revealDepth;
       const s = 0.004;
-      f.box(s, Hh - y0, d, -W / 2 + s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
-      f.box(s, Hh - y0, d, W / 2 - s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
-      f.box(W - 2 * s, s, d, 0, Hh - s / 2, -d / 2, lm, { collide: false });
-      if (!o.sillBoard) f.box(W - 2 * s, s, d, 0, y0 + s / 2, -d / 2, lm, { collide: false });
+      if (o.topSlope) {
+        // under a sloped top (notes/vindusmodeller.md): the sides up to it, the head along it
+        const k = o.topSlope;
+        const top = (x) => Hh - Math.abs(k) * (k > 0 ? W / 2 - x : x + W / 2);
+        const ds = s * Math.sqrt(1 + k * k);
+        for (const [a, b] of [[-W / 2, -W / 2 + s], [W / 2 - s, W / 2]]) quadPrism(f, [[a, y0], [b, y0], [b, top(b) - ds], [a, top(a) - ds]], -d, 0, lm, { collide: false });
+        quadPrism(f, [[-W / 2, top(-W / 2) - ds], [W / 2, top(W / 2) - ds], [W / 2, top(W / 2)], [-W / 2, top(-W / 2)]], -d, 0, lm, { collide: false });
+      } else {
+        f.box(s, Hh - y0, d, -W / 2 + s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
+        f.box(s, Hh - y0, d, W / 2 - s / 2, (y0 + Hh) / 2, -d / 2, lm, { collide: false });
+        f.box(W - 2 * s, s, d, 0, Hh - s / 2, -d / 2, lm, { collide: false });
+      }
+      if (!o.sillBoard && !revealFloor) f.box(W - 2 * s, s, d, 0, y0 + s / 2, -d / 2, lm, { collide: false });
     }
     const anchor = new THREE.Group();
     anchor.name = `window-anchor:${o.id}`;
@@ -759,15 +925,18 @@ export function buildRooms(ctx, layout, M = null) {
     rr.solid.add(wedge);
   }
 
-  // ---- floors (+ footstep zones), ceilings (+ trims), skirting
+  // ---- floors (+ footstep zones), ceilings (+ trims, roof windows), skirting
   const ceilingMeshes = new Map();
+  const skylightLinings = []; // { ceilingId, mesh }: the shafts follow their ceiling's paint (setPaint)
   for (const r of rooms) {
     const rr = R[r.id];
     const holes = H.floorOpenings.filter((fo) => fo.levelId === r.levelId && fo.roomId === r.id).map((fo) => fo.polygon);
     const raw = rawRoom.get(r.id) || {};
     const floor = raw.floor ?? r.floor ?? {};
     const boards = floor.boards === 'x' ? 'x' : 'z';
-    const fg = keep(floorGeometry(r.polygon, r.floorY, { holes, boards }));
+    let fg = floorGeometry(r.polygon, r.floorY, { holes, boards });
+    if (revealFloors.has(r.id)) fg = withRevealFloors(fg, revealFloors.get(r.id), boards);
+    keep(fg);
     const fl = new THREE.Mesh(fg, floorMaterial(floor));
     fl.name = `floor:${r.id}`;
     fl.receiveShadow = true;
@@ -784,7 +953,8 @@ export function buildRooms(ctx, layout, M = null) {
   for (const c of H.ceilings) {
     if (!roomIds.has(c.roomId)) continue;
     const rr = R[c.roomId];
-    const g = keep(ceilingGeometry(c.polygon, (x, z) => c.topAt(x, z), c.holes || []));
+    const sky = c.skylights || [];
+    const g = keep(ceilingGeometry(c.polygon, (x, z) => c.topAt(x, z), sky.length ? [...(c.holes || []), ...sky.map((s) => s.polygon)] : c.holes || [], c.surface));
     const mesh = new THREE.Mesh(g, paint(c.paint));
     mesh.name = `ceiling:${c.id}`;
     mesh.castShadow = true;
@@ -796,6 +966,251 @@ export function buildRooms(ctx, layout, M = null) {
     ceilingMeshes.set(c.id, mesh);
     const raw = (spec.ceilings || []).find((x) => x.id === c.id);
     if (c.trim) buildCeilingTrim(c, raw?.trimHeight ?? 0.035);
+    for (const s of sky) buildSkylight(c, s, rr, mesh);
+  }
+
+  // ---- the roofs (notes/tak.md, roof.js): over their level, hidden with the ceilings; the roof windows cut through them
+  if (H.roofs?.length) {
+    const levelIds = new Set(rooms.map((r) => r.levelId));
+    const skylights = [];
+    for (const c of H.ceilings) for (const s of c.skylights || []) skylights.push({ id: s.id, levelId: c.levelId, polygon: s.polygon.map((p) => [p.x, p.y]) });
+    const built = buildRoofs({ ...H, roofs: H.roofs.filter((p) => levelIds.has(p.levelId)) }, {
+      roots: ctx?.roots?.levels,
+      fallback: group,
+      keep,
+      batchers,
+      quality,
+      skylights,
+      cladding: (levelId) => {
+        // the dormers' cheeks and fronts are clad like a gable (a gable zone of the level, else its default)
+        if (CL) return finishMaterial(finishAt(CL, { levelId, wallId: '', y: 99, gableY: 0 }));
+        const w = H.walls.find((x) => x.levelId === levelId && x.exterior && x.thickness >= 0.2 && roomIds.has(x.roomId));
+        return w ? facadeMaterial(w) : cladding(LOOK.cladding);
+      },
+      lining: (levelId, x, z) => {
+        const c = H.ceilings.find((k) => k.levelId === levelId && roomIds.has(k.roomId) && inPoly(x, z, k.polygon));
+        return c ? { ceilingId: c.id, material: ceilingMeshes.get(c.id)?.material ?? paint(c.paint) } : null;
+      },
+      windowMaterials: () => pickMats(),
+      exteriorBatch: (levelId, x, z) => {
+        const r = rooms.find((k) => k.levelId === levelId && inPoly(x, z, k.polygon));
+        return r ? R[r.id].outside : null;
+      },
+    });
+    for (const m of built.meshes) {
+      pickables.ceilings.push(m);
+    }
+    for (const l of built.linings) skylightLinings.push(l);
+  }
+  // ---- the chimneys (notes/tak.md «Piper», chimney.js): inside a box per level with its collider, the part over the
+  //      roof hidden with the ceilings and the roofs
+  if (H.chimneys?.length) {
+    const levelIds = new Set(rooms.map((r) => r.levelId));
+    const list = H.chimneys.filter((c) => levelIds.has(c.outsideLevelId) || c.pieces.some((p) => levelIds.has(p.levelId)));
+    const built = buildChimneys({ ...H, chimneys: list }, { roots: ctx?.roots?.levels, fallback: group, keep, quality });
+    for (const m of built.meshes) pickables.ceilings.push(m);
+    colliders.push(...built.colliders);
+  }
+  // ---- the decks (notes/kledning.md, decks.js): terraces, balconies, porches, roof terraces with railings and stairs
+  if (H.decks?.length) {
+    const built = buildDecks(H, { roots: ctx?.roots?.levels, fallback: group, keep, batchers, quality, mainLevelId: mainId });
+    for (const g of built.groups) roots[g.name] = g;
+    colliders.push(...built.colliders);
+  }
+
+  /** The floor geometry with the strips out to the frame of its windows on the floor (floorGeometry's UVs and normal). */
+  function withRevealFloors(g, strips, boards) {
+    const pos = [];
+    for (const [a, b, c, d] of strips) {
+      // facing up: (b − a) × (c − a) along +y, else the other winding
+      const up = (b.z - a.z) * (c.x - a.x) - (b.x - a.x) * (c.z - a.z) > 0;
+      for (const p of up ? [a, b, c, a, c, d] : [a, c, b, a, d, c]) pos.push(p.x, p.y, p.z);
+    }
+    const n = pos.length / 3;
+    const uv = [];
+    for (let i = 0; i < n; i++) {
+      const x = pos[3 * i], z = pos[3 * i + 2];
+      if (boards === 'x') uv.push(x, z);
+      else uv.push(z, x);
+    }
+    const sg = new THREE.BufferGeometry();
+    sg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    sg.setAttribute('normal', new THREE.Float32BufferAttribute(Array.from({ length: n }, () => [0, 1, 0]).flat(), 3));
+    sg.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    const base = g.index ? g.toNonIndexed() : g;
+    const merged = mergeGeometries([base, sg], false);
+    if (base !== g) base.dispose();
+    g.dispose();
+    sg.dispose();
+    return merged ?? g;
+  }
+
+  /**
+   * A roof window in a ceiling (ceilings[].skylights, notes/vindusmodeller.md): the hole (cut from the ceiling above), a
+   * shaft lined in the ceiling's paint from a 12 mm lip under the ceiling up past the window, and the window itself –
+   * wallkit's, lying flat `depth` (0.3) above the ceiling with its glass facing down: frame, fixed glazing or a sash,
+   * panes. Its edge 0 (polygon[0] → polygon[1]) is the window's width. A flat ceiling (a sloped one: its highest
+   * corner). Hidden with the ceilings (pickables.ceilings), no collision.
+   */
+  function buildSkylight(c, s, rr, ceilingMesh) {
+    const P = s.polygon;
+    const u = new THREE.Vector3(P[1].x - P[0].x, 0, P[1].y - P[0].y);
+    if (u.lengthSq() < 1e-8) return;
+    u.normalize();
+    // v: across, with u × v = −y (the window's z points down into the room)
+    const v = new THREE.Vector3(-u.z, 0, u.x);
+    let u0 = Infinity, u1 = -Infinity, v0 = Infinity, v1 = -Infinity;
+    for (const p of P) {
+      const du = (p.x - P[0].x) * u.x + (p.y - P[0].y) * u.z;
+      const dv = (p.x - P[0].x) * v.x + (p.y - P[0].y) * v.z;
+      u0 = Math.min(u0, du), u1 = Math.max(u1, du), v0 = Math.min(v0, dv), v1 = Math.max(v1, dv);
+    }
+    const W = u1 - u0;
+    const L = v1 - v0;
+    if (W < 0.1 || L < 0.1) return;
+    const centre = new THREE.Vector3(P[0].x, 0, P[0].y).addScaledVector(u, (u0 + u1) / 2).addScaledVector(v, (v0 + v1) / 2);
+    // under a roof (notes/tak.md): the window lies in the roof, the shaft runs up to it
+    const rp = H.roofFieldOf?.(c.levelId)?.planeAt(centre.x, centre.z);
+    if (rp) return buildRoofSkylight(c, s, rr, ceilingMesh, { u, v, W, L, centre, rp });
+    const yC = Math.max(...P.map((p) => c.topAt(p.x, p.y)));
+    const depth = Math.max(0.05, s.depth ?? 0.3);
+    const fd = s.frame?.depth ?? 0.06;
+    const pick = { kind: 'ceiling', ceilingId: c.id };
+    const kit = new MeshBatcher(`skylight:${s.id}`);
+    // shaft: four boards 2 cm thick outside the hole, the long ones over the corners
+    const t = 0.02;
+    const y0 = yC - 0.012;
+    const y1 = yC + depth + fd + 0.03;
+    const lm = ceilingMesh.material;
+    const sf = kit.frame(basis(u, UP, v, centre.clone().setY(0)));
+    sf.box(W + 2 * t, y1 - y0, t, 0, (y0 + y1) / 2, -L / 2 - t / 2, lm, { collide: false });
+    sf.box(W + 2 * t, y1 - y0, t, 0, (y0 + y1) / 2, L / 2 + t / 2, lm, { collide: false });
+    sf.box(t, y1 - y0, L, -W / 2 - t / 2, (y0 + y1) / 2, 0, lm, { collide: false });
+    sf.box(t, y1 - y0, L, W / 2 + t / 2, (y0 + y1) / 2, 0, lm, { collide: false });
+    const shaft = kit.build();
+    batchers.push({ geometries: kit.geometries });
+    shaft.name = `skylight-shaft:${s.id}`;
+    // the window: an opening of W × L in the window frame (x = u, y = v, z = down), its bottom edge FRAME_INSET in from
+    // the shaft so the frame stands free of it on every side
+    const o = {
+      id: s.id,
+      width: W,
+      height: L - FRAME_INSET,
+      revealDepth: depth,
+      frame: { width: 0.06, depth: fd, ...(s.frame || {}) },
+      sashes: s.sashes ?? [{ opening: !!s.opening }],
+      panes: s.panes ?? null,
+      bars: s.bars ?? null,
+      sillBoard: null,
+    };
+    const origin = centre.clone().setY(yC).addScaledVector(v, -L / 2 + FRAME_INSET);
+    const frameHex = s.frame?.color;
+    const frameM = frameHex && !sameHex(frameHex, LOOK.frame) ? mat('black-metal', frameHex, { roughness: 0.42 }) : K.frame;
+    const WM = { ...pickMats(), frame: frameM, bars: s.bars?.color ? mat('black-metal', s.bars.color, { roughness: 0.42 }) : frameM };
+    const win = buildWindow(o, false, { M: WM, exteriorBatch: rr.outside, batchers, keep, matrix: basis(u, v, new THREE.Vector3(0, -1, 0), origin) });
+    win.group.name = `skylight:${s.id}`;
+    const meshes = [...shaft.children, ...win.group.children, ...(win.glass ? [win.glass] : [])];
+    for (const m of meshes) {
+      m.userData.pick = pick;
+      m.userData.noCollide = true;
+      pickables.ceilings.push(m);
+    }
+    for (const m of shaft.children) skylightLinings.push({ ceilingId: c.id, mesh: m });
+    rr.deco.add(shaft, win.group);
+    if (win.glass) rr.deco.add(win.glass);
+  }
+
+  /**
+   * A roof window under a roof (notes/tak.md): the window lies in the roof plane rp, its frame a few cm proud of the
+   * covering; the shaft is four vertical boards 2 cm outside the hole (and 3 mm into it, under the frame) from 12 mm
+   * under the ceiling (sloped or flat) up
+   * to just under the covering (roof.js cuts the same hole in the roof). On a sloped ceiling under the same plane the
+   * shaft is only the roof's thickness deep.
+   */
+  function buildRoofSkylight(c, s, rr, ceilingMesh, { u, v, W, L, centre, rp }) {
+    const roofTop = (x, z) => planeY(rp, x, z) + rp.tv;
+    const pick = { kind: 'ceiling', ceilingId: c.id };
+    // the boards reach 3 mm into the hole, under the window's frame (it stands FRAME_INSET in from the hole's sides)
+    const lip = 0.003;
+    const t = 0.02 + lip;
+    const corner = (a, b) => centre.clone().addScaledVector(u, (a * (W - 2 * lip)) / 2).addScaledVector(v, (b * (L - 2 * lip)) / 2);
+    const pos = [];
+    const uvs = [];
+    const quad = (A, B, C, D) => {
+      for (const p of [A, B, C, A, C, D]) pos.push(p.x, p.y, p.z);
+      const w = A.distanceTo(B), h = A.distanceTo(D);
+      uvs.push(0, 0, w, 0, w, h, 0, 0, w, h, 0, h);
+    };
+    const yb = (p) => c.topAt(p.x, p.z) - 0.012;
+    const yt = (p) => roofTop(p.x, p.z) - 0.005;
+    const at = (p, y) => new THREE.Vector3(p.x, y, p.z);
+    // the boards along u (over the corners) and along v (between them), each a closed box with sloped top / bottom
+    for (const [a0, b0, a1, b1, out, ext] of [[-1, -1, 1, -1, v.clone().negate(), true], [1, 1, -1, 1, v.clone(), true], [1, -1, 1, 1, u.clone(), false], [-1, 1, -1, -1, u.clone().negate(), false]]) {
+      let A = corner(a0, b0), B = corner(a1, b1);
+      if (ext) {
+        const d = B.clone().sub(A).normalize();
+        A = A.addScaledVector(d, -t);
+        B = B.addScaledVector(d, t);
+      }
+      const A2 = A.clone().addScaledVector(out, t), B2 = B.clone().addScaledVector(out, t);
+      // inner face (facing the hole: −out): seen from inside, A → B must run so that (B − A) × up = −out
+      const fn = new THREE.Vector3().crossVectors(B.clone().sub(A), UP);
+      const [p, q, p2, q2] = fn.dot(out) < 0 ? [A, B, A2, B2] : [B, A, B2, A2];
+      quad(at(p, yb(p)), at(q, yb(q)), at(q, yt(q)), at(p, yt(p))); // inner
+      quad(at(q2, yb(q2)), at(p2, yb(p2)), at(p2, yt(p2)), at(q2, yt(q2))); // outer
+      quad(at(p, yt(p)), at(q, yt(q)), at(q2, yt(q2)), at(p2, yt(p2))); // top
+      quad(at(p2, yb(p2)), at(q2, yb(q2)), at(q, yb(q)), at(p, yb(p))); // bottom
+      quad(at(p2, yb(p2)), at(p, yb(p)), at(p, yt(p)), at(p2, yt(p2))); // ends
+      quad(at(q, yb(q)), at(q2, yb(q2)), at(q2, yt(q2)), at(q, yt(q)));
+    }
+    const sg = new THREE.BufferGeometry();
+    sg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    sg.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+    sg.computeVertexNormals();
+    const shaft = new THREE.Mesh(keep(sg), ceilingMesh.material);
+    shaft.name = `skylight-shaft:${s.id}`;
+    shaft.castShadow = true;
+    shaft.receiveShadow = true;
+    // the window in the plane: x along u, y along v (both lifted onto the plane), z = u × v (down into the room)
+    const lift = (d) => new THREE.Vector3(d.x, rp.a * d.x + rp.b * d.z, d.z);
+    const u3 = lift(u);
+    const lu = u3.length();
+    u3.normalize();
+    const v3r = lift(v);
+    const lv = v3r.length();
+    const v3 = v3r.clone().addScaledVector(u3, -v3r.dot(u3)).normalize();
+    const z3 = new THREE.Vector3().crossVectors(u3, v3);
+    const fd = s.frame?.depth ?? 0.06;
+    const rd = 0.05;
+    const Wp = W * lu, Lp = L * lv;
+    // the frame's outside 4 cm over the covering: origin rd + fd − 0.04 below it along z3
+    const top = new THREE.Vector3(centre.x, roofTop(centre.x, centre.z), centre.z);
+    const origin = top.addScaledVector(z3, rd + fd - 0.04).addScaledVector(v3, -Lp / 2 + FRAME_INSET);
+    const o = {
+      id: s.id,
+      width: Wp,
+      height: Lp - FRAME_INSET,
+      revealDepth: rd,
+      frame: { width: 0.06, depth: fd, ...(s.frame || {}) },
+      sashes: s.sashes ?? [{ opening: !!s.opening }],
+      panes: s.panes ?? null,
+      bars: s.bars ?? null,
+      sillBoard: null,
+    };
+    const frameHex = s.frame?.color;
+    const frameM = frameHex && !sameHex(frameHex, LOOK.frame) ? mat('black-metal', frameHex, { roughness: 0.42 }) : K.frame;
+    const WM = { ...pickMats(), frame: frameM, bars: s.bars?.color ? mat('black-metal', s.bars.color, { roughness: 0.42 }) : frameM };
+    const win = buildWindow(o, false, { M: WM, exteriorBatch: rr.outside, batchers, keep, matrix: basis(u3, v3, z3, origin) });
+    win.group.name = `skylight:${s.id}`;
+    const meshes = [shaft, ...win.group.children, ...(win.glass ? [win.glass] : [])];
+    for (const m of meshes) {
+      m.userData.pick = pick;
+      m.userData.noCollide = true;
+      pickables.ceilings.push(m);
+    }
+    skylightLinings.push({ ceilingId: c.id, mesh: shaft });
+    rr.deco.add(shaft, win.group);
+    if (win.glass) rr.deco.add(win.glass);
   }
 
   /** Skirting of a room: along each wall of its loop, gaps at door holes and over the stairwell. */
@@ -971,12 +1386,18 @@ export function buildRooms(ctx, layout, M = null) {
   // "Above" is the upper level's slab footprint WITH its floor openings: the stairwell is open, never lidded (the slab
   // boxes leave the hole out, so they alone would put a cover over the shaft at the floor above). The cover sits at
   // most 7 cm over the slab underside of the level above (never at or above its floor).
+  // The slab of the level above decides (the main floor's over the basement); a room under its level's own roof
+  // (notes/tak.md) is closed by the roof.
   {
-    const covered = (x, z) => mainSlab.some((b) => x > b.min.x - 1e-6 && x < b.max.x + 1e-6 && z > b.min.z - 1e-6 && z < b.max.z + 1e-6);
+    const slabOf = new Map([[mainId, mainSlab]]);
     const capMat = mat('painted', '#3a3734', { roughness: 0.9 });
     for (const r of rooms) {
       const lv = H.levelsById[r.levelId];
       if (!lv?.aboveId) continue;
+      if (!slabOf.has(lv.aboveId)) slabOf.set(lv.aboveId, slabBoxes(H, lv.aboveId));
+      const slab = slabOf.get(lv.aboveId);
+      const roof = H.roofFieldOf?.(r.levelId);
+      const covered = (x, z) => slab.some((b) => x > b.min.x - 1e-6 && x < b.max.x + 1e-6 && z > b.min.z - 1e-6 && z < b.max.z + 1e-6) || !!roof?.planeAt(x, z);
       const holesAbove = H.floorOpenings.filter((fo) => fo.levelId === lv.aboveId).map((fo) => fo.polygon);
       const inHoleAbove = (x, z) => holesAbove.some((P) => inPoly(x, z, P));
       const capY = H.levelsById[lv.aboveId].bottomY + 0.07;
@@ -990,8 +1411,8 @@ export function buildRooms(ctx, layout, M = null) {
       const pts = [...r.polygon, ...foots.flat()];
       const rx = [Math.min(...pts.map((q) => q.x)), Math.max(...pts.map((q) => q.x))];
       const rz = [Math.min(...pts.map((q) => q.y)), Math.max(...pts.map((q) => q.y))];
-      const gx = [...pts.map((q) => q.x), ...mainSlab.flatMap((b) => [b.min.x, b.max.x]), ...holesAbove.flat().map((q) => q.x)];
-      const gz = [...pts.map((q) => q.y), ...mainSlab.flatMap((b) => [b.min.z, b.max.z]), ...holesAbove.flat().map((q) => q.y)];
+      const gx = [...pts.map((q) => q.x), ...slab.flatMap((b) => [b.min.x, b.max.x]), ...holesAbove.flat().map((q) => q.x)];
+      const gz = [...pts.map((q) => q.y), ...slab.flatMap((b) => [b.min.z, b.max.z]), ...holesAbove.flat().map((q) => q.y)];
       const grid = (vals, [lo, hi]) => [...new Set(vals.filter((v) => v >= lo - 1e-6 && v <= hi + 1e-6).map((v) => Math.round(v * 1e4) / 1e4))].sort((a, b) => a - b);
       const xs = grid(gx, rx);
       const zs = grid(gz, rz);
@@ -1060,7 +1481,10 @@ export function buildRooms(ctx, layout, M = null) {
       return;
     }
     const cm = ceilingMeshes.get(id);
-    if (cm) cm.material = paint(color || H.ceilings.find((c) => c.id === id)?.paint || 'sand');
+    if (cm) {
+      cm.material = paint(color || H.ceilings.find((c) => c.id === id)?.paint || 'sand');
+      for (const l of skylightLinings) if (l.ceilingId === id) l.mesh.material = cm.material;
+    }
   }
 
   return contract({ setPaint });

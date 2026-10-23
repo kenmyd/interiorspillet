@@ -61,7 +61,7 @@
     "idSyntax": "^[a-z0-9][a-z0-9_æøå-]*$",
     "topLevel": [
       "meta", "zones", "floor", "baseboard", "walls", "ceilings", "bulkheads", "builtInLights", "kitchen", "furniture", "fixtures", "highWall", "outside", "photoCameras",
-      "levels", "rooms", "floorOpenings", "stairs", "builtIns", "lightGroups", "facadeSegments", "outsideHouse"
+      "levels", "rooms", "floorOpenings", "stairs", "builtIns", "lightGroups", "facadeSegments", "outsideHouse", "roofs", "cladding", "decks", "chimneys"
     ],
     "protected": ["meta", "floor", "baseboard", "highWall"],
     "collections": {
@@ -116,8 +116,8 @@
       "lightGroups": { "required": ["id", "label"], "numbers": ["defaultDimmer"] },
       "floorOpenings": { "required": ["id", "levelId", "roomId", "polygon"], "polygons": ["polygon"] },
       "stairs": {
-        "required": ["id", "type", "fromLevel", "toLevel", "openingId", "risers", "top", "foot"],
-        "enums": { "type": ["straight", "quarter-turn-winder", "half-turn-winder"] },
+        "required": ["id", "type", "fromLevel", "toLevel", "openingId", "top", "foot"],
+        "enums": { "type": ["straight", "steep", "quarter-turn-winder", "quarter-turn-landing", "half-turn-winder"] },
         "numbers": ["risers"],
         "idPattern": "^trapp"
       },

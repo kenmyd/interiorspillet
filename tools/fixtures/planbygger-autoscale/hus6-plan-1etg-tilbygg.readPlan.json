@@ -1,0 +1,205 @@
+{
+  "levelTitle": "Plan 1 etg.",
+  "scaleText": "1:100",
+  "rooms": [],
+  "labels": [
+    {
+      "text": "STUE 2",
+      "area": 23.4,
+      "kind": "living",
+      "at": [
+        0.3465,
+        0.4066
+      ]
+    },
+    {
+      "text": "Brutto tilbygg",
+      "area": 28,
+      "kind": "other",
+      "at": [
+        0.2685,
+        0.309
+      ]
+    },
+    {
+      "text": "SPISESTUE",
+      "area": 21.5,
+      "kind": "dining",
+      "at": [
+        0.366,
+        0.5637
+      ]
+    },
+    {
+      "text": "STUE",
+      "area": 43,
+      "kind": "living",
+      "at": [
+        0.425,
+        0.64
+      ]
+    },
+    {
+      "text": "KJØKKEN",
+      "area": 18.5,
+      "kind": "kitchen",
+      "at": [
+        0.367,
+        0.679
+      ]
+    },
+    {
+      "text": "VASKEROM",
+      "area": 6,
+      "kind": "laundry",
+      "at": [
+        0.331,
+        0.773
+      ]
+    },
+    {
+      "text": "WC",
+      "area": 3,
+      "kind": "wc",
+      "at": [
+        0.358,
+        0.79
+      ]
+    },
+    {
+      "text": "ENTRE",
+      "area": 18,
+      "kind": "entrance",
+      "at": [
+        0.396,
+        0.799
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "text": "5500",
+      "value": 5.5,
+      "at": [
+        0.3245,
+        0.198
+      ],
+      "along": "h",
+      "what": "outer"
+    },
+    {
+      "text": "3100",
+      "value": 3.1,
+      "at": [
+        0.2275,
+        0.2765
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "3600",
+      "value": 3.6,
+      "at": [
+        0.2275,
+        0.389
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "11800",
+      "value": 11.8,
+      "at": [
+        0.2275,
+        0.647
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "4400",
+      "value": 4.4,
+      "at": [
+        0.4,
+        0.3225
+      ],
+      "along": "v",
+      "what": "other"
+    },
+    {
+      "text": "6700",
+      "value": 6.7,
+      "at": [
+        0.411,
+        0.3366
+      ],
+      "along": "v",
+      "what": "other"
+    },
+    {
+      "text": "7400",
+      "value": 7.4,
+      "at": [
+        0.423,
+        0.3487
+      ],
+      "along": "v",
+      "what": "outer"
+    },
+    {
+      "text": "7800",
+      "value": 7.8,
+      "at": [
+        0.57,
+        0.6124
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "3050",
+      "value": 3.05,
+      "at": [
+        0.57,
+        0.795
+      ],
+      "along": "v",
+      "what": "chain"
+    },
+    {
+      "text": "11100",
+      "value": 11.1,
+      "at": [
+        0.5825,
+        0.659
+      ],
+      "along": "v",
+      "what": "outer"
+    },
+    {
+      "text": "9815",
+      "value": 9.815,
+      "at": [
+        0.4004,
+        0.9188
+      ],
+      "along": "h",
+      "what": "outer"
+    }
+  ],
+  "openings": [],
+  "skylights": [],
+  "stair": {
+    "present": true,
+    "at": [
+      0.462,
+      0.81
+    ],
+    "type": "half-turn",
+    "up": "here"
+  },
+  "ceiling": [],
+  "furniture": [],
+  "notes": "Blå forklaringstekster fra kommunen ligger oppå tegningen. To skrå mål (6314 og 4400) langs den skrå veggen er utelatt."
+}
