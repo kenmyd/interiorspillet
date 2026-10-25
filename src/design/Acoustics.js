@@ -126,6 +126,10 @@ function estimateAbsorption(item) {
   if (a === 'bar-stool') return 0.15;
   // a recliner (high upholstered back, headrest, footstool or footrest) ≈ 0.7–0.9 m², more with a footstool
   if (a === 'recliner') return Math.min(1.2, (item.params?.footstool ? 0.85 : 0.75) * Math.max(0.6, Math.min(1.6, (w * d) / 0.65)));
+  // runde 3: an upholstered office chair, a moulded shell (more with a full pad), a stool (more when upholstered)
+  if (a === 'office-chair') return 0.3;
+  if (a === 'shell-chair') return item.params?.pad === 'full' ? 0.2 : 0.08;
+  if (a === 'stool') return item.params?.seat === 'upholstered' ? 0.12 : 0.05;
   if (family === 'seating') return 0.6 * Math.min(2, (w * d) / 0.56);
   // cabinets, vitrines, tables: hard wood/glass surfaces – no extra absorption
   if (family === 'storage' || family === 'table') return 0;

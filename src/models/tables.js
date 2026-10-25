@@ -18,7 +18,11 @@ import { mat, emissive, isTransparentKind, kindGroup } from '../home/materials.j
  * light chamfer underneath, two extension leaves, two A-frames of black flat steel splayed across the width ≈ 0.40
  * in from the ends) and the black lattice wall shelf over the sofa (082726, 082809).
  *
- * Exports: `archetypes` (the Def table for registry.js) and the geometry helper `ribPanelGeometry`.
+ * Also the flexible coffee-table (salongbord, sidebord, konsollbord, pidestall, round nightstands; design/furniture.md
+ * §3.1), fabric (speaker-cloth) cabinet fronts and the wall shelf's box style.
+ *
+ * Exports: `archetypes` (the Def table for registry.js), `buildCabinet`, `recolorer`, the geometry helper
+ * `ribPanelGeometry` and the table helpers listed at the end of the file (desks.js builds on them).
  */
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -57,6 +61,11 @@ function add(g, geo, material, part, x = 0, y = 0, z = 0, rot) {
 
 /** Interior shadow material (behind door gaps, through cane) – not a part, never recoloured. */
 const darkInside = () => mat('painted', '#15120f', { flat: true, roughness: 0.95 });
+/** A '#rrggbb' no lighter than #222222 in any channel: a board in it cannot be told from darkInside() behind it. */
+const nearBlack = (hex) => {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(typeof hex === 'string' ? hex.trim() : '');
+  return !!m && Math.max(...m.slice(1).map((x) => parseInt(x, 16))) <= 0x22;
+};
 
 /**
  * userData.model.recolor for SceneSync: swaps cached materials per part like the default path, but asks for a
@@ -558,6 +567,40 @@ function chamferGeometry(outer, inner, yHi, yLo) {
   return B.build();
 }
 
+/**
+ * Column of vertical ribs (fluted / reeded base) on a plan outline (shape space x / −z): walks the perimeter and
+ * pushes every other sample out by `depth`, then extrudes from y = 0 to colH. Grain along y.
+ * `mirror` maps shape y → +z (the dining table's original orientation); otherwise shape y → −z like planSlab.
+ */
+function ribbedColumn(base, colH, { pitch = 0.028, depth = 0.004, mirror = false } = {}) {
+  let per = 0;
+  const segs = base.map((p, i) => {
+    const q = base[(i + 1) % base.length];
+    const l = Math.hypot(q.x - p.x, q.y - p.y);
+    per += l;
+    return l;
+  });
+  const nR = Math.max(16, Math.round(per / pitch) * 2);
+  const ribbed = [];
+  let acc = 0, k = 0;
+  for (let i = 0; i < base.length && ribbed.length < nR * 2; i++) {
+    const p = base[i], q = base[(i + 1) % base.length];
+    const nx = q.y - p.y, ny = -(q.x - p.x), nl = Math.hypot(nx, ny) || 1;
+    while (acc < segs[i]) {
+      const t = acc / segs[i];
+      const out = k % 2 ? 0 : depth;
+      ribbed.push([p.x + (q.x - p.x) * t + (nx / nl) * out, p.y + (q.y - p.y) * t + (ny / nl) * out]);
+      acc += pitch / 2;
+      k++;
+    }
+    acc -= segs[i];
+  }
+  const geo = K.extrudeShape(mirror ? ribbed.map(([x, z]) => [x, -z]) : ribbed, colH, { curveSegments: 1 });
+  geo.rotateX(-Math.PI / 2);
+  K.worldUV(geo, 1, { grain: 'y' });
+  return geo;
+}
+
 /** Half chord (along z) of a top outline at x – for seams of extension leaves. */
 function halfChordAt(shape, w, d, x) {
   if (shape === 'rect') return d / 2 - 0.004;
@@ -645,35 +688,9 @@ function buildDining(spec) {
   } else if (legsStyle === 'column') {
     // one wide oval (stadium) column of vertical ribs on a low plinth (Nola)
     const cw = clamp(num(P.columnW, w * 0.42), 0.2, w - 0.2), cd = clamp(num(P.columnD, d * 0.45), 0.15, d - 0.1);
-    const pitch = 0.028;
     const base = stadiumPts(cw, cd, qSeg(spec, 16));
-    // ribbed outline: walk the perimeter and push every other sample out by 4 mm
-    let per = 0;
-    const segs = base.map((p, i) => {
-      const q = base[(i + 1) % base.length];
-      const l = Math.hypot(q.x - p.x, q.y - p.y);
-      per += l;
-      return l;
-    });
-    const nR = Math.max(16, Math.round(per / pitch) * 2);
-    const ribbed = [];
-    let acc = 0, k = 0;
-    for (let i = 0; i < base.length && ribbed.length < nR * 2; i++) {
-      const p = base[i], q = base[(i + 1) % base.length];
-      const nx = q.y - p.y, ny = -(q.x - p.x), nl = Math.hypot(nx, ny) || 1;
-      while (acc < segs[i]) {
-        const t = acc / segs[i];
-        const out = k % 2 ? 0 : 0.004;
-        ribbed.push([p.x + (q.x - p.x) * t + (nx / nl) * out, p.y + (q.y - p.y) * t + (ny / nl) * out]);
-        acc += pitch / 2;
-        k++;
-      }
-      acc -= segs[i];
-    }
     const colH = yUnder - 0.03;
-    const geo = K.extrudeShape(ribbed.map(([x, z]) => [x, -z]), colH, { curveSegments: 1 });
-    geo.rotateX(-Math.PI / 2);
-    K.worldUV(geo, 1, { grain: 'y' });
+    const geo = ribbedColumn(base, colH, { pitch: 0.028, depth: 0.004, mirror: true });
     const legsV = mat(spec.materials?.legs || 'oak', spec.colors?.legs, { grain: 'y' });
     add(g, geo, legsV, 'legs', 0, 0.03, 0);
     add(g, planSlab(stadiumPts(cw + 0.03, cd + 0.03, qSeg(spec, 16)), 0.03, { bevel: 0.003 }), legs, 'legs', 0, 0, 0);
@@ -882,6 +899,749 @@ function buildSideC(spec) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------
+// Coffee tables and small tables (coffee-table, design/furniture.md §3.1): salongbord, sidebord, konsollbord,
+// pidestall and round nightstands from one builder – a top of any plan shape on one of eleven bases. The table
+// helpers below (outline, top, legs, handles) are shared with desks.js.
+
+const CT_SHAPES = ['rect', 'rounded', 'soft', 'round', 'oval', 'stadium', 'organic'];
+const CT_BASES = ['legs', 'pedestal', 'drum', 'ribbed', 'panel', 'frame', 'sled', 'x', 'v', 'cross', 'spider', 'cabinet'];
+const CT_LEGS = ['square', 'round-taper', 'splayed', 'angled', 'block', 'metal-thin', 'hairpin', 'metal-square'];
+/** Plan shapes whose legs stand in the corners (the others get legCount legs round the outline). */
+const CORNER_SHAPES = new Set(['rect', 'rounded', 'soft']);
+
+/** Superellipse outline |x/a|ⁿ + |z/b|ⁿ = 1 (a «myk firkant»), `count` points, counter-clockwise. */
+function superPts(w, d, n, count = 64) {
+  const e = 2 / clamp(n, 2, 10);
+  const out = [];
+  for (let k = 0; k < count; k++) {
+    const a = (k / count) * Math.PI * 2;
+    const c = Math.cos(a), s = Math.sin(a);
+    out.push(new THREE.Vector2((Math.sign(c) * Math.abs(c) ** e * w) / 2, (Math.sign(s) * Math.abs(s) ** e * d) / 2));
+  }
+  return out;
+}
+
+/**
+ * Organic (drop / egg) outline: a circle with a few low harmonics drawn from the seed, rescaled to exactly w × d.
+ * `dent` (0–0.35) pushes a concave notch into the edge at the plan angle `dentAt` (0 = +x, π/2 = front +z, π = −x,
+ * −π/2 = back), so the outline turns into a bean / kidney (Dråpe).
+ */
+function blobPts(w, d, seed, count = 64, dent = 0, dentAt = Math.PI / 2) {
+  const r = K.rng(`coffee|${seed}`);
+  const a1 = r.range(0.1, 0.18), a2 = r.range(0.03, 0.07), a3 = r.range(0, 0.03);
+  const p2 = r.range(0, Math.PI * 2), p3 = r.range(0, Math.PI * 2);
+  const raw = [];
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  const dn = clamp(num(dent, 0), 0, 0.35);
+  const tD = -num(dentAt, Math.PI / 2); // plan angle → shape space (shape y = −z)
+  for (let k = 0; k < count; k++) {
+    const t = (k / count) * Math.PI * 2;
+    let rr = 1 + a1 * Math.cos(t) + a2 * Math.cos(2 * t + p2) + a3 * Math.cos(3 * t + p3);
+    if (dn > 0) {
+      const dt = Math.atan2(Math.sin(t - tD), Math.cos(t - tD));
+      rr -= dn * Math.exp(-((dt / 0.6) ** 2));
+    }
+    const x = rr * Math.cos(t), y = rr * Math.sin(t);
+    raw.push([x, y]);
+    x0 = Math.min(x0, x);
+    x1 = Math.max(x1, x);
+    y0 = Math.min(y0, y);
+    y1 = Math.max(y1, y);
+  }
+  const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+  return raw.map(([x, y]) => new THREE.Vector2(((x - cx) / (x1 - x0)) * w, ((y - cy) / (y1 - y0)) * d));
+}
+
+/**
+ * Plan outline (shape space x / −z, counter-clockwise) of a table top. The point count depends only on the shape and
+ * `n`, so outlines of different sizes correspond point by point (chamfers, rims).
+ * @param {string} shape  rect | rounded | soft | round | oval | stadium | organic
+ */
+export function tableOutline(shape, w, d, { cornerR = 0.03, softness = 4, seed = 1, n = 48, dent = 0, dentAt = Math.PI / 2 } = {}) {
+  w = Math.max(0.02, w);
+  d = Math.max(0.02, d);
+  switch (shape) {
+    case 'rounded': return roundRectPts(w, d, Math.max(0.002, cornerR), Math.max(3, Math.round(n / 8)));
+    case 'soft': return superPts(w, d, softness, n);
+    case 'round':
+    case 'oval': return ellipsePts(w, d, n);
+    case 'stadium':
+      if (w >= d) return stadiumPts(w, d, Math.max(8, Math.round(n / 2)));
+      // semicircular ends along z: the x-stadium turned a quarter round (still counter-clockwise)
+      return stadiumPts(d, w, Math.max(8, Math.round(n / 2))).map((p) => new THREE.Vector2(-p.y, p.x));
+    case 'organic': return blobPts(w, d, seed, n, dent, dentAt);
+    default: return roundRectPts(w, d, 0.004, 2);
+  }
+}
+
+/** Distance from the plan origin to a closed outline (shape space) along the plan direction (ux, uz); 0 when missed. */
+function rayHit(outline, ux, uz) {
+  const dx = ux, dy = -uz;
+  let best = Infinity;
+  for (let i = 0; i < outline.length; i++) {
+    const a = outline[i], b = outline[(i + 1) % outline.length];
+    const ex = b.x - a.x, ey = b.y - a.y;
+    const den = dx * ey - dy * ex;
+    if (Math.abs(den) < 1e-12) continue;
+    const t = (a.x * ey - a.y * ex) / den;
+    const s = (a.x * dy - a.y * dx) / den;
+    if (t > 0 && s >= -1e-9 && s <= 1 + 1e-9) best = Math.min(best, t);
+  }
+  return Number.isFinite(best) ? best : 0;
+}
+
+/** True when the plan point (x, z) lies inside the outline and at least m from its edge. */
+function insideBy(outline, x, z, m) {
+  const px = x, py = -z;
+  let inside = false, best = Infinity;
+  for (let i = 0, j = outline.length - 1; i < outline.length; j = i++) {
+    const a = outline[i], b = outline[j];
+    if (a.y > py !== b.y > py && px < ((b.x - a.x) * (py - a.y)) / (b.y - a.y) + a.x) inside = !inside;
+    const ex = b.x - a.x, ey = b.y - a.y;
+    const t = clamp(((px - a.x) * ex + (py - a.y) * ey) / (ex * ex + ey * ey || 1), 0, 1);
+    best = Math.min(best, Math.hypot(a.x + ex * t - px, a.y + ey * t - py));
+  }
+  return inside && best >= m;
+}
+
+/**
+ * Leg (foot) anchors in plan, [{ x, z, ux, uz }] with u the unit direction out from the centre. Corner shapes get four
+ * legs `inset` in from both edges (slid in along the diagonal until they clear a rounded or soft corner); the other
+ * shapes get `count` legs round the outline – four on the diagonals of the bounding box, three with one at the back.
+ */
+export function legAnchors(shape, outline, w, d, inset, legD, count = 4) {
+  const out = [];
+  const m = inset + legD / 2;
+  if (CORNER_SHAPES.has(shape)) {
+    const ax = Math.max(0.01, w / 2 - m), az = Math.max(0.01, d / 2 - m);
+    const need = Math.max(0, m - 0.002);
+    for (const [sx, sz] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
+      let x = sx * ax, z = sz * az;
+      for (let k = 0; k < 30 && !insideBy(outline, x, z, need); k++) {
+        x *= 0.97;
+        z *= 0.97;
+      }
+      const l = Math.hypot(x, z) || 1;
+      out.push({ x, z, ux: x / l, uz: z / l });
+    }
+    return out;
+  }
+  const n = clamp(Math.round(num(count, 4)), 3, 4);
+  const a0 = n === 3 ? -Math.PI / 2 : Math.PI / 4;
+  for (let k = 0; k < n; k++) {
+    const a = a0 + (k * 2 * Math.PI) / n;
+    // along the bounding box's own diagonal (the ellipse's parametric angle): oval legs spread along the long side
+    const vx = Math.cos(a) * w, vz = Math.sin(a) * d;
+    const l = Math.hypot(vx, vz) || 1;
+    const ux = vx / l, uz = vz / l;
+    const r = Math.max(0.02, rayHit(outline, ux, uz) - inset - legD);
+    out.push({ x: ux * r, z: uz * r, ux, uz });
+  }
+  return out;
+}
+
+/**
+ * Table top on a plan outline with its upper face at h: `edge` 'straight' (a hair of a bevel), 'rounded' (a soft
+ * radius) or 'bevel' (a thin edge over a lighter chamfer underneath). Returns the outline.
+ */
+export function tableTop(g, spec, { shape, w, d, h, topT, edge = 'straight', cornerR = 0.03, softness = 4, seed = 1, n = 48, dent = 0, dentAt = Math.PI / 2 }) {
+  const top = pm(spec, 'top', 'oak');
+  const o = { cornerR, softness, seed, n, dent, dentAt };
+  const outline = tableOutline(shape, w, d, o);
+  if (edge === 'bevel') {
+    const edgeT = Math.min(0.012, topT * 0.45);
+    add(g, planSlab(outline, edgeT, { bevel: 0.0012, grain: 'x' }), top, 'top', 0, h - edgeT, 0);
+    const cw = Math.min(0.025, Math.min(w, d) * 0.04);
+    const inner = tableOutline(shape, w - 2 * cw, d - 2 * cw, { ...o, cornerR: cornerR - cw });
+    // the cut chamfer reads a little lighter than the face on light wood; on dark wood (smoked oak, Nardo) a light
+    // band looks like an aluminium strip, so the lift fades out toward dark tops
+    const topHex = spec.colors?.top || '#4b4039';
+    const lum = new THREE.Color(topHex);
+    const L = 0.2126 * lum.r + 0.7152 * lum.g + 0.0722 * lum.b;
+    const fas = mat(spec.materials?.top || 'oak', tone(topHex, 1.06 + 0.16 * clamp((L - 0.05) / 0.15, 0, 1)));
+    add(g, chamferGeometry(outline, inner, h - edgeT, h - topT), fas, 'top');
+  } else {
+    const bevel = edge === 'rounded' ? Math.min(topT / 3, 0.01) : Math.min(0.0015, topT / 4);
+    add(g, planSlab(outline, topT, { bevel, grain: 'x' }), top, 'top', 0, h - topT, 0);
+  }
+  return outline;
+}
+
+/**
+ * Section between two points (angled and spider legs): `geo(len)` is centred and runs along y. `half` = half the
+ * section: a leaning leg's foot is lifted so its lowest corner, not its centre, stands on the floor.
+ */
+function strut(g, geo, material, part, top, foot, half = 0) {
+  if (half > 0 && foot[1] < 1e-6) {
+    const hd = Math.hypot(top[0] - foot[0], top[2] - foot[2]), vd = top[1] - foot[1];
+    foot = [foot[0], (half * Math.SQRT2 * hd) / (Math.hypot(hd, vd) || 1), foot[2]];
+  }
+  const dir = new THREE.Vector3(top[0] - foot[0], top[1] - foot[1], top[2] - foot[2]);
+  const len = dir.length();
+  if (len < 0.004) return null;
+  const m = add(g, geo(len), material, part, (top[0] + foot[0]) / 2, (top[1] + foot[1]) / 2, (top[2] + foot[2]) / 2);
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+  return m;
+}
+
+/**
+ * Leg materials of a table spec: `box` for box/extruded sections (the geometry carries the grain), `round` for turned
+ * and tapered legs (grain along the leg), plus the kind and its group.
+ */
+export function legMats(spec, fallbackKind = 'oak') {
+  const kind = spec.materials?.legs || fallbackKind;
+  const wood = kindGroup(kind) === 'wood';
+  return { kind, group: kindGroup(kind), box: mat(kind, spec.colors?.legs), round: mat(kind, spec.colors?.legs, wood ? { grain: 'v' } : undefined) };
+}
+
+/**
+ * One table leg from the floor up to yTop at the plan anchor a ({ x, z, ux, uz }) in a leg style:
+ * square | round-taper | splayed (foot out 8°) | angled (square, 14°, top further in) | block | metal-thin |
+ * metal-square | hairpin. legD = the section (diameter / side). Returns { top: [x, z], foot: [x, z] } in plan.
+ */
+export function styledLeg(g, style, a, yTop, legD, lm, seg = 12) {
+  const { x, z, ux, uz } = a;
+  if (yTop < 0.01) return { top: [x, z], foot: [x, z] };
+  switch (style) {
+    case 'round-taper':
+      add(g, K.taperLeg(yTop, legD / 2, legD * 0.35, { seg }), lm.round, 'legs', x, 0, z);
+      return { top: [x, z], foot: [x, z] };
+    case 'splayed': {
+      const t = 8 * K.DEG;
+      add(g, splayedLeg(x, yTop + 0.002, z, legD / 2, legD * 0.35, ux * t, uz * t, seg), lm.round, 'legs');
+      const out = yTop * Math.tan(t);
+      return { top: [x, z], foot: [x + ux * out, z + uz * out] };
+    }
+    case 'angled': {
+      const back = Math.tan(14 * K.DEG) * yTop;
+      const top = [x - ux * back, yTop + 0.004, z - uz * back];
+      strut(g, (len) => K.box(legD, len, legD, { grain: 'y' }), lm.box, 'legs', top, [x, 0, z], legD / 2);
+      return { top: [top[0], top[2]], foot: [x, z] };
+    }
+    case 'block': {
+      const s = Math.max(legD, 0.04);
+      add(g, K.roundedBox(s, yTop + 0.001, s, 0.006, 1, { grain: 'y', bottom: true }), lm.box, 'legs', x, 0, z);
+      return { top: [x, z], foot: [x, z] };
+    }
+    case 'metal-thin': {
+      const r = clamp(legD / 2, 0.005, 0.0125);
+      add(g, K.cylinder(r, r * 0.92, yTop, { seg }), lm.round, 'legs', x, 0, z);
+      add(g, K.box(0.04, 0.004, 0.04), lm.box, 'legs', x, yTop - 0.002, z);
+      return { top: [x, z], foot: [x, z] };
+    }
+    case 'hairpin': {
+      // two 9 mm rods in the vertical plane along the leg's diagonal, bent into a U at the floor, on a mount plate
+      const s = 0.035;
+      const prof = [[-s, yTop], [-0.012, 0.05], [-0.005, 0.012], [0, 0.006], [0.005, 0.012], [0.012, 0.05], [s, yTop]];
+      const pts = prof.map(([u, y]) => [x + u * ux, y, z + u * uz]);
+      add(g, K.tube(pts, 0.0045, { curve: 'catmull', radial: 6, seg: Math.max(16, Math.round(seg * 3)) }), lm.box, 'legs');
+      add(g, K.box(0.07, 0.006, 0.07), lm.box, 'legs', x, yTop - 0.003, z);
+      return { top: [x, z], foot: [x, z] };
+    }
+    default: {
+      // square / metal-square: a straight box section
+      const s = style === 'metal-square' ? clamp(legD, 0.012, 0.05) : legD;
+      add(g, K.box(s, yTop, s, { grain: 'y' }), lm.box, 'legs', x, yTop / 2, z);
+      return { top: [x, z], foot: [x, z] };
+    }
+  }
+}
+
+/**
+ * Handle on a drawer front centred (cx, cy) with its face at zFace (facing +z): knob, bar, cutout (a finger groove at
+ * the top edge: a shadowed slot in a darker tone of `frontHex`, near-black without it) or edge (a grip lip along the
+ * bottom). `hm` = the handle material.
+ */
+export function drawerHandle(g, style, hm, cx, cy, zFace, dw, dh, seg = 16, frontHex) {
+  if (style === 'knob') add(g, K.cylinder(0.011, 0.014, 0.024, { seg }), hm, 'handle', cx, cy, zFace, [Math.PI / 2, 0, 0]);
+  else if (style === 'bar') {
+    const len = clamp(dw * 0.38, 0.06, Math.min(0.22, dw - 0.04));
+    if (kindGroup(hm.userData?.kind) === 'metal') {
+      add(g, K.box(len, 0.011, 0.011, { grain: 'x' }), hm, 'handle', cx, cy, zFace + 0.026);
+      for (const s of [-1, 1]) add(g, K.cylinder(0.0045, 0.0045, 0.022, { seg: 8, center: true }), hm, 'handle', cx + s * (len / 2 - 0.012), cy, zFace + 0.011, [Math.PI / 2, 0, 0]);
+    } else add(g, K.roundedBox(len, 0.02, 0.016, 0.006, 2, { grain: 'x' }), hm, 'handle', cx, cy, zFace + 0.008);
+  } else if (style === 'cutout') {
+    const nw = clamp(dw * 0.3, 0.05, 0.12), nd = Math.min(0.022, dh * 0.3);
+    const groove = typeof frontHex === 'string' ? mat('painted', tone(frontHex, 0.5), { flat: true, roughness: 0.92 }) : darkInside();
+    add(g, K.box(nw, nd, 0.004), groove, null, cx, cy + dh / 2 - nd / 2, zFace - 0.0015);
+  } else if (style === 'edge') {
+    add(g, K.roundedBox(dw - 0.004, 0.012, 0.018, 0.003, 1, { grain: 'x' }), hm, 'handle', cx, cy - dh / 2 + 0.006, zFace + 0.004);
+  }
+}
+
+/** Shelf board on a plan outline under a table: board | slats | cane | glass, its upper face at y. */
+function shelfInto(g, spec, kind, outline, y, body) {
+  const pts = dedupe(outline);
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+  for (const p of pts) {
+    x0 = Math.min(x0, p.x);
+    x1 = Math.max(x1, p.x);
+    z0 = Math.min(z0, -p.y);
+    z1 = Math.max(z1, -p.y);
+  }
+  const sw = x1 - x0, sd = z1 - z0;
+  if (sw < 0.06 || sd < 0.06) return null;
+  if (kind === 'slats') {
+    // slats along x, each as long as the outline is wide at its z
+    const n = Math.max(2, Math.round(sd / 0.05));
+    const pitch = sd / n, sw2 = pitch - 0.012;
+    for (let k = 0; k < n; k++) {
+      const z = z0 + (k + 0.5) * pitch;
+      const half = chordHalf(pts, z);
+      if (half < 0.03) continue;
+      add(g, K.roundedBox(2 * half - 0.006, 0.016, sw2, 0.003, 1, { grain: 'x' }), body, 'body', 0, y - 0.008, z);
+    }
+    // two bearers under the slats
+    for (const sx of [-1, 1]) {
+      const bx = sx * Math.max(0.02, sw / 2 - 0.05);
+      const bl = 2 * chordHalfZ(pts, bx) - 0.03;
+      if (bl > 0.04) add(g, K.box(0.03, 0.02, bl, { grain: 'z' }), body, 'body', bx, y - 0.026, (z0 + z1) / 2);
+    }
+  } else if ((kind === 'cane' || kind === 'glass') && Math.min(sw, sd) >= 2 * 0.03 + 0.02) {
+    // (a frame of ft all round and a hole of at least 2 cm: on a smaller outline – legs pulled in to the centre – the
+    // hole would be a point and earcut throws, so it is a plain board)
+    const ft = 0.03;
+    const inner = pts.map((p) => new THREE.Vector2(p.x * (1 - (2 * ft) / sw), p.y * (1 - (2 * ft) / sd)));
+    const ring = new THREE.Shape(pts);
+    ring.holes.push(new THREE.Path([...inner].reverse()));
+    add(g, planSlab(ring, 0.02, { grain: 'x' }), body, 'body', 0, y - 0.02, 0);
+    const insert = kind === 'cane' ? mat('rattan', tone(spec.colors?.body || '#c7ab8a', 1.12), { open: true }) : mat('glass-clear', '#e9efec');
+    const grown = pts.map((p) => new THREE.Vector2(p.x * (1 - (1.6 * ft) / sw), p.y * (1 - (1.6 * ft) / sd)));
+    add(g, planSlab(grown, kind === 'cane' ? 0.004 : 0.008), insert, null, 0, y - (kind === 'cane' ? 0.012 : 0.014), 0);
+  } else add(g, planSlab(pts, 0.018, { bevel: 0.0015, grain: 'x' }), body, 'body', 0, y - 0.018, 0);
+  return { y, w: +(sw * 0.8).toFixed(3), d: +(sd * 0.8).toFixed(3) };
+}
+
+/** Half width (largest |x|) of an outline at plan depth z. */
+function chordHalf(outline, z) {
+  const py = -z;
+  let best = 0;
+  for (let i = 0; i < outline.length; i++) {
+    const a = outline[i], b = outline[(i + 1) % outline.length];
+    if (a.y > py === b.y > py) continue;
+    const x = a.x + ((py - a.y) / (b.y - a.y)) * (b.x - a.x);
+    best = Math.max(best, Math.abs(x));
+  }
+  return best;
+}
+
+/** Half depth (largest |z|) of an outline at plan x. */
+function chordHalfZ(outline, x) {
+  let best = 0;
+  for (let i = 0; i < outline.length; i++) {
+    const a = outline[i], b = outline[(i + 1) % outline.length];
+    if (a.x > x === b.x > x) continue;
+    const y = a.y + ((x - a.x) / (b.x - a.x)) * (b.y - a.y);
+    best = Math.max(best, Math.abs(y));
+  }
+  return best;
+}
+
+/** A coffee table's top thickness and tray rim (0 without one) at height h: the top's underside is h − trayH − topT. */
+function ctTopStack(P, h) {
+  const topT = clamp(num(P.topT, 0.03), 0.008, Math.min(0.06, h * 0.3));
+  const trayH = P.tray === true ? clamp(num(P.trayH, 0.022), 0.015, Math.min(0.1, h * 0.3)) : 0;
+  return { topT, trayH };
+}
+
+/**
+ * One coffee table (the main one or one of a `set`) into group tg, local to its own centre. Pushes its surfaces.
+ * @returns {{ complex: boolean }}
+ */
+function coffeeTableInto(tg, spec, t, out) {
+  const P = spec.params;
+  const { w, d, h, shape } = t;
+  const n = qSeg(spec, 48);
+  const seg = qSeg(spec, 12);
+  const { topT, trayH } = ctTopStack(P, h);
+  const edge = ['straight', 'bevel', 'rounded'].includes(P.edge) ? P.edge : 'straight';
+  const cornerR = clamp(num(P.cornerR, 0.03), 0.005, 0.3);
+  const softness = clamp(num(P.softness, 4), 3, 6);
+  // a set table may carry its own seed and notch (Dråpe: two beans nested notch to notch)
+  const seed = clamp(Math.round(num(t.seed, num(P.seed, 1))), 1, 9999);
+  const dent = clamp(num(t.dent, num(P.dent, 0)), 0, 0.35);
+  const dentAt = num(t.dentAt, num(P.dentAt, Math.PI / 2));
+  let base = CT_BASES.includes(P.base) ? P.base : 'legs';
+  if (base === 'panel' && !CORNER_SHAPES.has(shape)) base = 'legs';
+  const legStyle = CT_LEGS.includes(P.legStyle) ? P.legStyle : 'square';
+  const legD = clamp(num(P.legD, 0.045), 0.01, 0.12);
+  const legInset = clamp(num(P.legInset, 0.05), 0, 0.4);
+  const legCount = clamp(Math.round(num(P.legCount, 4)), 3, 4);
+  const lm = legMats(spec);
+  const body = pm(spec, 'body', 'oak');
+  const hm = pm(spec, 'handle', 'black-metal');
+  const io = { cornerR, softness, seed, n, dent, dentAt };
+  // a tray rim (brett) stands on the top: the top sinks by the rim height so the rim's upper edge is dims.h
+  const hTop = h - trayH;
+  const outline = tableTop(tg, spec, { shape, w, d, h: hTop, topT, edge, ...io });
+  if (trayH > 0) {
+    const inner = tableOutline(shape, w - 0.03, d - 0.03, { ...io, cornerR: cornerR - 0.015 });
+    const rim = new THREE.Shape(dedupe(outline));
+    rim.holes.push(new THREE.Path(dedupe(inner).reverse()));
+    add(tg, planSlab(rim, trayH, { grain: 'x' }), pm(spec, 'top', 'oak'), 'top', 0, hTop, 0);
+  }
+  const yUnder = hTop - topT;
+  const corner = CORNER_SHAPES.has(shape);
+  out.surfaces.push({ y: trayH > 0 ? +hTop.toFixed(4) : h, w: +(corner ? w - 0.04 : w * 0.72).toFixed(3), d: +(corner ? d - 0.04 : d * 0.72).toFixed(3), center: [+t.dx.toFixed(3), +t.dz.toFixed(3)] });
+  const shelfKind = ['board', 'slats', 'cane', 'glass'].includes(P.shelf) ? P.shelf : 'none';
+  let shelfOutline = null;
+  let complex = false;
+  const yShelfMax = (y) => clamp(num(P.shelfH, 0.12), 0.04, Math.max(0.05, y - 0.04));
+
+  if (base === 'legs') {
+    const drawers = clamp(Math.round(num(P.drawers, 0)), 0, 4);
+    const apronOn = P.apron === true || drawers > 0;
+    const apronH = clamp(num(P.apronH, 0.07), 0.04, Math.min(0.14, yUnder * 0.5));
+    const anchors = legAnchors(shape, outline, w, d, legInset, legStyle === 'block' ? Math.max(legD, 0.04) : legD, legCount);
+    const legs = anchors.map((a) => styledLeg(tg, legStyle, a, yUnder, legD, lm, seg));
+    const back = legD / 2 - 0.017; // apron board centre line, out from the leg centres (face 6 mm behind the legs')
+    if (apronOn) {
+      if (corner) {
+        const ax = Math.max(...legs.map((l) => Math.abs(l.top[0]))) + back, az = Math.max(...legs.map((l) => Math.abs(l.top[1]))) + back;
+        const zs = drawers > 0 ? (P.drawersBack === true ? [] : [-1]) : [-1, 1];
+        for (const sz of zs) add(tg, K.box(2 * ax, apronH, 0.022, { grain: 'x' }), body, 'body', 0, yUnder - apronH / 2, sz * az);
+        for (const sx of [-1, 1]) add(tg, K.box(0.022, apronH, Math.max(0.02, 2 * az - 0.044), { grain: 'z' }), body, 'body', sx * ax, yUnder - apronH / 2, 0);
+        if (drawers > 0) {
+          const span = 2 * (ax - legD / 2 - back) - 0.006;
+          for (const sz of P.drawersBack === true ? [1, -1] : [1]) {
+            const grp = new THREE.Group();
+            grp.position.z = sz * az;
+            if (sz < 0) grp.rotation.y = Math.PI;
+            tg.add(grp);
+            add(grp, K.box(span, apronH - 0.004, 0.004), darkInside(), null, 0, yUnder - apronH / 2, -0.006);
+            const fw = (span - 0.003 * (drawers - 1)) / drawers;
+            for (let k = 0; k < drawers; k++) {
+              const cx = -span / 2 + fw / 2 + k * (fw + 0.003);
+              add(grp, K.roundedBox(fw, apronH - 0.006, 0.02, 0.0012, 1, { grain: 'x' }), pm(spec, 'front', 'oak'), 'front', cx, yUnder - apronH / 2, 0.001);
+              drawerHandle(grp, P.handle, hm, cx, yUnder - apronH / 2, 0.011, fw, apronH - 0.006, 16, spec.colors?.front);
+            }
+          }
+          complex = true;
+        }
+      } else {
+        // a ring of short boards just inside the legs; drawers as flat fronts on the front chord
+        const off = legInset + legD / 2 + 0.017;
+        const ring = tableOutline(shape, w - 2 * off, d - 2 * off, { ...io, cornerR: cornerR - off, n: Math.max(16, Math.round(n / 2)) });
+        for (let i = 0; i < ring.length; i++) {
+          const a = ring[i], b = ring[(i + 1) % ring.length];
+          const len = Math.hypot(b.x - a.x, b.y - a.y);
+          if (len < 0.005) continue;
+          add(tg, K.box(len + 0.004, apronH, 0.022, { grain: 'x' }), body, 'body', (a.x + b.x) / 2, yUnder - apronH / 2, -(a.y + b.y) / 2, [0, Math.atan2(b.y - a.y, b.x - a.x), 0]);
+        }
+        if (drawers > 0) {
+          for (const sz of P.drawersBack === true ? [1, -1] : [1]) {
+            const zr = rayHit(ring, 0, sz);
+            const half = chordHalf(ring, sz * (zr - 0.03)) * 0.8;
+            const fw = (2 * half - 0.003 * (drawers - 1)) / drawers;
+            const grp = new THREE.Group();
+            grp.position.z = sz * (zr - 0.004);
+            if (sz < 0) grp.rotation.y = Math.PI;
+            tg.add(grp);
+            for (let k = 0; k < drawers; k++) {
+              const cx = -half + fw / 2 + k * (fw + 0.003);
+              add(grp, K.roundedBox(fw, apronH - 0.006, 0.02, 0.0012, 1, { grain: 'x' }), pm(spec, 'front', 'oak'), 'front', cx, yUnder - apronH / 2, 0.01);
+              drawerHandle(grp, P.handle, hm, cx, yUnder - apronH / 2, 0.02, fw, apronH - 0.006, 16, spec.colors?.front);
+            }
+          }
+          complex = true;
+        }
+      }
+    }
+    if (shelfKind !== 'none') {
+      const sy = yShelfMax(yUnder - (apronOn ? apronH : 0));
+      const at = sy / yUnder;
+      const pos = legs.map((l) => [l.foot[0] + (l.top[0] - l.foot[0]) * at, l.foot[1] + (l.top[1] - l.foot[1]) * at]);
+      if (corner) {
+        const sx = Math.max(...pos.map((p) => Math.abs(p[0]))) + 0.01, sz = Math.max(...pos.map((p) => Math.abs(p[1]))) + 0.01;
+        shelfOutline = roundRectPts(2 * sx, 2 * sz, shape === 'rect' ? 0.004 : 0.012, 3);
+      } else {
+        const a = anchors[0], p = pos[0];
+        const k = (Math.hypot(p[0], p[1]) + 0.01) / Math.max(0.05, rayHit(outline, a.ux, a.uz));
+        shelfOutline = tableOutline(shape, w * k, d * k, { ...io, cornerR: cornerR * k });
+      }
+      out.shelfY = sy;
+    }
+  } else if (base === 'pedestal') {
+    const colR = clamp(legD / 2, 0.03, 0.12);
+    const xs = w > d * 1.35 ? [-(w / 2 - d * 0.42), w / 2 - d * 0.42] : [0];
+    const footR = Math.max(colR + 0.04, 0.32 * Math.min(w, d));
+    for (const x of xs) {
+      add(tg, K.cylinder(colR, colR, Math.max(0.01, yUnder - 0.032), { seg: qSeg(spec, 24) }), lm.round, 'legs', x, 0.02, 0);
+      add(tg, planSlab(ellipsePts(2 * footR, 2 * footR, qSeg(spec, 48)), 0.02, { bevel: 0.004 }), lm.box, 'legs', x, 0, 0);
+      add(tg, planSlab(ellipsePts(colR * 4.4, colR * 4.4, qSeg(spec, 32)), 0.012), body, 'body', x, yUnder - 0.012, 0);
+    }
+    if (xs.length > 1) add(tg, K.box(xs[1] - xs[0], 0.04, 0.05, { grain: 'x' }), body, 'body', 0, yUnder - 0.02, 0);
+  } else if (base === 'drum' || base === 'ribbed') {
+    const bi = clamp(num(P.baseInset, 0.1), 0, Math.min(w, d) / 2 - 0.04);
+    const wi = w - 2 * bi, di = d - 2 * bi;
+    const plinthH = clamp(num(P.plinthH, 0.02), 0, Math.min(0.15, yUnder * 0.4));
+    const y0 = plinthH > 0.003 ? plinthH : 0;
+    const bo = { ...io, cornerR: cornerR - bi };
+    if (base === 'ribbed') {
+      const pitch = clamp(num(P.ribPitch, 0.028), 0.012, 0.08);
+      const depth = clamp(num(P.ribDepth, 0.004), 0.001, Math.min(0.02, pitch / 2));
+      // a plinth slab 15 mm proud of the ribs (never past the top's own outline)
+      if (y0) {
+        const grow = Math.min(0.03, 2 * bi);
+        add(tg, planSlab(tableOutline(shape, wi + grow, di + grow, { ...bo, cornerR: bo.cornerR + grow / 2 }), y0, { bevel: Math.min(0.003, y0 / 4), grain: 'x' }), lm.box, 'legs');
+      }
+      const col = tableOutline(shape, wi - 2 * depth, di - 2 * depth, { ...bo, cornerR: bo.cornerR - depth, n: Math.max(24, n) });
+      add(tg, ribbedColumn(col, Math.max(0.01, yUnder - y0), { pitch, depth }), lm.box, 'legs', 0, y0, 0);
+    } else {
+      // recessed plinth (a shadow line) under a solid drum
+      if (y0) add(tg, planSlab(tableOutline(shape, wi - 0.02, di - 0.02, { ...bo, cornerR: bo.cornerR - 0.01 }), y0, { grain: 'x' }), lm.box, 'legs');
+      const taper = clamp(num(P.drumTaper, 0), 0, 0.4);
+      if (taper > 0.001 && (shape === 'round' || shape === 'oval')) {
+        const r = wi / 2, rb = r * (1 - taper), e = Math.min(0.003, r * 0.05);
+        const geo = K.lathe([[0.001, y0], [rb - e, y0], [rb, y0 + e], [r, yUnder - e], [r - e, yUnder], [0.001, yUnder]], { seg: n });
+        if (Math.abs(di - wi) > 1e-4) geo.scale(1, 1, di / wi);
+        add(tg, geo, lm.round, 'legs');
+      } else add(tg, planSlab(tableOutline(shape, wi, di, bo), Math.max(0.01, yUnder - y0), { bevel: Math.min(0.002, bi > 0 ? 0.002 : 0), grain: 'y' }), lm.box, 'legs', 0, y0, 0);
+      const nd = clamp(Math.round(num(P.drumDrawers, 0)), 0, 3);
+      if (nd > 0) {
+        // drawer seams (dark grooves across the front) and a knob per drawer – round nightstands
+        const drum = tableOutline(shape, wi, di, bo);
+        const zf = rayHit(drum, 0, 1);
+        const bandH = Math.min(0.16, (yUnder - y0) / (nd + 1));
+        const groove = darkInside();
+        const roundish = !CORNER_SHAPES.has(shape);
+        for (let k = 1; k <= nd; k++) {
+          const y = yUnder - k * bandH;
+          if (roundish) {
+            const geo = K.torus(wi / 2 + 0.0005, 0.0022, { radial: 4, tubular: Math.max(12, Math.round(n / 2)), arc: (110 * Math.PI) / 180 });
+            geo.rotateX(Math.PI / 2);
+            geo.rotateY((-35 * Math.PI) / 180);
+            if (Math.abs(di - wi) > 1e-4) geo.scale(1, 1, di / wi);
+            add(tg, geo, groove, null, 0, y, 0);
+          } else add(tg, K.box(wi * 0.92, 0.004, 0.003), groove, null, 0, y, zf);
+          drawerHandle(tg, ['knob', 'bar', 'cutout'].includes(P.handle) ? P.handle : 'knob', hm, 0, y + bandH / 2, zf, Math.min(wi, 0.4), bandH, 16, spec.colors?.legs);
+        }
+      }
+    }
+  } else if (base === 'panel') {
+    const t2 = lm.group === 'metal' ? 0.012 : 0.035;
+    const waterfall = P.waterfall === true;
+    const x = waterfall ? w / 2 - t2 / 2 : w / 2 - clamp(legInset, 0, w / 2 - 0.1) - t2 / 2;
+    const pd = waterfall ? d - (shape === 'rect' ? 0 : 2 * Math.min(shape === 'soft' ? 0.15 * d : cornerR, d / 4)) : d * 0.9;
+    for (const sx of [-1, 1]) add(tg, K.box(t2, yUnder, pd, { grain: 'y' }), lm.box, 'legs', sx * x, yUnder / 2, 0);
+    if (shelfKind !== 'none') {
+      shelfOutline = roundRectPts(2 * x - t2, pd * 0.92, 0.004, 2);
+      out.shelfY = yShelfMax(yUnder);
+    }
+  } else if (base === 'frame') {
+    const tw = clamp(num(P.tubeW, 0.02), 0.01, 0.05);
+    const inset = clamp(legInset, 0, Math.min(w, d) / 2 - 0.05);
+    const floorOn = P.frameFloor !== false;
+    const fw = w - 2 * inset, fd = d - 2 * inset;
+    if (corner) {
+      // square-tube box frame under the top (TV-stue coffee table, Josh)
+      const yT = yUnder - tw / 2;
+      for (const sz of [-1, 1]) add(tg, K.box(fw, tw, tw, { grain: 'x' }), body, 'body', 0, yT, sz * (fd / 2 - tw / 2));
+      for (const sx of [-1, 1]) add(tg, K.box(tw, tw, fd - 2 * tw, { grain: 'z' }), body, 'body', sx * (fw / 2 - tw / 2), yT, 0);
+      const py0 = floorOn ? tw : 0, py1 = yUnder - tw;
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(tg, K.box(tw, Math.max(0.01, py1 - py0), tw, { grain: 'y' }), lm.box, 'legs', sx * (fw / 2 - tw / 2), (py0 + py1) / 2, sz * (fd / 2 - tw / 2));
+      if (floorOn) {
+        for (const sz of [-1, 1]) add(tg, K.box(fw, tw, tw, { grain: 'x' }), lm.box, 'legs', 0, tw / 2, sz * (fd / 2 - tw / 2));
+        for (const sx of [-1, 1]) add(tg, K.box(tw, tw, fd - 2 * tw, { grain: 'z' }), lm.box, 'legs', sx * (fw / 2 - tw / 2), tw / 2, 0);
+      }
+      if (shelfKind !== 'none') shelfOutline = roundRectPts(fw - 0.004, fd - 0.004, 0.004, 2);
+    } else {
+      // a band under the top, posts round it and a ring on the floor (as the nesting tables)
+      const ring = tableOutline(shape, fw, fd, { ...io, cornerR: cornerR - inset });
+      const band = new THREE.Shape(dedupe(ring));
+      band.holes.push(new THREE.Path(dedupe(tableOutline(shape, fw - 2 * tw * 0.5, fd - 2 * tw * 0.5, { ...io, cornerR: cornerR - inset - tw / 2 })).reverse()));
+      const bandH = Math.max(tw, 0.03);
+      add(tg, planSlab(band, bandH, { grain: 'x' }), body, 'body', 0, yUnder - bandH, 0);
+      const posts = legAnchors(shape, ring, fw, fd, tw * 0.25, tw, legCount);
+      const py0 = floorOn ? tw : 0;
+      for (const p of posts) add(tg, K.cylinder(tw / 2, tw / 2, Math.max(0.01, yUnder - bandH - py0 + 0.002), { seg }), lm.round, 'legs', p.x, py0 - 0.001, p.z);
+      if (floorOn) {
+        const r = Math.hypot(posts[0].x, posts[0].z) / Math.max(0.05, rayHit(ring, posts[0].ux, posts[0].uz));
+        const fl = tableOutline(shape, fw * r, fd * r, { ...io, cornerR: (cornerR - inset) * r, n: Math.max(16, Math.round(n / 2)) });
+        add(tg, K.tube(fl.map((p) => [p.x, tw / 2, -p.y]), tw / 2, { closed: true, radial: Math.max(4, Math.round(seg / 2)) }), lm.box, 'legs');
+      }
+      if (shelfKind !== 'none') shelfOutline = tableOutline(shape, fw * 0.9, fd * 0.9, { ...io, cornerR: (cornerR - inset) * 0.9 });
+    }
+    if (shelfOutline) out.shelfY = yShelfMax(yUnder - tw);
+  } else if (base === 'sled' || base === 'x') {
+    const wood = lm.group === 'wood' || lm.group === 'stone';
+    const inset = clamp(legInset, 0.02, w / 2 - 0.08);
+    let span = clamp(d * (base === 'sled' ? 0.82 : 0.72), 0.2, d - 0.04);
+    // crossed bars under a round or oval top: never wider than the top's own depth at the bars' x
+    if (base === 'x' && !corner) span = Math.max(0.1, Math.min(span, 2 * chordHalfZ(outline, w / 2 - inset - 0.03) - 0.04));
+    if (base === 'sled') {
+      // two closed side frames (mederammer) of tube or wood, a spine under the top
+      const t2 = wood ? 0.04 : clamp(num(P.tubeW, 0.025), 0.015, 0.04);
+      const fx = w / 2 - inset - t2 / 2;
+      const top = span * 0.92;
+      for (const sx of [-1, 1]) {
+        const x = sx * fx;
+        add(tg, K.box(t2, t2, top, { grain: 'z' }), lm.box, 'legs', x, yUnder - t2 / 2, 0);
+        add(tg, K.box(t2, t2, span, { grain: 'z' }), lm.box, 'legs', x, t2 / 2, 0);
+        for (const sz of [-1, 1]) strut(tg, (len) => K.box(t2, len + t2 * 0.5, t2, { grain: 'y' }), lm.box, 'legs', [x, yUnder - t2, sz * (top / 2 - t2 / 2)], [x, t2, sz * (span / 2 - t2 / 2)]);
+      }
+      add(tg, K.box(2 * fx, 0.03, 0.03, { grain: 'x' }), body, 'body', 0, yUnder - 0.015, 0);
+      if (shelfKind !== 'none') {
+        shelfOutline = roundRectPts(2 * fx - t2, span - 2 * t2, 0.004, 2);
+        out.shelfY = yShelfMax(yUnder);
+      }
+    } else {
+      // two crossed bars at each end and a stretcher (kryssben)
+      const fx = w / 2 - inset - 0.03;
+      const bw = wood ? 0.05 : 0.035, bt = wood ? 0.035 : 0.015;
+      // each bar from the floor up to the opposite top corner, cut level at the floor and under the top
+      for (const sx of [-1, 1]) for (const s2 of [-1, 1]) add(tg, barYZ(-s2 * span / 2, 0, s2 * span / 2, yUnder, bw, bt), lm.box, 'legs', sx * fx + s2 * bt * 0.55, 0, 0);
+      add(tg, K.box(2 * fx, 0.04, 0.035, { grain: 'x' }), lm.box, 'legs', 0, yUnder * 0.45, 0);
+      add(tg, K.box(2 * fx, 0.03, 0.03, { grain: 'x' }), body, 'body', 0, yUnder - 0.015, 0);
+    }
+  } else if (base === 'v') {
+    const metal = lm.group === 'metal';
+    const inset = clamp(legInset, 0.02, Math.min(w, d) / 2 - 0.08);
+    if (lm.group === 'stone') {
+      // stone: two upright slabs meeting near the front middle and opening toward the back corners, a V in plan (Vega);
+      // hidden vDepth = the V's depth from the apex to the slab ends: a shallow V reaches out to the sides and shows
+      // both slab faces from the front (centred on the same z as the default V)
+      const t2 = 0.03;
+      const vDepth = typeof P.vDepth === 'number' && Number.isFinite(P.vDepth) ? clamp(P.vDepth, 0.05, Math.max(0.05, d - 2 * inset - 0.06)) : null;
+      const zc = -0.04;
+      const apex = [0, vDepth != null ? zc + vDepth / 2 : d / 2 - inset - 0.12];
+      for (const sx of [-1, 1]) {
+        const end = vDepth != null ? [sx * (w / 2 - inset - 0.04), zc - vDepth / 2] : [sx * (w / 2 - inset - 0.06), -(d / 2 - inset - 0.04)];
+        const len = Math.hypot(end[0] - apex[0], end[1] - apex[1]);
+        const ang = Math.atan2(end[1] - apex[1], end[0] - apex[0]);
+        add(tg, K.box(len, yUnder, t2, { grain: 'y' }), lm.box, 'legs', (apex[0] + end[0]) / 2, yUnder / 2, (apex[1] + end[1]) / 2, [0, -ang, 0]);
+      }
+    } else {
+      // a V of flat bars at each end, meeting on the floor, a rail across the top of each V and a spine
+      const bw = clamp(legD, 0.03, 0.08), bt = metal ? 0.012 : 0.03;
+      const fx = w / 2 - inset - bt / 2;
+      let zt = Math.max(0.05, d / 2 - 0.06);
+      // under a round or oval top the end rail stays inside the top's depth at its x
+      if (!corner) zt = Math.max(0.05, Math.min(zt, chordHalfZ(outline, fx) - 0.02 - bw / 2));
+      for (const sx of [-1, 1]) {
+        for (const sz of [-1, 1]) add(tg, barYZ(0, 0, sz * zt, yUnder - 0.03, bw, bt), lm.box, 'legs', sx * fx, 0, 0);
+        add(tg, K.box(bt, 0.03, 2 * zt + bw, { grain: 'z' }), lm.box, 'legs', sx * fx, yUnder - 0.015, 0);
+      }
+      add(tg, K.box(2 * fx, 0.03, 0.03, { grain: 'x' }), body, 'body', 0, yUnder - 0.015, 0);
+      if (shelfKind !== 'none') {
+        shelfOutline = roundRectPts(2 * fx - bt, 2 * zt * 0.5, 0.004, 2);
+        out.shelfY = clamp(num(P.shelfH, 0.12), yUnder * 0.55, yUnder - 0.06);
+      }
+    }
+  } else if (base === 'cross') {
+    // two full-height slabs crossing at right angles under the middle, an X in plan (Ritz), on a small plate under
+    // the top; hidden crossL = the length of each slab, legD = its thickness. Any material.
+    const sT = clamp(legD, 0.02, 0.08);
+    const plateT = 0.012;
+    const reach = Math.min(...[[1, 1], [-1, 1], [1, -1], [-1, -1]].map(([a, b]) => rayHit(outline, a * Math.SQRT1_2, b * Math.SQRT1_2) || Math.min(w, d) / 2));
+    const crossL = clamp(num(P.crossL, Math.min(w, d) * 0.6), 0.1, Math.max(0.1, 2 * (reach - 0.03)));
+    const sh = Math.max(0.01, yUnder - plateT);
+    for (const s of [-1, 1]) add(tg, K.box(crossL, sh, sT, { grain: 'y' }), lm.box, 'legs', 0, sh / 2, 0, [0, (s * Math.PI) / 4, 0]);
+    const pr = clamp(crossL * 0.22, 0.05, 0.16);
+    add(tg, K.cylinder(pr, pr, plateT, { seg: qSeg(spec, 24) }), body, 'body', 0, yUnder - plateT, 0);
+  } else if (base === 'spider') {
+    // legs from a hub under the middle out to the floor (Bastia, Ritz); hidden hubH puts the hub low on a column,
+    // the legs then splay from there (spider foot, Celma)
+    const hub = clamp(Math.min(w, d) * 0.12, 0.025, 0.12);
+    const yh = clamp(num(P.hubH, yUnder - 0.02), 0.06, yUnder - 0.02);
+    // feet on the diagonals, never leaning more than ≈ 38° (a long rectangular top would splay them flat)
+    const reach = hub + yh * Math.tan(38 * K.DEG);
+    const feet = legAnchors(CORNER_SHAPES.has(shape) ? 'oval' : shape, outline, w, d, legInset, legD, legCount).map((f) => {
+      const r = Math.hypot(f.x, f.z);
+      return r > reach ? { ...f, x: f.ux * reach, z: f.uz * reach } : f;
+    });
+    const hubR = yh < yUnder - 0.06 ? Math.max(0.012, legD) : hub;
+    for (const f of feet) {
+      const top = [f.ux * hubR, yh, f.uz * hubR];
+      if (legStyle === 'metal-thin' || legStyle === 'hairpin') {
+        const r = clamp(legD / 2, 0.005, 0.0125);
+        strut(tg, (len) => K.cylinder(r, r, len, { seg, center: true }), lm.round, 'legs', top, [f.x, 0, f.z], r / Math.SQRT2);
+      } else if (legStyle === 'round-taper') strut(tg, (len) => K.cylinder(legD / 2, legD * 0.35, len, { seg, center: true }), lm.round, 'legs', top, [f.x, 0, f.z], (legD * 0.35) / Math.SQRT2);
+      else {
+        const s = Math.max(legD, 0.03);
+        strut(tg, (len) => K.box(s, len, s, { grain: 'y' }), lm.box, 'legs', top, [f.x, 0, f.z], s / 2);
+      }
+    }
+    if (yh < yUnder - 0.06) {
+      // the column from the hub up to a plate under the top
+      const cr = clamp(legD * 0.6, 0.007, 0.04);
+      add(tg, K.cylinder(cr, cr, yUnder - yh, { seg }), lm.round, 'legs', 0, yh - 0.01, 0);
+      add(tg, K.cylinder(Math.max(cr * 1.6, 0.012), Math.max(cr * 1.6, 0.012), 0.025, { seg }), lm.round, 'legs', 0, yh - 0.02, 0);
+      add(tg, K.cylinder(cr * 3, cr * 3, 0.008, { seg: qSeg(spec, 24) }), body, 'body', 0, yUnder - 0.008, 0);
+    } else add(tg, K.cylinder(hub + 0.02, hub + 0.02, 0.03, { seg: qSeg(spec, 24) }), body, 'body', 0, yUnder - 0.03, 0);
+  } else if (base === 'cabinet') {
+    // storage under the top (konsollbord with a box, Nola with tambour doors): the cabinet builder as a child
+    const bi = clamp(num(P.baseInset, 0.04), 0, Math.min(w, d) / 2 - 0.1);
+    const cw = w - 2 * bi, cd = d - 2 * bi;
+    const legH = clamp(num(P.cabinetLegH, 0), 0, yUnder - 0.08);
+    const roundish = !CORNER_SHAPES.has(shape);
+    const cab = buildCabinet({
+      dims: { w: cw, d: cd, h: yUnder },
+      params: {
+        fronts: Array.isArray(P.fronts) && P.fronts.length ? P.fronts : ['open'], frontStyle: P.frontStyle, slidingDoors: P.slidingDoors === true,
+        ribPitch: P.ribPitch, base: legH > 0.005 ? 'legs' : 'none', legH, legMaxFrac: 0.95, legStyle: P.cabinetLegStyle ?? 'metal-thin',
+        handle: P.handle, top: 'same', corners: shape === 'rect' ? 'square' : 'rounded', cornerR: roundish ? cd / 2 : cornerR,
+      },
+      colors: spec.colors, materials: spec.materials, quality: spec.quality,
+    }, 'coffee-table');
+    tg.add(cab);
+    complex = true;
+  }
+  if (shelfOutline && shelfKind !== 'none') {
+    const s = shelfInto(tg, spec, shelfKind, shelfOutline, out.shelfY, body);
+    if (s) out.surfaces.push({ ...s, y: +s.y.toFixed(4), center: [+t.dx.toFixed(3), +t.dz.toFixed(3)] });
+  }
+  out.shelfY = undefined;
+  return { complex };
+}
+
+function buildCoffeeTable(spec) {
+  const { w, d, h } = spec.dims;
+  const P = spec.params;
+  const g = new THREE.Group();
+  const shape = CT_SHAPES.includes(P.shape) ? P.shape : 'rect';
+  const out = { surfaces: [] };
+  const tables = [{ w, d, h, dx: 0, dz: 0, shape }];
+  // a set (settbord, Dråpe): extra tables in the same style, dims and offsets in metres from the main table's centre,
+  // measured on a main table of params.setRef { w, d, h } (the product's dims): a resized set scales with its main
+  // table. Without setRef they stay as given.
+  if (Array.isArray(P.set)) {
+    const ref = P.setRef && typeof P.setRef === 'object' ? P.setRef : {};
+    const k = (r, v) => (num(r, 0) > 0 ? v / r : 1);
+    const kx = k(ref.w, w), kz = k(ref.d, d), ky = k(ref.h, h);
+    const sc = (v, f, fb) => (typeof v === 'number' && Number.isFinite(v) ? v * f : fb);
+    const { topT, trayH } = ctTopStack(P, h);
+    for (const s of P.set.slice(0, 4)) {
+      if (!s || typeof s !== 'object') continue;
+      const t = {
+        w: clamp(sc(s.w, kx, w * 0.8), 0.2, 2), d: clamp(sc(s.d, kz, d * 0.8), 0.2, 1.3), h: clamp(sc(s.h, ky, h * 0.85), 0.2, 0.85),
+        dx: clamp(sc(s.dx, kx, 0), -2, 2), dz: clamp(sc(s.dz, kz, 0), -2, 2), shape: CT_SHAPES.includes(s.shape) ? s.shape : shape,
+        seed: s.seed, dent: s.dent, dentAt: s.dentAt,
+      };
+      // a set table that stands partly under the main one (nested) stays a cm under the main top's underside
+      if (Math.abs(t.dx) < (w + t.w) / 2 && Math.abs(t.dz) < (d + t.d) / 2) t.h = Math.min(t.h, Math.max(0.12, h - trayH - topT - 0.01));
+      tables.push(t);
+    }
+  }
+  let complex = false;
+  for (const t of tables) {
+    const tg = new THREE.Group();
+    tg.position.set(t.dx, 0, t.dz);
+    g.add(tg);
+    complex = coffeeTableInto(tg, spec, t, out).complex || complex;
+  }
+  const colliders = tables.length > 1 ? tables.map((t) => ({ min: [t.dx - t.w / 2, 0, t.dz - t.d / 2], max: [t.dx + t.w / 2, t.h, t.dz + t.d / 2] })) : undefined;
+  const legKind = spec.materials?.legs || 'oak';
+  const handleKind = spec.materials?.handle || 'black-metal';
+  const bevel = P.edge === 'bevel';
+  const rc = recolorer(g, (part, kind) =>
+    (part === 'top' && bevel) || (part === 'front' && complex) || (part === 'body' && complex && P.base === 'cabinet') ||
+    (part === 'legs' && !!kind && kindGroup(kind) !== kindGroup(legKind)) || (part === 'handle' && !!kind && kindGroup(kind) !== kindGroup(handleKind)));
+  g.name = 'coffee-table';
+  return K.finishModel(g, { surfaces: out.surfaces, colliders, recolor: rc });
+}
+
+// ---------------------------------------------------------------------------------------------------------------
 // Sideboards and TV benches
 
 /** Parses a front column code: 'door' | 'glass' | 'open' | 'drawer' | 'drawersN'. */
@@ -918,6 +1678,42 @@ function handleSide(i, n) {
   return i < c ? 1 : -1;
 }
 
+/**
+ * Herringbone (chevron) veneer face, dw × dh in the x–y plane facing +z, centred: tiles at ±45° with alternating
+ * grain, fine joints (cabinet fronts, desk tops).
+ */
+export function herringboneGeometry(dw, dh) {
+  const B = new GeoBuilder();
+  const nc = Math.max(1, Math.round(dw / 0.2));
+  const cw = dw / nc;
+  const plank = 0.055;
+  const per = plank * Math.SQRT2;
+  const jg = 0.0012;
+  const yMin = -dh / 2, yMax = dh / 2;
+  for (let c = 0; c < nc; c++) {
+    const cx = -dw / 2 + (c + 0.5) * cw;
+    for (const half of [-1, 1]) {
+      const ua = half < 0 ? -cw / 2 : jg / 2, ub = half < 0 ? -jg / 2 : cw / 2;
+      // strips s = y − half·u ∈ [k·per, (k+1)·per − jg]
+      const sMin = yMin - cw, sMax = yMax + cw;
+      for (let k = Math.floor(sMin / per); k * per < sMax; k++) {
+        const s0 = k * per + jg / 2, s1 = (k + 1) * per - jg / 2;
+        let pts = [
+          new THREE.Vector2(ua, s0 + half * ua), new THREE.Vector2(ub, s0 + half * ub),
+          new THREE.Vector2(ub, s1 + half * ub), new THREE.Vector2(ua, s1 + half * ua),
+        ];
+        pts = clipHalf(pts, 'y', yMin + jg, true);
+        if (pts.length >= 3) pts = clipHalf(pts, 'y', yMax - jg, false);
+        if (pts.length < 3) continue;
+        const dir = new THREE.Vector2(1, half).normalize();
+        const off = (c * 7.31 + k * 3.17 + (half > 0 ? 1.9 : 0)) % 5;
+        B.poly(pts.map((p) => [cx + p.x, p.y, 0]), [0, 0, 1], (q) => [(q[0] - cx) * dir.x + q[1] * dir.y + off, -(q[0] - cx) * dir.y + q[1] * dir.x]);
+      }
+    }
+  }
+  return B.build();
+}
+
 export function buildCabinet(spec, arch) {
   const { w, d, h } = spec.dims;
   const P = spec.params;
@@ -930,13 +1726,15 @@ export function buildCabinet(spec, arch) {
   const wall = base === 'wall';
   const lift = wall ? clamp(num(P.mountHeight, 0.3), 0, 2) : 0;
   const toFloor = !!P.roundedEndsToFloor && !wall;
-  const legH = wall || base === 'none' ? 0 : clamp(num(P.legH, 0.15), 0, h * 0.6);
+  const legH = wall || base === 'none' ? 0 : clamp(num(P.legH, 0.15), 0, h * clamp(num(P.legMaxFrac, 0.6), 0.6, 0.95));
   const yb = lift + legH;
   const yt = lift + h;
   const frontKind = M.front || 'oak';
   let style = P.frontStyle || 'flat';
   if (frontKind === 'rattan') style = 'cane';
   else if (isTransparentKind(frontKind)) style = 'glass';
+  // a textile front material means speaker-cloth fronts (TV-benk Vision), the way rattan means cane
+  else if (kindGroup(frontKind) === 'fabric') style = 'fabric';
   if (style === 'cane' && frontKind !== 'rattan' && !['wood', 'other'].includes(kindGroup(frontKind))) style = 'flat';
   const herring = P.frontPattern === 'herringbone' && (style === 'flat' || style === 'ribbed');
   if (herring) style = 'flat';
@@ -1008,7 +1806,10 @@ export function buildCabinet(spec, arch) {
   const eg = fit === 'inset' ? 0.0025 : 0.001;
   const drawerRow = clamp(Math.round(num(P.drawerRow, 0)), 0, 6);
   const openH = yo1 - yo0;
-  const bandH = drawerRow ? clamp(num(P.drawerH, openH * 0.24), 0.08, openH * 0.45) : 0;
+  // the band may not swallow the columns: 45 % of the opening, 75 % when the columns are open niches (a short niche
+  // over a tall drawer or door: SKAVE, RÅDMANSÖ, BESTÅ)
+  const capFrac = cells.every((c) => c.kind === 'open') ? 0.75 : 0.45;
+  const bandH = drawerRow ? clamp(num(P.drawerH, openH * 0.24), 0.08, openH * capFrac) : 0;
   const rowBottom = drawerRow > 0 && P.drawerRowPos === 'bottom';
   const yCols0 = rowBottom ? yo0 + bandH : yo0;
   const yCols1 = rowBottom ? yo1 : yo1 - bandH;
@@ -1019,6 +1820,8 @@ export function buildCabinet(spec, arch) {
   const doorCount = cells.filter((c) => c.kind === 'door' || c.kind === 'glass').length;
   let doorIdx = 0;
   const complexFront = style !== 'flat' || herring || handle === 'cutout' || cells.some((c) => c.mirror) || P.doorFrame === 'alu';
+  // speaker cloth goes on the doors; the drawers next to them are plain wood (Vision)
+  const clothOnDoors = style === 'fabric' && (cells.some((c) => c.kind === 'door' && !c.mirror) || (drawerRow > 0 && P.drawerRowDoors === true));
 
   /** Interior behind a closed cell (dark) – or a lined niche (body) for open/glass cells. */
   const interior = (x0, x1, y0, y1, lined, i) => {
@@ -1085,38 +1888,8 @@ export function buildCabinet(spec, arch) {
     }
   };
 
-  /** Herringbone (chevron) veneer face for a front: tiles at ±45° with alternating grain, fine joints. */
-  const herringboneFace = (dw, dh) => {
-    const B = new GeoBuilder();
-    const nc = Math.max(1, Math.round(dw / 0.2));
-    const cw = dw / nc;
-    const plank = 0.055;
-    const per = plank * Math.SQRT2;
-    const jg = 0.0012;
-    const yMin = -dh / 2, yMax = dh / 2;
-    for (let c = 0; c < nc; c++) {
-      const cx = -dw / 2 + (c + 0.5) * cw;
-      for (const half of [-1, 1]) {
-        const ua = half < 0 ? -cw / 2 : jg / 2, ub = half < 0 ? -jg / 2 : cw / 2;
-        // strips s = y − half·u ∈ [k·per, (k+1)·per − jg]
-        const sMin = yMin - cw, sMax = yMax + cw;
-        for (let k = Math.floor(sMin / per); k * per < sMax; k++) {
-          const s0 = k * per + jg / 2, s1 = (k + 1) * per - jg / 2;
-          let pts = [
-            new THREE.Vector2(ua, s0 + half * ua), new THREE.Vector2(ub, s0 + half * ub),
-            new THREE.Vector2(ub, s1 + half * ub), new THREE.Vector2(ua, s1 + half * ua),
-          ];
-          pts = clipHalf(pts, 'y', yMin + jg, true);
-          if (pts.length >= 3) pts = clipHalf(pts, 'y', yMax - jg, false);
-          if (pts.length < 3) continue;
-          const dir = new THREE.Vector2(1, half).normalize();
-          const off = (c * 7.31 + k * 3.17 + (half > 0 ? 1.9 : 0)) % 5;
-          B.poly(pts.map((p) => [cx + p.x, p.y, 0]), [0, 0, 1], (q) => [(q[0] - cx) * dir.x + q[1] * dir.y + off, -(q[0] - cx) * dir.y + q[1] * dir.x]);
-        }
-      }
-    }
-    return B.build();
-  };
+  /** Herringbone (chevron) veneer face for a front (herringboneGeometry). */
+  const herringboneFace = herringboneGeometry;
 
   /** One front (door or drawer) in the rect x0..x1 × y0..y1. */
   const addFront = (x0, x1, y0, y1, { side = 1, drawer = false, glass = false, track = 0, mirror = false, flip = false }) => {
@@ -1126,8 +1899,13 @@ export function buildCabinet(spec, arch) {
     const zFace = zf - track * (P.doorFrame === 'alu' ? 0.026 : 0.014);
     const zBack = zFace - fT;
     const grain = drawer && style === 'flat' ? 'x' : 'y';
-    let st = glass ? 'glass' : drawer && (style === 'glass' || style === 'cane') ? 'flat' : style;
+    // glass drawers get plain fronts, and so do drawers beside a cloth door (the cloth is the door's); cane only on
+    // shallow drawers (deep ones keep the framed cane panel, Shimoda)
+    let st = glass ? 'glass' : drawer && (style === 'glass' || (style === 'fabric' && clothOnDoors) || (style === 'cane' && dh < 0.12)) ? 'flat' : style;
     if (mirror) st = 'mirror';
+    // a plain drawer under speaker cloth is the carcass wood (Vision: oak drawers beside a cloth door)
+    const asBody = drawer && style === 'fabric' && st === 'flat';
+    const fm = asBody ? body : front, fp = asBody ? 'body' : 'front';
     if (P.slidingDoors && P.doorFrame === 'alu' && !drawer) {
       // sliding door in a slim aluminium frame (handle part), divided into horizontal panels by thin rails
       const fw = 0.022;
@@ -1160,10 +1938,25 @@ export function buildCabinet(spec, arch) {
       const backT = 0.006;
       add(g, K.box(dw, dh, backT), mat(frontKind, tone(C.front, 0.3)), 'front', cx, cy, zBack + backT / 2);
       const gapS = 0.008;
-      const n = Math.max(1, Math.round((dw + gapS) / (0.028 + gapS)));
-      const sw = (dw - gapS * (n - 1)) / n;
       const sd = fT - backT;
-      for (let k = 0; k < n; k++) add(g, K.box(sw, dh, sd, { grain: 'y' }), front, 'front', x0 + sw / 2 + k * (sw + gapS), cy, zFace - sd / 2);
+      if (P.slatDir === 'h') {
+        // horizontal slats stacked up the front (Linley)
+        const n = Math.max(1, Math.round((dh + gapS) / (0.028 + gapS)));
+        const sh = (dh - gapS * (n - 1)) / n;
+        for (let k = 0; k < n; k++) add(g, K.box(dw, sh, sd, { grain: 'x' }), front, 'front', cx, y0 + sh / 2 + k * (sh + gapS), zFace - sd / 2);
+      } else {
+        const n = Math.max(1, Math.round((dw + gapS) / (0.028 + gapS)));
+        const sw = (dw - gapS * (n - 1)) / n;
+        for (let k = 0; k < n; k++) add(g, K.box(sw, dh, sd, { grain: 'y' }), front, 'front', x0 + sw / 2 + k * (sw + gapS), cy, zFace - sd / 2);
+      }
+    } else if (st === 'fabric') {
+      // a body-coloured frame round an inset textile panel (høyttalerduk); a non-textile front kind gets woven cloth
+      const fw = Math.min(0.02, Math.min(dw, dh) * 0.2);
+      for (const s of [-1, 1]) add(g, K.box(fw, dh, fT, { grain: 'y' }), body, 'body', s > 0 ? x1 - fw / 2 : x0 + fw / 2, cy, zFace - fT / 2);
+      for (const s of [-1, 1]) add(g, K.box(dw - 2 * fw, fw, fT, { grain: 'x' }), body, 'body', cx, s > 0 ? y1 - fw / 2 : y0 + fw / 2, zFace - fT / 2);
+      const cloth = kindGroup(frontKind) === 'fabric' ? front : mat('woven', C.front);
+      const pt = fT - 0.006;
+      add(g, K.box(dw - 2 * fw + 0.004, dh - 2 * fw + 0.004, pt), cloth, 'front', cx, cy, zBack + pt / 2);
     } else if (st === 'cane' || st === 'glass' || st === 'framed') {
       const fw = st === 'framed' ? clamp(Math.min(dw, dh) * 0.14, 0.045, 0.075) : clamp(Math.min(dw, dh) * 0.12, 0.035, 0.05);
       let frameMat = front;
@@ -1175,11 +1968,14 @@ export function buildCabinet(spec, arch) {
       const iw = dw - 2 * fw + 0.008, ih = dh - 2 * fw + 0.008;
       if (st === 'framed') {
         const pt = fT - 0.008;
-        add(g, K.box(iw, ih, pt, { grain: 'y' }), front, 'front', cx, cy, zBack + pt / 2);
+        // the recessed panel a shade darker and the bead darker still, so the frame reads in light paint too (Sandnes)
+        const panelM = C.front ? mat(frontKind, tone(C.front, 0.93)) : front;
+        const beadM = C.front ? mat(frontKind, tone(C.front, 0.8)) : front;
+        add(g, K.box(iw, ih, pt, { grain: 'y' }), panelM, 'front', cx, cy, zBack + pt / 2);
         // a thin bevelled bead round the panel
         const bead = 0.006;
-        for (const s of [-1, 1]) add(g, K.box(bead, ih - 0.008, 0.004, { grain: 'y' }), front, 'front', cx + s * (iw / 2 - 0.004 - bead / 2), cy, zBack + pt + 0.002);
-        for (const s of [-1, 1]) add(g, K.box(iw - 0.008, bead, 0.004, { grain: 'x' }), front, 'front', cx, cy + s * (ih / 2 - 0.004 - bead / 2), zBack + pt + 0.002);
+        for (const s of [-1, 1]) add(g, K.box(bead, ih - 0.008, 0.004, { grain: 'y' }), beadM, 'front', cx + s * (iw / 2 - 0.004 - bead / 2), cy, zBack + pt + 0.002);
+        for (const s of [-1, 1]) add(g, K.box(iw - 0.008, bead, 0.004, { grain: 'x' }), beadM, 'front', cx, cy + s * (ih / 2 - 0.004 - bead / 2), zBack + pt + 0.002);
       } else if (st === 'cane') {
         add(g, K.box(iw, ih, 0.003), mat('rattan', frontKind === 'rattan' ? C.front : tone(C.front, 1.15), { open: true }), 'front', cx, cy, zFace - fT * 0.55);
       } else {
@@ -1190,10 +1986,15 @@ export function buildCabinet(spec, arch) {
       }
     } else if (P.gripRecess === 'top' && drawer) {
       // a recessed grip channel above the front: the front is lower, a dark channel shows behind its top edge
+      // the channel is a shaded tone of the grip profile's (handle) colour: light grey on Next, body-toned on MALM types.
+      // A handle colour that is just the front's (Bakhuse: no profile, an open grip gap) keeps the dark gap
       const gh = Math.min(0.022, dh * 0.25);
-      add(g, K.roundedBox(dw, dh - gh, fT, 0.0012, 1, { grain }), front, 'front', cx, cy - gh / 2, zBack + fT / 2);
-      add(g, K.box(dw, gh, 0.004), darkInside(), null, cx, y1 - gh / 2, zBack - 0.012);
-      add(g, K.box(dw, 0.003, fT * 0.7), front, 'front', cx, y1 - gh + 0.0015, zBack + fT * 0.35);
+      const profile = typeof C.handle === 'string' && C.handle.toLowerCase() !== String(C.front || '').toLowerCase();
+      const channel = profile ? mat(handleKind, tone(C.handle, 0.75)) : darkInside();
+      add(g, K.roundedBox(dw, dh - gh, fT, 0.0012, 1, { grain }), fm, fp, cx, cy - gh / 2, zBack + fT / 2);
+      // a coloured profile sits close behind the face (it reads as a light strip, Next); the dark gap stays deep
+      add(g, K.box(dw, gh, 0.004), channel, null, cx, y1 - gh / 2, profile ? zBack + 0.004 : zBack - 0.012);
+      add(g, K.box(dw, 0.003, fT * 0.7), fm, fp, cx, y1 - gh + 0.0015, zBack + fT * 0.35);
     } else if (handle === 'cutout' && !drawer && dh > 0.7) {
       // a vertical finger slot near the opening edge of a tall door (PAX/TONSTAD style)
       add(g, K.roundedBox(dw, dh, fT, 0.0012, 1, { grain }), front, 'front', cx, cy, zBack + fT / 2);
@@ -1214,13 +2015,13 @@ export function buildCabinet(spec, arch) {
       pts.push([-dw / 2, dh / 2]);
       const geo = K.extrudeShape(pts, fT, { bevel: 0.001, bevelSegments: 1 });
       K.worldUV(geo, 1, { grain });
-      add(g, geo, front, 'front', cx, cy, zBack);
+      add(g, geo, fm, fp, cx, cy, zBack);
       add(g, K.box(nw + 0.02, nd + 0.012, 0.004), handleMat, 'handle', cx + nx, y1 - nd / 2 - 0.002, zBack - 0.0025);
     } else if (herring) {
       add(g, K.box(dw, dh, fT - 0.0008), mat(frontKind, tone(C.front, 0.5)), 'front', cx, cy, zBack + (fT - 0.0008) / 2);
       add(g, herringboneFace(dw, dh), front, 'front', cx, cy, zFace - 0.0002);
     } else {
-      add(g, K.roundedBox(dw, dh, fT, 0.0012, 1, { grain }), front, 'front', cx, cy, zBack + fT / 2);
+      add(g, K.roundedBox(dw, dh, fT, 0.0012, 1, { grain }), fm, fp, cx, cy, zBack + fT / 2);
     }
     if (!(P.gripRecess === 'top' && drawer)) addHandle(x0, x1, y0, y1, side, drawer, zFace, flip);
   };
@@ -1249,7 +2050,9 @@ export function buildCabinet(spec, arch) {
         y0 += hh + gap;
       }
     } else {
-      const side = handleSide(doorIdx, doorCount);
+      // knobs on sliding doors sit at each door's outer edge (HAVSTA); bar pulls and grips of sliding doors stay where
+      // hinged pairs have them, meeting in the middle (Nola's tambour doors, TONSTAD)
+      const side = P.slidingDoors && handle === 'knob' ? -handleSide(doorIdx, doorCount) : handleSide(doorIdx, doorCount);
       const track = P.slidingDoors && doorIdx % 2 === 1 ? 1 : 0;
       doorIdx++;
       // a door in the back track runs behind its neighbours (no open gap between sliding doors)
@@ -1265,9 +2068,18 @@ export function buildCabinet(spec, arch) {
     }
   });
   // drawer row on top
+  let bandShelf = false;
   if (drawerRow) {
     const ry0 = rowBottom ? yo0 : yCols1, ry1 = rowBottom ? yCols0 : yo1;
     interior(xo0, xo1, ry0, ry1, false, 0);
+    // open or glass columns next to the band: a body-coloured shelf is their floor (bottom row) or ceiling (top row)
+    // instead of the dark drawer box behind the fronts (IDANÄS, BESTÅ, Madrid). A near-black carcass cannot be told
+    // from that dark box, so it gets none (the house's own black nightstand stays as it was)
+    bandShelf = fit === 'inset' && (style === 'glass' || cells.some((c) => c.kind === 'open' || c.kind === 'glass'));
+    if (bandShelf && !nearBlack(C.body)) {
+      const zb = -d / 2 + 0.012, ze = zf - fT - 0.0015;
+      add(g, K.box(openW, gT, ze - zb, { grain: 'x' }), body, 'body', 0, rowBottom ? yCols0 - gT / 2 : yCols1 + gT / 2, (zb + ze) / 2);
+    }
     const dw = (openW - 2 * eg - gap * (drawerRow - 1)) / drawerRow;
     for (let k = 0; k < drawerRow; k++) {
       const x0 = xo0 + eg + k * (dw + gap);
@@ -1339,6 +2151,13 @@ export function buildCabinet(spec, arch) {
           add(g, splayedLeg(x, yb + 0.002, z, 0.019, 0.012, sx * tilt, sz * tilt * 0.7, qSeg(spec, 14)), legsRound, 'legs');
         }
       }
+    } else if (legStyle === 'block' && P.squareFeet === true) {
+      // hidden squareFeet: square posts flush under the corners, the carcass's corner posts carried to the floor
+      // (Shimoda, the Madrid desk's drawer unit)
+      const s = clamp(Math.min(w, d) * 0.09, 0.03, 0.05);
+      for (const [sx, sz] of spots) {
+        add(g, K.box(s, yb + 0.001, s, { grain: 'y' }), legsMat, 'legs', sx * (w / 2 - s / 2 - 0.002), yb / 2, sz * (d / 2 - s / 2 - 0.002));
+      }
     } else if (legStyle === 'block') {
       for (const [sx, sz] of spots) {
         const x = sx * (w / 2 - ix), z = sz * (d / 2 - iz);
@@ -1380,11 +2199,13 @@ export function buildCabinet(spec, arch) {
   const colliders = wall ? [{ min: [-w / 2, lift, -d / 2], max: [w / 2, yt, d / 2] }] : undefined;
   const builtStyle = style;
   const rc = recolorer(g, (part, kind) => {
-    if (part === 'front') return complexFront || (kind && kind !== frontKind) || builtStyle === 'cane' || builtStyle === 'grooved';
-    if (part === 'handle') return kind && kindGroup(kind) !== kindGroup(handleKind);
+    // the grip channel is a tone of the handle colour, or the dark gap while the handle colour is the front's
+    if (part === 'front') return complexFront || (kind && kind !== frontKind) || builtStyle === 'cane' || builtStyle === 'grooved' || P.gripRecess === 'top';
+    if (part === 'handle') return P.gripRecess === 'top' || (kind && kindGroup(kind) !== kindGroup(handleKind));
     if (part === 'legs') return kind && kindGroup(kind) !== kindGroup(legKind);
     if (part === 'top') return kind && STONE.has(kind) !== STONE.has(M.top);
-    if (part === 'body') return builtStyle === 'glass';
+    // the band's shelf comes and goes with a near-black body
+    if (part === 'body') return builtStyle === 'glass' || bandShelf;
     return false;
   });
   g.name = arch;
@@ -1411,15 +2232,49 @@ function buildWallShelf(spec) {
   const top = pm(spec, 'top', 'black-metal');
   const surfaces = [];
   const y0 = -h / 2;
+  if (P.style === 'box') {
+    // wall unit of boxes (Bohus Tamara): an outer frame of 18 mm boards and a grid of dividers, open in front
+    const T = Math.min(0.018, w / 8, h / 8);
+    const cols = clamp(Math.round(num(P.cols, 3)), 1, 6);
+    const rows = clamp(Math.round(num(P.rows, 2)), 1, 5);
+    const zc = d / 2;
+    add(g, K.box(w, T, d, { grain: 'x' }), top, 'top', 0, h / 2 - T / 2, zc);
+    add(g, K.box(w, T, d, { grain: 'x' }), body, 'body', 0, y0 + T / 2, zc);
+    for (const sx of [-1, 1]) add(g, K.box(T, h - 2 * T, d, { grain: 'y' }), body, 'body', sx * (w / 2 - T / 2), 0, zc);
+    const iw = w - 2 * T, ih = h - 2 * T;
+    const cw = (iw - (cols - 1) * T) / cols, ch = (ih - (rows - 1) * T) / rows;
+    for (let c = 1; c < cols; c++) add(g, K.box(T, ih, d - 0.002, { grain: 'y' }), body, 'body', -iw / 2 + c * (cw + T) - T / 2, 0, zc - 0.001);
+    for (let r = 1; r < rows; r++) add(g, K.box(iw, T, d - 0.004, { grain: 'x' }), body, 'body', 0, y0 + T + r * (ch + T) - T / 2, zc - 0.002);
+    if (P.backPanel === true) add(g, K.box(iw, ih, 0.006, { grain: 'x' }), body, 'body', 0, 0, 0.003);
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const y = y0 + T + r * (ch + T);
+        surfaces.push({ y: +y.toFixed(4), w: +(cw - 0.01).toFixed(3), d: +(d - 0.02).toFixed(3), center: [+(-iw / 2 + c * (cw + T) + cw / 2).toFixed(3), +(zc + 0.005).toFixed(3)] });
+      }
+    }
+    surfaces.push({ y: +(h / 2).toFixed(4), w: +(w - 0.02).toFixed(3), d: +(d - 0.02).toFixed(3), center: [0, +zc.toFixed(3)] });
+    const rc = recolorer(g);
+    return K.finishModel(g, { surfaces, recolor: rc });
+  }
   if (P.style === 'simple') {
     const n = clamp(Math.round(num(P.shelves, 3)), 1, 8);
     const bt = clamp(num(P.topT, 0.025), 0.01, 0.06);
     const mounts = ['straps', 'battens', 'brackets'].includes(P.brackets) ? P.brackets : 'none';
     const bd = clamp(num(P.boardDepth, d), 0.05, d);
-    // straps hang from above, so a single strap shelf sits at the bottom of its box
-    const ys = Array.from({ length: n }, (_, i) => (n === 1 ? (mounts === 'straps' ? y0 : -bt / 2) : y0 + (i * (h - bt)) / (n - 1)));
+    // straps hang from above, so a single strap shelf sits at the bottom of its box; a single board on brackets sits
+    // at the top, its brackets filling dims.h below it (hat shelves, BERGSHULT)
+    const oneOnBrackets = n === 1 && mounts === 'brackets';
+    const ys = Array.from({ length: n }, (_, i) => (n === 1 ? (mounts === 'straps' ? y0 : oneOnBrackets ? h / 2 - bt : -bt / 2) : y0 + (i * (h - bt)) / (n - 1)));
+    // hidden rails: the board is n round steel tubes instead (Stord hat shelf)
+    const rails = clamp(Math.round(num(P.rails, 0)), 0, 8);
     for (const y of ys) {
-      add(g, K.roundedBox(w, bt, bd, 0.002, 1, { grain: 'x' }), top, 'top', 0, y + bt / 2, bd / 2);
+      if (rails >= 2) {
+        const rr = 0.008;
+        for (let k = 0; k < rails; k++) {
+          const z = rr + 0.012 + (k * (bd - 2 * rr - 0.024)) / (rails - 1);
+          add(g, K.cylinder(rr, rr, w, { seg: qSeg(spec, 10), center: true }), top, 'top', 0, y + bt - rr, z, [0, 0, Math.PI / 2]);
+        }
+      } else add(g, K.roundedBox(w, bt, bd, 0.002, 1, { grain: 'x' }), top, 'top', 0, y + bt / 2, bd / 2);
       surfaces.push({ y: +(y + bt).toFixed(4), w, d: bd, center: [0, bd / 2] });
     }
     const ix = w / 2 - Math.min(0.08, w * 0.12);
@@ -1432,13 +2287,48 @@ function buildWallShelf(spec) {
         add(g, K.cylinder(0.008, 0.008, 0.006, { seg: 10, center: true }), mat('brass', '#b08d57'), null, sx * ix, h / 2 - 0.015, 0.006, [Math.PI / 2, 0, 0]);
       }
     } else if (mounts === 'battens') {
-      // wooden battens, or thin rods for a metal frame (rising a little above the top board)
+      // wooden battens, or thin rods for a metal frame (rising a little above the top board); hidden battenCount
+      // spreads 2–5 of them evenly (Tamara 137 hangs on three)
       const rod = kindGroup(spec.materials?.body || 'oak') === 'metal';
-      for (const sx of [-1, 1]) add(g, K.roundedBox(rod ? 0.012 : 0.035, h, rod ? 0.012 : 0.02, rod ? 0.005 : 0.003, 1, { grain: 'y' }), body, 'body', sx * ix, 0, rod ? 0.02 : 0.01);
+      const nB = clamp(Math.round(num(P.battenCount, 2)), 2, 5);
+      for (let k = 0; k < nB; k++) add(g, K.roundedBox(rod ? 0.012 : 0.035, h, rod ? 0.012 : 0.02, rod ? 0.005 : 0.003, 1, { grain: 'y' }), body, 'body', -ix + (2 * ix * k) / (nB - 1), 0, rod ? 0.02 : 0.01);
     } else if (mounts === 'brackets') {
+      const bh = oneOnBrackets ? clamp(h - bt, 0.08, h) : 0.08;
+      const woodB = kindGroup(spec.materials?.body || 'black-metal') === 'wood';
+      // a part of the bracket between two (z, y) points in the bracket's plane: a box of width t (x) and depth s
+      const brace = (x, [za, ya], [zb, yb2], t, s) => {
+        const L = Math.hypot(zb - za, yb2 - ya);
+        add(g, K.box(t, L, s, { grain: 'y' }), body, 'body', x, (ya + yb2) / 2, (za + zb) / 2, [Math.atan2(zb - za, yb2 - ya), 0, 0]);
+      };
       for (const y of ys) for (const sx of [-1, 1]) {
-        add(g, K.box(0.004, 0.08, 0.004), body, 'body', sx * ix, y - 0.04, 0.002);
-        add(g, K.box(0.004, 0.004, bd * 0.7), body, 'body', sx * ix, y - 0.002, bd * 0.35);
+        const x = sx * ix;
+        if (woodB) {
+          // solid knee bracket (SANDSHULT): an upright against the wall, an arm under the board, a diagonal strut
+          const t = 0.022, al = bd * 0.85;
+          add(g, K.box(t, bh, 0.03, { grain: 'y' }), body, 'body', x, y - bh / 2, 0.015);
+          add(g, K.box(t, 0.03, al, { grain: 'z' }), body, 'body', x, y - 0.015, al / 2);
+          brace(x, [0.02, y - bh * 0.78], [al * 0.78, y - 0.02], t, 0.026);
+        } else {
+          // bent flat-bar bracket (Stord): a bar on the wall, an arm under the shelf and a diagonal from the wall
+          // bar's foot to the arm's front end, which turns up into a short lip
+          const t = 0.006, s = 0.022, al = bd * 0.94;
+          add(g, K.box(t, bh, s, { grain: 'y' }), body, 'body', x, y - bh / 2, s / 2);
+          add(g, K.box(t, s, al, { grain: 'z' }), body, 'body', x, y - s / 2, al / 2);
+          brace(x, [s * 0.6, y - bh + s * 0.6], [al - s * 0.4, y - s * 0.6], t, s * 0.9);
+          if (rails >= 2) add(g, K.box(t, 0.035, s * 0.8, { grain: 'y' }), body, 'body', x, y + 0.006, al - s * 0.4);
+        }
+      }
+      // hidden hooks: a strip between the brackets low on the wall with n pegs (Stord's coat hooks under the shelf)
+      const nH = clamp(Math.round(num(P.hooks, 0)), 0, 10);
+      if (nH > 0 && oneOnBrackets) {
+        const hy = ys[0] - bh + 0.02;
+        add(g, K.box(2 * ix, 0.02, 0.006, { grain: 'x' }), body, 'body', 0, hy, 0.014);
+        for (let k = 0; k < nH; k++) {
+          const hx = -ix + (2 * ix * (k + 0.5)) / nH;
+          const tilt = 18 * K.DEG;
+          add(g, K.cylinder(0.005, 0.005, 0.06, { seg: qSeg(spec, 8), center: true }), body, 'body', hx, hy + 0.03 * Math.sin(tilt), 0.017 + 0.03 * Math.cos(tilt), [Math.PI / 2 - tilt, 0, 0]);
+          add(g, K.sphere(0.009, { wSeg: qSeg(spec, 10), hSeg: 6 }), body, 'body', hx, hy + 0.06 * Math.sin(tilt), 0.017 + 0.06 * Math.cos(tilt));
+        }
       }
     }
     const rc = recolorer(g);
@@ -2176,6 +3066,9 @@ function buildDisplayCabinet(spec) {
       } else {
         put(K.box(iw + 0.006, ih + 0.006, 0.004), paneMat, null, cx, icy, zMid);
       }
+      // hidden glassBars: horizontal glazing bars across the pane (Wolin 1, Madrid 2)
+      const nBars = clamp(Math.round(num(P.glassBars, 0)), 0, 6);
+      for (let k = 1; k <= nBars; k++) put(K.box(iw, Math.max(0.008, fwv * 0.6), fT * 0.7, { grain: 'x' }), front, 'front', cx, icy - ih / 2 + (k * ih) / (nBars + 1), zMid + fT * 0.1);
       // glazing bead: a thin moulding on the inner edge of a wooden frame, a little behind its face
       if (!frontMetal && fwv >= 0.025) {
         const bd = 0.006, bz = zf - 0.0055 - 0.0035;
@@ -2239,8 +3132,14 @@ function buildDisplayCabinet(spec) {
       for (const sz of [-1, 1]) put(K.box(2 * fx + s, s, s, { grain: 'x' }), legsMat, 'legs', 0, yb - s / 2, sz * fzz);
       for (const sx of [-1, 1]) put(K.box(s, s, 2 * fzz - s, { grain: 'z' }), legsMat, 'legs', sx * fx, yb - s / 2, 0);
       for (const sx of [-1, 1]) for (const sz of [-1, 1]) put(K.box(s, yb - lift - s, s, { grain: 'y' }), legsMat, 'legs', sx * fx, lift + (yb - lift - s) / 2, sz * fzz);
-      for (const sx of [-1, 1]) put(K.box(s, s, 2 * fzz - s, { grain: 'z' }), legsMat, 'legs', sx * fx, lift + s / 2, 0);
-      put(K.box(2 * fx - s, s, s, { grain: 'x' }), legsMat, 'legs', 0, lift + s / 2, -fzz);
+      if (P.legCross === true) {
+        // hidden legCross: two diagonal stretchers crossing corner to corner low between the legs (FABRIKÖR)
+        const L = Math.hypot(2 * fx, 2 * fzz) - s;
+        for (const sg of [-1, 1]) put(K.box(s, s, L, { grain: 'z' }), legsMat, 'legs', 0, lift + 0.08 + (sg > 0 ? s * 0.5 : -s * 0.5), 0, [0, sg * Math.atan2(2 * fx, 2 * fzz), 0]);
+      } else {
+        for (const sx of [-1, 1]) put(K.box(s, s, 2 * fzz - s, { grain: 'z' }), legsMat, 'legs', sx * fx, lift + s / 2, 0);
+        put(K.box(2 * fx - s, s, s, { grain: 'x' }), legsMat, 'legs', 0, lift + s / 2, -fzz);
+      }
     } else if (legStyle === 'metal-frame') {
       const fw = w - 0.04, fd = d - 0.05, ft = 0.006;
       for (const sz of [-1, 1]) put(K.box(fw, legH, ft, { grain: 'x' }), legsMat, 'legs', 0, lift + legH / 2, sz * (fd / 2 - ft / 2));
@@ -2315,7 +3214,7 @@ export const P_CABINET = {
   doors: { type: 'number', min: 1, max: 6, step: 1, label: 'Antall dører / kolonner', default: 3 },
   drawerRow: { type: 'number', min: 0, max: 4, step: 1, label: 'Skuffer i egen rad', default: 0 },
   drawerRowPos: { type: 'enum', label: 'Skufferaden', options: [['top', 'Øverst'], ['bottom', 'Nederst']], default: 'top' },
-  frontStyle: { type: 'enum', label: 'Fronter', options: [['flat', 'Glatte'], ['ribbed', 'Riflede'], ['slatted', 'Spiler'], ['cane', 'Flettet'], ['glass', 'Glass i treramme'], ['framed', 'Rammedører'], ['grooved', 'Med spor']] },
+  frontStyle: { type: 'enum', label: 'Fronter', options: [['flat', 'Glatte'], ['ribbed', 'Riflede'], ['slatted', 'Spiler'], ['cane', 'Flettet'], ['glass', 'Glass i treramme'], ['framed', 'Rammedører'], ['grooved', 'Med spor'], ['fabric', 'Tekstil (høyttalerduk)']] },
   frontPattern: { type: 'enum', label: 'Mønster', options: [['none', 'Ingen'], ['herringbone', 'Fiskebein']], default: 'none' },
   ribPitch: { type: 'number', min: 0.008, max: 0.04, step: 0.001, label: 'Riflebredde (m)', default: 0.016 },
   handle: { type: 'enum', label: 'Håndtak', options: [['none', 'Uten (trykk og åpne)'], ['bar', 'Stanggrep'], ['cutout', 'Innfrest grep'], ['knob', 'Knott'], ['edge', 'Grepslist']] },
@@ -2433,6 +3332,41 @@ export const archetypes = {
     dimsRange: { w: [0.3, 0.8], d: [0.3, 0.8], h: [0.3, 0.7] },
     build: (spec) => buildNesting(spec, { frameDefault: 'legs', legCountDefault: 3 }),
   }),
+  'coffee-table': def('coffee-table', {
+    defaults: {
+      dims: { w: 1.2, d: 0.6, h: 0.42 },
+      params: { shape: 'rect', cornerR: 0.03, edge: 'straight', topT: 0.03, base: 'legs', legStyle: 'square', legCount: 4, legInset: 0.05, legD: 0.045, apron: false, shelf: 'none', shelfH: 0.12, drawers: 0, handle: 'none', baseInset: 0.1, tray: false },
+      ...finish('#b08a62', 'oak', '#b08a62', 'oak', '#b08a62', 'oak'),
+    },
+    // hidden (products): seed, softness, waterfall, tubeW, frameFloor, ribPitch, ribDepth, plinthH, drumTaper,
+    // drumDrawers, apronH, drawersBack, hubH (spider), set [{ w, d, h, dx, dz, shape?, seed?, dent?, dentAt? }] with
+    // setRef { w, d, h } (the main dims the set was measured on: the set scales when the main table is resized), fronts,
+    // frontStyle, slidingDoors, cabinetLegH, cabinetLegStyle, dent / dentAt (organic: a concave notch, plan angle),
+    // vDepth (stone V), crossL (cross: slab length), trayH (tray rim height)
+    params: {
+      ...P_TOP,
+      shape: { type: 'enum', label: 'Form', options: [['rect', 'Rektangulær'], ['rounded', 'Avrundede hjørner'], ['soft', 'Myk firkant'], ['round', 'Rund'], ['oval', 'Oval'], ['stadium', 'Stadionoval'], ['organic', 'Organisk (dråpe)']] },
+      cornerR: { type: 'number', min: 0.005, max: 0.3, step: 0.005, label: 'Hjørneradius (m)' },
+      edge: { type: 'enum', label: 'Kant', options: [['straight', 'Rett kant'], ['bevel', 'Tynn kant med skråfas'], ['rounded', 'Avrundet kant']] },
+      base: {
+        type: 'enum', label: 'Understell',
+        options: [['legs', 'Ben'], ['pedestal', 'Søyle med fot'], ['drum', 'Sokkel (massiv)'], ['ribbed', 'Riflet sokkel'], ['panel', 'Platebein (gavler)'], ['frame', 'Metallramme'], ['sled', 'Mederammer'], ['x', 'Kryssben'], ['v', 'V-understell'], ['cross', 'Kryss av plater'], ['spider', 'Fire ben fra midten'], ['cabinet', 'Skap/hyller under platen']],
+      },
+      legStyle: { type: 'enum', label: 'Ben', options: [['square', 'Firkantede'], ['round-taper', 'Runde, smalnende'], ['splayed', 'Skrå (utoverlente)'], ['angled', 'Vinklede'], ['block', 'Kraftige klosser'], ['metal-thin', 'Tynne metallben'], ['hairpin', 'Hårnålsben']] },
+      legCount: { type: 'number', min: 3, max: 4, step: 1, label: 'Antall ben' },
+      legInset: { type: 'number', min: 0, max: 0.4, step: 0.01, label: 'Ben/understell fra kanten (m)' },
+      legD: { type: 'number', min: 0.01, max: 0.12, step: 0.002, label: 'Bentykkelse (m)' },
+      apron: { type: 'bool', label: 'Sarg under platen' },
+      shelf: { type: 'enum', label: 'Hylle under', options: [['none', 'Ingen'], ['board', 'Hylleplate'], ['slats', 'Spilehylle'], ['cane', 'Flettet'], ['glass', 'Glass']] },
+      shelfH: { type: 'number', min: 0.04, max: 0.35, step: 0.01, label: 'Hyllehøyde (m)' },
+      drawers: { type: 'number', min: 0, max: 4, step: 1, label: 'Skuffer i sargen' },
+      handle: { type: 'enum', label: 'Håndtak', options: [['none', 'Uten'], ['knob', 'Knott'], ['bar', 'Stanggrep'], ['cutout', 'Innfrest grep']] },
+      baseInset: { type: 'number', min: 0, max: 0.4, step: 0.01, label: 'Sokkel inntrukket (m)' },
+      tray: { type: 'bool', label: 'Opphøyd kant (brett)' },
+    },
+    dimsRange: { w: [0.3, 2.0], d: [0.3, 1.3], h: [0.25, 0.85] },
+    build: buildCoffeeTable,
+  }),
   sideboard: def('sideboard', {
     defaults: {
       dims: { w: 1.8, d: 0.45, h: 0.76 },
@@ -2450,7 +3384,8 @@ export const archetypes = {
       ...finish('#2b2623', 'black-oak', '#2b2623', 'black-oak', '#2b2623', 'black-oak'),
     },
     params: P_CABINET,
-    dimsRange: { w: [0.9, 2.8], d: [0.3, 0.55], h: [0.25, 0.65] },
+    // h from 0.22: the wall-hung Vision is 23 cm tall
+    dimsRange: { w: [0.9, 2.8], d: [0.3, 0.55], h: [0.22, 0.65] },
     build: (spec) => buildCabinet(spec, 'tv-bench'),
   }),
   'display-cabinet': def('display-cabinet', {
@@ -2472,13 +3407,21 @@ export const archetypes = {
   'wall-shelf': def('wall-shelf', {
     defaults: { dims: { w: 1.2, d: 0.2, h: 0.5 }, params: { style: 'grid', boardDepth: 0.19, barW: 0.015, ...GRID_DEFAULT }, ...finish('#1e1e1e', 'black-metal', '#1e1e1e', 'black-metal') },
     params: {
-      style: { type: 'enum', label: 'Type', options: [['grid', 'Rutenett i metall'], ['simple', 'Enkle hyller']] },
+      style: { type: 'enum', label: 'Type', options: [['grid', 'Rutenett i metall'], ['simple', 'Enkle hyller'], ['box', 'Hyllemodul med rom']] },
       shelves: { type: 'number', min: 1, max: 6, step: 1, label: 'Antall hyller (enkle)', default: 3 },
+      cols: { type: 'number', min: 1, max: 6, step: 1, label: 'Kolonner (modul)', default: 3 },
+      rows: { type: 'number', min: 1, max: 5, step: 1, label: 'Rader (modul)', default: 2 },
       brackets: { type: 'enum', label: 'Oppheng (enkle)', options: [['none', 'Skjult'], ['straps', 'Lærstropper'], ['battens', 'Lister bak'], ['brackets', 'Konsoller']], default: 'none' },
       barW: { type: 'number', min: 0.008, max: 0.03, step: 0.001, label: 'Stangbredde (m)' },
     },
     // h from 0.04: a single board (IKEA LACK vegghylle 110x26 is 0.05 thick) must not be clamped to 0.10
-    dimsRange: { w: [0.4, 2.4], d: [0.12, 0.35], h: [0.04, 1.6] },
+    // d from 0.10: Bjørvik is 11 cm deep
+    dimsRange: { w: [0.4, 2.4], d: [0.1, 0.35], h: [0.04, 1.6] },
     build: buildWallShelf,
   }),
 };
+
+// Helpers for desks.js and the other model files (design/furniture.md §1.1); the table helpers tableOutline, tableTop,
+// legAnchors, legMats, styledLeg, drawerHandle, herringboneGeometry, ribPanelGeometry, recolorer and buildCabinet
+// are exported where they are defined.
+export { qSeg, tone, pm, add, darkInside, roundRectPts, stadiumPts, ellipsePts, clipHalf, dedupe, planSlab, barYZ, splayedLeg, finish, P_TOP, diningOutline, chamferGeometry, smoothProfile, ribbedColumn, strut };

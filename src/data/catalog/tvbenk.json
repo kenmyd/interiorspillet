@@ -850,5 +850,610 @@
     "verified": true,
     "verifiedNote": "Bekreftet på ikea.com/no 2026-10-20: 3 495 kr, 178,4x37,2x54,9, skyvedører, flyttbare hyller, kabeluttak, eikefiner med klar akryllakk, maks TV 30 kg. Antall dører (2) og høyden på bunnplaten (ca. 7 cm) anslått fra bildet; eikefiner- og offwhite-prisene fra IKEAs søk. Farger og stoff kontrollert 2026-10-21 mot ikea.no: alle variantene finnes (brun beiset eikefiner og eikefiner 3 495 kr; offwhite er en egen artikkel på 177x37x56 til 2 995 kr og heter nå bare «Offwhite»), og brun beiset er gjort litt lysere etter produktbildet.",
     "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-wolin-tv-benk-210x40",
+    "category": "tvbenk",
+    "name": "Wolin tv-benk 210x40",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/tv-benk/wolin-tv-benk-210x40-1",
+    "priceNok": 10899,
+    "salePriceNok": 6499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 330961, hvitoljet eikefiner): 6 499 kr (før 10 899 kr, kampanje «WOLIN-serien i hvitoljet» til 30.11.2026). Leveres flatpakket.",
+    "dims": {
+      "w": 2.1,
+      "d": 0.4,
+      "h": 0.5
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legFrame": true,
+      "legH": 0.18,
+      "topT": 0.02,
+      "fronts": [
+        "drawer",
+        "open",
+        "drawer"
+      ],
+      "frontStyle": "flat",
+      "handle": "cutout",
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eikefiner",
+        "colors": {
+          "body": "#ccb196",
+          "front": "#ceb398",
+          "top": "#d2b89e",
+          "legs": "#c6aa8e",
+          "handle": "#b89c82"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/wolin-tv-benk-210x40-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/WOLIN/609277/image-thumb__609277__PDP-Product/330961%20-%20Wolin%20tv-benk%20210%20H50%202%20skuffer%202%20hyller%20hvitoljet%20eikefiner%20-%202.e421aaf2.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Lang og lav TV-benk i hvitoljet eikefiner på et understell i eik, med to skuffer med innfreste grep og et åpent midtrom med hylle til dekoder og spillkonsoll.",
+    "why": "Med 2,1 m får en stor TV god plass på langveggen i kjellerstua; den lyse eiken er samme Wolin-serie som skjenken i katalogen, og ledningene gjemmes bak skuffene.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/WOLIN/609277/image-thumb__609277__PDP-Product/330961%20-%20Wolin%20tv-benk%20210%20H50%202%20skuffer%202%20hyller%20hvitoljet%20eikefiner%20-%202.e421aaf2.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): 6 499 kr (før 10 899, kampanje til 30.11), B210 D40 H50, benhøyde 18 cm, 2 skuffer og 2 hyller, hvitoljet eikefiner, bilde, varenr. 330961, status Not Expired (sortiment G2). Anslått: bredden på midtrommet og grepenes form fra produktbildet; fargene fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Korpuset står på en egen ramme av heltre eik med fire rette ben (benhøyde 18 cm fra Bohus). De to ytre rommene har klaffskuffer med et ovalt innfrest grep øverst; midtrommet er åpent med én fast hylle. Modellen tegner rammen med rette, runde ben; på 2,1 m bredde får den også to midtben."
+  },
+  {
+    "id": "bohus-vision-tv-benk-172x32",
+    "category": "tvbenk",
+    "name": "Vision tv-benk 172x32",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/tv-benk/vision-tv-benk-172x32",
+    "priceNok": 8299,
+    "salePriceNok": 6639,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 297798, hvitpigmentert): 6 639 kr (før 8 299 kr, kampanje «serie VISION» til 30.11.2026). Brun (varenr. 297799) samme pris og kampanje. Vegghengt, leveres montert; bestillingsvare.",
+    "dims": {
+      "w": 1.72,
+      "d": 0.32,
+      "h": 0.23
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "wall",
+      "mountHeight": 0.4,
+      "legH": 0,
+      "topT": 0.02,
+      "fronts": [
+        "drawer",
+        "door",
+        "drawer"
+      ],
+      "frontStyle": "fabric",
+      "frontFit": "inset",
+      "handle": "none",
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Hvitpigmentert",
+        "colors": {
+          "body": "#dccbb9",
+          "front": "#1f2021",
+          "top": "#dfcebd",
+          "legs": "#d6c5b3",
+          "handle": "#dccbb9"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "woven",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/vision-tv-benk-172x32",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/VISION/320672/image-thumb__320672__PDP-Product/297798%20-%20Vision%20tv-benk%20172x32%20H23%20vegghengt%201%20d%C3%B8r%202%20skuffer%20lakkert%20eikefiner%20hvitoljet%20-%201.de9374de.jpg"
+      },
+      {
+        "name": "Brun",
+        "colors": {
+          "body": "#5f544b",
+          "front": "#1f2021",
+          "top": "#62574d",
+          "legs": "#5a4f46",
+          "handle": "#5f544b"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "woven",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/vision-tv-benk-172x32-1",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/VISION/320677/image-thumb__320677__PDP-Product/297799%20-%20Vision%20tv-benk%20172x32%20H23%20vegghengt%201%20d%C3%B8r%202%20skuffer%20lakkert%20eikefiner%20brun%20-%201.344ef0f9.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Vegghengt, lav TV-benk i lakkert eikefiner med to skuffer og en midtdør trukket med svart tekstil, så fjernkontrollen virker gjennom døren.",
+    "why": "Henger fritt under TV-en i stua, så gulvet holdes ryddig og lett å vaske; bare 32 cm dybde tar lite plass i rommet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Interstil/Produkter/VISION/320672/image-thumb__320672__PDP-Product/297798%20-%20Vision%20tv-benk%20172x32%20H23%20vegghengt%201%20d%C3%B8r%202%20skuffer%20lakkert%20eikefiner%20hvitoljet%20-%201.de9374de.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): 6 639 kr (før 8 299, kampanje til 30.11) for begge farger, B172 D32 H23, vegghengt, 1 dør og 2 skuffer, lakkert eikefiner, bilde, varenr. 297798/297799, status Not Expired. Anslått: monteringshøyde og fargene fra produktbildene.",
+    "priceConfidence": "checked",
+    "shapeNote": "Svevende kasse, bare 23 cm høy, med innfelte fronter: skuff – stoffdør – skuff. I virkeligheten er bare midtdøren (ca. 1/3 av bredden) trukket med svart mesh-tekstil og de to skuffene er glatte i eik; modellen tegner alle tre frontene med stoffpanel i treramme (frontStyle fabric). Monteringshøyde (underkant) 0,40 m er anslått."
+  },
+  {
+    "id": "bohus-madrid-tv-benk-152x39",
+    "category": "tvbenk",
+    "name": "Madrid tv-benk 152x39",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/tv-benk/madrid-tv-benk-152x39-5",
+    "priceNok": 4499,
+    "salePriceNok": 2699,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 328699, matt svart): 2 699 kr (før 4 499 kr, kampanje «MADRID-serien i svart og hvit» til 30.11.2026). Hvit (varenr. 328698) samme pris og kampanje; eik (328697) og cashmere (317868) 4 499 kr uten kampanje. Leveres flatpakket med to sett grep (lærstropper og sølvknotter).",
+    "dims": {
+      "w": 1.52,
+      "d": 0.39,
+      "h": 0.55
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legStyle": "block",
+      "legH": 0.08,
+      "topT": 0.02,
+      "fronts": [
+        "open",
+        "open",
+        "open"
+      ],
+      "drawerRow": 3,
+      "drawerRowPos": "bottom",
+      "drawerH": 0.19,
+      "frontStyle": "flat",
+      "handle": "knob",
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Matt svart",
+        "colors": {
+          "body": "#464647",
+          "front": "#444445",
+          "top": "#464647",
+          "legs": "#424243",
+          "handle": "#ad7a5e"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/madrid-tv-benk-152x39-5",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/132072/image-thumb__132072__PDP-Product/249678%20-%20Madrid%20tv-benk%20152x39%20H55%203%20skuffer%203%20hyller%20svart%20foliert%20sponplate%20-%206.83ceb2bc.jpg"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f2f2f0",
+          "front": "#f2f2f0",
+          "top": "#f2f2f0",
+          "legs": "#ededeb",
+          "handle": "#ad7a5e"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/madrid-tv-benk-152x39-6",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/132068/image-thumb__132068__PDP-Product/249677%20-%20Madrid%20tv-benk%20152x39%20H55%203%20skuffer%203%20hyller%20hvit%20foliert%20sponplate%20-%2013.a493d16a.jpg"
+      },
+      {
+        "name": "Eik",
+        "colors": {
+          "body": "#c1a78c",
+          "front": "#c5aa8d",
+          "top": "#c8ae93",
+          "legs": "#b79c82",
+          "handle": "#1d1d1d"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/madrid-tv-benk-152x39-7",
+        "priceNok": 4499,
+        "priceConfidence": "checked",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/321387/image-thumb__321387__PDP-Product/308470%20-%20Madrid%20tv-benk%20151x38%20H54%203%20skuffer%20foliert%20spon%20eik%20-%204.cc38a683.jpg"
+      },
+      {
+        "name": "Cashmere",
+        "colors": {
+          "body": "#c9c0b7",
+          "front": "#c9c0b7",
+          "top": "#c9c0b7",
+          "legs": "#c4bbb2",
+          "handle": "#5e4331"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/madrid-tv-benk-152x39-2",
+        "priceNok": 4499,
+        "priceConfidence": "checked",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/344732/image-thumb__344732__PDP-Product/317868%20-%20Madrid%20tv-benk%20152x39%20H55%201%20skuff%203%20hyllerplater%20foliert%20spon%20cashmere%20-%202.6de0e809.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "TV-benk i foliert spon med tre åpne rom øverst og tre skuffer under, på korte ben. Leveres med to sett grep: lærstropper eller sølvknotter.",
+    "why": "Rimelig og rommelig benk til kjellerstua eller det lille soverommet i kjelleren; Madrid-serien finnes også som kommode, nattbord og vitrineskap i samme farger.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/132072/image-thumb__132072__PDP-Product/249678%20-%20Madrid%20tv-benk%20152x39%20H55%203%20skuffer%203%20hyller%20svart%20foliert%20sponplate%20-%206.83ceb2bc.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): matt svart og hvit 2 699 kr (før 4 499, kampanje til 30.11), eik og cashmere 4 499 kr, B152 D39 H55, 3 skuffer og 3 hyller, foliert spon, bilde, varenr. 328699/328698/328697/317868, status Not Expired. Anslått: benhøyde, skuffehøyde og fargene fra produktbildene (fargene følger Madrid-seriens øvrige møbler i katalogen).",
+    "priceConfidence": "checked",
+    "shapeNote": "Sidene går ned som korte ben (ca. 8 cm, anslått). Øverst tre åpne nisjer, under dem tre like skuffer med lærstropp midt på; modellen tegner stroppene som knotter i lærfarge."
+  },
+  {
+    "id": "bohus-nobu-tv-benk-220x40",
+    "category": "tvbenk",
+    "name": "Nobu tv-benk 220x40",
+    "brand": "Bohus Exclusive by Storm Storm",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/tv-benk/nobu-tv-benk-40x220",
+    "priceNok": 17999,
+    "salePriceNok": 12399,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 327521, hvitoljet eikefiner): 12 399 kr (før 17 999 kr, kampanje «NOBU serien i hvitoljet» til 30.11.2026). Delvis montert. Kan stå på sokkel (H41,5) eller henges på veggen (H36,5).",
+    "dims": {
+      "w": 2.2,
+      "d": 0.4,
+      "h": 0.415
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "plinth",
+      "legStyle": "block",
+      "legH": 0.05,
+      "topT": 0.02,
+      "fronts": [
+        "door",
+        "door",
+        "door",
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "framed",
+      "frontFit": "overlay",
+      "handle": "none",
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eikefiner",
+        "colors": {
+          "body": "#c4b096",
+          "front": "#c7b399",
+          "top": "#c9b59b",
+          "legs": "#b9a58b",
+          "handle": "#c4b096"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/tv-benk/nobu-tv-benk-40x220",
+        "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOBU/619069/image-thumb__619069__PDP-Product/327521%20-%20Nobu%20tv-benk%20220x40%20H41.4%206%20d%C3%B8rer%203%20hyller%20hvitoljet%20eikefiner%20-%201.cd7ca200.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Lang TV-benk i hvitoljet eikefiner med seks rammedører med myktlukking og tre justerbare hyller, på lav sokkel eller hengt på veggen.",
+    "why": "Med 2,2 m bredde fyller den en hel TV-vegg i kjellerstua og gir mye lukket plass, så spill og ledninger forsvinner bak rolige rammefronter.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Unique%20Furniture%20A-S/Produkter/NOBU/619069/image-thumb__619069__PDP-Product/327521%20-%20Nobu%20tv-benk%20220x40%20H41.4%206%20d%C3%B8rer%203%20hyller%20hvitoljet%20eikefiner%20-%201.cd7ca200.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): 12 399 kr (før 17 999, kampanje til 30.11), B220 D40 H41,5 frittstående med sokkel (H36,5 veggmontert), sokkel 5 cm, 6 dører, 3 hyller, hvitoljet eikefiner, bilde, varenr. 327521, status Not Expired (sortiment G2). Anslått: rammebredden på dørene og fargen fra produktbildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Seks like rammedører over hele fronten, uten synlige grep (myktlukkende). Frittstående på en tilbaketrukket sokkel på 5 cm (benhøyde 5 cm fra Bohus); kan også veggmonteres, men står på gulvet i spillet."
+  },
+  {
+    "id": "ikea-havsta-tv-benk-med-sokkel-160x47x62",
+    "category": "tvbenk",
+    "name": "HAVSTA TV-benk med sokkel 160x47x62 cm",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/havsta-tv-benk-med-sokkel-grabeige-90529266/",
+    "priceNok": 2995,
+    "salePriceNok": 2795,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 905.292.66, gråbeige): 2 795 kr («Ny lavere pris», førpris 2 995 kr, gyldig til 29.11.2026). Hvit (105.292.70) og svart (505.292.68) samme pris.",
+    "dims": {
+      "w": 1.6,
+      "d": 0.47,
+      "h": 0.62
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "plinth",
+      "legStyle": "block",
+      "legH": 0.1,
+      "topT": 0.03,
+      "fronts": [
+        "door",
+        "door"
+      ],
+      "slidingDoors": true,
+      "frontStyle": "glass",
+      "glassPattern": "clear",
+      "frontFit": "inset",
+      "handle": "knob",
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Gråbeige",
+        "colors": {
+          "body": "#c9c1b3",
+          "front": "#dfe6e2",
+          "top": "#ccc4b6",
+          "legs": "#c2baac",
+          "handle": "#a9a9a5"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "glass-clear",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "chrome"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#ecebe6",
+          "front": "#dfe6e2",
+          "top": "#efeee9",
+          "legs": "#e6e5e0",
+          "handle": "#a9a9a5"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "glass-clear",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "chrome"
+        },
+        "url": "https://www.ikea.com/no/no/p/havsta-tv-benk-med-sokkel-hvit-10529270/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/havsta-tv-benk-med-sokkel-hvit__1296038_pe935673_s5.jpg"
+      },
+      {
+        "name": "Svart",
+        "colors": {
+          "body": "#2c2b29",
+          "front": "#dfe6e2",
+          "top": "#2f2e2c",
+          "legs": "#282725",
+          "handle": "#a9a9a5"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "glass-clear",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "chrome"
+        },
+        "url": "https://www.ikea.com/no/no/p/havsta-tv-benk-med-sokkel-svart-50529268/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/havsta-tv-benk-med-sokkel-svart__1296039_pe935675_s5.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "TV-benk i beiset heltre furu med to skyvedører i klart herdet glass, flyttbare hyller og innebygd ledningsføring, på en lav sokkel.",
+    "why": "Glassdørene viser frem spill og bøker uten at de samler støv; den gråbeige furuen ligger nær SAND-veggene i stua, og 62 cm høyde passer under en vegghengt TV.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/havsta-tv-benk-med-sokkel-grabeige__1296040_pe935674_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»): 2 795 kr (førpris 2 995) for gråbeige, hvit og svart, B160 D47 H62, skyvedører i herdet glass, massiv furu beiset og lakkert, maks TV 30 kg, bilde, art.nr. 905.292.66, på lager. Anslått: sokkelhøyde, knotter og fargene fra produktbildene.",
+    "priceConfidence": "checked",
+    "shapeNote": "To overlappende skyvedører med smal treramme og klart glass, en liten rund metallknott ytterst på hver dør; topplaten stikker litt ut over korpuset. Sokkel ca. 10 cm og knottene er anslått fra produktbildet."
+  },
+  {
+    "id": "ikea-besta-tv-benk-med-skuffer-120x42x48",
+    "category": "tvbenk",
+    "name": "BESTÅ TV-benk med skuffer 120x42x48",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-skuffer-hvitbeiset-eikemonster-lappviken-stubbarp-hvitbeiset-eikemonster-s49399183/",
+    "priceNok": 2990,
+    "salePriceNok": 2345,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.com/no-produktdata, art.nr. 493.991.83, hvitbeiset eikemønster/Lappviken/Stubbarp): 2 345 kr (førpris 2 990 kr, gyldig til 15.12.2026). Hvit (093.991.80) og brunsvart (193.991.89) samme pris. STUBBARP-ben følger med i kombinasjonen.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.42,
+      "h": 0.48
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legStyle": "block",
+      "legH": 0.1,
+      "topT": 0.02,
+      "fronts": [
+        "open",
+        "open"
+      ],
+      "drawerRow": 2,
+      "drawerRowPos": "bottom",
+      "drawerH": 0.24,
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Hvitbeiset eikemønster",
+        "colors": {
+          "body": "#d9c6ab",
+          "front": "#dbc8ad",
+          "top": "#dccab0",
+          "legs": "#d3bfa3",
+          "handle": "#d9c6ab"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#efeeea",
+          "front": "#f1f0ec",
+          "top": "#efeeea",
+          "legs": "#eae9e4",
+          "handle": "#efeeea"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-skuffer-hvit-lappviken-stubbarp-hvit-s09399180/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/besta-tv-benk-med-skuffer-hvit-lappviken-stubbarp-hvit__0375474_pe553091_s5.jpg"
+      },
+      {
+        "name": "Brunsvart",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#2e2724",
+          "top": "#2b2421",
+          "legs": "#29221f",
+          "handle": "#2b2421"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-skuffer-brunsvart-lappviken-stubbarp-brunsvart-s19399189/",
+        "imageUrl": "https://www.ikea.com/no/no/images/products/besta-tv-benk-med-skuffer-brunsvart-lappviken-stubbarp-brunsvart__0341752_pe531768_s5.jpg"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Kompakt TV-benk med to åpne rom øverst og to trykk-åpne skuffer under, på STUBBARP-ben av eik, med ledningsuttak i topplaten.",
+    "why": "120 cm passer til en mindre TV på det lille soverommet eller hjemmekontoret i kjelleren; skuffene gjemmer kabler og fjernkontroller, nisjene tar dekoder og ruter.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-tv-benk-med-skuffer-hvitbeiset-eikemonster-lappviken-stubbarp-hvitbeiset-eikemonster__0343344_pe535924_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.com/no 2026-10-21 (produktdata og «Mål»): 2 345 kr (førpris 2 990) for alle tre fargene, B120 D42 H48, 2 skuffer (innv. 51x32,5 cm), maks TV 16 kg, bilde, art.nr. 493.991.83, på lager. Anslått: benhøyde (fra totalhøyden) og fargene fra produktbildene.",
+    "priceConfidence": "checked",
+    "shapeNote": "To åpne nisjer øverst og to trykk-åpne skuffer under; skuffefrontene er ca. 2/3 av korpushøyden. Ben 10 cm (STUBBARP) er utledet av totalhøyden."
+  },
+  {
+    "id": "skeidar-linley-tv-benk-160x40",
+    "category": "tvbenk",
+    "name": "Linley TV-benk",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/tv-benker/linley-tv-benk?VariationId=V_5637411682",
+    "priceNok": 8999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no-produktdata, art.nr. 9784200, hvitoljet eikefinér): 8 999 kr, ingen kampanje. Bestillingsvare på nett, leveringstid ca. 2–3 uker; finnes på lager i enkelte butikker.",
+    "dims": {
+      "w": 1.6,
+      "d": 0.4,
+      "h": 0.5
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legFrame": true,
+      "legH": 0.12,
+      "topT": 0.02,
+      "fronts": [
+        "door",
+        "open",
+        "door"
+      ],
+      "frontStyle": "slatted",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "slatDir": "h"
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet eikefinér",
+        "colors": {
+          "body": "#d5c3ad",
+          "front": "#d2c0aa",
+          "top": "#d8c6b0",
+          "legs": "#cfbda7",
+          "handle": "#d5c3ad"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "TV-benk i hvitoljet eikefinér med to lamelldører med trykk-åpning, et åpent midtrom med justerbar hylle og et lett understell i eik.",
+    "why": "Lamellfrontene gir struktur uten å virke urolige, og den lyse eiken passer mot SAND-veggene i stua; 160 cm er en god bredde under en mellomstor TV.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/9784200/9784200_V10235454-LinleyTV1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21 (sidens innebygde produktdata): 8 999 kr, B160 D40 H50, hvitoljet eikefinér, 2 dører med trykk-åpning, justerbare hyller, bestillingsvare ca. 2–3 uker, bilde, art.nr. 9784200. Anslått: benhøyde og fargen fra produktbildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Lamellene på dørene går vannrett. Midtrommet er åpent med én justerbar hylle og kabelhull. Understellet er en egen eikeramme med fire firkantede ben, ca. 12 cm (anslått); modellen tegner rammen med runde ben."
   }
 ]

@@ -6,6 +6,7 @@
   "description": "Interiørspillet – gå rundt i stua i 3D og prøv ut interiør før du kjøper (nettleser).",
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5180 --strictPort",
+    "dev:mobil": "vite --host 0.0.0.0 --port 5180 --strictPort",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4180",
     "shot": "node tools/shot.mjs",

@@ -4,6 +4,18 @@ import * as K from './kit.js';
 import { mat, emissive, resolveColor } from '../home/materials.js';
 import { createCanvas, canvasTexture, heightToNormalCanvas, cached, TileableNoise, clamp } from '../world/proctex.js';
 import { ceilingAt } from './lamps.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { ART_MOTIFS, ART_MOTIF_OPTIONS, LEGACY_MOTIFS, paintArt, motifOptsKey } from './artmotifs.js';
+import {
+  artLayout, quantAspect, artResFor, canvasSize, PAPER_WHITE, HANGER_Z, FRAME_OPTIONS, LAYOUT_OPTIONS, DEFAULT_SET_MOTIFS,
+  galleryLayout, fitSet, spanRects, packAtlas, atlasUvRect, PPM, ATLAS_MAX, ART_DEPTH_MIN,
+} from './artlayout.js';
+import { ArtCache, ART_BUDGET_PX } from './artcache.js';
+import { isImageId } from './artImages.js';
+import { customPrintTexture, useCustomTexture, customImageStats, CUSTOM_EDGE_HEX, CUSTOM_MAX_RES } from './artcustom.js';
+
+// where art builders get uploaded pictures from (home/index.js calls it with the ImageStore; design/upload.md §9)
+export { setArtImageSource } from './artImages.js';
 
 /**
  * Decor and acoustic products (ARCHITECTURE §5, parts §13): plants, vases (with flowers), art, mirrors, candles,
@@ -18,7 +30,10 @@ import { ceilingAt } from './lamps.js';
  *   leaf atlas   one RGBA texture: R = leaf albedo detail, G = pale-vein mask, A = leaf outline (alpha-tested with
  *                coverage-preserving mipmaps) + a vein normal map; FoliageMaterial tints it with the part colour and
  *                vertex colours (gentle per-leaf variation, darker toward the plant centre).
- *   motif art    procedural canvas «paintings» (misty-trees, abstract, landscape, botanical, line-art, photo).
+ *   motif art    procedural canvas «paintings»: the six legacy painters of this file (misty-trees, abstract, landscape,
+ *                botanical, line-art, photo – never changed) and the motifs of models/artmotifs.js; textures in
+ *                ArtCaches (models/artcache.js) that never dispose what a live material samples; gallery-wall atlases;
+ *                uploaded pictures through models/artcustom.js. Geometry numbers come from models/artlayout.js.
  *   bark, grille, TV screen materials.
  *
  * Params (all optional – see each Def.params for the Inspector schema):
@@ -27,7 +42,12 @@ import { ceilingAt } from './lamps.js';
  *         wider than the footprint, as the room plants have it, keeps the radial fit to that spread)
  *   vase: shape, flowers ('hydrangea'|'pampas'|'eucalyptus'|'sprig'|null), h, d (vase body when it has flowers),
  *         mat {d, color} (round jute mat under it), seed
- *   art-frame: motif, frame ('none'|'black'|'oak'|'white'|'floater'), frameW, depth, mat, texture, palette, edge, seed
+ *   art-frame: motif (a legacy key, an artmotifs.js key or 'custom' + imageId), frame (FRAME_PROFILES: none, thin,
+ *         black, oak, white, box, floater, alu, ornate, hanger), frameW, mat, matW, matH (over/under, else matW), glass,
+ *         texture, seed; hidden: palette, motifOpts, depth (legacy; else dims.d), edge, edgeHex, matColor, imageId,
+ *         imageAspect, fit, focus, cord
+ *   art-set: layout (LAYOUT_OPTIONS), gap, frame, mat, glass, mirror, seed; hidden: frames (layout 'custom'), motifs,
+ *         motif, palette, motifOpts, span, frameW, matW, matH, matColor, texture, edge, rise, overlap
  *   mirror: shape ('round'|'rect'|'organic'|'arch'), frameW, frameDepth, mullions, mullionCols, mullionRows
  *   candle-holder: kind ('lantern'|'tealight'|'candlestick'|'pillar'), count, spacing, glass, lit, candleColor
  *   basket: shape ('cylinder'|'oval'|'rect'|'pedal-bin' (rectangular)|'pedal-bin-round'|'stack'), weave ('rattan'|'rope'|'foam'|'none'),
@@ -300,8 +320,10 @@ function sampleProfile(pts, n) {
  * materials provide userData.decorRecolor(hex, kind). Returns false (→ rebuild) when a mesh cannot be recoloured.
  * @param {THREE.Group} group
  * @param {{ [part: string]: (kind: string, oldKind: string) => string }} [kindMap]
+ * @param {{ [part: string]: (kind: string, oldOpts: object|undefined) => object|undefined }} [optsMap]  mat() options
+ *   of a part by its (new) kind – the art frames' fine orange peel must not follow the frame onto wood
  */
-function makeRecolor(group, kindMap = {}) {
+function makeRecolor(group, kindMap = {}, optsMap = {}) {
   return (part, hex, kind) => {
     const meshes = group.userData.model?.parts?.[part];
     if (!meshes?.length) return true;
@@ -315,7 +337,7 @@ function makeRecolor(group, kindMap = {}) {
         if (ud.decorRecolor) next = ud.decorRecolor(hex, kind);
         else if (ud.cached && ud.kind && ud.kind !== 'paint' && ud.kind !== 'emissive') {
           const k = kindMap[part] ? kindMap[part](kind, ud.kind) : kind || ud.kind;
-          next = mat(k, hex || ud.hex, ud.opts);
+          next = mat(k, hex || ud.hex, optsMap[part] ? optsMap[part](k, ud.opts) : ud.opts);
         }
         if (!next) return false;
         swap.set(cur, next);
@@ -329,7 +351,7 @@ function makeRecolor(group, kindMap = {}) {
 
 /** finishModel with the decor recolour function. */
 function finish(g, o = {}) {
-  return K.finishModel(g, { ...o, recolor: makeRecolor(g, o.kindMap) });
+  return K.finishModel(g, { ...o, recolor: makeRecolor(g, o.kindMap, o.optsMap) });
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -2272,9 +2294,10 @@ function borderColor(cv) {
 }
 
 /**
- * Small LRU cache for generated art (every new colour or picture size makes a canvas of up to 1536 px, so the cache
- * must not grow without bound while someone drags a colour picker). Evicted entries are disposed – a model that still
- * shows one simply re-uploads it (three.js re-creates disposed GPU resources on the next use).
+ * Small LRU of print materials (one per motif × colour × size × surface). Eviction only drops the reference (the
+ * PRINTS dispose is a no-op): a material still on a mesh keeps working, its shader program is shared by every print,
+ * and it is garbage-collected later – disposing it released the shared program and stalled the next picture on a
+ * recompile. Textures live in ArtCaches (models/artcache.js), which never dispose what a live material samples.
  */
 class Lru {
   constructor(limit, dispose) {
@@ -2304,46 +2327,114 @@ class Lru {
     return v;
   }
 }
-const MOTIFS = new Lru(24, (a) => {
-  a.map?.dispose();
-  a.normalMap?.dispose();
+/** Motif canvases (+ relief normal maps), by motif × seed × colour × palette × aspect × size × relief × motifOpts. */
+const MOTIFS = new ArtCache({
+  budgetPx: ART_BUDGET_PX.medium,
+  dispose: (a) => {
+    a.map?.dispose();
+    a.normalMap?.dispose();
+  },
 });
-const PRINTS = new Lru(32, (m) => m.dispose());
-/** Picture aspect in ~4 % steps (a resized picture reuses its art; the stretch is invisible). */
-const quantAspect = (a) => Math.exp(Math.round(Math.log(clamp(a, 0.2, 5)) / 0.04) * 0.04);
+/** Gallery-wall atlases (art-set: every generated print of a set in one texture). */
+const ATLAS = new ArtCache({ budgetPx: ART_BUDGET_PX.medium, maxEntries: 32, dispose: (a) => a.map?.dispose() });
+const PRINTS = new Lru(48, () => {});
+/** The art caches keep the pixel budget of the highest render quality requested so far. */
+function artBudget(spec) {
+  const b = ART_BUDGET_PX[spec?.quality] ?? ART_BUDGET_PX.medium;
+  MOTIFS.raiseBudget(b);
+  ATLAS.raiseBudget(b);
+}
 
-/** Motif artwork (canvas texture + border colour + optional relief normal map), LRU-cached. */
-function motifArt({ motif, seed, hex, palette, aspect, res, relief }) {
+/** Debug / test hook (tools/artcheck.mjs): cache statistics of the motif, atlas and uploaded-picture textures. */
+export const _artDebug = Object.freeze({
+  stats: () => ({ motifs: MOTIFS.stats(), atlas: ATLAS.stats(), custom: customImageStats(), prints: PRINTS.map.size }),
+});
+
+/** Default colors.print of art-frame / art-set: a motif keeps its own palette until the print colour is changed. */
+const DEFAULT_PRINT = '#c9cfcd';
+const HEX6 = /^#[0-9a-f]{6}$/i;
+/** A palette motifPalette accepts (≥ 3 '#rrggbb'). */
+const validPalette = (p) => Array.isArray(p) && p.length >= 3 && p.every((x) => typeof x === 'string' && HEX6.test(x));
+/** A motif of models/artmotifs.js (not one of the six legacy painters of this file, which never change). */
+const isNewMotif = (motif) => typeof motif === 'string' && Object.hasOwn(ART_MOTIFS, motif) && !LEGACY_MOTIFS.includes(motif);
+const clampInt = (v, a, b, fb) => Math.round(clamp(num(Number(v), fb), a, b));
+
+/**
+ * Five tones for a motif (design/art.md §2.6): the item's palette (main = the print colour), else the motif's own
+ * palette (main = the print colour once it differs from the default), else derived from the print colour (legacy).
+ */
+function artPalette(motif, hex, palette) {
+  if (validPalette(palette)) {
+    const p = motifPalette(hex, palette);
+    p[1] = hex;
+    return p;
+  }
+  const def = isNewMotif(motif) ? ART_MOTIFS[motif] : null;
+  if (def && validPalette(def.palette)) {
+    const p = motifPalette(def.palette[1], def.palette);
+    if (String(hex).toLowerCase() !== DEFAULT_PRINT) p[1] = hex;
+    return p;
+  }
+  return motifPalette(hex, null);
+}
+
+const _artWarned = new Set();
+/**
+ * Paints `motif` into c (W × H): a legacy painter of this file, else a models/artmotifs.js painter. An unknown key
+ * paints 'abstract' (same rng key, as before); a new painter that throws is logged once and replaced by 'abstract'.
+ */
+function paintMotif(c, W, H, motif, seed, pal, hc, opts) {
+  const rngKey = `motif:${motif}:${seed}`;
+  if (isNewMotif(motif)) {
+    try {
+      if (paintArt(c, W, H, motif, K.rng(rngKey), pal, { hc, opts })) return;
+    } catch (err) {
+      if (!_artWarned.has(motif)) {
+        _artWarned.add(motif);
+        console.warn(`[art] motif «${motif}» failed – painting 'abstract' instead`, err);
+      }
+      c.fillStyle = pal[0];
+      c.fillRect(0, 0, W, H);
+    }
+  }
+  (MOTIF_PAINTERS[motif] || MOTIF_PAINTERS.abstract)(c, W, H, K.rng(rngKey), pal, hc);
+}
+
+/** Motif artwork (canvas texture + border colour + optional relief normal map), cached in MOTIFS (an ArtCache entry:
+ * the caller registers its material with MOTIFS.use right away). */
+function motifArt({ motif, seed, hex, palette, aspect, res, relief, opts }) {
   const a = quantAspect(aspect);
-  const key = `${motif}|${seed}|${hex}|${palette ? palette.join(',') : ''}|${a.toFixed(3)}|${res}|${relief || ''}`;
-  return MOTIFS.get(key, () => {
-    const W = a >= 1 ? res : Math.round(res * a), H = a >= 1 ? Math.round(res / a) : res;
-    const cv = createCanvas(W, H);
-    const c = cv.getContext('2d'); // GPU-backed: nothing reads it back at full size (see borderColor)
-    let hcv = null, hc = null;
-    if (relief === 'relief') {
-      hcv = createCanvas(W, H);
-      hc = hcv.getContext('2d');
-    }
-    const painter = MOTIF_PAINTERS[motif] || MOTIF_PAINTERS.abstract;
-    const pal = motifPalette(hexOf(hex), palette);
-    pal.mono = relief === 'relief';
-    painter(c, W, H, K.rng(`motif:${motif}:${seed}`), pal, hc);
-    const out = { map: canvasTexture(cv, { wrap: false }), edgeHex: borderColor(cv), normalMap: null };
-    if (relief) {
-      const sw = Math.max(64, Math.round(W / 2)), sh = Math.max(64, Math.round(H / 2));
-      const small = createCanvas(sw, sh);
-      const sc = small.getContext('2d', { willReadFrequently: true });
-      sc.filter = 'blur(1px)';
-      sc.drawImage(hcv || cv, 0, 0, sw, sh);
-      const d = sc.getImageData(0, 0, sw, sh).data;
-      const heights = new Float32Array(sw * sh);
-      const R = K.rng(`relief:${key}`);
-      for (let i = 0; i < sw * sh; i++) heights[i] = (d[i * 4] * 0.3 + d[i * 4 + 1] * 0.59 + d[i * 4 + 2] * 0.11) / 255 + R.range(-0.015, 0.015);
-      out.normalMap = canvasTexture(heightToNormalCanvas(heights, sw, sh, relief === 'relief' ? 7 : 3), { wrap: false, srgb: false });
-    }
-    return out;
-  });
+  const ok = isNewMotif(motif) ? motifOptsKey(motif, opts) : '';
+  const key = `${motif}|${seed}|${hex}|${Array.isArray(palette) ? palette.join(',') : ''}|${a.toFixed(3)}|${res}|${relief || ''}${ok ? `|${ok}` : ''}`;
+  const hit = MOTIFS.get(key);
+  if (hit) return hit;
+  const W = a >= 1 ? res : Math.round(res * a), H = a >= 1 ? Math.round(res / a) : res;
+  const cv = createCanvas(W, H);
+  const c = cv.getContext('2d'); // GPU-backed: nothing reads it back at full size (see borderColor)
+  let hcv = null, hc = null;
+  // a height canvas for 'relief': the legacy painters always draw one; a new motif only when it paints heights (the
+  // others take their relief from the colour luminance instead of a blank height canvas)
+  if (relief === 'relief' && (!isNewMotif(motif) || ART_MOTIFS[motif].relief)) {
+    hcv = createCanvas(W, H);
+    hc = hcv.getContext('2d');
+  }
+  const pal = artPalette(motif, hexOf(hex), palette);
+  pal.mono = relief === 'relief';
+  paintMotif(c, W, H, motif, seed, pal, hc, opts);
+  const out = { map: canvasTexture(cv, { wrap: false }), edgeHex: borderColor(cv), normalMap: null };
+  if (relief) {
+    const sw = Math.max(64, Math.round(W / 2)), sh = Math.max(64, Math.round(H / 2));
+    const small = createCanvas(sw, sh);
+    const sc = small.getContext('2d', { willReadFrequently: true });
+    sc.filter = 'blur(1px)';
+    sc.drawImage(hcv || cv, 0, 0, sw, sh);
+    const d = sc.getImageData(0, 0, sw, sh).data;
+    const heights = new Float32Array(sw * sh);
+    const R = K.rng(`relief:${key}`);
+    for (let i = 0; i < sw * sh; i++) heights[i] = (d[i * 4] * 0.3 + d[i * 4 + 1] * 0.59 + d[i * 4 + 2] * 0.11) / 255 + R.range(-0.015, 0.015);
+    out.normalMap = canvasTexture(heightToNormalCanvas(heights, sw, sh, relief === 'relief' ? 7 : 3), { wrap: false, srgb: false });
+  }
+  return MOTIFS.set(key, out, W * H + (out.normalMap ? (Math.max(64, Math.round(W / 2)) * Math.max(64, Math.round(H / 2))) : 0));
 }
 
 /** Normal map of a fabric/paper kind with UV channel 1 (metre UVs next to the 0..1 motif UVs). */
@@ -2358,38 +2449,79 @@ function surfaceNormal(kind) {
 }
 
 /**
+ * Material parameters of a flat print (no relief): the picture map on 0..1 UVs and the paper / fabric weave normals on
+ * UV channel 1. Generated prints, gallery-wall atlases and uploaded pictures share this layout – one shader program.
+ */
+function flatPrintParams(map, texture, fabric) {
+  const p = { map, roughness: 0.86, metalness: 0 };
+  const n = surfaceNormal(texture === 'paper' || texture === 'photo' ? 'paper' : fabric || 'linen');
+  if (n) {
+    p.normalMap = n;
+    p.normalScale = new THREE.Vector2(texture === 'photo' ? 0.15 : 0.45, texture === 'photo' ? 0.15 : 0.45);
+  }
+  if (texture === 'photo') p.roughness = 0.5;
+  return p;
+}
+
+/** Picture behind glass (params.glass): uniforms only – the same program as without glass. */
+function glassy(p) {
+  p.roughness = 0.22;
+  if (p.normalScale) p.normalScale.set(0.04, 0.04);
+  p.envMapIntensity = 0.9;
+  return p;
+}
+
+/**
  * Print / painting surface material (motif map on 0..1 UVs, canvas weave / relief normals), cached; recolour makes
  * the motif in the new base colour.
  */
 function printMaterial(o) {
-  const hex = hexOf(o.hex, '#c9cfcd');
+  const hex = hexOf(o.hex, DEFAULT_PRINT);
   const texture = o.texture || 'canvas';
-  const key = `${o.motif}|${o.seed}|${hex}|${o.palette ? o.palette.join(',') : ''}|${quantAspect(o.aspect).toFixed(3)}|${o.res}|${texture}|${o.fabric || ''}`;
+  const ok = isNewMotif(o.motif) ? motifOptsKey(o.motif, o.opts) : '';
+  const key = `${o.motif}|${o.seed}|${hex}|${Array.isArray(o.palette) ? o.palette.join(',') : ''}|${quantAspect(o.aspect).toFixed(3)}|${o.res}|${texture}|${o.fabric || ''}${ok ? `|${ok}` : ''}${o.glass ? '|g' : ''}`;
   return PRINTS.get(key, () => {
     const relief = texture === 'relief' ? 'relief' : texture === 'painted' ? 'painted' : null;
-    const art = motifArt({ motif: o.motif, seed: o.seed, hex, palette: o.palette, aspect: o.aspect, res: o.res, relief });
-    const p = { map: art.map, roughness: 0.86, metalness: 0 };
+    const art = motifArt({ motif: o.motif, seed: o.seed, hex, palette: o.palette, aspect: o.aspect, res: o.res, relief, opts: o.opts });
+    let p;
     if (relief) {
+      p = { map: art.map, roughness: 0.86, metalness: 0 };
       p.normalMap = art.normalMap;
       p.normalScale = new THREE.Vector2(relief === 'relief' ? 1.1 : 0.6, relief === 'relief' ? 1.1 : 0.6);
       p.roughness = relief === 'relief' ? 0.8 : 0.72;
-    } else {
-      const n = surfaceNormal(texture === 'paper' || texture === 'photo' ? 'paper' : o.fabric || 'linen');
-      if (n) {
-        p.normalMap = n;
-        p.normalScale = new THREE.Vector2(texture === 'photo' ? 0.15 : 0.45, texture === 'photo' ? 0.15 : 0.45);
-      }
-      if (texture === 'photo') p.roughness = 0.5;
-    }
+    } else p = flatPrintParams(art.map, texture, o.fabric);
+    if (o.glass) glassy(p);
     const m = new THREE.MeshStandardMaterial(p);
     m.name = `print ${o.motif} ${hex}`;
     m.userData = { shared: true, kind: 'print', hex, edgeHex: art.edgeHex, decorRecolor: (nh) => printMaterial({ ...o, hex: nh }) };
+    MOTIFS.use(art, m);
     return m;
   });
 }
 
-/** Plane with 0..1 UVs (motif) and metre UVs in uv1 (surface normals). */
-function printPlane(w, h) {
+/**
+ * Material of an uploaded picture (models/artcustom.js entry): exactly the layout of a flat printMaterial (map + weave
+ * normals on UV channel 1), so no new shader program; recolouring a photo is a no-op.
+ */
+function customPrintMaterial(entry, { texture = 'photo', fabric = null, glass = false } = {}) {
+  const tex = texture === 'relief' || texture === 'painted' ? 'canvas' : texture;
+  const key = `custom|${entry.key}|${tex}|${fabric || ''}|${glass ? 'g' : ''}`;
+  const m = PRINTS.get(key, () => {
+    const p = flatPrintParams(entry.map, tex, fabric);
+    if (glass) glassy(p);
+    const mm = new THREE.MeshStandardMaterial(p);
+    mm.name = `print custom ${entry.key}`;
+    mm.userData = { shared: true, kind: 'print', hex: '#e6e2da', edgeHex: entry.edgeHex, decorRecolor: () => mm };
+    return mm;
+  });
+  // (again on every use: a new entry under the same key after the old one was swept gets its user registered)
+  useCustomTexture(entry, m);
+  return m;
+}
+
+/** Plane with 0..1 UVs (motif; or the sub-rectangle uvRect [u0, v0, u1, v1] of an atlas / a span) and metre UVs in
+ * uv1 (surface normals). */
+function printPlane(w, h, uvRect = null) {
   const g = new THREE.PlaneGeometry(w, h);
   const pos = g.attributes.position;
   const uv1 = new Float32Array(pos.count * 2);
@@ -2398,18 +2530,40 @@ function printPlane(w, h) {
     uv1[i * 2 + 1] = pos.getY(i);
   }
   g.setAttribute('uv1', new THREE.BufferAttribute(uv1, 2));
+  if (uvRect) {
+    const [u0, v0, u1, v1] = uvRect;
+    const uv = g.attributes.uv;
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, u0 + uv.getX(i) * (u1 - u0), v0 + uv.getY(i) * (v1 - v0));
+  }
   return g;
 }
 
-/** Four frame bars around (w × h); optional inner step for wooden frames. Adds to g with part 'frame'. */
-function addFrameBars(g, w, h, fw, depth, m, { step = 0, z0 = 0 } = {}) {
+/**
+ * mat() options of a picture frame by kind: painted and powder-coated bars ('painted', 'black-metal' – the 'peel'
+ * texture, a 12 cm tile made for furniture panels) get it at 0.3 × (3.6 cm), so a 1 cm bar seen close reads smooth
+ * matte instead of hammered. Other kinds keep their texture (wood grain, brushed alu). Also the recolour rule of the
+ * art builders' 'frame' part (finish optsMap), so the fine peel never follows the frame onto wood.
+ */
+const FINE_PEEL = Object.freeze({ scale: 0.3 });
+const frameOpts = (kind) => (kind === 'painted' || kind === 'black-metal' ? FINE_PEEL : undefined);
+/** Frame material (see frameOpts). */
+const frameMaterial = (kind, hex) => mat(kind, hex, frameOpts(kind));
+/** finish() options of the art builders: the 'frame' part recolours with frameOpts. */
+const FRAME_FINISH = Object.freeze({ optsMap: Object.freeze({ frame: frameOpts }) });
+
+/**
+ * Four frame bars around (w × h), `depth` deep from z0; optional inner step for wooden frames (step) and rounded bars
+ * (round = edge radius, the aluminium profile). Adds to g with part `part` (null = a fixed finish, not recoloured).
+ */
+function addFrameBars(g, w, h, fw, depth, m, { step = 0, z0 = 0, round = 0, part = 'frame' } = {}) {
+  const bar = (bw, bh, bd, grain) => (round > 0 ? K.roundedBox(bw, bh, bd, round, 1, { grain }) : K.box(bw, bh, bd, { grain }));
   const bars = [
-    [K.box(w, fw, depth, { grain: 'x' }), 0, h / 2 - fw / 2],
-    [K.box(w, fw, depth, { grain: 'x' }), 0, -h / 2 + fw / 2],
-    [K.box(fw, h - 2 * fw, depth, { grain: 'y' }), -w / 2 + fw / 2, 0],
-    [K.box(fw, h - 2 * fw, depth, { grain: 'y' }), w / 2 - fw / 2, 0],
+    [bar(w, fw, depth, 'x'), 0, h / 2 - fw / 2],
+    [bar(w, fw, depth, 'x'), 0, -h / 2 + fw / 2],
+    [bar(fw, h - 2 * fw, depth, 'y'), -w / 2 + fw / 2, 0],
+    [bar(fw, h - 2 * fw, depth, 'y'), w / 2 - fw / 2, 0],
   ];
-  for (const [geo, x, y] of bars) g.add(K.partMesh(geo, m, 'frame', { position: [x, y, z0 + depth / 2] }));
+  for (const [geo, x, y] of bars) g.add(K.partMesh(geo, m, part, { position: [x, y, z0 + depth / 2] }));
   if (step > 0) {
     const sw = fw * 0.35, sd = depth * 0.8;
     const iw = w - 2 * fw, ih = h - 2 * fw;
@@ -2419,61 +2573,306 @@ function addFrameBars(g, w, h, fw, depth, m, { step = 0, z0 = 0 } = {}) {
       [K.box(sw, ih - 2 * sw, sd, { grain: 'y' }), -iw / 2 + sw / 2, 0],
       [K.box(sw, ih - 2 * sw, sd, { grain: 'y' }), iw / 2 - sw / 2, 0],
     ];
-    for (const [geo, x, y] of inner) g.add(K.partMesh(geo, m, 'frame', { position: [x, y, z0 + sd / 2] }));
+    for (const [geo, x, y] of inner) g.add(K.partMesh(geo, m, part, { position: [x, y, z0 + sd / 2] }));
   }
 }
 
-const FRAME_W = { black: 0.015, oak: 0.022, white: 0.03, floater: 0.012 };
+/**
+ * The frame of a picture of outer size w × h by profile (models/artlayout.js FRAME_PROFILES; the legacy profiles keep
+ * their exact round-1 geometry):
+ *   thin/black/floater 4 bars · oak/white 4 bars + inner step · alu 4 rounded bars · box 4 bars + a front lip inside
+ *   them · ornate 3 stepped rings (one material) · hanger 2 battens (front and back strip) + an optional cord
+ */
+function addFrame(g, L, w, h, m, part = 'frame', cord = true) {
+  const { fw, depth } = L;
+  switch (L.frame) {
+    case 'hanger': {
+      const bw = w + 0.01, t = 0.006;
+      for (const y of [h / 2 - fw / 2, -h / 2 + fw / 2]) {
+        for (const z of [t / 2, HANGER_Z + t / 2]) g.add(K.partMesh(K.box(bw, fw, t, { grain: 'x' }), m, part, { position: [0, y, z] }));
+      }
+      if (cord) {
+        // a cord from the top batten's ends to a nail 12 cm above the poster (fixed black, not recoloured)
+        const cm = mat('black-metal', '#2a2a2a');
+        const top = h / 2 + 0.12;
+        for (const s of [-1, 1]) {
+          const x0 = s * (bw / 2 - 0.012), y0 = h / 2;
+          const len = Math.hypot(x0, top - y0);
+          g.add(K.partMesh(K.box(len, 0.002, 0.002), cm, null, { position: [x0 / 2, (y0 + top) / 2, t / 2], rotation: [0, 0, Math.atan2(top - y0, -x0)] }));
+        }
+      }
+      return;
+    }
+    case 'alu':
+      addFrameBars(g, w, h, fw, depth, m, { round: Math.min(0.0015, fw / 3), part });
+      return;
+    case 'ornate':
+      addFrameBars(g, w, h, fw * 0.45, depth, m, { part });
+      addFrameBars(g, w - 0.9 * fw, h - 0.9 * fw, fw * 0.35, depth * 0.8, m, { part });
+      addFrameBars(g, w - 1.6 * fw, h - 1.6 * fw, fw * 0.2, depth * 0.9, m, { part });
+      return;
+    case 'box': {
+      addFrameBars(g, w, h, fw, depth, m, { part });
+      const ld = Math.min(0.006, depth);
+      if (L.lipW > 0) addFrameBars(g, w - 2 * fw, h - 2 * fw, L.lipW, ld, m, { z0: depth - ld, part });
+      return;
+    }
+    default:
+      addFrameBars(g, w, h, fw, depth, m, { step: L.step, part });
+  }
+}
+
+/** Side colour of a stretched canvas: params.edge 'wrap' (the picture's border colour), 'white' or 'dark'. */
+function canvasEdgeHex(P, base, custom = false) {
+  const mode = P?.edge || (custom ? 'white' : 'wrap');
+  const b = typeof P?.edgeHex === 'string' && HEX6.test(P.edgeHex) ? P.edgeHex : base;
+  return mode === 'dark' ? mixHex(b, '#2f3534', 0.65) : mode === 'white' ? '#ece9e2' : b;
+}
+
+/**
+ * One picture of outer size w × h (back at z 0, centred) into g from its artLayout L: the stretched canvas body (or
+ * the backing board and the passepartout of a paper print) and the frame. Returns the print plane geometry, already
+ * at its z – the caller adds it (art-frame) or merges it with the other prints of a set (art-set).
+ * @param {THREE.Group} g
+ * @param {{ L: object, w: number, h: number, edgeHex: string, frameMat: THREE.Material|null, framePart?: string|null,
+ *   matColor?: string, cord?: boolean, uvRect?: number[]|null }} o
+ */
+function addArtPiece(g, { L, w, h, edgeHex, frameMat, framePart = 'frame', matColor, cord = true, uvRect = null }) {
+  const bw = w - 2 * L.fw, bh = h - 2 * L.fw; // inside the bars (the box lip sits inside them)
+  if (!L.paperPrint) {
+    // stretched canvas (alone, or floating in the frame)
+    const { cd, z0 } = L;
+    g.add(K.partMesh(K.roundedBox(L.openW, L.openH, cd, Math.min(0.002, cd / 4), 1), mat('cotton', edgeHex), null, { position: [0, 0, z0 + cd / 2] }));
+    // shadow-gap backing behind the floating canvas
+    if (L.framed) g.add(K.partMesh(K.box(bw, bh, 0.004), mat('black-metal', '#141414'), null, { position: [0, 0, 0.002] }));
+  } else if (L.frame !== 'hanger') {
+    g.add(K.partMesh(K.box(bw, bh, 0.004), mat('painted', '#3a3836'), null, { position: [0, 0, 0.002] }));
+    if (L.matW > 0) {
+      const s = K.roundedRectShape(bw, bh, 0);
+      s.holes.push(new THREE.Path(K.roundedRectShape(L.picW, L.picH, 0).getPoints()));
+      const geo = K.extrudeShape(s, 0.002);
+      K.worldUV(geo);
+      g.add(K.partMesh(geo, mat('paper', typeof matColor === 'string' && HEX6.test(matColor) ? matColor : '#f3f0e9'), null, { position: [0, 0, L.printZ + 0.0004] }));
+    }
+  }
+  if (L.framed && frameMat) addFrame(g, L, w, h, frameMat, framePart, cord);
+  return printPlane(L.planeW, L.planeH, uvRect).translate(0, 0, L.printZ);
+}
 
 /** Composition seed from the size, so different products get different pictures (until the user picks one). */
 const defaultSeed = (w, h) => 1 + (Math.round(w * 100) * 31 + Math.round(h * 100) * 17) % 97;
 
+/** Texture size of a print: the legacy motifs keep today's artRes (byte-identical); new motifs follow the print's size. */
+const motifRes = (spec, motif, pw, ph) => (isNewMotif(motif) ? artResFor(spec?.quality, pw, ph) : artRes(spec));
+
 function buildArt(spec) {
   const P = spec.params, C = spec.colors, M = spec.materials;
   const { w, h } = spec.dims;
-  const depth = Math.max(0.008, num(P.depth, spec.dims.d));
-  const style = P.frame ?? 'black';
-  const fw0 = style === 'none' ? 0 : num(P.frameW, FRAME_W[style] ?? 0.02);
-  const fw = clamp(fw0, 0, Math.min(w, h) * 0.2);
-  const framed = fw > 0.001;
-  const texture = P.texture || (P.mat ? 'paper' : 'canvas');
-  const paperPrint = framed && (P.mat || texture === 'paper' || texture === 'photo');
-  const matW = paperPrint && P.mat ? num(P.matW, Math.min(w, h) * 0.09) : 0;
+  artBudget(spec);
+  const L = artLayout(spec.dims, P);
+  const custom = P.motif === 'custom' && isImageId(P.imageId);
   const motif = P.motif || 'abstract';
+  const fabric = M.print === 'cotton' || M.print === 'linen' ? M.print : null;
   const g = new THREE.Group();
-  const innerW = w - 2 * fw, innerH = h - 2 * fw;
-  const gap = framed && !paperPrint ? 0.005 : 0;
-  const pw = Math.max(0.02, innerW - 2 * matW - 2 * gap), ph = Math.max(0.02, innerH - 2 * matW - 2 * gap);
-  const pm = printMaterial({ motif, seed: P.seed ?? defaultSeed(w, h), hex: C.print, palette: P.palette, aspect: pw / ph, res: artRes(spec), texture, fabric: M.print === 'cotton' || M.print === 'linen' ? M.print : null });
-  if (!paperPrint) {
-    // stretched canvas (alone, or floating in the frame)
-    const cd = framed ? Math.min(depth * 0.8, depth - 0.004) : depth;
-    const edgeMode = P.edge || 'wrap';
-    const edgeHex = edgeMode === 'dark' ? mixHex(pm.userData.edgeHex, '#2f3534', 0.65) : edgeMode === 'white' ? '#ece9e2' : pm.userData.edgeHex;
-    const z0 = framed ? depth - cd - 0.001 : 0;
-    g.add(K.partMesh(K.roundedBox(pw, ph, cd, Math.min(0.002, cd / 4), 1), mat('cotton', edgeHex), null, { position: [0, 0, z0 + cd / 2] }));
-    g.add(K.partMesh(printPlane(pw - 0.001, ph - 0.001), pm, 'print', { position: [0, 0, z0 + cd + 0.0005] }));
-    if (framed) {
-      // shadow-gap backing behind the floating canvas
-      g.add(K.partMesh(K.box(innerW, innerH, 0.004), mat('black-metal', '#141414'), null, { position: [0, 0, 0.002] }));
-    }
+  let pm, edgeBase;
+  if (custom) {
+    const entry = customPrintTexture(P.imageId, { aspect: L.picW / L.picH, res: Math.min(artResFor(spec.quality, L.picW, L.picH), CUSTOM_MAX_RES), fit: L.draw, bg: PAPER_WHITE, focus: P.focus });
+    pm = customPrintMaterial(entry, { texture: L.texture, fabric, glass: P.glass === true });
+    edgeBase = entry.state === 'ready' ? entry.edgeHex : CUSTOM_EDGE_HEX;
   } else {
-    const pz = Math.min(depth * 0.55, depth - 0.006);
-    g.add(K.partMesh(K.box(innerW, innerH, 0.004), mat('painted', '#3a3836'), null, { position: [0, 0, 0.002] }));
-    g.add(K.partMesh(printPlane(pw + 0.004, ph + 0.004), pm, 'print', { position: [0, 0, pz] }));
-    if (matW > 0) {
-      const s = K.roundedRectShape(innerW, innerH, 0);
-      s.holes.push(new THREE.Path(K.roundedRectShape(pw, ph, 0).getPoints()));
-      const geo = K.extrudeShape(s, 0.002);
-      K.worldUV(geo);
-      g.add(K.partMesh(geo, mat('paper', P.matColor || '#f3f0e9'), null, { position: [0, 0, pz + 0.0004] }));
+    const seed = P.seed == null ? defaultSeed(w, h) : clampInt(P.seed, 1, 20, 1);
+    pm = printMaterial({ motif, seed, hex: C.print, palette: P.palette, aspect: L.picW / L.picH, res: motifRes(spec, motif, L.picW, L.picH), texture: L.texture, fabric, opts: P.motifOpts, glass: P.glass === true });
+    edgeBase = pm.userData.edgeHex;
+  }
+  const frameMat = L.framed ? frameMaterial(M.frame || L.kind, C.frame) : null;
+  const plane = addArtPiece(g, { L, w, h, edgeHex: canvasEdgeHex(P, edgeBase, custom), frameMat, matColor: P.matColor, cord: P.cord !== false });
+  g.add(K.partMesh(plane, pm, 'print'));
+  return finish(g, FRAME_FINISH);
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Gallery walls (art-set, design/art.md §4): one item and one price; the pieces of a layout (models/artlayout.js)
+// scaled uniformly into dims; every generated print of the set painted into ONE atlas texture (one material, one
+// merged print mesh that keeps uv1 – kit.mergeSameMaterial would drop it); uploaded pictures are separate meshes.
+
+/** params.frames[i].finish → a fixed frame material (not part-tagged, so recolouring the set leaves it alone). */
+const SET_FINISHES = Object.freeze({
+  black: ['black-metal', '#151515'], white: ['painted', '#f1efea'], oak: ['oak', '#c39b6e'],
+  walnut: ['walnut', '#5f4332'], gold: ['brass', '#c8a463'], alu: ['steel', '#b9bcbf'],
+});
+/** Gutter around each atlas cell (px; the cell's edge pixels are bled into it against mip bleeding). */
+const ATLAS_PAD = 6;
+/** Relief is not supported in sets: 'relief' / 'painted' map to 'canvas'. */
+const setTexture = (t) => (t === 'canvas' || t === 'paper' || t === 'photo' ? t : t === 'relief' || t === 'painted' ? 'canvas' : 'paper');
+
+/**
+ * Motif of set frame i (design/art.md §4.3): params.frames[i] fields, else params.motifs[i % n], else params.motif,
+ * else DEFAULT_SET_MOTIFS[(i + seed − 1) % 9]; seed defaults to params.seed + i. `palette` is the frame's own palette
+ * (null = it inherits the set palette and follows the print colour).
+ */
+function setMotif(P, i, data = {}) {
+  const seed0 = clampInt(P.seed ?? 1, 1, 20, 1);
+  const list = Array.isArray(P.motifs) ? P.motifs.filter((m) => m && typeof m === 'object' && typeof m.motif === 'string' && m.motif !== 'custom') : [];
+  const m = list.length ? list[i % list.length] : null;
+  const own = typeof data.motif === 'string' && data.motif !== 'custom' ? data.motif : null;
+  const setLevel = typeof P.motif === 'string' && P.motif && P.motif !== 'custom' ? P.motif : null;
+  const motif = own ?? m?.motif ?? setLevel ?? DEFAULT_SET_MOTIFS[(i + seed0 - 1) % DEFAULT_SET_MOTIFS.length];
+  const seed = clampInt(data.seed ?? m?.seed ?? seed0 + i, 1, 99, seed0 + i);
+  const palette = validPalette(data.palette) ? data.palette : validPalette(m?.palette) ? m.palette : null;
+  const opts = data.motifOpts ?? m?.motifOpts ?? (!own && !m && setLevel ? P.motifOpts : null) ?? null;
+  return { motif, seed, palette, opts };
+}
+
+/** Cache key of a set atlas: its cells (rects in px, motif, seed, own palette, opts), the print colour and palette. */
+function atlasKey(plan) {
+  const cells = plan.cells.map((c) => `${c.x},${c.y},${c.w},${c.h}:${c.motif}:${c.seed}:${c.palette ? c.palette.join(',') : ''}:${isNewMotif(c.motif) ? motifOptsKey(c.motif, c.opts) : ''}`);
+  return `set|${plan.W}x${plan.H}|${plan.hex}|${plan.palette ? plan.palette.join(',') : ''}|${cells.join(';')}`;
+}
+
+/** The atlas canvas of a set: each cell painted on its own canvas (any painter works), copied in and bled 6 px out. */
+function atlasArt(plan, key = atlasKey(plan)) {
+  const hit = ATLAS.get(key);
+  if (hit) return hit;
+  const cv = createCanvas(plan.W, plan.H);
+  const x = cv.getContext('2d');
+  x.fillStyle = '#9a968f';
+  x.fillRect(0, 0, plan.W, plan.H);
+  x.imageSmoothingEnabled = true;
+  const p = ATLAS_PAD;
+  let r = 0, g = 0, b = 0;
+  for (const cell of plan.cells) {
+    const { w, h } = cell;
+    const cc = createCanvas(w, h);
+    const c = cc.getContext('2d');
+    const pal = cell.palette ? artPalette(cell.motif, hexOf(cell.palette[1]), cell.palette) : artPalette(cell.motif, plan.hex, plan.palette);
+    pal.mono = false;
+    paintMotif(c, w, h, cell.motif, cell.seed, pal, null, cell.opts);
+    x.drawImage(cc, cell.x, cell.y);
+    x.drawImage(cc, 0, 0, w, 1, cell.x, cell.y - p, w, p);
+    x.drawImage(cc, 0, h - 1, w, 1, cell.x, cell.y + h, w, p);
+    x.drawImage(cc, 0, 0, 1, h, cell.x - p, cell.y, p, h);
+    x.drawImage(cc, w - 1, 0, 1, h, cell.x + w, cell.y, p, h);
+    x.drawImage(cc, 0, 0, 1, 1, cell.x - p, cell.y - p, p, p);
+    x.drawImage(cc, w - 1, 0, 1, 1, cell.x + w, cell.y - p, p, p);
+    x.drawImage(cc, 0, h - 1, 1, 1, cell.x - p, cell.y + h, p, p);
+    x.drawImage(cc, w - 1, h - 1, 1, 1, cell.x + w, cell.y + h, p, p);
+    const e = borderColor(cc);
+    r += parseInt(e.slice(1, 3), 16);
+    g += parseInt(e.slice(3, 5), 16);
+    b += parseInt(e.slice(5, 7), 16);
+  }
+  const n = Math.max(1, plan.cells.length);
+  const hx = (v) => Math.round(v / n).toString(16).padStart(2, '0');
+  const out = { map: canvasTexture(cv, { wrap: false }), edgeHex: plan.cells.length ? `#${hx(r)}${hx(g)}${hx(b)}` : '#ece9e2' };
+  out.map.name = 'art-set atlas';
+  return ATLAS.set(key, out, plan.W * plan.H);
+}
+
+/** The print material of a set's atlas (flat print layout, glass support); recolour repaints the inheriting frames. */
+function setPrintMaterial(plan, look) {
+  const akey = atlasKey(plan);
+  const key = `${akey}|${look.texture}|${look.fabric || ''}|${look.glass ? 'g' : ''}`;
+  return PRINTS.get(key, () => {
+    const art = atlasArt(plan, akey);
+    const p = flatPrintParams(art.map, look.texture, look.fabric);
+    if (look.glass) glassy(p);
+    const m = new THREE.MeshStandardMaterial(p);
+    m.name = `print set ${plan.hex}`;
+    m.userData = { shared: true, kind: 'print', hex: plan.hex, edgeHex: art.edgeHex, decorRecolor: (nh) => setPrintMaterial({ ...plan, hex: hexOf(nh, plan.hex) }, look) };
+    ATLAS.use(art, m);
+    return m;
+  });
+}
+
+/** Matrix of a set piece: centre (x, y) on the wall, or leaning – rotated about its bottom edge, which stands z out. */
+function pieceMatrix(f) {
+  const m = new THREE.Matrix4().makeTranslation(f.x, f.y - f.h / 2, f.z || 0);
+  if (f.tilt) m.multiply(new THREE.Matrix4().makeRotationX(-f.tilt));
+  return m.multiply(new THREE.Matrix4().makeTranslation(0, f.h / 2, 0));
+}
+
+function buildArtSet(spec) {
+  const P = spec.params, C = spec.colors, M = spec.materials;
+  const q = spec.quality === 'low' || spec.quality === 'high' ? spec.quality : 'medium';
+  artBudget(spec);
+  const lay = galleryLayout(typeof P.layout === 'string' ? P.layout : 'salon-5', { gap: P.gap, rise: P.rise, overlap: P.overlap, mirror: P.mirror === true, frames: P.frames });
+  const { frames, ledge, kz } = fitSet(lay.frames, lay.ledge, spec.dims);
+  const D = num(P.depth, spec.dims.d);
+  // on a ledge the pieces are 2.5 cm deep – squeezed with the ledge (kz < 1) when the set is shallower than it
+  const pieceD = ledge ? clamp(Math.min(0.025 * kz, D), ART_DEPTH_MIN, 0.06) : clamp(D, 0.005, 0.06);
+  const hex = hexOf(C.print, DEFAULT_PRINT);
+  const setPal = validPalette(P.palette) ? P.palette : null;
+  const look = { texture: setTexture(P.texture), fabric: M.print === 'cotton' || M.print === 'linen' ? M.print : null, glass: P.glass === true };
+  const pieces = frames.map((f, i) => {
+    const data = f.data && typeof f.data === 'object' ? f.data : {};
+    const custom = isImageId(data.imageId);
+    const Pi = {
+      frame: typeof data.frame === 'string' ? data.frame : typeof P.frame === 'string' ? P.frame : 'thin',
+      frameW: num(data.frameW, P.frameW), mat: typeof data.mat === 'boolean' ? data.mat : P.mat !== false,
+      matW: num(data.matW, P.matW), matH: num(data.matH, P.matH), texture: setTexture(data.texture ?? P.texture), depth: pieceD,
+    };
+    if (custom) Object.assign(Pi, { motif: 'custom', imageId: data.imageId, imageAspect: data.imageAspect, fit: data.fit });
+    return {
+      f, data, custom, mo: setMotif(P, i, data), L: artLayout({ w: f.w, h: f.h, d: pieceD }, Pi),
+      matColor: data.matColor ?? P.matColor, finish: Object.hasOwn(SET_FINISHES, data.finish ?? '') ? data.finish : null, uvRect: null,
+    };
+  });
+  const gen = pieces.filter((p) => !p.custom);
+  let pm = null;
+  if (gen.length && lay.span) {
+    // one motif across all panels (triptych): painted at the bounding box of the print planes, each plane its share
+    const sp = spanRects(gen.map((p) => ({ x: p.f.x, y: p.f.y, w: p.L.planeW, h: p.L.planeH })));
+    const mo = setMotif(P, 0, {});
+    pm = printMaterial({ motif: mo.motif, seed: mo.seed, hex: mo.palette ? mo.palette[1] : hex, palette: mo.palette ?? setPal, aspect: sp.aspect, res: motifRes(spec, mo.motif, sp.w, sp.h), texture: look.texture, fabric: look.fabric, opts: mo.opts, glass: look.glass });
+    gen.forEach((p, i) => (p.uvRect = sp.rects[i]));
+  } else if (gen.length) {
+    // cell sizes from the quantised print aspect (~4 % steps, as single pictures) and the long side in 32 px steps:
+    // resizing a set reuses its atlas until a step is crossed (the stretch stays ≤ 2 %)
+    const ppm = PPM[q] ?? 1000;
+    const cell = (L) => {
+      const c = canvasSize(quantAspect(L.picW / L.picH), Math.max(32, Math.round((Math.max(L.picW, L.picH) * ppm) / 32) * 32), 8);
+      return { w: c.W, h: c.H };
+    };
+    const packed = packAtlas(gen.map((p) => cell(p.L)), ATLAS_MAX[q] ?? 2048, ATLAS_PAD);
+    if (!packed) throw new Error('art-set: the prints do not fit into one atlas');
+    const plan = { W: packed.W, H: packed.H, hex, palette: setPal, cells: gen.map((p, i) => ({ ...packed.rects[i], motif: p.mo.motif, seed: p.mo.seed, palette: p.mo.palette, opts: p.mo.opts })) };
+    pm = setPrintMaterial(plan, look);
+    gen.forEach((p, i) => (p.uvRect = atlasUvRect(packed.rects[i], packed.W, packed.H)));
+  }
+  const setEdge = canvasEdgeHex(P, pm ? pm.userData.edgeHex : CUSTOM_EDGE_HEX);
+  const g = new THREE.Group();
+  const planes = [];
+  for (const p of pieces) {
+    const pg = new THREE.Group();
+    const fm = !p.L.framed ? null : p.finish ? frameMaterial(...SET_FINISHES[p.finish]) : frameMaterial(M.frame || p.L.kind, C.frame);
+    let cm = null, edge = setEdge;
+    if (p.custom) {
+      const entry = customPrintTexture(p.data.imageId, { aspect: p.L.picW / p.L.picH, res: Math.min(artResFor(q, p.L.picW, p.L.picH), CUSTOM_MAX_RES), fit: p.L.draw, bg: PAPER_WHITE, focus: p.data.focus });
+      cm = customPrintMaterial(entry, { texture: p.L.texture, fabric: look.fabric, glass: look.glass });
+      edge = canvasEdgeHex(p.data, entry.state === 'ready' ? entry.edgeHex : CUSTOM_EDGE_HEX, true);
     }
+    const plane = addArtPiece(pg, { L: p.L, w: p.f.w, h: p.f.h, edgeHex: edge, frameMat: fm, framePart: p.finish ? null : 'frame', matColor: p.matColor, cord: false, uvRect: p.uvRect });
+    const mtx = pieceMatrix(p.f);
+    if (p.custom) pg.add(K.partMesh(plane, cm, 'print', { noMerge: true }));
+    else planes.push(plane.applyMatrix4(mtx));
+    pg.applyMatrix4(mtx);
+    g.add(pg);
   }
-  if (framed) {
-    const kind = M.frame || (style === 'oak' ? 'oak' : style === 'white' ? 'painted' : 'black-metal');
-    addFrameBars(g, w, h, fw, depth, mat(kind, C.frame, WOOD_KINDS.has(kind) ? undefined : undefined), { step: style === 'oak' || style === 'white' ? 1 : 0 });
+  if (planes.length) {
+    const geo = mergeGeometries(planes, false);
+    for (const pl of planes) pl.dispose();
+    if (!geo) throw new Error('art-set: could not merge the print planes');
+    g.add(K.partMesh(geo, pm, 'print', { noMerge: true }));
   }
-  return finish(g);
+  if (ledge) {
+    // the picture ledge (layout 'ledge'): a board under the frames with a front lip, in the frame material (board and
+    // lip ledge.d deep / 8 mm thick in the natural layout, squeezed by kz in a shallower set – the set ends at dims.d)
+    const lm = frameMaterial(M.frame || 'oak', C.frame);
+    const lipD = 0.008 * kz;
+    g.add(K.partMesh(K.box(ledge.w, ledge.t, ledge.d, { grain: 'x' }), lm, 'frame', { position: [ledge.x, ledge.y - ledge.t / 2, ledge.d / 2] }));
+    g.add(K.partMesh(K.box(ledge.w, ledge.lip + ledge.t, lipD, { grain: 'x' }), lm, 'frame', { position: [ledge.x, ledge.y + ledge.lip / 2 - ledge.t / 2, ledge.d - lipD / 2] }));
+  }
+  return finish(g, FRAME_FINISH);
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -2869,6 +3268,7 @@ function screenMaterial(on, res) {
     if (on) {
       const art = motifArt({ motif: 'photo', seed: 3, hex: '#8fa6b8', aspect: 16 / 9, res });
       m = new THREE.MeshStandardMaterial({ color: '#050505', emissive: '#ffffff', emissiveMap: art.map, emissiveIntensity: 1.25, roughness: 0.22, metalness: 0 });
+      MOTIFS.use(art, m); // the screen keeps its picture (this material is cached for the page lifetime)
     } else {
       m = new THREE.MeshPhysicalMaterial({ color: '#040405', roughness: 0.2, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.06, envMapIntensity: 0.9 });
     }
@@ -3069,16 +3469,31 @@ function buildAcousticArt(spec) {
   const t = Math.max(0.01, num(P.thickness, d));
   const framed = P.frame && P.frame !== 'none';
   const fw = framed ? clamp(num(P.frameW, 0.015), 0.005, 0.05) : 0;
+  // 'custom' with an uploaded picture (params.imageId) prints it; 'custom' without one keeps the fjord photo
+  const custom = P.motif === 'custom' && isImageId(P.imageId);
   const motif = !P.motif || P.motif === 'custom' ? 'photo' : P.motif;
   const g = new THREE.Group();
   const pw = w - 2 * fw, ph = h - 2 * fw;
   const fabric = M.panel === 'paper' ? null : M.panel === 'cotton' || M.panel === 'linen' ? M.panel : 'woven';
-  const pm = printMaterial({ motif, seed: P.seed ?? 1, hex: C.panel, palette: P.palette, aspect: pw / ph, res: artRes(spec), texture: M.panel === 'paper' ? 'photo' : 'canvas', fabric });
+  const texture = M.panel === 'paper' ? 'photo' : 'canvas';
+  artBudget(spec);
+  let pm, edgeHex;
+  if (custom) {
+    const entry = customPrintTexture(P.imageId, { aspect: pw / ph, res: Math.min(artResFor(spec.quality, pw, ph), CUSTOM_MAX_RES), fit: P.fit === 'contain' ? 'contain' : 'cover', bg: PAPER_WHITE, focus: P.focus });
+    pm = customPrintMaterial(entry, { texture, fabric });
+    // fixed fabric sides (the white absorbent, as art-frame's 'white' edge for own pictures): the picture's border
+    // colour is known only once it is decoded, and these sides are not rebuilt when it arrives – they would change
+    // with what the session did (decoded at page load or not)
+    edgeHex = CUSTOM_EDGE_HEX;
+  } else {
+    pm = printMaterial({ motif, seed: P.seed ?? 1, hex: C.panel, palette: P.palette, aspect: pw / ph, res: motifRes(spec, motif, pw, ph), texture, fabric, opts: P.motifOpts });
+    edgeHex = pm.userData.edgeHex;
+  }
   g.add(K.partMesh(K.box(pw * 0.98, ph * 0.98, 0.004), mat('felt', C.backing), 'backing', { position: [0, 0, 0.002] }));
-  g.add(K.partMesh(K.roundedBox(pw, ph, t - 0.002, Math.min(0.006, t / 3), 2), mat(fabric || 'cotton', pm.userData.edgeHex), null, { position: [0, 0, 0.002 + (t - 0.002) / 2] }));
+  g.add(K.partMesh(K.roundedBox(pw, ph, t - 0.002, Math.min(0.006, t / 3), 2), mat(fabric || 'cotton', edgeHex), null, { position: [0, 0, 0.002 + (t - 0.002) / 2] }));
   g.add(K.partMesh(printPlane(pw - Math.min(0.012, t / 1.5), ph - Math.min(0.012, t / 1.5)), pm, 'panel', { position: [0, 0, t + 0.0006] }));
-  if (framed) addFrameBars(g, w, h, fw, t + 0.004, mat(M.frame === 'cotton' || M.frame === 'woven' ? 'black-metal' : M.frame || 'black-metal', C.frame));
-  return finish(g);
+  if (framed) addFrameBars(g, w, h, fw, t + 0.004, frameMaterial(M.frame === 'cotton' || M.frame === 'woven' ? 'black-metal' : M.frame || 'black-metal', C.frame));
+  return finish(g, FRAME_FINISH);
 }
 
 /** Outline of a felt shape inside w × h. */
@@ -3192,6 +3607,7 @@ function buildCeilingAbsorber(spec) {
     g.add(K.partMesh(K.roundedBox(w, h, t, Math.min(0.01, t / 3), 3), pm, 'panel', { position: [0, yTop - h / 2 - 0.006, 0] }));
     g.add(K.partMesh(K.box(w, 0.012, t + 0.004, { grain: 'x' }), mat(M.frame || 'ash', C.frame), 'frame', { position: [0, yTop - 0.006, 0] }));
     for (const s of [-1, 1]) addWire(g, s * w * 0.38, yTop, -0.006, 0);
+    // a standing screen keeps the normal ceiling side view: the wires and the hanging read from there
     return finish(g);
   }
   const t = Math.max(0.01, num(P.thickness, h));
@@ -3213,7 +3629,16 @@ function buildCeilingAbsorber(spec) {
   K.worldUV(geo);
   g.add(K.partMesh(geo, pm, 'panel', { position: [0, -drop, 0] }));
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) addWire(g, sx * w * 0.3, -drop + t, -0.006, sz * d * 0.3);
-  return finish(g);
+  return thumbUnder(finish(g));
+}
+
+/**
+ * Catalogue thumbnail of a flat raft: seen from below the front with no ceiling plate (ui/CatalogPanel.js thumbView
+ * 'under'), so the underside and the wires read – straight from below, a white raft vanished against the plate.
+ */
+function thumbUnder(g) {
+  g.userData.model.thumbView = 'under';
+  return g;
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -3242,7 +3667,19 @@ function def(id, { parts, partLabels = {}, defaults, params = {}, dimsRange, bui
 
 const seedParam = { type: 'number', label: 'Variant', min: 1, max: 20, step: 1, default: 1 };
 const POT_OPTIONS = [['auto', 'Som planten'], ['cylinder', 'Sylinder'], ['ribbed', 'Riflet krukke'], ['belly', 'Buet krukke'], ['taper', 'Konisk'], ['bowl', 'Skål']];
-const MOTIF_OPTIONS = [['misty-trees', 'Tåkete trær'], ['abstract', 'Abstrakt'], ['landscape', 'Landskap'], ['botanical', 'Botanisk'], ['line-art', 'Strektegning'], ['photo', 'Foto (fjord)']];
+/**
+ * «Motiv»: the six legacy motifs (labels only renamed) and the motifs of models/artmotifs.js grouped. No 'custom' for
+ * a picture: an own picture comes in through «Bilde» → «Bytt til eget bilde …» (ui/imageInspector.js hides this list
+ * once the item holds one) – picked here without a picture, 'custom' only painted the fjord photo of «Fjordfoto».
+ */
+const LEGACY_OPTIONS = [['misty-trees', 'Tåkete trær'], ['abstract', 'Abstrakt'], ['landscape', 'Landskap'],
+  ['botanical', 'Botanisk (enkel)'], ['line-art', 'Strektegning (enkel)'], ['photo', 'Fjordfoto (klassisk)']];
+const MOTIF_OPTIONS = [...LEGACY_OPTIONS, ...ART_MOTIF_OPTIONS];
+/**
+ * Acoustic pictures keep 'custom' (last): the catalogue's «eget motiv» panels carry it and show the fjord photo as an
+ * example until a picture is put in (buildAcousticArt) – the label says so, also when it is picked by hand.
+ */
+const ACOUSTIC_MOTIF_OPTIONS = [...MOTIF_OPTIONS, ['custom', 'Eget motiv (eksempelbilde)']];
 const plantParams = (species) => ({
   species: { type: 'enum', label: 'Plante', options: species },
   potStyle: { type: 'enum', label: 'Potte', options: POT_OPTIONS, default: 'auto' },
@@ -3301,20 +3738,47 @@ export const archetypes = {
   'art-frame': def('art-frame', {
     defaults: {
       dims: { w: 0.8, d: 0.04, h: 1.0 },
-      params: { motif: 'abstract', frame: 'black', depth: 0.04, texture: 'canvas', seed: 1 },
-      colors: { print: '#c9cfcd', frame: '#151515' },
+      // no default `depth`: the depth is params.depth (legacy data) or dims.d (design/art.md §3.5)
+      params: { motif: 'abstract', frame: 'black', texture: 'canvas', seed: 1 },
+      colors: { print: DEFAULT_PRINT, frame: '#151515' },
       materials: { print: 'cotton', frame: 'black-metal' },
     },
     params: {
       motif: { type: 'enum', label: 'Motiv', options: MOTIF_OPTIONS },
-      frame: { type: 'enum', label: 'Ramme', options: [['none', 'Uten ramme (lerret)'], ['black', 'Smal ramme'], ['oak', 'Treramme'], ['white', 'Bred ramme'], ['floater', 'Skyggefugeramme']] },
+      frame: { type: 'enum', label: 'Ramme', options: FRAME_OPTIONS },
       frameW: { type: 'number', label: 'Rammebredde', min: 0.005, max: 0.08, step: 0.001, unit: 'm', default: 0.02 },
       texture: { type: 'enum', label: 'Overflate', options: [['canvas', 'Lerret'], ['painted', 'Malt (penselstrøk)'], ['relief', 'Struktur / relieff'], ['paper', 'Papirtrykk'], ['photo', 'Fotopapir']] },
       mat: { type: 'bool', label: 'Passepartout', default: false },
+      // defaultFor(dims, params): the width the builder draws while matW is unset (9 % of the short outer side,
+      // models/artlayout.js) – what the Inspector shows instead of `default` (null: no mat drawn, e.g. no frame)
+      matW: { type: 'number', label: 'Passepartoutbredde', min: 0.015, max: 0.15, step: 0.005, unit: 'm', default: 0.06, requires: 'mat',
+        defaultFor: (dims, P) => artLayout(dims, P).matW || null },
+      // over and under the opening (models/artlayout.js); unset = matW all round (defaultFrom: a hint for the Inspector)
+      matH: { type: 'number', label: 'Passepartout over og under', min: 0.015, max: 0.15, step: 0.005, unit: 'm', default: 0.06, requires: 'mat', defaultFrom: 'matW' },
+      glass: { type: 'bool', label: 'Glass (refleks)', default: false },
       seed: seedParam,
     },
-    dimsRange: { w: [0.2, 2.4], d: [0.01, 0.08], h: [0.2, 2.4] },
+    dimsRange: { w: [0.1, 3.0], d: [0.005, 0.1], h: [0.1, 3.0] },
     build: buildArt,
+  }),
+  'art-set': def('art-set', {
+    defaults: {
+      dims: { w: 1.32, d: 0.025, h: 0.76 }, // = the natural size of 'salon-5' at gap 0.06 (real frame sizes)
+      params: { layout: 'salon-5', gap: 0.06, frame: 'thin', frameW: 0.012, texture: 'paper', mat: true, matW: 0.035, glass: true, seed: 1 },
+      colors: { print: DEFAULT_PRINT, frame: '#151515' },
+      materials: { print: 'paper', frame: 'black-metal' },
+    },
+    params: {
+      layout: { type: 'enum', label: 'Oppsett', options: LAYOUT_OPTIONS },
+      gap: { type: 'number', label: 'Mellomrom', min: 0.02, max: 0.25, step: 0.005, unit: 'm', default: 0.06, hint: 'Settet holder målene: mer mellomrom gir litt mindre bilder.' },
+      frame: { type: 'enum', label: 'Ramme', options: FRAME_OPTIONS },
+      mat: { type: 'bool', label: 'Passepartout', default: true },
+      glass: { type: 'bool', label: 'Glass (refleks)', default: true },
+      mirror: { type: 'bool', label: 'Speilvend oppsettet', default: false },
+      seed: { ...seedParam, hint: 'Nye motiver i alle rammene.' },
+    },
+    dimsRange: { w: [0.25, 3.6], d: [0.005, 0.12], h: [0.2, 2.4] },
+    build: buildArtSet,
   }),
   mirror: def('mirror', {
     defaults: {
@@ -3428,7 +3892,7 @@ export const archetypes = {
       ...acoustic('#8c8579', '#8c8579', '#545049', '#1c1c1c', 'woven', 'woven', 'black-metal'),
     },
     params: {
-      motif: { type: 'enum', label: 'Motiv', options: MOTIF_OPTIONS },
+      motif: { type: 'enum', label: 'Motiv', options: ACOUSTIC_MOTIF_OPTIONS },
       frame: { type: 'enum', label: 'Ramme', options: [['none', 'Uten ramme'], ['alu', 'Smal ramme']] },
       seed: seedParam,
     },

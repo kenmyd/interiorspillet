@@ -2,6 +2,7 @@ import { h, svg, bindUiSounds, trapTab, PAUSE_EVENT } from './dom.js';
 import { ICONS } from './icons.js';
 import { SettingsPanel } from './SettingsPanel.js';
 import { buildControlsOverview } from './controlsHelp.js';
+import { buildSchemeChooser } from './ControlsIntro.js';
 
 /**
  * Pause / settings menu (Esc).
@@ -12,7 +13,9 @@ import { buildControlsOverview } from './controlsHelp.js';
  *   dispose()
  * Settings edited here are written with settings.set(key, value); Game listens for changes.
  *
- * Views: main (Fortsett / Innstillinger / Kontroller / Avslutt), settings, controls, confirm-quit.
+ * Views: main (Fortsett / Innstillinger / Styring / Kontroller / Avslutt), settings, scheme («Styring»: the same
+ * chooser as the popup «Slik styrer du» – ControlsIntro.js), controls, confirm-quit.
+ *   showView(view)          opens one of the views (the menu must be open)
  * Esc handling: Input ignores keys while the game is paused, so the menu handles Esc itself: in a sub-view it
  * goes back to the main view, on the main view it resumes (onResume). The key press is stopped in the capture
  * phase, so it can never reach Input as a second 'pause' toggle (Input also ignores key presses that started
@@ -75,6 +78,8 @@ export class PauseMenu {
     window.removeEventListener('keydown', this._onKey, true);
     this._settingsPanel?.dispose();
     this._settingsPanel = null;
+    this._chooser?.dispose();
+    this._chooser = null;
     this.el.classList.remove('is-open');
     this.el.hidden = true;
     if (document.activeElement && this.el.contains(document.activeElement)) document.activeElement.blur();
@@ -93,9 +98,16 @@ export class PauseMenu {
 
   /* ------------------------------------------------------------------ views */
 
+  /** Opens a view ('main' | 'settings' | 'scheme' | 'controls' | 'confirm') of the open menu. */
+  showView(view) {
+    if (this.isOpen) this._show(view);
+  }
+
   _show(view) {
     this._settingsPanel?.dispose();
     this._settingsPanel = null;
+    this._chooser?.dispose();
+    this._chooser = null;
     this.view = view;
     this.panel.dataset.view = view;
     let focus = null;
@@ -110,7 +122,8 @@ export class PauseMenu {
         h('nav.kv-pause__menu', {},
           resume,
           this._menuBtn('sliders', 'Innstillinger', 'Mus, grafikk og lyd', () => this._show('settings')),
-          this._menuBtn('keyboard', 'Kontroller', 'Oversikt over taster og mus', () => this._show('controls')),
+          this._menuBtn('mouse', 'Styring', 'Mus, tastatur, touchpad eller touch', () => this._show('scheme')),
+          this._menuBtn('keyboard', 'Kontroller', 'Oversikt over taster, mus og touch', () => this._show('controls')),
           this._menuBtn('exit', 'Avslutt til hovedmeny', 'Tilbake til startsiden', () => this._show('confirm'), 'danger'),
         ),
         h('footer.kv-pause__foot', {}, h('kbd.kv-key.kv-key--wide', { text: 'Esc' }), h('span', { text: 'fortsett spillet' })),
@@ -120,6 +133,10 @@ export class PauseMenu {
       this._settingsPanel = new SettingsPanel(this.settings, { inGame: true });
       this.panel.replaceChildren(this._subHead('Innstillinger', 'sliders'), this._settingsPanel.el);
       focus = this.panel.querySelector('.kv-tab.is-active');
+    } else if (view === 'scheme') {
+      this._chooser = buildSchemeChooser(this.settings);
+      this.panel.replaceChildren(this._subHead('Slik styrer du', 'mouse'), this._chooser.el);
+      focus = this.panel.querySelector('.kv-iconbtn');
     } else if (view === 'controls') {
       this.panel.replaceChildren(this._subHead('Kontroller', 'keyboard'), buildControlsOverview(this.settings));
       focus = this.panel.querySelector('.kv-iconbtn');

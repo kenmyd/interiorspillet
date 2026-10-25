@@ -38,7 +38,7 @@
 // on the item's own (item.level). The level's plan (buildRoom) has the faces of all its rooms (backOf faces too, with
 // the holes of the slab behind them), the room polygons with the stairwell as a hole (a footprint must lie in ONE room:
 // «Utenfor rommet» / «Over trappehullet»), the kitchen, the built-ins and the stair's footprint on the lower level
-// («I trappa», blocked), and per door a clearance on both sides (a warning, as before) and the swing of a door the
+// («I trappa», blocked; a ceiling item hangs over it, but not under the stairwell: «Ingen tak over trappa»), and per door a clearance on both sides (a warning, as before) and the swing of a door the
 // player opens («I slaget til døra», blocked). Floors, ceilings, window boards and wall heights are the level's
 // (the entrance's floor lies 0.30 lower). Positions are world space, as the design holds them in memory; a new item
 // gets the item's `level` (DesignState v2 keeps it and saves y over the level's floor itself).
@@ -48,6 +48,7 @@ import { getArchetype } from '../models/registry.js';
 import { pickAt, cursorNDC, ndcFromClient, Footprint, hintUI, itemName, normDeg, underlayY, intersectFast, houseRoots, floorYAt, ROTATE_CURSOR } from './Selection.js';
 import { MAIN_LEVEL, itemLevel, levelFloorY, levelAtY } from './SceneSync.js';
 import { builtInFrame } from '../home/builtins.js';
+import { wallSnap } from './placementHooks.js';
 
 const DEG = Math.PI / 180;
 const GRID = 0.1;
@@ -61,7 +62,7 @@ const DOOR_CLEARANCE = 0.6;
  * arc lamps: beside a sofa against the wall their arm reaches sideways, along the wall, over the seat.) Floor vitrines
  * too – dropped by a wall with the default rotation they stood side-on to it (notes/add-storage.md).
  */
-const AUTO_FACE = /^(sideboard|tv-bench|display-cabinet|sofa-modular-l|sofa-curved|sofa-straight)$/;
+const AUTO_FACE = /^(sideboard|tv-bench|display-cabinet|sofa-modular-l|sofa-curved|sofa-straight|desk)$/;
 const AUTO_FACE_DIST = 0.4;
 /** Pendants over a table: the shade's underside this far above the top (60–70 cm is usual over a dining table). */
 const OVER_TABLE = 0.65;
@@ -71,10 +72,11 @@ const CUT_TO_LENGTH = new Set(['slat-panel']);
 
 const autoFaces = (archetype) => AUTO_FACE.test(archetype || '');
 
-/** Default height of the middle of wall items (m above the floor). */
+/** Default height of the middle of wall items (m above the floor); a product's params.mountHeight wins (start). */
 const WALL_V = {
   'art-frame': 1.5, mirror: 1.5, 'acoustic-art': 1.5, 'fabric-panel': 1.5, 'felt-shape': 1.5, 'slat-panel': 1.3,
   'wall-sconce': 1.7, 'wall-arm': 1.55, tv: 1.15, speaker: 1.2, 'wall-shelf': 1.45,
+  'spot-wall': 1.9, 'picture-light': 1.95, 'art-set': 1.45,
 };
 
 const _ray = new THREE.Raycaster();
@@ -132,6 +134,10 @@ export function buildRoom(editor, levelId = MAIN_LEVEL) {
   // the rooms of the level (physical ones), with the stairwell as a hole in the hall's floor
   const xz = (p) => ({ x: p.x, z: p.y });
   const holes = (H?.floorOpenings || []).filter((fo) => fo.levelId === levelId).map((fo) => fo.polygon.map(xz));
+  // the holes in the level's ceiling: the openings in the floor of the level above (the stairwell is open up to the
+  // hall – no basement ceiling for a ceiling item to hang on there)
+  const aboveId = H?.levelsById?.[levelId]?.aboveId ?? null;
+  const ceilingHoles = aboveId ? (H?.floorOpenings || []).filter((fo) => fo.levelId === aboveId).map((fo) => fo.polygon.map(xz)) : [];
   const roomList = (H?.rooms || []).filter((r) => r.levelId === levelId && !r.hud && r.polygon?.length >= 3);
   const rooms = roomList.length
     ? roomList.map((r) => ({ id: r.id, name: r.name, floorY: r.floorY ?? floorY, poly: r.polygon.map(xz), holes }))
@@ -211,7 +217,7 @@ export function buildRoom(editor, levelId = MAIN_LEVEL) {
     });
   }
   return {
-    level: levelId, floorY, walls, rooms, poly, holes, fixed, doors, sills,
+    level: levelId, floorY, walls, rooms, poly, holes, ceilingHoles, fixed, doors, sills,
     gap: layout.baseboard?.thickness ?? 0.012, skirting: layout.baseboard?.height ?? 0.07,
   };
 }
@@ -404,9 +410,14 @@ function roomAtXZ(room, x, z) {
 
 /**
  * Why a footprint cannot stand where it is: null when it lies on the floor of ONE room (corners inside, no reflex
- * corner of the room or of the stairwell poking in), else 'Utenfor rommet' / 'Over trappehullet'.
+ * corner of the room or of the stairwell poking in), else 'Utenfor rommet' / 'Over trappehullet'. A ceiling item
+ * (ceiling: true) must also lie under the level's ceiling: not under a hole in the floor above (the stairwell seen
+ * from the basement) – 'Ingen tak over trappa'.
+ * @param {object} room  buildRoom
+ * @param {object} fp  footprint { cx, cz, ax, az, hw, hd }
+ * @param {{ ceiling?: boolean }} [o]
  */
-export function footprintIssue(room, fp) {
+export function footprintIssue(room, fp, { ceiling = false } = {}) {
   const r = roomAtXZ(room, fp.cx, fp.cz);
   const overHole = (x, z) => room.holes.some((hp) => pointInPoly(hp, x, z));
   if (!r) return overHole(fp.cx, fp.cz) ? 'Over trappehullet' : 'Utenfor rommet';
@@ -416,6 +427,12 @@ export function footprintIssue(room, fp) {
   }
   for (const p of r.poly) if (insideFootprint(fp, p.x, p.z)) return 'Utenfor rommet';
   for (const hp of room.holes) for (const p of hp) if (insideFootprint(fp, p.x, p.z)) return 'Over trappehullet';
+  const above = ceiling ? room.ceilingHoles || [] : [];
+  if (above.length) {
+    const open = (x, z) => above.some((hp) => pointInPoly(hp, x, z));
+    if (open(fp.cx, fp.cz) || corners(fp, 0.006).some((c) => open(c.x, c.z))) return 'Ingen tak over trappa';
+    for (const hp of above) for (const p of hp) if (insideFootprint(fp, p.x, p.z)) return 'Ingen tak over trappa';
+  }
   return null;
 }
 
@@ -654,10 +671,10 @@ export class Placement {
     _box.setFromObject(this.ghost);
     this._yRel = Number.isFinite(_box.min.y) ? [_box.min.y, _box.max.y] : [0, this.spec.dims?.h ?? 0.5];
     const h = this.spec.dims?.h ?? 0.5;
-    // a wall cabinet with the shop's suggested bottom height (BESTÅ: params.mountHeight 1.2) starts there – the same
-    // height the Inspector's floor → wall swap uses
+    // a wall item with the shop's suggested bottom height (BESTÅ: params.mountHeight 1.2, a wall shelf, a swing-arm
+    // lamp) starts there – the same height the Inspector's floor → wall swap uses; else the archetype's usual height
     const mh = Number(this.spec.params?.mountHeight);
-    const wallV = WALL_V[this.spec.archetype] ?? (this.mount === 'wall' && mh > 0 ? mh + h / 2 : Math.max(1.45, h / 2 + 0.1));
+    const wallV = this.mount === 'wall' && mh > 0 ? mh + h / 2 : WALL_V[this.spec.archetype] ?? Math.max(1.45, h / 2 + 0.1);
     this.wallHeight = Array.isArray(itemSpec.position) && itemSpec.position[1] > 0 && this.mount === 'wall' ? itemSpec.position[1] : wallV;
     this.target = null;
     this._obstacles = null;
@@ -1191,7 +1208,7 @@ export class Placement {
     resolveWalls(room, fp, mount === 'rug' ? 0 : room.gap * 0.5);
     let status = 'ok';
     let message = '';
-    const issue = footprintIssue(room, fp);
+    const issue = footprintIssue(room, fp, { ceiling: mount === 'ceiling' });
     if (issue) {
       status = 'blocked';
       message = issue;
@@ -1268,8 +1285,19 @@ export class Placement {
       v = snap(v, GRID / 2);
     }
     let note = '';
+    // feature snaps (placementHooks.js: a picture light over a picture): position, note, the item it rests over, and
+    // while placing a params patch for the new item
+    let supportUid = null, snapPatch = null;
+    const sn = o.snap ? wallSnap(this, { wall: w, u, v, dims, archetype: o.archetype, uid: o.uid, placing: !d }) : null;
+    if (sn) {
+      u = sn.u;
+      v = sn.v;
+      note = sn.note || note;
+      supportUid = sn.supportUid ?? null;
+      if (!d && sn.patch) snapPatch = sn.patch;
+    }
     // centre on the wall when close
-    if (o.snap && Math.abs(u - w.L / 2) < CENTER_SNAP && w.L > dims.w + 0.1) {
+    if (!sn && o.snap && Math.abs(u - w.L / 2) < CENTER_SNAP && w.L > dims.w + 0.1) {
       u = w.L / 2;
       note = 'midt på veggen';
     }
@@ -1319,7 +1347,7 @@ export class Placement {
     const theta = normDeg(Math.atan2(w.nx, w.nz) / DEG);
     if (status === 'ok') {
       const fp = { cx: x + w.nx * dims.d / 2, cz: z + w.nz * dims.d / 2, ax: [w.dx, w.dz], az: [w.nx, w.nz], hw, hd: dims.d / 2 };
-      const hit2 = this._overlap({ ...fp, y0: w.fy + v - hh, y1: w.fy + v + hh }, 'wall', o.uid);
+      const hit2 = this._overlap({ ...fp, y0: w.fy + v - hh, y1: w.fy + v + hh }, 'wall', o.uid, supportUid);
       if (hit2) {
         status = 'overlap';
         message = `Overlapper med ${hit2.name}`;
@@ -1328,6 +1356,12 @@ export class Placement {
     if (!note) note = `midt ${cm(v)} cm · underkant ${cm(v - hh)} cm`;
     if (cutNote) note = `${cutNote} · ${note}`;
     const res = { mount: 'wall', position: [x, w.fy + v, z], rotationDeg: theta, attach: { wallId: w.id, normal: [r3(w.nx), 0, r3(w.nz)] }, status, message, note };
+    // the snap's patch (a picture light's wash sized to the picture) merged with the cut length
+    if (snapPatch) {
+      const cutDims = patch?.dims;
+      patch = { ...snapPatch, params: { ...(patch?.params || {}), ...(snapPatch.params || {}) } };
+      if (cutDims || snapPatch.dims) patch.dims = { ...(snapPatch.dims || {}), ...(cutDims || {}) };
+    }
     if (patch) res.patch = patch;
     return res;
   }

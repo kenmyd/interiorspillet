@@ -7,8 +7,9 @@
  *   MAIN_ROOT                       the main tree (C:\Dev\Interiørspillet): ROOT itself, or the folder that holds
  *                                   .claude/worktrees/<name>
  *   GPU_LOCK                        <MAIN_ROOT>/.shots/hus/gpu.lock.d – only one headless browser renders at a time
- *   acquireGpuLock({ label })       mkdir-lock: waits 20 s between tries, removes a lock older than 15 min (stale),
- *                                   keeps its own lock's mtime fresh every minute, releases on exit / Ctrl+C.
+ *   acquireGpuLock({ label })       mkdir-lock: waits HUS_LOCK_WAIT_MS (default 5 s) between tries, removes a lock
+ *                                   older than 15 min (stale), keeps its own lock's mtime fresh every minute, releases
+ *                                   on exit / Ctrl+C.
  *                                   → release()
  *   launchBrowser({ pidfile })      chromium.launchServer (msedge, headless, GPU flags) + connect; writes the browser's
  *                                   PID to pidfile (removed again by close()). → { browser, pid, close() }
@@ -56,7 +57,7 @@ export const ensureDir = (p) => mkdirSync(dirname(resolve(p)), { recursive: true
  * older than `staleMs` is removed as stale. Gives up after `timeoutMs` (default 60 min).
  * @returns {Promise<() => void>} release
  */
-export async function acquireGpuLock({ label = 'tool', waitMs = 20000, staleMs = 15 * 60 * 1000, timeoutMs = 60 * 60 * 1000, log = console.log } = {}) {
+export async function acquireGpuLock({ label = 'tool', waitMs = Number(process.env.HUS_LOCK_WAIT_MS) || 5000, staleMs = 15 * 60 * 1000, timeoutMs = 60 * 60 * 1000, log = console.log } = {}) {
   mkdirSync(dirname(GPU_LOCK), { recursive: true });
   const t0 = Date.now();
   let said = false;

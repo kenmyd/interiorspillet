@@ -13,8 +13,10 @@ import { recolorer } from './tables.js';
  *              (panel, channels, buttons, rounded, wings, wood, slats, loose cushions, cane), a foot end, and the bed
  *              made up (duvet with a turned-down fold, pillows, an optional runner/throw)
  *   headboard  sengegavl: the same headboard styles as a free-standing panel on feet
- *   bench      sengebenk / gangbenk / spisebenk: upholstered, wood, cushion or cord seat, legs/frames/end panels, an
- *              optional shoe shelf or baskets, or a lift-lid storage box
+ *   bench      sengebenk / gangbenk / spisebenk: upholstered, wood, cushion or cord seat, legs/frames/end panels,
+ *              trestles, crossed legs, sled frames, hairpins or upholstered down to the floor, an optional shoe shelf,
+ *              baskets or cubbies, or a lift-lid storage box; optionally a back (rail, spindles, panel, upholstered) and
+ *              arms (with a back, dims.h = the top of the back and params.seatH the seat)
  *
  * Origin: floor, footprint centre; the foot end / front toward +z (the headboard at −z). Everything is measured from
  * spec.dims and the params (legs keep their section, cushions their radius, channels their pitch).
@@ -36,7 +38,7 @@ function tone(hex, f) {
   return `#${c.getHexString()}`;
 }
 
-function def(id, { defaults, params = {}, dimsRange, build }) {
+function def(id, { defaults, params = {}, dimsRange, build, paramPatch }) {
   const a = schema.archetypes[id];
   const fam = schema.families[a.family];
   const parts = a.parts || fam.parts;
@@ -49,6 +51,8 @@ function def(id, { defaults, params = {}, dimsRange, build }) {
     params,
     dimsRange,
     build,
+    // paramPatch(item, key, value) → { dims?, params? } | null: what else changes when the user sets a param
+    ...(paramPatch ? { paramPatch } : {}),
   };
 }
 
@@ -459,7 +463,49 @@ function buildHeadboardProduct(spec) {
 // ---------------------------------------------------------------------------------------------------------------
 // Bench (sengebenk / gangbenk / spisebenk)
 
-const BENCH_LEGS = ['wood-taper', 'block', 'metal-thin', 'metal-frame', 'plinth', 'wood-frame'];
+const BENCH_LEGS = ['wood-taper', 'wood-straight', 'block', 'metal-thin', 'metal-frame', 'plinth', 'wood-frame', 'trestle', 'x', 'sled', 'hairpin', 'none'];
+const BENCH_BACKS = ['none', 'rail', 'spindles', 'panel', 'upholstered'];
+/** dimsRange.h of the bench. */
+const BENCH_H = [0.3, 1.0];
+/** Lean of a bench back (top toward −z). */
+const BACK_LEAN = 6 * DEG;
+
+/** Hairpin leg (FURN §2.3) at (x, z): one bent rod in the vertical plane along the corner diagonal (dx, dz), top at yTop. */
+function hairpin(yTop, x, z, dx, dz) {
+  const s = 0.035;
+  const pts = [[-s, yTop], [-0.012, 0.05], [-0.005, 0.012], [0, 0.006], [0.005, 0.012], [0.012, 0.05], [s, yTop]];
+  const l = Math.hypot(dx, dz) || 1;
+  return K.tube(pts.map(([u, y]) => [x + (u * dx) / l, y, z + (u * dz) / l]), 0.0045, { curve: 'catmull', radial: 6 });
+}
+
+/** A bench with a back or arms: dims.h is the top of the back (arms). */
+const benchRaised = (P) => (BENCH_BACKS.includes(P.back) && P.back !== 'none') || P.arms === true;
+
+/**
+ * Seat height of a bench of height h: without a back or arms dims.h is the seat (params.seatH when set); with them
+ * dims.h is the top of the back (arms) and the seat comes from params.seatH.
+ */
+function benchSeat(P, h) {
+  if (!benchRaised(P)) return clamp(num(P.seatH, h), 0.25, 0.9);
+  const back = BENCH_BACKS.includes(P.back) && P.back !== 'none';
+  return clamp(num(P.seatH, 0.46), 0.3, Math.max(0.3, h - (back ? 0.15 : 0.1)));
+}
+
+/**
+ * Inspector hook (def.paramPatch): the extra { dims, params } patch when params[key] becomes value, or null. A bench
+ * that gets a back or arms keeps its seat where it was (params.seatH) and grows by the back (0.38) or the arms (0.2);
+ * one that loses them shrinks to its seat – instead of dims.h suddenly meaning the other thing.
+ */
+function benchParamPatch(item, key, value) {
+  if (key !== 'back' && key !== 'arms') return null;
+  const P = item?.params || {};
+  const next = { ...P, [key]: value };
+  if (benchRaised(P) === benchRaised(next)) return null;
+  const seat = benchSeat(P, num(item?.dims?.h, 0.46));
+  const rise = !benchRaised(next) ? 0 : BENCH_BACKS.includes(next.back) && next.back !== 'none' ? 0.38 : 0.2;
+  const r3 = (v) => Math.round(v * 1000) / 1000;
+  return { params: { seatH: r3(seat) }, dims: { h: r3(clamp(seat + rise, BENCH_H[0], BENCH_H[1])) } };
+}
 
 function buildBench(spec) {
   const { w, d, h } = spec.dims;
@@ -474,14 +520,24 @@ function buildBench(spec) {
   const frameV = mat(frameKind, C.frame || C.legs, kindGroup(frameKind) === 'wood' ? { grain: 'y' } : undefined);
   const legsKind = M.legs || 'oak';
   const legs = mat(legsKind, C.legs, kindGroup(legsKind) === 'wood' ? { grain: 'y' } : undefined);
-  const seatH = clamp(num(P.seatH, h), 0.25, 0.9);
+  const wantBack = BENCH_BACKS.includes(P.back) ? P.back : 'none';
+  const arms = P.arms === true;
+  const seatH = benchSeat(P, h);
+  // the seat goes no lower than 0.3, so at the bottom of the height range there is no room left for a back over it
+  // (a 0-high upholstered back would be NaN geometry): the bench is drawn without one
+  const back = h - seatH >= 0.03 ? wantBack : 'none';
   const seatT = clamp(num(P.seatT, seat === 'upholstered' ? 0.1 : seat === 'cushion' ? 0.08 : 0.035), 0.015, 0.25);
   const style = BENCH_LEGS.includes(P.legStyle) ? P.legStyle : 'wood-taper';
   const storage = P.storage === true;
+  // upholstered all the way to the floor (Collin): one soft body, no legs
+  const solid = style === 'none' && !storage;
   const n = seg(spec, 12);
   // seat
   let underY = seatH - seatT; // underside of the seat
-  if (seat === 'upholstered') {
+  if (solid) {
+    add(g, softY(w, seatH, d, { puff: 0.06, round: 0.9, sides: 0.1, bottom: 0.02, seg: 14 }), up, 'upholstery', 0, seatH / 2, 0);
+    underY = 0;
+  } else if (seat === 'upholstered') {
     add(g, softY(w, seatT, d, { puff: 0.1, round: 0.6, sides: 0.12, bottom: 0.05, seg: 14 }), up, 'upholstery', 0, seatH - seatT / 2, 0);
     if (P.tufted === true) {
       const bm = mat(upKind, tone(C.upholstery, 0.82));
@@ -509,9 +565,44 @@ function buildBench(spec) {
     const sl = clamp(num(P.legH, 0.02), 0.02, underY - 0.15);
     add(g, K.roundedBox(w - 0.01, underY - sl, d - 0.01, 0.004, 1, { grain: 'x' }), frame, 'frame', 0, sl + (underY - sl) / 2, 0);
     if (sl <= 0.025) add(g, K.box(w - 0.08, 0.02, d - 0.08), legs, 'legs', 0, 0.01, 0);
-    else for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(g, K.taperLeg(sl + 0.002, 0.02, 0.014, { seg: n }), legs, 'legs', sx * (w / 2 - 0.06), 0, sz * (d / 2 - 0.06));
+    else if (style === 'metal-thin') {
+      // thin rods fixed to the front and back faces ≈ 20 cm in from the ends, rising 15 cm up the side (Deauville)
+      const xr = Math.max(0.04, Math.min(0.2, w / 2 - 0.08)), top = Math.min(underY - 0.02, sl + 0.15);
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(g, K.cylinder(0.009, 0.009, top, { seg: n }), legs, 'legs', sx * (w / 2 - xr), 0, sz * (d / 2 + 0.006));
+    } else for (const sx of [-1, 1]) for (const sz of [-1, 1]) add(g, K.taperLeg(sl + 0.002, 0.02, 0.014, { seg: n }), legs, 'legs', sx * (w / 2 - 0.06), 0, sz * (d / 2 - 0.06));
+  } else if (solid) {
+    // no base: the body stands on the floor
   } else if (style === 'plinth') {
     add(g, K.box(w - 0.08, underY, d - 0.08, { grain: 'x' }), legs, 'legs', 0, underY / 2, 0);
+  } else if (style === 'trestle' || style === 'x' || style === 'sled') {
+    // per end: a trestle (foot beam, post, top beam), crossed legs, or a bent sled frame; a stretcher between the ends
+    const x0 = w / 2 - 0.07, zh = d / 2 - 0.05;
+    for (const sx of [-1, 1]) {
+      const x = sx * x0;
+      if (style === 'trestle') {
+        add(g, K.roundedBox(0.05, 0.04, d - 0.06, 0.004, 1, { grain: 'z' }), legs, 'legs', x, 0.02, 0);
+        add(g, K.box(0.05, Math.max(0.01, underY - 0.075), 0.06, { grain: 'y' }), legs, 'legs', x, 0.04 + Math.max(0.01, underY - 0.075) / 2, 0);
+        add(g, K.box(0.05, 0.035, d - 0.1, { grain: 'z' }), legs, 'legs', x, underY - 0.0175, 0);
+      } else if (style === 'x') {
+        // two bars from a bottom corner to the opposite top corner, crossing in the middle
+        const len = Math.hypot(underY, 2 * zh);
+        for (const sz of [-1, 1]) add(g, K.box(0.035, len, 0.03, { grain: 'y' }), legs, 'legs', x + sz * 0.018, underY / 2, 0, [sz * Math.atan2(2 * zh, underY), 0, 0]);
+      } else {
+        const r = 0.011, y0 = r + 0.001;
+        add(g, K.tube([[x, underY, -zh], [x, y0 + 0.04, -zh], [x, y0, -zh + 0.04], [x, y0, zh - 0.04], [x, y0 + 0.04, zh], [x, underY, zh]], r, { curve: 'catmull', tension: 0.2, radial: 8, seg: 40 }), legs, 'legs');
+        add(g, K.cylinder(r, r, 2 * zh, { seg: 8, center: true }).rotateX(Math.PI / 2).translate(x, underY - r, 0), legs, 'legs');
+      }
+    }
+    const sy = style === 'sled' ? underY - 0.03 : style === 'x' ? underY / 2 : underY * 0.35;
+    add(g, K.box(2 * x0, 0.03, 0.025, { grain: 'x' }), legs, 'legs', 0, sy, style === 'sled' ? -(d / 2 - 0.05) : 0);
+  } else if (style === 'hairpin') {
+    const hx = w / 2 - 0.06, hz = d / 2 - 0.06;
+    for (const sx of [-1, 1]) {
+      for (const sz of [-1, 1]) {
+        add(g, hairpin(underY, sx * hx, sz * hz, sx, sz), legs, 'legs');
+        add(g, K.box(0.07, 0.006, 0.07), legs, 'legs', sx * hx, underY - 0.006, sz * hz);
+      }
+    }
   } else if (style === 'wood-frame') {
     // solid end panels from the floor to the seat (shoe benches)
     const et = 0.025;
@@ -532,6 +623,7 @@ function buildBench(spec) {
         const x = sx * (w / 2 - inset), z = sz * (d / 2 - inset);
         if (style === 'block') add(g, K.roundedBox(0.045, underY, 0.045, 0.003, 1, { grain: 'y', bottom: true }), legs, 'legs', x, 0, z);
         else if (style === 'metal-thin') add(g, K.cylinder(0.011, 0.009, underY, { seg: n }), legs, 'legs', x, 0, z);
+        else if (style === 'wood-straight') add(g, K.taperLeg(underY, 0.02, 0.018, { seg: n }), legs, 'legs', x, 0, z);
         else {
           // splayed: the foot at the corner, the top leaning in under the seat
           const tilt = 7 * DEG;
@@ -543,9 +635,17 @@ function buildBench(spec) {
     // a slim apron under the seat for wooden benches
     if (seat !== 'upholstered' && style !== 'metal-thin') for (const s of [-1, 1]) add(g, K.box(w - 0.12, 0.04, 0.018, { grain: 'x' }), frame, 'frame', 0, underY - 0.02, s * (d / 2 - 0.06));
   }
+  // cubbies: a bottom board and dividers under the seat (shoe benches)
+  const cubbies = solid || storage ? 0 : clamp(Math.round(num(P.cubbies, 0)), 0, 4);
+  if (cubbies > 0) {
+    const cw = w - (style === 'wood-frame' ? 0.06 : 0.1), cd = d - 0.06, bt = 0.018;
+    add(g, K.roundedBox(cw, bt, cd, 0.003, 1, { grain: 'x' }), frame, 'frame', 0, 0.04, 0);
+    const ch = Math.max(0.02, underY - 0.04 - bt / 2);
+    for (let k = 1; k < cubbies; k++) add(g, K.box(bt, ch, cd, { grain: 'y' }), frameV, 'frame', -cw / 2 + (cw * k) / cubbies, 0.04 + bt / 2 + ch / 2, 0);
+  }
   // shoe shelf / baskets
   const shelf = ['board', 'slats', 'basket'].includes(P.shelf) ? P.shelf : 'none';
-  if (shelf !== 'none' && !storage) {
+  if (shelf !== 'none' && !storage && !cubbies && !solid) {
     const sy = clamp(num(P.shelfH, Math.min(0.16, underY * 0.4)), 0.04, underY - 0.12);
     const sw = w - (style === 'wood-frame' ? 0.06 : 0.1), sd = d - 0.08;
     if (shelf === 'slats') {
@@ -562,9 +662,50 @@ function buildBench(spec) {
       for (let k = 0; k < nB; k++) add(g, K.roundedBox(bw, bh, sd - 0.04, 0.012, 2), bm, null, (k - (nB - 1) / 2) * (bw + 0.04), sy + 0.009 + bh / 2, 0);
     }
   }
+  // back: posts leaning 6° from the rear edge of the seat up to dims.h, with a rail, spindles under a rail, a panel or
+  // an upholstered cushion
+  const zBack = -d / 2 + 0.025;
+  const zAt = (y) => zBack - (y - seatH) * Math.tan(BACK_LEAN);
+  if (back !== 'none') {
+    const bh = h - seatH;
+    if (back === 'upholstered') {
+      add(g, softZ(w - 0.01, bh, 0.08, { puff: 0.12 }), up, 'upholstery', 0, seatH + bh / 2, zAt(seatH + bh / 2) + 0.015, [-BACK_LEAN, 0, 0]);
+    } else {
+      const posts = w < 1.3 ? [-1, 1] : [-1, 0, 1];
+      const y0 = seatH - seatT;
+      for (const p of posts) add(g, K.taperLeg((h - y0) / Math.cos(BACK_LEAN), 0.015, 0.015, { seg: n }), frameV, 'frame', p * (w / 2 - 0.04), y0, zBack, [-BACK_LEAN, 0, 0]);
+      const railH = back === 'panel' ? Math.max(0.05, 0.6 * bh) : 0.07;
+      const yr = h - railH / 2;
+      add(g, K.roundedBox(w - 0.04, railH, 0.022, 0.004, 1, { grain: 'x' }), frame, 'frame', 0, yr, zAt(yr), [-BACK_LEAN, 0, 0]);
+      if (back === 'spindles') {
+        const ns = Math.max(3, Math.round(w / 0.08));
+        const sl = Math.max(0.02, h - railH - seatH);
+        for (let k = 0; k < ns; k++) {
+          const x = -(w / 2 - 0.08) + ((w - 0.16) * (k + 0.5)) / ns;
+          add(g, K.cylinder(0.008, 0.008, sl / Math.cos(BACK_LEAN), { seg: Math.max(6, Math.round(n * 0.6)) }), frameV, 'frame', x, seatH - 0.004, zAt(seatH), [-BACK_LEAN, 0, 0]);
+        }
+      }
+    }
+  }
+  // arms: a front post and an arm board per end (a soft pad on upholstered seats)
+  if (arms) {
+    const soft = seat === 'upholstered' || solid;
+    const armY = back !== 'none' ? seatH + clamp((h - seatH) * 0.5, 0.16, 0.26) : h - (soft ? 0.05 : 0.022);
+    const zf = d / 2 - 0.03, zr = back !== 'none' ? zAt(armY) : -d / 2 + 0.03;
+    const al = zf - zr + 0.03;
+    for (const sx of [-1, 1]) {
+      const x = sx * (w / 2 - 0.0225);
+      add(g, K.taperLeg(armY - (seatH - seatT), 0.014, 0.014, { seg: n }), frameV, 'frame', x, seatH - seatT, zf);
+      if (back === 'none') add(g, K.taperLeg(armY - (seatH - seatT), 0.014, 0.014, { seg: n }), frameV, 'frame', x, seatH - seatT, zr);
+      if (soft) add(g, softY(0.09, 0.06, al, { puff: 0.15 }), up, 'upholstery', x - sx * 0.02, armY + 0.02, (zf + zr) / 2);
+      else add(g, K.roundedBox(0.045, 0.022, al, 0.005, 2, { grain: 'z' }), frame, 'frame', x, armY + 0.011, (zf + zr) / 2);
+    }
+  }
   const rc = recolorer(g, (part, kind) => !!kind && kindGroup(kind) !== kindGroup(part === 'upholstery' ? upKind : part === 'legs' ? legsKind : frameKind));
   g.name = 'bench';
-  return K.finishModel(g, { seatY: seatH, surfaces: [{ y: +seatH.toFixed(4), w: +(w * 0.9).toFixed(3), d: +(d * 0.8).toFixed(3), center: [0, 0] }], recolor: rc });
+  // with a back the free seat is shallower and further forward
+  const sd = back !== 'none' ? Math.max(0.1, d * 0.8 - 0.08) : d * 0.8;
+  return K.finishModel(g, { seatY: seatH, surfaces: [{ y: +seatH.toFixed(4), w: +(w * 0.9).toFixed(3), d: +sd.toFixed(3), center: [0, back !== 'none' ? 0.04 : 0] }], recolor: rc });
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -626,12 +767,16 @@ export const archetypes = {
     params: {
       seat: { type: 'enum', label: 'Sete', options: [['upholstered', 'Polstret'], ['wood', 'Tre'], ['cushion', 'Tre med pute'], ['cord', 'Flettet snor']] },
       seatT: { type: 'number', min: 0.02, max: 0.2, step: 0.01, label: 'Setetykkelse (m)' },
-      legStyle: { type: 'enum', label: 'Understell', options: [['wood-taper', 'Skrå treben'], ['block', 'Rette ben'], ['metal-thin', 'Tynne metallben'], ['metal-frame', 'Metallrammer'], ['plinth', 'Sokkel'], ['wood-frame', 'Gavler i tre']] },
+      legStyle: { type: 'enum', label: 'Understell', options: [['wood-taper', 'Skrå treben'], ['wood-straight', 'Runde, rette treben'], ['block', 'Rette ben'], ['metal-thin', 'Tynne metallben'], ['metal-frame', 'Metallrammer'], ['plinth', 'Sokkel'], ['wood-frame', 'Gavler i tre'], ['trestle', 'Bukker'], ['x', 'Kryssben'], ['sled', 'Medeben'], ['hairpin', 'Hårnålsben'], ['none', 'Polstret helt ned']] },
       shelf: { type: 'enum', label: 'Hylle under', options: [['none', 'Ingen'], ['board', 'Hylle'], ['slats', 'Spilehylle'], ['basket', 'Med kurver']] },
       tufted: { type: 'bool', label: 'Knapper i setet' },
       storage: { type: 'bool', label: 'Oppbevaring (løftelokk)' },
+      back: { type: 'enum', label: 'Rygg', options: [['none', 'Uten'], ['rail', 'Ryggspile'], ['spindles', 'Pinnerygg'], ['panel', 'Ryggplate'], ['upholstered', 'Polstret rygg']] },
+      arms: { type: 'bool', label: 'Armlener' },
+      cubbies: { type: 'number', min: 0, max: 4, step: 1, label: 'Rom under setet' },
     },
-    dimsRange: { w: [0.5, 2.2], d: [0.28, 0.6], h: [0.3, 0.6] },
+    dimsRange: { w: [0.5, 2.2], d: [0.28, 0.6], h: [...BENCH_H] },
     build: buildBench,
+    paramPatch: benchParamPatch,
   }),
 };

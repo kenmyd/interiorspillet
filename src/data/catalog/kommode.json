@@ -865,6 +865,832 @@
     "priceConfidence": "checked"
   },
   {
+    "id": "bohus-madrid-kommode-83x39",
+    "category": "kommode",
+    "name": "Madrid kommode 83x39",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/kommode/madrid-kommode-83x39-4",
+    "priceNok": 4749,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 317858, cashmere): 4 749 kr, ingen kampanje. Matt svart (varenr. 328790) 2 374 kr og hvit (varenr. 328789) 2 399 kr i kampanje «MADRID-serien i svart og hvit» til 2026-11-30 (før 4 749 / 4 799 kr); eik (varenr. 328788) 4 749 kr. Leveres med lærhåndtak og sølvknotter.",
+    "dims": {
+      "w": 0.83,
+      "d": 0.39,
+      "h": 0.99
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:3"
+      ],
+      "drawerRow": 2,
+      "drawerRowPos": "top",
+      "drawerH": 0.17,
+      "frontStyle": "flat",
+      "handle": "knob",
+      "base": "legs",
+      "legStyle": "block",
+      "legH": 0.1,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Cashmere",
+        "colors": {
+          "body": "#c9c0b7",
+          "front": "#c9c0b7",
+          "top": "#c9c0b7",
+          "legs": "#c4bbb2",
+          "handle": "#5e4331"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        }
+      },
+      {
+        "name": "Matt svart",
+        "colors": {
+          "body": "#464647",
+          "front": "#444445",
+          "top": "#464647",
+          "legs": "#424243",
+          "handle": "#ad7a5e"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "priceNok": 4749,
+        "salePriceNok": 2374,
+        "url": "https://www.bohus.no/oppbevaring/kommode/madrid-kommode-83x39-10"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f2f2f0",
+          "front": "#f2f2f0",
+          "top": "#f2f2f0",
+          "legs": "#ededeb",
+          "handle": "#ad7a5e"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "leather"
+        },
+        "priceNok": 4799,
+        "salePriceNok": 2399,
+        "url": "https://www.bohus.no/oppbevaring/kommode/madrid-kommode-83x39-9"
+      },
+      {
+        "name": "Eik",
+        "colors": {
+          "body": "#c1a78c",
+          "front": "#c1a78c",
+          "top": "#c6ad92",
+          "legs": "#b89e83",
+          "handle": "#1c1b19"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "leather"
+        },
+        "url": "https://www.bohus.no/oppbevaring/kommode/madrid-kommode-83x39-8"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Høy kommode med to små og tre brede skuffer, korte lærstropper som håndtak og firkantede ben; foliert sponplate i rolig cashmere.",
+    "why": "Høy og bare 83 cm bred, så den gir mye plass i soverommet (3,11 × 3,69 m) uten å ta en hel vegg; cashmere-fargen går godt med Sand-veggene. Samme serie som Madrid-nattbordet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MADRID/344716/image-thumb__344716__PDP-Product/317858%20-%20Madrid%20kommode%2083x39%20H99%20cm%2C%205%20skuffer%20foliert%20spon%20cashmere%20-%202.f2879ab0.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 4 749 kr, mål B83 D39 H99 cm, 5 skuffer, foliert spon, bilde, varenr. 317858, 328790, 328789 og 328788, status Not Expired. Benhøyde 9,8 cm fra eik-varianten. Anslått: høyden på de to små skuffene.",
+    "priceConfidence": "checked",
+    "shapeNote": "To små skuffer øverst og tre brede under (fem i alt), alle i en ramme der hjørnestolpene blir til korte, firkantede ben (ca. 10 cm). Korte lærstropper som håndtak (modellert som knotter)."
+  },
+  {
+    "id": "bohus-naia-kommode-40x50",
+    "category": "kommode",
+    "name": "Naia kommode 40x50",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/kommode/naia-kommode-40x50-1",
+    "priceNok": 2299,
+    "salePriceNok": 1599,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 302810, eik): 1 599 kr (før 2 299 kr, kampanje «NAIA-serien i farge eik, sand og brun» til 2026-11-30). Matt svart (varenr. 250825) 2 299 kr uten kampanje.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.5,
+      "h": 1.11
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:5"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "gripRecess": "top",
+      "base": "plinth",
+      "legH": 0.03,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Eik",
+        "colors": {
+          "body": "#c6ad94",
+          "front": "#cbb198",
+          "top": "#c6b198",
+          "legs": "#bea58c",
+          "handle": "#b29a82"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "oak"
+        }
+      },
+      {
+        "name": "Matt svart",
+        "colors": {
+          "body": "#2b2b2c",
+          "front": "#2b2b2c",
+          "top": "#2b2b2c",
+          "legs": "#262627",
+          "handle": "#222223"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        },
+        "priceNok": 2299,
+        "url": "https://www.bohus.no/oppbevaring/kommode/naia-kommode-40x50"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Svært smal og høy kommode med fem grepløse skuffer i foliert sponplate, innfrest grepskanal over hver skuff og lav sokkel.",
+    "why": "Bare 40 cm bred og 111 cm høy: får plass ved døra eller i en nisje i kjellersoverommet på 7,4 m² og gir mye skuffeplass; samme serie som Naia-nattbordet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/NAIA/319186/image-thumb__319186__PDP-Product/302810%20-%20Naia%20kommode%2040x50%20H111.3%20cm%2C%205%20skuffer%20foliert%20spon%20eik%20-%204.f2eb4446.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 1 599 kr (før 2 299), mål B40 D50 H111 cm, 5 skuffer, foliert spon, bilde, varenr. 302810 og 250825, status Not Expired. Bohus-dataene oppgir B4 cm for den svarte varianten (feil i dataene); 40 cm fra navnet og eik-varianten. Anslått: sokkel ca. 3 cm.",
+    "priceConfidence": "checked",
+    "shapeNote": "Smal søyle med fem like skuffer uten håndtak: en innfrest grepskanal over hver skuff (MALM-type). Lav, inntrukket sokkel (ca. 3 cm); toppen stikker litt fram."
+  },
+  {
+    "id": "bohus-bodo-kommode-50x40",
+    "category": "kommode",
+    "name": "Bodø kommode 50x40",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/bodo-kommode-50x40",
+    "priceNok": 5399,
+    "salePriceNok": 3299,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 284836, hvitoljet): 3 299 kr (før 5 399 kr, kampanje «serie BODØ» til 2026-11-30). Røykfarget (varenr. 284837) 3 499 kr, før 5 899 kr.",
+    "dims": {
+      "w": 0.5,
+      "d": 0.4,
+      "h": 1
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:4"
+      ],
+      "frontStyle": "flat",
+      "handle": "edge",
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legH": 0.16,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Hvitoljet",
+        "colors": {
+          "body": "#b59a7c",
+          "front": "#b59a7c",
+          "top": "#bba185",
+          "legs": "#a98d70",
+          "handle": "#8d745a"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        }
+      },
+      {
+        "name": "Røykfarget",
+        "colors": {
+          "body": "#3c342a",
+          "front": "#41362b",
+          "top": "#3c342a",
+          "legs": "#2a241d",
+          "handle": "#2c251e"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 5899,
+        "salePriceNok": 3499,
+        "url": "https://www.bohus.no/oppbevaring/kommode/bodo-kommode-50x40-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Høy og smal kommode i eikefinér med fire skuffer, smal grepslist på hver skuff og skrå, avsmalnende treben.",
+    "why": "Bare 50 cm bred: passer på en smal veggflate i soverommet (3,11 × 3,69 m) eller i kjellersoverommet på 7,4 m², og matcher Bodø-kommoden og -nattbordet i katalogen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/BOD%C3%98/274479/image-thumb__274479__PDP-Product/284836%20-%20Bod%C3%B8%20kommode%2050x40%20H100%204%20skuffer%20hvitoljet%20eikefiner%20hvitpigmentert%20-%202.4fc9aaaa.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 3 299 kr (før 5 399), mål B50 D40 H100 cm, 4 skuffer, eikefinér, bilde, varenr. 284836 og 284837, status Not Expired. Anslått: benhøyde ca. 16 cm fra produktbildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Høy, smal kasse med fire like høye skuffer; en tynn grepslist langs overkanten av hver skuff. Fire skrå, runde treben (ca. 16 cm) under bunnen."
+  },
+  {
+    "id": "bohus-next-kommode-80x48",
+    "category": "kommode",
+    "name": "Next kommode 80x48",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/kommode/next-kommode-80x48",
+    "priceNok": 4699,
+    "salePriceNok": 2799,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 333340, hvit): 2 799 kr (før 4 699 kr, kampanje «NEXT-serien i hvit» til 2026-11-30). Finnes også 157x48 med seks skuffer.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.481,
+      "h": 0.838
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:3"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "gripRecess": "top",
+      "base": "plinth",
+      "legH": 0.05,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f0efed",
+          "front": "#f2f1ef",
+          "top": "#f0efed",
+          "legs": "#ebeae8",
+          "handle": "#cfcccd"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Hvit kommode med tre store skuffer uten synlige håndtak; en innfrest grepskanal over hver skuff og gavler som går ned til gulvet.",
+    "why": "Enkel hvit kommode med dype skuffer (48 cm) som tar lite plass visuelt; passer i soverommet (3,11 × 3,69 m) under vinduet eller ved garderobeskapet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/NEXT/619393/image-thumb__619393__PDP-Product/333340%20-%20Next%20kommode%2080x48%20H83.8%20cm%2C%203%20skuffer%20hvit%20-%202.7b6b133e.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 2 799 kr (før 4 699), mål B80 D48,1 H83 cm (produktteksten sier H83,8), 3 skuffer, bilde, varenr. 333340, status Not Expired. Anslått: sokkelhøyde ca. 5 cm fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Tre like, høye skuffer med en lys grå grepskanal over hver skuff. Sidene går helt ned til gulvet og danner en inntrukket sokkel på ca. 5 cm."
+  },
+  {
+    "id": "bohus-may-kommode-143x30",
+    "category": "kommode",
+    "name": "May kommode 143x30",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/kommode/may-kommode-143-1x30-1-1",
+    "priceNok": 3199,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 328090, svart): 3 199 kr, ingen kampanje. Eik (varenr. 328091) og hvit (varenr. 328079) samme pris.",
+    "dims": {
+      "w": 1.43,
+      "d": 0.3,
+      "h": 0.68
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:3",
+        "drawers:3"
+      ],
+      "frontStyle": "flat",
+      "handle": "knob",
+      "base": "plinth",
+      "legH": 0.04,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Svart",
+        "colors": {
+          "body": "#2a2a2b",
+          "front": "#2c2c2d",
+          "top": "#2a2a2b",
+          "legs": "#262627",
+          "handle": "#b9bcbf"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "steel"
+        }
+      },
+      {
+        "name": "Eik",
+        "colors": {
+          "body": "#c4aa8d",
+          "front": "#c7ad90",
+          "top": "#c4aa8d",
+          "legs": "#bda386",
+          "handle": "#b9bcbf"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "steel"
+        },
+        "url": "https://www.bohus.no/oppbevaring/kommode/may-kommode-143-1x30-1-2"
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f1f0ee",
+          "front": "#f3f2f0",
+          "top": "#f1f0ee",
+          "legs": "#eae9e7",
+          "handle": "#b9bcbf"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "steel"
+        },
+        "url": "https://www.bohus.no/oppbevaring/kommode/may-kommode-143-1x30-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Lang og grunn kommode med seks skuffer i foliert sponplate, to små sølvfargede knotter på hver skuff og lav sokkel.",
+    "why": "Bare 30 cm dyp, så den stjeler lite gulv: passer langs veggen i kjellersoverommet på 7,4 m² eller i gangen, og gir mye plass for en lav pris.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Tvilum/Produkter/MAY/608728/image-thumb__608728__PDP-Product/328090%20-%20May%20kommode%20143.1x30.1%20H68.3%20cm%2C%206%20skuffer%20foliert%20spon%20svart%20-%201.59c0db47.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 3 199 kr, mål B143 D30 H68 cm, 6 skuffer, foliert spon, bilde, varenr. 328090, 328091 og 328079, status Not Expired. Anslått: sokkel ca. 4 cm fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Lang, lav og grunn kasse med 3+3 like skuffer; to små sølvfargede knotter per skuff (modellen viser én). Lav, inntrukket sokkel (ca. 4 cm)."
+  },
+  {
+    "id": "bohus-sandnes-kommode-80x40",
+    "category": "kommode",
+    "name": "Sandnes kommode 80x40",
+    "brand": "Bohus",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/oppbevaring/kommode/sandnes-kommode-80x40-2",
+    "priceNok": 5999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (bohus.no-produktdata, varenr. 314401, beige): 5 999 kr, ingen kampanje. Lys eik med svarte ben (varenr. 314400) samme pris.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.4,
+      "h": 1.1
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:3"
+      ],
+      "frontStyle": "framed",
+      "handle": "edge",
+      "base": "legs",
+      "legStyle": "metal-thin",
+      "legFrame": true,
+      "legH": 0.18,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": {
+          "body": "#bcb1aa",
+          "front": "#bbb0aa",
+          "top": "#bcb1aa",
+          "legs": "#b9ab9c",
+          "handle": "#bbb0aa"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "painted"
+        }
+      },
+      {
+        "name": "Lys eik / svart ben",
+        "colors": {
+          "body": "#d4ae80",
+          "front": "#d9b384",
+          "top": "#d4ae80",
+          "legs": "#1e1e1e",
+          "handle": "#d9b384"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "black-metal",
+          "handle": "oak"
+        },
+        "url": "https://www.bohus.no/oppbevaring/kommode/sandnes-kommode-80x40-1"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Høy kommode med tre dype skuffer med rammefronter uten håndtak, på slanke metallben; beige melamin eller lys eik.",
+    "why": "Høy kommode med mye plass på lite gulv i soverommet (3,11 × 3,69 m); beige passer til Sand-veggene. Samme serie som Sandnes-kommoden og det vegghengte Sandnes-nattbordet.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Actona%20Group%20A-S%20%28Container%29/Produkter/SANDNES/343562/image-thumb__343562__PDP-Product/314401%20-%20Sandnes%20kommode%2080x40%20H110%20cm%2C%203%20skuffer%20melamin%20mdf%20beige%20-%202.6028749d.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på bohus.no 2026-10-21 (produktdata): pris 5 999 kr, mål B80 D40 H110 cm, benhøyde 18 cm, 3 skuffer, MDF og stål, bilde, varenr. 314401 og 314400, status Not Expired.",
+    "priceConfidence": "checked",
+    "shapeNote": "Høy kasse med tre store skuffer, hver med en tynn hevet ramme rundt (shaker-preg) og uten håndtak. Slanke, firkantede metallben (18 cm) med en smal ramme under korpus; benene er beige på den beige varianten. Modellen har en smal kant i frontfargen øverst på hver skuff, så de tre skuffene synes i spillet; den ekte kommoden har ingen grepslist."
+  },
+  {
+    "id": "ikea-radmanso-kommode-3-skuffer-90x48",
+    "category": "kommode",
+    "name": "RÅDMANSÖ kommode med 3 skuffer 90x48",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/radmansoe-kommode-med-3-skuffer-brun-valnottmonstret-20593604/",
+    "priceNok": 1495,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.no-produktdata, varenr. 205.936.04, brun valnøttmønstret): 1 495 kr, ingen kampanje. Finnes bare i brunt valnøttmønster.",
+    "dims": {
+      "w": 0.9,
+      "d": 0.48,
+      "h": 0.81
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:3"
+      ],
+      "frontStyle": "flat",
+      "handle": "knob",
+      "base": "legs",
+      "legStyle": "metal-thin",
+      "legH": 0.13,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Brun valnøttmønstret",
+        "colors": {
+          "body": "#745a42",
+          "front": "#775c43",
+          "top": "#745a42",
+          "legs": "#1c1c1c",
+          "handle": "#b8955a"
+        },
+        "materials": {
+          "body": "walnut",
+          "front": "walnut",
+          "top": "walnut",
+          "legs": "black-metal",
+          "handle": "brass"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Kommode med tre skuffer i brunt valnøttmønster, små messingknotter og tynne svarte metallben.",
+    "why": "Varm valnøtt og svart metall går godt med de svarte metalldetaljene i huset; 90 cm bred passer under vinduet i soverommet (3,11 × 3,69 m). Matcher RÅDMANSÖ-nattbordet.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/radmansoe-kommode-med-3-skuffer-brun-valnottmonstret__1384138_pe962857_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-21 (produktdata): pris 1 495 kr, mål B90 D48 H81 cm, fri høyde under 13 cm, 3 skuffer, bilde, varenr. 205.936.04, på lager.",
+    "priceConfidence": "checked",
+    "shapeNote": "Kasse i valnøttmønster med tre like skuffer og én liten messingknott midt på hver. Fire tynne, svarte metallben (13 cm fri høyde) med en svart skinne under korpus."
+  },
+  {
+    "id": "ikea-idanas-kommode-4-skuffer-104x50",
+    "category": "kommode",
+    "name": "IDANÄS kommode 4 skuffer 104x50",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/idanaes-kommode-4-skuffer-hvit-10458767/",
+    "priceNok": 2795,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (ikea.no-produktdata, varenr. 104.587.67, hvit): 2 795 kr, ingen kampanje.",
+    "dims": {
+      "w": 1.04,
+      "d": 0.5,
+      "h": 1.18
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:4"
+      ],
+      "graduated": true,
+      "frontStyle": "flat",
+      "handle": "knob",
+      "base": "legs",
+      "legStyle": "wood-taper",
+      "legFrame": true,
+      "legH": 0.16,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#ebebe7",
+          "front": "#eeeeea",
+          "top": "#ebebe7",
+          "legs": "#e6e6e2",
+          "handle": "#4a4644"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Hvitmalt kommode med fire romslige skuffer, små mørke knotter og rette ben under en sarg; klassisk og rolig.",
+    "why": "Stor og rolig hvit kommode som gir plass til mye klær i soverommet (3,11 × 3,69 m); passer til IDANÄS-nattbordet.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/idanaes-kommode-4-skuffer-hvit__0898851_pe782663_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på ikea.no 2026-10-21 (produktdata): pris 2 795 kr, mål B104 D50 H118 cm, fri høyde under 16 cm, 4 skuffer, bilde, varenr. 104.587.67, på lager. Anslått: skuffehøydene fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Klassisk malt kommode med fire skuffer (den øverste lavere), to små mørke knotter per skuff (modellen viser én), en sarg under nederste skuff og rette, avsmalnende ben (16 cm fri høyde). Toppen stikker litt fram."
+  },
+  {
+    "id": "jysk-jenslev-kommode-4-skuffer-1-dor-79x36",
+    "category": "kommode",
+    "name": "Kommode JENSLEV 4 skuffer 1 dør",
+    "brand": "JYSK",
+    "store": "Jysk",
+    "url": "https://jysk.no/oppbevaring/kommoder/kommode-jenslev-4-skuffer-1-dor-natur-villeikfarget",
+    "priceNok": 1199,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (jysk.no-produktdata, varenr. 3601024, natur villeik): 1 199 kr, ingen førpris. Hvit (varenr. 3601401) 1 099 kr. Mulig frakt i tillegg.",
+    "dims": {
+      "w": 0.79,
+      "d": 0.36,
+      "h": 0.89
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:4",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "bar",
+      "handleLen": 0.13,
+      "base": "plinth",
+      "legH": 0.04,
+      "top": "same",
+      "corners": "square"
+    },
+    "variants": [
+      {
+        "name": "Natur villeik",
+        "colors": {
+          "body": "#c8956a",
+          "front": "#c99a6e",
+          "top": "#c8956a",
+          "legs": "#b9875e",
+          "handle": "#4b4b4b"
+        },
+        "materials": {
+          "body": "oak",
+          "front": "oak",
+          "top": "oak",
+          "legs": "oak",
+          "handle": "black-metal"
+        }
+      },
+      {
+        "name": "Hvit",
+        "colors": {
+          "body": "#f0efed",
+          "front": "#f2f1ef",
+          "top": "#f0efed",
+          "legs": "#e9e8e6",
+          "handle": "#4b4b4b"
+        },
+        "materials": {
+          "body": "painted",
+          "front": "painted",
+          "top": "painted",
+          "legs": "painted",
+          "handle": "black-metal"
+        },
+        "priceNok": 1099,
+        "url": "https://jysk.no/oppbevaring/kommoder/kommode-jenslev-4-skuffer-1-dor-hvit"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Kommode med fire skuffer og et skap med dør og hylle, i varm villeik-folie med mørke stanggrep; rimelig og praktisk.",
+    "why": "Skuffer og skap i ett: god for kjellersoverommet på 7,4 m² (kan bli hjemmekontor) til papirer og sengetøy; bare 36 cm dyp.",
+    "imageUrl": "https://cdn1.jysk.com/getimage/wd3.large/255987",
+    "verified": true,
+    "verifiedNote": "Bekreftet på jysk.no 2026-10-21 (produktdata): pris 1 199 kr, mål B79 H89 D36 cm, 4 skuffer og 1 dør med hylle, bilde, varenr. 3601024 og 3601401, JSON-LD InStock (leveringsstatus lastes først i nettleseren). Anslått: sokkelhøyde.",
+    "priceConfidence": "checked",
+    "shapeNote": "Fire skuffer i venstre kolonne og en høy dør til høyre (hylle bak), mørke stanggrep øverst på hver front. Lav sokkel (ca. 4 cm)."
+  },
+  {
+    "id": "skeidar-shimoda-kommode-40x30",
+    "category": "kommode",
+    "name": "Shimoda kommode",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/kommoder/shimoda-kommode?VariationId=V_5637390626",
+    "priceNok": 1999,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no-produktdata, art.nr. 7054300, sort ask fineer / natur rotting): 1 999 kr, ingen kampanje. På nettlager, levering 3–7 virkedager.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.3,
+      "h": 0.845
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:3"
+      ],
+      "frontStyle": "cane",
+      "handle": "knob",
+      "base": "legs",
+      "legStyle": "block",
+      "legH": 0.05,
+      "top": "same",
+      "corners": "square",
+      "squareFeet": true
+    },
+    "variants": [
+      {
+        "name": "Sort ask / natur rotting",
+        "colors": {
+          "body": "#1e1d1c",
+          "front": "#c4a27a",
+          "top": "#1e1d1c",
+          "legs": "#1e1d1c",
+          "handle": "#a87c50"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "rattan",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Smal kommode med svart askefinér og tre skuffer med flettet rotting i naturfarget treramme og små treknotter.",
+    "why": "Bare 40 × 30 cm: en lett, flettet kommode som får plass ved sengen eller i en krok i kjellersoverommet på 7,4 m²; rotting gir varme mot svarte detaljer.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/7054300/7054300_V10235454-Shimodakommode1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21 (produktdata): pris 1 999 kr, mål 40x30x84,5 cm, MDF/finér med rottingfronter, bilde, art.nr. 7054300, kjøpbar og på lager. Anslått: benhøyde ca. 5 cm fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Smal, høy svart ramme med tre skuffer; hver skuff har en natur treramme rundt et felt med flettet rotting og en liten treknott øverst. Hjørnestolpene blir korte ben (ca. 5 cm)."
+  },
+  {
+    "id": "skeidar-atmore-kommode-90x40",
+    "category": "kommode",
+    "name": "Atmore kommode",
+    "brand": "Skeidar",
+    "store": "Skeidar",
+    "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/kommoder/atmore-kommode?VariationId=V_5637610639",
+    "priceNok": 8499,
+    "priceNote": "Pris sjekket 2026-10-21 på produktsiden (skeidar.no-produktdata, art.nr. 5125003, hvitpigmentert eik): 8 499 kr, ingen kampanje. Røkt eik (art.nr. 5125006) samme pris. Bestillingsvare på nett, ca. 2–3 ukers levering.",
+    "dims": {
+      "w": 0.9,
+      "d": 0.4,
+      "h": 1.07
+    },
+    "archetype": "dresser",
+    "mount": "floor",
+    "params": {
+      "fronts": [
+        "drawers:3"
+      ],
+      "frontStyle": "flat",
+      "handle": "edge",
+      "base": "plinth",
+      "legH": 0.06,
+      "top": "same",
+      "corners": "rounded",
+      "cornerR": 0.08
+    },
+    "variants": [
+      {
+        "name": "Hvitpigmentert eik",
+        "colors": {
+          "body": "#dccfbd",
+          "front": "#dfd2c0",
+          "top": "#dccfbd",
+          "legs": "#d4c6b3",
+          "handle": "#cbbca8"
+        },
+        "materials": {
+          "body": "white-oak",
+          "front": "white-oak",
+          "top": "white-oak",
+          "legs": "white-oak",
+          "handle": "white-oak"
+        }
+      },
+      {
+        "name": "Røkt eik",
+        "colors": {
+          "body": "#5a4632",
+          "front": "#5d4834",
+          "top": "#5a4632",
+          "legs": "#523f2d",
+          "handle": "#4c3a2a"
+        },
+        "materials": {
+          "body": "smoked-oak",
+          "front": "smoked-oak",
+          "top": "smoked-oak",
+          "legs": "smoked-oak",
+          "handle": "smoked-oak"
+        },
+        "url": "https://www.skeidar.no/alle-produkter/alle-oppbevaring-og-skap/kommoder/atmore-kommode?VariationId=V_5637610640"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0,
+    "description": "Kommode i hvitpigmentert eik med sterkt avrundede hjørner, tre store grepløse skuffer og inntrukket sokkel.",
+    "why": "De runde hjørnene gjør den myk å gå forbi i soverommet (3,11 × 3,69 m); lys eik passer til Sand-veggene og det rolige uttrykket i huset.",
+    "imageUrl": "https://ellinorassetsblobs-g9c2h2ddefgrcrgg.z02.azurefd.net/assetsblobs/5125003/5125003_V10235454-Atmore1.webp",
+    "verified": true,
+    "verifiedNote": "Bekreftet på skeidar.no 2026-10-21 (produktdata): pris 8 499 kr i begge farger, mål 90x40x107 cm, 3 skuffer, bilde, art.nr. 5125003 og 5125006, kjøpbar (bestillingsvare). Anslått: hjørneradius og sokkelhøyde fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Myk form: alle fire loddrette hjørner er sterkt avrundet (radius ca. 8 cm) og sokkelen (ca. 6 cm) er inntrukket med runde ender. Tre store, glatte skuffer uten synlige håndtak. Modellen har en smal kant i en litt mørkere tone øverst på hver skuff, så de tre skuffene synes i spillet; den ekte kommoden har ingen grepslist."
+  },
+  {
     "id": "skeidar-savona-kommode-3-3-skuffer-160x46",
     "category": "kommode",
     "name": "Savona kommode 3+3 skuffer",

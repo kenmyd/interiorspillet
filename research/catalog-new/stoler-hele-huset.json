@@ -2,6 +2,7 @@
   {
     "id": "bohus-alice-spisestol",
     "category": "stoler",
+    "subcategory": "spisestol",
     "name": "Alice spisestol",
     "brand": "Interstil",
     "store": "Bohus",
@@ -105,6 +106,7 @@
   {
     "id": "bohus-ella-m-spisestol",
     "category": "stoler",
+    "subcategory": "spisestol",
     "name": "Ella (M) spisestol",
     "brand": "Jakobsen Home",
     "store": "Bohus",
@@ -263,6 +265,7 @@
   {
     "id": "bohus-rocco-spisestol-med-armlene",
     "category": "stoler",
+    "subcategory": "spisestol",
     "name": "Rocco spisestol med armlene",
     "brand": "Jakobsen Home",
     "store": "Bohus",
@@ -400,6 +403,7 @@
   {
     "id": "bohus-fyn-spisestol-med-armlene",
     "category": "stoler",
+    "subcategory": "spisestol",
     "name": "Fyn spisestol med armlene",
     "brand": "Actona",
     "store": "Bohus",
@@ -463,6 +467,7 @@
   {
     "id": "bohus-noni-spisestol",
     "category": "stoler",
+    "subcategory": "spisestol",
     "name": "Noni spisestol",
     "brand": "Actona",
     "store": "Bohus",
@@ -530,6 +535,7 @@
   {
     "id": "bohus-brage-spisestol",
     "category": "stoler",
+    "subcategory": "spisestol",
     "name": "Brage spisestol",
     "brand": "Unique Furniture",
     "store": "Bohus",
@@ -594,6 +600,7 @@
   {
     "id": "ikea-lisabo-stol",
     "category": "stoler",
+    "subcategory": "spisestol",
     "name": "LISABO stol",
     "brand": "IKEA",
     "store": "IKEA",
@@ -657,6 +664,7 @@
   {
     "id": "ikea-krylbo-stol",
     "category": "stoler",
+    "subcategory": "spisestol",
     "name": "KRYLBO stol",
     "brand": "IKEA",
     "store": "IKEA",

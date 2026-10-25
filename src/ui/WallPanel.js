@@ -583,7 +583,8 @@ export class WallPanel extends BasePanel {
     const game = this.editor.game;
     const player = game?.player, cam = game?.camera;
     const pc = this.editor.layout?.photoCamera?.('0_for');
-    if (!player || !cam?.isPerspectiveCamera || !pc?.pos || !this.hw?.origin) return null;
+    // a hidden or 0 × 0 canvas (minimised window) has no aspect: no pose, else the solver would turn the player to NaN
+    if (!player || !cam?.isPerspectiveCamera || !(cam.aspect > 0) || !pc?.pos || !this.hw?.origin) return null;
     const feet = new THREE.Vector3(pc.pos.x, this.home.floorY ?? 0, pc.pos.z);
     const eye = feet.clone();
     eye.y += PLAYER?.eyeHeight ?? 1.66;
@@ -605,6 +606,7 @@ export class WallPanel extends BasePanel {
       yaw -= Math.atan(ex * Math.tan(hHalf)) * 0.9;
       pitch = THREE.MathUtils.clamp(pitch + Math.atan(ey * Math.tan(vHalf)) * 0.9, -0.6, 0.4);
     }
+    if (!Number.isFinite(yaw) || !Number.isFinite(pitch)) return null;
     return { pos: feet, yaw: wrapAngle(yaw), pitch };
   }
 

@@ -5,11 +5,16 @@ sørvinduene mot elva og TV-stua – og prøver ut interiør før du kjøper noe
 
 - **Den høye veggen** (3,91 × 3,00 m): 40 forslag (spilevegger, sjakkbrett med Akupixel, tekstilpaneler, gardinvegg,
   mose, akustikkbilder …) som du kan bla i, ta i bruk, endre og sammenligne med fotomontasjene.
-- **Møbler og lamper** fra katalogen (Bohus, IKEA, Skeidar, Jysk, Christiania Belysning, Fagmøbler m.fl. – 338 produkter
-  med ekte mål og priser i 22 kategorier): sofaer, lenestoler og hvilestoler, bord, spisestoler, skjenker, TV-benker,
-  vitrineskap (også veggmontert), hyller, senger, nattbord, kommoder, garderobeskap, speil, bad, gang, taklamper (bl.a.
-  Secto- og Octo-spilelamper i tre), gulv- og bordlamper, puter, pledd, puffer, tepper, solskjerming, akustikkprodukter
-  og pynt.
+- **Møbler, lamper og kunst** fra katalogen (Bohus, IKEA, Skeidar, Jysk, Elektroimportøren, Lampehuset, Nordic Nest,
+  Christiania Belysning, Fagmøbler m.fl. – 597 produkter med ekte mål og priser i 24 kategorier): sofaer, lenestoler og
+  hvilestoler, bord (sofabord, sidebord, skrivebord), stoler og krakker (spisestoler, barkrakker, kontorstoler),
+  skjenker, TV-benker, vitrineskap (også veggmontert), hyller, senger, nattbord, kommoder, garderobeskap, speil, bad,
+  gang, taklamper (bl.a. Secto- og Octo-spilelamper i tre), **spotter og downlights** (innfelte og utenpåliggende
+  downlights, takspotter, spotskinner, veggspotter og bildebelysning – også som rekke eller rutenett i taket), gulv-,
+  bord-, vegg- og arbeidslamper, puter, pledd, puffer, tepper, solskjerming, akustikkprodukter, **kunst og bilder**
+  (lerret, plakater, innrammede bilder, bildevegger og tomme rammer) og pynt.
+- **Egne bilder**: last opp et eget bilde (JPG, PNG, WebP) og heng det på veggen i en ramme du velger, eller sett det i
+  en tom ramme fra katalogen. Bildene lagres bare i nettleseren og følger med når du eksporterer designet til fil.
 - **Solskjerming** på vinduene (persienner, rullegardiner, plissé, duo, lameller, gardiner, liftgardin, screen) med
   ekte sol som slipper inn i striper gjennom lamellene.
 - **Sol og belysning**: sola følger klokke og dato på 58,1° nord, kveld/natt med lampene og LED-listene på.
@@ -41,6 +46,7 @@ huskes i nettleseren, så neste start går raskere.
 | Kommando | Hva den gjør |
 | --- | --- |
 | `npm run dev` | utviklingsserver på http://127.0.0.1:5180 (oppdaterer seg selv når filer endres) |
+| `npm run dev:mobil` | samme server, men åpen i hjemmenettet: åpne adressen ved «Network:» (f.eks. http://192.168.1.20:5180) på mobilen eller nettbrettet (samme wifi) |
 | `npm run build` | lager nettversjonen i `dist/` (virker fra hvilken som helst mappe på en webserver) |
 | `npm run preview` | viser `dist/` på http://127.0.0.1:4180 |
 | `npm run pack` | bygger og pakker `dist/` + `.htaccess` i `deploy/interiorspillet-web.zip` for opplasting |
@@ -50,6 +56,30 @@ Nettversjonen for kenmyd.no: se **[deploy/LES_MEG_OPPLASTING.md](deploy/LES_MEG_
 ---------------------------------------------------------------------------------------------------------------
 
 ## Kontroller
+
+Spillet finner selv ut om det kjører på **mobil**, **nettbrett**, **PC med berøringsskjerm** eller **PC**, og viser
+popupen **«Slik styrer du»** når du går inn fra startsiden. Der velger du styring (valget lagres, og «Ikke vis igjen»
+slår popupen av). Du finner den igjen under **Esc → Styring** (på touch: **Meny → Styring**), med **«Bytt styring»** i
+hjelpen (H) og under **Innstillinger → Styring**.
+
+| Styring | For | Slik virker den |
+| --- | --- | --- |
+| **Mus** | PC med mus | som før (tabellene under) |
+| **Tastatur (A/D snur)** | bærbar uten mus | **W/S** gå · **A/D** snu (alltid) · **← →** gå sidelengs · **Q / Z** (eller Page Up / Page Down) se opp / ned · **Enter** velger det krysset midt i bildet peker på · **E** dører og stoler |
+| **Touchpad** | bærbar uten mus | sveip med **to fingre** for å se deg rundt · **trykk** for å velge · WASD går som vanlig |
+| **Joystick + dra for å se** | mobil, nettbrett | joysticken nede til venstre går (helt ut = løp) · **dra** en finger for å se deg rundt · **trykk** på et møbel for å velge det, **dra** det valgte for å flytte det |
+| **To joysticker** | mobil, nettbrett | venstre joystick går, høyre ser deg rundt |
+| **Trykk for å gå dit** | mobil, nettbrett | **trykk på gulvet**, så går du dit · dra for å se deg rundt |
+
+Touch-knappene: **Bruk** (åpne døra / sett deg – det som er midt i bildet; du kan også trykke på teksten under krysset),
+**Hopp**, **Løp** (av/på), **Hjelp** og **Meny** øverst til høyre. Mens du plasserer et nytt møbel: **Plasser**,
+**Roter** og **Avbryt**. På en PC med berøringsskjerm kommer touch-kontrollene fram når du tar på skjermen og går bort
+når du bruker musa eller tastaturet. En telefon på høykant får et hint om å snu den. Telefoner starter med
+grafikkvalitet «Lav».
+
+Teste touch på PC: legg til `?device=phone` (eller `tablet`, `touch-pc`) i adressen og slå på enhetsverktøylinja i
+utviklerverktøyene (F12 → Ctrl+Shift+M). `node tools/test-touch.mjs` kjører en automatisk test med emulert iPhone, iPad
+og PC (skjermbilder i `.shots/touch/`).
 
 ### Bevegelse
 
@@ -103,9 +133,17 @@ musehjulet. I **plan** drar du med høyre knapp og zoomer med hjulet. Alle verkt
 ## Verktøyene
 
 ### Katalog (K)
-1. Velg kategori øverst (Sofaer, Lenestoler, Bord, Spisestoler, Skjenker, TV-benker, Vitrineskap, Hyller, Senger,
-   Nattbord, Kommoder, Garderobeskap, Speil, Bad, Gang, Taklamper, Små lamper, Puter og pledd, Tepper, Solskjerming,
-   Akustikk, Smått) eller søk («bouclé», «eik», «IKEA» …). Klikk på et kort for detaljer, mål, pris og lenke til butikken.
+1. Velg kategori øverst (Sofaer, Lenestoler, Bord, Stoler og krakker, Skjenker, TV-benker, Vitrineskap, Hyller,
+   Senger, Nattbord, Kommoder, Garderobeskap, Speil, Bad, Gang, Taklamper, Spotter og downlights, Små lamper, Puter,
+   pledd og puffer, Tepper, Solskjerming, Akustikk, Kunst og bilder, Smått) eller søk («bouclé», «eik», «IKEA»,
+   «downlight», «plakat» …). Klikk på et kort for detaljer, mål, pris og lenke til butikken.
+   - **Spotter og downlights**: «Legg inn flere (rekke/rutenett) …» på produktkortet legger inn mange like spotter som
+     én enhet. I egenskapspanelet: **Antall og rutenett** (rader, kolonner, avstand), «Fordel jevnt i rommet»,
+     «Roter 90°» og «Del opp i enkeltspotter». Handlelista teller stykk og hele pakker.
+   - **Kunst og bilder**: det første kortet er **«Last opp eget bilde»** (eller dra en bildefil inn i spillvinduet).
+     Velg ramme, passepartout og om bildet skal fylle rammen eller vises helt, og trykk «Plasser på veggen». Et valgt
+     maleri, et akustikkbilde eller en tom ramme fra katalogen får «Bytt bilde …» / «Med eget bilde …».
+     Bildelamper fester seg over bildet når du plasserer dem på samme vegg.
 2. **«Plasser»**: et halvgjennomsiktig spøkelse følger musa på riktig underlag (gulv, vegg, tak, bordplate, sofa).
    Rødt betyr at det kolliderer med noe. **Klikk** plasserer, **Shift + klikk** plasserer flere, høyreklikk/Esc avbryter.
 3. Etterpå åpnes **egenskapspanelet**:
@@ -150,6 +188,8 @@ musehjulet. I **plan** drar du med høyre knapp og zoomer med hjulet. Alle verkt
 - **Lamper**: alle de faste lysene rom for rom (rommet du står i først, hvert rom med sin egen bryter) og lampene i
   designet – på/av og dimmer, «Alle på», «Alle av», «Automatisk». Lys merket «auto» følger tiden på døgnet.
 - Nye lamper fra katalogen lyser av seg selv; velg dem for dimmer, fargetemperatur og høyde under taket.
+- Spotter og downlights deler et lysbudsjett per rom: på kvalitet «Middels» får de to beste spotgruppene i et rom ekte
+  lys (på «Høy» tre). De andre lyser som omgivelseslys, og Belysning sier ifra («Lyser via omgivelseslys nå …»).
 
 ### Akustikk (merket nederst til venstre)
 «Etterklang ≈ 0,86 s» er grønn (≤ 0,6 s), gul (≤ 0,7 s) eller rød. Etter en endring vises hvor mye den endret seg.
@@ -167,6 +207,7 @@ mer demping som trengs for å nå 0,6 s. Tepper, puter, pledd, puffer, gardiner,
   så autolagringen aldri skriver over feil design.
 - **Eksporter til fil** / **Importer fra fil** (.json) – for sikkerhetskopi eller for å åpne designet på en annen maskin.
   Filer som ikke er et design fra Interiørspillet avvises, og urimelige verdier (mål, antall, posisjoner) rettes.
+  Egne bilder som designet bruker, følger med i fila (ca. 0,5 MB per bilde) og legges inn igjen ved import.
 
 ### Handleliste (I)
 Alt nytt i designet, sortert per butikk, med pris, antall og lenke («Åpne»), veggforslaget med prisanslag og
@@ -183,7 +224,8 @@ Viser stua slik den er i dag. Trykk O (eller Esc) igjen for å komme tilbake til
 Lagrer det du ser (uten markeringer og menyer) som en PNG-fil, f.eks. `stua-2026-10-18-1709.png`.
 
 ### Innstillinger (Esc → Innstillinger, eller på startskjermen)
-Musefølsomhet, invertert mus, museoppførsel (WoW-stil eller FPS), synsfelt, **grafikkvalitet** (Lav / Middels /
+Styring (Automatisk / Mus / Tastatur / Touchpad / Alltid touch), touch-kontroller (Joystick / To joysticker / Trykk for
+å gå dit), følsomhet for touch og touchpad, «Vis «Slik styrer du» ved start», musefølsomhet, invertert mus, museoppførsel (WoW-stil eller FPS), synsfelt, **grafikkvalitet** (Lav / Middels /
 Høy – Høy gir myke skygger i krokene, AO og glans i stoffene), **Automatisk oppløsning** (senker oppløsningen hvis
 bildet hakker, og øker den igjen når det er luft – «Middels» starter på inntil 1,25 × skjermoppløsningen), vis
 bildefrekvens, lyd.
@@ -212,7 +254,7 @@ Koordinater: meter, **+x = sør** (mot vinduene), **+z = vest** (mot TV-stua), +
 nordøstre innerhjørnet (øverst til venstre på plantegningen). `rotationDeg` 0 = fronten mot vest, 90 = mot sør.
 
 Etter en endring: lagre fila – siden lastes på nytt av seg selv med `npm run dev`. `node tools/test-design.mjs` sjekker
-dataene (95 tester).
+dataene (144 tester), `node tools/test-house.mjs` resten (28 testfiler).
 
 ### Sjekk med målebånd (viktigst først)
 
@@ -265,3 +307,7 @@ Også usikre: svingstolenes retning (±20°), maleriets størrelse (1,00 × 0,70
 - Farger på skjerm avhenger av skjermen; lys og hvitbalanse er kalibrert mot bildene av stua, men er ikke en fargeprøve.
 - Etterklangstiden er et Sabine-anslag (500–1000 Hz), kalibrert til 0,86 s for stua i dag – ikke en måling.
 - «Mine forslag» for veggen lagres i nettleseren (ikke i eksporterte designfiler); forslaget du bruker følger designet.
+- Egne bilder lagres i nettleseren (IndexedDB). Bilder som ikke brukes i noe design, ryddes bort etter 14 dager, og i
+  et privat vindu huskes de bare til fanen lukkes.
+- Resten av listen for møbler, lys og kunst (runde 3) står i `notes/qa-mobler-lys-kunst.md` («Mangler / kjente
+  begrensninger»).
