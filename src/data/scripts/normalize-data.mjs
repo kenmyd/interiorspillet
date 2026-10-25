@@ -365,7 +365,7 @@ const SUBCATEGORY_FROM_ARCHETYPE = {
   taklampe: {
     'pendant-dome': 'pendel', 'pendant-globe': 'pendel', 'pendant-cylinder': 'pendel', 'pendant-linear': 'pendel',
     'pendant-multi': 'pendel', 'pendant-tiered': 'pendel', 'pendant-woven': 'pendel', 'pendant-mushroom': 'pendel',
-    'pendant-slatted': 'pendel',
+    'pendant-slatted': 'pendel', 'pendant-felt': 'pendel',
   },
   solskjerming: {
     curtain: 'gardin', venetian: 'persienne', roller: 'rullegardin', pleated: 'plissé', 'duo-roller': 'duo-rullegardin',

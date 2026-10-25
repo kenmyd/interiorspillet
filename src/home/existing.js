@@ -49,7 +49,7 @@ export const CATEGORY_BY_ARCHETYPE = {
   'chandelier-molecule': 'taklampe',
   'pendant-dome': 'taklampe', 'pendant-globe': 'taklampe', 'pendant-cylinder': 'taklampe', 'pendant-linear': 'taklampe',
   'pendant-multi': 'taklampe', 'pendant-tiered': 'taklampe', 'pendant-woven': 'taklampe', 'pendant-mushroom': 'taklampe',
-  'pendant-slatted': 'taklampe', 'ceiling-ring': 'taklampe',
+  'pendant-slatted': 'taklampe', 'pendant-felt': 'taklampe', 'ceiling-ring': 'taklampe',
   'floor-arc': 'smalamper', 'floor-tripod': 'smalamper', 'floor-pole-shade': 'smalamper', 'floor-mushroom': 'smalamper',
   'floor-uplight': 'smalamper', 'floor-globe': 'smalamper', 'floor-reading': 'smalamper', 'table-mushroom': 'smalamper',
   'table-shade': 'smalamper', 'table-globe': 'smalamper', 'table-portable': 'smalamper', 'table-dome': 'smalamper',

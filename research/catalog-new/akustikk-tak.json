@@ -1,0 +1,48 @@
+[
+  {
+    "id": "akustikksenter-frigg-40-tekstil-tak-1200x2000",
+    "category": "akustikk",
+    "subcategory": "takabsorbent",
+    "name": "Frigg™ 40mm tekstil takplate 1200 × 2000, limt i taket",
+    "brand": "Norsk Akustikksenter",
+    "store": "Norsk Akustikksenter",
+    "url": "https://www.akustikksenter.no/butikk/direkte-monterte-absorbenter-vegg-og-tak/frigg40mm-tekstil/",
+    "priceNok": 5869,
+    "salePriceNok": 4989,
+    "priceNote": "pris sjekket 2026-10-18 inkl. mva for 1200 x 2000 mm (nettbutikkpris -15 % = 4988,65 kr) – samme plate som Frigg på veggen. 1200 x 2700 finnes bare i hvit (7923 kr / 6735 kr). Festes i taket med high-tack-lim eller monteringsbraketter (kjøpes separat).",
+    "dims": { "w": 2.0, "d": 1.2, "h": 0.04 },
+    "archetype": "ceiling-absorber",
+    "mount": "ceiling",
+    "params": { "thickness": 0.04, "shape": "flush" },
+    "variants": [
+      {
+        "name": "Beige",
+        "colors": { "panel": "#b8b0a6", "slats": "#b8b0a6", "backing": "#6e6a64", "frame": "#b8b0a6" },
+        "materials": { "panel": "woven", "slats": "woven", "backing": "felt", "frame": "woven" }
+      },
+      {
+        "name": "Hvit",
+        "colors": { "panel": "#e8e6dc", "slats": "#e8e6dc", "backing": "#8b8a84", "frame": "#e8e6dc" },
+        "materials": { "panel": "woven", "slats": "woven", "backing": "felt", "frame": "woven" }
+      },
+      {
+        "name": "Grå",
+        "colors": { "panel": "#939288", "slats": "#939288", "backing": "#585852", "frame": "#939288" },
+        "materials": { "panel": "woven", "slats": "woven", "backing": "felt", "frame": "woven" }
+      },
+      {
+        "name": "Koksgrå",
+        "colors": { "panel": "#373938", "slats": "#373938", "backing": "#212222", "frame": "#373938" },
+        "materials": { "panel": "woven", "slats": "woven", "backing": "felt", "frame": "woven" }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 2.28,
+    "description": "Norskprodusert lydabsorbent av 40 mm glassull trukket med tekstil – klasse A (αw 0,95) – limt rett i taket. Følger skråtaket og stikker bare 4 cm ned.",
+    "why": "I skråtaket over spisebordet tar platene lyden der den ellers spretter mellom bord, gulv og tak. To plater i beige gir ca. +4,6 m² Sabine – mer enn noe annet du kan gjøre uten å røre veggene – og beige ligger nær SAND i taket.",
+    "imageUrl": "https://www.akustikksenter.no/wp-content/uploads/2018/03/Frigg-40-Coal-II-scaled.jpg",
+    "verified": true,
+    "verifiedNote": "Pris, mål, farger og αw fra den bekreftede Frigg-platen (akustikksenter.no 2026-10-18, 1200 x 2000 i alle farger til 5869 kr / 4988,65 kr). Produktsiden oppgir montering direkte på vegg og tak; takplaten er ikke en egen vare hos forhandleren. Bildet er av koksgrå.",
+    "priceConfidence": "checked"
+  }
+]

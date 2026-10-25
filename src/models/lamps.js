@@ -521,7 +521,7 @@ const MAX_SLOPE = 0.47;
  * e.g. in the model gallery), else { slope: [dh/dx, dh/dz] } (0, 0 where flat). One-sided differences, the gentler
  * side wins, so the edge of a bulkhead does not read as a slope.
  */
-function ceilingAt(x, y, z) {
+export function ceilingAt(x, y, z) {
   const hc = roomLayout?.ceilingHeightAt;
   if (typeof hc !== 'function') return null;
   // the ceiling of the level the lamp hangs in (a point half a metre under its attachment picks the level, §1.8):
@@ -1108,6 +1108,64 @@ function buildPendantLinear(spec) {
   const lm = L.lumens(1500);
   L.spot([-w / 4, y0 - 0.002, 0], [0, -1, 0], lm / 2, 1.1, 0.9);
   L.spot([w / 4, y0 - 0.002, 0], [0, -1, 0], lm / 2, 1.1, 0.9);
+  return L.finish();
+}
+
+/** Soft peaks of the felt landscape pendant: [x / w, z / d, base radius / w, height share]; wires end on 0, 2 and 3. */
+const FELT_PEAKS = [[-0.34, 0.05, 0.16, 0.6], [-0.18, -0.08, 0.13, 0.42], [0, 0, 0.25, 1], [0.21, 0.07, 0.15, 0.68], [0.37, -0.05, 0.12, 0.45]];
+const FELT_WIRES = [0, 2, 3];
+
+/**
+ * Felt «landscape» pendant (Lucande Beutlin): a wavy oval felt tray (part inner) with soft felt peaks on top (part
+ * shade), hung from a long bar canopy (params.canopyL) on three wires that end on the peak tops; the LEDs shine down
+ * through an opal panel in the tray's underside. dims: w = length, d = width, h = height of the highest peak over the
+ * underside. The felt absorbs a little sound (catalogue `absorption`).
+ */
+function buildPendantFelt(spec) {
+  const L = new Lamp('pendant-felt', spec);
+  const { w, d, h } = L.dims;
+  const canopyL = clamp(num(L.P.canopyL, w * 0.75), 0.2, w);
+  const ch = canopy(L, { shape: 'bar', len: canopyL, d: 0.11, h: 0.037 });
+  const drop = dropOf(L, 0.85, h + ch + 0.1);
+  const y0 = -drop;
+  const t = clamp(h * 0.16, 0.02, 0.05);
+  // tray: an oval with a slow wave in its outline (the felt is cut, not turned)
+  const rf = (a) => 1 + 0.05 * Math.sin(3 * a + 0.7) + 0.035 * Math.sin(5 * a + 2.1);
+  const outline = (s) => {
+    const pts = [];
+    for (let i = 0; i < 96; i++) {
+      const a = (i / 96) * TAU;
+      pts.push(new THREE.Vector2(Math.cos(a) * (w / 2) * rf(a) * s / 1.06, Math.sin(a) * (d / 2) * rf(a) * s / 1.06));
+    }
+    return new THREE.Shape(pts);
+  };
+  const tray = K.extrudeShape(outline(1), t, { bevel: Math.min(0.006, t * 0.3), bevelSegments: 2, curveSegments: 8 });
+  tray.rotateX(-Math.PI / 2);
+  K.worldUV(tray);
+  L.add(tray.translate(0, y0, 0), L.mat('inner'), 'inner');
+  // opal LED panel in the underside, facing down
+  const panel = new THREE.ShapeGeometry(outline(0.72), 4);
+  panel.rotateX(Math.PI / 2);
+  L.glowAdd(panel.translate(0, y0 - 0.0008, 0), L.bulbMat(1.3), null);
+  // the peaks: soft turned felt hills with a rounded top, squeezed across the tray
+  const prof = [[1, 0], [0.86, 0.07], [0.68, 0.19], [0.5, 0.36], [0.35, 0.56], [0.21, 0.77], [0.1, 0.92], [0, 1]];
+  const ph = h - t;
+  const tops = [];
+  for (const [px, pz, pr, ps] of FELT_PEAKS) {
+    const rx = pr * w, rz = Math.min(rx * 1.1, d / 2 - Math.abs(pz * d) - 0.015);
+    const geo = K.lathe(prof, { seg: L.q.lathe });
+    geo.scale(rx, ph * ps, rz);
+    L.add(geo.translate(px * w, y0 + t - 0.002, pz * d), L.mat('shade'), 'shade');
+    tops.push([px * w, y0 + t + ph * ps - 0.004, pz * d]);
+  }
+  for (const i of FELT_WIRES) {
+    const [x, y, z] = tops[i];
+    if (Math.abs(x) > canopyL / 2) continue;
+    hanger(L, x, z, ch, y, { r: 0.0008, part: 'cord' });
+  }
+  const lm = L.lumens(950);
+  L.spot([-w / 4, y0 - 0.002, 0], [0, -1, 0], lm / 2, 1.15, 0.9);
+  L.spot([w / 4, y0 - 0.002, 0], [0, -1, 0], lm / 2, 1.15, 0.9);
   return L.finish();
 }
 
@@ -3226,6 +3284,7 @@ const PART_LABELS = {
   'chandelier-molecule': { base: 'Takkopp', metal: 'Armer', cord: 'Stang' },
   'ceiling-ring': { shade: 'Lysflate / glass', inner: 'Innside / nav', base: 'Takkopp', metal: 'Ring og arm', cord: 'Oppheng' },
   'pendant-linear': { shade: 'Armatur', inner: 'Lysflate', base: 'Takkopp', cord: 'Oppheng' },
+  'pendant-felt': { shade: 'Filt (toppene)', inner: 'Filt (bunnen)', base: 'Takfeste', metal: 'Beslag', cord: 'Wire' },
   'pendant-slatted': { shade: 'Spiler (utside)', inner: 'Spiler (innside)', metal: 'Takkopp', cord: 'Ledning' },
   'pendant-cylinder': { base: 'Takkopp', inner: 'Innside / linse' },
   'floor-tripod': { base: 'Stativ', metal: 'Beslag' },
@@ -3265,6 +3324,9 @@ export const archetypes = {
   'pendant-linear': C('pendant-linear', buildPendantLinear, { w: 1.0, d: 0.05, h: 0.05 }, { drop: 0.9 }, look('#1a1a1a', 'black-metal', '#1a1a1a', 'black-metal', '#f4efe6', 'glass-opal'), {
     params: { count: { type: 'number', min: 1, max: 12, step: 1, label: 'Antall lyspunkter' } },
     dimsRange: { w: [0.4, 2.0], d: [0.01, 0.15], h: [0.01, 0.12] },
+  }),
+  'pendant-felt': C('pendant-felt', buildPendantFelt, { w: 1.06, d: 0.52, h: 0.215 }, { drop: 0.85 }, look('#857a45', 'felt', '#e9e7e1', 'painted', '#6b5d40', 'felt', '#9a9a9a'), {
+    dimsRange: { w: [0.5, 1.6], d: [0.25, 0.8], h: [0.1, 0.4] },
   }),
   'pendant-multi': C('pendant-multi', buildPendantMulti, { w: 0.84, d: 0.84, h: 0.3 }, { drop: 1.0, count: 8, layout: 'branches' }, look('#1a1a1a', 'black-metal', '#1a1a1a', 'black-metal', '#c9a14a', 'brass'), {
     params: {

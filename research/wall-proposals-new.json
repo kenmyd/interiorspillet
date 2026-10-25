@@ -834,7 +834,8 @@
           "colorK": 2700,
           "alpha": 0
         }
-      ]
+      ],
+      "category": "diverse"
     },
     {
       "id": "N15",
@@ -3341,7 +3342,8 @@
         }
       ],
       "image": null,
-      "drawings": []
+      "drawings": [],
+      "category": "kombinert"
     },
     {
       "id": "N33",
@@ -4016,6 +4018,1562 @@
           "scale": 1,
           "seed": 39,
           "alpha": 0
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N40",
+      "code": "N40",
+      "name": "Naturell eik på lys filt – spilevegg uten sorte striper",
+      "group": "Runde 4 – spiler",
+      "priceText": "ca. 11–16 000 kr inkl. lekter og mineralull (estimat)",
+      "priceMin": 11000,
+      "priceMax": 16000,
+      "sabineAdded": 7,
+      "rt60": 0.68,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "Samme spilevegg som B (naturell eik, gulv til 235 cm), men med lys sandfarget filt bak spilene i stedet for sort. Fugene leses som fine, lyse linjer i treverket, så veggen blir lysere og roligere og glir bedre inn i SAND-veggene rundt. Dempingen er den samme.",
+      "pros": [
+        "Like mye demping som B (ca. +7 m² Sabine)",
+        "Lysere og roligere enn sort filt – passer SAND-veggene",
+        "Naturell eik holder stua lys",
+        "Finnes ferdig: Akupanel og Lundbergs leveres på beige filt"
+      ],
+      "cons": [
+        "Lys filt viser støv og merker litt mer enn sort",
+        "Mindre kontrast og «dybde» enn sort filt",
+        "Må stå på lekter med mineralull for å dempe så mye (rett på veggen bare klasse D)"
+      ],
+      "products": [
+        "WoodUpp Akupanel klassisk eik på beige filt, 240 × 60 cm – 7 stk (ca. 1 300–2 100 kr/stk, f.eks. Fjordglott Trevare)",
+        "Alternativ: Lundbergs Harmony på beige akustikkfilt, 259 × 61,5 cm (ca. 1 590 kr/stk veil.)",
+        "Lekter 45–48 mm med mineralull bak – gir klasse A (αw ≈ 0,9) mot 0,35 rett på veggen",
+        "Påbyggsrammer for brytere og stikk"
+      ],
+      "notes": "Som B, men med beige/sand filt bak (backingColor #cbbba2). Prøv filtfargen mot SAND-veggen – litt mørkere enn veggen gjør at fugene ikke forsvinner helt. Priser sjekket 25.10.2026, pris per størrelse ikke bekreftet.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#cbbba2",
+          "standoff": 0.048,
+          "alpha": 0.76
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N41",
+      "code": "N41",
+      "name": "Liggende spiler i røkt eik – gulv til 235 cm",
+      "group": "Runde 4 – spiler",
+      "priceText": "ca. 12–14 000 kr (estimat, som B2)",
+      "priceMin": 12000,
+      "priceMax": 14000,
+      "sabineAdded": 7,
+      "rt60": 0.68,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "Spilevegg i røkt eik der spilene ligger vannrett. Liggende linjer får veggen til å virke bredere og roligere, og de følger bordplaten og vinduskarmene i stua. Bygget som B med lekter og Glava bak, så den demper like mye.",
+      "pros": [
+        "Mye demping (ca. +7 m² Sabine)",
+        "Liggende linjer gir ro og gjør veggen bredere",
+        "Røkt eik henter spisebordet og kjøkkenet",
+        "Tåler stolrygger godt"
+      ],
+      "cons": [
+        "Ferdige akupaneler må snus 90° – sjekk at produsenten tillater det",
+        "Støv legger seg litt lettere på liggende spiler",
+        "Dyrere enn maling og bilder"
+      ],
+      "products": [
+        "Akustikkpaneler i røkt eik, 60 × 240 cm, montert liggende (eller løse spiler 27 × 12 mm på sort filt)",
+        "Lekter 48 mm med Glava bak",
+        "Endelister i eik på sidene",
+        "Påbyggsrammer for brytere og stikk"
+      ],
+      "notes": "Liggende spiler hele bredden, 0–235 cm.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "horizontal",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N42",
+      "code": "N42",
+      "name": "Spilefelt i trinn – fem felt i røkt eik, høyest på midten",
+      "group": "Runde 4 – spiler",
+      "priceText": "ca. 6–8 000 kr (estimat)",
+      "priceMin": 6000,
+      "priceMax": 8000,
+      "sabineAdded": 4.4,
+      "rt60": 0.74,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "Fem spilefelt på 60 cm i røkt eik som står på gulvet og stiger i trinn mot midten (165, 200 og 235 cm). Mellom feltene og over dem vises SAND-veggen. Trinnene rammer inn spisebordet og gir veggen en rolig «skyline» uten at den blir tung.",
+      "pros": [
+        "Mer luft og lys enn en heldekkende spilevegg",
+        "Rammer inn spisebordet midt på veggen",
+        "Ferdige paneler på 60 cm kan kappes til høydene",
+        "Fritt rundt bryterne ved døra"
+      ],
+      "cons": [
+        "Mindre demping enn heldekkende spiler (ca. +4,4 m² Sabine)",
+        "Mellomrommene må males pent – de synes",
+        "Stikkontakten ved gulvet får påbyggsramme"
+      ],
+      "products": [
+        "5 akustikkpaneler i røkt eik 60 × 240 cm (f.eks. WoodUpp Akupanel), kappet til 165 / 200 / 235 cm",
+        "Lekter med mineralull bak (45–48 mm) – rett på veggen demper de bare en tredjedel så mye",
+        "Endelister i eik"
+      ],
+      "notes": "Feltene står fra u 0,215 med 12 cm mellomrom: 165 / 200 / 235 / 200 / 165 cm høye.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0.215,
+          "v": 0,
+          "w": 0.6,
+          "h": 1.65,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 0.935,
+          "v": 0,
+          "w": 0.6,
+          "h": 2,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 1.655,
+          "v": 0,
+          "w": 0.6,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 2.375,
+          "v": 0,
+          "w": 0.6,
+          "h": 2,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 3.095,
+          "v": 0,
+          "w": 0.6,
+          "h": 1.65,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N43",
+      "code": "N43",
+      "name": "Spiler som løser seg opp – tett ved nisjen, luftig mot døra",
+      "group": "Runde 4 – spiler",
+      "priceText": "ca. 8–11 000 kr som gjør-det-selv (estimat)",
+      "priceMin": 8000,
+      "priceMax": 11000,
+      "sabineAdded": 7,
+      "rt60": 0.68,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "Eikespiler på sandfarget filt der avstanden mellom spilene øker i fire trinn fra nisjehjørnet mot døra (1,3 – 2,7 – 5,4 – 10 cm). Veggen går fra en tett spilevegg til enkeltspiler som nesten forsvinner i den lyse filten. Et rolig, arkitektonisk grep som gir bevegelse uten farger.",
+      "pros": [
+        "Mye demping over hele veggen (filten bak demper også i de åpne partiene)",
+        "Unik – ser spesialtegnet ut",
+        "Lys filt bak gjør overgangen myk",
+        "Løse spiler er billige"
+      ],
+      "cons": [
+        "Må bygges av løse spiler på filt – ikke ferdige paneler",
+        "Krever nøyaktig utmåling av avstandene",
+        "Bryterne ved døra må på påbyggsramme"
+      ],
+      "products": [
+        "Eikespiler 27 × 12 mm (ca. 70 stk à 240 cm)",
+        "Sandfarget PET-filt 9–12 mm på lekter med Glava (48 mm)",
+        "Avstandsmaler for 13 / 27 / 54 / 100 mm"
+      ],
+      "notes": "Fire felt: u 0–1,4 (13 mm fuge), 1,4–2,4 (27 mm), 2,4–3,2 (54 mm), 3,2–3,91 (100 mm). Gulv til 235 cm.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 1.4,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#cbbba2",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 1.4,
+          "v": 0,
+          "w": 1,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.027,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#cbbba2",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 2.4,
+          "v": 0,
+          "w": 0.8,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.054,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#cbbba2",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 3.2,
+          "v": 0,
+          "w": 0.71,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.1,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#cbbba2",
+          "standoff": 0.048,
+          "alpha": 0.76
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N44",
+      "code": "N44",
+      "name": "Ton i ton – spiler malt i SAND helt til taket",
+      "group": "Runde 4 – spiler",
+      "priceText": "ca. 12–16 000 kr (estimat)",
+      "priceMin": 12000,
+      "priceMax": 16000,
+      "sabineAdded": 8.9,
+      "rt60": 0.64,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "Spiler malt i samme SAND som veggene, på sandfarget filt, fra gulv til tak. Veggen får struktur og skyggespill i stedet for farge – den føles som en del av huset, ikke et møbel. Til taket gir mest demping av alle spileløsningene.",
+      "pros": [
+        "Mest demping av spilene (ca. +8,9 m² Sabine)",
+        "Helt i stil med huset – samme farge som veggene",
+        "Rolig – blir aldri «for mye»",
+        "Kan males om senere"
+      ],
+      "cons": [
+        "Mister treets varme",
+        "Malte spiler må lages eller males før montering",
+        "Krever stillas/høy stige opp til 3 m"
+      ],
+      "products": [
+        "Spilepaneler i MDF/furu malt i Jotun SAND 1140 (eller løse spiler malt på forhånd)",
+        "Sandfarget filt bak, lekter med Glava (48 mm)",
+        "Påbyggsrammer for brytere og stikk"
+      ],
+      "notes": "Gulv til tak (0–300 cm), hele bredden.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 3,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "painted",
+          "slatColor": "#cfc5b4",
+          "backing": "felt",
+          "backingColor": "#cbbba2",
+          "standoff": 0.048,
+          "alpha": 0.76
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N45",
+      "code": "N45",
+      "name": "Filtlameller i MARRAKESH – myk spilevegg i filt",
+      "group": "Runde 4 – filt",
+      "priceText": "pris ukjent (import eller gjør-det-selv)",
+      "priceMin": null,
+      "priceMax": null,
+      "sabineAdded": 7.5,
+      "rt60": 0.67,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "En spilevegg der lamellene er av PET-filt i stedet for tre: 35 mm brede filtlameller med smale fuger, i en varm gråbrun tone som ligger tett på MARRAKESH i TV-stua. Den har samme rytme som en spilevegg, men er myk å ta på, demper på hele flaten og binder stua til TV-stua.",
+      "pros": [
+        "Mye demping (ca. +7,5 m² Sabine)",
+        "Myk og stille – tåler stolrygger og barnehender",
+        "Henter MARRAKESH fra TV-stua",
+        "Lett – limes eller skrus på lekter"
+      ],
+      "cons": [
+        "Vanskelig å kjøpe ferdig i Norge – import eller gjør-det-selv",
+        "Ikke tre – mindre varm enn eik",
+        "Filt samler noe støv (støvsug med børste)"
+      ],
+      "products": [
+        "Ferdige filtlameller / PET-filtplater med V-spor fant vi ikke i norske nettbutikker (25.10.2026) – bare utenlandske og B2B-leverandører (f.eks. Decormania, Texfel), uten bekreftet pris og frakt",
+        "Gjør-det-selv: 35 mm brede strimler skåret av 20 mm PET-filt i varm gråbrun, limt på mørk filt",
+        "Lekter 20 mm, utsparinger for brytere og stikk"
+      ],
+      "notes": "Filtlameller 35 mm, fuge 12 mm, 20 mm ut fra veggen på mørk filt. Gulv til 235 cm. Dempingen er et anslag (αw ≈ 0,8 for PET-filt på lekter) – ingen målte tall funnet.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 2.35,
+          "slatW": 0.035,
+          "slatD": 0.02,
+          "gap": 0.012,
+          "orientation": "vertical",
+          "wood": "felt",
+          "slatColor": "#a39584",
+          "backing": "felt",
+          "backingColor": "#5e554b",
+          "standoff": 0.02,
+          "alpha": 0.82
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N46",
+      "code": "N46",
+      "name": "Filtplater i eikerammer – beige over brun",
+      "group": "Runde 4 – filt",
+      "priceText": "ca. 8–11 000 kr inkl. eikelister (estimat)",
+      "priceMin": 8000,
+      "priceMax": 11000,
+      "sabineAdded": 5.1,
+      "rt60": 0.72,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "Ti akustikkplater (50 mm, PET-filt med tekstil) i smale rammer av naturell eik, i fem kolonner: kvadratiske plater i en brun MARRAKESH-tone nederst, der stolryggene treffer, og høye plater i beige over. Rammene gir et ryddig, nesten snekret uttrykk som passer eikegulvet.",
+      "pros": [
+        "God demping (ca. +5,1 m² Sabine)",
+        "Mørkere plater nederst skjuler merker fra stolene",
+        "Eikerammene binder veggen til gulvet",
+        "Ferdige plater i standardmål – bare rammene lages selv"
+      ],
+      "cons": [
+        "Ti rammer å lage og montere i lodd",
+        "Lys tekstil øverst kan bli skitten ved påsmøring",
+        "Mindre «wow» enn spiler"
+      ],
+      "products": [
+        "Akustikmiljö «Lydabsorbent Single» 50 mm (resirkulert PET, αw 0,90): 5 stk 600 × 600 i Hush brun og 5 stk 1200 × 600 i Hush beige (Lydglede.no, ca. 799 kr/stk – pris per størrelse ikke bekreftet)",
+        "Alternativ: Frigg 40 mm tekstil i beige (Norsk Akustikksenter, αw 0,95)",
+        "Rammelist i eik ca. 30 × 55 mm, skjulte vegghengere"
+      ],
+      "notes": "Rader: 30–96 cm og 101–227 cm, fem kolonner fra u ≈ 0,15. Holder seg unna bryterne ved døra. Priser sjekket 25.10.2026.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#a39584",
+          "edge": "frame",
+          "frameColor": "#b08b62",
+          "alpha": 0.8,
+          "u": 0.155,
+          "v": 0.3,
+          "w": 0.66,
+          "h": 0.66,
+          "frameMaterial": "oak"
+        },
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#a39584",
+          "edge": "frame",
+          "frameColor": "#b08b62",
+          "alpha": 0.8,
+          "u": 0.865,
+          "v": 0.3,
+          "w": 0.66,
+          "h": 0.66,
+          "frameMaterial": "oak"
+        },
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#a39584",
+          "edge": "frame",
+          "frameColor": "#b08b62",
+          "alpha": 0.8,
+          "u": 1.575,
+          "v": 0.3,
+          "w": 0.66,
+          "h": 0.66,
+          "frameMaterial": "oak"
+        },
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#a39584",
+          "edge": "frame",
+          "frameColor": "#b08b62",
+          "alpha": 0.8,
+          "u": 2.285,
+          "v": 0.3,
+          "w": 0.66,
+          "h": 0.66,
+          "frameMaterial": "oak"
+        },
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#a39584",
+          "edge": "frame",
+          "frameColor": "#b08b62",
+          "alpha": 0.8,
+          "u": 2.995,
+          "v": 0.3,
+          "w": 0.66,
+          "h": 0.66,
+          "frameMaterial": "oak"
+        },
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#cbbba2",
+          "edge": "frame",
+          "frameColor": "#b08b62",
+          "alpha": 0.8,
+          "u": 0.155,
+          "v": 1.01,
+          "w": 0.66,
+          "h": 1.26,
+          "frameMaterial": "oak"
+        },
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#cbbba2",
+          "edge": "frame",
+          "frameColor": "#b08b62",
+          "alpha": 0.8,
+          "u": 0.865,
+          "v": 1.01,
+          "w": 0.66,
+          "h": 1.26,
+          "frameMaterial": "oak"
+        },
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#cbbba2",
+          "edge": "frame",
+          "frameColor": "#b08b62",
+          "alpha": 0.8,
+          "u": 1.575,
+          "v": 1.01,
+          "w": 0.66,
+          "h": 1.26,
+          "frameMaterial": "oak"
+        },
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#cbbba2",
+          "edge": "frame",
+          "frameColor": "#b08b62",
+          "alpha": 0.8,
+          "u": 2.285,
+          "v": 1.01,
+          "w": 0.66,
+          "h": 1.26,
+          "frameMaterial": "oak"
+        },
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#cbbba2",
+          "edge": "frame",
+          "frameColor": "#b08b62",
+          "alpha": 0.8,
+          "u": 2.995,
+          "v": 1.01,
+          "w": 0.66,
+          "h": 1.26,
+          "frameMaterial": "oak"
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N47",
+      "code": "N47",
+      "name": "Heldekkende filtvegg i MARRAKESH med eikelist – også oppslagstavle",
+      "group": "Runde 4 – filt",
+      "priceText": "ca. 6–9 000 kr med WoodUpp-filt (brun filt: ca. 16 000 kr)",
+      "priceMin": 6000,
+      "priceMax": 9000,
+      "sabineAdded": 7.4,
+      "rt60": 0.67,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "Hele veggen kles med PET-filt i en varm gråbrun tone, fra gulv til 235 cm, med en smal eikelist på toppen som bildehylle. Filten demper godt, og fordi man kan feste ting med nåler blir veggen også en stor oppslagstavle for tegninger, kort og bilder – her med noen få kort ved sidene.",
+      "pros": [
+        "Mye demping (ca. +7,4 m² Sabine)",
+        "Praktisk: tegninger og kort festes med nåler",
+        "Rolig, ensfarget – henter MARRAKESH fra TV-stua",
+        "Eikelisten på toppen gir en ren avslutning"
+      ],
+      "cons": [
+        "Filt på hele flaten må monteres nøyaktig i skjøtene",
+        "Mye pynt kan gjøre veggen rotete – hold det til noen få ting",
+        "Utsparinger for brytere og stikk"
+      ],
+      "products": [
+        "WoodUpp Akustikk filt 2400 × 600 × 9 mm i beige (ca. 499 kr/stk, 7 stk) – eller brun PET-filt fra Trebutikken (ca. 1 890 kr/stk)",
+        "Under filten: 30–40 mm mineralullplate eller lekter med Glava – 9 mm filt rett på veggen alene demper lite",
+        "Eikelist 90 × 30 mm som bildehylle på 235 cm, tegnestifter med eikehode",
+        "Ferdig alternativ i mindre format: Götessons Collage EcoSUND oppslagstavle 50 mm (Beltton.no, fra ca. 3 200 kr, 4–6 ukers levering)"
+      ],
+      "notes": "Filt 0–235 cm over hele bredden; eikelist på 235 cm. Kortene er bare eksempler. Fargen er vist i MARRAKESH-tonen – WoodUpp-beige er trolig lysere, så bestill vareprøve. Priser sjekket 25.10.2026.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "panel",
+          "depth": 0.03,
+          "surface": "felt",
+          "color": "#a39584",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.8,
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 2.35
+        },
+        {
+          "type": "shelf",
+          "u": 0,
+          "v": 2.35,
+          "w": 3.91,
+          "d": 0.09,
+          "thickness": 0.03,
+          "color": "#b08b62",
+          "material": "oak",
+          "decor": false,
+          "alpha": 0
+        },
+        {
+          "type": "art",
+          "u": 0.35,
+          "v": 1.45,
+          "w": 0.3,
+          "h": 0.4,
+          "depth": 0.004,
+          "motif": "botanical",
+          "palette": [
+            "#efe8dc",
+            "#7d8a6a",
+            "#3a3936"
+          ],
+          "frame": "none",
+          "acoustic": false,
+          "seed": 34,
+          "alpha": 0,
+          "sun": false
+        },
+        {
+          "type": "art",
+          "u": 0.75,
+          "v": 1.62,
+          "w": 0.21,
+          "h": 0.3,
+          "depth": 0.004,
+          "motif": "line-art",
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#c98f6b"
+          ],
+          "frame": "none",
+          "acoustic": false,
+          "seed": 83,
+          "alpha": 0,
+          "sun": false
+        },
+        {
+          "type": "art",
+          "u": 0.48,
+          "v": 1,
+          "w": 0.3,
+          "h": 0.21,
+          "depth": 0.004,
+          "motif": "abstract-shapes",
+          "palette": [
+            "#e9e0d0",
+            "#c98f6b",
+            "#b8a58a",
+            "#3a3936"
+          ],
+          "frame": "none",
+          "acoustic": false,
+          "seed": 28,
+          "alpha": 0,
+          "sun": false
+        },
+        {
+          "type": "art",
+          "u": 3.05,
+          "v": 1.5,
+          "w": 0.3,
+          "h": 0.4,
+          "depth": 0.004,
+          "motif": "line-art",
+          "palette": [
+            "#efe8dc",
+            "#7d8a6a",
+            "#3a3936"
+          ],
+          "frame": "none",
+          "acoustic": false,
+          "seed": 13,
+          "alpha": 0,
+          "sun": false
+        },
+        {
+          "type": "art",
+          "u": 3.4,
+          "v": 1.1,
+          "w": 0.21,
+          "h": 0.3,
+          "depth": 0.004,
+          "motif": "botanical",
+          "palette": [
+            "#f1ece2",
+            "#2b2b2b",
+            "#c98f6b"
+          ],
+          "frame": "none",
+          "acoustic": false,
+          "seed": 27,
+          "alpha": 0,
+          "sun": false
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N48",
+      "code": "N48",
+      "name": "Sekskanter i filt og eik – rolig klynge i sand",
+      "group": "Runde 4 – filt",
+      "priceText": "ca. 9–14 000 kr (filtsekskanter à ca. 470–730 kr + eik, estimat)",
+      "priceMin": 9000,
+      "priceMax": 14000,
+      "sabineAdded": 3.1,
+      "rt60": 0.77,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "En myk, avrundet klynge av store sekskanter (60 × 52 cm, standardmålet for akustiske sekskanter) over spisebordet: de fleste i filt/tekstil i beige, lys sand og brun, og omtrent hver sjette i naturell eik som ligger litt flatere. Fargene er så nær veggen at klyngen leses som et relieff – eiken gir varme lyspunkter.",
+      "pros": [
+        "Demper der folk sitter og prater (ca. +3,1 m² Sabine)",
+        "Ton i ton med SAND/MARRAKESH – rolig",
+        "Eikeflisene henter gulvet og stolbena",
+        "Ferdige sekskanter i standardmål – kan bygges ut senere"
+      ],
+      "cons": [
+        "Lag papirmal på veggen før du skrur/limer",
+        "Eikeflisene demper nesten ingenting (må lages selv)",
+        "Kantene på lys filt blir fort skitne nederst"
+      ],
+      "products": [
+        "Akustikmiljö «Honey» 600 × 520 mm, 40–50 mm (αw 0,75 / 0,90) i Hush beige og brun – Lydglede.no, ca. 469 kr/stk (min. 5 stk, pris per tykkelse ikke bekreftet)",
+        "Alternativ: Frigg Hex 40 mm i beige (Norsk Akustikksenter, αw 0,95, ca. 726 kr/stk)",
+        "Eikesekskanter: kapp selv av 18–20 mm eikefinert MDF i samme mål",
+        "Monteringslim eller borrelås"
+      ],
+      "notes": "Flate topp/bunn, 22 sekskanter. Klyngen er midtstilt rundt (1,95; 1,75) m. Priser sjekket 25.10.2026.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "hexagons",
+          "u": 0.19,
+          "v": 0.55,
+          "w": 3.27,
+          "h": 2.368,
+          "size": 0.52,
+          "depth": 0.04,
+          "colors": [
+            "#cbbba2",
+            "#c9bca6",
+            "#a39584",
+            "#b08b62"
+          ],
+          "surface": "felt",
+          "orientation": "flat-top",
+          "items": [
+            {
+              "cu": 0.45,
+              "cv": 1.866,
+              "color": "#b08b62",
+              "surface": "oak",
+              "depth": 0.02
+            },
+            {
+              "cu": 0.909,
+              "cv": 1.074,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 0.909,
+              "cv": 1.602,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 0.909,
+              "cv": 2.13,
+              "color": "#c9bca6"
+            },
+            {
+              "cu": 1.367,
+              "cv": 0.81,
+              "color": "#c9bca6"
+            },
+            {
+              "cu": 1.367,
+              "cv": 1.338,
+              "color": "#b08b62",
+              "surface": "oak",
+              "depth": 0.02
+            },
+            {
+              "cu": 1.367,
+              "cv": 1.866,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.367,
+              "cv": 2.394,
+              "color": "#c9bca6"
+            },
+            {
+              "cu": 1.825,
+              "cv": 1.074,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.825,
+              "cv": 1.602,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.825,
+              "cv": 2.13,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.825,
+              "cv": 2.658,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.284,
+              "cv": 0.81,
+              "color": "#b08b62",
+              "surface": "oak",
+              "depth": 0.02
+            },
+            {
+              "cu": 2.284,
+              "cv": 1.338,
+              "color": "#b08b62",
+              "surface": "oak",
+              "depth": 0.02
+            },
+            {
+              "cu": 2.284,
+              "cv": 1.866,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.284,
+              "cv": 2.394,
+              "color": "#b08b62",
+              "surface": "oak",
+              "depth": 0.02
+            },
+            {
+              "cu": 2.742,
+              "cv": 1.074,
+              "color": "#a39584"
+            },
+            {
+              "cu": 2.742,
+              "cv": 1.602,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.742,
+              "cv": 2.13,
+              "color": "#c9bca6"
+            },
+            {
+              "cu": 3.2,
+              "cv": 1.338,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 3.2,
+              "cv": 1.866,
+              "color": "#b08b62",
+              "surface": "oak",
+              "depth": 0.02
+            },
+            {
+              "cu": 3.2,
+              "cv": 2.394,
+              "color": "#cbbba2"
+            }
+          ],
+          "alpha": 0.604
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N49",
+      "code": "N49",
+      "name": "Spiler og filt i rytme – røkt eik og MARRAKESH-filt",
+      "group": "Runde 4 – kombinert",
+      "priceText": "ca. 9–12 000 kr (estimat)",
+      "priceMin": 9000,
+      "priceMax": 12000,
+      "sabineAdded": 6.4,
+      "rt60": 0.69,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "Sju felt på 50 cm fra gulv til 235 cm, annenhver spilepanel i røkt eik og glatt filtplate i en varm gråbrun MARRAKESH-tone. Rytmen gir veggen et rolig, skreddersydd uttrykk – litt som en fullhøyde garderobefront – og både spilene og filten demper.",
+      "pros": [
+        "God demping over hele veggen (ca. +6,4 m² Sabine)",
+        "Røkt eik + MARRAKESH-filt: varmt og henter TV-stua",
+        "Mindre «stripete» enn heldekkende spiler",
+        "Ferdige paneler kan kappes til 50 cm"
+      ],
+      "cons": [
+        "Krever presis montering så feltene står i lodd",
+        "Filtfeltene ligger litt bak spilene – støv i kanten",
+        "Stikkontakten ved gulvet får påbyggsramme"
+      ],
+      "products": [
+        "4 spilepaneler i røkt eik (f.eks. WoodUpp Akupanel), kappet til 50 cm, på lekter med mineralull",
+        "3 akustikkplater 50 × 235 cm, 40–50 mm, i brun/beige tekstil (f.eks. Frigg 40 mm tekstil, som finnes opp til 120 × 270 cm – spør om 50 cm bredde)",
+        "Eikelister i overgangene"
+      ],
+      "notes": "Felt fra u 0,155: spiler – filt – spiler – filt – spiler – filt – spiler. Gulv til 235 cm.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0.155,
+          "v": 0,
+          "w": 0.5,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "panel",
+          "depth": 0.04,
+          "surface": "felt",
+          "color": "#a39584",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.8,
+          "u": 0.655,
+          "v": 0,
+          "w": 0.5,
+          "h": 2.35
+        },
+        {
+          "type": "slats",
+          "u": 1.155,
+          "v": 0,
+          "w": 0.5,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "panel",
+          "depth": 0.04,
+          "surface": "felt",
+          "color": "#a39584",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.8,
+          "u": 1.655,
+          "v": 0,
+          "w": 0.5,
+          "h": 2.35
+        },
+        {
+          "type": "slats",
+          "u": 2.155,
+          "v": 0,
+          "w": 0.5,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "panel",
+          "depth": 0.04,
+          "surface": "felt",
+          "color": "#a39584",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.8,
+          "u": 2.655,
+          "v": 0,
+          "w": 0.5,
+          "h": 2.35
+        },
+        {
+          "type": "slats",
+          "u": 3.155,
+          "v": 0,
+          "w": 0.5,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N50",
+      "code": "N50",
+      "name": "Spilevegg med innfelt filtfelt i skogsgrønn over spisebordet",
+      "group": "Runde 4 – kombinert",
+      "priceText": "ca. 14–20 000 kr (estimat – filtfeltet er usikkert)",
+      "priceMin": 14000,
+      "priceMax": 20000,
+      "sabineAdded": 7.3,
+      "rt60": 0.67,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "En spilevegg i naturell eik fra gulv til 235 cm med et innfelt felt i skogsgrønn filt (2,4 × 1,2 m) over spisebordet – et rolig «bilde» uten motiv, som også kan brukes som oppslagstavle. Feltet samler blikket over bordet og henter de grønne tonene i rommet, mens spilene rundt demper mest.",
+      "pros": [
+        "Mye demping (ca. +7,3 m² Sabine)",
+        "Et blikkfang uten at man må velge et motiv",
+        "Filtfeltet kan byttes til en annen farge eller et akustikkbilde senere",
+        "Naturell eik holder rommet lyst"
+      ],
+      "cons": [
+        "Spilene må kappes rundt feltet – mer snekkerarbeid",
+        "Grønt er en ny farge på veggen – prøv den mot SAND",
+        "Bryterne ved døra må på påbyggsramme"
+      ],
+      "products": [
+        "Akustikkpaneler i naturell eik 60 × 240 cm (f.eks. WoodUpp Akupanel), kappet rundt feltet, på lekter med mineralull",
+        "Götessons Collage EcoSUND 50 mm, 240 × 120 cm i skogsgrønn (Beltton.no, 4–6 ukers levering; pris for denne størrelsen ikke bekreftet – minste størrelse fra ca. 3 200 kr)",
+        "Alternativ: to Akustikmiljö Single 1200 × 900 i Hush grønn side om side",
+        "Eikelister rundt feltet"
+      ],
+      "notes": "Filtfeltet: u 0,76–3,16, v 0,95–2,15 m (midt over bordet). Spilene ligger rundt i fire deler. Priser sjekket 25.10.2026.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 0.755,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 3.155,
+          "v": 0,
+          "w": 0.755,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 0.755,
+          "v": 0,
+          "w": 2.4,
+          "h": 0.95,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "slats",
+          "u": 0.755,
+          "v": 2.15,
+          "w": 2.4,
+          "h": 0.2,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "oak",
+          "slatColor": "#b08b62",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "panel",
+          "depth": 0.05,
+          "surface": "felt",
+          "color": "#4f5a44",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.9,
+          "u": 0.765,
+          "v": 0.96,
+          "w": 2.38,
+          "h": 1.18
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N51",
+      "code": "N51",
+      "name": "Spiler som går over i små filtsekskanter",
+      "group": "Runde 4 – kombinert",
+      "priceText": "ca. 8–11 000 kr (estimat)",
+      "priceMin": 8000,
+      "priceMax": 11000,
+      "sabineAdded": 3.8,
+      "rt60": 0.75,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "Et spilefelt i røkt eik fra nisjehjørnet (150 cm bredt, gulv til 235 cm) som «går i oppløsning» i små sekskanter av PET-filt (30 × 26 cm) i beige, gråbrunt og litt mørkebrunt. Tettest inntil spilene, så stadig glissere mot døra. Leken, men rolig fordi fargene er dempet og henter den røkte eiken.",
+      "pros": [
+        "Middels demping (ca. +3,8 m² Sabine)",
+        "Kombinerer tre og filt på en ny måte",
+        "Fritt rundt bryterne ved døra",
+        "Små fliser – kan flyttes og bygges ut"
+      ],
+      "cons": [
+        "Mange sekskanter å plassere (36 stk) – papirmal anbefales",
+        "Asymmetrisk – må like det",
+        "De små flisene kommer fra Danmark – frakt og dempetall ikke bekreftet"
+      ],
+      "products": [
+        "Akustikkpaneler i røkt eik 60 × 240 cm (2,5 stk, 150 cm bredt felt) på lekter med mineralull",
+        "AURA HEX 30 × 26 cm, 25 mm PET-filt i beige, lysegrå og mørkebrun (Dansk Lydisolering, ca. 1 295 DKK per 15 stk)",
+        "Monteringslim/borrelås for filten"
+      ],
+      "notes": "Spilefelt u 0–1,46. Sekskantene fra u 1,46 til 3,62, sannsynligheten faller mot døra. Dempingen for 25 mm filt er et anslag (αw ≈ 0,55). Priser sjekket 25.10.2026.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 1.46,
+          "h": 2.35,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "vertical",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "hexagons",
+          "u": 1.48,
+          "v": 0.12,
+          "w": 1.892,
+          "h": 2.136,
+          "size": 0.26,
+          "depth": 0.025,
+          "colors": [
+            "#cbbba2",
+            "#a39584",
+            "#5e4a3a"
+          ],
+          "surface": "felt",
+          "orientation": "flat-top",
+          "items": [
+            {
+              "cu": 1.61,
+              "cv": 0.25,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.61,
+              "cv": 0.518,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.61,
+              "cv": 0.786,
+              "color": "#5e4a3a"
+            },
+            {
+              "cu": 1.61,
+              "cv": 1.054,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.61,
+              "cv": 1.322,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.61,
+              "cv": 1.59,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.61,
+              "cv": 1.858,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.61,
+              "cv": 2.126,
+              "color": "#5e4a3a"
+            },
+            {
+              "cu": 1.843,
+              "cv": 0.384,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.843,
+              "cv": 0.652,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.843,
+              "cv": 0.92,
+              "color": "#a39584"
+            },
+            {
+              "cu": 1.843,
+              "cv": 1.456,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 1.843,
+              "cv": 1.724,
+              "color": "#5e4a3a"
+            },
+            {
+              "cu": 1.843,
+              "cv": 1.992,
+              "color": "#a39584"
+            },
+            {
+              "cu": 2.076,
+              "cv": 0.786,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.076,
+              "cv": 1.322,
+              "color": "#5e4a3a"
+            },
+            {
+              "cu": 2.076,
+              "cv": 1.59,
+              "color": "#a39584"
+            },
+            {
+              "cu": 2.076,
+              "cv": 1.858,
+              "color": "#5e4a3a"
+            },
+            {
+              "cu": 2.076,
+              "cv": 2.126,
+              "color": "#a39584"
+            },
+            {
+              "cu": 2.31,
+              "cv": 0.652,
+              "color": "#a39584"
+            },
+            {
+              "cu": 2.31,
+              "cv": 0.92,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.31,
+              "cv": 1.456,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.31,
+              "cv": 1.724,
+              "color": "#a39584"
+            },
+            {
+              "cu": 2.31,
+              "cv": 1.992,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.543,
+              "cv": 0.25,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.543,
+              "cv": 0.786,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.543,
+              "cv": 1.054,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 2.543,
+              "cv": 1.322,
+              "color": "#5e4a3a"
+            },
+            {
+              "cu": 2.776,
+              "cv": 0.652,
+              "color": "#a39584"
+            },
+            {
+              "cu": 2.776,
+              "cv": 1.992,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 3.009,
+              "cv": 1.054,
+              "color": "#a39584"
+            },
+            {
+              "cu": 3.009,
+              "cv": 1.322,
+              "color": "#a39584"
+            },
+            {
+              "cu": 3.009,
+              "cv": 1.59,
+              "color": "#a39584"
+            },
+            {
+              "cu": 3.009,
+              "cv": 1.858,
+              "color": "#a39584"
+            },
+            {
+              "cu": 3.009,
+              "cv": 2.126,
+              "color": "#cbbba2"
+            },
+            {
+              "cu": 3.242,
+              "cv": 0.92,
+              "color": "#cbbba2"
+            }
+          ],
+          "alpha": 0.55
+        }
+      ],
+      "image": null,
+      "drawings": []
+    },
+    {
+      "id": "N52",
+      "code": "N52",
+      "name": "Liggende eikespiler nede, MARRAKESH-filt oppe – brystpanel som tåler stolrygger",
+      "group": "Runde 4 – kombinert",
+      "priceText": "ca. 10–13 000 kr (estimat)",
+      "priceMin": 10000,
+      "priceMax": 13000,
+      "sabineAdded": 7.1,
+      "rt60": 0.68,
+      "rank": null,
+      "recommended": false,
+      "badge": "Ny",
+      "description": "Et brystpanel av liggende spiler i røkt eik fra gulvet til 100 cm, der stolryggene treffer veggen, med en smal eikelist på toppen. Over listen er veggen kledd med glatt filt i en varm gråbrun MARRAKESH-tone opp til 235 cm. Hardt og slitesterkt der det trengs, mykt og dempende der det er plass.",
+      "pros": [
+        "God demping (ca. +7 m² Sabine)",
+        "Spilene tåler stoler og støvsuger",
+        "Filten i MARRAKESH-tonen binder stua til TV-stua",
+        "Listen kan brukes som smal bildehylle"
+      ],
+      "cons": [
+        "To materialer og en list – mer arbeid",
+        "Brystpanel deler veggen på tvers (rommet kan virke lavere)",
+        "Stikkontakten ved gulvet får påbyggsramme"
+      ],
+      "products": [
+        "Spilepaneler i røkt eik montert liggende, 0–100 cm, på lekter med mineralull",
+        "Akustikkplater 40–50 mm i brun/beige tekstil, 103–235 cm (f.eks. Akustikmiljö Single i Hush brun, eller Frigg 40 mm tekstil)",
+        "Eikelist 70 × 25 mm på 100 cm"
+      ],
+      "notes": "Spiler 0–100 cm, list på 100 cm, filt 103–235 cm, hele bredden.",
+      "wallPaint": null,
+      "elements": [
+        {
+          "type": "slats",
+          "u": 0,
+          "v": 0,
+          "w": 3.91,
+          "h": 1,
+          "slatW": 0.027,
+          "slatD": 0.012,
+          "gap": 0.013,
+          "orientation": "horizontal",
+          "wood": "smoked-oak",
+          "slatColor": "#5f4936",
+          "backing": "felt",
+          "backingColor": "#1b1b1b",
+          "standoff": 0.048,
+          "alpha": 0.76
+        },
+        {
+          "type": "shelf",
+          "u": 0,
+          "v": 1,
+          "w": 3.91,
+          "d": 0.075,
+          "thickness": 0.025,
+          "color": "#b08b62",
+          "material": "oak",
+          "decor": false,
+          "alpha": 0
+        },
+        {
+          "type": "panel",
+          "depth": 0.04,
+          "surface": "felt",
+          "color": "#a39584",
+          "edge": "square",
+          "frameColor": null,
+          "alpha": 0.8,
+          "u": 0,
+          "v": 1.03,
+          "w": 3.91,
+          "h": 1.32
         }
       ],
       "image": null,

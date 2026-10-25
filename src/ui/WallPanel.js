@@ -12,6 +12,7 @@ import wallData from '../data/wall-proposals.json';
 import { computeAcoustics } from '../design/Acoustics.js';
 import { resolveColor } from '../home/materials.js';
 import { PLAYER } from '../config.js';
+import { classifyProposal, WALL_CATEGORIES, WALL_TAGS } from './wallCategories.js';
 import {
   applyWallDesign, buildWallDesign, disposeDesign, ELEMENT_TYPES, elementEditor, elementValues, setElementParam,
   createElement, describeElement, elementBounds, elementAbsorption, setWallQuality, placeElement,
@@ -36,6 +37,11 @@ import {
  * time for visible cards after compileAsync. The proposals' materials are compiled once in idle time
  * (renderer.compileAsync, KHR_parallel_shader_compile) so the first preview of a proposal does not stall on shaders.
  *
+ * The list is grouped by kind (wallCategories.js: spiler / filt og stoff / bilder / kombinert / diverse), filtered with
+ * chips (a proposal can be under several, e.g. «Sekskanter» and «Filt og stoff») and can be ordered by round, by
+ * etterklang or by price; ◀ ▶ flip in the order the list shows. The choice is remembered in this browser
+ * (interiorspillet.wallBrowse.v1).
+ *
  * Custom proposals («Mine forslag») live in localStorage (interiorspillet.wallCustom.v1); the active one is also in
  * the design itself (wall.proposalId 'mitt-…' + wall.elements), but its name is only known in this browser.
  * Also extra: collision boxes for wall elements that stick out (curtain, sideboard, plant …) unless SceneSync
@@ -43,7 +49,10 @@ import {
  */
 
 const STORE_KEY = 'interiorspillet.wallCustom.v1';
+const BROWSE_KEY = 'interiorspillet.wallBrowse.v1';
 const PROPOSALS = wallData.proposals || [];
+const CATEGORY_LABEL = Object.fromEntries(WALL_CATEGORIES.map((c) => [c.id, c.label]));
+const SORTS = [['type', 'Etter type'], ['runde', 'Etter runde'], ['rt', 'Minst etterklang'], ['pris', 'Lavest pris']];
 const GROUPS = [
   { id: 'r1', label: 'Første forslag', match: (g) => /^Runde 1/i.test(g) },
   { id: 'kunst', label: 'Kunst og mønster', match: (g) => /^Kunst/i.test(g) },
@@ -95,6 +104,27 @@ function saveCustom(list) {
   }
 }
 
+/** The list's filter (chip) and order, as last chosen in this browser. */
+function loadBrowse() {
+  const out = { filter: 'alle', sort: 'type' };
+  try {
+    const v = JSON.parse(localStorage.getItem(BROWSE_KEY) || '{}');
+    if (typeof v.filter === 'string') out.filter = v.filter;
+    if (SORTS.some(([k]) => k === v.sort)) out.sort = v.sort;
+  } catch {
+    /* no storage: the defaults */
+  }
+  return out;
+}
+
+function saveBrowse(v) {
+  try {
+    localStorage.setItem(BROWSE_KEY, JSON.stringify(v));
+  } catch {
+    /* only a convenience */
+  }
+}
+
 function groupLabel(p) {
   if (p.custom) return 'Mine forslag';
   return GROUPS.find((g) => g.match(p.group || ''))?.label || p.group || 'Andre';
@@ -104,6 +134,7 @@ function rankBadges(p) {
   const out = [];
   if (p.rank) out.push({ text: `Nr. ${p.rank}`, tone: 'accent' });
   if (p.recommended) out.push({ text: 'Anbefalt', tone: 'ok' });
+  if (p.badge) out.push({ text: p.badge, tone: 'info' });
   return out;
 }
 
@@ -138,6 +169,18 @@ function addStyles() {
 .wp-actions .wp-use[disabled] { opacity: 1; cursor: default; color: #8be6b4; border-color: rgba(139, 230, 180, 0.35); background: rgba(139, 230, 180, 0.07); }
 .wp-actions .wp-frame.is-active { color: var(--kv-accent-2); border-color: var(--kv-accent); }
 .wp-status .ip-tabs { margin: 0.5em -0.85em 0; border-radius: 0; }
+/* filter chips + order: stay at the top of the list while it scrolls */
+.wp-browse { position: sticky; top: -0.85em; z-index: 3; margin: -0.85em -1.1em 0.9em; padding: 0.65em 1.1em 0.6em; background: var(--ip-panel-bg); border-bottom: 1px solid var(--kv-line); }
+.wp-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3em; }
+.wp-chip { flex: none; display: inline-flex; align-items: center; gap: 0.35em; height: 1.85em; padding: 0 0.65em; border-radius: 2em; border: 1px solid var(--kv-line-2);
+  background: var(--kv-surface); color: var(--kv-ink-2); font-size: 0.76em; font-weight: 620; white-space: nowrap; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+.wp-chip:hover { background: var(--kv-surface-3); color: var(--kv-ink); }
+.wp-chip.is-active { background: var(--kv-accent-soft); border-color: rgba(255, 181, 46, 0.55); color: var(--kv-accent-2); }
+.wp-chip small { font-size: 0.85em; color: var(--kv-ink-4); font-weight: 600; }
+.wp-chip.is-active small { color: rgba(255, 210, 122, 0.7); }
+.wp-sort { display: flex; align-items: center; gap: 0.45em; margin-left: auto; font-size: 0.76em; color: var(--kv-ink-3); }
+.wp-sort .ip-select { width: auto; height: 1.95em; padding: 0 0.45em; font-size: 1em; }
+.wp-count { font-weight: 600; color: var(--kv-ink-4); letter-spacing: 0; }
 .wp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55em; }
 .wp-card { position: relative; display: flex; flex-direction: column; border-radius: var(--kv-r); overflow: hidden; cursor: pointer;
   border: 1px solid var(--kv-line); background: var(--kv-surface); transition: border-color 0.15s, background 0.15s, transform 0.15s var(--kv-ease); }
@@ -214,6 +257,8 @@ export class WallPanel extends BasePanel {
     this.hw = editor.home.highWall;
     this.wallId = this.hw?.wallId || 'w-hoy';
     this.custom = loadCustom();
+    this.browse = loadBrowse();
+    this._kinds = new Map(); // thumb key → classifyProposal(p)
     this.tab = 'forslag';
     this.preview = null; // { id, elements, wallPaint }
     this.live = null; // elements being dragged (scene only)
@@ -284,6 +329,52 @@ export class WallPanel extends BasePanel {
   proposal(id) {
     if (id == null) return null;
     return this.proposals().find((p) => p.id === String(id)) || null;
+  }
+
+  /** What the proposal is made of: { category, tags } (cached). */
+  _kind(p) {
+    const key = this._thumbKey(p);
+    let k = this._kinds.get(key);
+    if (!k) this._kinds.set(key, (k = classifyProposal(p)));
+    return k;
+  }
+
+  /** The list after the chosen chip and order: [{ label, list }] (one untitled-by-kind section for rt/price). */
+  _browseSections() {
+    const { filter, sort } = this.browse;
+    let all = this.proposals();
+    if (filter === 'mine') all = all.filter((p) => p.custom);
+    else if (filter !== 'alle') all = all.filter((p) => p.code !== '0' && this._kind(p).tags.includes(filter));
+    if (sort === 'rt' || sort === 'pris') {
+      const key = sort === 'rt' ? (p) => this._rtFor(p) : (p) => (p.custom ? null : (p.priceMin ?? p.priceMax ?? null));
+      const list = all.map((p, i) => ({ p, i, k: key(p) }))
+        .sort((a, b) => (a.k == null) - (b.k == null) || (a.k ?? 0) - (b.k ?? 0) || a.i - b.i)
+        .map((x) => x.p);
+      return [{ label: sort === 'rt' ? 'Minst etterklang først' : 'Lavest pris først (uten pris sist)', list }];
+    }
+    const groups = new Map();
+    // by kind: my own first, then the kinds in a fixed order, today's wall (the reference) last
+    if (sort === 'type') for (const label of ['Mine forslag', ...WALL_CATEGORIES.map((c) => c.label), 'Dagens vegg']) groups.set(label, []);
+    for (const p of all) {
+      const label = sort === 'runde' ? groupLabel(p) : p.custom ? 'Mine forslag' : p.code === '0' ? 'Dagens vegg' : CATEGORY_LABEL[this._kind(p).category] || 'Diverse';
+      if (!groups.has(label)) groups.set(label, []);
+      groups.get(label).push(p);
+    }
+    return [...groups].filter(([, list]) => list.length).map(([label, list]) => ({ label, list }));
+  }
+
+  /** Flip order: the cards as the list shows them. */
+  _browseOrder() {
+    return this._browseSections().flatMap((s) => s.list);
+  }
+
+  _setBrowse(patch) {
+    this.browse = { ...this.browse, ...patch };
+    saveBrowse(this.browse);
+    if (this.tab !== 'forslag') return;
+    this._thumbEls.clear();
+    this._renderBrowser();
+    this.body.scrollTop = 0;
   }
 
   /** The wall the scene shows: the preview, or the design's wall. */
@@ -634,9 +725,10 @@ export class WallPanel extends BasePanel {
     this.editor.ui?.photo?.followProposal?.(p);
   }
 
-  /** ◀ ▶ through every proposal (wraps). */
+  /** ◀ ▶ through the proposals in the order the list shows them (wraps; every proposal when the filter is empty). */
   flip(dir) {
-    const list = this.proposals();
+    let list = this._browseOrder();
+    if (!list.length) list = this.proposals();
     if (!list.length) return;
     const cur = this.shown().proposalId;
     let i = list.findIndex((p) => p.id === String(cur));
@@ -926,19 +1018,36 @@ export class WallPanel extends BasePanel {
 
   _renderBrowser() {
     this.detailsEl = h('div');
-    const groups = new Map();
-    for (const p of this.proposals()) {
-      const g = groupLabel(p);
-      if (!groups.has(g)) groups.set(g, []);
-      groups.get(g).push(p);
-    }
-    const sections = [];
-    for (const [label, list] of groups) {
-      sections.push(section(label, h('div.wp-grid', {}, list.map((p) => this._card(p)))));
-    }
-    this.content.replaceChildren(this.detailsEl, ...sections, h('p.wp-note', { text: 'Bla med ← → eller knappene øverst. Forslagene vises på veggen med en gang, men lagres først når du trykker «Bruk dette forslaget». Etterklangstiden er et estimat (Sabine) for hele rommet med møblene som står der nå.' }));
+    // a chip that has nothing left (e.g. «Mine forslag» after deleting the last one) falls back to «Alle»
+    const f = this.browse.filter;
+    if (f !== 'alle' && !(f === 'mine' ? this.custom.length : WALL_TAGS.some((t) => t.id === f))) this.browse = { ...this.browse, filter: 'alle' };
+    const sections = this._browseSections().map(({ label, list }) => section(null,
+      h('h3.ip-section__title', {}, label, h('span.wp-count', { text: ` · ${list.length}` })),
+      h('div.wp-grid', {}, list.map((p) => this._card(p)))));
+    if (!sections.length) sections.push(emptyState('Ingen forslag her ennå.', 'palette'));
+    this.content.replaceChildren(this._browseBar(), this.detailsEl, ...sections, h('p.wp-note', { text: 'Bla med ← → eller knappene øverst – de følger rekkefølgen i lista. Forslagene vises på veggen med en gang, men lagres først når du trykker «Bruk dette forslaget». Etterklangstiden er et estimat (Sabine) for hele rommet med møblene som står der nå.' }));
     this._renderDetails();
     this._markCards();
+  }
+
+  /** Chips (Alle / Spiler / Filt og stoff / Sekskanter / Bilder / Kombinert / Diverse / Mine forslag) and the order. */
+  _browseBar() {
+    const all = this.proposals();
+    const cur = this.browse.filter;
+    const chip = (id, label, n) => h(`button.wp-chip${cur === id ? '.is-active' : ''}`, {
+      type: 'button',
+      'aria-pressed': cur === id ? 'true' : 'false',
+      on: { click: () => this._setBrowse({ filter: id }) },
+    }, h('span', { text: label }), h('small', { text: String(n) }));
+    const chips = [chip('alle', 'Alle', all.length)];
+    for (const t of WALL_TAGS) {
+      const n = all.filter((p) => p.code !== '0' && this._kind(p).tags.includes(t.id)).length;
+      if (n) chips.push(chip(t.id, t.label, n));
+    }
+    if (this.custom.length) chips.push(chip('mine', 'Mine forslag', this.custom.length));
+    // no field row: a small select at the end of the chip row
+    const order = select({ options: SORTS, value: this.browse.sort, onChange: (v) => this._setBrowse({ sort: v }) });
+    return h('div.wp-browse', {}, h('div.wp-chips', {}, ...chips, h('label.wp-sort', {}, h('span', { text: 'Sorter' }), order.el)));
   }
 
   _card(p) {

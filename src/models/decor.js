@@ -3,6 +3,7 @@ import schema from '../data/archetypes.json';
 import * as K from './kit.js';
 import { mat, emissive, resolveColor } from '../home/materials.js';
 import { createCanvas, canvasTexture, heightToNormalCanvas, cached, TileableNoise, clamp } from '../world/proctex.js';
+import { ceilingAt } from './lamps.js';
 
 /**
  * Decor and acoustic products (ARCHITECTURE §5, parts §13): plants, vases (with flowers), art, mirrors, candles,
@@ -3150,6 +3151,34 @@ function addWire(g, x, y0, y1, z) {
   g.add(K.partMesh(K.cylinder(0.012, 0.012, 0.008, { seg: 12 }), mat('steel', '#c9ccd0', { flat: true }), null, { position: [x, -0.008, z] }));
 }
 
+/**
+ * Turns `plate` (top at y = 0) onto the room's ceiling plane wherever the item hangs, like a lamp canopy
+ * (lamps.js followCeiling): on every world-transform change of the root, flat where the ceiling is flat or where the
+ * item is not under the room's ceiling (the model gallery, a ghost far below).
+ */
+function followCeilingPlane(g, plate) {
+  const base = THREE.Object3D.prototype.updateMatrixWorld;
+  const last = [NaN, NaN, NaN, NaN, NaN];
+  const n = new THREE.Vector3();
+  const up = new THREE.Vector3(0, 1, 0);
+  g.updateMatrixWorld = function updateMatrixWorld(force) {
+    base.call(this, force);
+    const e = this.matrixWorld.elements;
+    const key = [e[12], e[13], e[14], e[0], e[2]];
+    if (key.every((v, i) => v === last[i])) return;
+    key.forEach((v, i) => (last[i] = v));
+    const c = ceilingAt(e[12], e[13], e[14]);
+    let su = 0, sv = 0;
+    if (c) {
+      const lx = Math.hypot(e[0], e[2]) || 1, lz = Math.hypot(e[8], e[10]) || 1;
+      su = (c.slope[0] * e[0] + c.slope[1] * e[2]) / lx;
+      sv = (c.slope[0] * e[8] + c.slope[1] * e[10]) / lz;
+    }
+    plate.quaternion.setFromUnitVectors(up, n.set(-su, 1, -sv).normalize());
+    plate.updateMatrixWorld(true);
+  };
+}
+
 function buildCeilingAbsorber(spec) {
   const P = spec.params, C = spec.colors, M = spec.materials;
   const { w, d, h } = spec.dims;
@@ -3166,6 +3195,17 @@ function buildCeilingAbsorber(spec) {
     return finish(g);
   }
   const t = Math.max(0.01, num(P.thickness, h));
+  if (shape === 'flush') {
+    // glued straight onto the ceiling (Frigg 40 in the sloped ceiling): the plate lies in the ceiling's plane
+    const plate = new THREE.Group();
+    plate.name = 'plate';
+    plate.userData.noMerge = true;
+    plate.add(K.partMesh(K.roundedBox(w, t, d, Math.min(0.006, t / 4), 2).translate(0, -t / 2 - 0.001, 0), pm, 'panel'));
+    g.add(plate);
+    finish(g);
+    followCeilingPlane(g, plate);
+    return g;
+  }
   const drop = Math.max(num(P.drop, 0.25), t + 0.03);
   const outline = shape === 'rect' ? K.roundedRectShape(w, d, Math.min(w, d) * 0.04) : shape === 'circle' ? new THREE.Shape(feltOutline('circle', Math.max(w, d), Math.max(w, d))) : new THREE.Shape(feltOutline('circle', w, d));
   const geo = K.extrudeShape(outline, t, { bevel: Math.min(0.008, t * 0.25), bevelSegments: 2, curveSegments: 32 });
@@ -3414,7 +3454,7 @@ export const archetypes = {
       ...acoustic('#c9bba6', '#c9bba6', '#797064', '#d9c3a0', 'woven', 'woven', 'ash'),
     },
     params: {
-      shape: { type: 'enum', label: 'Form', options: [['baffle', 'Hengende skjerm (stående)'], ['round', 'Flåte (oval)'], ['circle', 'Flåte (rund)'], ['rect', 'Flåte (rektangulær)']] },
+      shape: { type: 'enum', label: 'Form', options: [['baffle', 'Hengende skjerm (stående)'], ['round', 'Flåte (oval)'], ['circle', 'Flåte (rund)'], ['rect', 'Flåte (rektangulær)'], ['flush', 'Plate limt i taket']] },
       drop: { type: 'number', label: 'Avstand fra tak', min: 0.05, max: 1.5, step: 0.01, unit: 'm' },
     },
     dimsRange: { w: [0.3, 3.0], d: [0.02, 2.0], h: [0.02, 1.2] },

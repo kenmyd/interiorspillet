@@ -1125,6 +1125,64 @@
     "priceConfidence": "checked"
   },
   {
+    "id": "lampegiganten-lucande-beutlin-led-pendellampe-oliven-filt",
+    "category": "taklampe",
+    "subcategory": "pendel",
+    "name": "Beutlin LED-pendellampe i filt, oliven",
+    "brand": "Lucande",
+    "store": "Lampegiganten",
+    "url": "https://www.lampegiganten.no/p/lucande-led-pendellampe-beutlin-gronn-filt-dimbar-10031274.html",
+    "priceNok": 4399,
+    "salePriceNok": 2649,
+    "priceNote": "pris sjekket 2026-10-25 hos Lampegiganten.no: 2 649 kr (veil. 4 399 kr, -39 %), på lager, 5–8 virkedager. Integrert LED 18 W, 950 lm fra armaturen, 3000 K, Ra 80; dimmes i tre trinn (100/40/10 %) med vanlig veggbryter. Maks nedheng 205 cm. Takfeste 80 × 11 × 3,7 cm. 4 kg.",
+    "dims": {
+      "w": 1.06,
+      "d": 0.52,
+      "h": 0.215
+    },
+    "archetype": "pendant-felt",
+    "mount": "ceiling",
+    "params": {
+      "canopyL": 0.8,
+      "maxDrop": 2.05,
+      "lumens": 950,
+      "colorK": 3000
+    },
+    "variants": [
+      {
+        "name": "Oliven",
+        "colors": {
+          "shade": "#857a45",
+          "inner": "#6b5d40",
+          "base": "#e9e7e1",
+          "metal": "#e9e7e1",
+          "cord": "#9a9a9a"
+        },
+        "materials": {
+          "shade": "felt",
+          "inner": "felt",
+          "base": "painted",
+          "metal": "painted",
+          "cord": "steel"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.45,
+    "light": {
+      "lumens": 950,
+      "colorK": 3000,
+      "dimmable": true,
+      "kind": "pendant"
+    },
+    "description": "Lang pendel (106 × 52 cm) der skjermen er et lite landskap av myke filttopper i olivengrønn filt over en bølgete filtbunn. LED-lyset skinner ned gjennom en opal flate i bunnen. Henger i tre wirer fra et 80 cm langt takfeste.",
+    "why": "Lengden passer et spisebord på 200 cm, oliven henter de grønne tonene i stua, og filten demper litt der folk sitter og prater – en lampe som også er et lite akustikktiltak.",
+    "imageUrl": "https://lw-cdn.com/images/B3E4B3DDE1FA/k_d2e7aa84cbfb135e20dbc393ad549c74;w_1600;h_1600;q_100/10031274.jpg",
+    "verified": true,
+    "verifiedNote": "Bekreftet på lampegiganten.no 2026-10-25: 2 649 kr (veil. 4 399), 106 × 52 × 21,5 cm, filt, grønn/oliven, LED 18 W, 950 lm, 3000 K, maks nedheng 205 cm, takfeste 80 × 11 × 3,7 cm. Absorpsjonen er et anslag (produsenten oppgir ingen målte tall; en lignende PET-filtpendel Ø80 er målt til ca. 0,42 m² Sabine).",
+    "priceConfidence": "checked"
+  },
+  {
     "id": "christiania-belysning-secto-design-secto-4200-taklampe",
     "category": "taklampe",
     "subcategory": "pendel",

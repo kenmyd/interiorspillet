@@ -75,8 +75,21 @@ check('room-spec.json loads (the living room: 12 walls, 62 furniture)', stueWall
   fs.rmSync(out, { recursive: true, force: true });
 }
 check('palette.json loads (walls sand + marrakesh)', palette.walls.sand.hex === '#cfc5b4' && palette.walls.marrakesh.hex === '#aea191');
-check('wall-proposals.json: 60 proposals, existing first then N1…N39 (runde 3 = N20–N39)', walls.proposals.length === 60 && walls.proposals[0].id === '0' && walls.proposals[21].id === 'N1' && walls.proposals[39].id === 'N19' && walls.proposals[59].id === 'N39',
+check('wall-proposals.json: 73 proposals, existing first then N1…N52 (runde 3 = N20–N39, runde 4 = N40–N52)', walls.proposals.length === 73 && walls.proposals[0].id === '0' && walls.proposals[21].id === 'N1' && walls.proposals[39].id === 'N19' && walls.proposals[59].id === 'N39' && walls.proposals[72].id === 'N52',
   walls.proposals.map((p) => p.id).join(','));
+{
+  // the proposal browser's kinds (ui/wallCategories.js): every proposal has one, and the new round fills each kind
+  const { classifyProposal, WALL_CATEGORIES } = await import(pathToFileURL(path.join(ROOT, 'src/ui/wallCategories.js')).href);
+  const kinds = new Set(WALL_CATEGORIES.map((c) => c.id));
+  const cls = Object.fromEntries(walls.proposals.map((p) => [p.id, classifyProposal(p)]));
+  check('every wall proposal has a kind (spiler / filt / bilder / kombinert / diverse)', Object.values(cls).every((c) => kinds.has(c.category)));
+  check('kinds: B spiler, N17 filt, N9 bilder, K kombinert, C diverse, N45 filtlameller under filt + spiler, N20 sekskanter',
+    cls.B.category === 'spiler' && cls.N17.category === 'filt' && cls.N9.category === 'bilder' && cls.K.category === 'kombinert' && cls.C.category === 'diverse'
+      && cls.N45.category === 'filt' && cls.N45.tags.includes('spiler') && cls.N20.tags.includes('sekskanter'),
+    JSON.stringify({ B: cls.B, N17: cls.N17, N45: cls.N45 }));
+  check('runde 4 (N40–N52): spiler, filt and kombinert, all marked «Ny»', ['spiler', 'filt', 'kombinert'].every((k) => walls.proposals.some((p) => /^N(4\d|5[0-2])$/.test(p.id) && cls[p.id].category === k))
+    && walls.proposals.filter((p) => /^N(4\d|5[0-2])$/.test(p.id)).every((p) => p.badge === 'Ny'));
+}
 check('wall-proposals.json: acousticModel at top level', walls.acousticModel?.k === 22.7 && walls.acousticModel?.baseAbsorption === 26.4);
 const withImage = walls.proposals.filter((p) => p.image);
 check('proposal images → img/forslag/<CODE>.jpg + thumb', withImage.length === 21 && withImage.every((p) => p.image === `img/forslag/${p.code}.jpg` && p.thumb === `img/forslag/thumb/${p.code}.jpg`));
@@ -147,8 +160,8 @@ check('mountsCompatible: vitrineskap floor ↔ wall, nothing else across mounts'
   && !catalog.mountsCompatible('sideboard', 'floor', 'wall-shelf', 'wall') && !catalog.mountsCompatible('art-frame', 'wall', 'art-frame', 'floor'));
 // round 1 + catalog-new (lenestoler, Secto, gulvlamper, vitrineskap) + hele huset (152 new products incl. Skeidar and Jysk,
 // the 3 mirrors moved to Speil) + 34 lenestoler (24 hvilestoler) from Bohus, Skeidar, Fagmøbler, Møbelringen, Jysk, IKEA and Mio
-const COUNTS = { sofa: 11, lenestol: 55, bord: 10, stoler: 8, skjenk: 14, tvbenk: 7, vitrineskap: 5, hylle: 11, seng: 20, nattbord: 10, kommode: 10, garderobe: 9, speil: 13, bad: 19, gang: 14, taklampe: 19, smalamper: 34, tekstil: 24, teppe: 19, solskjerming: 22, akustikk: 16, smatt: 22 };
-check('counts per category – 372 products', Object.entries(COUNTS).every(([k, n]) => counts[k] === n) && catalog.allProducts().length === 372, JSON.stringify(counts));
+const COUNTS = { sofa: 11, lenestol: 55, bord: 10, stoler: 8, skjenk: 14, tvbenk: 7, vitrineskap: 5, hylle: 11, seng: 20, nattbord: 10, kommode: 10, garderobe: 9, speil: 13, bad: 19, gang: 14, taklampe: 20, smalamper: 34, tekstil: 24, teppe: 19, solskjerming: 22, akustikk: 17, smatt: 22 };
+check('counts per category – 374 products', Object.entries(COUNTS).every(([k, n]) => counts[k] === n) && catalog.allProducts().length === 374, JSON.stringify(counts));
 const NEW_DIR = path.join(ROOT, 'research', 'catalog-new');
 const fresh = fs.readdirSync(NEW_DIR).filter((f) => f.endsWith('.json')).flatMap((f) => readJson(`research/catalog-new/${f}`));
 const KEEP = ['category', 'subcategory', 'name', 'brand', 'store', 'url', 'priceNok', 'salePriceNok', 'priceNote', 'priceConfidence', 'archetype', 'defaultVariant', 'description', 'why', 'imageUrl', 'verified', 'verifiedNote', 'light'];
@@ -174,7 +187,7 @@ for (const src of fresh) {
     for (const [part, hex] of Object.entries(v.colors)) if (pv?.colors?.[part] !== hex || pv?.materials?.[part] !== v.materials[part]) freshProblems.push(`${src.id}#${i}: ${part}`);
   });
 }
-check(`all ${fresh.length} new products kept: prices, sale prices, variant prices/urls, notes, image URLs, params (shape notes, profilePoints)`, fresh.length === 212 && !freshProblems.length,
+check(`all ${fresh.length} new products kept: prices, sale prices, variant prices/urls, notes, image URLs, params (shape notes, profilePoints)`, fresh.length === 214 && !freshProblems.length,
   freshProblems.slice(0, 8).join(' | '));
 const pr = (id, vi) => {
   const x = catalog.priceOf(catalog.getProduct(id), vi);
@@ -207,9 +220,9 @@ check('Secto/Octo pendants: ceiling, drop = the shop cable default, 806 lm (shop
   && catalog.getProduct('christiania-belysning-secto-design-octo-4240-taklampe-o54').light.colorK === 3000
   && secto.light.colorK === catalog.NEW_LAMP.colorK && secto.light.dimmer === catalog.NEW_LAMP.dimmer
   && secto.params.profilePoints.length === 21 && secto.params.profilePoints[13][1] === 0.54);
-check('subcategories: every recliner «hvilestol» (32), every pendant «pendel» (18)', catalog.products('lenestol').filter((p) => p.subcategory === 'hvilestol').length === 32
+check('subcategories: every recliner «hvilestol» (32), every pendant «pendel» (19)', catalog.products('lenestol').filter((p) => p.subcategory === 'hvilestol').length === 32
   && catalog.products('lenestol').filter((p) => p.archetype === 'recliner').every((p) => p.subcategory === 'hvilestol')
-  && catalog.products('taklampe').filter((p) => p.subcategory === 'pendel').length === 18 && catalog.SUBCATEGORY_LABELS.hvilestol === 'Hvilestoler');
+  && catalog.products('taklampe').filter((p) => p.subcategory === 'pendel').length === 19 && catalog.SUBCATEGORY_LABELS.hvilestol === 'Hvilestoler');
 check('search finds the new products', catalog.products('vitrineskap').every((p) => catalog.search('vitrineskap').includes(p)) && catalog.search('secto').length === 4 && catalog.search('hvilestol fotskammel').length >= 4
   && catalog.search('octo').length === 2, `vitrine ${catalog.search('vitrineskap').length}, secto ${catalog.search('secto').length}, octo ${catalog.search('octo').length}`);
 const floorLamps = catalog.products('smalamper').filter((p) => p.subcategory === 'gulvlampe');

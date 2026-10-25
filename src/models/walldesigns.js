@@ -1206,6 +1206,8 @@ function box3(min, max) {
  * @returns {THREE.Material[]}
  */
 export function slatTones(kind, base) {
+  // filtlameller: slats of PET felt – two tones of the felt (dyed felt varies less than wood)
+  if (kind === 'felt') return [mat('felt', resolveColor(base)), mat('felt', shade(resolveColor(base), -0.02))];
   const k = woodKind(kind);
   if (k === 'painted' || k === 'lacquer') return [mat(k, resolveColor(base))];
   return [woodMat(k, shade(base, -0.025)), woodMat(k, base), woodMat(k, shade(base, 0.022))];
@@ -1219,8 +1221,9 @@ function buildSlats(ctx, el) {
   const standoff = clamp(num(el.standoff, 0), 0, 0.2);
   const felt = el.backing !== 'none';
   const vertical = el.orientation !== 'horizontal';
-  const kind = woodKind(el.wood);
-  const base = resolveColor(el.slatColor, WOOD_PRESETS[kind]?.hex || '#b08b62');
+  const feltSlats = el.wood === 'felt'; // filtlameller
+  const kind = feltSlats ? 'felt' : woodKind(el.wood);
+  const base = resolveColor(el.slatColor, feltSlats ? '#a39584' : WOOD_PRESETS[kind]?.hex || '#b08b62');
   const B = ctx.B;
   const R = K.rng(`slats:${ctx.index}:${u.toFixed(2)}:${v.toFixed(2)}`);
   const feltT = felt ? FELT_T : 0;
@@ -1228,7 +1231,7 @@ function buildSlats(ctx, el) {
   // thin slats glued straight on the wall (montage T): the narrow grooves read as fine dark lines in the wood, not as
   // black stripes – standard black felt is shown in a dark tone of the slat colour there (any other felt colour as chosen)
   let feltHex = resolveColor(el.backingColor, '#1b1b1b');
-  if (standoff < 0.005 && slatD <= 0.01 && gap <= 0.01 && lum(feltHex) < 0.02 && kind !== 'painted' && kind !== 'lacquer') feltHex = mixHex(feltHex, shade(base, -0.17), 0.62);
+  if (standoff < 0.005 && slatD <= 0.01 && gap <= 0.01 && lum(feltHex) < 0.02 && kind !== 'painted' && kind !== 'lacquer' && !feltSlats) feltHex = mixHex(feltHex, shade(base, -0.17), 0.62);
   if (felt) {
     const feltMat = mat('felt', feltHex);
     B.box(feltMat, 'backing', u + w / 2, v + h / 2, zBack + feltT / 2, w, h, feltT, { skip: '-z' });
@@ -1266,7 +1269,7 @@ function buildSlats(ctx, el) {
   }
   // end trims (oak cover strips over the open sides when the panel stands off the wall on battens)
   if (standoff > 0.015) {
-    const trim = woodMat(kind, base);
+    const trim = feltSlats ? tones[0] : woodMat(kind, base);
     const d = standoff + feltT + slatD;
     if (vertical) {
       for (const x of [u + 0.006, u + w - 0.006]) B.box(trim, 'slats', x, v + h / 2, d / 2, 0.012, h, d, { grain: 'y', uOff: R() * 3, skip: '-z' });
@@ -2653,8 +2656,8 @@ export function elementEditor(type, el = null) {
       return {
         ...POS(), ...SIZE(),
         orientation: { type: 'enum', label: 'Retning', options: [['vertical', 'Stående spiler'], ['horizontal', 'Liggende spiler']] },
-        wood: { type: 'enum', label: 'Treslag', options: WOOD_OPTIONS },
-        slatColor: { ...colorP('Farge på spilene'), palette: WOOD_SWATCHES },
+        wood: { type: 'enum', label: 'Treslag', options: [...WOOD_OPTIONS, ['felt', 'Filt (filtlameller)']] },
+        slatColor: e.wood === 'felt' ? { ...colorP('Farge på filtlamellene'), palette: FELT_SWATCHES } : { ...colorP('Farge på spilene'), palette: WOOD_SWATCHES },
         slatWMm: { type: 'number', min: 10, max: 80, step: 1, label: 'Spilebredde', unit: 'mm' },
         gapMm: { type: 'number', min: 3, max: 60, step: 1, label: 'Fuge mellom spilene', unit: 'mm' },
         slatDMm: { type: 'number', min: 5, max: 40, step: 1, label: 'Spiletykkelse', unit: 'mm' },
@@ -2974,6 +2977,8 @@ export function elementValues(el, elements = []) {
 function estimateAlpha(el) {
   switch (el.type) {
     case 'slats': {
+      // filtlameller absorb with the slats themselves (PET felt, αw ≈ 0.8–0.85 on felt and battens)
+      if (el.wood === 'felt') return el.backing === 'none' ? 0.5 : num(el.standoff, 0) >= 0.02 ? 0.82 : 0.7;
       if (el.backing === 'none') return 0.12;
       const open = num(el.gap, 0.013) / (num(el.slatW, 0.027) + num(el.gap, 0.013));
       const st = num(el.standoff, 0);
@@ -3057,6 +3062,7 @@ export function setElementParam(el, key, value) {
   } else if (key === 'wood' && t === 'slats') {
     e.wood = value;
     if (WOOD_PRESETS[value] && value !== 'painted') e.slatColor = WOOD_PRESETS[value].hex;
+    else if (value === 'felt') e.slatColor = '#a39584'; // Marrakesh-filt
   } else if (key === 'material' && (t === 'shelf' || t === 'sideboard-floating' || t === 'hooks' || t === 'bookcase' || t === 'ledge')) {
     e.material = value;
     if (WOOD_PRESETS[value] && value !== 'painted') e.color = WOOD_PRESETS[value].hex;
@@ -3199,7 +3205,7 @@ export function describeElement(el) {
   const label = ELEMENT_TYPES[el.type]?.label || el.type;
   const b = elementBounds(el);
   const size = `${fmt(b.u1 - b.u0)} × ${fmt(b.v1 - b.v0)} m`;
-  const wood = WOOD_PRESETS[el.wood || el.material]?.name;
+  const wood = el.type === 'slats' && el.wood === 'felt' ? 'Filtlameller' : WOOD_PRESETS[el.wood || el.material]?.name;
   switch (el.type) {
     case 'slats':
     case 'shelf':

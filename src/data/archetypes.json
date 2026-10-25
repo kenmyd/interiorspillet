@@ -114,6 +114,7 @@
     "pendant-tiered": { "family": "lamp", "mount": "ceiling", "label": "Pendel (lagdelt)" },
     "pendant-woven": { "family": "lamp", "mount": "ceiling", "label": "Pendel (flettet)" },
     "pendant-mushroom": { "family": "lamp", "mount": "ceiling", "label": "Pendel (sopp)" },
+    "pendant-felt": { "family": "lamp", "mount": "ceiling", "label": "Pendel (filt)" },
     "pendant-slatted": { "family": "lamp", "mount": "ceiling", "label": "Spilelampe (tre)", "parts": ["shade", "inner", "metal", "cord"], "partLabels": { "shade": "Spiler", "inner": "Innside spiler", "metal": "Takkopp" } },
     "ceiling-ring": { "family": "lamp", "mount": "ceiling", "label": "Taklampe (ring)" },
     "chandelier-molecule": { "family": "lamp", "mount": "ceiling", "label": "Grenlampe (molekyl)" },

@@ -49,6 +49,12 @@ proposals without an image (rendered into a corner of the game canvas inside `up
 visible cards first, every other frame, not in orbit/plan). Editor: wall paint, element list with
 paramEditor/duplicate/remove, add element, «Lagre som mitt forslag», «Tilbakestill», «Tøm veggen»; the selected
 element gets an amber outline on the wall; a click on the wall selects the element under the cursor.
+The list is grouped by kind (`ui/wallCategories.js` – Spiler / Filt og stoff / Bilder / Kombinert / Diverse, derived
+from the elements, a proposal's own `category` wins), with chips that filter (also «Sekskanter», «Mine forslag») and a
+«Sorter» select (type, runde, minst etterklang, lavest pris); ◀ ▶ follow the list's order. Slats with `wood: 'felt'`
+are filtlameller (felt material, own alpha). Runde 4 (N40–N52, badge «Ny») comes from
+`src/data/scripts/wall-round4.mjs`; static thumbnails for proposals without a montage: `node tools/wall-thumbs.mjs
+--ids=… --port=…` (headless Edge, WallPanel's own render).
 
 ### `ui/PhotoCompare.js`
 `open(photoCamera|id?, imageUrl?, { proposal, follow })` → `views.setPhotoCamera(cam)` + photo overlay (wipe handle,
