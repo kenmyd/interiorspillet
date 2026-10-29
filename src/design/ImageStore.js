@@ -1,5 +1,6 @@
 import { Emitter } from '../core/Events.js';
 import { IMAGE_ID, isImageId } from '../models/artImages.js';
+import { BUNDLED_IMAGES as BUNDLED } from '../data/bundledImages.js';
 
 export { IMAGE_ID, isImageId };
 
@@ -22,6 +23,10 @@ export { IMAGE_ID, isImageId };
  *
  * ImageRecord (IndexedDB 'interiorspillet-images' v1, store 'images', keyPath 'id'):
  *   { id, mime, data: ArrayBuffer, w, h, bytes, name, origW, origH, createdAt, lastUsedAt }
+ * Bundled pictures (data/bundledImages.js { [id]: { url, mime, w, h, name } }, files under public/img/…): catalogue
+ * motifs that ship with the game (the «Spesialkatalog» canvases). An id that no backend has is fetched from its
+ * relative url and kept in memory only (never written to IndexedDB), so a catalogue item can carry a real picture.
+ *
  * ImageBackend (all async): { get(id), put(rec), delete(id), keys(), all(), persistent, name }
  */
 
@@ -365,6 +370,20 @@ function usableRecord(rec, id = rec?.id) {
   return { ...rec, data };
 }
 
+/** A bundled picture (data/bundledImages.js) as an in-memory record, or null (unknown id, offline, Node). */
+async function fetchBundled(id) {
+  const b = BUNDLED[id];
+  if (!b || typeof fetch !== 'function') return null;
+  try {
+    const res = await fetch(b.url);
+    if (!res.ok) return null;
+    const data = await res.arrayBuffer();
+    return { id, mime: b.mime, data, w: b.w, h: b.h, bytes: data.byteLength, name: b.name || '', origW: b.w, origH: b.h, _unsaved: true, _bundled: true };
+  } catch {
+    return null;
+  }
+}
+
 /** The record as it is written to the backend (no in-memory flags). */
 function plain(rec) {
   const { _unsaved, ...out } = rec;
@@ -539,7 +558,7 @@ export class ImageStore extends Emitter {
       id: r.id, mime: r.mime, w: r.w, h: r.h, aspect: r.w / r.h, name: r.name || '', bytes: r.bytes ?? r.data.byteLength,
       origW: r.origW ?? r.w, origH: r.origH ?? r.h, createdAt: r.createdAt ?? null, lastUsedAt: r.lastUsedAt ?? null,
       // written to a backend that survives the tab (IndexedDB); false without one, in readOnly and after a failed write
-      persisted: !r._unsaved && this._persistent,
+      persisted: !!r._bundled || (!r._unsaved && this._persistent),
     };
   }
 
@@ -875,7 +894,8 @@ export class ImageStore extends Emitter {
     const wasMissing = new Set(need.filter((id) => this._status.get(id) === 'missing'));
     if (need.length) {
       for (const id of need) if (this._status.get(id) !== 'missing') this._status.set(id, 'loading');
-      const got = await Promise.all(need.map((id) => Promise.resolve().then(() => be.get(id)).catch(() => undefined)));
+      const got = await Promise.all(need.map((id) => Promise.resolve().then(() => be.get(id)).catch(() => undefined)
+        .then((rec) => rec || fetchBundled(id))));
       need.forEach((id, i) => {
         if (this._recs.has(id)) return; // imported meanwhile
         const rec = usableRecord(got[i], id);

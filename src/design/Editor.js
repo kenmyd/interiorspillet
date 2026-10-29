@@ -16,6 +16,7 @@ import { PhotoCompare } from '../ui/PhotoCompare.js';
 import { WindowPanel } from '../ui/WindowPanel.js';
 import { LightPanel } from '../ui/LightPanel.js';
 import { SunPanel } from '../ui/SunPanel.js';
+import { SpecialProposalPanel } from '../ui/SpecialProposalPanel.js';
 import { ImageUpload } from '../ui/ImageUpload.js';
 import { gridCatalogAction } from '../ui/inspector/gridSection.js';
 import { setPanelHost, closeTopPanel, anyModalOpen, isFormFocused } from '../ui/panelKit.js';
@@ -108,6 +109,7 @@ export class Editor {
       catalog: make('catalog', CatalogPanel),
       inspector: make('inspector', Inspector),
       wall: make('wall', WallPanel),
+      specialProposals: make('specialProposals', SpecialProposalPanel),
       window: make('window', WindowPanel),
       light: make('light', LightPanel),
       sun: make('sun', SunPanel),

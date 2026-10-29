@@ -32,6 +32,8 @@ const S = (body) =>
 /** Toolbar icons that ui/icons.js does not have (same 24 × 24 stroke style). */
 export const TOOL_ICONS = {
   catalog: ICONS.sofa,
+  star: S('<path d="M12 3.2l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.5l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>'),
+  frames: S('<rect x="3.5" y="3.5" width="8" height="10.5" rx="0.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="0.8"/><rect x="3" y="16.5" width="18" height="4" rx="0.8"/>'),
   wall: S('<rect x="4" y="3.5" width="16" height="17" rx="1.4"/><path d="M8 3.5v17M12 3.5v17M16 3.5v17"/>'),
   window: ICONS.blinds,
   bulb: ICONS.bulb,
@@ -48,6 +50,9 @@ export const TOOL_ICONS = {
 
 const BUTTONS = [
   { id: 'catalog', label: 'Katalog', icon: 'catalog', key: 'K', code: 'KeyK', panel: 'catalog', title: 'Katalog – lenestoler, skjenker, lamper, tekstiler og akustikk' },
+  // the owner's own pick (catalog SPECIAL_CATEGORY): opens the catalogue on «Spesialkatalog»
+  { id: 'special', label: 'Spesialkatalog', icon: 'star', key: 'J', code: 'KeyJ', title: 'Spesialkatalog – dine egne utvalgte møbler, lamper og bilder' },
+  { id: 'specialWall', label: 'Spesialforslag', icon: 'frames', key: 'N', code: 'KeyN', panel: 'specialProposals', title: 'Spesialforslag – skjenk, bilder og pynt fra Spesialkatalogen til den høye veggen' },
   { id: 'wall', label: 'Veggforslag', icon: 'wall', key: 'V', code: 'KeyV', panel: 'wall', title: 'Forslag til den høye veggen' },
   { id: 'window', label: 'Vinduer', icon: 'window', key: 'B', code: 'KeyB', panel: 'window', title: 'Vinduer og solskjerming' },
   { id: 'light', label: 'Belysning', icon: 'bulb', key: 'L', code: 'KeyL', panel: 'light', title: 'Belysning – lampene i rommene' },
@@ -235,6 +240,10 @@ export class Toolbar {
         const p = e.ui[b.panel];
         if (p?.isOpen) p.close();
         else p?.open?.();
+      } else if (id === 'special') {
+        const p = e.ui.catalog;
+        if (p?.isOpen && p.category === 'spesial') p.close();
+        else p?.open?.('spesial');
       } else if (id === 'view') e.views?.toggle?.();
       else if (id === 'level') this.cycleLevel();
       else if (id === 'compare') this.toggleCompare();
@@ -453,9 +462,12 @@ export class Toolbar {
 
   /** Every frame: active states of the panel buttons. */
   update() {
+    const cat = this.editor.ui.catalog;
+    const special = !!cat?.isOpen && cat.category === 'spesial';
     for (const b of BUTTONS) {
-      if (!b.panel) continue;
-      const on = !!this.editor.ui[b.panel]?.isOpen;
+      if (!b.panel && b.id !== 'special') continue;
+      // «Spesialkatalog» lights instead of «Katalog» while the catalogue shows the owner's list
+      const on = b.id === 'special' ? special : b.id === 'catalog' ? !!cat?.isOpen && !special : !!this.editor.ui[b.panel]?.isOpen;
       const btn = this.buttons.get(b.id);
       if (btn && btn.classList.contains('is-active') !== on) {
         btn.classList.toggle('is-active', on);

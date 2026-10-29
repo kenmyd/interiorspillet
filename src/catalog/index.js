@@ -23,6 +23,7 @@ import solskjerming from '../data/catalog/solskjerming.json';
 import akustikk from '../data/catalog/akustikk.json';
 import kunst from '../data/catalog/kunst.json';
 import smatt from '../data/catalog/smatt.json';
+import special from '../data/spesialkatalog.json';
 
 /**
  * Product catalogue (ARCHITECTURE §6). Products come from data/catalog/<key>.json, already normalised by
@@ -215,6 +216,25 @@ const DATA = {
 const ALL = Object.freeze(CATEGORIES.flatMap((c) => DATA[c.key] || []));
 const BY_ID = new Map(ALL.map((p) => [p.id, p]));
 
+/**
+ * «Spesialkatalog»: the owner's own pick across the categories (data/spesialkatalog.json: { ids: [...] }, in that
+ * order). Not a catalogue category – the products stay in their own categories; CatalogPanel shows the list as an extra
+ * tab first and Toolbar «Spesialkatalog» (J) opens it.
+ */
+export const SPECIAL_CATEGORY = Object.freeze({
+  key: 'spesial',
+  label: 'Spesialkatalog',
+  icon: 'pin',
+  rooms: ['alle'],
+  iconSvg: S('<path d="M12 3.2l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.5l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>'),
+});
+const SPECIAL = Object.freeze((special.ids || []).map((id) => BY_ID.get(id)).filter(Boolean));
+
+/** The products of the «Spesialkatalog» (in the owner's order). */
+export function specialProducts() {
+  return [...SPECIAL];
+}
+
 const clone = (v) => (v === undefined ? undefined : JSON.parse(JSON.stringify(v)));
 
 /** Lowercase, accent-free text for searching («plissé» matches «plisse», «øre» stays «øre»). */
@@ -283,6 +303,7 @@ export function search(text, { category } = {}) {
  * @returns {string}
  */
 export function categoryLabel(key) {
+  if (key === SPECIAL_CATEGORY.key) return SPECIAL_CATEGORY.label;
   return CATEGORIES.find((c) => c.key === key)?.label || EXTRA_CATEGORIES[key] || key || '';
 }
 
@@ -412,6 +433,9 @@ export function productToItemSpec(product, variantIndex) {
   if (!p) return null;
   const vi = clampVariant(p, variantIndex);
   const v = p.variants[vi] || { colors: {}, materials: {} };
+  // a size variant (the «Spesialkatalog» canvases: 50 × 70 … 120 × 180) has its own dims and absorption
+  const dims = v.dims ? { ...p.dims, ...v.dims } : p.dims;
+  const absorption = v.absorption ?? p.absorption;
   const spec = {
     source: 'catalog',
     refId: p.id,
@@ -420,13 +444,13 @@ export function productToItemSpec(product, variantIndex) {
     archetype: p.archetype,
     mount: p.mount,
     rotationDeg: 0,
-    dims: { w: p.dims.w, d: p.dims.d, h: p.dims.h },
+    dims: { w: dims.w, d: dims.d, h: dims.h },
     // paramsOverride: variant-specific model params (e.g. BESTÅ front styles) win over the product's
     params: { ...clone(p.params), ...clone(v.params || {}), ...clone(v.paramsOverride || {}) },
     colors: clone(v.colors),
     materials: clone(v.materials),
     variantIndex: vi,
-    acoustic: { m2: p.absorption || 0, ref: { w: p.dims.w, d: p.dims.d, h: p.dims.h } },
+    acoustic: { m2: absorption || 0, ref: { w: dims.w, d: dims.d, h: dims.h } },
   };
   // a coffee-table set (Dråpe, Josh): the set tables are measured on the product's own size, so a resized main table
   // takes its set tables along (models/tables.js)

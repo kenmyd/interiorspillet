@@ -4749,5 +4749,133 @@
     "verifiedNote": "Bekreftet på lampehuset.no 2026-10-21 (produktdata): pris 899 kr, Ø33 × H160 cm, metall/tekstil (plissert lin), E27, bilde, art.nr. 3210416071, på lager. Anslått: skjermens høyde, fotens Ø, lumen 806 lm for en E27-pære.",
     "priceConfidence": "checked",
     "shapeNote": "Tynn, sort metallstang på en lav, rund fot med en rett, plissert sylinderskjerm i lys lin (Ø33) øverst. Skjermens høyde (ca. 30 cm), antall plisser og fotens Ø (ca. 25 cm) anslått fra produktbildet."
+  },
+  {
+    "id": "bohus-sindig-turner-bordlampe-h42",
+    "category": "smalamper",
+    "subcategory": "bordlampe",
+    "name": "Turner bordlampe H42",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/bordlampe/turner-bordlampe-h42",
+    "priceNok": 1599,
+    "priceNote": "Pris sjekket 2026-10-29 på bohus.no (varenr. 320639): 1 599 kr. E27, pære følger ikke med.",
+    "dims": {
+      "w": 0.32,
+      "d": 0.15,
+      "h": 0.42
+    },
+    "archetype": "table-shade",
+    "mount": "surface",
+    "params": {
+      "shadeShape": "rect",
+      "shadeD": 0.32,
+      "shadeH": 0.15,
+      "shadeDepth": 0.15,
+      "baseShape": "rect",
+      "baseD": 0.24,
+      "baseH": 0.03,
+      "translucent": 0.55
+    },
+    "variants": [
+      {
+        "name": "Svart/natur",
+        "colors": {
+          "shade": "#ddd2bf",
+          "inner": "#ddd2bf",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "table",
+      "bulb": "E27 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Bordlampe med to tynne, svarte stenger på en rektangulær svart fot og en avlang tekstilskjerm i naturfarge – lillesøster til Turner gulvlampe.",
+    "why": "Samme uttrykk som Turner gulvlampe; passer på EKET eller BESTÅ ved TV-en.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/TURNER/603053/image-thumb__603053__PDP-Product/320639%20-%20Turner%20bordlampe%20H42%20E27%20metall%20svart-natur%20inkl.%20skjerm%20-%206.d2b99e63.jpg",
+    "verified": true,
+    "verifiedNote": "Navn, varenr., høyde og pris sjekket 2026-10-29 på bohus.no; bredde og skjermmål er anslått fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "De to stengene er tegnet som én fot; skjermmålene er anslått."
+  },
+  {
+    "id": "bohus-sindig-double-leselampe-gulv-h137",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Double leselampe gulv H137",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/double-gulvlampe-h137",
+    "priceNok": 1999,
+    "priceNote": "Pris sjekket 2026-10-29 på bohus.no (varenr. 234856): 1 999 kr. Siden har valget «Lampeskjerm» – sjekk om den grå-beige skjermen er med i prisen.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.4,
+      "h": 1.37
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeShape": "drum",
+      "shadeD": 0.4,
+      "shadeTopD": 0.34,
+      "shadeH": 0.27,
+      "baseShape": "disc",
+      "baseD": 0.28,
+      "baseH": 0.03,
+      "poleCount": 1,
+      "poleD": 0.02,
+      "translucent": 0.4
+    },
+    "variants": [
+      {
+        "name": "Svart med grå-beige skjerm",
+        "colors": {
+          "shade": "#b9afa2",
+          "inner": "#d8d0c4",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.04,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm + liten leselampe (anbefalt, ikke inkludert)"
+    },
+    "description": "Svart gulvlampe med konisk tekstilskjerm i grå-beige og en liten, svart lesespot på svingarm.",
+    "why": "Gir både stemningslys og leselys ved lenestolen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/DOUBLE/277138/image-thumb__277138__PDP-Environment/234856%20-%20Double%20gulvlampe%20H137%20E27%20metall%20svart%20-%201.3fc57441.jpg",
+    "verified": true,
+    "verifiedNote": "Navn, varenr., høyde og pris sjekket 2026-10-29 på bohus.no; skjermmål anslått fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Lesespoten på svingarmen er ikke modellert."
   }
 ]

@@ -1,0 +1,3209 @@
+[
+  {
+    "id": "hjort-knudsen-regal-lenestol-fothviler",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Regal lenestol med integrert fothviler",
+    "brand": "Hjort Knudsen",
+    "store": "Møbelringen",
+    "url": "https://www.mobelringen.no/search?q=Regal+lenestol",
+    "priceNok": 22999,
+    "salePriceNok": 10999,
+    "priceNote": "Fra skjermbildet til eieren 2026-10-29: 10 999 kr (førpris 22 999 kr, -52 %), tilbudet gjelder t.o.m. 30.11.2026. Ikke på lager i nettbutikken, kan bestilles i butikk (klikk og hent). Butikk: Møbelringen (oppgitt av eieren) – lenken er et søk i nettbutikken. Fargen Lodge hazel er målt i produktbildet (snitt #4b2e22).",
+    "dims": {
+      "w": 0.8,
+      "d": 0.88,
+      "h": 1.1
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "seatD": 0.5,
+      "backH": 1.1,
+      "armH": 0.6,
+      "armW": 0.16,
+      "armTuck": 0.03,
+      "legStyle": "swivel-star",
+      "legH": 0.15,
+      "backShape": "high",
+      "cushion": "tight",
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "integrated",
+      "backSeams": "cross",
+      "footrest": "integrated",
+      "footrestOpen": false,
+      "star": "spider",
+      "starArms": 5,
+      "lever": false,
+      "footstool": false,
+      "headrest": true,
+      "armStyle": "petal",
+      "armFlare": 0.07,
+      "armLip": 0.04,
+      "armTopR": 0.06,
+      "armBottom": 0.19,
+      "armFrontR": 0.18,
+      "armRearR": 0.08,
+      "armFrontTopR": 0.1,
+      "seatNose": 0,
+      "backW": 0.5,
+      "backTopR": 0.07,
+      "starR": 0.36,
+      "footTaper": 0.95,
+      "footR": 0.08,
+      "footBottom": 0.18,
+      "basePlate": 0.12,
+      "armSplay": 0.03,
+      "starBend": 1,
+      "starBar": 0.012,
+      "starHub": 0.13,
+      "armFlarePow": 0.5,
+      "armWelt": "edge",
+      "backPuff": 0.04,
+      "notes": "Høy hvilestol i bouclé (Lodge) med integrert fothviler som felles ut fra setefronten. Ryggen er delt i to polstrede felt med en tverrsøm, øverste felt er nakkestøtten. Brede, avrundede armlener som buer utover og smalner mot foten. Polaris-sokkel: tynn, svart femarmet stjernefot med søyle og sving. Mål anslått fra bildet (ikke bekreftet)."
+    },
+    "variants": [
+      {
+        "name": "Tekstil Lodge hazel, Polaris sort sokkel",
+        "colors": {
+          "upholstery": "#4b2e22",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal"
+        }
+      },
+      {
+        "name": "Tekstil Lodge hunter, Polaris sort sokkel",
+        "colors": {
+          "upholstery": "#454b45",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.5,
+    "description": "Høy hvilestol fra Hjort Knudsen med integrert fothviler, kraftig bouclé (Lodge) og svart Polaris svingfot.",
+    "why": "Lodge hazel gjentar de varme rustbrune tonene i akustikkbildene, Lodge hunter gir en mørk grønn kontrast.",
+    "imageUrl": "",
+    "verified": false,
+    "verifiedNote": "Fra eierens skjermbilde 2026-10-29. Fant ikke produktsiden i norske nettbutikker (Bohus, Skeidar, Fagmøbler, Møbelringen sjekket); mål og butikk er anslått.",
+    "priceConfidence": "check",
+    "shapeNote": "Mål anslått fra produktbildet."
+  },
+  {
+    "id": "bohus-conform-timeout-large-nanda-umber-fotskammel",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Timeout hvilestol large med fotskammel, Nanda 65 Umber",
+    "brand": "Conform",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-large-1",
+    "priceNok": 38198,
+    "salePriceNok": 30558,
+    "priceNote": "Pris sjekket 2026-10-29 på bohus.no: stolen (varenr. 318067) 24 879 kr (før 31 099) og fotskammelen large med pikering (varenr. 318068, bohus.no/timeout-fotskammel-large-1) 5 679 kr (før 7 099), til sammen 30 558 kr (før 38 198). 20 % rabatt på Timeout i Nanda og fåreskinn. Kjøpes hver for seg.",
+    "dims": {
+      "w": 0.84,
+      "d": 0.89,
+      "h": 1.14
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.42,
+      "seatD": 0.52,
+      "backH": 1.14,
+      "armH": 0.56,
+      "armW": 0.14,
+      "legStyle": "swivel-star",
+      "legH": 0.16,
+      "backShape": "high",
+      "cushion": "loose",
+      "footstool": true,
+      "headrest": true,
+      "body": "shell",
+      "headStyle": "roll",
+      "stoolW": 0.51,
+      "stoolD": 0.38,
+      "stoolH": 0.39,
+      "armPad": "lid",
+      "shellTop": 0.8,
+      "shellTaper": 0.62,
+      "shellBottom": 0.18,
+      "seatT": 0.12,
+      "seatNose": -0.035,
+      "backW": 0.5,
+      "backFlare": 0,
+      "shellFront": 1,
+      "armPadH": 0.065,
+      "headW": 0.6,
+      "armTilt": 0.04,
+      "armCurl": 0.03,
+      "shellDisc": 0.05,
+      "starArms": 4,
+      "notes": "Large-utgaven av Timeout: skall i svart eik, sete og rygg med pikering i Nanda 65 Umber (brun, nuppete tweed), regulerbar rygg, quattro svingfot i svart aluminium (4 armer). Fotskammelen large (51 × 38 × 39 cm) har samme stoff, svart skrog og x-fot quattro. Stolens mål er Large-målene (84 × 89 × 114 cm, ikke i tabell på Bohus-siden)."
+    },
+    "variants": [
+      {
+        "name": "Nanda 65 Umber med pikering, skrog svart eik, quattro svart aluminium",
+        "colors": {
+          "upholstery": "#6b5443",
+          "legs": "#1a1a1a",
+          "frame": "#1e1b19"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal",
+          "frame": "black-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.6,
+    "description": "Conform Timeout large med svart eikeskall, pikert sete og rygg i Nanda 65 Umber og matchende fotskammel med pikering.",
+    "why": "Den mørke umbra-tweeden og det svarte skallet passer til de brune akustikkbildene og en mørk BESTÅ-benk.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Conform%20Collection%20AB/Produkter/TIMEOUT/348109/image-thumb__348109__PDP-Product/318067%20-%20Timeout%20Svart%20hvilestol%20large%20med%20pikering%20Nanda%2065%20Umber%20svingfot%20quattro%20svart%20aluminium%20-%201.4a179343.jpg",
+    "verified": true,
+    "verifiedNote": "Sjekket 2026-10-29 på bohus.no: navn, varenr., priser og fotskammelens mål. Stolens mål er Large-målene (ikke i tabell på siden).",
+    "priceConfidence": "checked",
+    "shapeNote": "Pikeringen er ikke modellert."
+  },
+  {
+    "id": "ikea-besta-tv-benk-dorer-180-mork",
+    "category": "tvbenk",
+    "name": "BESTÅ TV-benk med dører 180x42x38 – mørke farger",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner-s39622908/",
+    "priceNok": 3595,
+    "salePriceNok": 3195,
+    "priceNote": "Priser sjekket 2026-10-29 på ikea.com/no («Ny lavere pris»), per variant. Ben eller veggopphenging kjøpes separat.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.42,
+      "h": 0.38
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "none",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Står rett på gulvet (ben eller veggopphenging kjøpes separat); grepsfrie dører med trykk-og-åpne-hengsler."
+    },
+    "variants": [
+      {
+        "name": "Brunsvart / Hedeviken brunbeiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5a4232",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5a4232"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 3595,
+        "salePriceNok": 3195,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner-s39622908/"
+      },
+      {
+        "name": "Brunsvart / Björköviken brun beiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5a4232",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5a4232"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 3745,
+        "salePriceNok": 3345,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-bjoerkoeviken-brun-beiset-eikefiner-s69422187/",
+        "paramsOverride": {
+          "frontStyle": "ribbed"
+        }
+      },
+      {
+        "name": "Brunsvart / Lappviken brunsvart",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#2e2925",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#2e2925"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "painted",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "painted"
+        },
+        "priceNok": 2995,
+        "salePriceNok": 2445,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-m-dorer-brunsvart-lappviken-brunsvart-s79330663/"
+      },
+      {
+        "name": "Brunsvart / Lappviken brun valnøttmønstret",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5c4030",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5c4030"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "walnut",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "walnut"
+        },
+        "priceNok": 2995,
+        "salePriceNok": 2445,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-lappviken-brun-valnottmonstret-s09612171/"
+      },
+      {
+        "name": "Brunsvart / Timmerviken svart",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#1f1f1f",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#1f1f1f"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "priceNok": 3295,
+        "salePriceNok": 2595,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-m-dorer-brunsvart-timmerviken-svart-s39330679/"
+      },
+      {
+        "name": "Brunsvart / Glassvik røkfarget glass",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#3a3632",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#3a3632"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "glass-smoked",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "glass-smoked"
+        },
+        "priceNok": 3595,
+        "salePriceNok": 3195,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-m-dorer-brunsvart-glassvik-rokfarget-glass-s99330657/",
+        "paramsOverride": {
+          "fronts": [
+            "glass",
+            "glass",
+            "glass"
+          ]
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "BESTÅ TV-benk 180 cm med tre grepsfrie dører i mørke farger: brunbeiset eik (Hedeviken, Björköviken), brunsvart, valnøtt, svart eller røkfarget glass.",
+    "why": "En mørk, lav benk under TV-en gjør veggen rolig og lar akustikkbildene og lenestolene ta oppmerksomheten.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner__1531465_pe1015646_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Varianter og priser sjekket 2026-10-29 på ikea.com/no.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-besta-tv-benk-dorer-240-mork",
+    "category": "tvbenk",
+    "name": "BESTÅ TV-benk med dører 240x42x38 – mørke farger",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-lappviken-brunsvart-s09603572/",
+    "priceNok": 4985,
+    "salePriceNok": 4085,
+    "priceNote": "Priser sjekket 2026-10-29 på ikea.com/no («Ny lavere pris»), per variant. Ben eller veggopphenging kjøpes separat.",
+    "dims": {
+      "w": 2.4,
+      "d": 0.42,
+      "h": 0.38
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "none",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Står rett på gulvet (ben eller veggopphenging kjøpes separat); grepsfrie dører med trykk-og-åpne-hengsler."
+    },
+    "variants": [
+      {
+        "name": "Brunsvart / Lappviken brunsvart",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#2e2925",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#2e2925"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "painted",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "painted"
+        },
+        "priceNok": 4985,
+        "salePriceNok": 4085,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-lappviken-brunsvart-s09603572/"
+      },
+      {
+        "name": "Brunsvart / Lappviken brun valnøttmønstret",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5c4030",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5c4030"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "walnut",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "walnut"
+        },
+        "priceNok": 4985,
+        "salePriceNok": 4085,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-lappviken-brun-valnottmonstret-s39612155/"
+      },
+      {
+        "name": "Brunsvart / Krukmakare mørk grågrønn",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#4b5a50",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#4b5a50"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "painted",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "painted"
+        },
+        "priceNok": 5585,
+        "salePriceNok": 4885,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-krukmakare-mork-gragronn-s79612163/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "BESTÅ TV-benk 240 cm med fire grepsfrie dører i mørke farger: brunsvart, valnøtt eller mørk grågrønn (Krukmakare).",
+    "why": "En mørk, lav benk under TV-en gjør veggen rolig og lar akustikkbildene og lenestolene ta oppmerksomheten.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-tv-benk-med-dorer-brunsvart-lappviken-brunsvart__1420623_pe977289_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Varianter og priser sjekket 2026-10-29 på ikea.com/no. 240 cm fant vi bare med Lappviken- og Krukmakare-dører (ikke Hedeviken, Björköviken eller Timmerviken).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-eket-medieoppbevaring-210-valnott",
+    "category": "tvbenk",
+    "name": "EKET medieoppbevaring 210x35x35, brun valnøttmønstret",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/eket-medieoppbevaring-kombinasjon-brun-valnottmonstret-s69580983/",
+    "priceNok": 3585,
+    "priceNote": "Pris sjekket 2026-10-29 på ikea.com/no: 3 585 kr (ikke på tilbud). Kan veggmonteres eller stå på ben.",
+    "dims": {
+      "w": 2.1,
+      "d": 0.35,
+      "h": 0.35
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "none",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "drawers:2",
+        "open",
+        "drawers:2"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Tre skap à 70 cm: to skuffer til venstre, åpen hylle i midten (med kabelhull), to skuffer til høyre. Grepsfrie fronter."
+    },
+    "variants": [
+      {
+        "name": "Brun valnøttmønstret",
+        "colors": {
+          "body": "#5c3f2b",
+          "front": "#5c3f2b",
+          "top": "#5c3f2b",
+          "legs": "#5c3f2b",
+          "handle": "#5c3f2b"
+        },
+        "materials": {
+          "body": "walnut",
+          "front": "walnut",
+          "top": "walnut",
+          "legs": "walnut",
+          "handle": "walnut"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "Lang og lav EKET-kombinasjon i brun valnøttmønstret: skuffer på sidene og en åpen hylle i midten for TV-boks og høyttaler.",
+    "why": "Valnøtten gir varme under TV-en og matcher Lodge hazel og de brune bildene; kan henges på veggen så gulvet blir fritt.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/eket-medieoppbevaring-kombinasjon-brun-valnottmonstret__1389132_pe965106_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Navn, mål og pris sjekket 2026-10-29 på ikea.com/no; skuffeoppsettet er tatt fra produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "bohus-sindig-turner-bordlampe-h42",
+    "category": "smalamper",
+    "subcategory": "bordlampe",
+    "name": "Turner bordlampe H42",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/lamper/bordlampe/turner-bordlampe-h42",
+    "priceNok": 1599,
+    "priceNote": "Pris sjekket 2026-10-29 på bohus.no (varenr. 320639): 1 599 kr. E27, pære følger ikke med.",
+    "dims": {
+      "w": 0.32,
+      "d": 0.15,
+      "h": 0.42
+    },
+    "archetype": "table-shade",
+    "mount": "surface",
+    "params": {
+      "shadeShape": "rect",
+      "shadeD": 0.32,
+      "shadeH": 0.15,
+      "shadeDepth": 0.15,
+      "baseShape": "rect",
+      "baseD": 0.24,
+      "baseH": 0.03,
+      "translucent": 0.55
+    },
+    "variants": [
+      {
+        "name": "Svart/natur",
+        "colors": {
+          "shade": "#ddd2bf",
+          "inner": "#ddd2bf",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "light": {
+      "lumens": 470,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "table",
+      "bulb": "E27 LED ca. 470 lm (anbefalt, ikke inkludert)"
+    },
+    "description": "Bordlampe med to tynne, svarte stenger på en rektangulær svart fot og en avlang tekstilskjerm i naturfarge – lillesøster til Turner gulvlampe.",
+    "why": "Samme uttrykk som Turner gulvlampe; passer på EKET eller BESTÅ ved TV-en.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/TURNER/603053/image-thumb__603053__PDP-Product/320639%20-%20Turner%20bordlampe%20H42%20E27%20metall%20svart-natur%20inkl.%20skjerm%20-%206.d2b99e63.jpg",
+    "verified": true,
+    "verifiedNote": "Navn, varenr., høyde og pris sjekket 2026-10-29 på bohus.no; bredde og skjermmål er anslått fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "De to stengene er tegnet som én fot; skjermmålene er anslått."
+  },
+  {
+    "id": "bohus-sindig-double-leselampe-gulv-h137",
+    "category": "smalamper",
+    "subcategory": "gulvlampe",
+    "name": "Double leselampe gulv H137",
+    "brand": "Sindig",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/double-gulvlampe-h137",
+    "priceNok": 1999,
+    "priceNote": "Pris sjekket 2026-10-29 på bohus.no (varenr. 234856): 1 999 kr. Siden har valget «Lampeskjerm» – sjekk om den grå-beige skjermen er med i prisen.",
+    "dims": {
+      "w": 0.4,
+      "d": 0.4,
+      "h": 1.37
+    },
+    "archetype": "floor-pole-shade",
+    "mount": "floor",
+    "params": {
+      "shadeShape": "drum",
+      "shadeD": 0.4,
+      "shadeTopD": 0.34,
+      "shadeH": 0.27,
+      "baseShape": "disc",
+      "baseD": 0.28,
+      "baseH": 0.03,
+      "poleCount": 1,
+      "poleD": 0.02,
+      "translucent": 0.4
+    },
+    "variants": [
+      {
+        "name": "Svart med grå-beige skjerm",
+        "colors": {
+          "shade": "#b9afa2",
+          "inner": "#d8d0c4",
+          "base": "#1c1c1c",
+          "metal": "#1c1c1c",
+          "cord": "#1a1a1a"
+        },
+        "materials": {
+          "shade": "linen",
+          "inner": "linen",
+          "base": "black-metal",
+          "metal": "black-metal",
+          "cord": "cotton"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.04,
+    "light": {
+      "lumens": 806,
+      "colorK": 2700,
+      "dimmable": false,
+      "kind": "floor",
+      "bulb": "E27 LED ca. 806 lm + liten leselampe (anbefalt, ikke inkludert)"
+    },
+    "description": "Svart gulvlampe med konisk tekstilskjerm i grå-beige og en liten, svart lesespot på svingarm.",
+    "why": "Gir både stemningslys og leselys ved lenestolen.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/K%26A%20International/Produkter/DOUBLE/277138/image-thumb__277138__PDP-Environment/234856%20-%20Double%20gulvlampe%20H137%20E27%20metall%20svart%20-%201.3fc57441.jpg",
+    "verified": true,
+    "verifiedNote": "Navn, varenr., høyde og pris sjekket 2026-10-29 på bohus.no; skjermmål anslått fra bildet.",
+    "priceConfidence": "checked",
+    "shapeNote": "Lesespoten på svingarmen er ikke modellert."
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-soft-leaves",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Soft Leaves",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-soft-leaves",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-22072767e8a39973fc80b9fa0126",
+      "imageAspect": 0.7141828653707704,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Soft Leaves» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/soft-leaves.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-dual-profile",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Dual Profile",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-dual-profile",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-0cf61a9be86655bcd826bf22dded",
+      "imageAspect": 0.7141828653707704,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Dual Profile» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/dual-profile.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-earth-leaves",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Earth Leaves",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-earth-leaves",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-75b85679024fb7b70e9dd3eea78d",
+      "imageAspect": 0.7141828653707704,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Earth Leaves» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/earth-leaves.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-when-we-break",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – When We Break",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-when-we-break",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-c1f8cce538e57dc4dac31c51719b",
+      "imageAspect": 0.7141828653707704,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «When We Break» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/when-we-break.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-the-heat-between",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – The Heat Between",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-the-heat-between",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-a8a4862d4e6f6a70505482a8f7c4",
+      "imageAspect": 0.7141828653707704,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «The Heat Between» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/the-heat-between.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-abstract-oval",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Abstract Oval",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-abstract-oval",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-80f09b4acff690c190408591aef2",
+      "imageAspect": 0.7141828653707704,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Abstract Oval» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/abstract-oval.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-brown-balance",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Brown Balance",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-brown-balance",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-2619a20184c25b443d08a357104e",
+      "imageAspect": 0.7141828653707704,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Brown Balance» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/brown-balance.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-circles-in-brown",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Circles In Brown",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-circles-in-brown",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.055,
+      "h": 0.8
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-9928e803f4dd2155cc59baf8c471",
+      "imageAspect": 1.4002016129032258,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "70 × 50 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 0.5
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "100 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "120 × 80 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 0.8
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "150 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1.5,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "180 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Circles In Brown» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/circles-in-brown.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-brown-forms",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Brown Forms",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-brown-forms",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.055,
+      "h": 0.8
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-1f69ea59de7d593497716ea0f76c",
+      "imageAspect": 1.4002016129032258,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "70 × 50 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 0.5
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "100 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "120 × 80 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 0.8
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "150 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1.5,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "180 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Brown Forms» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/brown-forms.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-brown-circles",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Brown Circles",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-brown-circles",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-aaf3c595e2059fbd5a332154e6a9",
+      "imageAspect": 0.7141828653707704,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Brown Circles» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/brown-circles.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-brown-shapes",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Brown Shapes",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-brown-shapes",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-68b0cb6f24be6e51eb271ce2228c",
+      "imageAspect": 0.7141828653707704,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Brown Shapes» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/brown-shapes.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-abstract-in-brown",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Abstract In Brown",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-abstract-in-brown",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.055,
+      "h": 0.8
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-de2c849a8f7bfdeecd8f9b40476c",
+      "imageAspect": 1.4002016129032258,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "70 × 50 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 0.5
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "100 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "120 × 80 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 0.8
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "150 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1.5,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "180 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Abstract In Brown» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/abstract-in-brown.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-brown-layers",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Brown Layers",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-brown-layers",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.055,
+      "h": 0.8
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-7571c6fb2dc9b627a65591030f0e",
+      "imageAspect": 1.4002016129032258,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "70 × 50 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 0.5
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "100 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "120 × 80 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 0.8
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "150 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1.5,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "180 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Brown Layers» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/brown-layers.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-amber-flow",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Amber Flow",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-amber-flow",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 1.2,
+      "d": 0.055,
+      "h": 0.8
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-3adfaa00cf680ea399c93b3bf859",
+      "imageAspect": 1.4002016129032258,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "70 × 50 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 0.5
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "100 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "120 × 80 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 0.8
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "150 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1.5,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "180 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Amber Flow» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/amber-flow.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-ethereal-strata",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Ethereal Strata",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-ethereal-strata",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-4d062b034074d331cf39fa57dd33",
+      "imageAspect": 0.7141828653707704,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Ethereal Strata» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/ethereal-strata.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-framed-stillness",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Framed Stillness",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-framed-stillness",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-a7cc042a7e2241ab3f89e5596da5",
+      "imageAspect": 0.7142857142857143,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Framed Stillness» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/framed-stillness.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "canvasbutik-lyddempende-bilde-timeless-peaks",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Timeless Peaks",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-timeless-peaks",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-10-29 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-7820a2efe7f34520df38eb182dcb",
+      "imageAspect": 0.7142857142857143,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Timeless Peaks» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket 2026-10-29 på canvasbutik.no. Motivbildet ligger i spillet (public/img/spesial/timeless-peaks.jpg).",
+    "priceConfidence": "checked"
+  }
+]

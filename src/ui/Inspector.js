@@ -146,6 +146,12 @@ const CSS = `
 .ipi-link { border: 0; background: transparent; color: var(--kv-accent-2); font-size: 0.8em; font-weight: 620; padding: 0; text-decoration: underline; text-underline-offset: 0.15em; }
 .ipi-link:hover { color: #fff; }
 .ipi-variants { display: flex; flex-wrap: wrap; gap: 0.36em; --ip-sw: 1.75em; }
+.ipi-sizes { display: grid; grid-template-columns: repeat(auto-fill, minmax(5.6em, 1fr)); gap: 0.36em; }
+.ipi-size { display: flex; flex-direction: column; align-items: center; gap: 0.05em; padding: 0.42em 0.3em; border-radius: var(--kv-r-sm); border: 1px solid var(--kv-line-2); background: var(--kv-surface); color: var(--kv-ink-2); }
+.ipi-size b { font-size: 0.92em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ipi-size small { font-size: 0.74em; color: var(--kv-ink-3); }
+.ipi-size:hover { background: var(--kv-surface-3); color: var(--kv-ink); }
+.ipi-size.is-active { background: var(--kv-accent-soft); border-color: rgba(255, 181, 46, 0.55); color: var(--kv-accent-2); }
 .ipi-vname { font-size: 0.82em; color: var(--kv-ink-2); margin-top: 0.45em; }
 .ipi-vname small { color: var(--kv-ink-3); }
 .ipi-parts { display: flex; flex-direction: column; gap: 0.3em; }
@@ -1110,7 +1116,9 @@ export class Inspector extends BasePanel {
     const nv = product.variants[j];
     if (!nv) return;
     const patch = { colors: clone(nv.colors), materials: clone(nv.materials), params: this._variantParams(product, j), variantIndex: j };
-    this._apply(patch.params ? this._fit(item.uid, patch).patch : patch, { label: `Velg ${nv.name || 'variant'}` });
+    // a size variant (the «Spesialkatalog» canvases) also changes the size
+    if (nv.dims) patch.dims = { ...product.dims, ...nv.dims };
+    this._apply(patch.params || patch.dims ? this._fit(item.uid, patch).patch : patch, { label: `Velg ${nv.name || 'variant'}` });
     this._render();
   }
 
@@ -1119,6 +1127,19 @@ export class Inspector extends BasePanel {
     const vi = item.variantIndex ?? 0;
     const v = product.variants[vi];
     const info = priceInfo(this.catalog, product, vi);
+    // size variants (the «Spesialkatalog» canvases): one quick button per size the store sells, with its price
+    if (product.variants.every((vv) => vv.dims)) {
+      const sizes = h('div.ipi-sizes', { role: 'group', 'aria-label': 'Størrelser' }, product.variants.map((vv, i) => {
+        const p = priceInfo(this.catalog, product, i).price;
+        return h(`button.ipi-size${i === vi ? '.is-active' : ''}`, {
+          type: 'button', 'aria-pressed': i === vi ? 'true' : 'false', title: `Bytt til ${vv.name}`,
+          on: { click: () => i !== vi && this._pickVariant(item, product, i) },
+        }, h('b', { text: (vv.name || '').replace(/\s*cm$/, '') }), p != null ? h('small', { text: fmtNok(p) }) : null);
+      }));
+      this._vnameEl = h('div.ipi-vname', {}, v?.name || '', info.price != null ? h('small', { text: ` · ${fmtNok(info.price)}` }) : null);
+      this._variantList = null;
+      return section(`Størrelser fra ${product.store} (${product.variants.length})`, sizes, this._vnameEl);
+    }
     // with an own colour/material no store variant is «the» one any more
     const custom = this._customLook(item, product);
     const own = custom.color || custom.mat;
@@ -1491,7 +1512,9 @@ export class Inspector extends BasePanel {
   }
 
   _sizeSection(item, product, def) {
-    const ref = product?.dims || this._original(item)?.dims || def?.defaults?.dims || null;
+    // a size variant (the «Spesialkatalog» canvases) has its own store size
+    const sizeVariant = product?.variants?.[item.variantIndex ?? product.defaultVariant ?? 0]?.dims;
+    const ref = (product && sizeVariant ? { ...product.dims, ...sizeVariant } : product?.dims) || this._original(item)?.dims || def?.defaults?.dims || null;
     const range = def?.dimsRange || {};
     const kids = [];
     // the room limits the sliders too: a wall item's width/height by the wall (length, wall top), a floor item's

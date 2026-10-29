@@ -61,10 +61,11 @@ const BASE = readJson('tools/house-tests/fixtures/catalog-baseline.json');
 // every catalogue number in one place: after a catalogue change paste the line `QA_PRINT_EXPECT=1 node tools/test-design.mjs`
 // prints (runde 3 foundation: the 4 round-1 art frames Smått → Kunst og bilder, the 4 side tables Smått → Bord;
 // runde 3 integration: + 225 research products from research/catalog-new/*-runde3*.json, 372 → 597; høy vegg runde 4:
-// + the felt pendant and the Frigg ceiling plate, 597 → 599)
+// + the felt pendant and the Frigg ceiling plate, 597 → 599; Spesialkatalog 2026-10-29: + 2 lenestoler, 3 TV-benker,
+// 2 lamper and 16 canvas pictures (Brown Balance replaced in place), 599 → 622)
 const EXPECT = {
-  counts: { sofa: 23, lenestol: 55, bord: 35, stoler: 30, skjenk: 14, tvbenk: 14, vitrineskap: 10, hylle: 22, seng: 20, nattbord: 22, kommode: 21, garderobe: 9, speil: 13, bad: 19, gang: 17, taklampe: 20, spotter: 37, smalamper: 61, tekstil: 31, teppe: 19, solskjerming: 22, akustikk: 17, kunst: 54, smatt: 14 },
-  total: 599, floorLamps: 27, pendel: 19,
+  counts: { sofa: 23, lenestol: 57, bord: 35, stoler: 30, skjenk: 14, tvbenk: 17, vitrineskap: 10, hylle: 22, seng: 20, nattbord: 22, kommode: 21, garderobe: 9, speil: 13, bad: 19, gang: 17, taklampe: 20, spotter: 37, smalamper: 63, tekstil: 31, teppe: 19, solskjerming: 22, akustikk: 33, kunst: 54, smatt: 14 },
+  total: 622, floorLamps: 28, pendel: 19,
 };
 const spec = readJson('src/data/room-spec.json');
 const palette = readJson('src/data/palette.json');
@@ -239,7 +240,7 @@ check('Secto/Octo pendants: ceiling, drop = the shop cable default, 806 lm (shop
   && secto.light.colorK === catalog.NEW_LAMP.colorK && secto.light.dimmer === catalog.NEW_LAMP.dimmer
   && secto.params.profilePoints.length === 21 && secto.params.profilePoints[13][1] === 0.54);
 const pendel = catalog.products('taklampe').filter((p) => p.subcategory === 'pendel').length;
-check(`subcategories: every recliner «hvilestol» (32), every pendant «pendel» (${EXPECT.pendel})`, catalog.products('lenestol').filter((p) => p.subcategory === 'hvilestol').length === 32
+check(`subcategories: every recliner «hvilestol» (34), every pendant «pendel» (${EXPECT.pendel})`, catalog.products('lenestol').filter((p) => p.subcategory === 'hvilestol').length === 34
   && catalog.products('lenestol').filter((p) => p.archetype === 'recliner').every((p) => p.subcategory === 'hvilestol')
   && pendel === EXPECT.pendel && catalog.SUBCATEGORY_LABELS.hvilestol === 'Hvilestoler');
 check('search finds the new products', catalog.products('vitrineskap').every((p) => catalog.search('vitrineskap').includes(p)) && catalog.search('secto').length === 4 && catalog.search('hvilestol fotskammel').length >= 4
@@ -560,7 +561,7 @@ check(`new hvilestoler absorb 0.7–0.9 m² (${reclAbs.map((v) => v.toFixed(2)).
 // the 34 lenestoler of the second round: small lounge chairs ~0.5 m², big upholstered recliners up to 0.9 m²
 const arm2 = fresh.filter((f) => f.category === 'lenestol' && !readJson('research/catalog-new/lenestol-ny.json').some((x) => x.id === f.id));
 const arm2Abs = arm2.map((f) => ac.itemAbsorption(catalog.productToItemSpec(f.id)));
-check(`${arm2.length} more lenestoler absorb 0.45–0.95 m² (min ${Math.min(...arm2Abs).toFixed(2)}, max ${Math.max(...arm2Abs).toFixed(2)})`, arm2.length === 34 && arm2Abs.every((v) => v >= 0.45 && v <= 0.95));
+check(`${arm2.length} more lenestoler absorb 0.45–0.95 m² (min ${Math.min(...arm2Abs).toFixed(2)}, max ${Math.max(...arm2Abs).toFixed(2)})`, arm2.length === 36 && arm2Abs.every((v) => v >= 0.45 && v <= 0.95));
 const vitAbs = catalog.products('vitrineskap').map((p) => ac.itemAbsorption(catalog.productToItemSpec(p)));
 check('vitrineskap absorb ≈ 0 (also without catalogue data)', vitAbs.every((v) => v === 0) && ac.itemAbsorption({ archetype: 'display-cabinet', dims: { w: 0.9, d: 0.4, h: 1.8 } }) === 0);
 const est = (footstool) => ac.itemAbsorption({ archetype: 'recliner', dims: { w: 0.8, d: 0.85, h: 1.05 }, params: { footstool } });
@@ -671,6 +672,41 @@ check('the bathroom ceiling counts in the bathroom, not the living room', near(a
   && ac.computeAcoustics(fa, { layout }, { roomId: 'bad' }).rt60 < ac.computeAcoustics(new DesignState(), { layout }, { roomId: 'bad' }).rt60 - 0.05);
 
 // ---------------------------------------------------------------------------------------------------------------
+section('Spesialforslag (design/specialProposals.js)');
+{
+  const SP = await imp('src/design/specialProposals.js');
+  const hw = layout.highWall;
+  check('20 special proposals, ids S1–S20', SP.SPECIAL_PROPOSALS.length === 20 && SP.SPECIAL_PROPOSALS.every((p, i) => p.id === `S${i + 1}`));
+  const bad = [];
+  for (const p of SP.SPECIAL_PROPOSALS) {
+    const L = SP.layoutSpecialProposal(p, catalog);
+    const pics = L.filter((e) => e.role === 'picture');
+    const bench = L.find((e) => e.role === 'bench');
+    const decor = L.filter((e) => e.role === 'decor');
+    const inWall = L.every((e) => e.u - e.w / 2 >= 0.05 && e.u + e.w / 2 <= hw.width - 0.3);
+    const overBench = pics.every((e) => e.v >= bench.v + bench.h + 0.2 && e.v + e.h <= hw.height - 0.25);
+    const apart = pics.every((e, i) => i === 0 || pics[i - 1].u + pics[i - 1].w / 2 < e.u - e.w / 2);
+    const onBench = decor.every((e) => Math.abs(e.u - bench.u) + e.w / 2 <= bench.w / 2 + 1e-6 && near(e.v, bench.v + bench.h, 1e-6));
+    const ok = pics.length >= 1 && pics.length <= 3 && decor.length >= 1 && inWall && overBench && apart && onBench
+      && pics.every((e) => catalog.getProduct(e.productId)?.archetype === 'acoustic-art');
+    if (!ok) bad.push(p.id);
+  }
+  check('every proposal: one sideboard, 1–3 pictures over it, decor on it, all inside the wall (clear of the door switches)', !bad.length, bad.join(', '));
+  const sd = new DesignState();
+  const fakeEditor = { design: sd, catalog, home: { layout } };
+  sd.add({ ...catalog.productToItemSpec('canvasbutik-lyddempende-bilde-soft-leaves', 2), uid: 'egen', position: [3.22, 1.5, 6.4], rotationDeg: 90, attach: { wallId: 'w-hoy', normal: [1, 0, 0] } });
+  const h0 = sd.historySize;
+  const u1 = SP.applySpecialProposal(fakeEditor, 'S4');
+  const u2 = SP.applySpecialProposal(fakeEditor, 'S2');
+  const spf = sd.list().filter((i) => SP.isSpecialUid(i.uid));
+  check('applying replaces what hangs on the high wall and the previous proposal; one undo step each', u1.length === 6 && u2.length === 4 && spf.length === 4 && !sd.get('egen')
+    && SP.activeSpecialProposal(sd) === 'S2' && sd.historySize === h0 + 2, `${u1.length}/${u2.length}/${spf.length}/${sd.historySize - h0}`);
+  const pic = spf.find((i) => i.archetype === 'acoustic-art');
+  check('the pictures hang on the high wall (attach w-hoy, facing the room) with their size variant', pic?.attach?.wallId === 'w-hoy' && pic.rotationDeg === 90 && pic.variantIndex === 4 && near(pic.dims.h, 1.8, 1e-9));
+  sd.undo();
+  check('undo brings S4 back', SP.activeSpecialProposal(sd) === 'S4' && sd.list().filter((i) => SP.isSpecialUid(i.uid)).length === 6);
+}
+
 section('Saves');
 const { Saves, STORAGE_KEY } = await imp('src/design/Saves.js');
 const mem = new Map();

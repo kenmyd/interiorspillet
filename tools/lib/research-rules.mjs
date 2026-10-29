@@ -469,7 +469,7 @@ export function lintFileName(name) {
  * ceiling plate). They are outside the round's stores, categories and dates, so like the pre-round files they get the
  * universal checks only.
  */
-export const AFTER_ROUND_FILES = Object.freeze(['akustikk-tak.json', 'taklampe-filt.json']);
+export const AFTER_ROUND_FILES = Object.freeze(['akustikk-tak.json', 'taklampe-filt.json', 'spesialkatalog.json']);
 
 /**
  * Runde-3 rules apply to every file except the pre-round research/catalog-new files (fixture list `researchNewFiles`)

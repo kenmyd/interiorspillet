@@ -146,6 +146,8 @@ export function getControls(settings, { touch = inputMode.touch } = {}) {
       grid: true,
       rows: [
         { keys: ['K'], text: 'Katalog – møbler, lamper, tekstiler' , short: 'Katalog' },
+        { keys: ['J'], text: 'Spesialkatalog – dine egne utvalgte varer', short: 'Spesialkatalog' },
+        { keys: ['N'], text: 'Spesialforslag – skjenk, bilder og pynt til den høye veggen', short: 'Spesialforslag' },
         { keys: ['V'], text: 'Veggforslag for den høye veggen', short: 'Veggforslag' },
         { keys: ['B'], text: 'Vinduer og solskjerming', short: 'Vinduer' },
         { keys: ['L'], text: 'Belysning – lampene i rommene', short: 'Belysning' },

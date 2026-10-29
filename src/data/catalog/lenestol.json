@@ -7235,5 +7235,181 @@
     "verified": true,
     "verifiedNote": "Bekreftet på skeidar.no 2026-10-21: navn, art.nr., pris, mål (76 × 76 × 90 cm), designer Niels Gammelgaard, svensk produksjon, 4-bensfot med sving og alle 21 variantene. Åtte av dem er tatt med. Skeidar oppgir ikke sitte- eller armlenshøyde (anslått fra bildet) og ingen vippefunksjon, så stolen er ført som loungestol selv om Skeidar kaller den hvilestol. Farger og stoff kontrollert 2026-10-21 mot Skeidar: alle åtte variantene finnes, og fargene er hentet fra hver variants eget bilde.",
     "priceConfidence": "checked"
+  },
+  {
+    "id": "hjort-knudsen-regal-lenestol-fothviler",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Regal lenestol med integrert fothviler",
+    "brand": "Hjort Knudsen",
+    "store": "Møbelringen",
+    "url": "https://www.mobelringen.no/search?q=Regal+lenestol",
+    "priceNok": 22999,
+    "salePriceNok": 10999,
+    "priceNote": "Fra skjermbildet til eieren 2026-10-29: 10 999 kr (førpris 22 999 kr, -52 %), tilbudet gjelder t.o.m. 30.11.2026. Ikke på lager i nettbutikken, kan bestilles i butikk (klikk og hent). Butikk: Møbelringen (oppgitt av eieren) – lenken er et søk i nettbutikken. Fargen Lodge hazel er målt i produktbildet (snitt #4b2e22).",
+    "dims": {
+      "w": 0.8,
+      "d": 0.88,
+      "h": 1.1
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.46,
+      "seatD": 0.5,
+      "backH": 1.1,
+      "armH": 0.6,
+      "armW": 0.16,
+      "armTuck": 0.03,
+      "legStyle": "swivel-star",
+      "legH": 0.15,
+      "backShape": "high",
+      "cushion": "tight",
+      "body": "box",
+      "sides": "fabric",
+      "headStyle": "integrated",
+      "backSeams": "cross",
+      "footrest": "integrated",
+      "footrestOpen": false,
+      "star": "spider",
+      "starArms": 5,
+      "lever": false,
+      "footstool": false,
+      "headrest": true,
+      "armStyle": "petal",
+      "armFlare": 0.07,
+      "armLip": 0.04,
+      "armTopR": 0.06,
+      "armBottom": 0.19,
+      "armFrontR": 0.18,
+      "armRearR": 0.08,
+      "armFrontTopR": 0.1,
+      "seatNose": 0,
+      "backW": 0.5,
+      "backTopR": 0.07,
+      "starR": 0.36,
+      "footTaper": 0.95,
+      "footR": 0.08,
+      "footBottom": 0.18,
+      "basePlate": 0.12,
+      "armSplay": 0.03,
+      "starBend": 1,
+      "starBar": 0.012,
+      "starHub": 0.13,
+      "armFlarePow": 0.5,
+      "armWelt": "edge",
+      "backPuff": 0.04,
+      "notes": "Høy hvilestol i bouclé (Lodge) med integrert fothviler som felles ut fra setefronten. Ryggen er delt i to polstrede felt med en tverrsøm, øverste felt er nakkestøtten. Brede, avrundede armlener som buer utover og smalner mot foten. Polaris-sokkel: tynn, svart femarmet stjernefot med søyle og sving. Mål anslått fra bildet (ikke bekreftet)."
+    },
+    "variants": [
+      {
+        "name": "Tekstil Lodge hazel, Polaris sort sokkel",
+        "colors": {
+          "upholstery": "#4b2e22",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal"
+        }
+      },
+      {
+        "name": "Tekstil Lodge hunter, Polaris sort sokkel",
+        "colors": {
+          "upholstery": "#454b45",
+          "legs": "#1c1c1c"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.5,
+    "description": "Høy hvilestol fra Hjort Knudsen med integrert fothviler, kraftig bouclé (Lodge) og svart Polaris svingfot.",
+    "why": "Lodge hazel gjentar de varme rustbrune tonene i akustikkbildene, Lodge hunter gir en mørk grønn kontrast.",
+    "imageUrl": "",
+    "verified": false,
+    "verifiedNote": "Fra eierens skjermbilde 2026-10-29. Fant ikke produktsiden i norske nettbutikker (Bohus, Skeidar, Fagmøbler, Møbelringen sjekket); mål og butikk er anslått.",
+    "priceConfidence": "check",
+    "shapeNote": "Mål anslått fra produktbildet."
+  },
+  {
+    "id": "bohus-conform-timeout-large-nanda-umber-fotskammel",
+    "category": "lenestol",
+    "subcategory": "hvilestol",
+    "name": "Timeout hvilestol large med fotskammel, Nanda 65 Umber",
+    "brand": "Conform",
+    "store": "Bohus",
+    "url": "https://www.bohus.no/stoler/lenestol/hvilestol/timeout-hvilestol-large-1",
+    "priceNok": 38198,
+    "salePriceNok": 30558,
+    "priceNote": "Pris sjekket 2026-10-29 på bohus.no: stolen (varenr. 318067) 24 879 kr (før 31 099) og fotskammelen large med pikering (varenr. 318068, bohus.no/timeout-fotskammel-large-1) 5 679 kr (før 7 099), til sammen 30 558 kr (før 38 198). 20 % rabatt på Timeout i Nanda og fåreskinn. Kjøpes hver for seg.",
+    "dims": {
+      "w": 0.84,
+      "d": 0.89,
+      "h": 1.14
+    },
+    "archetype": "recliner",
+    "mount": "floor",
+    "params": {
+      "seatH": 0.42,
+      "seatD": 0.52,
+      "backH": 1.14,
+      "armH": 0.56,
+      "armW": 0.14,
+      "legStyle": "swivel-star",
+      "legH": 0.16,
+      "backShape": "high",
+      "cushion": "loose",
+      "footstool": true,
+      "headrest": true,
+      "body": "shell",
+      "headStyle": "roll",
+      "stoolW": 0.51,
+      "stoolD": 0.38,
+      "stoolH": 0.39,
+      "armPad": "lid",
+      "shellTop": 0.8,
+      "shellTaper": 0.62,
+      "shellBottom": 0.18,
+      "seatT": 0.12,
+      "seatNose": -0.035,
+      "backW": 0.5,
+      "backFlare": 0,
+      "shellFront": 1,
+      "armPadH": 0.065,
+      "headW": 0.6,
+      "armTilt": 0.04,
+      "armCurl": 0.03,
+      "shellDisc": 0.05,
+      "starArms": 4,
+      "notes": "Large-utgaven av Timeout: skall i svart eik, sete og rygg med pikering i Nanda 65 Umber (brun, nuppete tweed), regulerbar rygg, quattro svingfot i svart aluminium (4 armer). Fotskammelen large (51 × 38 × 39 cm) har samme stoff, svart skrog og x-fot quattro. Stolens mål er Large-målene (84 × 89 × 114 cm, ikke i tabell på Bohus-siden)."
+    },
+    "variants": [
+      {
+        "name": "Nanda 65 Umber med pikering, skrog svart eik, quattro svart aluminium",
+        "colors": {
+          "upholstery": "#6b5443",
+          "legs": "#1a1a1a",
+          "frame": "#1e1b19"
+        },
+        "materials": {
+          "upholstery": "boucle",
+          "legs": "black-metal",
+          "frame": "black-oak"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.6,
+    "description": "Conform Timeout large med svart eikeskall, pikert sete og rygg i Nanda 65 Umber og matchende fotskammel med pikering.",
+    "why": "Den mørke umbra-tweeden og det svarte skallet passer til de brune akustikkbildene og en mørk BESTÅ-benk.",
+    "imageUrl": "https://www.bohus.no/pimcorecdn/Leverand%C3%B8rer/Conform%20Collection%20AB/Produkter/TIMEOUT/348109/image-thumb__348109__PDP-Product/318067%20-%20Timeout%20Svart%20hvilestol%20large%20med%20pikering%20Nanda%2065%20Umber%20svingfot%20quattro%20svart%20aluminium%20-%201.4a179343.jpg",
+    "verified": true,
+    "verifiedNote": "Sjekket 2026-10-29 på bohus.no: navn, varenr., priser og fotskammelens mål. Stolens mål er Large-målene (ikke i tabell på siden).",
+    "priceConfidence": "checked",
+    "shapeNote": "Pikeringen er ikke modellert."
   }
 ]

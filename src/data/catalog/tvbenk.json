@@ -160,6 +160,342 @@
     "priceConfidence": "checked"
   },
   {
+    "id": "ikea-besta-tv-benk-dorer-180-mork",
+    "category": "tvbenk",
+    "name": "BESTÅ TV-benk med dører 180x42x38 – mørke farger",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner-s39622908/",
+    "priceNok": 3595,
+    "salePriceNok": 3195,
+    "priceNote": "Priser sjekket 2026-10-29 på ikea.com/no («Ny lavere pris»), per variant. Ben eller veggopphenging kjøpes separat.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.42,
+      "h": 0.38
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "none",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Står rett på gulvet (ben eller veggopphenging kjøpes separat); grepsfrie dører med trykk-og-åpne-hengsler."
+    },
+    "variants": [
+      {
+        "name": "Brunsvart / Hedeviken brunbeiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5a4232",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5a4232"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 3595,
+        "salePriceNok": 3195,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner-s39622908/"
+      },
+      {
+        "name": "Brunsvart / Björköviken brun beiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5a4232",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5a4232"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 3745,
+        "salePriceNok": 3345,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-bjoerkoeviken-brun-beiset-eikefiner-s69422187/",
+        "paramsOverride": {
+          "frontStyle": "ribbed"
+        }
+      },
+      {
+        "name": "Brunsvart / Lappviken brunsvart",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#2e2925",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#2e2925"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "painted",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "painted"
+        },
+        "priceNok": 2995,
+        "salePriceNok": 2445,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-m-dorer-brunsvart-lappviken-brunsvart-s79330663/"
+      },
+      {
+        "name": "Brunsvart / Lappviken brun valnøttmønstret",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5c4030",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5c4030"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "walnut",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "walnut"
+        },
+        "priceNok": 2995,
+        "salePriceNok": 2445,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-lappviken-brun-valnottmonstret-s09612171/"
+      },
+      {
+        "name": "Brunsvart / Timmerviken svart",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#1f1f1f",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#1f1f1f"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "black-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "black-oak"
+        },
+        "priceNok": 3295,
+        "salePriceNok": 2595,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-m-dorer-brunsvart-timmerviken-svart-s39330679/"
+      },
+      {
+        "name": "Brunsvart / Glassvik røkfarget glass",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#3a3632",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#3a3632"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "glass-smoked",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "glass-smoked"
+        },
+        "priceNok": 3595,
+        "salePriceNok": 3195,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-m-dorer-brunsvart-glassvik-rokfarget-glass-s99330657/",
+        "paramsOverride": {
+          "fronts": [
+            "glass",
+            "glass",
+            "glass"
+          ]
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "BESTÅ TV-benk 180 cm med tre grepsfrie dører i mørke farger: brunbeiset eik (Hedeviken, Björköviken), brunsvart, valnøtt, svart eller røkfarget glass.",
+    "why": "En mørk, lav benk under TV-en gjør veggen rolig og lar akustikkbildene og lenestolene ta oppmerksomheten.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner__1531465_pe1015646_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Varianter og priser sjekket 2026-10-29 på ikea.com/no.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-besta-tv-benk-dorer-240-mork",
+    "category": "tvbenk",
+    "name": "BESTÅ TV-benk med dører 240x42x38 – mørke farger",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-lappviken-brunsvart-s09603572/",
+    "priceNok": 4985,
+    "salePriceNok": 4085,
+    "priceNote": "Priser sjekket 2026-10-29 på ikea.com/no («Ny lavere pris»), per variant. Ben eller veggopphenging kjøpes separat.",
+    "dims": {
+      "w": 2.4,
+      "d": 0.42,
+      "h": 0.38
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "none",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Står rett på gulvet (ben eller veggopphenging kjøpes separat); grepsfrie dører med trykk-og-åpne-hengsler."
+    },
+    "variants": [
+      {
+        "name": "Brunsvart / Lappviken brunsvart",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#2e2925",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#2e2925"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "painted",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "painted"
+        },
+        "priceNok": 4985,
+        "salePriceNok": 4085,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-lappviken-brunsvart-s09603572/"
+      },
+      {
+        "name": "Brunsvart / Lappviken brun valnøttmønstret",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5c4030",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5c4030"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "walnut",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "walnut"
+        },
+        "priceNok": 4985,
+        "salePriceNok": 4085,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-lappviken-brun-valnottmonstret-s39612155/"
+      },
+      {
+        "name": "Brunsvart / Krukmakare mørk grågrønn",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#4b5a50",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#4b5a50"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "painted",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "painted"
+        },
+        "priceNok": 5585,
+        "salePriceNok": 4885,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-krukmakare-mork-gragronn-s79612163/"
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "BESTÅ TV-benk 240 cm med fire grepsfrie dører i mørke farger: brunsvart, valnøtt eller mørk grågrønn (Krukmakare).",
+    "why": "En mørk, lav benk under TV-en gjør veggen rolig og lar akustikkbildene og lenestolene ta oppmerksomheten.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-tv-benk-med-dorer-brunsvart-lappviken-brunsvart__1420623_pe977289_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Varianter og priser sjekket 2026-10-29 på ikea.com/no. 240 cm fant vi bare med Lappviken- og Krukmakare-dører (ikke Hedeviken, Björköviken eller Timmerviken).",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-eket-medieoppbevaring-210-valnott",
+    "category": "tvbenk",
+    "name": "EKET medieoppbevaring 210x35x35, brun valnøttmønstret",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/eket-medieoppbevaring-kombinasjon-brun-valnottmonstret-s69580983/",
+    "priceNok": 3585,
+    "priceNote": "Pris sjekket 2026-10-29 på ikea.com/no: 3 585 kr (ikke på tilbud). Kan veggmonteres eller stå på ben.",
+    "dims": {
+      "w": 2.1,
+      "d": 0.35,
+      "h": 0.35
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "none",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "drawers:2",
+        "open",
+        "drawers:2"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Tre skap à 70 cm: to skuffer til venstre, åpen hylle i midten (med kabelhull), to skuffer til høyre. Grepsfrie fronter."
+    },
+    "variants": [
+      {
+        "name": "Brun valnøttmønstret",
+        "colors": {
+          "body": "#5c3f2b",
+          "front": "#5c3f2b",
+          "top": "#5c3f2b",
+          "legs": "#5c3f2b",
+          "handle": "#5c3f2b"
+        },
+        "materials": {
+          "body": "walnut",
+          "front": "walnut",
+          "top": "walnut",
+          "legs": "walnut",
+          "handle": "walnut"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "Lang og lav EKET-kombinasjon i brun valnøttmønstret: skuffer på sidene og en åpen hylle i midten for TV-boks og høyttaler.",
+    "why": "Valnøtten gir varme under TV-en og matcher Lodge hazel og de brune bildene; kan henges på veggen så gulvet blir fritt.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/eket-medieoppbevaring-kombinasjon-brun-valnottmonstret__1389132_pe965106_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Navn, mål og pris sjekket 2026-10-29 på ikea.com/no; skuffeoppsettet er tatt fra produktbildet.",
+    "priceConfidence": "checked"
+  },
+  {
     "id": "bohus-nola-tv-benk-180x40",
     "category": "tvbenk",
     "name": "Nola tv-benk 180x40",

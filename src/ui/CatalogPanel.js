@@ -5,6 +5,7 @@ import { ICONS } from './icons.js';
 import { buildModel } from '../models/registry.js';
 import { applyShading } from '../models/shading.js';
 import { disposeModel } from '../models/kit.js';
+import { getArtImageSource } from '../models/artImages.js';
 import { resolveColor, prepareMaterials } from '../home/materials.js';
 import { rt60For, acousticsFor, LIVING_ROOM_ID } from '../design/Acoustics.js';
 import * as catalogModule from '../catalog/index.js';
@@ -141,6 +142,9 @@ class ThumbRenderer {
     let url = null;
     const t0 = performance.now();
     try {
+      // a catalogue picture (bundled «Spesialkatalog» canvas): decode it first, else the thumbnail shows the placeholder
+      const imageId = p.job.product?.params?.imageId;
+      if (imageId) await getArtImageSource()?.request?.(imageId);
       url = await this._render(p.job);
     } catch (err) {
       console.warn('[catalog] thumbnail failed', p.job.product?.id, err);
@@ -975,6 +979,8 @@ export class CatalogPanel extends BasePanel {
     // in idle time once the game runs (or on the first thumbnail request, whichever comes first).
     this._scheduleWarmUp();
     this.cat = editor.catalog;
+    // «Spesialkatalog» (catalog SPECIAL_CATEGORY) first, then the catalogue categories
+    this.cats = [...(this.cat.SPECIAL_CATEGORY ? [this.cat.SPECIAL_CATEGORY] : []), ...this.cat.CATEGORIES];
     this.category = this.cat.CATEGORIES.find((c) => c.key !== 'solskjerming')?.key || 'lenestol';
     this.sub = null;
     this.sort = 'anbefalt';
@@ -1021,9 +1027,9 @@ export class CatalogPanel extends BasePanel {
     // categories: one list – a drop-down grid under the «Kategori» picker in the compact panel, the sidebar in the
     // large catalogue (moved between the two by _applyLayout)
     this.catEls = new Map();
-    this.catsEl = h('div.ipc-cats', { id: 'ipc-cats', role: 'tablist', 'aria-label': 'Kategorier', on: { keydown: (e) => this._catsKey(e) } }, this.cat.CATEGORIES.map((c) => {
+    this.catsEl = h('div.ipc-cats', { id: 'ipc-cats', role: 'tablist', 'aria-label': 'Kategorier', on: { keydown: (e) => this._catsKey(e) } }, this.cats.map((c) => {
       const ext = c.key === 'solskjerming';
-      const n = ext ? 0 : this.cat.products(c.key).length;
+      const n = ext ? 0 : this._catProducts(c.key).length;
       const b = h(`button.ipc-cat${ext ? '.ipc-cat--ext' : ''}`, {
         type: 'button',
         role: 'tab',
@@ -1322,7 +1328,7 @@ export class CatalogPanel extends BasePanel {
       this.editor.ui.window?.open?.();
       return;
     }
-    if (!this.cat.CATEGORIES.some((c) => c.key === key)) return;
+    if (!this.cats.some((c) => c.key === key)) return;
     const changed = key !== this.category || this.query;
     this.category = key;
     this.sub = null;
@@ -1352,10 +1358,24 @@ export class CatalogPanel extends BasePanel {
     }
   }
 
+  /** Products of a category key – «spesial» is the owner's own list across the categories. */
+  _catProducts(key) {
+    return key === this.cat.SPECIAL_CATEGORY?.key ? this.cat.specialProducts() : this.cat.products(key);
+  }
+
+  /** The sub filter a product belongs to: its subcategory, in the «Spesialkatalog» its category. */
+  _subOf(p) {
+    return this.category === this.cat.SPECIAL_CATEGORY?.key ? p.category : p.subcategory;
+  }
+
+  _subLabel(s) {
+    return this.category === this.cat.SPECIAL_CATEGORY?.key ? this.cat.categoryLabel(s) : this.cat.SUBCATEGORY_LABELS?.[s] || s;
+  }
+
   /** Products to show: search (all categories) or the current category, filtered and sorted. */
   _products() {
-    let list = this.query.trim() ? this.cat.search(this.query) : this.cat.products(this.category);
-    if (!this.query.trim() && this.sub) list = list.filter((p) => p.subcategory === this.sub);
+    let list = this.query.trim() ? this.cat.search(this.query) : this._catProducts(this.category);
+    if (!this.query.trim() && this.sub) list = list.filter((p) => this._subOf(p) === this.sub);
     const price = (p) => priceInfo(this.cat, p, this.cardVariant.get(p.id) ?? p.defaultVariant).price ?? Infinity;
     if (this.sort === 'pris-lav') list = [...list].sort((a, b) => price(a) - price(b));
     else if (this.sort === 'pris-hoy') list = [...list].sort((a, b) => (price(b) === Infinity ? -1 : price(b)) - (price(a) === Infinity ? -1 : price(a)));
@@ -1365,8 +1385,8 @@ export class CatalogPanel extends BasePanel {
 
   _renderSubs() {
     const searching = !!this.query.trim();
-    const all = searching ? [] : this.cat.products(this.category);
-    const subs = [...new Set(all.map((p) => p.subcategory).filter(Boolean))];
+    const all = searching ? [] : this._catProducts(this.category);
+    const subs = [...new Set(all.map((p) => this._subOf(p)).filter(Boolean))];
     if (subs.length < 2) {
       this.subsEl.replaceChildren();
       return;
@@ -1379,7 +1399,7 @@ export class CatalogPanel extends BasePanel {
     this._subsFor = this.category;
     this.subsEl.replaceChildren(
       chip(null, 'Alle'),
-      ...subs.map((s) => chip(s, this.cat.SUBCATEGORY_LABELS?.[s] || s, all.filter((p) => p.subcategory === s).length)),
+      ...subs.map((s) => chip(s, this._subLabel(s), all.filter((p) => this._subOf(p) === s).length)),
     );
     this.subsEl.scrollLeft = scroll;
   }
@@ -1387,8 +1407,8 @@ export class CatalogPanel extends BasePanel {
   /** What the list shows: the «Kategori» picker (compact) and the heading over the grid (large). */
   _renderHeading(list) {
     const q = this.query.trim();
-    const c = this.cat.CATEGORIES.find((x) => x.key === this.category);
-    const subLabel = this.sub ? this.cat.SUBCATEGORY_LABELS?.[this.sub] || this.sub : null;
+    const c = this.cats.find((x) => x.key === this.category);
+    const subLabel = this.sub ? this._subLabel(this.sub) : null;
     if (q) {
       this.pickBtn.replaceChildren(svg(SEARCH_ICON), h('span', { text: `Treff på «${q}»` }), h('small', { text: String(list.length) }), svg(CHEVRON_ICON));
       this.pickBtn.title = `${list.length} treff i hele katalogen – klikk for å velge en kategori`;
@@ -1396,7 +1416,7 @@ export class CatalogPanel extends BasePanel {
       this.titleEl.replaceChildren(h('b', { text: `Søk: «${q}»` }), h('small', { text: `${list.length} treff i hele katalogen` }));
       return;
     }
-    const n = this.cat.products(this.category).length;
+    const n = this._catProducts(this.category).length;
     this.pickBtn.replaceChildren(svg(c?.iconSvg || ICONS[c?.icon] || ICONS.sofa), h('span', { text: c?.label || 'Kategori' }), h('small', { text: String(n) }), svg(CHEVRON_ICON));
     this.pickBtn.title = 'Velg kategori';
     this.pickBtn.setAttribute('aria-label', `Kategori: ${c?.label || ''} (${productsText(n)}). Velg kategori`);
