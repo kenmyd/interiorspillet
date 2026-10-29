@@ -65,7 +65,7 @@ const timeout = {
     notes: 'Large-utgaven av Timeout: skall i svart eik, sete og rygg med pikering i Nanda 65 Umber (brun, nuppete tweed), regulerbar rygg, quattro svingfot i svart aluminium (4 armer). Fotskammelen large (51 × 38 × 39 cm) har samme stoff, svart skrog og x-fot quattro. Stolens mål er Large-målene (84 × 89 × 114 cm, ikke i tabell på Bohus-siden).',
   },
   variants: [
-    { name: 'Nanda 65 Umber med pikering, skrog svart eik, quattro svart aluminium', colors: { upholstery: '#533a2e', legs: '#1a1a1a', frame: '#1e1b19' }, materials: { upholstery: 'woven', legs: 'black-metal', frame: 'black-oak' } },
+    { name: 'Nanda 65 Umber med pikering, skrog svart eik, quattro svart aluminium', colors: { upholstery: '#4a362c', legs: '#1a1a1a', frame: '#1e1b19' }, materials: { upholstery: 'tweed', legs: 'black-metal', frame: 'black-oak' } },
   ],
   defaultVariant: 0, absorption: 0.6,
   description: 'Conform Timeout large med svart eikeskall, pikert sete og rygg i Nanda 65 Umber og matchende fotskammel med pikering.',
@@ -74,7 +74,7 @@ const timeout = {
   verified: true,
   verifiedNote: `Sjekket ${CHECKED} på bohus.no: navn, varenr., priser og fotskammelens mål. Stolens mål er Large-målene (ikke i tabell på siden).`,
   priceConfidence: 'checked',
-  shapeNote: 'Formen rettet 2026-10-29 etter eierens bilder: skallet slutter rett over armene bak (ryggen er stoppet helt ned bak), seteputa er tykk og står ut over skallets lave framkant, som faller bratt under armen. Rette, parallelle armlener med flat overside (armStraight). Pikering 3 × 3 knapper i ryggen. Fargen er målt i produktbildet (snitt #52392c).',
+  shapeNote: 'Formen rettet 2026-10-29 etter eierens bilder: skallet slutter rett over armene bak (ryggen er stoppet helt ned bak), seteputa er tykk og står ut over skallets lave framkant, som faller bratt under armen. Rette, parallelle armlener med flat overside (armStraight). Pikering 3 × 3 knapper i ryggen. Stoffet er melert tweed (mørk sjokoladebrun bunn med kobberfargede nupper) etter eierens bilde av den ekte fotskammelen; fargen #4a362c er snittet.',
 };
 
 // ---- TV-benker -------------------------------------------------------------------------------------------------

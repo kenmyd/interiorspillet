@@ -158,12 +158,12 @@
       {
         "name": "Nanda 65 Umber med pikering, skrog svart eik, quattro svart aluminium",
         "colors": {
-          "upholstery": "#533a2e",
+          "upholstery": "#4a362c",
           "legs": "#1a1a1a",
           "frame": "#1e1b19"
         },
         "materials": {
-          "upholstery": "woven",
+          "upholstery": "tweed",
           "legs": "black-metal",
           "frame": "black-oak"
         }
@@ -177,7 +177,7 @@
     "verified": true,
     "verifiedNote": "Sjekket 2026-10-29 på bohus.no: navn, varenr., priser og fotskammelens mål. Stolens mål er Large-målene (ikke i tabell på siden).",
     "priceConfidence": "checked",
-    "shapeNote": "Formen rettet 2026-10-29 etter eierens bilder: skallet slutter rett over armene bak (ryggen er stoppet helt ned bak), seteputa er tykk og står ut over skallets lave framkant, som faller bratt under armen. Rette, parallelle armlener med flat overside (armStraight). Pikering 3 × 3 knapper i ryggen. Fargen er målt i produktbildet (snitt #52392c)."
+    "shapeNote": "Formen rettet 2026-10-29 etter eierens bilder: skallet slutter rett over armene bak (ryggen er stoppet helt ned bak), seteputa er tykk og står ut over skallets lave framkant, som faller bratt under armen. Rette, parallelle armlener med flat overside (armStraight). Pikering 3 × 3 knapper i ryggen. Stoffet er melert tweed (mørk sjokoladebrun bunn med kobberfargede nupper) etter eierens bilde av den ekte fotskammelen; fargen #4a362c er snittet."
   },
   {
     "id": "ikea-besta-tv-benk-dorer-180-mork",

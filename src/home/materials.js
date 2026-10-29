@@ -43,7 +43,7 @@ import palette from '../data/palette.json';
 
 /** Valid material kinds per group (same lists as data/archetypes.json). */
 export const MATERIAL_KINDS = Object.freeze({
-  fabric: Object.freeze(['boucle', 'woven', 'velvet', 'velour', 'linen', 'wool', 'felt', 'leather', 'teddy', 'knit', 'cotton']),
+  fabric: Object.freeze(['boucle', 'woven', 'tweed', 'velvet', 'velour', 'linen', 'wool', 'felt', 'leather', 'teddy', 'knit', 'cotton']),
   wood: Object.freeze(['oak', 'white-oak', 'smoked-oak', 'walnut', 'black-oak', 'teak', 'ash', 'painted', 'lacquer']),
   metal: Object.freeze(['black-metal', 'brass', 'chrome', 'steel', 'bronze']),
   stone: Object.freeze(['marble-dark', 'marble-white', 'travertine']),
@@ -53,7 +53,7 @@ export const MATERIAL_KINDS = Object.freeze({
 
 /** Norwegian names for drop-downs (Inspector, WallPanel …). */
 export const MATERIAL_LABELS = Object.freeze({
-  boucle: 'Bouclé', woven: 'Vevd stoff', velvet: 'Fløyel', velour: 'Velur', linen: 'Lin', wool: 'Ull', felt: 'Filt',
+  boucle: 'Bouclé', woven: 'Vevd stoff', tweed: 'Tweed (melert)', velvet: 'Fløyel', velour: 'Velur', linen: 'Lin', wool: 'Ull', felt: 'Filt',
   leather: 'Skinn', teddy: 'Teddy', knit: 'Strikk', cotton: 'Bomull',
   oak: 'Eik', 'white-oak': 'Hvitoljet eik', 'smoked-oak': 'Røkt eik', walnut: 'Valnøtt', 'black-oak': 'Sortbeiset eik',
   teak: 'Teak', ash: 'Ask', painted: 'Malt', lacquer: 'Høyglanslakk',
@@ -80,6 +80,7 @@ const DEFS = {
   // fabrics
   boucle: { tex: 'boucle', rough: 0.97, sheen: [0.55, 0.85], ns: 1.15, def: '#e5ded2' },
   woven: { tex: 'woven', rough: 0.93, sheen: [0.3, 0.8], ns: 0.9, def: '#7b7a77' },
+  tweed: { tex: 'tweed', rough: 0.95, sheen: [0.3, 0.8], ns: 1.05, def: '#5a4134' },
   velvet: { tex: 'velvet', rough: 0.78, sheen: [1.0, 0.32], ns: 0.5, def: '#4a5646' },
   velour: { tex: 'velour', rough: 0.82, sheen: [0.85, 0.42], ns: 0.5, def: '#8e9a7e' },
   linen: { tex: 'linen', rough: 0.9, sheen: [0.2, 0.8], ns: 0.8, def: '#d4c8b2' },
@@ -465,6 +466,25 @@ const GEN = {
       const lum = W.tone * mel * (0.66 + 0.34 * W.prof) + 0.03 * N.fbm(u, v, 3, 3, 0.5);
       o.l = lum;
       o.h = W.h;
+    } });
+  },
+  tweed() {
+    const W = {};
+    const N = new TileableNoise(63);
+    // chunky 2/2 basket weave of two yarns (Conform's Nanda): dark base threads and warm, lighter copper nubs. The
+    // texture carries the hue of the two yarns, so the item colour sets the overall tone and the nubs stay warmer
+    return genSet({ w: 256, h: 256, tile: [0.07, 0.07], normal: 2.4, pixel(x, y, u, v, o) {
+      weave(u, v, 40, (i, j) => (Math.floor(i / 2) + Math.floor(j / 2)) % 2 === 0, 5, W);
+      const nub = hash2(W.thread, mod(Math.floor(W.along * 1.5), 60), 31) > 0.68;
+      const lum = (0.66 + 0.34 * W.prof) + 0.04 * N.fbm(u, v, 3, 3, 0.5);
+      if (nub) {
+        o.r = lum * 1.7;
+        o.g = lum * 1.42;
+        o.b = lum * 1.12;
+      } else {
+        o.r = o.g = o.b = lum * 0.6;
+      }
+      o.h = W.h * (nub ? 1.15 : 0.9);
     } });
   },
   linen() {

@@ -326,7 +326,7 @@
     "triptych": "art-set"
   },
   "materials": {
-    "fabric": ["boucle", "woven", "velvet", "velour", "linen", "wool", "felt", "leather", "teddy", "knit", "cotton"],
+    "fabric": ["boucle", "woven", "tweed", "velvet", "velour", "linen", "wool", "felt", "leather", "teddy", "knit", "cotton"],
     "wood": ["oak", "white-oak", "smoked-oak", "walnut", "black-oak", "teak", "ash", "painted", "lacquer"],
     "metal": ["black-metal", "brass", "chrome", "steel", "bronze"],
     "stone": ["marble-dark", "marble-white", "travertine"],
