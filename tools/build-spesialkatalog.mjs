@@ -60,12 +60,12 @@ const timeout = {
   params: {
     seatH: 0.42, seatD: 0.52, backH: 1.14, armH: 0.56, armW: 0.14, legStyle: 'swivel-star', legH: 0.16, backShape: 'high',
     cushion: 'loose', footstool: true, headrest: true, body: 'shell', headStyle: 'roll', stoolW: 0.51, stoolD: 0.38, stoolH: 0.39,
-    armPad: 'lid', shellTop: 0.8, shellTaper: 0.62, shellBottom: 0.18, seatT: 0.12, seatNose: -0.035, backW: 0.5, backFlare: 0,
-    shellFront: 1, armPadH: 0.065, headW: 0.6, armTilt: 0.04, armCurl: 0.03, shellDisc: 0.05, starArms: 4,
+    armPad: 'lid', shellTaper: 0.62, shellBottom: 0.18, seatT: 0.15, seatNose: 0.03, backW: 0.5, backFlare: 0,
+    shellFront: 0.35, backSeams: 'tufted', tuftCols: 3, tuftRows: 3, armPadH: 0.065, headW: 0.6, armTilt: 0.04, armCurl: 0.03, shellDisc: 0.05, starArms: 4,
     notes: 'Large-utgaven av Timeout: skall i svart eik, sete og rygg med pikering i Nanda 65 Umber (brun, nuppete tweed), regulerbar rygg, quattro svingfot i svart aluminium (4 armer). Fotskammelen large (51 × 38 × 39 cm) har samme stoff, svart skrog og x-fot quattro. Stolens mål er Large-målene (84 × 89 × 114 cm, ikke i tabell på Bohus-siden).',
   },
   variants: [
-    { name: 'Nanda 65 Umber med pikering, skrog svart eik, quattro svart aluminium', colors: { upholstery: '#6b5443', legs: '#1a1a1a', frame: '#1e1b19' }, materials: { upholstery: 'boucle', legs: 'black-metal', frame: 'black-oak' } },
+    { name: 'Nanda 65 Umber med pikering, skrog svart eik, quattro svart aluminium', colors: { upholstery: '#533a2e', legs: '#1a1a1a', frame: '#1e1b19' }, materials: { upholstery: 'woven', legs: 'black-metal', frame: 'black-oak' } },
   ],
   defaultVariant: 0, absorption: 0.6,
   description: 'Conform Timeout large med svart eikeskall, pikert sete og rygg i Nanda 65 Umber og matchende fotskammel med pikering.',
@@ -74,7 +74,7 @@ const timeout = {
   verified: true,
   verifiedNote: `Sjekket ${CHECKED} på bohus.no: navn, varenr., priser og fotskammelens mål. Stolens mål er Large-målene (ikke i tabell på siden).`,
   priceConfidence: 'checked',
-  shapeNote: 'Pikeringen er ikke modellert.',
+  shapeNote: 'Formen rettet 2026-10-29 etter eierens bilder: skallet slutter rett over armene bak (ryggen er stoppet helt ned bak), seteputa er tykk og står ut over skallets lave framkant, som faller bratt under armen. Pikering 3 × 3 knapper i ryggen. Fargen er målt i produktbildet (snitt #52392c).',
 };
 
 // ---- TV-benker -------------------------------------------------------------------------------------------------

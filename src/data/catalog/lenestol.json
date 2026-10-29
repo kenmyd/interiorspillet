@@ -5920,14 +5920,13 @@
       "stoolD": 0.38,
       "stoolH": 0.39,
       "armPad": "lid",
-      "shellTop": 0.8,
       "shellTaper": 0.62,
       "shellBottom": 0.18,
-      "seatT": 0.12,
-      "seatNose": -0.035,
+      "seatT": 0.15,
+      "seatNose": 0.03,
       "backW": 0.48,
       "backFlare": 0,
-      "shellFront": 1,
+      "shellFront": 0.35,
       "armPadH": 0.065,
       "headW": 0.58,
       "armTilt": 0.04,
@@ -7371,14 +7370,16 @@
       "stoolD": 0.38,
       "stoolH": 0.39,
       "armPad": "lid",
-      "shellTop": 0.8,
       "shellTaper": 0.62,
       "shellBottom": 0.18,
-      "seatT": 0.12,
-      "seatNose": -0.035,
+      "seatT": 0.15,
+      "seatNose": 0.03,
       "backW": 0.5,
       "backFlare": 0,
-      "shellFront": 1,
+      "shellFront": 0.35,
+      "backSeams": "tufted",
+      "tuftCols": 3,
+      "tuftRows": 3,
       "armPadH": 0.065,
       "headW": 0.6,
       "armTilt": 0.04,
@@ -7391,12 +7392,12 @@
       {
         "name": "Nanda 65 Umber med pikering, skrog svart eik, quattro svart aluminium",
         "colors": {
-          "upholstery": "#6b5443",
+          "upholstery": "#533a2e",
           "legs": "#1a1a1a",
           "frame": "#1e1b19"
         },
         "materials": {
-          "upholstery": "boucle",
+          "upholstery": "woven",
           "legs": "black-metal",
           "frame": "black-oak"
         }
@@ -7410,6 +7411,6 @@
     "verified": true,
     "verifiedNote": "Sjekket 2026-10-29 på bohus.no: navn, varenr., priser og fotskammelens mål. Stolens mål er Large-målene (ikke i tabell på siden).",
     "priceConfidence": "checked",
-    "shapeNote": "Pikeringen er ikke modellert."
+    "shapeNote": "Formen rettet 2026-10-29 etter eierens bilder: skallet slutter rett over armene bak (ryggen er stoppet helt ned bak), seteputa er tykk og står ut over skallets lave framkant, som faller bratt under armen. Pikering 3 × 3 knapper i ryggen. Fargen er målt i produktbildet (snitt #52392c)."
   }
 ]
