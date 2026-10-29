@@ -5677,6 +5677,13 @@ function buildRecliner(spec) {
         const xo = shPad === 'round' ? pm[0] - sx * (padW / 2 - T / 2 - 0.004) + sx * (padW / 2) : pm[0] + sx * (T / 2 + 0.004);
         pts.push([xo - sx * val(aP, u) + sx * curl * sstep(shPad === 'round' ? 0.72 : 0.45, 1, u), yArmRim + val(bP, u) - 0.006 + rise * sstep(0.75, 1, u) - drop * sstep(0.82, 1, u), pm[2]]);
       }
+      // params.armStraight (0–1): the pad runs straight back from its widest point instead of following the bowl's
+      // curve in plan (Timeout: two straight, parallel arm tops – no «horseshoe»)
+      const straight = clamp01(num(P.armStraight, 0));
+      if (straight > 0) {
+        const xw = Math.max(...pts.map((q) => sx * q[0]));
+        for (const q of pts) q[0] = lerp(q[0], sx * xw, straight);
+      }
       const padGeo = sweepGeometry(pts, { a: aP, b: bP, r: shPad === 'lid' ? 0.75 : 0.85, nc: 5, ns: 3, nEnd: 4, capLen: shPad === 'lid' ? 0.8 : 1 });
       if (tiltA || curlA) {
         const p = padGeo.attributes.position;

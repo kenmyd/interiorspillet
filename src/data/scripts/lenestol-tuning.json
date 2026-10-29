@@ -824,9 +824,11 @@
       "armW": 0.14,
       "armPadH": 0.065,
       "headW": 0.58,
-      "armTilt": 0.04,
-      "armCurl": 0.03,
-      "shellDisc": 0.05
+      "armTilt": 0,
+      "armCurl": 0,
+      "shellDisc": 0.05,
+      "armStraight": 1,
+      "armDrop": 0.012
     }
   },
   "bohus-scapa-avila-hvilestol": {
