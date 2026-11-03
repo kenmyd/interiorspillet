@@ -8,10 +8,10 @@
       "port": 5180
     },
     {
-      "name": "veggforslag-test",
+      "name": "interiorspillet-sjekk",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--config", ".shots/wall-r3/vite.config.mjs"],
-      "port": 5249
+      "runtimeArgs": ["vite", "--host", "127.0.0.1", "--port", "5277", "--strictPort"],
+      "port": 5277
     },
     {
       "name": "hus-test",
