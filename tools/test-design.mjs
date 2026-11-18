@@ -65,10 +65,10 @@ const BASE = readJson('tools/house-tests/fixtures/catalog-baseline.json');
 // 2 lamper and 16 canvas pictures (Brown Balance replaced in place), 599 → 622; 2026-11-18: + BESTÅ veggmontert
 // skapkombinasjon 180x22x38, 622 → 623; − 3 canvas motifs (Dual Profile, When We Break, The Heat Between) + 37 of the
 // owner's own finds on canvasbutik.no, 623 → 657; + the wall-hung BESTÅ TV-benk 180x42x38 and
-// skapkombinasjon 180x42x64, 657 → 659)
+// skapkombinasjon 180x42x64, 657 → 659; + the three in 240 cm built from parts, 659 → 662)
 const EXPECT = {
-  counts: { sofa: 23, lenestol: 57, bord: 35, stoler: 30, skjenk: 15, tvbenk: 19, vitrineskap: 10, hylle: 22, seng: 20, nattbord: 22, kommode: 21, garderobe: 9, speil: 13, bad: 19, gang: 17, taklampe: 20, spotter: 37, smalamper: 63, tekstil: 31, teppe: 19, solskjerming: 22, akustikk: 67, kunst: 54, smatt: 14 },
-  total: 659, floorLamps: 28, pendel: 19,
+  counts: { sofa: 23, lenestol: 57, bord: 35, stoler: 30, skjenk: 16, tvbenk: 21, vitrineskap: 10, hylle: 22, seng: 20, nattbord: 22, kommode: 21, garderobe: 9, speil: 13, bad: 19, gang: 17, taklampe: 20, spotter: 37, smalamper: 63, tekstil: 31, teppe: 19, solskjerming: 22, akustikk: 67, kunst: 54, smatt: 14 },
+  total: 662, floorLamps: 28, pendel: 19,
 };
 const spec = readJson('src/data/room-spec.json');
 const palette = readJson('src/data/palette.json');
@@ -677,70 +677,87 @@ check('the bathroom ceiling counts in the bathroom, not the living room', near(a
 // ---------------------------------------------------------------------------------------------------------------
 section('Spesialforslag (design/specialProposals.js)');
 {
+  // the owner's design 2026-11-18: cabinet × width × front chosen on top; three kinds of picture-only proposals
   const SP = await imp('src/design/specialProposals.js');
   const hw = layout.highWall;
-  check('20 special proposals, ids S1–S20', SP.SPECIAL_PROPOSALS.length === 20 && SP.SPECIAL_PROPOSALS.every((p, i) => p.id === `S${i + 1}`));
-  const KEYS = SP.SPECIAL_BENCHES.map((b) => b.key);
-  check('three cabinets to choose from: grunt 22×38, dypt 42×38, høyt 42×64, each with Hedeviken (0) and Björköviken (1)',
-    KEYS.join() === 'grunt,dypt,hoyt' && SP.SPECIAL_BENCHES.every((b) => {
-      const p = catalog.getProduct(b.id);
-      return p?.params?.base === 'wall' && /Hedeviken/.test(p.variants[0].name) && /Björköviken/.test(p.variants[1].name);
-    }));
-  const bad = [];
-  for (const key of KEYS) for (const p of SP.SPECIAL_PROPOSALS) {
-    const L = SP.layoutSpecialProposal(p, catalog, key);
-    const pics = L.filter((e) => e.role === 'picture');
-    const bench = L.find((e) => e.role === 'bench');
-    const decor = L.filter((e) => e.role === 'decor');
-    const inWall = L.every((e) => e.u - e.w / 2 >= 0.05 && e.u + e.w / 2 <= hw.width - 0.3);
-    const overBench = pics.every((e) => e.v >= bench.v + bench.h + 0.2 && e.v + e.h <= hw.height - 0.25);
-    const apart = pics.every((e, i) => i === 0 || pics[i - 1].u + pics[i - 1].w / 2 < e.u - e.w / 2);
-    const onBench = decor.every((e) => Math.abs(e.u - bench.u) + e.w / 2 <= bench.w / 2 + 1e-6 && near(e.v, bench.v + bench.h, 1e-6));
-    const ok = pics.length >= 1 && pics.length <= 3 && decor.length >= 1 && inWall && overBench && apart && onBench
-      && bench.productId === SP.SPECIAL_BENCHES.find((b) => b.key === key).id && [0, 1].includes(bench.variantIndex)
-      && pics.every((e) => catalog.getProduct(e.productId)?.archetype === 'acoustic-art');
-    if (!ok) bad.push(`${key}/${p.id}`);
-  }
-  check('every proposal with every cabinet: the chosen cabinet, 1–3 pictures over it (under 2,75 m), decor on it, all inside the wall', !bad.length, bad.join(', '));
-  // decor fits on the top (a plant on its pot), stays low under a picture, tall floor items never stand in front of one
-  const comp = [];
-  for (const key of KEYS) for (const p of SP.SPECIAL_PROPOSALS) {
-    const L = SP.layoutSpecialProposal(p, catalog, key);
-    const bench = L.find((e) => e.role === 'bench');
-    const pics = L.filter((e) => e.role === 'picture');
-    const low = Math.min(...pics.map((q) => q.v));
-    const under = (e) => pics.some((q) => Math.abs(q.u - e.u) < (q.w + e.w) / 2 - 1e-6);
-    for (const e of L) {
-      const pr = catalog.getProduct(e.productId);
-      const foot = Number(pr?.variants?.[e.variantIndex]?.paramsOverride?.potD ?? pr?.params?.potD) || e.d;
-      if (e.role === 'decor' && foot > bench.d + 0.012) comp.push(`${key}/${p.id} ${e.productId} for dyp`);
-      if (e.role === 'decor' && e.h > 0.3 && under(e)) comp.push(`${key}/${p.id} ${e.productId} dekker bildet`);
-      if (e.role === 'floor' && e.h > low && under(e)) comp.push(`${key}/${p.id} ${e.productId} foran bildet`);
+  const ART = (s) => `canvasbutik-lyddempende-bilde-${s}`;
+  const special = new Set(readJson('src/data/spesialkatalog.json').ids);
+  const motifs = [...special].map((id) => catalog.getProduct(id)).filter((p) => p?.archetype === 'acoustic-art');
+  const land = motifs.filter((p) => p.dims.w > p.dims.h).map((p) => p.id);
+  check('«stort bilde» lists every landscape motif in the Spesialkatalog (and only those)', land.length >= 1
+    && land.length === SP.SPECIAL_LANDSCAPE.length && SP.SPECIAL_LANDSCAPE.every((s) => land.includes(ART(s))), `${land.length}/${SP.SPECIAL_LANDSCAPE.length}`);
+  const groupBad = [];
+  for (const [kind, n, list] of [['to', 2, SP.SPECIAL_PAIRS], ['tre', 3, SP.SPECIAL_TRIOS]]) {
+    const sets = new Set();
+    for (const g of list) {
+      const key = [...g].sort().join();
+      if (g.length !== n || new Set(g).size !== n || sets.has(key)) groupBad.push(`${kind}: ${g}`);
+      sets.add(key);
+      for (const slug of g) {
+        const p = catalog.getProduct(ART(slug));
+        if (!p || !special.has(p.id) || p.dims.w > p.dims.h) groupBad.push(`${kind}: ${slug} mangler eller er liggende`);
+      }
     }
   }
-  check('composition: decor fits on the top and stays low under a picture; no tall floor item in front of a picture', !comp.length, comp.join('; '));
-  const tall = SP.layoutSpecialProposal(SP.SPECIAL_PROPOSALS.find((p) => p.id === 'S7'), catalog, 'hoyt').find((e) => e.role === 'picture');
-  const low22 = SP.layoutSpecialProposal(SP.SPECIAL_PROPOSALS.find((p) => p.id === 'S7'), catalog, 'grunt').find((e) => e.role === 'picture');
-  check('over the tall cabinet a 120 × 180 steps down to 100 × 150 (fromV), over the low one it stays', tall.variantIndex === 3 && tall.fromV === 4 && low22.variantIndex === 4 && low22.fromV === undefined);
-  for (const key of KEYS) {
-    const b1 = SP.specialItemSpecs(SP.SPECIAL_PROPOSALS[0], catalog, hw, key).find((s) => s.uid.endsWith('-1'));
-    check(`${key}: the wall-hung cabinet stands at y 0 and lifts itself 25 cm (no double lift)`, near(b1.position[1], 0, 1e-9) && b1.params.base === 'wall' && near(b1.params.mountHeight, 0.25, 1e-9));
+  check('30 pairs and 30 trios of upright Spesialkatalog motifs, no repeats, ids P1–P30 / T1–T30', SP.SPECIAL_PAIRS.length === 30 && SP.SPECIAL_TRIOS.length === 30
+    && !groupBad.length && SP.specialProposals('to').map((p) => p.id).join() === Array.from({ length: 30 }, (_, i) => `P${i + 1}`).join()
+    && SP.specialProposals('tre')[29].id === 'T30' && SP.specialProposals('stort')[0].id === 'L1', groupBad.join('; '));
+  const benchOk = SP.SPECIAL_BENCHES.every((b) => SP.SPECIAL_WIDTHS.every((w) => {
+    const p = catalog.getProduct(b.ids[w]);
+    return p?.params?.base === 'wall' && near(p.dims.w, w / 100, 1e-9) && p.params.fronts.length === w / 60
+      && /Hedeviken/.test(p.variants[0].name) && /Björköviken/.test(p.variants[1].name);
+  }));
+  check('three cabinets × 180 / 240 cm, wall-hung, Hedeviken (0) and Björköviken (1), a door per 60 cm', benchOk);
+  // every proposal with every choice: inside the wall, under 2,75 m, pictures over the cabinet, decor low and on the top
+  const bad = [];
+  let n = 0;
+  for (const bench of SP.SPECIAL_BENCHES.map((b) => b.key)) for (const width of SP.SPECIAL_WIDTHS) for (const front of [0, 1]) {
+    for (const k of SP.SPECIAL_KINDS) for (const size of k.sizes) for (const p of SP.specialProposals(k.key)) {
+      const set = { bench, width, front, size2: k.key === 'to' ? size : 2, size3: k.key === 'tre' ? size : 1 };
+      const L = SP.layoutSpecialProposal(p, catalog, set);
+      n++;
+      const bench0 = L.find((e) => e.role === 'bench');
+      const pics = L.filter((e) => e.role === 'picture');
+      const decor = L.filter((e) => e.role === 'decor');
+      const ok = bench0.productId === SP.benchProductId(set) && bench0.variantIndex === front
+        && pics.length === p.pictures.length && pics.every((e) => e.variantIndex === SP.pictureSize(k.key, set))
+        && L.every((e) => e.u - e.w / 2 >= 0.05 && e.u + e.w / 2 <= hw.width - 0.3)
+        && pics.every((e) => e.v >= bench0.v + bench0.h + 0.2 && e.v + e.h <= hw.height - 0.25)
+        && pics.every((e, i) => i === 0 || pics[i - 1].u + pics[i - 1].w / 2 < e.u - e.w / 2)
+        && decor.length === 2 && decor.every((e) => {
+          const pr = catalog.getProduct(e.productId);
+          const foot = Number(pr?.variants?.[e.variantIndex]?.paramsOverride?.potD ?? pr?.params?.potD) || e.d;
+          return Math.abs(e.u - bench0.u) + e.w / 2 <= bench0.w / 2 + 1e-6 && near(e.v, bench0.v + bench0.h, 1e-6) && e.h <= 0.3 && foot <= bench0.d + 0.012;
+        });
+      if (!ok) bad.push(`${bench}/${width}/${front}/${p.id}/${size}`);
+    }
   }
-  check('the chosen cabinet is module state, default «grunt»', SP.getSpecialBench() === 'grunt' && SP.setSpecialBench('nei') === 'grunt');
+  check(`every proposal with every choice (${n} layouts): the chosen cabinet, the chosen size, inside the wall and under 2,75 m, a low lamp and plant on the top`, !bad.length, bad.slice(0, 8).join(', '));
+  for (const [bench, width] of [['grunt', 180], ['dypt', 240], ['hoyt', 240]]) {
+    const b1 = SP.specialItemSpecs(SP.specialProposalById('P1'), catalog, hw, { bench, width }).find((x) => x.uid === 'spf-p1-1');
+    check(`${bench} ${width}: the wall-hung cabinet stands at y 0 and lifts itself 25 cm (no double lift)`, near(b1.position[1], 0, 1e-9) && b1.params.base === 'wall' && near(b1.params.mountHeight, 0.25, 1e-9));
+  }
+  const s0 = SP.getSpecialSettings();
+  check('the choices are module state, bad values fall back to the defaults', s0.bench === 'grunt' && s0.width === 180 && s0.front === 0
+    && SP.setSpecialSettings({ bench: 'nei', width: 200, size2: 1 }).width === 180 && SP.getSpecialSettings().size2 === 2 && SP.getSpecialSettings().bench === 'grunt');
   const sd = new DesignState();
   const fakeEditor = { design: sd, catalog, home: { layout } };
-  sd.add({ ...catalog.productToItemSpec('canvasbutik-lyddempende-bilde-soft-leaves', 2), uid: 'egen', position: [3.22, 1.5, 6.4], rotationDeg: 90, attach: { wallId: 'w-hoy', normal: [1, 0, 0] } });
+  sd.add({ ...catalog.productToItemSpec(ART('soft-leaves'), 2), uid: 'egen', position: [3.22, 1.5, 6.4], rotationDeg: 90, attach: { wallId: 'w-hoy', normal: [1, 0, 0] } });
   const h0 = sd.historySize;
-  // S1: cabinet + 3 pictures + 2 decor + 1 floor vase; S7: cabinet + one 120 × 180 + 2 decor + 1 floor vase
-  const u1 = SP.applySpecialProposal(fakeEditor, 'S1');
-  const u2 = SP.applySpecialProposal(fakeEditor, 'S7');
+  // T1: cabinet + 3 pictures + lamp + plant; L1: cabinet + one 180 × 120 + lamp + plant
+  const u1 = SP.applySpecialProposal(fakeEditor, 'T1', { bench: 'dypt', width: 240, front: 1, size3: 2 });
+  const u2 = SP.applySpecialProposal(fakeEditor, 'L1', { bench: 'hoyt', width: 180, front: 0 });
   const spf = sd.list().filter((i) => SP.isSpecialUid(i.uid));
-  check('applying replaces what hangs on the high wall and the previous proposal; one undo step each', u1.length === 7 && u2.length === 5 && spf.length === 5 && !sd.get('egen')
-    && SP.activeSpecialProposal(sd) === 'S7' && sd.historySize === h0 + 2, `${u1.length}/${u2.length}/${spf.length}/${sd.historySize - h0}`);
+  check('applying replaces what hangs on the high wall and the previous proposal; one undo step each', u1.length === 6 && u2.length === 4 && spf.length === 4 && !sd.get('egen')
+    && SP.activeSpecialProposal(sd) === 'L1' && sd.historySize === h0 + 2, `${u1.length}/${u2.length}/${spf.length}/${sd.historySize - h0}`);
   const pic = spf.find((i) => i.archetype === 'acoustic-art');
-  check('the pictures hang on the high wall (attach w-hoy, facing the room) with their size variant', pic?.attach?.wallId === 'w-hoy' && pic.rotationDeg === 90 && pic.variantIndex === 4 && near(pic.dims.h, 1.8, 1e-9));
+  check('the big picture hangs on the high wall (attach w-hoy, facing the room) as 180 × 120', pic?.attach?.wallId === 'w-hoy' && pic.rotationDeg === 90 && pic.variantIndex === 4 && near(pic.dims.w, 1.8, 1e-9) && near(pic.dims.h, 1.2, 1e-9));
+  const act = SP.activeSpecialSettings(sd);
+  check('the cabinet in the room tells its choices back', act?.bench === 'hoyt' && act.width === 180 && act.front === 0, JSON.stringify(act));
   sd.undo();
-  check('undo brings S1 back', SP.activeSpecialProposal(sd) === 'S1' && sd.list().filter((i) => SP.isSpecialUid(i.uid)).length === 7);
+  const act2 = SP.activeSpecialSettings(sd);
+  check('undo brings T1 back with its cabinet', SP.activeSpecialProposal(sd) === 'T1' && sd.list().filter((i) => SP.isSpecialUid(i.uid)).length === 6
+    && act2?.bench === 'dypt' && act2.width === 240 && act2.front === 1);
 }
 
 section('Saves');

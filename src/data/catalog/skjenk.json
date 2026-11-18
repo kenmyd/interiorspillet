@@ -1485,5 +1485,93 @@
     "verified": true,
     "verifiedNote": "Navn, mål, innhold og priser sjekket 2026-11-18 på ikea.com/no. Hedeviken finnes ikke i «brunbeiset» i 64 cm høyde – bare mørk brun beiset og eikefiner.",
     "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-besta-veggmontert-skapkombinasjon-240x42x64-mork",
+    "category": "skjenk",
+    "name": "BESTÅ veggmontert skapkombinasjon 240x42x64 – brunbeiset eik (av deler)",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-mork-brun-beiset-eikefiner-s19417862/",
+    "priceNok": 6780,
+    "salePriceNok": 5980,
+    "priceNote": "Ingen ferdig 240-kombinasjon med disse dørene – bygges av deler (fire 60 cm-seksjoner) i BESTÅ-planleggeren. Pris = summen av delene, sjekket 2026-11-18 på ikea.com/no: 4 × stamme 60x40x64 (595, før 795), 4 × hylleplate 56x36 (100), 4 × veggskinne (100), 4 × hengsel (150), 4 × dør 60x64 (Hedeviken mørk brun 550, Björköviken 600). Hedeviken 5 980 kr (før 6 780), Björköviken 6 180 kr (før 6 980).",
+    "dims": {
+      "w": 2.4,
+      "d": 0.42,
+      "h": 0.64
+    },
+    "archetype": "sideboard",
+    "mount": "floor",
+    "params": {
+      "base": "wall",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Tre BESTÅ-skap 60x40x64 på veggskinne, dører 60x64 med trykk-og-åpne-hengsler (grepsfrie). Underkant 25 cm over gulvet.",
+      "mountHeight": 0.25
+    },
+    "variants": [
+      {
+        "name": "Brunsvart / Hedeviken mørk brun beiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#46342a",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#46342a"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 6780,
+        "salePriceNok": 5980,
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-mork-brun-beiset-eikefiner-s19417862/"
+      },
+      {
+        "name": "Brunsvart / Björköviken brun beiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5a4232",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5a4232"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 6980,
+        "salePriceNok": 6180,
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-bjoerkoeviken-brun-beiset-eikefiner-s89421790/",
+        "paramsOverride": {
+          "frontStyle": "ribbed"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "Høy, veggmontert BESTÅ-kombinasjon 240 × 42 × 64 cm i brunsvart med fire grepsfrie dører: Hedeviken i mørk brun beiset eik eller riflet Björköviken. Fire seksjoner, bygd av deler.",
+    "why": "Mer oppbevaring og et tydeligere møbel under bildene; Hedeviken finnes i denne høyden bare i den mørkere beisen.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-mork-brun-beiset-eikefiner__0994653_pe821277_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Delene og prisene sjekket 2026-11-18 på ikea.com/no; summen av delene er lik prisen på 180-kombinasjonen for tre seksjoner.",
+    "priceConfidence": "checked"
   }
 ]
