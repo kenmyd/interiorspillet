@@ -1398,5 +1398,92 @@
     "verified": true,
     "verifiedNote": "Bekreftet på skeidar.no 2026-10-18 (gammel URL ga 404 – rettet til /alle-oppbevaring-og-skap/). Rettet pris 22 399 → 15 999, mål 160x45x74 bekreftet, varianter Warm Beige og Walnut, frontoppsett 4 skuffer + 1 dør. Farger og stoff kontrollert 2026-10-21 mot skeidar.no: begge variantene finnes (Warm Beige 15 999 kr, Walnut 11 999 kr, før 22 399 kr). Rettet: Walnut er røkt eikefinér (navnet sa «mørk eikefiner»); fargene justert etter produktbildene, egne lenker og pris lagt inn.",
     "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-besta-veggmontert-skapkombinasjon-180x42x64-mork",
+    "category": "skjenk",
+    "name": "BESTÅ veggmontert skapkombinasjon 180x42x64 – brunbeiset eik",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-mork-brun-beiset-eikefiner-s19417862/",
+    "priceNok": 5085,
+    "salePriceNok": 4485,
+    "priceNote": "Priser sjekket 2026-11-18 på ikea.com/no («Ny lavere pris»): Hedeviken mørk brun beiset 4 485 kr (før 5 085, art. 194.178.62), Björköviken brun beiset 4 635 kr (før 5 235, art. 894.217.90). Veggskinner, 3 hylleplater og trykk-åpne-hengsler følger med; BESTÅ topplate kjøpes separat.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.42,
+      "h": 0.64
+    },
+    "archetype": "sideboard",
+    "mount": "floor",
+    "params": {
+      "base": "wall",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Tre BESTÅ-skap 60x40x64 på veggskinne, dører 60x64 med trykk-og-åpne-hengsler (grepsfrie). Underkant 25 cm over gulvet.",
+      "mountHeight": 0.25
+    },
+    "variants": [
+      {
+        "name": "Brunsvart / Hedeviken mørk brun beiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#46342a",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#46342a"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 5085,
+        "salePriceNok": 4485,
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-mork-brun-beiset-eikefiner-s19417862/"
+      },
+      {
+        "name": "Brunsvart / Björköviken brun beiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5a4232",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5a4232"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 5235,
+        "salePriceNok": 4635,
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-bjoerkoeviken-brun-beiset-eikefiner-s89421790/",
+        "paramsOverride": {
+          "frontStyle": "ribbed"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "Høy, veggmontert BESTÅ-kombinasjon 180 × 42 × 64 cm i brunsvart med tre grepsfrie dører: Hedeviken i mørk brun beiset eik eller riflet Björköviken.",
+    "why": "Mer oppbevaring og et tydeligere møbel under bildene; Hedeviken finnes i denne høyden bare i den mørkere beisen.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-mork-brun-beiset-eikefiner__0994653_pe821277_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Navn, mål, innhold og priser sjekket 2026-11-18 på ikea.com/no. Hedeviken finnes ikke i «brunbeiset» i 64 cm høyde – bare mørk brun beiset og eikefiner.",
+    "priceConfidence": "checked"
   }
 ]

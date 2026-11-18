@@ -11,33 +11,12 @@ export const BUNDLED_IMAGES = Object.freeze({
     "h": 1389,
     "name": "Soft Leaves (canvasbutik.no)"
   },
-  "img-0cf61a9be86655bcd826bf22dded": {
-    "url": "img/spesial/dual-profile.jpg",
-    "mime": "image/jpeg",
-    "w": 992,
-    "h": 1389,
-    "name": "Dual Profile (canvasbutik.no)"
-  },
   "img-75b85679024fb7b70e9dd3eea78d": {
     "url": "img/spesial/earth-leaves.jpg",
     "mime": "image/jpeg",
     "w": 992,
     "h": 1389,
     "name": "Earth Leaves (canvasbutik.no)"
-  },
-  "img-c1f8cce538e57dc4dac31c51719b": {
-    "url": "img/spesial/when-we-break.jpg",
-    "mime": "image/jpeg",
-    "w": 992,
-    "h": 1389,
-    "name": "When We Break (canvasbutik.no)"
-  },
-  "img-a8a4862d4e6f6a70505482a8f7c4": {
-    "url": "img/spesial/the-heat-between.jpg",
-    "mime": "image/jpeg",
-    "w": 992,
-    "h": 1389,
-    "name": "The Heat Between (canvasbutik.no)"
   },
   "img-80f09b4acff690c190408591aef2": {
     "url": "img/spesial/abstract-oval.jpg",
@@ -122,5 +101,264 @@ export const BUNDLED_IMAGES = Object.freeze({
     "w": 1400,
     "h": 1960,
     "name": "Timeless Peaks (canvasbutik.no)"
+  },
+  "img-dbfc987ff6b84efd2e01d0404424": {
+    "url": "img/spesial/golden-horizons.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Golden Horizons (canvasbutik.no)"
+  },
+  "img-0156cb92d011ee63366498c86865": {
+    "url": "img/spesial/sands-of-time.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Sands Of Time (canvasbutik.no)"
+  },
+  "img-8849de9a38b376ad7ad017daa7ad": {
+    "url": "img/spesial/veins-of-terra.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Veins Of Terra (canvasbutik.no)"
+  },
+  "img-aba1fc834c847e00e8d3e00ee01d": {
+    "url": "img/spesial/whispers-of-earth.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 714,
+    "name": "Whispers Of Earth (canvasbutik.no)"
+  },
+  "img-82d1ae0fe93896392813899ad8d4": {
+    "url": "img/spesial/rust-and-flow.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Rust And Flow (canvasbutik.no)"
+  },
+  "img-47fd4c124ba031e34a533eabf0d6": {
+    "url": "img/spesial/amber-waves.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 714,
+    "name": "Amber Waves (canvasbutik.no)"
+  },
+  "img-394b12edefc3457c628e6211881a": {
+    "url": "img/spesial/whispering-leaves.jpg",
+    "mime": "image/jpeg",
+    "w": 992,
+    "h": 1389,
+    "name": "Whispering Leaves (canvasbutik.no)"
+  },
+  "img-0f28aa7fda4167b6d26a71aa98da": {
+    "url": "img/spesial/rust.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Rust (canvasbutik.no)"
+  },
+  "img-708ffbf064996c5f6015c65c89bb": {
+    "url": "img/spesial/petal.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 714,
+    "name": "Petal (canvasbutik.no)"
+  },
+  "img-1fedcfeb556710e4fdd5d9590042": {
+    "url": "img/spesial/gaiety.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Gaiety (canvasbutik.no)"
+  },
+  "img-7ab7fc81c0f09220b502a0a38953": {
+    "url": "img/spesial/nature-petals.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Nature Petals (canvasbutik.no)"
+  },
+  "img-516e6758d779a8a7f8f01e4ed53d": {
+    "url": "img/spesial/beige-botanics.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Beige Botanics (canvasbutik.no)"
+  },
+  "img-501dab9cbcd6fa2cbe2298a1f15b": {
+    "url": "img/spesial/beigeflor.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Beigeflor (canvasbutik.no)"
+  },
+  "img-12c2b86946f5383be47fa4bf8a54": {
+    "url": "img/spesial/serenebeige.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Serenebeige (canvasbutik.no)"
+  },
+  "img-92e067e5dc6345aa60afe876ccd7": {
+    "url": "img/spesial/blissful-meadow.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Blissful Meadow (canvasbutik.no)"
+  },
+  "img-17621d31bfa352b9c9153e4696c7": {
+    "url": "img/spesial/beigeblossom.jpg",
+    "mime": "image/jpeg",
+    "w": 992,
+    "h": 1389,
+    "name": "Beigeblossom (canvasbutik.no)"
+  },
+  "img-505581e95a6221ca7ae85d09d0c6": {
+    "url": "img/spesial/central-flower.jpg",
+    "mime": "image/jpeg",
+    "w": 992,
+    "h": 1389,
+    "name": "Central Flower (canvasbutik.no)"
+  },
+  "img-bf7bccf1f0ec8608410f2c745f64": {
+    "url": "img/spesial/natures-quiet-elegance.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Nature's Quiet Elegance (canvasbutik.no)"
+  },
+  "img-1e20fa2d3233263294fada13c34e": {
+    "url": "img/spesial/serene-waterdrop.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 714,
+    "name": "Serene Waterdrop (canvasbutik.no)"
+  },
+  "img-372fe08cd016eebd86b1070f0262": {
+    "url": "img/spesial/fall-flowers.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Fall Flowers (canvasbutik.no)"
+  },
+  "img-72383c865e3665baff7593865e38": {
+    "url": "img/spesial/inflorescence.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Inflorescence (canvasbutik.no)"
+  },
+  "img-5bc781ea65a6e4b0370711b4d7d0": {
+    "url": "img/spesial/burdocks.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Burdocks (canvasbutik.no)"
+  },
+  "img-563cc8cefa842f35d71a512971b4": {
+    "url": "img/spesial/grass-in-light.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Grass In Light (canvasbutik.no)"
+  },
+  "img-35fd4b37dbb4851c4e83eec38efd": {
+    "url": "img/spesial/sunlight-in-the-mountains.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Sunlight In The Mountains (canvasbutik.no)"
+  },
+  "img-7873a21b5b58e9195f8b4c01c852": {
+    "url": "img/spesial/finery.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Finery (canvasbutik.no)"
+  },
+  "img-0b87e20df83727a561c22b105862": {
+    "url": "img/spesial/boho-flower.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Boho Flower (canvasbutik.no)"
+  },
+  "img-661e8aec0145536c6c4982ee1fcd": {
+    "url": "img/spesial/nature-graphic-no1.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Nature Graphic No1 (canvasbutik.no)"
+  },
+  "img-9cb87ce51b1dcfb6c16a33fcc4b8": {
+    "url": "img/spesial/nature-graphic-no2.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Nature Graphic No2 (canvasbutik.no)"
+  },
+  "img-be54e45182cf078cc6d422eabf01": {
+    "url": "img/spesial/graphic-art-no1.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Graphic Art No1 (canvasbutik.no)"
+  },
+  "img-0c2fcdfe495a4f519144742b40cf": {
+    "url": "img/spesial/graphic-art-no2.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Graphic Art No2 (canvasbutik.no)"
+  },
+  "img-7e1efb2dbc31a1e503a9c716f83e": {
+    "url": "img/spesial/hazy-mountains.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Hazy Mountains (canvasbutik.no)"
+  },
+  "img-82abd1e4dd79f2ee7e7c1d24a35d": {
+    "url": "img/spesial/colorful-autumn.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Colorful Autumn (canvasbutik.no)"
+  },
+  "img-df6981cee17126233a1fee9afeff": {
+    "url": "img/spesial/above-the-clouds.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Above The Clouds (canvasbutik.no)"
+  },
+  "img-4c1f71fcd57a5713126d72eb49a8": {
+    "url": "img/spesial/secrecy.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Secrecy (canvasbutik.no)"
+  },
+  "img-592ff52a7693c2daf23ba5ae7aab": {
+    "url": "img/spesial/connection.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Connection (canvasbutik.no)"
+  },
+  "img-75ed5676ded8a8d23b900bead19c": {
+    "url": "img/spesial/dolomites.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Dolomites (canvasbutik.no)"
+  },
+  "img-fa3a3e40414b80ce982573a355a8": {
+    "url": "img/spesial/cattle-on-field.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 714,
+    "name": "Cattle On Field (canvasbutik.no)"
   }
 });

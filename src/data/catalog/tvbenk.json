@@ -437,6 +437,180 @@
     "priceConfidence": "checked"
   },
   {
+    "id": "ikea-besta-veggmontert-skapkombinasjon-180x22-mork",
+    "category": "tvbenk",
+    "name": "BESTÅ veggmontert skapkombinasjon 180x22x38 – brunbeiset eik",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-brunbeiset-eikefiner-s09623155/",
+    "priceNok": 4125,
+    "salePriceNok": 3825,
+    "priceNote": "Priser sjekket 2026-11-18 på ikea.com/no («Ny lavere pris»): Hedeviken 3 825 kr (før 4 125, art. 096.231.55), Björköviken 3 975 kr (før 4 275, art. 896.231.56). Veggskinner, 3 hylleplater og trykk-åpne-hengsler følger med.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.22,
+      "h": 0.38
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "wall",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "Tre grunne BESTÅ-skap (60x20x38) på veggskinne, dører 60x38 med trykk-og-åpne-hengsler (grepsfrie). Underkant 25 cm over gulvet som i spesialforslagene – kan henges høyere.",
+      "mountHeight": 0.25
+    },
+    "variants": [
+      {
+        "name": "Brunsvart / Hedeviken brunbeiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5a4232",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5a4232"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 4125,
+        "salePriceNok": 3825,
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-brunbeiset-eikefiner-s09623155/"
+      },
+      {
+        "name": "Brunsvart / Björköviken brunbeiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5a4232",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5a4232"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 4275,
+        "salePriceNok": 3975,
+        "url": "https://www.ikea.com/no/no/p/besta-veggmontert-skapkombinasjon-brunsvart-bjoerkoeviken-brunbeiset-eikefiner-s89623156/",
+        "paramsOverride": {
+          "frontStyle": "ribbed"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "Tre grunne, veggmonterte BESTÅ-skap (180 × 22 × 38 cm) i brunsvart med grepsfrie dører i brunbeiset eik – glatt Hedeviken eller riflet Björköviken.",
+    "why": "Bare 22 cm dyp: tar lite plass foran den høye veggen, svever over gulvet og gir en mørk, rolig hylle under bildene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-brunbeiset-eikefiner__1602856_pe1043770_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Navn, mål, innhold og priser sjekket 2026-11-18 på ikea.com/no. Mål 180 × 22 × 38 bekreftet av eieren.",
+    "priceConfidence": "checked"
+  },
+  {
+    "id": "ikea-besta-tv-benk-dorer-180x42-veggmontert",
+    "category": "tvbenk",
+    "name": "BESTÅ TV-benk med dører 180x42x38 – veggmontert, brunbeiset eik",
+    "brand": "IKEA",
+    "store": "IKEA",
+    "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner-s39622908/",
+    "priceNok": 3595,
+    "salePriceNok": 3195,
+    "priceNote": "Priser sjekket 2026-11-18 på ikea.com/no («Ny lavere pris»): Hedeviken 3 195 kr (før 3 595, art. 396.229.08), Björköviken 3 345 kr (før 3 745, art. 694.221.87). Veggfester følger med – IKEA sier BESTÅ veggskinne ikke skal brukes til TV-benken.",
+    "dims": {
+      "w": 1.8,
+      "d": 0.42,
+      "h": 0.38
+    },
+    "archetype": "tv-bench",
+    "mount": "floor",
+    "params": {
+      "base": "wall",
+      "legH": 0,
+      "legStyle": "block",
+      "fronts": [
+        "door",
+        "door",
+        "door"
+      ],
+      "frontStyle": "flat",
+      "handle": "none",
+      "top": "same",
+      "corners": "square",
+      "notes": "TV-benken (180x40x38 stamme) hengt på veggen med de medfølgende veggfestene, tre dører 60x38 med trykk-og-åpne-hengsler. Underkant 25 cm over gulvet som i spesialforslagene.",
+      "mountHeight": 0.25
+    },
+    "variants": [
+      {
+        "name": "Brunsvart / Hedeviken brunbeiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5a4232",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5a4232"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 3595,
+        "salePriceNok": 3195,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner-s39622908/"
+      },
+      {
+        "name": "Brunsvart / Björköviken brun beiset eikefiner",
+        "colors": {
+          "body": "#2b2421",
+          "front": "#5a4232",
+          "top": "#2b2421",
+          "legs": "#2b2421",
+          "handle": "#5a4232"
+        },
+        "materials": {
+          "body": "black-oak",
+          "front": "smoked-oak",
+          "top": "black-oak",
+          "legs": "black-oak",
+          "handle": "smoked-oak"
+        },
+        "priceNok": 3745,
+        "salePriceNok": 3345,
+        "url": "https://www.ikea.com/no/no/p/besta-tv-benk-med-dorer-brunsvart-bjoerkoeviken-brun-beiset-eikefiner-s69422187/",
+        "paramsOverride": {
+          "frontStyle": "ribbed"
+        }
+      }
+    ],
+    "defaultVariant": 0,
+    "absorption": 0.02,
+    "description": "BESTÅ TV-benk 180 × 42 × 38 cm hengt på veggen – samme dører som den grunne skapkombinasjonen, men nesten dobbelt så dyp. Glatt Hedeviken eller riflet Björköviken.",
+    "why": "Stikker 42 cm ut fra veggen og gir en ordentlig hylle for lamper og planter under bildene.",
+    "imageUrl": "https://www.ikea.com/no/no/images/products/besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner__1531465_pe1015646_s5.jpg",
+    "verified": true,
+    "verifiedNote": "Navn, mål, innhold og priser sjekket 2026-11-18 på ikea.com/no.",
+    "priceConfidence": "checked"
+  },
+  {
     "id": "ikea-eket-medieoppbevaring-210-valnott",
     "category": "tvbenk",
     "name": "EKET medieoppbevaring 210x35x35, brun valnøttmønstret",

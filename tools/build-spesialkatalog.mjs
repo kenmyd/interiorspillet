@@ -122,6 +122,73 @@ const besta240 = {
   imageUrl: 'https://www.ikea.com/no/no/images/products/besta-tv-benk-med-dorer-brunsvart-lappviken-brunsvart__1420623_pe977289_s5.jpg',
   verifiedNote: `Varianter og priser sjekket ${CHECKED} på ikea.com/no. 240 cm fant vi bare med Lappviken- og Krukmakare-dører (ikke Hedeviken, Björköviken eller Timmerviken).`,
 };
+// 2026-11-18: the owner's two links – three shallow 60 cm cabinets on a wall rail, push-to-open doors
+const VEGG_CHECKED = '2026-11-18';
+const bestaVegg = {
+  id: 'ikea-besta-veggmontert-skapkombinasjon-180x22-mork', category: 'tvbenk',
+  name: 'BESTÅ veggmontert skapkombinasjon 180x22x38 – brunbeiset eik',
+  brand: 'IKEA', store: 'IKEA', url: ikea('besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-brunbeiset-eikefiner-s09623155'),
+  priceNok: 4125, salePriceNok: 3825,
+  priceNote: `Priser sjekket ${VEGG_CHECKED} på ikea.com/no («Ny lavere pris»): Hedeviken 3 825 kr (før 4 125, art. 096.231.55), Björköviken 3 975 kr (før 4 275, art. 896.231.56). Veggskinner, 3 hylleplater og trykk-åpne-hengsler følger med.`,
+  dims: { w: 1.8, d: 0.22, h: 0.38 }, archetype: 'tv-bench', mount: 'floor',
+  params: {
+    ...bestaParams(3), base: 'wall', mountHeight: 0.25,
+    notes: 'Tre grunne BESTÅ-skap (60x20x38) på veggskinne, dører 60x38 med trykk-og-åpne-hengsler (grepsfrie). Underkant 25 cm over gulvet som i spesialforslagene – kan henges høyere.',
+  },
+  variants: [
+    bestaV('Brunsvart / Hedeviken brunbeiset eikefiner', '#5a4232', 'smoked-oak', ikea('besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-brunbeiset-eikefiner-s09623155'), 4125, 3825),
+    bestaV('Brunsvart / Björköviken brunbeiset eikefiner', '#5a4232', 'smoked-oak', ikea('besta-veggmontert-skapkombinasjon-brunsvart-bjoerkoeviken-brunbeiset-eikefiner-s89623156'), 4275, 3975, { frontStyle: 'ribbed' }),
+  ],
+  defaultVariant: 0, absorption: 0.02,
+  description: 'Tre grunne, veggmonterte BESTÅ-skap (180 × 22 × 38 cm) i brunsvart med grepsfrie dører i brunbeiset eik – glatt Hedeviken eller riflet Björköviken.',
+  why: 'Bare 22 cm dyp: tar lite plass foran den høye veggen, svever over gulvet og gir en mørk, rolig hylle under bildene.',
+  imageUrl: 'https://www.ikea.com/no/no/images/products/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-brunbeiset-eikefiner__1602856_pe1043770_s5.jpg',
+  verified: true, verifiedNote: `Navn, mål, innhold og priser sjekket ${VEGG_CHECKED} på ikea.com/no. Mål 180 × 22 × 38 bekreftet av eieren.`, priceConfidence: 'checked',
+};
+// The deeper ones (the owner, 2026-11-18): the 42 cm TV bench hung with its own wall brackets (no BESTÅ rail), and the
+// 64 cm tall wall-hung combination. Same door order as bestaVegg: 0 Hedeviken, 1 Björköviken.
+const bestaTv42 = {
+  id: 'ikea-besta-tv-benk-dorer-180x42-veggmontert', category: 'tvbenk',
+  name: 'BESTÅ TV-benk med dører 180x42x38 – veggmontert, brunbeiset eik',
+  brand: 'IKEA', store: 'IKEA', url: ikea('besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner-s39622908'),
+  priceNok: 3595, salePriceNok: 3195,
+  priceNote: `Priser sjekket ${VEGG_CHECKED} på ikea.com/no («Ny lavere pris»): Hedeviken 3 195 kr (før 3 595, art. 396.229.08), Björköviken 3 345 kr (før 3 745, art. 694.221.87). Veggfester følger med – IKEA sier BESTÅ veggskinne ikke skal brukes til TV-benken.`,
+  dims: { w: 1.8, d: 0.42, h: 0.38 }, archetype: 'tv-bench', mount: 'floor',
+  params: {
+    ...bestaParams(3), base: 'wall', mountHeight: 0.25,
+    notes: 'TV-benken (180x40x38 stamme) hengt på veggen med de medfølgende veggfestene, tre dører 60x38 med trykk-og-åpne-hengsler. Underkant 25 cm over gulvet som i spesialforslagene.',
+  },
+  variants: [
+    bestaV('Brunsvart / Hedeviken brunbeiset eikefiner', '#5a4232', 'smoked-oak', ikea('besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner-s39622908'), 3595, 3195),
+    bestaV('Brunsvart / Björköviken brun beiset eikefiner', '#5a4232', 'smoked-oak', ikea('besta-tv-benk-med-dorer-brunsvart-bjoerkoeviken-brun-beiset-eikefiner-s69422187'), 3745, 3345, { frontStyle: 'ribbed' }),
+  ],
+  defaultVariant: 0, absorption: 0.02,
+  description: 'BESTÅ TV-benk 180 × 42 × 38 cm hengt på veggen – samme dører som den grunne skapkombinasjonen, men nesten dobbelt så dyp. Glatt Hedeviken eller riflet Björköviken.',
+  why: 'Stikker 42 cm ut fra veggen og gir en ordentlig hylle for lamper og planter under bildene.',
+  imageUrl: 'https://www.ikea.com/no/no/images/products/besta-tv-benk-med-dorer-brunsvart-hedeviken-brunbeiset-eikefiner__1531465_pe1015646_s5.jpg',
+  verified: true, verifiedNote: `Navn, mål, innhold og priser sjekket ${VEGG_CHECKED} på ikea.com/no.`, priceConfidence: 'checked',
+};
+const besta64 = {
+  id: 'ikea-besta-veggmontert-skapkombinasjon-180x42x64-mork', category: 'skjenk',
+  name: 'BESTÅ veggmontert skapkombinasjon 180x42x64 – brunbeiset eik',
+  brand: 'IKEA', store: 'IKEA', url: ikea('besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-mork-brun-beiset-eikefiner-s19417862'),
+  priceNok: 5085, salePriceNok: 4485,
+  priceNote: `Priser sjekket ${VEGG_CHECKED} på ikea.com/no («Ny lavere pris»): Hedeviken mørk brun beiset 4 485 kr (før 5 085, art. 194.178.62), Björköviken brun beiset 4 635 kr (før 5 235, art. 894.217.90). Veggskinner, 3 hylleplater og trykk-åpne-hengsler følger med; BESTÅ topplate kjøpes separat.`,
+  dims: { w: 1.8, d: 0.42, h: 0.64 }, archetype: 'sideboard', mount: 'floor',
+  params: {
+    ...bestaParams(3), base: 'wall', mountHeight: 0.25,
+    notes: 'Tre BESTÅ-skap 60x40x64 på veggskinne, dører 60x64 med trykk-og-åpne-hengsler (grepsfrie). Underkant 25 cm over gulvet.',
+  },
+  variants: [
+    bestaV('Brunsvart / Hedeviken mørk brun beiset eikefiner', '#46342a', 'smoked-oak', ikea('besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-mork-brun-beiset-eikefiner-s19417862'), 5085, 4485),
+    bestaV('Brunsvart / Björköviken brun beiset eikefiner', '#5a4232', 'smoked-oak', ikea('besta-veggmontert-skapkombinasjon-brunsvart-bjoerkoeviken-brun-beiset-eikefiner-s89421790'), 5235, 4635, { frontStyle: 'ribbed' }),
+  ],
+  defaultVariant: 0, absorption: 0.02,
+  description: 'Høy, veggmontert BESTÅ-kombinasjon 180 × 42 × 64 cm i brunsvart med tre grepsfrie dører: Hedeviken i mørk brun beiset eik eller riflet Björköviken.',
+  why: 'Mer oppbevaring og et tydeligere møbel under bildene; Hedeviken finnes i denne høyden bare i den mørkere beisen.',
+  imageUrl: 'https://www.ikea.com/no/no/images/products/besta-veggmontert-skapkombinasjon-brunsvart-hedeviken-mork-brun-beiset-eikefiner__0994653_pe821277_s5.jpg',
+  verified: true, verifiedNote: `Navn, mål, innhold og priser sjekket ${VEGG_CHECKED} på ikea.com/no. Hedeviken finnes ikke i «brunbeiset» i 64 cm høyde – bare mørk brun beiset og eikefiner.`, priceConfidence: 'checked',
+};
 const eket = {
   id: 'ikea-eket-medieoppbevaring-210-valnott', category: 'tvbenk', name: 'EKET medieoppbevaring 210x35x35, brun valnøttmønstret',
   brand: 'IKEA', store: 'IKEA', url: ikea('eket-medieoppbevaring-kombinasjon-brun-valnottmonstret-s69580983'), priceNok: 3585,
@@ -175,18 +242,54 @@ const TURNER_GULV = 'bohus-sindig-turner-gulvlampe-h147';
 // ---- akustikkbilder fra canvasbutik.no -------------------------------------------------------------------------
 // [short side, long side, list price, sale price] (m, kr) – the same for every motif
 const SIZES = [[0.5, 0.7, 3000, 1999], [0.7, 1.0, 3499, 2498], [0.8, 1.2, 4499, 3498], [1.0, 1.5, 6999, 5998], [1.2, 1.8, 8999, 7998]];
+// The motif groups (the owner's picks; 2026-11-18: Dual Profile, When We Break and The Heat Between taken out, the owner's
+// own finds from canvasbutik.no added). tone = the words in the description, why = the group's «hvorfor».
+const GROUPS = {
+  akvarell: { tone: 'akvarell-abstrakt i brune og beige toner', why: 'Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og brunbeiset eik.' },
+  fjell: { tone: 'malte fjellag i beige, brunt og grått', why: 'Golden Horizons og Timeless Peaks er samme serie – lagene gjentar de vannrette linjene i BESTÅ-skapet.' },
+  blekk: { tone: 'flytende blekk og marmor i brunt, rust og gull', why: 'Kraftige, varme brunfarger med glød – passer til brunbeiset eik og mørkt treverk.' },
+  hostfoto: { tone: 'landskapsfoto i høstbrunt og tåke', why: 'Stemningsfulle foto med samme brune toner som møblene og tåke som gir dybde i veggen.' },
+  gronnfoto: { tone: 'landskapsfoto i blågrønt og tåke', why: 'Gir grønt som kontrastfarge til det brune – passer best med grønne puter eller planter i rommet.' },
+  beigefoto: { tone: 'botanisk foto i beige og varm brun med myk, uskarp bakgrunn', why: 'Lyse, rolige naturfoto i samme beige skala – flere sammen ser ut som én serie.' },
+  bladfoto: { tone: 'nærbilde av tørkede blader i kobber, rosa og sepia', why: 'Tørkede blader i varme kobbertoner – søsken til hverandre og til de brune møblene.' },
+  grafisk: { tone: 'grafiske former i brunt, rust, beige og dempet grønt', why: 'Rolige, grafiske former med samme brunskala som møblene – to i samme serie blir et tydelig par.' },
+};
+const NEW = '2026-11-18';
+// [slug, title, group, store handle (when it is not lyddempende-bilde-<slug>), checked date]
 const MOTIFS = [
-  ['soft-leaves', 'Soft Leaves'], ['dual-profile', 'Dual Profile'], ['earth-leaves', 'Earth Leaves'], ['when-we-break', 'When We Break'],
-  ['the-heat-between', 'The Heat Between'], ['abstract-oval', 'Abstract Oval'], ['brown-balance', 'Brown Balance'],
-  ['circles-in-brown', 'Circles In Brown'], ['brown-forms', 'Brown Forms'], ['brown-circles', 'Brown Circles'], ['brown-shapes', 'Brown Shapes'],
-  ['abstract-in-brown', 'Abstract In Brown'], ['brown-layers', 'Brown Layers'], ['amber-flow', 'Amber Flow'], ['ethereal-strata', 'Ethereal Strata'],
-  ['framed-stillness', 'Framed Stillness'], ['timeless-peaks', 'Timeless Peaks'],
+  ['soft-leaves', 'Soft Leaves', 'akvarell'], ['earth-leaves', 'Earth Leaves', 'akvarell'], ['abstract-oval', 'Abstract Oval', 'akvarell'],
+  ['brown-balance', 'Brown Balance', 'akvarell'], ['circles-in-brown', 'Circles In Brown', 'akvarell'], ['brown-forms', 'Brown Forms', 'akvarell'],
+  ['brown-circles', 'Brown Circles', 'akvarell'], ['brown-shapes', 'Brown Shapes', 'akvarell'], ['abstract-in-brown', 'Abstract In Brown', 'akvarell'],
+  ['brown-layers', 'Brown Layers', 'akvarell'], ['amber-flow', 'Amber Flow', 'akvarell'], ['ethereal-strata', 'Ethereal Strata', 'akvarell'],
+  ['framed-stillness', 'Framed Stillness', 'akvarell'],
+  ['timeless-peaks', 'Timeless Peaks', 'fjell'], ['golden-horizons', 'Golden Horizons', 'fjell', null, NEW],
+  ['sands-of-time', 'Sands Of Time', 'blekk', null, NEW], ['veins-of-terra', 'Veins Of Terra', 'blekk', null, NEW],
+  ['whispers-of-earth', 'Whispers Of Earth', 'blekk', null, NEW], ['rust-and-flow', 'Rust And Flow', 'blekk', null, NEW],
+  ['amber-waves', 'Amber Waves', 'blekk', null, NEW],
+  ['whispering-leaves', 'Whispering Leaves', 'bladfoto', null, NEW], ['rust', 'Rust', 'bladfoto', null, NEW],
+  ['petal', 'Petal', 'bladfoto', null, NEW], ['gaiety', 'Gaiety', 'bladfoto', null, NEW],
+  ['nature-petals', 'Nature Petals', 'beigefoto', null, NEW], ['beige-botanics', 'Beige Botanics', 'beigefoto', null, NEW],
+  ['beigeflor', 'Beigeflor', 'beigefoto', null, NEW], ['serenebeige', 'Serenebeige', 'beigefoto', null, NEW],
+  ['blissful-meadow', 'Blissful Meadow', 'beigefoto', null, NEW], ['beigeblossom', 'Beigeblossom', 'beigefoto', null, NEW],
+  ['central-flower', 'Central Flower', 'beigefoto', null, NEW], ['natures-quiet-elegance', "Nature's Quiet Elegance", 'beigefoto', null, NEW],
+  ['serene-waterdrop', 'Serene Waterdrop', 'beigefoto', null, NEW],
+  ['fall-flowers', 'Fall Flowers', 'beigefoto', null, NEW], ['inflorescence', 'Inflorescence', 'beigefoto', null, NEW],
+  ['burdocks', 'Burdocks', 'beigefoto', null, NEW], ['grass-in-light', 'Grass In Light', 'beigefoto', null, NEW],
+  ['sunlight-in-the-mountains', 'Sunlight In The Mountains', 'beigefoto', null, NEW], ['finery', 'Finery', 'beigefoto', null, NEW],
+  ['boho-flower', 'Boho Flower', 'beigefoto', null, NEW],
+  ['nature-graphic-no1', 'Nature Graphic No1', 'grafisk', null, NEW], ['nature-graphic-no2', 'Nature Graphic No2', 'grafisk', null, NEW],
+  ['graphic-art-no1', 'Graphic Art No1', 'grafisk', null, NEW], ['graphic-art-no2', 'Graphic Art No2', 'grafisk', null, NEW],
+  ['hazy-mountains', 'Hazy Mountains', 'hostfoto', 'hazy-mountains-1', NEW], ['colorful-autumn', 'Colorful Autumn', 'hostfoto', 'colorful-autumn-1', NEW],
+  ['above-the-clouds', 'Above The Clouds', 'hostfoto', 'above-the-clouds-1', NEW],
+  ['secrecy', 'Secrecy', 'gronnfoto', 'secrecy-1', NEW], ['connection', 'Connection', 'gronnfoto', 'connection-1', NEW],
+  ['dolomites', 'Dolomites', 'gronnfoto', 'dolomites-1', NEW], ['cattle-on-field', 'Cattle On Field', 'gronnfoto', 'cattle-on-field-1', NEW],
 ];
 const DEPTH = 0.055;
 const DEFAULT_SIZE = 2; // 80 × 120
 const sabine = (d) => Math.round(d.w * d.h * 0.95 * 100) / 100; // α ≈ 1,0 at 500–2000 Hz, a little edge loss
 const bundled = {};
-const art = MOTIFS.map(([slug, title]) => {
+const art = MOTIFS.map(([slug, title, group, handle, checked = CHECKED]) => {
+  const G = GROUPS[group];
   const file = `img/spesial/${slug}.jpg`;
   const bytes = new Uint8Array(fs.readFileSync(path.join(ROOT, 'public', file)));
   const mime = sniffMime(bytes);
@@ -199,9 +302,9 @@ const art = MOTIFS.map(([slug, title]) => {
   return {
     id: `canvasbutik-lyddempende-bilde-${slug}`, category: 'akustikk', subcategory: 'akustikkbilde',
     name: `Lyddempende bilde – ${title}`, brand: 'Canvasbutik', store: 'canvasbutik.no',
-    url: `https://canvasbutik.no/products/lyddempende-bilde-${slug}`,
+    url: `https://canvasbutik.no/products/lyddempende-bilde-${handle || slug}`,
     priceNok: SIZES[DEFAULT_SIZE][2], salePriceNok: SIZES[DEFAULT_SIZE][3],
-    priceNote: `Pris sjekket ${CHECKED} på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.`,
+    priceNote: `Pris sjekket ${checked} på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra.${checked === NEW ? ' Butikken har også 45×60 til 1 399 kr (ikke i spillet).' : ''}`,
     dims: dims(SIZES[DEFAULT_SIZE]), archetype: 'acoustic-art', mount: 'wall',
     params: { thickness: DEPTH, motif: 'custom', imageId: id, imageAspect: w / h, fit: 'cover' },
     variants: SIZES.map((s) => ({
@@ -212,18 +315,20 @@ const art = MOTIFS.map(([slug, title]) => {
     })),
     defaultVariant: DEFAULT_SIZE,
     absorption: sabine(dims(SIZES[DEFAULT_SIZE])),
-    description: `Lyddempende canvasbilde «${title}» i brune og beige toner: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.`,
-    why: 'Kunst og demping i ett – de varme brune tonene passer til Lodge hazel, Timeout Umber og valnøtt.',
+    description: `Lyddempende canvasbilde «${title}», ${G.tone}: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.`,
+    why: G.why,
     imageUrl: '',
     verified: true,
-    verifiedNote: `Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket ${CHECKED} på canvasbutik.no. Motivbildet ligger i spillet (public/${file}).`,
+    verifiedNote: checked === NEW
+      ? `Motiv, størrelser og priser sjekket ${checked} på canvasbutik.no; lydmålingen (ISO 354 / 11654) er den samme for hele serien (sjekket ${CHECKED}). Motivbildet ligger i spillet (public/${file}).`
+      : `Motiv, størrelser, priser og lydmåling (ISO 354 / 11654) sjekket ${checked} på canvasbutik.no. Motivbildet ligger i spillet (public/${file}).`,
     priceConfidence: 'checked',
   };
 });
 
-const products = [regal, timeout, besta180, besta240, eket, turnerBord, double, ...art];
+const products = [regal, timeout, besta180, besta240, bestaVegg, bestaTv42, besta64, eket, turnerBord, double, ...art];
 fs.writeFileSync(path.join(ROOT, 'research/catalog-new/spesialkatalog.json'), `${JSON.stringify(products, null, 2)}\n`);
-const ids = [regal.id, timeout.id, besta180.id, besta240.id, eket.id, ...art.map((p) => p.id), turnerBord.id, TURNER_GULV, double.id];
+const ids = [regal.id, timeout.id, besta180.id, besta240.id, bestaVegg.id, bestaTv42.id, besta64.id, eket.id, ...art.map((p) => p.id), turnerBord.id, TURNER_GULV, double.id];
 fs.writeFileSync(path.join(ROOT, 'src/data/spesialkatalog.json'), `${JSON.stringify({ ids }, null, 2)}\n`);
 fs.writeFileSync(path.join(ROOT, 'src/data/bundledImages.js'), `/**
  * Pictures that ship with the game (generated by tools/build-spesialkatalog.mjs – do not edit by hand): picture id
