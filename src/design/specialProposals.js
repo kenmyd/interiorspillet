@@ -97,7 +97,7 @@ export const SPECIAL_TRIOS = Object.freeze([
   ['timeless-peaks', 'ethereal-strata', 'golden-horizons'], ['sands-of-time', 'veins-of-terra', 'rust-and-flow'],
   ['hazy-mountains', 'above-the-clouds', 'colorful-autumn'], ['secrecy', 'dolomites', 'connection'],
   // grafisk
-  ['graphic-art-no1', 'nature-graphic-no1', 'graphic-art-no2'], ['nature-graphic-no2', 'graphic-art-no2', 'nature-graphic-no1'],
+  ['graphic-art-no1', 'nature-graphic-no1', 'graphic-art-no2'], ['nature-graphic-no1', 'nature-graphic-no2', 'nature-graphic-no3'],
   // akvarell
   ['brown-circles', 'brown-shapes', 'brown-balance'], ['earth-leaves', 'soft-leaves', 'ethereal-strata'],
   ['framed-stillness', 'abstract-oval', 'brown-shapes'],

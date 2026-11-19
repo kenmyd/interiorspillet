@@ -301,6 +301,7 @@ const MOTIFS = [
   ['sunlight-in-the-mountains', 'Sunlight In The Mountains', 'beigefoto', null, NEW], ['finery', 'Finery', 'beigefoto', null, NEW],
   ['boho-flower', 'Boho Flower', 'beigefoto', null, NEW],
   ['nature-graphic-no1', 'Nature Graphic No1', 'grafisk', null, NEW], ['nature-graphic-no2', 'Nature Graphic No2', 'grafisk', null, NEW],
+  ['nature-graphic-no3', 'Nature Graphic No3', 'grafisk', null, NEW],
   ['graphic-art-no1', 'Graphic Art No1', 'grafisk', null, NEW], ['graphic-art-no2', 'Graphic Art No2', 'grafisk', null, NEW],
   ['hazy-mountains', 'Hazy Mountains', 'hostfoto', 'hazy-mountains-1', NEW], ['colorful-autumn', 'Colorful Autumn', 'hostfoto', 'colorful-autumn-1', NEW],
   ['above-the-clouds', 'Above The Clouds', 'hostfoto', 'above-the-clouds-1', NEW],

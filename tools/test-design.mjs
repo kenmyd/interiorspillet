@@ -65,10 +65,10 @@ const BASE = readJson('tools/house-tests/fixtures/catalog-baseline.json');
 // 2 lamper and 16 canvas pictures (Brown Balance replaced in place), 599 → 622; 2026-11-18: + BESTÅ veggmontert
 // skapkombinasjon 180x22x38, 622 → 623; − 3 canvas motifs (Dual Profile, When We Break, The Heat Between) + 37 of the
 // owner's own finds on canvasbutik.no, 623 → 657; + the wall-hung BESTÅ TV-benk 180x42x38 and
-// skapkombinasjon 180x42x64, 657 → 659; + the three in 240 cm built from parts, 659 → 662)
+// skapkombinasjon 180x42x64, 657 → 659; + the three in 240 cm built from parts, 659 → 662; + Nature Graphic No3 back for the owner's trio, 662 → 663)
 const EXPECT = {
-  counts: { sofa: 23, lenestol: 57, bord: 35, stoler: 30, skjenk: 16, tvbenk: 21, vitrineskap: 10, hylle: 22, seng: 20, nattbord: 22, kommode: 21, garderobe: 9, speil: 13, bad: 19, gang: 17, taklampe: 20, spotter: 37, smalamper: 63, tekstil: 31, teppe: 19, solskjerming: 22, akustikk: 67, kunst: 54, smatt: 14 },
-  total: 662, floorLamps: 28, pendel: 19,
+  counts: { sofa: 23, lenestol: 57, bord: 35, stoler: 30, skjenk: 16, tvbenk: 21, vitrineskap: 10, hylle: 22, seng: 20, nattbord: 22, kommode: 21, garderobe: 9, speil: 13, bad: 19, gang: 17, taklampe: 20, spotter: 37, smalamper: 63, tekstil: 31, teppe: 19, solskjerming: 22, akustikk: 68, kunst: 54, smatt: 14 },
+  total: 663, floorLamps: 28, pendel: 19,
 };
 const spec = readJson('src/data/room-spec.json');
 const palette = readJson('src/data/palette.json');

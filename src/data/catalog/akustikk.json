@@ -7932,6 +7932,157 @@
     "priceConfidence": "checked"
   },
   {
+    "id": "canvasbutik-lyddempende-bilde-nature-graphic-no3",
+    "category": "akustikk",
+    "subcategory": "akustikkbilde",
+    "name": "Lyddempende bilde – Nature Graphic No3",
+    "brand": "Canvasbutik",
+    "store": "canvasbutik.no",
+    "url": "https://canvasbutik.no/products/lyddempende-bilde-nature-graphic-no3",
+    "priceNok": 4499,
+    "salePriceNok": 3498,
+    "priceNote": "Pris sjekket 2026-11-18 på canvasbutik.no (salg, samme pris for alle motiver): 50×70 1 999 (før 3 000), 70×100 2 498 (før 3 499), 80×120 3 498 (før 4 499), 100×150 5 998 (før 6 999), 120×180 7 998 (før 8 999). Valgfri eikeramme koster ekstra. Butikken har også 45×60 til 1 399 kr (ikke i spillet).",
+    "dims": {
+      "w": 0.8,
+      "d": 0.055,
+      "h": 1.2
+    },
+    "archetype": "acoustic-art",
+    "mount": "wall",
+    "params": {
+      "thickness": 0.055,
+      "motif": "custom",
+      "imageId": "img-a14ea6d70209ddd24b9932a9193c",
+      "imageAspect": 0.7142857142857143,
+      "fit": "cover"
+    },
+    "variants": [
+      {
+        "name": "50 × 70 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3000,
+        "salePriceNok": 1999,
+        "dims": {
+          "w": 0.5,
+          "d": 0.055,
+          "h": 0.7
+        },
+        "absorption": 0.33
+      },
+      {
+        "name": "70 × 100 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 3499,
+        "salePriceNok": 2498,
+        "dims": {
+          "w": 0.7,
+          "d": 0.055,
+          "h": 1
+        },
+        "absorption": 0.66
+      },
+      {
+        "name": "80 × 120 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 4499,
+        "salePriceNok": 3498,
+        "dims": {
+          "w": 0.8,
+          "d": 0.055,
+          "h": 1.2
+        },
+        "absorption": 0.91
+      },
+      {
+        "name": "100 × 150 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 6999,
+        "salePriceNok": 5998,
+        "dims": {
+          "w": 1,
+          "d": 0.055,
+          "h": 1.5
+        },
+        "absorption": 1.42
+      },
+      {
+        "name": "120 × 180 cm",
+        "colors": {
+          "panel": "#8c7a68",
+          "slats": "#8c7a68",
+          "backing": "#545049",
+          "frame": "#eceae4"
+        },
+        "materials": {
+          "panel": "woven",
+          "slats": "woven",
+          "backing": "felt",
+          "frame": "woven"
+        },
+        "priceNok": 8999,
+        "salePriceNok": 7998,
+        "dims": {
+          "w": 1.2,
+          "d": 0.055,
+          "h": 1.8
+        },
+        "absorption": 2.05
+      }
+    ],
+    "defaultVariant": 2,
+    "absorption": 0.91,
+    "description": "Lyddempende canvasbilde «Nature Graphic No3», grafiske former i brunt, rust, beige og dempet grønt: 35 mm glassullplate bak lydåpent lerret, 55 mm dypt. Klasse B (αw 0,80), α 1,0 ved 500–2000 Hz.",
+    "why": "Rolige, grafiske former med samme brunskala som møblene – to i samme serie blir et tydelig par.",
+    "imageUrl": "",
+    "verified": true,
+    "verifiedNote": "Motiv, størrelser og priser sjekket 2026-11-18 på canvasbutik.no; lydmålingen (ISO 354 / 11654) er den samme for hele serien (sjekket 2026-10-29). Motivbildet ligger i spillet (public/img/spesial/nature-graphic-no3.jpg).",
+    "priceConfidence": "checked"
+  },
+  {
     "id": "canvasbutik-lyddempende-bilde-graphic-art-no1",
     "category": "akustikk",
     "subcategory": "akustikkbilde",

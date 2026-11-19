@@ -298,6 +298,13 @@ export const BUNDLED_IMAGES = Object.freeze({
     "h": 1400,
     "name": "Nature Graphic No2 (canvasbutik.no)"
   },
+  "img-a14ea6d70209ddd24b9932a9193c": {
+    "url": "img/spesial/nature-graphic-no3.jpg",
+    "mime": "image/jpeg",
+    "w": 1000,
+    "h": 1400,
+    "name": "Nature Graphic No3 (canvasbutik.no)"
+  },
   "img-be54e45182cf078cc6d422eabf01": {
     "url": "img/spesial/graphic-art-no1.jpg",
     "mime": "image/jpeg",
